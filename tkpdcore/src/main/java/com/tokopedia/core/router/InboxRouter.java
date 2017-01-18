@@ -5,7 +5,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
+import com.tokopedia.core.gcm.GCMLegacyListenerService;
 import com.tokopedia.core.onboarding.FreeReturnOnboardingActivity;
 import com.tokopedia.core.util.RouterUtils;
 
@@ -20,6 +22,9 @@ public class InboxRouter {
     private static final String DETAIL_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.detail.activity.ResCenterActivity";
     private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
     private static final String INBOX_RESCENTER_FRAGMENT = "com.tokopedia.inbox.rescenter.inbox.fragment.InboxResCenterFragment";
+    private static final String INBOX_TALK_ACTIVITY = "com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity";
+    private static final String INBOX_TALK_FRAGMENT = "com.tokopedia.inbox.inboxtalk.fragment.InboxTalkFragment";
+
 
     public static final String ARG_PARAM_EXTRA_INSTANCE_TYPE = "ARG_PARAM_EXTRA_INSTANCE_TYPE";
     public static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
@@ -35,16 +40,32 @@ public class InboxRouter {
     private static final String INBOX_TICKET_ACTIVITY = "com.tokopedia.inbox.inboxticket.activity.InboxTicketActivity";
     private static final String INBOX_TICKET_FRAGMENT = "com.tokopedia.inbox.inboxticket.fragment.InboxTicketFragment";
 
+    private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
+
     /////////// INTENT
 
     public static Intent getContactUsActivityIntent(Context context) {
-        Intent intent = RouterUtils.getActivityIntent(context, INBOX_CONTACT_US_ACTIVITY);
-        return intent;
+        return RouterUtils.getActivityIntent(context, INBOX_CONTACT_US_ACTIVITY);
     }
 
     public static Intent getInboxTicketActivityIntent(Context context) {
-        Intent intent = RouterUtils.getActivityIntent(context, INBOX_TICKET_ACTIVITY);
+        return RouterUtils.getActivityIntent(context, INBOX_TICKET_ACTIVITY);
+    }
+
+    public static Intent getInboxMessageActivityIntent(Context context) {
+        return RouterUtils.getActivityIntent(context, INBOX_MESSAGE_ACTIVITY);
+    }
+
+    public static Intent getInboxTalkActivityIntent(Context context) {
+        Intent intent = RouterUtils.getActivityIntent(context, INBOX_TALK_ACTIVITY);
         return intent;
+    }
+
+    public static Fragment instanceInboxTalkFromNotification(Context context) {
+        Fragment fragment = Fragment.instantiate(context, INBOX_TALK_FRAGMENT);
+        Bundle bundle = new Bundle();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     /////////// COMPONENT NAME
@@ -59,6 +80,11 @@ public class InboxRouter {
         fragment.setArguments(args);
         return fragment;
     }
+
+    public static ComponentName getInboxMessageActivityComponentName(Context context) {
+        return RouterUtils.getActivityComponentName(context, INBOX_MESSAGE_ACTIVITY);
+    }
+
 
     public static Intent getInboxResCenterActivityIntent(Context context) {
         Intent intent = RouterUtils.getActivityIntent(context, INBOX_RESCENTER_ACTIVITY);
@@ -112,4 +138,7 @@ public class InboxRouter {
         fragment.setArguments(bundle);
         return fragment;
     }
+
+
+
 }

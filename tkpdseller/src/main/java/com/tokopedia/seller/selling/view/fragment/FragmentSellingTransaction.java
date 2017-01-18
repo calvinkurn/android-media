@@ -33,6 +33,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.PagingHandler;
@@ -460,6 +461,12 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     public void onPause() {
         presenter.finishConnection();
         super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        UnifyTracking.eventViewShopTransactionPage();
     }
 
     private void createEditRefDialog(final SellingStatusTxModel model) {

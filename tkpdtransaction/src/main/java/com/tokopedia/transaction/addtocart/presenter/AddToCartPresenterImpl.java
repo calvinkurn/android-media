@@ -15,7 +15,6 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.Cart;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
@@ -27,6 +26,7 @@ import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.LocationPass;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -58,7 +58,6 @@ import java.util.Map;
  * @author Angga.Prasetiyo on 11/03/2016.
  */
 public class AddToCartPresenterImpl implements AddToCartPresenter {
-    private static final String TAG = AddToCartPresenterImpl.class.getSimpleName();
     private final AddToCartNetInteractor addToCartNetInteractor;
     private final AddToCartViewListener viewListener;
     private final KeroNetInteractorImpl keroNetInteractor;
@@ -70,7 +69,8 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     }
 
     @Override
-    public void getCartFormData(@NonNull final Context context, @NonNull final ProductCartPass data) {
+    public void getCartFormData(@NonNull final Context context,
+                                @NonNull final ProductCartPass data) {
         viewListener.showInitLoading();
         Map<String, String> param = new HashMap<>();
         param.put("product_id", data.getProductId());
@@ -86,7 +86,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.hideInitLoading();
                         if (isAllowKeroAccess(data)) {
                             calculateKeroRates(context, data);
-                        }else{
+                        } else {
                             viewListener.hideProgressLoading();
                         }
                     }
@@ -117,7 +117,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.hideInitLoading();
                         if (isAllowKeroAccess(data)) {
                             calculateKeroRates(context, data);
-                        }else{
+                        } else {
                             viewListener.hideProgressLoading();
                         }
                     }
@@ -130,7 +130,8 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     }
 
     @Override
-    public void calculateKeroRates(@NonNull Context context, @NonNull final AtcFormData atcFormData) {
+    public void calculateKeroRates(@NonNull Context context,
+                                   @NonNull final AtcFormData atcFormData) {
         viewListener.disableBuyButton();
         keroNetInteractor.calculateShipping(context, KeroppiParam.paramsKero(atcFormData.getShop(),
                 atcFormData.getForm().getDestination(), atcFormData.getForm().getProductDetail()),
@@ -198,7 +199,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     public void calculateProduct(@NonNull final Context context,
                                  @NonNull final OrderData orderData) {
         viewListener.disableBuyButton();
-        addToCartNetInteractor.calculateCartPrice(context, AuthUtil.generateParams(context,
+        addToCartNetInteractor.calculateCartPrice(context, AuthUtil.generateParamsNetwork(context,
                 NetParamUtil.paramCalculateCart("calculate_product", orderData)),
                 new AddToCartNetInteractor.OnCalculateProduct() {
                     @Override
@@ -209,8 +210,9 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
                     @Override
                     public void onFailure() {
-                        viewListener.showCalculateProductErrorMessage(context
-                                .getString(R.string.msg_network_error));
+                        viewListener.showCalculateProductErrorMessage(
+                                context.getString(R.string.msg_network_error)
+                        );
                         viewListener.enableBuyButton();
                     }
 
@@ -225,7 +227,9 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     public void calculateKeroAddressShipping(@NonNull Context context,
                                              @NonNull final OrderData orderData) {
         keroNetInteractor.calculateKeroCartAddressShipping(context,
-                AuthUtil.generateParamsNetwork(context, KeroppiParam.paramsKeroOrderData(orderData)),
+                AuthUtil.generateParamsNetwork(
+                        context, KeroppiParam.paramsKeroOrderData(orderData)
+                ),
                 new KeroNetInteractor.OnCalculateKeroAddressShipping() {
                     @Override
                     public void onSuccess(List<Attribute> datas) {
@@ -244,7 +248,9 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
     @Override
     public Destination generateAddressData(Intent data) {
-        return Destination.convertFromBundle(data.getExtras().getParcelable(ManageAddressConstant.EXTRA_ADDRESS));
+        return Destination.convertFromBundle(
+                data.getExtras().getParcelable(ManageAddressConstant.EXTRA_ADDRESS)
+        );
     }
 
     @Override
@@ -257,7 +263,9 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
             viewListener.disableBuyButton();
             CommonUtils.dumper("rates/v1 kerorates called calculateAllShipping");
             keroNetInteractor.calculateKeroCartAddressShipping(context,
-                    AuthUtil.generateParamsNetwork(context, KeroppiParam.paramsKeroOrderData(orderData)),
+                    AuthUtil.generateParamsNetwork(
+                            context, KeroppiParam.paramsKeroOrderData(orderData)
+                    ),
                     new KeroNetInteractor.OnCalculateKeroAddressShipping() {
                         @Override
                         public void onSuccess(List<Attribute> datas) {
@@ -459,7 +467,9 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
         myAlertDialog.setPositiveButton(context.getString(R.string.title_pay),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface arg0, int arg1) {
-                        viewListener.navigateToActivity(new Intent(context, Cart.class));
+                        viewListener.navigateToActivity(
+                                TransactionCartRouter.createInstanceCartActivity(context)
+                        );
                         viewListener.closeView();
                     }
 
@@ -509,17 +519,12 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
     @Override
     public boolean isAllowKeroAccess(AtcFormData data) {
-        if (data.getShop().getUt() != 0 && !TextUtils.isEmpty(data.getShop().getToken())
+        return data.getShop().getUt() != 0 && !TextUtils.isEmpty(data.getShop().getToken())
                 && !TextUtils.isEmpty(data.getShop().getAvailShippingCode())
                 && !TextUtils.isEmpty(data.getShop().getOriginId() + "")
                 && !TextUtils.isEmpty(data.getShop().getOriginPostal())
                 && !TextUtils.isEmpty(data.getForm().getDestination().getDistrictId())
                 && !TextUtils.isEmpty(data.getForm().getDestination().getPostalCode())
-                && !TextUtils.isEmpty(data.getForm().getProductDetail().getProductWeight())
-                ) {
-            return true;
-        } else {
-            return false;
-        }
+                && !TextUtils.isEmpty(data.getForm().getProductDetail().getProductWeight());
     }
 }

@@ -1,15 +1,14 @@
 package com.tokopedia.transaction.purchase.listener;
 
-import com.tokopedia.core.product.listener.ViewListener;
+import com.tokopedia.transaction.base.IBaseView;
 import com.tokopedia.transaction.purchase.model.response.txconfirmation.TxConfData;
 
 import java.util.List;
 
 /**
- * TxConfViewListener
- * Created by Angga.Prasetiyo on 13/05/2016.
+ * @author by Angga.Prasetiyo on 13/05/2016.
  */
-public interface TxConfViewListener extends ViewListener {
+public interface TxConfViewListener extends IBaseView {
     void renderDataList(List<TxConfData> orderDataList, boolean hasNext, int typeRequest);
 
     void showFailedLoadMoreData(String message);

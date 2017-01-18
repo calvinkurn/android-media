@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,15 +21,16 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.network.entity.home.recentView.RecentView;
-import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.rxjava.RxUtils;
+import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.var.NotificationVariable;
 import com.tokopedia.seller.customadapter.ListViewOrderStatus;
 import com.tokopedia.seller.customadapter.ListViewShopOrderDetail;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.seller.selling.model.orderShipping.OrderCustomer;
 import com.tokopedia.seller.selling.model.orderShipping.OrderDestination;
 import com.tokopedia.seller.selling.model.orderShipping.OrderDetail;
@@ -40,8 +40,6 @@ import com.tokopedia.seller.selling.model.orderShipping.OrderShipment;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShop;
 import com.tokopedia.seller.selling.model.shopconfirmationdetail.ShippingConfirmDetModel;
-import com.tokopedia.core.util.AppUtils;
-import com.tokopedia.core.var.NotificationVariable;
 
 import org.parceler.Parcels;
 
@@ -175,14 +173,12 @@ ShippingConfirmationDetail extends TActivity {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position,
                                     long arg3) {
-//				Intent intent = new Intent(ShippingConfirmationDetail.this, ProductDetailPresenter.class);
-                Intent intent = new Intent(ShippingConfirmationDetail.this, ProductInfoActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(PRODUCT_URI, dataProducts.get(position).ProductUrlList);
-                bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS,
-                        getProductDataToPass(dataProducts.get(position)));
-                intent.putExtras(bundle);
-                startActivity(intent);
+                startActivity(
+                        ProductDetailRouter.createInstanceProductDetailInfoActivity(
+                                ShippingConfirmationDetail.this,
+                                getProductDataToPass(dataProducts.get(position))
+                        )
+                );
             }
         });
 

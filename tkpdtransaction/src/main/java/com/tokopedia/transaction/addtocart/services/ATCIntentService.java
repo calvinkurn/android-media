@@ -16,8 +16,6 @@ import rx.schedulers.Schedulers;
  * @author Angga.Prasetiyo on 21/03/2016.
  */
 public class ATCIntentService extends IntentService {
-    private static final String TAG = ATCIntentService.class.getSimpleName();
-
     public static final String EXTRA_ACTION = "EXTRA_ACTION";
     public static final String EXTRA_ORDER_DATA = "EXTRA_ORDER_DATA";
     public static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";

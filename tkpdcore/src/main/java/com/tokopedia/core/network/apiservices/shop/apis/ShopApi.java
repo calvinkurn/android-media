@@ -51,9 +51,6 @@ public interface ShopApi {
     @POST(TkpdBaseURL.Shop.PATH_GET_SHOP_REVIEW)
     Observable<Response<TkpdResponse>> getReview(@FieldMap Map<String, String> params);
 
-    @GET(TkpdBaseURL.Shop.PATH_GEt_SHOP_TALK)
-    Observable<Response<TkpdResponse>> getTalk(@QueryMap Map<String, String> params);
-
     @FormUrlEncoded
     @POST(TkpdBaseURL.Shop.URL_SHOP + TkpdBaseURL.Shop.PATH_GET_SHOP_NOTES)
     Observable<GetShopNotes> getNotesBasic(
