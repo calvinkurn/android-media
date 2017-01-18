@@ -35,7 +35,7 @@
     <string name="title_group_list">Grup</string>
     <string name="title_product_ad_detail">Detil Promo Produk</string>
     <string name="title_shop_ad_detail">Detil Promo Toko</string>
-    <string name="title_group_ad_detail">Detil Grup</string>
+    <string name="title_group_ad_detail">Detil Promo Grup</string>
 
     <!-- Top Ads ad list -->
     <string name="label_top_ads_daily_spend">Anggaran Harian</string>
