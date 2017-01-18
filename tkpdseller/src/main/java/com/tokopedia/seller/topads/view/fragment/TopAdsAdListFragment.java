@@ -27,7 +27,7 @@ import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.presenter.TopAdsAdListPresenter;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyGroupAdsDataBinder;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
@@ -67,6 +67,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     private ProgressDialog progressDialog;
 
     protected abstract void searchAd();
+
+    protected abstract TopAdsEmptyAdDataBinder getEmptyViewBinder();
 
     public TopAdsAdListFragment() {
         // Required empty public constructor
@@ -130,7 +132,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         });
         adapter = new TopAdsAdListAdapter();
         adapter.setCallback(this);
-        adapter.setEmptyView(new TopAdsEmptyGroupAdsDataBinder(adapter));
+        adapter.setEmptyView(getEmptyViewBinder());
         TopAdsRetryDataBinder topAdsRetryDataBinder = new TopAdsRetryDataBinder(adapter);
         topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
@@ -141,6 +143,13 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
             }
         });
         adapter.setRetryView(topAdsRetryDataBinder);
+    }
+
+    private void updateEmptyViewNoResult() {
+        TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
+        emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_empty_promo_not_found_title_empty_text));
+        emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_empty_promo_not_found_content_empty_text));
+        adapter.setEmptyView(emptyGroupAdsDataBinder);
     }
 
     @Override
@@ -181,7 +190,11 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         hideLoading();
         if (adapter.getDataSize() < 1) {
             adapter.showEmptyFull(true);
+            if (TextUtils.isEmpty(keyword)) {
+                searchView.setVisibility(View.GONE);
+            }
         }
+
     }
 
     @Override
@@ -249,6 +262,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                updateEmptyViewNoResult();
                 setItemsVisibility(menu, searchItem, false);
             }
         });

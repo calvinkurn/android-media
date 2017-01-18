@@ -11,13 +11,13 @@ import com.tokopedia.seller.topads.presenter.TopAdsGroupAdListPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsGroupAdListPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
-import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyGroupAdsDataBinder;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 /**
  * Created by zulfikarrahman on 12/22/16.
  */
 
-public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupAdListPresenter> implements TopAdsEmptyGroupAdsDataBinder.Callback {
+public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupAdListPresenter> implements TopAdsEmptyAdDataBinder.Callback {
 
     public static Fragment createInstance() {
         TopAdsGroupAdListFragment fragment = new TopAdsGroupAdListFragment();
@@ -35,13 +35,22 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     }
 
     @Override
+    protected TopAdsEmptyAdDataBinder getEmptyViewBinder() {
+        TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
+        emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_empty_group_promo_text));
+        emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_empty_group_promo_content_empty_text));
+        return emptyGroupAdsDataBinder;
+    }
+
+    @Override
     protected void initialVar() {
         super.initialVar();
         int totalProductAd = getActivity().getIntent().getIntExtra(TopAdsExtraConstant.EXTRA_TOTAL_PRODUCT_ADS, Integer.MIN_VALUE);
         if (totalProductAd >= 0) {
-            TopAdsEmptyGroupAdsDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyGroupAdsDataBinder(adapter);
-            emptyGroupAdsDataBinder.setEmptyGroupContentText(getString(R.string.top_ads_empty_group_promo_content_not_empty_text));
-            emptyGroupAdsDataBinder.setEmptyGroupContentItemText(getString(R.string.top_ads_empty_group_promo_content_item_no_text, String.valueOf(totalProductAd)));
+            TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
+            emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_empty_group_promo_text));
+            emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_empty_group_promo_content_not_empty_text));
+            emptyGroupAdsDataBinder.setEmptyContentItemText(getString(R.string.top_ads_empty_group_promo_content_item_no_text, String.valueOf(totalProductAd)));
             emptyGroupAdsDataBinder.setCallback(this);
             adapter.setEmptyView(emptyGroupAdsDataBinder);
         }
@@ -57,7 +66,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     }
 
     @Override
-    public void onEmptyGroupContentItemTextClicked() {
+    public void onEmptyContentItemTextClicked() {
         Intent intent = new Intent(getActivity(), TopAdsProductAdListActivity.class);
         startActivity(intent);
     }

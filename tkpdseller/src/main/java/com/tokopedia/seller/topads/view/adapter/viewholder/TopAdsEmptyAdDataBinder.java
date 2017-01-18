@@ -18,28 +18,32 @@ import butterknife.ButterKnife;
 /**
  * Created by Nisie on 2/26/16.
  */
-public class TopAdsEmptyGroupAdsDataBinder extends NoResultDataBinder {
+public class TopAdsEmptyAdDataBinder extends NoResultDataBinder {
 
     public interface Callback {
 
-        void onEmptyGroupContentItemTextClicked();
+        void onEmptyContentItemTextClicked();
 
     }
 
-    private String emptyGroupContentText;
-    private String emptyGroupContentItemText;
+    private String emptyTitleText;
+    private String emptyContentText;
+    private String emptyContentItemText;
     private Callback callback;
 
-    public TopAdsEmptyGroupAdsDataBinder(DataBindAdapter dataBindAdapter) {
+    public TopAdsEmptyAdDataBinder(DataBindAdapter dataBindAdapter) {
         super(dataBindAdapter);
     }
 
     public static class EmptyViewHolder extends ViewHolder {
-        @BindView(R2.id.text_view_empty_group_content_text)
-        TextView emptyGroupContentTextView;
+        @BindView(R2.id.text_view_empty_title_text)
+        TextView emptyTitleTextView;
 
-        @BindView(R2.id.text_view_empty_group_content_item_text)
-        TextView emptyGroupContentItemTextView;
+        @BindView(R2.id.text_view_empty_content_text)
+        TextView emptyContentTextView;
+
+        @BindView(R2.id.text_view_empty_content_item_text)
+        TextView emptyContentItemTextView;
 
         public EmptyViewHolder(View itemView) {
             super(itemView);
@@ -47,12 +51,16 @@ public class TopAdsEmptyGroupAdsDataBinder extends NoResultDataBinder {
         }
     }
 
-    public void setEmptyGroupContentText(String emptyGroupContentText) {
-        this.emptyGroupContentText = emptyGroupContentText;
+    public void setEmptyTitleText(String emptyTitleText) {
+        this.emptyTitleText = emptyTitleText;
     }
 
-    public void setEmptyGroupContentItemText(String emptyGroupContentItemText) {
-        this.emptyGroupContentItemText = emptyGroupContentItemText;
+    public void setEmptyContentText(String emptyContentText) {
+        this.emptyContentText = emptyContentText;
+    }
+
+    public void setEmptyContentItemText(String emptyContentItemText) {
+        this.emptyContentItemText = emptyContentItemText;
     }
 
     public void setCallback(Callback callback) {
@@ -73,17 +81,22 @@ public class TopAdsEmptyGroupAdsDataBinder extends NoResultDataBinder {
     @Override
     public void bindViewHolder(ViewHolder holder, int position) {
         EmptyViewHolder emptyViewHolder = (EmptyViewHolder) holder;
-        if (!TextUtils.isEmpty(emptyGroupContentText)) {
-            emptyViewHolder.emptyGroupContentTextView.setText(emptyGroupContentText);
+        if (!TextUtils.isEmpty(emptyTitleText)) {
+            emptyViewHolder.emptyTitleTextView.setText(emptyTitleText);
         }
-        if (!TextUtils.isEmpty(emptyGroupContentItemText)) {
-            emptyViewHolder.emptyGroupContentItemTextView.setText(emptyGroupContentItemText);
-            emptyViewHolder.emptyGroupContentItemTextView.setVisibility(View.VISIBLE);
-            emptyViewHolder.emptyGroupContentItemTextView.setOnClickListener(new View.OnClickListener() {
+        if (!TextUtils.isEmpty(emptyContentText)) {
+            emptyViewHolder.emptyContentTextView.setText(emptyContentText);
+        }
+        if (!TextUtils.isEmpty(emptyContentText)) {
+            emptyViewHolder.emptyContentTextView.setText(emptyContentText);
+        }
+        if (!TextUtils.isEmpty(emptyContentItemText)) {
+            emptyViewHolder.emptyContentItemTextView.setText(emptyContentItemText);
+            emptyViewHolder.emptyContentItemTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (callback != null) {
-                        callback.onEmptyGroupContentItemTextClicked();
+                        callback.onEmptyContentItemTextClicked();
                     }
                 }
             });

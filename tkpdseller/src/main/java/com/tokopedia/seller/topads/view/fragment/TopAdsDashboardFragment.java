@@ -31,6 +31,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
 
         void onLoadDataError();
 
+        void onLoadDataSuccess();
     }
 
     @BindView(R2.id.swipe_refresh_layout)
@@ -137,6 +138,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     public void onSummaryLoaded(@NonNull Summary summary) {
         updateSummaryLayout(summary);
         hideLoading();
+        onLoadDataSuccess();
     }
 
     private void updateSummaryLayout(Summary summary) {
@@ -158,6 +160,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     public void onDepositTopAdsLoaded(@NonNull DataDeposit dataDeposit) {
         depositDescTextView.setText(getString(R.string.label_top_ads_deposit_desc, dataDeposit.getAmountFmt()));
         hideLoading();
+        onLoadDataSuccess();
     }
 
     @Override
@@ -171,6 +174,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         ImageHandler.loadImageCircle2(getActivity(), shopIconImageView, shopModel.info.shopAvatar);
         shopTitleTextView.setText(shopModel.info.shopName);
         hideLoading();
+        onLoadDataSuccess();
     }
 
     @Override
@@ -182,6 +186,12 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     protected void showNetworkError() {
         if (callback != null) {
             callback.onLoadDataError();
+        }
+    }
+
+    protected void onLoadDataSuccess() {
+        if (callback != null) {
+            callback.onLoadDataSuccess();
         }
     }
 

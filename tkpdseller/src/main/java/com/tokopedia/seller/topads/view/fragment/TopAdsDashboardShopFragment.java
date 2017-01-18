@@ -105,6 +105,7 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
         }
         pricePromoPerClick.setText(promoPriceUsed.getContext().getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
         promoPriceUsed.setText(promoPriceUsed.getContext().getString(R.string.top_ads_used_format_text, ad.getStatTotalSpent()));
+        onLoadDataSuccess();
     }
 
     @Override
