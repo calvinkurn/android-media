@@ -1,5 +1,6 @@
 package com.tokopedia.seller.gmstat.views;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -24,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.network.MessageErrorException;
+import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.gmstat.views.adapter.GMStatWidgetAdapter;
 import com.tokopedia.seller.gmstat.views.adapter.MarketInsightLoadingAdapter;
 import com.tokopedia.seller.gmstat.views.helper.BuyerDataLoading;
@@ -86,12 +88,12 @@ import static com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper.getDates;
  * A placeholder fragment containing a simple view.
  * created by norman 02/01/2017
  */
-public class GMStatActivityFragment extends Fragment implements GMFragmentView {
+public class GMStatActivityFragment extends BasePresenterFragment implements GMFragmentView {
 
     public static final double NoDataAvailable = -2147483600;
-    private static final String TAG = "GMStatActivityFragment";
+    public static final String TAG = "GMStatActivityFragment";
     
-    void initView(View rootView){
+    void initViews(View rootView){
         monthNamesAbrev = rootView.getResources().getStringArray(R.array.month_names_abrev);
         grossIncomeGraph2 = (LineChartView) rootView.findViewById(R.id.gross_income_graph2);
         gmStatRecyclerView = (RecyclerView) rootView.findViewById(R.id.gmstat_recyclerview);
@@ -114,7 +116,22 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
                 }
         );
     }
-    
+
+    @Override
+    protected void setViewListener() {
+
+    }
+
+    @Override
+    protected void initialVar() {
+
+    }
+
+    @Override
+    protected void setActionVar() {
+
+    }
+
     String[] monthNamesAbrev;
 
 //    @BindArray(R.array.month_names)
@@ -263,7 +280,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     protected void initAdapter() {
         gridLayoutManager = new GridLayoutManager(getActivity(), 2);
         gmStatRecyclerView.setLayoutManager(gridLayoutManager);
-        GridDividerItemDecoration gridDividerItemDecoration = new GridDividerItemDecoration(getContext());
+        GridDividerItemDecoration gridDividerItemDecoration = new GridDividerItemDecoration(getActivity());
         gmStatRecyclerView.addItemDecoration(gridDividerItemDecoration);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -352,10 +369,10 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     private long shopId;
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if(context != null && context instanceof GMStat){
-            this.gmstat = (GMStat) context;
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if(activity != null && activity instanceof GMStat){
+            this.gmstat = (GMStat) activity;
 
             // get shop id
             try {
@@ -372,12 +389,17 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     }
 
     @Override
+    protected boolean isRetainInstance() {
+        return false;
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         gmFragmentPresenter.setFirstTime(false);
         rootView = inflater.inflate(R.layout.fragment_gmstat, container, false);
         this.unbind = ButterKnife.bind(this, rootView);
-        initView(rootView);
+        initViews(rootView);
         initNumberFormatter();
         initEmptyAdapter();
         initChartLoading();
@@ -398,6 +420,21 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
         grossGraphChartConfig = new GrossGraphChartConfig(
                 gmFragmentPresenter.getmLabels(), gmFragmentPresenter.getmValues());
         return rootView;
+    }
+
+    @Override
+    protected void onFirstTimeLaunched() {
+
+    }
+
+    @Override
+    public void onSaveState(Bundle state) {
+
+    }
+
+    @Override
+    public void onRestoreState(Bundle savedState) {
+
     }
 
     private void initNumberFormatter() {
@@ -497,6 +534,36 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
     }
 
     @Override
+    protected boolean getOptionsMenuEnable() {
+        return false;
+    }
+
+    @Override
+    protected void initialPresenter() {
+
+    }
+
+    @Override
+    protected void initialListener(Activity activity) {
+
+    }
+
+    @Override
+    protected void setupArguments(Bundle arguments) {
+
+    }
+
+    @Override
+    protected int getFragmentLayout() {
+        return 0;
+    }
+
+    @Override
+    protected void initView(View view) {
+
+    }
+
+    @Override
     public void onSuccessGetShopCategory(GetShopCategory getShopCategory) {
         marketInsightReal.setVisibility(View.VISIBLE);
         marketInsightLoading.hideLoading();
@@ -559,7 +626,7 @@ public class GMStatActivityFragment extends Fragment implements GMFragmentView {
                         }
                     })
                     .setDotDrawable(oval2Copy6)
-                    .setTooltip(new Tooltip(getContext(),
+                    .setTooltip(new Tooltip(getActivity(),
                             layoutTooltip,
                             R.id.gm_stat_tooltip_textview,
                             new StringFormatRenderer() {

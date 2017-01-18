@@ -1,9 +1,9 @@
 package com.tokopedia.seller.gmstat.views;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -118,7 +118,7 @@ public abstract class BaseGMStatActivity extends AppCompatActivity implements GM
                 int lastSelection = data.getIntExtra(SELECTION_PERIOD, 1);
                 int selectionType = data.getIntExtra(SELECTION_TYPE, PERIOD_TYPE);
                 if(sDate != -1 && eDate != -1){
-                    Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
+                    Fragment fragment = getFragmentManager().findFragmentById(R.id.fragment);
                     if(fragment != null && fragment instanceof GMStatActivityFragment){
                         ((GMStatActivityFragment)fragment).fetchData(sDate, eDate, lastSelection, selectionType);
                     }

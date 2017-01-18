@@ -19,6 +19,7 @@ import com.tokopedia.seller.gmstat.views.models.ProdSeen;
 import com.tokopedia.seller.gmstat.views.models.ProdSold;
 import com.tokopedia.seller.gmstat.views.models.SuccessfulTransaction;
 import com.tokopedia.seller.gmstat.views.viewholder.CommonGMVH;
+import com.tokopedia.seller.gmstat.views.viewholder.EmptyVH;
 import com.tokopedia.seller.gmstat.views.viewholder.GrossEarnVH;
 import com.tokopedia.seller.gmstat.views.viewholder.LoadingGM;
 import com.tokopedia.seller.gmstat.views.viewholder.LoadingGMGrossIncome;
@@ -73,7 +74,7 @@ public class GMStatWidgetAdapter extends RecyclerView.Adapter{
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_gross_earn_loading, parent, false);
                 return new LoadingGMGrossIncome(view);
         }
-        return new GMStatActivityFragment.EmptyVH(new ImageView(parent.getContext()));
+        return new EmptyVH(new ImageView(parent.getContext()));
     }
 
     @Override

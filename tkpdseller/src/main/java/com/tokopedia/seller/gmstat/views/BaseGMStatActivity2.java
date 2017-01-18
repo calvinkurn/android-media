@@ -1,9 +1,10 @@
 package com.tokopedia.seller.gmstat.views;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 
 import com.tkpd.library.utils.image.ImageHandler;
@@ -165,12 +166,26 @@ public abstract class BaseGMStatActivity2 extends DrawerPresenterActivity
                 int lastSelection = data.getIntExtra(SELECTION_PERIOD, 1);
                 int selectionType = data.getIntExtra(SELECTION_TYPE, PERIOD_TYPE);
                 if(sDate != -1 && eDate != -1){
-                    Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
+                    Fragment fragment = getFragmentManager().findFragmentById(R.id.fragment);
                     if(fragment != null && fragment instanceof GMStatActivityFragment){
                         ((GMStatActivityFragment)fragment).fetchData(sDate, eDate, lastSelection, selectionType);
                     }
                 }
             }
         }
+    }
+
+    private void inflateNewFragment(Fragment fragment, String tag) {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_gmstat_fragment_container, fragment, tag);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(!isAfterRotate)
+            inflateNewFragment(new GMStatActivityFragment(), GMStatActivityFragment.TAG);
     }
 }
