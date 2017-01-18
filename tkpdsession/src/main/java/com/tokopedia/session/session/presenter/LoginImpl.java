@@ -144,6 +144,31 @@ public class LoginImpl implements Login {
         facade.unSubscribe();
     }
 
+    @Override
+    public void sendGTMScreen(Context context) {
+
+    }
+
+    @Override
+    public void sendGTMRegisterThrougLogin() {
+
+    }
+
+    @Override
+    public void sendCTAAction() {
+
+    }
+
+    @Override
+    public void sendGTMLoginError(String label) {
+
+    }
+
+    @Override
+    public void doFacebookLogin(LoginFragment fragment, CallbackManager callbackManager) {
+
+    }
+
     public void downloadProviderLogin() {
         facade.downloadProvider(loginView.getActivity(), new LoginInteractor.DiscoverLoginListener() {
             @Override
