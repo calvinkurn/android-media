@@ -25,4 +25,9 @@ public class TopAdsStatisticImprFragment extends TopAdsStatisticFragment {
     protected String getTitleGraph() {
         return getString(R.string.title_graph_impr_statistic_topads);
     }
+
+    @Override
+    protected String getValueDisplay(Cell cell) {
+        return cell.getImpressionSumFmt();
+    }
 }

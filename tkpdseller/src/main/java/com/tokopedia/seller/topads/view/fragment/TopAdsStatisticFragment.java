@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.drawable.Drawable;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -58,6 +60,7 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
     private GrossGraphChartConfig grossGraphChartConfig;
     private List<Cell> cells;
     private String[] mLabels ;
+    private ArrayList<String> mLabelDisplay = new ArrayList<>();
     private float[] mValues ;
 
     public TopAdsStatisticFragment() {
@@ -136,6 +139,10 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
             if(grossGraphChartConfig == null){
                 grossGraphChartConfig = new GrossGraphChartConfig(mLabels, mValues);
             }
+            contentGraph.addDataDisplayDots(mLabelDisplay);
+            Tooltip tooltip = new Tooltip(getActivity(),
+                    layoutTooltip,
+                    R.id.gm_stat_tooltip_textview);
             grossGraphChartConfig
                     .setmLabels(mLabels)
                     .setmValues(mValues, new XRenderer.XRendererListener() {
@@ -157,15 +164,7 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
                         }
                     })
                     .setDotDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.oval_2_copy_6))
-                    .setTooltip(new Tooltip(getActivity(),
-                            layoutTooltip,
-                            R.id.gm_stat_tooltip_textview,
-                            new StringFormatRenderer() {
-                                @Override
-                                public String formatString(String s) {
-                                    return KMNumbers.formatNumbers(Float.valueOf(s));
-                                }
-                            }))
+                    .setTooltip(tooltip)
                     .buildChart(grossGraphChartConfig.buildLineChart(contentGraph));
         } catch (Exception e) {
             Log.e("TopAdsStatisticFragment", e.getMessage());
@@ -182,6 +181,7 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
         this.cells = topAdsStatisticActivityViewListener.getDataCell();
         mLabels = generateLabels();
         mValues = generateValues();
+        mLabelDisplay = generateLabelDisplay();
 
     }
 
@@ -195,6 +195,7 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
         this.cells = cells;
         mLabels = generateLabels();
         mValues = generateValues();
+        mLabelDisplay = generateLabelDisplay();
         generateLineChart();
     }
 
@@ -240,6 +241,23 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
             return null;
         }
     }
+
+
+    private ArrayList<String> generateLabelDisplay() {
+        if(cells != null && cells.size()>0){
+            ArrayList<String> valuesDisplay = new ArrayList<>();
+            for(int i = 0; i<cells.size(); i++){
+                Cell cell = cells.get(i);
+                String value = getValueDisplay(cell);
+                valuesDisplay.add(value);
+            }
+            return valuesDisplay;
+        }else{
+            return null;
+        }
+    }
+
+    protected abstract String getValueDisplay(Cell cell);
 
     protected abstract float getValueData(Cell cell);
 
