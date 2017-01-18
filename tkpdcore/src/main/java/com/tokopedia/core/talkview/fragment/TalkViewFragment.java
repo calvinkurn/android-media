@@ -253,11 +253,13 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
         return new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                int heightDiff = mainLayout.getRootView().getHeight() - mainLayout.getHeight();
-                if (keyboardAppears(heightDiff) && adapter.getItemCount()>0) { // if more than 200 dp, it's probably a keyboard...
-                    header.setVisibility(View.GONE);
-                }else{
-                    header.setVisibility(View.VISIBLE);
+                if(mainLayout == null){
+                    int heightDiff = mainLayout.getRootView().getHeight() - mainLayout.getHeight();
+                    if (keyboardAppears(heightDiff) && adapter.getItemCount()>0) { // if more than 200 dp, it's probably a keyboard...
+                        header.setVisibility(View.GONE);
+                    }else{
+                        header.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         };

@@ -1,8 +1,12 @@
 package com.tokopedia.core.share.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -10,11 +14,19 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.sromku.simple.fb.SimpleFacebook;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultSender;
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -28,6 +40,8 @@ import com.tokopedia.core.share.presenter.ProductSharePresenterImpl;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 /**
  * Created by Angga.Prasetiyo on 11/12/2015.
  * Modified by Alvarisi on 17/12/2016
@@ -37,7 +51,6 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     private static final String ARGS_SHARE_DATA = "ARGS_SHARE_DATA";
 
     private ShareData shareData;
-    private SimpleFacebook simpleFacebook;
     @BindView(R2.id.text_line)
     TextView tvTitle;
 
@@ -82,6 +95,8 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
 
     @BindView(R2.id.text_subtitle)
     TextView subtitle;
+    private CallbackManager callbackManager;
+    private ShareDialog shareDialog;
 
     public static ProductShareFragment newInstance(@NonNull ShareData shareData) {
         ProductShareFragment fragment = new ProductShareFragment();
@@ -107,6 +122,13 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
         args.putString(ProductService.STOCK_STATUS, stockStatus);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
     }
 
     @Override
@@ -283,7 +305,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
 
     @Override
     protected void initialVar() {
-        simpleFacebook = SimpleFacebook.getInstance(getActivity());
+
     }
 
     @Override
@@ -312,7 +334,6 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     @Override
     public void onDestroy() {
         super.onDestroy();
-        simpleFacebook.clean();
     }
 
     @OnClick(R2.id.bbm_share)
@@ -337,7 +358,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
 
     @OnClick(R2.id.facebook_share)
     void shareFb() {
-        presenter.shareFb(simpleFacebook, shareData);
+        presenter.shareFb(shareData);
     }
 
     @OnClick(R2.id.twitter_share)
@@ -366,4 +387,42 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     }
 
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void showDialogShareFb() {
+        shareDialog = new ShareDialog(this);
+        callbackManager = CallbackManager.Factory.create();
+        shareDialog.registerCallback(callbackManager, new
+                FacebookCallback<Sharer.Result>() {
+                    @Override
+                    public void onSuccess(Sharer.Result result) {
+                        SnackbarManager.make(getActivity(),getString(R.string.success_share_product)
+                                , Snackbar.LENGTH_SHORT).show();
+                        presenter.setFacebookCache();
+                    }
+                    @Override
+                    public void onCancel() {
+                    }
+                    @Override
+                    public void onError(FacebookException error) {
+                        Log.i(TAG, "onError: "+error);
+                    }
+                });
+
+        if (ShareDialog.canShow(ShareLinkContent.class)) {
+            ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                    .setImageUrl(Uri.parse(shareData.getImgUri()))
+                    .setContentTitle(shareData.getName())
+                    .setContentDescription(shareData.getUri())
+                    .setContentUrl(Uri.parse(shareData.getUri()))
+                    .setQuote(shareData.getDescription())
+                    .build();
+
+            shareDialog.show(linkContent);
+        }
+    }
 }

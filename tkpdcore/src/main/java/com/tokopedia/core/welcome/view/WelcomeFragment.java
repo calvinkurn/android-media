@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.facebook.login.LoginFragment;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;

@@ -1,10 +1,13 @@
-package com.tokopedia.core.session.presenter;
+package com.tokopedia.session.session.presenter;
 
 import android.content.Context;
 import android.os.Bundle;
 
+import com.facebook.CallbackManager;
+import com.tokopedia.core.session.model.FacebookModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.model.LoginViewModel;
+import com.tokopedia.session.session.fragment.LoginFragment;
 
 import org.json.JSONObject;
 
@@ -109,7 +112,7 @@ public interface Login {
 
     void startLoginWithGoogle(String LoginType, Object model);
 
-    void loginFacebook();
+    void loginFacebook(FacebookModel facebookModel, String token);
 
     void sendDataFromInternet(String loginType, Object... data);
 
@@ -127,4 +130,14 @@ public interface Login {
     void getProvider();
 
     void unSubscribe();
+
+    void sendGTMScreen(Context context);
+
+    void sendGTMRegisterThrougLogin();
+
+    void sendCTAAction();
+
+    void sendGTMLoginError(String label);
+
+    void doFacebookLogin(LoginFragment fragment, CallbackManager callbackManager);
 }

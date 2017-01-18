@@ -38,6 +38,10 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
@@ -55,6 +59,7 @@ import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.session.session.model.LoginModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.model.LoginViewModel;
+import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.session.session.presenter.LoginImpl;
 import com.tokopedia.session.session.presenter.LoginView;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -85,7 +90,7 @@ import permissions.dispatcher.RuntimePermissions;
 public class LoginFragment extends Fragment implements LoginView {
     // demo only
     int anTestInt = 0;
-    com.tokopedia.core.session.presenter.Login login;
+    Login login;
 
     Context mContext;
 
@@ -117,6 +122,7 @@ public class LoginFragment extends Fragment implements LoginView {
     List<LoginProviderModel.ProvidersBean> listProvider;
     Snackbar snackbar;
     private Unbinder unbinder;
+    private CallbackManager callbackManager;
 
     public static LoginFragment newInstance(String mEmail, boolean goToIndex, String login, String name, String url) {
         Bundle extras = new Bundle();
@@ -153,6 +159,9 @@ public class LoginFragment extends Fragment implements LoginView {
 
         if (savedInstanceState != null)
             Log.d(TAG, LoginFragment.class.getSimpleName() + " : get testing data : " + (anTestInt = savedInstanceState.getInt(TEST_INT_KEY)));
+
+        FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
     }
 
     @Override
@@ -364,8 +373,15 @@ public class LoginFragment extends Fragment implements LoginView {
     }
 
     public void onFacebookClick() {
-        login.loginFacebook();
+        if(AccessToken.getCurrentAccessToken() != null) {
+            LoginManager.getInstance().logOut();
+        }
         UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.FACEBOOK);
+        processFacebookLogin();
+    }
+
+    private void processFacebookLogin() {
+        login.doFacebookLogin(this, callbackManager);
     }
 
     @Override
@@ -714,6 +730,7 @@ public class LoginFragment extends Fragment implements LoginView {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode,resultCode,data);
         switch (requestCode) {
             case 100:
                 if(resultCode == Activity.RESULT_CANCELED){
