@@ -71,6 +71,7 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         groupSummaryLabelView.setContent(String.valueOf(totalAd.getTotalProductGroupAd()));
         itemSummaryLabelView.setContent(String.valueOf(totalAd.getTotalProductAd()));
         totalProductAd = totalAd.getTotalProductAd();
+        onLoadDataSuccess();
     }
 
     @Override

@@ -4,12 +4,14 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.model.data.Ad;
 import com.tokopedia.seller.topads.model.data.ProductAd;
 import com.tokopedia.seller.topads.presenter.TopAdsProductAdListPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsProductAdListPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailProductActivity;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 /**
  * Created by zulfikarrahman on 12/16/16.
@@ -41,6 +43,14 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
     @Override
     protected void searchAd() {
         presenter.searchAd(startDate, endDate, keyword, status, group, page);
+    }
+
+    @Override
+    protected TopAdsEmptyAdDataBinder getEmptyViewBinder() {
+        TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
+        emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_empty_product_promo_text));
+        emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_empty_product_promo_content_empty_text));
+        return emptyGroupAdsDataBinder;
     }
 
     @Override

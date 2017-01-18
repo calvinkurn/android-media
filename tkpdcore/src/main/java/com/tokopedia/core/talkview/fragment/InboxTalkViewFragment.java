@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.R;
-import com.tokopedia.core.talk.inboxtalk.model.InboxTalk;
+import com.tokopedia.core.talk.model.model.InboxTalk;
 import com.tokopedia.core.talkview.adapter.InboxTalkViewAdapter;
 import com.tokopedia.core.talkview.adapter.TalkViewAdapter;
 import com.tokopedia.core.talkview.inbox.model.TalkDetail;

@@ -2,9 +2,13 @@ package com.tokopedia.core.manage.people.address.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -14,6 +18,8 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.manage.people.address.ManageAddressConstant;
+import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.adapter.ChooseAddressAdapter;
 import com.tokopedia.core.manage.people.address.listener.ChooseAddressFragmentView;
 import com.tokopedia.core.manage.people.address.presenter.ChooseAddressFragmentPresenter;
@@ -83,7 +89,7 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
 
     @Override
     protected boolean getOptionsMenuEnable() {
-        return false;
+        return true;
     }
 
     @Override
@@ -149,7 +155,7 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
     @Override
     protected void initialVar() {
 
-        adapter = ChooseAddressAdapter.createInstance(getActivity());
+        adapter = ChooseAddressAdapter.createInstance(getActivity(), presenter);
         adapter.setOnRetryListenerRV(presenter.onRetry(search.getText()!=null ? search.getText().toString() : ""));
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         addressRV.setLayoutManager(linearLayoutManager);
@@ -274,5 +280,59 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDestroyView();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (getActivity().getIntent().getBooleanExtra("resolution_center", false)) {
+            inflater.inflate(R.menu.manage_people_address, menu);
+        } else {
+            super.onCreateOptionsMenu(menu, inflater);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_add_address) {
+            presenter.setOnAddAddressClick(getActivity());
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case ManageAddressConstant.REQUEST_CODE_PARAM_CREATE:
+                    presenter.onSuccessCreateAddress();
+                    break;
+                case ChooseAddressFragmentPresenterImpl.REQUEST_CHOOSE_ADDRESS_CODE:
+                    presenter.onSuccessEditAddress();
+                default:
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void resetSearch() {
+        search.setText("");
+    }
+
+    @Override
+    public void navigateToAddAddress(Bundle bundle) {
+        Intent intent = new Intent(getActivity(), AddAddressActivity.class);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
+    }
+
+    @Override
+    public void navigateToEditAddress(Bundle bundle) {
+        Intent intent = new Intent(getActivity(), AddAddressActivity.class);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, ChooseAddressFragmentPresenterImpl.REQUEST_CHOOSE_ADDRESS_CODE);
     }
 }

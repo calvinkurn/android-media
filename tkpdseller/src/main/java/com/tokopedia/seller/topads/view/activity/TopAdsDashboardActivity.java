@@ -14,6 +14,7 @@ import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.seller.R2;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
@@ -44,9 +45,9 @@ public class TopAdsDashboardActivity extends BasePresenterActivity implements To
     @BindView(R2.id.fab_speed_dial)
     FabSpeedDial fabSpeedDial;
 
+    private SnackbarRetry snackbarRetry;
     private TopAdsDashboardShopFragment dashboardShopFragment;
     private TopAdsDashboardProductFragment dashboardProductFragment;
-
     private TopAdsDatePickerPresenterImpl datePickerPresenter;
 
     @Override
@@ -106,6 +107,13 @@ public class TopAdsDashboardActivity extends BasePresenterActivity implements To
                 return false;
             }
         });
+        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(this, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                dashboardShopFragment.loadData();
+                dashboardProductFragment.loadData();
+            }
+        });
     }
 
     public PagerAdapter getViewPagerAdapter() {
@@ -136,12 +144,11 @@ public class TopAdsDashboardActivity extends BasePresenterActivity implements To
 
     @Override
     public void onLoadDataError() {
-        NetworkErrorHelper.createSnackbarWithAction(this, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                dashboardShopFragment.loadData();
-                dashboardProductFragment.loadData();
-            }
-        }).showRetrySnackbar();
+        snackbarRetry.showRetrySnackbar();
+    }
+
+    @Override
+    public void onLoadDataSuccess() {
+        snackbarRetry.hideRetrySnackbar();
     }
 }

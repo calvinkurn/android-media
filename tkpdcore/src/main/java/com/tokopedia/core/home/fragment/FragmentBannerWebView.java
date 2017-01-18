@@ -31,7 +31,7 @@ import com.tokopedia.core.home.BannerWebView;
 public class FragmentBannerWebView extends Fragment {
 
     private ProgressBar progressBar;
-    private WebView webviewBanner;
+    private WebView webview;
 
     private class MyWebViewClient extends WebChromeClient {
         @Override
@@ -139,20 +139,20 @@ public class FragmentBannerWebView extends Fragment {
         View view = inflater.inflate(R.layout.fragment_fragment_general_web_view, container, false);
         System.out.println("KIRISAME use URL: " + getArguments().getString("url", "http://blog.tokopedia.com"));
         String url = getArguments().getString("url", "http://blog.tokopedia.com");
-        webviewBanner= (WebView) view.findViewById(R.id.webview);
+        webview = (WebView) view.findViewById(R.id.webview);
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
         progressBar.setIndeterminate(true);
-        clearCache(webviewBanner);
-        webviewBanner.loadUrl(url);
-        webviewBanner.setWebViewClient(new MyWebClient());
-        webviewBanner.setWebChromeClient(new MyWebViewClient());
+        clearCache(webview);
+        webview.loadUrl(url);
+        webview.setWebViewClient(new MyWebClient());
+        webview.setWebChromeClient(new MyWebViewClient());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
-            webviewBanner.setWebContentsDebuggingEnabled(true);
+            webview.setWebContentsDebuggingEnabled(true);
             CommonUtils.dumper("webviewconf debugging = true");
         }
         getActivity().setProgressBarIndeterminateVisibility(true);
-        WebSettings webSettings = webviewBanner.getSettings();
+        WebSettings webSettings = webview.getSettings();
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setBuiltInZoomControls(true);
@@ -168,20 +168,20 @@ public class FragmentBannerWebView extends Fragment {
     }
 
 
-    public WebView getWebviewBanner() {
-        return webviewBanner;
+    public WebView getWebview() {
+        return webview;
     }
 
-    public void setWebviewBanner(WebView webviewBanner) {
-        this.webviewBanner = webviewBanner;
+    public void setWebview(WebView webview) {
+        this.webview = webview;
     }
 
     private void optimizeWebView() {
         if (Build.VERSION.SDK_INT >= 19) {
-            webviewBanner.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            webview.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         }
         else {
-            webviewBanner.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            webview.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
     }
 }

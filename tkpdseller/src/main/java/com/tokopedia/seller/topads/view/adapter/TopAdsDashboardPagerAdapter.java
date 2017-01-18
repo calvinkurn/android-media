@@ -6,14 +6,13 @@ import android.support.v13.app.FragmentPagerAdapter;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.inboxmessage.InboxMessageConstant;
 
 import java.util.List;
 
 /**
  * Created by Nisie on 5/10/16.
  */
-public class TopAdsDashboardPagerAdapter extends FragmentPagerAdapter implements InboxMessageConstant {
+public class TopAdsDashboardPagerAdapter extends FragmentPagerAdapter {
     private List<Fragment> fragmentList;
 
 
@@ -43,21 +42,6 @@ public class TopAdsDashboardPagerAdapter extends FragmentPagerAdapter implements
                 return MainApplication.getAppContext().getString(R.string.title_inbox_archive);
             default:
                 return MainApplication.getAppContext().getString(R.string.title_inbox_trash);
-        }
-    }
-
-    public Fragment getItemByTag(String tag) {
-        switch (tag) {
-            case MESSAGE_ALL:
-                return getItem(0);
-            case MESSAGE_SENT:
-                return getItem(1);
-            case MESSAGE_ARCHIVE:
-                return getItem(2);
-            case MESSAGE_TRASH:
-                return getItem(3);
-            default:
-                return null;
         }
     }
 

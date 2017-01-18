@@ -22,12 +22,14 @@ public interface AppEventTracking {
         String REGISTER_TYPE = "REGISTER_TYPE";
         String LOGIN_TYPE = "LOGIN_TYPE";
         String SESSION_STATE = "SESSION_STATE";
+        String MEDIUM = "MEDIUM";
     }
 
     interface GTMCacheValue {
         String EMAIL = "Email";
         String FACEBOOK = "Facebook";
         String GMAIL = "Gmail";
+        String WEBVIEW = "Webview";
         String REGISTER = "Register";
         String LOGIN = "Login";
     }
@@ -93,6 +95,7 @@ public interface AppEventTracking {
         String GMSUBSCRIBE = "subscribeGoldMerchant";
         String DEPOSIT = "clickSaldo";
         String OTP = "clickOTP";
+        String TOP_PICKS = "clickToppicks";
     }
 
     interface Category {
@@ -139,6 +142,8 @@ public interface AppEventTracking {
         String GOLD_MERCHANT = "Gold Merchant";
         String DEPOSIT = "Saldo";
         String OTP = "OTP";
+        String TOP_PICKS_HOME = "Toppicks Home";
+        String TOP_PICKS = "Toppicks";
         String CATALOG = "Katalog";
     }
 
@@ -168,6 +173,7 @@ public interface AppEventTracking {
         String INSTALLED = "Installed";
         String SUBSCRIBE = "Subscribe";
         String ERROR = "Error";
+        String SUCCESS = "Success";
     }
 
     interface EventLabel {
@@ -239,6 +245,7 @@ public interface AppEventTracking {
         String SHOP_ETALASE = "Shop Etalase";
         String SHOP_NOTES = "Shop Notes";
         String SHOP_LOCATION = "Shop Location";
+        String SHOP_CREATED = "Shop Created";
 
         String DELETE = "Delete";
         String ADD = "Add";

@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -29,7 +28,6 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.rescenter.detail.customview.DetailView;
 import com.tokopedia.inbox.rescenter.detail.customview.ReplyEditorView;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
-import com.tokopedia.inbox.rescenter.detail.dialog.InputShippingRefNumDialog;
 import com.tokopedia.inbox.rescenter.detail.dialog.TrackShippingDialog;
 import com.tokopedia.inbox.rescenter.detail.listener.DetailResCenterView;
 import com.tokopedia.inbox.rescenter.detail.listener.ResCenterView;
@@ -301,15 +299,6 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     }
 
     @Override
-    public void showInputShippingRefNumDialog(String resolutionID, InputShippingRefNumDialog.Listener listener) {
-        InputShippingRefNumDialog.Builder(getActivity(), resolutionID)
-                .initView()
-                .initPrevious()
-                .initValue(listener)
-                .show();
-    }
-
-    @Override
     public void finishActivity() {
         getActivity().finish();
     }
@@ -432,37 +421,13 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     }
 
     @Override
-    public void openInputShippingRef(String paramID) {
-        presenter.showShippingRefNumDialog(false,
-                getActivity(),
-                new InputShippingRefNumDialog.Listener() {
-                    @Override
-                    public void onSubmitButtonClick() {
-                        presenter.actionInputShippingRefNum();
-                    }
-
-                    @Override
-                    public void onScanButtonClick() {
-                        presenter.showScanBarcode(getActivity());
-                    }
-                });
+    public void openInputShippingRef() {
+        presenter.onNewShippingClickListener(getActivity());
     }
 
     @Override
     public void openEditShippingRef(String url) {
-        presenter.onOverflowShippingRefNumClick(context,
-                url,
-                new InputShippingRefNumDialog.Listener() {
-                    @Override
-                    public void onSubmitButtonClick() {
-                        presenter.actionEditShippingRefNum();
-                    }
-
-                    @Override
-                    public void onScanButtonClick() {
-                        presenter.showScanBarcode(getActivity());
-                    }
-                });
+        presenter.onEditShippingClickListener(getActivity(), url);
     }
 
     @Override
