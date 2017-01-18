@@ -10,14 +10,14 @@ import com.tokopedia.core.session.presenter.SessionView;
  */
 
 public class NotificationUtils {
-    public static Intent configureGeneralIntent(Intent intent){
+    public static Intent configureGeneralIntent(Intent intent) {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("from_notif", true);
         intent.putExtra("unread", false);
         return intent;
     }
 
-    public static Intent configurePromoIntent(Intent intent, Bundle data){
+    public static Intent configurePromoIntent(Intent intent, Bundle data) {
         if (data.getInt("keylogin1", -99) != -99) {
             intent.putExtra(
                     com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY,
@@ -30,4 +30,6 @@ public class NotificationUtils {
         }
         return intent;
     }
+
+
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.core.gcm;
+package com.tokopedia.core.gcm.utils;
 
 import android.os.Bundle;
 
@@ -59,7 +59,7 @@ public class GCMUtils {
         }
     }
 
-    static boolean isValidForSellerApp(int tkpCode) {
+    public static boolean isValidForSellerApp(int tkpCode) {
         if (GlobalConfig.isSellerApp()
                 && GCMUtils.isExcludeFromSellerApp(tkpCode)){
             return false;
@@ -67,7 +67,7 @@ public class GCMUtils {
         return true;
     }
 
-    static int getCode(Bundle data) {
+    public static int getCode(Bundle data) {
         int code;
         try {
             code = Integer.parseInt(data.getString("tkp_code"));

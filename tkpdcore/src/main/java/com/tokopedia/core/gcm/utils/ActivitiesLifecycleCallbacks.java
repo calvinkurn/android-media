@@ -1,4 +1,4 @@
-package com.tokopedia.core.gcm;
+package com.tokopedia.core.gcm.utils;
 
 import android.app.Activity;
 import android.app.Application;
@@ -52,7 +52,7 @@ public class ActivitiesLifecycleCallbacks {
         return liveActivityOrNull;
     }
 
-    boolean isAppOnBackground() {
+    public boolean isAppOnBackground() {
         return getLiveActivityOrNull() == null;
     }
 
