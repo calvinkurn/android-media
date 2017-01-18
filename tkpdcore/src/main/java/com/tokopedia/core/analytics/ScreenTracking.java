@@ -99,15 +99,6 @@ public class ScreenTracking extends TrackingUtils {
                 .sendScreen(screenName);
     }
 
-    public static void sendLocaProductDetailEvent(ProductDetailData successResult, Map<String,String> attributes){
-        getLocaEngine().sendEventProductView(
-                successResult.getInfo().getProductName(),
-                Integer.toString(successResult.getInfo().getProductId()),
-                successResult.getInfo().getProductCatalogName(),
-                attributes
-        );
-    }
-
     public static void sendLocaCartEvent(Map<String, String> attributes){
         String screenName = MainApplication.getAppContext().getString(R.string.cart_pg_1);
         eventLoca(screenName, attributes);

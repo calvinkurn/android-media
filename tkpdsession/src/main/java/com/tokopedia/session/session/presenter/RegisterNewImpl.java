@@ -41,7 +41,6 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
     LocalCacheHandler loginUuid;
     LocalCacheHandler providerListCache;
     RegisterInteractor facade;
-    LocalCacheHandler cacheGTM;
     boolean isSelect;
     boolean isEmailEdit;
     boolean isSaving;

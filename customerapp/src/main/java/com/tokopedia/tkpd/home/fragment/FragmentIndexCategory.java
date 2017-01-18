@@ -104,6 +104,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     private static final long SLIDE_DELAY = 8000;
     public static final String TAG = FragmentIndexCategory.class.getSimpleName();
+    private static final String BASE_URL = "www.tokopedia.com";
+    private static final String BASE_MOBILE_URL = "m.tokopedia.com";
     private static final String TOP_PICKS_URL = "https://www.tokopedia.com/toppicks/";
 
     private ViewHolder holder;
@@ -119,7 +121,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private TopPicksPresenter topPicksPresenter;
     private RecyclerViewCategoryMenuAdapter recyclerViewCategoryMenuAdapter;
     private TopPicksAdapter topPicksAdapter;
-
     private GetShopInfoRetrofit getShopInfoRetrofit;
 
     private class ViewHolder {
@@ -448,14 +449,19 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         }
     }
 
+    private boolean isBaseHost(String host) {
+        return (host.contains(BASE_URL) || host.contains(BASE_MOBILE_URL));
+    }
+
     private View.OnClickListener onPromoClicked(final String url) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
                     Uri uri = Uri.parse(url);
+                    String host = uri.getHost();
                     List<String> linkSegment = uri.getPathSegments();
-                    if (isShop(linkSegment)) {
+                    if (isBaseHost(host) && isShop(linkSegment)) {
                         String shopDomain = linkSegment.get(0);
                         getShopInfo(url,shopDomain);
                     } else {

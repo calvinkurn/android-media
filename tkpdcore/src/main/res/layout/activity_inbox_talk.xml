@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".talk.inboxtalk.activity.InboxTalkActivity">
+    tools:context="com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity">
 
     <include layout="@layout/layout_tab_indicator_main_fixed" />
 

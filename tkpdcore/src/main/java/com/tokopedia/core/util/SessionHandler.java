@@ -7,7 +7,6 @@ import android.net.http.SslError;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -37,7 +36,7 @@ import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.session.DialogLogoutFragment;
 import com.tokopedia.core.session.model.RegisterViewModel;
 import com.tokopedia.core.session.presenter.RegisterNext;
-import com.tokopedia.core.talk.inboxtalk.database.InboxTalkCacheManager;
+import com.tokopedia.core.talk.cache.database.InboxTalkCacheManager;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 
