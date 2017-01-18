@@ -38,7 +38,6 @@ import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.fragment.TwitterDialogV4;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
-import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.myproduct.dialog.DialogFragmentImageAddProduct;
 import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.seller.myproduct.fragment.ChooserDialogFragment;
@@ -553,10 +552,12 @@ public class ProductActivity extends BaseProductActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.home) {
             Log.d(TAG, messageTAG + " R.id.home !!!");
+            onBackPressed();
             return true;
         } else if (item.getItemId() == android.R.id.home) {
             Log.d(TAG, messageTAG + " android.R.id.home !!!");
             getSupportFragmentManager().popBackStack();
+            onBackPressed();
             return true;
         }
 
@@ -799,8 +800,8 @@ public class ProductActivity extends BaseProductActivity implements
         if (fragmentList != null && fragmentList.size() != 0) {
             //TODO: Perform your logic to pass back press here
             for (Fragment fragment : fragmentList) {
-                if (fragment instanceof InstopedActivity.OnBackPressedListener) {
-                    boolean canGoBack = ((InstopedActivity.OnBackPressedListener) fragment).onBackPressed();
+                if (fragment instanceof OnBackPressedListener) {
+                    boolean canGoBack = ((OnBackPressedListener) fragment).onBackPressed();
                     if (!canGoBack) {
                         super.onBackPressed();
                     }
