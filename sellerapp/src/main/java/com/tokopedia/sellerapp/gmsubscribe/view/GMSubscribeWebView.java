@@ -62,7 +62,7 @@ public class GMSubscribeWebView extends TkpdWebView {
 
     public void goToGoldTokopedia(Context context) {
 
-        loadAuthUrlWithFlags(URLGenerator.generateURLSessionLogin(GOLD_TOKOPEDIA_COM, context), null);
+        loadAuthUrl(URLGenerator.generateURLSessionLogin(GOLD_TOKOPEDIA_COM, context));
     }
 
 
