@@ -439,7 +439,7 @@ public class FragmentProductFeed extends TkpdBaseV4Fragment
     @Override
     public void loadDataChange() {
         getAdapter().notifyDataSetChanged();
-        if (getAdapter().getHistoryAdapter() != null) {
+        if (getAdapter() != null && getAdapter().getHistoryAdapter() != null) {
             getAdapter().getHistoryAdapter().notifyDataSetChanged();
         }
     }

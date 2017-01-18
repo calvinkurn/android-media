@@ -120,7 +120,7 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
 
     @Override
     public void onMessageError(int type, Object... data) {
-        if (data[0] instanceof String) {
+        if (data[0] != null && data[0] instanceof String) {
             Toast.makeText(getActivity(), (String) data[0], Toast.LENGTH_SHORT).show();
         }
     }
