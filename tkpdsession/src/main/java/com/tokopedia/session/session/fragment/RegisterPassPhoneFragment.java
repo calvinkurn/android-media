@@ -433,20 +433,10 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
     public void setAllowedField() {
         if(allowedFieldList!=null){
             makeItEnabled(vName,false);
-            makeItEnabled(vPassword,false);
             makeItEnabled(vPhoneNumber, false);
             vPasswordRetype.setVisibility(View.GONE);
             for(String key : allowedFieldList){
                 switch (key){
-                    case "password":
-                        makeItEnabled(vPassword, true);
-                        vPasswordRetype.setVisibility(View.VISIBLE);
-                        float scale = getResources().getDisplayMetrics().density;
-                        int dpAsPixels = (int) (5*scale + 0.5f);
-                        vPassword.setPadding(0,0,dpAsPixels,0);
-                        vPassword.setText("");
-                        vPasswordRetype.setText("");
-                        break;
                     case "name":
                         makeItEnabled(vName, true);
                         vName.requestFocus();
