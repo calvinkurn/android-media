@@ -22,6 +22,7 @@ public interface AddToCartNetInteractor {
                           @NonNull Map<String, String> param,
                           @NonNull OnGetCartFormListener listener);
 
+    @SuppressWarnings("unused")
     void getAddressShipping(@NonNull Context context,
                             @NonNull Map<String, String> param,
                             @NonNull OnGetCartAddressListener listener);

@@ -1,7 +1,6 @@
 package com.tokopedia.core.analytics;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.text.TextUtils;
 
 import com.appsflyer.AFInAppEventParameterName;

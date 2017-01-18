@@ -28,6 +28,7 @@ import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
@@ -330,7 +331,7 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                 startActivity(intent);
             } else {
-                startActivity(new Intent(getBaseContext(), Cart.class));
+                startActivity(TransactionCartRouter.createInstanceCartActivity(this));
             }
             return true;
         } else

@@ -37,12 +37,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
-import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
-import com.tokopedia.core.product.model.passdata.ProductPass;
-import com.tokopedia.core.product.model.productdetail.ProductBreadcrumb;
-import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.product.model.productdetail.ProductImage;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.io.File;

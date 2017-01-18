@@ -46,10 +46,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.sromku.simple.fb.Permission;
-import com.sromku.simple.fb.SimpleFacebook;
-import com.sromku.simple.fb.listeners.OnLoginListener;
-import com.sromku.simple.fb.listeners.OnNewPermissionsListener;
 import com.tkpd.library.ui.expandablelayout.ExpandableRelativeLayout;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.widget.ClickToSelectEditText;
@@ -61,6 +57,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tkpd.library.utils.TwitterHandler;
+import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -69,6 +66,7 @@ import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.myproduct.ManageProduct;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.CategoryDB_Table;
@@ -83,6 +81,7 @@ import com.tokopedia.core.database.model.ProductDB_Table;
 import com.tokopedia.core.database.model.WeightUnitDB;
 import com.tokopedia.core.database.model.WeightUnitDB_Table;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
+import com.tokopedia.core.myproduct.ManageProduct;
 import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.myproduct.ProductSocMedActivity;
 import com.tokopedia.core.myproduct.adapter.ClickToSelectWithImage;
@@ -301,10 +300,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
      */
     public int positionAtSocMed;
 
-    @BindView(R2.id.add_product_returnable_spinner)
-    Spinner addProductReturnableSpinner;
-    @BindView(R2.id.add_product_policy_layout)
-    LinearLayout addProductPolicyLayout;
     GetShopNoteModel.ShopNoteModel returnPolicy = null;
     MyShopInfoModel.Info myShopInfoModel;
     NoteDetailModel.Detail detail;
@@ -443,7 +438,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
      * for example, if user tap save then it will move to manage product
      */
     boolean isCreateNewActivity = false;
-    private SimpleFacebook mSimpleFacebook;
     public TwitterHandler th;
     private ShareSocmedHandler shareSocmed;
 
@@ -674,7 +668,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mSimpleFacebook.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -704,7 +697,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         if (checkNotNull(displayEtalaseModels))
             outState.putParcelable(SAVED_ETALASES, Parcels.wrap(new ArrayList<TextDeleteModel>(displayEtalaseModels)));// 12
         outState.putString(SAVED_NEW_ETALASE, addProductAddToNewEtalase.getText().toString());// 13
-        outState.putInt(SAVED_RETURN_POLICY, addProductReturnableSpinner.getSelectedItemPosition());// 14
         outState.putInt(SAVED_CONDITION, addProductCondition.getSelectedItemPosition());// 15
         outState.putInt(SAVED_INSURANCE, addProductInsurance.getSelectedItemPosition());// 16
         outState.putString(SAVED_DESCRIPTION, addProductDesc.getText().toString());// 17
@@ -1553,7 +1545,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             addProductAddToNewEtalase.setText(newEtalase);
 
             initReturnableSpinner(textToDisplay);
-            addProductReturnableSpinner.setSelection(returnPolicy_);
 
             addProductCondition.setAdapter(SimpleSpinnerAdapter.createAdapterAddProduct(getActivity(), conditions));
             addProductCondition.setSelection(condition);
@@ -1682,12 +1673,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
     @Override
     public void setProductReturnable(boolean returnable) {
-        int lastIndex = textToDisplay.size() - 1;
-        if (returnable) {
-            addProductReturnableSpinner.setSelection(lastIndex - 1); // dapat dikembalikan
-        } else {
-            addProductReturnableSpinner.setSelection(lastIndex);// tidak dapat dikembalikan
-        }
     }
 
     @Override
@@ -1801,7 +1786,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             }
             wholesaleLayout.setupParams(models);
         }
-        mSimpleFacebook = SimpleFacebook.getInstance(getActivity());
         dismissErrorProductName();
         dismissPriceError();
         dismissWeightError();
@@ -1965,7 +1949,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     public void initReturnableSpinner(List<String> textToDisplay) {
         this.textToDisplay = textToDisplay;
 
-        addProductReturnableSpinner.setAdapter(SimpleSpinnerAdapter.createAdapterAddProduct(getActivity(), textToDisplay));
     }
 
 
@@ -2414,37 +2397,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         return simpleTextModels;
     }
 
-    @OnClick(R2.id.add_product_policy_layout)
-    public void onClick() {
-        if (addProductReturnableSpinner.getSelectedItem().toString().contains("Tambah")) {
-            DialogFragment fragment = ReturnPolicyDialog.newInstance();
-            fragment.show(getActivity().getSupportFragmentManager(), ReturnPolicyDialog.FRAGMENT_TAG);
-        }
-        if (addProductReturnableSpinner.getSelectedItem().toString().contains("Ya")) {
-            if (detail != null) {
-                DialogFragment fragment = ReturnPolicyDialog.newInstance(detail);
-                fragment.show(getActivity().getSupportFragmentManager(), ReturnPolicyDialog.FRAGMENT_TAG);
-            } else {
-                Toast.makeText(getActivity(), "detail not ready yet", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    @OnItemSelected(R2.id.add_product_returnable_spinner)
-    public void selectReturnPolicy(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-        switch (position) {
-            case 0:
-                addProductPolicyLayout.setVisibility(View.GONE);
-                break;
-            case 1:
-                addProductPolicyLayout.setVisibility(View.VISIBLE);
-                break;
-            case 2:
-                addProductPolicyLayout.setVisibility(View.GONE);
-                break;
-        }
-    }
-
     //[REMOVE] move onclick to its container
 //    @OnClick(R2.id.add_product_submit_and_push)
 //    public void pushProduct(){
@@ -2649,12 +2601,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         inputAddProductModel.setWholeSales(datas);
 
         // 9. get terima pengembalian
-        String[] array2 = getResources().getStringArray(R.array.return_policy);
-        if (addProductReturnableSpinner.getSelectedItem().toString().contains(array2[1])) {
-            inputAddProductModel.setReturnable(RETURNABLE_YES);
-        } else {
-            inputAddProductModel.setReturnable(RETURNABLE_NO);
-        }
+        inputAddProductModel.setReturnable(RETURNABLE_NO);
         // 10. get kondisi
         String[] array1 = getResources().getStringArray(R.array.condition);
         if (addProductCondition.getSelectedItem().toString().contains(array1[0])) {
@@ -3018,38 +2965,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         }
     }
 
-    /**
-     * login facebook
-     */
-    public void loginFacebook(final OnNewPermissionsListener onNewPermissionsListener) {
-        // login
-        mSimpleFacebook.login(new OnLoginListener() {
-            @Override
-            public void onFail(String reason) {
-            }
-
-            @Override
-            public void onException(Throwable throwable) {
-            }
-
-            @Override
-            public void onLogin(String accessToken, List<Permission> acceptedPermissions, List<Permission> declinedPermissions) {
-                authorizeFacebook(onNewPermissionsListener);
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-        });
-    }
-
-    public void authorizeFacebook(OnNewPermissionsListener onNewPermissionsListener) {
-        Permission[] permissions = new Permission[]{
-                Permission.PUBLISH_ACTION
-        };
-        mSimpleFacebook.requestNewPermissions(permissions, onNewPermissionsListener);
-    }
 
     public void showDialog() {
         if (getActivity() != null && getActivity() instanceof AddProductView) {

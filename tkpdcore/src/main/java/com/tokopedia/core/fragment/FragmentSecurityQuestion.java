@@ -211,6 +211,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
             FragmentSecurityQuestionPermissionsDispatcher.checkSmsPermissionWithCheck(FragmentSecurityQuestion.this);
         }
+        securityQuestion.doSendAnalytics();
     }
 
     @Override

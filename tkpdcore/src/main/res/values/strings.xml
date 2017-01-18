@@ -319,6 +319,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="tx_success_from">Transaksi Sukses dari </string>
     <string name="tx_title">Transaksi</string>
     <string name="title_product_video">Video Produk</string>
+    <string name="success_share_product">Sukses membagikan produk</string>
     <!-- Strings related product info -->
 
 
@@ -640,7 +641,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="title_payment_method">Metode Pembayaran</string>
     <string name="title_total_payment">Total Pembayaran</string>
     <string name="title_total_payment_left">Total Yang Harus Dibayar</string>
-    <string name="tittle_checkout">Checkout</string>
+    <string name="tittle_checkout">Pilih Metode Pembayaran</string>
     <string name="title_tokopedia_balance">Saldo Tokopedia</string>
     <string name="title_use_tokopedia_balance">Ingin gunakan saldo Tokopedia-mu ?</string>
     <string name="title_use_promo_code">Gunakan Kode Voucher Tokopedia</string>
@@ -947,6 +948,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_remaining_tokopedia">Saldo tersedia</string>
     <string name="msg_payment_success">Terima kasih, Anda telah sukses mengkonfirmasi dengan menggunakan metode pembayaran</string>
     <string name="title_activity_people_tx_details">Detil Transaksi</string>
+    <string name="title_activity_cart_shipment">Ubah Pengiriman</string>
     <string name="title_payment_confirmation">KONFIRMASI</string>
     <!-- <string name="title_payment_verification">VERIFIKASI</string> -->
     <string name="title_payment_verification">Ubah Pembayaran</string>

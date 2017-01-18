@@ -61,8 +61,7 @@ public class TalkViewActivity extends TActivity
                 fragment = ProductTalkViewFragment.createInstance(bundle);
             }
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.container, fragment, TalkViewActivity.class.getSimpleName());
-            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.add(R.id.container, fragment, TalkViewActivity.class.getSimpleName());
             fragmentTransaction.commit();
         }
         UnifyTracking.eventDiscussionProductDetail(bundle.getString("from", "N/A"));

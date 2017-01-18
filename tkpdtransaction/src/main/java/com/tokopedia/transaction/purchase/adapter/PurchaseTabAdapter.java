@@ -10,8 +10,7 @@ import com.tokopedia.transaction.purchase.fragment.TxSummaryFragment;
 import com.tokopedia.transaction.purchase.fragment.TxVerificationFragment;
 
 /**
- * PurchaseTabAdapter
- * Created by anggaprasetiyo on 8/26/16.
+ * @author anggaprasetiyo on 8/26/16.
  */
 public class PurchaseTabAdapter extends FragmentStatePagerAdapter {
 

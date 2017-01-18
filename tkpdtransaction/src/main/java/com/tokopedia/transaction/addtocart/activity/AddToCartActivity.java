@@ -2,16 +2,17 @@ package com.tokopedia.transaction.addtocart.activity;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.IntentService;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.text.util.Linkify;
 import android.view.MenuItem;
@@ -23,17 +24,13 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
-import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -45,9 +42,12 @@ import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.addtocart.listener.AddToCartViewListener;
 import com.tokopedia.transaction.addtocart.model.Insurance;
 import com.tokopedia.transaction.addtocart.model.OrderData;
@@ -75,19 +75,22 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity.RESULT_NOT_SELECTED_DESTINATION;
+
 /**
  * @author Angga.Prasetiyo on 11/03/2016.
  */
 public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         implements AddToCartViewListener, AdapterView.OnItemSelectedListener,
         TextWatcher, ATCResultReceiver.Receiver {
-    private static final String TAG = AddToCartActivity.class.getSimpleName();
-    public static final String EXTRA_ADDRESS_DATA = "EXTRA_ADDRESS_DATA";
-    public static final String EXTRA_LATITUDE = "latitude";
-    public static final String EXTRA_LONGITUDE = "longitude";
     public static final int REQUEST_CHOOSE_ADDRESS = 0;
-    public static final int REQUEST_CREATE_NEW_ADDRESS = 1;
     public static final int REQUEST_CHOOSE_LOCATION = 2;
+    private static final String EXTRA_STATE_ORDER_DATA = "orderData";
+    private static final String EXTRA_STATE_DESTINATION_DATA = "destinationData";
+    private static final String EXTRA_STATE_LOCATION_PASS_DATA = "locationPassData";
+    private static final String EXTRA_STATE_PRODUCT_DETAIL_DATA = "productDetailData";
+    private static final String EXTRA_STATE_SHIPMENT_LIST_DATA = "shipmentsData";
+    private static final String EXTRA_STATE_SHIPMENT_RATE_LIST_DATA = "shipmentRateAttrs";
 
     private ProductCartPass productCartPass;
     private TkpdProgressDialog progressDialog;
@@ -99,8 +102,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     private List<Shipment> mShipments;
     private List<Attribute> mShipmentRateAttrs;
     private Observable<Long> incrementObservable = Observable.interval(200, TimeUnit.MILLISECONDS);
-
-    private Handler handler = new Handler();
 
     @BindView(R2.id.tv_ticker_gtm)
     TextView tvTickerGTM;
@@ -136,28 +137,16 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     TextView tvProductPrice;
     @BindView(R2.id.tv_price_shipping)
     TextView tvShippingPrice;
-    @BindView(R2.id.layout_product_price)
-    RelativeLayout viewProductPrice;
-    @BindView(R2.id.layout_shipping_price)
-    RelativeLayout viewShippingPrice;
-    @BindView(R2.id.pb_price)
-    ProgressBar pbLoadingPrice;
     @BindView(R2.id.tv_error_shipping)
     TextView tvErrorShipping;
     @BindView(R2.id.btn_buy)
     TextView btnBuy;
-    @BindView(R2.id.product_view)
-    LinearLayout viewProduct;
-    @BindView(R2.id.layout_value_geo_location)
-    View viewAssignLocation;
     @BindView(R2.id.layout_geo_location)
     View viewFieldLocation;
     @BindView(R2.id.et_geo_location)
     EditText etValueLocation;
     @BindView(R2.id.til_form_qty)
     TextInputLayout tilAmount;
-    @BindView(R2.id.til_form_notes)
-    TextInputLayout tilRemark;
     @BindView(R2.id.container)
     LinearLayout container;
     @BindView(R2.id.increase_button)
@@ -167,7 +156,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @BindView(R2.id.calculate_cart_progress_bar)
     View calculateCartProgressBar;
 
-    private AtcFormData atcFormData;
     private ATCResultReceiver atcReceiver;
     private Subscription subscription;
 
@@ -193,7 +181,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_add_to_cart_new;
+        return R.layout.activity_add_to_cart_tx_module;
     }
 
     @Override
@@ -258,6 +246,23 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     }
 
     @Override
+    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
+
+    }
+
+    @Override
+    public String getStringFromResource(@StringRes int resId) {
+        return getString(resId);
+    }
+
+    @Override
+    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            TKPDMapParam<String, String> originParams
+    ) {
+        return null;
+    }
+
+    @Override
     public void closeView() {
         this.finish();
     }
@@ -265,7 +270,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @Override
     public void initialOrderData(AtcFormData data) {
-        this.atcFormData = data;
         this.orderData = OrderData.createFromATCForm(data, productCartPass);
     }
 
@@ -305,7 +309,10 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             btnBuy.setText(getString(R.string.title_buy));
         }
         tvProductName.setText(data.getProductName());
-        etQuantity.setText((orderData == null ? data.getProductMinOrder() : String.valueOf(orderData.getQuantity())));
+        etQuantity.setText(
+                (orderData == null ? data.getProductMinOrder()
+                        : String.valueOf(orderData.getQuantity()))
+        );
         etQuantity.setEnabled(true);
         etRemark.setEnabled(true);
         tvProductPrice.setText(data.getProductPrice());
@@ -383,7 +390,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     public void hideNetworkError() {
         container.setVisibility(View.VISIBLE);
-        findViewById(R.id.main_scroll).setVisibility(View.VISIBLE);
+        View mainView = findViewById(R.id.main_scroll);
+        if (mainView != null) mainView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -432,8 +440,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @Override
     public void showErrorMessage(String message) {
-        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG)
-                .show();
+        View view = findViewById(android.R.id.content);
+        if (view != null) Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
+        else Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -508,8 +517,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     public void onCartFailedLoading() {
         hideInitLoading();
-        KeyboardHandler.hideSoftKeyboard(this);
-        findViewById(R.id.main_scroll).setVisibility(View.GONE);
+        View mainView = findViewById(R.id.main_scroll);
+        if (mainView != null) mainView.setVisibility(View.GONE);
         NetworkErrorHelper.showEmptyState(this, parentView,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -554,13 +563,17 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         } else if (parent.getAdapter().getItem(position) instanceof Product) {
             orderData.setShipmentPackage(((Product) parent.getAdapter()
                     .getItem(position)).getShipperProductId());
-            tvShippingPrice.setText(((Product)
-                    parent.getAdapter().getItem(position)).getFormattedPrice() + "");
+            tvShippingPrice.setText(MessageFormat.format("{0}", ((Product)
+                    parent.getAdapter().getItem(position)).getFormattedPrice()));
             tvErrorShipping.setVisibility(View.GONE);
             if (((Product) parent.getAdapter().getItem(position)).getIsShowMap() == 1) {
                 viewFieldLocation.setVisibility(View.VISIBLE);
                 if (!(etValueLocation.getText().length() > 0)) {
-                    Snackbar.make(cartCoordinatLayout, getString(R.string.message_gojek_shipping_package), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(
+                            cartCoordinatLayout,
+                            getString(R.string.message_gojek_shipping_package),
+                            Snackbar.LENGTH_LONG
+                    ).show();
                 }
             } else {
                 viewFieldLocation.setVisibility(View.GONE);
@@ -583,8 +596,16 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             tvErrorShipping.setVisibility(View.GONE);
             switch (requestCode) {
                 case REQUEST_CHOOSE_ADDRESS:
-                    renderFormAddress(Destination.convertFromBundle(data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)));
-                    this.orderData.setAddress(Destination.convertFromBundle(data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)));
+                    renderFormAddress(
+                            Destination.convertFromBundle(
+                                    data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
+                            )
+                    );
+                    this.orderData.setAddress(
+                            Destination.convertFromBundle(
+                                    data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
+                            )
+                    );
                     startCalculateCartLoading();
                     presenter.calculateKeroAddressShipping(this, orderData);
                     CommonUtils.dumper("rates/v1 kerorates called request choose address");
@@ -592,10 +613,10 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 case ManageAddressConstant.REQUEST_CODE_PARAM_CREATE:
                     Destination addressData = presenter.generateAddressData(data);
                     startCalculateCartLoading();
-                    if (this.orderData.getAddress() == null || !this.orderData.getAddress().isCompleted()){
+                    if (this.orderData.getAddress() == null || !this.orderData.getAddress().isCompleted()) {
                         this.orderData.setAddress(addressData);
                         presenter.getCartKeroToken(this, productCartPass, addressData);
-                    }else{
+                    } else {
                         renderFormAddress(addressData);
                         this.orderData.setAddress(addressData);
                         presenter.calculateKeroAddressShipping(this, orderData);
@@ -603,7 +624,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     break;
                 case REQUEST_CHOOSE_LOCATION:
                     Bundle bundle = data.getExtras();
-                    LocationPass locationPass = bundle.getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
+                    LocationPass locationPass = bundle.getParcelable(
+                            GeolocationActivity.EXTRA_EXISTING_LOCATION
+                    );
                     if (locationPass != null) {
                         this.orderData.getAddress().setLatitude(locationPass.getLatitude());
                         this.orderData.getAddress().setLongitude(locationPass.getLongitude());
@@ -614,6 +637,19 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     }
                     break;
             }
+        } else if (resultCode == RESULT_NOT_SELECTED_DESTINATION){
+            renderFormAddress(
+                    Destination.convertFromBundle(
+                            data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
+                    )
+            );
+            this.orderData.setAddress(
+                    Destination.convertFromBundle(
+                            data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
+                    )
+            );
+            startCalculateCartLoading();
+            presenter.calculateKeroAddressShipping(this, orderData);
         }
     }
 
@@ -697,12 +733,19 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             tilAmount.setError(getString(R.string.error_min_order)
                     + " " + orderData.getMinOrder());
             if (etQuantity.requestFocus())
-                getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                getWindow().setSoftInputMode(
+                        WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
+                );
         } else if (orderData.getAddress() == null) {
             showErrorMessage(getString(R.string.error_no_address));
         } else {
-            CommonUtils.dumper("rates/v1 kerorates called aftertextchanged");
-            orderData.setWeight(CommonUtils.round((Double.parseDouble(orderData.getInitWeight()) * Double.parseDouble(s.toString())), 2) + "");
+            orderData.setWeight(
+                    CommonUtils.round(
+                            (Double.parseDouble(
+                                    orderData.getInitWeight()) * Double.parseDouble(s.toString())
+                            ), 2
+                    ) + ""
+            );
             tilAmount.setError(null);
             tilAmount.setErrorEnabled(false);
             presenter.calculateAllPrices(AddToCartActivity.this, orderData);
@@ -749,24 +792,33 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("orderData", this.orderData);
-        outState.putParcelable("destinationData", this.mDestination);
-        outState.putParcelable("locationPassData", this.mLocationPass);
-        outState.putParcelable("productDetailData", this.mProductDetail);
-        outState.putParcelableArrayList("shipmentsData", (ArrayList<? extends Parcelable>) this.mShipments);
-        outState.putParcelableArrayList("shipmentRateAttrs", (ArrayList<? extends Parcelable>) this.mShipmentRateAttrs);
+        outState.putParcelable(EXTRA_STATE_ORDER_DATA, this.orderData);
+        outState.putParcelable(EXTRA_STATE_DESTINATION_DATA, this.mDestination);
+        outState.putParcelable(EXTRA_STATE_LOCATION_PASS_DATA, this.mLocationPass);
+        outState.putParcelable(EXTRA_STATE_PRODUCT_DETAIL_DATA, this.mProductDetail);
+        outState.putParcelableArrayList(
+                EXTRA_STATE_SHIPMENT_LIST_DATA, (ArrayList<? extends Parcelable>) this.mShipments
+        );
+        outState.putParcelableArrayList(
+                EXTRA_STATE_SHIPMENT_RATE_LIST_DATA,
+                (ArrayList<? extends Parcelable>) this.mShipmentRateAttrs
+        );
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            this.orderData = savedInstanceState.getParcelable("orderData");
-            this.mDestination = savedInstanceState.getParcelable("destinationData");
-            this.mLocationPass = savedInstanceState.getParcelable("locationPassData");
-            this.mProductDetail = savedInstanceState.getParcelable("productDetailData");
-            this.mShipments = savedInstanceState.getParcelableArrayList("shipmentsData");
-            this.mShipmentRateAttrs = savedInstanceState.getParcelableArrayList("shipmentRateAttrs");
+            this.orderData = savedInstanceState.getParcelable(EXTRA_STATE_ORDER_DATA);
+            this.mDestination = savedInstanceState.getParcelable(EXTRA_STATE_DESTINATION_DATA);
+            this.mLocationPass = savedInstanceState.getParcelable(EXTRA_STATE_LOCATION_PASS_DATA);
+            this.mProductDetail = savedInstanceState.getParcelable(EXTRA_STATE_PRODUCT_DETAIL_DATA);
+            this.mShipments = savedInstanceState.getParcelableArrayList(
+                    EXTRA_STATE_SHIPMENT_LIST_DATA
+            );
+            this.mShipmentRateAttrs = savedInstanceState.getParcelableArrayList(
+                    EXTRA_STATE_SHIPMENT_RATE_LIST_DATA
+            );
         }
     }
 
@@ -857,8 +909,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     if (subscription != null) subscription.unsubscribe();
-                    subscription = incrementCounterSubscription().subscribe(increaseQuantitySubscriber());
-                    CommonUtils.dumper("SUBSCRIBE");
+                    subscription = incrementCounterSubscription().subscribe(
+                            increaseQuantitySubscriber()
+                    );
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_CANCEL ||
                         motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     if (subscription != null) {
@@ -876,7 +929,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     if (subscription != null) subscription.unsubscribe();
-                    subscription = incrementCounterSubscription().subscribe(decreaseQuantitySubscriber());
+                    subscription = incrementCounterSubscription()
+                            .subscribe(decreaseQuantitySubscriber());
                 } else if (motionEvent.getAction() == MotionEvent.ACTION_CANCEL ||
                         motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     if (subscription != null) {

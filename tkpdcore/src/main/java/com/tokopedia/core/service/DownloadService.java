@@ -16,9 +16,6 @@ import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tkpd.library.utils.data.DataReceiver;
 import com.tokopedia.core.R;
 import com.tokopedia.core.SplashScreen;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.City;
@@ -52,7 +49,6 @@ import com.tokopedia.core.session.model.OTPModel;
 import com.tokopedia.core.session.model.QuestionFormModel;
 import com.tokopedia.core.session.model.SecurityQuestionViewModel;
 import com.tokopedia.core.session.model.TokenModel;
-import com.tokopedia.core.session.presenter.Login;
 import com.tokopedia.core.session.presenter.SecurityQuestion;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.PasswordGenerator;
@@ -97,6 +93,11 @@ public class DownloadService extends IntentService implements DownloadServiceCon
     public static final int STATUS_RUNNING = 0;
     public static final int STATUS_FINISHED = 1;
     public static final int STATUS_ERROR = 2;
+
+    int EmailType = 0;
+    int FacebookType = 1;
+    int GooglePlusType = 2;
+    int WebViewType = 3;
 
     static String emailV2;
     static String passwordV2;
@@ -723,7 +724,7 @@ public class DownloadService extends IntentService implements DownloadServiceCon
         NetworkHandler network = new NetworkHandler(getApplicationContext(), "http://www.tokopedia.com/ws-new/third-app-login.pl");
         network.AddParam("act", "do_login");
         network.AddParam("name", loginGoogleModel.getFullName());
-        network.AddParam("app_type", Login.GooglePlusType);
+        network.AddParam("app_type", GooglePlusType);
         network.AddParam("birthday", loginGoogleModel.getBirthday());
         network.AddParam("gender", loginGoogleModel.getGender());
         network.AddParam("email", loginGoogleModel.getEmail());
@@ -748,7 +749,7 @@ public class DownloadService extends IntentService implements DownloadServiceCon
         NetworkHandler network = new NetworkHandler(getApplicationContext(), "http://www.tokopedia.com/ws-new/third-app-login.pl");
         network.AddParam("act", "do_login");
         network.AddParam("name", loginFacebookViewModel.getFullName());
-        network.AddParam("app_type", Login.FacebookType);
+        network.AddParam("app_type", FacebookType);
         network.AddParam("birthday", loginFacebookViewModel.getBirthday());
         network.AddParam("gender", loginFacebookViewModel.getGender());
         network.AddParam("fb_token", loginFacebookViewModel.getFbToken());
@@ -774,7 +775,7 @@ public class DownloadService extends IntentService implements DownloadServiceCon
         String authKey = tokenModel.getTokenType() + " "+ tokenModel.getAccessToken();
         network.AddHeader("authorization",authKey);
         network.AddParam("act", "do_login_yahoo");
-        network.AddParam("app_type", Login.WebViewType);
+        network.AddParam("app_type", WebViewType);
         network.AddParam("birthday", accountsParameter.getInfoModel().getBday());
         network.AddParam("app_id", PasswordGenerator.getAppId(getApplicationContext()));
         network.Commit(new com.tokopedia.core.network.NetworkHandler.NetworkHandlerListener() {
