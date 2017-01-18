@@ -1,4 +1,4 @@
-package com.tokopedia.core.gcm.notification.dedicated;
+package com.tokopedia.tkpd.fcm.notification;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,8 +15,8 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
  * Created by alvarisi on 1/16/17.
  */
 
-public class PurchaseDeliveredNotification extends BaseNotification {
-    public PurchaseDeliveredNotification(Context context) {
+public class PurchaseRejectedNotification extends BaseNotification {
+    public PurchaseRejectedNotification(Context context) {
         super(context);
     }
 
@@ -26,12 +26,14 @@ public class PurchaseDeliveredNotification extends BaseNotification {
                 new Intent(mContext, TransactionPurchaseRouter.getPurchaseActivityClass())
         );
         mNotificationPass.classParentStack = TransactionPurchaseRouter.getPurchaseActivityClass();
-        mNotificationPass.title = mContext.getString(R.string.title_notif_purchase_delivered);
+        mNotificationPass.title = mContext.getString(R.string.title_notif_purchase_rejected);
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         Bundle bundle = new Bundle();
         bundle.putInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
-                TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER);
+                TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER);
+        bundle.putString(TransactionPurchaseRouter.EXTRA_STATE_TX_FILTER,
+                TransactionPurchaseRouter.TRANSACTION_CANCELED_FILTER_ID);
         mNotificationPass.extraData = bundle;
         mNotificationPass.mIntent.putExtras(bundle);
     }

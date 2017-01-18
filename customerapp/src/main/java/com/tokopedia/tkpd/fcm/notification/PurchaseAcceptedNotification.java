@@ -1,4 +1,4 @@
-package com.tokopedia.core.gcm.notification.dedicated;
+package com.tokopedia.tkpd.fcm.notification;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,8 +15,8 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
  * Created by alvarisi on 1/16/17.
  */
 
-public class PurchasePartialProcessedNotification extends BaseNotification {
-    public PurchasePartialProcessedNotification(Context context) {
+public class PurchaseAcceptedNotification extends BaseNotification {
+    public PurchaseAcceptedNotification(Context context) {
         super(context);
     }
 
@@ -26,7 +26,7 @@ public class PurchasePartialProcessedNotification extends BaseNotification {
                 new Intent(mContext, TransactionPurchaseRouter.getPurchaseActivityClass())
         );
         mNotificationPass.classParentStack = TransactionPurchaseRouter.getPurchaseActivityClass();
-        mNotificationPass.title = mContext.getString(R.string.title_notif_purchase_partial_accepted);
+        mNotificationPass.title = mContext.getString(R.string.title_notif_purchase_accepted);
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         Bundle bundle = new Bundle();

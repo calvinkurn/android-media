@@ -1,4 +1,4 @@
-package com.tokopedia.core.gcm.notification.dedicated;
+package com.tokopedia.tkpd.fcm.notification;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,11 +12,11 @@ import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
 /**
- * Created by alvarisi on 1/12/17.
+ * Created by alvarisi on 1/13/17.
  */
 
-public class ReviewEditedNotification extends BaseNotification {
-    public ReviewEditedNotification(Context context) {
+public class ReviewReplyNotification extends BaseNotification {
+    public ReviewReplyNotification(Context context) {
         super(context);
     }
 
@@ -26,7 +26,7 @@ public class ReviewEditedNotification extends BaseNotification {
                 new Intent(mContext, InboxReputationActivity.class)
         );
         mNotificationPass.classParentStack = InboxReputationActivity.class;
-        mNotificationPass.title = String.format("%s %s", data.getString("counter"), mContext.getString(R.string.title_new_talk));
+        mNotificationPass.title = mContext.getString(R.string.title_reply_review);
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
     }
