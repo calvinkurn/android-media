@@ -23,8 +23,8 @@ public class URLGenerator {
         Uri uri = Uri.parse(url);
         String path = uri.getLastPathSegment();
         String queryStart = uri.getQuery();
-        String urlFinal = getBaseUrl() + "seamless?token="
-                + GCMHandler.getRegistrationId(context)
+        String urlFinal = getBaseUrl() + SEAMLESS_LOGIN
+                + "token=" + GCMHandler.getRegistrationId(context)
                 + "&os_type=1"
                 + "&uid=" + SessionHandler.getLoginID(context)
                 + "&url=" + url;
@@ -36,8 +36,8 @@ public class URLGenerator {
         Uri uri = Uri.parse(url);
         String path = uri.getLastPathSegment();
         String queryStart = uri.getQuery();
-        String urlFinal = getBaseUrl() + "seamless?token="
-                + GCMHandler.getRegistrationId(context)
+        String urlFinal = getBaseUrl() + SEAMLESS_LOGIN
+                + "token=" + GCMHandler.getRegistrationId(context)
                 + "&os_type=1"
                 + "&uid=" + SessionHandler.getLoginID(context)
                 + "&url=" + url;
@@ -48,8 +48,8 @@ public class URLGenerator {
         Uri uri = Uri.parse(url);
         String path = uri.getLastPathSegment();
         String queryStart = uri.getQuery();
-        String urlFinal = getBaseUrl() + "wvlogin?token="
-                + GCMHandler.getRegistrationId(context)
+        String urlFinal = getBaseUrl() + SEAMLESS_LOGIN
+                + "token=" + GCMHandler.getRegistrationId(context)
                 + "&os_type=1"
                 + "&uid=" + SessionHandler.getLoginID(context)
                 + "&url=" + url;
