@@ -27,6 +27,8 @@ import butterknife.OnClick;
 
 public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter> extends TopAdsDatePickerFragment<T> implements TopAdsDashboardFragmentListener {
 
+    private static final int REQUEST_CODE_ADD_KREDIT = TopAdsDashboardFragment.class.hashCode();
+
     public interface Callback {
 
         void onLoadDataError();
@@ -251,7 +253,16 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     @OnClick(R2.id.image_button_add_deposit)
     void goToAddCredit() {
         Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_ADD_KREDIT);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        if(resultCode == getActivity().RESULT_OK && requestCode == REQUEST_CODE_ADD_KREDIT){
+            presenter.populateDeposit();
+        }
     }
 
     protected abstract Class<?> getClassIntentStatistic();
