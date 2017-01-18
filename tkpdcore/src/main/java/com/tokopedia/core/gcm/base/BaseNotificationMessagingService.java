@@ -5,26 +5,23 @@ import android.os.Bundle;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.tokopedia.core.gcm.ActivitiesLifecycleCallbacks;
-import com.tokopedia.core.gcm.AppNotificationReceiverUIBackground;
 import com.tokopedia.core.gcm.FCMCacheManager;
-import com.tokopedia.core.gcm.GCMUtils;
 import com.tokopedia.core.gcm.INotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.NotificationAnalyticsReceiver;
+import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
+import com.tokopedia.core.gcm.utils.GCMUtils;
 
 /**
  * @author by alvarisi on 1/10/17.
  */
 
 public abstract class BaseNotificationMessagingService extends FirebaseMessagingService {
-    protected AppNotificationReceiverUIBackground mAppNotificationReceiverUIBackground;
     protected FCMCacheManager cacheManager;
     protected INotificationAnalyticsReceiver mNotificationAnalyticsReceiver;
     protected ActivitiesLifecycleCallbacks mActivitiesLifecycleCallbacks;
     protected Context mContext;
 
     public BaseNotificationMessagingService() {
-        mAppNotificationReceiverUIBackground = new AppNotificationReceiverUIBackground(getApplication());
         mNotificationAnalyticsReceiver = new NotificationAnalyticsReceiver();
         mActivitiesLifecycleCallbacks = new ActivitiesLifecycleCallbacks(getApplication());
         mContext = getApplication().getApplicationContext();
@@ -33,4 +30,6 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
     protected Bundle convertMap(RemoteMessage message){
         return GCMUtils.convertMap(message.getData());
     }
+
+
 }
