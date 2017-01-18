@@ -1,4 +1,4 @@
-package com.tokopedia.core.product.model.passdata;
+package com.tokopedia.core.router.productdetail.passdata;
 
 import android.graphics.Bitmap;
 import android.os.Parcel;

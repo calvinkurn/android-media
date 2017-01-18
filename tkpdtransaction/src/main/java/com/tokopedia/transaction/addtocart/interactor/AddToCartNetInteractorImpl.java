@@ -30,8 +30,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
- * Created by Angga.Prasetiyo on 11/03/2016.
- * migrate retrofit 2 by Angga.Prasetiyo
+ * @author Angga.Prasetiyo on 11/03/2016.
  */
 public class AddToCartNetInteractorImpl implements AddToCartNetInteractor {
     private static final String TAG = AddToCartNetInteractorImpl.class.getSimpleName();

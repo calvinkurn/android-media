@@ -46,6 +46,7 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
 import com.tokopedia.core.service.HUDIntent;
@@ -337,7 +338,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
             context.startActivity(intent);
         } else {
-            context.startActivity(new Intent(context, Cart.class));
+            context.startActivity(TransactionCartRouter.createInstanceCartActivity(context));
         }
         return true;
     }
@@ -349,7 +350,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
             startActivity(intent);
         } else {
-            startActivity(new Intent(getBaseContext(), Cart.class));
+            startActivity(TransactionCartRouter.createInstanceCartActivity(this));
         }
         return true;
     }

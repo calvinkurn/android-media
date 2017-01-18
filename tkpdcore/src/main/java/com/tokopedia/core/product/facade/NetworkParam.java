@@ -1,10 +1,9 @@
 package com.tokopedia.core.product.facade;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-
 import com.tokopedia.core.product.model.etalase.Etalase;
-import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 
 import java.util.HashMap;
 import java.util.Map;

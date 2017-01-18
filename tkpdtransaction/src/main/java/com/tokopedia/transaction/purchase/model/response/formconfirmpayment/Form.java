@@ -112,8 +112,8 @@ public class Form {
     }
 
     public List<Method> getMethod(boolean removeId5) {
-        for(int i=0; i<method.size(); i++){
-            if(method.get(i).getMethodId().equals("5") && removeId5){
+        for (int i = 0; i < method.size(); i++) {
+            if (method.get(i).getMethodId().equals("5") && removeId5) {
                 method.remove(i);
             }
         }

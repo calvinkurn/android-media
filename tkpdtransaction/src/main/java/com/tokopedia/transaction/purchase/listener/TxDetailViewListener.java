@@ -2,13 +2,12 @@ package com.tokopedia.transaction.purchase.listener;
 
 import android.content.Intent;
 
-import com.tokopedia.core.product.listener.ViewListener;
+import com.tokopedia.transaction.base.IBaseView;
 
 /**
- * TxConfViewListener
- * Created by Angga.Prasetiyo on 28/04/2016.
+ * @author Angga.Prasetiyo on 28/04/2016.
  */
-public interface TxDetailViewListener extends ViewListener {
+public interface TxDetailViewListener extends IBaseView {
 
     void closeWithResult(int requestCode, Intent data);
 

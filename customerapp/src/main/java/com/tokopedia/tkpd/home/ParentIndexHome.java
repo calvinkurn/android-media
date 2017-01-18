@@ -20,6 +20,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.Cart;
 import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
 import com.tokopedia.core.GalleryBrowser;
+import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.tkpd.R;
 
@@ -403,7 +404,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
                     intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                     startActivity(intent);
                 } else {
-                    startActivity(new Intent(getBaseContext(), Cart.class));
+                    startActivity(TransactionCartRouter.createInstanceCartActivity(this));
                 }
                 return true;
             default:

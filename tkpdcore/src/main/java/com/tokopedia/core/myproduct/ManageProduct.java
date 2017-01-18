@@ -17,7 +17,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ActionMode;
@@ -51,7 +50,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
@@ -74,7 +72,6 @@ import com.tokopedia.core.customadapter.ListViewManageProdAdapter;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.model.CategoryDB;
-import com.tokopedia.core.database.model.CategoryDB_Table;
 import com.tokopedia.core.database.model.EtalaseDB;
 import com.tokopedia.core.database.model.ReturnableDB;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
@@ -96,10 +93,10 @@ import com.tokopedia.core.myproduct.presenter.NetworkInteractorImpl;
 import com.tokopedia.core.myproduct.service.ProductService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.v4.NetworkConfig;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.prototype.ProductCache;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
@@ -571,13 +568,11 @@ public class ManageProduct extends TkpdActivity implements
             public void onItemClick(AdapterView<?> arg0, View arg1,
                                     int position, long arg3) {
                 if (lvadapter.getCount() > 0) {
-                    Bundle bundle = new Bundle();
-                    //				Intent intent = new Intent(ManageProduct.this, ProductDetailPresenter.class);
-                    Intent intent = new Intent(ManageProduct.this, ProductInfoActivity.class);
-                    bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS,
-                            lvadapter.getProductDataToPass(position));
-                    intent.putExtras(bundle);
-                    startActivityForResult(intent, 2);
+                    startActivityForResult(
+                            ProductDetailRouter.createInstanceProductDetailInfoActivity(
+                                    ManageProduct.this, lvadapter.getProductId(position)
+                            ), 2
+                    );
                 }
             }
         };
@@ -1485,7 +1480,6 @@ public class ManageProduct extends TkpdActivity implements
 
         List<CategoryDB> level1 =
                 DbManagerImpl.getInstance().getDepartmentParent();
-        ;
         data = new ArrayList<>();
         data_id = new ArrayList<>();
         for (CategoryDB lvl1 : level1) {

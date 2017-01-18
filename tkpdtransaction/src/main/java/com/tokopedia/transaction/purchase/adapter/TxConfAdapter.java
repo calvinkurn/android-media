@@ -2,16 +2,16 @@ package com.tokopedia.transaction.purchase.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.text.Html;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.model.response.txconfirmation.TxConfData;
 
 import java.util.ArrayList;
@@ -22,8 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * TxConfAdapter
- * Created by Angga.Prasetiyo on 12/05/2016.
+ * @author Angga.Prasetiyo on 12/05/2016.
  */
 public class TxConfAdapter extends ArrayAdapter<TxConfData> {
     private final LayoutInflater inflater;
@@ -44,13 +43,13 @@ public class TxConfAdapter extends ArrayAdapter<TxConfData> {
     }
 
     public TxConfAdapter(Context context) {
-        super(context, R.layout.listview_payment_confirm);
+        super(context, R.layout.holder_item_transaction_confirmation_tx_module);
         this.inflater = LayoutInflater.from(context);
         this.context = context;
     }
 
     @Override
-    public void addAll(Collection<? extends TxConfData> collection) {
+    public void addAll(@NonNull Collection<? extends TxConfData> collection) {
         txConfDataList.addAll(collection);
         notifyDataSetChanged();
     }
@@ -71,18 +70,23 @@ public class TxConfAdapter extends ArrayAdapter<TxConfData> {
         return txConfDataList.size();
     }
 
+    @SuppressWarnings("deprecation")
+    @NonNull
     @SuppressLint("InflateParams")
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         final ViewHolder holder;
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.listview_payment_confirm, null);
+            convertView = inflater.inflate(
+                    R.layout.holder_item_transaction_confirmation_tx_module, null
+            );
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
         final TxConfData item = getItem(position);
+        if (item == null) return convertView;
         holder.tvShopName.setText(MethodChecker.fromHtml(item.getConfirmation().getShopList()));
         holder.tvCreateDate.setText(item.getConfirmation().getCreateTime());
         holder.tvDueDate.setText(item.getConfirmation().getPayDueDate());

@@ -20,7 +20,7 @@ def allowSplit() {
 }
 
 def allowDistribution() {
-    if ( project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
+    if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
         return "true";
     }
     return "false";

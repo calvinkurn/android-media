@@ -2,11 +2,11 @@ package com.tokopedia.transaction.purchase.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.transaction.purchase.model.response.txverification.TxVerData;
 import com.tokopedia.core.util.UploadImageReVamp;
+import com.tokopedia.transaction.purchase.model.response.txverification.TxVerData;
 
 /**
- * Created by Angga.Prasetiyo on 24/05/2016.
+ * @author Angga.Prasetiyo on 24/05/2016.
  */
 public interface TxVerificationPresenter {
     void getPaymentVerification(Context context, int page, int typeRequest);

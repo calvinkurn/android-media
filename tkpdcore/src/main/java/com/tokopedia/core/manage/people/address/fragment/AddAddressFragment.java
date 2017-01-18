@@ -40,6 +40,7 @@ import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.presenter.AddAddressPresenter;
 import com.tokopedia.core.manage.people.address.presenter.AddAddressPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -161,9 +162,9 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     }
 
     private void setEditParam(Destination address) {
-        addressTypeEditText.setText(address.getAddressName());
+        addressTypeEditText.setText(MethodChecker.fromHtml(address.getAddressName()));
         addressEditText.setText(address.getAddressStreet());
-        receiverNameEditText.setText(address.getReceiverName());
+        receiverNameEditText.setText(MethodChecker.fromHtml(address.getReceiverName()));
         receiverPhoneEditText.setText(address.getReceiverPhone());
         postcodeEditText.setText(address.getPostalCode());
         if (address.getLatitude() != null &&
