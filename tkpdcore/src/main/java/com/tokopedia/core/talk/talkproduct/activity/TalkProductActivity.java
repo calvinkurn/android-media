@@ -9,8 +9,8 @@ import android.os.Handler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.talk.inboxtalk.intentservice.InboxTalkIntentService;
-import com.tokopedia.core.talk.inboxtalk.intentservice.InboxTalkResultReceiver;
+import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
+import com.tokopedia.core.talk.receiver.intentservice.InboxTalkResultReceiver;
 import com.tokopedia.core.talk.talkproduct.fragment.TalkProductFragment;
 
 public class TalkProductActivity extends TActivity implements InboxTalkResultReceiver.Receiver {

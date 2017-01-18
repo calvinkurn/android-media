@@ -141,8 +141,7 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.ViewShopNotes"
             android:label="@string/title_shop_notes"
@@ -214,11 +213,6 @@
             android:name="com.tokopedia.core.EtalaseShopEditor"
             android:label="@string/title_activity_etalase_shop_editor"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.inboxmessage.activity.SendMessageActivity"
-            android:label="@string/title_activity_send_message"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateVisible" />
         <activity
             android:name="com.tokopedia.core.ShopEditor"
             android:label="@string/title_activity_shop_editor"
@@ -345,16 +339,6 @@
             android:label="@string/title_activity_gallery_browser"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.inboxmessage.activity.InboxMessageActivity"
-            android:label="@string/title_inbox_message"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            tools:ignore="UnusedAttribute" />
-        <activity
-            android:name="com.tokopedia.core.inboxmessage.activity.InboxMessageDetailActivity"
-            android:label="@string/title_inbox_message"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
             android:name="com.tokopedia.core.tracking.activity.TrackingActivity"
             android:label="Tracking"
             android:screenOrientation="portrait" />
@@ -457,10 +441,6 @@
         <activity
             android:name="com.tokopedia.core.talkview.activity.TalkViewActivity"
             android:label="@string/title_talk"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity"
-            android:label="@string/title_activity_inbox_talk"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.share.ShareActivity"
@@ -620,9 +600,7 @@
         <service
             android:name="com.tokopedia.core.manage.people.address.service.ManagePeopleAddressService"
             android:exported="false" />
-        <service
-            android:name="com.tokopedia.core.inboxmessage.intentservice.InboxMessageIntentService"
-            android:exported="false" />
+
         <service
             android:name="com.localytics.android.GcmListenerService"
             android:exported="false">
@@ -639,9 +617,6 @@
         </service>
         <service
             android:name="com.tokopedia.core.product.intentservice.ProductInfoIntentService"
-            android:exported="false" />
-        <service
-            android:name="com.tokopedia.core.talk.inboxtalk.intentservice.InboxTalkIntentService"
             android:exported="false" />
         <service
             android:name="com.tokopedia.core.talkview.intentservice.TalkDetailIntentService"
@@ -671,6 +646,10 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>
         </provider>
+        <provider
+            android:authorities="com.facebook.app.FacebookContentProvider"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
     </application>
 
 </manifest>

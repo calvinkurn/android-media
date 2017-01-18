@@ -12,9 +12,9 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.text.TextUtils;
 
 import com.google.android.gms.gcm.GcmListenerService;
 import com.tkpd.library.utils.CommonUtils;
@@ -29,7 +29,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
-import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.InboxRouter;
@@ -37,10 +36,10 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -117,7 +116,12 @@ public class GCMLegacyListenerService extends GcmListenerService{
                 }
                 break;
             case TkpdState.GCMServiceState.GCM_CART:
-                if (SessionHandler.isV4Login(this)) createNotification(data, Cart.class);
+                if (SessionHandler.isV4Login(this))
+                    try {
+                        createNotification(data, TransactionCartRouter.createInstanceCartClass());
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 break;
             case TkpdState.GCMServiceState.GCM_WISHLIST:
                 if (SessionHandler.isV4Login(this))
@@ -178,14 +182,15 @@ public class GCMLegacyListenerService extends GcmListenerService{
         ComponentName componentName = null;
         switch (Integer.parseInt(data.getString("tkp_code"))) {
             case TkpdState.GCMServiceState.GCM_MESSAGE:
-                resultclass = InboxMessageActivity.class;
+                componentName = InboxRouter.getInboxMessageActivityComponentName(this);
+                intent = InboxRouter.getInboxMessageActivityIntent(this);
                 //bundle.putInt("notif_call", NotificationCode);
                 title = data.getString("counter") + " " + this.getString(R.string.title_new_message);
                 ticker = data.getString("desc");
                 desc = data.getString("desc");
                 break;
             case TkpdState.GCMServiceState.GCM_TALK:
-                resultclass = InboxTalkActivity.class;
+                intent = InboxRouter.getInboxTalkActivityIntent(this);
                 //bundle.putInt("notif_call", NotificationCode);
                 title = data.getString("counter") + " " + this.getString(R.string.title_new_talk);
                 ticker = data.getString("desc");

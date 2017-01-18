@@ -12,10 +12,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.tkpd.R;
@@ -84,7 +85,7 @@ public class WishlistRecyclerViewAdapter extends RecyclerView.Adapter<WishlistRe
 
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(context, ProductInfoActivity.class);
-                bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_ITEM, item);
+                bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, item);
                 intent.putExtras(bundle);
                 context.startActivity(intent);
             }

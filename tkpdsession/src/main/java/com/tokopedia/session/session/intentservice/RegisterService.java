@@ -16,7 +16,7 @@ import com.tokopedia.core.service.constant.DownloadServiceConstant;
 import com.tokopedia.core.session.model.CreatePasswordModel;
 import com.tokopedia.session.session.model.RegisterSuccessModel;
 import com.tokopedia.core.session.model.RegisterViewModel;
-import com.tokopedia.core.session.presenter.Login;
+import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.core.session.presenter.RegisterNext;
 import com.tokopedia.session.session.presenter.RegisterPassPhone;
 import com.tokopedia.session.session.subscriber.BaseAccountSubscriber;

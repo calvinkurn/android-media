@@ -1,11 +1,11 @@
 package com.tokopedia.inbox.rescenter.detail.listener;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.core.database.model.AttachmentResCenterDB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
-import com.tokopedia.inbox.rescenter.detail.dialog.InputShippingRefNumDialog;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.DetailResCenterData;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.ResCenterTrackShipping;
 
@@ -35,8 +35,6 @@ public interface DetailResCenterView {
     void showTrackingDialog(ResCenterTrackShipping.TrackShipping trackShipping);
 
     void showInvalidTrackingDialog();
-
-    void showInputShippingRefNumDialog(String resolutionID, InputShippingRefNumDialog.Listener listener);
 
     void finishActivity();
 
@@ -70,7 +68,7 @@ public interface DetailResCenterView {
 
     void actionCancelResolution(String paramID);
 
-    void openInputShippingRef(String paramID);
+    void openInputShippingRef();
 
     void openTrackShippingRef(String url);
 
@@ -79,6 +77,8 @@ public interface DetailResCenterView {
     void openEditSolution(String paramID);
 
     void openInputAddress();
+
+    void openInputAddressForAcceptAdmin();
 
     void openInputAddressMigrateVersion();
 
@@ -99,4 +99,8 @@ public interface DetailResCenterView {
     void setErrorWvLogin();
 
     String getResolutionID();
+
+    void startActivity(Intent intent);
+
+    void startActivityForResult(Intent intent, int requestCode);
 }

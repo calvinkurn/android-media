@@ -22,7 +22,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ClickableSpan;
@@ -57,10 +56,7 @@ import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.myproduct.ManageProduct;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -70,16 +66,18 @@ import com.tokopedia.core.network.apiservices.shop.ShopService;
 import com.tokopedia.core.network.apiservices.transaction.DepositService;
 import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
+import com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
 import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
 import com.tokopedia.sellerapp.home.boommenu.BoomMenuButton;
 import com.tokopedia.sellerapp.home.boommenu.SquareMenuButton;
@@ -116,8 +114,8 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-import static com.tokopedia.sellerapp.drawer.DrawerVariableSeller.goToShopNewOrder;
 import static com.tokopedia.core.drawer.DrawerVariable.startIntent;
+import static com.tokopedia.sellerapp.drawer.DrawerVariableSeller.goToShopNewOrder;
 
 public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerListener,
         SessionHandler.onLogoutListener {
@@ -203,7 +201,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
 
     @OnClick({R.id.message_see_more, R.id.message__card_view_container})
     public void messageSeeMore() {
-        startIntent(this, InboxMessageActivity.class);
+        startIntent(InboxRouter.getInboxMessageActivityIntent(this));
     }
 
     @OnClick({R.id.complain_see_more, R.id.complain_container})

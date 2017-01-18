@@ -22,12 +22,14 @@ public interface AppEventTracking {
         String REGISTER_TYPE = "REGISTER_TYPE";
         String LOGIN_TYPE = "LOGIN_TYPE";
         String SESSION_STATE = "SESSION_STATE";
+        String MEDIUM = "MEDIUM";
     }
 
     interface GTMCacheValue {
         String EMAIL = "Email";
         String FACEBOOK = "Facebook";
         String GMAIL = "Gmail";
+        String WEBVIEW = "Webview";
         String REGISTER = "Register";
         String LOGIN = "Login";
     }
@@ -171,6 +173,7 @@ public interface AppEventTracking {
         String INSTALLED = "Installed";
         String SUBSCRIBE = "Subscribe";
         String ERROR = "Error";
+        String SUCCESS = "Success";
     }
 
     interface EventLabel {
@@ -242,6 +245,7 @@ public interface AppEventTracking {
         String SHOP_ETALASE = "Shop Etalase";
         String SHOP_NOTES = "Shop Notes";
         String SHOP_LOCATION = "Shop Location";
+        String SHOP_CREATED = "Shop Created";
 
         String DELETE = "Delete";
         String ADD = "Add";

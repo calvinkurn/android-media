@@ -2,11 +2,13 @@ package com.tokopedia.transaction.purchase.activity;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.AppCompatSpinner;
@@ -23,12 +25,14 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.TokopediaBankAccount;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.listener.ConfirmPaymentViewListener;
 import com.tokopedia.transaction.purchase.model.ConfirmPaymentData;
 import com.tokopedia.transaction.purchase.model.ConfirmationData;
@@ -43,7 +47,6 @@ import com.tokopedia.transaction.purchase.model.response.formconfirmpayment.SysB
 import com.tokopedia.transaction.purchase.presenter.ConfirmPaymentPresenter;
 import com.tokopedia.transaction.purchase.presenter.ConfirmPaymentPresenterImpl;
 import com.tokopedia.transaction.purchase.receiver.TxActionReceiver;
-import com.tokopedia.core.util.TokopediaBankAccount;
 
 import java.text.MessageFormat;
 import java.util.Calendar;
@@ -105,18 +108,12 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
     EditText tvChooseAccountBank;
     @BindView(R2.id.msg_success)
     TextView tvSuccessMessage;
-    @BindView(R2.id.submit_but)
-    TextView btnSubmit;
     @BindView(R2.id.total_payment)
     TextView tvTotalPayment;
     @BindView(R2.id.total_payment_success)
     TextView tvSuccessTotalPayment;
     @BindView(R2.id.title_conf_payment)
     TextView tvLabelTotalPayment;
-    @BindView(R2.id.tokopedia_deposit)
-    TextView tvSuccessTokopediaDeposit;
-    @BindView(R2.id.remaining_tokopedia_deposit)
-    TextView tvRemainingTokopediaDeposit;
     @BindView(R2.id.check_account)
     View btnSysAccountInfo;
     @BindView(R2.id.account_owner)
@@ -210,7 +207,7 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_confirm_payment;
+        return R.layout.activity_confirm_payment_tx_module;
     }
 
     @Override
@@ -301,6 +298,23 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
     @Override
     public void dismissDialog(Dialog dialog) {
         if (dialog.isShowing()) dialog.dismiss();
+    }
+
+    @Override
+    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
+
+    }
+
+    @Override
+    public String getStringFromResource(@StringRes int resId) {
+        return getString(resId);
+    }
+
+    @Override
+    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            TKPDMapParam<String, String> originParams
+    ) {
+        return null;
     }
 
     @Override
@@ -525,15 +539,19 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
     @Override
     public void requestFocusError(View view) {
         if (view.requestFocus())
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            getWindow().setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
+            );
     }
 
     @Override
     public void renderConfirmationSuccess(ConfirmationData data) {
         tvLabelTotalPayment.setText(getString(R.string.title_confirmed_payment));
         tvSuccessTotalPayment.setText(data.getPaymentDetail().getPaymentAmt());
-        tvSuccessMessage.setText(MessageFormat.format("{0} {1}", getString(R.string.msg_payment_success),
-                data.getPaymentDetail().getPaymentMethodName()));
+        tvSuccessMessage.setText(
+                MessageFormat.format("{0} {1}", getString(R.string.msg_payment_success),
+                        data.getPaymentDetail().getPaymentMethodName())
+        );
         viewPaymentSuccess.setVisibility(View.VISIBLE);
         viewFormPayment.setVisibility(View.GONE);
         presenter.setLocalyticsFlow(this, data);
@@ -693,7 +711,7 @@ public class ConfirmPaymentActivity extends BasePresenterActivity<ConfirmPayment
 
         private final int resId;
 
-        public InputWatcher(int id) {
+        InputWatcher(int id) {
             resId = id;
         }
 

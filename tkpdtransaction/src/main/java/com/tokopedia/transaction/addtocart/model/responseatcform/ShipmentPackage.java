@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ShipmentPackage implements Parcelable{
+public class ShipmentPackage implements Parcelable {
 
     @SerializedName("price_total")
     @Expose

@@ -27,7 +27,6 @@ import com.tokopedia.core.shopinfo.models.talkmodel.ShopTalk;
 import com.tokopedia.core.shopinfo.models.talkmodel.ShopTalkResult;
 import com.tokopedia.core.shopinfo.presenter.ShopTalkPresenter;
 import com.tokopedia.core.shopinfo.presenter.ShopTalkPresenterImpl;
-import com.tokopedia.core.talk.inboxtalk.fragment.InboxTalkFragment;
 import com.tokopedia.core.talkview.activity.TalkViewActivity;
 
 import butterknife.BindView;
@@ -39,6 +38,7 @@ import butterknife.BindView;
 public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
         implements ShopTalkFragmentView {
 
+    public final static int GO_TO_DETAIL = 2;
     private static final String PARAM_FROM = "from";
     private static final String PARAM_MODEL = "talk";
     private static final String PARAM_POSITION = "position";
@@ -170,7 +170,7 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
                 bundle.putInt(PARAM_POSITION, shopTalk.getPosition());
                 intent.putExtras(bundle);
 
-                getActivity().startActivityForResult(intent, InboxTalkFragment.GO_TO_DETAIL);
+                getActivity().startActivityForResult(intent, GO_TO_DETAIL);
             }
 
             @Override

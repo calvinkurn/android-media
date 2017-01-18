@@ -23,7 +23,7 @@ allprojects {
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'http://maven.localytics.com/public' }
         maven {
-            url "${artifactory_url}"+"/libs-release-local";
+            url "${artifactory_url}" + "/libs-release-local";
             credentials {
                 username = "${artifactory_username}"
                 password = "${artifactory_password}"
@@ -41,7 +41,7 @@ task wrapper(type: Wrapper) {
 }
 
 ext {
-     artifactoryUrl = "${artifactory_url}"
+    artifactoryUrl = "${artifactory_url}"
 }
 
 afterEvaluate {

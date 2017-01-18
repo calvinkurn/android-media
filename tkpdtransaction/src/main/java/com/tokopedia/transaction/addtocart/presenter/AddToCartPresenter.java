@@ -42,6 +42,7 @@ public interface AddToCartPresenter {
 
     void processAddToCartSuccess(@NonNull Context context, String message);
 
+    @SuppressWarnings("unused")
     void processAddToCartFailure(@NonNull Context context, String string);
 
     void sendAnalyticsATCSuccess(@NonNull Context context, @NonNull ProductCartPass productCartPass,

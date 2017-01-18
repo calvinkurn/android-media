@@ -16,7 +16,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +27,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
@@ -47,6 +45,7 @@ import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.Badge;
@@ -389,10 +388,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
      * @return
      */
     private boolean checkAvailableData(int position) {
-        if (position > data.size()) {
-            return false;
-        }
-        return true;
+        return position <= data.size();
     }
 
     /**
@@ -478,7 +474,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     // SETTER AND GETTER BELOW
 
     public boolean checkHasNext() {
-        return pagingHandlerModel.getStartIndex() == -1 ? false : true;
+        return pagingHandlerModel.getStartIndex() != -1;
     }
 
     public PagingHandler.PagingHandlerModel getPagingHandlerModel() {
@@ -678,7 +674,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         public void onClick() {
             Bundle bundle = new Bundle();
             Intent intent = new Intent(context, ProductInfoActivity.class);
-            bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_ITEM, data);
+            bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
             intent.putExtras(bundle);
             context.startActivity(intent);
         }
