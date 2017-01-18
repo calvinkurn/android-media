@@ -40,7 +40,8 @@
                 android:layout_toRightOf="@id/saldo_icon"
                 android:layout_toEndOf="@id/saldo_icon"
                 android:layout_centerVertical="true"
-                android:text="@string/saldo" />
+                android:text="@string/saldo"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/deposit_text"
@@ -95,7 +96,8 @@
                 android:layout_toRightOf="@id/icon_toko_cash"
                 android:layout_toEndOf="@id/icon_toko_cash"
                 android:layout_centerVertical="true"
-                android:text="@string/toko_cash_info" />
+                android:text="@string/toko_cash_info"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/top_cash_value"
@@ -152,7 +154,8 @@
                 android:layout_toRightOf="@id/icon_top_points"
                 android:layout_toEndOf="@id/icon_top_points"
                 android:layout_centerVertical="true"
-                android:text="@string/loyalty_points_info" />
+                android:text="@string/loyalty_points_info"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/toppoints_text"
