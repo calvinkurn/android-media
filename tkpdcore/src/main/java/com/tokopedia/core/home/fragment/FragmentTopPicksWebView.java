@@ -1,3 +1,4 @@
+
 package com.tokopedia.core.home.fragment;
 
 import android.app.Fragment;
@@ -111,14 +112,14 @@ public class FragmentTopPicksWebView extends Fragment {
                     case DeepLinkChecker.HOT:
                         DeepLinkChecker.openHot(url, getActivity());
                         return true;
+                    case DeepLinkChecker.HOT_LIST:
+                        DeepLinkChecker.openHomepage(getActivity());
+                        return true;
                     case DeepLinkChecker.CATALOG:
                         DeepLinkChecker.openCatalog(url, getActivity());
                         return true;
                     case DeepLinkChecker.PRODUCT:
                         DeepLinkChecker.openProduct(url, getActivity());
-                        return true;
-                    case DeepLinkChecker.SHOP:
-                        ((BannerWebView) getActivity()).openShop(url);
                         return true;
                     default:
                         return false;
