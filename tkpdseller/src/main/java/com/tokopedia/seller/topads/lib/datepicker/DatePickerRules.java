@@ -13,7 +13,7 @@ import java.util.Locale;
 
 public class DatePickerRules {
     private static final Locale locale = new Locale("in", "ID");
-    public long maxSDate;
+    public long minSDate;
     private long maxLimit;
     private long minLimit;
     private int rangeLimit;
@@ -41,16 +41,12 @@ public class DatePickerRules {
     DatePickerRulesListener datePickerRulesListener;
     DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy", locale);
 
-    public DatePickerRules(long maxLimit, long minLimit, int rangeLimit) {
-        this.maxLimit = maxLimit;
-        this.minLimit = minLimit;
+    public DatePickerRules(long maxEDate, long minSDate, int rangeLimit) {
+        this.maxLimit = maxEDate;
+        this.minLimit = minSDate;
         this.rangeLimit = rangeLimit;
-        this.maxEDate = maxLimit;
-
-        Calendar instance = getInstance();
-        instance.setTimeInMillis(maxEDate);
-        instance.add(Calendar.DATE, (-1 * rangeLimit));
-        this.maxSDate = instance.getTimeInMillis();
+        this.maxEDate = maxEDate;
+        this.minSDate = minSDate;
     }
 
     public void setDatePickerRulesListener(DatePickerRulesListener datePickerRulesListener) {
@@ -74,8 +70,8 @@ public class DatePickerRules {
             return;
         }
 
-        if (sDate < maxSDate) {
-            maxSDate = sDate;
+        if (sDate < minSDate) {
+            minSDate = sDate;
             this.sDate = sDate;
 
             Calendar instance = getInstance();
@@ -144,7 +140,7 @@ public class DatePickerRules {
                 }
 
                 this.sDate = sDate;
-                this.maxSDate = sDate;
+                this.minSDate = sDate;
             }
         }
 
@@ -155,8 +151,8 @@ public class DatePickerRules {
 //                return;
 //            }else
 
-        Log.d("MNORMANSYAH ", "eDate " + SetDateFragment.getDateFormat(eDate) + " maxSDate " + SetDateFragment.getDateFormat(maxSDate) + " eDate" + SetDateFragment.getDateFormat(maxEDate));
-        if (sDate >= maxSDate && sDate <= maxEDate) {
+        Log.d("MNORMANSYAH ", "eDate " + SetDateFragment.getDateFormat(eDate) + " minSDate " + SetDateFragment.getDateFormat(minSDate) + " eDate" + SetDateFragment.getDateFormat(maxEDate));
+        if (sDate >= minSDate && sDate <= maxEDate) {
             this.sDate = sDate;
             if (datePickerRulesListener != null) {
                 datePickerRulesListener.successSDate(sDate, eDate);
@@ -192,8 +188,8 @@ public class DatePickerRules {
                 instance.setTimeInMillis(minLimit);
             }
 
-            maxSDate = instance.getTimeInMillis();
-            sDate = maxSDate;
+            minSDate = instance.getTimeInMillis();
+            sDate = minSDate;
 
             if (datePickerRulesListener != null) {
                 datePickerRulesListener.resetToEDate(sDate, eDate);
@@ -237,10 +233,10 @@ public class DatePickerRules {
                     instance.setTimeInMillis(minLimit);
 //                        instance.add(Calendar.DATE, 1);
                     sDate = instance.getTimeInMillis();
-                    maxSDate = sDate;
+                    minSDate = sDate;
                 } else {
                     sDate = sDates;
-                    maxSDate = sDates;
+                    minSDate = sDates;
                 }
 
                 this.eDate = eDate;
@@ -255,8 +251,8 @@ public class DatePickerRules {
 //                return;
 //            }else
 
-        Log.d("MNORMANSYAH ", "eDate " + SetDateFragment.getDateFormat(eDate) + " maxSDate " + SetDateFragment.getDateFormat(maxSDate) + " eDate" + SetDateFragment.getDateFormat(maxEDate));
-        if (eDate >= maxSDate && eDate <= maxEDate) {
+        Log.d("MNORMANSYAH ", "eDate " + SetDateFragment.getDateFormat(eDate) + " minSDate " + SetDateFragment.getDateFormat(minSDate) + " eDate" + SetDateFragment.getDateFormat(maxEDate));
+        if (eDate >= minSDate && eDate <= maxEDate) {
             this.eDate = eDate;
             if (datePickerRulesListener != null) {
                 datePickerRulesListener.successEDate(sDate, eDate);

@@ -62,26 +62,6 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
     }
 
     @Override
-    public void resetDate() {
-        topAdsCacheDataSource.resetDate();
-    }
-
-    @Override
-    public void saveDate(Date startDate, Date endDate) {
-        topAdsCacheDataSource.saveDate(startDate, endDate);
-    }
-
-    @Override
-    public Date getStartDate(Date defaultDate) {
-        return topAdsCacheDataSource.getStartDate(defaultDate);
-    }
-
-    @Override
-    public Date getEndDate(Date defaultDate) {
-        return topAdsCacheDataSource.getEndDate(defaultDate);
-    }
-
-    @Override
     public void getDashboardSummary(final StatisticRequest statisticRequest, final ListenerInteractor<Summary> listener) {
         Observable<Response<DataResponse<DataStatistic>>> statisticApiObservable = topAdsManagementService.getApi().getDashboardStatistic(statisticRequest.getParams());
         compositeSubscription.add(statisticApiObservable

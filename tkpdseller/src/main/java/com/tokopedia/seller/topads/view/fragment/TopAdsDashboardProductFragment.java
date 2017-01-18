@@ -61,7 +61,7 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         super.setViewListener();
     }
 
-    protected void loadData() {
+    public void loadData() {
         super.loadData();
         presenter.populateTotalAd();
     }

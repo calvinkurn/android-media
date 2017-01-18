@@ -11,6 +11,19 @@
         <item name="android:textSize">@dimen/text_size_xlarge</item>
     </style>
 
+    <style name="TextView.TopAdsListTitle">
+        <item name="android:textSize">@dimen/font_medium</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:lines">1</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="TextView.TopAdsListContent">
+        <item name="android:textSize">@dimen/font_small</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:lines">1</item>
+    </style>
+
     <style name="TextView.Statistic">
         <item name="android:textSize">@dimen/text_size_xxxlarge</item>
         <item name="android:textColor">@color/green_200</item>

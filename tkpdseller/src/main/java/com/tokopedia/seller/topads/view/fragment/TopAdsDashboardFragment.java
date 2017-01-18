@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
@@ -20,7 +19,6 @@ import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardPresenter;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
-import com.tokopedia.seller.topads.view.activity.TopAdsStatisticProductActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 import com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView;
 
@@ -29,7 +27,11 @@ import butterknife.OnClick;
 
 public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter> extends TopAdsDatePickerFragment<T> implements TopAdsDashboardFragmentListener {
 
-    private static final int REQUEST_CODE_DATE = 0;
+    public interface Callback {
+
+        void onLoadDataError();
+
+    }
 
     @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
@@ -56,6 +58,12 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     TopAdsStatisticLabelView averageStatisticLabelView;
     @BindView(R2.id.statistic_label_view_cost)
     TopAdsStatisticLabelView costStatisticLabelView;
+
+    private Callback callback;
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
 
     @Override
     protected boolean isRetainInstance() {
@@ -117,7 +125,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
 
     }
 
-    protected void loadData() {
+    public void loadData() {
         swipeToRefresh.setRefreshing(true);
         rangeDateDescTextView.setText(presenter.getRangeDateFormat(startDate, endDate));
         presenter.populateSummary(startDate, endDate);
@@ -172,12 +180,9 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     }
 
     protected void showNetworkError() {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                loadData();
-            }
-        }).showRetrySnackbar();
+        if (callback != null) {
+            callback.onLoadDataError();
+        }
     }
 
     protected void hideLoading() {
@@ -209,7 +214,8 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
 
     @OnClick(R2.id.statistic_label_view_ctr)
     void onStatisticImpressionClicked() {
-        Intent intent = new Intent(getActivity(), getClassIntentStatistic());Bundle bundle = new Bundle();
+        Intent intent = new Intent(getActivity(), getClassIntentStatistic());
+        Bundle bundle = new Bundle();
         bundle.putInt(TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_KEY, TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_CTR);
         intent.putExtras(bundle);
         startActivity(intent);
@@ -217,7 +223,8 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
 
     @OnClick(R2.id.statistic_label_view_conversion)
     void onStatisticConversionClicked() {
-        Intent intent = new Intent(getActivity(), getClassIntentStatistic());Bundle bundle = new Bundle();
+        Intent intent = new Intent(getActivity(), getClassIntentStatistic());
+        Bundle bundle = new Bundle();
         bundle.putInt(TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_KEY, TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_CONVERTION);
         intent.putExtras(bundle);
         startActivity(intent);
@@ -225,7 +232,8 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
 
     @OnClick(R2.id.statistic_label_view_average)
     void onStatisticAverageClicked() {
-        Intent intent = new Intent(getActivity(), getClassIntentStatistic());Bundle bundle = new Bundle();
+        Intent intent = new Intent(getActivity(), getClassIntentStatistic());
+        Bundle bundle = new Bundle();
         bundle.putInt(TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_KEY, TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_AVG);
         intent.putExtras(bundle);
         startActivity(intent);
@@ -233,7 +241,8 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
 
     @OnClick(R2.id.statistic_label_view_cost)
     void onStatisticCostClicked() {
-        Intent intent = new Intent(getActivity(), getClassIntentStatistic());Bundle bundle = new Bundle();
+        Intent intent = new Intent(getActivity(), getClassIntentStatistic());
+        Bundle bundle = new Bundle();
         bundle.putInt(TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_KEY, TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_SPENT);
         intent.putExtras(bundle);
         startActivity(intent);

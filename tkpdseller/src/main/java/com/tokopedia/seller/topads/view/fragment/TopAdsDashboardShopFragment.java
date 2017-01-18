@@ -65,8 +65,12 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
         super.initView(view);
     }
 
-    protected void loadData() {
+    public void loadData() {
         super.loadData();
+        populateShop();
+    }
+
+    private void populateShop() {
         presenter.populateShopAd(startDate, endDate);
     }
 
@@ -77,7 +81,7 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
         if (requestCode == REQUEST_CODE_AD_STATUS && intent != null) {
             boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, false);
             if (adStatusChanged) {
-                loadData();
+                populateShop();
             }
         }
     }

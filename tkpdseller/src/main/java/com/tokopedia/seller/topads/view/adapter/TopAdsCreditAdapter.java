@@ -33,6 +33,10 @@ public class TopAdsCreditAdapter extends BaseLinearRecyclerViewAdapter {
         notifyDataSetChanged();
     }
 
+    public void setCheckedPosition(int checkedPosition) {
+        this.checkedPosition = checkedPosition;
+    }
+
     public TopAdsCreditAdapter() {
         data = new ArrayList<>();
         checkedPosition = 0;
@@ -75,8 +79,9 @@ public class TopAdsCreditAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     private void bindProduct(final ViewHolder holder, int position) {
+        DataCredit dataCredit = data.get(position);
         holder.radioButton.setChecked(position == checkedPosition);
-        holder.radioButton.setText(data.get(position).getProductPrice());
+        holder.radioButton.setText(dataCredit.getProductPrice());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

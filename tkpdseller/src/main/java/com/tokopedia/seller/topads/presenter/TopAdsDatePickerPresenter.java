@@ -1,5 +1,8 @@
 package com.tokopedia.seller.topads.presenter;
 
+import android.app.Activity;
+import android.content.Intent;
+
 import java.util.Date;
 
 /**
@@ -17,5 +20,9 @@ public interface TopAdsDatePickerPresenter {
 
     boolean isDateUpdated(Date startDate, Date endDate);
 
+    void saveSelectionDatePicker(int selectionDatePickerType, int selectionDatePeriodIndex);
+
     String getRangeDateFormat(Date startDate, Date endDate);
+
+    Intent getDatePickerIntent(Activity activity, Date startDate, Date endDate);
 }

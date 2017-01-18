@@ -12,7 +12,9 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_small">
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingLeft="@dimen/padding_small"
+        android:paddingRight="@dimen/padding_small">
 
         <include
             layout="@layout/include_top_ads_shop_ad"
@@ -25,7 +27,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/padding_small"
         android:paddingLeft="@dimen/padding_small"
         android:paddingRight="@dimen/padding_small">
 

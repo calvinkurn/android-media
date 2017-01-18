@@ -13,6 +13,7 @@ import android.view.View;
 import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R2;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
@@ -21,6 +22,7 @@ import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsDashboardPagerAdapter;
+import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardProductFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardShopFragment;
 
@@ -33,7 +35,7 @@ import butterknife.BindView;
  * Created by Nathaniel on 11/22/2016.
  */
 
-public class TopAdsDashboardActivity extends BasePresenterActivity {
+public class TopAdsDashboardActivity extends BasePresenterActivity implements TopAdsDashboardFragment.Callback {
 
     @BindView(R2.id.pager)
     ViewPager viewPager;
@@ -41,6 +43,9 @@ public class TopAdsDashboardActivity extends BasePresenterActivity {
     TabLayout indicator;
     @BindView(R2.id.fab_speed_dial)
     FabSpeedDial fabSpeedDial;
+
+    private TopAdsDashboardShopFragment dashboardShopFragment;
+    private TopAdsDashboardProductFragment dashboardProductFragment;
 
     private TopAdsDatePickerPresenterImpl datePickerPresenter;
 
@@ -104,14 +109,14 @@ public class TopAdsDashboardActivity extends BasePresenterActivity {
     }
 
     public PagerAdapter getViewPagerAdapter() {
-        return new TopAdsDashboardPagerAdapter(getFragmentManager(), getFragmentList());
-    }
-
-    public List<Fragment> getFragmentList() {
+        dashboardProductFragment = TopAdsDashboardProductFragment.createInstance();
+        dashboardProductFragment.setCallback(this);
+        dashboardShopFragment = TopAdsDashboardShopFragment.createInstance();
+        dashboardShopFragment.setCallback(this);
         List<Fragment> fragmentList = new ArrayList<>();
-        fragmentList.add(TopAdsDashboardProductFragment.createInstance());
-        fragmentList.add(TopAdsDashboardShopFragment.createInstance());
-        return fragmentList;
+        fragmentList.add(dashboardProductFragment);
+        fragmentList.add(dashboardShopFragment);
+        return new TopAdsDashboardPagerAdapter(getFragmentManager(), fragmentList);
     }
 
     @Override
@@ -127,5 +132,16 @@ public class TopAdsDashboardActivity extends BasePresenterActivity {
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public void onLoadDataError() {
+        NetworkErrorHelper.createSnackbarWithAction(this, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                dashboardShopFragment.loadData();
+                dashboardProductFragment.loadData();
+            }
+        }).showRetrySnackbar();
     }
 }

@@ -28,14 +28,6 @@ import java.util.List;
 
 public interface DashboardTopadsInteractor {
 
-    void resetDate();
-
-    void saveDate(Date startDate, Date endDate);
-
-    Date getStartDate(Date defaultDate);
-
-    Date getEndDate(Date defaultDate);
-
     void getDashboardSummary(StatisticRequest statisticRequest, final ListenerInteractor<Summary> listener);
 
     void getDeposit(ShopRequest shopRequest, final ListenerInteractor<DataDeposit> listener);

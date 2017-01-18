@@ -3,6 +3,7 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
@@ -37,6 +38,12 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
         bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, groupAd);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    protected void initView(View view) {
+        super.initView(view);
+        name.setTitle(getString(R.string.label_top_ads_groups));
     }
 
     @Override

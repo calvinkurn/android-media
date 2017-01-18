@@ -120,6 +120,7 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
     public void onCreditListLoaded(@NonNull List<DataCredit> creditList) {
         hideLoading();
         adapter.setData(creditList);
+        adapter.setCheckedPosition(getDefaultSelection(creditList));
         submitButton.setVisibility(View.VISIBLE);
         submitButton.setEnabled(true);
     }
@@ -141,6 +142,16 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
         adapter.showEmpty(false);
         adapter.showRetry(false);
         submitButton.setVisibility(View.GONE);
+    }
+
+    private int getDefaultSelection(List<DataCredit> creditList) {
+        for (int i = 0; i < creditList.size(); i++) {
+            DataCredit dataCredit = creditList.get(i);
+            if (dataCredit.getSelected() > 0) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     @OnClick(R2.id.button_submit)

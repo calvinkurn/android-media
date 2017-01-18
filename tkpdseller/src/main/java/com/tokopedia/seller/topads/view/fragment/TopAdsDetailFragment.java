@@ -145,6 +145,12 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     public void onLoadAdError() {
         progressDialog.dismiss();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                refreshAd();
+            }
+        }).showRetrySnackbar();
     }
 
     @Override
@@ -206,7 +212,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
             end.setContent(getString(R.string.top_ads_range_date_text, ad.getEndDate(), ad.getEndTime()));
         }
         dailyBudget.setContent(ad.getPriceDailyFmt());
-        sent.setContent(ad.getPriceDailySpentFmt());
+        sent.setContent(ad.getStatTotalSpent());
         impr.setContent(ad.getStatTotalImpression());
         click.setContent(ad.getStatTotalClick());
         ctr.setContent(ad.getStatTotalCtr());

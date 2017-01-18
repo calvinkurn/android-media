@@ -27,6 +27,9 @@ public class DataCredit implements Parcelable {
     @SerializedName("product_url")
     @Expose
     private String productUrl;
+    @SerializedName("default")
+    @Expose
+    private int selected;
 
     public DataCredit() {
 
@@ -102,6 +105,14 @@ public class DataCredit implements Parcelable {
         this.productUrl = productUrl;
     }
 
+    public int getSelected() {
+        return selected;
+    }
+
+    public void setSelected(int selected) {
+        this.selected = selected;
+    }
+
 
     @Override
     public int describeContents() {
@@ -115,6 +126,7 @@ public class DataCredit implements Parcelable {
         dest.writeString(this.productPrice);
         dest.writeString(this.productBonus);
         dest.writeString(this.productUrl);
+        dest.writeInt(this.selected);
     }
 
     protected DataCredit(Parcel in) {
@@ -123,6 +135,7 @@ public class DataCredit implements Parcelable {
         this.productPrice = in.readString();
         this.productBonus = in.readString();
         this.productUrl = in.readString();
+        this.selected = in.readInt();
     }
 
     public static final Creator<DataCredit> CREATOR = new Creator<DataCredit>() {

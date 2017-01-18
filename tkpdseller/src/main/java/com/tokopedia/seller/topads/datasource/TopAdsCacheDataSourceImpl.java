@@ -21,6 +21,8 @@ public class TopAdsCacheDataSourceImpl implements TopAdsCacheDataSource {
 
     private static final String PARAM_START_DATE = "PARAM_START_DATE";
     private static final String PARAM_END_DATE = "PARAM_END_DATE";
+    private static final String PARAM_LAST_SELCTION_DATE_PICKER_TYPE = "PARAM_LAST_SELCTION_DATE_PICKER_TYPE";
+    private static final String PARAM_LAST_SELCTION_DATE_PICKER_INDEX = "PARAM_LAST_SELCTION_DATE_PICKER_INDEX";
 
     private LocalCacheHandler localCacheHandler;
 
@@ -32,6 +34,8 @@ public class TopAdsCacheDataSourceImpl implements TopAdsCacheDataSource {
     public void resetDate() {
         localCacheHandler.putString(PARAM_START_DATE, null);
         localCacheHandler.putString(PARAM_END_DATE, null);
+        localCacheHandler.putInt(PARAM_LAST_SELCTION_DATE_PICKER_TYPE, 0);
+        localCacheHandler.putInt(PARAM_LAST_SELCTION_DATE_PICKER_INDEX, 2);
         localCacheHandler.applyEditor();
     }
 
@@ -78,5 +82,22 @@ public class TopAdsCacheDataSourceImpl implements TopAdsCacheDataSource {
     @Override
     public boolean isStatisticDataExpired() {
         return localCacheHandler.isExpired();
+    }
+
+    @Override
+    public void saveSelectionDatePicker(int selectionDatePickerType, int selectionDatePeriodIndex) {
+        localCacheHandler.putInt(PARAM_LAST_SELCTION_DATE_PICKER_TYPE, selectionDatePickerType);
+        localCacheHandler.putInt(PARAM_LAST_SELCTION_DATE_PICKER_INDEX, selectionDatePeriodIndex);
+        localCacheHandler.applyEditor();
+    }
+
+    @Override
+    public int getLastSelectionDatePickerType() {
+        return localCacheHandler.getInt(PARAM_LAST_SELCTION_DATE_PICKER_TYPE);
+    }
+
+    @Override
+    public int getLastSelectionDatePickerIndex() {
+        return localCacheHandler.getInt(PARAM_LAST_SELCTION_DATE_PICKER_INDEX);
     }
 }
