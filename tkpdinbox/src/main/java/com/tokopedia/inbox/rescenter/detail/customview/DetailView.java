@@ -211,8 +211,8 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
                 listener.showConfirmationDialog(R.string.msg_accept_admin, new ConfirmationDialog.Listener() {
                     @Override
                     public void onSubmitButtonClick() {
-                        if (resolutionDetailModel.getResolutionLast().getLastShowAcceptReturButton() == 1) {
-                            listener.openInputAddress();
+                        if (resolutionDetailModel.getResolutionLast().getLastShowAcceptAdminReturButton() == 1) {
+                            listener.openInputAddressForAcceptAdmin();
                         } else {
                             listener.actionAcceptAdmin(paramID);
                         }
