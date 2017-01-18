@@ -1,11 +1,9 @@
 <resources>
     <string name="app_name">tkpdseller</string>
 
-    <string name="title_topads_list">Produk</string>
     <string name="title_topads_dashboard">TopAds</string>
     <string name="title_topads_promo_product">Produk</string>
     <string name="title_topads_promo_group">Grup</string>
-    <string name="title_topads_store">Toko</string>
     <string name="title_top_ads_dashboard">TopAds</string>
     <string name="title_top_ads_product">Produk</string>
     <string name="title_top_ads_store">Toko</string>
@@ -36,6 +34,7 @@
     <string name="action_filter_date">Filter Tanggal</string>
     <string name="title_group_list">Grup</string>
     <string name="title_product_ad_detail">Detil Promo Produk</string>
+    <string name="title_shop_ad_detail">Detil Promo Toko</string>
     <string name="title_group_ad_detail">Detil Grup</string>
 
     <!-- Top Ads ad list -->
@@ -43,7 +42,7 @@
     <string name="top_ads_bid_format_text">%1$s - %2$s</string>
     <string name="top_ads_used_format_text">Terpakai %1$s</string>
     <string name="top_ads_spent_format_text">%1$s / %2$s</string>
-    <string name="top_ads_empty_group_promo_text">Group Promo Anda Kosong</string>
+    <string name="top_ads_empty_group_promo_text">Promo Produk Anda Kosong</string>
     <string name="top_ads_empty_group_promo_content_empty_text">Anda belum memiliki produk yang dipromosikan</string>
     <string name="top_ads_empty_group_promo_content_not_empty_text">Produk yang telah anda promosikan ada di dalam items</string>
     <string name="top_ads_empty_group_promo_content_item_no_text">Lihat %1$s Promo Produk</string>
@@ -96,7 +95,7 @@
     <string name="label_title_ctr_topads">CTR</string>
     <string name="label_title_favorite_topads">Terjual</string>
     <string name="label_title_items_topads">@string/title_top_ads_product</string>
-    <string name="label_top_ads_promo_group">Promo Group</string>
+    <string name="label_top_ads_promo_group">Nama Group</string>
 
     <string name="label_today">Hari Ini</string>
     <string name="yesterday">Kemarin</string>

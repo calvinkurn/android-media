@@ -51,6 +51,7 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
     @Override
     protected void initView(View view) {
         super.initView(view);
+        name.setTitle(getString(R.string.title_top_ads_store));
         name.setContentClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,7 +59,6 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
             }
         });
         name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.green_200));
-        name.setTitle(getString(R.string.title_label_shop_topads));
         favorite.setTitle(getString(R.string.title_label_favorit_topads));
     }
 
