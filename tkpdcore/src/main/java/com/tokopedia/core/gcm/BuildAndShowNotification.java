@@ -17,12 +17,15 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.NotificationCenter;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.gcm.interactor.entity.NotificationEntity;
 import com.tokopedia.core.gcm.model.NotificationPass;
+import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.core.var.TkpdState;
 
 import java.io.File;
+import java.util.List;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_ICON;
@@ -32,7 +35,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_UPDATE_APPS_TITL
 import static com.tokopedia.core.gcm.Constants.EXTRA_PLAYSTORE_URL;
 
 /**
- * @author  by alvarisi on 1/11/17.
+ * @author by alvarisi on 1/11/17.
  */
 
 public class BuildAndShowNotification {
@@ -42,6 +45,10 @@ public class BuildAndShowNotification {
     public BuildAndShowNotification(Context context) {
         mContext = context;
         cacheManager = new FCMCacheManager(context);
+    }
+
+    public interface OnGetFileListener {
+        void onFileReady(File file);
     }
 
     public void buildAndShowNotification(NotificationPass notificationPass, Bundle data, Intent intent) {
@@ -103,6 +110,9 @@ public class BuildAndShowNotification {
     }
 
     public void buildAndShowNotification(NotificationPass notificationPass, Bundle data) {
+        //TODO : create flow again
+        saveIncomingNotification(notificationPass, data);
+
         NotificationManager mNotificationManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -113,18 +123,23 @@ public class BuildAndShowNotification {
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
         NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
 
-        if (notificationPass.isAllowedBigStyle) {
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
+
+        if (notificationPass.isAllowedBigStyle || isSingleNotification()) {
             mBuilder.setContentTitle(notificationPass.title);
             mBuilder.setContentText(notificationPass.description);
             bigStyle.bigText(notificationPass.description);
             mBuilder.setStyle(bigStyle);
             mBuilder.setTicker(notificationPass.ticker);
+            if (notificationPass.classParentStack != null) {
+                stackBuilder.addParentStack(notificationPass.classParentStack);
+            }
         } else {
-            notificationPass.componentNameParentStack = RouterUtils.getActivityComponentName(mContext, NotificationCenter.class);
+            stackBuilder.addParentStack(RouterUtils.getActivityComponentName(mContext, NotificationCenter.class));
             inboxStyle.setBigContentTitle(mContext.getString(R.string.title_new_notif_general));
-            if (notificationPass.savedNotificationContents != null) {
-                for (String content : notificationPass.savedNotificationContents) {
-                    inboxStyle.addLine(content);
+            if (getUnOpenedNotification() != null) {
+                for (NotificationEntity entity : getUnOpenedNotification()) {
+                    inboxStyle.addLine(entity.getTitle());
                 }
             }
             mBuilder.setContentTitle(mContext.getString(R.string.title_new_notif_general));
@@ -143,12 +158,6 @@ public class BuildAndShowNotification {
                 mBuilder.setVibrate(getVibratePattern());
             }
         }
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
-        if (notificationPass.componentNameParentStack != null) {
-            stackBuilder.addParentStack(notificationPass.componentNameParentStack);
-        } else if (notificationPass.classParentStack != null) {
-            stackBuilder.addParentStack(notificationPass.classParentStack);
-        }
 
         stackBuilder.addNextIntent(notificationPass.getIntent());
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -160,11 +169,26 @@ public class BuildAndShowNotification {
         mNotificationManager.notify(100, notif);
     }
 
+    private void saveIncomingNotification(NotificationPass notificationPass, Bundle data) {
+        NotificationEntity notificationEntity = new NotificationEntity();
+        notificationEntity.setCode(String.valueOf(GCMUtils.getCode(data)));
+        notificationEntity.setTitle(notificationPass.title);
+        cacheManager.saveIncomingNotification(notificationEntity);
+    }
+
+    private boolean isSingleNotification() {
+        return cacheManager.getHistoryPushNotification().size() <= 1;
+    }
+
+    private List<NotificationEntity> getUnOpenedNotification() {
+        return cacheManager.getHistoryPushNotification();
+    }
+
     private NotificationCompat.Builder configureIconNotification(Bundle data, final NotificationCompat.Builder mBuilder) {
         if (!TextUtils.isEmpty(data.getString(ARG_NOTIFICATION_ICON))) {
             ImageHandler.loadImageBitmapNotification(
                     mContext,
-                    data.getString(ARG_NOTIFICATION_ICON), new FCMMessagingService.OnGetFileListener() {
+                    data.getString(ARG_NOTIFICATION_ICON), new OnGetFileListener() {
                         @Override
                         public void onFileReady(File file) {
                             mBuilder.setLargeIcon(
@@ -188,7 +212,7 @@ public class BuildAndShowNotification {
         if (!TextUtils.isEmpty(data.getString(ARG_NOTIFICATION_IMAGE))) {
             ImageHandler.loadImageBitmapNotification(
                     mContext,
-                    data.getString(ARG_NOTIFICATION_IMAGE), new FCMMessagingService.OnGetFileListener() {
+                    data.getString(ARG_NOTIFICATION_IMAGE), new OnGetFileListener() {
                         @Override
                         public void onFileReady(File file) {
                             NotificationCompat.BigPictureStyle bigStyle =
