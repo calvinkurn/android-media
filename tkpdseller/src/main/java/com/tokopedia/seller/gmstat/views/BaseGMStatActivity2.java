@@ -5,16 +5,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.Toolbar;
 
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.presenters.BaseGMStatActivityPresenter;
-import com.tokopedia.seller.gmstat.presenters.BaseGMStatActivityView;
 import com.tokopedia.seller.gmstat.presenters.GMStat;
 import com.tokopedia.seller.gmstat.utils.DaggerInjectorListener;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
@@ -30,8 +26,8 @@ import static com.tokopedia.seller.gmstat.views.SetDateFragment.START_DATE;
  * Created by normansyahputa on 1/18/17.
  */
 
-public abstract class BaseGMStatActivity2 extends DrawerPresenterActivity<BaseGMStatActivityPresenter>
-    implements BaseGMStatActivityView, GMStat, SessionHandler.onLogoutListener, DaggerInjectorListener
+public abstract class BaseGMStatActivity2 extends DrawerPresenterActivity
+    implements GMStat, SessionHandler.onLogoutListener, DaggerInjectorListener
 {
     protected GMStatNetworkController gmStatNetworkController;
 

@@ -199,7 +199,8 @@ public class GMStatHeaderViewHelper {
         if(!isGmStat)
             return;
 
-        Intent moveToSetDate = new Intent(gmStatActivityFragment.getActivity(), SetDateActivity.class);
+//        Intent moveToSetDate = new Intent(gmStatActivityFragment.getActivity(), SetDateActivity.class);
+        Intent moveToSetDate = new Intent(gmStatActivityFragment.getActivity(), SetDateActivity2.class);
         moveToSetDate.putExtra(IS_GOLD_MERCHANT, isGmStat);
         moveToSetDate.putExtra(SELECTION_PERIOD, lastSelection);
         moveToSetDate.putExtra(SELECTION_TYPE, selectionType);

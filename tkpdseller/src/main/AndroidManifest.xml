@@ -50,6 +50,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3"
             />
+        <activity android:name=".gmstat.views.SetDateActivity2"
+            android:label="@string/set_date"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3"
+            />
 
     </application>
 
