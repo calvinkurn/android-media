@@ -44,10 +44,6 @@ public class GMSubscribeWebView extends TkpdWebView {
         super(context, attrs, defStyleAttr);
     }
 
-    public GMSubscribeWebView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
     @SuppressLint("SetJavaScriptEnabled")
     public void initGMSubscribeWebView(GMSubscribeWebViewListener listener, ProgressBar progressBar){
         this.listener = listener;
