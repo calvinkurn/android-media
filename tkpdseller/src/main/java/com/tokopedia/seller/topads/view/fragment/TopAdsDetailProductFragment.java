@@ -78,7 +78,6 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     @Override
     protected void setupArguments(Bundle bundle) {
         super.setupArguments(bundle);
-
     }
 
     @Override
