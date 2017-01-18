@@ -118,7 +118,7 @@ public class FragmentVeritransView extends Fragment {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.addJavascriptInterface(new TheJavaScriptInterface(), "HTMLOUT");
         webView.setWebViewClient(new VtWebViewClient());
-        webView.loadAuthUrl(url);
+        webView.loadAuthUrlWithFlags(url);
     }
     private Runnable runnable = new Runnable() {
         @Override

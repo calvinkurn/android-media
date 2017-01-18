@@ -117,7 +117,7 @@ public class FragmentRechargeWebView extends Fragment {
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
         progressBar.setIndeterminate(true);
         clearCache(webviewRecharge);
-        webviewRecharge.loadAuthUrl(url);
+        webviewRecharge.loadAuthUrlWithFlags(url);
         webviewRecharge.setWebViewClient(new RechargeWebClient());
         webviewRecharge.setWebChromeClient(new MyWebViewClient());
         getActivity().setProgressBarIndeterminateVisibility(true);

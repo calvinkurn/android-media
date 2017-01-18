@@ -78,7 +78,7 @@ public class WebViewLoginFragment extends DialogFragment {
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
         getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         webViewOauth.clearCache(true);
-        webViewOauth.loadAuthUrl(url);
+        webViewOauth.loadAuthUrlWithFlags(url);
         webViewOauth.setWebViewClient(new AuthWebClient());
         webViewOauth.clearHistory();
         webViewOauth.clearFormData();

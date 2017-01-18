@@ -87,7 +87,7 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
         WebSettings webSettings = webView.getSettings();
         webSettings.setBuiltInZoomControls(false);
         webView.setWebViewClient(new MyWebClient());
-        webView.loadAuthUrl(getUrl(data.getResolutionLinkEncode()));
+        webView.loadAuthUrlWithFlags(getUrl(data.getResolutionLinkEncode()));
     }
 
     private String getUrl(String data) {
