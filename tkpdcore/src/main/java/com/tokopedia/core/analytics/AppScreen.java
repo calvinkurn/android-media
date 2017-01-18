@@ -162,6 +162,7 @@ public final class AppScreen {
     public static final String SCREEN_RESOLUTION_CENTER_EDIT = "Edit resolution center";
     public static final String SCREEN_RESOLUTION_CENTER = "Resolution center page";
     public static final String SCREEN_RESOLUTION_CENTER_ADD = "Add resolution center page";
+    public static final String SCREEN_RESOLUTION_CENTER_INPUT_SHIPPING = "Input shipping form page";
     public static final String SCREEN_SHOP_SELLING_DETAIL = "Selling Detail Page";
     public static final String SCREEN_ORDER_HISTORY = "History order";
     public static final String SCREEN_ORDER_REJECT = "Confirm Reject Order Screen";
@@ -227,6 +228,11 @@ public final class AppScreen {
     public static final String SCREEN_HOME_CATEGORY = "event : Viewed Home - Category";
     public static final String SCREEN_HOME_FEED = "event : Viewed Home - Product feed Page";
     public static final String SCREEN_VIEWED_SHOP_PAGE = "event : Viewed Shop Page";
+    public static final String SCREEN_VIEWED_ADD_TO_CART = "event : Viewed Add To Cart Page";
+    public static final String SCREEN_VIEWED_FAV_STORE = "event : Viewed Home - Fav Store Page";
+    public static final String SCREEN_VIEWED_WISHLIST = "event : Viewed Wishlist Page ";
+    public static final String SCREEN_VIEWED_LOGIN = "event : Viewed Login Page ";
+    public static final String SCREEN_VIEWED_TRANSACTION_SHOP = "event : Viewed Transaction Shop Page ";
     public static final String SCREEN_VIEWED_SEARCH_PAGE = "event : Viewed Search Page";
     public static final String EVENT_ADDED_PRODUCT = "event : Add Product";
     public static final String EVENT_ADDED_WISHLIST = "event : Add to wishlist";

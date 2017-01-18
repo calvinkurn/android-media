@@ -1,10 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.tokopedia.inbox">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.inbox">
 
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
+
+        <!-- ======================================================= -->
+        <!-- ACTIVITIES REGISTRY -->
+        <!-- ======================================================= -->
+
         <activity
             android:name="com.tokopedia.inbox.contactus.activity.ContactUsActivity"
             android:screenOrientation="portrait"
@@ -37,11 +43,45 @@
             android:name="com.tokopedia.inbox.rescenter.edit.activity.EditResCenterActivity"
             android:label="@string/title_activity_edit_resolution"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity"
+            android:label="@string/title_activity_input_shipping"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity"
+            android:label="@string/title_activity_send_message"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateVisible" />
+        <activity
+            android:name="com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity"
+            android:label="@string/title_inbox_message"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            tools:ignore="UnusedAttribute" />
+        <activity
+            android:name="com.tokopedia.inbox.inboxmessage.activity.InboxMessageDetailActivity"
+            android:label="@string/title_inbox_message"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name="com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity"
+            android:label="@string/title_activity_inbox_talk"
+            android:screenOrientation="portrait" />
+
+        <!-- ======================================================= -->
+        <!-- SERVICES REGISTRY -->
+        <!-- ======================================================= -->
+
         <service
             android:name="com.tokopedia.inbox.rescenter.detail.service.DetailResCenterService"
             android:exported="false" />
         <service
             android:name="com.tokopedia.inbox.rescenter.create.service.CreateResCenterService"
+            android:exported="false" />
+        <service
+            android:name="com.tokopedia.inbox.inboxmessage.intentservice.InboxMessageIntentService"
+            android:exported="false" />
+        <service
+            android:name="com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService"
             android:exported="false" />
     </application>
 </manifest>

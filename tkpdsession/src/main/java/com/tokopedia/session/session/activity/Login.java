@@ -30,6 +30,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.Cart;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.fragment.FragmentSecurityQuestion;
 import com.tokopedia.core.msisdn.activity.MsisdnActivity;
@@ -736,6 +737,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                         session.sendGTMEvent(resultData, type);
                         session.sendLocalyticsEvent(resultData, type);
                         ((BaseView) fragment).setData(type, resultData);
+                        UserAuthenticationAnalytics.sendAnalytics(resultData);
                     }
                 }
                 break;

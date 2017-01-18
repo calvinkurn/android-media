@@ -1,6 +1,6 @@
 package com.tokopedia.core.message.interactor;
 
-import com.tokopedia.core.inboxmessage.model.inboxmessage.InboxMessage;
+import com.tokopedia.inbox.inboxmessage.model.inboxmessage.InboxMessage;
 
 /**
  * Created by Angga.Prasetiyo on 26/01/2016.

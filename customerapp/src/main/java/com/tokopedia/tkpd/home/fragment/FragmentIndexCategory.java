@@ -30,12 +30,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
-import com.tokopedia.core.ShopStatistic;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -45,6 +43,7 @@ import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customView.WrapContentViewPager;
 import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
@@ -52,31 +51,38 @@ import com.tokopedia.core.network.entity.home.Banner;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
+import com.tokopedia.core.network.entity.topPicks.Item;
+import com.tokopedia.core.network.entity.topPicks.Toppick;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
+import com.tokopedia.tkpd.home.TopPicksView;
 import com.tokopedia.tkpd.home.adapter.RecyclerViewCategoryMenuAdapter;
 import com.tokopedia.tkpd.home.adapter.SectionListCategoryAdapter;
 import com.tokopedia.tkpd.home.adapter.TickerAnnouncementAdapter;
+import com.tokopedia.tkpd.home.adapter.TopPicksAdapter;
+import com.tokopedia.tkpd.home.adapter.TopPicksItemAdapter;
 import com.tokopedia.tkpd.home.facade.FacadePromo;
 import com.tokopedia.tkpd.home.presenter.Category;
 import com.tokopedia.tkpd.home.presenter.CategoryImpl;
 import com.tokopedia.tkpd.home.presenter.CategoryView;
 import com.tokopedia.tkpd.home.presenter.HomeCatMenuPresenter;
 import com.tokopedia.tkpd.home.presenter.HomeCatMenuPresenterImpl;
+import com.tokopedia.tkpd.home.presenter.TopPicksPresenter;
+import com.tokopedia.tkpd.home.presenter.TopPicksPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.adapter.RechargeViewPagerAdapter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -87,15 +93,21 @@ import java.util.Map;
 /**
  * Created by Nisie on 1/07/15.
  * modified by mady add feature Recharge and change home menu
+ * modified by alifa add Top Picks
  */
 public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         CategoryView,
         RechargeCategoryView,
         SectionListCategoryAdapter.OnCategoryClickedListener,
-        SectionListCategoryAdapter.OnGimmicClickedListener, HomeCatMenuView {
+        SectionListCategoryAdapter.OnGimmicClickedListener, HomeCatMenuView, TopPicksView,
+        TopPicksItemAdapter.OnTitleClickedListener, TopPicksItemAdapter.OnItemClickedListener, TopPicksAdapter.OnClickViewAll{
 
     private static final long SLIDE_DELAY = 8000;
     public static final String TAG = FragmentIndexCategory.class.getSimpleName();
+    private static final String BASE_URL = "www.tokopedia.com";
+    private static final String BASE_MOBILE_URL = "m.tokopedia.com";
+    private static final String TOP_PICKS_URL = "https://www.tokopedia.com/toppicks/";
+
     private ViewHolder holder;
     private Model model;
     private PromoImagePagerAdapter pagerAdapter;
@@ -105,12 +117,11 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private RechargeCategoryPresenter rechargeCategoryPresenter;
     TickerAnnouncementAdapter tickerAdapter;
 
-
     private HomeCatMenuPresenter homeCatMenuPresenter;
+    private TopPicksPresenter topPicksPresenter;
     private RecyclerViewCategoryMenuAdapter recyclerViewCategoryMenuAdapter;
-
+    private TopPicksAdapter topPicksAdapter;
     private GetShopInfoRetrofit getShopInfoRetrofit;
-
 
     private class ViewHolder {
         private View MainView;
@@ -124,6 +135,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         RecyclerView announcementContainer;
         NestedScrollView wrapperScrollview;
         RecyclerView categoriesRecylerview;
+        RecyclerView topPicksRecyclerView;
         public LinearLayout wrapperLinearLayout;
 
 
@@ -172,6 +184,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         getAnnouncement();
         getPromo();
         homeCatMenuPresenter.fetchHomeCategoryMenu(false);
+        topPicksPresenter.fetchTopPicks();
 
     }
 
@@ -193,10 +206,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
             }
         });
-
-
     }
-
 
     private void getPromo() {
         category.fetchBanners(onGetPromoListener());
@@ -284,6 +294,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         tickerAdapter = TickerAnnouncementAdapter.createInstance(getActivity());
         rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(getActivity(), this);
         homeCatMenuPresenter = new HomeCatMenuPresenterImpl(this);
+        topPicksPresenter = new TopPicksPresenterImpl(this);
     }
 
     private void startSlide() {
@@ -352,6 +363,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.announcementContainer = (RecyclerView) holder.MainView.findViewById(R.id.announcement_ticker);
         holder.wrapperScrollview = (NestedScrollView) holder.MainView.findViewById(R.id.category_scrollview);
         initCategoryRecyclerView();
+        initTopPicks();
 
     }
 
@@ -437,6 +449,9 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         }
     }
 
+    private boolean isBaseHost(String host) {
+        return (host.contains(BASE_URL) || host.contains(BASE_MOBILE_URL));
+    }
 
     private View.OnClickListener onPromoClicked(final String url) {
         return new View.OnClickListener() {
@@ -444,8 +459,9 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             public void onClick(View v) {
                 try {
                     Uri uri = Uri.parse(url);
+                    String host = uri.getHost();
                     List<String> linkSegment = uri.getPathSegments();
-                    if (isShop(linkSegment)) {
+                    if (isBaseHost(host) && isShop(linkSegment)) {
                         String shopDomain = linkSegment.get(0);
                         getShopInfo(url,shopDomain);
                     } else {
@@ -514,10 +530,71 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         UnifyTracking.eventHomeCategory(title);
     }
 
+    /* TOP PICKS */
+    private void initTopPicks() {
+        holder.topPicksRecyclerView = (RecyclerView) holder.MainView.findViewById(R.id.recycler_view_toppicks);
+        holder.topPicksRecyclerView.setHasFixedSize(true);
+        holder.topPicksRecyclerView.setNestedScrollingEnabled(false);
+        topPicksAdapter = new TopPicksAdapter(getContext(),this,this,this);
+        topPicksAdapter.setHomeMenuWidth(getHomeMenuWidth());
+        holder.topPicksRecyclerView.setLayoutManager(
+                new NonScrollLinearLayoutManager(getActivity(),
+                        LinearLayoutManager.VERTICAL,
+                        false)
+        );
+        holder.topPicksRecyclerView.setAdapter(topPicksAdapter);
+    }
+
+    @Override
+    public void renderTopPicks(ArrayList<Toppick> toppicks) {
+
+            topPicksAdapter.setDataList(toppicks);
+            topPicksAdapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void onItemClicked(String toppickName, Item topPickItem, int position) {
+        String url = topPickItem.getUrl();
+        UnifyTracking.eventHomeTopPicksItem(toppickName, topPickItem.getName());
+        switch ((DeepLinkChecker.getDeepLinkType(url))) {
+            case DeepLinkChecker.BROWSE:
+                DeepLinkChecker.openBrowse(url, getActivity());
+                break;
+            case DeepLinkChecker.HOT:
+                DeepLinkChecker.openHot(url, getActivity());
+                break;
+            case DeepLinkChecker.CATALOG:
+                DeepLinkChecker.openCatalog(url, getActivity());
+                break;
+            default:
+                openWebViewTopPicksURL(url);
+        }
+    }
+
+    @Override
+    public void onTitleClicked(Toppick toppick) {
+        openWebViewTopPicksURL(toppick.getUrl());
+        UnifyTracking.eventHomeTopPicksTitle(toppick.getName());
+    }
+
+    @Override
+    public void onClick(Toppick toppick) {
+        openWebViewTopPicksURL(TOP_PICKS_URL);
+    }
+
+    public void openWebViewTopPicksURL(String url) {
+        if (url!="") {
+            startActivity(TopPicksWebView.newInstance(getActivity(),url));
+        }
+    }
+
+
+    /* TOP PICKS */
+
 
     @Override
     public void onSuccessFetchBanners(Banner banner) {
-//        setTicker(banner);
     }
 
     @Override
@@ -540,6 +617,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             @Override
             public void onRetryClicked() {
                 homeCatMenuPresenter.fetchHomeCategoryMenu(true);
+                topPicksPresenter.fetchTopPicks();
             }
         }).showRetrySnackbar();
     }
@@ -599,6 +677,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         super.onDestroyView();
         category.unSubscribe();
         homeCatMenuPresenter.OnDestroy();
+        topPicksPresenter.onDestroy();
     }
 
     //region recharge

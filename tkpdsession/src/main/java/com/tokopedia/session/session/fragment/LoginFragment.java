@@ -43,6 +43,10 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.customView.PasswordView;
@@ -145,6 +149,8 @@ public class LoginFragment extends Fragment implements LoginView {
         login.fetchDataAfterRotate(savedInstanceState);
         login.fetchIntenValues(getArguments());
 
+        UserAuthenticationAnalytics.setActiveLogin();
+
         if (savedInstanceState != null)
             Log.d(TAG, LoginFragment.class.getSimpleName() + " : get testing data : " + (anTestInt = savedInstanceState.getInt(TEST_INT_KEY)));
     }
@@ -178,7 +184,8 @@ public class LoginFragment extends Fragment implements LoginView {
     public void onResume() {
         super.onResume();
         login.initData();
-        login.sendGTMScreen(getActivity());
+        ScreenTracking.screen(AppScreen.SCREEN_LOGIN);
+        UnifyTracking.eventViewLoginPage();
         mEmailView.addTextChangedListener(watcher(wrapperEmail));
         mPasswordView.addTextChangedListener(watcher(wrapperPassword));
     }
@@ -308,7 +315,7 @@ public class LoginFragment extends Fragment implements LoginView {
                         model.setPassword(mPasswordView.getText().toString());
                         model.setIsEmailClick(true);
                         login.sendDataFromInternet(LoginModel.EmailType, model);
-                        login.sendCTAAction();
+                        UnifyTracking.eventCTAAction();
                     }
                 }
             }
@@ -318,7 +325,7 @@ public class LoginFragment extends Fragment implements LoginView {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                login.sendGTMRegisterThrougLogin();
+                UnifyTracking.eventRegisterThroughLogin();
                 ((SessionView) getActivity()).moveToRegisterInitial();
             }
         });
@@ -358,6 +365,7 @@ public class LoginFragment extends Fragment implements LoginView {
 
     public void onFacebookClick() {
         login.loginFacebook();
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.FACEBOOK);
     }
 
     @Override
@@ -448,12 +456,12 @@ public class LoginFragment extends Fragment implements LoginView {
             setWrapperError(wrapperPassword, getString(R.string.error_field_required));
             focusPair.setView(mPasswordView);
             focusPair.setIsFocus(true);
-            login.sendGTMLoginError(AppEventTracking.EventLabel.PASSWORD);
+            UnifyTracking.eventLoginError(AppEventTracking.EventLabel.PASSWORD);
         } else if (password.length() < 4) {
             setWrapperError(wrapperPassword, getString(R.string.error_incorrect_password));
             focusPair.setView(mPasswordView);
             focusPair.setIsFocus(true);
-            login.sendGTMLoginError(AppEventTracking.EventLabel.PASSWORD);
+            UnifyTracking.eventLoginError(AppEventTracking.EventLabel.PASSWORD);
         }
 
         // Check for a valid email address.
@@ -461,12 +469,12 @@ public class LoginFragment extends Fragment implements LoginView {
             setWrapperError(wrapperEmail, getString(R.string.error_field_required));
             focusPair.setView(mEmailView);
             focusPair.setIsFocus(true);
-            login.sendGTMLoginError(AppEventTracking.EventLabel.EMAIL);
+            UnifyTracking.eventLoginError(AppEventTracking.EventLabel.EMAIL);
         } else if (!CommonUtils.EmailValidation(email)) {
             setWrapperError(wrapperEmail, getString(R.string.error_invalid_email));
             focusPair.setView(mEmailView);
             focusPair.setIsFocus(true);
-            login.sendGTMLoginError(AppEventTracking.EventLabel.EMAIL);
+            UnifyTracking.eventLoginError(AppEventTracking.EventLabel.EMAIL);
         }
 
         return focusPair;
@@ -595,6 +603,7 @@ public class LoginFragment extends Fragment implements LoginView {
 
     @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
     public void onGooglePlusClicked() {
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.GMAIL);
         showProgress(true);
         ((GoogleActivity) getActivity()).onSignInClicked();
     }
@@ -637,7 +646,7 @@ public class LoginFragment extends Fragment implements LoginView {
         newFragment.show(getFragmentManager().beginTransaction(), "dialog");
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(name);
     }
 
     @Override
