@@ -1,20 +1,13 @@
 package com.tokopedia.core.gcm;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.Cart;
-import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.router.CustomerRouter;
-import com.tokopedia.core.router.SessionRouter;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.router.home.SimpleHomeRouter;
-import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
+import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -64,7 +57,6 @@ public class FCMMessagingService extends FirebaseMessagingService {
 
     private void handlePromotionNotification(Bundle data) {
         mAppNotificationReceiverUIBackground.prepareAndExecutePromoNotification(data);
-
     }
 
     private void handleDedicatedNotification(Bundle data) {
@@ -74,7 +66,7 @@ public class FCMMessagingService extends FirebaseMessagingService {
             resetNotificationStatus(data);
 
             if (mActivitiesLifecycleCallbacks.isAppOnBackground()) {
-                mAppNotificationReceiverUIBackground.prepareAndExecuteDedicationNotification(data);
+                mAppNotificationReceiverUIBackground.prepareDeathOrLiveFunction(data);
             } else {
                 NotificationReceivedListener listener =
                         (NotificationReceivedListener) mActivitiesLifecycleCallbacks.getLiveActivityOrNull();
