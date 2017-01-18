@@ -17,5 +17,5 @@ import rx.Observable;
 public interface TokoCashApi {
 
     @GET(TkpdBaseURL.TopCash.PATH_WALLET)
-    Observable<Response<TopCashItem>> getTokoCash(@QueryMap Map<String, String> params);
+    Observable<Response<TopCashItem>> getTokoCash();
 }
