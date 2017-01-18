@@ -21,11 +21,9 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.util.DeepLinkChecker;
+import com.tokopedia.core.util.TkpdWebView;
 
 /**
  * Created by Alifa on 1/10/2017.
@@ -34,7 +32,7 @@ import com.tokopedia.core.util.DeepLinkChecker;
 public class FragmentTopPicksWebView extends Fragment {
 
     private ProgressBar progressBar;
-    private WebView webview;
+    private TkpdWebView webview;
     private static final String TOP_PICKS_URL = "https://www.tokopedia.com/toppicks/";
     private static final String BASE_URL = "www.tokopedia.com";
     private static final String BASE_MOBILE_URL = "m.tokopedia.com";
@@ -140,13 +138,13 @@ public class FragmentTopPicksWebView extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fragment_general_web_view, container, false);
         String url = getArguments().getString("url", TOP_PICKS_URL);
-        webview = (WebView) view.findViewById(R.id.webview);
+        webview = (TkpdWebView) view.findViewById(R.id.webview);
         webview.getSettings().setBuiltInZoomControls(true);
         webview.getSettings().setDisplayZoomControls(false);
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
         progressBar.setIndeterminate(true);
         clearCache(webview);
-        webview.loadUrl(url);
+        webview.loadAuthUrlWithFlags(url);
         webview.setWebViewClient(new FragmentTopPicksWebView.MyWebClient());
         webview.setWebChromeClient(new FragmentTopPicksWebView.MyWebViewClient());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -175,7 +173,7 @@ public class FragmentTopPicksWebView extends Fragment {
         return webview;
     }
 
-    public void setWebview(WebView webview) {
+    public void setWebview(TkpdWebView webview) {
         this.webview = webview;
     }
 

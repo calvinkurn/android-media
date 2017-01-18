@@ -18,12 +18,13 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.util.TkpdWebView;
 
 
 public class FragmentGeneralWebView extends Fragment implements BaseWebViewClient.WebViewCallback, View.OnKeyListener {
     private static final String TAG = FragmentGeneralWebView.class.getSimpleName();
 
-    private WebView WebViewGeneral;
+    private TkpdWebView WebViewGeneral;
     private OnFragmentInteractionListener mListener;
     private ProgressBar progressBar;
     private String url;
@@ -55,7 +56,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         CommonUtils.dumper("Load URL: " + url);
         View fragmentView = inflater.inflate(R.layout.fragment_fragment_general_web_view, container, false);
         CookieManager.getInstance().setAcceptCookie(true);
-        WebViewGeneral = (WebView) fragmentView.findViewById(R.id.webview);
+        WebViewGeneral = (TkpdWebView) fragmentView.findViewById(R.id.webview);
         progressBar = (ProgressBar) fragmentView.findViewById(R.id.progressbar);
         progressBar.setIndeterminate(true);
         WebViewGeneral.setOnKeyListener(this);
@@ -72,7 +73,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 super.onProgressChanged(view, newProgress);
             }
         });
-        WebViewGeneral.loadUrl(url);
+        WebViewGeneral.loadAuthUrlWithFlags(url);
         return fragmentView;
     }
 
