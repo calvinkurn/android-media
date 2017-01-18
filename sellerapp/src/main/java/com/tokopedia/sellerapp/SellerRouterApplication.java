@@ -49,7 +49,7 @@ public class SellerRouterApplication extends MainApplication implements TkpdCore
 
     @Override
     public void goToEditProduct(Context context, boolean isEdit, String productId) {
-        ProductActivity.moveToEditFragment(context, isEdit, productId);
+        context.startActivity(ProductActivity.moveToEditFragment(context, isEdit, productId));
     }
 
     @Override
