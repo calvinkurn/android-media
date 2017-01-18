@@ -5,12 +5,10 @@ import android.content.Context;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.model.RechargeOperatorModel;
-import com.tokopedia.core.database.recharge.operator.OperatorData;
 import com.tokopedia.core.database.recharge.product.Product;
-import com.tokopedia.core.database.recharge.product.ProductData;
 import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
-import com.tokopedia.tkpd.home.recharge.interactor.RechargeDBInteractor;
-import com.tokopedia.tkpd.home.recharge.interactor.RechargeDBInteractorImpl;
+import com.tokopedia.tkpd.home.recharge.interactor.RechargeInteractor;
+import com.tokopedia.tkpd.home.recharge.interactor.RechargeInteractorImpl;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractor;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractorImpl;
 import com.tokopedia.tkpd.home.recharge.view.RechargeView;
@@ -23,24 +21,22 @@ import java.util.List;
  * @author Kulomady 05 on 7/13/2016.
  */
 public class RechargePresenterImpl implements RechargePresenter,
-        RechargeNetworkInteractor.OnGetOperatorListener,
-        RechargeNetworkInteractor.OnGetProductListener,
-        RechargeDBInteractor.OnGetListProduct,
-        RechargeDBInteractor.OnGetOperatorByIdListener, RechargeDBInteractor.OnGetRecentNumberListener,
-        RechargeDBInteractor.OnGetListProductForOperator, RechargeDBInteractor.OnGetListOperatorByIdsListener {
+        RechargeInteractor.OnGetListProduct,
+        RechargeInteractor.OnGetOperatorByIdListener, RechargeInteractor.OnGetRecentNumberListener,
+        RechargeInteractor.OnGetListProductForOperator, RechargeInteractor.OnGetListOperatorByIdsListener {
 
     private static final String RECHARGE_PHONEBOOK_CACHE_KEY = "RECHARGE_CACHE";
     private final LocalCacheHandler cacheHandlerPhoneBook;
     private final LocalCacheHandler cacheHandlerLastOrder;
     private RechargeView view;
     private RechargeNetworkInteractor interactor;
-    private RechargeDBInteractor dbInteractor;
+    private RechargeInteractor dbInteractor;
     private Context context;
 
     public RechargePresenterImpl(Context context, RechargeView view) {
         this.view = view;
         this.interactor = new RechargeNetworkInteractorImpl();
-        this.dbInteractor = new RechargeDBInteractorImpl();
+        this.dbInteractor = new RechargeInteractorImpl();
         this.context = context;
         this.cacheHandlerPhoneBook = new LocalCacheHandler(this.context, RECHARGE_PHONEBOOK_CACHE_KEY);
         this.cacheHandlerLastOrder = new LocalCacheHandler(
@@ -48,9 +44,10 @@ public class RechargePresenterImpl implements RechargePresenter,
         );
     }
 
+
     @Override
     public void fetchDataProducts() {
-        this.interactor.getAllProduct(this);
+
     }
 
     @Override
@@ -113,22 +110,6 @@ public class RechargePresenterImpl implements RechargePresenter,
     public void clearRechargePhonebookCache() {
         LocalCacheHandler.clearCache(this.context, RECHARGE_PHONEBOOK_CACHE_KEY);
 
-    }
-    @Override
-    public void onSuccess(OperatorData data) {
-        this.fetchDataProducts();
-    }
-
-    @Override
-    public void onNetworkError() {
-
-    }
-
-    @Override
-    public void onSuccess(ProductData data) {
-        if (this.view != null) {
-            this.view.hideProgressFetchData();
-        }
     }
 
     @Override
