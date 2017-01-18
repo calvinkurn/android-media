@@ -39,6 +39,7 @@ import com.tokopedia.core.gcm.notification.dedicated.ResCenterSellerReplyNotific
 import com.tokopedia.core.gcm.notification.dedicated.ReviewEditedNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ReviewReplyNotification;
 import com.tokopedia.core.gcm.notification.dedicated.TicketResponseNotification;
+import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -63,7 +64,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_URL;
 /**
  * @author by alvarisi on 1/9/17.
  */
-
+@Deprecated
 public class AppNotificationReceiverUIBackground {
     private INotificationAnalyticsReceiver mNotificationAnalyticsReceiver;
     private FCMCacheManager cacheManager;
@@ -113,9 +114,6 @@ public class AppNotificationReceiverUIBackground {
         if (visitable != null) {
             visitable.proccessReceivedNotification(data);
         }
-
-        Class<?> clazz = NewMessageNotification.class;
-        suchADangerousReflectionFunction(data, clazz);
     }
 
     void prepareDeathOrLiveFunction(Bundle data){

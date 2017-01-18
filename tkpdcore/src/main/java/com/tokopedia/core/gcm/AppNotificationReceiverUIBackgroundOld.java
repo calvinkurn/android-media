@@ -17,6 +17,7 @@ import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.notification.dedicated.NewDiscussionNotification;
 import com.tokopedia.core.gcm.notification.dedicated.NewMessageNotification;
+import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.router.CustomerRouter;
@@ -47,7 +48,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_URL;
 /**
  * Created by alvarisi on 1/16/17.
  */
-
+@Deprecated
 public class AppNotificationReceiverUIBackgroundOld {
     private INotificationAnalyticsReceiver mNotificationAnalyticsReceiver;
     private FCMCacheManager cacheManager;
