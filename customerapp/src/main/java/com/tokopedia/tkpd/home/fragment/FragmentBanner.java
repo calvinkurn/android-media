@@ -88,12 +88,17 @@ public class FragmentBanner extends Fragment implements View.OnTouchListener {
         super.onActivityCreated(savedInstanceState);
         ImageHandler.LoadImage(image, promoItem.imgUrl);
         int margin = (int) getResources().getDimension(R.dimen.slider_margin);
-        if (pos == 0) {
-            setMargin(0, margin);
-        } else if (0 < pos && pos < size - 1) {
-            setMargin(margin, margin);
+        int default_margin = (int) getResources().getDimension(R.dimen.banner_margin);
+        if(size>1){
+            if(pos == 0){
+                setMargin(default_margin, margin);
+            } else if (0 < pos && pos < size - 1) {
+                setMargin(margin, margin);
+            } else {
+                setMargin(margin, default_margin);
+            }
         } else {
-            setMargin(margin, 0);
+            setMargin(default_margin, default_margin);
         }
         image.setOnTouchListener(this);
     }
@@ -195,7 +200,7 @@ public class FragmentBanner extends Fragment implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        if(motionEvent.getAction() == MotionEvent.ACTION_MOVE){
+        if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
             getActivity().sendBroadcast(new Intent(FragmentIndexCategory.BANNER_RECEIVER_INTENT));
         }
         return false;

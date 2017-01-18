@@ -137,7 +137,7 @@ public class CategoryImpl implements Category {
                 Banner b = bannerResponse.body();
 
                 if (bannerResponse.isSuccessful() && b.getData() != null)
-                    view.onSuccessFetchBanners(b);
+                     view.onSuccessFetchBanners(b);
 
             }
         };
