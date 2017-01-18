@@ -34,6 +34,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/layout_empty_shop_ad"
+                style="@style/LabelLayout"
+                android:layout_marginBottom="@dimen/top_ads_dashboard_margin_bottom_space"
+                android:visibility="gone">
+
+                <include
+                    layout="@layout/include_top_ads_empty_shop_ad"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </FrameLayout>
         </LinearLayout>
     </ScrollView>
 </com.tokopedia.core.customwidget.SwipeToRefresh>

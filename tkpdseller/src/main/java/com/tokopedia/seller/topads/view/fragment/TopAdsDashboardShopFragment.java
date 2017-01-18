@@ -9,12 +9,10 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.model.data.ProductAd;
 import com.tokopedia.seller.topads.model.data.ShopAd;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardShopPresenterImpl;
-import com.tokopedia.seller.topads.view.activity.TopAdsStatisticShopActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailShopActivity;
-import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsStatisticShopActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardStoreFragmentListener;
 
 import butterknife.BindView;
@@ -26,6 +24,9 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
 
     @BindView(R2.id.layout_shop_ad)
     View shopAdView;
+
+    @BindView(R2.id.layout_empty_shop_ad)
+    View shopAdEmptyView;
 
     @BindView(R2.id.title_product)
     TextView titleProduct;
@@ -89,6 +90,16 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     @Override
     public void onAdShopLoaded(@NonNull ShopAd ad) {
         shopAd = ad;
+        if (ad.getId() > 0) {
+            loadDetailAd(ad);
+        } else {
+            loadAdShopNotExist();
+        }
+        onLoadDataSuccess();
+    }
+
+    private void loadDetailAd(ShopAd ad) {
+        shopAdEmptyView.setVisibility(View.GONE);
         shopAdView.setVisibility(View.VISIBLE);
         titleProduct.setText(ad.getName());
         statusActive.setText(ad.getStatusDesc());
@@ -105,7 +116,11 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
         }
         pricePromoPerClick.setText(promoPriceUsed.getContext().getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
         promoPriceUsed.setText(promoPriceUsed.getContext().getString(R.string.top_ads_used_format_text, ad.getStatTotalSpent()));
-        onLoadDataSuccess();
+    }
+
+    private void loadAdShopNotExist() {
+        shopAdView.setVisibility(View.GONE);
+        shopAdEmptyView.setVisibility(View.VISIBLE);
     }
 
     @Override

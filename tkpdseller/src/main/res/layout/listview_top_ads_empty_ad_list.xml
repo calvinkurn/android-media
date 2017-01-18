@@ -30,7 +30,7 @@
         android:textColor="@color/black"
         android:textSize="@dimen/text_size_large"
         android:textStyle="bold"
-        tools:text="@string/top_ads_empty_group_promo_text"/>
+        tools:text="@string/top_ads_empty_group_title_promo_text"/>
 
     <TextView
         android:id="@+id/text_view_empty_content_text"

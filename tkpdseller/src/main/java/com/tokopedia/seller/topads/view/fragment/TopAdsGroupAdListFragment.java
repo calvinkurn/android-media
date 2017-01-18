@@ -37,7 +37,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     @Override
     protected TopAdsEmptyAdDataBinder getEmptyViewBinder() {
         TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
-        emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_empty_group_promo_text));
+        emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_empty_group_title_promo_text));
         emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_empty_group_promo_content_empty_text));
         return emptyGroupAdsDataBinder;
     }
@@ -48,7 +48,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
         int totalProductAd = getActivity().getIntent().getIntExtra(TopAdsExtraConstant.EXTRA_TOTAL_PRODUCT_ADS, Integer.MIN_VALUE);
         if (totalProductAd >= 0) {
             TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
-            emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_empty_group_promo_text));
+            emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_empty_group_title_promo_text));
             emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_empty_group_promo_content_not_empty_text));
             emptyGroupAdsDataBinder.setEmptyContentItemText(getString(R.string.top_ads_empty_group_promo_content_item_no_text, String.valueOf(totalProductAd)));
             emptyGroupAdsDataBinder.setCallback(this);
