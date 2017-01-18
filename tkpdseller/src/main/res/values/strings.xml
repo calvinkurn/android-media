@@ -95,7 +95,7 @@
     <string name="label_title_ctr_topads">CTR</string>
     <string name="label_title_favorite_topads">Terjual</string>
     <string name="label_title_items_topads">@string/title_top_ads_product</string>
-    <string name="label_top_ads_promo_group">Nama Group</string>
+    <string name="label_top_ads_promo_group">Nama Grup</string>
 
     <string name="label_today">Hari Ini</string>
     <string name="yesterday">Kemarin</string>

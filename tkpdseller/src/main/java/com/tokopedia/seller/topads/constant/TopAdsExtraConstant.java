@@ -11,6 +11,7 @@ public class TopAdsExtraConstant {
     public static final String EXTRA_GROUP = "EXTRA_GROUP";
     public static final String EXTRA_TOTAL_PRODUCT_ADS = "EXTRA_TOTAL_PRODUCT_ADS";
     public static final String EXTRA_AD_STATUS_CHANGED = "EXTRA_AD_STATUS_CHANGED";
+    public static final String EXTRA_AD_ID_GROUP = "EXTRA_AD_ID_GROUP";
 
     public static final int TYPE_NEW_PROMO_GROUP = 0;
     public static final int TYPE_NEW_PROMO_EXIST_GROUP = 1;

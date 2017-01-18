@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.tokopedia.seller.topads.model.data.ProductAd;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailProductPresenterImpl;
+import com.tokopedia.seller.topads.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
 import butterknife.BindView;
@@ -108,8 +110,18 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         super.onAdLoaded(ad);
         productAd = (ProductAd) ad;
         String groupName = productAd.getGroupName();
-        if(CommonUtils.checkStringNotEmpty(groupName) && groupName.equals("-")){
+        if(groupName == null || (groupName!=null && groupName.equals("-"))){
             groupName = getString(R.string.title_label_empty_group_topads);
+            promoGroupLabelView.setContentClickListener(null);
+        }else{
+            promoGroupLabelView.setContentClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
+                    intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID_GROUP, productAd.getGroupId());
+                    startActivity(intent);
+                }
+            });
         }
         promoGroupLabelView.setContent(groupName);
     }
