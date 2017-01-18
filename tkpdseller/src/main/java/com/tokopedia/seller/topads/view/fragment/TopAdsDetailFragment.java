@@ -16,6 +16,7 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
@@ -74,6 +75,8 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     protected Ad adFromIntent;
     protected ProgressDialog progressDialog;
+    private SnackbarRetry snackbarRetryOnAd;
+    private SnackbarRetry snackbarRetryOffAd;
 
     protected abstract void refreshAd();
 
@@ -85,6 +88,21 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     protected void initView(View view) {
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+        snackbarRetryOnAd = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                setStatusSwitch(true);
+                turnOnAd();
+            }
+        });
+
+        snackbarRetryOffAd = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                setStatusSwitch(false);
+                turnOffAd();
+            }
+        });
     }
 
     @Override
@@ -157,38 +175,28 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     public void onTurnOnAdSuccess() {
         loadData();
         setResultAdStatusChanged();
+        snackbarRetryOnAd.hideRetrySnackbar();
     }
 
     @Override
     public void onTurnOnAdError() {
         setStatusSwitch(!status.isChecked());
         progressDialog.dismiss();
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                setStatusSwitch(true);
-                turnOnAd();
-            }
-        }).showRetrySnackbar();
+        snackbarRetryOnAd.showRetrySnackbar();
     }
 
     @Override
     public void onTurnOffAdSuccess() {
         loadData();
         setResultAdStatusChanged();
+        snackbarRetryOffAd.hideRetrySnackbar();
     }
 
     @Override
     public void onTurnOffAdError() {
         setStatusSwitch(!status.isChecked());
         progressDialog.dismiss();
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                setStatusSwitch(false);
-                turnOffAd();
-            }
-        }).showRetrySnackbar();
+        snackbarRetryOffAd.showRetrySnackbar();
     }
 
     protected void loadAdDetail(Ad ad) {

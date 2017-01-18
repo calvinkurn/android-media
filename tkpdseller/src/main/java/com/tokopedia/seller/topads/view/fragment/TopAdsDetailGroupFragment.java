@@ -31,11 +31,13 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
     TopAdsLabelView items;
 
     private GroupAd groupAd;
+    private int groupId;
 
-    public static Fragment createInstance(GroupAd groupAd) {
+    public static Fragment createInstance(GroupAd groupAd, int groupId) {
         Fragment fragment = new TopAdsDetailGroupFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, groupAd);
+        bundle.putInt(TopAdsExtraConstant.EXTRA_AD_ID_GROUP, groupId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -55,6 +57,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
     protected void setupArguments(Bundle bundle) {
         super.setupArguments(bundle);
         groupAd = bundle.getParcelable(TopAdsExtraConstant.EXTRA_AD);
+        groupId = bundle.getInt(TopAdsExtraConstant.EXTRA_AD_ID_GROUP);
     }
 
     @Override
@@ -76,7 +79,11 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
 
     @Override
     protected void refreshAd() {
-        presenter.refreshAd(startDate, endDate, groupAd.getId());
+        if(groupAd != null) {
+            presenter.refreshAd(startDate, endDate, groupAd.getId());
+        }else{
+            presenter.refreshAd(startDate, endDate, groupId);
+        }
     }
 
     @Override

@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
+    android:weightSum="1"
+    android:orientation="horizontal"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/LabelLayout">
 
     <TextView
+        android:layout_weight="0.3"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:ellipsize="end"
         android:id="@+id/title_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/content_text_view"
         android:textColor="@color/black"
         android:textSize="16sp"
         tools:text="@string/app_name"/>
 
     <TextView
+        android:gravity="right"
+        android:layout_toRightOf="@id/title_text_view"
+        android:layout_weight="0.7"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:ellipsize="end"
         android:id="@+id/content_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

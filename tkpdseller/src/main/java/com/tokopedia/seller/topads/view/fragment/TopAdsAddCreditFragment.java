@@ -156,6 +156,7 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
 
     @OnClick(R2.id.button_submit)
     void chooseCredit() {
+        getActivity().setResult(Activity.RESULT_OK);
         Intent intent = new Intent(getActivity(), TopAdsPaymentCreditActivity.class);
         intent.putExtra(TopAdsConstant.EXTRA_CREDIT, adapter.getSelectedCredit());
         startActivity(intent);

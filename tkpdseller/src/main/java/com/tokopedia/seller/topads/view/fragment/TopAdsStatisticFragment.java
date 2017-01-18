@@ -167,7 +167,11 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
                     .setTooltip(tooltip)
                     .buildChart(grossGraphChartConfig.buildLineChart(contentGraph));
         } catch (Exception e) {
-            Log.e("TopAdsStatisticFragment", e.getMessage());
+            if(e!= null && e.getMessage() != null) {
+                Log.e("TopAdsStatisticFragment", e.getMessage());
+            }else{
+                Log.e("TopAdsStatisticFragment", "Null Pointer");
+            }
         }
     }
 
