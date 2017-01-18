@@ -59,6 +59,7 @@ public abstract class BaseGMStatActivity2 extends DrawerPresenterActivity<BaseGM
     protected void setupVar() {
         super.setupVar();
         fetchIntent(getIntent().getExtras());
+        inject();
     }
 
     /**
