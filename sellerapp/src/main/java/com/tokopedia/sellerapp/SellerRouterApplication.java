@@ -53,9 +53,9 @@ public class SellerRouterApplication extends MainApplication implements TkpdCore
     }
 
     @Override
-    public void resetAddProductCache() {
-        AddProductPresenterImpl.clearEtalaseCache(getApplicationContext());
-        AddProductPresenterImpl.clearDepartementCache(getApplicationContext());
+    public void resetAddProductCache(Context context) {
+        AddProductPresenterImpl.clearEtalaseCache(context);
+        AddProductPresenterImpl.clearDepartementCache(context);
     }
 
     @Override
