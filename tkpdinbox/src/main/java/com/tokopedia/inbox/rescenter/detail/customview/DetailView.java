@@ -80,6 +80,21 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
 //        );
 //    }
 
+//    private String getUrl(String data) {
+//        Log.d(TAG, "getUrl: " + URLGenerator.generateURLSessionLoginV4(data, getContext()));
+//        return URLGenerator.generateURLSessionLoginV4(data, getContext());
+//    }
+
+//    public String getPath(String resolutionLinkEncode) {
+//        Log.d(TAG, "getPath: " + Uri.parse(getUrl(resolutionLinkEncode)).getPath());
+//        return Uri.parse(getUrl(resolutionLinkEncode)).getPath();
+//    }
+//
+//    public String getQuery(String resolutionLinkEncode) {
+//        Log.d(TAG, "getQuery: " + Uri.parse(getUrl(resolutionLinkEncode)).getQuery());
+//        return Uri.parse(getUrl(resolutionLinkEncode)).getQuery();
+//    }
+
     @Override
     public void renderData(@NonNull DetailResCenterData.Detail data) {
         this.resolutionDetailModel = data;
@@ -90,18 +105,8 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
     }
 
     private String getUrl(String data) {
-        Log.d(TAG, "getUrl: " + URLGenerator.generateURLSessionLoginV4(data, getContext()));
-        return URLGenerator.generateURLSessionLoginV4(data, getContext());
-    }
-
-    public String getPath(String resolutionLinkEncode) {
-        Log.d(TAG, "getPath: " + Uri.parse(getUrl(resolutionLinkEncode)).getPath());
-        return Uri.parse(getUrl(resolutionLinkEncode)).getPath();
-    }
-
-    public String getQuery(String resolutionLinkEncode) {
-        Log.d(TAG, "getQuery: " + Uri.parse(getUrl(resolutionLinkEncode)).getQuery());
-        return Uri.parse(getUrl(resolutionLinkEncode)).getQuery();
+        Log.d(TAG, "getImageUrl: " + URLGenerator.generateURLSessionLogin(data, getContext()));
+        return URLGenerator.generateURLSessionLogin(data, getContext());
     }
 
     private class MyWebClient extends WebViewClient {
