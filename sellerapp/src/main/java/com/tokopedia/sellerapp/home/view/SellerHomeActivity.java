@@ -201,7 +201,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
 
     @OnClick({R.id.message_see_more, R.id.message__card_view_container})
     public void messageSeeMore() {
-        startIntent(InboxRouter.getInboxMessageActivityIntent(this));
+        this.startActivity(InboxRouter.getInboxMessageActivityIntent(this));
     }
 
     @OnClick({R.id.complain_see_more, R.id.complain_container})

@@ -16,6 +16,9 @@ public abstract class BasePresenterActivity<P> extends TActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(isAfterRotate(savedInstanceState)){
+            setupVar();
+        }
         if (getIntent().getExtras() != null) {
             setupBundlePass(getIntent().getExtras());
         }
@@ -24,11 +27,23 @@ public abstract class BasePresenterActivity<P> extends TActivity {
         }
         initialPresenter();
         inflateView(getLayoutId());
-        ButterKnife.bind(this);
+        initViews();
         initView();
         initVar();
         setViewListener();
         setActionVar();
+    }
+
+    protected void initViews() {
+        ButterKnife.bind(this);
+    }
+
+    protected void setupVar(){
+        // leave empty
+    }
+
+    protected boolean isAfterRotate(Bundle savedInstanceState){
+        return savedInstanceState != null;
     }
 
     @Override
