@@ -467,11 +467,6 @@ public class ManageProduct extends TkpdActivity implements
                     ShowInsuranceChange();
                     mode.finish();
                     return true;
-                } else if (item.getItemId() == R.id.action_update_returnable) {
-                    ActionTaken = true;
-                    changeMultipleReturnable();
-                    mode.finish();
-                    return true;
                 } else if (item.getItemId() == R.id.action_delete) {
                     ActionTaken = true;
                     ShowDeleteChange();

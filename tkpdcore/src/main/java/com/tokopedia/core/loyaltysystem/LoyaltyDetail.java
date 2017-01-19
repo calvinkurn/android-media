@@ -9,10 +9,12 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 
+import retrofit2.http.Url;
+
 public class LoyaltyDetail extends TActivity implements FragmentGeneralWebView.OnFragmentInteractionListener {
 
     public static int FRAGMENT_VIEW = R.id.main_view;
-    private String Url;
+    private String url;
 
     @Override
     public String getScreenName() {
@@ -23,18 +25,17 @@ public class LoyaltyDetail extends TActivity implements FragmentGeneralWebView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_loyalty_detail);
-        Url = getIntent().getExtras().getString("url");
-        if (Url.startsWith("https://pulsa.tokopedia.com/saldo/"))
+        url = getIntent().getExtras().getString("url");
+        if (url != null && url.contains("https://pulsa.tokopedia.com/saldo/"))
             toolbar.setTitle(R.string.title_activity_people_deposit);
         else
             toolbar.setTitle(R.string.title_activity_loyalty_detail);
 
-        Log.i("LOYALTY", Url);
         showFragmentWebView();
     }
 
     private void showFragmentWebView() {
-        Fragment fragment = FragmentGeneralWebView.createInstance(Url);
+        Fragment fragment = FragmentGeneralWebView.createInstance(url);
         getFragmentManager().beginTransaction().add(FRAGMENT_VIEW, fragment).commit();
     }
 

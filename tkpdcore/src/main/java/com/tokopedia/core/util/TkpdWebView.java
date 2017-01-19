@@ -28,17 +28,21 @@ public class TkpdWebView extends WebView {
         super(context, attrs, defStyleAttr);
     }
 
-    public void loadUrlWithFlags(String url){
+    public void loadUrlWithFlags(String url) {
         loadUrl(generateUri(url));
     }
 
     public void loadAuthUrl(String url) {
-        loadUrl(generateUri(url),
+        loadUrl(url,
                 AuthUtil.generateHeaders(
                         Uri.parse(url).getPath(),
                         Uri.parse(generateUri(url)).getQuery(),
                         "GET",
                         AuthUtil.KEY.KEY_WSV4));
+    }
+
+    public void loadAuthUrlWithFlags(String url) {
+        loadAuthUrl(generateUri(url));
     }
 
     private String generateUri(String uri) {
