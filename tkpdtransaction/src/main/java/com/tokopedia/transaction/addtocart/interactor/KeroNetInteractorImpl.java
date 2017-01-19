@@ -50,8 +50,10 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
 
             @Override
             public void onNext(Response<String> stringResponse) {
-                Rates rates = new Gson().fromJson(stringResponse.body(), Rates.class);
-                listener.onSuccess(rates.getData());
+                if(stringResponse.body() != null) {
+                    Rates rates = new Gson().fromJson(stringResponse.body(), Rates.class);
+                    listener.onSuccess(rates.getData());
+                }
             }
         };
 

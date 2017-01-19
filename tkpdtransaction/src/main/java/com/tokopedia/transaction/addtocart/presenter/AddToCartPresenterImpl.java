@@ -132,35 +132,38 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     @Override
     public void calculateKeroRates(@NonNull Context context, @NonNull final AtcFormData atcFormData) {
         viewListener.disableBuyButton();
-        keroNetInteractor.calculateShipping(context, KeroppiParam.paramsKero(atcFormData.getShop(),
-                atcFormData.getForm().getDestination(), atcFormData.getForm().getProductDetail()),
-                new KeroNetInteractor.CalculationListener() {
-                    @Override
-                    public void onSuccess(Data rates) {
-                        viewListener.renderFormShipmentRates(filterAvailableKeroShipment(
-                                rates.getAttributes(), atcFormData.getForm().getShipment())
-                        );
-                        viewListener.enableBuyButton();
-                    }
+        if(!atcFormData.getForm().getDestination().getAddressId().isEmpty() &&
+                !atcFormData.getForm().getDestination().getAddressId().equals("0")) {
+            keroNetInteractor.calculateShipping(context, KeroppiParam.paramsKero(atcFormData.getShop(),
+                    atcFormData.getForm().getDestination(), atcFormData.getForm().getProductDetail()),
+                    new KeroNetInteractor.CalculationListener() {
+                        @Override
+                        public void onSuccess(Data rates) {
+                            viewListener.renderFormShipmentRates(filterAvailableKeroShipment(
+                                    rates.getAttributes(), atcFormData.getForm().getShipment())
+                            );
+                            viewListener.enableBuyButton();
+                        }
 
-                    @Override
-                    public void onFailed(String error) {
-                        viewListener.showErrorMessage(error);
-                        viewListener.enableBuyButton();
-                    }
+                        @Override
+                        public void onFailed(String error) {
+                            viewListener.showErrorMessage(error);
+                            viewListener.enableBuyButton();
+                        }
 
-                    @Override
-                    public void onTimeout(String timeoutError) {
-                        viewListener.showErrorMessage(timeoutError);
-                        viewListener.enableBuyButton();
-                    }
+                        @Override
+                        public void onTimeout(String timeoutError) {
+                            viewListener.showErrorMessage(timeoutError);
+                            viewListener.enableBuyButton();
+                        }
 
-                    @Override
-                    public void onNoConnection() {
-                        viewListener.onCartFailedLoading();
-                        viewListener.enableBuyButton();
-                    }
-                });
+                        @Override
+                        public void onNoConnection() {
+                            viewListener.onCartFailedLoading();
+                            viewListener.enableBuyButton();
+                        }
+                    });
+        }
     }
 
     private List<Attribute> filterAvailableKeroShipment(List<Attribute> datas,
