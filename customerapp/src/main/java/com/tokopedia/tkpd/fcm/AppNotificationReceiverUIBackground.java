@@ -7,14 +7,22 @@ import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.base.BaseAppNotificationReceiverUIBackground;
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerEditNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerNotification;
+import com.tokopedia.core.gcm.notification.promotions.DeeplinkNotification;
 import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.fcm.notification.NewReviewNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAcceptedNotification;
+import com.tokopedia.tkpd.fcm.notification.PurchaseAutoCancel2DNotification;
+import com.tokopedia.tkpd.fcm.notification.PurchaseAutoCancel4DNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseDeliveredNotification;
+import com.tokopedia.tkpd.fcm.notification.PurchaseFinishReminderNotification;
+import com.tokopedia.tkpd.fcm.notification.PurchaseFinishedNotification;
+import com.tokopedia.tkpd.fcm.notification.PurchaseNewOrderNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchasePartialProcessedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseRejectedNotification;
+import com.tokopedia.tkpd.fcm.notification.PurchaseRejectedShippingNotification;
+import com.tokopedia.tkpd.fcm.notification.PurchaseShippedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseVerifiedNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterAdminBuyerReplyNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterSellerAgreeNotification;
@@ -107,6 +115,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     private void prepareAndExecutePromoNotification(Bundle data) {
         Map<Integer, Class> promoNotifications = getCommonPromoNotification();
+        promoNotifications.put(TkpdState.GCMServiceState.GCM_DEEPLINK, DeeplinkNotification.class);
         Class<?> clazz = promoNotifications.get(GCMUtils.getCode(data));
         if (clazz != null) {
             executeNotification(data, clazz);
@@ -128,6 +137,14 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY, ResCenterSellerReplyNotification.class);
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_AGREE, ResCenterSellerAgreeNotification.class);
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY, ResCenterAdminBuyerReplyNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_AUTO_CANCEL_2D, PurchaseAutoCancel2DNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_AUTO_CANCEL_4D, PurchaseAutoCancel4DNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_FINISH, PurchaseFinishedNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_FINISH_REMINDER, PurchaseFinishReminderNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_NEW_ORDER, PurchaseNewOrderNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED_SHIPPING, PurchaseRejectedShippingNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_CONFIRM_SHIPPING, PurchaseShippedNotification.class);
+
 
         Class<?> clazz = dedicatedNotification.get(GCMUtils.getCode(data));
         if (clazz != null) {
