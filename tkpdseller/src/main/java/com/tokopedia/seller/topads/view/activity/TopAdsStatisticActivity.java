@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -13,6 +14,8 @@ import android.view.MenuItem;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
@@ -58,6 +61,7 @@ public abstract class TopAdsStatisticActivity extends BasePresenterActivity<TopA
     ProgressDialog progressDialog;
     private Date startDate;
     private Date endDate;
+    SnackbarRetry snackbarRetry;
 
     @Override
     protected void setupURIPass(Uri uri) {
@@ -87,6 +91,12 @@ public abstract class TopAdsStatisticActivity extends BasePresenterActivity<TopA
         viewPager.setCurrentItem(currentPositonPager);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(R.string.title_loading));
+        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(this, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                loadData();
+            }
+        });
     }
 
     @Override
@@ -161,11 +171,12 @@ public abstract class TopAdsStatisticActivity extends BasePresenterActivity<TopA
 
     @Override
     public void onError(Throwable throwable) {
-
+        snackbarRetry.showRetrySnackbar();
     }
 
     @Override
     public void updateDataCell(List<Cell> cells) {
+        snackbarRetry.hideRetrySnackbar();
         this.cells = cells;
         Fragment fragment = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, viewPager.getCurrentItem());
         if(fragment != null && fragment instanceof TopAdsStatisticViewListener){
