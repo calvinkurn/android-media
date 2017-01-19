@@ -8,25 +8,17 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.DaggerInjectorListener;
 import com.tokopedia.seller.gmstat.presenters.GMStat;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
-
-import butterknife.BindColor;
-import butterknife.BindString;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper.MOVE_TO_SET_DATE;
 import static com.tokopedia.seller.gmstat.views.SetDateActivity.PERIOD_TYPE;

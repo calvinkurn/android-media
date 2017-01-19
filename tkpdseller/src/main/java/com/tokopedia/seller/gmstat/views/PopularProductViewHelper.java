@@ -16,9 +16,7 @@ import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by normansyahputa on 11/9/16.

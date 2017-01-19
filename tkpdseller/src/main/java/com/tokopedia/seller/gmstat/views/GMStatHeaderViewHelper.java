@@ -18,11 +18,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import butterknife.BindArray;
-import butterknife.BindColor;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import static com.tokopedia.seller.gmstat.views.BaseGMStatActivity.IS_GOLD_MERCHANT;
 import static com.tokopedia.seller.gmstat.views.GMStatActivityFragment.getDateWithYear;
 import static com.tokopedia.seller.gmstat.views.SetDateActivity.CUSTOM_END_DATE;

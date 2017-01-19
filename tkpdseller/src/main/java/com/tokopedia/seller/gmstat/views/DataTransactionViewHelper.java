@@ -1,7 +1,6 @@
 package com.tokopedia.seller.gmstat.views;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
@@ -25,11 +24,7 @@ import com.tokopedia.seller.gmstat.views.williamchart.chart.view.LineChartView;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindArray;
-import butterknife.BindColor;
-import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.tokopedia.seller.gmstat.views.GMStatActivityFragment.NoDataAvailable;
 import static com.tokopedia.seller.gmstat.views.PopularProductViewHelper.getFormattedString;

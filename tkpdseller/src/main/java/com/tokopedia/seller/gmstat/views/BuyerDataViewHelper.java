@@ -14,11 +14,6 @@ import com.tokopedia.seller.gmstat.views.circleprogress.DonutProgress;
 
 import java.util.Locale;
 
-import butterknife.BindArray;
-import butterknife.BindColor;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import static com.tokopedia.seller.gmstat.views.GMStatActivityFragment.NoDataAvailable;
 import static com.tokopedia.seller.gmstat.views.PopularProductViewHelper.getFormattedString;
 

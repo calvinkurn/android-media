@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.library.LoaderTextView;
-import com.tokopedia.seller.gmstat.views.GMStatActivityFragment;
 
 /**
  * Created by normansyahputa on 1/18/17.

@@ -1,6 +1,5 @@
 package com.tokopedia.seller.gmstat.views;
 
-import android.content.Intent;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,11 +23,6 @@ import com.tokopedia.seller.gmstat.models.GetShopCategory;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindColor;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.tokopedia.seller.gmstat.views.DataTransactionViewHelper.dpToPx;
 

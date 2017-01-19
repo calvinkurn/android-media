@@ -12,9 +12,6 @@ import android.view.WindowManager;
 
 import com.tokopedia.seller.R;
 
-import butterknife.BindColor;
-import butterknife.ButterKnife;
-
 import static com.tokopedia.seller.gmstat.views.BaseGMStatActivity.IS_GOLD_MERCHANT;
 import static com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper.MOVE_TO_SET_DATE;
 

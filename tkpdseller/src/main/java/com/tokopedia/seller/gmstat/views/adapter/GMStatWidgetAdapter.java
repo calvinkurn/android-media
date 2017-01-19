@@ -8,7 +8,6 @@ import android.widget.ImageView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.presenters.GMStat;
-import com.tokopedia.seller.gmstat.views.GMStatActivityFragment;
 import com.tokopedia.seller.gmstat.views.models.BaseGMModel;
 import com.tokopedia.seller.gmstat.views.models.CommomGMModel;
 import com.tokopedia.seller.gmstat.views.models.ConvRate;

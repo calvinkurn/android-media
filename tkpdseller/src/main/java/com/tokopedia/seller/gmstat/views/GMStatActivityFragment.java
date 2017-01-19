@@ -1,18 +1,14 @@
 package com.tokopedia.seller.gmstat.views;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.IntRange;
 import android.support.annotation.LayoutRes;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -20,14 +16,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.gmstat.views.adapter.GMStatWidgetAdapter;
-import com.tokopedia.seller.gmstat.views.adapter.MarketInsightLoadingAdapter;
 import com.tokopedia.seller.gmstat.views.helper.BuyerDataLoading;
 import com.tokopedia.seller.gmstat.views.helper.MarketInsightLoading;
 import com.tokopedia.seller.gmstat.views.helper.PopularProductLoading;
@@ -47,7 +40,6 @@ import com.tokopedia.seller.gmstat.views.williamchart.chart.view.LineChartView;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.library.LoaderImageView;
-import com.tokopedia.seller.gmstat.library.LoaderTextView;
 import com.tokopedia.seller.gmstat.models.GetBuyerData;
 import com.tokopedia.seller.gmstat.models.GetKeyword;
 import com.tokopedia.seller.gmstat.models.GetPopularProduct;
@@ -63,7 +55,6 @@ import com.tokopedia.seller.gmstat.utils.GrossGraphChartConfig;
 
 import java.net.UnknownHostException;
 import java.text.DateFormat;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -73,12 +64,7 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-import butterknife.BindArray;
-import butterknife.BindColor;
-import butterknife.BindDrawable;
-import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 
 import static com.tokopedia.seller.gmstat.views.DataTransactionViewHelper.dpToPx;

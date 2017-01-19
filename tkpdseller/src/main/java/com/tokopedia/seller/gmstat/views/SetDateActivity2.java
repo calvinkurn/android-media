@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.seller.R;
 
 import static com.tokopedia.seller.gmstat.views.BaseGMStatActivity.IS_GOLD_MERCHANT;
