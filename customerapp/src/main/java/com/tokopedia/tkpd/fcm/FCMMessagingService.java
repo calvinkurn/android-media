@@ -14,8 +14,7 @@ public class FCMMessagingService extends BaseNotificationMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         Bundle data = convertMap(remoteMessage);
-        AppNotificationReceiver appNotificationReceiver = new AppNotificationReceiver();
-        appNotificationReceiver.init(getApplication());
-        appNotificationReceiver.onNotificationReceived(remoteMessage.getFrom(), data);
+        AppNotificationReceiver.Notifications.init(getApplication());
+        AppNotificationReceiver.Notifications.onNotificationReceived(remoteMessage.getFrom(), data);
     }
 }

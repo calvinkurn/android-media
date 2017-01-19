@@ -6,8 +6,8 @@ import android.os.Bundle;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.INotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.NotificationAnalyticsReceiver;
-import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
-import com.tokopedia.core.gcm.utils.GCMUtils;
+
+import rx.Observable;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 
@@ -15,37 +15,32 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
  * Created by alvarisi on 1/17/17.
  */
 
-public class AppNotificationReceiver {
-    AppNotificationReceiverUIBackground mAppNotificationReceiverUIBackground;
+public enum AppNotificationReceiver {
+    Notifications;
+    public static String TAG = "PUSHNOTIFTAG";
+    private AppNotificationReceiverUIBackground mAppNotificationReceiverUIBackground;
     private FCMCacheManager cacheManager;
-    INotificationAnalyticsReceiver mNotificationAnalyticsReceiver;
-    ActivitiesLifecycleCallbacks mActivitiesLifecycleCallbacks;
-    private Application mApplication;
+    private INotificationAnalyticsReceiver mNotificationAnalyticsReceiver;
 
-    public AppNotificationReceiver() {
-    }
-
-    void init(Application application){
-        mApplication = application;
+    void init(Application application) {
         mAppNotificationReceiverUIBackground = new AppNotificationReceiverUIBackground(application);
         mNotificationAnalyticsReceiver = new NotificationAnalyticsReceiver();
-        mActivitiesLifecycleCallbacks = new ActivitiesLifecycleCallbacks(application);
         cacheManager = new FCMCacheManager(application.getBaseContext());
     }
 
-    public void onNotificationReceived(String from, Bundle data){
-        if (isAllowedNotification(data)){
-            cacheManager.setCache(mApplication.getBaseContext());
-            mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(data);
+    public void onNotificationReceived(String from, Bundle bundle) {
+        if (isAllowedNotification(bundle)) {
+            cacheManager.setCache();
+            mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(Observable.just(bundle));
         }
-        mNotificationAnalyticsReceiver.onNotificationReceived(data);
+        mNotificationAnalyticsReceiver.onNotificationReceived(Observable.just(bundle));
     }
 
     private boolean isAllowedNotification(Bundle data) {
-        return GCMUtils.isValidForSellerApp(GCMUtils.getCode(data))
-                && cacheManager.isAllowToHandleNotif(data)
+        return cacheManager.isAllowToHandleNotif(data)
                 && cacheManager.checkLocalNotificationAppSettings(
-                Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE))
+                Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)
+                )
         );
     }
 }

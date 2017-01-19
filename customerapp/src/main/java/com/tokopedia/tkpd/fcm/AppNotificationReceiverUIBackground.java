@@ -24,6 +24,13 @@ import com.tokopedia.tkpd.fcm.notification.ReviewReplyNotification;
 
 import java.util.Map;
 
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Actions;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 
 /**
@@ -40,7 +47,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         if (isDedicatedNotification(data)) {
             handleDedicatedNotification(data);
         } else {
-            handlePromotionNotification(data);
+            prepareAndExecutePromoNotification(data);
         }
     }
 
@@ -51,7 +58,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
             resetNotificationStatus(data);
 
             if (mActivitiesLifecycleCallbacks.isAppOnBackground()) {
-                prepareDeathOrLiveFunction(data);
+                prepareAndExecuteDedicatedNotification(data);
             } else {
                 NotificationReceivedListener listener =
                         (NotificationReceivedListener) mActivitiesLifecycleCallbacks.getLiveActivityOrNull();
@@ -61,31 +68,52 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                             == TkpdState.GCMServiceState.GCM_CART_UPDATE) {
                         listener.onRefreshCart(data.getInt("is_cart_exists", 0));
                     } else {
-                        prepareDeathOrLiveFunction(data);
+                        prepareAndExecuteDedicatedNotification(data);
                     }
                 } else {
-                    prepareDeathOrLiveFunction(data);
+                    prepareAndExecuteDedicatedNotification(data);
                 }
             }
             mFCMCacheManager.resetCache(data);
         }
     }
 
+    @Override
+    public void handlePromotionNotification(Bundle data) {
 
+    }
 
-    private void handlePromotionNotification(Bundle data) {
-        prepareAndExecutePromoNotification(data);
+    @Override
+    public void notifyReceiverBackgroundMessage(Observable<Bundle> data) {
+        data.map(new Func1<Bundle, Boolean>() {
+            @Override
+            public Boolean call(Bundle bundle) {
+                if (isDedicatedNotification(bundle)) {
+                    handleDedicatedNotification(bundle);
+                } else {
+                    prepareAndExecutePromoNotification(bundle);
+                }
+                return true;
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(Actions.empty(), new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
     }
 
     private void prepareAndExecutePromoNotification(Bundle data) {
-        Map<Integer, Class> dedicatedNotification = getCommonPromoNotification();
-        Class<?> clazz = dedicatedNotification.get(GCMUtils.getCode(data));
+        Map<Integer, Class> promoNotifications = getCommonPromoNotification();
+        Class<?> clazz = promoNotifications.get(GCMUtils.getCode(data));
         if (clazz != null) {
-            suchADangerousReflectionFunction(data, clazz);
+            executeNotification(data, clazz);
         }
     }
 
-    private void prepareDeathOrLiveFunction(Bundle data) {
+    private void prepareAndExecuteDedicatedNotification(Bundle data) {
         Map<Integer, Class> dedicatedNotification = getCommonDedicatedNotification();
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REVIEW, NewReviewNotification.class);
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REVIEW_EDIT, ReviewEditedNotification.class);
@@ -103,7 +131,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
         Class<?> clazz = dedicatedNotification.get(GCMUtils.getCode(data));
         if (clazz != null) {
-            suchADangerousReflectionFunction(data, clazz);
+            executeNotification(data, clazz);
         }
     }
 }
