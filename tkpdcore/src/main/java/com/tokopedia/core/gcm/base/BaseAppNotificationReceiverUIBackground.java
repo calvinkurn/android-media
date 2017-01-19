@@ -11,8 +11,6 @@ import com.tokopedia.core.gcm.notification.dedicated.NewDiscussionNotification;
 import com.tokopedia.core.gcm.notification.dedicated.NewMessageNotification;
 import com.tokopedia.core.gcm.notification.dedicated.NewOrderNotification;
 import com.tokopedia.core.gcm.notification.dedicated.PurchaseDisputeNotification;
-import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyEditNotification;
-import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToSellerEditNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToSellerNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ResCenterAdminSellerReplyNotification;
@@ -88,8 +86,6 @@ public abstract class BaseAppNotificationReceiverUIBackground {
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TICKET, TicketResponseNotification.class);
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RES_CENTER, ResCenterNewNotification.class);
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_NEWORDER, NewOrderNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY, ReputationSmileyNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY, ReputationSmileyEditNotification.class);
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_SELLER, ReputationSmileyToSellerNotification.class);
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_SELLER, ReputationSmileyToSellerEditNotification.class);
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_DISPUTE, PurchaseDisputeNotification.class);
