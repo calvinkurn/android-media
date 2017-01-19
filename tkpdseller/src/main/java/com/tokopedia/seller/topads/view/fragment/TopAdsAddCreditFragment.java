@@ -162,4 +162,11 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
         startActivity(intent);
         getActivity().finish();
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.unSubscribe();
+    }
+
 }
