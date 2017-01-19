@@ -1,6 +1,7 @@
 package com.tokopedia.seller.gmstat.views;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,7 +15,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.gmstat.views.adapter.SetDatePagerAdapter;
 
 import java.util.Locale;
 
@@ -26,7 +29,7 @@ import static com.tokopedia.seller.gmstat.views.SetDateActivity.PERIOD_TYPE;
  * Created by normansyahputa on 11/25/16.
  */
 
-public class SetDateFragment extends Fragment {
+public class SetDateFragment extends BasePresenterFragment {
     private SetDate setDate;
     private static final Locale locale = new Locale("in","ID");
 
@@ -40,10 +43,10 @@ public class SetDateFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if(context != null && context instanceof SetDate){
-            setDate = (SetDate) context;
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if(activity != null && activity instanceof SetDate){
+            setDate = (SetDate) activity;
         }
     }
 
@@ -54,6 +57,11 @@ public class SetDateFragment extends Fragment {
 
     public static final String START_DATE = "START_DATE";
     public static final String END_DATE = "END_DATE";
+
+    @Override
+    protected boolean isRetainInstance() {
+        return false;
+    }
 
     @Nullable
     @Override
@@ -77,54 +85,64 @@ public class SetDateFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    protected void onFirstTimeLaunched() {
+
+    }
+
+    @Override
+    public void onSaveState(Bundle state) {
+
+    }
+
+    @Override
+    public void onRestoreState(Bundle savedState) {
+
+    }
+
+    @Override
+    protected boolean getOptionsMenuEnable() {
+        return false;
+    }
+
+    @Override
+    protected void initialPresenter() {
+
+    }
+
+    @Override
+    protected void initialListener(Activity activity) {
+
+    }
+
+    @Override
+    protected void setupArguments(Bundle arguments) {
+
+    }
+
+    @Override
+    protected int getFragmentLayout() {
+        return 0;
+    }
+
     public void initView(View rootView){
         slidingTabs = (TabLayout) rootView.findViewById(R.id.sliding_tabs);
         setDateViewPager = (ViewPager) rootView.findViewById(R.id.set_date_viewpager);
     }
 
-    public static class SetDatePagerAdapter extends FragmentPagerAdapter {
-        final int PAGE_COUNT = 2;
-        private String tabTitles[] = new String[] { "PERIODE", "KUSTOM" };
-        private Context context;
-        private boolean isGM;
-        private int lastSelectionPeriod;
-        private long sDate;
-        private long eDate;
+    @Override
+    protected void setViewListener() {
 
-        public SetDatePagerAdapter(FragmentManager fm, Context context, boolean isGM,
-                                   int lastSelectionPeriod, long sDate, long eDate) {
-            super(fm);
-            this.context = context;
-            this.isGM = isGM;
-            this.lastSelectionPeriod = lastSelectionPeriod;
-            this.sDate = sDate;
-            this.eDate = eDate;
-            Log.d("MNORMANSYAH", "sDate "+getDateFormat(sDate)+" eDate "+getDateFormat(eDate));
-        }
+    }
 
-        @Override
-        public int getCount() {
-            if(!isGM)
-                return 1;
-            return PAGE_COUNT;
-        }
+    @Override
+    protected void initialVar() {
 
-        @Override
-        public Fragment getItem(int position) {
-            switch (position) {
-                case 0:
-                    return PeriodFragment.newInstance(lastSelectionPeriod);
-                case 1:
-                default:
-                    return CustomFragment.newInstance(sDate,eDate);
-            }
-        }
+    }
 
-        @Override
-        public CharSequence getPageTitle(int position) {
-            // Generate title based on item position
-            return tabTitles[position];
-        }
+    @Override
+    protected void setActionVar() {
+
     }
 
     public static String reverseDate(String[] split) {
