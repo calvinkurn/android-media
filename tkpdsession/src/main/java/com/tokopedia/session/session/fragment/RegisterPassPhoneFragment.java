@@ -331,7 +331,7 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
             sendGTMRegisterError(AppEventTracking.EventLabel.FULLNAME);
             return false;
         }
-        if (vPassword.length() == 0 && vPassword.isEnabled()) {
+        if (vPassword.length() == 0 && vPassword.getVisibility()==View.VISIBLE) {
             vPassword.setError(getText(R.string.error_field_required));
             vPassword.requestFocus();
             sendGTMRegisterError(AppEventTracking.EventLabel.PASSWORD);
@@ -434,6 +434,7 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
         if(allowedFieldList!=null){
             makeItEnabled(vName,false);
             makeItEnabled(vPhoneNumber, false);
+            vPassword.setVisibility(View.GONE);
             vPasswordRetype.setVisibility(View.GONE);
             for(String key : allowedFieldList){
                 switch (key){
@@ -441,6 +442,10 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
                         makeItEnabled(vName, true);
                         vName.requestFocus();
                         vName.setText("");
+                        break;
+                    case "password":
+                        vPassword.setVisibility(View.VISIBLE);
+                        vPasswordRetype.setVisibility(View.VISIBLE);
                         break;
                     case "phone":
                         makeItEnabled(vPhoneNumber,true);
