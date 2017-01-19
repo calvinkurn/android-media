@@ -25,4 +25,6 @@ public interface RegisterInitialView extends BaseView{
     void onMessageError(int discoverLogin, String s);
 
     void finishActivity();
+
+    void moveToFragmentSecurityQuestion(int user_check_security_1, int user_check_security_2, int user_id);
 }
