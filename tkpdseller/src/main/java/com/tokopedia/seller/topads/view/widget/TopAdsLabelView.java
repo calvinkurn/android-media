@@ -29,7 +29,6 @@ public class TopAdsLabelView extends FrameLayout {
     private String titleText;
     private String valueText;
     private int colorValue;
-    private OnClickListener contentClickListener;
 
     public TopAdsLabelView(Context context) {
         super(context);
@@ -66,14 +65,6 @@ public class TopAdsLabelView extends FrameLayout {
         titleTextView.setText(titleText);
         contentTextView.setText(valueText);
         contentTextView.setTextColor(colorValue);
-        contentTextView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(contentClickListener != null){
-                    contentClickListener.onClick(view);
-                }
-            }
-        });
         invalidate();
         requestLayout();
     }
@@ -108,9 +99,5 @@ public class TopAdsLabelView extends FrameLayout {
 
     public String getValue() {
         return contentTextView.getText().toString();
-    }
-
-    public void setContentClickListener(OnClickListener contentClickListener) {
-        this.contentClickListener = contentClickListener;
     }
 }

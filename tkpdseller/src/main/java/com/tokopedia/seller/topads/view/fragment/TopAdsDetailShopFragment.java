@@ -15,15 +15,12 @@ import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.interactor.TopAdsProductAdInteractorImpl;
 import com.tokopedia.seller.topads.interactor.TopAdsShopAdInteractorImpl;
 import com.tokopedia.seller.topads.model.data.Ad;
-import com.tokopedia.seller.topads.model.data.ProductAd;
 import com.tokopedia.seller.topads.model.data.ShopAd;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailProductPresenter;
-import com.tokopedia.seller.topads.presenter.TopAdsDetailProductPresenterImpl;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailShopPresenterImpl;
-import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
-import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
@@ -52,12 +49,6 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
     protected void initView(View view) {
         super.initView(view);
         name.setTitle(getString(R.string.title_top_ads_store));
-        name.setContentClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DeepLinkChecker.openShop(ad.getShopUri(), getActivity());
-            }
-        });
         name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.green_200));
         favorite.setTitle(getString(R.string.title_label_favorit_topads));
     }
@@ -88,5 +79,10 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
     public void onAdLoaded(Ad ad) {
         super.onAdLoaded(ad);
         this.ad = (ShopAd) ad;
+    }
+
+    @OnClick(R2.id.name)
+    void onNameClicked() {
+        DeepLinkChecker.openShop(ad.getShopUri(), getActivity());
     }
 }

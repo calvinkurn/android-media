@@ -116,6 +116,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
                 int visibleItem = layoutManager.getItemCount() - 1;
                 if (lastItemPosition == visibleItem && adapter.getDataSize() < totalItem) {
                     searchAd(page + 1);
+                    adapter.showLoading(true);
                 }
             }
         });
@@ -182,9 +183,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     public void onSearchAdLoaded(@NonNull List adList, int totalItem) {
         swipeToRefresh.setEnabled(true);
+        this.totalItem = totalItem;
         if (page == START_PAGE) {
             adapter.clearData();
-            this.totalItem = totalItem;
             layoutManager.scrollToPositionWithOffset(0, 0);
         }
         adapter.addData(adList);
@@ -195,7 +196,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
                 searchView.setVisibility(View.GONE);
             }
         }
-
     }
 
     @Override
@@ -215,6 +215,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     }
 
     private void hideLoading() {
+        adapter.showLoading(false);
         adapter.showLoadingFull(false);
         adapter.showEmptyFull(false);
         adapter.showRetryFull(false);

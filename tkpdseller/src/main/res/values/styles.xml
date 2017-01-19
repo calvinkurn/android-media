@@ -25,7 +25,21 @@
         <item name="android:lines">1</item>
     </style>
 
-    <style name="TextView.Statistic">
+    <style name="TextView.TopAdsShopTitle">
+        <item name="android:textSize">@dimen/font_small</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextView.TopAdsDate">
+        <item name="android:textSize">@dimen/font_medium</item>
+        <item name="android:textColor">@color/green_200</item>
+    </style>
+
+    <style name="TextView.DashboardStatisticTitle">
+        <item name="android:textSize">@dimen/text_size_small</item>
+    </style>
+
+    <style name="TextView.DashboardStatisticContent">
         <item name="android:textSize">@dimen/text_size_xxxlarge</item>
         <item name="android:textColor">@color/green_200</item>
         <item name="android:text">@string/top_ads_statistic_info_default_value</item>

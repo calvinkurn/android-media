@@ -14,5 +14,5 @@
 
     <TextView
         android:id="@+id/text_view_content"
-        style="@style/TextView.Statistic"/>
+        style="@style/TextView.DashboardStatisticContent"/>
 </LinearLayout>

@@ -19,7 +19,7 @@
 
         <TextView
             android:id="@+id/text_view_range_date"
-            style="@style/TextView"
+            style="@style/TextView.TopAdsDate"
             tools:text="@string/app_name"/>
 
         <ImageView
