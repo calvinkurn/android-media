@@ -34,6 +34,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import rx.Observable;
+
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 
 /**
@@ -71,7 +73,9 @@ public abstract class BaseAppNotificationReceiverUIBackground {
 
     public abstract void handleDedicatedNotification(Bundle data);
 
-    public abstract void notifyReceiverBackgroundMessage(Bundle data);
+    public abstract void handlePromotionNotification(Bundle data);
+
+    public abstract void notifyReceiverBackgroundMessage(Observable<Bundle> data);
 
     protected Map<Integer, Class> getCommonDedicatedNotification(){
         Map<Integer, Class> dedicatedNotification = new HashMap<>();
@@ -102,7 +106,7 @@ public abstract class BaseAppNotificationReceiverUIBackground {
         return promotionsNotification;
     }
 
-    protected void suchADangerousReflectionFunction(Bundle data, Class<?> clazz) {
+    protected void executeNotification(Bundle data, Class<?> clazz) {
         Constructor<?> ctor = null;
         try {
             ctor = clazz.getConstructor(Context.class);

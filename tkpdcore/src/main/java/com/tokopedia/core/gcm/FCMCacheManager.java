@@ -51,6 +51,13 @@ public class FCMCacheManager {
         cache.setExpire(1);
         cache.applyEditor();
     }
+    public void setCache() {
+        if (cache == null)
+            cache = new LocalCacheHandler(context, TkpdCache.G_CODE);
+
+        cache.setExpire(1);
+        cache.applyEditor();
+    }
 
     public void resetCache(Bundle data) {
         if (Integer.parseInt(data.getString(NOTIFICATION_CODE)) > 600
