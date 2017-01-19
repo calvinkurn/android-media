@@ -12,6 +12,7 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.gcm.interactor.entity.NotificationEntity;
@@ -20,6 +21,7 @@ import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,6 +53,7 @@ public class FCMCacheManager {
         cache.setExpire(1);
         cache.applyEditor();
     }
+
     public void setCache() {
         if (cache == null)
             cache = new LocalCacheHandler(context, TkpdCache.G_CODE);
@@ -292,8 +295,10 @@ public class FCMCacheManager {
         if (!isExist) {
             notificationEntities.add(notificationEntity);
         }
+        Type baseType = new TypeToken<List<NotificationEntity>>() {
+        }.getType();
         Gson gson = new Gson();
-        String newList = gson.toJson(notificationEntities, NotificationEntity.class);
+        String newList = gson.toJson(notificationEntities, baseType);
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.GCM_NOTIFICATION);
         localCacheHandler.putString(TkpdCache.Key.NOTIFICATION_PASS_DATA, newList);
         localCacheHandler.applyEditor();
@@ -307,7 +312,7 @@ public class FCMCacheManager {
                         localCacheHandler.getString(TkpdCache.Key.NOTIFICATION_PASS_DATA, "")
                 );
         if (mNotificationEntity != null)
-            return mNotificationEntity;
+            return new ArrayList<>(mNotificationEntity);
         else
             return new ArrayList<>();
     }

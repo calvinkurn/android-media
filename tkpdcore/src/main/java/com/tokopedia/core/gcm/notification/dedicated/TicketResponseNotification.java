@@ -25,7 +25,7 @@ public class TicketResponseNotification extends BaseNotification {
                 InboxRouter.getInboxTicketActivityIntent(mContext)
         );
         mNotificationPass.classParentStack = InboxRouter.getInboxticketActivityClass();
-        mNotificationPass.title = mContext.getString(R.string.title_reply_review);
+        mNotificationPass.title = mContext.getString(R.string.title_new_ticket);
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
     }

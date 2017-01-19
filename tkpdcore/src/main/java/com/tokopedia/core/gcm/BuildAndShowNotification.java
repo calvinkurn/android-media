@@ -135,7 +135,8 @@ public class BuildAndShowNotification {
                 stackBuilder.addParentStack(notificationPass.classParentStack);
             }
         } else {
-            stackBuilder.addParentStack(RouterUtils.getActivityComponentName(mContext, NotificationCenter.class));
+            notificationPass.setIntent(new Intent(mContext, NotificationCenter.class));
+            stackBuilder.addParentStack(NotificationCenter.class);
             inboxStyle.setBigContentTitle(mContext.getString(R.string.title_new_notif_general));
             if (getUnOpenedNotification() != null) {
                 for (NotificationEntity entity : getUnOpenedNotification()) {
