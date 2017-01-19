@@ -84,7 +84,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.renderFormProductInfo(data.getForm().getProductDetail());
                         viewListener.renderFormAddress(data.getForm().getDestination());
                         viewListener.hideInitLoading();
-                        if (isAllowKeroAccess(data)) {
+                        if (isAllowKeroAccess(data) && isAllowedCourier(data)) {
                             calculateKeroRates(context, data);
                         }else{
                             viewListener.hideProgressLoading();
@@ -115,7 +115,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.renderFormProductInfo(data.getForm().getProductDetail());
                         viewListener.renderFormAddress(data.getForm().getDestination());
                         viewListener.hideInitLoading();
-                        if (isAllowKeroAccess(data)) {
+                        if (isAllowKeroAccess(data) && isAllowedCourier(data)) {
                             calculateKeroRates(context, data);
                         }else{
                             viewListener.hideProgressLoading();
@@ -132,38 +132,36 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     @Override
     public void calculateKeroRates(@NonNull Context context, @NonNull final AtcFormData atcFormData) {
         viewListener.disableBuyButton();
-        if(!atcFormData.getForm().getDestination().getAddressId().isEmpty() &&
-                !atcFormData.getForm().getDestination().getAddressId().equals("0")) {
-            keroNetInteractor.calculateShipping(context, KeroppiParam.paramsKero(atcFormData.getShop(),
-                    atcFormData.getForm().getDestination(), atcFormData.getForm().getProductDetail()),
-                    new KeroNetInteractor.CalculationListener() {
-                        @Override
-                        public void onSuccess(Data rates) {
-                            viewListener.renderFormShipmentRates(filterAvailableKeroShipment(
-                                    rates.getAttributes(), atcFormData.getForm().getShipment())
-                            );
-                            viewListener.enableBuyButton();
-                        }
+        keroNetInteractor.calculateShipping(context, KeroppiParam.paramsKero(atcFormData.getShop(),
+                atcFormData.getForm().getDestination(), atcFormData.getForm().getProductDetail()),
+                new KeroNetInteractor.CalculationListener() {
+                    @Override
+                    public void onSuccess(Data rates) {
+                        viewListener.renderFormShipmentRates(filterAvailableKeroShipment(
+                                rates.getAttributes(), atcFormData.getForm().getShipment())
+                        );
+                        viewListener.enableBuyButton();
+                    }
 
-                        @Override
-                        public void onFailed(String error) {
-                            viewListener.showErrorMessage(error);
-                            viewListener.enableBuyButton();
-                        }
+                    @Override
+                    public void onFailed(String error) {
+                        viewListener.showErrorMessage(error);
+                        viewListener.enableBuyButton();
+                    }
 
-                        @Override
-                        public void onTimeout(String timeoutError) {
-                            viewListener.showErrorMessage(timeoutError);
-                            viewListener.enableBuyButton();
-                        }
+                    @Override
+                    public void onTimeout(String timeoutError) {
+                        viewListener.showErrorMessage(timeoutError);
+                        viewListener.enableBuyButton();
+                    }
 
-                        @Override
-                        public void onNoConnection() {
-                            viewListener.onCartFailedLoading();
-                            viewListener.enableBuyButton();
-                        }
-                    });
-        }
+                    @Override
+                    public void onNoConnection() {
+                        viewListener.onCartFailedLoading();
+                        viewListener.enableBuyButton();
+                    }
+                });
+
     }
 
     private List<Attribute> filterAvailableKeroShipment(List<Attribute> datas,
@@ -520,10 +518,29 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                 && !TextUtils.isEmpty(data.getForm().getDestination().getDistrictId())
                 && !TextUtils.isEmpty(data.getForm().getDestination().getPostalCode())
                 && !TextUtils.isEmpty(data.getForm().getProductDetail().getProductWeight())
-                ) {
+                && data.getForm().getDestination() != null
+                && !data.getForm().getDestination().getAddressId().isEmpty()
+                && !data.getForm().getDestination().getAddressId().equals("0")) {
             return true;
         } else {
             return false;
         }
+    }
+
+    private boolean isAllowedCourier(AtcFormData data) {
+        for (int i = 0; i<data.getForm().getShipment().size(); i++) {
+            for(int j = 0; j<data.getForm().getShipment().get(i).getShipmentPackage().size(); j++) {
+                ShipmentPackage shipmentPackage = data.getForm().getShipment().get(i)
+                        .getShipmentPackage().get(j);
+                boolean packageAvailable = shipmentPackage.getPackageAvailable() == 1;
+                boolean instantCourier = shipmentPackage.getShowMap() == 1;
+                boolean allowedInstant = !data.getShop().getLatitude().isEmpty();
+                if(packageAvailable && !instantCourier)
+                    return true;
+                else if (instantCourier && allowedInstant)
+                    return true;
+            }
+        }
+        return false;
     }
 }
