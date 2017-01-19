@@ -19,9 +19,13 @@ import com.tokopedia.core.gcm.notification.dedicated.ResCenterAdminSellerReplyNo
 import com.tokopedia.core.gcm.notification.dedicated.ResCenterBuyerAgreeNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ResCenterBuyerReplyNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ResCenterNewNotification;
+import com.tokopedia.core.gcm.notification.dedicated.SellingAutoCancel2DNotification;
+import com.tokopedia.core.gcm.notification.dedicated.SellingAutoCancel4DNotification;
+import com.tokopedia.core.gcm.notification.dedicated.SellingInvalidResiNotification;
+import com.tokopedia.core.gcm.notification.dedicated.SellingOrderDeliveredNotification;
+import com.tokopedia.core.gcm.notification.dedicated.SellingOrderFinishedNotification;
 import com.tokopedia.core.gcm.notification.dedicated.TicketResponseNotification;
 import com.tokopedia.core.gcm.notification.promotions.CartNotification;
-import com.tokopedia.core.gcm.notification.promotions.DeeplinkNotification;
 import com.tokopedia.core.gcm.notification.promotions.GeneralNotification;
 import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.VerificationNotification;
@@ -77,7 +81,7 @@ public abstract class BaseAppNotificationReceiverUIBackground {
 
     public abstract void notifyReceiverBackgroundMessage(Observable<Bundle> data);
 
-    protected Map<Integer, Class> getCommonDedicatedNotification(){
+    protected Map<Integer, Class> getCommonDedicatedNotification() {
         Map<Integer, Class> dedicatedNotification = new HashMap<>();
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_MESSAGE, NewMessageNotification.class);
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TALK, NewDiscussionNotification.class);
@@ -92,17 +96,21 @@ public abstract class BaseAppNotificationReceiverUIBackground {
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_REPLY, ResCenterBuyerReplyNotification.class);
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_AGREE, ResCenterBuyerAgreeNotification.class);
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_SELLER_REPLY, ResCenterAdminSellerReplyNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_CANCEL_2D_SELLER, SellingAutoCancel2DNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_CANCEL_4D_SELLER, SellingAutoCancel4DNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_INVALID_RESI, SellingInvalidResiNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_DELIVERED_SELLER, SellingOrderDeliveredNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_FINISH_SELLER, SellingOrderFinishedNotification.class);
         return dedicatedNotification;
     }
 
-    protected Map<Integer, Class> getCommonPromoNotification(){
+    protected Map<Integer, Class> getCommonPromoNotification() {
         Map<Integer, Class> promotionsNotification = new HashMap<>();
         promotionsNotification.put(TkpdState.GCMServiceState.GCM_PROMO, PromoNotification.class);
         promotionsNotification.put(TkpdState.GCMServiceState.GCM_GENERAL, GeneralNotification.class);
         promotionsNotification.put(TkpdState.GCMServiceState.GCM_CART, CartNotification.class);
         promotionsNotification.put(TkpdState.GCMServiceState.GCM_VERIFICATION, VerificationNotification.class);
         promotionsNotification.put(TkpdState.GCMServiceState.GCM_WISHLIST, WishlistNotification.class);
-        promotionsNotification.put(TkpdState.GCMServiceState.GCM_DEEPLINK, DeeplinkNotification.class);
         return promotionsNotification;
     }
 
