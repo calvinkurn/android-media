@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.seller.gmstat.utils.GMNetworkErrorHelper;
 import com.tokopedia.seller.gmstat.views.adapter.GMStatWidgetAdapter;
 import com.tokopedia.seller.gmstat.views.helper.BuyerDataLoading;
 import com.tokopedia.seller.gmstat.views.helper.MarketInsightLoading;
@@ -154,7 +155,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     private BuyerDataViewHelper buyerDataViewHelper;
     private GMStatHeaderViewHelper gmstatHeaderViewHelper;
     private GrossGraphChartConfig grossGraphChartConfig;
-    private SnackBar snackBar;
+    GMNetworkErrorHelper gmNetworkErrorHelper;
 
     private List<NExcel> joinDateAndGrossGraph(List<Integer> dateGraph, List<Integer> grossGraph){
         List<NExcel> nExcels = new ArrayList<>();
@@ -451,7 +452,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     @Override
     public void onResume() {
         super.onResume();
-        snackBar = new SnackBar().view(rootView);
+        gmNetworkErrorHelper = new GMNetworkErrorHelper(null, rootView);
         gmFragmentPresenter.onResume();
     }
 
@@ -472,7 +473,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     @Override
     public void onPause() {
         super.onPause();
-        snackBar = null;
+        gmNetworkErrorHelper.onPause();
         gmFragmentPresenter.onPause();
         if(grossIncomeGraph2 != null)
             grossIncomeGraph2.dismissAllTooltips();
@@ -655,20 +656,14 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
             @Override
             public void run() {
                 if(getActivity() != null && rootView != null){
-                    snackBar
-                            .duration(SnackBar.SnackBarDuration.INDEFINITE)
-                            .text(textMessage.toString(), "COBA KEMBALI")
-                            .textColors(Color.WHITE,Color.GREEN)
-                            .backgroundColor(Color.BLACK)
-                            .duration(SnackBar.SnackBarDuration.INDEFINITE)
-                            .setOnClickListener(true, new OnActionClickListener() {
+                    gmNetworkErrorHelper.showSnackbar(textMessage.toString(), "COBA KEMBALI"
+                            , new OnActionClickListener() {
                                 @Override
-                                public void onClick(View view) {
+                                public void onClick(@SuppressWarnings("UnusedParameters") View view) {
                                     gmFragmentPresenter.setFetchData(true);
                                     gmFragmentPresenter.fetchData();
                                 }
-                            })
-                            .show();
+                            });
                 }
             }
         }, 100);

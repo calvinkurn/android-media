@@ -15,12 +15,12 @@ public class SnackBar {
 
 
 
-    enum SnackBarDuration {
+    public enum SnackBarDuration {
         SHORT, LONG, INDEFINITE
     }
 
 
-    enum IconPosition {
+    public enum IconPosition {
         LEFT, RIGHT, TOP, BOTTOM
     }
     //Default snackbar will be showed for short duration
