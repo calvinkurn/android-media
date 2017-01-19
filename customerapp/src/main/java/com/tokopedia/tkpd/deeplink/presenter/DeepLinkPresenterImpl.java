@@ -106,11 +106,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_SHOP_INFO;
                     break;
                 case ACCOUNTS:
-                    openWebView(null, uriData);
+                    openWebView(uriData);
                     screenName = AppScreen.SCREEN_LOGIN;
                     break;
                 case OTHER:
-                    openWebView(linkSegment, uriData);
+                    openWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
                     break;
                 case INVOICE:
@@ -122,7 +122,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_RECHARGE;
                     break;
                 default:
-                    openWebView(linkSegment, uriData);
+                    openWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
                     break;
             }
@@ -243,9 +243,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return false;
     }
 
-    private void openWebView(List<String> linkSegment, Uri uriData) {
+    private void openWebView(Uri uriData) {
         CommonUtils.dumper("wvlogin URL links "+getUrl(uriData.toString()));
-        Fragment fragment = FragmentGeneralWebView.createInstance(uriData.toString());
+        String url = getUrl(uriData.toString());
+        Fragment fragment = FragmentGeneralWebView.createInstance(url);
         viewListener.inflateFragment(fragment, "WEB_VIEW");
     }
 
