@@ -103,21 +103,6 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         );
     }
 
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initialVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
     String[] monthNamesAbrev;
 
 //    @BindArray(R.array.month_names)
@@ -375,11 +360,6 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         gmFragmentPresenter.setFirstTime(false);
@@ -406,21 +386,6 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         grossGraphChartConfig = new GrossGraphChartConfig(
                 gmFragmentPresenter.getmLabels(), gmFragmentPresenter.getmValues());
         return rootView;
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
     }
 
     private void initNumberFormatter() {
@@ -517,36 +482,6 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     public void onDestroyView() {
         super.onDestroyView();
         unbind.unbind();
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return 0;
-    }
-
-    @Override
-    protected void initView(View view) {
-
     }
 
     @Override
@@ -784,6 +719,33 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         return hasDecimal ? (truncated / 10d) + suffix : (truncated / 10) + suffix;
     }
 
+    //[START] unused methods
+    @Override protected void setViewListener() {}
+
+    @Override protected void initialVar() {}
+
+    @Override protected void setActionVar() {}
+
+    @Override protected boolean isRetainInstance() { return false; }
+
+    @Override protected void onFirstTimeLaunched() { }
+
+    @Override public void onSaveState(Bundle state) { }
+
+    @Override protected boolean getOptionsMenuEnable() { return false; }
+
+    @Override protected void initialPresenter() {}
+
+    @Override public void onRestoreState(Bundle savedState) {}
+
+    @Override protected void initialListener(Activity activity) {}
+
+    @Override protected void setupArguments(Bundle arguments) {}
+
+    @Override protected int getFragmentLayout() { return 0; }
+
+    @Override protected void initView(View view) {}
+    //[END] unused methods
 
 
 }

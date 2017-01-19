@@ -1,9 +1,9 @@
 package com.tokopedia.seller.gmstat.views.adapter;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v13.app.FragmentStatePagerAdapter;
 import android.util.Log;
 
 import com.tokopedia.seller.gmstat.views.CustomFragment;
@@ -15,7 +15,7 @@ import static com.tokopedia.seller.gmstat.views.GMStatActivityFragment.getDateFo
  * Created by normansyahputa on 1/19/17.
  */
 
-public class SetDatePagerAdapter extends FragmentPagerAdapter {
+public class SetDatePagerAdapter extends FragmentStatePagerAdapter {
     final int PAGE_COUNT = 2;
     private String tabTitles[] = new String[] { "PERIODE", "KUSTOM" };
     private Context context;

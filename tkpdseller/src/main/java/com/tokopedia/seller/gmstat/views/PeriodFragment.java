@@ -1,8 +1,9 @@
 package com.tokopedia.seller.gmstat.views;
 
+import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.views.adapter.PeriodAdapter;
 import com.tokopedia.seller.gmstat.views.helper.PeriodChooseViewHelper;
@@ -31,13 +33,13 @@ import static com.tokopedia.seller.gmstat.views.SetDateActivity.SELECTION_PERIOD
  * Created by normansyahputa on 1/19/17.
  */
 
-public class PeriodFragment extends Fragment {
+public class PeriodFragment extends BasePresenterFragment {
 
     RecyclerView periodRecyclerView;
     private Unbinder unbinder;
     private PeriodAdapter periodAdapter;
 
-    public void initView(View rootView){
+    public void initViews(View rootView){
         periodRecyclerView = (RecyclerView) rootView.findViewById(R.id.period_recyclerview);
         saveDate = (Button) rootView.findViewById(R.id.save_date);
         periodLinLay = (LinearLayout) rootView.findViewById(R.id.period_linlay);
@@ -136,7 +138,7 @@ public class PeriodFragment extends Fragment {
         }
 
         unbinder = ButterKnife.bind(this, rootView);
-        initView(rootView);
+        initViews(rootView);
 
         //[START] old code
         periodAdapter = new PeriodAdapter();
@@ -185,4 +187,34 @@ public class PeriodFragment extends Fragment {
     public static Fragment newInstance() {
         return new PeriodFragment();
     }
+
+    //[START] unused methods
+    @Override protected void setViewListener() {}
+
+    @Override protected void initialVar() {}
+
+    @Override protected void setActionVar() {}
+
+    @Override protected boolean isRetainInstance() { return false; }
+
+    @Override protected void onFirstTimeLaunched() { }
+
+    @Override public void onSaveState(Bundle state) { }
+
+    @Override protected boolean getOptionsMenuEnable() { return false; }
+
+    @Override protected void initialPresenter() {}
+
+    @Override public void onRestoreState(Bundle savedState) {}
+
+    @Override protected void initialListener(Activity activity) {}
+
+    @Override protected void setupArguments(Bundle arguments) {}
+
+    @Override protected int getFragmentLayout() { return 0; }
+
+    @Override protected void initView(View view) {}
+    //[END] unused methods
+
+
 }

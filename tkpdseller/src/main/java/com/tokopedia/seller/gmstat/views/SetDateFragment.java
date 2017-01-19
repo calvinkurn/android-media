@@ -58,17 +58,12 @@ public class SetDateFragment extends BasePresenterFragment {
     public static final String START_DATE = "START_DATE";
     public static final String END_DATE = "END_DATE";
 
-    @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.set_date_layout, container, false);
-        initView(rootView);
-        setDatePagerAdapter = new SetDatePagerAdapter(getActivity().getSupportFragmentManager(),
+        initViews(rootView);
+        setDatePagerAdapter = new SetDatePagerAdapter(getActivity().getFragmentManager(),
                 getActivity(), setDate.isGMStat(), setDate.selectionPeriod(),
                 setDate.sDate(), setDate.eDate());
         setDateViewPager.setAdapter(setDatePagerAdapter);
@@ -85,64 +80,9 @@ public class SetDateFragment extends BasePresenterFragment {
         return rootView;
     }
 
-    @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return 0;
-    }
-
-    public void initView(View rootView){
+    public void initViews(View rootView){
         slidingTabs = (TabLayout) rootView.findViewById(R.id.sliding_tabs);
         setDateViewPager = (ViewPager) rootView.findViewById(R.id.set_date_viewpager);
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initialVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     public static String reverseDate(String[] split) {
@@ -152,4 +92,32 @@ public class SetDateFragment extends BasePresenterFragment {
         }
         return reverse;
     }
+
+    //[START] unused methods
+    @Override protected void setViewListener() {}
+
+    @Override protected void initialVar() {}
+
+    @Override protected void setActionVar() {}
+
+    @Override protected boolean isRetainInstance() { return false; }
+
+    @Override protected void onFirstTimeLaunched() { }
+
+    @Override public void onSaveState(Bundle state) { }
+
+    @Override protected boolean getOptionsMenuEnable() { return false; }
+
+    @Override protected void initialPresenter() {}
+
+    @Override public void onRestoreState(Bundle savedState) {}
+
+    @Override protected void initialListener(Activity activity) {}
+
+    @Override protected void setupArguments(Bundle arguments) {}
+
+    @Override protected int getFragmentLayout() { return 0; }
+
+    @Override protected void initView(View view) {}
+    //[END] unused methods
 }

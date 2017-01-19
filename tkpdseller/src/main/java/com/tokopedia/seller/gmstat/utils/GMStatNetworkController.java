@@ -43,7 +43,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.tkpd.library.utils.network.BaseNetworkController.onResponseError;
-import static com.tokopedia.seller.gmstat.views.SetDateFragment.StartOrEndPeriodModel.YESTERDAY;
+import static com.tokopedia.seller.gmstat.views.models.StartOrEndPeriodModel.YESTERDAY;
 
 /**
  * Created by normansyahputa on 11/2/16.
