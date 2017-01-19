@@ -1,5 +1,6 @@
 package com.tokopedia.seller.myproduct;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
@@ -26,6 +27,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -36,6 +38,10 @@ import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.DownloadResultSender;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.fragment.TwitterDialogV4;
+import com.tokopedia.core.myproduct.fragment.ImageGalleryAlbumFragment;
+import com.tokopedia.core.myproduct.fragment.ImageGalleryFragment;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.myproduct.dialog.DialogFragmentImageAddProduct;
@@ -73,6 +79,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
@@ -80,6 +92,7 @@ import static com.tkpd.library.utils.CommonUtils.checkNotNull;
 /**
  * Created by sebastianusk on 03/01/2017.
  */
+@RuntimePermissions
 public class ProductActivity extends BaseProductActivity implements
         ProductView,
         ChooserFragment.OnListFragmentInteractionListener,
@@ -91,6 +104,7 @@ public class ProductActivity extends BaseProductActivity implements
 {
 
     private static final String TAG = "ProductActivity";
+    public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     SimpleFacebook simplefacebook;
 
     @BindView(R2.id.toolbar)
@@ -101,7 +115,7 @@ public class ProductActivity extends BaseProductActivity implements
 
     FloatingActionButton fab;
 
-    String FRAGMENT;
+    String FRAGMENT = "";
     int position;
     String imagePathFromImport;
     String[] multiImagePathFromImport;
@@ -128,6 +142,8 @@ public class ProductActivity extends BaseProductActivity implements
     private Unbinder unbinder;
     private String messageTAG = "Product";
     private BroadcastReceiver addProductReceiver;
+    private String imagePathCamera;
+    private boolean broadcastRegistered = false;
 
     public static File getOutputMediaFile(){
         File mediaStorageDir = new File(
@@ -150,38 +166,28 @@ public class ProductActivity extends BaseProductActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fetchSaveInstanceState(savedInstanceState);
+        /* Starting Download Service */
+        addProductReceiver = getProductServiceReceiver();
+        supportFragmentManager = getSupportFragmentManager();
 
-        getImplicitIntent();
 
-        if (this.isFinishing()) {
-            return;
-        }
         simplefacebook = SimpleFacebook.getInstance(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             getWindow().setStatusBarColor(getResources().getColor(R.color.green_600));
         }
-        fetchSaveInstanceState(savedInstanceState);
-        fetchExtras(getIntent());
-        switch (FRAGMENT) {
-            case AddProductFragment.FRAGMENT_TAG:
-                setContentView(R.layout.activity_product2);
-                break;
-            default:
-                setContentView(R.layout.activity_product);
-                break;
-        }
+
+        setContentView(R.layout.activity_product2);
         unbinder = ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        ProductActivityPermissionsDispatcher.continueOnCreateWithCheck(this);
 
-        supportFragmentManager = getSupportFragmentManager();
 
-        /* Starting Download Service */
-        addProductReceiver = getProductServiceReceiver();
     }
 
     @NonNull
@@ -433,13 +439,16 @@ public class ProductActivity extends BaseProductActivity implements
             initFragment(FRAGMENT);
 
         registerReceiver(addProductReceiver, new IntentFilter(TkpdState.ProductService.BROADCAST_ADD_PRODUCT));
+        broadcastRegistered = true;
 
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(addProductReceiver);
+        if(broadcastRegistered) {
+            unregisterReceiver(addProductReceiver);
+        }
     }
 
     public void fetchSaveInstanceState(Bundle bundle) {
@@ -613,12 +622,6 @@ public class ProductActivity extends BaseProductActivity implements
                 dialogFragment.show(fm, ChooserDialogFragment.FRAGMENT_TAG);
                 break;
         }
-    }
-
-    @Deprecated
-    public void showPopup(String title, List<SimpleTextModel> simpleTextModels) {
-        DialogFragment dialogFragment = ChooserDialogFragment.newInstance(title, simpleTextModels);
-        dialogFragment.show(supportFragmentManager, ChooserDialogFragment.FRAGMENT_TAG);
     }
 
     @Override
@@ -813,4 +816,64 @@ public class ProductActivity extends BaseProductActivity implements
             super.onBackPressed();
         }
     }
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void continueOnCreate() {
+        getImplicitIntent();
+        if (this.isFinishing()) {
+            return;
+        }
+        fetchExtras(getIntent());
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        ProductActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
+
+    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showRationaleForStorage(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(this, request, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    void showDeniedForCamera() {
+        RequestPermissionUtil.onPermissionDenied(this,Manifest.permission.CAMERA);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.CAMERA)
+    void showNeverAskForCamera() {
+        RequestPermissionUtil.onNeverAskAgain(this,Manifest.permission.CAMERA);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showDeniedForStorage() {
+        RequestPermissionUtil.onPermissionDenied(this,Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showNeverAskForStorage() {
+        RequestPermissionUtil.onNeverAskAgain(this,Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showDeniedForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onPermissionDenied(this,listPermission);
+    }
+
+    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showNeverAskForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onNeverAskAgain(this,listPermission);
+    }
+
 }
