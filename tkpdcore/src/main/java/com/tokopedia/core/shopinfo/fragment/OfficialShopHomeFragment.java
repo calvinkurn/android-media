@@ -136,6 +136,7 @@ public class OfficialShopHomeFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         progressBar.setIndeterminate(true);
         String url = getArguments().getString(SHOP_URL);
+        CommonUtils.dumper("webviewconf URL address "+url);
         webView.loadUrl(url);
         webView.setWebViewClient(new MyWebClient());
         webView.setWebChromeClient(new MyWebViewClient());
@@ -171,6 +172,7 @@ public class OfficialShopHomeFragment extends Fragment {
 
     private boolean overrideUrl(String url) {
         Uri uri = Uri.parse(url);
+        CommonUtils.dumper("webviewconf override "+url);
         if(uri.getScheme().equals("tokopedia")) {
             String id = uri.getLastPathSegment();
             switch (uri.getPathSegments().get(1)) {
