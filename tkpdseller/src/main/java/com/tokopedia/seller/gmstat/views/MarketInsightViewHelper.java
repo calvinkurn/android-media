@@ -24,6 +24,8 @@ import com.tokopedia.seller.gmstat.models.GetShopCategory;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.seller.gmstat.utils.GMStatConstant.MARKET_INSIGHT_FOOTER_FORMAT;
+import static com.tokopedia.seller.gmstat.utils.GMStatConstant.NUMBER_TIMES_FORMAT;
 import static com.tokopedia.seller.gmstat.views.DataTransactionViewHelper.dpToPx;
 
 /**
@@ -54,10 +56,8 @@ public class MarketInsightViewHelper {
 
     int breakLineBackground;
 
-//    @BindView(R.id.market_insight_container_upper)
-//    RelativeLayout marketInsightContainerUpper;
-
     LinearLayout separator2;
+    private String prefixFooterMarketInsight;
 
     public void addProductMarketInsight(){
         ProductActivity.moveToAddProduct(view.getContext());
@@ -132,7 +132,7 @@ public class MarketInsightViewHelper {
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ProductActivity.moveToAddProduct(view.getContext());
+                        addProductMarketInsight();
                     }
                 });
 
@@ -171,6 +171,8 @@ public class MarketInsightViewHelper {
                     }
                 }
         );
+
+        prefixFooterMarketInsight = view.getContext().getString(R.string.prefix_footer_market_insight);
     }
 
     /**
@@ -183,10 +185,8 @@ public class MarketInsightViewHelper {
 
         HadesV1Model.Category category = hadesV1Models.get(0).getData().getCategories().get(0);
 
-        String categoryBold = String.format("\"<i><b>%s</b></i>\"", category.getName());
-//        String footerText = String.format("Kata kunci ini berdasarkan kategori dari \"%s\"", category.getName());
-//        marketInsightFooter_.setText(footerText);
-        marketInsightFooter_.setText(MethodChecker.fromHtml("Kata kunci ini berdasarkan kategori dari "+categoryBold+" "));
+        String categoryBold = String.format(MARKET_INSIGHT_FOOTER_FORMAT, category.getName());
+        marketInsightFooter_.setText(MethodChecker.fromHtml(prefixFooterMarketInsight+categoryBold+" "));
     }
 
     public void bindData(List<GetKeyword> getKeywords){
@@ -252,8 +252,8 @@ public class MarketInsightViewHelper {
             searchKeyword.add(searchKeyword1);
         }
 
-        String categoryBold = String.format("\"<i><b>%s</b></i>\"", "kaos");
-        marketInsightFooter_.setText(MethodChecker.fromHtml("Kata kunci ini berdasarkan kategori dari "+categoryBold+" "));
+        String categoryBold = String.format(MARKET_INSIGHT_FOOTER_FORMAT, "kaos");
+        marketInsightFooter_.setText(MethodChecker.fromHtml(prefixFooterMarketInsight+categoryBold+" "));
 
         marketInsightRecyclerView.setLayoutManager(new LinearLayoutManager(
                 view.getContext(), LinearLayoutManager.VERTICAL, false));
@@ -353,7 +353,7 @@ public class MarketInsightViewHelper {
 
             marketInsightProgress.setProgress((float) percentage);
 
-            marketInsightNumber.setText(String.format("%sx", String.valueOf(searchKeyword.getFrequency())));
+            marketInsightNumber.setText(String.format(NUMBER_TIMES_FORMAT, String.valueOf(searchKeyword.getFrequency())));
 
             marketInsightKeyword.setText(searchKeyword.getKeyword());
         }

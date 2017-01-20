@@ -14,6 +14,9 @@ import com.tokopedia.seller.gmstat.views.circleprogress.DonutProgress;
 
 import java.util.Locale;
 
+import static com.tokopedia.seller.gmstat.utils.GMStatConstant.LOWER_BUYER_FORMAT;
+import static com.tokopedia.seller.gmstat.utils.GMStatConstant.PERCENTAGE_FORMAT;
+import static com.tokopedia.seller.gmstat.utils.GMStatConstant.UPPER_BUYER_FORMAT;
 import static com.tokopedia.seller.gmstat.views.GMStatActivityFragment.NoDataAvailable;
 import static com.tokopedia.seller.gmstat.views.PopularProductViewHelper.getFormattedString;
 
@@ -41,10 +44,8 @@ public class BuyerDataViewHelper {
 
     int gredyColor;
 
-//    @BindDrawable(R.drawable.ic_rectangle_down)
     Drawable icRectagleDown;
 
-//    @BindDrawable(R.drawable.ic_rectangle_up)
     Drawable icRectagleUp;
 
     String[] gender;
@@ -103,9 +104,6 @@ public class BuyerDataViewHelper {
             percentageBuyer.setTextColor(gredyColor);
             buyerCountIcon.setVisibility(View.GONE);
             headerPieBuyerData.setVisibility(View.GONE);
-//            malePie.setText(String.format("%.2f%% Pria", 0.0f));
-//            femalePie.setText(String.format("%.2f%%", 0.0f));
-
             return;
         }else{
             femalePie.setTextColor(arrowDown);
@@ -124,18 +122,14 @@ public class BuyerDataViewHelper {
             if(malePercent >= femalePercent){
                 biggerGender += gender[0];
                 headerPieBuyerData.setText(biggerGender);
-//                malePie.setText(String.format(locale, "%.2f%% %s", femalePercent, gender[1]));
-//                femalePie.setText(String.format(locale, "%.2f%%", malePercent));
-                malePie.setText(String.format(locale, "%3d%% %s", (int)femalePercent, gender[1]));
-                femalePie.setText(String.format(locale, "%3d%%", (int)malePercent));
+                malePie.setText(String.format(locale, UPPER_BUYER_FORMAT, (int)femalePercent, gender[1]));
+                femalePie.setText(String.format(locale, LOWER_BUYER_FORMAT, (int)malePercent));
                 buyerDataPieChart.setProgress((float) malePercent);
             }else{
                 biggerGender += gender[1];
                 headerPieBuyerData.setText(biggerGender);
-//                malePie.setText(String.format(locale, "%.2f%% %s", malePercent, gender[0]));
-//                femalePie.setText(String.format(locale, "%.2f%%", femalePercent));
-                malePie.setText(String.format(locale, "%3d%% %s", (int)malePercent, gender[0]));
-                femalePie.setText(String.format(locale, "%3d%%", (int)femalePercent));
+                malePie.setText(String.format(locale, UPPER_BUYER_FORMAT, (int)malePercent, gender[0]));
+                femalePie.setText(String.format(locale, LOWER_BUYER_FORMAT, (int)femalePercent));
                 buyerDataPieChart.setProgress((float) femalePercent);
             }
         }
@@ -157,30 +151,21 @@ public class BuyerDataViewHelper {
             }else{
                 buyerCountIcon.setVisibility(View.VISIBLE);
                 buyerCountIcon.setImageDrawable(icRectagleDown);
-//            imageHandler.loadImage(buyerCountIcon, R.mipmap.arrow_down_percentage);
                 percentageBuyer.setTextColor(arrowDown);
                 isDefault = true;
             }
         }else{// up here
             buyerCountIcon.setVisibility(View.VISIBLE);
             buyerCountIcon.setImageDrawable(icRectagleUp);
-//            imageHandler.loadImage(buyerCountIcon, R.mipmap.arrow_up_percentage);
             percentageBuyer.setTextColor(arrowUp);
             isDefault = true;
         }
 
         if(isDefault){
             double d = percentage;
-            percentageBuyer.setText(String.format("%s%%", KMNumbers.formatString(d).replace("-", "")));
-
-//            DecimalFormat formatter = new DecimalFormat("#0.00");
-//            String text;
-//            System.out.println(text = formatter.format(percentage));
-//            percentageBuyer.setText(String.format("%s%%", text.replace("-", "")));
+            percentageBuyer.setText(String.format(PERCENTAGE_FORMAT, KMNumbers.formatString(d).replace("-", "")));
         }else{
             percentageBuyer.setText(R.string.no_data);
         }
-
-        // set icon up or down or netral
     }
 }

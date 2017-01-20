@@ -54,5 +54,8 @@
     <string name="unknown_exception_description">Tidak ada koneksi.\nSilahkan coba kembali</string>
     <string name="message_exception_description">Terjadi kesalahan koneksi.\nSilahkan coba kembali"</string>
     <string name="default_exception_description">Kesalahan tidak diketahui</string>
+    <string name="prefix_footer_market_insight">Kata kunci ini berdasarkan kategori dari </string>
+    <string name="last_thirty_days_ago">Data dalam 30 hari terakhir</string>
+
 
 </resources>

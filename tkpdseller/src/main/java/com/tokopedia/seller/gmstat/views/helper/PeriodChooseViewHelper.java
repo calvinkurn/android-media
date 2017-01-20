@@ -11,6 +11,8 @@ import com.tokopedia.seller.gmstat.views.models.PeriodRangeModel;
 
 import butterknife.ButterKnife;
 
+import static com.tokopedia.seller.gmstat.utils.GMStatConstant.RANGE_DATE_FORMAT;
+import static com.tokopedia.seller.gmstat.utils.GMStatConstant.SINGLE_DATE_FORMAT;
 import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateWithYear;
 import static com.tokopedia.seller.gmstat.views.SetDateFragment.reverseDate;
 
@@ -98,7 +100,6 @@ public class PeriodChooseViewHelper {
                 periodHeader.setText(R.string.thirty_days_ago);
             }
         }
-//            periodHeader.setText(periodRangeModel.headerText);
 
         String description = periodRangeModel.getDescription();
         Log.d("MNORMANSYAH", "description : "+description);
@@ -111,12 +112,12 @@ public class PeriodChooseViewHelper {
         }
 
         if(split.length  >1 ){
-            String res = String.format("%s - %s", getDateWithYear(split[0], monthNamesAbrev), getDateWithYear(split[1], monthNamesAbrev));
+            String res = String.format(RANGE_DATE_FORMAT, getDateWithYear(split[0], monthNamesAbrev), getDateWithYear(split[1], monthNamesAbrev));
             periodDate.setText(res);
         }
 
         if(split.length  ==1 ){
-            String res = String.format("%s", getDateWithYear(split[0], monthNamesAbrev));
+            String res = String.format(SINGLE_DATE_FORMAT, getDateWithYear(split[0], monthNamesAbrev));
             periodDate.setText(res);
         }
     }

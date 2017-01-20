@@ -13,6 +13,7 @@ import com.tokopedia.seller.gmstat.presenters.GMStat;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.models.CommomGMModel;
 
+import static com.tokopedia.seller.gmstat.utils.GMStatConstant.PERCENTAGE_FORMAT;
 import static com.tokopedia.seller.gmstat.views.GMStatActivityFragment.NoDataAvailable;
 
 /**
@@ -101,7 +102,7 @@ public class CommonGMVH extends RecyclerView.ViewHolder{
 //                System.out.println(text = formatter.format(d));
 
             double d = commomGMModel.percentage;
-            percentage.setText(String.format("%s%%", KMNumbers.formatString(d).replace("-", "")));
+            percentage.setText(String.format(PERCENTAGE_FORMAT, KMNumbers.formatString(d).replace("-", "")));
         }else{
             percentage.setText(R.string.no_data);
         }

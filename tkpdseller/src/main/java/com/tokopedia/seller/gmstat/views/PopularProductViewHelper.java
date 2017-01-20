@@ -18,6 +18,8 @@ import java.util.Locale;
 
 import butterknife.ButterKnife;
 
+import static com.tokopedia.seller.gmstat.utils.GMStatConstant.LAST_THIRTY_DAYS_AGO_FORMAT;
+
 /**
  * Created by normansyahputa on 11/9/16.
  */
@@ -46,6 +48,10 @@ public class PopularProductViewHelper {
 
     View separator2;
 
+    private String lastThirtyDaysAgo;
+
+    private static final Locale locale = new Locale("in", "ID");
+
     public void moveToAddProduct(){
         ProductActivity.moveToAddProduct(itemView.getContext());
     }
@@ -59,11 +65,10 @@ public class PopularProductViewHelper {
     }
 
     public PopularProductViewHelper(View itemView){
-        ButterKnife.bind(this, itemView);
         initView(itemView);
         this.itemView = itemView;
 
-        String categoryBold = String.format("<i>%s</i>", "Data dalam 30 hari terakhir");
+        String categoryBold = String.format(LAST_THIRTY_DAYS_AGO_FORMAT, lastThirtyDaysAgo);
         footerPopularProduct.setText(MethodChecker.fromHtml(categoryBold));
     }
 
@@ -128,6 +133,8 @@ public class PopularProductViewHelper {
                     }
                 }
         );
+
+        lastThirtyDaysAgo = itemView.getContext().getString(R.string.last_thirty_days_ago);
     }
 
     public void bindData(GetPopularProduct getPopularProduct, ImageHandler imageHandler){
@@ -147,7 +154,6 @@ public class PopularProductViewHelper {
         popularProductDescription.setText(MethodChecker.fromHtml(getPopularProduct.getProductName()));
         long sold = getPopularProduct.getSold();
         String text = getFormattedString(sold);
-//        numberOfSelling.setText(toKFormat(getPopularProduct.getSold()));
         numberOfSelling.setText(text);
         xSold.setText(R.string.number_of_selled);
     }
@@ -155,10 +161,8 @@ public class PopularProductViewHelper {
     public static String getFormattedString(long value) {
         String text = "";
         if( value < 1_000_000){
-            Locale locale = new Locale("in", "ID");
             NumberFormat currencyFormatter = NumberFormat.getNumberInstance(locale);
-            System.out.println(text = (currencyFormatter.format(value)));
-//                text = successTrans+"";
+            text = currencyFormatter.format(value);
         }else if(value >= 1_000_000){
             text = KMNumbers.formatNumbers(value);
         }

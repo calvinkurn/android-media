@@ -26,6 +26,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 
+import static com.tokopedia.seller.gmstat.utils.GMStatConstant.PERCENTAGE_FORMAT;
 import static com.tokopedia.seller.gmstat.views.GMStatActivityFragment.NoDataAvailable;
 import static com.tokopedia.seller.gmstat.views.PopularProductViewHelper.getFormattedString;
 
@@ -208,7 +209,7 @@ public class DataTransactionViewHelper {
 //            String text;
 //            System.out.println(text = formatter.format(d));
             double d = diffSuccessTrans;
-            percentage.setText(String.format("%s%%", KMNumbers.formatString(d).replace("-", "")));
+            percentage.setText(String.format(PERCENTAGE_FORMAT, KMNumbers.formatString(d).replace("-", "")));
         }else{
             percentage.setText(R.string.no_data);
         }
