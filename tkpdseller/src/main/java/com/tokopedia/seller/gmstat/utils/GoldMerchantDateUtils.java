@@ -51,7 +51,7 @@ public class GoldMerchantDateUtils {
         return day + " "+ month+" "+year;
     }
 
-    private static String getDate(Integer date){
+    public static String getDate(Integer date){
         List<String> dateRaw = getDateRaw(date);
         String month = dateRaw.get(1);
         String day = dateRaw.get(0);

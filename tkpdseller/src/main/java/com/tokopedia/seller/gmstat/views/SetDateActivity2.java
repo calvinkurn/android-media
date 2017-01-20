@@ -1,5 +1,7 @@
 package com.tokopedia.seller.gmstat.views;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,49 +29,31 @@ public class SetDateActivity2 extends BasePresenterActivity implements SetDateFr
     private long sDate = -1, eDate = -1;
 
     @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
     protected int getLayoutId() {
         return R.layout.content_set_date;
     }
 
-    @Override
-    protected void initView() {
 
+    @Override protected void initView() {
+        if(!isAfterRotate)
+            inflateNewFragment(new SetDateFragment(), GMStatActivityFragment.TAG);
     }
 
-    @Override
-    protected void setViewListener() {
+    //[START] unused methods
+    @Override protected void setupURIPass(Uri data) {}
 
-    }
+    @Override protected void setupBundlePass(Bundle extras) {}
 
-    @Override
-    protected void initVar() {
+    @Override protected void initialPresenter() { }
 
-    }
+    @Override protected void setViewListener() { }
 
-    @Override
-    protected void setActionVar() {
+    @Override protected void initVar() { }
 
-    }
+    @Override protected void setActionVar() { }
 
-    @Override
-    public String getScreenName() {
-        return null;
-    }
+    @Override public String getScreenName() { return null; }
+    //[END] unused methods
 
     /**
      * @return true if first time, false if already in foreground.
@@ -133,5 +117,12 @@ public class SetDateActivity2 extends BasePresenterActivity implements SetDateFr
     @Override
     public long eDate() {
         return eDate;
+    }
+
+    private void inflateNewFragment(Fragment fragment, String tag) {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.set_date_fragment_container, fragment, tag);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }

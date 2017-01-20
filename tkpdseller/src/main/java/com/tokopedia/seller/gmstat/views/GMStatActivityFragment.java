@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.gmstat.utils.GMNetworkErrorHelper;
+import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.gmstat.views.adapter.GMStatWidgetAdapter;
 import com.tokopedia.seller.gmstat.views.helper.BuyerDataLoading;
 import com.tokopedia.seller.gmstat.views.helper.MarketInsightLoading;
@@ -68,7 +69,6 @@ import java.util.TreeMap;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-import static com.tkpd.library.utils.CommonUtils.getDate;
 import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateRaw;
 import static com.tokopedia.seller.gmstat.views.DataTransactionViewHelper.dpToPx;
 import static com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper.getDates;
@@ -196,7 +196,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
             Integer date = dateGraph.get(i);
             Integer gross = grossGraph.get(i);
 
-            nExcels.add(new NExcel(gross, getDate(date)));
+            nExcels.add(new NExcel(gross, GoldMerchantDateUtils.getDate(date)));
         }
 
         return nExcels;

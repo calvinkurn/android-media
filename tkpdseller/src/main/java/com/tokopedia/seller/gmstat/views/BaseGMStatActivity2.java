@@ -133,6 +133,10 @@ public abstract class BaseGMStatActivity2 extends DrawerPresenterActivity
         green600 = ResourcesCompat.getColor(getResources(), R.color.green_600, null);
 
         tkpdMainGreenColor = ResourcesCompat.getColor(getResources(), R.color.tkpd_main_green, null);
+
+        if(!isAfterRotate) {
+            inflateNewFragment(new GMStatActivityFragment(), GMStatActivityFragment.TAG);
+        }
     }
 
     @Override
@@ -180,12 +184,5 @@ public abstract class BaseGMStatActivity2 extends DrawerPresenterActivity
         fragmentTransaction.replace(R.id.content_gmstat_fragment_container, fragment, tag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(!isAfterRotate)
-            inflateNewFragment(new GMStatActivityFragment(), GMStatActivityFragment.TAG);
     }
 }
