@@ -27,6 +27,8 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.presenter.TopAdsAdListPresenter;
+import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenter;
+import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
@@ -76,13 +78,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     }
 
     @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
+    protected TopAdsDatePickerPresenter getDatePickerPresenter() {
+        return new TopAdsDatePickerPresenterImpl(getActivity());
     }
 
     @Override
@@ -92,17 +89,14 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     @Override
     protected void initView(View view) {
+        super.initView(view);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
     }
 
     @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
     protected void setViewListener() {
+        super.setViewListener();
         swipeToRefresh.setEnabled(false);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
@@ -124,6 +118,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     @Override
     protected void initialVar() {
+        super.initialVar();
         page = START_PAGE;
         totalItem = Integer.MAX_VALUE;
         refresh = new RefreshHandler(getActivity(), mainView, new RefreshHandler.OnRefreshHandlerListener() {
@@ -159,7 +154,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         page = START_PAGE;
         adapter.clearData();
         adapter.showLoadingFull(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(presenter.getRangeDateFormat(startDate, endDate));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(datePickerPresenter.getRangeDateFormat(startDate, endDate));
         searchAd();
     }
 

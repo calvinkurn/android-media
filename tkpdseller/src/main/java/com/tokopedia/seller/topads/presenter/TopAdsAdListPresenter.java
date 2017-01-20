@@ -7,6 +7,6 @@ import java.util.List;
 /**
  * Created by zulfikarrahman on 11/24/16.
  */
-public interface TopAdsAdListPresenter<T extends Ad> extends TopAdsDatePickerPresenter, RetrofitPresenter {
+public interface TopAdsAdListPresenter<T extends Ad> extends RetrofitPresenter {
 
 }

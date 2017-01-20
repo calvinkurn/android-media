@@ -40,6 +40,7 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
 
     @Override
     protected void initialPresenter() {
+        super.initialPresenter();
         presenter = new TopAdsDetailShopPresenterImpl(getActivity(), this,
                 new TopAdsProductAdInteractorImpl(new TopAdsManagementService(), new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(getActivity())),
                 new TopAdsShopAdInteractorImpl(getActivity()));

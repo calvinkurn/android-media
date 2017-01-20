@@ -37,6 +37,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
 
     @Override
     protected void initialPresenter() {
+        super.initialPresenter();
         presenter = new TopAdsProductAdListPresenterImpl(context, this);
     }
 

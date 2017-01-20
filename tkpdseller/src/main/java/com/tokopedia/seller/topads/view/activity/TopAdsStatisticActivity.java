@@ -29,6 +29,8 @@ import com.tokopedia.seller.topads.lib.datepicker.SetDateActivity;
 import com.tokopedia.seller.topads.lib.datepicker.SetDateFragment;
 import com.tokopedia.seller.topads.model.data.Cell;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
+import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenter;
+import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.presenter.TopAdsStatisticActivityPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsStatisticActivityPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsStatisticPagerAdapter;
@@ -49,8 +51,7 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public abstract class TopAdsStatisticActivity extends BasePresenterActivity<TopAdsStatisticActivityPresenter> implements TopAdsStatisticActivityViewListener {
-    private static final int REQUEST_CODE_DATE = 5;
+public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<TopAdsStatisticActivityPresenter> implements TopAdsStatisticActivityViewListener {
 
     @BindView(R2.id.pager)
     ViewPager viewPager;
@@ -60,13 +61,11 @@ public abstract class TopAdsStatisticActivity extends BasePresenterActivity<TopA
     private List<Cell> cells;
     int currentPositonPager;
     ProgressDialog progressDialog;
-    private Date startDate;
-    private Date endDate;
     SnackbarRetry snackbarRetry;
 
     @Override
-    protected void setupURIPass(Uri uri) {
-
+    protected TopAdsDatePickerPresenter getDatePickerPresenter() {
+        return new TopAdsDatePickerPresenterImpl(this);
     }
 
     @Override
@@ -76,6 +75,7 @@ public abstract class TopAdsStatisticActivity extends BasePresenterActivity<TopA
 
     @Override
     protected void initialPresenter() {
+        super.initialPresenter();
         presenter = new TopAdsStatisticActivityPresenterImpl(this, new TopAdsProductAdInteractorImpl
                 (new TopAdsManagementService(), new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(this)), this);
     }
@@ -121,28 +121,9 @@ public abstract class TopAdsStatisticActivity extends BasePresenterActivity<TopA
         tabLayout.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (presenter.isDateUpdated(startDate, endDate)) {
-            startDate = presenter.getStartDate();
-            endDate = presenter.getEndDate();
-            loadData();
-        }
-    }
-
-    private void loadData() {
+    protected void loadData() {
         presenter.getStatisticFromNet(getTypeStatistic(), SessionHandler.getShopID(this));
-        getSupportActionBar().setSubtitle(presenter.getRangeDateFormat(presenter.getStartDate(), presenter.getEndDate()));
-    }
-
-    @Override
-    protected void initVar() {
-    }
-
-    @Override
-    protected void setActionVar() {
-
+        getSupportActionBar().setSubtitle(datePickerPresenter.getRangeDateFormat(startDate, endDate));
     }
 
     @Override
@@ -220,26 +201,6 @@ public abstract class TopAdsStatisticActivity extends BasePresenterActivity<TopA
             openDatePicker();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void openDatePicker() {
-        Intent intent = presenter.getDatePickerIntent(this, startDate, endDate);
-        startActivityForResult(intent, REQUEST_CODE_DATE);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == REQUEST_CODE_DATE && intent != null) {
-            long startDateTime = intent.getLongExtra(SetDateFragment.START_DATE, -1);
-            long endDateTime = intent.getLongExtra(SetDateFragment.END_DATE, -1);
-            int selectionDatePickerType = intent.getIntExtra(SetDateActivity.SELECTION_TYPE, 0);
-            int selectionDatePeriodIndex = intent.getIntExtra(SetDateActivity.SELECTION_PERIOD, 0);
-            if (startDateTime > 0 && endDateTime > 0) {
-                presenter.saveDate(new Date(startDateTime), new Date(endDateTime));
-                presenter.saveSelectionDatePicker(selectionDatePickerType, selectionDatePeriodIndex);
-            }
-        }
     }
 
     protected abstract int getTypeStatistic();

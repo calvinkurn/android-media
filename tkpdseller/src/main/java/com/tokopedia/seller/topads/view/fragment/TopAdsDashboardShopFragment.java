@@ -52,6 +52,7 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
 
     @Override
     protected void initialPresenter() {
+        super.initialPresenter();
         presenter = new TopAdsDashboardShopPresenterImpl(getActivity());
         presenter.setTopAdsDashboardFragmentListener(this);
     }
@@ -59,11 +60,6 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_top_ads_store;
-    }
-
-    @Override
-    protected void initView(View view) {
-        super.initView(view);
     }
 
     public void loadData() {

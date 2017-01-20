@@ -22,6 +22,8 @@ import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.model.data.Ad;
+import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenter;
+import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailPresenter;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelSwitch;
@@ -85,6 +87,11 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     @Override
+    protected TopAdsDatePickerPresenter getDatePickerPresenter() {
+        return new TopAdsDatePickerPresenterImpl(getActivity());
+    }
+
+    @Override
     protected void initView(View view) {
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
@@ -106,29 +113,15 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
     protected void setupArguments(Bundle bundle) {
         super.setupArguments(bundle);
         adFromIntent = bundle.getParcelable(TopAdsExtraConstant.EXTRA_AD);
     }
 
     @Override
-    protected void initialVar() {
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
     protected void loadData() {
         progressDialog.show();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(presenter.getRangeDateFormat(startDate, endDate));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(datePickerPresenter.getRangeDateFormat(startDate, endDate));
         if (adFromIntent != null) {
             onAdLoaded(adFromIntent);
             adFromIntent = null;

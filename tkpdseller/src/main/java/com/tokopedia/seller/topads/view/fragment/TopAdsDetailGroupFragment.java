@@ -50,6 +50,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
 
     @Override
     protected void initialPresenter() {
+        super.initialPresenter();
         presenter = new TopAdsDetailGroupPresenterImpl(getActivity(), this, new TopAdsGroupAdInteractorImpl(getActivity()));
     }
 
@@ -91,28 +92,6 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
         super.onAdLoaded(ad);
         groupAd = (GroupAd) ad;
         items.setContent(String.valueOf(groupAd.getTotalItem()));
-    }
-
-    @Override
-    public void onTurnOnAdError() {
-        super.onTurnOnAdError();
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.turnOnAds(groupAd, SessionHandler.getShopID(getActivity()));
-            }
-        }).showRetrySnackbar();
-    }
-
-    @Override
-    public void onTurnOffAdError() {
-        super.onTurnOffAdError();
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.turnOffAds(groupAd, SessionHandler.getShopID(getActivity()));
-            }
-        }).showRetrySnackbar();
     }
 
     @OnClick(R2.id.items)

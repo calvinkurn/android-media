@@ -1,18 +1,21 @@
-package com.tokopedia.seller.topads.view.fragment;
+package com.tokopedia.seller.topads.view.activity;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 
-import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenter;
+import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.topads.lib.datepicker.SetDateActivity;
 import com.tokopedia.seller.topads.lib.datepicker.SetDateFragment;
+import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenter;
 
 import java.util.Date;
 
-public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<T> {
+/**
+ * Created by Nathaniel on 1/20/2017.
+ */
+
+public abstract class TopAdsDatePickerActivity<T> extends BasePresenterActivity<T> {
 
     private static final int REQUEST_CODE_DATE = 5;
 
@@ -23,28 +26,13 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
     protected abstract TopAdsDatePickerPresenter getDatePickerPresenter();
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
+    protected void setupURIPass(Uri uri) {
 
     }
 
     @Override
-    public void onSaveState(Bundle state) {
+    protected void setupBundlePass(Bundle bundle) {
 
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return true;
     }
 
     @Override
@@ -53,17 +41,13 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
     }
 
     @Override
-    protected void initialListener(Activity activity) {
-
+    protected int getLayoutId() {
+        return 0;
     }
 
     @Override
-    protected void setupArguments(Bundle arguments) {
+    protected void initView() {
 
-    }
-
-    @Override
-    protected void initView(View view) {
     }
 
     @Override
@@ -72,8 +56,8 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
     }
 
     @Override
-    protected void initialVar() {
-        datePickerPresenter = getDatePickerPresenter();
+    protected void initVar() {
+
     }
 
     @Override
@@ -109,7 +93,7 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
     }
 
     protected void openDatePicker() {
-        Intent intent = datePickerPresenter.getDatePickerIntent(getActivity(), startDate, endDate);
+        Intent intent = datePickerPresenter.getDatePickerIntent(this, startDate, endDate);
         startActivityForResult(intent, REQUEST_CODE_DATE);
     }
 }

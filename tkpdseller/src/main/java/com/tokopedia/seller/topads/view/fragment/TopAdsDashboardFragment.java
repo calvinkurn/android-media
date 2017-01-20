@@ -17,7 +17,10 @@ import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
+import com.tokopedia.seller.topads.presenter.TopAdsAdListPresenterImpl;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardPresenter;
+import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenter;
+import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 import com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView;
@@ -69,38 +72,8 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
+    protected TopAdsDatePickerPresenter getDatePickerPresenter() {
+        return new TopAdsDatePickerPresenterImpl(getActivity());
     }
 
     @Override
@@ -109,12 +82,8 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     }
 
     @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
     protected void initialVar() {
+        super.initialVar();
         RefreshHandler refresh = new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
@@ -123,14 +92,9 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         });
     }
 
-    @Override
-    protected void setActionVar() {
-
-    }
-
     public void loadData() {
         swipeToRefresh.setRefreshing(true);
-        rangeDateDescTextView.setText(presenter.getRangeDateFormat(startDate, endDate));
+        rangeDateDescTextView.setText(datePickerPresenter.getRangeDateFormat(startDate, endDate));
         presenter.populateSummary(startDate, endDate);
         presenter.populateDeposit();
         presenter.populateShopInfo();

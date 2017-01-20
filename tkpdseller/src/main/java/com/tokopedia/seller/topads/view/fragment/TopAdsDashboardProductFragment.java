@@ -36,6 +36,7 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
 
     @Override
     protected void initialPresenter() {
+        super.initialPresenter();
         presenter = new TopAdsDashboardProductPresenterImpl(getActivity());
         presenter.setTopAdsDashboardFragmentListener(this);
     }

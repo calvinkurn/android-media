@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * Created by Nisie on 5/9/16.
  */
-public interface TopAdsDashboardPresenter extends TopAdsDatePickerPresenter, RetrofitPresenter {
+public interface TopAdsDashboardPresenter extends RetrofitPresenter {
 
     /**
      * Populate summary based on date range
