@@ -109,7 +109,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
             promoGroupLabelView.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.green_200));
         } else {
             promoGroupLabelView.setContent(getString(R.string.title_label_empty_group_topads));
-            promoGroupLabelView.setContentColorValue(ContextCompat.getColor(getActivity(), android.R.color.primary_text_dark));
+            promoGroupLabelView.setContentColorValue(ContextCompat.getColor(getActivity(), android.R.color.tab_indicator_text));
         }
 
     }

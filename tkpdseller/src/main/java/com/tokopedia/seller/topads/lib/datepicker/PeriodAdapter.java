@@ -68,44 +68,9 @@ public class PeriodAdapter extends RecyclerView.Adapter {
 
         datePickerRules = new DatePickerRules(maxEndDate, minStartDate, maxDateRange);
         datePickerRules.setDatePickerRulesListener(new DatePickerRules.DatePickerRulesListener() {
-            @Override
-            public void exceedSDate() {
-                Toast.makeText(itemView.getContext(), "exceed start date", Toast.LENGTH_SHORT).show();
-            }
 
             @Override
-            public void exceedEDate() {
-                Toast.makeText(itemView.getContext(), "exceed end date", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void resetToSDate(long sDate, long eDate) {
-                basePeriodModels.clear();
-                StartOrEndPeriodModel startOrEndPeriodModel = new StartOrEndPeriodModel(true, false, "Tanggal Mulai");
-                startOrEndPeriodModel.setStartDate(sDate);
-                basePeriodModels.add(startOrEndPeriodModel);
-                startOrEndPeriodModel = new StartOrEndPeriodModel(false, true, "Tanggal Selesai");
-                startOrEndPeriodModel.setEndDate(eDate);
-                basePeriodModels.add(startOrEndPeriodModel);
-
-                PeriodAdapter.this.notifyDataSetChanged();
-            }
-
-            @Override
-            public void resetToEDate(long sDate, long eDate) {
-                basePeriodModels.clear();
-                StartOrEndPeriodModel startOrEndPeriodModel = new StartOrEndPeriodModel(true, false, "Tanggal Mulai");
-                startOrEndPeriodModel.setStartDate(sDate);
-                basePeriodModels.add(startOrEndPeriodModel);
-                startOrEndPeriodModel = new StartOrEndPeriodModel(false, true, "Tanggal Selesai");
-                startOrEndPeriodModel.setEndDate(eDate);
-                basePeriodModels.add(startOrEndPeriodModel);
-
-                PeriodAdapter.this.notifyDataSetChanged();
-            }
-
-            @Override
-            public void successSDate(long sDate, long eDate) {
+            public void successDate(long sDate, long eDate) {
                 basePeriodModels.clear();
                 StartOrEndPeriodModel startOrEndPeriodModel = new StartOrEndPeriodModel(true, false, "Tanggal Mulai");
                 startOrEndPeriodModel.setStartDate(sDate);
@@ -120,29 +85,6 @@ public class PeriodAdapter extends RecyclerView.Adapter {
                 startOrEndPeriodModel.setEndDate(eDate);
                 basePeriodModels.add(startOrEndPeriodModel);
                 PeriodAdapter.this.notifyDataSetChanged();
-            }
-
-            @Override
-            public void successEDate(long sDate, long eDate) {
-                basePeriodModels.clear();
-                StartOrEndPeriodModel startOrEndPeriodModel = new StartOrEndPeriodModel(true, false, "Tanggal Mulai");
-                startOrEndPeriodModel.setStartDate(sDate);
-                basePeriodModels.add(startOrEndPeriodModel);
-
-                if (sDate == -1) {
-                    PeriodAdapter.this.notifyDataSetChanged();
-                    return;
-                }
-                startOrEndPeriodModel = new StartOrEndPeriodModel(false, true, "Tanggal Selesai");
-                startOrEndPeriodModel.setEndDate(eDate);
-                basePeriodModels.add(startOrEndPeriodModel);
-
-                PeriodAdapter.this.notifyDataSetChanged();
-            }
-
-            @Override
-            public void promptUserExceedLimit() {
-                Toast.makeText(itemView.getContext(), "exceed range date", Toast.LENGTH_SHORT).show();
             }
         });
         datePickerRules.seteDate(eDate);
@@ -165,7 +107,6 @@ public class PeriodAdapter extends RecyclerView.Adapter {
                         .inflate(R.layout.periode_layout, parent, false));
             case StartOrEndPeriodModel.TYPE:
             default:
-//                    return null;
                 return new CustomViewHolder(LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.custom_layout, parent, false));
         }
@@ -196,11 +137,6 @@ public class PeriodAdapter extends RecyclerView.Adapter {
                 return basePeriodModels.get(position).type;
         }
         throw new RuntimeException("please register type to PeriodAdapter");
-//            return super.getItemViewType(position);
-    }
-
-    public List<SetDateFragment.BasePeriodModel> getBasePeriodModels() {
-        return basePeriodModels;
     }
 
     public void setBasePeriodModels(List<SetDateFragment.BasePeriodModel> basePeriodModels) {
