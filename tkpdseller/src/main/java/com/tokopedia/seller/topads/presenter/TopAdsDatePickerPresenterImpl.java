@@ -124,6 +124,8 @@ public class TopAdsDatePickerPresenterImpl implements TopAdsDatePickerPresenter 
         intent.putExtra(SetDateActivity.DATE_PERIOD_LIST, getPeriodRangeList());
         intent.putExtra(SetDateActivity.SELECTION_PERIOD, topAdsDatePickerInteractor.getLastSelectionDatePickerIndex());
         intent.putExtra(SetDateActivity.SELECTION_TYPE, topAdsDatePickerInteractor.getLastSelectionDatePickerType());
+
+        intent.putExtra(SetDateActivity.PAGE_TITLE, activity.getString(R.string.title_date_picker));
         return intent;
     }
 

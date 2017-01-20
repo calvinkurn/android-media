@@ -28,7 +28,7 @@
 
         <TextView
             android:id="@+id/text_view_deposit_desc"
-            style="@style/TextView"
+            style="@style/TextView.TopAdsShopContent"
             android:text="@string/top_ads_statistic_info_default_value"/>
     </LinearLayout>
 

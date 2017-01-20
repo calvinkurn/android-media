@@ -9,6 +9,7 @@
     <string name="title_top_ads_store">Toko</string>
     <string name="title_top_ads_add_credit">Tambah Kredit Promo</string>
     <string name="title_top_ads_new_promo">Pilih Atau Buat Promo</string>
+    <string name="title_date_picker">Atur Tanggal</string>
 
     <string name="label_top_ads_impression">Tampil</string>
     <string name="label_top_ads_click">Klik</string>

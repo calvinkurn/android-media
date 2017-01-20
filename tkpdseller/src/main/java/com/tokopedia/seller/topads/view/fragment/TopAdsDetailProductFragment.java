@@ -104,10 +104,18 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         super.onAdLoaded(ad);
         productAd = (ProductAd) ad;
         String groupName = productAd.getGroupName();
-        if (TextUtils.isEmpty(productAd.getGroupName())) {
-            groupName = getString(R.string.title_label_empty_group_topads);
+        if (isHasGroupAd()) {
+            promoGroupLabelView.setContent(groupName);
+            promoGroupLabelView.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.green_200));
+        } else {
+            promoGroupLabelView.setContent(getString(R.string.title_label_empty_group_topads));
+            promoGroupLabelView.setContentColorValue(ContextCompat.getColor(getActivity(), android.R.color.primary_text_dark));
         }
-        promoGroupLabelView.setContent(groupName);
+
+    }
+
+    private boolean isHasGroupAd() {
+        return !TextUtils.isEmpty(productAd.getGroupName()) && productAd.getGroupId() > 0;
     }
 
     @OnClick(R2.id.name)
@@ -119,7 +127,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
 
     @OnClick(R2.id.label_view_promo_group)
     void onPromoGroupClicked() {
-        if (!TextUtils.isEmpty(productAd.getGroupName())) {
+        if (isHasGroupAd()) {
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID_GROUP, productAd.getGroupId());
             startActivity(intent);

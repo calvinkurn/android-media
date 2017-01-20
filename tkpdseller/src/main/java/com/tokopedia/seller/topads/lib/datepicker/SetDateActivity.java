@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
@@ -34,6 +35,7 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
     public static final String MAX_END_DATE = "MAX_END_DATE";
     public static final String MAX_DATE_RANGE = "MAX_DATE_RANGE";
     public static final String DATE_PERIOD_LIST = "DATE_PERIOD_LIST";
+    public static final String PAGE_TITLE = "PAGE_TITLE";
 
     public static final int PERIOD_TYPE = 0;
     public static final int CUSTOM_TYPE = 1;
@@ -41,9 +43,6 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
     private boolean isGoldMerchant;
     private boolean isAfterRotate;
 
-    int green600;
-
-    int tkpdMainGreenColor;
     private int selectionPeriod;
     private int selectionType;
     private long sDate = -1, eDate = -1;
@@ -60,15 +59,13 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
         }
         setContentView(R.layout.activity_date_picker);
         ButterKnife.bind(this);
-        green600 = ContextCompat.getColor(this, R.color.green_600);
-        tkpdMainGreenColor = ContextCompat.getColor(this, R.color.tkpd_main_green);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(green600);
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.green_600));
         }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
-            toolbar.setBackgroundColor(tkpdMainGreenColor);
+            toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.tkpd_main_green));
         }
         setSupportActionBar(toolbar);
         ActionBar supportActionBar = getSupportActionBar();
@@ -76,6 +73,10 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
             supportActionBar.setDisplayHomeAsUpEnabled(true);
             supportActionBar.setDisplayShowHomeEnabled(true);
             supportActionBar.setHomeButtonEnabled(true);
+        }
+        String title = getIntent().getExtras().getString(PAGE_TITLE);
+        if (!TextUtils.isEmpty(title)) {
+            getSupportActionBar().setTitle(title);
         }
         isAfterRotate = savedInstanceState != null;
     }

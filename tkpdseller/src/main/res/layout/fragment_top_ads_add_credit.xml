@@ -15,7 +15,11 @@
 
     <Button
         android:id="@+id/button_submit"
-        style="@style/ButtonGreen"
+        style="@style/Button.TopAds"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:enabled="false"
         android:text="@string/label_top_ads_choose_credit"/>
 </LinearLayout>
