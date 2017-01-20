@@ -27,9 +27,6 @@ import static com.tokopedia.seller.gmstat.views.models.StartOrEndPeriodModel.YES
 
 public class CustomViewHolder extends RecyclerView.ViewHolder{
 
-//        @BindArray(R.array.month_names)
-//        String[] monthNames;
-
     String[] monthNamesAbrev;
 
     TextView customHeader;
@@ -37,8 +34,6 @@ public class CustomViewHolder extends RecyclerView.ViewHolder{
     TextView customDate;
 
     ImageView customDropDown;
-
-//        DateValidationListener dateValidationListener;
 
     void initView(View rootView){
         monthNamesAbrev = rootView.getResources().getStringArray(R.array.month_names_abrev);
@@ -68,10 +63,6 @@ public class CustomViewHolder extends RecyclerView.ViewHolder{
 
     public void setDatePickerRules(DatePickerRules datePickerRules) {
         this.datePickerRules = datePickerRules;
-    }
-
-    public void setDateValidationListener(DateValidationListener dateValidationListener) {
-//            this.dateValidationListener = dateValidationListener;
     }
 
     private StartOrEndPeriodModel startOrEndPeriodModel;
@@ -131,7 +122,6 @@ public class CustomViewHolder extends RecyclerView.ViewHolder{
 
     public CustomViewHolder(View itemView) {
         super(itemView);
-        ButterKnife.bind(this, itemView);
         initView(itemView);
     }
 
@@ -142,8 +132,6 @@ public class CustomViewHolder extends RecyclerView.ViewHolder{
             String endDate = startOrEndPeriodModel.getEndDate();
             String[] split = endDate.split(" ");
             customDate.setText(getDateWithYear(Integer.parseInt(reverseDate(split)), monthNamesAbrev));
-
-//                dateValidationListener.addEDate(startOrEndPeriodModel.endDate);
             cal = Calendar.getInstance();
             cal.setTimeInMillis(startOrEndPeriodModel.endDate);
         }
@@ -151,8 +139,6 @@ public class CustomViewHolder extends RecyclerView.ViewHolder{
             String startDate = startOrEndPeriodModel.getStartDate();
             String[] split = startDate.split(" ");
             customDate.setText(getDateWithYear(Integer.parseInt(reverseDate(split)), monthNamesAbrev));
-
-//                dateValidationListener.addSDate(startOrEndPeriodModel.startDate);
             cal = Calendar.getInstance();
             cal.setTimeInMillis(startOrEndPeriodModel.startDate);
         }

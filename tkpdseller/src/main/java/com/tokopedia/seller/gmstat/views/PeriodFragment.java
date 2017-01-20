@@ -36,7 +36,6 @@ import static com.tokopedia.seller.gmstat.views.SetDateActivity.SELECTION_PERIOD
 public class PeriodFragment extends BasePresenterFragment {
 
     RecyclerView periodRecyclerView;
-    private Unbinder unbinder;
     private PeriodAdapter periodAdapter;
 
     public void initViews(View rootView){
@@ -136,8 +135,6 @@ public class PeriodFragment extends BasePresenterFragment {
         if(bundle != null){
             lastSelection = bundle.getInt(SELECTION_PERIOD, 1);
         }
-
-        unbinder = ButterKnife.bind(this, rootView);
         initViews(rootView);
 
         //[START] old code
@@ -176,12 +173,6 @@ public class PeriodFragment extends BasePresenterFragment {
             periodLinLay.addView(view);
         }
         return rootView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
     }
 
     public static Fragment newInstance() {

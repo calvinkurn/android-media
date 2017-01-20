@@ -160,8 +160,6 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         }
     }
     private GMStat gmstat;
-
-    private Unbinder unbind;
     private DataTransactionViewHelper dataTransactionViewHelper;
     private BuyerDataViewHelper buyerDataViewHelper;
     private GMStatHeaderViewHelper gmstatHeaderViewHelper;
@@ -318,7 +316,6 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
                              Bundle savedInstanceState) {
         gmFragmentPresenter.setFirstTime(false);
         rootView = inflater.inflate(R.layout.fragment_gmstat, container, false);
-        this.unbind = ButterKnife.bind(this, rootView);
         initViews(rootView);
         initNumberFormatter();
         initEmptyAdapter();
@@ -430,12 +427,6 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         gmFragmentPresenter.onPause();
         if(grossIncomeGraph2 != null)
             grossIncomeGraph2.dismissAllTooltips();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbind.unbind();
     }
 
     @Override

@@ -33,7 +33,6 @@ import static com.tokopedia.seller.gmstat.views.SetDateActivity.CUSTOM_TYPE;
 
 public class CustomFragment extends BasePresenterFragment {
     RecyclerView periodRecyclerView;
-    private Unbinder unbinder;
     private PeriodAdapter periodAdapter;
     LinearLayout periodLinLay;
     private long sDate, eDate;
@@ -68,7 +67,6 @@ public class CustomFragment extends BasePresenterFragment {
         View rootView = inflater.inflate(R.layout.period_layout, container, false);
 
         initViews(rootView);
-        unbinder = ButterKnife.bind(this, rootView);
 
         periodLinLay.setVisibility(View.GONE);
         periodRecyclerView.setVisibility(View.VISIBLE);
@@ -88,12 +86,6 @@ public class CustomFragment extends BasePresenterFragment {
         periodRecyclerView.setAdapter(periodAdapter);
 
         return rootView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
     }
 
     //[START] unused methods

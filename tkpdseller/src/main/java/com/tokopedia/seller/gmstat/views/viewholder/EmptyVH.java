@@ -13,6 +13,5 @@ public class EmptyVH extends RecyclerView.ViewHolder{
 
     public EmptyVH(View itemView) {
         super(itemView);
-        ButterKnife.bind(this, itemView);
     }
 }

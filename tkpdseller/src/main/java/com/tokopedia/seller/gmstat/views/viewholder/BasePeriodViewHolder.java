@@ -49,9 +49,6 @@ public class BasePeriodViewHolder extends RecyclerView.ViewHolder{
     private PeriodRangeModel periodRangeModel;
     PeriodListener periodListener;
 
-//        @BindArray(R.array.month_names)
-//        String[] monthNames;
-
     String[] monthNamesAbrev;
 
     public void setPeriodListener(PeriodListener periodListener) {
@@ -67,7 +64,6 @@ public class BasePeriodViewHolder extends RecyclerView.ViewHolder{
 
     public BasePeriodViewHolder(View itemView) {
         super(itemView);
-        ButterKnife.bind(this, itemView);
         initView(itemView);
     }
 
@@ -88,7 +84,6 @@ public class BasePeriodViewHolder extends RecyclerView.ViewHolder{
                 periodHeader.setText(R.string.thirty_days_ago);
             }
         }
-//            periodHeader.setText(periodRangeModel.headerText);
 
         String description = periodRangeModel.getDescription();
         Log.d("MNORMANSYAH", "description : "+description);

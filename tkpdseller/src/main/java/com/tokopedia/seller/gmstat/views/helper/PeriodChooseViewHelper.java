@@ -28,7 +28,6 @@ public class PeriodChooseViewHelper {
     public PeriodChooseViewHelper(View itemView, int position){
         this.itemView = itemView;
         this.position = position;
-        ButterKnife.bind(this, itemView);
         initView(itemView);
     }
 
@@ -54,9 +53,6 @@ public class PeriodChooseViewHelper {
     private PeriodRangeModel periodRangeModel;
     PeriodListener periodListener;
 
-//        @BindArray(R.array.month_names)
-//        String[] monthNames;
-
     String[] monthNamesAbrev;
 
     public void setPeriodListener(PeriodListener periodListener) {
@@ -71,7 +67,6 @@ public class PeriodChooseViewHelper {
         onCheckBoxPeriod(!checkBoxPeriod.isChecked());
     }
 
-    //        @OnCheckedChanged(R.id.checkbox_period)
     public void onCheckBoxPeriod(boolean checked){
         periodRangeModel.isChecked = checked;
         if(periodListener != null){

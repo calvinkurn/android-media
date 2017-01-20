@@ -46,10 +46,8 @@ public class CommonGMVH extends RecyclerView.ViewHolder{
 
     int gredyColor;
 
-    //        @BindDrawable(R.drawable.ic_rectangle_down)
     Drawable icRectagleDown;
 
-    //        @BindDrawable(R.drawable.ic_rectangle_up)
     Drawable icRectagleUp;
 
     public GMStat gmStat;
@@ -83,24 +81,17 @@ public class CommonGMVH extends RecyclerView.ViewHolder{
             }else{
                 arrowIcon.setVisibility(View.VISIBLE);
                 arrowIcon.setImageDrawable(icRectagleDown);
-//                gmStat.getImageHandler().loadImage(arrowIcon, R.mipmap.arrow_down_percentage);
                 percentage.setTextColor(arrowDown);
                 isDefault = true;
             }
         }else{// up here
             arrowIcon.setVisibility(View.VISIBLE);
             arrowIcon.setImageDrawable(icRectagleUp);
-//                gmStat.getImageHandler().loadImage(arrowIcon, R.mipmap.arrow_up_percentage);
             percentage.setTextColor(arrowUp);
             isDefault = true;
         }
 
         if(isDefault) {
-//                DecimalFormat formatter = new DecimalFormat("#0.00");
-//                double d = commomGMModel.percentage;
-//                String text;
-//                System.out.println(text = formatter.format(d));
-
             double d = commomGMModel.percentage;
             percentage.setText(String.format(PERCENTAGE_FORMAT, KMNumbers.formatString(d).replace("-", "")));
         }else{

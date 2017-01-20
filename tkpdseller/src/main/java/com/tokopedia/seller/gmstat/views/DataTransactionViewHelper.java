@@ -86,7 +86,6 @@ public class DataTransactionViewHelper {
     public DataTransactionViewHelper(View itemView, ImageHandler imageHandler, boolean isGoldMerchant){
         this.itemView = itemView;
         this.isGoldMerchant = isGoldMerchant;
-        ButterKnife.bind(this, itemView);
         initView(itemView);
 
         icRectagleDown = AppCompatDrawableManager.get().getDrawable(itemView.getContext(),
