@@ -27,8 +27,8 @@ public class CommonGMVH extends RecyclerView.ViewHolder{
         percentage = (TextView) itemView.findViewById(R.id.percentage);
         arrowIcon = (ImageView) itemView.findViewById(R.id.arrow_icon);
         arrowDown = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_down, null);
-        arrowUp = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_up, null);;
-        gredyColor = ResourcesCompat.getColor(itemView.getResources(), R.color.grey_400, null);;
+        arrowUp = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_up, null);
+        gredyColor = ResourcesCompat.getColor(itemView.getResources(), R.color.grey_400, null);
     }
 
     TextView text;

@@ -18,8 +18,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateWithYear;
 import static com.tokopedia.seller.gmstat.views.BaseGMStatActivity.IS_GOLD_MERCHANT;
-import static com.tokopedia.seller.gmstat.views.GMStatActivityFragment.getDateWithYear;
 import static com.tokopedia.seller.gmstat.views.SetDateActivity.CUSTOM_END_DATE;
 import static com.tokopedia.seller.gmstat.views.SetDateActivity.CUSTOM_START_DATE;
 import static com.tokopedia.seller.gmstat.views.SetDateActivity.PERIOD_TYPE;

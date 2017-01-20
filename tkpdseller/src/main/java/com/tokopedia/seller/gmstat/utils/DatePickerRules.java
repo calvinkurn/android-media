@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import static com.tokopedia.seller.gmstat.views.GMStatActivityFragment.getDateFormat;
+import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateFormat;
 
 /**
  * Created by normansyahputa on 1/18/17.

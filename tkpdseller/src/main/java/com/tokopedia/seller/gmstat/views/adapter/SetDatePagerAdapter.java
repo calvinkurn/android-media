@@ -9,7 +9,7 @@ import android.util.Log;
 import com.tokopedia.seller.gmstat.views.CustomFragment;
 import com.tokopedia.seller.gmstat.views.PeriodFragment;
 
-import static com.tokopedia.seller.gmstat.views.GMStatActivityFragment.getDateFormat;
+import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateFormat;
 
 /**
  * Created by normansyahputa on 1/19/17.

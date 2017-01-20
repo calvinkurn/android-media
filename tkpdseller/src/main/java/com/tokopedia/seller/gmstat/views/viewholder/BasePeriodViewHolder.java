@@ -13,7 +13,7 @@ import com.tokopedia.seller.gmstat.views.models.PeriodRangeModel;
 
 import butterknife.ButterKnife;
 
-import static com.tokopedia.seller.gmstat.views.GMStatActivityFragment.getDateWithYear;
+import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateWithYear;
 import static com.tokopedia.seller.gmstat.views.SetDateFragment.reverseDate;
 
 /**

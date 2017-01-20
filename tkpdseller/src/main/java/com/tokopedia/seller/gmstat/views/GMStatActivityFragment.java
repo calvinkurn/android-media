@@ -68,6 +68,8 @@ import java.util.TreeMap;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.tkpd.library.utils.CommonUtils.getDate;
+import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateRaw;
 import static com.tokopedia.seller.gmstat.views.DataTransactionViewHelper.dpToPx;
 import static com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper.getDates;
 
@@ -79,8 +81,17 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
 
     public static final double NoDataAvailable = -2147483600;
     public static final String TAG = "GMStatActivityFragment";
-    
+    private String tryAgainText;
+    private String unknownExceptionDescription;
+    private String messageExceptionDescription;
+    private String defaultExceptionDescription;
+
     void initViews(View rootView){
+        tryAgainText = getString(R.string.try_again);
+        unknownExceptionDescription = getString(R.string.unknown_exception_description);
+        messageExceptionDescription = getString(R.string.message_exception_description);
+        defaultExceptionDescription = getString(R.string.default_exception_description);
+
         monthNamesAbrev = rootView.getResources().getStringArray(R.array.month_names_abrev);
         grossIncomeGraph2 = (LineChartView) rootView.findViewById(R.id.gross_income_graph2);
         gmStatRecyclerView = (RecyclerView) rootView.findViewById(R.id.gmstat_recyclerview);
@@ -92,8 +103,8 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         parentFragmentGmStat = (LinearLayout) rootView.findViewById(R.id.parent_fragment_gmstat);
         grossIncomeGraphContainer = (HorizontalScrollView) rootView.findViewById(R.id.gross_income_graph_container);
         grossIncomeGraphContainer2 = (LinearLayout) rootView.findViewById(R.id.gross_income_graph_container2);
-        oval2Copy6 = ResourcesCompat.getDrawable(getResources(), R.drawable.oval_2_copy_6, null);;
-        
+        oval2Copy6 = ResourcesCompat.getDrawable(getResources(), R.drawable.oval_2_copy_6, null);
+
         rootView.findViewById(R.id.header_gmstat).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -157,6 +168,18 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     private GrossGraphChartConfig grossGraphChartConfig;
     GMNetworkErrorHelper gmNetworkErrorHelper;
 
+    private static final Locale locale = new Locale("in","ID");
+
+    private static final NavigableMap<Long, String> suffixes = new TreeMap<>();
+    static {
+        suffixes.put(1_000L, "k");
+        suffixes.put(1_000_000L, "M");
+        suffixes.put(1_000_000_000L, "G");
+        suffixes.put(1_000_000_000_000L, "T");
+        suffixes.put(1_000_000_000_000_000L, "P");
+        suffixes.put(1_000_000_000_000_000_000L, "E");
+    }
+
     private List<NExcel> joinDateAndGrossGraph(List<Integer> dateGraph, List<Integer> grossGraph){
         List<NExcel> nExcels = new ArrayList<>();
         if(dateGraph == null || grossGraph == null || dateGraph.isEmpty() || grossGraph.isEmpty())
@@ -177,76 +200,6 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         }
 
         return nExcels;
-    }
-
-    public static String getDateWithYear(int date, String[] monthNames){
-        List<String> dateRaw = getDateRaw(date);
-        String year = dateRaw.get(2);
-        String month = dateRaw.get(1);
-        month = monthNames[Integer.parseInt(month)-1];
-
-        String day = String.valueOf(Integer.valueOf(dateRaw.get(0)));
-        Log.d(TAG, "bulan "+month+" tanggal "+day+" rawDate "+date);
-
-        return day + " "+ month+" "+year;
-    }
-
-    public static long getDateWithYear(int date){
-        List<String> dateRaw = getDateRaw(date);
-        String year = dateRaw.get(2);
-        String month = dateRaw.get(1);
-        String day = String.valueOf(Integer.valueOf(dateRaw.get(0)));
-        Calendar instance = Calendar.getInstance();
-        instance.set(Integer.parseInt(year), Integer.parseInt(month)-1, Integer.parseInt(day));
-
-        return instance.getTimeInMillis();
-    }
-
-    public static String getDateWithYear(String date, String[] monthNames){
-        List<String> dateRaw = getDateRaw(date);
-        String year = dateRaw.get(2);
-        String month = dateRaw.get(1);
-        month = monthNames[Integer.parseInt(month)-1];
-
-        String day = String.valueOf(Integer.valueOf(dateRaw.get(0)));
-        Log.d(TAG, "bulan "+month+" tanggal "+day+" rawDate "+date);
-
-        return day + " "+ month+" "+year;
-    }
-
-    private static String getDate(Integer date){
-        List<String> dateRaw = getDateRaw(date);
-        String month = dateRaw.get(1);
-        String day = dateRaw.get(0);
-        Log.d(TAG, "bulan "+month+" tanggal "+day);
-
-        return day + " "+ month;
-    }
-
-    public static String getDateRaw(String label , String[] monthNames){
-        String[] split = label.split(" ");
-        return split[0]+" "+monthNames[Integer.parseInt(split[1])-1];
-    }
-
-    private static List<String> getDateRaw(String s){
-        List<String> result = new ArrayList<>();
-        String year = s.substring(0, 4);
-        String month = s.substring(4, 6);
-        String day = s.substring(6);
-        Log.d(TAG, "getDateRaw : "+s+ " day "+day+" int "+s);
-        result.add(day);result.add(month);result.add(year);
-        return result;
-    }
-
-    private static List<String> getDateRaw(int date){
-        List<String> result = new ArrayList<>();
-        String s = Integer.toString(date);
-        String year = s.substring(0, 4);
-        String month = s.substring(4, 6);
-        String day = s.substring(6);
-        Log.d(TAG, "getDateRaw : "+s+ " day "+day+" int "+date);
-        result.add(day);result.add(month);result.add(year);
-        return result;
     }
 
     protected void initAdapter() {
@@ -645,18 +598,18 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
 
         final StringBuilder textMessage = new StringBuilder("");
         if(e instanceof UnknownHostException){
-            textMessage.append("Tidak ada koneksi. \nSilahkan coba kembali");
+            textMessage.append(unknownExceptionDescription);
         }else if(e instanceof MessageErrorException){
-            textMessage.append("Terjadi kesalahan koneksi. \nSilahkan coba kembali");
+            textMessage.append(messageExceptionDescription);
         }else{
-            textMessage.append("Kesalahan tidak diketahui");
+            textMessage.append(defaultExceptionDescription);
         }
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if(getActivity() != null && rootView != null){
-                    gmNetworkErrorHelper.showSnackbar(textMessage.toString(), "COBA KEMBALI"
+                    gmNetworkErrorHelper.showSnackbar(textMessage.toString(), tryAgainText
                             , new OnActionClickListener() {
                                 @Override
                                 public void onClick(@SuppressWarnings("UnusedParameters") View view) {
@@ -672,46 +625,6 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     @Override
     public void onFailure() {
 
-    }
-
-    public static String toKFormat(long input){
-        double l = input / 1000D;
-        return Double.toString(l)+"K";
-    }
-
-
-    private static final Locale locale = new Locale("in","ID");
-    public static String getDateFormat(long timeInMillis){
-        Calendar instance = Calendar.getInstance();
-        instance.setTimeInMillis(timeInMillis);
-        DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy", locale);
-        return dateFormat.format(instance.getTime());
-    }
-
-
-    private static final NavigableMap<Long, String> suffixes = new TreeMap<>();
-    static {
-        suffixes.put(1_000L, "k");
-        suffixes.put(1_000_000L, "M");
-        suffixes.put(1_000_000_000L, "G");
-        suffixes.put(1_000_000_000_000L, "T");
-        suffixes.put(1_000_000_000_000_000L, "P");
-        suffixes.put(1_000_000_000_000_000_000L, "E");
-    }
-
-    public static String format(long value) {
-        //Long.MIN_VALUE == -Long.MIN_VALUE so we need an adjustment here
-        if (value == Long.MIN_VALUE) return format(Long.MIN_VALUE + 1);
-        if (value < 0) return "-" + format(-value);
-        if (value < 1000) return Long.toString(value); //deal with easy case
-
-        Map.Entry<Long, String> e = suffixes.floorEntry(value);
-        Long divideBy = e.getKey();
-        String suffix = e.getValue();
-
-        long truncated = value / (divideBy / 10); //the number part of the output times 10
-        boolean hasDecimal = truncated < 100 && (truncated / 10d) != (truncated / 10);
-        return hasDecimal ? (truncated / 10d) + suffix : (truncated / 10) + suffix;
     }
 
     //[START] unused methods

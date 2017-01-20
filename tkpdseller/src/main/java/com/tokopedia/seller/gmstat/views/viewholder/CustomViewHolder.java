@@ -17,7 +17,7 @@ import java.util.Calendar;
 
 import butterknife.ButterKnife;
 
-import static com.tokopedia.seller.gmstat.views.GMStatActivityFragment.getDateWithYear;
+import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateWithYear;
 import static com.tokopedia.seller.gmstat.views.SetDateFragment.reverseDate;
 import static com.tokopedia.seller.gmstat.views.models.StartOrEndPeriodModel.YESTERDAY;
 

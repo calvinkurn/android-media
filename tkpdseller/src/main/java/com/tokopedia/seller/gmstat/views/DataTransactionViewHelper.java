@@ -129,7 +129,7 @@ public class DataTransactionViewHelper {
 
         breakLineBackground = ResourcesCompat.getColor(itemView.getResources(), R.color.breakline_background, null);
 
-        transparantColor = ResourcesCompat.getColor(itemView.getResources(), android.R.color.transparent, null);;
+        transparantColor = ResourcesCompat.getColor(itemView.getResources(), android.R.color.transparent, null);
 
         itemView.findViewById(R.id.move_to_gmsubscribe)
                 .setOnClickListener(new View.OnClickListener() {

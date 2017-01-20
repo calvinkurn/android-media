@@ -50,4 +50,9 @@
         <item>Wanita</item>
     </string-array>
 
+    <string name="try_again">COBA KEMBALI</string>
+    <string name="unknown_exception_description">Tidak ada koneksi.\nSilahkan coba kembali</string>
+    <string name="message_exception_description">Terjadi kesalahan koneksi.\nSilahkan coba kembali"</string>
+    <string name="default_exception_description">Kesalahan tidak diketahui</string>
+
 </resources>

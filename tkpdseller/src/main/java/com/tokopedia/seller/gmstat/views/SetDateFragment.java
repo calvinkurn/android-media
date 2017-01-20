@@ -20,8 +20,6 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.views.adapter.SetDatePagerAdapter;
 
 import java.util.Locale;
-
-import static com.tokopedia.seller.gmstat.views.GMStatActivityFragment.getDateFormat;
 import static com.tokopedia.seller.gmstat.views.SetDateActivity.CUSTOM_TYPE;
 import static com.tokopedia.seller.gmstat.views.SetDateActivity.PERIOD_TYPE;
 
