@@ -62,4 +62,6 @@ public interface AddToCartViewListener extends IBaseView {
     void showTickerGTM(String message);
 
     void hideTickerGTM();
+
+    void showAddressErrorMessage();
 }

@@ -3,6 +3,7 @@ package com.tokopedia.core.network.apiservices.kero;
 import com.tokopedia.core.network.apiservices.kero.apis.KeroApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.GlobalAuthService;
+import com.tokopedia.core.network.retrofit.services.KeroService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
 import retrofit2.Retrofit;
@@ -11,7 +12,7 @@ import retrofit2.Retrofit;
 /**
  * Created by Herdi_WORK on 19.09.16.
  */
-public class KeroAuthService extends GlobalAuthService<KeroApi>{
+public class KeroAuthService extends KeroService<KeroApi> {
     @Override
     protected void initApiService(Retrofit retrofit) {
         api = retrofit.create(KeroApi.class);
