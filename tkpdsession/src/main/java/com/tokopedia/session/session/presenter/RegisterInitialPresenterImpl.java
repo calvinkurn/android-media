@@ -25,7 +25,9 @@ import com.tokopedia.core.session.model.LoginFacebookViewModel;
 import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.model.RegisterViewModel;
+import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.FacebookContainer;
 import com.tokopedia.session.R;
 import com.tokopedia.session.session.fragment.RegisterInitialFragment;
@@ -157,7 +159,16 @@ public class RegisterInitialPresenterImpl extends RegisterInitialPresenter {
                 break;
 
             case DownloadServiceConstant.MAKE_LOGIN:
-                view.finishActivity();
+                // if need to move to security
+                if (data.getBoolean(DownloadService.LOGIN_MOVE_SECURITY, false)) {// move to security
+                    SecurityModel loginSecurityModel = data.getParcelable(DownloadService.LOGIN_SECURITY_QUESTION_DATA);
+                    view.moveToFragmentSecurityQuestion(
+                            loginSecurityModel.getSecurity().getUser_check_security_1(),
+                            loginSecurityModel.getSecurity().getUser_check_security_2(),
+                            loginSecurityModel.getUser_id());
+                } else if (SessionHandler.isV4Login(context)) {// go back to home
+                    view.finishActivity();
+                }
                 break;
         }
     }
