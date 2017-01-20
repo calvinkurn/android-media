@@ -53,6 +53,8 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
                 if(stringResponse.body() != null) {
                     Rates rates = new Gson().fromJson(stringResponse.body(), Rates.class);
                     listener.onSuccess(rates.getData());
+                } else {
+                    throw new NullPointerException();
                 }
             }
         };
