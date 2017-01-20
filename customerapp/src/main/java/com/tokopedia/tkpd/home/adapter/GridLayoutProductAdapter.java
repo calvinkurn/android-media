@@ -165,6 +165,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
             viewHolder.productName.setText(Html.fromHtml(product.getProductName()));
             viewHolder.productPrice.setText(product.getProductPrice());
             viewHolder.shopName.setText(Html.fromHtml(product.getShopName()));
+            viewHolder.location.setText(product.getShopLocation());
             setProductImage(viewHolder, product.getProductImage());
             if (product.getLabels() == null) {
                 product.setLabels(new ArrayList<com.tokopedia.core.network.entity.home.recentView.Label>());
