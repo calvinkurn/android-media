@@ -401,6 +401,12 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     }
 
     @Override
+    public void showAddressErrorMessage() {
+        NetworkErrorHelper.showSnackbar(this,
+                getString(R.string.address_not_supported_add_to_cart));
+    }
+
+    @Override
     public void renderProductPrice(String price) {
         this.orderData.setPriceTotal(price);
         tvProductPrice.setText(price);

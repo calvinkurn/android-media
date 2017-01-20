@@ -62,6 +62,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     private final AddToCartNetInteractor addToCartNetInteractor;
     private final AddToCartViewListener viewListener;
     private final KeroNetInteractorImpl keroNetInteractor;
+    private static final String GOJEK_ID = "10";
 
     public AddToCartPresenterImpl(AddToCartActivity addToCartActivity) {
         this.addToCartNetInteractor = new AddToCartNetInteractorImpl();
@@ -533,14 +534,15 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                 ShipmentPackage shipmentPackage = data.getForm().getShipment().get(i)
                         .getShipmentPackage().get(j);
                 boolean packageAvailable = shipmentPackage.getPackageAvailable() == 1;
-                boolean instantCourier = shipmentPackage.getShowMap() == 1;
-                boolean allowedInstant = !data.getShop().getLatitude().isEmpty();
-                if(packageAvailable && !instantCourier)
+                boolean isGojek = shipmentPackage.getShipmentId().equals(GOJEK_ID);
+                boolean allowedInstant = !data.getForm().getDestination().getLatitude().isEmpty();
+                if (packageAvailable && !isGojek)
                     return true;
-                else if (instantCourier && allowedInstant)
+                else if(allowedInstant)
                     return true;
             }
         }
+        viewListener.showAddressErrorMessage();
         return false;
     }
 }

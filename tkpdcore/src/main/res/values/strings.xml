@@ -1854,4 +1854,5 @@ di Tokopedia Sekarang!</string>
     <string name="action_send_otp_with_call">Atau kirim OTP melalui telepon</string>
     <string name="content_change_number">Jika nomor Anda sudah tidak aktif, silahkan Klik disini</string>
     <string name="title_resend_otp">Kirim ulang OTP</string>
+    <string name="address_not_supported_add_to_cart">Layanan kurir tidak mendukung pengiriman dari lokasi penjual ke lokasi pembeli</string>
 </resources>

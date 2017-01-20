@@ -60,4 +60,6 @@ public interface AddToCartViewListener extends ViewListener {
     void showTickerGTM(String message);
 
     void hideTickerGTM();
+
+    void showAddressErrorMessage();
 }
