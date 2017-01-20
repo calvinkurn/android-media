@@ -67,7 +67,6 @@ public class CategoryImpl implements Category {
                                 CategoryApi.size,
                                 CategoryApi.number,
                                 CategoryApi.ANDROID_DEVICE,
-                                CategoryApi.TARGET_ALL,
                                 CategoryApi.state,
                                 CategoryApi.expired
                         ).subscribeOn(Schedulers.io())
@@ -147,7 +146,6 @@ public class CategoryImpl implements Category {
                                 SessionHandler.getLoginID(MainApplication.getAppContext()),
                                 CategoryApi.size,
                                 CategoryApi.ANDROID_DEVICE,
-                                CategoryApi.TARGET_BANNER,
                                 CategoryApi.state,
                                 CategoryApi.newExpired,
                                 CategoryApi.TARGET_SLIDE_TYPE

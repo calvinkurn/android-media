@@ -110,10 +110,6 @@ public class ImageHandler {
         }
     }
 
-//    public static void LoadImageBitmapwithUIL(final ImageView imageview, final String url, ImageLoadingListener listener) {
-//        ImageLoader.getInstance().displayImage(url, imageview, initOptions(), listener);
-//    }
-
     public static int calculateInSampleSize(BitmapFactory.Options options) {
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -155,37 +151,24 @@ public class ImageHandler {
         return output;
     }
 
-//    public static DisplayImageOptions initOptions() {
-//        DisplayImageOptions options = new DisplayImageOptions.Builder()
-//                .showStubImage(R.drawable.loading_page) // resource or drawable
-//                .showImageForEmptyUri(R.drawable.error_drawable) // resource or drawable
-//                .showImageOnFail(R.drawable.error_drawable)
-//                .bitmapConfig(Config.RGB_565)// resource or drawable
-//                .cacheOnDisc(true)
-//                .cacheInMemory(true)
-//                .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
-//                .build();
-//
-//        return options;
-//    }
-
     public static void loadImageWithoutFit(Context context, ImageView imageview, String url) {
         Glide.with(context)
                 .load(url)
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imageview);
     }
 
     public static void loadImageThumbs(Context context, ImageView imageview, String url) {
         Glide.with(context)
                 .load(url)
+                .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
                 .thumbnail(0.5f)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imageview);
     }
 
@@ -253,15 +236,16 @@ public class ImageHandler {
 
 
     public static void loadImageBitmap2(Context context, String url, SimpleTarget<Bitmap> target) {
+        Glide.clear(target);
         Glide.with(context)
                 .load(url)
                 .asBitmap()
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .centerCrop()
                 .into(target);
-
     }
 
     public static void loadImageBitmapNotification(Context context, String url, FCMMessagingService.OnGetFileListener listener) {
