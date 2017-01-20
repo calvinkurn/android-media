@@ -80,7 +80,6 @@ public class FragmentTopPicksWebView extends Fragment {
         @Override
         public void onPageFinished(WebView wv, String url) {
             webViewLoadComplete(wv);
-            System.gc();
         }
 
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
