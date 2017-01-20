@@ -617,4 +617,9 @@ public interface TkpdBaseURL {
         String URL_HELP = MOBILE_DOMAIN + "bantuan/";
         String URL_CHANGE_NUMBER = "https://www.tokopedia.com/contact-us?solution_id=54";
     }
+
+    interface TopCash{
+        String GET_WALLET = ACCOUNTS_DOMAIN + "api/v1/wallet/";
+        String PATH_WALLET = "balance";
+    }
 }
