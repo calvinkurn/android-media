@@ -60,6 +60,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         public ImageView productImage;
         public ImageView deleteWishlistBut;
         public TextView buyWishlistBut;
+        public TextView location;
 
 
         public ViewHolder(View itemView) {
@@ -74,6 +75,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
             wishlistContent = (LinearLayout) itemView.findViewById(R.id.wishlist);
             buyWishlistBut = (TextView) itemView.findViewById(R.id.buy_button);
             deleteWishlistBut = (ImageView) itemView.findViewById(R.id.delete_but);
+            location = (TextView) itemView.findViewById(R.id.location);
         }
 
         public Context getContext() {
@@ -136,6 +138,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
             viewHolder.productName.setText(Html.fromHtml(product.name));
             viewHolder.productPrice.setText(product.price);
             viewHolder.shopName.setText(Html.fromHtml(product.shop));
+            viewHolder.location.setText(product.getShop_location());
             setProductImage(viewHolder, product.getImgUri());
             if (product.labels == null) {
                 product.labels = new ArrayList<Label>();
@@ -193,6 +196,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         viewHolder.productName.setText(Html.fromHtml(product.name));
         viewHolder.productPrice.setText(product.price);
         viewHolder.shopName.setText(Html.fromHtml(product.shop));
+        viewHolder.location.setText(product.getShop_location());
         setProductImage(viewHolder, product.getImgUri());
         if(product.labels == null) {
             product.labels = new ArrayList<Label>();
