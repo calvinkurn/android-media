@@ -228,6 +228,8 @@ dependencies {
     // Optional -- Mockito framework
     testCompile rootProject.ext.testDependencies.mockitorCore
 
+    testCompile rootProject.ext.miscDependencies.rxJava
+
     androidTestCompile rootProject.ext.miscDependencies.rxJava
 
     androidTestCompile rootProject.ext.testDependencies.uiautomator
