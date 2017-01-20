@@ -465,10 +465,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private void setTokoCashLayoutValue(HeaderViewHolder holder, DrawerHeader headerValue) {
-        if(headerValue.tokoCashValue == null || headerValue.tokoCashText.isEmpty()) {
+        if(isTokoCashDisabled(headerValue) && isTokoNoAction(headerValue)) {
            holder.topCashLayout.setVisibility(View.GONE);
-        } else if(!headerValue.tokoCashToWallet && !headerValue.tokoCashOtherAction) {
-            holder.topCashLayout.setVisibility(View.GONE);
         }else {
             holder.tokoCashLabel.setText(headerValue.tokoCashText);
             holder.topCashLayout
@@ -477,6 +475,14 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             holder.topCashLayout.setVisibility(View.VISIBLE);
             holder.loadingTopCash.setVisibility(View.GONE);
         }
+    }
+
+    private boolean isTokoNoAction(DrawerHeader headerValue) {
+        return !headerValue.tokoCashToWallet && !headerValue.tokoCashOtherAction;
+    }
+
+    private boolean isTokoCashDisabled(DrawerHeader headerValue) {
+        return headerValue.tokoCashValue == null || headerValue.tokoCashText.isEmpty();
     }
 
     private View.OnClickListener onLayoutTopCashSelected(final String redirectURL) {
@@ -492,12 +498,9 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                 .goToWallet(context, bundle);
                     }
                 }
-
-//                Intent intent = new Intent(context, LoyaltyDetail.class);
-//                intent.putExtras(bundle);
-//                context.startActivity(intent);
                 finishActivity();
             }
         };
     }
+
 }

@@ -650,7 +650,7 @@ public class DrawerVariable {
         model.header.Loyalty = Cache.getString("loyalty", "");
         model.header.LoyaltyUrl = Cache.getString("loyalty_url", "");
 
-        setTokoCashFromCache();
+        setTokoCashValueFromCache();
     }
 
     private void setCachePeopleMenu() {
@@ -966,18 +966,7 @@ public class DrawerVariable {
                 new NetworkInteractor.TopCashListener() {
             @Override
             public void onSuccess(TopCashItem topCashItem) {
-                model.header.tokoCashURL = topCashItem.getData().getRedirectUrl();
-                model.header.tokoCashLink = topCashItem.getData().getLink();
-                if(model.header.tokoCashLink == 1) {
-                    model.header.tokoCashValue = topCashItem.getData().getBalance();
-                    model.header.tokoCashText = topCashItem.getData().getText();
-                    model.header.tokoCashToWallet = true;
-                } else {
-                    model.header.tokoCashText = topCashItem.getData().getText();
-                    model.header.tokoCashToWallet = false;
-                    if(topCashItem.getData().getAction() != null)
-                        model.header.tokoCashOtherAction = true;
-                }
+                populateTokoCashData(topCashItem);
                 putTokoCashValueOnCache();
                 adapter.notifyDataSetChanged();
             }
@@ -996,7 +985,22 @@ public class DrawerVariable {
         });
     }
 
-    private void setTokoCashFromCache() {
+    private void populateTokoCashData(TopCashItem topCashItem) {
+        model.header.tokoCashURL = topCashItem.getData().getRedirectUrl();
+        model.header.tokoCashLink = topCashItem.getData().getLink();
+        if(model.header.tokoCashLink == 1) {
+            model.header.tokoCashValue = topCashItem.getData().getBalance();
+            model.header.tokoCashText = topCashItem.getData().getText();
+            model.header.tokoCashToWallet = true;
+        } else {
+            model.header.tokoCashText = topCashItem.getData().getText();
+            model.header.tokoCashToWallet = false;
+            if(topCashItem.getData().getAction() != null)
+                model.header.tokoCashOtherAction = true;
+        }
+    }
+
+    private void setTokoCashValueFromCache() {
         model.header.tokoCashValue = Cache.getString(CACHE_TOKO_CASH_TEXT);
         model.header.tokoCashURL = Cache.getString(CACHE_TOKO_CASH_URL);
         model.header.tokoCashText = Cache.getString(CACHE_TOKO_CASH_LABEL);

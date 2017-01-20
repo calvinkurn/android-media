@@ -18,7 +18,9 @@ import com.tokopedia.transaction.webview.WalletWebView;
  * Created by normansyahputa on 12/15/16.
  */
 
-public class ConsumerRouterApplication extends MainApplication implements TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter {
+public class ConsumerRouterApplication extends MainApplication implements TkpdCoreRouter,
+        SellerModuleRouter,
+        IConsumerModuleRouter {
     @Override
     public void goToHome(Context context) {
         Intent intent = new Intent(context,
