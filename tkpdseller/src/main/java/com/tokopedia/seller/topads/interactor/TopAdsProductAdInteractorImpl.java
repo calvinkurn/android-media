@@ -1,21 +1,11 @@
 package com.tokopedia.seller.topads.interactor;
 
-import android.content.Context;
-
-import com.tokopedia.seller.selling.model.modelConfirmShipping.Data;
-import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSource;
 import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSource;
-import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
-import com.tokopedia.seller.topads.model.data.Ad;
 import com.tokopedia.seller.topads.model.data.Cell;
-import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.DataStatistic;
-import com.tokopedia.seller.topads.model.data.GroupAd;
-import com.tokopedia.seller.topads.model.data.Product;
 import com.tokopedia.seller.topads.model.data.ProductAd;
 import com.tokopedia.seller.topads.model.data.ProductAdBulkAction;
-import com.tokopedia.seller.topads.model.data.Summary;
 import com.tokopedia.seller.topads.model.request.DataRequest;
 import com.tokopedia.seller.topads.model.request.SearchAdRequest;
 import com.tokopedia.seller.topads.model.request.StatisticRequest;
@@ -23,15 +13,17 @@ import com.tokopedia.seller.topads.model.response.DataResponse;
 import com.tokopedia.seller.topads.model.response.PageDataResponse;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 
-import java.util.HashMap;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -111,12 +103,61 @@ public class TopAdsProductAdInteractorImpl implements TopAdsProductAdInteractor 
                 .flatMap(new Func1<Response<DataResponse<DataStatistic>>, Observable<List<Cell>>>() {
                     @Override
                     public Observable<List<Cell>> call(Response<DataResponse<DataStatistic>> dataResponseResponse) {
-                        return Observable.just(dataResponseResponse.body().getData().getCells());
+                        List<Cell> cellsResponse = dataResponseResponse.body().getData().getCells();
+                        if(cellsResponse != null){
+                            if(cellsResponse.size() > 0) {
+                                List<Cell> cellsRequest = generateRangeCell(statisticRequest);
+                                if (cellsRequest != null && cellsRequest.size() >= cellsResponse.size()) {
+                                    for (int i = 0; i < cellsRequest.size(); i++) {
+                                        Date dateRequest = cellsRequest.get(i).getDate();
+                                        for(int j=0; j<cellsResponse.size(); j++) {
+                                            Date dateResponse = cellsResponse.get(j).getDate();
+                                            if (dateRequest.equals(dateResponse)) {
+                                                cellsRequest.set(i, cellsResponse.get(j));
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    return Observable.just(cellsRequest);
+                                } else {
+                                    throw new RuntimeException("");
+                                }
+                            }else{
+                                List<Cell> cellsRequest = generateRangeCell(statisticRequest);
+                                return Observable.just(cellsRequest);
+                            }
+                        }else{
+                            throw new NullPointerException();
+                        }
                     }
 
                 })
                 .subscribe(new SubscribeOnNext<List<Cell>>(listener), new SubscribeOnError(listener)));
     }
+
+    /**
+     * generate range date between date start request and last date request
+     * @param statisticRequest object request to network API
+     * @return
+     */
+    private List<Cell> generateRangeCell(StatisticRequest statisticRequest) {
+        List<Cell> cells = new ArrayList<Cell>();
+        Date lastDate = statisticRequest.getEndDate();
+        Date startDate = statisticRequest.getStartDate();
+        SimpleDateFormat formatter = new SimpleDateFormat("MM");
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(startDate);
+        while (cal.getTime().before(lastDate)) {
+            cal.add(Calendar.DATE, 1);
+            Cell cell = new Cell(cal.get(Calendar.DAY_OF_MONTH), Integer.parseInt(formatter.format(cal.getTime())), cal.get(Calendar.YEAR),
+                    0, 0, 0, 0, 0, 0, "0", "0", "0", "0", "0", "0");
+            cells.add(cell);
+        }
+
+        return cells;
+    }
+
 
     @Override
     public void unSubscribe() {

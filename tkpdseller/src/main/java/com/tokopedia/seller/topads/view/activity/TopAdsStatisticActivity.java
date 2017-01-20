@@ -112,8 +112,8 @@ public abstract class TopAdsStatisticActivity extends BasePresenterActivity<TopA
             @Override
             public void onPageSelected(int position) {
                 Fragment fragment = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, viewPager.getCurrentItem());
-                if(fragment != null && fragment instanceof TopAdsStatisticViewListener && cells != null){
-                    ((TopAdsStatisticViewListener)fragment).updateDataCell(cells);
+                if (fragment != null && fragment instanceof TopAdsStatisticViewListener && cells != null) {
+                    ((TopAdsStatisticViewListener) fragment).updateDataCell(cells);
                 }
             }
 
@@ -171,6 +171,9 @@ public abstract class TopAdsStatisticActivity extends BasePresenterActivity<TopA
 
     @Override
     public void onError(Throwable throwable) {
+        if(snackbarRetry.isShown()){
+            snackbarRetry.hideRetrySnackbar();
+        }
         snackbarRetry.showRetrySnackbar();
     }
 
@@ -179,13 +182,13 @@ public abstract class TopAdsStatisticActivity extends BasePresenterActivity<TopA
         snackbarRetry.hideRetrySnackbar();
         this.cells = cells;
         Fragment fragment = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, viewPager.getCurrentItem());
-        if(fragment != null && fragment instanceof TopAdsStatisticViewListener){
-            ((TopAdsStatisticViewListener)fragment).updateDataCell(cells);
+        if (fragment != null && fragment instanceof TopAdsStatisticViewListener) {
+            ((TopAdsStatisticViewListener) fragment).updateDataCell(cells);
         }
     }
 
     @Override
-    public List<Cell> getDataCell(){
+    public List<Cell> getDataCell() {
         return this.cells;
     }
 
@@ -209,7 +212,7 @@ public abstract class TopAdsStatisticActivity extends BasePresenterActivity<TopA
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
 
-        if(itemId == R.id.menu_date){
+        if (itemId == R.id.menu_date) {
             openDatePicker();
         }
         return super.onOptionsItemSelected(item);
