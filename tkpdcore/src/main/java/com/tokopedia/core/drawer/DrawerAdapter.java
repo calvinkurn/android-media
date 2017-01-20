@@ -465,7 +465,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private void setTokoCashLayoutValue(HeaderViewHolder holder, DrawerHeader headerValue) {
-        if(isTokoCashDisabled(headerValue) && isTokoNoAction(headerValue)) {
+        if(isTokoCashDisabled(headerValue) || isTokoNoAction(headerValue)) {
            holder.topCashLayout.setVisibility(View.GONE);
         }else {
             holder.tokoCashLabel.setText(headerValue.tokoCashText);
