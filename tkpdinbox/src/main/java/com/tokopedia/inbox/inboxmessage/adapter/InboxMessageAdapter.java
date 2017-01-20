@@ -27,6 +27,8 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.view.View.Y;
+
 /**
  * Created by Nisie on 5/9/16.
  */
@@ -449,19 +451,27 @@ public class InboxMessageAdapter extends BaseLinearRecyclerViewAdapter
     }
 
     public int getChosenMessageStatus() {
-        int statusRead = 0;
-        int statusUnread = 0;
+        int statusRead = -1;
+        int statusUnread = -1;
 
         for (InboxMessageItem inboxMessageItem : listMove) {
             if (inboxMessageItem.getMessageReadStatus() == STATE_READ)
-                statusRead = 1;
+                statusRead = STATE_READ;
 
             if (inboxMessageItem.getMessageReadStatus() == STATE_NOT_READ) {
-                statusUnread = 1;
+                statusUnread = STATE_NOT_READ;
             }
-
         }
-        return statusRead + statusUnread;
+
+        if (statusRead == STATE_READ && statusUnread == STATE_NOT_READ) {
+            return STATE_BOTH;
+        } else if (statusRead == STATE_READ) {
+            return STATE_READ;
+        } else if (statusUnread == STATE_NOT_READ) {
+            return STATE_NOT_READ;
+        } else {
+            return -1;
+        }
     }
 
 }

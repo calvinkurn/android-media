@@ -20,7 +20,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.MultiPaneActivity;
 import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
-import com.tokopedia.inbox.inboxmessage.fragment.InboxMessageFragment;
 import com.tokopedia.core.inboxreputation.fragment.InboxReputationFragment;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.InboxRouter;
@@ -79,7 +78,7 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
             Bundle bundle = new Bundle();
             switch (NotificationCode.get(i)) {
                 case 101:
-                    fragment = InboxMessageFragment.createInstance("inbox-message");
+                    fragment = InboxRouter.instanceInboxMessageFromNotification(this);
                     bundle.putBoolean("from_notif", true);
                     bundle.putString("nav", "inbox-message");
                     fragment.setArguments(bundle);
