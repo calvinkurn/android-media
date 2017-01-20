@@ -74,11 +74,6 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     }
 
     @Override
-    protected void setupArguments(Bundle bundle) {
-        super.setupArguments(bundle);
-    }
-
-    @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_top_ads_product_detail;
     }

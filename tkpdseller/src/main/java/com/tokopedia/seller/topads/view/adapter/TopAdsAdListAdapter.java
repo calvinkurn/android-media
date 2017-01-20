@@ -70,8 +70,11 @@ public class TopAdsAdListAdapter<T extends Ad> extends BaseLinearRecyclerViewAda
     }
 
     public void bindDataAds(final int position, RecyclerView.ViewHolder viewHolder) {
-        final Ad ad = data.get(position);
         final TopAdsViewHolder topAdsViewHolder = (TopAdsViewHolder) viewHolder;
+        if (data.size() <= position) {
+            return;
+        }
+        final Ad ad = data.get(position);
         topAdsViewHolder.bindObject(ad);
         topAdsViewHolder.mainView.setOnClickListener(new View.OnClickListener() {
             @Override
