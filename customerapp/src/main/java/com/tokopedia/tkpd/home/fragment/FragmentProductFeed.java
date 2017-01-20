@@ -216,7 +216,9 @@ public class FragmentProductFeed extends TkpdBaseV4Fragment
 
     public void refreshData() {
         if (productFeedPresenter != null && productFeedPresenter.isAfterRotation()) {
-            productFeedPresenter.refreshData();
+            if (!productFeedPresenter.isLoadedFirstPage()) {
+                productFeedPresenter.refreshData();
+            }
         }
     }
 

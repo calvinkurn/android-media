@@ -118,4 +118,6 @@ public interface ProductFeed {
     void unsubscribe();
 
     void fecthRecentProductFromNetwork();
+
+    boolean isLoadedFirstPage();
 }
