@@ -41,7 +41,7 @@ public class GetKeyword {
         private String keyword;
         @SerializedName("Frequency")
         @Expose
-        private Integer frequency;
+        private int frequency;
 
         /**
          *
@@ -66,7 +66,7 @@ public class GetKeyword {
          * @return
          * The frequency
          */
-        public Integer getFrequency() {
+        public int getFrequency() {
             return frequency;
         }
 
@@ -75,7 +75,7 @@ public class GetKeyword {
          * @param frequency
          * The Frequency
          */
-        public void setFrequency(Integer frequency) {
+        public void setFrequency(int frequency) {
             this.frequency = frequency;
         }
 

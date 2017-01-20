@@ -8,64 +8,64 @@ public class GetTransactionGraph {
 
     @SerializedName("FinishedTrans")
     @Expose
-    private Long finishedTrans;
+    private long finishedTrans;
     @SerializedName("DiffFinishedTrans")
     @Expose
-    private Double diffFinishedTrans;
+    private double diffFinishedTrans;
     @SerializedName("SuccessTrans")
     @Expose
-    private Long successTrans;
+    private long successTrans;
     @SerializedName("NewOrder")
     @Expose
-    private Integer newOrder;
+    private int newOrder;
     @SerializedName("DeliveredProduct")
     @Expose
-    private Integer deliveredProduct;
+    private int deliveredProduct;
     @SerializedName("GrossRevenue")
     @Expose
-    private Long grossRevenue;
+    private long grossRevenue;
     @SerializedName("NetRevenue")
     @Expose
-    private Integer netRevenue;
+    private int netRevenue;
     @SerializedName("RejectedAmount")
     @Expose
-    private Integer rejectedAmount;
+    private int rejectedAmount;
     @SerializedName("ShippingCost")
     @Expose
-    private Integer shippingCost;
+    private int shippingCost;
     @SerializedName("CpcProduct")
     @Expose
-    private Integer cpcProduct;
+    private int cpcProduct;
     @SerializedName("CpcShop")
     @Expose
-    private Integer cpcShop;
+    private int cpcShop;
     @SerializedName("DiffSuccessTrans")
     @Expose
-    private Double diffSuccessTrans;
+    private double diffSuccessTrans;
     @SerializedName("DiffNewOrder")
     @Expose
-    private Double diffNewOrder;
+    private double diffNewOrder;
     @SerializedName("DiffDeliveredProduct")
     @Expose
-    private Double diffDeliveredProduct;
+    private double diffDeliveredProduct;
     @SerializedName("DiffGrossRevenue")
     @Expose
-    private Double diffGrossRevenue;
+    private double diffGrossRevenue;
     @SerializedName("DiffNetRevenue")
     @Expose
-    private Double diffNetRevenue;
+    private double diffNetRevenue;
     @SerializedName("DiffRejectedAmount")
     @Expose
-    private Double diffRejectedAmount;
+    private double diffRejectedAmount;
     @SerializedName("DiffShippingCost")
     @Expose
-    private Double diffShippingCost;
+    private double diffShippingCost;
     @SerializedName("DiffCpcShop")
     @Expose
-    private Double diffCpcShop;
+    private double diffCpcShop;
     @SerializedName("DiffCpcProd")
     @Expose
-    private Double diffCpcProd;
+    private double diffCpcProd;
     @SerializedName("DateGraph")
     @Expose
     private List<Integer> dateGraph = null;
@@ -132,163 +132,163 @@ public class GetTransactionGraph {
         this.rejectedTransGraph = rejectedTransGraph;
     }
 
-    public Long getFinishedTrans() {
+    public long getFinishedTrans() {
         return finishedTrans;
     }
 
-    public void setFinishedTrans(Long finishedTrans) {
+    public void setFinishedTrans(long finishedTrans) {
         this.finishedTrans = finishedTrans;
     }
 
-    public Double getDiffFinishedTrans() {
+    public double getDiffFinishedTrans() {
         return diffFinishedTrans;
     }
 
-    public void setDiffFinishedTrans(Double diffFinishedTrans) {
+    public void setDiffFinishedTrans(double diffFinishedTrans) {
         this.diffFinishedTrans = diffFinishedTrans;
     }
 
-    public Long getSuccessTrans() {
+    public long getSuccessTrans() {
         return successTrans;
     }
 
-    public void setSuccessTrans(Long successTrans) {
+    public void setSuccessTrans(long successTrans) {
         this.successTrans = successTrans;
     }
 
-    public Integer getNewOrder() {
+    public int getNewOrder() {
         return newOrder;
     }
 
-    public void setNewOrder(Integer newOrder) {
+    public void setNewOrder(int newOrder) {
         this.newOrder = newOrder;
     }
 
-    public Integer getDeliveredProduct() {
+    public int getDeliveredProduct() {
         return deliveredProduct;
     }
 
-    public void setDeliveredProduct(Integer deliveredProduct) {
+    public void setDeliveredProduct(int deliveredProduct) {
         this.deliveredProduct = deliveredProduct;
     }
 
-    public Long getGrossRevenue() {
+    public long getGrossRevenue() {
         return grossRevenue;
     }
 
-    public void setGrossRevenue(Long grossRevenue) {
+    public void setGrossRevenue(long grossRevenue) {
         this.grossRevenue = grossRevenue;
     }
 
-    public Integer getNetRevenue() {
+    public int getNetRevenue() {
         return netRevenue;
     }
 
-    public void setNetRevenue(Integer netRevenue) {
+    public void setNetRevenue(int netRevenue) {
         this.netRevenue = netRevenue;
     }
 
-    public Integer getRejectedAmount() {
+    public int getRejectedAmount() {
         return rejectedAmount;
     }
 
-    public void setRejectedAmount(Integer rejectedAmount) {
+    public void setRejectedAmount(int rejectedAmount) {
         this.rejectedAmount = rejectedAmount;
     }
 
-    public Integer getShippingCost() {
+    public int getShippingCost() {
         return shippingCost;
     }
 
-    public void setShippingCost(Integer shippingCost) {
+    public void setShippingCost(int shippingCost) {
         this.shippingCost = shippingCost;
     }
 
-    public Integer getCpcProduct() {
+    public int getCpcProduct() {
         return cpcProduct;
     }
 
-    public void setCpcProduct(Integer cpcProduct) {
+    public void setCpcProduct(int cpcProduct) {
         this.cpcProduct = cpcProduct;
     }
 
-    public Integer getCpcShop() {
+    public int getCpcShop() {
         return cpcShop;
     }
 
-    public void setCpcShop(Integer cpcShop) {
+    public void setCpcShop(int cpcShop) {
         this.cpcShop = cpcShop;
     }
 
-    public Double getDiffSuccessTrans() {
+    public double getDiffSuccessTrans() {
         return diffSuccessTrans;
     }
 
-    public void setDiffSuccessTrans(Double diffSuccessTrans) {
+    public void setDiffSuccessTrans(double diffSuccessTrans) {
         this.diffSuccessTrans = diffSuccessTrans;
     }
 
-    public Double getDiffNewOrder() {
+    public double getDiffNewOrder() {
         return diffNewOrder;
     }
 
-    public void setDiffNewOrder(Double diffNewOrder) {
+    public void setDiffNewOrder(double diffNewOrder) {
         this.diffNewOrder = diffNewOrder;
     }
 
-    public Double getDiffDeliveredProduct() {
+    public double getDiffDeliveredProduct() {
         return diffDeliveredProduct;
     }
 
-    public void setDiffDeliveredProduct(Double diffDeliveredProduct) {
+    public void setDiffDeliveredProduct(double diffDeliveredProduct) {
         this.diffDeliveredProduct = diffDeliveredProduct;
     }
 
-    public Double getDiffGrossRevenue() {
+    public double getDiffGrossRevenue() {
         return diffGrossRevenue;
     }
 
-    public void setDiffGrossRevenue(Double diffGrossRevenue) {
+    public void setDiffGrossRevenue(double diffGrossRevenue) {
         this.diffGrossRevenue = diffGrossRevenue;
     }
 
-    public Double getDiffNetRevenue() {
+    public double getDiffNetRevenue() {
         return diffNetRevenue;
     }
 
-    public void setDiffNetRevenue(Double diffNetRevenue) {
+    public void setDiffNetRevenue(double diffNetRevenue) {
         this.diffNetRevenue = diffNetRevenue;
     }
 
-    public Double getDiffRejectedAmount() {
+    public double getDiffRejectedAmount() {
         return diffRejectedAmount;
     }
 
-    public void setDiffRejectedAmount(Double diffRejectedAmount) {
+    public void setDiffRejectedAmount(double diffRejectedAmount) {
         this.diffRejectedAmount = diffRejectedAmount;
     }
 
-    public Double getDiffShippingCost() {
+    public double getDiffShippingCost() {
         return diffShippingCost;
     }
 
-    public void setDiffShippingCost(Double diffShippingCost) {
+    public void setDiffShippingCost(double diffShippingCost) {
         this.diffShippingCost = diffShippingCost;
     }
 
-    public Double getDiffCpcShop() {
+    public double getDiffCpcShop() {
         return diffCpcShop;
     }
 
-    public void setDiffCpcShop(Double diffCpcShop) {
+    public void setDiffCpcShop(double diffCpcShop) {
         this.diffCpcShop = diffCpcShop;
     }
 
-    public Double getDiffCpcProd() {
+    public double getDiffCpcProd() {
         return diffCpcProd;
     }
 
-    public void setDiffCpcProd(Double diffCpcProd) {
+    public void setDiffCpcProd(double diffCpcProd) {
         this.diffCpcProd = diffCpcProd;
     }
 

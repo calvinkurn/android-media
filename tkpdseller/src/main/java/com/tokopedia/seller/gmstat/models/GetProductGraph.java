@@ -14,28 +14,28 @@ public class GetProductGraph {
 
     @SerializedName("SuccessTrans")
     @Expose
-    private Long successTrans;
+    private long successTrans;
     @SerializedName("ProductView")
     @Expose
-    private Long productView;
+    private long productView;
     @SerializedName("ProductSold")
     @Expose
-    private Long productSold;
+    private long productSold;
     @SerializedName("ConversionRate")
     @Expose
-    private Double conversionRate;
+    private double conversionRate;
     @SerializedName("DiffTrans")
     @Expose
-    private Double diffTrans;
+    private double diffTrans;
     @SerializedName("DiffConv")
     @Expose
-    private Double diffConv;
+    private double diffConv;
     @SerializedName("DiffView")
     @Expose
-    private Double diffView;
+    private double diffView;
     @SerializedName("DiffSold")
     @Expose
-    private Double diffSold;
+    private double diffSold;
     @SerializedName("DateGraph")
     @Expose
     private List<Integer> dateGraph = new ArrayList<Integer>();
@@ -66,7 +66,7 @@ public class GetProductGraph {
      * @return
      * The successTrans
      */
-    public Long getSuccessTrans() {
+    public long getSuccessTrans() {
         return successTrans;
     }
 
@@ -75,7 +75,7 @@ public class GetProductGraph {
      * @param successTrans
      * The SuccessTrans
      */
-    public void setSuccessTrans(Long successTrans) {
+    public void setSuccessTrans(long successTrans) {
         this.successTrans = successTrans;
     }
 
@@ -84,7 +84,7 @@ public class GetProductGraph {
      * @return
      * The productView
      */
-    public Long getProductView() {
+    public long getProductView() {
         return productView;
     }
 
@@ -93,7 +93,7 @@ public class GetProductGraph {
      * @param productView
      * The ProductView
      */
-    public void setProductView(Long productView) {
+    public void setProductView(long productView) {
         this.productView = productView;
     }
 
@@ -102,7 +102,7 @@ public class GetProductGraph {
      * @return
      * The productSold
      */
-    public Long getProductSold() {
+    public long getProductSold() {
         return productSold;
     }
 
@@ -111,7 +111,7 @@ public class GetProductGraph {
      * @param productSold
      * The ProductSold
      */
-    public void setProductSold(Long productSold) {
+    public void setProductSold(long productSold) {
         this.productSold = productSold;
     }
 
@@ -120,7 +120,7 @@ public class GetProductGraph {
      * @return
      * The conversionRate
      */
-    public Double getConversionRate() {
+    public double getConversionRate() {
         return conversionRate;
     }
 
@@ -129,7 +129,7 @@ public class GetProductGraph {
      * @param conversionRate
      * The ConversionRate
      */
-    public void setConversionRate(Double conversionRate) {
+    public void setConversionRate(double conversionRate) {
         this.conversionRate = conversionRate;
     }
 
@@ -138,7 +138,7 @@ public class GetProductGraph {
      * @return
      * The diffTrans
      */
-    public Double getDiffTrans() {
+    public double getDiffTrans() {
         return diffTrans;
     }
 
@@ -147,7 +147,7 @@ public class GetProductGraph {
      * @param diffTrans
      * The DiffTrans
      */
-    public void setDiffTrans(Double diffTrans) {
+    public void setDiffTrans(double diffTrans) {
         this.diffTrans = diffTrans;
     }
 
@@ -156,7 +156,7 @@ public class GetProductGraph {
      * @return
      * The diffConv
      */
-    public Double getDiffConv() {
+    public double getDiffConv() {
         return diffConv;
     }
 
@@ -165,7 +165,7 @@ public class GetProductGraph {
      * @param diffConv
      * The DiffConv
      */
-    public void setDiffConv(Double diffConv) {
+    public void setDiffConv(double diffConv) {
         this.diffConv = diffConv;
     }
 
@@ -174,7 +174,7 @@ public class GetProductGraph {
      * @return
      * The diffView
      */
-    public Double getDiffView() {
+    public double getDiffView() {
         return diffView;
     }
 
@@ -183,7 +183,7 @@ public class GetProductGraph {
      * @param diffView
      * The DiffView
      */
-    public void setDiffView(Double diffView) {
+    public void setDiffView(double diffView) {
         this.diffView = diffView;
     }
 
@@ -192,7 +192,7 @@ public class GetProductGraph {
      * @return
      * The diffSold
      */
-    public Double getDiffSold() {
+    public double getDiffSold() {
         return diffSold;
     }
 
@@ -201,7 +201,7 @@ public class GetProductGraph {
      * @param diffSold
      * The DiffSold
      */
-    public void setDiffSold(Double diffSold) {
+    public void setDiffSold(double diffSold) {
         this.diffSold = diffSold;
     }
 

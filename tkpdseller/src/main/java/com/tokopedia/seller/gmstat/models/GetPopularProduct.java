@@ -7,22 +7,22 @@ public class GetPopularProduct {
 
     @SerializedName("ProductId")
     @Expose
-    private Integer productId;
+    private int productId;
     @SerializedName("Sold")
     @Expose
-    private Long sold;
+    private long sold;
     @SerializedName("View")
     @Expose
-    private Integer view;
+    private int view;
     @SerializedName("SuccessTrans")
     @Expose
-    private Integer successTrans;
+    private int successTrans;
     @SerializedName("WishlistCount")
     @Expose
-    private Integer wishlistCount;
+    private int wishlistCount;
     @SerializedName("ConversionRate")
     @Expose
-    private Integer conversionRate;
+    private int conversionRate;
     @SerializedName("ProductName")
     @Expose
     private String productName;
@@ -38,7 +38,7 @@ public class GetPopularProduct {
      * @return
      * The productId
      */
-    public Integer getProductId() {
+    public int getProductId() {
         return productId;
     }
 
@@ -47,7 +47,7 @@ public class GetPopularProduct {
      * @param productId
      * The ProductId
      */
-    public void setProductId(Integer productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
@@ -56,7 +56,7 @@ public class GetPopularProduct {
      * @return
      * The sold
      */
-    public Long getSold() {
+    public long getSold() {
         return sold;
     }
 
@@ -65,7 +65,7 @@ public class GetPopularProduct {
      * @param sold
      * The Sold
      */
-    public void setSold(Long sold) {
+    public void setSold(long sold) {
         this.sold = sold;
     }
 
@@ -74,7 +74,7 @@ public class GetPopularProduct {
      * @return
      * The view
      */
-    public Integer getView() {
+    public int getView() {
         return view;
     }
 
@@ -83,7 +83,7 @@ public class GetPopularProduct {
      * @param view
      * The View
      */
-    public void setView(Integer view) {
+    public void setView(int view) {
         this.view = view;
     }
 
@@ -92,7 +92,7 @@ public class GetPopularProduct {
      * @return
      * The successTrans
      */
-    public Integer getSuccessTrans() {
+    public int getSuccessTrans() {
         return successTrans;
     }
 
@@ -101,7 +101,7 @@ public class GetPopularProduct {
      * @param successTrans
      * The SuccessTrans
      */
-    public void setSuccessTrans(Integer successTrans) {
+    public void setSuccessTrans(int successTrans) {
         this.successTrans = successTrans;
     }
 
@@ -110,7 +110,7 @@ public class GetPopularProduct {
      * @return
      * The wishlistCount
      */
-    public Integer getWishlistCount() {
+    public int getWishlistCount() {
         return wishlistCount;
     }
 
@@ -119,7 +119,7 @@ public class GetPopularProduct {
      * @param wishlistCount
      * The WishlistCount
      */
-    public void setWishlistCount(Integer wishlistCount) {
+    public void setWishlistCount(int wishlistCount) {
         this.wishlistCount = wishlistCount;
     }
 
@@ -128,7 +128,7 @@ public class GetPopularProduct {
      * @return
      * The conversionRate
      */
-    public Integer getConversionRate() {
+    public int getConversionRate() {
         return conversionRate;
     }
 
@@ -137,7 +137,7 @@ public class GetPopularProduct {
      * @param conversionRate
      * The ConversionRate
      */
-    public void setConversionRate(Integer conversionRate) {
+    public void setConversionRate(int conversionRate) {
         this.conversionRate = conversionRate;
     }
 

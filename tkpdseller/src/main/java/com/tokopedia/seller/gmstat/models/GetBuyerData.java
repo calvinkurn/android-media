@@ -14,37 +14,37 @@ public class GetBuyerData {
 
     @SerializedName("TotalBuyer")
     @Expose
-    private Long totalBuyer;
+    private long totalBuyer;
     @SerializedName("MaleBuyer")
     @Expose
-    private Integer maleBuyer;
+    private int maleBuyer;
     @SerializedName("FemaleBuyer")
     @Expose
-    private Integer femaleBuyer;
+    private int femaleBuyer;
     @SerializedName("SuccessTrans")
     @Expose
-    private Integer successTrans;
+    private int successTrans;
     @SerializedName("ProductSold")
     @Expose
-    private Integer productSold;
+    private int productSold;
     @SerializedName("Age1")
     @Expose
-    private Integer age1;
+    private int age1;
     @SerializedName("Age2")
     @Expose
-    private Integer age2;
+    private int age2;
     @SerializedName("Age3")
     @Expose
-    private Integer age3;
+    private int age3;
     @SerializedName("Age4")
     @Expose
-    private Integer age4;
+    private int age4;
     @SerializedName("Age5")
     @Expose
-    private Integer age5;
+    private int age5;
     @SerializedName("DiffTotal")
     @Expose
-    private Double diffTotal;
+    private double diffTotal;
     @SerializedName("DateGraph")
     @Expose
     private List<Integer> dateGraph = new ArrayList<Integer>();
@@ -75,7 +75,7 @@ public class GetBuyerData {
      * @return
      * The totalBuyer
      */
-    public Long getTotalBuyer() {
+    public long getTotalBuyer() {
         return totalBuyer;
     }
 
@@ -84,7 +84,7 @@ public class GetBuyerData {
      * @param totalBuyer
      * The TotalBuyer
      */
-    public void setTotalBuyer(Long totalBuyer) {
+    public void setTotalBuyer(long totalBuyer) {
         this.totalBuyer = totalBuyer;
     }
 
@@ -93,7 +93,7 @@ public class GetBuyerData {
      * @return
      * The maleBuyer
      */
-    public Integer getMaleBuyer() {
+    public int getMaleBuyer() {
         return maleBuyer;
     }
 
@@ -102,7 +102,7 @@ public class GetBuyerData {
      * @param maleBuyer
      * The MaleBuyer
      */
-    public void setMaleBuyer(Integer maleBuyer) {
+    public void setMaleBuyer(int maleBuyer) {
         this.maleBuyer = maleBuyer;
     }
 
@@ -111,7 +111,7 @@ public class GetBuyerData {
      * @return
      * The femaleBuyer
      */
-    public Integer getFemaleBuyer() {
+    public int getFemaleBuyer() {
         return femaleBuyer;
     }
 
@@ -120,7 +120,7 @@ public class GetBuyerData {
      * @param femaleBuyer
      * The FemaleBuyer
      */
-    public void setFemaleBuyer(Integer femaleBuyer) {
+    public void setFemaleBuyer(int femaleBuyer) {
         this.femaleBuyer = femaleBuyer;
     }
 
@@ -129,7 +129,7 @@ public class GetBuyerData {
      * @return
      * The successTrans
      */
-    public Integer getSuccessTrans() {
+    public int getSuccessTrans() {
         return successTrans;
     }
 
@@ -138,7 +138,7 @@ public class GetBuyerData {
      * @param successTrans
      * The SuccessTrans
      */
-    public void setSuccessTrans(Integer successTrans) {
+    public void setSuccessTrans(int successTrans) {
         this.successTrans = successTrans;
     }
 
@@ -147,7 +147,7 @@ public class GetBuyerData {
      * @return
      * The productSold
      */
-    public Integer getProductSold() {
+    public int getProductSold() {
         return productSold;
     }
 
@@ -156,7 +156,7 @@ public class GetBuyerData {
      * @param productSold
      * The ProductSold
      */
-    public void setProductSold(Integer productSold) {
+    public void setProductSold(int productSold) {
         this.productSold = productSold;
     }
 
@@ -165,7 +165,7 @@ public class GetBuyerData {
      * @return
      * The age1
      */
-    public Integer getAge1() {
+    public int getAge1() {
         return age1;
     }
 
@@ -174,7 +174,7 @@ public class GetBuyerData {
      * @param age1
      * The Age1
      */
-    public void setAge1(Integer age1) {
+    public void setAge1(int age1) {
         this.age1 = age1;
     }
 
@@ -183,7 +183,7 @@ public class GetBuyerData {
      * @return
      * The age2
      */
-    public Integer getAge2() {
+    public int getAge2() {
         return age2;
     }
 
@@ -192,7 +192,7 @@ public class GetBuyerData {
      * @param age2
      * The Age2
      */
-    public void setAge2(Integer age2) {
+    public void setAge2(int age2) {
         this.age2 = age2;
     }
 
@@ -201,7 +201,7 @@ public class GetBuyerData {
      * @return
      * The age3
      */
-    public Integer getAge3() {
+    public int getAge3() {
         return age3;
     }
 
@@ -210,7 +210,7 @@ public class GetBuyerData {
      * @param age3
      * The Age3
      */
-    public void setAge3(Integer age3) {
+    public void setAge3(int age3) {
         this.age3 = age3;
     }
 
@@ -219,7 +219,7 @@ public class GetBuyerData {
      * @return
      * The age4
      */
-    public Integer getAge4() {
+    public int getAge4() {
         return age4;
     }
 
@@ -228,7 +228,7 @@ public class GetBuyerData {
      * @param age4
      * The Age4
      */
-    public void setAge4(Integer age4) {
+    public void setAge4(int age4) {
         this.age4 = age4;
     }
 
@@ -237,7 +237,7 @@ public class GetBuyerData {
      * @return
      * The age5
      */
-    public Integer getAge5() {
+    public int getAge5() {
         return age5;
     }
 
@@ -246,7 +246,7 @@ public class GetBuyerData {
      * @param age5
      * The Age5
      */
-    public void setAge5(Integer age5) {
+    public void setAge5(int age5) {
         this.age5 = age5;
     }
 
@@ -255,7 +255,7 @@ public class GetBuyerData {
      * @return
      * The diffTotal
      */
-    public Double getDiffTotal() {
+    public double getDiffTotal() {
         return diffTotal;
     }
 
@@ -264,7 +264,7 @@ public class GetBuyerData {
      * @param diffTotal
      * The DiffTotal
      */
-    public void setDiffTotal(Double diffTotal) {
+    public void setDiffTotal(double diffTotal) {
         this.diffTotal = diffTotal;
     }
 
