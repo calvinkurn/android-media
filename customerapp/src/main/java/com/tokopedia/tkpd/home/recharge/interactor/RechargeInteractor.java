@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * @author ricoharisin on 7/18/16.
  */
-public interface RechargeDBInteractor {
+public interface RechargeInteractor {
 
     void getListProduct(OnGetListProduct onGetListProduct, String prefix, int categoryId, Boolean validatePrefix);
 
@@ -22,7 +22,7 @@ public interface RechargeDBInteractor {
 
     void getListProductDefaultOperator(OnGetListProduct onGetListProduct, int categoryId, String operatorId);
 
-    void getCategory(OnGetCategory onGetCategory);
+    void getCategoryData(OnGetCategory onGetCategory);
 
     void getStatus(OnGetStatus onGetStatus);
 
@@ -55,7 +55,7 @@ public interface RechargeDBInteractor {
     }
 
     interface OnGetCategory {
-        void onSuccess(List<Category> listCategory);
+        void onSuccess(CategoryData categoryData);
 
         void onError(Throwable e);
 

@@ -146,84 +146,28 @@ public class LoginImpl implements Login {
 
     @Override
     public void sendGTMScreen(Context context) {
-        Nishikino.init(context).startAnalytics().sendScreen(AppScreen.SCREEN_LOGIN);
+
     }
 
     @Override
     public void sendGTMRegisterThrougLogin() {
-        Nishikino.init(mContext).startAnalytics()
-                .sendButtonClick(
-                        AppEventTracking.Event.REGISTER_LOGIN,
-                        AppEventTracking.Category.LOGIN,
-                        AppEventTracking.Action.REGISTER,
-                        AppEventTracking.EventLabel.REGISTER);
+
     }
 
     @Override
     public void sendCTAAction() {
-        Nishikino.init(mContext).startAnalytics()
-                .sendButtonClick(
-                        AppEventTracking.Event.LOGIN_CLICK,
-                        AppEventTracking.Category.LOGIN,
-                        AppEventTracking.Action.CLICK,
-                        AppEventTracking.EventLabel.CTA);
+
     }
 
     @Override
     public void sendGTMLoginError(String label) {
-        Nishikino.init(mContext).startAnalytics()
-                .sendButtonClick(
-                        AppEventTracking.Event.LOGIN_ERROR,
-                        AppEventTracking.Category.LOGIN,
-                        AppEventTracking.Action.LOGIN_ERROR,
-                        label);
+
     }
 
     @Override
-    public void doFacebookLogin(final LoginFragment fragment, final CallbackManager callbackManager) {
-        LoginManager.getInstance().logInWithReadPermissions(fragment, FacebookContainer.readPermissions);
-        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(final LoginResult loginResult) {
-                Set<String> declinedPermissions = loginResult.getAccessToken().getDeclinedPermissions();
-                if(declinedPermissions.size()>0 && FacebookContainer.readPermissions.containsAll(declinedPermissions)){
-                    doFacebookLogin(fragment,callbackManager);
-                }else {
-                    GraphRequest request = GraphRequest.newMeRequest(
-                            loginResult.getAccessToken(),
-                            new GraphRequest.GraphJSONObjectCallback() {
-                                @Override
-                                public void onCompleted(
-                                        JSONObject object,
-                                        GraphResponse response) {
-                                    FacebookModel facebookModel =
-                                            new GsonBuilder().create().fromJson(String.valueOf(object), FacebookModel.class);
-                                    loginFacebook(facebookModel,loginResult.getAccessToken().getToken());
-                                }
-                            });
-                    Bundle parameters = new Bundle();
-                    parameters.putString("fields","id,name,gender,birthday,email");
-                    request.setParameters(parameters);
-                    request.executeAsync();
-                }
-            }
+    public void doFacebookLogin(LoginFragment fragment, CallbackManager callbackManager) {
 
-            @Override
-            public void onCancel() {
-                LoginManager.getInstance().logOut();
-                Log.i(TAG, "onCancel: ");
-            }
-
-            @Override
-            public void onError(FacebookException e) {
-                if(e instanceof FacebookAuthorizationException){
-                    LoginManager.getInstance().logOut();
-                }
-                loginView.showError(fragment.getActivity().getString(R.string.msg_network_error));
-            }
-        });
     }
-
 
     public void downloadProviderLogin() {
         facade.downloadProvider(loginView.getActivity(), new LoginInteractor.DiscoverLoginListener() {

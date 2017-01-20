@@ -69,13 +69,42 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         this.context = activity;
     }
 
+    @Override
+    public boolean isLandingPageWebView(Uri uri) {
+        int type = getDeepLinkType(uri);
+        switch (type){
+            case HOMEPAGE:
+                return false;
+            case BROWSE:
+                return false;
+            case HOT:
+                return false;
+            case CATALOG:
+                return false;
+            case PRODUCT:
+                return false;
+            case SHOP:
+                return false;
+            case ACCOUNTS:
+                return true;
+            case OTHER:
+                return true;
+            case INVOICE:
+                return false;
+            case RECHARGE:
+                return false;
+            default:
+                return true;
+        }
+    }
+
     public void processDeepLinkAction(Uri uriData) {
         if (uriData.getHost().equals(AF_ONELINK_HOST)) {
             Log.d(TAG, "URI DATA = " + uriData.toString());
             processAFlistener();
         } else {
             List<String> linkSegment = uriData.getPathSegments();
-            String screenName = "";
+            String screenName;
             int type = getDeepLinkType(uriData);
             CommonUtils.dumper("FCM wvlogin deeplink type "+type);
             switch (type) {
@@ -456,8 +485,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 && !isBrowse(linkSegment)
                 && !isHot(linkSegment)
                 && !isCatalog(linkSegment)
-                && !linkSegment.get(0).equals("pulsa")
-        );
+                && !linkSegment.get(0).equals("pulsa"));
     }
 
     private boolean isCatalog(List<String> linkSegment) {

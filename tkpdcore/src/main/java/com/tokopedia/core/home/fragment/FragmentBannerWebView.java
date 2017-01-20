@@ -24,6 +24,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.util.TkpdWebView;
 
 /**
  * Created by Nisie on 8/25/2015.
@@ -31,7 +32,7 @@ import com.tokopedia.core.home.BannerWebView;
 public class FragmentBannerWebView extends Fragment {
 
     private ProgressBar progressBar;
-    private WebView webview;
+    private TkpdWebView webview;
 
     private class MyWebViewClient extends WebChromeClient {
         @Override
@@ -139,11 +140,11 @@ public class FragmentBannerWebView extends Fragment {
         View view = inflater.inflate(R.layout.fragment_fragment_general_web_view, container, false);
         System.out.println("KIRISAME use URL: " + getArguments().getString("url", "http://blog.tokopedia.com"));
         String url = getArguments().getString("url", "http://blog.tokopedia.com");
-        webview = (WebView) view.findViewById(R.id.webview);
+        webview = (TkpdWebView) view.findViewById(R.id.webview);
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
         progressBar.setIndeterminate(true);
         clearCache(webview);
-        webview.loadUrl(url);
+        webview.loadAuthUrl(url);
         webview.setWebViewClient(new MyWebClient());
         webview.setWebChromeClient(new MyWebViewClient());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -172,7 +173,7 @@ public class FragmentBannerWebView extends Fragment {
         return webview;
     }
 
-    public void setWebview(WebView webview) {
+    public void setWebview(TkpdWebView webview) {
         this.webview = webview;
     }
 
