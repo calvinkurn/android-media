@@ -21,7 +21,8 @@ public interface DynamicFilter {
     String SOURCE = "source";
     String USER_ID = "user_id";
     String V1_DYNAMIC_ATTRIBUTES = "/v1/dynamic_attributes";
-    String DYNAMIC_FILTER_URL = "https://ace.tokopedia.com";
+    String STAGING_DYNAMIC_FILTER_URL = "https://ace-staging.tokopedia.com";
+    String DYNAMIC_FILTER_URL = STAGING_DYNAMIC_FILTER_URL; //"https://ace.tokopedia.com";
     String fullUrl = DYNAMIC_FILTER_URL + V1_DYNAMIC_ATTRIBUTES;
     String SC = "sc";
 
