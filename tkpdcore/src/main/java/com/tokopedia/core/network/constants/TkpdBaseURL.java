@@ -11,7 +11,7 @@ public interface TkpdBaseURL {
     String BASE_DOMAIN = LIVE_DOMAIN;
     String ACE_STAGING_DOMAIN = "http://ace-staging.tokopedia.com/";
     String ACE_DOMAIN = "https://ace.tokopedia.com/";
-    String CLOVER_DOMAIN = "https://points.tokopedia.com/";
+    String CLOVER_DOMAIN = "https://clover.tokopedia.com/";
     String TOPADS_DOMAIN = "https://ta.tokopedia.com/";
     String TOPADS_STAGING_DOMAIN = "http://ta-staging.tokopedia.com/";
     String MOJITO_DOMAIN = "https://mojito.tokopedia.com/";
@@ -40,6 +40,8 @@ public interface TkpdBaseURL {
         String URL_PROMO_ACTION = BASE_DOMAIN + "v4/action/promo/";
         String URL_PROMO = BASE_DOMAIN + "v4/promo/";
         String URL_REVIEW_ACTION = BASE_DOMAIN + "v4/action/review/";
+        String URL_TALK = BASE_DOMAIN + "v4/talk/";
+        String URL_TALK_ACTION = BASE_DOMAIN + "v4/action/talk/";
 
         String PATH_GET_DETAIL_PRODUCT = "get_detail.pl";
         String PATH_GET_OTHER_PRODUCT = "get_other_product.pl";
@@ -89,6 +91,15 @@ public interface TkpdBaseURL {
         String PATH_EDIT_REPUTATION_REVIEW_VALIDATION = "edit_reputation_review_validation.pl";
         String PATH_EDIT_REPUTATION_REVIEW_SUBMIT = "edit_reputation_review_submit.pl";
 
+        String PATH_ADD_COMMENT_TALK = "add_comment_talk.pl";
+        String PATH_ADD_PRODUCT_TALK = "add_product_talk.pl";
+        String PATH_DELETE_COMMENT_TALK = "delete_comment_talk.pl";
+        String PATH_DELETE_PRODUCT_TALK = "delete_product_talk.pl";
+        String PATH_FOLLOW_PRODUCT_TALK = "follow_product_talk.pl";
+        String PATH_REPORT_COMMENT_TALK = "report_comment_talk.pl";
+        String PATH_REPORT_PRODUCT_TALK = "report_product_talk.pl";
+
+        String PATH_GET_COMMENT_BY_TALK = "get_comment_by_talk_id.pl";
         String PATH_GET_HELPFUL_REVIEW = "get_helpful_review.pl";
         String PATH_GET_REPORT_PRODUCT_TYPE = "get_product_report_type.pl";
     }
@@ -98,18 +109,23 @@ public interface TkpdBaseURL {
         String URL_WISH_LIST_ACTION = BASE_DOMAIN + "v4/action/wishlist/";
         String URL_WISH_LIST = BASE_DOMAIN + "v4/wishlist/";
         String URL_GENERAL_ACTION = BASE_DOMAIN + "v4/action/general-usage/";
+        String URL_INBOX_MESSAGE = BASE_DOMAIN + "v4/inbox-message/";
+        String URL_INBOX_PRICE_ALERT = BASE_DOMAIN + "v4/inbox-price-alert/";
         String URL_INBOX_REPUTATION = BASE_DOMAIN + "v4/inbox-reputation/";
         String URL_INBOX_RES_CENTER = BASE_DOMAIN + "v4/inbox-resolution-center/";
         String URL_INBOX_REVIEW = BASE_DOMAIN + "v4/inbox-review/";
+        String URL_INBOX_TALK = BASE_DOMAIN + "v4/inbox-talk/";
         String URL_INBOX_TICKET = BASE_DOMAIN + "v4/inbox-ticket/";
         String URL_INTERRUPT_ACTION = BASE_DOMAIN + "v4/action/interrupt/";
         String URL_INTERRUPT = BASE_DOMAIN + "v4/interrupt/";
         String URL_INVOICE = BASE_DOMAIN + "v4/";
+        String URL_MESSAGE_ACTION = BASE_DOMAIN + "v4/action/message/";
         String URL_MSISDN_ACTION = BASE_DOMAIN + "v4/action/msisdn/";
         String URL_MSISDN = BASE_DOMAIN + "v4/msisdn/";
         String URL_NOTIFICATION = BASE_DOMAIN + "v4/notification/";
         String URL_PEOPLE_ACTION = BASE_DOMAIN + "v4/action/people/";
         String URL_PEOPLE = BASE_DOMAIN + "v4/people/";
+        String URL_SESSION_ACTION = BASE_DOMAIN + "v4/action/session/";
         String URL_SESSION = BASE_DOMAIN + "v4/session/";
         String URL_REGISTER = BASE_DOMAIN + "v4/action/register/";
         String URL_TICKET_ACTION = BASE_DOMAIN + "v4/action/ticket/";
@@ -125,6 +141,14 @@ public interface TkpdBaseURL {
         String PATH_EDIT_EMAIL = "edit_email.pl";
         String PATH_RESEND_CODE = "resend_code.pl";
         String PATH_RESET_PASSWORD = "reset_password.pl";
+
+        String PATH_GET_INBOX_MESSAGE = "get_inbox_message.pl";
+        String PATH_GET_INBOX_DETAIL_MESSAGE = "get_inbox_detail_message.pl";
+
+        String PATH_GET_ADD_CATALOG_PRICE_ALERT_FORM = "get_add_catalog_price_alert_form.pl";
+        String PATH_GET_ADD_PRODUCT_PRICE_ALERT_FORM = "get_add_product_price_alert_form.pl";
+        String PATH_GET_PRICE_ALERT = "get_price_alert.pl";
+        String PATH_GET_PRICE_ALERT_DETAIL = "get_price_alert_detail.pl";
 
         String PATH_GET_INBOX_REPUTATION = "get_inbox_reputation.pl";
         String PATH_GET_LIST_REPUTATION_REVIEW = "get_list_reputation_review.pl";
@@ -143,6 +167,9 @@ public interface TkpdBaseURL {
         String PATH_TRACK_SHIPPING_REF = "track_shipping_ref.pl";
 
         String PATH_GET_INBOX_REVIEW = "get_inbox_review.pl";
+
+        String PATH_GET_INBOX_DETAIL_TALK = "get_inbox_detail_talk.pl";
+        String PATH_GET_INBOX_TALK = "get_inbox_talk.pl";
 
         String PATH_GET_INBOX_TICKET = "get_inbox_ticket.pl";
         String PATH_GET_INBOX_TICKET_DETAIL = "get_inbox_ticket_detail.pl";
@@ -215,6 +242,15 @@ public interface TkpdBaseURL {
         String PATH_GET_PROFILE = "get_profile.pl";
         String PATH_GET_RANDOM_FAV_SHOP = "get_random_fav_shop.pl";
         String PATH_GET_SEARCH_BANK_ACCOUNT = "search_bank_account.pl";
+
+        String PATH_ADD_CATALOG_PRICE_ALERT = "add_catalog_price_alert.pl";
+        String PATH_ADD_PRODUCT_PRICE_ALERT = "add_product_price_alert.pl";
+        String PATH_DELETE_CATALOG_PRICE_ALERT = "delete_catalog_price_alert.pl";
+        String PATH_DELETE_PRODUCT_PRICE_ALERT = "delete_product_price_alert.pl";
+        String PATH_EDIT_INBOX_PRICE_ALERT = "edit_inbox_price_alert.pl";
+        String PATH_REMOVE_PRODUCT_PRICE_ALERT = "remove_product_price_alert.pl";
+
+        String PATH_DO_REGISTER = "do_register.pl";
 
         String PATH_LOGIN = "login.pl";
         String PATH_CREATE_PASSWORD = "create_password.pl";
@@ -325,6 +361,7 @@ public interface TkpdBaseURL {
         String PATH_GET_SHOP_NOTES = "get_shop_notes.pl";
         String PATH_GET_SHOP_PRODUCT = "get_shop_product.pl";
         String PATH_GET_SHOP_REVIEW = "get_shop_review.pl";
+        String PATH_GEt_SHOP_TALK = "get_shop_talk.pl";
     }
 
     interface Etc {
@@ -357,11 +394,9 @@ public interface TkpdBaseURL {
         String PATH_CANCEL_RESOLUTION = "cancel_resolution.pl";
         String PATH_CREATE_RES_SUBMIT = "create_resolution_submit.pl";
         String PATH_CREATE_RES_VALIDATION = "create_resolution_validation_new.pl";
-        String PATH_EDIT_RESI_RESOLUTION_VALIDATION = "edit_resi_resolution_validation.pl";
-        String PATH_EDIT_RESI_RESOLUTION_SUBMIT = "edit_resi_resolution_submit.pl";
+        String PATH_EDIT_RESI_RESOLUTION = "edit_resi_resolution.pl";
         String PATH_FINISH_RES_RETURN = "finish_resolution_retur.pl";
-        String PATH_INPUT_RESI_RESOLUTION_VALIDATION = "input_resi_resolution_validation.pl";
-        String PATH_INPUT_RESI_RESOLUTION_SUBMIT = "input_resi_resolution_submit.pl";
+        String PATH_INPUT_RESI_RESOLUTION = "input_resi_resolution.pl";
         String PATH_INPUT_ADDRESS_RESOLUTION = "input_address_resolution.pl";
         String PATH_EDIT_ADDRESS_RESOLUTION = "edit_address_resolution.pl";
         String PATH_REJECT_ADMIN_RES_SUBMIT = "reject_admin_resolution_submit.pl";
@@ -398,7 +433,7 @@ public interface TkpdBaseURL {
     interface Transaction {
         String URL_DEPOSIT_ACTION = BASE_DOMAIN + "v4/action/deposit/";
         String URL_DEPOSIT = BASE_DOMAIN + "v4/deposit/";
-        String URL_DEPOSIT_CLOVER = CLOVER_DOMAIN + "app/";
+        String URL_DEPOSIT_CLOVER = CLOVER_DOMAIN + "deposit/v4/";
         String URL_TRACKING_ORDER = BASE_DOMAIN + "v4/tracking-order/";
         String URL_TX_ACTION = BASE_DOMAIN + "v4/action/tx/";
         String URL_TX = BASE_DOMAIN + "v4/";
@@ -419,7 +454,7 @@ public interface TkpdBaseURL {
         String PATH_GET_SUMMARY = "get_summary.pl";
         String PATH_GET_WITHDRAW_FORM = "get_withdraw_form.pl";
         String PATH_GET_TOPPOINTS = "get_lp.pl";
-        String PATH_GET_TOPPOINTS_CLOVER = "v4";
+        String PATH_GET_TOPPOINTS_CLOVER = "lp";
 
 
         String PATH_TRACK_ORDER = "track_order.pl";
@@ -544,43 +579,33 @@ public interface TkpdBaseURL {
         String PATH_SALDO = "/saldo/";
     }
 
-    interface KunyitTalk {
-        String BASE_HOST_INBOX_TALK = "/talk/v2";
+    interface Kunyit {
+//        String GET_INBOX_TALK = "/v2/inbox/talks";
+//        String GET_PRODUCT_TALK = "/v2/talks/read";
+//        String GET_COMMENT_TALK = "/v2/comments/read";
+//        String GET_INBOX_TALK_DETAIL = "/v2/inbox/talks/detail";
+//        String ADD_PRODUCT_TALK = "/v2/talks/create";
+//        String ADD_COMMENT_TALK = "/v2/comments/create";
+//        String DELETE_COMMENT_TALK = "/v2/comments/delete";
+//        String REPORT_COMMENT_TALK = "/v1/report/talkcomments";
+//        String FOLLOW_PRODUCT_TALK = "/v2/talks/follow";
+//        String DELETE_PRODUCT_TALK = "/v2/talks/delete";
+//        String REPORT_PRODUCT_TALK = "/v1/report/talks";
 
-        String GET_INBOX_TALK = BASE_HOST_INBOX_TALK + "/inbox";
-        String GET_PRODUCT_TALK = BASE_HOST_INBOX_TALK + "/read";
-        String GET_SHOP_TALK = BASE_HOST_INBOX_TALK + "/read";
-        String GET_COMMENT_TALK = BASE_HOST_INBOX_TALK + "/comment";
-        String GET_INBOX_TALK_DETAIL = BASE_HOST_INBOX_TALK + "/inbox/detail";
+        String GET_INBOX_TALK = "/v2/talk/inbox";
+        String GET_PRODUCT_TALK = "/v2/talk";
+        String GET_COMMENT_TALK = "/v2/talk/comment";
+        String GET_INBOX_TALK_DETAIL = "/v2/talk/inbox/detail";
 
-        String ADD_PRODUCT_TALK = BASE_HOST_INBOX_TALK + "/create";
-        String FOLLOW_PRODUCT_TALK = BASE_HOST_INBOX_TALK + "/follow";
-        String DELETE_PRODUCT_TALK = BASE_HOST_INBOX_TALK + "/delete";
-        String REPORT_PRODUCT_TALK = BASE_HOST_INBOX_TALK + "/report";
+        String ADD_PRODUCT_TALK = "/v2/talk/create";
+        String FOLLOW_PRODUCT_TALK = "/v2/talk/follow";
+        String DELETE_PRODUCT_TALK = "/v2/talk/delete";
+        String REPORT_PRODUCT_TALK = "/v2/talk/report";
 
-        String ADD_COMMENT_TALK = BASE_HOST_INBOX_TALK + "/comment/create";
-        String DELETE_COMMENT_TALK = BASE_HOST_INBOX_TALK + "/comment/delete";
-        String REPORT_COMMENT_TALK = BASE_HOST_INBOX_TALK + "/comment/report";
+        String ADD_COMMENT_TALK = "/v2/talk/comment/create";
+        String DELETE_COMMENT_TALK = "/v2/talk/comment/delete";
+        String REPORT_COMMENT_TALK = "/v2/talk/comment/report";
 
-    }
-
-    interface KunyitMessage {
-        String BASE_HOST_INBOX_MESSAGE = "/message/v1";
-        String GET_INBOX_MESSAGE = BASE_HOST_INBOX_MESSAGE + "/list";
-        String GET_INBOX_DETAIL_MESSAGE = BASE_HOST_INBOX_MESSAGE + "/detail";
-        String SEND_MESSAGE = BASE_HOST_INBOX_MESSAGE + "/send";
-        String SEND_REPLY_MESSAGE = BASE_HOST_INBOX_MESSAGE + "/reply";
-        String DELETE_MESSAGES = BASE_HOST_INBOX_MESSAGE + "/delete";
-        String DELETE_MESSAGES_FOREVER = BASE_HOST_INBOX_MESSAGE + "/delete/forever";
-        String UNDO_DELETE_MESSAGES = BASE_HOST_INBOX_MESSAGE + "/delete/undo";
-        String ARCHIVE_MESSAGES = BASE_HOST_INBOX_MESSAGE + "/archive";
-        String UNDO_ARCHIVE_MESSAGES = BASE_HOST_INBOX_MESSAGE + "/archive/undo";
-        String FLAG_SPAM = BASE_HOST_INBOX_MESSAGE + "/spam";
-        String UNDO_FLAG_SPAM = BASE_HOST_INBOX_MESSAGE + "/spam/undo";
-        String MOVE_TO_INBOX = BASE_HOST_INBOX_MESSAGE + "/move_inbox";
-        String UNDO_MOVE_TO_INBOX = BASE_HOST_INBOX_MESSAGE + "/move_inbox/undo";
-        String MARK_AS_READ = BASE_HOST_INBOX_MESSAGE + "/mark/read";
-        String MARK_AS_UNREAD = BASE_HOST_INBOX_MESSAGE + "/mark/unread";
     }
 
     interface Accounts {
@@ -616,10 +641,5 @@ public interface TkpdBaseURL {
         String PATH_CREATE_STEP_2 = URL_CONTACT_US + "/ajax/create/step/2";
         String URL_HELP = MOBILE_DOMAIN + "bantuan/";
         String URL_CHANGE_NUMBER = "https://www.tokopedia.com/contact-us?solution_id=54";
-    }
-
-    interface TopCash{
-        String GET_WALLET = ACCOUNTS_DOMAIN + "api/v1/wallet/";
-        String PATH_WALLET = "balance";
     }
 }

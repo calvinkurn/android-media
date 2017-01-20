@@ -123,11 +123,6 @@ public class BrowseCatalogAdapter extends ProductAdapter {
 
         @OnClick(R2.id.container)
         public void onClick() {
-//            Intent intent = new Intent(context, Catalog.class);
-//            Bundle bundle = new Bundle();
-//            bundle.putString("ctg_id", catalogModel.catalogId);
-//            intent.putExtras(bundle);
-//            context.startActivity(intent);
             UnifyTracking.eventClickCatalog(catalogModel.getCatalogName());
             CommonUtils.dumper("GAv4 locasearched Clicked Catalog "+catalogModel.getCatalogName());
             context.startActivity(DetailProductRouter.getCatalogDetailActivity(context, catalogModel.getCatalogId()));
