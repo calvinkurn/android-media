@@ -1,32 +1,32 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.tokopedia.seller.topads.view.fragment.TopAdsStatisticFragment">
 
     <android.support.v7.widget.CardView
-        app:cardPreventCornerOverlap="false"
-        android:layout_gravity="top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        app:cardPreventCornerOverlap="false">
 
         <LinearLayout
-            android:padding="@dimen/top_ads_dashboard_padding_cards"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/top_ads_dashboard_padding_cards">
 
             <TextView
-                android:layout_marginBottom="30dp"
                 android:id="@+id/content_title_graph"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp" />
 
             <com.tokopedia.seller.topads.view.library.williamchart.view.LineChartView
                 android:id="@+id/content_graph"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"/>
+                android:layout_height="300dp" />
 
 
         </LinearLayout>

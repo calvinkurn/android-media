@@ -214,16 +214,8 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
             String[] labels = new String[cells.size()];
             for(int i = 0; i<cells.size(); i++){
                 Cell cell = cells.get(i);
-                String dateText = cell.getDateDay() + "/" + cell.getDateMonth() + "/" + cell.getDateYear();
-                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-                Date date = new Date();
-                try {
-                    date = formatter.parse(dateText);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
                 SimpleDateFormat formatterLabel = new SimpleDateFormat("dd MMM");
-                String label = formatterLabel.format(date);
+                String label = formatterLabel.format(cell.getDate());
                 labels[i] = label;
             }
             return labels;

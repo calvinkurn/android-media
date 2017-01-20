@@ -7,6 +7,11 @@ package com.tokopedia.seller.topads.model.data;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class Cell {
 
     @SerializedName("date.day")
@@ -54,6 +59,27 @@ public class Cell {
     @SerializedName("cost_sum_fmt")
     @Expose
     private String costSumFmt;
+
+    public Cell(int dateDay, int dateMonth, int dateYear, int impressionSum, int clickSum,
+                float ctrPercentage, int conversionSum, float costAvg, int costSum,
+                String impressionSumFmt, String clickSumFmt, String ctrPercentageFmt,
+                String conversionSumFmt, String costAvgFmt, String costSumFmt) {
+        this.dateDay = dateDay;
+        this.dateMonth = dateMonth;
+        this.dateYear = dateYear;
+        this.impressionSum = impressionSum;
+        this.clickSum = clickSum;
+        this.ctrPercentage = ctrPercentage;
+        this.conversionSum = conversionSum;
+        this.costAvg = costAvg;
+        this.costSum = costSum;
+        this.impressionSumFmt = impressionSumFmt;
+        this.clickSumFmt = clickSumFmt;
+        this.ctrPercentageFmt = ctrPercentageFmt;
+        this.conversionSumFmt = conversionSumFmt;
+        this.costAvgFmt = costAvgFmt;
+        this.costSumFmt = costSumFmt;
+    }
 
     public int getDateDay() {
         return dateDay;
@@ -173,6 +199,18 @@ public class Cell {
 
     public void setCostSumFmt(String costSumFmt) {
         this.costSumFmt = costSumFmt;
+    }
+
+    public Date getDate(){
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String dateText = getDateDay() + "/" + getDateMonth() + "/" + getDateYear();
+        Date date = new Date();
+        try {
+            date = formatter.parse(dateText);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
     }
 
 }
