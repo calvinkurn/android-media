@@ -138,7 +138,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
             viewHolder.productName.setText(Html.fromHtml(product.name));
             viewHolder.productPrice.setText(product.price);
             viewHolder.shopName.setText(Html.fromHtml(product.shop));
-            viewHolder.location.setText(product.getShop_location());
+            viewHolder.location.setText(product.getShopLocation());
             setProductImage(viewHolder, product.getImgUri());
             if (product.labels == null) {
                 product.labels = new ArrayList<Label>();
@@ -197,7 +197,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         viewHolder.productName.setText(Html.fromHtml(product.name));
         viewHolder.productPrice.setText(product.price);
         viewHolder.shopName.setText(Html.fromHtml(product.shop));
-        viewHolder.location.setText(product.getShop_location());
+        viewHolder.location.setText(product.getShopLocation());
         setProductImage(viewHolder, product.getImgUri());
         if(product.labels == null) {
             product.labels = new ArrayList<Label>();

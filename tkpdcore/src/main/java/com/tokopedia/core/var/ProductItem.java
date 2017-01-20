@@ -247,11 +247,11 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
         this.topAds = topAds;
     }
 
-    public String getShop_location() {
+    public String getShopLocation() {
         return shop_location;
     }
 
-    public void setShop_location(String shop_location) {
+    public void setShopLocation(String shop_location) {
         this.shop_location = shop_location;
     }
 
