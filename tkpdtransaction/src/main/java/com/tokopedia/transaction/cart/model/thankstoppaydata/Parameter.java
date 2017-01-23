@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.payment.model.responsethankspayment.PriceDetail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,7 @@ public class Parameter implements Parcelable {
     private String donationAmt;
     @SerializedName("price_detail")
     @Expose
-    private List<PriceDetail> priceDetail = new ArrayList<PriceDetail>();
+    private List<PriceDetail> priceDetail = new ArrayList<>();
     @SerializedName("lp_amount")
     @Expose
     private String lpAmount;
@@ -204,6 +203,9 @@ public class Parameter implements Parcelable {
     }
 
 
+    public Parameter() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -230,9 +232,6 @@ public class Parameter implements Parcelable {
         dest.writeValue(this.isTransfer);
     }
 
-    public Parameter() {
-    }
-
     protected Parameter(Parcel in) {
         this.voucherAmt = in.readString();
         this.donationAmt = in.readString();
@@ -254,7 +253,7 @@ public class Parameter implements Parcelable {
         this.isTransfer = (Integer) in.readValue(Integer.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<Parameter> CREATOR = new Parcelable.Creator<Parameter>() {
+    public static final Creator<Parameter> CREATOR = new Creator<Parameter>() {
         @Override
         public Parameter createFromParcel(Parcel source) {
             return new Parameter(source);

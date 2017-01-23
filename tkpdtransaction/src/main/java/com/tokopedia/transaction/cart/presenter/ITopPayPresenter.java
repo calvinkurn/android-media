@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.cart.presenter;
 
+import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 
 /**
@@ -27,5 +29,7 @@ public interface ITopPayPresenter {
 
     void clearNotificationCart();
 
-
+    void processPaymentAnalytics(
+            LocalCacheHandler localCacheHandler, ThanksTopPayData thanksTopPayData
+    ) throws Exception;
 }
