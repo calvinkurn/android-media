@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.addtocart.utils;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.transaction.addtocart.model.OrderData;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Destination;
 import com.tokopedia.transaction.addtocart.model.responseatcform.ProductDetail;
@@ -21,6 +22,7 @@ public class KeroppiParam {
     private static final String FROM = "from";
     private static final String TOKEN = "token";
     private static final String UT = "ut";
+    private static final String APP_VERSION = "app_version";
 
     private static final String SEPARATOR = "|";
     private static final String CO_SEPARATOR = ",";
@@ -61,6 +63,7 @@ public class KeroppiParam {
         params.put(FROM, FROM_CLIENT);
         params.put(TOKEN, orderData.getShop().getToken());
         params.put(UT, orderData.getShop().getUt() + "");
+        params.put(APP_VERSION, GlobalConfig.VERSION_NAME);
         return params;
     }
 
