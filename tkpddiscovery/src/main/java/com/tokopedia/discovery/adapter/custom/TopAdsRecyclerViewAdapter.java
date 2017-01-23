@@ -96,7 +96,7 @@ public class TopAdsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             ProductItem item = getItem(position);
             holder.productName.setText(MethodChecker.fromHtml(item.name));
             holder.productPrice.setText(item.price);
-            holder.shopLocation.setText(item.getShop_location());
+            holder.shopLocation.setText(item.getShopLocation());
             holder.shopName.setText(MethodChecker.fromHtml(item.shop));
             setProductImage(holder, item);
             setClickListener(holder, item);
