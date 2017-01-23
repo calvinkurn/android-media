@@ -198,13 +198,15 @@ public class OfficialShopHomeFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        webView.onPause();
+        if(webView!=null)
+            webView.onPause();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        webView.onResume();
+        if(webView!=null)
+            webView.onResume();
     }
 
     @Override
@@ -218,6 +220,6 @@ public class OfficialShopHomeFragment extends Fragment {
                 webView.onResume();
             }
         }
-        
+
     }
 }
