@@ -21,7 +21,6 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
-import com.tokopedia.core.Cart;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.NotificationCenter;
 import com.tokopedia.core.R;
@@ -35,6 +34,7 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -113,7 +113,13 @@ public class FCMMessagingService extends FirebaseMessagingService {
                 }
                 break;
             case TkpdState.GCMServiceState.GCM_CART:
-                if (SessionHandler.isV4Login(this)) createNotification(data, Cart.class);
+                if (SessionHandler.isV4Login(this)) try {
+                    createNotification(
+                            data, TransactionCartRouter.createInstanceCartClass()
+                    );
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
                 break;
             case TkpdState.GCMServiceState.GCM_WISHLIST:
                 if (SessionHandler.isV4Login(this)) {
