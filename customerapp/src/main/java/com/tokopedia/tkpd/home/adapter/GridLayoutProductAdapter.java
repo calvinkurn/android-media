@@ -155,8 +155,6 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
             setBadges(viewHolder, product);
             setLabels(viewHolder, product);
             viewHolder.mainContent.setOnClickListener(onProductItemClicked(position));
-            setBadges(viewHolder, product);
-            setLabels(viewHolder, product);
         } else if (data.get(position) instanceof RecentView) {
             RecentView product = (RecentView) data.get(position);
             viewHolder.productName.setText(Html.fromHtml(product.getProductName()));
@@ -281,6 +279,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     private void setBadgesRecentView(ViewHolder holder, RecentView data) {
+        holder.badgeContainer.removeAllViews();
         if (data.getBadges() != null && holder.badgeContainer.getChildCount() == 0) {
             for (com.tokopedia.core.network.entity.home.recentView.Badge badges : data.getBadges()) {
                 LuckyShopImage.loadImage(context, badges.getImageUrl(), holder.badgeContainer);
