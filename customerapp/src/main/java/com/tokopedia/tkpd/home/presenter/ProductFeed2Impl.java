@@ -612,6 +612,11 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
         );
     }
 
+    @Override
+    public boolean isLoadedFirstPage() {
+        return mPaging.getPage() >= 1;
+    }
+
     @NonNull
     private HorizontalRecentViewList getHorizontalRecentViewList(RecentViewData aRecentViewData) {
         return new HorizontalRecentViewList(aRecentViewData.getData().getRecentView());
@@ -731,6 +736,5 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
         product.setTopAds(ads);
         return product;
     }
-
 
 }
