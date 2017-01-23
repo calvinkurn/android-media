@@ -194,4 +194,30 @@ public class OfficialShopHomeFragment extends Fragment {
         }
         return true;
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        webView.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        webView.onResume();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if(webView!=null){
+            if(!isVisibleToUser){
+                webView.onPause();
+            }else{
+                webView.onResume();
+            }
+        }
+        
+    }
 }
