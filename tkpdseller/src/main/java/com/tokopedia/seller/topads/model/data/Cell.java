@@ -60,27 +60,6 @@ public class Cell {
     @Expose
     private String costSumFmt;
 
-    public Cell(int dateDay, int dateMonth, int dateYear, int impressionSum, int clickSum,
-                float ctrPercentage, int conversionSum, float costAvg, int costSum,
-                String impressionSumFmt, String clickSumFmt, String ctrPercentageFmt,
-                String conversionSumFmt, String costAvgFmt, String costSumFmt) {
-        this.dateDay = dateDay;
-        this.dateMonth = dateMonth;
-        this.dateYear = dateYear;
-        this.impressionSum = impressionSum;
-        this.clickSum = clickSum;
-        this.ctrPercentage = ctrPercentage;
-        this.conversionSum = conversionSum;
-        this.costAvg = costAvg;
-        this.costSum = costSum;
-        this.impressionSumFmt = impressionSumFmt;
-        this.clickSumFmt = clickSumFmt;
-        this.ctrPercentageFmt = ctrPercentageFmt;
-        this.conversionSumFmt = conversionSumFmt;
-        this.costAvgFmt = costAvgFmt;
-        this.costSumFmt = costSumFmt;
-    }
-
     public int getDateDay() {
         return dateDay;
     }

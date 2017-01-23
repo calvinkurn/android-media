@@ -2,8 +2,6 @@ package com.tokopedia.seller.topads.view.activity;
 
 import android.app.Fragment;
 import android.app.ProgressDialog;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -13,7 +11,6 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
@@ -25,8 +22,6 @@ import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.interactor.TopAdsProductAdInteractorImpl;
-import com.tokopedia.seller.topads.lib.datepicker.SetDateActivity;
-import com.tokopedia.seller.topads.lib.datepicker.SetDateFragment;
 import com.tokopedia.seller.topads.model.data.Cell;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenter;
@@ -34,19 +29,16 @@ import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.presenter.TopAdsStatisticActivityPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsStatisticActivityPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsStatisticPagerAdapter;
-import com.tokopedia.seller.topads.view.fragment.TopAdsDatePickerFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsStatisticAvgFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsStatisticConversionFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsStatisticCtrFragment;
-import com.tokopedia.seller.topads.view.fragment.TopAdsStatisticKlikFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsStatisticImprFragment;
+import com.tokopedia.seller.topads.view.fragment.TopAdsStatisticKlikFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsStatisticSpentFragment;
 import com.tokopedia.seller.topads.view.listener.TopAdsStatisticActivityViewListener;
 import com.tokopedia.seller.topads.view.listener.TopAdsStatisticViewListener;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -87,6 +79,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
 
     @Override
     protected void initView() {
+        super.initView();
         viewPager.setAdapter(getViewPagerAdapter());
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(currentPositonPager);
@@ -97,6 +90,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
 
     @Override
     protected void setViewListener() {
+        super.setViewListener();
         viewPager.setOffscreenPageLimit(TopAdsConstant.OFFSCREEN_PAGE_LIMIT);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

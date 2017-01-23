@@ -13,8 +13,6 @@ import com.tokopedia.seller.topads.model.response.DataResponse;
 import com.tokopedia.seller.topads.model.response.PageDataResponse;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,6 +20,7 @@ import java.util.List;
 
 import retrofit2.Response;
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -103,61 +102,69 @@ public class TopAdsProductAdInteractorImpl implements TopAdsProductAdInteractor 
                 .flatMap(new Func1<Response<DataResponse<DataStatistic>>, Observable<List<Cell>>>() {
                     @Override
                     public Observable<List<Cell>> call(Response<DataResponse<DataStatistic>> dataResponseResponse) {
-                        List<Cell> cellsResponse = dataResponseResponse.body().getData().getCells();
-                        if(cellsResponse != null){
-                            if(cellsResponse.size() > 0) {
-                                List<Cell> cellsRequest = generateRangeCell(statisticRequest);
-                                if (cellsRequest != null ) {
-                                    for (int i = 0; i < cellsRequest.size(); i++) {
-                                        Date dateRequest = cellsRequest.get(i).getDate();
-                                        for(int j=0; j<cellsResponse.size(); j++) {
-                                            Date dateResponse = cellsResponse.get(j).getDate();
-                                            if (dateRequest.equals(dateResponse)) {
-                                                cellsRequest.set(i, cellsResponse.get(j));
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    return Observable.just(cellsRequest);
-                                } else {
-                                    throw new NullPointerException();
-                                }
-                            }else{
-                                List<Cell> cellsRequest = generateRangeCell(statisticRequest);
-                                return Observable.just(cellsRequest);
-                            }
-                        }else{
-                            throw new NullPointerException();
-                        }
+                        final List<Cell> cellsResponse = dataResponseResponse.body().getData().getCells();
+                        return Observable.just(cellsResponse);
                     }
-
                 })
                 .subscribe(new SubscribeOnNext<List<Cell>>(listener), new SubscribeOnError(listener)));
     }
 
     /**
      * generate range date between date start request and last date request
-     * @param statisticRequest object request to network API
+     *
      * @return
      */
-    private List<Cell> generateRangeCell(StatisticRequest statisticRequest) {
-        List<Cell> cells = new ArrayList<Cell>();
-        Date lastDate = statisticRequest.getEndDate();
-        Date startDate = statisticRequest.getStartDate();
-        SimpleDateFormat formatter = new SimpleDateFormat("MM");
-
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(startDate);
-        while (cal.getTime().before(lastDate)) {
-            Cell cell = new Cell(cal.get(Calendar.DAY_OF_MONTH), Integer.parseInt(formatter.format(cal.getTime())), cal.get(Calendar.YEAR),
-                    0, 0, 0, 0, 0, 0, "0", "0", "0", "0", "0", "0");
-            cells.add(cell);
-            cal.add(Calendar.DATE, 1);
-        }
-
-        return cells;
+    public Observable<List<Cell>> getDefaultCellList(final Date startDate, final Date endDate) {
+        return Observable.create(
+                new Observable.OnSubscribe<List<Cell>>() {
+                    @Override
+                    public void call(Subscriber<? super List<Cell>> subscriber) {
+                        List<Cell> cellList = new ArrayList<>();
+                        Calendar start = Calendar.getInstance();
+                        start.setTime(startDate);
+                        Calendar end = Calendar.getInstance();
+                        end.setTime(endDate);
+                        for (Date date = start.getTime(); start.before(end); start.add(Calendar.DATE, 1), date = start.getTime()) {
+                            Calendar calendar = Calendar.getInstance();
+                            calendar.setTime(date);
+                            Cell cell = new Cell();
+                            cell.setDateDay(calendar.get(Calendar.DATE));
+                            cell.setDateMonth(calendar.get(Calendar.MONTH));
+                            cell.setDateYear(calendar.get(Calendar.YEAR));
+                            cellList.add(cell);
+                        }
+                        subscriber.onNext(cellList);
+                    }
+                }
+        );
     }
 
+    private Observable<List<Cell>> getCombinedCellList(final List<Cell> cellList, final List<Cell> networkCellList) {
+        return Observable.create(
+                new Observable.OnSubscribe<List<Cell>>() {
+                    @Override
+                    public void call(Subscriber<? super List<Cell>> subscriber) {
+                        for (int i = 0; i < cellList.size(); i++) {
+                            Cell cell = cellList.get(i);
+                            Cell networkCell = getSameCell(cell, networkCellList);
+                            if (networkCell != null) {
+                                cellList.set(i, networkCell);
+                            }
+                        }
+                        subscriber.onNext(cellList);
+                    }
+
+                    private Cell getSameCell(Cell cell, List<Cell> networkCellList) {
+                        for (Cell networkCell : networkCellList) {
+                            if (cell.getDateDay() == networkCell.getDateDay() && cell.getDateMonth() == networkCell.getDateMonth() && cell.getDateYear() == networkCell.getDateYear()) {
+                                return networkCell;
+                            }
+                        }
+                        return null;
+                    }
+                }
+        );
+    }
 
     @Override
     public void unSubscribe() {

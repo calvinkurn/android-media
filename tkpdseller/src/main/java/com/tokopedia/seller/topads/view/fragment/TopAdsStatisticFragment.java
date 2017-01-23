@@ -1,49 +1,34 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.IntRange;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.model.data.Cell;
 import com.tokopedia.seller.topads.presenter.TopAdsStatisticPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsStatisticPresenterImpl;
-import com.tokopedia.seller.topads.view.activity.TopAdsStatisticActivity;
 import com.tokopedia.seller.topads.view.library.util.GrossGraphChartConfig;
-import com.tokopedia.seller.topads.view.library.util.KMNumbers;
-import com.tokopedia.seller.topads.view.library.williamchart.renderer.StringFormatRenderer;
 import com.tokopedia.seller.topads.view.library.williamchart.renderer.XRenderer;
 import com.tokopedia.seller.topads.view.library.williamchart.tooltip.Tooltip;
 import com.tokopedia.seller.topads.view.library.williamchart.view.LineChartView;
 import com.tokopedia.seller.topads.view.listener.TopAdsStatisticActivityViewListener;
 import com.tokopedia.seller.topads.view.listener.TopAdsStatisticViewListener;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import butterknife.BindArray;
-import butterknife.BindDrawable;
 import butterknife.BindView;
-
-import static java.security.AccessController.getContext;
 
 /**
  * A simple {@link Fragment} subclass.
