@@ -198,7 +198,6 @@ dependencies {
     }
     compile (rootProject.ext.tkpdDependencies.core)*/
     compile project(':tkpddiscovery')
-    compile project(':tkpdtransaction')
     compile project(':tkpdseller')
     compile project(':tkpdsession')
     compile project(':tkpdinbox')

@@ -1,3 +1,164 @@
 <resources>
     <string name="app_name">tkpdseller</string>
+
+    <string name="title_topads_dashboard">TopAds</string>
+    <string name="title_topads_promo_product">Produk</string>
+    <string name="title_topads_promo_group">Grup</string>
+    <string name="title_top_ads_dashboard">TopAds</string>
+    <string name="title_top_ads_product">Produk</string>
+    <string name="title_top_ads_store">Toko</string>
+    <string name="title_top_ads_add_credit">Tambah Kredit Promo</string>
+    <string name="title_top_ads_new_promo">Pilih Atau Buat Promo</string>
+    <string name="title_date_picker">Atur Tanggal</string>
+
+    <string name="label_top_ads_impression">Tampil</string>
+    <string name="label_top_ads_click">Klik</string>
+    <string name="label_top_ads_ctr">CTR</string>
+    <string name="label_top_ads_conversion">Konversi</string>
+    <string name="label_top_ads_average">Rata - Rata</string>
+    <string name="label_top_ads_cost">Terpakai</string>
+    <string name="label_top_ads_groups">Grup</string>
+    <string name="label_top_ads_items">Produk</string>
+    <string name="label_top_ads_choose_credit">Pilih</string>
+    <string name="label_top_ads_deposit_desc">Kredit TopAds: %1$s</string>
+    <string name="label_top_ads_next">Selanjutnya</string>
+    <string name="label_top_ads_save">Simpan</string>
+
+    <string name="menu_top_ads_add_promo_group">Tambah Promo Group</string>
+    <string name="menu_top_ads_add_promo_product">Tambah Promo Produk</string>
+
+    <string name="top_ads_statistic_info_default_value">-</string>
+    <string name="top_ads_range_date_text">%1$s - %2$s</string>
+
+    <string name="title_action_on">On</string>
+    <string name="title_action_off">Off</string>
+    <string name="action_filter_date">Filter Tanggal</string>
+    <string name="title_group_list">Grup</string>
+    <string name="title_product_ad_detail">Detil Promo Produk</string>
+    <string name="title_shop_ad_detail">Detil Promo Toko</string>
+    <string name="title_group_ad_detail">Detil Promo Grup</string>
+
+    <!-- Top Ads ad list -->
+    <string name="label_top_ads_daily_spend">Anggaran Harian</string>
+    <string name="top_ads_bid_format_text">%1$s - %2$s</string>
+    <string name="top_ads_used_format_text">Terpakai %1$s</string>
+    <string name="top_ads_spent_format_text">%1$s / %2$s</string>
+    <string name="top_ads_empty_shop_title_text">Promo Toko Anda Kosong</string>
+    <string name="top_ads_empty_shop_content_text">Tambah promo untuk mempromosikan toko anda</string>
+    <string name="top_ads_empty_promo_not_found_title_empty_text">Hasil tidak ditemukan</string>
+    <string name="top_ads_empty_promo_not_found_content_empty_text">Silahkan coba lagi atau ganti kata kunci</string>
+    <string name="top_ads_empty_group_title_promo_text">Promo Group Anda Kosong</string>
+    <string name="top_ads_empty_product_title_promo_text">Promo Produk Anda Kosong</string>
+    <string name="top_ads_empty_group_promo_content_empty_text">Anda belum memiliki group yang dipromosikan</string>
+    <string name="top_ads_empty_product_promo_content_empty_text">Anda belum memiliki produk yang dipromosikan</string>
+    <string name="top_ads_empty_group_promo_content_not_empty_text">Produk yang telah anda promosikan ada di dalam items</string>
+    <string name="top_ads_empty_group_promo_content_item_no_text">Lihat %1$s Promo Produk</string>
+
+    <!-- Top Ads New Promo -->
+    <string name="label_top_ads_group_name">Nama Grup</string>
+    <string name="label_top_ads_choose_group">Pilih Grup</string>
+    <string name="label_top_ads_create_promo_new_group">Buat promo grup baru</string>
+    <string name="label_top_ads_create_promo_from_exist_group">Promo grup yang ada</string>
+    <string name="label_top_ads_create_promo_not_in_group">Tidak masuk ke promo grup</string>
+
+    <!-- Top Ads Edit Promo -->
+    <string name="label_top_ads_add_product">Tambah Produk</string>
+    <string name="label_top_ads_max_price_hint">Biaya Maks (Rp)</string>
+    <string name="label_top_ads_max_price_description">Sesuaikan biaya anggaran promo anda. Rekomendasi biaya: Rp 50 sampai Rp 200 per klik</string>
+    <string name="label_top_ads_icon">Icon TopAds</string>
+
+    <!-- Top Ads Edit Promo Budget-->
+    <string name="label_top_ads_budget">Anggaran</string>
+    <string name="label_top_ads_budget_lifetime">Anggaran Seumur Hidup</string>
+    <string name="label_top_ads_budget_per_day">Per Hari</string>
+    <string name="label_top_ads_budget_cost_per_day">Biaya per hari</string>
+
+    <!-- Top Ads Edit Promo Show Time-->
+    <string name="label_top_ads_show_time">Waktu Tampil</string>
+    <string name="label_top_ads_show_time_automatic">Otomatis</string>
+    <string name="label_top_ads_show_time_configured">Atur tanggal mulai dan berhenti</string>
+    <string name="label_top_ads_show_time_start">Mulai</string>
+    <string name="label_top_ads_show_time_end">Selesai</string>
+
+    <!-- Top Ads Add product-->
+    <string name="label_top_ads_promoted">Promoted</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Top Ads Detail product-->
+    <string name="label_non_active_topads">Tidak Aktif</string>
+    <string name="label_active_topads">Aktif</string>
+    <string name="label_title_name_topads">Name</string>
+    <string name="label_title_status_topads">Status</string>
+    <string name="label_title_max_bid_topads">Biaya Maks</string>
+    <string name="label_title_avg_cost_topads">Rata-rata</string>
+    <string name="label_title_start_topads">Mulai</string>
+    <string name="label_title_end_topads">Selesai</string>
+    <string name="label_title_daily_budget_topads">Anggaran Harian</string>
+    <string name="label_title_sent_topads">Terpakai</string>
+    <string name="label_title_impr_topads">Tampil</string>
+    <string name="label_title_click_topads">Klik</string>
+    <string name="label_title_ctr_topads">CTR</string>
+    <string name="label_title_favorite_topads">Terjual</string>
+    <string name="label_title_items_topads">@string/title_top_ads_product</string>
+    <string name="label_top_ads_promo_group">Nama Grup</string>
+
+    <string name="label_today">Hari Ini</string>
+    <string name="yesterday">Kemarin</string>
+    <string name="seven_days_ago">7 hari terakhir</string>
+    <string name="thirty_days_ago">30 hari terakhir</string>
+    <string name="label_this_month">Bulan Ini</string>
+
+    <!-- untuk tanggal gmstat -->
+    <string-array name="month_names">
+        <item>Januari</item>
+        <item>Februari</item>
+        <item>Maret</item>
+        <item>April</item>
+        <item>Mei</item>
+        <item>Juni</item>
+        <item>Juli</item>
+        <item>Agustus</item>
+        <item>September</item>
+        <item>Oktober</item>
+        <item>November</item>
+        <item>Desember</item>
+    </string-array>
+
+    <!-- untuk tanggal gmstat -->
+    <string-array name="month_names_abrev">
+        <item>Jan</item>
+        <item>Feb</item>
+        <item>Mar</item>
+        <item>Apr</item>
+        <item>Mei</item>
+        <item>Jun</item>
+        <item>Jul</item>
+        <item>Agu</item>
+        <item>Sep</item>
+        <item>Okt</item>
+        <item>Nov</item>
+        <item>Des</item>
+    </string-array>
+
+    <!-- Top Ads Statistic-->
+    <string name="label_title_show_statistics_topads">Tampil</string>
+    <string name="label_title_klik_statistics_topads">Klik</string>
+    <string name="label_title_ctr_statistics_topads">CTR</string>
+    <string name="label_title_convertion_statistics_topads">Konversi</string>
+    <string name="label_title_average_statistics_topads">Rata-Rata</string>
+    <string name="label_title_used_statistics_topads">Terpakai</string>
+    <string name="title_graph_impr_statistic_topads">Jumlah orang yang melihat promo anda.</string>
+    <string name="title_graph_avg_statistic_topads">Biaya rata-rata yang anda bayarkan untuk setiap klik.</string>
+    <string name="title_graph_convertion_statistic_topads">Jumlah favorit / transaksi dari promo anda.</string>
+    <string name="title_graph_ctr_statistic_topads">Perbandingan orang yang melihat promo anda dengan jumlah klik pada promo tersebut.</string>
+    <string name="title_graph_klik_statistic_topads">Jumlah klik pada promo anda.</string>
+    <string name="title_graph_spent_statistic_topads">Jumlah anggaran yang telah terpakai untuk promosi ini.</string>
+    <string name="title_activity_statistic">Statistik</string>
+
+
+    <string name="title_label_empty_group_topads">Tanpa Grup</string>
+    <string name="title_label_shop_topads">Toko</string>
+    <string name="title_label_favorit_topads">Favorit</string>
 </resources>

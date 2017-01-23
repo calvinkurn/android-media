@@ -1,13 +1,26 @@
 package com.tokopedia.seller.topads.interactor;
 
-import android.content.Context;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.seller.topads.model.data.GroupAdBulkAction;
+import com.tokopedia.seller.topads.model.data.ProductAd;
+import com.tokopedia.seller.topads.model.data.ProductAdBulkAction;
+import com.tokopedia.seller.topads.model.data.DataCredit;
+import com.tokopedia.seller.topads.model.data.DataDeposit;
+import com.tokopedia.seller.topads.model.data.GroupAd;
+import com.tokopedia.seller.topads.model.data.Product;
+import com.tokopedia.seller.topads.model.data.Summary;
+import com.tokopedia.seller.topads.model.data.TotalAd;
+import com.tokopedia.seller.topads.model.request.DataRequest;
+import com.tokopedia.seller.topads.model.request.SearchAdRequest;
+import com.tokopedia.seller.topads.model.request.SearchProductRequest;
+import com.tokopedia.seller.topads.model.request.ShopRequest;
+import com.tokopedia.seller.topads.model.request.StatisticRequest;
+import com.tokopedia.seller.topads.model.response.DataResponse;
+import com.tokopedia.seller.topads.model.response.PageDataResponse;
 
-import com.tokopedia.seller.topads.model.exchange.CreditResponse;
-import com.tokopedia.seller.topads.model.exchange.ProductResponse;
-import com.tokopedia.seller.topads.model.exchange.ShopResponse;
-import com.tokopedia.seller.topads.model.exchange.StatisticResponse;
-
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by zulfikarrahman on 11/4/16.
@@ -15,40 +28,27 @@ import java.util.HashMap;
 
 public interface DashboardTopadsInteractor {
 
-    interface ListenerGetDashboardProduct{
-        void onSuccess(ProductResponse response);
-        void onError(String message);
-    }
+    void getDashboardSummary(StatisticRequest statisticRequest, final ListenerInteractor<Summary> listener);
 
-    interface ListenerGetDashboardShop{
-        void onSuccess(ShopResponse response);
-        void onError(String message);
-    }
+    void getDeposit(ShopRequest shopRequest, final ListenerInteractor<DataDeposit> listener);
 
-    interface ListenerGetDashboardStatistic{
-        void onSuccess(StatisticResponse response);
-        void onError(String message);
-    }
+    void getShopInfo(ShopRequest shopRequest, final ListenerInteractor<ShopModel> listener);
 
-    interface ListenerGetDashboardDeposit{
-        void onSuccess(StatisticResponse response);
-        void onError(String message);
-    }
+    void getTotalAd(ShopRequest shopRequest, final ListenerInteractor<TotalAd> listener);
 
-    interface ListenerGetDashboardCredit{
-        void onSuccess(CreditResponse response);
-        void onError(String message);
-    }
+    void getCreditList(final ListenerInteractor<List<DataCredit>> listener);
+
+    void searchProduct(SearchProductRequest searchProductRequest, final ListenerInteractor<List<Product>> listener);
 
     void unSubscribe();
 
-    void getDashboardProduct(Context context, HashMap<String, String> params, ListenerGetDashboardProduct listenerGetDashboardProduct);
+    void getListProductAds(HashMap<String, String> params, ListenerInteractor<PageDataResponse<List<ProductAd>>> listener);
 
-    void getDashboardShop(Context context, HashMap<String, String> params, ListenerGetDashboardShop listenerGetDashboardShop);
+    void getListGroupAds(SearchAdRequest searchAdRequest, ListenerInteractor<List<GroupAd>> listener);
 
-    void getDashboardStatistic(Context context, HashMap<String, String> params, ListenerGetDashboardStatistic listenerGetDashboardStatistic);
+    void getDashboardResponse(HashMap<String, String> params, ListenerInteractor<DataResponse<DataDeposit>> listener);
 
-    void getDashboardResponse(Context context, HashMap<String, String> params, ListenerGetDashboardDeposit listenerGetDashboardDeposit);
+    void actionSingleAds(DataRequest<ProductAdBulkAction> dataRequest, ListenerInteractor<ProductAdBulkAction> listenerInteractor);
 
-    void getDashboardCredit(Context context, HashMap<String, String> params, ListenerGetDashboardCredit listenerGetDashboardCredit);
+    void actionGroupAds(DataRequest<GroupAdBulkAction> dataRequest, ListenerInteractor<GroupAdBulkAction> listenerInteractor);
 }

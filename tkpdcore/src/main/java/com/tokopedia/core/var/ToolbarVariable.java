@@ -114,14 +114,7 @@ public class ToolbarVariable {
             case TYPE_SEARCH: {
                 initSearchView();
             }
-            default: {
-                initViewDetail();
-            }
         }
-    }
-
-    private void initViewDetail() {
-        initTitle();
     }
 
     private void initViewMain() {
@@ -130,19 +123,13 @@ public class ToolbarVariable {
     }
 
     protected void setAsActionBar() {
+        context.setSupportActionBar(holder.toolbar);
         switch (type) {
             case TYPE_DETAIL: {
-                context.setSupportActionBar(holder.toolbar);
                 context.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 break;
             }
-            default: {
-                context.setSupportActionBar(holder.toolbar);
-                break;
-            }
         }
-        context.setSupportActionBar(holder.toolbar);
-        context.getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     private void initSearchView() {
