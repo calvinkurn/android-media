@@ -1219,10 +1219,10 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="msg_security_question">Hi Toppers, Mohon kesediaannya menjawab pertanyaan berikut untuk membantu kami memastikan bahwa Anda adalah pemilik akun Tokopedia ini.</string>
     <string name="bar_security_question">Pertanyaan Keamanan</string>
     <string name="title_security_question">Halo, User</string>
-    <string name="content_security_question">Kami telah mengirimkan kode verifikasi ke nomor ponsel/email kamu.</string>
-    <string name="content_security_question_phone">Kami telah mengirimkan kode verifikasi ke nomor ponsel </string>
-    <string name="content_security_question_email">Kami telah mengirimkan kode verifikasi ke email kamu.</string>
-    <string name="msg_otp">Hi Toppers, Mohon kesediaannya mengisi kode Verifikasi berikut untuk membantu kami memastikan bahwa Anda adalah pemilik akun Tokopedia ini.</string>
+    <string name="content_security_question">Kami telah mengirimkan Kode Verifikasi ke nomor ponsel/email kamu.</string>
+    <string name="content_security_question_phone">Kami telah mengirimkan Kode Verifikasi ke nomor ponsel </string>
+    <string name="content_security_question_email">Kami telah mengirimkan Kode Verifikasi ke email kamu.</string>
+    <string name="msg_otp">Hi Toppers, Mohon kesediaannya mengisi Kode Verifikasi berikut untuk membantu kami memastikan bahwa Anda adalah pemilik akun Tokopedia ini.</string>
     <string name="title_error_security">Kode Verifikasi Salah</string>
     <string name="msg_error_security">Silakan coba lagi agar bisa login dan menggunakan akun Anda.</string>
     <string name="title_error_otp">Kode Verifikasi Salah</string>
