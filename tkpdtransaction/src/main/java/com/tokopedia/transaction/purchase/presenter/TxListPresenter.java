@@ -7,8 +7,7 @@ import com.tokopedia.transaction.purchase.model.AllTxFilter;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
 
 /**
- *
- * Created by Angga.Prasetiyo on 21/04/2016.
+ * @author Angga.Prasetiyo on 21/04/2016.
  */
 public interface TxListPresenter {
 

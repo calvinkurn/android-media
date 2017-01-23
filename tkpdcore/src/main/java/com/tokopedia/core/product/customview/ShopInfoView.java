@@ -1,5 +1,6 @@
 package com.tokopedia.core.product.customview;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,15 +15,14 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.inbox.inboxmessage.fragment.SendMessageFragment;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.listener.ProductDetailView;
-import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ShopBadge;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
+import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -30,11 +30,13 @@ import java.util.List;
 
 import butterknife.BindView;
 
+import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
+
+
 /**
- * Created by Angga.Prasetiyo on 27/10/2015.
+ * @author Angga.Prasetiyo on 27/10/2015.
  */
 public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView> {
-    private static final String TAG = ShopInfoView.class.getSimpleName();
 
     @BindView(R2.id.iv_ava)
     ImageView ivShopAva;
@@ -91,6 +93,7 @@ public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView>
         setVisibility(GONE);
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
         tvShopName.setText(MethodChecker.fromHtml(data.getShopInfo().getShopName()));
@@ -161,14 +164,10 @@ public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView>
         }
     }
 
-    public View getProductOtherView() {
-        return this.layoutOther;
-    }
-
     private class AnimationFav extends ScaleAnimation {
 
-        public AnimationFav(int fromX, float toX, int fromY, float toY, int pivotXType,
-                            float pivotXValue, int pivotYType, float pivotYValue) {
+        AnimationFav(int fromX, float toX, int fromY, float toY, int pivotXType,
+                     float pivotXValue, int pivotYType, float pivotYValue) {
             super(fromX, toX, fromY, toY, pivotXType, pivotXValue, pivotYType, pivotYValue);
             setDuration(250);
             setRepeatCount(Animation.INFINITE);
@@ -181,20 +180,12 @@ public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView>
 
         private final ProductOther data;
 
-        public ClickOtherProduct(ProductOther productOther) {
+        ClickOtherProduct(ProductOther productOther) {
             this.data = productOther;
         }
 
         @Override
         public void onClick(View v) {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS,
-                    ProductPass.Builder.aProductPass()
-                            .setProductPrice(data.getProductPrice())
-                            .setProductId(data.getProductId())
-                            .setProductName(data.getProductName())
-                            .setProductImage(data.getProductImage())
-                            .build());
             listener.onProductOtherClicked(ProductPass.Builder.aProductPass()
                     .setProductPrice(data.getProductPrice())
                     .setProductId(data.getProductId())
@@ -207,7 +198,7 @@ public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView>
     private class ClickBtnFave implements OnClickListener {
         private final ProductDetailData data;
 
-        public ClickBtnFave(ProductDetailData data) {
+        ClickBtnFave(ProductDetailData data) {
             this.data = data;
         }
 
@@ -223,7 +214,7 @@ public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView>
     private class ClickShopMessage implements OnClickListener {
         private final ProductDetailData data;
 
-        public ClickShopMessage(ProductDetailData data) {
+        ClickShopMessage(ProductDetailData data) {
             this.data = data;
         }
 
@@ -231,8 +222,8 @@ public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView>
         public void onClick(View v) {
             Bundle bundle = new Bundle();
             bundle.putBoolean("login", true);
-            bundle.putString(SendMessageFragment.PARAM_SHOP_ID, String.valueOf(data.getShopInfo().getShopId()));
-            bundle.putString(SendMessageFragment.PARAM_OWNER_FULLNAME, data.getShopInfo().getShopName());
+            bundle.putString(InboxRouter.PARAM_SHOP_ID, String.valueOf(data.getShopInfo().getShopId()));
+            bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, data.getShopInfo().getShopName());
             listener.onProductShopMessageClicked(bundle);
         }
     }
@@ -240,7 +231,7 @@ public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView>
     private class ClickShopAva implements OnClickListener {
         private final ProductDetailData data;
 
-        public ClickShopAva(ProductDetailData data) {
+        ClickShopAva(ProductDetailData data) {
             this.data = data;
         }
 
@@ -258,7 +249,7 @@ public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView>
     private class ClickShopName implements OnClickListener {
         private final ProductDetailData data;
 
-        public ClickShopName(ProductDetailData data) {
+        ClickShopName(ProductDetailData data) {
             this.data = data;
         }
 
@@ -276,7 +267,7 @@ public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView>
     private class ClickShopRating implements OnClickListener {
         private final ProductDetailData data;
 
-        public ClickShopRating(ProductDetailData data) {
+        ClickShopRating(ProductDetailData data) {
             this.data = data;
         }
 

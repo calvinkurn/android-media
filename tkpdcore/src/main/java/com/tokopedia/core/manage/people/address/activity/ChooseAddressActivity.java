@@ -12,6 +12,9 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.manage.people.address.fragment.ChooseAddressFragment;
+import com.tokopedia.core.manage.people.address.model.Destination;
+
+import java.util.ArrayList;
 
 /**
  * Created by Alifa on 10/11/2016.
@@ -20,6 +23,7 @@ import com.tokopedia.core.manage.people.address.fragment.ChooseAddressFragment;
 public class ChooseAddressActivity extends BasePresenterActivity {
 
     public static final String REQUEST_CODE_PARAM_ADDRESS = "ADDRESSPASSDATA";
+    public static final int RESULT_NOT_SELECTED_DESTINATION = 2;
 
     private static final String TAG = "CHOOSE_ADDRESS_FRAGMENT";
 

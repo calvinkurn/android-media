@@ -22,6 +22,8 @@ public class ManageShopNotesActivity extends BasePresenterActivity {
     public static final String PARAM_IS_RETURNABLE_POLICY = "IS_RETURNABLE_POLICY";
     public static final String PARAM_IS_EDIT = "IS_EDIT";
     public static final String PARAM_SHOP_NOTE = "SHOP_NOTE";
+    private static final String EXTRA_BUNDLE = "EXTRA_BUNDLE_NOTES";
+    private Bundle bundle;
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -39,36 +41,54 @@ public class ManageShopNotesActivity extends BasePresenterActivity {
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            bundle = new Bundle();
+            bundle = savedInstanceState.getBundle(EXTRA_BUNDLE);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBundle(EXTRA_BUNDLE, bundle);
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.activity_simple_fragment;
     }
 
     @Override
     protected void initView() {
-        Bundle bundle = new Bundle();
-        if (getIntent().getExtras() != null)
+        if (getIntent().getExtras() != null && bundle == null) {
+            bundle = new Bundle();
             bundle = getIntent().getExtras();
-
-        if (getFragmentManager().findFragmentById(R.id.container) == null) {
-            ManageShopNotesFragment fragment = ManageShopNotesFragment.createInstance(bundle);
-            fragment.setOnActionShopNoteListener(onActionShopNoteListener());
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
-            fragmentTransaction.commit();
         }
+
+        ManageShopNotesFragment fragment = ManageShopNotesFragment.createInstance(bundle);
+        fragment.setOnActionShopNoteListener(onActionShopNoteListener());
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        if (getFragmentManager().findFragmentById(R.id.container) == null) {
+            fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
+        } else {
+            fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        }
+        fragmentTransaction.commit();
     }
 
     private ManageShopNotesFragment.OnActionShopNoteListener onActionShopNoteListener() {
         return new ManageShopNotesFragment.OnActionShopNoteListener() {
             @Override
             public void onAddShopNote(boolean isReturnablePolicy, ShopNote shopNote) {
-                Bundle bundle = getIntent().getExtras();
-                if (bundle == null)
+                if (bundle == null) {
                     bundle = new Bundle();
+                }
 
                 bundle.putBoolean(PARAM_IS_RETURNABLE_POLICY, isReturnablePolicy);
-                if(shopNote != null) {
+                if (shopNote != null) {
                     bundle.putBoolean(PARAM_IS_EDIT, true);
                     bundle.putParcelable(PARAM_SHOP_NOTE, shopNote);
                 }
@@ -121,7 +141,7 @@ public class ManageShopNotesActivity extends BasePresenterActivity {
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
-        }else {
+        } else {
             super.onBackPressed();
         }
     }

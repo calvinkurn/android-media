@@ -9,7 +9,6 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginProviderModel;
-import com.tokopedia.core.session.presenter.Login;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.var.TkpdState;
@@ -20,14 +19,14 @@ import com.tokopedia.core.welcome.view.WelcomeFragmentView;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import static com.tokopedia.core.session.presenter.Login.BACKGROUND_CACHE_KEY;
-import static com.tokopedia.core.session.presenter.Login.PROVIDER_CACHE_KEY;
-
 /**
  * Created by stevenfredian on 10/5/16.
  */
 
 public class WelcomeFragmentPresenterImpl implements WelcomeFragmentPresenter {
+
+    String PROVIDER_CACHE_KEY = "provider_cache";
+    String BACKGROUND_CACHE_KEY = "background_cache_key";
 
     private WelcomeFragmentView view;
     private WelcomeInteractor interactor;

@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.ResultReceiver;
+import android.util.Log;
 
 import com.tokopedia.core.payment.interactor.PaymentNetInteractor;
 import com.tokopedia.core.payment.interactor.PaymentNetInteractorImpl;
@@ -98,6 +99,9 @@ public class PaymentIntentService extends IntentService {
         final Map<String, String> params = ((ParamParcel)
                 intent.getParcelableExtra(EXTRA_PARAM_GET_PARAMETER_DYNAMIC_PAYMENT)).getMap();
         receiver.send(RESULT_GET_PARAMETER_DYNAMIC_PAYMENT_RUNNING, null);
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            Log.d("PARAM CART", entry.getKey() + " = " + entry.getValue());
+        }
         paymentNetInteractor.getParameterDynamicPayment(getBaseContext(), params,
                 new PaymentNetInteractor.OnGetParameterDynamicPayment() {
                     @Override

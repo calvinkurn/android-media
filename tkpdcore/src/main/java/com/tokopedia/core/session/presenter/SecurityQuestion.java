@@ -79,4 +79,6 @@ public interface SecurityQuestion {
 
     void doRequestOtpWithCall();
 
+    void doSendAnalytics();
+
 }

@@ -78,6 +78,8 @@ public interface DetailResCenterView {
 
     void openInputAddress();
 
+    void openInputAddressForAcceptAdmin();
+
     void openInputAddressMigrateVersion();
 
     void openEditAddress(String url);

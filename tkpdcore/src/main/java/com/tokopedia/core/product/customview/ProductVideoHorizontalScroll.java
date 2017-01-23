@@ -60,7 +60,7 @@ public class ProductVideoHorizontalScroll extends HorizontalScrollView {
     }
 
     public void destroyAllOnGoingYoutubeProcess() {
-        for (int i = 0; i<youtubeThumbnailList.size(); i++) {
+        for (int i = 0; i < youtubeThumbnailList.size(); i++) {
             youtubeThumbnailList.get(i).destroyReleaseProcess();
         }
     }

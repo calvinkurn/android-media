@@ -3,9 +3,12 @@ package com.tokopedia.session.session.presenter;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.facebook.CallbackManager;
 import com.tokopedia.core.session.base.BaseImpl;
+import com.tokopedia.core.session.model.FacebookModel;
 import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
+import com.tokopedia.session.session.fragment.RegisterInitialFragment;
 
 import java.util.List;
 
@@ -24,7 +27,7 @@ public abstract class RegisterInitialPresenter extends BaseImpl<RegisterInitialV
 
     public abstract void loginWebView(Context activity, Bundle bundle);
 
-    public abstract void loginFacebook(Context activity);
+    public abstract void loginFacebook(Context activity, FacebookModel facebookModel, String token);
 
     public abstract void downloadProviderLogin(Context context);
 
@@ -34,6 +37,7 @@ public abstract class RegisterInitialPresenter extends BaseImpl<RegisterInitialV
 
     public abstract void setData(Context activity, int type, Bundle data);
 
-
     public abstract void unSubscribeFacade();
+
+    public abstract void doFacebookLogin(RegisterInitialFragment registerInitialFragment, CallbackManager callbackManager);
 }

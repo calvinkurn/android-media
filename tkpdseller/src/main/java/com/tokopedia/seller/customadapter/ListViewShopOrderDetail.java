@@ -2,9 +2,6 @@ package com.tokopedia.seller.customadapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,11 +12,11 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.core.R;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.model.shopconfirmationdetail.ShippingConfirmDetModel;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.R;
 
 import java.util.ArrayList;
 
@@ -98,15 +95,11 @@ public class ListViewShopOrderDetail extends BaseAdapter{
 			
 			@Override
 			public void onClick(View v) {
-				
-//				Intent intent = new Intent(context, ProductDetailPresenter.class);
-				Intent intent = new Intent(context, ProductInfoActivity.class);
-				Bundle bundle = new Bundle();
-				bundle.putString(PRODUCT_URI, data.ProductUrlList);
-				bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS,
-						getProductDataToPass(data));
-				intent.putExtras(bundle);
-				context.startActivity(intent);
+				context.startActivity(
+						ProductDetailRouter.createInstanceProductDetailInfoActivity(
+								context, getProductDataToPass(data)
+						)
+				);
 			}
 		});
 		return convertView;

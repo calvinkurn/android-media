@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.deeplink.presenter;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,16 +19,12 @@ import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.fragment.FragmentShopPreview;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.v4.NetworkConfig;
-import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
-import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.router.home.HotListRouter;
 import com.tokopedia.core.router.home.RechargeRouter;
-import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.tkpd.IConsumerModuleRouter;
@@ -72,13 +67,42 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         this.context = activity;
     }
 
+    @Override
+    public boolean isLandingPageWebView(Uri uri) {
+        int type = getDeepLinkType(uri);
+        switch (type){
+            case HOMEPAGE:
+                return false;
+            case BROWSE:
+                return false;
+            case HOT:
+                return false;
+            case CATALOG:
+                return false;
+            case PRODUCT:
+                return false;
+            case SHOP:
+                return false;
+            case ACCOUNTS:
+                return true;
+            case OTHER:
+                return true;
+            case INVOICE:
+                return false;
+            case RECHARGE:
+                return false;
+            default:
+                return true;
+        }
+    }
+
     public void processDeepLinkAction(Uri uriData) {
         if (uriData.getHost().equals(AF_ONELINK_HOST)) {
             Log.d(TAG, "URI DATA = " + uriData.toString());
             processAFlistener();
         } else {
             List<String> linkSegment = uriData.getPathSegments();
-            String screenName = "";
+            String screenName;
             int type = getDeepLinkType(uriData);
             switch (type) {
                 case HOMEPAGE:
@@ -449,7 +473,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return (linkSegment.size() == 2
                 && !isBrowse(linkSegment)
                 && !isHot(linkSegment)
-                && !isCatalog(linkSegment));
+                && !isCatalog(linkSegment)
+                && !linkSegment.get(0).equals("pulsa"));
     }
 
     private boolean isCatalog(List<String> linkSegment) {

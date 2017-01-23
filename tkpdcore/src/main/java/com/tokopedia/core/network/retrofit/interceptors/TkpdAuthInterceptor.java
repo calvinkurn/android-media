@@ -62,6 +62,7 @@ public class TkpdAuthInterceptor implements Interceptor {
         } else if (isServerError(response.code())) {
             showServerErrorSnackbar();
             sendErrorNetworkAnalytics(response);
+            throw new IOException();
         }
 
 
@@ -72,7 +73,7 @@ public class TkpdAuthInterceptor implements Interceptor {
             throws IOException {
         Map<String, String> authHeaders = new HashMap<>();
         authHeaders = prepareHeader(authHeaders, originRequest);
-        generateHeader(authHeaders, originRequest , newRequest);
+        generateHeader(authHeaders, originRequest, newRequest);
     }
 
     Map<String, String> prepareHeader(Map<String, String> authHeaders, Request originRequest) {
@@ -94,7 +95,7 @@ public class TkpdAuthInterceptor implements Interceptor {
         return AuthUtil.generateHeaders(path, strParam, method, authKey);
     }
 
-    void generateHeader(Map<String, String> authHeaders, Request originRequest, Request.Builder newRequest){
+    void generateHeader(Map<String, String> authHeaders, Request originRequest, Request.Builder newRequest) {
         for (Map.Entry<String, String> entry : authHeaders.entrySet())
             newRequest.addHeader(entry.getKey(), entry.getValue());
         newRequest.method(originRequest.method(), originRequest.body());

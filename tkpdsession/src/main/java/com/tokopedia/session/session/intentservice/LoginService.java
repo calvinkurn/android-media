@@ -33,7 +33,7 @@ import com.tokopedia.session.session.model.LoginThirdModel;
 import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.session.model.TokenModel;
-import com.tokopedia.core.session.presenter.Login;
+import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.session.session.presenter.LoginImpl;
 import com.tokopedia.session.session.subscriber.AccountSubscriber;
 import com.tokopedia.session.session.subscriber.BaseAccountSubscriber;

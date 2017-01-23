@@ -120,7 +120,7 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
 
     @Override
     public void onMessageError(int type, Object... data) {
-        if(data[0] instanceof String) {
+        if (data[0] != null && data[0] instanceof String) {
             Toast.makeText(getActivity(), (String) data[0], Toast.LENGTH_SHORT).show();
         }
     }
@@ -150,7 +150,7 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
 
     @Override
     public void showLoading(boolean bool) {
-        if(bool){
+        if (bool) {
             dialog.showDialog();
         } else {
             dialog.dismiss();
@@ -158,8 +158,8 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
     }
 
     @OnClick(R2.id.dynamic_filter_category_finish)
-    public void finishTo(){
-        if(getActivity() != null && getActivity() instanceof DynamicFilterView){
+    public void finishTo() {
+        if (getActivity() != null && getActivity() instanceof DynamicFilterView) {
             ((DynamicFilterView) getActivity()).finishThis();
         }
     }
@@ -167,7 +167,8 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putIntegerArrayList(GROUPS_KEY, dynamicCategoryAdapter.saveGroups());
+        if (dynamicCategoryAdapter != null)
+            outState.putIntegerArrayList(GROUPS_KEY, dynamicCategoryAdapter.saveGroups());
     }
 
     @Override

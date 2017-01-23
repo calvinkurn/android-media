@@ -319,6 +319,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="tx_success_from">Transaksi Sukses dari </string>
     <string name="tx_title">Transaksi</string>
     <string name="title_product_video">Video Produk</string>
+    <string name="success_share_product">Sukses membagikan produk</string>
     <!-- Strings related product info -->
 
 
@@ -640,7 +641,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="title_payment_method">Metode Pembayaran</string>
     <string name="title_total_payment">Total Pembayaran</string>
     <string name="title_total_payment_left">Total Yang Harus Dibayar</string>
-    <string name="tittle_checkout">Checkout</string>
+    <string name="tittle_checkout">Pilih Metode Pembayaran</string>
     <string name="title_tokopedia_balance">Saldo Tokopedia</string>
     <string name="title_use_tokopedia_balance">Ingin gunakan saldo Tokopedia-mu ?</string>
     <string name="title_use_promo_code">Gunakan Kode Voucher Tokopedia</string>
@@ -947,6 +948,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_remaining_tokopedia">Saldo tersedia</string>
     <string name="msg_payment_success">Terima kasih, Anda telah sukses mengkonfirmasi dengan menggunakan metode pembayaran</string>
     <string name="title_activity_people_tx_details">Detil Transaksi</string>
+    <string name="title_activity_cart_shipment">Ubah Pengiriman</string>
     <string name="title_payment_confirmation">KONFIRMASI</string>
     <!-- <string name="title_payment_verification">VERIFIKASI</string> -->
     <string name="title_payment_verification">Ubah Pembayaran</string>
@@ -1395,6 +1397,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_shipping_fee_max">Maksimum biaya pengiriman tambahan</string>
     <string name="title_loyalty_points">TopPoints terpakai</string>
     <string name="loyalty_points_info">TopPoints</string>
+    <string name="toko_cash_info">TokoCash</string>
     <string name="msg_lucky_merchant">Anda berhasil menjadi Lucky Merchant</string>
     <string name="msg_lucky_merchant_detail">Kesempatan mendapatkan pesanan lebih banyak setiap harinya</string>
     <string name="msg_lucky_valid">Berlaku sampai 30 hari kedepan</string>
@@ -1850,7 +1853,7 @@ di Tokopedia Sekarang!</string>
 
     <string name="notification_error_ssl_cert_invalid">Invalid SSL Certificate. Apakah anda ingin melanjutkan?</string>
     <string name="title_email_address">Alamat Email</string>
-    <string name="title_phone_optional">Nomor Telepon (Optional)</string>
+    <string name="title_phone_optional">Nomor Telepon (Opsional)</string>
     <string name="error_attachment">Mohon tambahkan lampiran.</string>
     <string name="action_send_otp_with_call">Atau kirim OTP melalui telepon</string>
     <string name="content_change_number">Jika nomor Anda sudah tidak aktif, silahkan Klik disini</string>
@@ -1858,4 +1861,5 @@ di Tokopedia Sekarang!</string>
 
     <string name="mark_as_read">Tandai sudah dibaca</string>
     <string name="mark_as_unread">Tandai belum dibaca</string>
+    <string name="address_not_supported_add_to_cart">Layanan kurir tidak mendukung pengiriman dari lokasi penjual ke lokasi pembeli</string>
 </resources>

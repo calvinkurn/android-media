@@ -1,25 +1,30 @@
 package com.tokopedia.core.share.presenter;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.sromku.simple.fb.Permission;
-import com.sromku.simple.fb.SimpleFacebook;
-import com.sromku.simple.fb.entities.Feed;
-import com.sromku.simple.fb.listeners.OnLoginListener;
-import com.sromku.simple.fb.listeners.OnPublishListener;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.tkpd.library.utils.ConnectionDetector;
+import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.share.fragment.ProductShareFragment;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdState;
 
-import java.util.List;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Angga.Prasetiyo on 11/12/2015.
@@ -28,9 +33,14 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     private static final String TAG = ProductSharePresenterImpl.class.getSimpleName();
 
     private final Activity activity;
+    private final ProductShareFragment fragment;
+    private static final String FACEBOOK = "well";
+    LocalCacheHandler facebookCache;
 
     public ProductSharePresenterImpl(BasePresenterFragment baseFragment) {
         this.activity = baseFragment.getActivity();
+        this.fragment = (ProductShareFragment) baseFragment;
+        facebookCache = new LocalCacheHandler(activity, FACEBOOK);
     }
 
     @Override
@@ -45,41 +55,19 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     }
 
     @Override
-    public void shareFb(final SimpleFacebook simpleFacebook, final ShareData data) {
+    public void shareFb(final ShareData data) {
         UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
                 AppEventTracking.SOCIAL_MEDIA.FACEBOOK
         );
         data.setSource(AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
-        ConnectionDetector detector =  new ConnectionDetector(this.activity);
+        ConnectionDetector detector = new ConnectionDetector(this.activity);
+        boolean expired = facebookCache.isExpired();
+
         if (detector.isConnectingToInternet()){
-            simpleFacebook.publish(new Feed.Builder()
-                    .setMessage(data.getUri())
-                    .setName(data.getName())
-                    .setCaption(data.getPrice())
-                    .setDescription(data.getDescription())
-                    .setPicture(data.getImgUri())
-                    .setLink(data.renderShareUri())
-                    .build(), true, new OnPublishListener() {
-                @Override
-                public void onFail(String reason) {
-                    loginFacebook(simpleFacebook);
-                }
-
-                @Override
-                public void onException(Throwable throwable) {
-                    throwable.printStackTrace();
-                }
-
-                @Override
-                public void onThinking() {
-                    Log.d("varis tag", "on Thingking");
-                }
-
-                @Override
-                public void onComplete(String id) {
-                    Log.d("varis tag", "on Complete");
-                }
-            });
+            if(expired){
+                LoginManager.getInstance().logOut();
+            }
+            fragment.showDialogShareFb();
         } else {
             NetworkErrorHelper.showSnackbar(this.activity);
         }
@@ -196,27 +184,10 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
         Toast.makeText(activity, "Copied to clipboard", Toast.LENGTH_SHORT).show();
     }
 
-    private void loginFacebook(SimpleFacebook simpleFacebook) {
-        simpleFacebook.login(new OnLoginListener() {
-            @Override
-            public void onLogin(String accessToken, List<Permission> acceptedPermissions, List<Permission> declinedPermissions) {
-
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-
-            @Override
-            public void onException(Throwable throwable) {
-
-            }
-
-            @Override
-            public void onFail(String s) {
-
-            }
-        });
+    @Override
+    public void setFacebookCache() {
+        facebookCache.setExpire(3600);
     }
+
+
 }

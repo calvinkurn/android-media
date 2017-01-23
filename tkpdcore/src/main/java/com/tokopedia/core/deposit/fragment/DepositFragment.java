@@ -24,6 +24,7 @@ import com.tokopedia.core.deposit.listener.DepositFragmentView;
 import com.tokopedia.core.deposit.presenter.DepositFragmentPresenter;
 import com.tokopedia.core.deposit.presenter.DepositFragmentPresenterImpl;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RefreshHandler;
@@ -173,7 +174,7 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
             public void onClick(View v) {
                 UnifyTracking.eventDepositTopUp();
                 Bundle bundle = new Bundle();
-                bundle.putString("url", url);
+                bundle.putString("url", URLGenerator.generateURLSessionLoginV4(url,getActivity()));
                 Intent intent = new Intent(context, LoyaltyDetail.class);
                 intent.putExtras(bundle);
                 context.startActivity(intent);

@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,8 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.TopAdsUtil;
 import com.tokopedia.core.var.Badge;
@@ -96,7 +96,7 @@ public class TopAdsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             ProductItem item = getItem(position);
             holder.productName.setText(MethodChecker.fromHtml(item.name));
             holder.productPrice.setText(item.price);
-            holder.shopLocation.setText(item.getShop_location());
+            holder.shopLocation.setText(item.getShopLocation());
             holder.shopName.setText(MethodChecker.fromHtml(item.shop));
             setProductImage(holder, item);
             setClickListener(holder, item);
@@ -117,7 +117,7 @@ public class TopAdsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(context, ProductInfoActivity.class);
-                bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_ITEM, item);
+                bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, item);
                 intent.putExtras(bundle);
                 context.startActivity(intent);
             }

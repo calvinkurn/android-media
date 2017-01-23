@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.addtocart.utils;
 
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.addtocart.model.OrderData;
 
 import java.util.HashMap;
@@ -11,16 +12,17 @@ import java.util.Map;
 public class NetParamUtil {
     private static final String TAG = NetParamUtil.class.getSimpleName();
 
-    public static Map<String, String> paramCalculateCart(String doAction, OrderData orderData) {
-        Map<String, String> params = new HashMap<>();
-        params.put("address_id", orderData.getAddress().getAddressId());
-        params.put("district_id", orderData.getAddress().getDistrictId());
-        params.put("do", doAction);
-        params.put("product_id", orderData.getProductId());
-        params.put("postal_code", orderData.getAddress().getPostalCode());
+    public static TKPDMapParam<String, String> paramCalculateCart(String doAction,
+                                                                  OrderData orderData) {
+        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        params.put("address_id", orderData.getAddress().getAddressId() + "");
+        params.put("district_id", orderData.getAddress().getDistrictId() + "");
+        params.put("do", doAction + "");
+        params.put("product_id", orderData.getProductId() + "");
+        params.put("postal_code", orderData.getAddress().getPostalCode() + "");
         params.put("qty", orderData.getQuantity() + "");
-        params.put("shop_id", orderData.getShopId());
-        params.put("weight", orderData.getWeight());
+        params.put("shop_id", orderData.getShopId() + "");
+        params.put("weight", orderData.getWeight() + "");
         return params;
     }
 

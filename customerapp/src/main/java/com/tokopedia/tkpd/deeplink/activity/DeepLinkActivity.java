@@ -10,21 +10,18 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
-import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
@@ -181,17 +178,30 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     protected void onFinishFetechedDepartment() {
         super.onFinishFetechedDepartment();
-        Log.i("HADES TAG", "DO SOMETHING AFTER FINISH");
+        Log.i("GAv4 HADES TAG", "DO SOMETHING AFTER FINISH");
         dissmisProgressService();
         if (uriData != null) presenter.processDeepLinkAction(uriData);
     }
 
     private void initDeepLink() {
-        Log.i("HADES TAG", "HADES RUNNING??? " + HadesService.getIsHadesRunning());
-        if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
-            showProgressService();
-        } else {
-            if (uriData != null) presenter.processDeepLinkAction(uriData);
+        if (uriData != null) {
+            if (presenter.isLandingPageWebView(uriData)) {
+                CommonUtils.dumper("GAv4 Escape HADES webview");
+                presenter.processDeepLinkAction(uriData);
+            } else {
+                if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
+                    CommonUtils.dumper("GAv4 Entering HADES");
+                    showProgressService();
+                }else{
+                    CommonUtils.dumper("GAv4 Escape HADES non webview");
+                    presenter.processDeepLinkAction(uriData);
+                }
+            }
+        } else  {
+            if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
+                CommonUtils.dumper("GAv4 Entering HADES null Uri");
+                showProgressService();
+            }
         }
     }
 

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -35,7 +34,6 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.EtalaseDB;
 import com.tokopedia.core.myproduct.ManageProduct;
@@ -48,8 +46,7 @@ import com.tokopedia.core.myproduct.presenter.NetworkInteractor;
 import com.tokopedia.core.myproduct.presenter.NetworkInteractorImpl;
 import com.tokopedia.core.myproduct.utils.VerificationUtils;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -227,7 +224,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
         if (data.getIsSuccess() == 1) {
             showSnackBar(context.getString(R.string.title_quick_success));
             KeyboardHandler keyboardHandler = new KeyboardHandler();
-            keyboardHandler.hideSoftKeyboard(context);
+            KeyboardHandler.hideSoftKeyboard(context);
             clearCheckdData();
             ((ManageProduct) context).ClearData();
             ((ManageProduct) context).CheckCache();
@@ -273,7 +270,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
             holder.EditBut = (TextView) convertView.findViewById(R.id.edit_but);
             holder.CopyBut = (TextView) convertView.findViewById(R.id.copy_but);
             holder.UnderRev = (TextView) convertView.findViewById(R.id.review_warning);
-            holder.EditorArea = (View) convertView.findViewById(R.id.editor_area);
+            holder.EditorArea = convertView.findViewById(R.id.editor_area);
             holder.Prices = (EditText) convertView.findViewById(R.id.price);
             holder.Currency = (Spinner) convertView.findViewById(R.id.currency);
             holder.MainView = convertView.findViewById(R.id.main_view);

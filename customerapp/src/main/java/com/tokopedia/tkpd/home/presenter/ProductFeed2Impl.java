@@ -612,6 +612,11 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
         );
     }
 
+    @Override
+    public boolean isLoadedFirstPage() {
+        return mPaging.getPage() >= 1;
+    }
+
     @NonNull
     private HorizontalRecentViewList getHorizontalRecentViewList(RecentViewData aRecentViewData) {
         return new HorizontalRecentViewList(aRecentViewData.getData().getRecentView());
@@ -717,7 +722,7 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
         product.setWholesale(data.product.wholesalePrice.size() > 0 ? "1" : "0");
         product.setPreorder((data.product.preorder) ? "1" : "0");
         product.setIsTopAds(true);
-        product.setShop_location(data.shop.location);
+        product.setShopLocation(data.shop.location);
         product.setBadges(data.shop.badges);
         product.setLabels(data.product.labels);
         TopAds ads = new TopAds();
@@ -731,6 +736,5 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
         product.setTopAds(ads);
         return product;
     }
-
 
 }
