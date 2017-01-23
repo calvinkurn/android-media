@@ -633,8 +633,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             else
                 title.setText(MethodChecker.fromHtml(data.name));
             price.setText(data.price);
-            if (data.getShop_location() != null)
-                location.setText(MethodChecker.fromHtml(data.getShop_location()));
+            if (data.getShopLocation() != null)
+                location.setText(MethodChecker.fromHtml(data.getShopLocation()));
             else
                 location.setVisibility(View.INVISIBLE);
 
