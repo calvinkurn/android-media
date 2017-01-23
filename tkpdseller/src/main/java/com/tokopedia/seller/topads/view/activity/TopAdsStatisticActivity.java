@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
@@ -91,12 +92,7 @@ public abstract class TopAdsStatisticActivity extends BasePresenterActivity<TopA
         viewPager.setCurrentItem(currentPositonPager);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(R.string.title_loading));
-        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(this, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                loadData();
-            }
-        });
+        snackbarRetry = getSnackbarWithAction();
     }
 
     @Override
@@ -171,10 +167,18 @@ public abstract class TopAdsStatisticActivity extends BasePresenterActivity<TopA
 
     @Override
     public void onError(Throwable throwable) {
-        if(snackbarRetry.isShown()){
-            snackbarRetry.hideRetrySnackbar();
-        }
+        snackbarRetry = getSnackbarWithAction();
         snackbarRetry.showRetrySnackbar();
+    }
+
+    @NonNull
+    private SnackbarRetry getSnackbarWithAction() {
+        return NetworkErrorHelper.createSnackbarWithAction(this, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                loadData();
+            }
+        });
     }
 
     @Override

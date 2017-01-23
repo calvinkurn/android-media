@@ -107,7 +107,7 @@ public class TopAdsProductAdInteractorImpl implements TopAdsProductAdInteractor 
                         if(cellsResponse != null){
                             if(cellsResponse.size() > 0) {
                                 List<Cell> cellsRequest = generateRangeCell(statisticRequest);
-                                if (cellsRequest != null && cellsRequest.size() >= cellsResponse.size()) {
+                                if (cellsRequest != null ) {
                                     for (int i = 0; i < cellsRequest.size(); i++) {
                                         Date dateRequest = cellsRequest.get(i).getDate();
                                         for(int j=0; j<cellsResponse.size(); j++) {
@@ -120,7 +120,7 @@ public class TopAdsProductAdInteractorImpl implements TopAdsProductAdInteractor 
                                     }
                                     return Observable.just(cellsRequest);
                                 } else {
-                                    throw new RuntimeException("");
+                                    throw new NullPointerException();
                                 }
                             }else{
                                 List<Cell> cellsRequest = generateRangeCell(statisticRequest);
@@ -149,10 +149,10 @@ public class TopAdsProductAdInteractorImpl implements TopAdsProductAdInteractor 
         Calendar cal = Calendar.getInstance();
         cal.setTime(startDate);
         while (cal.getTime().before(lastDate)) {
-            cal.add(Calendar.DATE, 1);
             Cell cell = new Cell(cal.get(Calendar.DAY_OF_MONTH), Integer.parseInt(formatter.format(cal.getTime())), cal.get(Calendar.YEAR),
                     0, 0, 0, 0, 0, 0, "0", "0", "0", "0", "0", "0");
             cells.add(cell);
+            cal.add(Calendar.DATE, 1);
         }
 
         return cells;
