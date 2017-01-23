@@ -10,14 +10,13 @@ import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 /**
  * Created by zulfikarrahman on 11/24/16.
  */
-public abstract class TopAdsAdListPresenterImpl<T extends Ad> extends TopAdsDatePickerPresenterImpl implements TopAdsAdListPresenter<T> {
+public abstract class TopAdsAdListPresenterImpl<T extends Ad> implements TopAdsAdListPresenter<T> {
 
     protected final TopAdsListPromoViewListener topAdsListPromoViewListener;
     protected final Context context;
     protected PagingHandler pagingHandler;
 
     public TopAdsAdListPresenterImpl(Context context, TopAdsListPromoViewListener topAdsListPromoViewListener) {
-        super(context);
         this.topAdsListPromoViewListener = topAdsListPromoViewListener;
         this.context = context;
         pagingHandler = new PagingHandler();

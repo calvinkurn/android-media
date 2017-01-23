@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
@@ -25,7 +26,7 @@ import butterknife.Unbinder;
 public class TopAdsPaymentCreditFragment extends TkpdFragment {
 
     @BindView(R2.id.webview)
-    WebView webView;
+    TkpdWebView webView;
     @BindView(R2.id.progressbar)
     ProgressBar progressBar;
 
@@ -79,8 +80,7 @@ public class TopAdsPaymentCreditFragment extends TkpdFragment {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
+                return false ;
             }
         });
     }

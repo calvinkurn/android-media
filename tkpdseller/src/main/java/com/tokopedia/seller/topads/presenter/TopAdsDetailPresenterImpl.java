@@ -8,14 +8,13 @@ import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
 /**
  * Created by zulfikarrahman on 12/29/16.
  */
-public abstract class TopAdsDetailPresenterImpl extends TopAdsDatePickerPresenterImpl implements TopAdsDetailPresenter {
+public abstract class TopAdsDetailPresenterImpl implements TopAdsDetailPresenter {
 
     protected final TopAdsDetailViewListener topAdsDetailViewListener;
 
     private Context context;
 
     public TopAdsDetailPresenterImpl(Context context, TopAdsDetailViewListener topAdsDetailViewListener) {
-        super(context);
         this.context = context;
         this.topAdsDetailViewListener = topAdsDetailViewListener;
     }

@@ -4,13 +4,13 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v13.app.FragmentPagerAdapter;
 
-import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.seller.R;
 
 import java.util.List;
 
 /**
- * Created by Nisie on 5/10/16.
+ * Created by Nathaniel on 01/23/2017.
  */
 public class TopAdsDashboardPagerAdapter extends FragmentPagerAdapter {
     private List<Fragment> fragmentList;
@@ -35,13 +35,11 @@ public class TopAdsDashboardPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return MainApplication.getAppContext().getString(R.string.title_inbox_message);
+                return MainApplication.getAppContext().getString(R.string.title_top_ads_product);
             case 1:
-                return MainApplication.getAppContext().getString(R.string.title_inbox_sent);
-            case 2:
-                return MainApplication.getAppContext().getString(R.string.title_inbox_archive);
+                return MainApplication.getAppContext().getString(R.string.title_top_ads_store);
             default:
-                return MainApplication.getAppContext().getString(R.string.title_inbox_trash);
+                return MainApplication.getAppContext().getString(R.string.title_top_ads_product);
         }
     }
 

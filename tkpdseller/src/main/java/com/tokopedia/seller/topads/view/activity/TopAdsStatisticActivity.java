@@ -116,7 +116,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
     }
 
     protected void loadData() {
-        presenter.getStatisticFromNet(getTypeStatistic(), SessionHandler.getShopID(this));
+        presenter.getStatisticFromNet(startDate, endDate, getTypeStatistic(), SessionHandler.getShopID(this));
         getSupportActionBar().setSubtitle(datePickerPresenter.getRangeDateFormat(startDate, endDate));
     }
 
