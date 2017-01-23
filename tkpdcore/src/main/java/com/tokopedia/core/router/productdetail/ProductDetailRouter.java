@@ -19,6 +19,7 @@ public class ProductDetailRouter {
 
     public static Intent createInstanceProductDetailInfoActivity(Context context, ProductPass data) {
         Intent intent = RouterUtils.getActivityIntent(context, PRODUCT_DETAIL_INFO_ACTIVITY);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         intent.putExtra(EXTRA_PRODUCT_PASS, data);
         return intent;
     }
