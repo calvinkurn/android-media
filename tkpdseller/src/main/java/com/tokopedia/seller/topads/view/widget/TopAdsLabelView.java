@@ -10,10 +10,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
@@ -21,10 +17,7 @@ import butterknife.ButterKnife;
 
 public class TopAdsLabelView extends FrameLayout {
 
-    @BindView(R2.id.title_text_view)
     TextView titleTextView;
-
-    @BindView(R2.id.content_text_view)
     TextView contentTextView;
     private String titleText;
     private String valueText;
@@ -47,13 +40,11 @@ public class TopAdsLabelView extends FrameLayout {
 
     private void init(AttributeSet attrs) {
         init();
-
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.TopAdsLabelView);
         try {
             titleText = styledAttributes.getString(R.styleable.TopAdsLabelView_title);
             valueText = styledAttributes.getString(R.styleable.TopAdsLabelView_content);
             colorValue = styledAttributes.getColor(R.styleable.TopAdsLabelView_content_color, ContextCompat.getColor(getContext(), R.color.grey));
-
         } finally {
             styledAttributes.recycle();
         }
@@ -70,9 +61,9 @@ public class TopAdsLabelView extends FrameLayout {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.item_detail_topads_layout, null);
-        ButterKnife.bind(this, view);
-        addView(view);
+        View view = inflate(getContext(), R.layout.item_detail_topads_layout, this);
+        titleTextView = (TextView) view.findViewById(R.id.title_text_view);
+        contentTextView = (TextView) view.findViewById(R.id.content_text_view);
     }
 
     public void setTitle(String textTitle) {

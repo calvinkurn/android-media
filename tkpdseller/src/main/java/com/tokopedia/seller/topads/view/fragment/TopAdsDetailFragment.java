@@ -13,12 +13,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.model.data.Ad;
@@ -29,50 +27,22 @@ import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelSwitch;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
-import butterknife.BindView;
-
 /**
  * A simple {@link Fragment} subclass.
  */
 public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> extends TopAdsDatePickerFragment<T> implements TopAdsDetailViewListener, CompoundButton.OnCheckedChangeListener {
 
-    @BindView(R2.id.container_detail_topads)
-    LinearLayout containerDetail;
-
-    @BindView(R2.id.name)
     TopAdsLabelView name;
-
-    @BindView(R2.id.status)
     TopAdsLabelSwitch status;
-
-    @BindView(R2.id.max_bid)
     TopAdsLabelView maxBid;
-
-    @BindView(R2.id.avg_cost)
     TopAdsLabelView avgCost;
-
-    @BindView(R2.id.start)
     TopAdsLabelView start;
-
-    @BindView(R2.id.end)
     TopAdsLabelView end;
-
-    @BindView(R2.id.daily_budget)
     TopAdsLabelView dailyBudget;
-
-    @BindView(R2.id.sent)
     TopAdsLabelView sent;
-
-    @BindView(R2.id.impr)
     TopAdsLabelView impr;
-
-    @BindView(R2.id.click)
     TopAdsLabelView click;
-
-    @BindView(R2.id.ctr)
     TopAdsLabelView ctr;
-
-    @BindView(R2.id.favorite)
     TopAdsLabelView favorite;
 
     protected Ad adFromIntent;
@@ -93,6 +63,19 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     @Override
     protected void initView(View view) {
+        super.initView(view);
+        name = (TopAdsLabelView) view.findViewById(R.id.name);
+        status = (TopAdsLabelSwitch) view.findViewById(R.id.status);
+        maxBid = (TopAdsLabelView) view.findViewById(R.id.max_bid);
+        avgCost = (TopAdsLabelView) view.findViewById(R.id.avg_cost);
+        start = (TopAdsLabelView) view.findViewById(R.id.start);
+        end = (TopAdsLabelView) view.findViewById(R.id.end);
+        dailyBudget = (TopAdsLabelView) view.findViewById(R.id.daily_budget);
+        sent = (TopAdsLabelView) view.findViewById(R.id.sent);
+        impr = (TopAdsLabelView) view.findViewById(R.id.impr);
+        click = (TopAdsLabelView) view.findViewById(R.id.click);
+        ctr = (TopAdsLabelView) view.findViewById(R.id.ctr);
+        favorite = (TopAdsLabelView) view.findViewById(R.id.favorite);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
         snackbarRetryOnAd = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {

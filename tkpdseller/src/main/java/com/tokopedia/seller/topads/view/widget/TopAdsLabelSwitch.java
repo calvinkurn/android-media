@@ -7,27 +7,17 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
  */
 
 public class TopAdsLabelSwitch extends FrameLayout {
-    @BindView(R2.id.title_text_view)
     TextView titleTextView;
-
-    @BindView(R2.id.switch_text_view)
     TextView switchTextView;
-
-    @BindView(R2.id.switch_status)
     SwitchCompat switchStatus;
 
     private CompoundButton.OnCheckedChangeListener listener;
@@ -51,14 +41,11 @@ public class TopAdsLabelSwitch extends FrameLayout {
     private void init(AttributeSet attrs) {
         init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.TopAdsLabelView);
-
         try {
             titleText = styledAttributes.getString(R.styleable.TopAdsLabelView_title);
         } finally {
             styledAttributes.recycle();
         }
-
-
     }
 
     @Override
@@ -78,9 +65,10 @@ public class TopAdsLabelSwitch extends FrameLayout {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.item_detail_topads_switch_layout, null);
-        ButterKnife.bind(this, view);
-        addView(view);
+        View view = inflate(getContext(), R.layout.item_detail_topads_switch_layout, this);
+        titleTextView = (TextView) view.findViewById(R.id.title_text_view);
+        switchTextView = (TextView) view.findViewById(R.id.switch_text_view);
+        switchStatus = (SwitchCompat) view.findViewById(R.id.switch_status);
     }
 
     public void setTitle(String textTitle) {

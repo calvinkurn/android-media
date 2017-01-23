@@ -6,53 +6,33 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
-import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.presenter.TopAdsNewPromoPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsNewPromoPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsEditPromoActivity;
-import com.tokopedia.seller.topads.view.activity.TopAdsPaymentCreditActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsNewPromoFragmentListener;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.OnClick;
-
 public class TopAdsNewPromoFragment extends BasePresenterFragment<TopAdsNewPromoPresenter> implements TopAdsNewPromoFragmentListener {
 
-
-    @BindView(R2.id.radio_group)
     RadioGroup radioGroup;
-
-    @BindView(R2.id.radio_button_new_group)
     RadioButton newGroupRadioButton;
-
-    @BindView(R2.id.radio_button_exist_group)
     RadioButton existGroupRadioButton;
-
-    @BindView(R2.id.radio_button_no_group)
     RadioButton noGroupRadioButton;
-
-    @BindView(R2.id.edit_text_new_group_name)
     EditText newGroupNameEditText;
-
-    @BindView(R2.id.edit_text_exist_group_name)
     EditText existGroupNameEditText;
-
-    @BindView(R2.id.input_layout_new_group_name)
     TextInputLayout newGroupNameInputLayout;
-
-    @BindView(R2.id.input_layout_exist_group_name)
     TextInputLayout existGroupNameInputLayout;
+    Button submitButton;
 
     private int newPromoType;
 
@@ -108,6 +88,21 @@ public class TopAdsNewPromoFragment extends BasePresenterFragment<TopAdsNewPromo
 
     @Override
     protected void initView(View view) {
+        radioGroup = (RadioGroup) view.findViewById(R.id.radio_group);
+        newGroupRadioButton = (RadioButton) view.findViewById(R.id.radio_button_new_group);
+        existGroupRadioButton = (RadioButton) view.findViewById(R.id.radio_button_exist_group);
+        noGroupRadioButton = (RadioButton) view.findViewById(R.id.radio_button_no_group);
+        newGroupNameEditText = (EditText) view.findViewById(R.id.edit_text_new_group_name);
+        existGroupNameEditText = (EditText) view.findViewById(R.id.edit_text_exist_group_name);
+        newGroupNameInputLayout = (TextInputLayout) view.findViewById(R.id.input_layout_new_group_name);
+        existGroupNameInputLayout = (TextInputLayout) view.findViewById(R.id.input_layout_exist_group_name);
+        submitButton = (Button) view.findViewById(R.id.button_submit);
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chooseCredit();
+            }
+        });
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
@@ -185,7 +180,6 @@ public class TopAdsNewPromoFragment extends BasePresenterFragment<TopAdsNewPromo
         existGroupNameEditText.setText("");
     }
 
-    @OnClick(R2.id.button_submit)
     void chooseCredit() {
         Intent intent = new Intent(getActivity(), TopAdsEditPromoActivity.class);
         startActivity(intent);

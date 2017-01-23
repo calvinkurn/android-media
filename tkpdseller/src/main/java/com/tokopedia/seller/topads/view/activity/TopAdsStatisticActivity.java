@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -16,7 +15,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
@@ -41,13 +39,9 @@ import com.tokopedia.seller.topads.view.listener.TopAdsStatisticViewListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-
 public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<TopAdsStatisticActivityPresenter> implements TopAdsStatisticActivityViewListener {
 
-    @BindView(R2.id.pager)
     ViewPager viewPager;
-    @BindView(R2.id.tab)
     TabLayout tabLayout;
 
     private List<Cell> cells;
@@ -80,6 +74,8 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
     @Override
     protected void initView() {
         super.initView();
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        tabLayout = (TabLayout) findViewById(R.id.tab);
         viewPager.setAdapter(getViewPagerAdapter());
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(currentPositonPager);

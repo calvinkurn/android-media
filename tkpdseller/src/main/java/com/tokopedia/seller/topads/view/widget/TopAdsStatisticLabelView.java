@@ -10,10 +10,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
@@ -21,10 +17,7 @@ import butterknife.ButterKnife;
 
 public class TopAdsStatisticLabelView extends FrameLayout {
 
-    @BindView(R2.id.text_view_title)
     TextView titleTextView;
-
-    @BindView(R2.id.text_view_content)
     TextView contentTextView;
 
     private String titleText;
@@ -48,7 +41,6 @@ public class TopAdsStatisticLabelView extends FrameLayout {
 
     private void init(AttributeSet attrs) {
         init();
-
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.TopAdsLabelView);
         try {
             titleText = styledAttributes.getString(R.styleable.TopAdsLabelView_title);
@@ -70,9 +62,9 @@ public class TopAdsStatisticLabelView extends FrameLayout {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.custom_view_topads_statistic, null);
-        ButterKnife.bind(this, view);
-        addView(view);
+        View view = inflate(getContext(), R.layout.custom_view_topads_statistic, this);
+        titleTextView = (TextView) view.findViewById(R.id.text_view_title);
+        contentTextView = (TextView) view.findViewById(R.id.text_view_content);
     }
 
     public void setTitle(String textTitle) {

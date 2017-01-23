@@ -11,14 +11,10 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.model.data.Product;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Nathaniel on 12/2/2016.
@@ -93,22 +89,18 @@ public class TopAdsProductAdapter extends BaseLinearRecyclerViewAdapter {
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.image_view_icon)
         ImageView iconImageView;
-
-        @BindView(R2.id.text_view_title)
         TextView titleTextView;
-
-        @BindView(R2.id.text_view_promoted)
         TextView promotedTextView;
-
-        @BindView(R2.id.text_view_group_name)
         TextView groupNameTextView;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            iconImageView = (ImageView) itemView.findViewById(R.id.image_view_icon);
+            titleTextView = (TextView) itemView.findViewById(R.id.text_view_title);
+            promotedTextView = (TextView) itemView.findViewById(R.id.text_view_promoted);
+            groupNameTextView = (TextView) itemView.findViewById(R.id.text_view_group_name);
         }
     }
 }
