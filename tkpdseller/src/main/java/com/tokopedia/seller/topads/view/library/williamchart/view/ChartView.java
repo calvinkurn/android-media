@@ -1644,14 +1644,15 @@ public abstract class ChartView extends RelativeLayout {
         }
     }
 
-
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
         @Override
         public boolean onSingleTapUp(MotionEvent ev) {
-
             if (mEntryListener != null || mTooltip != null) { // Check if tap on any entry
                 int nSets = mRegions.size();
+                if (mRegions.size() <= 0) {
+                    return false;
+                }
                 int nEntries = mRegions.get(0).size();
                 for (int i = 0; i < nSets; i++)
                     for (int j = 0; j < nEntries; j++)
@@ -1668,19 +1669,14 @@ public abstract class ChartView extends RelativeLayout {
                             return true;
                         }
             }
-
             if (mChartListener != null) mChartListener.onClick(ChartView.this);
             if (mTooltip != null && mTooltip.on()) dismissTooltip(mTooltip);
             return true;
         }
 
-
         @Override
         public boolean onDown(MotionEvent e) {
-
             return true;
         }
-
     }
-
 }
