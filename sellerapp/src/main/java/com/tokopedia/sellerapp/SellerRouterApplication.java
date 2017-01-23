@@ -2,6 +2,7 @@ package com.tokopedia.sellerapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tokopedia.core.app.MainApplication;
@@ -21,6 +22,11 @@ public class SellerRouterApplication extends MainApplication implements TkpdCore
     @Override
     public DrawerVariable getDrawer(AppCompatActivity activity) {
         return new DrawerVariableSeller(activity);
+    }
+
+    @Override
+    public void goToWallet(Context context, Bundle bundle) {
+
     }
 
     @Override
