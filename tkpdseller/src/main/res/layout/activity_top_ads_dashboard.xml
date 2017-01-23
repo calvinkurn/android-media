@@ -18,12 +18,5 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <com.tkpd.library.ui.floatbutton.FabSpeedDial
-            style="@style/FabSpeedDial"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:visibility="gone"
-            app:fabMenu="@menu/menu_fab_top_ads"/>
     </RelativeLayout>
 </LinearLayout>
