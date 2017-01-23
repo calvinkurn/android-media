@@ -15,13 +15,13 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.inbox.inboxmessage.fragment.SendMessageFragment;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ShopBadge;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -29,6 +29,9 @@ import com.tokopedia.core.util.SessionHandler;
 import java.util.List;
 
 import butterknife.BindView;
+
+import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
+
 
 /**
  * @author Angga.Prasetiyo on 27/10/2015.
@@ -219,8 +222,8 @@ public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView>
         public void onClick(View v) {
             Bundle bundle = new Bundle();
             bundle.putBoolean("login", true);
-            bundle.putString(SendMessageFragment.PARAM_SHOP_ID, String.valueOf(data.getShopInfo().getShopId()));
-            bundle.putString(SendMessageFragment.PARAM_OWNER_FULLNAME, data.getShopInfo().getShopName());
+            bundle.putString(InboxRouter.PARAM_SHOP_ID, String.valueOf(data.getShopInfo().getShopId()));
+            bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, data.getShopInfo().getShopName());
             listener.onProductShopMessageClicked(bundle);
         }
     }

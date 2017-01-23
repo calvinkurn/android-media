@@ -13,8 +13,6 @@ import android.view.Window;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity;
-import com.tokopedia.inbox.inboxmessage.fragment.SendMessageFragment;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -170,15 +168,15 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     @SuppressWarnings("deprecation")
     @Override
     public void processAskSeller(Context context, OrderData orderData) {
-        Intent intent = new Intent(context, SendMessageActivity.class);
+        Intent intent = InboxRouter.getSendMessageActivityIntent(context);
         Bundle bundle = new Bundle();
-        bundle.putString(SendMessageFragment.PARAM_SHOP_ID,
+        bundle.putString(InboxRouter.PARAM_SHOP_ID,
                 orderData.getOrderShop().getShopId());
-        bundle.putString(SendMessageFragment.PARAM_OWNER_FULLNAME,
+        bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME,
                 orderData.getOrderShop().getShopName());
-        bundle.putString(SendMessageFragment.PARAM_CUSTOM_SUBJECT,
+        bundle.putString(InboxRouter.PARAM_CUSTOM_SUBJECT,
                 orderData.getOrderDetail().getDetailInvoice());
-        bundle.putString(SendMessageFragment.PARAM_CUSTOM_MESSAGE,
+        bundle.putString(InboxRouter.PARAM_CUSTOM_MESSAGE,
                 MethodChecker.fromHtml(
                         context.getString(R.string.custom_content_message_ask_seller)
                                 .replace("XXX",
