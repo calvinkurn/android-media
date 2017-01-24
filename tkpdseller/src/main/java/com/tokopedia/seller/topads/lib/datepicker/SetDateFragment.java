@@ -97,7 +97,7 @@ public class SetDateFragment extends Fragment {
 
     public static class SetDatePagerAdapter extends FragmentPagerAdapter {
         final int PAGE_COUNT = 2;
-        private String tabTitles[] = new String[]{"PERIODE", "KUSTOM"};
+        private String tabTitles[] = new String[]{"Set Tanggal", "Atur Tanggal"};
         private Context context;
         private boolean isGM;
         private int lastSelectionPeriod;

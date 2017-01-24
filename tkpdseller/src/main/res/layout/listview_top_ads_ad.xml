@@ -28,7 +28,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingLeft="@dimen/padding_small"
-        android:paddingRight="@dimen/padding_small">
+        android:paddingRight="@dimen/padding_small"
+        android:layout_marginBottom="@dimen/top_ads_dashboard_padding_cards_small">
 
         <ProgressBar
             android:id="@+id/progress_bar"

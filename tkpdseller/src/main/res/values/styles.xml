@@ -84,7 +84,7 @@
     <style name="RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">20dp</item>
+        <item name="android:padding">12dp</item>
     </style>
 
     <style name="Button.TopAds" parent="Widget.AppCompat.Button">
@@ -93,7 +93,7 @@
         <item name="android:maxHeight">52dp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">15sp</item>
-        <item name="android:background">@color/deep_orange_500</item>
+        <item name="android:background">@drawable/bg_rounded_corners</item>
     </style>
 
     <style name="FabSpeedDial">
