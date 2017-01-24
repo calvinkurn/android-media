@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -44,6 +45,7 @@ import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
@@ -517,6 +519,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void trackingCartCancelEvent() {
         UnifyTracking.eventATCRemove();
+    }
+
+    @Override
+    public LocalCacheHandler getLocalCacheHandlerNotificationData() {
+        return new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
     }
 
     @Override

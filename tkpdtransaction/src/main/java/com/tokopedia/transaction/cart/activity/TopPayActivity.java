@@ -41,6 +41,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.listener.ITopPayView;
+import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.presenter.ITopPayPresenter;
 import com.tokopedia.transaction.cart.presenter.TopPayPresenter;
@@ -187,10 +188,17 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
     }
 
     @Override
-    public void onGetThanksTopPaySuccess(String message) {
+    public void onGetThanksTopPaySuccess(ThanksTopPayData data) {
         presenter.clearNotificationCart();
+        try {
+            presenter.processPaymentAnalytics(
+                    new LocalCacheHandler(this, TkpdCache.NOTIFICATION_DATA), data
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         hideProgressLoading();
-        showToastMessage(message);
+        showToastMessage("Pembayaran berhasil");
         navigateToActivity(TransactionPurchaseRouter.createIntentTxSummary(this));
         CartBadgeNotificationReceiver.resetBadgeCart(this);
         closeView();
