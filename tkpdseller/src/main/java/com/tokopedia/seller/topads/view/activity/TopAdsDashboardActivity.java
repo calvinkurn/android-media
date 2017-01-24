@@ -30,6 +30,8 @@ import com.tokopedia.seller.topads.view.listener.TopAdsDashboardTabListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.seller.topads.view.fragment.TopAdsDashboardShopFragment.showCreateAdsAlert;
+
 /**
  * Created by Nathaniel on 11/22/2016.
  */
@@ -119,9 +121,9 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.action_add_promo_group) {
-
+                    showCreateAdsAlert(TopAdsDashboardActivity.this);
                 } else if (menuItem.getItemId() == R.id.action_add_promo_product) {
-
+                    showCreateAdsAlert(TopAdsDashboardActivity.this);
                 }
                 return false;
             }
