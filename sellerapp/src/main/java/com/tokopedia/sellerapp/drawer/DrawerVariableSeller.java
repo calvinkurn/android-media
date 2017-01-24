@@ -661,8 +661,8 @@ public class DrawerVariableSeller extends DrawerVariable {
             model.data.add(model.header);
             model.data.add(model.sellerHome);
             model.data.add(model.gmSubscribeMenu);
-            model.data.add(model.topAdsMenu);
             model.data.add(new DrawerItem("Statistik", 0, R.drawable.statistik_icon, TkpdState.DrawerPosition.SELLER_GM_STAT, false));
+            model.data.add(model.topAdsMenu);
             model.data.add(model.inboxMenu);
             model.data.add(model.shopMenu);
             model.data.add(new DrawerItem("Pengaturan", 0, R.drawable.icon_setting, TkpdState.DrawerPosition.SETTINGS,
