@@ -166,7 +166,7 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
     @Override
     protected void initView() {
         super.initView();
-        drawer.setDrawerPosition(TkpdState.DrawerPosition.INBOX_TALK);
+//        drawer.setDrawerPosition(TkpdState.DrawerPosition.INBOX_TALK);
         ButterKnife.bind(this);
         setContent();
         adapter = new PagerAdapter(getFragmentManager());

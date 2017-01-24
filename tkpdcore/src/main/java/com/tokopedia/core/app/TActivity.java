@@ -85,8 +85,8 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
     private boolean isBind = false;
     private boolean isDialogNotConnectionShown = false;
     protected FrameLayout parentView;
-    protected ToolbarVariable toolbar;
-    private DrawerLayout drawerLayout;
+//    protected ToolbarVariable toolbar;
+//    private DrawerLayout drawerLayout;
     protected Boolean isAllowFetchDepartmentView = false;
     HadesBroadcastReceiver mReceiverHades;
     ErrorNetworkReceiver mReceiverLogout;
@@ -121,10 +121,10 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
 
         setContentView(R.layout.drawer_activity);
         parentView = (FrameLayout) findViewById(R.id.parent_view);
-        toolbar = new ToolbarVariable(this);
-        toolbar.createToolbarWithoutDrawer();
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_nav);
-        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+//        toolbar = new ToolbarVariable(this);
+//        toolbar.createToolbarWithoutDrawer();
+//        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout_nav);
+//        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         Localytics.registerPush(new GCMHandler(this).getSenderID());
 
         /*  Support Fragment */
@@ -142,15 +142,15 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
             new GlobalCacheManager().deleteAll();
         }
 
-        if (GlobalConfig.isSellerApp()) {
-            drawer = ((TkpdCoreRouter)getApplication()).getDrawer(this);
-        } else {
-            drawer = new DrawerVariable(this);
-        }
+//        if (GlobalConfig.isSellerApp()) {
+//            drawer = ((TkpdCoreRouter)getApplication()).getDrawer(this);
+//        } else {
+//            drawer = new DrawerVariable(this);
+//        }
 
-        drawer.setToolbar(toolbar);
-        drawer.createDrawer();
-        drawer.setEnabled(false);
+//        drawer.setToolbar(toolbar);
+//        drawer.createDrawer();
+//        drawer.setEnabled(false);
 
         HockeyAppHelper.handleLogin(this);
         HockeyAppHelper.checkForUpdate(this);
@@ -183,7 +183,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
 
             }
         }
-        drawer.setHasUpdated(false);
+//        drawer.setHasUpdated(false);
         HockeyAppHelper.unregisterManager();
     }
 
@@ -215,9 +215,9 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
 
             }
         }
-        if (!drawer.hasUpdated()) {
-            drawer.updateData();
-        }
+//        if (!drawer.hasUpdated()) {
+//            drawer.updateData();
+//        }
 
 
         registerForceLogoutReceiver();

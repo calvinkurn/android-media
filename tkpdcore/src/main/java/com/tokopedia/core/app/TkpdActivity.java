@@ -7,11 +7,23 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.localytics.android.Localytics;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.drawer.DrawerVariable;
+import com.tokopedia.core.drawer2.DrawerHelper;
+import com.tokopedia.core.drawer2.datamanager.DrawerDataManager;
+import com.tokopedia.core.drawer2.datamanager.DrawerDataManagerImpl;
+import com.tokopedia.core.drawer2.viewmodel.DrawerData;
 import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Nisie on 31/08/15.
@@ -21,6 +33,8 @@ public abstract class TkpdActivity extends TActivity implements NotificationList
 
     private Boolean isLogin;
     private CartBadgeNotificationReceiver cartBadgeNotificationReceiver;
+    private DrawerHelper drawerHelper;
+    private CompositeSubscription compositeSubscription;
 
     @Override
     public void onStart() {
@@ -31,12 +45,56 @@ public abstract class TkpdActivity extends TActivity implements NotificationList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        toolbar.createToolbarWithDrawer();
-        drawer.setEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//        toolbar.createToolbarWithDrawer();
+//        drawer.setEnabled(true);
+
+        compositeSubscription = new CompositeSubscription();
+        setupDrawer();
+
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         cartBadgeNotificationReceiver = new CartBadgeNotificationReceiver(this);
         IntentFilter intentFilter = new IntentFilter(CartBadgeNotificationReceiver.ACTION);
         registerReceiver(cartBadgeNotificationReceiver, intentFilter);
+    }
+
+    protected void setupDrawer() {
+        if (GlobalConfig.isSellerApp()) {
+//            drawerHelper = new DrawerVariable(this);
+
+        } else {
+            drawerHelper = ((TkpdCoreRouter) getApplication()).getDrawer(this);
+            drawerHelper.initDrawer(this);
+            drawerHelper.setEnabled(true);
+            DrawerDataManager drawerDataManager = new DrawerDataManagerImpl();
+            compositeSubscription.add(drawerDataManager.getDrawerData(this)
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .subscribe(
+                            new Subscriber<DrawerData>() {
+                                @Override
+                                public void onCompleted() {
+
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    CommonUtils.dumper("NISNIS " + e.toString());
+                                }
+
+                                @Override
+                                public void onNext(DrawerData drawerData) {
+                                    CommonUtils.dumper("NISNIS onNext " + drawerData.getDrawerProfile().getDeposit());
+
+                                    drawerHelper.setData(drawerData);
+
+
+                                }
+
+
+                            }
+                    ));
+        }
     }
 
 
@@ -51,7 +109,7 @@ public abstract class TkpdActivity extends TActivity implements NotificationList
     }
 
     protected void RefreshDrawer() {
-        drawer.updateData();
+//        drawer.updateData();
     }
 
     @Override
@@ -83,8 +141,8 @@ public abstract class TkpdActivity extends TActivity implements NotificationList
 
     @Override
     public void onBackPressed() {
-        if (drawer.isOpened()) {
-            drawer.closeDrawer();
+        if (drawerHelper.isOpened()) {
+            drawerHelper.closeDrawer();
         } else {
             super.onBackPressed();
         }
@@ -93,7 +151,7 @@ public abstract class TkpdActivity extends TActivity implements NotificationList
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        drawer.unsubscribe();
+//        drawer.unsubscribe();
         unregisterReceiver(cartBadgeNotificationReceiver);
     }
 
@@ -103,6 +161,6 @@ public abstract class TkpdActivity extends TActivity implements NotificationList
     }
 
     public void setDrawerEnabled(boolean isEnabled) {
-        this.drawer.setEnabled(isEnabled);
+        this.drawerHelper.setEnabled(isEnabled);
     }
 }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.drawer2.DrawerHelper;
 import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
@@ -18,15 +19,17 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     protected T presenter;
     private Boolean isLogin;
+    private DrawerHelper drawerHelper;
+
 
     @Override
     protected void initView() {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         }
-        toolbar.createToolbarWithDrawer();
-        drawer.setEnabled(true);
-        drawer.setDrawerPosition(setDrawerPosition());
+//        toolbar.createToolbarWithDrawer();
+//        drawerHelper.setEnabled(true);
+//        drawer.setDrawerPosition(setDrawerPosition());
     }
 
     protected abstract int setDrawerPosition();
@@ -43,7 +46,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @SuppressWarnings("unused")
     protected void RefreshDrawer() {
-        drawer.updateData();
+//        drawer.updateData();
     }
 
     @Override
@@ -80,14 +83,14 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onBackPressed() {
-        if(drawer.isOpened()){
-            drawer.closeDrawer();
-        }else {
-            super.onBackPressed();
-        }
+//        if(drawer.isOpened()){
+//            drawer.closeDrawer();
+//        }else {
+//            super.onBackPressed();
+//        }
     }
 
     public void setDrawerEnabled(boolean isEnabled) {
-        this.drawer.setEnabled(isEnabled);
+//        this.drawer.setEnabled(isEnabled);
     }
 }

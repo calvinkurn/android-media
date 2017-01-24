@@ -284,7 +284,7 @@ public class ManageProduct extends TkpdActivity implements
 
         LocalBroadcastManager.getInstance(this).registerReceiver(onCompletedAddReceiver,
                 new IntentFilter(ProductService.ACTION_COMPLETED_ADD_PRODUCT));
-        drawer.setDrawerPosition(TkpdState.DrawerPosition.MANAGE_PRODUCT);
+//        drawer.setDrawerPosition(TkpdState.DrawerPosition.MANAGE_PRODUCT);
 
         getOverflowMenu();
         addReturnableSpinnerItems();

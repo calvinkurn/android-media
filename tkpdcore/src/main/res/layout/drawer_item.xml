@@ -15,7 +15,6 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/margin_small"
         android:padding="@dimen/padding_vs"
-        tools:src="@drawable/forums"
         />
 
     <TextView

@@ -190,7 +190,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
             }
         }
 
-        drawer.setDrawerPosition(TkpdState.DrawerPosition.INDEX_HOME);
+//        drawer.setDrawerPosition(TkpdState.DrawerPosition.INDEX_HOME);
         initCreate();
         adapter.notifyDataSetChanged();
 
@@ -208,16 +208,16 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
         });
 
         t.start();
-        if (!GlobalConfig.isSellerApp()) {
-            drawer.createDrawer(true);
-            drawer.setEnabled(true);
-            drawer.setOnSearchClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    onSearchOptionSelected();
-                }
-            });
-        }
+//        if (!GlobalConfig.isSellerApp()) {
+//            drawer.createDrawer(true);
+//            drawer.setEnabled(true);
+//            drawer.setOnSearchClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    onSearchOptionSelected();
+//                }
+//            });
+//        }
     }
 
 
@@ -416,9 +416,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
     @Override
     public void onGetNotif() {
         CommonUtils.dumper("nyampeee nich status: " + MainApplication.getNotificationStatus());
-        if (MainApplication.getDrawerStatus()) {
-            drawer.updateData();
-        }
+//        if (MainApplication.getDrawerStatus()) {
+//            drawer.updateData();
+//        }
     }
 
     @Override
@@ -467,12 +467,12 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
 
         invalidateOptionsMenu();
         MainApplication.setCurrentActivity(this);
-        if (MainApplication.getNotificationStatus()) {
-            drawer.getNotification();
-        }
-        if (MainApplication.getDrawerStatus()) {
-            drawer.updateData();
-        }
+//        if (MainApplication.getNotificationStatus()) {
+//            drawer.getNotification();
+//        }
+//        if (MainApplication.getDrawerStatus()) {
+//            drawer.updateData();
+//        }
         super.onResume();
 
         sendNotifLocalyticsCallback();

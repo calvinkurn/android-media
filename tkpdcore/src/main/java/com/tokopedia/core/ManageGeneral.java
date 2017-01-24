@@ -106,7 +106,7 @@ public class ManageGeneral extends TkpdActivity implements NotificationListener{
     @Override
     public void onGetNotif() {
         if (MainApplication.getNotificationStatus()) {
-            drawer.getNotification();
+//            drawer.getNotification();
         }
     }
 
