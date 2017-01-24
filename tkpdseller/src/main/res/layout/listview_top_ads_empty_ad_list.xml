@@ -41,7 +41,7 @@
         tools:text="@string/top_ads_empty_group_promo_content_empty_text"
         android:textColor="@color/grey_400"
         android:textSize="@dimen/text_size_medium"
-        android:textStyle="bold"/>
+        />
 
     <TextView
         android:id="@+id/text_view_empty_content_item_text"
@@ -51,6 +51,6 @@
         android:gravity="center"
         tools:text="@string/top_ads_empty_group_promo_content_item_no_text"
         android:textColor="@color/tkpd_main_green"
-        android:textStyle="bold"/>
+        />
 
 </LinearLayout>

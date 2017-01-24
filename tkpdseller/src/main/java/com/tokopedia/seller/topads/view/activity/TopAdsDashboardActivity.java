@@ -12,7 +12,6 @@ import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsDashboardPagerAdapter;
@@ -23,18 +22,14 @@ import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardShopFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-
 /**
  * Created by Nathaniel on 11/22/2016.
  */
 
 public class TopAdsDashboardActivity extends BasePresenterActivity implements TopAdsDashboardFragment.Callback {
 
-    @BindView(R2.id.pager)
     ViewPager viewPager;
-    @BindView(R2.id.indicator)
-    TabLayout indicator;
+    TabLayout tabLayout;
 
     private SnackbarRetry snackbarRetry;
     private TopAdsDashboardShopFragment dashboardShopFragment;
@@ -68,13 +63,15 @@ public class TopAdsDashboardActivity extends BasePresenterActivity implements To
 
     @Override
     protected void initView() {
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        tabLayout = (TabLayout) findViewById(R.id.indicator);
         datePickerPresenter.resetDate();
         viewPager.setAdapter(getViewPagerAdapter());
         viewPager.setOffscreenPageLimit(TopAdsConstant.OFFSCREEN_PAGE_LIMIT);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
-        indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
-        indicator.addTab(indicator.newTab().setText(R.string.title_top_ads_product));
-        indicator.addTab(indicator.newTab().setText(R.string.title_top_ads_store));
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.title_top_ads_product));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.title_top_ads_store));
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(this, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {

@@ -1,10 +1,8 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -24,7 +22,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.presenter.TopAdsAdListPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenter;
@@ -37,8 +34,6 @@ import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
 
 import java.util.List;
 
-import butterknife.BindView;
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -48,13 +43,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     private static final int START_PAGE = 1;
     protected static final int REQUEST_CODE_AD_STATUS = TopAdsAdListFragment.class.hashCode();
 
-    @BindView(R2.id.list_product)
     RecyclerView recyclerView;
-
-    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
-
-    @BindView(R2.id.mainView)
     View mainView;
 
     protected String keyword;
@@ -90,6 +80,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     protected void initView(View view) {
         super.initView(view);
+        recyclerView = (RecyclerView) view.findViewById(R.id.list_product);
+        swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+        mainView = view.findViewById(R.id.mainView);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
     }

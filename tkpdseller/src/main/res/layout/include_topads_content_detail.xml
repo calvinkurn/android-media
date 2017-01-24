@@ -7,7 +7,7 @@
         android:id="@+id/max_bid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="@string/label_title_max_bid_topads"/>
+        app:title="@string/label_top_ads_max_bid"/>
 
     <include layout="@layout/include_separator_horizontal"/>
 
@@ -15,7 +15,7 @@
         android:id="@+id/avg_cost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="@string/label_title_avg_cost_topads"/>
+        app:title="@string/label_top_ads_avg_cost"/>
 
     <include layout="@layout/include_separator_horizontal"/>
 
@@ -23,7 +23,7 @@
         android:id="@+id/start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="@string/label_title_start_topads"/>
+        app:title="@string/label_top_ads_start"/>
 
     <include layout="@layout/include_separator_horizontal"/>
 
@@ -31,7 +31,7 @@
         android:id="@+id/end"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="@string/label_title_end_topads"/>
+        app:title="@string/label_top_ads_end"/>
 
     <include layout="@layout/include_separator_horizontal"/>
 
@@ -39,7 +39,7 @@
         android:id="@+id/daily_budget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="@string/label_title_daily_budget_topads"/>
+        app:title="@string/label_top_ads_daily_budget"/>
 
     <include layout="@layout/include_separator_horizontal"/>
 
@@ -47,7 +47,7 @@
         android:id="@+id/sent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="@string/label_title_sent_topads"/>
+        app:title="@string/label_top_ads_sent"/>
 
     <include layout="@layout/include_separator_horizontal"/>
 
@@ -55,7 +55,7 @@
         android:id="@+id/impr"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="@string/label_title_impr_topads"/>
+        app:title="@string/label_top_ads_impression"/>
 
     <include layout="@layout/include_separator_horizontal"/>
 
@@ -63,7 +63,7 @@
         android:id="@+id/click"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="@string/label_title_click_topads"/>
+        app:title="@string/label_top_ads_click"/>
 
     <include layout="@layout/include_separator_horizontal"/>
 
@@ -71,7 +71,7 @@
         android:id="@+id/ctr"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="@string/label_title_ctr_topads"/>
+        app:title="@string/label_top_ads_ctr"/>
 
     <include layout="@layout/include_separator_horizontal"/>
 
@@ -80,6 +80,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/topads_detail_padding_item"
-        app:title="@string/label_title_favorite_topads"/>
+        app:title="@string/label_top_ads_favorite"/>
 
 </merge>

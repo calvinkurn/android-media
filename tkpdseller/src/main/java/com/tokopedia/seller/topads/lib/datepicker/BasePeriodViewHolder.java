@@ -4,14 +4,10 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
 
 /**
  * Created by Nathaniel on 1/16/2017.
@@ -19,25 +15,17 @@ import butterknife.OnCheckedChanged;
 
 @Deprecated
 public class BasePeriodViewHolder extends RecyclerView.ViewHolder {
-    @BindView(R2.id.checkbox_period)
     CheckBox checkBoxPeriod;
-
-    @BindView(R2.id.period_header)
     TextView periodHeader;
-
-    @BindView(R2.id.period_date)
     TextView periodDate;
+
     private PeriodRangeModel periodRangeModel;
     SetDateFragment.PeriodListener periodListener;
-
-//        @BindArray(R.array.month_names)
-//        String[] monthNames;
 
     public void setPeriodListener(SetDateFragment.PeriodListener periodListener) {
         this.periodListener = periodListener;
     }
 
-    @OnCheckedChanged(R2.id.checkbox_period)
     public void onCheckBoxPeriod(boolean checked) {
         periodRangeModel.isChecked = checked;
         if (periodListener != null) {
@@ -47,7 +35,15 @@ public class BasePeriodViewHolder extends RecyclerView.ViewHolder {
 
     public BasePeriodViewHolder(View itemView) {
         super(itemView);
-        ButterKnife.bind(this, itemView);
+        checkBoxPeriod = (CheckBox) itemView.findViewById(R.id.checkbox_period);
+        periodHeader = (TextView) itemView.findViewById(R.id.period_header);
+        periodDate = (TextView) itemView.findViewById(R.id.period_date);
+        checkBoxPeriod.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                onCheckBoxPeriod(b);
+            }
+        });
     }
 
     public void bindData(PeriodRangeModel periodRangeModel) {

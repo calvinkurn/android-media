@@ -6,16 +6,16 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by Nathaniel on 1/16/2017.
  */
 public class PeriodChooseViewHelper {
+
+    CheckBox checkBoxPeriod;
+    TextView periodHeader;
+    TextView periodDate;
+    View overlaySetDate;
 
     private View itemView;
     private int position;
@@ -23,28 +23,26 @@ public class PeriodChooseViewHelper {
     public PeriodChooseViewHelper(View itemView, int position) {
         this.itemView = itemView;
         this.position = position;
-        ButterKnife.bind(this, itemView);
+
+        checkBoxPeriod = (CheckBox) itemView.findViewById(R.id.checkbox_period);
+        periodHeader = (TextView) itemView.findViewById(R.id.period_header);
+        periodDate = (TextView) itemView.findViewById(R.id.period_date);
+        overlaySetDate = itemView.findViewById(R.id.overlay_set_date);
+        overlaySetDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onCheckForOther();
+            }
+        });
     }
 
-    @BindView(R2.id.checkbox_period)
-    CheckBox checkBoxPeriod;
-
-    @BindView(R2.id.period_header)
-    TextView periodHeader;
-
-    @BindView(R2.id.period_date)
-    TextView periodDate;
     private PeriodRangeModel periodRangeModel;
     SetDateFragment.PeriodListener periodListener;
-
-//        @BindArray(R.array.month_names)
-//        String[] monthNames;
 
     public void setPeriodListener(SetDateFragment.PeriodListener periodListener) {
         this.periodListener = periodListener;
     }
 
-    @OnClick(R2.id.overlay_set_date)
     public void onCheckForOther() {
         if (periodListener.isAllNone(!checkBoxPeriod.isChecked(), position)) {
             return;
@@ -53,7 +51,6 @@ public class PeriodChooseViewHelper {
         onCheckBoxPeriod(!checkBoxPeriod.isChecked());
     }
 
-    //        @OnCheckedChanged(R.id.checkbox_period)
     public void onCheckBoxPeriod(boolean checked) {
         periodRangeModel.isChecked = checked;
         if (periodListener != null) {

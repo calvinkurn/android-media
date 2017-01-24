@@ -14,9 +14,6 @@ import android.view.WindowManager;
 import com.tokopedia.seller.R;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import butterknife.ButterKnife;
 
 /**
  * Created by normansyahputa on 12/7/16.
@@ -58,7 +55,6 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
             fetchIntent(getIntent().getExtras());
         }
         setContentView(R.layout.activity_date_picker);
-        ButterKnife.bind(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.green_600));
