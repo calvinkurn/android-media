@@ -1,9 +1,6 @@
 <resources>
     <string name="app_name">tkpdseller</string>
 
-    <string name="title_topads_dashboard">TopAds</string>
-    <string name="title_topads_promo_product">Produk</string>
-    <string name="title_topads_promo_group">Grup</string>
     <string name="title_top_ads_dashboard">TopAds</string>
     <string name="title_top_ads_product">Produk</string>
     <string name="title_top_ads_store">Toko</string>
@@ -147,9 +144,7 @@
     <string name="title_top_ads_statistic_graph_spent">Jumlah anggaran yang telah terpakai untuk promosi ini.</string>
     <string name="title_activity_statistic">Statistik</string>
 
-
-    <string name="title_label_empty_group_topads">Tanpa Grup</string>
-    <string name="title_label_shop_topads">Toko</string>
-    <string name="title_label_favorit_topads">Favorit</string>
-    <string name="save_date">Simpan</string>
+    <string name="label_top_ads_empty_group">Tanpa Grup</string>
+    <string name="label_top_ads_favorit">Favorit</string>
+    <string name="save_date">SIMPAN</string>
 </resources>

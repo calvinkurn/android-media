@@ -3,6 +3,7 @@ package com.tokopedia.seller.topads.network.interceptor;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.text.SimpleDateFormat;
@@ -20,6 +21,7 @@ public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
 
     private static final String CONTENT_TYPE = "";
     private static final String HEADER_DATE = "X-Date";
+    private static final String HEADER_DEVICE = "X-Device";
     private static final String HEADER_USER_ID = "Tkpd-UserId";
 
     @Override
@@ -29,6 +31,7 @@ public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
         String date = dateFormat.format(new Date());
         headerMap.put(HEADER_DATE, date);
         headerMap.put(HEADER_USER_ID, SessionHandler.getLoginID(MainApplication.getAppContext()));
+        headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
         return headerMap;
     }
 }
