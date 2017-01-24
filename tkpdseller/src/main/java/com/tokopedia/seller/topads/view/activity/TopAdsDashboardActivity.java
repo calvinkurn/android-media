@@ -8,9 +8,11 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenterImpl;
@@ -26,7 +28,7 @@ import java.util.List;
  * Created by Nathaniel on 11/22/2016.
  */
 
-public class TopAdsDashboardActivity extends BasePresenterActivity implements TopAdsDashboardFragment.Callback {
+public class TopAdsDashboardActivity extends DrawerPresenterActivity implements TopAdsDashboardFragment.Callback {
 
     ViewPager viewPager;
     TabLayout tabLayout;
@@ -63,6 +65,8 @@ public class TopAdsDashboardActivity extends BasePresenterActivity implements To
 
     @Override
     protected void initView() {
+        super.initView();
+        drawer.setDrawerPosition(TkpdState.DrawerPosition.SELLER_TOP_ADS);
         viewPager = (ViewPager) findViewById(R.id.pager);
         tabLayout = (TabLayout) findViewById(R.id.indicator);
         datePickerPresenter.resetDate();
@@ -79,6 +83,11 @@ public class TopAdsDashboardActivity extends BasePresenterActivity implements To
                 dashboardProductFragment.loadData();
             }
         });
+    }
+
+    @Override
+    protected int setDrawerPosition() {
+        return TkpdState.DrawerPosition.SELLER_TOP_ADS;
     }
 
     public PagerAdapter getViewPagerAdapter() {
