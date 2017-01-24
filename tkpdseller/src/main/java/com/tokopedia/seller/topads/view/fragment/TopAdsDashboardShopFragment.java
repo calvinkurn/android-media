@@ -2,7 +2,9 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
@@ -61,6 +63,20 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
         statusActive = (TextView) view.findViewById(R.id.status_active);
         promoPriceUsed = (TextView) view.findViewById(R.id.promo_price_used);
         pricePromoPerClick = (TextView) view.findViewById(R.id.price_promo_per_click);
+        Button addPromoButton = (Button) view.findViewById(R.id.button_add_promo);
+        addPromoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showCreateAdsAlert();
+            }
+        });
+    }
+
+    private void showCreateAdsAlert() {
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+        alertDialog.setMessage(R.string.top_ads_create_ad_alert);
+        alertDialog.setPositiveButton(R.string.title_ok, null);
+        alertDialog.show();
     }
 
     public void loadData() {

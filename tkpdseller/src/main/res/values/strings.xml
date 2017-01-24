@@ -22,11 +22,13 @@
     <string name="label_top_ads_next">Selanjutnya</string>
     <string name="label_top_ads_save">Simpan</string>
 
+    <string name="menu_top_ads_add_promo_shop">Tambah Promo Toko</string>
     <string name="menu_top_ads_add_promo_group">Tambah Promo Group</string>
     <string name="menu_top_ads_add_promo_product">Tambah Promo Produk</string>
 
     <string name="top_ads_statistic_info_default_value">-</string>
     <string name="top_ads_range_date_text">%1$s - %2$s</string>
+    <string name="top_ads_create_ad_alert">Untuk sementara promo TopAds hanya bisa dibuat melalui Tokopedia versi desktop</string>
 
     <string name="title_action_on">On</string>
     <string name="title_action_off">Off</string>

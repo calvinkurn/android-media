@@ -8,23 +8,25 @@
 
     <TextView
         android:id="@+id/text_view_empty_title_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/TextView.TopAdsTitleEmptyView"
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
-        android:textColor="@color/black"
-        android:textSize="@dimen/text_size_large"
-        android:textStyle="bold"
         android:text="@string/top_ads_empty_shop_title_text"/>
 
     <TextView
         android:id="@+id/text_view_empty_content_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/TextView.TopAdsContentEmptyView"
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
-        android:textColor="@color/grey_400"
-        android:textSize="@dimen/text_size_medium"
-        android:textStyle="bold"
         android:text="@string/top_ads_empty_shop_content_text"/>
+
+    <Button
+        android:id="@+id/button_add_promo"
+        style="@style/Button.TopAds.EmptyState"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/menu_top_ads_add_promo_shop"/>
 </LinearLayout>
