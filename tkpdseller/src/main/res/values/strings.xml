@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">tkpdseller</string>
 
-    <string name="title_topads_dashboard">TOPADS</string>
+    <string name="title_topads_dashboard">TopAds</string>
     <string name="title_topads_promo_product">Produk</string>
     <string name="title_topads_promo_group">Grup</string>
     <string name="title_top_ads_dashboard">TopAds</string>
@@ -162,5 +162,5 @@
     <string name="title_label_empty_group_topads">Tanpa Grup</string>
     <string name="title_label_shop_topads">Toko</string>
     <string name="title_label_favorit_topads">Favorit</string>
-    <string name="save_date">SIMPAN</string>
+    <string name="save_date">Simpan</string>
 </resources>

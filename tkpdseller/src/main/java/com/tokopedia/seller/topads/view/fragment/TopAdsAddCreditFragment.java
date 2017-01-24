@@ -90,6 +90,9 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
 
     @Override
     protected void initView(View view) {
+        if(submitButton != null){
+            submitButton.setTransformationMethod(null);
+        }
         adapter = new TopAdsCreditAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
