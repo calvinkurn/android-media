@@ -58,13 +58,14 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         super.initView(view);
         promoGroupLabelView = (TopAdsLabelView) view.findViewById(R.id.label_view_promo_group);
         name.setTitle(getString(R.string.title_top_ads_product));
-        name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.green_200));
+        name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
         name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onNameClicked();
             }
         });
+        name.setTypefaceType(TopAdsLabelView.TYPE_FACE_BOLD);
         promoGroupLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

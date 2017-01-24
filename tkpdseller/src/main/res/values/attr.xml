@@ -4,6 +4,7 @@
         <attr name="title" format="string"/>
         <attr name="content" format="string"/>
         <attr name="content_color" format="color"/>
+        <attr name="content_style" format="integer"/>
     </declare-styleable>
 
     <!-- william chart attr -->

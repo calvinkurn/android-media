@@ -20,6 +20,7 @@
     <color name="black">#000000</color>
     <color name="black_seventy_percent">#B3000000</color>
     <color name="black_fifty_four_percent">#8A000000</color>
+    <color name="black_twenty_percent">#1F000000</color>
     <color name="greyish_brown_two">#4b4b4b</color>
     <color name="tkpd_green_onboarding">#53BA51</color>
     <color name="tkpd_green_header">#42BD41</color>
