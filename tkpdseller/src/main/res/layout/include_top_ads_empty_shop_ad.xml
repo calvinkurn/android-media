@@ -22,7 +22,7 @@
 
     <Button
         android:id="@+id/button_add_promo"
-        style="@style/Button.TopAds.EmptyState"
+        style="@style/Button.TopAds.Submit.Green"
         android:layout_width="match_parent"
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="10dp"

@@ -104,6 +104,8 @@
     <string name="seven_days_ago">7 hari terakhir</string>
     <string name="thirty_days_ago">30 hari terakhir</string>
     <string name="label_this_month">Bulan Ini</string>
+    <string name="label_date_period">Periode</string>
+    <string name="label_date_custom">Kustom</string>
 
     <!-- untuk tanggal gmstat -->
     <string-array name="month_names">
@@ -148,5 +150,5 @@
 
     <string name="label_top_ads_empty_group">Tanpa Grup</string>
     <string name="label_top_ads_favorit">Favorit</string>
-    <string name="save_date">SIMPAN</string>
+    <string name="save_date">Simpan</string>
 </resources>

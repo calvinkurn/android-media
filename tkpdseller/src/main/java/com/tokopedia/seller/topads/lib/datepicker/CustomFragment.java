@@ -41,7 +41,7 @@ public class CustomFragment extends Fragment {
             maxEndDate = bundle.getLong(SetDateActivity.MAX_END_DATE, -1);
             maxDateRange = bundle.getInt(SetDateActivity.MAX_DATE_RANGE, -1);
         }
-        View rootView = inflater.inflate(R.layout.period_layout, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_period_layout, container, false);
 
 
         periodRecyclerView = (RecyclerView) rootView.findViewById(R.id.period_recyclerview);
@@ -53,9 +53,6 @@ public class CustomFragment extends Fragment {
                 saveDate();
             }
         });
-        if(saveDate!=null){
-            saveDate.setTransformationMethod(null);
-        }
         periodLinLay.setVisibility(View.GONE);
         periodRecyclerView.setVisibility(View.VISIBLE);
         periodAdapter = new PeriodAdapter(rootView, sDate, eDate, minStartDate, maxEndDate, maxDateRange);
