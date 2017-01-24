@@ -25,6 +25,9 @@ public class TopAdsViewHolder extends RecyclerView.ViewHolder {
     public ProgressBar progressBarPromo;
     public View mainView;
 
+    @BindView(R2.id.used_keyword)
+    public TextView usedKeyword;
+
     public TopAdsViewHolder(View view) {
         super(view);
         titleProduct = (TextView) view.findViewById(R.id.title_product);
@@ -50,6 +53,8 @@ public class TopAdsViewHolder extends RecyclerView.ViewHolder {
                 break;
         }
         pricePromoPerClick.setText(promoPriceUsed.getContext().getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
+        usedKeyword.setVisibility(View.VISIBLE);
+        usedKeyword.setText(promoPriceUsed.getContext().getString(R.string.label_title_sent_topads));
         promoPriceUsed.setText(promoPriceUsed.getContext().getString(R.string.top_ads_used_format_text, ad.getStatTotalSpent()));
         if (!TextUtils.isEmpty(ad.getPriceDailyBar())) {
             progressBarLayout.setVisibility(View.VISIBLE);

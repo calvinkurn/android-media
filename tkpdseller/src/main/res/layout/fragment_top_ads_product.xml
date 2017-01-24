@@ -28,6 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
+                app:content_color="@color/tkpd_main_green"
                 app:content="@string/top_ads_statistic_info_default_value"
                 app:title="@string/label_top_ads_groups"/>
 
@@ -38,6 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/top_ads_dashboard_margin_bottom_space"
                 android:layout_marginTop="@dimen/top_ads_dashboard_margin_cards"
+                app:content_color="@color/tkpd_main_green"
                 app:content="@string/top_ads_statistic_info_default_value"
                 app:title="@string/label_top_ads_items"/>
         </LinearLayout>

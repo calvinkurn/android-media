@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">tkpdseller</string>
 
-    <string name="title_topads_dashboard">TopAds</string>
+    <string name="title_topads_dashboard">TOPADS</string>
     <string name="title_topads_promo_product">Produk</string>
     <string name="title_topads_promo_group">Grup</string>
     <string name="title_top_ads_dashboard">TopAds</string>
@@ -41,7 +41,7 @@
     <!-- Top Ads ad list -->
     <string name="label_top_ads_daily_spend">Anggaran Harian</string>
     <string name="top_ads_bid_format_text">%1$s - %2$s</string>
-    <string name="top_ads_used_format_text">Terpakai %1$s</string>
+    <string name="top_ads_used_format_text">%1$s</string>
     <string name="top_ads_spent_format_text">%1$s / %2$s</string>
     <string name="top_ads_empty_shop_title_text">Promo Toko Anda Kosong</string>
     <string name="top_ads_empty_shop_content_text">Tambah promo untuk mempromosikan toko anda</string>
@@ -97,6 +97,7 @@
     <string name="label_title_end_topads">Selesai</string>
     <string name="label_title_daily_budget_topads">Anggaran Harian</string>
     <string name="label_title_sent_topads">Terpakai</string>
+    <string name="label_title_sent_topads_with_space">Terpakai </string>
     <string name="label_title_impr_topads">Tampil</string>
     <string name="label_title_click_topads">Klik</string>
     <string name="label_title_ctr_topads">CTR</string>
@@ -161,4 +162,5 @@
     <string name="title_label_empty_group_topads">Tanpa Grup</string>
     <string name="title_label_shop_topads">Toko</string>
     <string name="title_label_favorit_topads">Favorit</string>
+    <string name="save_date">SIMPAN</string>
 </resources>
