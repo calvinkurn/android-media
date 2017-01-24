@@ -7,7 +7,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.model.data.ShopAd;
@@ -16,32 +15,16 @@ import com.tokopedia.seller.topads.view.activity.TopAdsDetailShopActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsStatisticShopActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardStoreFragmentListener;
 
-import butterknife.BindView;
-import butterknife.OnClick;
-
 public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsDashboardShopPresenterImpl> implements TopAdsDashboardStoreFragmentListener {
 
     protected static final int REQUEST_CODE_AD_STATUS = TopAdsDashboardShopFragment.class.hashCode();
 
-    @BindView(R2.id.layout_shop_ad)
     View shopAdView;
-
-    @BindView(R2.id.layout_empty_shop_ad)
     View shopAdEmptyView;
-
-    @BindView(R2.id.title_product)
     TextView titleProduct;
-
-    @BindView(R2.id.status_active_dot)
     View statusActiveDot;
-
-    @BindView(R2.id.status_active)
     TextView statusActive;
-
-    @BindView(R2.id.promo_price_used)
     TextView promoPriceUsed;
-
-    @BindView(R2.id.price_promo_per_click)
     TextView pricePromoPerClick;
 
     @BindView(R2.id.image_button_add_deposit)
@@ -64,6 +47,24 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_top_ads_store;
+    }
+
+    @Override
+    protected void initView(View view) {
+        super.initView(view);
+        shopAdView = view.findViewById(R.id.layout_shop_ad);
+        shopAdView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onShopItemClicked();
+            }
+        });
+        shopAdEmptyView = view.findViewById(R.id.layout_empty_shop_ad);
+        titleProduct = (TextView) view.findViewById(R.id.title_product);
+        statusActiveDot = view.findViewById(R.id.status_active_dot);
+        statusActive = (TextView) view.findViewById(R.id.status_active);
+        promoPriceUsed = (TextView) view.findViewById(R.id.promo_price_used);
+        pricePromoPerClick = (TextView) view.findViewById(R.id.price_promo_per_click);
     }
 
     public void loadData() {
@@ -115,7 +116,7 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
                 break;
         }
         pricePromoPerClick.setText(promoPriceUsed.getContext().getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
-        promoPriceUsed.setText(promoPriceUsed.getContext().getString(R.string.top_ads_used_format_text, ad.getStatTotalSpent()));
+        promoPriceUsed.setText(ad.getStatTotalSpent());
     }
 
     private void loadAdShopNotExist() {
@@ -134,7 +135,6 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
         return TopAdsStatisticShopActivity.class;
     }
 
-    @OnClick(R2.id.layout_shop_ad)
     void onShopItemClicked() {
         Intent intent = new Intent(getActivity(), TopAdsDetailShopActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD, shopAd);

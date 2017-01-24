@@ -7,7 +7,8 @@
     <string name="title_top_ads_dashboard">TopAds</string>
     <string name="title_top_ads_product">Produk</string>
     <string name="title_top_ads_store">Toko</string>
-    <string name="title_top_ads_add_credit">Tambah Kredit Promo</string>
+    <string name="title_top_ads_promo_group">Grup</string>
+    <string name="title_top_ads_add_credit">Tambah Kredit TopAds</string>
     <string name="title_top_ads_new_promo">Pilih Atau Buat Promo</string>
     <string name="title_date_picker">Atur Tanggal</string>
 
@@ -41,7 +42,6 @@
     <!-- Top Ads ad list -->
     <string name="label_top_ads_daily_spend">Anggaran Harian</string>
     <string name="top_ads_bid_format_text">%1$s - %2$s</string>
-    <string name="top_ads_used_format_text">%1$s</string>
     <string name="top_ads_spent_format_text">%1$s / %2$s</string>
     <string name="top_ads_empty_shop_title_text">Promo Toko Anda Kosong</string>
     <string name="top_ads_empty_shop_content_text">Tambah promo untuk mempromosikan toko anda</string>
@@ -87,22 +87,17 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- Top Ads Detail product-->
-    <string name="label_non_active_topads">Tidak Aktif</string>
-    <string name="label_active_topads">Aktif</string>
-    <string name="label_title_name_topads">Name</string>
-    <string name="label_title_status_topads">Status</string>
-    <string name="label_title_max_bid_topads">Biaya Maks</string>
-    <string name="label_title_avg_cost_topads">Rata-rata</string>
-    <string name="label_title_start_topads">Mulai</string>
-    <string name="label_title_end_topads">Selesai</string>
-    <string name="label_title_daily_budget_topads">Anggaran Harian</string>
-    <string name="label_title_sent_topads">Terpakai</string>
-    <string name="label_title_sent_topads_with_space">Terpakai </string>
-    <string name="label_title_impr_topads">Tampil</string>
-    <string name="label_title_click_topads">Klik</string>
-    <string name="label_title_ctr_topads">CTR</string>
-    <string name="label_title_favorite_topads">Terjual</string>
-    <string name="label_title_items_topads">@string/title_top_ads_product</string>
+    <string name="label_top_ads_non_active">Tidak Aktif</string>
+    <string name="label_top_ads_active">Aktif</string>
+    <string name="label_top_ads_name">Name</string>
+    <string name="label_top_ads_status">Status</string>
+    <string name="label_top_ads_max_bid">Biaya Maks</string>
+    <string name="label_top_ads_avg_cost">Rata-rata</string>
+    <string name="label_top_ads_start">Mulai</string>
+    <string name="label_top_ads_end">Selesai</string>
+    <string name="label_top_ads_daily_budget">Anggaran Harian</string>
+    <string name="label_top_ads_sent">Terpakai</string>
+    <string name="label_top_ads_favorite">Terjual</string>
     <string name="label_top_ads_promo_group">Nama Grup</string>
 
     <string name="label_today">Hari Ini</string>
@@ -144,18 +139,12 @@
     </string-array>
 
     <!-- Top Ads Statistic-->
-    <string name="label_title_show_statistics_topads">Tampil</string>
-    <string name="label_title_klik_statistics_topads">Klik</string>
-    <string name="label_title_ctr_statistics_topads">CTR</string>
-    <string name="label_title_convertion_statistics_topads">Konversi</string>
-    <string name="label_title_average_statistics_topads">Rata-Rata</string>
-    <string name="label_title_used_statistics_topads">Terpakai</string>
-    <string name="title_graph_impr_statistic_topads">Jumlah orang yang melihat promo anda.</string>
-    <string name="title_graph_avg_statistic_topads">Biaya rata-rata yang anda bayarkan untuk setiap klik.</string>
-    <string name="title_graph_convertion_statistic_topads">Jumlah favorit / transaksi dari promo anda.</string>
-    <string name="title_graph_ctr_statistic_topads">Perbandingan orang yang melihat promo anda dengan jumlah klik pada promo tersebut.</string>
-    <string name="title_graph_klik_statistic_topads">Jumlah klik pada promo anda.</string>
-    <string name="title_graph_spent_statistic_topads">Jumlah anggaran yang telah terpakai untuk promosi ini.</string>
+    <string name="title_top_ads_statistic_graph_impression">Jumlah orang yang melihat promo anda.</string>
+    <string name="title_top_ads_statistic_graph_avg">Biaya rata-rata yang anda bayarkan untuk setiap klik.</string>
+    <string name="title_top_ads_statistic_graph_convertion">Jumlah favorit / transaksi dari promo anda.</string>
+    <string name="title_top_ads_statistic_graph_ctr">Perbandingan orang yang melihat promo anda dengan jumlah klik pada promo tersebut.</string>
+    <string name="title_top_ads_statistic_graph_click">Jumlah klik pada promo anda.</string>
+    <string name="title_top_ads_statistic_graph_spent">Jumlah anggaran yang telah terpakai untuk promosi ini.</string>
     <string name="title_activity_statistic">Statistik</string>
 
 

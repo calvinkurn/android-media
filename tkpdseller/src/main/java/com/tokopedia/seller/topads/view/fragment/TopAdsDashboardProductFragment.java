@@ -5,26 +5,18 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.model.data.TotalAd;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardProductPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupAdListActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
-import com.tokopedia.seller.topads.view.activity.TopAdsStatisticActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsStatisticProductActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardProductFragmentListener;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
-import butterknife.BindView;
-import butterknife.OnClick;
-
 public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopAdsDashboardProductPresenterImpl> implements TopAdsDashboardProductFragmentListener {
 
-    @BindView(R2.id.label_view_group_summary)
     TopAdsLabelView groupSummaryLabelView;
-
-    @BindView(R2.id.label_view_item_summary)
     TopAdsLabelView itemSummaryLabelView;
 
     int totalProductAd;
@@ -49,6 +41,20 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
     @Override
     protected void initView(View view) {
         super.initView(view);
+        groupSummaryLabelView = (TopAdsLabelView) view.findViewById(R.id.label_view_group_summary);
+        itemSummaryLabelView = (TopAdsLabelView) view.findViewById(R.id.label_view_item_summary);
+        groupSummaryLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onProductGroupClicked();
+            }
+        });
+        itemSummaryLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onProductItemClicked();
+            }
+        });
     }
 
     @Override
@@ -81,7 +87,6 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         hideLoading();
     }
 
-    @OnClick(R2.id.label_view_group_summary)
     void onProductGroupClicked() {
         Intent intent = new Intent(getActivity(), TopAdsGroupAdListActivity.class);
         if (totalProductAd >= 0) {
@@ -90,7 +95,6 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         startActivity(intent);
     }
 
-    @OnClick(R2.id.label_view_item_summary)
     void onProductItemClicked() {
         Intent intent = new Intent(getActivity(), TopAdsProductAdListActivity.class);
         startActivity(intent);

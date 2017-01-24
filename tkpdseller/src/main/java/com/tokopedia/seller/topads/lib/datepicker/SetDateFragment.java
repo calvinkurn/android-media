@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -23,10 +22,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 import static com.tokopedia.seller.topads.lib.datepicker.SetDateActivity.CUSTOM_TYPE;
 import static com.tokopedia.seller.topads.lib.datepicker.SetDateActivity.PERIOD_TYPE;
@@ -69,14 +64,9 @@ public class SetDateFragment extends Fragment {
         }
     }
 
-    @BindView(R2.id.sliding_tabs)
     TabLayout slidingTabs;
-
-    @BindView(R2.id.set_date_viewpager)
     ViewPager setDateViewPager;
     SetDatePagerAdapter setDatePagerAdapter;
-
-    Unbinder bind;
 
     public static final String START_DATE = "START_DATE";
     public static final String END_DATE = "END_DATE";
@@ -85,7 +75,9 @@ public class SetDateFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_date_picker, container, false);
-        bind = ButterKnife.bind(this, rootView);
+        slidingTabs = (TabLayout) rootView.findViewById(R.id.sliding_tabs);
+        setDateViewPager = (ViewPager) rootView.findViewById(R.id.set_date_viewpager);
+
         setDatePagerAdapter = new SetDatePagerAdapter(getActivity().getSupportFragmentManager(),
                 getActivity(), setDate.isGMStat(), setDate.selectionPeriod(),
                 setDate.sDate(), setDate.eDate(), setDate.getMinStartDate(), setDate.getMaxStartDate(), setDate.getMaxDateRange(), setDate.getPeriodRangeModelList());
@@ -101,12 +93,6 @@ public class SetDateFragment extends Fragment {
                 break;
         }
         return rootView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        bind.unbind();
     }
 
     public static class SetDatePagerAdapter extends FragmentPagerAdapter {
@@ -189,31 +175,33 @@ public class SetDateFragment extends Fragment {
         }
     }
 
-    public static String getDateFormat(long timeInMillis){
+    public static String getDateFormat(long timeInMillis) {
         Calendar instance = Calendar.getInstance();
         instance.setTimeInMillis(timeInMillis);
         DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy", locale);
         return dateFormat.format(instance.getTime());
     }
 
-    public static String getDateWithYear(int date, String[] monthNames){
+    public static String getDateWithYear(int date, String[] monthNames) {
         List<String> dateRaw = getDateRaw(date);
         String year = dateRaw.get(2);
         String month = dateRaw.get(1);
-        month = monthNames[Integer.parseInt(month)-1];
+        month = monthNames[Integer.parseInt(month) - 1];
 
         String day = String.valueOf(Integer.valueOf(dateRaw.get(0)));
 
-        return day + " "+ month+" "+year;
+        return day + " " + month + " " + year;
     }
 
-    private static List<String> getDateRaw(int date){
+    private static List<String> getDateRaw(int date) {
         List<String> result = new ArrayList<>();
         String s = Integer.toString(date);
         String year = s.substring(0, 4);
         String month = s.substring(4, 6);
         String day = s.substring(6);
-        result.add(day);result.add(month);result.add(year);
+        result.add(day);
+        result.add(month);
+        result.add(year);
         return result;
     }
 }

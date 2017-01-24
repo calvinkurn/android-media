@@ -12,7 +12,6 @@ import android.widget.Button;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.model.data.DataCredit;
 import com.tokopedia.seller.topads.presenter.TopAdsAddCreditPresenter;
@@ -23,17 +22,11 @@ import com.tokopedia.seller.topads.view.listener.TopAdsAddCreditFragmentListener
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.OnClick;
-
 public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCreditPresenter> implements TopAdsAddCreditFragmentListener {
 
     private static String TAG = TopAdsAddCreditFragment.class.getSimpleName();
 
-    @BindView(R2.id.recycler_view)
     RecyclerView recyclerView;
-
-    @BindView(R2.id.button_submit)
     Button submitButton;
 
     private TopAdsCreditAdapter adapter;
@@ -90,12 +83,20 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
 
     @Override
     protected void initView(View view) {
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        submitButton = (Button) view.findViewById(R.id.button_submit);
         if(submitButton != null){
             submitButton.setTransformationMethod(null);
         }
         adapter = new TopAdsCreditAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chooseCredit();
+            }
+        });
     }
 
     @Override
@@ -157,8 +158,7 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
         return 0;
     }
 
-    @OnClick(R2.id.button_submit)
-    void chooseCredit() {
+    private void chooseCredit() {
         getActivity().setResult(Activity.RESULT_OK);
         Intent intent = new Intent(getActivity(), TopAdsPaymentCreditActivity.class);
         intent.putExtra(TopAdsConstant.EXTRA_CREDIT, adapter.getSelectedCredit());

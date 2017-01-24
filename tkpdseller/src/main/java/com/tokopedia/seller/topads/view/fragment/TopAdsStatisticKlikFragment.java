@@ -23,7 +23,7 @@ public class TopAdsStatisticKlikFragment extends TopAdsStatisticFragment {
 
     @Override
     protected String getTitleGraph() {
-        return getString(R.string.title_graph_klik_statistic_topads);
+        return getString(R.string.title_top_ads_statistic_graph_click);
     }
 
     @Override

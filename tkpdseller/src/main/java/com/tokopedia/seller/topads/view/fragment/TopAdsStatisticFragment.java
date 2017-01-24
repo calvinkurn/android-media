@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.model.data.Cell;
 import com.tokopedia.seller.topads.presenter.TopAdsStatisticPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsStatisticPresenterImpl;
@@ -28,25 +27,20 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-
 /**
  * A simple {@link Fragment} subclass.
  */
 public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopAdsStatisticPresenter> implements TopAdsStatisticViewListener {
 
-    @BindView(R2.id.content_title_graph)
     TextView contentTitleGraph;
-
-    @BindView(R2.id.content_graph)
     LineChartView contentGraph;
 
     TopAdsStatisticActivityViewListener topAdsStatisticActivityViewListener;
     private GrossGraphChartConfig grossGraphChartConfig;
     private List<Cell> cells;
-    private String[] mLabels ;
+    private String[] mLabels;
     private ArrayList<String> mLabelDisplay = new ArrayList<>();
-    private float[] mValues ;
+    private float[] mValues;
 
     public TopAdsStatisticFragment() {
         // Required empty public constructor
@@ -101,6 +95,8 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
 
     @Override
     protected void initView(View view) {
+        contentTitleGraph = (TextView) view.findViewById(R.id.content_title_graph);
+        contentGraph = (LineChartView) view.findViewById(R.id.content_graph);
         contentTitleGraph.setText(getTitleGraph());
     }
 
@@ -121,7 +117,7 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
                 layoutTooltip = R.layout.gm_stat_tooltip;
             }
 
-            if(grossGraphChartConfig == null){
+            if (grossGraphChartConfig == null) {
                 grossGraphChartConfig = new GrossGraphChartConfig(mLabels, mValues);
             }
             contentGraph.addDataDisplayDots(mLabelDisplay);
@@ -133,7 +129,7 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
                     .setmValues(mValues, new XRenderer.XRendererListener() {
                         @Override
                         public boolean filterX(@IntRange(from = 0L) int i) {
-                            if(mValues != null) {
+                            if (mValues != null) {
                                 if (i == 0 || mValues.length - 1 == i)
                                     return true;
 
@@ -142,7 +138,7 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
                                 }
 
                                 return indexToDisplay.contains(i);
-                            }else{
+                            } else {
                                 return true;
                             }
 
@@ -152,9 +148,9 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
                     .setTooltip(tooltip)
                     .buildChart(grossGraphChartConfig.buildLineChart(contentGraph));
         } catch (Exception e) {
-            if(e!= null && e.getMessage() != null) {
+            if (e != null && e.getMessage() != null) {
                 Log.e("TopAdsStatisticFragment", e.getMessage());
-            }else{
+            } else {
                 Log.e("TopAdsStatisticFragment", "Null Pointer");
             }
         }
@@ -194,46 +190,48 @@ public abstract class TopAdsStatisticFragment extends BasePresenterFragment<TopA
     }
 
 
-    protected String[] generateLabels(){
-        if(cells != null && cells.size()>0){
+    protected String[] generateLabels() {
+        if (cells != null && cells.size() > 0) {
             String[] labels = new String[cells.size()];
-            for(int i = 0; i<cells.size(); i++){
+            for (int i = 0; i < cells.size(); i++) {
                 Cell cell = cells.get(i);
                 SimpleDateFormat formatterLabel = new SimpleDateFormat("dd MMM");
                 String label = formatterLabel.format(cell.getDate());
                 labels[i] = label;
             }
             return labels;
-        }else{
+        } else {
             return null;
         }
-    };
+    }
 
-    protected float[] generateValues(){
-        if(cells != null && cells.size()>0){
+    ;
+
+    protected float[] generateValues() {
+        if (cells != null && cells.size() > 0) {
             float[] values = new float[cells.size()];
-            for(int i = 0; i<cells.size(); i++){
+            for (int i = 0; i < cells.size(); i++) {
                 Cell cell = cells.get(i);
                 float value = getValueData(cell);
-                values[i] =  value;
+                values[i] = value;
             }
             return values;
-        }else{
+        } else {
             return null;
         }
     }
 
 
     private ArrayList<String> generateLabelDisplay() {
-        if(cells != null && cells.size()>0){
+        if (cells != null && cells.size() > 0) {
             ArrayList<String> valuesDisplay = new ArrayList<>();
-            for(int i = 0; i<cells.size(); i++){
+            for (int i = 0; i < cells.size(); i++) {
                 Cell cell = cells.get(i);
                 String value = getValueDisplay(cell);
                 valuesDisplay.add(value);
             }
             return valuesDisplay;
-        }else{
+        } else {
             return null;
         }
     }

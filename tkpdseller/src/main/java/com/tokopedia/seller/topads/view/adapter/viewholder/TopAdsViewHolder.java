@@ -7,51 +7,35 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.model.data.Ad;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by zulfikarrahman on 11/28/16.
  */
 public class TopAdsViewHolder extends RecyclerView.ViewHolder {
 
-    @BindView(R2.id.title_product)
     public TextView titleProduct;
-
-    @BindView(R2.id.status_active_dot)
     public View statusActiveDot;
-
-    @BindView(R2.id.status_active)
     public TextView statusActive;
-
-    @BindView(R2.id.promo_price_used)
     public TextView promoPriceUsed;
-
-    @BindView(R2.id.total_price_promo)
     public TextView totalPricePromo;
-
-    @BindView(R2.id.price_promo_per_click)
     public TextView pricePromoPerClick;
-
-    @BindView(R2.id.progress_bar_layout)
     public View progressBarLayout;
-
-    @BindView(R2.id.progress_bar)
     public ProgressBar progressBarPromo;
-
-    @BindView(R2.id.mainView)
     public View mainView;
-
-    @BindView(R2.id.used_keyword)
-    public TextView usedKeyword;
 
     public TopAdsViewHolder(View view) {
         super(view);
-        ButterKnife.bind(this, view);
+        titleProduct = (TextView) view.findViewById(R.id.title_product);
+        statusActiveDot = view.findViewById(R.id.status_active_dot);
+        statusActive = (TextView) view.findViewById(R.id.status_active);
+        promoPriceUsed = (TextView) view.findViewById(R.id.promo_price_used);
+        totalPricePromo = (TextView) view.findViewById(R.id.total_price_promo);
+        pricePromoPerClick = (TextView) view.findViewById(R.id.price_promo_per_click);
+        progressBarLayout = view.findViewById(R.id.progress_bar_layout);
+        progressBarPromo = (ProgressBar) view.findViewById(R.id.progress_bar);
+        mainView = view.findViewById(R.id.mainView);
     }
 
     public void bindObject(Ad ad) {
@@ -66,9 +50,7 @@ public class TopAdsViewHolder extends RecyclerView.ViewHolder {
                 break;
         }
         pricePromoPerClick.setText(promoPriceUsed.getContext().getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
-        usedKeyword.setVisibility(View.VISIBLE);
-        usedKeyword.setText(promoPriceUsed.getContext().getString(R.string.label_title_sent_topads));
-        promoPriceUsed.setText(promoPriceUsed.getContext().getString(R.string.top_ads_used_format_text, ad.getStatTotalSpent()));
+        promoPriceUsed.setText(ad.getStatTotalSpent());
         if (!TextUtils.isEmpty(ad.getPriceDailyBar())) {
             progressBarLayout.setVisibility(View.VISIBLE);
             progressBarPromo.setProgress((int) Double.parseDouble(ad.getPriceDailyBar()));

@@ -8,10 +8,8 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
@@ -24,9 +22,6 @@ import com.tokopedia.seller.topads.presenter.TopAdsDetailProductPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
-import butterknife.BindView;
-import butterknife.OnClick;
-
 /**
  * Created by zulfikarrahman on 12/29/16.
  */
@@ -37,7 +32,6 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         void goToProductActivity(String productUrl);
     }
 
-    @BindView(R2.id.label_view_promo_group)
     TopAdsLabelView promoGroupLabelView;
 
     private ProductAd productAd;
@@ -62,8 +56,21 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     @Override
     protected void initView(View view) {
         super.initView(view);
+        promoGroupLabelView = (TopAdsLabelView) view.findViewById(R.id.label_view_promo_group);
         name.setTitle(getString(R.string.title_top_ads_product));
         name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.green_200));
+        name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onNameClicked();
+            }
+        });
+        promoGroupLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onPromoGroupClicked();
+            }
+        });
     }
 
     @Override
@@ -104,7 +111,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
             promoGroupLabelView.setContent(groupName);
             promoGroupLabelView.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.green_200));
         } else {
-            promoGroupLabelView.setContent(getString(R.string.title_label_empty_group_topads));
+            promoGroupLabelView.setContent(getString(R.string.label_top_ads_empty_group));
             promoGroupLabelView.setContentColorValue(ContextCompat.getColor(getActivity(), android.R.color.tab_indicator_text));
         }
 
@@ -114,14 +121,12 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         return !TextUtils.isEmpty(productAd.getGroupName()) && productAd.getGroupId() > 0;
     }
 
-    @OnClick(R2.id.name)
     void onNameClicked() {
         if (listener != null) {
             listener.goToProductActivity(productAd.getProductUri());
         }
     }
 
-    @OnClick(R2.id.label_view_promo_group)
     void onPromoGroupClicked() {
         if (isHasGroupAd()) {
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);

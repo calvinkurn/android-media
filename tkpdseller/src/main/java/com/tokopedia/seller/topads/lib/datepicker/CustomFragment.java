@@ -12,43 +12,23 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
 
 /**
  * Created by Nathaniel on 1/16/2017.
  */
 
 public class CustomFragment extends Fragment {
-    @BindView(R2.id.period_recyclerview)
     RecyclerView periodRecyclerView;
-    private Unbinder unbinder;
     private PeriodAdapter periodAdapter;
-    @BindView(R2.id.period_linlay)
     LinearLayout periodLinLay;
     private long sDate, eDate;
     private long minStartDate;
     private long maxEndDate;
     private int maxDateRange;
-
-    @BindView(R2.id.save_date)
-    Button saveDate;
-
-    @OnClick(R2.id.save_date)
-    public void saveDate() {
-        if (getActivity() != null && getActivity() instanceof SetDateFragment.SetDate) {
-            long sDate = periodAdapter.datePickerRules.sDate;
-            long eDate = periodAdapter.datePickerRules.eDate;
-            ((SetDateFragment.SetDate) getActivity()).returnStartAndEndDate(sDate, eDate, -1, SetDateActivity.CUSTOM_TYPE);
-        }
-    }
+    private Button saveDate;
 
     @Nullable
     @Override
@@ -67,6 +47,15 @@ public class CustomFragment extends Fragment {
             saveDate.setTransformationMethod(null);
         }
 
+        periodRecyclerView = (RecyclerView) rootView.findViewById(R.id.period_recyclerview);
+        periodLinLay = (LinearLayout) rootView.findViewById(R.id.period_linlay);
+        saveDate = (Button) rootView.findViewById(R.id.save_date);
+        saveDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveDate();
+            }
+        });
         periodLinLay.setVisibility(View.GONE);
         periodRecyclerView.setVisibility(View.VISIBLE);
         periodAdapter = new PeriodAdapter(rootView, sDate, eDate, minStartDate, maxEndDate, maxDateRange);
@@ -96,10 +85,12 @@ public class CustomFragment extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
+    public void saveDate() {
+        if (getActivity() != null && getActivity() instanceof SetDateFragment.SetDate) {
+            long sDate = periodAdapter.datePickerRules.sDate;
+            long eDate = periodAdapter.datePickerRules.eDate;
+            ((SetDateFragment.SetDate) getActivity()).returnStartAndEndDate(sDate, eDate, -1, SetDateActivity.CUSTOM_TYPE);
+        }
     }
 
     public static Fragment newInstance() {

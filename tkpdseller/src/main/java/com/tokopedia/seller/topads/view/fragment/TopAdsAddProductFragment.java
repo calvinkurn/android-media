@@ -12,7 +12,6 @@ import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.model.data.Product;
 import com.tokopedia.seller.topads.presenter.TopAdsAddProductPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsAddProductPresenterImpl;
@@ -21,13 +20,8 @@ import com.tokopedia.seller.topads.view.listener.TopAdsAddProductFragmentListene
 
 import java.util.List;
 
-import butterknife.BindView;
-
 public class TopAdsAddProductFragment extends BasePresenterFragment<TopAdsAddProductPresenter> implements TopAdsAddProductFragmentListener, SearchView.OnQueryTextListener {
 
-    private static String TAG = TopAdsAddProductFragment.class.getSimpleName();
-
-    @BindView(R2.id.recycler_view)
     RecyclerView recyclerView;
 
     private LinearLayoutManager layoutManager;
@@ -62,7 +56,7 @@ public class TopAdsAddProductFragment extends BasePresenterFragment<TopAdsAddPro
 
     @Override
     protected boolean getOptionsMenuEnable() {
-        return false;
+        return true;
     }
 
     @Override
@@ -87,7 +81,7 @@ public class TopAdsAddProductFragment extends BasePresenterFragment<TopAdsAddPro
 
     @Override
     protected void initView(View view) {
-        setHasOptionsMenu(true);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         adapter = new TopAdsProductAdapter();
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);

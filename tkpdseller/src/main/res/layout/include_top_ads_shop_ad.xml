@@ -44,15 +44,13 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/used_keyword"
             style="@style/TextView"
             android:textColor="@color/black"
             android:textSize="16sp"
-            tools:text="@string/label_title_sent_topads_with_space"/>
+            android:text="@string/label_top_ads_sent"/>
 
         <TextView
             android:layout_marginLeft="3dp"
