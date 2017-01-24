@@ -67,7 +67,7 @@ public class TopAdsPaymentCreditFragment extends TkpdFragment {
                 super.onProgressChanged(view, newProgress);
             }
         });
-        webView.loadUrl(URLGenerator.generateURLSessionLogin(Uri.encode(dataCredit.getProductUrl()), getActivity()));
+        webView.loadAuthUrl(URLGenerator.generateURLSessionLogin(Uri.encode(dataCredit.getProductUrl()), getActivity()));
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
