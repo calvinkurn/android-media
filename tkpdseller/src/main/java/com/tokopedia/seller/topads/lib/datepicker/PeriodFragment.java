@@ -130,6 +130,9 @@ public class PeriodFragment extends Fragment {
         unbinder = ButterKnife.bind(this, rootView);
         //[START] old code
         periodAdapter = new PeriodAdapter();
+        if(saveDate!=null){
+            saveDate.setTransformationMethod(null);
+        }
 
         basePeriodModels = new ArrayList<>();
         for (PeriodRangeModel periodRangeModel: periodRangeModelList) {

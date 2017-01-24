@@ -29,5 +29,5 @@
         android:textAllCaps="false"
         android:textColor="#ffffff"
         android:textSize="13sp"
-        android:background="#42b549"/>
+        android:background="@drawable/rounded_corner_tkpd_seller"/>
 </RelativeLayout>

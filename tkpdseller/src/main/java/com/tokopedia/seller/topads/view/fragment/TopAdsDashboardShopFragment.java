@@ -3,6 +3,7 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
@@ -42,6 +43,9 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
 
     @BindView(R2.id.price_promo_per_click)
     TextView pricePromoPerClick;
+
+    @BindView(R2.id.image_button_add_deposit)
+    ImageView imageButtonAddDeposit;
 
     private ShopAd shopAd;
 

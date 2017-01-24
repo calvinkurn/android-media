@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.tokopedia.seller.R;
@@ -37,6 +38,9 @@ public class CustomFragment extends Fragment {
     private long maxEndDate;
     private int maxDateRange;
 
+    @BindView(R2.id.save_date)
+    Button saveDate;
+
     @OnClick(R2.id.save_date)
     public void saveDate() {
         if (getActivity() != null && getActivity() instanceof SetDateFragment.SetDate) {
@@ -59,6 +63,9 @@ public class CustomFragment extends Fragment {
         }
         View rootView = inflater.inflate(R.layout.period_layout, container, false);
         unbinder = ButterKnife.bind(this, rootView);
+        if(saveDate!=null){
+            saveDate.setTransformationMethod(null);
+        }
 
         periodLinLay.setVisibility(View.GONE);
         periodRecyclerView.setVisibility(View.VISIBLE);
