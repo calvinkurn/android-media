@@ -6,7 +6,6 @@ import android.support.v13.app.FragmentPagerAdapter;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.constant.TopAdsConstant;
 
 import java.util.List;
 
@@ -36,17 +35,17 @@ public class TopAdsStatisticPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return MainApplication.getAppContext().getString(R.string.label_title_show_statistics_topads);
+                return MainApplication.getAppContext().getString(R.string.label_top_ads_impression);
             case 1:
-                return MainApplication.getAppContext().getString(R.string.label_title_klik_statistics_topads);
+                return MainApplication.getAppContext().getString(R.string.label_top_ads_click);
             case 2:
-                return MainApplication.getAppContext().getString(R.string.label_title_ctr_statistics_topads);
+                return MainApplication.getAppContext().getString(R.string.label_top_ads_ctr);
             case 3:
-                return MainApplication.getAppContext().getString(R.string.label_title_convertion_statistics_topads);
+                return MainApplication.getAppContext().getString(R.string.label_top_ads_conversion);
             case 4:
-                return MainApplication.getAppContext().getString(R.string.label_title_average_statistics_topads);
+                return MainApplication.getAppContext().getString(R.string.label_top_ads_average);
             case 5:
-                return MainApplication.getAppContext().getString(R.string.label_title_used_statistics_topads);
+                return MainApplication.getAppContext().getString(R.string.label_top_ads_cost);
             default:
                 return "";
         }

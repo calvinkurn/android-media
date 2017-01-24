@@ -32,15 +32,15 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsDashboardActivity"
-            android:label="@string/title_topads_dashboard"
+            android:label="@string/title_top_ads_dashboard"
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsProductAdListActivity"
-            android:label="@string/title_topads_promo_product"
+            android:label="@string/title_top_ads_product"
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsGroupAdListActivity"
-            android:label="@string/title_topads_promo_group"
+            android:label="@string/title_top_ads_promo_group"
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsAddCreditActivity"
