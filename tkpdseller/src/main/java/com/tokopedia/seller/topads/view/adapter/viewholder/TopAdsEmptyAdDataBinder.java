@@ -10,10 +10,6 @@ import android.widget.TextView;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Nisie on 2/26/16.
@@ -36,18 +32,15 @@ public class TopAdsEmptyAdDataBinder extends NoResultDataBinder {
     }
 
     public static class EmptyViewHolder extends ViewHolder {
-        @BindView(R2.id.text_view_empty_title_text)
         TextView emptyTitleTextView;
-
-        @BindView(R2.id.text_view_empty_content_text)
         TextView emptyContentTextView;
-
-        @BindView(R2.id.text_view_empty_content_item_text)
         TextView emptyContentItemTextView;
 
-        public EmptyViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
+        public EmptyViewHolder(View view) {
+            super(view);
+            emptyTitleTextView = (TextView) view.findViewById(R.id.text_view_empty_title_text);
+            emptyContentTextView = (TextView) view.findViewById(R.id.text_view_empty_content_text);
+            emptyContentItemTextView = (TextView) view.findViewById(R.id.text_view_empty_content_item_text);
         }
     }
 

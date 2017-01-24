@@ -13,24 +13,15 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.model.data.DataCredit;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 public class TopAdsPaymentCreditFragment extends TkpdFragment {
 
-    @BindView(R2.id.webview)
-    TkpdWebView webView;
-    @BindView(R2.id.progressbar)
+    WebView webView;
     ProgressBar progressBar;
 
-    private Unbinder unbinder;
     private DataCredit dataCredit;
 
     public static TopAdsPaymentCreditFragment createInstance() {
@@ -48,14 +39,14 @@ public class TopAdsPaymentCreditFragment extends TkpdFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fragment_general_web_view, container, false);
-        unbinder = ButterKnife.bind(this, view);
+        webView = (WebView) view.findViewById(R.id.webview);
+        progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
         return view;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
         progressBar.setIndeterminate(true);
         loadWeb();
     }
@@ -80,15 +71,9 @@ public class TopAdsPaymentCreditFragment extends TkpdFragment {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                return false ;
+                return false;
             }
         });
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
     }
 
     @Override

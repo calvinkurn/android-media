@@ -8,7 +8,6 @@ import android.view.View;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
@@ -19,8 +18,6 @@ import com.tokopedia.seller.topads.model.data.ShopAd;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailShopPresenterImpl;
-
-import butterknife.OnClick;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
@@ -52,6 +49,12 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
         name.setTitle(getString(R.string.title_top_ads_store));
         name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.green_200));
         favorite.setTitle(getString(R.string.title_label_favorit_topads));
+        name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onNameClicked();
+            }
+        });
     }
 
     @Override
@@ -82,7 +85,6 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
         this.ad = (ShopAd) ad;
     }
 
-    @OnClick(R2.id.name)
     void onNameClicked() {
         DeepLinkChecker.openShop(ad.getShopUri(), getActivity());
     }

@@ -1,6 +1,5 @@
 package com.tokopedia.seller.topads.view.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,20 +12,15 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.model.data.DataDeposit;
 import com.tokopedia.seller.topads.model.data.Summary;
-import com.tokopedia.seller.topads.presenter.TopAdsAdListPresenterImpl;
 import com.tokopedia.seller.topads.presenter.TopAdsDashboardPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 import com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView;
-
-import butterknife.BindView;
-import butterknife.OnClick;
 
 public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter> extends TopAdsDatePickerFragment<T> implements TopAdsDashboardFragmentListener {
 
@@ -39,30 +33,21 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         void onLoadDataSuccess();
     }
 
-    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
-    @BindView(R2.id.image_view_shop_icon)
     ImageView shopIconImageView;
-    @BindView(R2.id.text_view_shop_title)
     TextView shopTitleTextView;
-    @BindView(R2.id.text_view_deposit_desc)
     TextView depositDescTextView;
+    ImageView addDepositButton;
 
-    @BindView(R2.id.text_view_range_date)
+    View dateRangeLayout;
     TextView rangeDateDescTextView;
 
-    @BindView(R2.id.statistic_label_view_impression)
     TopAdsStatisticLabelView impressionStatisticLabelView;
-    @BindView(R2.id.statistic_label_view_click)
     TopAdsStatisticLabelView clickStatisticLabelView;
-    @BindView(R2.id.statistic_label_view_ctr)
     TopAdsStatisticLabelView ctrStatisticLabelView;
-    @BindView(R2.id.statistic_label_view_conversion)
     TopAdsStatisticLabelView conversionStatisticLabelView;
-    @BindView(R2.id.statistic_label_view_average)
     TopAdsStatisticLabelView averageStatisticLabelView;
-    @BindView(R2.id.statistic_label_view_cost)
     TopAdsStatisticLabelView costStatisticLabelView;
 
     private Callback callback;
@@ -78,7 +63,69 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
 
     @Override
     protected void initView(View view) {
+        super.initView(view);
+        swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+        shopIconImageView = (ImageView) view.findViewById(R.id.image_view_shop_icon);
+        shopTitleTextView = (TextView) view.findViewById(R.id.text_view_shop_title);
+        depositDescTextView = (TextView) view.findViewById(R.id.text_view_deposit_desc);
+        addDepositButton = (ImageView) view.findViewById(R.id.image_button_add_deposit);
+        addDepositButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToAddCredit();
+            }
+        });
+        dateRangeLayout = view.findViewById(R.id.layout_date);
+        dateRangeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onDateLayoutClicked();
+            }
+        });
+        rangeDateDescTextView = (TextView) view.findViewById(R.id.text_view_range_date);
+        impressionStatisticLabelView = (TopAdsStatisticLabelView) view.findViewById(R.id.statistic_label_view_impression);
+        clickStatisticLabelView = (TopAdsStatisticLabelView) view.findViewById(R.id.statistic_label_view_click);
+        ctrStatisticLabelView = (TopAdsStatisticLabelView) view.findViewById(R.id.statistic_label_view_ctr);
+        conversionStatisticLabelView = (TopAdsStatisticLabelView) view.findViewById(R.id.statistic_label_view_conversion);
+        averageStatisticLabelView = (TopAdsStatisticLabelView) view.findViewById(R.id.statistic_label_view_average);
+        costStatisticLabelView = (TopAdsStatisticLabelView) view.findViewById(R.id.statistic_label_view_cost);
         depositDescTextView.setText(getString(R.string.label_top_ads_deposit_desc, getString(R.string.top_ads_statistic_info_default_value)));
+        impressionStatisticLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onStatisticImpressionClicked();
+            }
+        });
+        clickStatisticLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onStatisticClickClicked();
+            }
+        });
+        ctrStatisticLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onStatisticCtrClicked();
+            }
+        });
+        conversionStatisticLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onStatisticConversionClicked();
+            }
+        });
+        averageStatisticLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onStatisticAverageClicked();
+            }
+        });
+        costStatisticLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onStatisticCostClicked();
+            }
+        });
     }
 
     @Override
@@ -165,13 +212,11 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         swipeToRefresh.setRefreshing(false);
     }
 
-    @OnClick(R2.id.layout_date)
     void onDateLayoutClicked() {
         openDatePicker();
     }
 
-    @OnClick(R2.id.statistic_label_view_impression)
-    void onStaticImpressionClicked() {
+    void onStatisticImpressionClicked() {
         Intent intent = new Intent(getActivity(), getClassIntentStatistic());
         Bundle bundle = new Bundle();
         bundle.putInt(TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_KEY, TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_IMPR);
@@ -179,7 +224,6 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         startActivity(intent);
     }
 
-    @OnClick(R2.id.statistic_label_view_click)
     void onStatisticClickClicked() {
         Intent intent = new Intent(getActivity(), getClassIntentStatistic());
         Bundle bundle = new Bundle();
@@ -188,8 +232,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         startActivity(intent);
     }
 
-    @OnClick(R2.id.statistic_label_view_ctr)
-    void onStatisticImpressionClicked() {
+    void onStatisticCtrClicked() {
         Intent intent = new Intent(getActivity(), getClassIntentStatistic());
         Bundle bundle = new Bundle();
         bundle.putInt(TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_KEY, TopAdsExtraConstant.EXTRA_STATISTIC_POSITION_CTR);
@@ -197,7 +240,6 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         startActivity(intent);
     }
 
-    @OnClick(R2.id.statistic_label_view_conversion)
     void onStatisticConversionClicked() {
         Intent intent = new Intent(getActivity(), getClassIntentStatistic());
         Bundle bundle = new Bundle();
@@ -206,7 +248,6 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         startActivity(intent);
     }
 
-    @OnClick(R2.id.statistic_label_view_average)
     void onStatisticAverageClicked() {
         Intent intent = new Intent(getActivity(), getClassIntentStatistic());
         Bundle bundle = new Bundle();
@@ -215,7 +256,6 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         startActivity(intent);
     }
 
-    @OnClick(R2.id.statistic_label_view_cost)
     void onStatisticCostClicked() {
         Intent intent = new Intent(getActivity(), getClassIntentStatistic());
         Bundle bundle = new Bundle();
@@ -224,7 +264,6 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         startActivity(intent);
     }
 
-    @OnClick(R2.id.image_button_add_deposit)
     void goToAddCredit() {
         Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
         startActivityForResult(intent, REQUEST_CODE_ADD_KREDIT);
@@ -233,8 +272,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-
-        if(resultCode == getActivity().RESULT_OK && requestCode == REQUEST_CODE_ADD_KREDIT){
+        if (resultCode == getActivity().RESULT_OK && requestCode == REQUEST_CODE_ADD_KREDIT) {
             presenter.populateDeposit();
         }
     }

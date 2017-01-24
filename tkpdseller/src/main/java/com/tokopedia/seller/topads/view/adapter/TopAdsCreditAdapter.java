@@ -8,14 +8,10 @@ import android.widget.RadioButton;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.model.data.DataCredit;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Nathaniel on 12/2/2016.
@@ -107,12 +103,11 @@ public class TopAdsCreditAdapter extends BaseLinearRecyclerViewAdapter {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.radio_button)
         public RadioButton radioButton;
 
         public ViewHolder(View view) {
             super(view);
-            ButterKnife.bind(this, view);
+            radioButton = (RadioButton) view.findViewById(R.id.radio_button);
         }
     }
 }

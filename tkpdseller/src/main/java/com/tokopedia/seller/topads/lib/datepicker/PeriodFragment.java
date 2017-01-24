@@ -12,51 +12,25 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
 
 /**
  * Created by Nathaniel on 1/16/2017.
  */
 
 public class PeriodFragment extends Fragment {
-    @BindView(R2.id.period_recyclerview)
+
     RecyclerView periodRecyclerView;
-    private Unbinder unbinder;
-    private PeriodAdapter periodAdapter;
-
-    @BindView(R2.id.save_date)
     Button saveDate;
-
-    @BindView(R2.id.period_linlay)
     LinearLayout periodLinLay;
+
     List<PeriodChooseViewHelper> periodChooseViewHelpers;
     ArrayList<PeriodRangeModel> periodRangeModelList;
-
+    private PeriodAdapter periodAdapter;
     private long maxEndDate;
-
-    @OnClick(R2.id.save_date)
-    public void saveDate() {
-        if (getActivity() != null && getActivity() instanceof SetDateFragment.SetDate) {
-            for (int i = 0; i < basePeriodModels.size(); i++) {
-                PeriodRangeModel prm = (PeriodRangeModel) basePeriodModels.get(i);
-                if (prm.isChecked) {
-                    long sDate = prm.startDate;
-                    long eDate = prm.endDate;
-                    ((SetDateFragment.SetDate) getActivity()).returnStartAndEndDate(sDate, eDate, i, SetDateActivity.PERIOD_TYPE);
-                }
-            }
-
-        }
-    }
 
     public static Fragment newInstance(int selectionPeriod, ArrayList<PeriodRangeModel> periodRangeModelList) {
         Fragment fragment = new PeriodFragment();
@@ -119,6 +93,16 @@ public class PeriodFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.period_layout, container, false);
 
+        periodRecyclerView = (RecyclerView) rootView.findViewById(R.id.period_recyclerview);
+        saveDate = (Button) rootView.findViewById(R.id.save_date);
+        saveDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveDate();
+            }
+        });
+        periodLinLay = (LinearLayout) rootView.findViewById(R.id.period_linlay);
+
         int lastSelection = 1;
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -127,12 +111,11 @@ public class PeriodFragment extends Fragment {
             periodRangeModelList = bundle.getParcelableArrayList(SetDateActivity.DATE_PERIOD_LIST);
         }
 
-        unbinder = ButterKnife.bind(this, rootView);
         //[START] old code
         periodAdapter = new PeriodAdapter();
 
         basePeriodModels = new ArrayList<>();
-        for (PeriodRangeModel periodRangeModel: periodRangeModelList) {
+        for (PeriodRangeModel periodRangeModel : periodRangeModelList) {
             basePeriodModels.add(periodRangeModel);
         }
 
@@ -161,11 +144,20 @@ public class PeriodFragment extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
+    private void saveDate() {
+        if (getActivity() != null && getActivity() instanceof SetDateFragment.SetDate) {
+            for (int i = 0; i < basePeriodModels.size(); i++) {
+                PeriodRangeModel prm = (PeriodRangeModel) basePeriodModels.get(i);
+                if (prm.isChecked) {
+                    long sDate = prm.startDate;
+                    long eDate = prm.endDate;
+                    ((SetDateFragment.SetDate) getActivity()).returnStartAndEndDate(sDate, eDate, i, SetDateActivity.PERIOD_TYPE);
+                }
+            }
+
+        }
     }
+
 
     public static Fragment newInstance() {
         return new PeriodFragment();
