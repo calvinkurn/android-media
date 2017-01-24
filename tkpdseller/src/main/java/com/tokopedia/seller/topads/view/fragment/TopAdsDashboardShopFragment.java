@@ -27,9 +27,6 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     TextView promoPriceUsed;
     TextView pricePromoPerClick;
 
-    @BindView(R2.id.image_button_add_deposit)
-    ImageView imageButtonAddDeposit;
-
     private ShopAd shopAd;
 
     public static TopAdsDashboardShopFragment createInstance() {

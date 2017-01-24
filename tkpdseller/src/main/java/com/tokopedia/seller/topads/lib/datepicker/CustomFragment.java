@@ -42,10 +42,7 @@ public class CustomFragment extends Fragment {
             maxDateRange = bundle.getInt(SetDateActivity.MAX_DATE_RANGE, -1);
         }
         View rootView = inflater.inflate(R.layout.period_layout, container, false);
-        unbinder = ButterKnife.bind(this, rootView);
-        if(saveDate!=null){
-            saveDate.setTransformationMethod(null);
-        }
+
 
         periodRecyclerView = (RecyclerView) rootView.findViewById(R.id.period_recyclerview);
         periodLinLay = (LinearLayout) rootView.findViewById(R.id.period_linlay);
@@ -56,6 +53,9 @@ public class CustomFragment extends Fragment {
                 saveDate();
             }
         });
+        if(saveDate!=null){
+            saveDate.setTransformationMethod(null);
+        }
         periodLinLay.setVisibility(View.GONE);
         periodRecyclerView.setVisibility(View.VISIBLE);
         periodAdapter = new PeriodAdapter(rootView, sDate, eDate, minStartDate, maxEndDate, maxDateRange);
