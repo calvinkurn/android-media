@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.view.adapter.viewholder;
 
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -36,6 +37,11 @@ public class TopAdsViewHolder extends RecyclerView.ViewHolder {
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         progressBarPromo = (ProgressBar) view.findViewById(R.id.progress_bar);
         mainView = view.findViewById(R.id.mainView);
+
+        // programmatically styling for ProgressBar
+        // http://stackoverflow.com/questions/16893209/how-to-customize-a-progress-bar-in-android
+        Drawable draw=view.getContext().getResources().getDrawable(R.drawable.top_ads_progressbar);
+        progressBarPromo.setProgressDrawable(draw);
     }
 
     public void bindObject(Ad ad) {

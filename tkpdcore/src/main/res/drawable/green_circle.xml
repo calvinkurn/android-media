@@ -3,7 +3,7 @@
     android:shape="oval">
 
     <solid
-        android:color="@color/green_800"/>
+        android:color="@color/tkpd_main_green"/>
 
     <size
         android:width="@dimen/notification_circle_size"

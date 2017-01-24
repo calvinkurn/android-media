@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -22,6 +23,10 @@ public class TopAdsLabelView extends FrameLayout {
     private String titleText;
     private String valueText;
     private int colorValue;
+
+    public final static int TYPE_FACE_NORMAL = 0,
+        TYPE_FACE_BOLD = 1;
+    private int typefaceType;
 
     public TopAdsLabelView(Context context) {
         super(context);
@@ -45,6 +50,7 @@ public class TopAdsLabelView extends FrameLayout {
             titleText = styledAttributes.getString(R.styleable.TopAdsLabelView_title);
             valueText = styledAttributes.getString(R.styleable.TopAdsLabelView_content);
             colorValue = styledAttributes.getColor(R.styleable.TopAdsLabelView_content_color, ContextCompat.getColor(getContext(), R.color.grey));
+            typefaceType = styledAttributes.getInt(R.styleable.TopAdsLabelView_content_style, TYPE_FACE_NORMAL);
         } finally {
             styledAttributes.recycle();
         }
@@ -80,6 +86,21 @@ public class TopAdsLabelView extends FrameLayout {
 
     public void setContentColorValue(@ColorInt int colorValue) {
         contentTextView.setTextColor(colorValue);
+        invalidate();
+        requestLayout();
+    }
+
+    public void setTypefaceType(int typefaceType){
+        switch (typefaceType){
+            case TYPE_FACE_NORMAL:
+                contentTextView.setTypeface(null, Typeface.NORMAL);
+                break;
+            case TYPE_FACE_BOLD:
+                contentTextView.setTypeface(null, Typeface.BOLD);
+                break;
+            default:
+                throw new RuntimeException("dont have any typeface type !!");
+        }
         invalidate();
         requestLayout();
     }

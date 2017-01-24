@@ -33,7 +33,7 @@
 
         <ProgressBar
             android:id="@+id/progress_bar"
-            style="?android:attr/progressBarStyleHorizontal"
+            style="@style/TopAdsProgressBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_vs"/>
@@ -44,7 +44,7 @@
             android:orientation="horizontal">
 
             <TextView
-                style="@style/TextView"
+                style="@style/TextView.TopAdsListContent"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:text="@string/label_top_ads_daily_spend"/>
