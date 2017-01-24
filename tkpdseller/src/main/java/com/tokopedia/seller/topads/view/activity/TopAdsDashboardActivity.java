@@ -23,6 +23,7 @@ import com.tokopedia.seller.topads.view.adapter.TopAdsDashboardPagerAdapter;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardProductFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardShopFragment;
+import com.tokopedia.seller.topads.view.listener.TopAdsDashboardTabListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ public class TopAdsDashboardActivity extends BasePresenterActivity implements To
     private TopAdsDashboardShopFragment dashboardShopFragment;
     private TopAdsDashboardProductFragment dashboardProductFragment;
     private TopAdsDatePickerPresenterImpl datePickerPresenter;
+    private TopAdsDashboardTabListener topadsDashList;
 
     @Override
     public String getScreenName() {
@@ -76,7 +78,22 @@ public class TopAdsDashboardActivity extends BasePresenterActivity implements To
         viewPager.setAdapter(getViewPagerAdapter());
         viewPager.setOffscreenPageLimit(TopAdsConstant.OFFSCREEN_PAGE_LIMIT);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
+        topadsDashList = new TopAdsDashboardTabListener(viewPager);
+        topadsDashList.setTopAdsDashboardList(new TopAdsDashboardTabListener.TopAdsDashboardList() {
+            @Override
+            public void onSelected(int positon) {
+                switch (positon){
+                    case 0:
+                        fabSpeedDial.setVisibility(View.VISIBLE);
+                        break;
+                    case 1:
+                    default:
+                        fabSpeedDial.setVisibility(View.GONE);
+                        break;
+                }
+            }
+        });
+        tabLayout.setOnTabSelectedListener(topadsDashList);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.title_top_ads_product));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.title_top_ads_store));
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(this, new NetworkErrorHelper.RetryClickedListener() {
