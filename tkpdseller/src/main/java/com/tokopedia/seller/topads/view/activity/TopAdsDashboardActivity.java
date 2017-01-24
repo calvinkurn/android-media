@@ -6,7 +6,12 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.MenuItem;
+import android.view.View;
 
+import com.tkpd.library.ui.floatbutton.FabSpeedDial;
+import com.tkpd.library.ui.floatbutton.ListenerFabClick;
+import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -30,6 +35,7 @@ public class TopAdsDashboardActivity extends BasePresenterActivity implements To
 
     ViewPager viewPager;
     TabLayout tabLayout;
+    FabSpeedDial fabSpeedDial;
 
     private SnackbarRetry snackbarRetry;
     private TopAdsDashboardShopFragment dashboardShopFragment;
@@ -65,6 +71,7 @@ public class TopAdsDashboardActivity extends BasePresenterActivity implements To
     protected void initView() {
         viewPager = (ViewPager) findViewById(R.id.pager);
         tabLayout = (TabLayout) findViewById(R.id.indicator);
+        fabSpeedDial = (FabSpeedDial) findViewById(R.id.top_ads_dashboard_fab);
         datePickerPresenter.resetDate();
         viewPager.setAdapter(getViewPagerAdapter());
         viewPager.setOffscreenPageLimit(TopAdsConstant.OFFSCREEN_PAGE_LIMIT);
@@ -77,6 +84,25 @@ public class TopAdsDashboardActivity extends BasePresenterActivity implements To
             public void onRetryClicked() {
                 dashboardShopFragment.loadData();
                 dashboardProductFragment.loadData();
+            }
+        });
+        fabSpeedDial.setListenerFabClick(new ListenerFabClick() {
+            @Override
+            public void onFabClick() {
+                if (!fabSpeedDial.isShown()) {
+                    fabSpeedDial.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
+            @Override
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.action_add_promo_group) {
+
+                } else if (menuItem.getItemId() == R.id.action_add_promo_product) {
+
+                }
+                return false;
             }
         });
     }
