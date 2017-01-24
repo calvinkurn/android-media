@@ -30,6 +30,11 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
     }
 
     @Override
+    public void goToProductDetail(Context context, String productUrl) {
+        throw new RuntimeException("right now, it implement at Seller Application !!");
+    }
+
+    @Override
     public Fragment getRechargeCategoryFragment() {
         Bundle bundle = new Bundle();
         return RechargeCategoryFragment.newInstance(bundle);
