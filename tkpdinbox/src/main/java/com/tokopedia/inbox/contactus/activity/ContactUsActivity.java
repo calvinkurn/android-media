@@ -13,6 +13,8 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.fragment.ContactUsFaqFragment;
 import com.tokopedia.inbox.contactus.fragment.ContactUsFaqFragment.ContactUsFaqListener;
@@ -163,8 +165,13 @@ public class ContactUsActivity extends BasePresenterActivity implements
     @Override
     public void onFinishCreateTicket() {
         CommonUtils.UniversalToast(this, getString(R.string.title_contact_finish));
-        if (GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isSellerApp() && SessionHandler.isV4Login(this)) {
             Intent intent = SellerAppRouter.getSellerHomeActivity(this);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        } else if (GlobalConfig.isSellerApp()) {
+            Intent intent = new Intent(this, WelcomeActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
