@@ -44,6 +44,18 @@ public abstract class AuthService<T> extends BaseService<T> {
         this.overrideBaseUrl = overrideBaseUrl;
     }
 
+    /**
+     * this constructor only made for creating base Url,
+     * the one from the top not work anymore
+     * @param baseUrl
+     * @param isOverriten
+     */
+    public AuthService(String baseUrl, int isOverriten){
+        super(baseUrl);
+        this.baseUrl = baseUrl;
+        this.overrideBaseUrl = true;
+    }
+
     @Override
     public OkHttpClient.Builder getOkHttpClientBuilder() {
         OkHttpClient.Builder okHttpClient = new OkHttpClient.Builder();
