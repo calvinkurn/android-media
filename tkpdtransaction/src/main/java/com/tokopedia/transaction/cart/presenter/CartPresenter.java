@@ -138,6 +138,9 @@ public class CartPresenter implements ICartPresenter {
                 checkoutAnalytics.addProduct(product.getProduct());
             }
         }
+        checkoutAnalytics.setCurrency("IDR");
+        checkoutAnalytics.setStep(2);
+
         Map[] afAllItemsPurchased = new Map[afProducts.size()];
         int ctr = 0;
         for (HashMap<String, Object> afItem : afProducts) {
@@ -157,6 +160,7 @@ public class CartPresenter implements ICartPresenter {
                 new TypeToken<ArrayList<com.tokopedia.core.analytics.model.Product>>() {
                 }.getType()
         );
+        String checkout = afGSON.toJson(checkoutAnalytics, new TypeToken<Checkout>(){}.getType());
 
         LocalCacheHandler cache = view.getLocalCacheHandlerNotificationData();
 
@@ -167,6 +171,7 @@ public class CartPresenter implements ICartPresenter {
         cache.putString(Jordan.CACHE_AF_KEY_ALL_PRODUCTS, afpurchased);
         cache.putString(Jordan.CACHE_AF_KEY_REVENUE, cartData.getGrandTotal() + "");
         cache.putString(Jordan.CACHE_KEY_DATA_AR_ALLPURCHASE, allPurchases);
+        cache.putString(Jordan.CACHE_KEY_DATA_CHECKOUT, checkout);
         cache.applyEditor();
 
         Map<String, Object> afValue = new HashMap<>();

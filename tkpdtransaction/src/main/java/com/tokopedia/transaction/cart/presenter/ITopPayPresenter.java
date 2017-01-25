@@ -32,4 +32,8 @@ public interface ITopPayPresenter {
     void processPaymentAnalytics(
             LocalCacheHandler localCacheHandler, ThanksTopPayData thanksTopPayData
     ) throws Exception;
+
+    void processCheckoutAnalytics(
+            LocalCacheHandler localCacheHandler, String gateway
+    );
 }

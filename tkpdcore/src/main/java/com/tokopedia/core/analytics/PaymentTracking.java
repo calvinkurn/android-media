@@ -3,6 +3,7 @@ package com.tokopedia.core.analytics;
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.localytics.android.Localytics;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.Product;
@@ -118,6 +119,7 @@ public class PaymentTracking extends TrackingUtils {
     }
 
     public static void eventCartCheckout(Checkout checkout) {
+        CommonUtils.dumper("GAv4 CHECKOUT EVENT");
         getGTMEngine()
                 .eventCheckout(checkout)
                 .sendScreen(AppScreen.SCREEN_CART_SUMMARY_CHECKOUT)

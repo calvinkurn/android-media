@@ -83,6 +83,7 @@ public class Jordan {
     public static final String CACHE_LC_KEY_ALL_PRODUCTS = "lc_allprod";
     public static final String CACHE_LC_KEY_SHIPPINGRATE = "lc_shippingrate";
     public static final String CACHE_KEY_DATA_AR_ALLPURCHASE = "cc_purchase";
+    public static final String CACHE_KEY_DATA_CHECKOUT = "cc_checkout";
 
     public static final String AF_VALUE_PRODUCTTYPE = "product";
 
