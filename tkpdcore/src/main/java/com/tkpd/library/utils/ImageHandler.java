@@ -2,6 +2,7 @@ package com.tkpd.library.utils;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -162,14 +163,14 @@ public class ImageHandler {
     }
 
     public static void loadImageThumbs(Context context, ImageView imageview, String url) {
+        Glide.get(context).clearMemory();
         Glide.with(context)
                 .load(url)
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
-                .thumbnail(0.5f)
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(imageview);
     }
 
@@ -237,7 +238,7 @@ public class ImageHandler {
 
 
     public static void loadImageBitmap2(Context context, String url, SimpleTarget<Bitmap> target) {
-        Glide.clear(target);
+        Glide.get(context).clearMemory();
         Glide.with(context)
                 .load(url)
                 .asBitmap()
@@ -388,6 +389,7 @@ public class ImageHandler {
     }
 
     public static void loadImageFit2(Context context, ImageView imageView, String url) {
+        Glide.get(context).clearMemory();
         Glide.with(context)
                 .load(url)
                 .dontAnimate()
