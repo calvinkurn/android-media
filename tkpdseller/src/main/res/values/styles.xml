@@ -154,4 +154,8 @@
         <item name="android:minHeight">3dip</item>
         <item name="android:maxHeight">3dip</item>
     </style>
+
+    <style name="TopAdsRadioButton" parent="@android:style/Widget.CompoundButton.RadioButton">
+        <item name="android:button">@drawable/top_ads_set_date_radio_button</item>
+    </style>
 </resources>

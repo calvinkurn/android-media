@@ -18,6 +18,7 @@ import com.tokopedia.seller.topads.model.data.ShopAd;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsDetailShopPresenterImpl;
+import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
@@ -47,7 +48,8 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
     protected void initView(View view) {
         super.initView(view);
         name.setTitle(getString(R.string.title_top_ads_store));
-        name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.green_200));
+        name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
+        name.setTypefaceType(TopAdsLabelView.TYPE_FACE_BOLD);
         favorite.setTitle(getString(R.string.label_top_ads_favorit));
         name.setOnClickListener(new View.OnClickListener() {
             @Override

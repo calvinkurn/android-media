@@ -10,5 +10,5 @@
 
     <RadioButton
         android:id="@+id/radio_button"
-        style="@style/RadioButton"/>
+        style="@style/TopAdsRadioButton"/>
 </LinearLayout>
