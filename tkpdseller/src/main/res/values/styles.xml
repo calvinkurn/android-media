@@ -95,7 +95,11 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/font_medium</item>
-        <item name="android:padding">12dp</item>
+        <item name="android:padding">12dp</item>`
+    </style>
+
+    <style name="TopAdsRadioButton" parent="@style/RadioButton">
+        <item name="android:button">@drawable/top_ads_set_date_radio_button</item>
     </style>
 
     <style name="Button.TopAds" parent="Widget.AppCompat.Button">
@@ -153,9 +157,5 @@
         <item name="android:progressDrawable">@drawable/top_ads_progressbar</item>
         <item name="android:minHeight">3dip</item>
         <item name="android:maxHeight">3dip</item>
-    </style>
-
-    <style name="TopAdsRadioButton" parent="@android:style/Widget.CompoundButton.RadioButton">
-        <item name="android:button">@drawable/top_ads_set_date_radio_button</item>
     </style>
 </resources>
