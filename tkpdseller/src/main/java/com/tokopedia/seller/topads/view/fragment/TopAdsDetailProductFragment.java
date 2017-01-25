@@ -65,7 +65,6 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
                 onNameClicked();
             }
         });
-        name.setTypefaceType(TopAdsLabelView.TYPE_FACE_BOLD);
         promoGroupLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -23,10 +23,7 @@ public class TopAdsLabelView extends FrameLayout {
     private String titleText;
     private String valueText;
     private int colorValue;
-
-    public final static int TYPE_FACE_NORMAL = 0,
-        TYPE_FACE_BOLD = 1;
-    private int typefaceType;
+    private int contentTextStyleValue;
 
     public TopAdsLabelView(Context context) {
         super(context);
@@ -50,7 +47,7 @@ public class TopAdsLabelView extends FrameLayout {
             titleText = styledAttributes.getString(R.styleable.TopAdsLabelView_title);
             valueText = styledAttributes.getString(R.styleable.TopAdsLabelView_content);
             colorValue = styledAttributes.getColor(R.styleable.TopAdsLabelView_content_color, ContextCompat.getColor(getContext(), R.color.grey));
-            typefaceType = styledAttributes.getInt(R.styleable.TopAdsLabelView_content_style, TYPE_FACE_NORMAL);
+            contentTextStyleValue = styledAttributes.getInt(R.styleable.TopAdsLabelView_content_textStyle, Typeface.NORMAL);
         } finally {
             styledAttributes.recycle();
         }
@@ -62,6 +59,7 @@ public class TopAdsLabelView extends FrameLayout {
         titleTextView.setText(titleText);
         contentTextView.setText(valueText);
         contentTextView.setTextColor(colorValue);
+        contentTextView.setTypeface(null, contentTextStyleValue);
         invalidate();
         requestLayout();
     }
@@ -84,23 +82,14 @@ public class TopAdsLabelView extends FrameLayout {
         requestLayout();
     }
 
-    public void setContentColorValue(@ColorInt int colorValue) {
-        contentTextView.setTextColor(colorValue);
+    public void setContentTypeface(int typefaceType) {
+        contentTextView.setTypeface(null, typefaceType);
         invalidate();
         requestLayout();
     }
 
-    public void setTypefaceType(int typefaceType){
-        switch (typefaceType){
-            case TYPE_FACE_NORMAL:
-                contentTextView.setTypeface(null, Typeface.NORMAL);
-                break;
-            case TYPE_FACE_BOLD:
-                contentTextView.setTypeface(null, Typeface.BOLD);
-                break;
-            default:
-                throw new RuntimeException("dont have any typeface type !!");
-        }
+    public void setContentColorValue(@ColorInt int colorValue) {
+        contentTextView.setTextColor(colorValue);
         invalidate();
         requestLayout();
     }
