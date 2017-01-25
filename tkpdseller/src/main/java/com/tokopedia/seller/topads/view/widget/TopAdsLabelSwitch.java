@@ -82,7 +82,7 @@ public class TopAdsLabelSwitch extends FrameLayout {
     }
 
     public void setSwitchStatusText(String textTitle) {
-        switchStatus.setText(textTitle);
+        switchTextView.setText(textTitle);
         invalidate();
         requestLayout();
     }

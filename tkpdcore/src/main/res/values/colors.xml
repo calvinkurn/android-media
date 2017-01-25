@@ -11,15 +11,13 @@
     <color name="colorGreen">#42B459</color>
     <color name="colorBlack">#494949</color>
     <color name="colorGray">#DDDDDD</color>
-    <color name="color_gray">#1f000000</color>
 
     <color name="label_text_color">#9b9b9b</color>
     <color name="grey">#888888</color>
     <color name="greyish_brown_70">#b2515151</color>
     <color name="greyish_bg">#ededed</color>
     <color name="black">#000000</color>
-    <color name="black_seventy_percent">#B3000000</color>
-    <color name="black_fifty_four_percent">#8A000000</color>
+    <color name="black_twenty_percent">#1F000000</color>
     <color name="greyish_brown_two">#4b4b4b</color>
     <color name="tkpd_green_onboarding">#53BA51</color>
     <color name="tkpd_green_header">#42BD41</color>

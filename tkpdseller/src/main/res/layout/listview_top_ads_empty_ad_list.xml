@@ -23,24 +23,17 @@
 
     <TextView
         android:id="@+id/text_view_empty_title_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/TextView.TopAdsTitleEmptyView"
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
-        android:textColor="@color/black_seventy_percent"
-        android:textSize="@dimen/fontm"
         tools:text="@string/top_ads_empty_group_title_promo_text"/>
 
     <TextView
         android:id="@+id/text_view_empty_content_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/TextView.TopAdsContentEmptyView"
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
-        tools:text="@string/top_ads_empty_group_promo_content_empty_text"
-        android:textColor="@color/black_fifty_four_percent"
-        android:textSize="@dimen/text_size_small"
-        />
+        tools:text="@string/top_ads_empty_group_promo_content_empty_text"/>
 
     <TextView
         android:id="@+id/text_view_empty_content_item_text"
@@ -48,8 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_med"
         android:gravity="center"
-        tools:text="@string/top_ads_empty_group_promo_content_item_no_text"
         android:textColor="@color/tkpd_main_green"
-        />
+        tools:text="@string/top_ads_empty_group_promo_content_item_no_text"/>
 
 </LinearLayout>
