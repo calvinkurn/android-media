@@ -98,7 +98,13 @@ public class ContactUsActivity extends BasePresenterActivity implements
         Bundle bundle = getIntent().getExtras();
         if (bundle == null)
             bundle = new Bundle();
-        if (bundle.getString(PARAM_URL, "").equals("") && getFragmentManager().findFragmentById(R.id.main_view) == null) {
+
+        if (goToCreateTicket(bundle)) {
+            url = bundle.getString(PARAM_URL, "");
+            if (url != null && !url.equals(""))
+                bundle.putString(PARAM_SOLUTION_ID, Uri.parse(url).getQueryParameter("solution_id"));
+            onGoToCreateTicket(bundle);
+        } else if (getFragmentManager().findFragmentById(R.id.main_view) == null) {
             ContactUsFaqFragment fragment = ContactUsFaqFragment.createInstance(bundle);
             listener = fragment.getBackButtonListener();
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
@@ -106,12 +112,13 @@ public class ContactUsActivity extends BasePresenterActivity implements
             fragmentTransaction.add(R.id.main_view, fragment, fragment.getClass().getSimpleName());
             fragmentTransaction.addToBackStack(ContactUsFaqFragment.class.getSimpleName());
             fragmentTransaction.commit();
-        } else if (getFragmentManager().findFragmentById(R.id.main_view) == null) {
-            url = bundle.getString(PARAM_URL, "");
-            if (url != null || !url.equals(""))
-                bundle.putString(PARAM_SOLUTION_ID, Uri.parse(url).getQueryParameter("solution_id"));
-            onGoToCreateTicket(bundle);
         }
+    }
+
+    private boolean goToCreateTicket(Bundle bundle) {
+        return getFragmentManager().findFragmentById(R.id.main_view) == null
+                && !bundle.getString(PARAM_URL, "").equals("")
+                && Uri.parse(bundle.getString(PARAM_URL, "")).getQueryParameter("solution_id") != null;
     }
 
     @Override

@@ -3,34 +3,41 @@ package com.tokopedia.core.drawer2.datamanager;
 import android.content.Context;
 import android.util.Log;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
 import com.tokopedia.core.drawer.model.notification.NotificationData;
 import com.tokopedia.core.drawer.model.profileinfo.ProfileData;
+import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
 import com.tokopedia.core.drawer2.interactor.DepositNetworkInteractor;
 import com.tokopedia.core.drawer2.interactor.DepositNetworkInteractorImpl;
 import com.tokopedia.core.drawer2.interactor.NotificationNetworkInteractor;
 import com.tokopedia.core.drawer2.interactor.NotificationNetworkInteractorImpl;
 import com.tokopedia.core.drawer2.interactor.ProfileNetworkInteractor;
 import com.tokopedia.core.drawer2.interactor.ProfileNetworkInteractorImpl;
+import com.tokopedia.core.drawer2.interactor.TokoCashNetworkInteractor;
+import com.tokopedia.core.drawer2.interactor.TokoCashNetworkInteractorImpl;
 import com.tokopedia.core.drawer2.interactor.TopPointsNetworkInteractor;
 import com.tokopedia.core.drawer2.interactor.TopPointsNetworkInteractorImpl;
+import com.tokopedia.core.drawer2.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.viewmodel.DrawerProfile;
+import com.tokopedia.core.drawer2.viewmodel.DrawerTokoCash;
+import com.tokopedia.core.drawer2.viewmodel.DrawerTopPoints;
 import com.tokopedia.core.network.apiservices.clover.CloverService;
 import com.tokopedia.core.network.apiservices.transaction.DepositService;
+import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.drawer2.viewmodel.DrawerData;
+import com.tokopedia.core.util.Drawer;
+import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONException;
 
 import retrofit2.Response;
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -44,6 +51,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
     private final NotificationNetworkInteractor notificationNetworkInteractor;
     private final DepositNetworkInteractor depositNetworkInteractor;
     private final TopPointsNetworkInteractor topPointsNetworkInteractor;
+    private final TokoCashNetworkInteractor tokoCashNetworkInteractor;
 
 
     public DrawerDataManagerImpl() {
@@ -51,138 +59,104 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
         notificationNetworkInteractor = new NotificationNetworkInteractorImpl(new NotificationService());
         depositNetworkInteractor = new DepositNetworkInteractorImpl(new DepositService());
         topPointsNetworkInteractor = new TopPointsNetworkInteractorImpl(new CloverService());
+        tokoCashNetworkInteractor = new TokoCashNetworkInteractorImpl(new TokoCashService());
     }
 
     @Override
-    public Observable<DrawerData> getDrawerData(Context context) {
-        DrawerData drawerData = new DrawerData();
-
-//        Observable<Response<TkpdResponse>> notificationObservable =
-//                profileNetworkInteractor.getProfileInfo(context, new TKPDMapParam<String, String>());
-
-        return Observable.merge(getProfileInfoObservable(drawerData, context),
-                getDepositObservable(drawerData, context),
-                getTopPointsObservable(drawerData, context),
-                getNotificationsObservable(drawerData, context)
-        ).first(new Func1<DrawerData, Boolean>() {
-            @Override
-            public Boolean call(DrawerData drawerData) {
-                return drawerData.getDrawerProfile() != null
-                        && drawerData.getDrawerProfile().getDeposit() != null
-                        && drawerData.getDrawerProfile().getUserName() != null
-                        && drawerData.getDrawerProfile().getTopPoints() != null
-                        && drawerData.getDrawerNotification() != null;
-            }
-        });
-
-    }
-
-    private Observable<DrawerData> getNotificationsObservable(final DrawerData drawerData, Context context) {
-        return notificationNetworkInteractor.getNotification(context, new TKPDMapParam<String, String>())
-                .flatMap(new Func1<Response<TkpdResponse>, Observable<DrawerData>>() {
+    public Observable<DrawerProfile> getDrawerProfile(Context context) {
+        return profileNetworkInteractor.getProfileInfo(context, new TKPDMapParam<String, String>())
+                .flatMap(new Func1<Response<TkpdResponse>, Observable<DrawerProfile>>() {
                     @Override
-                    public Observable<DrawerData> call(Response<TkpdResponse> response) {
-                        NotificationData notificationData = response.body().convertDataObj(NotificationData.class);
-                        DrawerNotification drawerNotification = new DrawerNotification();
-                        drawerNotification.setInboxMessage(notificationData.getInbox().getInboxMessage());
-                        drawerNotification.setInboxResCenter(notificationData.getResolution());
-                        drawerNotification.setInboxReview(notificationData.getInbox().getInboxReputation());
-                        drawerNotification.setInboxTalk(notificationData.getInbox().getInboxTalk());
-                        drawerNotification.setInboxTicket(notificationData.getInbox().getInboxTicket());
-
-                        drawerNotification.setPurchaseDeliveryConfirm(notificationData.getPurchase().getPurchaseDeliveryConfirm());
-                        drawerNotification.setPurchaseOrderStatus(notificationData.getPurchase().getPurchaseOrderStatus());
-                        drawerNotification.setPurchasePaymentConfirm(notificationData.getPurchase().getPurchasePaymentConfirm());
-                        drawerNotification.setPurchaseReorder(notificationData.getPurchase().getPurchaseReorder());
-
-                        drawerNotification.setSellingNewOrder(notificationData.getSales().getSalesNewOrder());
-                        drawerNotification.setSellingShippingConfirmation(notificationData.getSales().getSalesShippingConfirm());
-                        drawerNotification.setSellingShippingStatus(notificationData.getSales().getSalesShippingStatus());
-
-                        drawerData.setDrawerNotification(drawerNotification);
-                        return Observable.just(drawerData);
-                    }
-                })
-                .onErrorReturn(new Func1<Throwable, DrawerData>() {
-                    @Override
-                    public DrawerData call(Throwable throwable) {
-                        Log.d(TAG, throwable.toString());
-                        drawerData.setDrawerNotification(new DrawerNotification());
-                        return null;
+                    public Observable<DrawerProfile> call(Response<TkpdResponse> response) {
+                        DrawerProfile drawerProfile = convertToDrawerProfile(response);
+                        return Observable.just(drawerProfile);
                     }
                 });
     }
 
-    private Observable<DrawerData> getTopPointsObservable(final DrawerData drawerData, Context context) {
-        return topPointsNetworkInteractor.getTopPoints(
-                context, new TKPDMapParam<String, String>())
-                .flatMap(new Func1<Response<TkpdResponse>, Observable<DrawerData>>() {
+    @Override
+    public Observable<DrawerDeposit> getDeposit(Context context) {
+        return depositNetworkInteractor.getDeposit(context, new TKPDMapParam<String, String>())
+                .flatMap(new Func1<Response<TkpdResponse>, Observable<DrawerDeposit>>() {
                     @Override
-                    public Observable<DrawerData> call(Response<TkpdResponse> response) {
+                    public Observable<DrawerDeposit> call(Response<TkpdResponse> response) {
+                        String deposit = convertToDeposit(response);
+                        DrawerDeposit drawerDeposit = new DrawerDeposit();
+                        drawerDeposit.setDeposit(deposit);
+                        return Observable.just(drawerDeposit);
+                    }
+                });
+    }
+
+    @Override
+    public Observable<DrawerTopPoints> getTopPoints(Context context) {
+        return topPointsNetworkInteractor.getTopPoints(context, new TKPDMapParam<String, String>())
+                .flatMap(new Func1<Response<TkpdResponse>, Observable<DrawerTopPoints>>() {
+                    @Override
+                    public Observable<DrawerTopPoints> call(Response<TkpdResponse> response) {
                         LoyaltyItem topPoints = convertToTopPoints(response);
-                        drawerData.getDrawerProfile().setTopPoints(topPoints.getLoyaltyPoint().getAmount());
-                        drawerData.getDrawerProfile().setTopPointsUrl(topPoints.getUri());
-                        return Observable.just(drawerData);
-                    }
-                })
-                .onErrorReturn(new Func1<Throwable, DrawerData>() {
-                    @Override
-                    public DrawerData call(Throwable throwable) {
-                        Log.d(TAG, throwable.toString());
-                        drawerData.getDrawerProfile().setTopPoints("");
-                        drawerData.getDrawerProfile().setTopPointsUrl("");
-                        return drawerData;
+                        DrawerTopPoints drawerTopPoints = new DrawerTopPoints();
+                        drawerTopPoints.setTopPoints(topPoints.getLoyaltyPoint().getAmount());
+                        drawerTopPoints.setTopPointsUrl(topPoints.getUri());
+                        return Observable.just(drawerTopPoints);
                     }
                 });
+    }
+
+    @Override
+    public Observable<DrawerTokoCash> getTokoCash(String accessToken) {
+        return tokoCashNetworkInteractor.getTokoCash(accessToken)
+                .flatMap(new Func1<Response<TopCashItem>, Observable<DrawerTokoCash>>() {
+                    @Override
+                    public Observable<DrawerTokoCash> call(Response<TopCashItem> response) {
+                        TopCashItem topCashItem = response.body();
+                        DrawerTokoCash drawerTokoCash = new DrawerTokoCash();
+                        drawerTokoCash.setHasTokoCash(hasTokoCash(topCashItem));
+                        drawerTokoCash.setTokoCash(topCashItem.getData().getBalance());
+                        drawerTokoCash.setTokoCashUrl(topCashItem.getData().getRedirectUrl());
+                        drawerTokoCash.setTokoCashLabel(topCashItem.getData().getText());
+                        return Observable.just(drawerTokoCash);
+                    }
+                });
+    }
+
+    @Override
+    public Observable<DrawerNotification> getNotification(Context context) {
+        return notificationNetworkInteractor.getNotification(context, new TKPDMapParam<String, String>())
+                .flatMap(new Func1<Response<TkpdResponse>, Observable<DrawerNotification>>() {
+                    @Override
+                    public Observable<DrawerNotification> call(Response<TkpdResponse> response) {
+                        NotificationData notificationData = response.body().convertDataObj(NotificationData.class);
+                        return Observable.just(convertToDrawerNotification(notificationData));
+                    }
+                });
+    }
+
+    private DrawerNotification convertToDrawerNotification(NotificationData notificationData) {
+        DrawerNotification drawerNotification = new DrawerNotification();
+        drawerNotification.setInboxMessage(notificationData.getInbox().getInboxMessage());
+        drawerNotification.setInboxResCenter(notificationData.getResolution());
+        drawerNotification.setInboxReview(notificationData.getInbox().getInboxReputation());
+        drawerNotification.setInboxTalk(notificationData.getInbox().getInboxTalk());
+        drawerNotification.setInboxTicket(notificationData.getInbox().getInboxTicket());
+
+        drawerNotification.setPurchaseDeliveryConfirm(notificationData.getPurchase().getPurchaseDeliveryConfirm());
+        drawerNotification.setPurchaseOrderStatus(notificationData.getPurchase().getPurchaseOrderStatus());
+        drawerNotification.setPurchasePaymentConfirm(notificationData.getPurchase().getPurchasePaymentConfirm());
+        drawerNotification.setPurchaseReorder(notificationData.getPurchase().getPurchaseReorder());
+
+        drawerNotification.setSellingNewOrder(notificationData.getSales().getSalesNewOrder());
+        drawerNotification.setSellingShippingConfirmation(notificationData.getSales().getSalesShippingConfirm());
+        drawerNotification.setSellingShippingStatus(notificationData.getSales().getSalesShippingStatus());
+        return drawerNotification;
+    }
+
+    private boolean hasTokoCash(TopCashItem topCashItem) {
+        return (topCashItem.getData().getLink() == 1) || (topCashItem.getData().getLink() == 0 && topCashItem.getData().getAction() != null);
     }
 
     private LoyaltyItem convertToTopPoints(Response<TkpdResponse> response) {
         return response.body().convertDataObj(LoyaltyItem.class);
-    }
-
-    private Observable<DrawerData> getDepositObservable(final DrawerData drawerData, Context context) {
-        return depositNetworkInteractor.getDeposit(
-                context, new TKPDMapParam<String, String>())
-                .flatMap(new Func1<Response<TkpdResponse>, Observable<DrawerData>>() {
-                    @Override
-                    public Observable<DrawerData> call(Response<TkpdResponse> depositResponse) {
-
-                        String deposit = convertToDeposit(depositResponse);
-                        drawerData.getDrawerProfile().setDeposit(deposit);
-                        return Observable.just(drawerData);
-                    }
-                })
-                .onErrorReturn(new Func1<Throwable, DrawerData>() {
-                    @Override
-                    public DrawerData call(Throwable throwable) {
-                        Log.d(TAG, throwable.toString());
-                        drawerData.getDrawerProfile().setDeposit("");
-                        return drawerData;
-                    }
-                });
-    }
-
-    private Observable<DrawerData> getProfileInfoObservable(final DrawerData drawerData, Context context) {
-        return profileNetworkInteractor.getProfileInfo(
-                context, new TKPDMapParam<String, String>())
-                .flatMap(new Func1<Response<TkpdResponse>, Observable<DrawerData>>() {
-                    @Override
-                    public Observable<DrawerData> call(Response<TkpdResponse> profileResponse) {
-                        DrawerProfile drawerProfile = convertToDrawerProfile(profileResponse);
-                        drawerData.setDrawerProfile(drawerProfile);
-                        return Observable.just(drawerData);
-                    }
-                })
-                .onErrorReturn(new Func1<Throwable, DrawerData>() {
-                    @Override
-                    public DrawerData call(Throwable throwable) {
-                        Log.d(TAG, throwable.toString());
-                        DrawerProfile drawerProfile = new DrawerProfile();
-                        drawerData.setDrawerProfile(drawerProfile);
-                        return drawerData;
-                    }
-                });
-
     }
 
     private DrawerProfile convertToDrawerProfile(Response<TkpdResponse> response) {

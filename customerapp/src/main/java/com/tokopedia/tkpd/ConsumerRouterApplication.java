@@ -14,6 +14,7 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
 import com.tokopedia.tkpd.home.ParentIndexHome;
+import com.tokopedia.transaction.webview.WalletWebView;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -32,6 +33,11 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
+    public void goToProductDetail(Context context, String productUrl) {
+        throw new RuntimeException("right now, it implement at Seller Application !!");
+    }
+
+    @Override
     public Fragment getRechargeCategoryFragment() {
         Bundle bundle = new Bundle();
         return RechargeCategoryFragment.newInstance(bundle);
@@ -41,5 +47,12 @@ public class ConsumerRouterApplication extends MainApplication implements
     public DrawerHelper getDrawer(AppCompatActivity activity) {
         CommonUtils.dumper("NISNIS " + activity.getClass().getSimpleName());
         return DrawerBuyerHelper.createInstance(activity);
+    }
+
+    @Override
+    public void goToWallet(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, WalletWebView.class);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 }

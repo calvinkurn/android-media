@@ -34,6 +34,8 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         void onGoToProfile();
 
         void onGoToTopPoints(String topPointsUrl);
+
+        void onGoToTopCash(String topCashUrl);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -50,6 +52,9 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         @BindView(R2.id.toppoints_text)
         TextView topPoint;
 
+        @BindView(R2.id.top_cash_value)
+        TextView tokoCash;
+
         @BindView(R2.id.cover_img)
         ImageView coverImg;
 
@@ -65,11 +70,22 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         @BindView(R2.id.drawer_top_points)
         RelativeLayout topPointsLayout;
 
+        @BindView(R2.id.drawer_top_cash)
+        RelativeLayout tokoCashLayout;
+
         @BindView(R2.id.loading_saldo)
         View loadingSaldo;
 
         @BindView(R2.id.loading_loyalty)
         View loadingLoyalty;
+
+        @BindView(R2.id.loading_top_cash)
+        View loadingTokoCash;
+
+        @BindView(R2.id.toko_cash_label)
+        TextView tokoCashLabel;
+
+
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -78,7 +94,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
     }
 
     private Context context;
-    private DrawerProfile data;
+    private DrawerData data;
     private DrawerHeaderListener listener;
 
     public DrawerHeaderDataBinder(DataBindAdapter dataBindAdapter,
@@ -86,12 +102,16 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
                                   DrawerHeaderListener listener) {
         super(dataBindAdapter);
         this.context = context;
-        this.data = new DrawerProfile();
+        this.data = new DrawerData();
         this.listener = listener;
     }
 
-    public void setData(DrawerData drawerData) {
-        data = drawerData.getDrawerProfile();
+    public void setData(DrawerData data) {
+        data = data;
+    }
+
+    public DrawerData getData() {
+        return data;
     }
 
     @Override
@@ -125,16 +145,18 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
 
         setCover(holder);
 
-        if (data.getUserAvatar() != null && !data.getUserAvatar().equals(""))
-            ImageHandler.loadImageCircle2(context, holder.avatar, data.getUserAvatar());
+        if (data.getDrawerProfile().getUserAvatar() != null && !data.getDrawerProfile().getUserAvatar().equals(""))
+            ImageHandler.loadImageCircle2(context, holder.avatar, data.getDrawerProfile().getUserAvatar());
 
-        holder.name.setText(data.getUserName());
+        holder.name.setText(data.getDrawerProfile().getUserName());
 
         setDeposit(holder);
         setTopPoints(holder);
+        setTopCash(holder);
 
         setListener(holder);
     }
+
 
     private void setListener(ViewHolder holder) {
         holder.saldoLayout.setOnClickListener(new View.OnClickListener() {
@@ -146,7 +168,13 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         holder.topPointsLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onGoToTopPoints(data.getTopPointsUrl());
+                listener.onGoToTopPoints(data.getDrawerTopPoints().getTopPointsUrl());
+            }
+        });
+        holder.tokoCashLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onGoToTopCash(data.getDrawerTokoCash().getTokoCashUrl());
             }
         });
         holder.name.setOnClickListener(new View.OnClickListener() {
@@ -163,33 +191,47 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         });
     }
 
+    private void setTopCash(ViewHolder holder) {
+        if (!data.getDrawerTokoCash().isHasTokoCash()) {
+            holder.tokoCashLayout.setVisibility(View.GONE);
+        } else if (data.getDrawerTokoCash().getTokoCash().equals("")) {
+            holder.loadingTokoCash.setVisibility(View.VISIBLE);
+            holder.tokoCash.setVisibility(View.GONE);
+        } else {
+            holder.loadingTokoCash.setVisibility(View.GONE);
+            holder.tokoCash.setVisibility(View.VISIBLE);
+            holder.tokoCash.setText(data.getDrawerTokoCash().getTokoCash());
+            holder.tokoCashLabel.setText(data.getDrawerTokoCash().getTokoCashLabel());
+        }
+    }
+
     private void setTopPoints(ViewHolder holder) {
-        if (data.getTopPoints().equals("")) {
+        if (data.getDrawerTopPoints().getTopPoints().equals("")) {
             holder.loadingLoyalty.setVisibility(View.VISIBLE);
             holder.topPoint.setVisibility(View.GONE);
         } else {
             holder.loadingLoyalty.setVisibility(View.GONE);
             holder.topPoint.setVisibility(View.VISIBLE);
-            holder.topPoint.setText(data.getTopPoints());
+            holder.topPoint.setText(data.getDrawerTopPoints().getTopPoints());
         }
     }
 
     private void setDeposit(ViewHolder holder) {
-        if (data.getDeposit().equals("")) {
+        if (data.getDrawerDeposit().getDeposit().equals("")) {
             holder.loadingSaldo.setVisibility(View.VISIBLE);
             holder.deposit.setVisibility(View.GONE);
         } else {
             holder.loadingSaldo.setVisibility(View.GONE);
-            holder.deposit.setText(data.getDeposit());
+            holder.deposit.setText(data.getDrawerDeposit().getDeposit());
             holder.deposit.setVisibility(View.VISIBLE);
         }
     }
 
     private void setCover(ViewHolder holder) {
-        if (data.getShopCover() != null && !data.getShopCover().equals("")) {
+        if (data.getDrawerProfile().getShopCover() != null && !data.getDrawerProfile().getShopCover().equals("")) {
             holder.gradientBlack.setBackgroundResource(R.drawable.gradient_black);
             holder.coverImg.setVisibility(View.VISIBLE);
-            ImageHandler.LoadImage(holder.coverImg, data.getShopCover());
+            ImageHandler.LoadImage(holder.coverImg, data.getDrawerProfile().getShopCover());
             holder.name.setShadowLayer(1.5f, 2, 2, R.color.trans_black_40);
         } else {
             holder.gradientBlack.setBackgroundResource(0);

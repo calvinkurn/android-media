@@ -7,8 +7,16 @@ package com.tokopedia.core.drawer2.viewmodel;
 public class DrawerData {
     private DrawerProfile drawerProfile;
     private DrawerNotification drawerNotification;
+    private DrawerTokoCash drawerTokoCash;
+    private DrawerTopPoints drawerTopPoints;
+    private DrawerDeposit drawerDeposit;
 
     public DrawerData() {
+        this.drawerDeposit = new DrawerDeposit();
+        this.drawerProfile = new DrawerProfile();
+        this.drawerTokoCash = new DrawerTokoCash();
+        this.drawerNotification = new DrawerNotification();
+        this.drawerTopPoints = new DrawerTopPoints();
     }
 
     public DrawerData(DrawerProfile drawerProfile, DrawerNotification drawerNotification) {
@@ -30,5 +38,29 @@ public class DrawerData {
 
     public void setDrawerNotification(DrawerNotification drawerNotification) {
         this.drawerNotification = drawerNotification;
+    }
+
+    public DrawerTokoCash getDrawerTokoCash() {
+        return drawerTokoCash;
+    }
+
+    public void setDrawerTokoCash(DrawerTokoCash drawerTokoCash) {
+        this.drawerTokoCash = drawerTokoCash;
+    }
+
+    public DrawerTopPoints getDrawerTopPoints() {
+        return drawerTopPoints;
+    }
+
+    public void setDrawerTopPoints(DrawerTopPoints drawerTopPoints) {
+        this.drawerTopPoints = drawerTopPoints;
+    }
+
+    public DrawerDeposit getDrawerDeposit() {
+        return drawerDeposit;
+    }
+
+    public void setDrawerDeposit(DrawerDeposit drawerDeposit) {
+        this.drawerDeposit = drawerDeposit;
     }
 }

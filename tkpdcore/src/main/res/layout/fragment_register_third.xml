@@ -95,7 +95,7 @@
                 android:hint="@string/title_new_password_confirmation"
                 android:imeOptions="actionNext"
                 android:inputType="textPassword"
-                android:paddingRight="@dimen/padding_vs"
+                android:padding="@dimen/padding_vs"
                 android:textColor="@color/black"
                 android:textSize="@dimen/font_small" />
 

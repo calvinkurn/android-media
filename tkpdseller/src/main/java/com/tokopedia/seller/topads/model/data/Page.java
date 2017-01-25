@@ -11,26 +11,26 @@ public class Page {
 
     @SerializedName("current")
     @Expose
-    private Integer current;
+    private int current;
     @SerializedName("per_page")
     @Expose
-    private Integer perPage;
+    private int perPage;
     @SerializedName("min")
     @Expose
-    private Integer min;
+    private int min;
     @SerializedName("max")
     @Expose
-    private Integer max;
+    private int max;
     @SerializedName("total")
     @Expose
-    private Integer total;
+    private int total;
 
     /**
      *
      * @return
      * The current
      */
-    public Integer getCurrent() {
+    public int getCurrent() {
         return current;
     }
 
@@ -39,7 +39,7 @@ public class Page {
      * @param current
      * The current
      */
-    public void setCurrent(Integer current) {
+    public void setCurrent(int current) {
         this.current = current;
     }
 
@@ -48,7 +48,7 @@ public class Page {
      * @return
      * The perPage
      */
-    public Integer getPerPage() {
+    public int getPerPage() {
         return perPage;
     }
 
@@ -57,7 +57,7 @@ public class Page {
      * @param perPage
      * The per_page
      */
-    public void setPerPage(Integer perPage) {
+    public void setPerPage(int perPage) {
         this.perPage = perPage;
     }
 
@@ -66,7 +66,7 @@ public class Page {
      * @return
      * The min
      */
-    public Integer getMin() {
+    public int getMin() {
         return min;
     }
 
@@ -75,7 +75,7 @@ public class Page {
      * @param min
      * The min
      */
-    public void setMin(Integer min) {
+    public void setMin(int min) {
         this.min = min;
     }
 
@@ -84,7 +84,7 @@ public class Page {
      * @return
      * The max
      */
-    public Integer getMax() {
+    public int getMax() {
         return max;
     }
 
@@ -93,7 +93,7 @@ public class Page {
      * @param max
      * The max
      */
-    public void setMax(Integer max) {
+    public void setMax(int max) {
         this.max = max;
     }
 
@@ -102,7 +102,7 @@ public class Page {
      * @return
      * The total
      */
-    public Integer getTotal() {
+    public int getTotal() {
         return total;
     }
 
@@ -111,7 +111,7 @@ public class Page {
      * @param total
      * The total
      */
-    public void setTotal(Integer total) {
+    public void setTotal(int total) {
         this.total = total;
     }
 

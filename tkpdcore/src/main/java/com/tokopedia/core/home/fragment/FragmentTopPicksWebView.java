@@ -77,6 +77,10 @@ public class FragmentTopPicksWebView extends Fragment {
             progressBar.setVisibility(View.GONE);
         }
 
+        @Override
+        public void onPageFinished(WebView wv, String url) {
+            webViewLoadComplete(wv);
+        }
 
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             CommonUtils.dumper("DEEPLINK " + errorCode + "  " + description + " " + failingUrl);
@@ -84,6 +88,13 @@ public class FragmentTopPicksWebView extends Fragment {
             progressBar.setVisibility(View.GONE);
         }
 
+    }
+
+    void webViewLoadComplete( WebView wv ){
+        wv.clearAnimation();
+        wv.clearDisappearingChildren();
+        wv.destroyDrawingCache();
+        wv.freeMemory();
     }
 
 
@@ -151,6 +162,8 @@ public class FragmentTopPicksWebView extends Fragment {
             WebView.setWebContentsDebuggingEnabled(true);
             webview.setWebContentsDebuggingEnabled(true);
             CommonUtils.dumper("webviewconf debugging = true");
+        } else {
+            webview.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
         getActivity().setProgressBarIndeterminateVisibility(true);
         WebSettings webSettings = webview.getSettings();

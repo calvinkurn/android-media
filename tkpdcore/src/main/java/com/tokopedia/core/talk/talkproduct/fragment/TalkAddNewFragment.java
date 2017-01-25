@@ -165,7 +165,7 @@ public class TalkAddNewFragment extends BasePresenterFragment<TalkAddNewPresente
     }
 
     private boolean validateContent() {
-        if(TextUtils.isEmpty(mMessageText)) {
+        if(TextUtils.isEmpty(mMessageText) || mMessageText.trim().length() == 0) {
             mMessage.setError(getString(R.string.error_field_required));
             return true;
         }

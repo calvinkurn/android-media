@@ -6,134 +6,229 @@ package com.tokopedia.seller.topads.model.data;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ConflictAction;
+import com.raizlabs.android.dbflow.annotation.ContainerKey;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.annotation.Unique;
+import com.raizlabs.android.dbflow.annotation.UniqueGroup;
+import com.raizlabs.android.dbflow.structure.BaseModel;
+import com.tokopedia.seller.database.TkpdSellerDatabase;
 
-public class Summary {
+@Table(database = TkpdSellerDatabase.class,
+        uniqueColumnGroups = {@UniqueGroup(groupNumber = 1, uniqueConflict = ConflictAction.REPLACE)})
+public class Summary extends BaseModel {
+
+    @ContainerKey("id")
+    @Column
+    @Unique(unique = false)
+    @PrimaryKey(autoincrement = true)
+    public long Id;
 
     @SerializedName("click_sum")
     @Expose
-    private Integer clickSum;
+    @Column
+    public int clickSum;
+
+    @SerializedName("click_sum_fmt")
+    @Expose
+    public String clickSumFmt;
+
     @SerializedName("cost_sum")
     @Expose
-    private Double costSum;
+    @Column
+    public double costSum;
+
+    @SerializedName("cost_sum_fmt")
+    @Expose
+    public String costSumFmt;
+
     @SerializedName("impression_sum")
     @Expose
-    private Integer impressionSum;
+    @Column
+    public int impressionSum;
+
+    @SerializedName("impression_sum_fmt")
+    @Expose
+    public String impressionSumFmt;
+
     @SerializedName("ctr_percentage")
     @Expose
-    private Double ctrPercentage;
+    @Column
+    public double ctrPercentage;
+
+    @SerializedName("ctr_percentage_fmt")
+    @Expose
+    public String ctrPercentageFmt;
+
     @SerializedName("conversion_sum")
     @Expose
-    private Integer conversionSum;
+    @Column
+    public int conversionSum;
+
+    @SerializedName("conversion_sum_fmt")
+    @Expose
+    public String conversionSumFmt;
+
     @SerializedName("cost_avg")
     @Expose
-    private Double costAvg;
+    @Column
+    public double costAvg;
 
-    /**
-     *
-     * @return
-     * The clickSum
-     */
-    public Integer getClickSum() {
+    @SerializedName("cost_avg_fmt")
+    @Expose
+    public String costAvgFmt;
+
+    @Unique(unique = false, uniqueGroups = 1)
+    @Column
+    public String shopId;
+
+    @Unique(unique = false, uniqueGroups = 1)
+    @Column
+    public int type;
+
+    @Unique(unique = false, uniqueGroups = 1)
+    @Column
+    public String startDate;
+
+    @Unique(unique = false, uniqueGroups = 1)
+    @Column
+    public String endDate;
+
+    public long getId() {
+        return Id;
+    }
+
+    public void setId(long id) {
+        Id = id;
+    }
+
+    public int getClickSum() {
         return clickSum;
     }
 
-    /**
-     *
-     * @param clickSum
-     * The click_sum
-     */
-    public void setClickSum(Integer clickSum) {
+    public void setClickSum(int clickSum) {
         this.clickSum = clickSum;
     }
 
-    /**
-     *
-     * @return
-     * The costSum
-     */
-    public Double getCostSum() {
+    public String getClickSumFmt() {
+        return clickSumFmt;
+    }
+
+    public void setClickSumFmt(String clickSumFmt) {
+        this.clickSumFmt = clickSumFmt;
+    }
+
+    public double getCostSum() {
         return costSum;
     }
 
-    /**
-     *
-     * @param costSum
-     * The cost_sum
-     */
-    public void setCostSum(Double costSum) {
+    public void setCostSum(double costSum) {
         this.costSum = costSum;
     }
 
-    /**
-     *
-     * @return
-     * The impressionSum
-     */
-    public Integer getImpressionSum() {
+    public String getCostSumFmt() {
+        return costSumFmt;
+    }
+
+    public void setCostSumFmt(String costSumFmt) {
+        this.costSumFmt = costSumFmt;
+    }
+
+    public int getImpressionSum() {
         return impressionSum;
     }
 
-    /**
-     *
-     * @param impressionSum
-     * The impression_sum
-     */
-    public void setImpressionSum(Integer impressionSum) {
+    public void setImpressionSum(int impressionSum) {
         this.impressionSum = impressionSum;
     }
 
-    /**
-     *
-     * @return
-     * The ctrPercentage
-     */
-    public Double getCtrPercentage() {
+    public String getImpressionSumFmt() {
+        return impressionSumFmt;
+    }
+
+    public void setImpressionSumFmt(String impressionSumFmt) {
+        this.impressionSumFmt = impressionSumFmt;
+    }
+
+    public double getCtrPercentage() {
         return ctrPercentage;
     }
 
-    /**
-     *
-     * @param ctrPercentage
-     * The ctr_percentage
-     */
-    public void setCtrPercentage(Double ctrPercentage) {
+    public void setCtrPercentage(double ctrPercentage) {
         this.ctrPercentage = ctrPercentage;
     }
 
-    /**
-     *
-     * @return
-     * The conversionSum
-     */
-    public Integer getConversionSum() {
+    public String getCtrPercentageFmt() {
+        return ctrPercentageFmt;
+    }
+
+    public void setCtrPercentageFmt(String ctrPercentageFmt) {
+        this.ctrPercentageFmt = ctrPercentageFmt;
+    }
+
+    public int getConversionSum() {
         return conversionSum;
     }
 
-    /**
-     *
-     * @param conversionSum
-     * The conversion_sum
-     */
-    public void setConversionSum(Integer conversionSum) {
+    public void setConversionSum(int conversionSum) {
         this.conversionSum = conversionSum;
     }
 
-    /**
-     *
-     * @return
-     * The costAvg
-     */
-    public Double getCostAvg() {
+    public String getConversionSumFmt() {
+        return conversionSumFmt;
+    }
+
+    public void setConversionSumFmt(String conversionSumFmt) {
+        this.conversionSumFmt = conversionSumFmt;
+    }
+
+    public double getCostAvg() {
         return costAvg;
     }
 
-    /**
-     *
-     * @param costAvg
-     * The cost_avg
-     */
-    public void setCostAvg(Double costAvg) {
+    public void setCostAvg(double costAvg) {
         this.costAvg = costAvg;
     }
 
+    public String getCostAvgFmt() {
+        return costAvgFmt;
+    }
+
+    public void setCostAvgFmt(String costAvgFmt) {
+        this.costAvgFmt = costAvgFmt;
+    }
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
 }
