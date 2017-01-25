@@ -20,7 +20,7 @@
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/top_ads_dashboard_fab"
-            app:srcCompat="@drawable/ic_add_white_24_px"
+            android:src="@drawable/ic_add_black_48dp_00"
             app:fabSize="normal"
             app:backgroundTint="@color/tkpd_main_green"
             android:layout_width="wrap_content"
