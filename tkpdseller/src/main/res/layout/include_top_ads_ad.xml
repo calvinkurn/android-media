@@ -49,10 +49,9 @@
         android:paddingBottom="@dimen/padding_small">
 
         <TextView
-            style="@style/TextView"
+            style="@style/TextView.TopAdsListTitle"
             android:text="@string/label_top_ads_sent"
-            android:textColor="@color/black"
-            android:textSize="16sp"/>
+            android:textStyle="normal"/>
 
         <TextView
             android:id="@+id/promo_price_used"
@@ -96,7 +95,7 @@
                 tools:text="@string/app_name"/>
 
             <TextView
-                style="@style/TextView"
+                style="@style/TextView.TopAdsListContent"
                 android:layout_width="wrap_content"
                 android:layout_marginLeft="@dimen/padding_vs"
                 android:layout_marginRight="@dimen/padding_vs"
