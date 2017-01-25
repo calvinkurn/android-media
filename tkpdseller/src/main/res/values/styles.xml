@@ -144,17 +144,6 @@
         <item name="android:background">@color/white</item>
     </style>
 
-    <style name="ListViewTopAdsAdStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:foreground">?attr/selectableItemBackground</item>
-        <item name="android:paddingTop">@dimen/top_ads_dashboard_padding_cards</item>
-        <item name="android:paddingLeft">@dimen/top_ads_dashboard_padding_cards</item>
-        <item name="android:paddingRight">@dimen/top_ads_dashboard_padding_cards</item>
-        <item name="android:paddingBottom">@dimen/top_ads_dashboard_padding_cards_small</item>
-        <item name="android:background">@color/white</item>
-    </style>
-
     <style name="ColorSwitchCompat">
         <item name="colorControlActivated">@color/tkpd_main_green</item>
     </style>
