@@ -3,6 +3,7 @@ package com.tokopedia.seller.topads.view.activity;
 import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -40,7 +41,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
 
     ViewPager viewPager;
     TabLayout tabLayout;
-    FabSpeedDial fabSpeedDial;
+    FloatingActionButton fabSpeedDial;
 
     private SnackbarRetry snackbarRetry;
     private TopAdsDashboardShopFragment dashboardShopFragment;
@@ -79,7 +80,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
         drawer.setDrawerPosition(TkpdState.DrawerPosition.SELLER_TOP_ADS);
         viewPager = (ViewPager) findViewById(R.id.pager);
         tabLayout = (TabLayout) findViewById(R.id.indicator);
-        fabSpeedDial = (FabSpeedDial) findViewById(R.id.top_ads_dashboard_fab);
+        fabSpeedDial = (FloatingActionButton) findViewById(R.id.top_ads_dashboard_fab);
         datePickerPresenter.resetDate();
         viewPager.setAdapter(getViewPagerAdapter());
         viewPager.setOffscreenPageLimit(TopAdsConstant.OFFSCREEN_PAGE_LIMIT);
@@ -109,23 +110,10 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
                 dashboardProductFragment.loadData();
             }
         });
-        fabSpeedDial.setListenerFabClick(new ListenerFabClick() {
+        fabSpeedDial.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFabClick() {
-                if (!fabSpeedDial.isShown()) {
-                    fabSpeedDial.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
-            @Override
-            public boolean onMenuItemSelected(MenuItem menuItem) {
-                if (menuItem.getItemId() == R.id.action_add_promo_group) {
-                    showCreateAdsAlert(TopAdsDashboardActivity.this);
-                } else if (menuItem.getItemId() == R.id.action_add_promo_product) {
-                    showCreateAdsAlert(TopAdsDashboardActivity.this);
-                }
-                return false;
+            public void onClick(View v) {
+                showCreateAdsAlert(TopAdsDashboardActivity.this);
             }
         });
     }

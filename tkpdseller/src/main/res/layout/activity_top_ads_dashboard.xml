@@ -18,12 +18,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <com.tkpd.library.ui.floatbutton.FabSpeedDial
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/top_ads_dashboard_fab"
-            style="@style/FabSpeedDial"
+            app:srcCompat="@drawable/ic_add_white_24_px"
+            app:fabSize="normal"
+            app:backgroundTint="@color/tkpd_main_green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            app:fabMenu="@menu/menu_fab_top_ads"/>
+            android:layout_alignParentEnd="true"
+            app:layout_anchorGravity="bottom|right|end"/>
     </RelativeLayout>
 </LinearLayout>
