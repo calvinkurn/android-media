@@ -167,7 +167,11 @@ public class InstagramMediaPresenterImpl implements InstagramMedia {
     private void requestMedia() {
         instagramMediaView.loadingShow(true);
         Observable<Response<String>> observable = service.getApi().getSelfMedia(model.accessToken, nextMaxId, ITEM_COUNT_GETTER);
-        observable.subscribeOn(Schedulers.newThread()).unsubscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(onGetUserMediaSubscriber());
+        observable
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(onGetUserMediaSubscriber());
     }
 
     private Subscriber<Response<String>> onGetUserMediaSubscriber() {
@@ -207,14 +211,9 @@ public class InstagramMediaPresenterImpl implements InstagramMedia {
             instagramMediaView.showEmptyData();
         } else {
             isLoading = false;
-            mediaModels.clear();
             mediaModels.addAll(getMediaModelsFromResult(data));
             instagramMediaView.initAdapter(mediaModels);
             if (maxItemCount == -1) {
-                //[START] depends on how much it fetch the data
-//            updateMaxCount(data.getData().size());
-                //[END] depends on how much it fetch the data
-
                 updateMaxCount(20);
             }
             if (nextMaxId == null) {
@@ -263,10 +262,16 @@ public class InstagramMediaPresenterImpl implements InstagramMedia {
             Caption caption = data.getCaption();
             Images images = data.getImages();
             model.link = data.getLink();
-            model.captionText = caption.getText();
+            if(caption != null) {
+                model.captionText = caption.getText();
+            }
             model.filter = data.getFilter();
-            model.standardResolution = images.getStandardResolution().getUrl();
-            model.thumbnail = images.getThumbnail().getUrl();
+            if(images.getStandardResolution() != null) {
+                model.standardResolution = images.getStandardResolution().getUrl();
+            }
+            if(images.getThumbnail() != null) {
+                model.thumbnail = images.getThumbnail().getUrl();
+            }
             models.add(model);
         }
         return models;
