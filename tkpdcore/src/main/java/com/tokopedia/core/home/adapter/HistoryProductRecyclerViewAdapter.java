@@ -119,9 +119,7 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
 
 
     private void setBadges(ViewHolder holder, RecentView data) {
-        if (holder.badgesContainer !=null && holder.badgesContainer.getChildCount() != 0) {
-            holder.badgesContainer.removeAllViews();
-        }
+        holder.badgesContainer.removeAllViews();
         if (data.getBadges() != null) {
             for (Badge badges : data.getBadges())  {
                 View view = LayoutInflater.from(context).inflate(R.layout.badge_layout_small, null);
