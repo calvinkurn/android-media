@@ -496,7 +496,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.updateAddressShipping(AddToCartActivity.this, orderData);
+                        presenter.processChooseGeoLocation(AddToCartActivity.this, orderData);
                     }
                 });
         snackbarRetry.showRetrySnackbar();
