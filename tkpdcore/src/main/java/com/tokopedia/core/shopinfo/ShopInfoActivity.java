@@ -60,6 +60,10 @@ import java.util.List;
 
 import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
 
+/**
+ * Created by UNKNOWN on UNKNOWN DATE TIME
+ * Edited by HAFIZH on 23-01-2017
+ */
 
 public class ShopInfoActivity extends TActivity {
 
@@ -171,14 +175,14 @@ public class ShopInfoActivity extends TActivity {
         sendEventLoca();
     }
 
-    public void switchTab(String etalaseId){
+    public void switchTab(String etalaseId) {
         try {
             if (!etalaseId.equals("all")) {
                 ProductList productListFragment = (ProductList) adapter.getItem(1);
                 productListFragment.setSelectedEtalase(etalaseId);
             }
             holder.pager.setCurrentItem(1, true);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -267,7 +271,7 @@ public class ShopInfoActivity extends TActivity {
                 shopInfoString = result;
                 try {
                     updateView();
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -413,7 +417,7 @@ public class ShopInfoActivity extends TActivity {
             ImageHandler.loadImageCircle2(this, holder.shopAvatar, shopModel.info.shopAvatar);
             if (!shopModel.info.shopCover.isEmpty()) {
                 holder.goldShop.setVisibility(View.VISIBLE);
-                if(shopModel.info.shopIsOfficial == 1){
+                if (shopModel.info.shopIsOfficial == 1) {
                     holder.goldShop.setImageResource(R.drawable.ic_badge_official);
                 } else {
                     holder.goldShop.setImageResource(R.drawable.ic_shop_gold);
@@ -438,7 +442,7 @@ public class ShopInfoActivity extends TActivity {
 
     private void updateView() throws Exception {
         facadeAction.setShopModel(shopModel);
-        if(shopModel.info.shopIsOfficial == 1){
+        if (shopModel.info.shopIsOfficial == 1) {
             adapter.initOfficialShop(shopModel);
         } else {
             adapter.initRegularShop();
@@ -461,7 +465,7 @@ public class ShopInfoActivity extends TActivity {
         holder.location.setText(shopModel.info.shopLocation);
         holder.location.setVisibility(View.VISIBLE);
         holder.collapsingToolbarLayout.setTitle(" ");
-        if(shopModel.info.shopIsOfficial==1){
+        if (shopModel.info.shopIsOfficial == 1) {
             showOfficialCover();
             holder.indicator.setTabMode(TabLayout.MODE_SCROLLABLE);
         } else {
@@ -730,7 +734,7 @@ public class ShopInfoActivity extends TActivity {
         holder.appBarLayout.setExpanded(false, true);
     }
 
-    private void sendEventLoca(){
+    private void sendEventLoca() {
         ScreenTracking.eventLoca(AppScreen.SCREEN_VIEWED_SHOP_PAGE);
     }
 }
