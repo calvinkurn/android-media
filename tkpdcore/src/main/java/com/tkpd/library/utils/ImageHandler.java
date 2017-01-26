@@ -163,7 +163,6 @@ public class ImageHandler {
     }
 
     public static void loadImageThumbs(Context context, ImageView imageview, String url) {
-        Glide.get(context).clearMemory();
         Glide.with(context)
                 .load(url)
                 .dontAnimate()
@@ -238,7 +237,6 @@ public class ImageHandler {
 
 
     public static void loadImageBitmap2(Context context, String url, SimpleTarget<Bitmap> target) {
-        Glide.get(context).clearMemory();
         Glide.with(context)
                 .load(url)
                 .asBitmap()
@@ -389,7 +387,6 @@ public class ImageHandler {
     }
 
     public static void loadImageFit2(Context context, ImageView imageView, String url) {
-        Glide.get(context).clearMemory();
         Glide.with(context)
                 .load(url)
                 .dontAnimate()
