@@ -132,8 +132,6 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
             return ((BrowseProductActivity) getActivity()).checkHasFilterAttrIsNull(activeTab);
         }
     };
-    //    @BindView(R2.id.progressBar)
-//    ProgressBar progressBar;
     private BrowserSectionsPagerAdapter mSectionsPagerAdapter;
 
     public static BrowseParentFragment newInstance(BrowseProductActivityModel browseProductActivityModel) {

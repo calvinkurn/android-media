@@ -265,7 +265,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void setupRecyclerView() {
-        ((BrowseProductActivity) getActivity()).showLoading(true);
         mRecyclerView.setAdapter(productAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
