@@ -5,10 +5,12 @@ import android.os.Bundle;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.Product;
+import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.var.TkpdCache;
@@ -110,6 +112,20 @@ public class TopPayPresenter implements ITopPayPresenter {
     }
 
     @Override
+    public void processCheckoutAnalytics(LocalCacheHandler cacheHandler, String gateway){
+
+        Gson afGSON = new Gson();
+        Checkout checkoutData = afGSON.fromJson(
+                cacheHandler.getString(Jordan.CACHE_KEY_DATA_CHECKOUT),
+                new TypeToken<Checkout>() {
+                }.getType());
+
+        checkoutData.setCheckoutOption(gateway);
+
+        PaymentTracking.eventCartCheckout(checkoutData);
+    }
+
+    @Override
     public void processPaymentAnalytics(
             LocalCacheHandler cacheHandler, ThanksTopPayData thanksTopPayData
     ) throws Exception {
@@ -137,6 +153,7 @@ public class TopPayPresenter implements ITopPayPresenter {
         int qty = cacheHandler.getInt(Jordan.CACHE_AF_KEY_QTY);
         String totalShipping = cacheHandler.getLong(Jordan.CACHE_LC_KEY_SHIPPINGRATE) + "";
 
+        CommonUtils.dumper("GAv4 process analytics "+revenue+" data "+arrJas);
 
         /**
          * GTM Block
