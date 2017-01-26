@@ -41,6 +41,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.listener.ITopPayView;
+import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.presenter.ITopPayPresenter;
 import com.tokopedia.transaction.cart.presenter.TopPayPresenter;
@@ -60,6 +61,7 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
     private static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
     private static final String CONTAINS_ACCOUNT_URL = "accounts.tokopedia.com";
     private static final String CONTAINS_LOGIN_URL = "login.pl";
+    private static final String PAYMENT_FAILED = "payment failed";
     private static final long FORCE_TIMEOUT = 60000L;
     public static final int RESULT_TOPPAY_CANCELED_OR_NOT_VERIFIED = TopPayActivity.class.hashCode();
     public static final String EXTRA_RESULT_MESSAGE = "EXTRA_RESULT_MESSAGE";
@@ -187,10 +189,18 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
     }
 
     @Override
-    public void onGetThanksTopPaySuccess(String message) {
+    public void onGetThanksTopPaySuccess(ThanksTopPayData data) {
+        presenter.processCheckoutAnalytics(new LocalCacheHandler(this, TkpdCache.NOTIFICATION_DATA), data.getParameter().getGatewayName());
         presenter.clearNotificationCart();
+        try {
+            presenter.processPaymentAnalytics(
+                    new LocalCacheHandler(this, TkpdCache.NOTIFICATION_DATA), data
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         hideProgressLoading();
-        showToastMessage(message);
+        showToastMessage("Pembayaran berhasil");
         navigateToActivity(TransactionPurchaseRouter.createIntentTxSummary(this));
         CartBadgeNotificationReceiver.resetBadgeCart(this);
         closeView();
@@ -199,6 +209,7 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
     @Override
     public void onGetThanksTopPayFailed(String message) {
         hideProgressLoading();
+        presenter.processCheckoutAnalytics(new LocalCacheHandler(this, TkpdCache.NOTIFICATION_DATA), PAYMENT_FAILED);
         NetworkErrorHelper.createSnackbarWithAction(this, message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
