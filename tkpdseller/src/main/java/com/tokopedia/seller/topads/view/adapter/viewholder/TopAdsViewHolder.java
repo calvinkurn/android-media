@@ -49,7 +49,7 @@ public class TopAdsViewHolder extends RecyclerView.ViewHolder {
         statusActive.setText(ad.getStatusDesc());
         switch (ad.getStatus()) {
             case TopAdsConstant.STATUS_AD_ACTIVE:
-                statusActiveDot.setBackgroundResource(R.drawable.green_circle);
+                statusActiveDot.setBackgroundResource(R.drawable.ic_status_green);
                 break;
             default:
                 statusActiveDot.setBackgroundResource(R.drawable.grey_circle);
