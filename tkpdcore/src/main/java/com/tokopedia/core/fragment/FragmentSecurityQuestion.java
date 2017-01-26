@@ -370,7 +370,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                                   ds.setColor(getResources().getColor(R.color.tkpd_main_green));
                               }
                           }
-                , getString(R.string.action_send_otp_with_call).indexOf("kirim OTP melalui telepon")
+                , getString(R.string.action_send_otp_with_call).indexOf("kirim")
                 , getString(R.string.action_send_otp_with_call).length()
                 , 0);
 

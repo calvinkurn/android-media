@@ -409,6 +409,12 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     }
 
     @Override
+    public void showAddressErrorMessage() {
+        NetworkErrorHelper.showSnackbar(this,
+                getString(R.string.address_not_supported_add_to_cart));
+    }
+
+    @Override
     public void renderProductPrice(String price) {
         this.orderData.setPriceTotal(price);
         tvProductPrice.setText(price);
@@ -490,7 +496,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.updateAddressShipping(AddToCartActivity.this, orderData);
+                        presenter.processChooseGeoLocation(AddToCartActivity.this, orderData);
                     }
                 });
         snackbarRetry.showRetrySnackbar();
@@ -739,13 +745,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         } else if (orderData.getAddress() == null) {
             showErrorMessage(getString(R.string.error_no_address));
         } else {
-            orderData.setWeight(
-                    CommonUtils.round(
-                            (Double.parseDouble(
-                                    orderData.getInitWeight()) * Double.parseDouble(s.toString())
-                            ), 2
-                    ) + ""
-            );
+            CommonUtils.dumper("rates/v1 kerorates called aftertextchanged");
+            orderData.setWeight(CommonUtils.round((Double.parseDouble(orderData.getInitWeight()) *
+                    Double.parseDouble(s.toString())), 4) + "");
             tilAmount.setError(null);
             tilAmount.setErrorEnabled(false);
             presenter.calculateAllPrices(AddToCartActivity.this, orderData);

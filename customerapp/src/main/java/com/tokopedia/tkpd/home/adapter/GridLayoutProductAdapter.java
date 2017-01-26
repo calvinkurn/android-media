@@ -60,6 +60,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         public ImageView productImage;
         public ImageView deleteWishlistBut;
         public TextView buyWishlistBut;
+        public TextView location;
 
 
         public ViewHolder(View itemView) {
@@ -74,6 +75,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
             wishlistContent = (LinearLayout) itemView.findViewById(R.id.wishlist);
             buyWishlistBut = (TextView) itemView.findViewById(R.id.buy_button);
             deleteWishlistBut = (ImageView) itemView.findViewById(R.id.delete_but);
+            location = (TextView) itemView.findViewById(R.id.location);
         }
 
         public Context getContext() {
@@ -136,6 +138,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
             viewHolder.productName.setText(Html.fromHtml(product.name));
             viewHolder.productPrice.setText(product.price);
             viewHolder.shopName.setText(Html.fromHtml(product.shop));
+            viewHolder.location.setText(product.getShopLocation());
             setProductImage(viewHolder, product.getImgUri());
             if (product.labels == null) {
                 product.labels = new ArrayList<Label>();
@@ -155,13 +158,12 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
             setBadges(viewHolder, product);
             setLabels(viewHolder, product);
             viewHolder.mainContent.setOnClickListener(onProductItemClicked(position));
-            setBadges(viewHolder, product);
-            setLabels(viewHolder, product);
         } else if (data.get(position) instanceof RecentView) {
             RecentView product = (RecentView) data.get(position);
             viewHolder.productName.setText(Html.fromHtml(product.getProductName()));
             viewHolder.productPrice.setText(product.getProductPrice());
             viewHolder.shopName.setText(Html.fromHtml(product.getShopName()));
+            viewHolder.location.setText(product.getShopLocation());
             setProductImage(viewHolder, product.getProductImage());
             if (product.getLabels() == null) {
                 product.setLabels(new ArrayList<com.tokopedia.core.network.entity.home.recentView.Label>());
@@ -193,6 +195,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         viewHolder.productName.setText(Html.fromHtml(product.name));
         viewHolder.productPrice.setText(product.price);
         viewHolder.shopName.setText(Html.fromHtml(product.shop));
+        viewHolder.location.setText(product.getShopLocation());
         setProductImage(viewHolder, product.getImgUri());
         if(product.labels == null) {
             product.labels = new ArrayList<Label>();
@@ -281,6 +284,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     private void setBadgesRecentView(ViewHolder holder, RecentView data) {
+        holder.badgeContainer.removeAllViews();
         if (data.getBadges() != null && holder.badgeContainer.getChildCount() == 0) {
             for (com.tokopedia.core.network.entity.home.recentView.Badge badges : data.getBadges()) {
                 LuckyShopImage.loadImage(context, badges.getImageUrl(), holder.badgeContainer);

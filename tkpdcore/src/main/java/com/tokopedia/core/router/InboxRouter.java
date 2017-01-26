@@ -1,5 +1,6 @@
 package com.tokopedia.core.router;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.ComponentName;
 import android.content.Context;
@@ -10,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import com.tokopedia.core.gcm.GCMLegacyListenerService;
 import com.tokopedia.core.onboarding.FreeReturnOnboardingActivity;
 import com.tokopedia.core.util.RouterUtils;
+
+import static com.raizlabs.android.dbflow.config.FlowLog.Level.I;
 
 /**
  * Created by Nathaniel on 11/11/2016.
@@ -41,6 +44,14 @@ public class InboxRouter {
     private static final String INBOX_TICKET_FRAGMENT = "com.tokopedia.inbox.inboxticket.fragment.InboxTicketFragment";
 
     private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
+    private static final String INBOX_MESSAGE_FRAGMENT = "com.tokopedia.inbox.inboxmessage.fragment.InboxMessageFragment";
+    private static final String SEND_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity";;
+    public static final java.lang.String PARAM_CUSTOM_SUBJECT = "custom_subject";
+    public static final java.lang.String PARAM_CUSTOM_MESSAGE = "custom_message";
+    public static final java.lang.String PARAM_OWNER_FULLNAME = "owner_fullname";
+    public static final java.lang.String PARAM_USER_ID = "to_user_id";
+    public static final java.lang.String PARAM_SHOP_ID = "to_shop_id";
+
 
     /////////// INTENT
 
@@ -63,6 +74,13 @@ public class InboxRouter {
 
     public static Fragment instanceInboxTalkFromNotification(Context context) {
         Fragment fragment = Fragment.instantiate(context, INBOX_TALK_FRAGMENT);
+        Bundle bundle = new Bundle();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static Fragment instanceInboxMessageFromNotification(Context context) {
+        Fragment fragment = Fragment.instantiate(context, INBOX_MESSAGE_FRAGMENT);
         Bundle bundle = new Bundle();
         fragment.setArguments(bundle);
         return fragment;
@@ -139,6 +157,7 @@ public class InboxRouter {
         return fragment;
     }
 
-
-
+    public static Intent getSendMessageActivityIntent(Context context) {
+        return RouterUtils.getActivityIntent(context, SEND_MESSAGE_ACTIVITY);
+    }
 }

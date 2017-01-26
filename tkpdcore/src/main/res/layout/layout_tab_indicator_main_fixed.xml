@@ -4,10 +4,11 @@
     android:id="@+id/indicator"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/tkpd_main_green"
-    app:tabGravity="fill"
-    app:tabIndicatorColor="@color/white"
-    app:tabIndicatorHeight="4dp"
-    app:tabMode="fixed"
     app:tabSelectedTextColor="@color/white"
-    app:tabTextAppearance="@style/CustomTitlePageIndicator" />
+    app:tabTextColor="@android:color/white"
+    android:background="@color/tkpd_main_green"
+    app:tabIndicatorColor="@color/white"
+    app:tabIndicatorHeight="3dp"
+    app:elevation="10dp"
+    app:tabGravity="fill"
+    app:tabMode="fixed" />

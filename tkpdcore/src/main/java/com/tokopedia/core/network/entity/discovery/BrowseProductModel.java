@@ -230,7 +230,7 @@ public class BrowseProductModel {
             productItem.setLabels(data.labels);
             productItem.setPrice(data.productPrice);
             productItem.setShop(data.shopName);
-            productItem.setShop_location(data.shopLocation);
+            productItem.setShopLocation(data.shopLocation);
             productItem.setShopId(Integer.parseInt(data.shopId));
             productItem.preorder = data.productPreOder;
             productItem.wholesale = data.productWholesale;

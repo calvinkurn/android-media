@@ -14,6 +14,7 @@ import com.tokopedia.core.util.RouterUtils;
 public class SellerRouter {
 
     private static final String ACTIVITY_SELLING_TRANSACTION = "com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction";
+    private static final String ACTIVITY_TOPADS_DASHBOARD = "com.tokopedia.seller.topads.view.activity.TopAdsDashboardActivity";
 
     private static final String FRAGMENT_SELLING_NEW_ORDER = "com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder";
 
@@ -42,6 +43,10 @@ public class SellerRouter {
 
     public static Fragment getFragmentSellingNewOrder(Context context) {
         return Fragment.instantiate(context, FRAGMENT_SELLING_NEW_ORDER);
+    }
+
+    public static Intent getActivityTopadsDashboard(Context context) {
+        return RouterUtils.getActivityIntent(context, ACTIVITY_TOPADS_DASHBOARD);
     }
 
     public static ComponentName getActivitySellingTransactionName(Context context) {
