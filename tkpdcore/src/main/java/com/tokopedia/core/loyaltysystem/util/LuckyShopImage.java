@@ -30,6 +30,7 @@ public class LuckyShopImage {
                     .dontAnimate()
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
+                    .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
@@ -54,7 +55,6 @@ public class LuckyShopImage {
     public static void loadImage(Context context, String url, final LinearLayout container) {
         if (url != null && !url.equals("")) {
             final View view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null);
-            Glide.get(context).clearMemory();
             Glide.with(context)
                     .load(url)
                     .asBitmap()
