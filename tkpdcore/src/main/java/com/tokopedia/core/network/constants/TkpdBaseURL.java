@@ -617,8 +617,8 @@ public class TkpdBaseURL {
         public static final String URL_CHANGE_NUMBER = "https://www.tokopedia.com/contact-us?solution_id=54";
     }
 
-    interface TopCash{
-        String GET_WALLET = ACCOUNTS_DOMAIN + "api/v1/wallet/";
-        String PATH_WALLET = "balance";
+    public static class TopCash{
+        public static final String GET_WALLET = ACCOUNTS_DOMAIN + "api/v1/wallet/";
+        public static final String PATH_WALLET = "balance";
     }
 }
