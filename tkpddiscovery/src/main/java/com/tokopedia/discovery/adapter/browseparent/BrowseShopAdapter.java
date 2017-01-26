@@ -131,6 +131,7 @@ public class BrowseShopAdapter extends ProductAdapter {
                 public void onClick(View v) {
                     Intent intent = new Intent(context, ShopInfoActivity.class);
                     intent.putExtras(ShopInfoActivity.createBundle(shopModel.getShopId(), ""));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }
             });
