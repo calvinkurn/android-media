@@ -27,7 +27,6 @@ import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.Cart;
 import com.tokopedia.core.ForceUpdate;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.ManageGeneral;
@@ -43,9 +42,9 @@ import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
@@ -53,12 +52,10 @@ import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.service.HadesBroadcastReceiver;
 import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.service.constant.HadesConstant;
-
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.PhoneVerificationUtil;
-import com.tokopedia.core.util.RequestManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdCache;
@@ -293,8 +290,6 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
     protected void onDestroy() {
         super.onDestroy();
         isPause = true;
-        RequestManager.clearRequestList(this.getClass().getSimpleName());
-        RequestManager.cancelAllRequest();
         unbindLogService();
         unregisterHadesReceiver();
         if (!GlobalConfig.isSellerApp()) {

@@ -34,13 +34,10 @@ import com.tokopedia.core.fragment.FragmentCart;
 import com.tokopedia.core.fragment.FragmentCart.ActivityCartCommunicator;
 import com.tokopedia.core.fragment.FragmentCartFinish;
 import com.tokopedia.core.fragment.FragmentCartFinish.ActivityCartFinishCommunicator;
-import com.tokopedia.core.fragment.FragmentCartSummary;
-import com.tokopedia.core.fragment.FragmentCartSummary.ActivityCartSummaryCommunicator;
 import com.tokopedia.core.interfaces.CartInterfaces;
 import com.tokopedia.core.payment.fragment.DynamicPaymentFragment;
 import com.tokopedia.core.payment.interactor.PaymentNetInteractor;
 import com.tokopedia.core.payment.interactor.PaymentNetInteractorImpl;
-import com.tokopedia.core.payment.model.responsecartstep1.CarStep1Data;
 import com.tokopedia.core.payment.model.responsecartstep2.CartStep2Data;
 import com.tokopedia.core.payment.model.responsecartstep2.Transaction;
 import com.tokopedia.core.payment.model.responsedynamicpayment.DynamicPaymentData;
@@ -55,7 +52,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Cart extends TActivity implements ActivityCartCommunicator,
-        ActivityCartSummaryCommunicator, ActivityCartFinishCommunicator, EcashInterface,
+        ActivityCartFinishCommunicator, EcashInterface,
         KlikpayInterface, BRIePayConnectorView, DynamicPaymentFragment.ActionListener {
 
     private LocalCacheHandler cacheHandler;
@@ -92,19 +89,6 @@ public class Cart extends TActivity implements ActivityCartCommunicator,
     }
 
     @Override
-    public void TriggerToAddFragment(String response) {
-        Bundle bundle = new Bundle();
-        bundle.putString("response", response);
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        FragmentCartSummary fragment = new FragmentCartSummary();
-        fragment.setArguments(bundle);
-        fragmentTransaction.add(R.id.container, fragment);
-        fragmentTransaction.addToBackStack("cartsum");
-        fragmentTransaction.commit();
-        fragmentManager.executePendingTransactions();
-    }
-
-    @Override
     public void TriggerReloadFragment() {
         fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -125,21 +109,6 @@ public class Cart extends TActivity implements ActivityCartCommunicator,
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         }
-    }
-
-    @Override
-    public void TriggerToFinishTx(int Gateway, String response) {
-        Bundle bundle = new Bundle();
-        bundle.putInt("gateway", Gateway);
-        bundle.putString("response", response);
-
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        FragmentCartFinish fragment = new FragmentCartFinish();
-        fragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.container, fragment, "summary");
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-        fragmentManager.executePendingTransactions();
     }
 
     @Override
@@ -174,24 +143,9 @@ public class Cart extends TActivity implements ActivityCartCommunicator,
         }
     }
 
-    @Override
     public void epayBRICancel() {
         finish();
         startActivity(getIntent());
-    }
-
-    @Override
-    public void toFinishCart(CartStep2Data data) {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("CART_STEP_2_DATA", data);
-        bundle.putBoolean("is_wsv4", true);
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        FragmentCartFinish fragment = new FragmentCartFinish();
-        fragment.setArguments(bundle);
-        fragmentTransaction.replace(R.id.container, fragment, "summary");
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-        fragmentManager.executePendingTransactions();
     }
 
     @Override
@@ -212,15 +166,6 @@ public class Cart extends TActivity implements ActivityCartCommunicator,
                 DynamicPaymentFragment.class.getSimpleName());
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
-    }
-
-    @Override
-    public void toSummaryCart(CarStep1Data cartData) {
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.container, FragmentCartSummary.newInstanceWSV4(cartData));
-        fragmentTransaction.addToBackStack("cartsum");
-        fragmentTransaction.commit();
-        fragmentManager.executePendingTransactions();
     }
 
     @Override
@@ -310,14 +255,6 @@ public class Cart extends TActivity implements ActivityCartCommunicator,
         Dialog dialog = myAlertDialog.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.show();
-    }
-
-    @Override
-    public void setDialogStatus(Boolean status, int State,
-                                DialogFragment fargment) {
-        this.Status = status;
-        this.State = State;
-        this.fragment = fargment;
     }
 
     @Override

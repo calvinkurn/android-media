@@ -19,7 +19,6 @@ import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl;
 import com.tokopedia.core.myproduct.utils.FileUtils;
-import com.tokopedia.core.network.NetworkHandler;
 import com.tokopedia.core.network.apiservices.etc.HomeService;
 import com.tokopedia.core.network.apiservices.etc.apis.home.ProductFeedApi;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
@@ -342,7 +341,7 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
     @Override
     public void refreshData() {
         mPaging.resetPage();
-        if(currTopAdsItem != null) {
+        if (currTopAdsItem != null) {
             currTopAdsItem.clear();
         }
         topAdsCounter = 1;
@@ -382,8 +381,8 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
         try {
             ScreenTracking.screenLoca(screenName);
             ScreenTracking.eventLoca(screenName);
-        }catch (Exception e){
-            CommonUtils.dumper(TAG+" error connecting to GCM Service");
+        } catch (Exception e) {
+            CommonUtils.dumper(TAG + " error connecting to GCM Service");
             TrackingUtils.eventLogAnalytics(ParentIndexHome.class.getSimpleName(), e.getMessage());
         }
     }
@@ -539,24 +538,21 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
 
                             @Override
                             public void onError(Throwable e) {
-                                if (e != null && e.getMessage() != null && RetrofitUtils.isSessionInvalid(e.getMessage())) {
-                                    NetworkHandler.forceLogout(mContext);
-                                } else {
-                                    Log.e(TAG, messageTag + "onError : " + e.getLocalizedMessage());
-                                    Toast.makeText(mContext, mContext.getString(R.string.message_verification_timeout), Toast.LENGTH_SHORT).show();
+                                Log.e(TAG, messageTag + "onError : " + e.getLocalizedMessage());
+                                Toast.makeText(mContext, mContext.getString(R.string.message_verification_timeout), Toast.LENGTH_SHORT).show();
 
-                                    if (view.getData() == null || view.getData().size() == 0) {
-                                        view.displayMainContent(false);
-                                        view.displayRetryFull();
-                                    } else {
-                                        view.displayMainContent(true);
-                                        view.displayLoadMore(false);
-                                        view.displayRetry(true);
-                                    }
-                                    view.displayLoading(false);
-                                    view.displayPull(false);
-                                    view.loadDataChange();
+                                if (view.getData() == null || view.getData().size() == 0) {
+                                    view.displayMainContent(false);
+                                    view.displayRetryFull();
+                                } else {
+                                    view.displayMainContent(true);
+                                    view.displayLoadMore(false);
+                                    view.displayRetry(true);
                                 }
+                                view.displayLoading(false);
+                                view.displayPull(false);
+                                view.loadDataChange();
+
                                 view.displayPull(false);
                             }
 
@@ -635,9 +631,9 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
         } else {
             int counter = 2;
             List<ProductItem> passProduct = new ArrayList<>();
-            while(counter != 0 && !currTopAdsItem.isEmpty()) {
+            while (counter != 0 && !currTopAdsItem.isEmpty()) {
                 passProduct.add(currTopAdsItem.remove(0));
-                counter --;
+                counter--;
             }
             view.addTopAds(passProduct, page);
         }
@@ -678,7 +674,7 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
         switch (type) {
             case DiscoveryListener.TOPADS:
                 Log.i(TAG, "fetch top ads " + data.getModel1());
-                topAdsCounter ++;
+                topAdsCounter++;
                 ObjContainer model2 = data.getModel2();
                 if (model2 instanceof TopAdsResponse.TopAdsContainer) {
 
@@ -697,9 +693,9 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
                     List<ProductItem> passProduct = new ArrayList<>();
 
                     int counter = 2;
-                    while(counter != 0 && !currTopAdsItem.isEmpty()) {
+                    while (counter != 0 && !currTopAdsItem.isEmpty()) {
                         passProduct.add(currTopAdsItem.remove(0));
-                        counter --;
+                        counter--;
                     }
 
                     view.addTopAds(passProduct, mPaging.getPage());

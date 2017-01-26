@@ -25,7 +25,6 @@ import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.RequestManager;
 import com.tokopedia.core.var.NotificationVariable;
 
 import java.util.List;
@@ -122,7 +121,6 @@ public class MainApplication extends TkpdMultiDexApplication {
      * Intialize the request manager and the image cache
      */
     private void init() {
-        RequestManager.init(this);
     }
 
     /**
