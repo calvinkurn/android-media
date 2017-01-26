@@ -10,7 +10,7 @@ public class SellerAppBaseUrl {
     public static final String BASE_CLOVER_DOMAIN = "https://points.tokopedia.com/";
     public static final String BASE_TOPADS_DOMAIN = "https://ta-alpha.tokopedia.com/";
     public static final String BASE_MOJITO_DOMAIN = "https://mojito-alpha.tokopedia.com/";
-    public static final String BASE_HADES_DOMAIN = "https://hades-alpha.tokopedia.com";
+    public static final String BASE_HADES_DOMAIN = "https://ajax-alpha.tokopedia.com/hades/";
     public static final String BASE_RECHARGE_API_DOMAIN = "https://ajax-alpha.tokopedia.com/recharge/v1.1/operator/list/";
     public static final String BASE_ACCOUNTS_DOMAIN = "https://accounts-alpha.tokopedia.com/";
     public static final String BASE_INBOX_DOMAIN = "https://inbox-alpha.tokopedia.com";
