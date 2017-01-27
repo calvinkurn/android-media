@@ -49,7 +49,6 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
@@ -71,7 +70,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -86,7 +84,7 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
     public static final int PASSWORD_MINIMUM_LENGTH = 6;
     public static final String VALIDATE_EMAIL = "validate_email";
 
-    @BindView(R2.id.register_name)
+    @BindView(R2.id.register_email)
     AutoCompleteTextView registerName;
     @BindView(R2.id.register_password)
     PasswordView registerPassword;
@@ -462,7 +460,7 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_register_reborn;
+        return R.layout.fragment_register_step1;
     }
 
     @Override

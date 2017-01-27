@@ -12,7 +12,6 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
@@ -55,14 +54,11 @@ import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
-import org.parceler.Parcels;
-
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -246,7 +242,7 @@ public class RegisterNewNextFragment extends BaseFragment<RegisterNewNext> imple
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_register_4;
+        return R.layout.fragment_register_step2;
     }
 
     @OnClick(R2.id.register_finish_button)

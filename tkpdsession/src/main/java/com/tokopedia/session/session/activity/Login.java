@@ -48,6 +48,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.session.register.activity.RegisterActivity;
 import com.tokopedia.session.session.fragment.ActivationResentFragment;
 import com.tokopedia.session.session.fragment.ForgotPasswordFragment;
 import com.tokopedia.session.session.fragment.LoginFragment;
@@ -329,13 +330,15 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     @Override
     public void moveToRegister() {
-        Fragment fragment = RegisterNewViewFragment.newInstance();
-        moveToFragment(fragment, true, REGISTER_FRAGMENT_TAG, TkpdState.DrawerPosition.REGISTER);
+//        Fragment fragment = RegisterNewViewFragment.newInstance();
+//        moveToFragment(fragment, true, REGISTER_FRAGMENT_TAG, TkpdState.DrawerPosition.REGISTER);
+//
+//        // Change the header
+//        session.setWhichFragment(TkpdState.DrawerPosition.REGISTER);
+//        setToolbarTitle();
+//        invalidateOptionsMenu();
 
-        // Change the header
-        session.setWhichFragment(TkpdState.DrawerPosition.REGISTER);
-        setToolbarTitle();
-        invalidateOptionsMenu();
+        startActivity(new Intent(this, RegisterActivity.class));
     }
 
     @Override
