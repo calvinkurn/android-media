@@ -12,16 +12,17 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.widget.MaterialSpinner;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.session.model.RegisterViewModel;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.register.presenter.RegisterStep2Presenter;
-import com.tokopedia.session.session.presenter.RegisterNewNext;
+import com.tokopedia.session.register.presenter.RegisterStep2PresenterImpl;
+import com.tokopedia.session.register.viewlistener.RegisterStep2ViewListener;
 
 import butterknife.BindView;
 
@@ -30,7 +31,7 @@ import butterknife.BindView;
  */
 
 public class RegisterStep2Fragment extends BasePresenterFragment<RegisterStep2Presenter>
-        implements RegisterConstant {
+        implements RegisterStep2ViewListener, RegisterConstant {
 
     @BindView(R2.id.register_next_status)
     LinearLayout registerNextStatus;
@@ -58,6 +59,7 @@ public class RegisterStep2Fragment extends BasePresenterFragment<RegisterStep2Pr
     MaterialSpinner dateText;
 
     String name;
+    TkpdProgressDialog progressDialog;
 
     public static RegisterStep2Fragment createInstance(Bundle bundle) {
         RegisterStep2Fragment fragment = new RegisterStep2Fragment();
@@ -92,7 +94,7 @@ public class RegisterStep2Fragment extends BasePresenterFragment<RegisterStep2Pr
 
     @Override
     protected void initialPresenter() {
-
+        presenter = new RegisterStep2PresenterImpl(this);
     }
 
     @Override
@@ -198,6 +200,13 @@ public class RegisterStep2Fragment extends BasePresenterFragment<RegisterStep2Pr
             }
         });
 
+        registerFinish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.finishRegister();
+            }
+        });
+
     }
 
     private void setWrapperError(TextInputLayout wrapper, String s) {
@@ -219,5 +228,17 @@ public class RegisterStep2Fragment extends BasePresenterFragment<RegisterStep2Pr
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public void showLoadingProgress() {
+        if (progressDialog == null && getActivity() != null) {
+            progressDialog = new TkpdProgressDialog(getActivity(),
+                    TkpdProgressDialog.NORMAL_PROGRESS);
+        }
+
+        if (getActivity() != null) {
+            progressDialog.showDialog();
+        }
     }
 }

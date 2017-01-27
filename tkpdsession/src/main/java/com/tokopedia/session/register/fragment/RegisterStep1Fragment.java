@@ -391,10 +391,12 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
 
     @Override
     public void showLoadingProgress() {
-        if (progressDialog == null && getActivity() != null)
+        if (progressDialog == null && getActivity() != null) {
             progressDialog = new TkpdProgressDialog(getActivity(),
                     TkpdProgressDialog.NORMAL_PROGRESS);
-        else if (progressDialog != null && getActivity() != null) {
+        }
+
+        if (getActivity() != null) {
             progressDialog.showDialog();
         }
     }
