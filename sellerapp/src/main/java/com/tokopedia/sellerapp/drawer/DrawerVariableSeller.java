@@ -52,7 +52,6 @@ import com.tokopedia.core.var.ToolbarVariable;
 import com.tokopedia.seller.topads.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.activities.GMStatActivity;
-import com.tokopedia.sellerapp.gmstat.activities.GMStatActivity2;
 import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
@@ -426,9 +425,9 @@ public class DrawerVariableSeller extends DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.SIGN_OUT);
                 break;
             case TkpdState.DrawerPosition.SELLER_GM_STAT:
-                intent = new Intent(context, GMStatActivity2.class);
-                intent.putExtra(GMStatActivity2.SHOP_ID, SessionHandler.getShopID(context));
-                intent.putExtra(GMStatActivity2.IS_GOLD_MERCHANT, SessionHandler.isGoldMerchant(context));
+                intent = new Intent(context, GMStatActivity.class);
+                intent.putExtra(GMStatActivity.SHOP_ID, SessionHandler.getShopID(context));
+                intent.putExtra(GMStatActivity.IS_GOLD_MERCHANT, SessionHandler.isGoldMerchant(context));
                 context.startActivity(intent);
                 break;
             case TkpdState.DrawerPosition.SELLER_TOP_ADS:

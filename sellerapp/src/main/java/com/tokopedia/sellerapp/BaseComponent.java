@@ -2,7 +2,6 @@ package com.tokopedia.sellerapp;
 
 
 import com.tokopedia.sellerapp.gmstat.activities.GMStatActivity;
-import com.tokopedia.sellerapp.gmstat.activities.GMStatActivity2;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
 /**
@@ -16,6 +15,4 @@ public interface BaseComponent {
     void inject(SellerHomeActivity sellerHomeActivity);
 
     void inject(GMStatActivity gmStatActivity);
-
-    void inject(GMStatActivity2 gmStatActivity2);
 }

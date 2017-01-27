@@ -1,73 +1,73 @@
 package com.tokopedia.seller.gmstat.views;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
-import android.view.WindowManager;
 
+import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.R;
 
 import static com.tokopedia.seller.gmstat.views.BaseGMStatActivity.IS_GOLD_MERCHANT;
 import static com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper.MOVE_TO_SET_DATE;
+import static com.tokopedia.seller.gmstat.views.SetDateConstant.CUSTOM_END_DATE;
+import static com.tokopedia.seller.gmstat.views.SetDateConstant.CUSTOM_START_DATE;
+import static com.tokopedia.seller.gmstat.views.SetDateConstant.PERIOD_TYPE;
+import static com.tokopedia.seller.gmstat.views.SetDateConstant.SELECTION_PERIOD;
+import static com.tokopedia.seller.gmstat.views.SetDateConstant.SELECTION_TYPE;
 
 /**
- * Created by normansyahputa on 12/7/16.
+ * Created by normansyahputa on 1/18/17.
  */
-
-public class SetDateActivity extends AppCompatActivity implements SetDateFragment.SetDate {
-
-    public static final String SELECTION_TYPE = "SELECTION_TYPE";
-    public static final String SELECTION_PERIOD = "SELECTION_PERIOD";
-    public static final String CUSTOM_START_DATE = "CUSTOM_START_DATE";
-    public static final String CUSTOM_END_DATE = "CUSTOM_END_DATE";
-    public static final int PERIOD_TYPE = 0;
-    public static final int CUSTOM_TYPE = 1;
+public class SetDateActivity extends BasePresenterActivity implements SetDateFragment.SetDate{
 
     private boolean isGoldMerchant;
     private boolean isAfterRotate;
-
-    int green600;
-
-    int tkpdMainGreenColor;
     private int selectionPeriod;
     private int selectionType;
     private long sDate = -1, eDate = -1;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if(!isAfterRotate) {
-            fetchIntent(getIntent().getExtras());
-        }
-        setContentView(R.layout.activity_set_date);
-        initView();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(green600);
-        }
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if(toolbar != null) {
-            toolbar.setBackgroundColor(tkpdMainGreenColor);
-        }
-        setSupportActionBar(toolbar);
-        ActionBar supportActionBar = getSupportActionBar();
-        if(supportActionBar != null){
-            supportActionBar.setDisplayHomeAsUpEnabled(true);
-            supportActionBar.setDisplayShowHomeEnabled(true);
-            supportActionBar.setHomeButtonEnabled(true);
-        }
-        isAfterRotate = savedInstanceState != null;
+    protected int getLayoutId() {
+        return R.layout.content_set_date;
     }
 
-    private void initView() {
-        green600 = ResourcesCompat.getColor(getResources(), R.color.green_600, null);
 
-        tkpdMainGreenColor = ResourcesCompat.getColor(getResources(), R.color.tkpd_main_green, null);
+    @Override protected void initView() {
+        if(!isAfterRotate)
+            inflateNewFragment(new SetDateFragment(), GMStatActivityFragment.TAG);
+    }
+
+    //[START] unused methods
+    @Override protected void setupURIPass(Uri data) {}
+
+    @Override protected void setupBundlePass(Bundle extras) {}
+
+    @Override protected void initialPresenter() { }
+
+    @Override protected void setViewListener() { }
+
+    @Override protected void initVar() { }
+
+    @Override protected void setActionVar() { }
+
+    @Override public String getScreenName() { return null; }
+    //[END] unused methods
+
+    /**
+     * @return true if first time, false if already in foreground.
+     */
+    @Override
+    protected boolean isAfterRotate(Bundle savedInstanceState) {
+        isAfterRotate = super.isAfterRotate(savedInstanceState);
+        return !isAfterRotate;
+    }
+
+    @Override
+    protected void setupVar() {
+        super.setupVar();
+        fetchIntent(getIntent().getExtras());
     }
 
     private void fetchIntent(Bundle extras) {
@@ -79,6 +79,7 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
             eDate = extras.getLong(CUSTOM_END_DATE, -1);
         }
     }
+
     @Override
     public void returnStartAndEndDate(long startDate, long endDate, int lastSelection, int selectionType) {
         Intent intent = new Intent();
@@ -99,18 +100,6 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == com.tokopedia.core.R.id.home) {
-            return true;
-        } else if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public int selectionPeriod() {
         return selectionPeriod;
     }
@@ -128,5 +117,12 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
     @Override
     public long eDate() {
         return eDate;
+    }
+
+    private void inflateNewFragment(Fragment fragment, String tag) {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.set_date_fragment_container, fragment, tag);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }

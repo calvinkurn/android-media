@@ -2,15 +2,10 @@ package com.tokopedia.seller.gmstat.views;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +15,8 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.views.adapter.SetDatePagerAdapter;
 
 import java.util.Locale;
-import static com.tokopedia.seller.gmstat.views.SetDateActivity.CUSTOM_TYPE;
-import static com.tokopedia.seller.gmstat.views.SetDateActivity.PERIOD_TYPE;
+import static com.tokopedia.seller.gmstat.views.SetDateConstant.CUSTOM_TYPE;
+import static com.tokopedia.seller.gmstat.views.SetDateConstant.PERIOD_TYPE;
 
 /**
  * Created by normansyahputa on 11/25/16.

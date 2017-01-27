@@ -20,12 +20,9 @@ import com.tokopedia.seller.gmstat.views.models.StartOrEndPeriodModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
-import static com.tokopedia.seller.gmstat.views.SetDateActivity.CUSTOM_END_DATE;
-import static com.tokopedia.seller.gmstat.views.SetDateActivity.CUSTOM_START_DATE;
-import static com.tokopedia.seller.gmstat.views.SetDateActivity.CUSTOM_TYPE;
+import static com.tokopedia.seller.gmstat.views.SetDateConstant.CUSTOM_END_DATE;
+import static com.tokopedia.seller.gmstat.views.SetDateConstant.CUSTOM_START_DATE;
+import static com.tokopedia.seller.gmstat.views.SetDateConstant.CUSTOM_TYPE;
 
 /**
  * Created by normansyahputa on 1/19/17.

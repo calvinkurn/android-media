@@ -22,7 +22,7 @@ import com.tokopedia.sellerapp.TestUtilModules;
 import com.tokopedia.sellerapp.activities.sellerhome.SellerHomeTest;
 import com.tokopedia.sellerapp.daggerModules.AppModule;
 import com.tokopedia.sellerapp.daggerModules.NetworkModules;
-import com.tokopedia.sellerapp.gmstat.activities.GMStatActivity2;
+import com.tokopedia.sellerapp.gmstat.activities.GMStatActivity;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -129,9 +129,9 @@ public class GMStatTest {
     public static final String SEARCH_KEYWORD_JSON = "search_keyword.json";
     public static final String CAT_ID_JSON = "cat_id.json";
     @Rule
-    public ActivityTestRule<GMStatActivity2> activityTestRule =
-            new ActivityTestRule<GMStatActivity2>(
-                    GMStatActivity2.class, true, false
+    public ActivityTestRule<GMStatActivity> activityTestRule =
+            new ActivityTestRule<GMStatActivity>(
+                    GMStatActivity.class, true, false
             );
 
     MockWebServer server;
@@ -421,8 +421,8 @@ public class GMStatTest {
 
     public void startGoldMerchant() {
         Intent intent = new Intent();
-        intent.putExtra(GMStatActivity2.IS_GOLD_MERCHANT, true);
-        intent.putExtra(GMStatActivity2.SHOP_ID, "512612");
+        intent.putExtra(GMStatActivity.IS_GOLD_MERCHANT, true);
+        intent.putExtra(GMStatActivity.SHOP_ID, "512612");
         activityTestRule.launchActivity(intent);
     }
 
@@ -606,8 +606,8 @@ public class GMStatTest {
 
     public void startNonGoldMerchant() {
         Intent intent = new Intent();
-        intent.putExtra(GMStatActivity2.IS_GOLD_MERCHANT, false);
-        intent.putExtra(GMStatActivity2.SHOP_ID, "512612");
+        intent.putExtra(GMStatActivity.IS_GOLD_MERCHANT, false);
+        intent.putExtra(GMStatActivity.SHOP_ID, "512612");
         activityTestRule.launchActivity(intent);
     }
 

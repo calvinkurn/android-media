@@ -23,11 +23,8 @@ import com.tokopedia.seller.gmstat.views.models.PeriodRangeModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
-import static com.tokopedia.seller.gmstat.views.SetDateActivity.PERIOD_TYPE;
-import static com.tokopedia.seller.gmstat.views.SetDateActivity.SELECTION_PERIOD;
+import static com.tokopedia.seller.gmstat.views.SetDateConstant.PERIOD_TYPE;
+import static com.tokopedia.seller.gmstat.views.SetDateConstant.SELECTION_PERIOD;
 
 /**
  * Created by normansyahputa on 1/19/17.

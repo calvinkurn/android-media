@@ -20,11 +20,11 @@ import java.util.Locale;
 
 import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateWithYear;
 import static com.tokopedia.seller.gmstat.views.BaseGMStatActivity.IS_GOLD_MERCHANT;
-import static com.tokopedia.seller.gmstat.views.SetDateActivity.CUSTOM_END_DATE;
-import static com.tokopedia.seller.gmstat.views.SetDateActivity.CUSTOM_START_DATE;
-import static com.tokopedia.seller.gmstat.views.SetDateActivity.PERIOD_TYPE;
-import static com.tokopedia.seller.gmstat.views.SetDateActivity.SELECTION_PERIOD;
-import static com.tokopedia.seller.gmstat.views.SetDateActivity.SELECTION_TYPE;
+import static com.tokopedia.seller.gmstat.views.SetDateConstant.CUSTOM_END_DATE;
+import static com.tokopedia.seller.gmstat.views.SetDateConstant.CUSTOM_START_DATE;
+import static com.tokopedia.seller.gmstat.views.SetDateConstant.PERIOD_TYPE;
+import static com.tokopedia.seller.gmstat.views.SetDateConstant.SELECTION_PERIOD;
+import static com.tokopedia.seller.gmstat.views.SetDateConstant.SELECTION_TYPE;
 
 /**
  * Created by normansyahputa on 11/21/16.
@@ -195,7 +195,7 @@ public class GMStatHeaderViewHelper {
             return;
 
 //        Intent moveToSetDate = new Intent(gmStatActivityFragment.getActivity(), SetDateActivity.class);
-        Intent moveToSetDate = new Intent(gmStatActivityFragment.getActivity(), SetDateActivity2.class);
+        Intent moveToSetDate = new Intent(gmStatActivityFragment.getActivity(), SetDateActivity.class);
         moveToSetDate.putExtra(IS_GOLD_MERCHANT, isGmStat);
         moveToSetDate.putExtra(SELECTION_PERIOD, lastSelection);
         moveToSetDate.putExtra(SELECTION_TYPE, selectionType);
