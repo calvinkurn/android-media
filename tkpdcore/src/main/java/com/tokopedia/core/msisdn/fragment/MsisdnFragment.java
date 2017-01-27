@@ -423,6 +423,7 @@ public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFrag
     public void processOTP(String otpCode) {
         if (vInputOtp != null)
             vInputOtp.setText(otpCode);
+        presenter.verifyOTP(otpCode);
     }
 
     public void setListener(PhoneVerificationUtil.MSISDNListener listener) {
