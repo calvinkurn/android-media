@@ -81,7 +81,7 @@ public class PeriodFragment extends BasePresenterFragment {
         @Override
         public void updateCheck(boolean checked, int index) {
 
-            // dont unselect period.
+            // check if options get selected only one.
             if(isAllNone(checked, index))
                 return;
 
@@ -116,8 +116,6 @@ public class PeriodFragment extends BasePresenterFragment {
                     isNoneAll++;
                 }
             }
-
-            // dont unselect period.
             return isNoneAll == basePeriodModels.size();
         }
     };

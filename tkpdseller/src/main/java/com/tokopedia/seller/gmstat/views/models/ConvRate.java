@@ -20,13 +20,6 @@ public class ConvRate extends SuccessfulTransaction{
         this.convRate = convRate*100;
 
         text = KMNumbers.formatString(this.convRate) + "%";
-
-//            NumberFormat formatter = new DecimalFormat("#0.00");
-//            text = formatter.format(convRate)+"%";
-
-        //[START] obsolete things
-//            text = convRate+"%";
-        //[END] obsolete things
         textDescription = "Tingkat Konversi";
     }
 

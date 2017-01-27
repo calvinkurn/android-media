@@ -1,5 +1,7 @@
 package com.tokopedia.seller.gmstat.utils;
 
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+
 /**
  * Created by normansyahputa on 11/2/16.
  */
@@ -7,8 +9,9 @@ package com.tokopedia.seller.gmstat.utils;
 public final class GMStatConstant {
     public static final String GMSTAT_TAG = "GMSTAT_TAG";
 
-//    public static String baseUrl = "http://goldmerchant-staging.tokopedia.com";
-    public static String baseUrl = "https://goldmerchant.tokopedia.com";
+    // this is used by automated testing.
+    public static String baseUrl = TkpdBaseURL.GOLD_MERCHANT_DOMAIN;
+
     public static final String UPPER_BUYER_FORMAT = "%3d%% %s";
     public static final String LOWER_BUYER_FORMAT = "%3d%%";
     public static final String PERCENTAGE_FORMAT = "%s%%";

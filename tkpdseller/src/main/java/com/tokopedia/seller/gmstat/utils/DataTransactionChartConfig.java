@@ -48,8 +48,7 @@ public class DataTransactionChartConfig {
     private final Runnable mEndAction = new Runnable() {
         @Override
         public void run() {
-
-//            mPlayBtn.setEnabled(true);
+            // do nothing
         }
     };
 
@@ -113,7 +112,6 @@ public class DataTransactionChartConfig {
 
         LineSet dataset = new LineSet(mLabels, mValues);
 
-//        if (mIsLineDashed) dataset.setDashed(mLineDashType);
         float mLineThickness = 3;
         dataset.setSmooth(LineSet.SMOOTH_QUAD)
                 .setThickness(Tools.fromDpToPx(mLineThickness))
@@ -136,7 +134,6 @@ public class DataTransactionChartConfig {
         mGridPaint.setStyle(Paint.Style.STROKE);
         mGridPaint.setAntiAlias(true);
         mGridPaint.setStrokeWidth(Tools.fromDpToPx(mGridThickness));
-//        if (mIsGridDashed) mGridPaint.setPathEffect(new DashPathEffect(mGridDashType, 0));
 
         chart.setXAxis(false)
                 .setXLabels(mXLabelPosition)

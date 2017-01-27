@@ -156,13 +156,6 @@ public class DatePickerRules {
             }
         }
 
-//            if(sDate > eDate && eDate != -1){
-//                if(datePickerRulesListener != null){
-//                    datePickerRulesListener.exceedSDate();
-//                }
-//                return;
-//            }else
-
         Log.d("MNORMANSYAH ", "eDate "+getDateFormat(eDate)+" maxSDate "+getDateFormat(maxSDate)+" eDate"+ getDateFormat(maxEDate));
         if(sDate >= maxSDate && sDate <= maxEDate){
             this.sDate = sDate;
@@ -251,7 +244,6 @@ public class DatePickerRules {
                 if(sDates < minLimit){
                     instance = getInstance();
                     instance.setTimeInMillis(minLimit);
-//                        instance.add(Calendar.DATE, 1);
                     sDate = instance.getTimeInMillis();
                     maxSDate = sDate;
                 }else{
@@ -263,13 +255,6 @@ public class DatePickerRules {
                 this.maxEDate= eDate;
             }
         }
-
-//            if(sDate > eDate && sDate != -1){
-//                if(datePickerRulesListener != null){
-//                    datePickerRulesListener.exceedEDate();
-//                }
-//                return;
-//            }else
 
         Log.d("MNORMANSYAH ", "eDate "+getDateFormat(eDate)+" maxSDate "+getDateFormat(maxSDate)+" eDate"+ getDateFormat(maxEDate));
         if(eDate >= maxSDate && eDate <= maxEDate){

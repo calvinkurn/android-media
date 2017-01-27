@@ -243,7 +243,7 @@ public class MarketInsightViewHelper {
         marketInsightEmptyState.setVisibility(View.GONE);
 
 
-        // init dummy data
+        // create dummy data as replacement for non gold merchant user.
         List<GetKeyword.SearchKeyword> searchKeyword = new ArrayList<>();
         for(int i=0;i<3;i++){
             GetKeyword.SearchKeyword searchKeyword1 = new GetKeyword.SearchKeyword();
@@ -340,11 +340,6 @@ public class MarketInsightViewHelper {
         }
 
         public void bindData(GetKeyword.SearchKeyword searchKeyword, List<GetKeyword.SearchKeyword> list){
-
-//            double total = 0;
-//            for (GetKeyword.SearchKeyword sk : list) {
-//                total += sk.getFrequency();
-//            }
             double total = list.get(0).getFrequency();
 
             double v = searchKeyword.getFrequency() / total;

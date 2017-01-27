@@ -137,7 +137,6 @@ public class BuyerDataViewHelper {
         buyerCount.setText(getFormattedString(getBuyerData.getTotalBuyer()));
 
         double percentage = getBuyerData.getDiffTotal() * 100D;
-        // image for arrow is here
         boolean isDefault;
         if(percentage == 0){
             buyerCountIcon.setVisibility(View.GONE);

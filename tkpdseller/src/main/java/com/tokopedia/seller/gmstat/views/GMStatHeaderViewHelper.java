@@ -34,9 +34,6 @@ public class GMStatHeaderViewHelper {
 
     String[] monthNamesAbrev;
 
-//    @BindArray(R.array.month_names)
-//    String[] monthNames;
-
     LoaderTextView calendarRange;
 
     LoaderImageView calendarArrowIcon;
@@ -174,7 +171,6 @@ public class GMStatHeaderViewHelper {
 
         String startDate = getDateWithYear(dateGraph.get(0), monthNames);
 
-//        int lastIndex = (dateGraph.size()>7)?6:dateGraph.size()-1;
         int lastIndex = dateGraph.size()-1;
         String endDate = getDateWithYear(dateGraph.get(lastIndex), monthNames);
 
@@ -194,7 +190,6 @@ public class GMStatHeaderViewHelper {
         if(!isGmStat)
             return;
 
-//        Intent moveToSetDate = new Intent(gmStatActivityFragment.getActivity(), SetDateActivity.class);
         Intent moveToSetDate = new Intent(gmStatActivityFragment.getActivity(), SetDateActivity.class);
         moveToSetDate.putExtra(IS_GOLD_MERCHANT, isGmStat);
         moveToSetDate.putExtra(SELECTION_PERIOD, lastSelection);

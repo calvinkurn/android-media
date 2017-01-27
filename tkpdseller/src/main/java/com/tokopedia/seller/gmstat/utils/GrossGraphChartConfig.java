@@ -55,8 +55,7 @@ public class GrossGraphChartConfig {
     private final Runnable mEndAction = new Runnable() {
         @Override
         public void run() {
-
-//            mPlayBtn.setEnabled(true);
+            // currently empty
         }
     };
     private Drawable dotDrawable;
@@ -92,8 +91,6 @@ public class GrossGraphChartConfig {
         mYLabelPosition = AxisRenderer.LabelPosition.OUTSIDE;
         mEasingId = 0;
         mOverlapFactor = 1;
-//        int[] mEqualOrder = new
-//        mOverlapOrder = mEqualOrder;
         mStartX = 0f;
         mStartY = 1f;
     }
@@ -127,7 +124,6 @@ public class GrossGraphChartConfig {
 
         LineSet dataset = new LineSet(mLabels, mValues);
 
-//        if (mIsLineDashed) dataset.setDashed(mLineDashType);
         float mLineThickness = 3;
         dataset.setSmooth(LineSet.SMOOTH_QUAD)
                 .setThickness(Tools.fromDpToPx(mLineThickness))
@@ -144,9 +140,6 @@ public class GrossGraphChartConfig {
 
         // Tooltip
         Tooltip mTip = tooltip;
-
-//        ((TextView) mTip.findViewById(R.id.value)).setTypeface(
-//                Typeface.createFromAsset(chart.getContext().getAssets(), "OpenSans-Semibold.ttf"));
 
         mTip.setVerticalAlignment(Tooltip.Alignment.BOTTOM_TOP);
         mTip.setDimensions((int) Tools.fromDpToPx(58), (int) Tools.fromDpToPx(25));
@@ -174,7 +167,6 @@ public class GrossGraphChartConfig {
         mGridPaint.setStyle(Paint.Style.STROKE);
         mGridPaint.setAntiAlias(true);
         mGridPaint.setStrokeWidth(Tools.fromDpToPx(mGridThickness));
-//        if (mIsGridDashed) mGridPaint.setPathEffect(new DashPathEffect(mGridDashType, 0));
 
         chart.setXAxis(true)
                 .setXLabels(mXLabelPosition)

@@ -116,9 +116,6 @@ public class GMStatNetworkController extends BaseNetworkController {
 
     public Observable<Response<GetPopularProduct>> getPopularProduct(long shopId){
 
-//        Calendar dayOne = Calendar.getInstance();
-//        dayOne.set(dayOne.get(Calendar.YEAR), dayOne.get(Calendar.MONTH), 1);
-
         Calendar dayOne = Calendar.getInstance();
         dayOne.add(Calendar.DATE, -30);
 
@@ -277,21 +274,6 @@ public class GMStatNetworkController extends BaseNetworkController {
                                     })
                                     .toList();
 
-//                            return Observable.zip(getKeywords, Observable.just(keywordModel), new Func2<List<Response<GetKeyword>>, KeywordModel, KeywordModel>() {
-//                                @Override
-//                                public KeywordModel call(List<Response<GetKeyword>> responses, KeywordModel keywordModel) {
-//                                    keywordModel.getKeywords = new ArrayList<GetKeyword>();
-//                                    for (Response<GetKeyword> response : responses) {
-//                                        if(response.isSuccessful()) {
-//                                            keywordModel.getKeywords.add(response.body());
-//                                        }
-//                                    }
-//
-//                                    keywordModel.getResponseList = responses;
-//
-//                                    return keywordModel;
-//                                }
-//                            });
 
                             return Observable.zip(getKeywords, getCategories, Observable.just(keywordModel), new Func3<List<Response<GetKeyword>>, List<Response<HadesV1Model>>, KeywordModel, KeywordModel>() {
                                 @Override

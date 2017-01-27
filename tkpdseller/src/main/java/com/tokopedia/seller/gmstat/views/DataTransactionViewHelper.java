@@ -175,10 +175,7 @@ public class DataTransactionViewHelper {
         transactionCountIcon.setVisibility(View.VISIBLE);
         transactionCount.setText(getFormattedString(getTransactionGraph.getFinishedTrans()));
 
-        // percentage is missing and icon is missing too
-//        Double diffSuccessTrans = getTransactionGraph.getDiffSuccessTrans()*100;
         Double diffSuccessTrans = getTransactionGraph.getDiffFinishedTrans()*100;
-        // image for arrow is here
         boolean isDefault;
         if(diffSuccessTrans == 0){
             transactionCountIcon.setVisibility(View.GONE);
@@ -190,23 +187,17 @@ public class DataTransactionViewHelper {
                 percentage.setTextColor(gredyColor);
                 isDefault = false;
             }else{
-//            imageHandler.loadImage(transactionCountIcon, R.mipmap.arrow_down_percentage);
                 transactionCountIcon.setImageDrawable(icRectagleDown);
                 percentage.setTextColor(arrowDown);
                 isDefault = true;
             }
         }else{// up here
-//            imageHandler.loadImage(transactionCountIcon, R.mipmap.arrow_up_percentage);
             transactionCountIcon.setImageDrawable(icRectagleUp);
             percentage.setTextColor(arrowUp);
             isDefault = true;
         }
 
         if(isDefault){
-//            DecimalFormat formatter = new DecimalFormat("#0.00");
-//            double d = diffSuccessTrans;
-//            String text;
-//            System.out.println(text = formatter.format(d));
             double d = diffSuccessTrans;
             percentage.setText(String.format(PERCENTAGE_FORMAT, KMNumbers.formatString(d).replace("-", "")));
         }else{

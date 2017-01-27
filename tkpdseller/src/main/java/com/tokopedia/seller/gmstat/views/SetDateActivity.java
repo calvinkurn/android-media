@@ -125,4 +125,10 @@ public class SetDateActivity extends BasePresenterActivity implements SetDateFra
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

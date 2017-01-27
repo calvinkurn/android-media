@@ -144,7 +144,7 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
         this.eDate = eDate;
         gmFragmentView.bindHeader(sDate, eDate, lastSelectionPeriod, selectionType);
 
-        //[START] dummy data
+        //[START] dummy data, dont remove this line of code - necessary for demo.
 //        gmstat.getGmStatNetworkController().fetchData(gmStatListener, getActivity().getAssets());
         //[END] dummy data
     }

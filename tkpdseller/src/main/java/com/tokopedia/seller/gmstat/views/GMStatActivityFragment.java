@@ -117,9 +117,6 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
 
     String[] monthNamesAbrev;
 
-//    @BindArray(R.array.month_names)
-//    String[] monthNames;
-
     LineChartView grossIncomeGraph2;
     
     RecyclerView gmStatRecyclerView;
@@ -297,7 +294,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         if(activity != null && activity instanceof GMStat){
             this.gmstat = (GMStat) activity;
 
-            // get shop id
+            // get shop id from activity.
             try {
                 shopId = Long.parseLong(gmstat.getShopId());
             }catch (NumberFormatException nfe){

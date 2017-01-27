@@ -65,7 +65,6 @@ public class PeriodAdapter extends RecyclerView.Adapter{
         basePeriodModels = new ArrayList<>();
 
         Calendar instance = Calendar.getInstance();
-//            instance.add(Calendar.DATE, -1);
         long tomorrow = instance.getTimeInMillis();
 
         instance = Calendar.getInstance();
@@ -184,7 +183,6 @@ public class PeriodAdapter extends RecyclerView.Adapter{
                         .inflate(R.layout.periode_layout, parent, false));
             case StartOrEndPeriodModel.TYPE:
             default:
-//                    return null;
                 return new CustomViewHolder(LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.custom_layout, parent, false));
         }
@@ -200,7 +198,6 @@ public class PeriodAdapter extends RecyclerView.Adapter{
                 break;
             case StartOrEndPeriodModel.TYPE:
                 CustomViewHolder customViewHolder = (CustomViewHolder) holder;
-//                    customViewHolder.setDateValidationListener(dateValidationListener);
                 customViewHolder.setDatePickerRules(datePickerRules);
                 customViewHolder.bindData((StartOrEndPeriodModel) basePeriodModels.get(position));
                 break;
@@ -215,7 +212,6 @@ public class PeriodAdapter extends RecyclerView.Adapter{
                 return basePeriodModels.get(position).type;
         }
         throw new RuntimeException("please register type to PeriodAdapter");
-//            return super.getItemViewType(position);
     }
 
     public List<BasePeriodModel> getBasePeriodModels() {

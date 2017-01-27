@@ -24,14 +24,9 @@ public class SuccessfulTransaction extends CommomGMModel{
             Locale locale = new Locale("in", "ID");
             NumberFormat currencyFormatter = NumberFormat.getNumberInstance(locale);
             System.out.println(text = (currencyFormatter.format(successTrans)));
-//                text = successTrans+"";
         }else if(successTrans >= 1_000_000){
             text = KMNumbers.formatNumbers(successTrans);
         }
-        //[START] This is obsolete
-//            double l = successTrans / 1000D;
-//            text = Double.toString(l)+"K";
-        //[END] This is obsolete
         textDescription = "Transaksi Sukses";
     }
 }

@@ -31,6 +31,7 @@ public interface TkpdBaseURL {
     String PULSA_WEB_DOMAIN = "https://pulsa.tokopedia.com";
     String PULSA_WEB_STAGING_DOMAIN = "https://pulsa-staging.tokopedia.com";
     String GOLD_MERCHANT_DOMAIN = "https://goldmerchant.tokopedia.com";
+    String GOLD_MERCHANT_STAGING_DOMAIN = "http://goldmerchant-staging.tokopedia.com";
     String WEB_DOMAIN = "https://www.tokopedia.com/";
     String MOBILE_DOMAIN = "https://m.tokopedia.com/";
 
