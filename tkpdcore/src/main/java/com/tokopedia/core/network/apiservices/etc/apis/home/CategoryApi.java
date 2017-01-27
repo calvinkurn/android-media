@@ -60,7 +60,6 @@ public interface CategoryApi {
             @Header(HEADER_USER_ID) String user_id,
             @Query(PAGE_SIZE) String size,
             @Query(FILTER_DEVICE) String device,
-            @Query(FILTER_TARGET) String target,
             @Query(FILTER_STATE) String state,
             @Query(FILTER_EXPIRED) String expired,
             @Query(FILTER_SLIDE_TYPE) String slideType
@@ -74,7 +73,6 @@ public interface CategoryApi {
             @Query(PAGE_SIZE) String size,
             @Query(PAGE_NUMBER) String number,
             @Query(FILTER_DEVICE) String device,
-            @Query(FILTER_TARGET) String target,
             @Query(FILTER_STATE) String state,
             @Query(FILTER_EXPIRED) String expired
     );

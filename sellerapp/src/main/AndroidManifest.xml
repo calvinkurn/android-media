@@ -76,7 +76,14 @@
         <activity android:name=".gmstat.activities.GMStatActivity2"
             android:label="@string/title_activity_gmstat"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3"/>
+            android:theme="@style/Theme.Tokopedia3"
+            />
+
+        <provider
+            android:authorities="com.facebook.app.FacebookContentProvider411083689235522"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
+
     </application>
 
 </manifest>

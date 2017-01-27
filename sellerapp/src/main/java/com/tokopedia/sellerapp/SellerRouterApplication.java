@@ -2,11 +2,14 @@ package com.tokopedia.sellerapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer.DrawerVariable;
+import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
 import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
@@ -23,6 +26,11 @@ public class SellerRouterApplication extends MainApplication implements TkpdCore
     }
 
     @Override
+    public void goToWallet(Context context, Bundle bundle) {
+
+    }
+
+    @Override
     public void goToHome(Context context) {
         Intent intent = new Intent(context,
                 SellerHomeActivity.class);
@@ -36,5 +44,10 @@ public class SellerRouterApplication extends MainApplication implements TkpdCore
             throw new RuntimeException("unable to process to next view !!");
 
         context.startActivity(new Intent(context, GMSubscribeActivity.class));
+    }
+
+    @Override
+    public void goToProductDetail(Context context, String productUrl) {
+        DeepLinkChecker.openProduct(productUrl, context);
     }
 }

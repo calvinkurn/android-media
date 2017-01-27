@@ -346,10 +346,12 @@ public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements Favor
     @Override
     public void displayProgressBar(boolean isDisplay) {
         Log.d(TAG, " progress bar ingin " + (isDisplay ? "dihidupkan" : "dimatikan"));
-        if (isDisplay)
-            progressBar.setVisibility(View.VISIBLE);
-        else
-            progressBar.setVisibility(View.GONE);
+        if (progressBar != null) {
+            if (isDisplay)
+                progressBar.setVisibility(View.VISIBLE);
+            else
+                progressBar.setVisibility(View.GONE);
+        }
     }
 
     private Boolean isDataExist() {

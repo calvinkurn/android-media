@@ -9,4 +9,5 @@ import android.content.Context;
 public interface SellerModuleRouter {
     void goToHome(Context context);
     void goToGMSubscribe(Context context);
+    void goToProductDetail(Context context, String productUrl);
 }

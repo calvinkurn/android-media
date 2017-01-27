@@ -70,7 +70,6 @@ import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.core.util.SessionHandler;
@@ -196,7 +195,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
 
     @OnClick({R.id.discussion_see_more, R.id.discussion_container})
     public void discussionSeeMore() {
-        startIntent(this, InboxTalkActivity.class);
+        startActivity(InboxRouter.getInboxTalkActivityIntent(this));
     }
 
     @OnClick({R.id.message_see_more, R.id.message__card_view_container})

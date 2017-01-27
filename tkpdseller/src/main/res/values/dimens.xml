@@ -1,4 +1,18 @@
 <resources>
+
+    <!-- General Dimens -->
+    <dimen name="top_ads_dashboard_margin_cards">20dp</dimen>
+    <dimen name="top_ads_dashboard_padding_cards">15dp</dimen>
+    <dimen name="top_ads_dashboard_padding_cards_small">7dp</dimen>
+    <dimen name="top_ads_dashboard_margin_bottom_space">50dp</dimen>
+    <dimen name="top_ads_item_padding_left">25dp</dimen>
+    <dimen name="top_ads_margin_layout">20dp</dimen>
+    <dimen name="topads_detail_padding_item">16dp</dimen>
+    <dimen name="topads_arrow_left_margin">8dp</dimen>
+    <dimen name="topads_arrow_left_width">8dp</dimen>
+    <dimen name="topads_arrow_left_height">16dp</dimen>
+
+
     <!-- gmstat -->
     <dimen name="gmstat_height_header_date">52dp</dimen>
     <dimen name="gmstat_card_elevation">1dp</dimen>

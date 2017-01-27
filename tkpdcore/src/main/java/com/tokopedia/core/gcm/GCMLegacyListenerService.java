@@ -20,7 +20,6 @@ import com.google.android.gms.gcm.GcmListenerService;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
-import com.tokopedia.core.Cart;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.NotificationCenter;
 import com.tokopedia.core.R;

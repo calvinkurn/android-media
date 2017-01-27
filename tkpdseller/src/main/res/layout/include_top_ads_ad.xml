@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title_product"
+        style="@style/TextView.TopAdsListTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_vs"
+        tools:text="@string/app_name"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_vs"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/status_active_dot"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:background="@drawable/ic_status_green"/>
+
+        <TextView
+            android:id="@+id/status_active"
+            style="@style/TextView.TopAdsListContent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
+            tools:text="@string/app_name"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/price_promo_per_click"
+        style="@style/TextView.TopAdsListContent"
+        android:layout_marginBottom="@dimen/margin_vs"
+        tools:text="@string/app_name"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/padding_small">
+
+        <TextView
+            style="@style/TextView.TopAdsListTitle"
+            android:text="@string/label_top_ads_sent"
+            android:textStyle="normal"/>
+
+        <TextView
+            android:id="@+id/promo_price_used"
+            style="@style/TextView.TopAdsListTitle"
+            android:layout_marginLeft="3dp"
+            android:layout_marginStart="3dp"
+            android:textSize="16sp"
+            tools:text="@string/app_name"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/top_ads_dashboard_padding_cards_small"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="@style/TopAdsProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_vs"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/TextView.TopAdsListContent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="@string/label_top_ads_daily_spend"/>
+
+            <TextView
+                android:id="@+id/text_view_daily_spent"
+                style="@style/TextView.TopAdsListTitle"
+                android:textSize="@dimen/font_small"
+                tools:text="@string/app_name"/>
+
+            <TextView
+                style="@style/TextView.TopAdsListContent"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="@dimen/padding_vs"
+                android:layout_marginRight="@dimen/padding_vs"
+                android:text="@string/top_ads_spent_separator"/>
+
+            <TextView
+                android:id="@+id/text_view_daily_total"
+                style="@style/TextView.TopAdsListContent"
+                android:ellipsize="end"
+                tools:text="@string/app_name"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

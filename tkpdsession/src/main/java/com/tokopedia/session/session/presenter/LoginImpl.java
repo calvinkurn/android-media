@@ -186,25 +186,10 @@ public class LoginImpl implements Login {
             @Override
             public void onSuccess(final LoginResult loginResult) {
                 Set<String> declinedPermissions = loginResult.getAccessToken().getDeclinedPermissions();
-                if(declinedPermissions.size()>0 && FacebookContainer.readPermissions.containsAll(declinedPermissions)){
+                if(hasDeclinedPermission(declinedPermissions)){
                     doFacebookLogin(fragment,callbackManager);
                 }else {
-                    GraphRequest request = GraphRequest.newMeRequest(
-                            loginResult.getAccessToken(),
-                            new GraphRequest.GraphJSONObjectCallback() {
-                                @Override
-                                public void onCompleted(
-                                        JSONObject object,
-                                        GraphResponse response) {
-                                    FacebookModel facebookModel =
-                                            new GsonBuilder().create().fromJson(String.valueOf(object), FacebookModel.class);
-                                    loginFacebook(facebookModel,loginResult.getAccessToken().getToken());
-                                }
-                            });
-                    Bundle parameters = new Bundle();
-                    parameters.putString("fields","id,name,gender,birthday,email");
-                    request.setParameters(parameters);
-                    request.executeAsync();
+                    requestProfileFacebook(loginResult);
                 }
             }
 
@@ -224,6 +209,28 @@ public class LoginImpl implements Login {
         });
     }
 
+    private void requestProfileFacebook(final LoginResult loginResult) {
+        GraphRequest request = GraphRequest.newMeRequest(
+                loginResult.getAccessToken(),
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(
+                            JSONObject object,
+                            GraphResponse response) {
+                        FacebookModel facebookModel =
+                                new GsonBuilder().create().fromJson(String.valueOf(object), FacebookModel.class);
+                        loginFacebook(facebookModel,loginResult.getAccessToken().getToken());
+                    }
+                });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields","id,name,gender,birthday,email");
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
+    private boolean hasDeclinedPermission(Set<String> declinedPermissions) {
+        return declinedPermissions.size()>0 && FacebookContainer.readPermissions.containsAll(declinedPermissions);
+    }
 
     public void downloadProviderLogin() {
         facade.downloadProvider(loginView.getActivity(), new LoginInteractor.DiscoverLoginListener() {

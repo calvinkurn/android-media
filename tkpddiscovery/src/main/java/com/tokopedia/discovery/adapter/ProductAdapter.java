@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.ImageHandler;
@@ -110,10 +111,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case TkpdState.RecyclerView.VIEW_PRODUCT:
-                return new ViewHolderProductitem(LayoutInflater.from(context).inflate(R.layout.listview_product_item_list, parent, false));
+                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_list, parent, false));
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
-                return new ViewHolderProductitem(LayoutInflater.from(context).inflate(R.layout.listview_product_item_grid, parent, false));
+                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_grid, parent, false));
             case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
             case TkpdState.RecyclerView.VIEW_TOP_ADS:
                 return ProductFeedAdapter.createViewTopAds(parent);
@@ -620,10 +621,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         private Context context;
         private ProductItem data;
 
-        public ViewHolderProductitem(View itemView) {
+        public ViewHolderProductitem(Context context, View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            this.context = itemView.getContext();
+            this.context = context;
         }
 
         public void bindData(ProductItem data, ViewHolderProductitem viewHolder) {
@@ -633,8 +634,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             else
                 title.setText(MethodChecker.fromHtml(data.name));
             price.setText(data.price);
-            if (data.getShop_location() != null)
-                location.setText(MethodChecker.fromHtml(data.getShop_location()));
+            if (data.getShopLocation() != null)
+                location.setText(MethodChecker.fromHtml(data.getShopLocation()));
             else
                 location.setVisibility(View.INVISIBLE);
 

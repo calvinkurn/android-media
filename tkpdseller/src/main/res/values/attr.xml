@@ -89,6 +89,18 @@
         <attr name="arcProgressStyle" format="reference"/>
     </declare-styleable>
 
+    <declare-styleable name="TopAdsLabelView">
+        <attr name="title" format="string"/>
+        <attr name="content" format="string"/>
+        <attr name="content_color" format="color"/>
+        <attr name="content_textStyle">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+        </attr>
+    </declare-styleable>
+
+    <!-- william chart attr -->
     <declare-styleable name="ChartAttrs">
 
         <attr name="chart_axisThickness" format="dimension"/>
@@ -105,9 +117,9 @@
         <attr name="chart_shadowDx" format = "dimension"/>
         <attr name="chart_shadowDy" format = "dimension"/>
         <attr name="chart_shadowRadius" format = "dimension"/>
-
     </declare-styleable>
 
+    <!-- william chart attr -->
     <declare-styleable name="BarChartAttrs">
         <attr name="chart_barSpacing" format="dimension"/>
         <attr name="chart_setSpacing" format="dimension"/>

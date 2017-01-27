@@ -61,6 +61,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     private final AddToCartNetInteractor addToCartNetInteractor;
     private final AddToCartViewListener viewListener;
     private final KeroNetInteractorImpl keroNetInteractor;
+    private static final String GOJEK_ID = "10";
 
     public AddToCartPresenterImpl(AddToCartActivity addToCartActivity) {
         this.addToCartNetInteractor = new AddToCartNetInteractorImpl();
@@ -84,7 +85,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.renderFormProductInfo(data.getForm().getProductDetail());
                         viewListener.renderFormAddress(data.getForm().getDestination());
                         viewListener.hideInitLoading();
-                        if (isAllowKeroAccess(data)) {
+                        if (isAllowKeroAccess(data) && isAllowedCourier(data)) {
                             calculateKeroRates(context, data);
                         } else {
                             viewListener.hideProgressLoading();
@@ -115,7 +116,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.renderFormProductInfo(data.getForm().getProductDetail());
                         viewListener.renderFormAddress(data.getForm().getDestination());
                         viewListener.hideInitLoading();
-                        if (isAllowKeroAccess(data)) {
+                        if (isAllowKeroAccess(data) && isAllowedCourier(data)) {
                             calculateKeroRates(context, data);
                         } else {
                             viewListener.hideProgressLoading();
@@ -162,6 +163,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.enableBuyButton();
                     }
                 });
+
     }
 
     private List<Attribute> filterAvailableKeroShipment(List<Attribute> datas,
@@ -278,6 +280,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         @Override
                         public void onFailure() {
                             viewListener.enableBuyButton();
+                            viewListener.showCalculateShippingErrorMessage();
                         }
                     });
         }
@@ -381,15 +384,17 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
             viewListener.showErrorMessage(context.getString(R.string.error_no_address));
             return false;
         }
-        if (orderData.getShipment().equals(TkpdState.SHIPPING_ID.GOJEK)
-                && orderData.getShipmentPackage().equals("0")
-                && viewListener.getGoogleMapLocation().isEmpty()) {
-            viewListener.showErrorMessage(context.getString(R.string.error_google_map_not_chosen));
-            return false;
-        }
-        if (orderData.getShipment().equals("0") || orderData.getShipmentPackage().equals("0")) {
-            viewListener.showErrorMessage(context.getString(R.string.title_select_agency_error));
-            return false;
+        if (orderData.getShipment() != null && orderData.getShipmentPackage() != null) {
+            if (orderData.getShipment().equals(TkpdState.SHIPPING_ID.GOJEK)
+                    && orderData.getShipmentPackage().equals("0")
+                    && viewListener.getGoogleMapLocation().isEmpty()) {
+                viewListener.showErrorMessage(context.getString(R.string.error_google_map_not_chosen));
+                return false;
+            }
+            if (orderData.getShipment().equals("0") || orderData.getShipmentPackage().equals("0")) {
+                viewListener.showErrorMessage(context.getString(R.string.title_select_agency_error));
+                return false;
+            }
         }
         return true;
     }
@@ -525,6 +530,27 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                 && !TextUtils.isEmpty(data.getShop().getOriginPostal())
                 && !TextUtils.isEmpty(data.getForm().getDestination().getDistrictId())
                 && !TextUtils.isEmpty(data.getForm().getDestination().getPostalCode())
-                && !TextUtils.isEmpty(data.getForm().getProductDetail().getProductWeight());
+                && !TextUtils.isEmpty(data.getForm().getProductDetail().getProductWeight())
+                && data.getForm().getDestination() != null
+                && !data.getForm().getDestination().getAddressId().isEmpty()
+                && !data.getForm().getDestination().getAddressId().equals("0");
+    }
+
+    private boolean isAllowedCourier(AtcFormData data) {
+        for (int i = 0; i<data.getForm().getShipment().size(); i++) {
+            for(int j = 0; j<data.getForm().getShipment().get(i).getShipmentPackage().size(); j++) {
+                ShipmentPackage shipmentPackage = data.getForm().getShipment().get(i)
+                        .getShipmentPackage().get(j);
+                boolean packageAvailable = shipmentPackage.getPackageAvailable() == 1;
+                boolean isGojek = shipmentPackage.getShipmentId().equals(GOJEK_ID);
+                boolean allowedInstant = !data.getForm().getDestination().getLatitude().isEmpty();
+                if (packageAvailable && !isGojek)
+                    return true;
+                else if(allowedInstant)
+                    return true;
+            }
+        }
+        viewListener.showAddressErrorMessage();
+        return false;
     }
 }
