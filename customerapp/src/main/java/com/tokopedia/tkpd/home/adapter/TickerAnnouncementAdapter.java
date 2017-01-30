@@ -2,6 +2,10 @@ package com.tokopedia.tkpd.home.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -28,9 +32,6 @@ public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnoun
 
     private Ticker.Tickers[] tickers;
     Context context;
-
-    public static final int TICKER_WARNING = 1;
-    public static final int TICKER_ANNOUNCEMENT = 2;
 
     public static TickerAnnouncementAdapter createInstance(Context context) {
         return new TickerAnnouncementAdapter(context);
@@ -66,13 +67,8 @@ public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnoun
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        switch (viewType) {
-            case TICKER_WARNING: return new ViewHolder(
-                    LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_ticker_warning, parent, false));
-            default:
-            case TICKER_ANNOUNCEMENT: return new ViewHolder(
-                    LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_ticker_announcement, parent, false));
-        }
+        return new ViewHolder(
+                LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_ticker_warning, parent, false));
     }
 
     @Override
@@ -101,6 +97,13 @@ public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnoun
             }, sp.getSpanStart(url), sp.getSpanEnd(url), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         holder.message.setText(style);
+
+        Drawable background = holder.announcementContainer.getBackground();
+        if (background instanceof GradientDrawable) {
+            // cast to 'ShapeDrawable'
+            GradientDrawable gradientDrawable = (GradientDrawable) background;
+            gradientDrawable.setColor(Color.parseColor(tickers[position].getColor()));
+        }
     }
 
     @Override
@@ -108,9 +111,4 @@ public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnoun
         return tickers.length;
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return tickers[position].getTickerType().isEmpty()? TICKER_ANNOUNCEMENT:
-                Integer.parseInt(tickers[position].getTickerType());
-    }
 }

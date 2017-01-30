@@ -14,7 +14,7 @@ public interface TkpdBaseURL {
     String CLOVER_DOMAIN = "https://points.tokopedia.com/";
     String TOPADS_DOMAIN = "https://ta.tokopedia.com/";
     String TOPADS_STAGING_DOMAIN = "http://ta-staging.tokopedia.com/";
-    String MOJITO_DOMAIN = "https://mojito-staging.tokopedia.com/";
+    String MOJITO_DOMAIN = "https://mojito.tokopedia.com/";
     String MOJITO_STAGING_DOMAIN = "https://mojito-staging.tokopedia.com/";
     String HADES_DOMAIN = "https://hades.tokopedia.com";
     String RECHARGE_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
