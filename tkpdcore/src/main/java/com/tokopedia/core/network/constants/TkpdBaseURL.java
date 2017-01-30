@@ -515,6 +515,8 @@ public interface TkpdBaseURL {
         String URL_TOPADS_SHOP = TOPADS_DOMAIN + "promo/v1/display/";
 
         String PATH_DISPLAY_SHOP = "shops";
+        String PATH_GET_PROMO_TOP_ADS = "/promo/v1.1/display/products";
+        String PATH_GET_SHOP_TOP_ADS = "promo/v1/display/shops";
     }
 
     interface Mojito {
