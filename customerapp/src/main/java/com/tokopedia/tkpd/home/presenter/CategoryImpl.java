@@ -2,9 +2,11 @@ package com.tokopedia.tkpd.home.presenter;
 
 import android.util.Log;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.apiservices.etc.apis.home.CategoryApi;
 import com.tokopedia.core.network.entity.home.Banner;
+import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.home.Slide;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
@@ -69,6 +71,41 @@ public class CategoryImpl implements Category {
                                 CategoryApi.ANDROID_DEVICE,
                                 CategoryApi.state,
                                 CategoryApi.expired
+                        ).subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .unsubscribeOn(Schedulers.io())
+                                .subscribe(
+                                        subscriber
+                                )
+                );
+    }
+
+    @Override
+    public void fetchBrands(OnGetBrandsListener listener) {
+        Subscriber<Response<Brands>> subscriber = new Subscriber<Response<Brands>>() {
+            @Override
+            public void onCompleted() {
+                Log.d(TAG, messageTAG + "onCompleted()");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d(TAG, messageTAG + " -> " + e);
+            }
+
+            @Override
+            public void onNext(Response<Brands> response) {
+
+                CommonUtils.dumper("mohito " + response.body().getData().get(0).getShopName());
+
+            }
+        };
+
+        subscription
+                .add(
+                        categoryApi.getBrands(
+                                SessionHandler.getLoginID(MainApplication.getAppContext()),
+                                CategoryApi.FILTER_ANDROID_DEVICE
                         ).subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .unsubscribeOn(Schedulers.io())

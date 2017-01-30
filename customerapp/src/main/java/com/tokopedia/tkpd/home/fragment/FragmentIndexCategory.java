@@ -211,6 +211,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private void getPromo() {
         category.fetchBanners(onGetPromoListener());
         category.fetchSlides(onGetPromoListener());
+        category.fetchBrands(new Category.OnGetBrandsListener() {
+        });
     }
 
     private FacadePromo.GetPromoListener onGetPromoListener() {
