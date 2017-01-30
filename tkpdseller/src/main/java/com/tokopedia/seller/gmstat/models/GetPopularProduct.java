@@ -34,162 +34,126 @@ public class GetPopularProduct {
     private String imageLink;
 
     /**
-     *
-     * @return
-     * The productId
+     * @return The productId
      */
     public int getProductId() {
         return productId;
     }
 
     /**
-     *
-     * @param productId
-     * The ProductId
+     * @param productId The ProductId
      */
     public void setProductId(int productId) {
         this.productId = productId;
     }
 
     /**
-     *
-     * @return
-     * The sold
+     * @return The sold
      */
     public long getSold() {
         return sold;
     }
 
     /**
-     *
-     * @param sold
-     * The Sold
+     * @param sold The Sold
      */
     public void setSold(long sold) {
         this.sold = sold;
     }
 
     /**
-     *
-     * @return
-     * The view
+     * @return The view
      */
     public int getView() {
         return view;
     }
 
     /**
-     *
-     * @param view
-     * The View
+     * @param view The View
      */
     public void setView(int view) {
         this.view = view;
     }
 
     /**
-     *
-     * @return
-     * The successTrans
+     * @return The successTrans
      */
     public int getSuccessTrans() {
         return successTrans;
     }
 
     /**
-     *
-     * @param successTrans
-     * The SuccessTrans
+     * @param successTrans The SuccessTrans
      */
     public void setSuccessTrans(int successTrans) {
         this.successTrans = successTrans;
     }
 
     /**
-     *
-     * @return
-     * The wishlistCount
+     * @return The wishlistCount
      */
     public int getWishlistCount() {
         return wishlistCount;
     }
 
     /**
-     *
-     * @param wishlistCount
-     * The WishlistCount
+     * @param wishlistCount The WishlistCount
      */
     public void setWishlistCount(int wishlistCount) {
         this.wishlistCount = wishlistCount;
     }
 
     /**
-     *
-     * @return
-     * The conversionRate
+     * @return The conversionRate
      */
     public int getConversionRate() {
         return conversionRate;
     }
 
     /**
-     *
-     * @param conversionRate
-     * The ConversionRate
+     * @param conversionRate The ConversionRate
      */
     public void setConversionRate(int conversionRate) {
         this.conversionRate = conversionRate;
     }
 
     /**
-     *
-     * @return
-     * The productName
+     * @return The productName
      */
     public String getProductName() {
         return productName;
     }
 
     /**
-     *
-     * @param productName
-     * The ProductName
+     * @param productName The ProductName
      */
     public void setProductName(String productName) {
         this.productName = productName;
     }
 
     /**
-     *
-     * @return
-     * The productLink
+     * @return The productLink
      */
     public String getProductLink() {
         return productLink;
     }
 
     /**
-     *
-     * @param productLink
-     * The ProductLink
+     * @param productLink The ProductLink
      */
     public void setProductLink(String productLink) {
         this.productLink = productLink;
     }
 
     /**
-     *
-     * @return
-     * The imageLink
+     * @return The imageLink
      */
     public String getImageLink() {
         return imageLink;
     }
 
     /**
-     *
-     * @param imageLink
-     * The ImageLink
+     * @param imageLink The ImageLink
      */
     public void setImageLink(String imageLink) {
         this.imageLink = imageLink;

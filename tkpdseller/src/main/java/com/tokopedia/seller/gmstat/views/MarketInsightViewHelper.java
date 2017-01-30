@@ -34,45 +34,21 @@ import static com.tokopedia.seller.gmstat.views.DataTransactionViewHelper.dpToPx
 
 public class MarketInsightViewHelper {
 
-    LinearLayout marketInsightHeader;
-
-    TextView marketInsightHeader_;
-
-    RecyclerView marketInsightRecyclerView;
-
-    TextView marketInsightFooter_;
-
-    LinearLayout marketInsightGoldMerchant;
-
-    LinearLayout marketInsightNonGoldMerchant;
-
-    LinearLayout marketInsightEmptyState;
-
-    FrameLayout marketInsightContainerTop;
-
-    int emptyColorBackground;
-
     int transparantColor;
-
-    int breakLineBackground;
-
-    LinearLayout separator2;
+    private RecyclerView marketInsightRecyclerView;
+    private TextView marketInsightFooter_;
+    private LinearLayout marketInsightGoldMerchant;
+    private LinearLayout marketInsightNonGoldMerchant;
+    private LinearLayout marketInsightEmptyState;
+    private FrameLayout marketInsightContainerTop;
+    private int emptyColorBackground;
+    private LinearLayout separator2;
     private String prefixFooterMarketInsight;
-
-    public void addProductMarketInsight(){
-        ProductActivity.moveToAddProduct(view.getContext());
-    }
-
-    public void moveToGMSubscribe(){
-        if(!isGoldMerchant)
-            Router.goToGMSubscribe(view.getContext());
-    }
-
     private View view;
     private boolean isGoldMerchant;
     private MarketInsightAdapter marketInsightAdapter;
 
-    public MarketInsightViewHelper(View view, boolean isGoldMerchant){
+    public MarketInsightViewHelper(View view, boolean isGoldMerchant) {
         this.view = view;
         this.isGoldMerchant = isGoldMerchant;
         initView(view);
@@ -84,17 +60,17 @@ public class MarketInsightViewHelper {
             }
         });
 
-        if(isGoldMerchant){
+        if (isGoldMerchant) {
             separator2.removeAllViews();
-            View view2= new View(view.getContext());
-            view2.setLayoutParams(new LinearLayout.LayoutParams( ViewGroup.LayoutParams.MATCH_PARENT,
+            View view2 = new View(view.getContext());
+            view2.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     (int) dpToPx(view.getContext(), 16)));
             view2.setBackgroundResource(android.R.color.transparent);
             separator2.addView(view2);
-        }else{
+        } else {
             separator2.removeAllViews();
-            View view2= new View(view.getContext());
-            view2.setLayoutParams(new LinearLayout.LayoutParams( ViewGroup.LayoutParams.MATCH_PARENT,
+            View view2 = new View(view.getContext());
+            view2.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     (int) dpToPx(view.getContext(), 16)));
             view2.setBackgroundResource(R.color.breakline_background);
             separator2.addView(view2);
@@ -102,31 +78,34 @@ public class MarketInsightViewHelper {
 
     }
 
+    public void addProductMarketInsight() {
+        ProductActivity.moveToAddProduct(view.getContext());
+    }
+
+    public void moveToGMSubscribe() {
+        if (!isGoldMerchant)
+            Router.goToGMSubscribe(view.getContext());
+    }
+
     private void initView(final View view) {
 
-        marketInsightHeader= (LinearLayout) view.findViewById(R.id.market_insight_header);
+        marketInsightRecyclerView = (RecyclerView) view.findViewById(R.id.market_insight_recyclerview);
 
-        marketInsightHeader_= (TextView) view.findViewById(R.id.market_insight_header_);
+        marketInsightFooter_ = (TextView) view.findViewById(R.id.market_insight_footer_);
 
-        marketInsightRecyclerView= (RecyclerView) view.findViewById(R.id.market_insight_recyclerview);
+        marketInsightGoldMerchant = (LinearLayout) view.findViewById(R.id.market_insight_gold_merchant);
 
-        marketInsightFooter_= (TextView) view.findViewById(R.id.market_insight_footer_);
+        marketInsightNonGoldMerchant = (LinearLayout) view.findViewById(R.id.market_insight_non_gold_merchant);
 
-        marketInsightGoldMerchant= (LinearLayout) view.findViewById(R.id.market_insight_gold_merchant);
+        marketInsightEmptyState = (LinearLayout) view.findViewById(R.id.market_insight_empty_state);
 
-        marketInsightNonGoldMerchant= (LinearLayout) view.findViewById(R.id.market_insight_non_gold_merchant);
-
-        marketInsightEmptyState= (LinearLayout) view.findViewById(R.id.market_insight_empty_state);
-
-        marketInsightContainerTop= (FrameLayout) view.findViewById(R.id.market_insight_container_top);
+        marketInsightContainerTop = (FrameLayout) view.findViewById(R.id.market_insight_container_top);
 
         emptyColorBackground = ResourcesCompat.getColor(view.getResources(), R.color.empty_background, null);
 
         transparantColor = ResourcesCompat.getColor(view.getResources(), android.R.color.transparent, null);
 
-        breakLineBackground = ResourcesCompat.getColor(view.getResources(), R.color.breakline_background, null);
-
-        separator2= (LinearLayout) view.findViewById(R.id.separator_2_market_insight);
+        separator2 = (LinearLayout) view.findViewById(R.id.separator_2_market_insight);
 
         view.findViewById(R.id.market_insight_empty_state)
                 .setOnClickListener(new View.OnClickListener() {
@@ -177,29 +156,30 @@ public class MarketInsightViewHelper {
 
     /**
      * set category for footer
+     *
      * @param hadesV1Models non null and non empty dataset
      */
-    public void bindDataCategory(List<HadesV1Model> hadesV1Models){
-        if(hadesV1Models==null||hadesV1Models.size()<=0)
+    public void bindDataCategory(List<HadesV1Model> hadesV1Models) {
+        if (hadesV1Models == null || hadesV1Models.size() <= 0)
             return;
 
         HadesV1Model.Category category = hadesV1Models.get(0).getData().getCategories().get(0);
 
         String categoryBold = String.format(MARKET_INSIGHT_FOOTER_FORMAT, category.getName());
-        marketInsightFooter_.setText(MethodChecker.fromHtml(prefixFooterMarketInsight+categoryBold+" "));
+        marketInsightFooter_.setText(MethodChecker.fromHtml(prefixFooterMarketInsight + categoryBold + " "));
     }
 
-    public void bindData(List<GetKeyword> getKeywords){
-        if(isGoldMerchant){
+    public void bindData(List<GetKeyword> getKeywords) {
+        if (isGoldMerchant) {
             marketInsightGoldMerchant.setVisibility(View.VISIBLE);
             marketInsightNonGoldMerchant.setVisibility(View.GONE);
             marketInsightEmptyState.setVisibility(View.GONE);
-        }else{
+        } else {
             displayNonGoldMerchant();
             return;
         }
 
-        if(getKeywords==null||getKeywords.size()<=0) {
+        if (getKeywords == null || getKeywords.size() <= 0) {
             displayEmptyState();
             return;
         }
@@ -207,19 +187,19 @@ public class MarketInsightViewHelper {
         //[START] check whether all is empty
         int isNotEmpty = 0;
         for (GetKeyword getKeyword : getKeywords) {
-            if(getKeyword.getSearchKeyword() == null || getKeyword.getSearchKeyword().isEmpty())
+            if (getKeyword.getSearchKeyword() == null || getKeyword.getSearchKeyword().isEmpty())
                 isNotEmpty++;
         }
 
         // if all keyword empty
-        if(isNotEmpty == getKeywords.size()) {
+        if (isNotEmpty == getKeywords.size()) {
             displayEmptyState();
             return;
         }
 
         // remove null or empty
-        for(int i=0;i<getKeywords.size();i++){
-            if(getKeywords.get(i) == null
+        for (int i = 0; i < getKeywords.size(); i++) {
+            if (getKeywords.get(i) == null
                     || getKeywords.get(i).getSearchKeyword() == null
                     || getKeywords.get(i).getSearchKeyword().isEmpty())
                 getKeywords.remove(i);
@@ -245,7 +225,7 @@ public class MarketInsightViewHelper {
 
         // create dummy data as replacement for non gold merchant user.
         List<GetKeyword.SearchKeyword> searchKeyword = new ArrayList<>();
-        for(int i=0;i<3;i++){
+        for (int i = 0; i < 3; i++) {
             GetKeyword.SearchKeyword searchKeyword1 = new GetKeyword.SearchKeyword();
             searchKeyword1.setFrequency(1000);
             searchKeyword1.setKeyword("kaos");
@@ -253,7 +233,7 @@ public class MarketInsightViewHelper {
         }
 
         String categoryBold = String.format(MARKET_INSIGHT_FOOTER_FORMAT, "kaos");
-        marketInsightFooter_.setText(MethodChecker.fromHtml(prefixFooterMarketInsight+categoryBold+" "));
+        marketInsightFooter_.setText(MethodChecker.fromHtml(prefixFooterMarketInsight + categoryBold + " "));
 
         marketInsightRecyclerView.setLayoutManager(new LinearLayoutManager(
                 view.getContext(), LinearLayoutManager.VERTICAL, false));
@@ -269,21 +249,21 @@ public class MarketInsightViewHelper {
     }
 
     public void bindData(GetShopCategory getShopCategory) {
-        if(getShopCategory == null || getShopCategory.getShopCategory() == null || getShopCategory.getShopCategory().isEmpty()){
-            if(isGoldMerchant)
+        if (getShopCategory == null || getShopCategory.getShopCategory() == null || getShopCategory.getShopCategory().isEmpty()) {
+            if (isGoldMerchant)
                 displayEmptyState();
-            else{
+            else {
                 displayNonGoldMerchant();
             }
         }
     }
 
-    public static class MarketInsightAdapter extends RecyclerView.Adapter<MarketInsightViewHolder>{
+    public static class MarketInsightAdapter extends RecyclerView.Adapter<MarketInsightViewHolder> {
 
-        private double total;
         List<GetKeyword.SearchKeyword> searchKeywords;
+        private double total;
 
-        public MarketInsightAdapter(List<GetKeyword.SearchKeyword> searchKeywords){
+        public MarketInsightAdapter(List<GetKeyword.SearchKeyword> searchKeywords) {
             this.searchKeywords = searchKeywords;
 
             total = 0;
@@ -307,11 +287,11 @@ public class MarketInsightViewHelper {
 
         @Override
         public int getItemCount() {
-            return searchKeywords.size()>=3?3:searchKeywords.size();
+            return searchKeywords.size() >= 3 ? 3 : searchKeywords.size();
         }
     }
 
-    public static class MarketInsightViewHolder extends RecyclerView.ViewHolder{
+    public static class MarketInsightViewHolder extends RecyclerView.ViewHolder {
 
         final String TAG = "MarketInsight";
 
@@ -323,28 +303,28 @@ public class MarketInsightViewHelper {
 
         RoundCornerProgressBar marketInsightProgress;
 
-        void initView(View itemView){
-
-            marketInsightKeyword= (TextView) itemView.findViewById(R.id.market_insight_keyword);
-
-            marketInsightNumber= (TextView) itemView.findViewById(R.id.market_insight_number);
-
-            zoomIcon= (ImageView) itemView.findViewById(R.id.zoom_icon);
-
-            marketInsightProgress= (RoundCornerProgressBar) itemView.findViewById(R.id.market_insight_progress);
-        }
-
         public MarketInsightViewHolder(View itemView) {
             super(itemView);
             initView(itemView);
         }
 
-        public void bindData(GetKeyword.SearchKeyword searchKeyword, List<GetKeyword.SearchKeyword> list){
+        void initView(View itemView) {
+
+            marketInsightKeyword = (TextView) itemView.findViewById(R.id.market_insight_keyword);
+
+            marketInsightNumber = (TextView) itemView.findViewById(R.id.market_insight_number);
+
+            zoomIcon = (ImageView) itemView.findViewById(R.id.zoom_icon);
+
+            marketInsightProgress = (RoundCornerProgressBar) itemView.findViewById(R.id.market_insight_progress);
+        }
+
+        public void bindData(GetKeyword.SearchKeyword searchKeyword, List<GetKeyword.SearchKeyword> list) {
             double total = list.get(0).getFrequency();
 
             double v = searchKeyword.getFrequency() / total;
-            double percentage = Math.floor((v*100)+0.5);
-            Log.d(TAG, "total "+total+" percentage "+percentage+" frequency "+searchKeyword.getFrequency());
+            double percentage = Math.floor((v * 100) + 0.5);
+            Log.d(TAG, "total " + total + " percentage " + percentage + " frequency " + searchKeyword.getFrequency());
 
             marketInsightProgress.setProgress((float) percentage);
 

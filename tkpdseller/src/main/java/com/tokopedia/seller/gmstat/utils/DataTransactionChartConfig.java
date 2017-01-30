@@ -28,6 +28,14 @@ import java.text.DecimalFormat;
  * rename class to DataTransactionChartConfig because it belongs to DataTransaction only.
  */
 public class DataTransactionChartConfig {
+    private static final int GREEN_COLOR = Color.rgb(66, 181, 73);
+    private static final int GREY_COLOR = Color.rgb(189, 189, 189);
+    private final Runnable mEndAction = new Runnable() {
+        @Override
+        public void run() {
+            // do nothing
+        }
+    };
     private String[] mLabels;
     private float[] mValues;
     private boolean mIsLineSmooth = true;
@@ -45,31 +53,22 @@ public class DataTransactionChartConfig {
     private float mOverlapFactor;
     private float mStartX;
     private float mStartY;
-    private final Runnable mEndAction = new Runnable() {
-        @Override
-        public void run() {
-            // do nothing
-        }
-    };
+    private int[] mEqualOrder = {0, 1, 2, 3, 4, 5, 6};
 
-    private static final int GREEN_COLOR = Color.rgb(66,181,73);
-    private static final int GREY_COLOR = Color.rgb(189,189,189);
-
-
-    public DataTransactionChartConfig(String[] mLabels, float[] mValues){
-        if(mLabels == null)
+    public DataTransactionChartConfig(String[] mLabels, float[] mValues) {
+        if (mLabels == null)
             throw new RuntimeException("unable to process null WilliamChartUtils mValues");
-        if(mValues==null)
+        if (mValues == null)
             throw new RuntimeException("unable to process null WilliamChartUtils mValues");
 
         this.mLabels = mLabels;
         this.mValues = mValues;
 
-        mLineColorId = Color.rgb(66,181,73);
-        mPointColorId = Color.rgb(255,255,255);
-        mGridColorId = Color.argb(13, 0,0,0);
-        mLabelColorId = Color.argb(97, 0,0,0);
-        mAxisColorId = Color.argb(13, 0,0,0);
+        mLineColorId = Color.rgb(66, 181, 73);
+        mPointColorId = Color.rgb(255, 255, 255);
+        mGridColorId = Color.argb(13, 0, 0, 0);
+        mLabelColorId = Color.argb(97, 0, 0, 0);
+        mAxisColorId = Color.argb(13, 0, 0, 0);
         mGridThickness = 1f;
         mXLabelPosition = AxisRenderer.LabelPosition.NONE;
         mYLabelPosition = AxisRenderer.LabelPosition.NONE;
@@ -80,8 +79,6 @@ public class DataTransactionChartConfig {
         mStartY = 1f;
     }
 
-    private int[] mEqualOrder = {0, 1, 2, 3, 4, 5, 6};
-
     public void setmLabels(String[] mLabels) {
         this.mLabels = mLabels;
     }
@@ -89,10 +86,9 @@ public class DataTransactionChartConfig {
     public void setmValues(float[] mValues) {
         this.mValues = mValues;
 
-        if(mValues.length != mEqualOrder.length)
-        {
+        if (mValues.length != mEqualOrder.length) {
             mEqualOrder = new int[mValues.length];
-            for(int i=0;i<mEqualOrder.length;i++){
+            for (int i = 0; i < mEqualOrder.length; i++) {
                 mEqualOrder[i] = i;
             }
         }
@@ -101,9 +97,9 @@ public class DataTransactionChartConfig {
 
     public ChartView buildLineChart(LineChartView chart, int bottomMargin, boolean emptyState) {
 
-        if(emptyState){
+        if (emptyState) {
             mLineColorId = GREY_COLOR;
-        }else{
+        } else {
             mLineColorId = GREEN_COLOR;
         }
 

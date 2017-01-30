@@ -18,34 +18,34 @@ package com.tokopedia.seller.gmstat.views.williamchart.chart.animation.easing;
 
 public class QuintEase extends BaseEasingMethod {
 
-	public QuintEase() {
+    public QuintEase() {
 
-		super();
-	}
-
-
-	@Override
-	protected float easeOut(float time) {
-
-		return (float) Math.pow(time - 1, 5) + 1;
-	}
+        super();
+    }
 
 
-	@Override
-	protected float easeInOut(float time) {
+    @Override
+    protected float easeOut(float time) {
 
-		float p = time / 0.5f;
-		if (p < 1.f) return 0.5f * p * p * p * p * p;
-
-		p -= 2.f;
-		return 0.5f * (p * p * p * p * p + 2.f);
-	}
+        return (float) Math.pow(time - 1, 5) + 1;
+    }
 
 
-	@Override
-	protected float easeIn(float time) {
+    @Override
+    protected float easeInOut(float time) {
 
-		return time * time * time * time * time;
-	}
+        float p = time / 0.5f;
+        if (p < 1.f) return 0.5f * p * p * p * p * p;
+
+        p -= 2.f;
+        return 0.5f * (p * p * p * p * p + 2.f);
+    }
+
+
+    @Override
+    protected float easeIn(float time) {
+
+        return time * time * time * time * time;
+    }
 
 }

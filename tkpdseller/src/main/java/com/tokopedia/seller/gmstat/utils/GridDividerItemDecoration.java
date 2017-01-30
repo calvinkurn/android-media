@@ -16,7 +16,7 @@ import com.tokopedia.seller.R;
 
 public class GridDividerItemDecoration extends RecyclerView.ItemDecoration {
 
-    private static final int[] ATTRS = { android.R.attr.listDivider };
+    private static final int[] ATTRS = {android.R.attr.listDivider};
 
     private Drawable mDivider;
     private int mInsets;
@@ -35,7 +35,9 @@ public class GridDividerItemDecoration extends RecyclerView.ItemDecoration {
         drawHorizontal(c, parent);
     }
 
-    /** Draw dividers at each expected grid interval */
+    /**
+     * Draw dividers at each expected grid interval
+     */
     public void drawVertical(Canvas c, RecyclerView parent) {
         if (parent.getChildCount() == 0) return;
 
@@ -55,7 +57,9 @@ public class GridDividerItemDecoration extends RecyclerView.ItemDecoration {
         }
     }
 
-    /** Draw dividers to the right of each child view */
+    /**
+     * Draw dividers to the right of each child view
+     */
     public void drawHorizontal(Canvas c, RecyclerView parent) {
         final int childCount = parent.getChildCount();
 

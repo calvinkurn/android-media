@@ -29,191 +29,189 @@ import com.tokopedia.seller.gmstat.views.williamchart.chart.Tools;
  */
 public class Point extends ChartEntry {
 
-	private static final String TAG = "chart.model.Point";
+    private static final String TAG = "chart.model.Point";
 
 
-	/** Defaults **/
-	private static final int DEFAULT_COLOR = -16777216;
+    /**
+     * Defaults
+     **/
+    private static final int DEFAULT_COLOR = -16777216;
 
-	private static final float DOTS_THICKNESS = 4;
+    private static final float DOTS_THICKNESS = 4;
 
-	private static final float DOTS_RADIUS = 3;
-
-
-	/** Dot variables */
-	private boolean mHasStroke;
-
-	private float mStrokeThickness;
-
-	private int mStrokeColor;
+    private static final float DOTS_RADIUS = 3;
 
 
-	/** Radius */
-	private float mRadius;
+    /**
+     * Dot variables
+     */
+    private boolean mHasStroke;
+
+    private float mStrokeThickness;
+
+    private int mStrokeColor;
 
 
-	/** Dots drawable background */
-	private Drawable mDrawable;
+    /**
+     * Radius
+     */
+    private float mRadius;
 
 
-	/**
-	 * Constructor.
-	 *
-	 * @param label
-	 * @param value
-	 */
-	public Point(String label, float value) {
-
-		super(label, value);
-
-		isVisible = false;
-
-		mRadius = Tools.fromDpToPx(DOTS_THICKNESS);
-
-		mHasStroke = false;
-		mStrokeThickness = Tools.fromDpToPx(DOTS_RADIUS);
-		mStrokeColor = DEFAULT_COLOR;
-
-		mDrawable = null;
-	}
+    /**
+     * Dots drawable background
+     */
+    private Drawable mDrawable;
 
 
-	/**
-	 * Whether the Point has stroke defined or not.
-	 *
-	 * @return true if point has stroke define.
-	 */
-	public boolean hasStroke() {
+    /**
+     * Constructor.
+     *
+     * @param label
+     * @param value
+     */
+    public Point(String label, float value) {
 
-		return mHasStroke;
-	}
+        super(label, value);
+
+        isVisible = false;
+
+        mRadius = Tools.fromDpToPx(DOTS_THICKNESS);
+
+        mHasStroke = false;
+        mStrokeThickness = Tools.fromDpToPx(DOTS_RADIUS);
+        mStrokeColor = DEFAULT_COLOR;
+
+        mDrawable = null;
+    }
+
+
+    /**
+     * Whether the Point has stroke defined or not.
+     *
+     * @return true if point has stroke define.
+     */
+    public boolean hasStroke() {
+
+        return mHasStroke;
+    }
 
 
 
     /*
-	 * --------
+     * --------
 	 * Getters
 	 * --------
 	 */
 
 
-	/**
-	 * Retrieve the point's stroke thickness.
-	 *
-	 * @return point's stroke thickness.
-	 */
-	public float getStrokeThickness() {
+    /**
+     * Retrieve the point's stroke thickness.
+     *
+     * @return point's stroke thickness.
+     */
+    public float getStrokeThickness() {
 
-		return mStrokeThickness;
-	}
+        return mStrokeThickness;
+    }
 
+    /**
+     * Define specific thickness to point's stroke.
+     *
+     * @param thickness Grid thickness. Can't be equal or less than 0
+     * @return {@link Point} self-reference.
+     */
+    public Point setStrokeThickness(@FloatRange(from = 0.f) float thickness) {
 
-	/**
-	 * Retrieve the point's radius.
-	 *
-	 * @return point radius.
-	 */
-	public float getRadius() {
+        if (thickness < 0) throw new IllegalArgumentException("Grid thickness < 0.");
 
-		return mRadius;
-	}
+        isVisible = true;
+        mHasStroke = true;
+        mStrokeThickness = thickness;
+        return this;
+    }
 
+    /**
+     * Retrieve the point's radius.
+     *
+     * @return point radius.
+     */
+    public float getRadius() {
 
-	/**
-	 * Retrieve point's stroke color.
-	 *
-	 * @return point's stroke color.
-	 */
-	public int getStrokeColor() {
+        return mRadius;
+    }
 
-		return mStrokeColor;
-	}
+    /**
+     * Define specific radius to point.
+     *
+     * @param radius value of radius starting from 0.
+     * @return {@link Point} self-reference.
+     */
+    public Point setRadius(@FloatRange(from = 0.f) float radius) {
 
+        if (radius < 0.f) throw new IllegalArgumentException("Dot radius can't be < 0.");
 
-	/**
-	 * Retrieve point's drawable.
-	 *
-	 * @return {@link Drawable} to be displayed.
-	 */
-	public Drawable getDrawable() {
-
-		return mDrawable;
-	}
+        isVisible = true;
+        mRadius = radius;
+        return this;
+    }
 
 
 
     /*
-	 * --------
+     * --------
 	 * Setters
 	 * --------
 	 */
 
+    /**
+     * Retrieve point's stroke color.
+     *
+     * @return point's stroke color.
+     */
+    public int getStrokeColor() {
 
-	/**
-	 * Define specific radius to point.
-	 *
-	 * @param radius value of radius starting from 0.
-	 *
-	 * @return {@link Point} self-reference.
-	 */
-	public Point setRadius(@FloatRange(from = 0.f) float radius) {
+        return mStrokeColor;
+    }
 
-		if (radius < 0.f) throw new IllegalArgumentException("Dot radius can't be < 0.");
+    /**
+     * Define point's stroke color.
+     *
+     * @param color The color.
+     * @return {@link Point} self-reference.
+     */
+    public Point setStrokeColor(@ColorInt int color) {
 
-		isVisible = true;
-		mRadius = radius;
-		return this;
-	}
+        isVisible = true;
+        mHasStroke = true;
+        mStrokeColor = color;
+        return this;
+    }
 
+    /**
+     * Retrieve point's drawable.
+     *
+     * @return {@link Drawable} to be displayed.
+     */
+    public Drawable getDrawable() {
 
-	/**
-	 * Define specific thickness to point's stroke.
-	 *
-	 * @param thickness Grid thickness. Can't be equal or less than 0
-	 *
-	 * @return {@link Point} self-reference.
-	 */
-	public Point setStrokeThickness(@FloatRange(from = 0.f) float thickness) {
+        return mDrawable;
+    }
 
-		if (thickness < 0) throw new IllegalArgumentException("Grid thickness < 0.");
+    /**
+     * Define a drawable to be drawn instead of the usual dot.
+     *
+     * @param drawable The drawable.
+     * @return {@link Point} self-reference.
+     */
+    public Point setDrawable(@NonNull Drawable drawable) {
 
-		isVisible = true;
-		mHasStroke = true;
-		mStrokeThickness = thickness;
-		return this;
-	}
+        if (drawable == null)
+            throw new IllegalArgumentException("Drawable argument can't be null.");
 
-
-	/**
-	 * Define point's stroke color.
-	 *
-	 * @param color The color.
-	 *
-	 * @return {@link Point} self-reference.
-	 */
-	public Point setStrokeColor(@ColorInt int color) {
-
-		isVisible = true;
-		mHasStroke = true;
-		mStrokeColor = color;
-		return this;
-	}
-
-
-	/**
-	 * Define a drawable to be drawn instead of the usual dot.
-	 *
-	 * @param drawable The drawable.
-	 *
-	 * @return {@link Point} self-reference.
-	 */
-	public Point setDrawable(@NonNull Drawable drawable) {
-
-		if (drawable == null) throw new IllegalArgumentException("Drawable argument can't be null.");
-
-		isVisible = true;
-		mDrawable = drawable;
-		return this;
-	}
+        isVisible = true;
+        mDrawable = drawable;
+        return this;
+    }
 
 }

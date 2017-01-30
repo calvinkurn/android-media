@@ -29,168 +29,173 @@ import java.util.Collections;
 public abstract class ChartSet {
 
 
-	private static final String TAG = "chart.model.ChartSet";
+    private static final String TAG = "chart.model.ChartSet";
 
 
-	/** Set with entries */
-	final private ArrayList<ChartEntry> mEntries;
+    /**
+     * Set with entries
+     */
+    final private ArrayList<ChartEntry> mEntries;
 
 
-	/** Paint alpha value from 0 to 1 */
-	private float mAlpha;
+    /**
+     * Paint alpha value from 0 to 1
+     */
+    private float mAlpha;
 
 
-	/** Whether the set will be visible or not */
-	private boolean mIsVisible;
+    /**
+     * Whether the set will be visible or not
+     */
+    private boolean mIsVisible;
 
 
-	ChartSet() {
+    ChartSet() {
 
-		mEntries = new ArrayList<>();
-		mAlpha = 1;
-		mIsVisible = false;
-	}
-
-
-	void addEntry(ChartEntry e) {
-
-		if (e == null) throw new IllegalArgumentException("Chart entry added can't be null object.");
-
-		mEntries.add(e);
-	}
+        mEntries = new ArrayList<>();
+        mAlpha = 1;
+        mIsVisible = false;
+    }
 
 
-	/**
-	 * Updates set values.
-	 *
-	 * @param newValues
-	 */
-	public void updateValues(float[] newValues) {
+    void addEntry(ChartEntry e) {
 
-		int nEntries = size();
-		if (newValues.length != nEntries) throw new IllegalArgumentException(
-				  "New set values given doesn't match previous " + "number of entries.");
+        if (e == null)
+            throw new IllegalArgumentException("Chart entry added can't be null object.");
 
-		for (int i = 0; i < nEntries; i++)
-			setValue(i, newValues[i]);
-	}
-	
+        mEntries.add(e);
+    }
+
+
+    /**
+     * Updates set values.
+     *
+     * @param newValues
+     */
+    public void updateValues(float[] newValues) {
+
+        int nEntries = size();
+        if (newValues.length != nEntries) throw new IllegalArgumentException(
+                "New set values given doesn't match previous " + "number of entries.");
+
+        for (int i = 0; i < nEntries; i++)
+            setValue(i, newValues[i]);
+    }
+
 	
 	
 	
 	/*
-	 * --------
+     * --------
 	 * Getters
 	 * --------
 	 */
 
 
-	/**
-	 * Get set of {@link ChartEntry}s.
-	 *
-	 * @return List of entries contained in the set.
-	 */
-	public ArrayList<ChartEntry> getEntries() {
+    /**
+     * Get set of {@link ChartEntry}s.
+     *
+     * @return List of entries contained in the set.
+     */
+    public ArrayList<ChartEntry> getEntries() {
 
-		return mEntries;
-	}
-
-
-	/**
-	 * Get {@link ChartEntry} from specific index.
-	 *
-	 * @param index Entry's index
-	 *
-	 * @return {@link ChartSet} self-reference.
-	 */
-	public ChartEntry getEntry(int index) {
-
-		return mEntries.get(index);
-	}
+        return mEntries;
+    }
 
 
-	/**
-	 * Get {@link ChartEntry} value from specific index.
-	 *
-	 * @param index Value's index
-	 *
-	 * @return Value of given index.
-	 */
-	public float getValue(int index) {
+    /**
+     * Get {@link ChartEntry} from specific index.
+     *
+     * @param index Entry's index
+     * @return {@link ChartSet} self-reference.
+     */
+    public ChartEntry getEntry(int index) {
 
-		return mEntries.get(index).getValue();
-	}
-
-
-	/**
-	 * Get {@link ChartEntry} label from specific index.
-	 *
-	 * @param index Label's index
-	 *
-	 * @return Label of given index.
-	 */
-	public String getLabel(int index) {
-
-		return mEntries.get(index).getLabel();
-	}
+        return mEntries.get(index);
+    }
 
 
-	/**
-	 * Get {@link ChartEntry} with the highest value.
-	 */
-	public ChartEntry getMax() {
+    /**
+     * Get {@link ChartEntry} value from specific index.
+     *
+     * @param index Value's index
+     * @return Value of given index.
+     */
+    public float getValue(int index) {
 
-		return Collections.max(mEntries);
-	}
-
-
-	/**
-	 * Get {@link ChartEntry} with the lowest value.
-	 */
-	public ChartEntry getMin() {
-
-		return Collections.min(mEntries);
-	}
-	
-	
-	/**
-	 * Get screen points.
-	 *
-	 * @return Display coordinates of all entries.
-	 */
-	public float[][] getScreenPoints() {
-
-		int nEntries = size();
-		float[][] result = new float[nEntries][2];
-		for (int i = 0; i < nEntries; i++) {
-			result[i][0] = mEntries.get(i).getX();
-			result[i][1] = mEntries.get(i).getY();
-		}
-
-		return result;
-	}
+        return mEntries.get(index).getValue();
+    }
 
 
-	/**
-	 * Get current set's alpha.
-	 *
-	 * @return Set's alpha.
-	 */
-	public float getAlpha() {
+    /**
+     * Get {@link ChartEntry} label from specific index.
+     *
+     * @param index Label's index
+     * @return Label of given index.
+     */
+    public String getLabel(int index) {
 
-		return mAlpha;
-	}
+        return mEntries.get(index).getLabel();
+    }
 
 
-	/**
-	 * Get whether the set should be presented or not.
-	 *
-	 * @return True if set visible, False if not.
-	 */
-	public boolean isVisible() {
+    /**
+     * Get {@link ChartEntry} with the highest value.
+     */
+    public ChartEntry getMax() {
 
-		return mIsVisible;
-	}
+        return Collections.max(mEntries);
+    }
+
+
+    /**
+     * Get {@link ChartEntry} with the lowest value.
+     */
+    public ChartEntry getMin() {
+
+        return Collections.min(mEntries);
+    }
+
+
+    /**
+     * Get screen points.
+     *
+     * @return Display coordinates of all entries.
+     */
+    public float[][] getScreenPoints() {
+
+        int nEntries = size();
+        float[][] result = new float[nEntries][2];
+        for (int i = 0; i < nEntries; i++) {
+            result[i][0] = mEntries.get(i).getX();
+            result[i][1] = mEntries.get(i).getY();
+        }
+
+        return result;
+    }
+
+
+    /**
+     * Get current set's alpha.
+     *
+     * @return Set's alpha.
+     */
+    public float getAlpha() {
+
+        return mAlpha;
+    }
+
+    /**
+     * Set set's alpha.
+     *
+     * @param alpha alpha value from 0 to 1.
+     *              If you need to make the set invisible than consider
+     *              using the method setVisible().
+     */
+    public void setAlpha(@FloatRange(from = 0.f, to = 1.f) float alpha) {
+
+        mAlpha = (alpha < 1) ? alpha : 1;
+    }
 	
 	
 	
@@ -200,65 +205,59 @@ public abstract class ChartSet {
 	 * --------
 	 */
 
+    /**
+     * Get whether the set should be presented or not.
+     *
+     * @return True if set visible, False if not.
+     */
+    public boolean isVisible() {
 
-	/**
-	 * Set {@link ChartEntry} value at specific index position.
-	 *
-	 * @param index Value's index where value will be placed
-	 */
-	private void setValue(int index, float value) {
+        return mIsVisible;
+    }
 
-		mEntries.get(index).setValue(value);
-	}
+    /**
+     * Set whether the set should be visible or not.
+     *
+     * @param visible false if set should not be visible.
+     */
+    public void setVisible(boolean visible) {
 
+        mIsVisible = visible;
+    }
 
-	/**
-	 * Set set's alpha.
-	 *
-	 * @param alpha alpha value from 0 to 1.
-	 * If you need to make the set invisible than consider
-	 * using the method setVisible().
-	 */
-	public void setAlpha(@FloatRange(from = 0.f, to = 1.f) float alpha) {
+    /**
+     * Set {@link ChartEntry} value at specific index position.
+     *
+     * @param index Value's index where value will be placed
+     */
+    private void setValue(int index, float value) {
 
-		mAlpha = (alpha < 1) ? alpha : 1;
-	}
+        mEntries.get(index).setValue(value);
+    }
 
+    /**
+     * @param radius
+     * @param dx
+     * @param dy
+     * @param color
+     */
+    void setShadow(float radius, float dx, float dy, int color) {
 
-	/**
-	 * Set whether the set should be visible or not.
-	 *
-	 * @param visible false if set should not be visible.
-	 */
-	public void setVisible(boolean visible) {
-
-		mIsVisible = visible;
-	}
-
-
-	/**
-	 * @param radius
-	 * @param dx
-	 * @param dy
-	 * @param color
-	 */
-	void setShadow(float radius, float dx, float dy, int color) {
-
-		for (ChartEntry e : getEntries())
-			e.setShadow(radius, dx, dy, color);
-	}
+        for (ChartEntry e : getEntries())
+            e.setShadow(radius, dx, dy, color);
+    }
 
 
-	public int size() {
+    public int size() {
 
-		return mEntries.size();
-	}
+        return mEntries.size();
+    }
 
 
-	public String toString() {
+    public String toString() {
 
-		return mEntries.toString();
-	}
+        return mEntries.toString();
+    }
 
 
 }

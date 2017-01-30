@@ -10,19 +10,13 @@ import com.tokopedia.seller.gmstat.library.LoaderTextView;
  * Created by normansyahputa on 1/18/17.
  */
 
-public class LoadingGM extends RecyclerView.ViewHolder{
+public class LoadingGM extends RecyclerView.ViewHolder {
 
-    LoaderTextView textDescription;
+    private LoaderTextView textDescription;
 
-    LoaderTextView text;
+    private LoaderTextView text;
 
-    LoaderTextView noDataText;
-
-    void initView(View itemView){
-        textDescription = (LoaderTextView) itemView.findViewById(R.id.textDescription);
-        text = (LoaderTextView) itemView.findViewById(R.id.text);
-        noDataText = (LoaderTextView) itemView.findViewById(R.id.no_data_text);
-    }
+    private LoaderTextView noDataText;
 
     public LoadingGM(View itemView) {
         super(itemView);
@@ -31,5 +25,11 @@ public class LoadingGM extends RecyclerView.ViewHolder{
         textDescription.resetLoader();
         text.resetLoader();
         noDataText.resetLoader();
+    }
+
+    private void initView(View itemView) {
+        textDescription = (LoaderTextView) itemView.findViewById(R.id.textDescription);
+        text = (LoaderTextView) itemView.findViewById(R.id.text);
+        noDataText = (LoaderTextView) itemView.findViewById(R.id.no_data_text);
     }
 }

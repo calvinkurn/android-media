@@ -4,18 +4,14 @@ import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.DatePickerRules;
-import com.tokopedia.seller.gmstat.utils.DateValidationListener;
 import com.tokopedia.seller.gmstat.views.models.StartOrEndPeriodModel;
 
 import java.util.Calendar;
-
-import butterknife.ButterKnife;
 
 import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateWithYear;
 import static com.tokopedia.seller.gmstat.views.SetDateFragment.reverseDate;
@@ -25,21 +21,27 @@ import static com.tokopedia.seller.gmstat.views.models.StartOrEndPeriodModel.YES
  * Created by normansyahputa on 1/18/17.
  */
 
-public class CustomViewHolder extends RecyclerView.ViewHolder{
+public class CustomViewHolder extends RecyclerView.ViewHolder {
 
-    String[] monthNamesAbrev;
+    private String[] monthNamesAbrev;
 
-    TextView customHeader;
+    private TextView customHeader;
 
-    TextView customDate;
+    private TextView customDate;
 
-    ImageView customDropDown;
+    private DatePickerRules datePickerRules;
+    private Calendar cal;
+    private StartOrEndPeriodModel startOrEndPeriodModel;
 
-    void initView(View rootView){
+    public CustomViewHolder(View itemView) {
+        super(itemView);
+        initView(itemView);
+    }
+
+    private void initView(View rootView) {
         monthNamesAbrev = rootView.getResources().getStringArray(R.array.month_names_abrev);
         customHeader = (TextView) rootView.findViewById(R.id.custom_header);
         customDate = (TextView) rootView.findViewById(R.id.custom_date);
-        customDropDown = (ImageView) rootView.findViewById(R.id.custom_drop_down);
         rootView.findViewById(R.id.custom_date).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -58,17 +60,12 @@ public class CustomViewHolder extends RecyclerView.ViewHolder{
         );
     }
 
-    DatePickerRules datePickerRules;
-    private Calendar cal;
-
     public void setDatePickerRules(DatePickerRules datePickerRules) {
         this.datePickerRules = datePickerRules;
     }
 
-    private StartOrEndPeriodModel startOrEndPeriodModel;
-
-    public void onChooseDate(){
-        if(startOrEndPeriodModel == null || !(this.itemView.getContext() instanceof Activity))
+    public void onChooseDate() {
+        if (startOrEndPeriodModel == null || !(this.itemView.getContext() instanceof Activity))
             return;
         Calendar minDate = Calendar.getInstance();
         minDate.set(2015, 6, 25);
@@ -85,34 +82,34 @@ public class CustomViewHolder extends RecyclerView.ViewHolder{
         datePicker.setMinDate(minDate.getTimeInMillis());
         datePicker.setMaxDate(maxDate.getTimeInMillis());
 
-        if(startOrEndPeriodModel.isEndDate){
+        if (startOrEndPeriodModel.isEndDate) {
             datePicker.DatePickerCalendar(new DatePickerUtil.onDateSelectedListener() {
                 @Override
                 public void onDateSelected(int year, int monthOfYear, int dayOfMonth) {
                     Calendar newDate = Calendar.getInstance();
                     newDate.set(year, monthOfYear - 1, dayOfMonth);
-                    Log.d("MNORMANSYAH", "year : "+year+" monthOfYear "+monthOfYear+ " dayOfMonth "+dayOfMonth);
-                    String month = ((monthOfYear+1 < 10)?("0"+(monthOfYear+1)):(monthOfYear+1)+"");
-                    String day = ((dayOfMonth < 10)?("0"+dayOfMonth):dayOfMonth+"");
-                    String data = year+""+month+""+day;
-                    Log.d("MNORMANSYAH", "data : "+data);
+                    Log.d("MNORMANSYAH", "year : " + year + " monthOfYear " + monthOfYear + " dayOfMonth " + dayOfMonth);
+                    String month = ((monthOfYear + 1 < 10) ? ("0" + (monthOfYear + 1)) : (monthOfYear + 1) + "");
+                    String day = ((dayOfMonth < 10) ? ("0" + dayOfMonth) : dayOfMonth + "");
+                    String data = year + "" + month + "" + day;
+                    Log.d("MNORMANSYAH", "data : " + data);
 
                     datePickerRules.seteDate(newDate.getTimeInMillis());
                 }
             });
         }
 
-        if(startOrEndPeriodModel.isStartDate){
+        if (startOrEndPeriodModel.isStartDate) {
             datePicker.DatePickerCalendar(new DatePickerUtil.onDateSelectedListener() {
                 @Override
                 public void onDateSelected(int year, int monthOfYear, int dayOfMonth) {
                     Calendar newDate = Calendar.getInstance();
                     newDate.set(year, monthOfYear - 1, dayOfMonth);
-                    String month = ((monthOfYear+1 < 10)?("0"+(monthOfYear+1)):(monthOfYear+1)+"");
-                    String day = ((dayOfMonth < 10)?("0"+dayOfMonth):dayOfMonth+"");
-                    String data = year+""+month+"" +
-                            ""+day;
-                    Log.d("MNORMANSYAH", "data : "+data);
+                    String month = ((monthOfYear + 1 < 10) ? ("0" + (monthOfYear + 1)) : (monthOfYear + 1) + "");
+                    String day = ((dayOfMonth < 10) ? ("0" + dayOfMonth) : dayOfMonth + "");
+                    String data = year + "" + month + "" +
+                            "" + day;
+                    Log.d("MNORMANSYAH", "data : " + data);
 
                     datePickerRules.setsDate(newDate.getTimeInMillis());
                 }
@@ -120,22 +117,17 @@ public class CustomViewHolder extends RecyclerView.ViewHolder{
         }
     }
 
-    public CustomViewHolder(View itemView) {
-        super(itemView);
-        initView(itemView);
-    }
-
-    public void bindData(StartOrEndPeriodModel startOrEndPeriodModel){
+    public void bindData(StartOrEndPeriodModel startOrEndPeriodModel) {
         this.startOrEndPeriodModel = startOrEndPeriodModel;
         customHeader.setText(startOrEndPeriodModel.textHeader);
-        if(startOrEndPeriodModel.isEndDate) {
+        if (startOrEndPeriodModel.isEndDate) {
             String endDate = startOrEndPeriodModel.getEndDate();
             String[] split = endDate.split(" ");
             customDate.setText(getDateWithYear(Integer.parseInt(reverseDate(split)), monthNamesAbrev));
             cal = Calendar.getInstance();
             cal.setTimeInMillis(startOrEndPeriodModel.endDate);
         }
-        if(startOrEndPeriodModel.isStartDate) {
+        if (startOrEndPeriodModel.isStartDate) {
             String startDate = startOrEndPeriodModel.getStartDate();
             String[] split = startDate.split(" ");
             customDate.setText(getDateWithYear(Integer.parseInt(reverseDate(split)), monthNamesAbrev));

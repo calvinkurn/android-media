@@ -25,145 +25,146 @@ public class NExcel {
      */
     private String unit;
 
-    public NExcel(float num, String mXmsg){
+    public NExcel(float num, String mXmsg) {
         this(0, num, mXmsg);
     }
 
-    public NExcel(float lower, float upper, String mXmsg){
+    public NExcel(float lower, float upper, String mXmsg) {
         this(lower, upper, mXmsg, Color.GRAY);
     }
 
-    public NExcel(float lower, float upper, String mXmsg, int color){
+    public NExcel(float lower, float upper, String mXmsg, int color) {
         this(lower, upper, "", mXmsg, color);
     }
 
 
-    public NExcel(float num, String unit, String mXmsg){
+    public NExcel(float num, String unit, String mXmsg) {
         this(0, num, unit, mXmsg, Color.GRAY);
     }
 
 
     // set koordinat y dengan nilai lower
-    public NExcel(float lower, float upper, String unit, String mXmsg, int color){
+    public NExcel(float lower, float upper, String unit, String mXmsg, int color) {
         mUpper = upper;
         mLower = lower;
-        mHeight = mNum = upper-lower;
+        mHeight = mNum = upper - lower;
         mStart.y = mLower;
-        this.mXmsg = (mXmsg != null && !mXmsg.isEmpty())? mXmsg : mUpper+"";
+        this.mXmsg = (mXmsg != null && !mXmsg.isEmpty()) ? mXmsg : mUpper + "";
         this.unit = unit;
         this.mColor = color;
     }
 
-    public RectF getRectF(){
-        return new RectF(mStart.x, mStart.y-mHeight, mStart.x+mWidth, mStart.y);
+    public RectF getRectF() {
+        return new RectF(mStart.x, mStart.y - mHeight, mStart.x + mWidth, mStart.y);
     }
 
-    public PointF getMidPointF(){
-        return new PointF(getMidX(), mStart.y-mHeight);
+    public PointF getMidPointF() {
+        return new PointF(getMidX(), mStart.y - mHeight);
     }
 
-    public String getTextMsg(){
+    public String getTextMsg() {
         return textMsg;
     }
 
-    public String getUnit(){
-        return unit;
-    }
-
-    public void setUnit(String unit){
-        this.unit = unit;
-    }
-
-    public void setTextMsg(String textMsg){
+    public void setTextMsg(String textMsg) {
         this.textMsg = textMsg;
     }
 
-    public float getWidth(){
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public float getWidth() {
         return mWidth;
     }
 
     /**
      * currently used only for bar chart.
+     *
      * @param width
      */
-    public void setWidth(float width){
+    public void setWidth(float width) {
         this.mWidth = width;
     }
 
-    public float getHeight(){
+    public float getHeight() {
         return mHeight;
     }
 
-    public void setHeight(float height){
+    public void setHeight(float height) {
         this.mHeight = height;
     }
 
-    public PointF getStart(){
+    public PointF getStart() {
         return mStart;
     }
 
-    public void setStart(PointF start){
+    public void setStart(PointF start) {
         this.mStart = start;
     }
 
-    public float getMidX(){
-        if(null != mStart) {
-            mMidX = mStart.x+mWidth/2;
-        }else {
+    public float getMidX() {
+        if (null != mStart) {
+            mMidX = mStart.x + mWidth / 2;
+        } else {
             throw new RuntimeException("mStart Cannot be empty");
         }
         return mMidX;
     }
 
-    public void setMidX(float midX){
+    public void setMidX(float midX) {
         this.mMidX = midX;
     }
 
-    public int getColor(){
+    public int getColor() {
         return mColor;
     }
 
-    public void setColor(int color){
+    public void setColor(int color) {
         mColor = color;
     }
 
-    public float getNum(){
+    public float getNum() {
         return mNum;
     }
 
-    public void setNum(float num){
+    public void setNum(float num) {
         this.mNum = num;
     }
 
-    public float getMax(){
+    public float getMax() {
         return mMax;
     }
 
-    public void setMax(float max){
+    public void setMax(float max) {
         this.mMax = max;
     }
 
-    public String getXmsg(){
+    public String getXmsg() {
         return mXmsg;
     }
 
-    public void setXmsg(String xmsg){
+    public void setXmsg(String xmsg) {
         this.mXmsg = xmsg;
     }
 
-    public float getUpper(){
+    public float getUpper() {
         return mUpper;
     }
 
-    public void setUpper(float upper){
+    public void setUpper(float upper) {
         mUpper = upper;
     }
 
-    public float getLower(){
+    public float getLower() {
         return mLower;
     }
 
-    public void setLower(float lower){
+    public void setLower(float lower) {
         mLower = lower;
     }
 }

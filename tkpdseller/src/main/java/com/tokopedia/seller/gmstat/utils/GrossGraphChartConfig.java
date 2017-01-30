@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.View;
 
+import com.tokopedia.seller.gmstat.views.YAxisRenderer;
 import com.tokopedia.seller.gmstat.views.williamchart.chart.Tools;
 import com.tokopedia.seller.gmstat.views.williamchart.chart.animation.Animation;
 import com.tokopedia.seller.gmstat.views.williamchart.chart.animation.easing.BaseEasingMethod;
@@ -26,7 +27,6 @@ import com.tokopedia.seller.gmstat.views.williamchart.chart.renderer.XRenderer;
 import com.tokopedia.seller.gmstat.views.williamchart.chart.tooltip.Tooltip;
 import com.tokopedia.seller.gmstat.views.williamchart.chart.view.ChartView;
 import com.tokopedia.seller.gmstat.views.williamchart.chart.view.LineChartView;
-import com.tokopedia.seller.gmstat.views.YAxisRenderer;
 
 import java.text.DecimalFormat;
 
@@ -35,6 +35,12 @@ import java.text.DecimalFormat;
  * rename class to gross graph chart config because it belongs to gross graph.
  */
 public class GrossGraphChartConfig {
+    private final Runnable mEndAction = new Runnable() {
+        @Override
+        public void run() {
+            // currently empty
+        }
+    };
     private String[] mLabels;
     private float[] mValues;
     private boolean mIsLineSmooth = true;
@@ -52,15 +58,33 @@ public class GrossGraphChartConfig {
     private float mOverlapFactor;
     private float mStartX;
     private float mStartY;
-    private final Runnable mEndAction = new Runnable() {
-        @Override
-        public void run() {
-            // currently empty
-        }
-    };
     private Drawable dotDrawable;
     private Tooltip tooltip;
     private XRenderer.XRendererListener xRendererListener;
+    private int[] mEqualOrder = {0, 1, 2, 3, 4, 5, 6};
+
+    public GrossGraphChartConfig(String[] mLabels, float[] mValues) {
+        if (mLabels == null)
+            throw new RuntimeException("unable to process null WilliamChartUtils mValues");
+        if (mValues == null)
+            throw new RuntimeException("unable to process null WilliamChartUtils mValues");
+
+        this.mLabels = mLabels;
+        this.mValues = mValues;
+
+        mLineColorId = Color.rgb(66, 181, 73);
+        mPointColorId = Color.rgb(255, 255, 255);
+        mGridColorId = Color.argb(13, 0, 0, 0);
+        mLabelColorId = Color.argb(97, 0, 0, 0);
+        mAxisColorId = Color.argb(13, 0, 0, 0);
+        mGridThickness = 1f;
+        mXLabelPosition = AxisRenderer.LabelPosition.OUTSIDE;
+        mYLabelPosition = AxisRenderer.LabelPosition.OUTSIDE;
+        mEasingId = 0;
+        mOverlapFactor = 1;
+        mStartX = 0f;
+        mStartY = 1f;
+    }
 
     public GrossGraphChartConfig setDotDrawable(Drawable dotDrawable) {
         this.dotDrawable = dotDrawable;
@@ -72,31 +96,6 @@ public class GrossGraphChartConfig {
         return this;
     }
 
-    public GrossGraphChartConfig(String[] mLabels, float[] mValues){
-        if(mLabels == null)
-            throw new RuntimeException("unable to process null WilliamChartUtils mValues");
-        if(mValues==null)
-            throw new RuntimeException("unable to process null WilliamChartUtils mValues");
-
-        this.mLabels = mLabels;
-        this.mValues = mValues;
-
-        mLineColorId = Color.rgb(66,181,73);
-        mPointColorId = Color.rgb(255,255,255);
-        mGridColorId = Color.argb(13, 0,0,0);
-        mLabelColorId = Color.argb(97, 0,0,0);
-        mAxisColorId = Color.argb(13, 0,0,0);
-        mGridThickness = 1f;
-        mXLabelPosition = AxisRenderer.LabelPosition.OUTSIDE;
-        mYLabelPosition = AxisRenderer.LabelPosition.OUTSIDE;
-        mEasingId = 0;
-        mOverlapFactor = 1;
-        mStartX = 0f;
-        mStartY = 1f;
-    }
-
-    private int[] mEqualOrder = {0, 1, 2, 3, 4, 5, 6};
-
     public GrossGraphChartConfig setmLabels(String[] mLabels) {
         this.mLabels = mLabels;
         return this;
@@ -106,10 +105,9 @@ public class GrossGraphChartConfig {
         this.mValues = mValues;
         this.xRendererListener = xRendererListener;
 
-        if(mValues.length != mEqualOrder.length)
-        {
+        if (mValues.length != mEqualOrder.length) {
             mEqualOrder = new int[mValues.length];
-            for(int i=0;i<mEqualOrder.length;i++){
+            for (int i = 0; i < mEqualOrder.length; i++) {
                 mEqualOrder[i] = i;
             }
         }

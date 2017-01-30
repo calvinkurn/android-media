@@ -30,26 +30,26 @@ import java.util.List;
  * Created by normansyahputa on 1/18/17.
  */
 
-public class GMStatWidgetAdapter extends RecyclerView.Adapter{
+public class GMStatWidgetAdapter extends RecyclerView.Adapter {
 
-    List<BaseGMModel> baseGMModels;
-    GMStat gmStat;
+    private List<BaseGMModel> baseGMModels;
+    private GMStat gmStat;
 
     public GMStatWidgetAdapter() {
         baseGMModels = new ArrayList<>();
     }
 
-    public GMStatWidgetAdapter(List<BaseGMModel> baseGMModels, GMStat gmStat){
+    public GMStatWidgetAdapter(List<BaseGMModel> baseGMModels, GMStat gmStat) {
         this.baseGMModels = baseGMModels;
         this.gmStat = gmStat;
     }
 
-    public void clear(){
+    public void clear() {
         this.baseGMModels.clear();
     }
 
-    public void addAll(List<BaseGMModel> baseGMModels){
-        if(baseGMModels == null)
+    public void addAll(List<BaseGMModel> baseGMModels) {
+        if (baseGMModels == null)
             return;
         this.baseGMModels.addAll(baseGMModels);
     }
@@ -83,12 +83,12 @@ public class GMStatWidgetAdapter extends RecyclerView.Adapter{
             case ProdSeen.TYPE:
             case ProdSold.TYPE:
             case ConvRate.TYPE:
-                CommonGMVH commonGMVH = ((CommonGMVH)holder);
+                CommonGMVH commonGMVH = ((CommonGMVH) holder);
                 commonGMVH.gmStat = gmStat;
                 commonGMVH.bind((CommomGMModel) baseGMModels.get(position));
                 break;
             case GrossIncome.TYPE:
-                ((GrossEarnVH)holder).bind((GrossIncome) baseGMModels.get(position));
+                ((GrossEarnVH) holder).bind((GrossIncome) baseGMModels.get(position));
                 break;
         }
     }
@@ -100,7 +100,7 @@ public class GMStatWidgetAdapter extends RecyclerView.Adapter{
 
     @Override
     public int getItemViewType(int position) {
-        switch (baseGMModels.get(position).type){
+        switch (baseGMModels.get(position).type) {
             case SuccessfulTransaction.TYPE:
             case ProdSeen.TYPE:
             case ProdSold.TYPE:

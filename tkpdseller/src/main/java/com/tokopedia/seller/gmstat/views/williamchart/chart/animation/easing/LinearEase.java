@@ -18,24 +18,24 @@ package com.tokopedia.seller.gmstat.views.williamchart.chart.animation.easing;
 
 public class LinearEase extends BaseEasingMethod {
 
-	@Override
-	protected float easeOut(float time) {
+    @Override
+    protected float easeOut(float time) {
 
-		return time;
-	}
-
-
-	@Override
-	protected float easeInOut(float time) {
-
-		return time;
-	}
+        return time;
+    }
 
 
-	@Override
-	protected float easeIn(float time) {
+    @Override
+    protected float easeInOut(float time) {
 
-		return time;
-	}
+        return time;
+    }
+
+
+    @Override
+    protected float easeIn(float time) {
+
+        return time;
+    }
 
 }

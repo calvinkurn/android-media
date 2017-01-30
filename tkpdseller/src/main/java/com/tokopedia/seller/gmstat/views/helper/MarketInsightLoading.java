@@ -14,27 +14,13 @@ import com.tokopedia.seller.gmstat.views.adapter.MarketInsightLoadingAdapter;
  */
 
 public class MarketInsightLoading {
-    LoaderImageView marketInsightHeaderIc;
-
-    LoaderTextView marketInsightHeaderText;
-
-    LoaderTextView marketInsightHeaderLoading;
-
-    RecyclerView marketInsightLoadingRec;
-
-    void initView(View itemView){
-        marketInsightHeaderIc= (LoaderImageView) itemView.findViewById(R.id.market_insight_header_ic);
-
-        marketInsightHeaderText= (LoaderTextView) itemView.findViewById(R.id.market_insight_header_text);
-
-        marketInsightHeaderLoading= (LoaderTextView) itemView.findViewById(R.id.market_insight_header_loading);
-
-        marketInsightLoadingRec= (RecyclerView) itemView.findViewById(R.id.market_insight_loading_recyclerview);
-    }
-
     private final View parentView;
+    private LoaderImageView marketInsightHeaderIc;
+    private LoaderTextView marketInsightHeaderText;
+    private LoaderTextView marketInsightHeaderLoading;
+    private RecyclerView marketInsightLoadingRec;
 
-    public MarketInsightLoading(View itemView){
+    public MarketInsightLoading(View itemView) {
         initView(itemView);
 
         parentView = itemView.findViewById(R.id.market_insight_loading);
@@ -47,11 +33,21 @@ public class MarketInsightLoading {
         marketInsightLoadingRec.setAdapter(new MarketInsightLoadingAdapter());
     }
 
+    private void initView(View itemView) {
+        marketInsightHeaderIc = (LoaderImageView) itemView.findViewById(R.id.market_insight_header_ic);
+
+        marketInsightHeaderText = (LoaderTextView) itemView.findViewById(R.id.market_insight_header_text);
+
+        marketInsightHeaderLoading = (LoaderTextView) itemView.findViewById(R.id.market_insight_header_loading);
+
+        marketInsightLoadingRec = (RecyclerView) itemView.findViewById(R.id.market_insight_loading_recyclerview);
+    }
+
     public void displayLoading() {
         parentView.setVisibility(View.VISIBLE);
     }
 
-    public void hideLoading(){
+    public void hideLoading() {
         parentView.setVisibility(View.GONE);
     }
 }

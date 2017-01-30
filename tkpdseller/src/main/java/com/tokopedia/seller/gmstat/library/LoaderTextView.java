@@ -83,7 +83,7 @@ public class LoaderTextView extends TextView implements LoaderView {
         loaderController.onDraw(canvas);
     }
 
-    public void stopLoading(){
+    public void stopLoading() {
         if (loaderController != null) {
             loaderController.stopLoading();
         }
@@ -100,7 +100,7 @@ public class LoaderTextView extends TextView implements LoaderView {
     @Override
     public void setRectColor(Paint rectPaint) {
         final Typeface typeface = getTypeface();
-        if (typeface != null && typeface.getStyle()== Typeface.BOLD ) {
+        if (typeface != null && typeface.getStyle() == Typeface.BOLD) {
             rectPaint.setColor(LoaderConstant.COLOR_DARKER_GREY);
         } else {
             rectPaint.setColor(LoaderConstant.COLOR_DEFAULT_GREY);

@@ -29,20 +29,33 @@ import static com.tokopedia.seller.gmstat.views.SetDateConstant.CUSTOM_TYPE;
  */
 
 public class CustomFragment extends BasePresenterFragment {
-    RecyclerView periodRecyclerView;
+    private RecyclerView periodRecyclerView;
     private PeriodAdapter periodAdapter;
-    LinearLayout periodLinLay;
+    private LinearLayout periodLinLay;
     private long sDate, eDate;
 
-    public void saveDate(){
-        if(getActivity() != null && getActivity() instanceof SetDateFragment.SetDate){
+    public static Fragment newInstance() {
+        return new CustomFragment();
+    }
+
+    public static Fragment newInstance(long sDate, long eDate) {
+        Fragment fragment = new CustomFragment();
+        Bundle bundle = new Bundle();
+        bundle.putLong(CUSTOM_START_DATE, sDate);
+        bundle.putLong(CUSTOM_END_DATE, eDate);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public void saveDate() {
+        if (getActivity() != null && getActivity() instanceof SetDateFragment.SetDate) {
             long sDate = periodAdapter.datePickerRules.sDate;
             long eDate = periodAdapter.datePickerRules.eDate;
-            ((SetDateFragment.SetDate)getActivity()).returnStartAndEndDate(sDate, eDate, -1, CUSTOM_TYPE);
+            ((SetDateFragment.SetDate) getActivity()).returnStartAndEndDate(sDate, eDate, -1, CUSTOM_TYPE);
         }
     }
 
-    void initViews(View rootView){
+    void initViews(View rootView) {
         periodLinLay = (LinearLayout) rootView.findViewById(R.id.period_linlay);
         periodRecyclerView = (RecyclerView) rootView.findViewById(R.id.period_recyclerview);
         rootView.findViewById(R.id.save_date).setOnClickListener(new View.OnClickListener() {
@@ -57,7 +70,7 @@ public class CustomFragment extends BasePresenterFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Bundle bundle = getArguments();
-        if(bundle != null){
+        if (bundle != null) {
             sDate = bundle.getLong(CUSTOM_START_DATE, -1);
             eDate = bundle.getLong(CUSTOM_END_DATE, -1);
         }
@@ -86,43 +99,59 @@ public class CustomFragment extends BasePresenterFragment {
     }
 
     //[START] unused methods
-    @Override protected void setViewListener() {}
-
-    @Override protected void initialVar() {}
-
-    @Override protected void setActionVar() {}
-
-    @Override protected boolean isRetainInstance() { return false; }
-
-    @Override protected void onFirstTimeLaunched() { }
-
-    @Override public void onSaveState(Bundle state) { }
-
-    @Override protected boolean getOptionsMenuEnable() { return false; }
-
-    @Override protected void initialPresenter() {}
-
-    @Override public void onRestoreState(Bundle savedState) {}
-
-    @Override protected void initialListener(Activity activity) {}
-
-    @Override protected void setupArguments(Bundle arguments) {}
-
-    @Override protected int getFragmentLayout() { return 0; }
-
-    @Override protected void initView(View view) {}
-    //[END] unused methods
-
-    public static Fragment newInstance() {
-        return new CustomFragment();
+    @Override
+    protected void setViewListener() {
     }
 
-    public static Fragment newInstance(long sDate, long eDate){
-        Fragment fragment = new CustomFragment();
-        Bundle bundle = new Bundle();
-        bundle.putLong(CUSTOM_START_DATE, sDate);
-        bundle.putLong(CUSTOM_END_DATE, eDate);
-        fragment.setArguments(bundle);
-        return fragment;
+    @Override
+    protected void initialVar() {
+    }
+
+    @Override
+    protected void setActionVar() {
+    }
+
+    @Override
+    protected boolean isRetainInstance() {
+        return false;
+    }
+
+    @Override
+    protected void onFirstTimeLaunched() {
+    }
+
+    @Override
+    public void onSaveState(Bundle state) {
+    }
+
+    @Override
+    protected boolean getOptionsMenuEnable() {
+        return false;
+    }
+
+    @Override
+    protected void initialPresenter() {
+    }
+
+    @Override
+    public void onRestoreState(Bundle savedState) {
+    }
+
+    @Override
+    protected void initialListener(Activity activity) {
+    }
+
+    @Override
+    protected void setupArguments(Bundle arguments) {
+    }
+    //[END] unused methods
+
+    @Override
+    protected int getFragmentLayout() {
+        return 0;
+    }
+
+    @Override
+    protected void initView(View view) {
     }
 }

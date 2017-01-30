@@ -20,37 +20,26 @@ import static com.tokopedia.seller.gmstat.views.GMStatActivityFragment.NoDataAva
  * Created by normansyahputa on 1/18/17.
  */
 
-public class CommonGMVH extends RecyclerView.ViewHolder{
-
-    void initView(View itemView){
-        text = (TextView) itemView.findViewById(R.id.text);
-        textDescription = (TextView) itemView.findViewById(R.id.textDescription);
-        percentage = (TextView) itemView.findViewById(R.id.percentage);
-        arrowIcon = (ImageView) itemView.findViewById(R.id.arrow_icon);
-        arrowDown = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_down, null);
-        arrowUp = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_up, null);
-        gredyColor = ResourcesCompat.getColor(itemView.getResources(), R.color.grey_400, null);
-    }
-
-    TextView text;
-
-    TextView textDescription;
-
-    TextView percentage;
-
-    ImageView arrowIcon;
-
-    int arrowDown;
-
-    int arrowUp;
-
-    int gredyColor;
-
-    Drawable icRectagleDown;
-
-    Drawable icRectagleUp;
+public class CommonGMVH extends RecyclerView.ViewHolder {
 
     public GMStat gmStat;
+    private TextView text;
+
+    private TextView textDescription;
+
+    private TextView percentage;
+
+    private ImageView arrowIcon;
+
+    private int arrowDown;
+
+    private int arrowUp;
+
+    private int gredyColor;
+
+    private Drawable icRectagleDown;
+
+    private Drawable icRectagleUp;
 
     public CommonGMVH(View itemView) {
         super(itemView);
@@ -62,39 +51,49 @@ public class CommonGMVH extends RecyclerView.ViewHolder{
                 R.drawable.ic_rectangle_up);
     }
 
-    public void bind(CommomGMModel commomGMModel){
+    private void initView(View itemView) {
+        text = (TextView) itemView.findViewById(R.id.text);
+        textDescription = (TextView) itemView.findViewById(R.id.textDescription);
+        percentage = (TextView) itemView.findViewById(R.id.percentage);
+        arrowIcon = (ImageView) itemView.findViewById(R.id.arrow_icon);
+        arrowDown = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_down, null);
+        arrowUp = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_up, null);
+        gredyColor = ResourcesCompat.getColor(itemView.getResources(), R.color.grey_400, null);
+    }
+
+    public void bind(CommomGMModel commomGMModel) {
         text.setText(commomGMModel.text);
         textDescription.setText(commomGMModel.textDescription);
 
 
         // image for arrow is here
         boolean isDefault;
-        if(commomGMModel.percentage == 0){
+        if (commomGMModel.percentage == 0) {
             arrowIcon.setVisibility(View.GONE);
             percentage.setTextColor(arrowUp);
             isDefault = true;
-        }else if(commomGMModel.percentage < 0){// down here
-            if(commomGMModel.percentage == NoDataAvailable*100){
+        } else if (commomGMModel.percentage < 0) {// down here
+            if (commomGMModel.percentage == NoDataAvailable * 100) {
                 arrowIcon.setVisibility(View.GONE);
                 percentage.setTextColor(gredyColor);
                 isDefault = false;
-            }else{
+            } else {
                 arrowIcon.setVisibility(View.VISIBLE);
                 arrowIcon.setImageDrawable(icRectagleDown);
                 percentage.setTextColor(arrowDown);
                 isDefault = true;
             }
-        }else{// up here
+        } else {// up here
             arrowIcon.setVisibility(View.VISIBLE);
             arrowIcon.setImageDrawable(icRectagleUp);
             percentage.setTextColor(arrowUp);
             isDefault = true;
         }
 
-        if(isDefault) {
+        if (isDefault) {
             double d = commomGMModel.percentage;
             percentage.setText(String.format(PERCENTAGE_FORMAT, KMNumbers.formatString(d).replace("-", "")));
-        }else{
+        } else {
             percentage.setText(R.string.no_data);
         }
     }

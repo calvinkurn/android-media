@@ -13,35 +13,19 @@ import com.tokopedia.seller.gmstat.library.LoaderTextView;
 public class BuyerDataLoading {
     private final View parentView;
 
-    LoaderImageView buyerdataHeaderIc;
+    private LoaderImageView buyerdataHeaderIc;
 
-    LoaderTextView buyerDataHeaderText;
+    private LoaderTextView buyerDataHeaderText;
 
-    LoaderTextView buyerNumberHeaderLoading;
+    private LoaderTextView buyerNumberHeaderLoading;
 
-    LoaderTextView buyerCountLoading;
+    private LoaderTextView buyerCountLoading;
 
-    LoaderImageView buyerCountIconLoading;
+    private LoaderImageView buyerCountIconLoading;
 
-    LoaderImageView dataBuyerLoading;
+    private LoaderImageView dataBuyerLoading;
 
-    void initView(View itemView){
-
-        buyerdataHeaderIc= (LoaderImageView) itemView.findViewById(R.id.buyer_data_header_ic);
-
-        buyerDataHeaderText= (LoaderTextView) itemView.findViewById(R.id.buyer_data_header_text);
-
-        buyerNumberHeaderLoading= (LoaderTextView) itemView.findViewById(R.id.buyer_number_header_loading);
-
-        buyerCountLoading= (LoaderTextView) itemView.findViewById(R.id.buyer_count_loading);
-
-        buyerCountIconLoading= (LoaderImageView) itemView.findViewById(R.id.buyer_count_icon_loading);
-
-        dataBuyerLoading= (LoaderImageView) itemView.findViewById(R.id.data_buyer_loading);
-    }
-
-
-    public BuyerDataLoading(View itemView){
+    public BuyerDataLoading(View itemView) {
         initView(itemView);
 
         parentView = itemView.findViewById(R.id.buyer_data_loading);
@@ -54,11 +38,26 @@ public class BuyerDataLoading {
         dataBuyerLoading.resetLoader();
     }
 
+    private void initView(View itemView) {
+
+        buyerdataHeaderIc = (LoaderImageView) itemView.findViewById(R.id.buyer_data_header_ic);
+
+        buyerDataHeaderText = (LoaderTextView) itemView.findViewById(R.id.buyer_data_header_text);
+
+        buyerNumberHeaderLoading = (LoaderTextView) itemView.findViewById(R.id.buyer_number_header_loading);
+
+        buyerCountLoading = (LoaderTextView) itemView.findViewById(R.id.buyer_count_loading);
+
+        buyerCountIconLoading = (LoaderImageView) itemView.findViewById(R.id.buyer_count_icon_loading);
+
+        dataBuyerLoading = (LoaderImageView) itemView.findViewById(R.id.data_buyer_loading);
+    }
+
     public void displayLoading() {
         parentView.setVisibility(View.VISIBLE);
     }
 
-    public void hideLoading(){
+    public void hideLoading() {
         parentView.setVisibility(View.GONE);
     }
 }

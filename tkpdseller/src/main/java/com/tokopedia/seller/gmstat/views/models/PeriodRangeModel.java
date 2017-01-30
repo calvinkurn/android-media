@@ -16,28 +16,49 @@ import static com.tokopedia.seller.gmstat.views.models.StartOrEndPeriodModel.YES
 public class PeriodRangeModel extends BasePeriodModel implements Parcelable {
 
     public static final int TYPE = 1;
+    public static final Parcelable.Creator<PeriodRangeModel> CREATOR = new Parcelable.Creator<PeriodRangeModel>() {
+        @Override
+        public PeriodRangeModel createFromParcel(android.os.Parcel source) {
+            return new PeriodRangeModel(source);
+        }
+
+        @Override
+        public PeriodRangeModel[] newArray(int size) {
+            return new PeriodRangeModel[size];
+        }
+    };
+    private static final Locale locale = new Locale("in", "ID");
     public boolean isChecked;
     public String headerText;
-    String formatText = "%s - %s";
     public boolean isRange;
     public int range;
     public long startDate = -1, endDate = -1;
-
-    private static final Locale locale = new Locale("in","ID");
+    private String formatText = "%s - %s";
 
     public PeriodRangeModel() {
         super(TYPE);
     }
 
-    public PeriodRangeModel(boolean isRange, int range){
+    public PeriodRangeModel(boolean isRange, int range) {
         this();
         this.isRange = isRange;
         this.range = range;
     }
 
-    public String getDescription(){
+    protected PeriodRangeModel(android.os.Parcel in) {
+        super(in);
+        this.isChecked = in.readByte() != 0;
+        this.headerText = in.readString();
+        this.formatText = in.readString();
+        this.isRange = in.readByte() != 0;
+        this.range = in.readInt();
+        this.startDate = in.readLong();
+        this.endDate = in.readLong();
+    }
+
+    public String getDescription() {
         DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy", locale);
-        if(isRange) {
+        if (isRange) {
             Calendar sDate = calculateCalendar(YESTERDAY);
             endDate = sDate.getTimeInMillis();
             String yesterday = dateFormat.format(sDate.getTime());
@@ -47,7 +68,7 @@ public class PeriodRangeModel extends BasePeriodModel implements Parcelable {
             String startDate = dateFormat.format(eDate.getTime());
 
             return headerText = String.format(formatText, startDate, yesterday);
-        }else{
+        } else {
             Calendar sDate = calculateCalendar(-range);
             startDate = sDate.getTimeInMillis();
             endDate = sDate.getTimeInMillis();
@@ -55,7 +76,7 @@ public class PeriodRangeModel extends BasePeriodModel implements Parcelable {
         }
     }
 
-    private Calendar calculateCalendar(int daysAgo){
+    private Calendar calculateCalendar(int daysAgo) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, daysAgo);
         return cal;
@@ -78,27 +99,4 @@ public class PeriodRangeModel extends BasePeriodModel implements Parcelable {
         dest.writeLong(this.startDate);
         dest.writeLong(this.endDate);
     }
-
-    protected PeriodRangeModel(android.os.Parcel in) {
-        super(in);
-        this.isChecked = in.readByte() != 0;
-        this.headerText = in.readString();
-        this.formatText = in.readString();
-        this.isRange = in.readByte() != 0;
-        this.range = in.readInt();
-        this.startDate = in.readLong();
-        this.endDate = in.readLong();
-    }
-
-    public static final Parcelable.Creator<PeriodRangeModel> CREATOR = new Parcelable.Creator<PeriodRangeModel>() {
-        @Override
-        public PeriodRangeModel createFromParcel(android.os.Parcel source) {
-            return new PeriodRangeModel(source);
-        }
-
-        @Override
-        public PeriodRangeModel[] newArray(int size) {
-            return new PeriodRangeModel[size];
-        }
-    };
 }

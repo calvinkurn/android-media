@@ -33,6 +33,7 @@ public class HadesNetwork {
 
     /**
      * use dagger module instead of using this function.
+     *
      * @return
      */
     @Deprecated
@@ -44,8 +45,8 @@ public class HadesNetwork {
      * @param department 0 means department parent, larger than zero is proceed, less than 0
      * @param level      -1 if {@value BREADCRUMB_LEVEL}, level 1,2,3
      * @param view       {@value TREE} for tree, {@value LIST} for list
-     * please use {@link HadesNetwork#fetchDepartment(int, int, int, HadesApi)} coupled with
-     * with dagger stuff.
+     *                   please use {@link HadesNetwork#fetchDepartment(int, int, int, HadesApi)} coupled with
+     *                   with dagger stuff.
      */
     @Deprecated
     public static Observable<Response<HadesV1Model>> fetchDepartment(int department, int level, int view) {
@@ -92,7 +93,7 @@ public class HadesNetwork {
      * @param view       {@value TREE} for tree, {@value LIST} for list
      */
     public static Observable<Response<HadesV1Model>> fetchDepartment(int department, int level, int view, HadesApi hadesNetwork) {
-        if(hadesNetwork == null)
+        if (hadesNetwork == null)
             return null;
 
         Observable<Response<HadesV1Model>> category;

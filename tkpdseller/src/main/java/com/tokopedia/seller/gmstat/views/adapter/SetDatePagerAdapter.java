@@ -17,8 +17,7 @@ import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateFor
 
 public class SetDatePagerAdapter extends FragmentStatePagerAdapter {
     final int PAGE_COUNT = 2;
-    private String tabTitles[] = new String[] { "PERIODE", "KUSTOM" };
-    private Context context;
+    private String tabTitles[] = new String[]{"PERIODE", "KUSTOM"};
     private boolean isGM;
     private int lastSelectionPeriod;
     private long sDate;
@@ -27,17 +26,16 @@ public class SetDatePagerAdapter extends FragmentStatePagerAdapter {
     public SetDatePagerAdapter(FragmentManager fm, Context context, boolean isGM,
                                int lastSelectionPeriod, long sDate, long eDate) {
         super(fm);
-        this.context = context;
         this.isGM = isGM;
         this.lastSelectionPeriod = lastSelectionPeriod;
         this.sDate = sDate;
         this.eDate = eDate;
-        Log.d("MNORMANSYAH", "sDate "+getDateFormat(sDate)+" eDate "+getDateFormat(eDate));
+        Log.d("MNORMANSYAH", "sDate " + getDateFormat(sDate) + " eDate " + getDateFormat(eDate));
     }
 
     @Override
     public int getCount() {
-        if(!isGM)
+        if (!isGM)
             return 1;
         return PAGE_COUNT;
     }
@@ -49,7 +47,7 @@ public class SetDatePagerAdapter extends FragmentStatePagerAdapter {
                 return PeriodFragment.newInstance(lastSelectionPeriod);
             case 1:
             default:
-                return CustomFragment.newInstance(sDate,eDate);
+                return CustomFragment.newInstance(sDate, eDate);
         }
     }
 

@@ -14,21 +14,17 @@ public class GetKeyword {
 
     @SerializedName("SearchKeyword")
     @Expose
-    private List<SearchKeyword> searchKeyword = new ArrayList<SearchKeyword>();
+    private List<SearchKeyword> searchKeyword = new ArrayList<>();
 
     /**
-     *
-     * @return
-     * The searchKeyword
+     * @return The searchKeyword
      */
     public List<SearchKeyword> getSearchKeyword() {
         return searchKeyword;
     }
 
     /**
-     *
-     * @param searchKeyword
-     * The SearchKeyword
+     * @param searchKeyword The SearchKeyword
      */
     public void setSearchKeyword(List<SearchKeyword> searchKeyword) {
         this.searchKeyword = searchKeyword;
@@ -44,36 +40,28 @@ public class GetKeyword {
         private int frequency;
 
         /**
-         *
-         * @return
-         * The keyword
+         * @return The keyword
          */
         public String getKeyword() {
             return keyword;
         }
 
         /**
-         *
-         * @param keyword
-         * The Keyword
+         * @param keyword The Keyword
          */
         public void setKeyword(String keyword) {
             this.keyword = keyword;
         }
 
         /**
-         *
-         * @return
-         * The frequency
+         * @return The frequency
          */
         public int getFrequency() {
             return frequency;
         }
 
         /**
-         *
-         * @param frequency
-         * The Frequency
+         * @param frequency The Frequency
          */
         public void setFrequency(int frequency) {
             this.frequency = frequency;

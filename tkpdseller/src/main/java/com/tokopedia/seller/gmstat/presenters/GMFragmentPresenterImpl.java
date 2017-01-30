@@ -23,50 +23,16 @@ import rx.subscriptions.CompositeSubscription;
 
 public class GMFragmentPresenterImpl implements GMFragmentPresenter {
 
-    private long sDate = -1, eDate = -1;
     boolean isFetchData = false, isFirstTime = false;
+    @IntRange(from = 0, to = 2)
+    int lastSelectionPeriod = 1;
+    CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private long sDate = -1, eDate = -1;
     private long shopId;
     private float[] mValues = new float[10];
     private String[] mLabels = new String[10];
-
-    @IntRange(from = 0, to = 2)
-    int lastSelectionPeriod = 1;
     private int selectionType;
-
-
     private GMFragmentView gmFragmentView;
-    private GMStat gmStat;
-
-    CompositeSubscription compositeSubscription = new CompositeSubscription();
-
-    public GMFragmentPresenterImpl(GMFragmentView gmFragmentView, GMStat gmStat, long shopId){
-        this.gmFragmentView = gmFragmentView;
-        this.gmStat = gmStat;
-        this.shopId = shopId;
-    }
-
-    public void setFirstTime(boolean firstTime) {
-        isFirstTime = firstTime;
-    }
-
-    public void setFetchData(boolean fetchData) {
-        isFetchData = fetchData;
-    }
-
-    public void initInstance(){
-        for(int i=0;i<mLabels.length;i++){
-            mLabels[i] = "";
-        }
-    }
-
-    public float[] getmValues() {
-        return mValues;
-    }
-
-    public String[] getmLabels() {
-        return mLabels;
-    }
-
     GMStatNetworkController.GetGMStat gmStatListener = new GMStatNetworkController.GetGMStat() {
         @Override
         public void onSuccessGetShopCategory(GetShopCategory getShopCategory) {
@@ -118,25 +84,54 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
 
         }
     };
+    private GMStat gmStat;
+
+    public GMFragmentPresenterImpl(GMFragmentView gmFragmentView, GMStat gmStat, long shopId) {
+        this.gmFragmentView = gmFragmentView;
+        this.gmStat = gmStat;
+        this.shopId = shopId;
+    }
+
+    public void setFirstTime(boolean firstTime) {
+        isFirstTime = firstTime;
+    }
+
+    public void setFetchData(boolean fetchData) {
+        isFetchData = fetchData;
+    }
+
+    public void initInstance() {
+        for (int i = 0; i < mLabels.length; i++) {
+            mLabels[i] = "";
+        }
+    }
+
+    public float[] getmValues() {
+        return mValues;
+    }
+
+    public String[] getmLabels() {
+        return mLabels;
+    }
 
     @Override
     public void fetchData() {
-        if(isFirstTime && isFetchData) {
+        if (isFirstTime && isFetchData) {
             gmFragmentView.resetToLoading();
             gmStat.getGmStatNetworkController().fetchData(shopId, sDate, eDate, compositeSubscription, gmStatListener);
-        }else if(!isFirstTime){
+        } else if (!isFirstTime) {
             //[START] real network
             gmStat.getGmStatNetworkController().fetchData(shopId, compositeSubscription, gmStatListener);
             //[END] real network
         }
 
-        if(isFetchData){
+        if (isFetchData) {
             isFetchData = false;
         }
     }
 
     @Override
-    public void fetchData(long sDate, long eDate, int lastSelectionPeriod, int selectionType){
+    public void fetchData(long sDate, long eDate, int lastSelectionPeriod, int selectionType) {
         this.lastSelectionPeriod = lastSelectionPeriod;
         this.selectionType = selectionType;
         isFetchData = true;
@@ -160,8 +155,8 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
     }
 
-    public void displayDefaultValue(AssetManager assets){
-        if(assets == null)
+    public void displayDefaultValue(AssetManager assets) {
+        if (assets == null)
             return;
 
         gmStat.getGmStatNetworkController().fetchDataEmptyState(gmStatListener, assets);

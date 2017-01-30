@@ -20,7 +20,7 @@ import static com.tokopedia.seller.gmstat.views.SetDateConstant.SELECTION_TYPE;
 /**
  * Created by normansyahputa on 1/18/17.
  */
-public class SetDateActivity extends BasePresenterActivity implements SetDateFragment.SetDate{
+public class SetDateActivity extends BasePresenterActivity implements SetDateFragment.SetDate {
 
     private boolean isGoldMerchant;
     private boolean isAfterRotate;
@@ -34,26 +34,11 @@ public class SetDateActivity extends BasePresenterActivity implements SetDateFra
     }
 
 
-    @Override protected void initView() {
-        if(!isAfterRotate)
+    @Override
+    protected void initView() {
+        if (!isAfterRotate)
             inflateNewFragment(new SetDateFragment(), GMStatActivityFragment.TAG);
     }
-
-    //[START] unused methods
-    @Override protected void setupURIPass(Uri data) {}
-
-    @Override protected void setupBundlePass(Bundle extras) {}
-
-    @Override protected void initialPresenter() { }
-
-    @Override protected void setViewListener() { }
-
-    @Override protected void initVar() { }
-
-    @Override protected void setActionVar() { }
-
-    @Override public String getScreenName() { return null; }
-    //[END] unused methods
 
     /**
      * @return true if first time, false if already in foreground.
@@ -71,7 +56,7 @@ public class SetDateActivity extends BasePresenterActivity implements SetDateFra
     }
 
     private void fetchIntent(Bundle extras) {
-        if(extras != null){
+        if (extras != null) {
             isGoldMerchant = extras.getBoolean(IS_GOLD_MERCHANT, false);
             selectionPeriod = extras.getInt(SELECTION_PERIOD, 1);
             selectionType = extras.getInt(SELECTION_TYPE, PERIOD_TYPE);
@@ -85,7 +70,7 @@ public class SetDateActivity extends BasePresenterActivity implements SetDateFra
         Intent intent = new Intent();
         intent.putExtra(SetDateFragment.START_DATE, startDate);
         intent.putExtra(SetDateFragment.END_DATE, endDate);
-        if(lastSelection < 0){
+        if (lastSelection < 0) {
             lastSelection = selectionPeriod;
         }
         intent.putExtra(SELECTION_PERIOD, lastSelection);
@@ -131,4 +116,35 @@ public class SetDateActivity extends BasePresenterActivity implements SetDateFra
         super.onBackPressed();
         finish();
     }
+
+    //[START] unused methods
+    @Override
+    protected void setupURIPass(Uri data) {
+    }
+
+    @Override
+    protected void setupBundlePass(Bundle extras) {
+    }
+
+    @Override
+    protected void initialPresenter() {
+    }
+
+    @Override
+    protected void setViewListener() {
+    }
+
+    @Override
+    protected void initVar() {
+    }
+
+    @Override
+    protected void setActionVar() {
+    }
+
+    @Override
+    public String getScreenName() {
+        return null;
+    }
+    //[END] unused methods
 }

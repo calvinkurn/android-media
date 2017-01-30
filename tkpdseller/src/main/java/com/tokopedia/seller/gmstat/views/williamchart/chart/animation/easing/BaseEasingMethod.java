@@ -22,53 +22,52 @@ package com.tokopedia.seller.gmstat.views.williamchart.chart.animation.easing;
  */
 public abstract class BaseEasingMethod {
 
-	public final static int ENTER = 0;
+    public final static int ENTER = 0;
 
-	public final static int UPDATE = 1;
+    public final static int UPDATE = 1;
 
-	public final static int EXIT = 2;
+    public final static int EXIT = 2;
 
-	private static int mState;
-
-
-	protected abstract float easeOut(float time);
-
-	protected abstract float easeInOut(float time);
-
-	protected abstract float easeIn(float time);
+    private static int mState;
 
 
-	/**
-	 * Method that gives the next interpolated value to be processed by
-	 * the {@link com.tokopedia.seller.gmstat.views.williamchart.chart.animation.Animation} object.
-	 *
-	 * @param time - time normalized between 0 and 1
-	 *
-	 * @return the next interpolation.
-	 */
-	public float next(float time) {
+    protected abstract float easeOut(float time);
 
-		if (mState == BaseEasingMethod.ENTER) return easeOut(time);
-		else if (mState == BaseEasingMethod.UPDATE) return easeInOut(time);
-		else if (mState == BaseEasingMethod.EXIT) return easeIn(time);
-		return 1;
-	}
+    protected abstract float easeInOut(float time);
+
+    protected abstract float easeIn(float time);
 
 
-	public int getState() {
+    /**
+     * Method that gives the next interpolated value to be processed by
+     * the {@link com.tokopedia.seller.gmstat.views.williamchart.chart.animation.Animation} object.
+     *
+     * @param time - time normalized between 0 and 1
+     * @return the next interpolation.
+     */
+    public float next(float time) {
 
-		return mState;
-	}
+        if (mState == BaseEasingMethod.ENTER) return easeOut(time);
+        else if (mState == BaseEasingMethod.UPDATE) return easeInOut(time);
+        else if (mState == BaseEasingMethod.EXIT) return easeIn(time);
+        return 1;
+    }
 
 
-	/**
-	 * Whether interpolation should comply with ENTER, UPDATE, or EXIT animation.
-	 *
-	 * @param state
-	 */
-	public void setState(int state) {
+    public int getState() {
 
-		mState = state;
-	}
+        return mState;
+    }
+
+
+    /**
+     * Whether interpolation should comply with ENTER, UPDATE, or EXIT animation.
+     *
+     * @param state
+     */
+    public void setState(int state) {
+
+        mState = state;
+    }
 
 }

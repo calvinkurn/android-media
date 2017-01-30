@@ -13,33 +13,19 @@ import com.tokopedia.seller.gmstat.library.LoaderTextView;
 public class TransactionDataLoading {
     private final View parentView;
 
-    LoaderImageView dataTransactionHeaderLoadingIc;
+    private LoaderImageView dataTransactionHeaderLoadingIc;
 
-    LoaderTextView dataTransactionHeaderLoadingText;
+    private LoaderTextView dataTransactionHeaderLoadingText;
 
-    LoaderTextView buyerNumberHeaderLoading;
+    private LoaderTextView buyerNumberHeaderLoading;
 
-    LoaderTextView transactionCountLoading;
+    private LoaderTextView transactionCountLoading;
 
-    LoaderImageView transactionCountIconLoading;
+    private LoaderImageView transactionCountIconLoading;
 
-    LoaderImageView trasactionChartLoading;
+    private LoaderImageView trasactionChartLoading;
 
-    void initView(View itemView){
-        dataTransactionHeaderLoadingIc= (LoaderImageView) itemView.findViewById(R.id.data_transaction_header_loading_ic);
-
-        dataTransactionHeaderLoadingText= (LoaderTextView) itemView.findViewById(R.id.data_transaction_header_loading_text);
-
-        buyerNumberHeaderLoading= (LoaderTextView) itemView.findViewById(R.id.buyer_number_header_loading);
-
-        transactionCountLoading= (LoaderTextView) itemView.findViewById(R.id.transaction_count_loading);
-
-        transactionCountIconLoading= (LoaderImageView) itemView.findViewById(R.id.transaction_count_icon_loading);
-
-        trasactionChartLoading= (LoaderImageView) itemView.findViewById(R.id.transaction_chart_loading);
-    }
-
-    public TransactionDataLoading(View itemView){
+    public TransactionDataLoading(View itemView) {
         initView(itemView);
         parentView = itemView.findViewById(R.id.transaction_data_loading);
 
@@ -51,11 +37,25 @@ public class TransactionDataLoading {
         trasactionChartLoading.resetLoader();
     }
 
+    private void initView(View itemView) {
+        dataTransactionHeaderLoadingIc = (LoaderImageView) itemView.findViewById(R.id.data_transaction_header_loading_ic);
+
+        dataTransactionHeaderLoadingText = (LoaderTextView) itemView.findViewById(R.id.data_transaction_header_loading_text);
+
+        buyerNumberHeaderLoading = (LoaderTextView) itemView.findViewById(R.id.buyer_number_header_loading);
+
+        transactionCountLoading = (LoaderTextView) itemView.findViewById(R.id.transaction_count_loading);
+
+        transactionCountIconLoading = (LoaderImageView) itemView.findViewById(R.id.transaction_count_icon_loading);
+
+        trasactionChartLoading = (LoaderImageView) itemView.findViewById(R.id.transaction_chart_loading);
+    }
+
     public void displayLoading() {
         parentView.setVisibility(View.VISIBLE);
     }
 
-    public void hideLoading(){
+    public void hideLoading() {
         parentView.setVisibility(View.GONE);
     }
 }

@@ -19,25 +19,6 @@ import com.tokopedia.seller.R;
  * Created by bruce on 11/4/14.
  */
 public class CircleProgress extends View {
-    private Paint textPaint;
-    private RectF rectF = new RectF();
-
-    private float textSize;
-    private int textColor;
-    private int progress = 0;
-    private int max;
-    private int finishedColor;
-    private int unfinishedColor;
-    private String prefixText = "";
-    private String suffixText = "%";
-
-    private final int default_finished_color = Color.rgb(66, 145, 241);
-    private final int default_unfinished_color = Color.rgb(204, 204, 204);
-    private final int default_text_color = Color.WHITE;
-    private final int default_max = 100;
-    private final float default_text_size;
-    private final int min_size;
-
     private static final String INSTANCE_STATE = "saved_instance";
     private static final String INSTANCE_TEXT_COLOR = "text_color";
     private static final String INSTANCE_TEXT_SIZE = "text_size";
@@ -47,7 +28,22 @@ public class CircleProgress extends View {
     private static final String INSTANCE_PROGRESS = "progress";
     private static final String INSTANCE_SUFFIX = "suffix";
     private static final String INSTANCE_PREFIX = "prefix";
-
+    private final int default_finished_color = Color.rgb(66, 145, 241);
+    private final int default_unfinished_color = Color.rgb(204, 204, 204);
+    private final int default_text_color = Color.WHITE;
+    private final int default_max = 100;
+    private final float default_text_size;
+    private final int min_size;
+    private Paint textPaint;
+    private RectF rectF = new RectF();
+    private float textSize;
+    private int textColor;
+    private int progress = 0;
+    private int max;
+    private int finishedColor;
+    private int unfinishedColor;
+    private String prefixText = "";
+    private String suffixText = "%";
     private Paint paint = new Paint();
 
     public CircleProgress(Context context) {
@@ -248,7 +244,7 @@ public class CircleProgress extends View {
 
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        if(state instanceof Bundle) {
+        if (state instanceof Bundle) {
             final Bundle bundle = (Bundle) state;
             textColor = bundle.getInt(INSTANCE_TEXT_COLOR);
             textSize = bundle.getFloat(INSTANCE_TEXT_SIZE);

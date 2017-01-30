@@ -1,7 +1,6 @@
 package com.tokopedia.seller.gmstat.views;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,8 +19,23 @@ import android.widget.LinearLayout;
 
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.gmstat.library.LoaderImageView;
+import com.tokopedia.seller.gmstat.models.GetBuyerData;
+import com.tokopedia.seller.gmstat.models.GetKeyword;
+import com.tokopedia.seller.gmstat.models.GetPopularProduct;
+import com.tokopedia.seller.gmstat.models.GetProductGraph;
+import com.tokopedia.seller.gmstat.models.GetShopCategory;
+import com.tokopedia.seller.gmstat.models.GetTransactionGraph;
+import com.tokopedia.seller.gmstat.presenters.GMFragmentPresenterImpl;
+import com.tokopedia.seller.gmstat.presenters.GMFragmentView;
+import com.tokopedia.seller.gmstat.presenters.GMStat;
 import com.tokopedia.seller.gmstat.utils.GMNetworkErrorHelper;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
+import com.tokopedia.seller.gmstat.utils.GridDividerItemDecoration;
+import com.tokopedia.seller.gmstat.utils.GrossGraphChartConfig;
+import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import com.tokopedia.seller.gmstat.views.adapter.GMStatWidgetAdapter;
 import com.tokopedia.seller.gmstat.views.helper.BuyerDataLoading;
 import com.tokopedia.seller.gmstat.views.helper.MarketInsightLoading;
@@ -39,35 +53,13 @@ import com.tokopedia.seller.gmstat.views.williamchart.chart.renderer.StringForma
 import com.tokopedia.seller.gmstat.views.williamchart.chart.renderer.XRenderer;
 import com.tokopedia.seller.gmstat.views.williamchart.chart.tooltip.Tooltip;
 import com.tokopedia.seller.gmstat.views.williamchart.chart.view.LineChartView;
-import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.library.LoaderImageView;
-import com.tokopedia.seller.gmstat.models.GetBuyerData;
-import com.tokopedia.seller.gmstat.models.GetKeyword;
-import com.tokopedia.seller.gmstat.models.GetPopularProduct;
-import com.tokopedia.seller.gmstat.models.GetProductGraph;
-import com.tokopedia.seller.gmstat.models.GetShopCategory;
-import com.tokopedia.seller.gmstat.models.GetTransactionGraph;
-import com.tokopedia.seller.gmstat.presenters.GMFragmentPresenterImpl;
-import com.tokopedia.seller.gmstat.presenters.GMFragmentView;
-import com.tokopedia.seller.gmstat.presenters.GMStat;
-import com.tokopedia.seller.gmstat.utils.GridDividerItemDecoration;
-import com.tokopedia.seller.gmstat.utils.KMNumbers;
-import com.tokopedia.seller.gmstat.utils.GrossGraphChartConfig;
 
 import java.net.UnknownHostException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
-
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateRaw;
 import static com.tokopedia.seller.gmstat.views.DataTransactionViewHelper.dpToPx;
@@ -81,12 +73,59 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
 
     public static final double NoDataAvailable = -2147483600;
     public static final String TAG = "GMStatActivityFragment";
+    private static final Locale locale = new Locale("in", "ID");
+    private static final NavigableMap<Long, String> suffixes = new TreeMap<>();
+
+    static {
+        suffixes.put(1_000L, "k");
+        suffixes.put(1_000_000L, "M");
+        suffixes.put(1_000_000_000L, "G");
+        suffixes.put(1_000_000_000_000L, "T");
+        suffixes.put(1_000_000_000_000_000L, "P");
+        suffixes.put(1_000_000_000_000_000_000L, "E");
+    }
+
     private String tryAgainText;
     private String unknownExceptionDescription;
     private String messageExceptionDescription;
     private String defaultExceptionDescription;
+    private String[] monthNamesAbrev;
+    private LineChartView grossIncomeGraph2;
+    private RecyclerView gmStatRecyclerView;
+    private GMStatWidgetAdapter gmStatWidgetAdapter;
+    private LoaderImageView grossIncomeGraph2Loading;
+    private View popularProduct;
+    private View transactionData;
+    private View marketInsight;
+    private View marketInsightReal;
+    private HorizontalScrollView grossIncomeGraphContainer;
+    private Drawable oval2Copy6;
+    private GridLayoutManager gridLayoutManager;
+    private MarketInsightViewHelper marketInsightViewHelper;
+    private PopularProductLoading popularProductLoading;
+    private TransactionDataLoading transactionDataLoading;
+    private BuyerDataLoading buyerDataLoading;
+    private MarketInsightLoading marketInsightLoading;
+    private PopularProductViewHelper popularProductViewHelper;
+    private View rootView;
+    private GMFragmentPresenterImpl gmFragmentPresenter;
+    private GMStat gmstat;
+    private DataTransactionViewHelper dataTransactionViewHelper;
+    private BuyerDataViewHelper buyerDataViewHelper;
+    private GMStatHeaderViewHelper gmstatHeaderViewHelper;
+    private GrossGraphChartConfig grossGraphChartConfig;
+    private GMNetworkErrorHelper gmNetworkErrorHelper;
 
-    void initViews(View rootView){
+    public GMStatActivityFragment() {
+    }
+
+    public void onClickHeaderGMStat() {
+        if (gmstatHeaderViewHelper != null) {
+            gmstatHeaderViewHelper.onClick(this);
+        }
+    }
+
+    void initViews(View rootView) {
         tryAgainText = getString(R.string.try_again);
         unknownExceptionDescription = getString(R.string.unknown_exception_description);
         messageExceptionDescription = getString(R.string.message_exception_description);
@@ -100,9 +139,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         transactionData = rootView.findViewById(R.id.transaction_data);
         marketInsight = rootView.findViewById(R.id.buyer_data);
         marketInsightReal = rootView.findViewById(R.id.market_insight);
-        parentFragmentGmStat = (LinearLayout) rootView.findViewById(R.id.parent_fragment_gmstat);
         grossIncomeGraphContainer = (HorizontalScrollView) rootView.findViewById(R.id.gross_income_graph_container);
-        grossIncomeGraphContainer2 = (LinearLayout) rootView.findViewById(R.id.gross_income_graph_container2);
         oval2Copy6 = ResourcesCompat.getDrawable(getResources(), R.drawable.oval_2_copy_6, null);
 
         rootView.findViewById(R.id.header_gmstat).setOnClickListener(
@@ -115,79 +152,19 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         );
     }
 
-    String[] monthNamesAbrev;
-
-    LineChartView grossIncomeGraph2;
-    
-    RecyclerView gmStatRecyclerView;
-    GMStatWidgetAdapter gmStatWidgetAdapter;
-
-    LoaderImageView grossIncomeGraph2Loading;
-
-    View popularProduct;
-
-    View transactionData;
-
-    View marketInsight;
-
-    View marketInsightReal;
-
-    LinearLayout parentFragmentGmStat;
-
-    HorizontalScrollView grossIncomeGraphContainer;
-
-    LinearLayout grossIncomeGraphContainer2;
-
-    Drawable oval2Copy6;
-
-    private GridLayoutManager gridLayoutManager;
-    private MarketInsightViewHelper marketInsightViewHelper;
-    private PopularProductLoading popularProductLoading;
-    private TransactionDataLoading transactionDataLoading;
-    private BuyerDataLoading buyerDataLoading;
-    private MarketInsightLoading marketInsightLoading;
-    PopularProductViewHelper popularProductViewHelper;
-    private View rootView;
-
-    private GMFragmentPresenterImpl gmFragmentPresenter;
-    
-    public void onClickHeaderGMStat(){
-        if(gmstatHeaderViewHelper!=null){
-            gmstatHeaderViewHelper.onClick(this);
-        }
-    }
-    private GMStat gmstat;
-    private DataTransactionViewHelper dataTransactionViewHelper;
-    private BuyerDataViewHelper buyerDataViewHelper;
-    private GMStatHeaderViewHelper gmstatHeaderViewHelper;
-    private GrossGraphChartConfig grossGraphChartConfig;
-    GMNetworkErrorHelper gmNetworkErrorHelper;
-
-    private static final Locale locale = new Locale("in","ID");
-
-    private static final NavigableMap<Long, String> suffixes = new TreeMap<>();
-    static {
-        suffixes.put(1_000L, "k");
-        suffixes.put(1_000_000L, "M");
-        suffixes.put(1_000_000_000L, "G");
-        suffixes.put(1_000_000_000_000L, "T");
-        suffixes.put(1_000_000_000_000_000L, "P");
-        suffixes.put(1_000_000_000_000_000_000L, "E");
-    }
-
-    private List<NExcel> joinDateAndGrossGraph(List<Integer> dateGraph, List<Integer> grossGraph){
+    private List<NExcel> joinDateAndGrossGraph(List<Integer> dateGraph, List<Integer> grossGraph) {
         List<NExcel> nExcels = new ArrayList<>();
-        if(dateGraph == null || grossGraph == null || dateGraph.isEmpty() || grossGraph.isEmpty())
+        if (dateGraph == null || grossGraph == null || dateGraph.isEmpty() || grossGraph.isEmpty())
             return null;
 
         int lowerSize;
-        if(dateGraph.size()>grossGraph.size()){
+        if (dateGraph.size() > grossGraph.size()) {
             lowerSize = grossGraph.size();
-        }else{
+        } else {
             lowerSize = dateGraph.size();
         }
 
-        for(int i=0;i<lowerSize;i++){
+        for (int i = 0; i < lowerSize; i++) {
             Integer date = dateGraph.get(i);
             Integer gross = grossGraph.get(i);
 
@@ -205,7 +182,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                switch (gmStatWidgetAdapter.getItemViewType(position)){
+                switch (gmStatWidgetAdapter.getItemViewType(position)) {
                     case SuccessfulTransaction.TYPE:
                     case ProdSeen.TYPE:
                     case ProdSold.TYPE:
@@ -227,7 +204,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                switch (gmStatWidgetAdapter.getItemViewType(position)){
+                switch (gmStatWidgetAdapter.getItemViewType(position)) {
                     case SuccessfulTransaction.TYPE:
                     case ProdSeen.TYPE:
                     case ProdSold.TYPE:
@@ -244,7 +221,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     }
 
     @Override
-    public void resetToLoading(){
+    public void resetToLoading() {
         resetEmptyAdapter();
         gmstatHeaderViewHelper.resetToLoading();
         initChartLoading();
@@ -266,7 +243,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         gmStatWidgetAdapter.clear();
 
         List<BaseGMModel> loadingBases = new ArrayList<>();
-        for(int i=0;i<4;i++)
+        for (int i = 0; i < 4; i++)
             loadingBases.add(new LoadingGMModel());
 
         loadingBases.add(new LoadingGMTwoModel());
@@ -274,9 +251,9 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         gmStatWidgetAdapter.notifyDataSetChanged();
     }
 
-    protected void initEmptyAdapter(){
+    protected void initEmptyAdapter() {
         List<BaseGMModel> loadingBases = new ArrayList<>();
-        for(int i=0;i<4;i++)
+        for (int i = 0; i < 4; i++)
             loadingBases.add(new LoadingGMModel());
 
         loadingBases.add(new LoadingGMTwoModel());
@@ -285,27 +262,22 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         initAdapter();
     }
 
-//    private final long shopId = 560900;
-    private long shopId;
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if(activity != null && activity instanceof GMStat){
+        if (activity != null && activity instanceof GMStat) {
             this.gmstat = (GMStat) activity;
 
             // get shop id from activity.
+            long shopId;
             try {
                 shopId = Long.parseLong(gmstat.getShopId());
-            }catch (NumberFormatException nfe){
-                throw new RuntimeException(nfe.getMessage()+"\n [need valid shop id]");
+            } catch (NumberFormatException nfe) {
+                throw new RuntimeException(nfe.getMessage() + "\n [need valid shop id]");
             }
 
             gmFragmentPresenter = new GMFragmentPresenterImpl(this, gmstat, shopId);
         }
-    }
-
-    public GMStatActivityFragment() {
     }
 
     @Override
@@ -367,7 +339,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         grossIncomeGraph2Loading.resetLoader();
     }
 
-    private void displayChart(){
+    private void displayChart() {
         grossIncomeGraphContainer.setVisibility(View.VISIBLE);
         grossIncomeGraph2Loading.setVisibility(View.GONE);
     }
@@ -375,10 +347,11 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     /**
      * limitation of william chart ( for big width it cannot draw, effectively for size of 15 )
      * https://github.com/diogobernardino/WilliamChart/issues/152
+     *
      * @param numChart
      */
-    private void resizeChart(int numChart){
-        Log.d(TAG, "resizeChart "+numChart);
+    private void resizeChart(int numChart) {
+        Log.d(TAG, "resizeChart " + numChart);
 
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
@@ -389,8 +362,8 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
             layout Params of linechart .
         */
         double newSizeRatio = ((double) numChart) / 7;
-        if(newSizeRatio > 1){
-            grossIncomeGraph2.setLayoutParams(new LinearLayout.LayoutParams((int) dpToPx(getActivity(), 680),grossIncomeGraph2.getLayoutParams().height));//(int) (newSizeRatio * width / 2)
+        if (newSizeRatio > 1) {
+            grossIncomeGraph2.setLayoutParams(new LinearLayout.LayoutParams((int) dpToPx(getActivity(), 680), grossIncomeGraph2.getLayoutParams().height));//(int) (newSizeRatio * width / 2)
         } else {
             grossIncomeGraph2.setLayoutParams(new LinearLayout.LayoutParams(width, grossIncomeGraph2.getLayoutParams().height));
         }
@@ -403,7 +376,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         gmFragmentPresenter.onResume();
     }
 
-    public void displayDefaultValue(){
+    public void displayDefaultValue() {
         gmFragmentPresenter.displayDefaultValue(getActivity().getAssets());
     }
 
@@ -413,7 +386,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     }
 
     @Override
-    public void fetchData(long sDate, long eDate, int lastSelectionPeriod, int selectionType){
+    public void fetchData(long sDate, long eDate, int lastSelectionPeriod, int selectionType) {
         gmFragmentPresenter.fetchData(sDate, eDate, lastSelectionPeriod, selectionType);
     }
 
@@ -422,7 +395,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         super.onPause();
         gmNetworkErrorHelper.onPause();
         gmFragmentPresenter.onPause();
-        if(grossIncomeGraph2 != null)
+        if (grossIncomeGraph2 != null)
             grossIncomeGraph2.dismissAllTooltips();
     }
 
@@ -441,13 +414,13 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
 
         List<Integer> dateGraph = getTransactionGraph.getDateGraph();
         List<String> dates = getDates(dateGraph, GMStatActivityFragment.this.monthNamesAbrev);
-        if(dates != null) {
-            grossIncome.textDescription = dates.get(0)+" - "+dates.get(1);
+        if (dates != null) {
+            grossIncome.textDescription = dates.get(0) + " - " + dates.get(1);
         }
         List<Integer> grossGraph = getTransactionGraph.getGrossGraph();
         List<NExcel> nExcels = joinDateAndGrossGraph(dateGraph, grossGraph);
 
-        if(nExcels != null){
+        if (nExcels != null) {
             //[]START] try used willam chart
             displayChart();
             resizeChart(nExcels.size());
@@ -461,14 +434,14 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
             }
 
             final List<Integer> indexToDisplay = new ArrayList<>();
-            int divide = mValues.length/10;
-            for(int j=1;j<=divide-1;j++){
-                indexToDisplay.add((j*10)-1);
+            int divide = mValues.length / 10;
+            for (int j = 1; j <= divide - 1; j++) {
+                indexToDisplay.add((j * 10) - 1);
             }
 
             @LayoutRes int layoutTooltip = R.layout.gm_stat_tooltip_lollipop;
             int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-            if (currentapiVersion < android.os.Build.VERSION_CODES.LOLLIPOP){
+            if (currentapiVersion < android.os.Build.VERSION_CODES.LOLLIPOP) {
                 layoutTooltip = R.layout.gm_stat_tooltip;
             }
 
@@ -477,10 +450,10 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
                     .setmValues(mValues, new XRenderer.XRendererListener() {
                         @Override
                         public boolean filterX(@IntRange(from = 0L) int i) {
-                            if(i==0 || mValues.length-1 == i)
+                            if (i == 0 || mValues.length - 1 == i)
                                 return true;
 
-                            if(mValues.length <= 15){
+                            if (mValues.length <= 15) {
                                 return true;
                             }
 
@@ -510,11 +483,11 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         transactionDataLoading.hideLoading();
         transactionData.setVisibility(View.VISIBLE);
 
-        if(sDate == -1 && eDate == -1) {
+        if (sDate == -1 && eDate == -1) {
             gmstatHeaderViewHelper.bindData(dateGraph, lastSelectionPeriod);
             gmFragmentPresenter.setsDate(gmstatHeaderViewHelper.getsDate());
             gmFragmentPresenter.seteDate(gmstatHeaderViewHelper.geteDate());
-        }else {
+        } else {
             gmstatHeaderViewHelper.bindDate(sDate, eDate, lastSelectionPeriod, selectionType);
             gmstatHeaderViewHelper.stopLoading();
         }
@@ -525,16 +498,16 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         List<BaseGMModel> baseGMModels = new ArrayList<>();
         SuccessfulTransaction successfulTransaction
                 = new SuccessfulTransaction(getProductGraph.getSuccessTrans());
-        successfulTransaction.percentage = getProductGraph.getDiffTrans()*100;
+        successfulTransaction.percentage = getProductGraph.getDiffTrans() * 100;
 
         ProdSeen prodSeen = new ProdSeen(getProductGraph.getProductView());
-        prodSeen.percentage = getProductGraph.getDiffView()*100;
+        prodSeen.percentage = getProductGraph.getDiffView() * 100;
 
         ProdSold prodSold = new ProdSold(getProductGraph.getProductSold());
-        prodSold.percentage = getProductGraph.getDiffSold()*100;
+        prodSold.percentage = getProductGraph.getDiffSold() * 100;
 
-        ConvRate convRate = new ConvRate(getProductGraph.getConversionRate()*100);
-        convRate.percentage = getProductGraph.getDiffConv()*100;
+        ConvRate convRate = new ConvRate(getProductGraph.getConversionRate() * 100);
+        convRate.percentage = getProductGraph.getDiffConv() * 100;
 
         baseGMModels.add(successfulTransaction);
         baseGMModels.add(prodSeen);
@@ -543,7 +516,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         gmStatWidgetAdapter.clear();
         gmStatWidgetAdapter.addAll(baseGMModels);
 
-        if(!isFirstTime) {
+        if (!isFirstTime) {
             initAdapter(gmStatWidgetAdapter);
             gmFragmentPresenter.setFirstTime(true);
         }
@@ -585,18 +558,18 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         displayDefaultValue();
 
         final StringBuilder textMessage = new StringBuilder("");
-        if(e instanceof UnknownHostException){
+        if (e instanceof UnknownHostException) {
             textMessage.append(unknownExceptionDescription);
-        }else if(e instanceof MessageErrorException){
+        } else if (e instanceof MessageErrorException) {
             textMessage.append(messageExceptionDescription);
-        }else{
+        } else {
             textMessage.append(defaultExceptionDescription);
         }
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(getActivity() != null && rootView != null){
+                if (getActivity() != null && rootView != null) {
                     gmNetworkErrorHelper.showSnackbar(textMessage.toString(), tryAgainText
                             , new OnActionClickListener() {
                                 @Override
@@ -616,31 +589,60 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     }
 
     //[START] unused methods
-    @Override protected void setViewListener() {}
+    @Override
+    protected void setViewListener() {
+    }
 
-    @Override protected void initialVar() {}
+    @Override
+    protected void initialVar() {
+    }
 
-    @Override protected void setActionVar() {}
+    @Override
+    protected void setActionVar() {
+    }
 
-    @Override protected boolean isRetainInstance() { return false; }
+    @Override
+    protected boolean isRetainInstance() {
+        return false;
+    }
 
-    @Override protected void onFirstTimeLaunched() { }
+    @Override
+    protected void onFirstTimeLaunched() {
+    }
 
-    @Override public void onSaveState(Bundle state) { }
+    @Override
+    public void onSaveState(Bundle state) {
+    }
 
-    @Override protected boolean getOptionsMenuEnable() { return false; }
+    @Override
+    protected boolean getOptionsMenuEnable() {
+        return false;
+    }
 
-    @Override protected void initialPresenter() {}
+    @Override
+    protected void initialPresenter() {
+    }
 
-    @Override public void onRestoreState(Bundle savedState) {}
+    @Override
+    public void onRestoreState(Bundle savedState) {
+    }
 
-    @Override protected void initialListener(Activity activity) {}
+    @Override
+    protected void initialListener(Activity activity) {
+    }
 
-    @Override protected void setupArguments(Bundle arguments) {}
+    @Override
+    protected void setupArguments(Bundle arguments) {
+    }
 
-    @Override protected int getFragmentLayout() { return 0; }
+    @Override
+    protected int getFragmentLayout() {
+        return 0;
+    }
 
-    @Override protected void initView(View view) {}
+    @Override
+    protected void initView(View view) {
+    }
     //[END] unused methods
 
 

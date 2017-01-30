@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.Router;
@@ -24,8 +23,6 @@ import com.tokopedia.seller.gmstat.views.williamchart.chart.view.LineChartView;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
-
 import static com.tokopedia.seller.gmstat.utils.GMStatConstant.PERCENTAGE_FORMAT;
 import static com.tokopedia.seller.gmstat.views.GMStatActivityFragment.NoDataAvailable;
 import static com.tokopedia.seller.gmstat.views.PopularProductViewHelper.getFormattedString;
@@ -35,55 +32,26 @@ import static com.tokopedia.seller.gmstat.views.PopularProductViewHelper.getForm
  */
 
 public class DataTransactionViewHelper {
+    int transparantColor;
     private DataTransactionChartConfig williamChartUtils;
-
-    String[] monthNamesAbrev;
-
-    LineChartView transactionChart;
-
-    TextView percentage;
-
-    ImageView transactionCountIcon;
-
-    TextView transactionCount;
-
-    int arrowDown;
-
-    int arrowUp;
-
-    LinearLayout transactionDataContainerGoldMerchant;
-
-    LinearLayout transactionDataContainerNonGoldMerchant;
-
-//    @BindView(R2.id.transaction_data_container_upper)
-//    RelativeLayout transactionDataContainerUpper;
-
-    int gredyColor;
-
-//    @BindDrawable(R.drawable.ic_rectangle_down)
-    Drawable icRectagleDown;
-
-//    @BindDrawable(R.drawable.ic_rectangle_up)
-    Drawable icRectagleUp;
-
+    private LineChartView transactionChart;
+    private TextView percentage;
+    private ImageView transactionCountIcon;
+    private TextView transactionCount;
+    private int arrowDown;
+    private int arrowUp;
+    private LinearLayout transactionDataContainerGoldMerchant;
+    private LinearLayout transactionDataContainerNonGoldMerchant;
+    private int gredyColor;
+    private Drawable icRectagleDown;
+    private Drawable icRectagleUp;
     private View itemView;
     private boolean isGoldMerchant;
-
     private float[] mValues = new float[10];
     private String[] mLabels = new String[10];
-    ImageHandler imageHandler;
+    private LinearLayout separator2;
 
-    LinearLayout separator2;
-
-    int breakLineBackground;
-
-    int transparantColor;
-
-    public void moveToGMSubscribe(){
-        Router.goToGMSubscribe(itemView.getContext());
-    }
-
-    public DataTransactionViewHelper(View itemView, ImageHandler imageHandler, boolean isGoldMerchant){
+    public DataTransactionViewHelper(View itemView, ImageHandler imageHandler, boolean isGoldMerchant) {
         this.itemView = itemView;
         this.isGoldMerchant = isGoldMerchant;
         initView(itemView);
@@ -92,42 +60,47 @@ public class DataTransactionViewHelper {
                 R.drawable.ic_rectangle_down);
         icRectagleUp = AppCompatDrawableManager.get().getDrawable(itemView.getContext(),
                 R.drawable.ic_rectangle_up);
-        for(int i=0;i<mLabels.length;i++){
+        for (int i = 0; i < mLabels.length; i++) {
             mLabels[i] = "";
         }
         williamChartUtils = new DataTransactionChartConfig(mLabels, mValues);
-        this.imageHandler = imageHandler;
 
-        if(isGoldMerchant){
+        if (isGoldMerchant) {
             transactionDataContainerGoldMerchant.setVisibility(View.VISIBLE);
             transactionDataContainerNonGoldMerchant.setVisibility(View.GONE);
         }
     }
 
+    public static float dpToPx(Context context, float valueInDp) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp, metrics);
+    }
+
+    public void moveToGMSubscribe() {
+        Router.goToGMSubscribe(itemView.getContext());
+    }
+
     private void initView(View itemView) {
-        monthNamesAbrev = itemView.getResources().getStringArray(R.array.month_names_abrev);
 
         transactionChart = (LineChartView) itemView.findViewById(R.id.transaction_chart);
 
-        percentage= (TextView) itemView.findViewById(R.id.percentage);
+        percentage = (TextView) itemView.findViewById(R.id.percentage);
 
-        transactionCountIcon= (ImageView) itemView.findViewById(R.id.transaction_count_icon);
+        transactionCountIcon = (ImageView) itemView.findViewById(R.id.transaction_count_icon);
 
-        transactionCount= (TextView) itemView.findViewById(R.id.transaction_count);
+        transactionCount = (TextView) itemView.findViewById(R.id.transaction_count);
 
         arrowDown = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_down, null);
 
         arrowUp = ResourcesCompat.getColor(itemView.getResources(), R.color.arrow_up, null);
 
-        transactionDataContainerGoldMerchant= (LinearLayout) itemView.findViewById(R.id.transaction_data_container_gold_merchant);
+        transactionDataContainerGoldMerchant = (LinearLayout) itemView.findViewById(R.id.transaction_data_container_gold_merchant);
 
-        transactionDataContainerNonGoldMerchant= (LinearLayout) itemView.findViewById(R.id.transaction_data_container_non_gold_merchant);
+        transactionDataContainerNonGoldMerchant = (LinearLayout) itemView.findViewById(R.id.transaction_data_container_non_gold_merchant);
 
         gredyColor = ResourcesCompat.getColor(itemView.getResources(), R.color.grey_400, null);
 
-        separator2= (LinearLayout) itemView.findViewById(R.id.separator_2_transaction_data);
-
-        breakLineBackground = ResourcesCompat.getColor(itemView.getResources(), R.color.breakline_background, null);
+        separator2 = (LinearLayout) itemView.findViewById(R.id.separator_2_transaction_data);
 
         transparantColor = ResourcesCompat.getColor(itemView.getResources(), android.R.color.transparent, null);
 
@@ -140,20 +113,20 @@ public class DataTransactionViewHelper {
                 });
     }
 
-    public void bindData(GetTransactionGraph getTransactionGraph){
+    public void bindData(GetTransactionGraph getTransactionGraph) {
 
-        if(isGoldMerchant){
+        if (isGoldMerchant) {
             separator2.removeAllViews();
-        }else{
+        } else {
             View view = new View(itemView.getContext());
-            view.setLayoutParams(new LinearLayout.LayoutParams( ViewGroup.LayoutParams.MATCH_PARENT,
+            view.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     (int) dpToPx(itemView.getContext(), 16)));
             view.setBackgroundResource(R.color.breakline_background);
             separator2.addView(view);
         }
 
         /* non gold merchant */
-        if(!isGoldMerchant){
+        if (!isGoldMerchant) {
             transactionDataContainerGoldMerchant.setVisibility(View.VISIBLE);
             transactionDataContainerNonGoldMerchant.setVisibility(View.VISIBLE);
 
@@ -161,7 +134,7 @@ public class DataTransactionViewHelper {
         }
 
         /* empty state */
-        if(getTransactionGraph == null || getTransactionGraph.getFinishedTrans() == 0){
+        if (getTransactionGraph == null || getTransactionGraph.getFinishedTrans() == 0) {
 
             transactionCountIcon.setVisibility(View.GONE);
             percentage.setTextColor(gredyColor);
@@ -175,32 +148,32 @@ public class DataTransactionViewHelper {
         transactionCountIcon.setVisibility(View.VISIBLE);
         transactionCount.setText(getFormattedString(getTransactionGraph.getFinishedTrans()));
 
-        Double diffSuccessTrans = getTransactionGraph.getDiffFinishedTrans()*100;
+        Double diffSuccessTrans = getTransactionGraph.getDiffFinishedTrans() * 100;
         boolean isDefault;
-        if(diffSuccessTrans == 0){
+        if (diffSuccessTrans == 0) {
             transactionCountIcon.setVisibility(View.GONE);
             percentage.setTextColor(arrowUp);
             isDefault = true;
-        }else if(diffSuccessTrans < 0){// down here
-            if(diffSuccessTrans == NoDataAvailable*100){
+        } else if (diffSuccessTrans < 0) {// down here
+            if (diffSuccessTrans == NoDataAvailable * 100) {
                 transactionCountIcon.setVisibility(View.GONE);
                 percentage.setTextColor(gredyColor);
                 isDefault = false;
-            }else{
+            } else {
                 transactionCountIcon.setImageDrawable(icRectagleDown);
                 percentage.setTextColor(arrowDown);
                 isDefault = true;
             }
-        }else{// up here
+        } else {// up here
             transactionCountIcon.setImageDrawable(icRectagleUp);
             percentage.setTextColor(arrowUp);
             isDefault = true;
         }
 
-        if(isDefault){
+        if (isDefault) {
             double d = diffSuccessTrans;
             percentage.setText(String.format(PERCENTAGE_FORMAT, KMNumbers.formatString(d).replace("-", "")));
-        }else{
+        } else {
             percentage.setText(R.string.no_data);
         }
 
@@ -214,14 +187,14 @@ public class DataTransactionViewHelper {
         int size = (successTransGraph.size() >= rejectedTransGraph.size())
                 ? rejectedTransGraph.size() : successTransGraph.size();
         List<Integer> merge = new ArrayList<>();
-        for(int i=0;i<size;i++){
-            merge.add(successTransGraph.get(i)+rejectedTransGraph.get(i));
+        for (int i = 0; i < size; i++) {
+            merge.add(successTransGraph.get(i) + rejectedTransGraph.get(i));
         }
 
         List<NExcel> nExcels = joinDateAndGrossGraph(
                 getTransactionGraph.getDateGraph(),
                 merge);
-        if(nExcels == null)
+        if (nExcels == null)
             return;
 
 //        if(nExcels!= null) {
@@ -247,29 +220,24 @@ public class DataTransactionViewHelper {
         //[END] try used willam chart
     }
 
-    private List<NExcel> joinDateAndGrossGraph(List<Integer> dateGraph, List<Integer> successTransGrpah){
+    private List<NExcel> joinDateAndGrossGraph(List<Integer> dateGraph, List<Integer> successTransGrpah) {
         List<NExcel> nExcels = new ArrayList<>();
-        if(dateGraph == null || successTransGrpah == null)
+        if (dateGraph == null || successTransGrpah == null)
             return null;
 
         int lowerSize;
-        if(dateGraph.size()>successTransGrpah.size()){
+        if (dateGraph.size() > successTransGrpah.size()) {
             lowerSize = successTransGrpah.size();
-        }else{
+        } else {
             lowerSize = dateGraph.size();
         }
 
-        for(int i=0;i<lowerSize;i++){
+        for (int i = 0; i < lowerSize; i++) {
             Integer gross = successTransGrpah.get(i);
 
             nExcels.add(new NExcel(gross, ""));
         }
 
         return nExcels;
-    }
-
-    public static float dpToPx(Context context, float valueInDp) {
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp, metrics);
     }
 }

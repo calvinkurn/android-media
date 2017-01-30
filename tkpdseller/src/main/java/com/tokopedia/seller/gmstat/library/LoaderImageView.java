@@ -119,7 +119,7 @@ public class LoaderImageView extends ImageView implements LoaderView {
         loaderController.stopLoading();
     }
 
-    public void stopLoading(){
+    public void stopLoading() {
         if (loaderController != null) {
             loaderController.stopLoading();
         }

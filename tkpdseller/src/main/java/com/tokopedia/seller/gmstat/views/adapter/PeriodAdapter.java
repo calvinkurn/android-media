@@ -27,18 +27,18 @@ import java.util.Locale;
  * Created by normansyahputa on 1/19/17.
  */
 @SuppressWarnings("deprecation")
-public class PeriodAdapter extends RecyclerView.Adapter{
+public class PeriodAdapter extends RecyclerView.Adapter {
+    private static final Locale locale = new Locale("in", "ID");
     public DatePickerRules datePickerRules;
-    List<BasePeriodModel> basePeriodModels;
-    private static final Locale locale = new Locale("in","ID");
-    DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy", locale);
+    private List<BasePeriodModel> basePeriodModels;
+    private RecyclerView mRecyclerView;
 
-    PeriodListener periodListener = new PeriodListener() {
+    private PeriodListener periodListener = new PeriodListener() {
         @Override
         public void updateCheck(boolean checked, int index) {
-            for(int i=0;i<basePeriodModels.size();i++){
-                if(index != i){
-                    if(basePeriodModels.get(i) instanceof PeriodRangeModel){
+            for (int i = 0; i < basePeriodModels.size(); i++) {
+                if (index != i) {
+                    if (basePeriodModels.get(i) instanceof PeriodRangeModel) {
                         PeriodRangeModel prm = (PeriodRangeModel) basePeriodModels.get(i);
                         prm.isChecked = false;
                     }
@@ -57,11 +57,11 @@ public class PeriodAdapter extends RecyclerView.Adapter{
     };
 
     @Deprecated
-    public PeriodAdapter(){
+    public PeriodAdapter() {
         basePeriodModels = new ArrayList<>();
     }
 
-    public PeriodAdapter(final View itemView, long sDate, long eDate){
+    public PeriodAdapter(final View itemView, long sDate, long eDate) {
         basePeriodModels = new ArrayList<>();
 
         Calendar instance = Calendar.getInstance();
@@ -75,9 +75,10 @@ public class PeriodAdapter extends RecyclerView.Adapter{
         instance.add(Calendar.DATE, -1);
         long yesterday = instance.getTimeInMillis();
 
-        Log.d("MNORMANSYAH", "max limit ## "+dateFormat.format(tomorrow)+
-                " minLimit "+ dateFormat.format(minLimit) +
-                " max End Date "+dateFormat.format(yesterday));
+        DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy", locale);
+        Log.d("MNORMANSYAH", "max limit ## " + dateFormat.format(tomorrow) +
+                " minLimit " + dateFormat.format(minLimit) +
+                " max End Date " + dateFormat.format(yesterday));
 
         datePickerRules = new DatePickerRules(tomorrow, minLimit, 60, yesterday);
         datePickerRules.setDatePickerRulesListener(new DatePickerRules.DatePickerRulesListener() {
@@ -124,7 +125,7 @@ public class PeriodAdapter extends RecyclerView.Adapter{
                 startOrEndPeriodModel.setStartDate(sDate);
                 basePeriodModels.add(startOrEndPeriodModel);
 
-                if(eDate == -1) {
+                if (eDate == -1) {
                     PeriodAdapter.this.notifyDataSetChanged();
                     return;
                 }
@@ -142,7 +143,7 @@ public class PeriodAdapter extends RecyclerView.Adapter{
                 startOrEndPeriodModel.setStartDate(sDate);
                 basePeriodModels.add(startOrEndPeriodModel);
 
-                if(sDate == -1) {
+                if (sDate == -1) {
                     PeriodAdapter.this.notifyDataSetChanged();
                     return;
                 }
@@ -167,8 +168,6 @@ public class PeriodAdapter extends RecyclerView.Adapter{
         datePickerRules.setsDate(sDate);
     }
 
-    private RecyclerView mRecyclerView;
-
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
@@ -177,7 +176,7 @@ public class PeriodAdapter extends RecyclerView.Adapter{
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        switch (viewType){
+        switch (viewType) {
             case PeriodRangeModel.TYPE:
                 return new BasePeriodViewHolder(LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.periode_layout, parent, false));
@@ -190,9 +189,9 @@ public class PeriodAdapter extends RecyclerView.Adapter{
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        switch (basePeriodModels.get(position).type){
+        switch (basePeriodModels.get(position).type) {
             case PeriodRangeModel.TYPE:
-                BasePeriodViewHolder bpvh = ((BasePeriodViewHolder)holder);
+                BasePeriodViewHolder bpvh = ((BasePeriodViewHolder) holder);
                 bpvh.setPeriodListener(periodListener);
                 bpvh.bindData((PeriodRangeModel) basePeriodModels.get(position));
                 break;
@@ -206,7 +205,7 @@ public class PeriodAdapter extends RecyclerView.Adapter{
 
     @Override
     public int getItemViewType(int position) {
-        switch (basePeriodModels.get(position).type){
+        switch (basePeriodModels.get(position).type) {
             case PeriodRangeModel.TYPE:
             case StartOrEndPeriodModel.TYPE:
                 return basePeriodModels.get(position).type;

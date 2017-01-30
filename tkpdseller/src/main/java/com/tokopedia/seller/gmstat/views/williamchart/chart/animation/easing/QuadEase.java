@@ -18,33 +18,33 @@ package com.tokopedia.seller.gmstat.views.williamchart.chart.animation.easing;
 
 public class QuadEase extends BaseEasingMethod {
 
-	public QuadEase() {
+    public QuadEase() {
 
-		super();
-	}
-
-
-	@Override
-	protected float easeOut(float time) {
-
-		return -time * (time - 2);
-	}
+        super();
+    }
 
 
-	@Override
-	protected float easeInOut(float time) {
+    @Override
+    protected float easeOut(float time) {
 
-		float p = time / 0.5f;
-		if (p < 1.f) return 0.5f * p * p;
-
-		return -0.5f * ((--p) * (p - 2.f) - 1.f);
-	}
+        return -time * (time - 2);
+    }
 
 
-	@Override
-	protected float easeIn(float time) {
+    @Override
+    protected float easeInOut(float time) {
 
-		return time * time;
-	}
+        float p = time / 0.5f;
+        if (p < 1.f) return 0.5f * p * p;
+
+        return -0.5f * ((--p) * (p - 2.f) - 1.f);
+    }
+
+
+    @Override
+    protected float easeIn(float time) {
+
+        return time * time;
+    }
 
 }

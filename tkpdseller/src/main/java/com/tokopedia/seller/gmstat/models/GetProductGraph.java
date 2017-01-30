@@ -38,312 +38,248 @@ public class GetProductGraph {
     private double diffSold;
     @SerializedName("DateGraph")
     @Expose
-    private List<Integer> dateGraph = new ArrayList<Integer>();
+    private List<Integer> dateGraph = new ArrayList<>();
     @SerializedName("ViewGraoh")
     @Expose
-    private List<Integer> viewGraoh = new ArrayList<Integer>();
+    private List<Integer> viewGraoh = new ArrayList<>();
     @SerializedName("ProductSoldGraph")
     @Expose
-    private List<Integer> productSoldGraph = new ArrayList<Integer>();
+    private List<Integer> productSoldGraph = new ArrayList<>();
     @SerializedName("SuccessTransGraph")
     @Expose
-    private List<Integer> successTransGraph = new ArrayList<Integer>();
+    private List<Integer> successTransGraph = new ArrayList<>();
     @SerializedName("PDateGraph")
     @Expose
-    private List<Integer> pDateGraph = new ArrayList<Integer>();
+    private List<Integer> pDateGraph = new ArrayList<>();
     @SerializedName("PViewGraph")
     @Expose
-    private List<Integer> pViewGraph = new ArrayList<Integer>();
+    private List<Integer> pViewGraph = new ArrayList<>();
     @SerializedName("PProductSoldGraph")
     @Expose
-    private List<Integer> pProductSoldGraph = new ArrayList<Integer>();
+    private List<Integer> pProductSoldGraph = new ArrayList<>();
     @SerializedName("PSuccessTransGraph")
     @Expose
-    private List<Integer> pSuccessTransGraph = new ArrayList<Integer>();
+    private List<Integer> pSuccessTransGraph = new ArrayList<>();
 
     /**
-     *
-     * @return
-     * The successTrans
+     * @return The successTrans
      */
     public long getSuccessTrans() {
         return successTrans;
     }
 
     /**
-     *
-     * @param successTrans
-     * The SuccessTrans
+     * @param successTrans The SuccessTrans
      */
     public void setSuccessTrans(long successTrans) {
         this.successTrans = successTrans;
     }
 
     /**
-     *
-     * @return
-     * The productView
+     * @return The productView
      */
     public long getProductView() {
         return productView;
     }
 
     /**
-     *
-     * @param productView
-     * The ProductView
+     * @param productView The ProductView
      */
     public void setProductView(long productView) {
         this.productView = productView;
     }
 
     /**
-     *
-     * @return
-     * The productSold
+     * @return The productSold
      */
     public long getProductSold() {
         return productSold;
     }
 
     /**
-     *
-     * @param productSold
-     * The ProductSold
+     * @param productSold The ProductSold
      */
     public void setProductSold(long productSold) {
         this.productSold = productSold;
     }
 
     /**
-     *
-     * @return
-     * The conversionRate
+     * @return The conversionRate
      */
     public double getConversionRate() {
         return conversionRate;
     }
 
     /**
-     *
-     * @param conversionRate
-     * The ConversionRate
+     * @param conversionRate The ConversionRate
      */
     public void setConversionRate(double conversionRate) {
         this.conversionRate = conversionRate;
     }
 
     /**
-     *
-     * @return
-     * The diffTrans
+     * @return The diffTrans
      */
     public double getDiffTrans() {
         return diffTrans;
     }
 
     /**
-     *
-     * @param diffTrans
-     * The DiffTrans
+     * @param diffTrans The DiffTrans
      */
     public void setDiffTrans(double diffTrans) {
         this.diffTrans = diffTrans;
     }
 
     /**
-     *
-     * @return
-     * The diffConv
+     * @return The diffConv
      */
     public double getDiffConv() {
         return diffConv;
     }
 
     /**
-     *
-     * @param diffConv
-     * The DiffConv
+     * @param diffConv The DiffConv
      */
     public void setDiffConv(double diffConv) {
         this.diffConv = diffConv;
     }
 
     /**
-     *
-     * @return
-     * The diffView
+     * @return The diffView
      */
     public double getDiffView() {
         return diffView;
     }
 
     /**
-     *
-     * @param diffView
-     * The DiffView
+     * @param diffView The DiffView
      */
     public void setDiffView(double diffView) {
         this.diffView = diffView;
     }
 
     /**
-     *
-     * @return
-     * The diffSold
+     * @return The diffSold
      */
     public double getDiffSold() {
         return diffSold;
     }
 
     /**
-     *
-     * @param diffSold
-     * The DiffSold
+     * @param diffSold The DiffSold
      */
     public void setDiffSold(double diffSold) {
         this.diffSold = diffSold;
     }
 
     /**
-     *
-     * @return
-     * The dateGraph
+     * @return The dateGraph
      */
     public List<Integer> getDateGraph() {
         return dateGraph;
     }
 
     /**
-     *
-     * @param dateGraph
-     * The DateGraph
+     * @param dateGraph The DateGraph
      */
     public void setDateGraph(List<Integer> dateGraph) {
         this.dateGraph = dateGraph;
     }
 
     /**
-     *
-     * @return
-     * The viewGraoh
+     * @return The viewGraoh
      */
     public List<Integer> getViewGraoh() {
         return viewGraoh;
     }
 
     /**
-     *
-     * @param viewGraoh
-     * The ViewGraoh
+     * @param viewGraoh The ViewGraoh
      */
     public void setViewGraoh(List<Integer> viewGraoh) {
         this.viewGraoh = viewGraoh;
     }
 
     /**
-     *
-     * @return
-     * The productSoldGraph
+     * @return The productSoldGraph
      */
     public List<Integer> getProductSoldGraph() {
         return productSoldGraph;
     }
 
     /**
-     *
-     * @param productSoldGraph
-     * The ProductSoldGraph
+     * @param productSoldGraph The ProductSoldGraph
      */
     public void setProductSoldGraph(List<Integer> productSoldGraph) {
         this.productSoldGraph = productSoldGraph;
     }
 
     /**
-     *
-     * @return
-     * The successTransGraph
+     * @return The successTransGraph
      */
     public List<Integer> getSuccessTransGraph() {
         return successTransGraph;
     }
 
     /**
-     *
-     * @param successTransGraph
-     * The SuccessTransGraph
+     * @param successTransGraph The SuccessTransGraph
      */
     public void setSuccessTransGraph(List<Integer> successTransGraph) {
         this.successTransGraph = successTransGraph;
     }
 
     /**
-     *
-     * @return
-     * The pDateGraph
+     * @return The pDateGraph
      */
     public List<Integer> getPDateGraph() {
         return pDateGraph;
     }
 
     /**
-     *
-     * @param pDateGraph
-     * The PDateGraph
+     * @param pDateGraph The PDateGraph
      */
     public void setPDateGraph(List<Integer> pDateGraph) {
         this.pDateGraph = pDateGraph;
     }
 
     /**
-     *
-     * @return
-     * The pViewGraph
+     * @return The pViewGraph
      */
     public List<Integer> getPViewGraph() {
         return pViewGraph;
     }
 
     /**
-     *
-     * @param pViewGraph
-     * The PViewGraph
+     * @param pViewGraph The PViewGraph
      */
     public void setPViewGraph(List<Integer> pViewGraph) {
         this.pViewGraph = pViewGraph;
     }
 
     /**
-     *
-     * @return
-     * The pProductSoldGraph
+     * @return The pProductSoldGraph
      */
     public List<Integer> getPProductSoldGraph() {
         return pProductSoldGraph;
     }
 
     /**
-     *
-     * @param pProductSoldGraph
-     * The PProductSoldGraph
+     * @param pProductSoldGraph The PProductSoldGraph
      */
     public void setPProductSoldGraph(List<Integer> pProductSoldGraph) {
         this.pProductSoldGraph = pProductSoldGraph;
     }
 
     /**
-     *
-     * @return
-     * The pSuccessTransGraph
+     * @return The pSuccessTransGraph
      */
     public List<Integer> getPSuccessTransGraph() {
         return pSuccessTransGraph;
     }
 
     /**
-     *
-     * @param pSuccessTransGraph
-     * The PSuccessTransGraph
+     * @param pSuccessTransGraph The PSuccessTransGraph
      */
     public void setPSuccessTransGraph(List<Integer> pSuccessTransGraph) {
         this.pSuccessTransGraph = pSuccessTransGraph;

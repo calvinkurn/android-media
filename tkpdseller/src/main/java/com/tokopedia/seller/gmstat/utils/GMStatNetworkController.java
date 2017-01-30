@@ -56,7 +56,7 @@ public class GMStatNetworkController extends BaseNetworkController {
 
     private final static long DEFAULT_SDATE = Long.MAX_VALUE;
     private final static long DEFAULT_EDATE = Long.MIN_VALUE;
-    private static final Locale locale = new Locale("in","ID");
+    private static final Locale locale = new Locale("in", "ID");
 
     private GMStatApi gmstatApi;
 
@@ -65,33 +65,7 @@ public class GMStatNetworkController extends BaseNetworkController {
         this.gmstatApi = gmStatApi;
     }
 
-    public Observable<Response<GetProductGraph>> getProductGraph(
-            long shopId
-    ){
-        return getProductGraph(shopId, DEFAULT_SDATE, DEFAULT_EDATE);
-    }
-
-    public Observable<Response<GetProductGraph>> getProductGraph(
-            long shopId, long sDate, long eDate
-    ){
-        return gmstatApi.getProductGraph(
-            getGMStatParam(shopId, sDate, eDate));
-    }
-
-    public Observable<Response<GetTransactionGraph>> getTransactionGraph(
-            long shopId, long sDate, long eDate
-    ){
-        return gmstatApi.getTransactionGraph(
-                getGMStatParam(shopId, sDate, eDate));
-    }
-
-    public Observable<Response<GetTransactionGraph>> getTransactionGraph(
-            long shopId
-    ){
-        return getTransactionGraph(shopId, DEFAULT_SDATE, DEFAULT_EDATE);
-    }
-
-    private static Response<?> getError1000(){
+    private static Response<?> getError1000() {
         return Response.<Object>error(1000, new ResponseBody() {
             @Override
             public MediaType contentType() {
@@ -110,11 +84,37 @@ public class GMStatNetworkController extends BaseNetworkController {
         });
     }
 
-    public Observable<Response<GetPopularProduct>> getPopularProduct(long shopId, long sDate, long eDate){
+    public Observable<Response<GetProductGraph>> getProductGraph(
+            long shopId
+    ) {
+        return getProductGraph(shopId, DEFAULT_SDATE, DEFAULT_EDATE);
+    }
+
+    public Observable<Response<GetProductGraph>> getProductGraph(
+            long shopId, long sDate, long eDate
+    ) {
+        return gmstatApi.getProductGraph(
+                getGMStatParam(shopId, sDate, eDate));
+    }
+
+    public Observable<Response<GetTransactionGraph>> getTransactionGraph(
+            long shopId, long sDate, long eDate
+    ) {
+        return gmstatApi.getTransactionGraph(
+                getGMStatParam(shopId, sDate, eDate));
+    }
+
+    public Observable<Response<GetTransactionGraph>> getTransactionGraph(
+            long shopId
+    ) {
+        return getTransactionGraph(shopId, DEFAULT_SDATE, DEFAULT_EDATE);
+    }
+
+    public Observable<Response<GetPopularProduct>> getPopularProduct(long shopId, long sDate, long eDate) {
         return gmstatApi.getPopulatProduct(getGMStatParam(shopId, sDate, eDate));
     }
 
-    public Observable<Response<GetPopularProduct>> getPopularProduct(long shopId){
+    public Observable<Response<GetPopularProduct>> getPopularProduct(long shopId) {
 
         Calendar dayOne = Calendar.getInstance();
         dayOne.add(Calendar.DATE, -30);
@@ -125,17 +125,17 @@ public class GMStatNetworkController extends BaseNetworkController {
         return gmstatApi.getPopulatProduct(getGMStatParam(shopId, dayOne.getTimeInMillis(), yesterday.getTimeInMillis()));
     }
 
-    public Observable<Response<GetBuyerData>> getBuyerData(long shopId, long sDate, long eDate){
+    public Observable<Response<GetBuyerData>> getBuyerData(long shopId, long sDate, long eDate) {
         return gmstatApi.getBuyerData(
                 getGMStatParam(shopId, sDate, eDate));
     }
 
-    public Observable<Response<GetBuyerData>> getBuyerData(long shopId){
+    public Observable<Response<GetBuyerData>> getBuyerData(long shopId) {
         return gmstatApi.getBuyerData(
                 getGMStatParam(shopId, DEFAULT_SDATE, DEFAULT_EDATE));
     }
 
-    public void getBuyerData(long shopId, CompositeSubscription compositeSubscription, final GetGMStat getGMStat){
+    public void getBuyerData(long shopId, CompositeSubscription compositeSubscription, final GetGMStat getGMStat) {
         compositeSubscription.add(
                 getBuyerData(shopId).subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -166,7 +166,7 @@ public class GMStatNetworkController extends BaseNetworkController {
         );
     }
 
-    public void getPopularProduct(long shopId, CompositeSubscription compositeSubscription, final GetGMStat getGMStat){
+    public void getPopularProduct(long shopId, CompositeSubscription compositeSubscription, final GetGMStat getGMStat) {
         compositeSubscription.add(
                 getPopularProduct(shopId).subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -197,11 +197,11 @@ public class GMStatNetworkController extends BaseNetworkController {
         );
     }
 
-    public Observable<Response<GetShopCategory>> getShopCategory(long shopId){
+    public Observable<Response<GetShopCategory>> getShopCategory(long shopId) {
         return gmstatApi.getShopCategory(getGMStatParam(shopId, DEFAULT_SDATE, DEFAULT_EDATE));
     }
 
-    public void getShopCategory(long shopId, CompositeSubscription compositeSubscription, final GetGMStat getGMStat){
+    public void getShopCategory(long shopId, CompositeSubscription compositeSubscription, final GetGMStat getGMStat) {
         compositeSubscription.add(
                 getShopCategory(shopId)
                         .subscribeOn(Schedulers.io())
@@ -221,10 +221,10 @@ public class GMStatNetworkController extends BaseNetworkController {
 
                                     @Override
                                     public void onNext(Response<GetShopCategory> response) {
-                                        if(response.isSuccessful()){
+                                        if (response.isSuccessful()) {
                                             GetShopCategory body = response.body();
                                             getGMStat.onSuccessGetShopCategory(body);
-                                        }else{
+                                        } else {
                                             onResponseError(response.code(), getGMStat);
                                         }
                                     }
@@ -233,21 +233,20 @@ public class GMStatNetworkController extends BaseNetworkController {
         );
     }
 
-    public Observable<KeywordModel> getKeywordModels(final long shopId){
+    public Observable<KeywordModel> getKeywordModels(final long shopId) {
 
         return getShopCategory(shopId)
                 .flatMap(new Func1<Response<GetShopCategory>, Observable<KeywordModel>>() {
                     @Override
                     public Observable<KeywordModel> call(final Response<GetShopCategory> response) {
-                        if(response.isSuccessful()){
+                        if (response.isSuccessful()) {
                             KeywordModel keywordModel =
                                     new KeywordModel();
                             keywordModel.getShopCategory = response.body();
                             keywordModel.getShopCategoryResponse = response;
 
-                            if(keywordModel.getShopCategory == null || keywordModel.getShopCategory.getShopCategory() == null
-                                    || keywordModel.getShopCategory.getShopCategory().isEmpty())
-                            {
+                            if (keywordModel.getShopCategory == null || keywordModel.getShopCategory.getShopCategory() == null
+                                    || keywordModel.getShopCategory.getShopCategory().isEmpty()) {
                                 keywordModel.getResponseList = new ArrayList<>();
                                 keywordModel.hadesv1Models = new ArrayList<>();
                                 return Observable.just(keywordModel);
@@ -280,25 +279,25 @@ public class GMStatNetworkController extends BaseNetworkController {
                                 public KeywordModel call(List<Response<GetKeyword>> responses, List<Response<HadesV1Model>> responses2, KeywordModel keywordModel) {
                                     keywordModel.getKeywords = new ArrayList<>();
                                     keywordModel.hadesv1Models = new ArrayList<>();
-                                    List<Integer> indexToRemoved = new ArrayList<Integer>();
+                                    List<Integer> indexToRemoved = new ArrayList<>();
                                     List<HadesV1Model> hadesV1Models = new ArrayList<>();
-                                    if(responses != null && responses2 != null
-                                            && responses.size() == responses2.size()){
+                                    if (responses != null && responses2 != null
+                                            && responses.size() == responses2.size()) {
                                         int size = responses.size();
-                                        for(int i=0;i<size;i++){
+                                        for (int i = 0; i < size; i++) {
                                             Response<GetKeyword> h1 = responses.get(i);
                                             Response<HadesV1Model> h2 = responses2.get(i);
-                                            if(h2.isSuccessful()&&h2.errorBody()==null) {
+                                            if (h2.isSuccessful() && h2.errorBody() == null) {
                                                 keywordModel.getKeywords.add(h1.body());
                                                 keywordModel.hadesv1Models.add(h2.body());
                                                 hadesV1Models.add(h2.body());
                                                 indexToRemoved.add(i);
                                             }
                                         }
-                                    }else{
+                                    } else {
                                         keywordModel.getKeywords = new ArrayList<>();
                                         for (Response<GetKeyword> response : responses) {
-                                            if(response.isSuccessful()) {
+                                            if (response.isSuccessful()) {
                                                 keywordModel.getKeywords.add(response.body());
                                             }
                                         }
@@ -317,32 +316,22 @@ public class GMStatNetworkController extends BaseNetworkController {
                                     return keywordModel;
                                 }
                             });
-                        }else{
+                        } else {
                             throw new RuntimeException("fai    led");
                         }
                     }
                 });
     }
 
-    public Observable<Response<GetKeyword>> getKeyword(long shopId, long catId){
+    public Observable<Response<GetKeyword>> getKeyword(long shopId, long catId) {
         Map<String, String> param = new HashMap<>();
-        param.put("shop_id", shopId+"");
-        param.put("cat_id", catId+"");
+        param.put("shop_id", shopId + "");
+        param.put("cat_id", catId + "");
 
         return gmstatApi.getKeyword(param);
     }
 
-
-    public static class KeywordModel{
-        public List<GetKeyword> getKeywords;
-        public GetShopCategory getShopCategory;
-
-        public Response<GetShopCategory> getShopCategoryResponse;
-        public List<Response<GetKeyword>> getResponseList;
-        public List<HadesV1Model> hadesv1Models;
-    }
-
-    public void fetchDataEmptyState(final GetGMStat getGMStat, AssetManager assetManager){
+    public void fetchDataEmptyState(final GetGMStat getGMStat, AssetManager assetManager) {
 
         GetProductGraph body = gson.fromJson(readJson("get_product_graph_empty_state.json", assetManager), GetProductGraph.class);
         getGMStat.onSuccessProductnGraph(body);
@@ -362,7 +351,7 @@ public class GMStatNetworkController extends BaseNetworkController {
         KeywordModel keywordModel = new KeywordModel();
         keywordModel.getShopCategory = gson.fromJson(readJson("shop_category_empty.json", assetManager), GetShopCategory.class);
 
-        if(keywordModel.getShopCategory == null || keywordModel.getShopCategory.getShopCategory() == null || keywordModel.getShopCategory.getShopCategory().isEmpty()) {
+        if (keywordModel.getShopCategory == null || keywordModel.getShopCategory.getShopCategory() == null || keywordModel.getShopCategory.getShopCategory().isEmpty()) {
             getGMStat.onSuccessGetShopCategory(keywordModel.getShopCategory);
             return;
         }
@@ -374,7 +363,7 @@ public class GMStatNetworkController extends BaseNetworkController {
         getGMStat.onSuccessGetKeyword(getKeywords);
     }
 
-    public void fetchData(final GetGMStat getGMStat, AssetManager assetManager){
+    public void fetchData(final GetGMStat getGMStat, AssetManager assetManager) {
 
         GetProductGraph body = gson.fromJson(readJson("product_graph.json", assetManager), GetProductGraph.class);
         getGMStat.onSuccessProductnGraph(body);
@@ -402,9 +391,9 @@ public class GMStatNetworkController extends BaseNetworkController {
         getGMStat.onSuccessGetKeyword(getKeywords);
     }
 
-    private String readJson(String fileName, AssetManager assetManager){
+    private String readJson(String fileName, AssetManager assetManager) {
         BufferedReader reader = null;
-        String total ="";
+        String total = "";
         try {
             reader = new BufferedReader(
                     new InputStreamReader(assetManager.open(fileName), "UTF-8"));
@@ -431,7 +420,7 @@ public class GMStatNetworkController extends BaseNetworkController {
     }
 
     @SuppressWarnings("unchecked")
-    public void fetchData(long shopId, long sDate, long eDate, CompositeSubscription compositeSubscription, final GetGMStat getGMStat){
+    public void fetchData(long shopId, long sDate, long eDate, CompositeSubscription compositeSubscription, final GetGMStat getGMStat) {
         compositeSubscription.add(
                 Observable.concat(
                         getProductGraph(shopId, sDate, eDate).onErrorResumeNext(
@@ -479,8 +468,8 @@ public class GMStatNetworkController extends BaseNetworkController {
 
                                     @Override
                                     public void onError(Throwable e) {
-                                        if(BuildConfig.DEBUG){
-                                            Log.e(TAG, "error : "+e);
+                                        if (BuildConfig.DEBUG) {
+                                            Log.e(TAG, "error : " + e);
                                         }
                                         getGMStat.onError(e);
                                     }
@@ -517,10 +506,10 @@ public class GMStatNetworkController extends BaseNetworkController {
 
                                         Response<GetBuyerData> response =
                                                 (Response<GetBuyerData>) responses.get(3);
-                                        if(response.isSuccessful()){
+                                        if (response.isSuccessful()) {
                                             GetBuyerData body = response.body();
                                             getGMStat.onSuccessBuyerData(body);
-                                        }else{
+                                        } else {
                                             onResponseError(response.code(), getGMStat);
                                         }
 
@@ -528,7 +517,7 @@ public class GMStatNetworkController extends BaseNetworkController {
                                         GetShopCategory getShopCategory = keywordModel.getShopCategory;
                                         getGMStat.onSuccessGetShopCategory(getShopCategory);
 
-                                        if(getShopCategory == null || getShopCategory.getShopCategory() == null || getShopCategory.getShopCategory().isEmpty())
+                                        if (getShopCategory == null || getShopCategory.getShopCategory() == null || getShopCategory.getShopCategory().isEmpty())
                                             return;
 
                                         List<GetKeyword> getKeywords = keywordModel.getKeywords;
@@ -542,7 +531,7 @@ public class GMStatNetworkController extends BaseNetworkController {
     }
 
     @SuppressWarnings("unchecked")
-    public void fetchData(long shopId, CompositeSubscription compositeSubscription, final GetGMStat getGMStat ){
+    public void fetchData(long shopId, CompositeSubscription compositeSubscription, final GetGMStat getGMStat) {
         compositeSubscription.add(
                 Observable.concat(
                         getProductGraph(shopId).onErrorResumeNext(
@@ -590,8 +579,8 @@ public class GMStatNetworkController extends BaseNetworkController {
 
                                     @Override
                                     public void onError(Throwable e) {
-                                        if(BuildConfig.DEBUG){
-                                            Log.e(TAG, "error : "+e);
+                                        if (BuildConfig.DEBUG) {
+                                            Log.e(TAG, "error : " + e);
                                         }
                                         getGMStat.onError(e);
                                     }
@@ -628,10 +617,10 @@ public class GMStatNetworkController extends BaseNetworkController {
 
                                         Response<GetBuyerData> response =
                                                 (Response<GetBuyerData>) responses.get(3);
-                                        if(response.isSuccessful()){
+                                        if (response.isSuccessful()) {
                                             GetBuyerData body = response.body();
                                             getGMStat.onSuccessBuyerData(body);
-                                        }else{
+                                        } else {
                                             onResponseError(response.code(), getGMStat);
                                         }
 
@@ -639,7 +628,7 @@ public class GMStatNetworkController extends BaseNetworkController {
                                         GetShopCategory getShopCategory = keywordModel.getShopCategory;
                                         getGMStat.onSuccessGetShopCategory(getShopCategory);
 
-                                        if(getShopCategory == null || getShopCategory.getShopCategory() == null || getShopCategory.getShopCategory().isEmpty())
+                                        if (getShopCategory == null || getShopCategory.getShopCategory() == null || getShopCategory.getShopCategory().isEmpty())
                                             return;
 
                                         List<GetKeyword> getKeywords = keywordModel.getKeywords;
@@ -653,9 +642,9 @@ public class GMStatNetworkController extends BaseNetworkController {
 
     }
 
-    public void getProductGraph(long shopId, CompositeSubscription compositeSubscription, final GetGMStat getGMStat){
+    public void getProductGraph(long shopId, CompositeSubscription compositeSubscription, final GetGMStat getGMStat) {
         compositeSubscription.add(
-                getProductGraph(shopId) .subscribeOn(Schedulers.io())
+                getProductGraph(shopId).subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())
                         .subscribe(
@@ -684,9 +673,9 @@ public class GMStatNetworkController extends BaseNetworkController {
         );
     }
 
-    public void getTransactionGraph(long shopId, CompositeSubscription compositeSubscription, final GetGMStat getGMStat){
+    public void getTransactionGraph(long shopId, CompositeSubscription compositeSubscription, final GetGMStat getGMStat) {
         compositeSubscription.add(
-                getTransactionGraph(shopId) .subscribeOn(Schedulers.io())
+                getTransactionGraph(shopId).subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())
                         .subscribe(
@@ -715,43 +704,59 @@ public class GMStatNetworkController extends BaseNetworkController {
         );
     }
 
-    public interface GetGMStat extends CommonListener {
-        void onSuccessGetShopCategory(GetShopCategory getShopCategory);
-        void onSuccessTransactionGraph(GetTransactionGraph getTransactionGraph);
-        void onSuccessProductnGraph(GetProductGraph getTransactionGraph);
-        void onSuccessPopularProduct(GetPopularProduct getPopularProduct);
-        void onSuccessBuyerData(GetBuyerData getBuyerData);
-        void onSuccessGetKeyword(List<GetKeyword> getKeywords);
-        void onSuccessGetCategory(List<HadesV1Model> hadesV1Models);
-        void onComplete();
-    }
-
     public Map<String, String> getGMStatParam(
             long shopId, long sDate, long eDate
-    ){
+    ) {
         Map<String, String> param = new HashMap<>();
 
-        if(shopId <= 0)
-            throw new RuntimeException("Shop Id cannot be nulled for "+TAG);
+        if (shopId <= 0)
+            throw new RuntimeException("Shop Id cannot be nulled for " + TAG);
 
         param.put("shop_id", Long.toString(shopId));
 
-        if(sDate != DEFAULT_SDATE){
+        if (sDate != DEFAULT_SDATE) {
             param.put("sDate", getFormattedDate(sDate));
         }
 
-        if(eDate != DEFAULT_EDATE){
+        if (eDate != DEFAULT_EDATE) {
             param.put("eDate", getFormattedDate(eDate));
         }
 
-        param.put("timestamp", System.currentTimeMillis()+"");
+        param.put("timestamp", System.currentTimeMillis() + "");
 
         return param;
     }
 
-    public String getFormattedDate(long dateLong){
+    public String getFormattedDate(long dateLong) {
         Date date = new Date(dateLong);
         DateFormat formatter = new SimpleDateFormat("yyyyMMdd", locale);// "HH:mm:ss:SSS"
         return formatter.format(date);
+    }
+
+    public interface GetGMStat extends CommonListener {
+        void onSuccessGetShopCategory(GetShopCategory getShopCategory);
+
+        void onSuccessTransactionGraph(GetTransactionGraph getTransactionGraph);
+
+        void onSuccessProductnGraph(GetProductGraph getTransactionGraph);
+
+        void onSuccessPopularProduct(GetPopularProduct getPopularProduct);
+
+        void onSuccessBuyerData(GetBuyerData getBuyerData);
+
+        void onSuccessGetKeyword(List<GetKeyword> getKeywords);
+
+        void onSuccessGetCategory(List<HadesV1Model> hadesV1Models);
+
+        void onComplete();
+    }
+
+    public static class KeywordModel {
+        public List<GetKeyword> getKeywords;
+        public GetShopCategory getShopCategory;
+
+        public Response<GetShopCategory> getShopCategoryResponse;
+        public List<Response<GetKeyword>> getResponseList;
+        public List<HadesV1Model> hadesv1Models;
     }
 }

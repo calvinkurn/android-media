@@ -28,6 +28,8 @@ import android.view.animation.LinearInterpolator;
 
 public class LoaderController {
 
+    private final static int MAX_COLOR_CONSTANT_VALUE = 255;
+    private final static int ANIMATION_CYCLE_DURATION = 750; //milis
     private LoaderView loaderView;
     private Paint rectPaint;
     private LinearGradient linearGradient;
@@ -37,9 +39,6 @@ public class LoaderController {
     private float heightWeight = LoaderConstant.MAX_WEIGHT;
     private boolean useGradient = LoaderConstant.USE_GRADIENT_DEFAULT;
     private int gravity = LoaderConstant.DEFAULT_GRAVITY;
-
-    private final static int MAX_COLOR_CONSTANT_VALUE = 255;
-    private final static int ANIMATION_CYCLE_DURATION = 750; //milis
 
     public LoaderController(LoaderView view) {
         loaderView = view;
@@ -53,17 +52,17 @@ public class LoaderController {
     }
 
     public void onDraw(Canvas canvas) {
-        float margin_height = canvas.getHeight() * (1-heightWeight)/2;
-        rectPaint.setAlpha((int)(progress * MAX_COLOR_CONSTANT_VALUE));
+        float margin_height = canvas.getHeight() * (1 - heightWeight) / 2;
+        rectPaint.setAlpha((int) (progress * MAX_COLOR_CONSTANT_VALUE));
         if (useGradient) {
             prepareGradient(canvas.getWidth() * widthWeight);
         }
-        if(gravity == Gravity.RIGHT){
+        if (gravity == Gravity.RIGHT) {
             canvas.drawRect(canvas.getWidth() - (canvas.getWidth() * widthWeight),
                     margin_height,
-                    canvas.getWidth() ,
+                    canvas.getWidth(),
                     canvas.getHeight() - margin_height, rectPaint);
-        }else {
+        } else {
             canvas.drawRect(0, margin_height,
                     canvas.getWidth() * widthWeight,
                     canvas.getHeight() - margin_height, rectPaint);

@@ -11,27 +11,19 @@ import com.tokopedia.seller.gmstat.library.LoaderTextView;
  */
 
 public class PopularProductLoading {
-    LoaderTextView popularProductDescription;
+    private LoaderTextView popularProductDescription;
 
-    LoaderTextView textPopularProduct;
+    private LoaderTextView textPopularProduct;
 
-    LoaderImageView imagePopularProduct;
+    private LoaderImageView imagePopularProduct;
 
-    LoaderTextView dataProductTitle;
+    private LoaderTextView dataProductTitle;
 
-    LoaderImageView dataProductIcon;
+    private LoaderImageView dataProductIcon;
 
-    View parentView;
+    private View parentView;
 
-    void initView(View itemView){
-        popularProductDescription = (LoaderTextView) itemView.findViewById(R.id.popular_product_description_loading);
-        textPopularProduct = (LoaderTextView) itemView.findViewById(R.id.text_popular_product_loading);
-        imagePopularProduct = (LoaderImageView) itemView.findViewById(R.id.image_popular_product_loading);
-        dataProductTitle = (LoaderTextView) itemView.findViewById(R.id.data_product_title_loading);
-        dataProductIcon = (LoaderImageView) itemView.findViewById(R.id.data_product_icon_loading);
-    }
-
-    public PopularProductLoading(View itemView){
+    public PopularProductLoading(View itemView) {
         initView(itemView);
 
         parentView = itemView.findViewById(R.id.popular_product_loading);
@@ -43,11 +35,19 @@ public class PopularProductLoading {
         dataProductIcon.resetLoader();
     }
 
+    private void initView(View itemView) {
+        popularProductDescription = (LoaderTextView) itemView.findViewById(R.id.popular_product_description_loading);
+        textPopularProduct = (LoaderTextView) itemView.findViewById(R.id.text_popular_product_loading);
+        imagePopularProduct = (LoaderImageView) itemView.findViewById(R.id.image_popular_product_loading);
+        dataProductTitle = (LoaderTextView) itemView.findViewById(R.id.data_product_title_loading);
+        dataProductIcon = (LoaderImageView) itemView.findViewById(R.id.data_product_icon_loading);
+    }
+
     public void displayLoading() {
         parentView.setVisibility(View.VISIBLE);
     }
 
-    public void hideLoading(){
+    public void hideLoading() {
         parentView.setVisibility(View.GONE);
     }
 }

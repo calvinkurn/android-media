@@ -16,8 +16,6 @@ import com.tokopedia.seller.gmstat.utils.KMNumbers;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import butterknife.ButterKnife;
-
 import static com.tokopedia.seller.gmstat.utils.GMStatConstant.LAST_THIRTY_DAYS_AGO_FORMAT;
 
 /**
@@ -25,46 +23,21 @@ import static com.tokopedia.seller.gmstat.utils.GMStatConstant.LAST_THIRTY_DAYS_
  */
 
 public class PopularProductViewHelper {
+    private static final Locale locale = new Locale("in", "ID");
     private final View itemView;
-
-    ImageView dataProductIcon;
-
-    TextView dataProductTitle;
-
-    ImageView imagePopularProduct;
-
-    TextView textPopularProduct;
-
-    TextView popularProductDescription;
-
-    TextView numberOfSelling;
-
-    TextView xSold;
+    private TextView dataProductTitle;
+    private ImageView imagePopularProduct;
+    private TextView textPopularProduct;
+    private TextView popularProductDescription;
+    private TextView numberOfSelling;
+    private TextView xSold;
     private GetPopularProduct getPopularProduct;
-
-    TextView footerPopularProduct;
-
-    LinearLayout popularProductEmptyState;
-
-    View separator2;
-
+    private TextView footerPopularProduct;
+    private LinearLayout popularProductEmptyState;
+    private View separator2;
     private String lastThirtyDaysAgo;
 
-    private static final Locale locale = new Locale("in", "ID");
-
-    public void moveToAddProduct(){
-        ProductActivity.moveToAddProduct(itemView.getContext());
-    }
-
-    public void gotoProductDetail(){
-        if(getPopularProduct == null)
-            return;
-
-        itemView.getContext().startActivity(ProductInfoActivity.createInstance(
-                itemView.getContext(), getPopularProduct.getProductId()+""));
-    }
-
-    public PopularProductViewHelper(View itemView){
+    public PopularProductViewHelper(View itemView) {
         initView(itemView);
         this.itemView = itemView;
 
@@ -72,26 +45,48 @@ public class PopularProductViewHelper {
         footerPopularProduct.setText(MethodChecker.fromHtml(categoryBold));
     }
 
+    public static String getFormattedString(long value) {
+        String text = "";
+        if (value < 1_000_000) {
+            NumberFormat currencyFormatter = NumberFormat.getNumberInstance(locale);
+            text = currencyFormatter.format(value);
+        } else if (value >= 1_000_000) {
+            text = KMNumbers.formatNumbers(value);
+        }
+        return text;
+    }
+
+    public void moveToAddProduct() {
+        ProductActivity.moveToAddProduct(itemView.getContext());
+    }
+
+    public void gotoProductDetail() {
+        if (getPopularProduct == null)
+            return;
+
+        itemView.getContext().startActivity(ProductInfoActivity.createInstance(
+                itemView.getContext(), getPopularProduct.getProductId() + ""));
+    }
+
     private void initView(View itemView) {
-        dataProductIcon= (ImageView) itemView.findViewById(R.id.data_product_icon);
 
-        dataProductTitle= (TextView) itemView.findViewById(R.id.data_product_title);
+        dataProductTitle = (TextView) itemView.findViewById(R.id.data_product_title);
 
-        imagePopularProduct= (ImageView) itemView.findViewById(R.id.image_popular_product);
+        imagePopularProduct = (ImageView) itemView.findViewById(R.id.image_popular_product);
 
-        textPopularProduct= (TextView) itemView.findViewById(R.id.text_popular_product);
+        textPopularProduct = (TextView) itemView.findViewById(R.id.text_popular_product);
 
-        popularProductDescription= (TextView) itemView.findViewById(R.id.popular_product_description);
+        popularProductDescription = (TextView) itemView.findViewById(R.id.popular_product_description);
 
-        numberOfSelling= (TextView) itemView.findViewById(R.id.number_of_selling);
+        numberOfSelling = (TextView) itemView.findViewById(R.id.number_of_selling);
 
-        xSold= (TextView) itemView.findViewById(R.id.x_sold);
+        xSold = (TextView) itemView.findViewById(R.id.x_sold);
 
-        footerPopularProduct= (TextView) itemView.findViewById(R.id.footer_popular_product);
+        footerPopularProduct = (TextView) itemView.findViewById(R.id.footer_popular_product);
 
-        popularProductEmptyState= (LinearLayout) itemView.findViewById(R.id.popular_product_empty_state);
+        popularProductEmptyState = (LinearLayout) itemView.findViewById(R.id.popular_product_empty_state);
 
-        separator2= itemView.findViewById(R.id.separator_2);
+        separator2 = itemView.findViewById(R.id.separator_2);
 
         itemView.findViewById(R.id.popular_product_empty_state)
                 .setOnClickListener(new View.OnClickListener() {
@@ -137,13 +132,13 @@ public class PopularProductViewHelper {
         lastThirtyDaysAgo = itemView.getContext().getString(R.string.last_thirty_days_ago);
     }
 
-    public void bindData(GetPopularProduct getPopularProduct, ImageHandler imageHandler){
+    public void bindData(GetPopularProduct getPopularProduct, ImageHandler imageHandler) {
         this.getPopularProduct = getPopularProduct;
-        if(getPopularProduct == null || getPopularProduct.getProductId() == 0){
+        if (getPopularProduct == null || getPopularProduct.getProductId() == 0) {
             popularProductEmptyState.setVisibility(View.VISIBLE);
             separator2.setVisibility(View.GONE);
             return;
-        }else{
+        } else {
             popularProductEmptyState.setVisibility(View.GONE);
             separator2.setVisibility(View.VISIBLE);
         }
@@ -156,16 +151,5 @@ public class PopularProductViewHelper {
         String text = getFormattedString(sold);
         numberOfSelling.setText(text);
         xSold.setText(R.string.number_of_selled);
-    }
-
-    public static String getFormattedString(long value) {
-        String text = "";
-        if( value < 1_000_000){
-            NumberFormat currencyFormatter = NumberFormat.getNumberInstance(locale);
-            text = currencyFormatter.format(value);
-        }else if(value >= 1_000_000){
-            text = KMNumbers.formatNumbers(value);
-        }
-        return text;
     }
 }
