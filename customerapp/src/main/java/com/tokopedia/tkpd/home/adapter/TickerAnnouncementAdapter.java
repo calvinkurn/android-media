@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.network.entity.home.Ticker;
@@ -46,7 +47,7 @@ public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnoun
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.announcement_ticker_container)
-        LinearLayout announcementContainer;
+        RelativeLayout announcementContainer;
 
         @BindView(R.id.ticker_title)
         TextView title;
