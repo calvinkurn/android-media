@@ -148,6 +148,10 @@ dependencies {
     compile rootProject.ext.miscDependencies.rxJava
     compile rootProject.ext.miscDependencies.rxJavaMath
 
+    provided rootProject.ext.miscDependencies.javaxAnnotation
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
 }
 
 apply plugin: 'com.google.gms.google-services'
