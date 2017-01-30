@@ -57,7 +57,7 @@ public class TkpdWebView extends WebView {
                 + "&" + app_version;
 
         try {
-            if (Uri.parse(uri).getQuery().isEmpty()) {
+            if (Uri.parse(uri).getQuery() == null) {
                 url += "?" + URLEncoder.encode(flags, "UTF-8");
             } else {
                 flags = "&" + flags;
