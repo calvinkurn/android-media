@@ -10,7 +10,6 @@ import android.text.style.URLSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,6 +28,9 @@ public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnoun
 
     private Ticker.Tickers[] tickers;
     Context context;
+
+    public static final int TICKER_WARNING = 1;
+    public static final int TICKER_ANNOUNCEMENT = 2;
 
     public static TickerAnnouncementAdapter createInstance(Context context) {
         return new TickerAnnouncementAdapter(context);
@@ -64,8 +66,13 @@ public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnoun
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View parentView = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_ticker_announcement, parent, false);
-        return new ViewHolder(parentView);
+        switch (viewType) {
+            case TICKER_WARNING: return new ViewHolder(
+                    LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_ticker_warning, parent, false));
+            default:
+            case TICKER_ANNOUNCEMENT: return new ViewHolder(
+                    LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_ticker_announcement, parent, false));
+        }
     }
 
     @Override
@@ -99,5 +106,11 @@ public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnoun
     @Override
     public int getItemCount() {
         return tickers.length;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return tickers[position].getTickerType().isEmpty()? TICKER_ANNOUNCEMENT:
+                Integer.parseInt(tickers[position].getTickerType());
     }
 }

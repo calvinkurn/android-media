@@ -79,10 +79,6 @@ public class Ticker {
         @Expose
         String createdOn;
 
-        @SerializedName("state")
-        @Expose
-        String state;
-
         @SerializedName("expire_time")
         @Expose
         String expireTime;
@@ -115,6 +111,18 @@ public class Ticker {
         @Expose
         String updatedBy;
 
+        @SerializedName("ticker_type")
+        @Expose
+        String ticker_type;
+
+        @SerializedName("color")
+        @Expose
+        String color;
+
+        @SerializedName("status")
+        @Expose
+        String status;
+
         public String getRedirectUrl() {
             return redirectUrl;
         }
@@ -137,14 +145,6 @@ public class Ticker {
 
         public void setCreatedOn(String createdOn) {
             this.createdOn = createdOn;
-        }
-
-        public String getState() {
-            return state;
-        }
-
-        public void setState(String state) {
-            this.state = state;
         }
 
         public String getExpireTime() {
@@ -211,13 +211,36 @@ public class Ticker {
             this.updatedBy = updatedBy;
         }
 
+        public String getTickerType() {
+            return ticker_type;
+        }
+
+        public void setTickerType(String ticker_type) {
+            this.ticker_type = ticker_type;
+        }
+
+        public String getColor() {
+            return color;
+        }
+
+        public void setColor(String color) {
+            this.color = color;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
         @Override
         public String toString() {
-            return "tickers{" +
+            return "Tickers{" +
                     "redirectUrl='" + redirectUrl + '\'' +
                     ", createdBy='" + createdBy + '\'' +
                     ", createdOn='" + createdOn + '\'' +
-                    ", state='" + state + '\'' +
                     ", expireTime='" + expireTime + '\'' +
                     ", id='" + id + '\'' +
                     ", message='" + message + '\'' +
@@ -226,6 +249,9 @@ public class Ticker {
                     ", device='" + device + '\'' +
                     ", updatedOn='" + updatedOn + '\'' +
                     ", updatedBy='" + updatedBy + '\'' +
+                    ", ticker_type='" + ticker_type + '\'' +
+                    ", color='" + color + '\'' +
+                    ", status='" + status + '\'' +
                     '}';
         }
     }
