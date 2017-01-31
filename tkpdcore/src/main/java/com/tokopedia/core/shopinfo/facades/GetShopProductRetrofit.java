@@ -100,7 +100,7 @@ public class GetShopProductRetrofit {
         params.put("keyword", param.getKeyword());
         params.put("etalase_id", param.getEtalaseId());
         params.put("order_by", param.getOrderBy());
-        params.put("perPage", "12");
+        params.put("per_page", "12");
         params.put("wholesale", "1");
         return params;
     }
