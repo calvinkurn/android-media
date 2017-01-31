@@ -17,19 +17,19 @@ import java.util.List;
  * Created by Nathaniel on 1/31/2017.
  */
 
-public class TopAdsFilterStatusFragment extends TopAdsFilterContentFragment {
+public class TopAdsFilterGroupNameFragment extends TopAdsFilterContentFragment {
 
     private TopAdsBasicRadioButtonAdapter adapter;
     private RecyclerView recyclerView;
 
     @Override
     public String getTitle(Context context) {
-        return context.getString(R.string.label_top_ads_status);
+        return context.getString(R.string.label_top_ads_promo_group);
     }
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_top_ads_filter_content_status;
+        return R.layout.fragment_top_ads_filter_content_group_name;
     }
 
     @Override
@@ -45,8 +45,8 @@ public class TopAdsFilterStatusFragment extends TopAdsFilterContentFragment {
 
     private List<RadioButtonItem> getStatusList() {
         List<RadioButtonItem> radioButtonItemList = new ArrayList<>();
-        String[] statusValueList = getResources().getStringArray(R.array.filter_status_list_values);
-        String[] statusNameList = getResources().getStringArray(R.array.filter_status_list_names);
+        String[] statusValueList = getResources().getStringArray(R.array.filter_group_name_list_values);
+        String[] statusNameList = getResources().getStringArray(R.array.filter_group_name_list_names);
         for (int i = 0; i < statusNameList.length; i++) {
             RadioButtonItem radioButtonItem = new RadioButtonItem();
             radioButtonItem.setName(statusNameList[i]);

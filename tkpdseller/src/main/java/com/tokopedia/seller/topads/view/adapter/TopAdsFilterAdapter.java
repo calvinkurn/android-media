@@ -1,9 +1,11 @@
 package com.tokopedia.seller.topads.view.adapter;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
@@ -19,10 +21,21 @@ import java.util.List;
 
 public class TopAdsFilterAdapter extends BaseLinearRecyclerViewAdapter {
 
+    public interface Callback {
+
+        void onItemSelected(int position);
+
+    }
+
     private static final int VIEW_DATA = 100;
 
     private List<FilterTitleItem> data;
-    private int checkedPosition;
+    private int selectedPosition;
+    private Callback callback;
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
 
     public void setData(List<FilterTitleItem> data) {
         this.data = data;
@@ -31,7 +44,7 @@ public class TopAdsFilterAdapter extends BaseLinearRecyclerViewAdapter {
 
     public TopAdsFilterAdapter() {
         data = new ArrayList<>();
-        checkedPosition = 0;
+        selectedPosition = 0;
     }
 
     @Override
@@ -73,32 +86,43 @@ public class TopAdsFilterAdapter extends BaseLinearRecyclerViewAdapter {
     private void bindProduct(final ViewHolder holder, int position) {
         FilterTitleItem filterTitleItem = data.get(position);
         holder.titleTextView.setText(filterTitleItem.getTitle());
+        holder.statusImageView.setVisibility(filterTitleItem.isActive() ? View.VISIBLE : View.INVISIBLE);
+        if (selectedPosition == position) {
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.white));
+        } else {
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), android.R.color.transparent));
+        }
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSelectItem(holder.getAdapterPosition());
-            }
-        });
-        holder.titleTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onSelectItem(holder.getAdapterPosition());
+                onItemSelected(holder.getAdapterPosition());
             }
         });
     }
 
-    private void onSelectItem(int position) {
-        checkedPosition = position;
+    private void onItemSelected(int position) {
+        selectedPosition = position;
+        notifyDataSetChanged();
+        if (callback != null) {
+            callback.onItemSelected(position);
+        }
+    }
+
+    public void selectItem(int position) {
+        selectedPosition = position;
         notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView titleTextView;
+        public ImageView statusImageView;
 
         public ViewHolder(View view) {
             super(view);
             titleTextView = (TextView) view.findViewById(R.id.text_view_title);
+            statusImageView = (ImageView) view.findViewById(R.id.image_view_status);
         }
     }
 }

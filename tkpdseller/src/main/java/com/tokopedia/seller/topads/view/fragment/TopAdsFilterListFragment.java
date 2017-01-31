@@ -19,14 +19,22 @@ import java.util.List;
  * Created by Nathaniel on 1/27/2017.
  */
 
-public class TopAdsFilterListFragment extends BasePresenterFragment {
+public class TopAdsFilterListFragment extends BasePresenterFragment implements TopAdsFilterAdapter.Callback {
+
+    public interface Callback {
+
+        void onItemSelected(int position);
+
+    }
 
     private static final String EXTRA_TITLE_ITEM_LIST = "EXTRA_TITLE_ITEM_LIST";
+    private static final String EXTRA_ITEM_SELECTED_POSITION = "EXTRA_ITEM_SELECTED_POSITION";
 
-    public static TopAdsFilterListFragment createInstance(ArrayList<FilterTitleItem> filterTitleItemList) {
+    public static TopAdsFilterListFragment createInstance(ArrayList<FilterTitleItem> filterTitleItemList, int selectedPosition) {
         TopAdsFilterListFragment fragment = new TopAdsFilterListFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(EXTRA_TITLE_ITEM_LIST, filterTitleItemList);
+        bundle.putInt(EXTRA_ITEM_SELECTED_POSITION, selectedPosition);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -34,6 +42,12 @@ public class TopAdsFilterListFragment extends BasePresenterFragment {
     private TopAdsFilterAdapter adapter;
     private RecyclerView recyclerView;
     private ArrayList<FilterTitleItem> filterTitleItemList;
+    private Callback callback;
+    private int selectedItem;
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
 
     @Override
     protected boolean isRetainInstance() {
@@ -73,6 +87,7 @@ public class TopAdsFilterListFragment extends BasePresenterFragment {
     @Override
     protected void setupArguments(Bundle bundle) {
         filterTitleItemList = bundle.getParcelableArrayList(EXTRA_TITLE_ITEM_LIST);
+        selectedItem = bundle.getInt(EXTRA_ITEM_SELECTED_POSITION);
     }
 
     @Override
@@ -87,6 +102,8 @@ public class TopAdsFilterListFragment extends BasePresenterFragment {
         adapter = new TopAdsFilterAdapter();
         recyclerView.setAdapter(adapter);
         adapter.setData(filterTitleItemList);
+        adapter.setCallback(this);
+        adapter.selectItem(selectedItem);
     }
 
     @Override
@@ -102,5 +119,18 @@ public class TopAdsFilterListFragment extends BasePresenterFragment {
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public void onItemSelected(int position) {
+        if (callback != null) {
+            callback.onItemSelected(position);
+        }
+    }
+
+    public void selectItem(int position) {
+        if (isAdded()) {
+            adapter.selectItem(position);
+        }
     }
 }

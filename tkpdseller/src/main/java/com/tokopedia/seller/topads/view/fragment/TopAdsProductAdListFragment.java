@@ -11,6 +11,9 @@ import com.tokopedia.seller.topads.model.data.ProductAd;
 import com.tokopedia.seller.topads.presenter.TopAdsProductAdListPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsProductAdListPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailProductActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsFilterGroupActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsFilterProductActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 /**
@@ -65,6 +68,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
 
     @Override
     protected void goToFilter() {
-
+        Intent intent = new Intent(getActivity(), TopAdsFilterProductActivity.class);
+        startActivityForResult(intent, 0);
     }
 }
