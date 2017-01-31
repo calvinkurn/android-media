@@ -82,7 +82,7 @@ ext {
     ]
 
     deeplinkDispatchDependencies = [
-            deeplinkDispatch: "com.airbnb:deeplinkdispatch:${deeplinkDispatchVersion}",
+            deeplinkDispatch : "com.airbnb:deeplinkdispatch:${deeplinkDispatchVersion}",
             deeplinkDispatchProcessor : "com.airbnb:deeplinkdispatch-processor:${deeplinkDispatchVersion}"
     ]
 
