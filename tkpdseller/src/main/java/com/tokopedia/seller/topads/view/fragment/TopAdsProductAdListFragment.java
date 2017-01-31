@@ -62,4 +62,9 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
             startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
         }
     }
+
+    @Override
+    protected void goToFilter() {
+
+    }
 }

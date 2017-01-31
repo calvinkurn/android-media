@@ -10,6 +10,7 @@ import com.tokopedia.seller.topads.model.data.GroupAd;
 import com.tokopedia.seller.topads.presenter.TopAdsGroupAdListPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsGroupAdListPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailGroupActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsFilterGroupActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
@@ -59,11 +60,17 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
 
     @Override
     public void onClicked(Ad ad) {
-        if(ad instanceof GroupAd){
+        if (ad instanceof GroupAd) {
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD, (GroupAd) ad);
             startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
         }
+    }
+
+    @Override
+    protected void goToFilter() {
+        Intent intent = new Intent(getActivity(), TopAdsFilterGroupActivity.class);
+        startActivityForResult(intent, 0);
     }
 
     @Override

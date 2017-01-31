@@ -4,6 +4,7 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -46,6 +47,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
     View mainView;
+    protected FloatingActionButton fabFilter;
 
     protected String keyword;
     protected int status;
@@ -62,6 +64,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     protected abstract void searchAd();
 
     protected abstract TopAdsEmptyAdDataBinder getEmptyViewBinder();
+
+    protected abstract void goToFilter();
 
     public TopAdsAdListFragment() {
         // Required empty public constructor
@@ -82,9 +86,16 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         super.initView(view);
         recyclerView = (RecyclerView) view.findViewById(R.id.list_product);
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+        fabFilter = (FloatingActionButton) view.findViewById(R.id.fab_filter);
         mainView = view.findViewById(R.id.mainView);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+        fabFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToFilter();
+            }
+        });
     }
 
     @Override

@@ -1,0 +1,17 @@
+<resources>
+    <!-- untuk tanggal gmstat -->
+    <string-array name="filter_status_list_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <!-- untuk tanggal gmstat -->
+    <string-array name="filter_status_list">
+        <item>@string/label_top_ads_all_active</item>
+        <item>@string/label_top_ads_active</item>
+        <item>@string/label_top_ads_not_sent</item>
+        <item>@string/label_top_ads_not_active</item>
+    </string-array>
+</resources>
