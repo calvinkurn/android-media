@@ -2,14 +2,20 @@ package com.tokopedia.session.register.interactor;
 
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.session.register.RegisterConstant;
+import com.tokopedia.session.session.intentservice.RegisterService;
 
 import org.json.JSONObject;
 
 import retrofit2.Response;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by nisie on 1/27/17.
@@ -52,6 +58,11 @@ public class RegisterNetworkInteractorImpl implements RegisterNetworkInteractor,
                         }
                     }
                 });
+    }
+
+    @Override
+    public Observable<Response<TkpdResponse>> finishRegister(TKPDMapParam<String, String> param) {
+        return accountsService.getApi().doRegister(param);
     }
 
     private Observable<Integer> goToRegister(Response<TkpdResponse> tkpdResponse) {

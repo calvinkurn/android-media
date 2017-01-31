@@ -37,10 +37,10 @@ import com.tokopedia.session.R;
 import com.tokopedia.session.register.activity.RegisterActivity;
 import com.tokopedia.session.register.adapter.AutoCompleteTextAdapter;
 import com.tokopedia.session.register.interactor.RegisterNetworkInteractorImpl;
+import com.tokopedia.session.register.model.RegisterStep1ViewModel;
 import com.tokopedia.session.register.presenter.RegisterStep1Presenter;
 import com.tokopedia.session.register.presenter.RegisterStep1PresenterImpl;
 import com.tokopedia.session.register.viewlistener.RegisterStep1ViewListener;
-import com.tokopedia.session.session.fragment.RegisterInitialFragment;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -56,8 +56,6 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 import rx.subscriptions.CompositeSubscription;
-
-import static com.tokopedia.session.register.RegisterConstant.BUNDLE_NAME;
 
 /**
  * Created by nisie on 1/27/17.
@@ -412,10 +410,28 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
     @Override
     public void goToRegisterStep2() {
         dismissLoadingProgress();
-        Bundle bundle = new Bundle();
-        bundle.putString(BUNDLE_NAME, name.getText().toString());
+        RegisterStep1ViewModel pass = new RegisterStep1ViewModel();
+        pass.setName(name.getText().toString());
+        pass.setPassword(registerPassword.getText().toString());
+        pass.setEmail(email.getText().toString());
+        pass.setAutoVerify(isEmailAddressFromDevice());
         if (getActivity() instanceof RegisterActivity)
-            ((RegisterActivity) getActivity()).goToStep2(bundle);
+            ((RegisterActivity) getActivity()).goToStep2(pass);
+    }
+
+    private boolean isEmailAddressFromDevice() {
+        List<String> list = getEmailListOfAccountsUserHasLoggedInto();
+        boolean result = false;
+        if (list.size() > 0) {
+            A:
+            for (String e : list) {
+                if (e.equals(email.getText().toString())) {
+                    result = true;
+                    break A;
+                }
+            }
+        }
+        return result;
     }
 
     @Override

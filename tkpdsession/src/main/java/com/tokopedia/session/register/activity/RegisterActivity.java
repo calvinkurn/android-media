@@ -11,6 +11,7 @@ import com.tokopedia.core.manage.shop.notes.fragment.ManageShopNotesFragment;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.fragment.RegisterStep1Fragment;
 import com.tokopedia.session.register.fragment.RegisterStep2Fragment;
+import com.tokopedia.session.register.model.RegisterStep1ViewModel;
 
 /**
  * Created by nisie on 1/27/17.
@@ -79,8 +80,8 @@ public class RegisterActivity extends BasePresenterActivity {
         return AppScreen.SCREEN_REGISTER;
     }
 
-    public void goToStep2(Bundle bundle) {
-        RegisterStep2Fragment fragment = RegisterStep2Fragment.createInstance(bundle);
+    public void goToStep2(RegisterStep1ViewModel model) {
+        RegisterStep2Fragment fragment = RegisterStep2Fragment.createInstance(model);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
