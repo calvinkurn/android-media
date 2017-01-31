@@ -65,6 +65,11 @@ public class RegisterNetworkInteractorImpl implements RegisterNetworkInteractor,
         return accountsService.getApi().doRegister(param);
     }
 
+    @Override
+    public Observable<Response<TkpdResponse>> resendActivation(TKPDMapParam<String, String> param) {
+        return accountsService.getApi().resentActivation(param);
+    }
+
     private Observable<Integer> goToRegister(Response<TkpdResponse> tkpdResponse) {
         int action = GO_TO_REGISTER;
         return Observable.just(action);

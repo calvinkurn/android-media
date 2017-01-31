@@ -9,6 +9,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.manage.shop.notes.fragment.ManageShopNotesFragment;
 import com.tokopedia.session.R;
+import com.tokopedia.session.register.fragment.RegisterActivationFragment;
 import com.tokopedia.session.register.fragment.RegisterStep1Fragment;
 import com.tokopedia.session.register.fragment.RegisterStep2Fragment;
 import com.tokopedia.session.register.model.RegisterStep1ViewModel;
@@ -81,7 +82,21 @@ public class RegisterActivity extends BasePresenterActivity {
     }
 
     public void goToStep2(RegisterStep1ViewModel model) {
-        RegisterStep2Fragment fragment = RegisterStep2Fragment.createInstance(model);
+
+        RegisterActivationFragment fragment = RegisterActivationFragment.createInstance(model.getEmail(), model.getName());
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.commit();
+
+//        RegisterStep2Fragment fragment = RegisterStep2Fragment.createInstance(model);
+//        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+//        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+//        fragmentTransaction.commit();
+    }
+
+    public void goToSendActivation(String email, String name) {
+        RegisterActivationFragment fragment = RegisterActivationFragment.createInstance(email, name);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());

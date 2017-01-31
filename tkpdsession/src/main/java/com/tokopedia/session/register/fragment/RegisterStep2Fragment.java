@@ -22,14 +22,21 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.widget.MaterialSpinner;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.session.model.LoginViewModel;
+import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.util.AppEventTracking;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.RegisterConstant;
+import com.tokopedia.session.register.activity.RegisterActivity;
 import com.tokopedia.session.register.interactor.RegisterNetworkInteractorImpl;
 import com.tokopedia.session.register.model.RegisterStep1ViewModel;
 import com.tokopedia.session.register.model.RegisterViewModel;
@@ -38,11 +45,16 @@ import com.tokopedia.session.register.presenter.RegisterStep2Presenter;
 import com.tokopedia.session.register.presenter.RegisterStep2PresenterImpl;
 import com.tokopedia.session.register.util.RegisterUtil;
 import com.tokopedia.session.register.viewlistener.RegisterStep2ViewListener;
+import com.tokopedia.session.session.model.LoginModel;
+import com.tokopedia.session.session.model.RegisterSuccessModel;
+import com.tokopedia.session.session.presenter.LoginImpl;
 import com.tokopedia.session.session.presenter.RegisterNewImpl;
 import com.tokopedia.session.session.presenter.RegisterNewNext;
 import com.tokopedia.session.session.presenter.RegisterNewNextView;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import rx.subscriptions.CompositeSubscription;
@@ -396,10 +408,32 @@ public class RegisterStep2Fragment extends BasePresenterFragment<RegisterStep2Pr
     public void onSuccessRegister(RegisterResult registerResult) {
         finishLoadingProgress();
 
-        NetworkErrorHelper.showSnackbar(getActivity(), "Success Register");
+        if (registerResult.getIsActive() == RegisterResult.USER_INACTIVE) {
+            sendLocalyticsRegisterEvent(registerResult.getUserId());
+            sendGTMRegisterEvent();
 
-        //Go to login
+            ((RegisterActivity) getActivity()).goToSendActivation(
+                    presenter.getViewModel().getRegisterStep1ViewModel().getEmail(),
+                    presenter.getViewModel().getRegisterStep1ViewModel().getName());
+        } else {
+            onErrorRegister(getString(R.string.alert_email_address_is_already_registered));
+        }
 
+    }
+
+    private void sendLocalyticsRegisterEvent(int userId) {
+        Map<String, String> attributesLogin = new HashMap<String, String>();
+        CustomerWrapper customerLogin = new CustomerWrapper();
+        customerLogin.setCustomerId(Integer.toString(userId));
+        customerLogin.setFullName(presenter.getViewModel().getRegisterStep1ViewModel().getName());
+        customerLogin.setEmailAddress(presenter.getViewModel().getRegisterStep1ViewModel().getEmail());
+        customerLogin.setExtraAttr(attributesLogin);
+        customerLogin.setMethod(getString(com.tokopedia.core.R.string.title_email));
+        UnifyTracking.eventLoginLoca(customerLogin);
+    }
+
+    private void sendGTMRegisterEvent() {
+        UnifyTracking.eventRegisterSuccess(getString(com.tokopedia.core.R.string.title_email));
     }
 
     @Override

@@ -18,4 +18,7 @@ public interface RegisterNetworkInteractor {
     Observable<Integer>  smartRegister(TKPDMapParam<String, String> param);
 
     Observable<Response<TkpdResponse>>  finishRegister(TKPDMapParam<String, String> param);
+
+    Observable<Response<TkpdResponse>>  resendActivation(TKPDMapParam<String, String> param);
+
 }
