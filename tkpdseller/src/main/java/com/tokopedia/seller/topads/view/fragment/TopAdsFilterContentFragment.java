@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
@@ -12,7 +13,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 
 public abstract class TopAdsFilterContentFragment extends BasePresenterFragment {
 
-    public abstract String getTitle();
+    public abstract String getTitle(Context context);
 
     @Override
     protected boolean isRetainInstance() {

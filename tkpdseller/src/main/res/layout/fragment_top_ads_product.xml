@@ -32,6 +32,7 @@
                 app:content_color="@color/tkpd_main_green"
                 app:title="@string/label_top_ads_groups"/>
 
+            <include layout="@layout/include_separator_horizontal"/>
 
             <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
                 android:id="@+id/label_view_item_summary"
@@ -42,13 +43,6 @@
                 app:content_color="@color/tkpd_main_green"
                 app:title="@string/label_top_ads_items"/>
 
-            <!-- blank space for FAB -->
-            <LinearLayout
-                android:id="@+id/top_ads_blank_space"
-                android:layout_width="match_parent"
-                android:layout_height="45.75dp"
-                android:background="@android:color/transparent"
-                android:orientation="horizontal"/>
         </LinearLayout>
     </ScrollView>
 </com.tokopedia.core.customwidget.SwipeToRefresh>

@@ -12,8 +12,6 @@ import java.util.List;
 
 public class TopAdsFilterGroupActivity extends TopAdsFilterActivity {
 
-    public static final String FILTER_CONTENT_LIST = "FILTER_CONTENT_LIST";
-
     @Override
     protected List<TopAdsFilterContentFragment> getFilterContentList() {
         List<TopAdsFilterContentFragment> filterContentFragmentList = new ArrayList<>();

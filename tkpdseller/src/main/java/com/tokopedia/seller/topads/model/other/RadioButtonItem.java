@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by Nathaniel on 1/27/2017.
  */
 
-public class FilterStatus {
+public class RadioButtonItem {
 
     private int value;
     private String name;
