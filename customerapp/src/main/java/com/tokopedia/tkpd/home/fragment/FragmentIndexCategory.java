@@ -191,8 +191,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private void getAnnouncement() {
         category.fetchTickers(new Category.FetchTickersListener() {
             @Override
-            public void onSuccess(final Ticker.Tickers[] tickers) {
-                if (tickers.length > 0) {
+            public void onSuccess(final ArrayList<Ticker.Tickers> tickers) {
+                if (tickers.size() > 0) {
 
                     holder.announcementContainer.setVisibility(View.VISIBLE);
                     tickerAdapter.addItem(tickers);

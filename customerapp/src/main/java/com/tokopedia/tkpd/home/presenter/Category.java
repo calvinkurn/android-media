@@ -3,6 +3,8 @@ package com.tokopedia.tkpd.home.presenter;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.tkpd.home.facade.FacadePromo;
 
+import java.util.ArrayList;
+
 /**
  * Created by m.normansyah on 2/24/16.
  */
@@ -17,7 +19,7 @@ public interface Category {
     void fetchTickers(final FetchTickersListener listener);
 
     interface FetchTickersListener{
-        void onSuccess(Ticker.Tickers[] tickers);
+        void onSuccess(ArrayList<Ticker.Tickers> tickers);
         void onError();
 
     }

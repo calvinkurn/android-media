@@ -5,8 +5,10 @@ import android.text.Spanned;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.shop.model.etalasemodel.List;
 import com.tokopedia.core.util.MethodChecker;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -48,21 +50,14 @@ public class Ticker {
     public static class Data {
         @SerializedName("tickers")
         @Expose
-        Tickers[] tickers;
+        ArrayList<Tickers> tickers;
 
-        public Tickers[] getTickers() {
+        public ArrayList<Tickers> getTickers() {
             return tickers;
         }
 
-        public void setTickers(Tickers[] tickers) {
+        public void setTickers(ArrayList<Tickers> tickers) {
             this.tickers = tickers;
-        }
-
-        @Override
-        public String toString() {
-            return "Data{" +
-                    "tickers=" + Arrays.toString(tickers) +
-                    '}';
         }
     }
 

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.ShapeDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -14,6 +13,7 @@ import android.text.style.URLSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,6 +21,8 @@ import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.core.home.BannerWebView;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,7 +32,7 @@ import butterknife.ButterKnife;
  */
 public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnouncementAdapter.ViewHolder> {
 
-    private Ticker.Tickers[] tickers;
+    private ArrayList<Ticker.Tickers> tickers;
     Context context;
 
     public static TickerAnnouncementAdapter createInstance(Context context) {
@@ -39,10 +41,10 @@ public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnoun
 
     TickerAnnouncementAdapter(Context context) {
         this.context = context;
-        this.tickers = new Ticker.Tickers[]{};
+        this.tickers = new ArrayList<>();
     }
 
-    public void addItem(Ticker.Tickers[] tickers) {
+    public void addItem(ArrayList<Ticker.Tickers> tickers) {
         this.tickers = tickers;
         notifyDataSetChanged();
     }
@@ -58,6 +60,8 @@ public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnoun
         @BindView(R.id.ticker_message)
         TextView message;
 
+        @BindView(R.id.btn_close)
+        ImageView btnClose;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -68,18 +72,18 @@ public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnoun
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(
-                LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_ticker_warning, parent, false));
+                LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_ticker, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        if (tickers[position].getTitle() != null && tickers[position].getTitle().length() == 0) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        if (tickers.get(position).getTitle() != null && tickers.get(position).getTitle().length() == 0) {
             holder.title.setVisibility(View.GONE);
         } else {
             holder.title.setVisibility(View.VISIBLE);
-            holder.title.setText(tickers[position].getTitle());
+            holder.title.setText(tickers.get(position).getTitle());
         }
-        holder.message.setText(tickers[position].getMessage());
+        holder.message.setText(tickers.get(position).getMessage());
         holder.message.setMovementMethod(new SelectableSpannedMovementMethod());
 
         Spannable sp = (Spannable)holder.message.getText();
@@ -102,13 +106,22 @@ public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnoun
         if (background instanceof GradientDrawable) {
             // cast to 'ShapeDrawable'
             GradientDrawable gradientDrawable = (GradientDrawable) background;
-            gradientDrawable.setColor(Color.parseColor(tickers[position].getColor()));
+            gradientDrawable.setColor(Color.parseColor(tickers.get(position).getColor()));
         }
+
+        holder.btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tickers.remove(position);
+                notifyDataSetChanged();
+
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return tickers.length;
+        return tickers.size();
     }
 
 }
