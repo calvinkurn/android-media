@@ -158,7 +158,7 @@ public class RegisterStep1PresenterImpl implements RegisterStep1Presenter, Regis
     private TKPDMapParam<String, String> getValidateEmailParam() {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("email", viewListener.getEmail().getText().toString());
-        param.put("password", viewListener.getEmail().getText().toString());
+        param.put("password", viewListener.getPassword().getText().toString());
         return param;
     }
 

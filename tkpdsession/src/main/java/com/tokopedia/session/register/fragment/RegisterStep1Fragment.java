@@ -4,6 +4,7 @@ import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -34,6 +35,7 @@ import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.session.R;
+import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.register.activity.RegisterActivity;
 import com.tokopedia.session.register.adapter.AutoCompleteTextAdapter;
 import com.tokopedia.session.register.interactor.RegisterNetworkInteractorImpl;
@@ -100,8 +102,6 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
 
     @BindView(R2.id.name)
     EditText name;
-
-    TkpdProgressDialog progressDialog;
 
     public static RegisterStep1Fragment createInstance(Bundle bundle) {
         RegisterStep1Fragment fragment = new RegisterStep1Fragment();
@@ -366,14 +366,6 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
         name.setEnabled(isEnabled);
         registerPassword.setEnabled(isEnabled);
         registerNext.setEnabled(isEnabled);
-
-        if (isEnabled) {
-            registerNextProgress.setVisibility(View.GONE);
-            registerNextButton.setText(getString(R.string.title_next));
-        } else {
-            registerNextProgress.setVisibility(View.VISIBLE);
-            registerNextButton.setText(getString(R.string.processing));
-        }
     }
 
     @Override
@@ -389,22 +381,16 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
 
     @Override
     public void showLoadingProgress() {
-        if (progressDialog == null && getActivity() != null) {
-            progressDialog = new TkpdProgressDialog(getActivity(),
-                    TkpdProgressDialog.NORMAL_PROGRESS);
-        }
-
-        if (getActivity() != null) {
-            progressDialog.showDialog();
-        }
+        setActionsEnabled(false);
+        registerNextProgress.setVisibility(View.VISIBLE);
+        registerNextButton.setText(getString(R.string.processing));
     }
 
     @Override
     public void dismissLoadingProgress() {
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-            progressDialog = null;
-        }
+        setActionsEnabled(true);
+        registerNextProgress.setVisibility(View.GONE);
+        registerNextButton.setText(getString(R.string.title_next));
     }
 
     @Override
@@ -429,7 +415,7 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
     @Override
     public void goToResetPasswordPage() {
         dismissLoadingProgress();
-
+        startActivity(new Intent(getActivity(), ForgotPasswordActivity.class));
     }
 
     private boolean isEmailAddressFromDevice() {
@@ -473,7 +459,6 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        progressDialog = null;
         presenter.onDestroyView();
     }
 

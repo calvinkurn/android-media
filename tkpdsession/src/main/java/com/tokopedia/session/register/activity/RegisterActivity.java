@@ -84,7 +84,7 @@ public class RegisterActivity extends BasePresenterActivity {
     public void goToStep2(RegisterStep1ViewModel model) {
         RegisterStep2Fragment fragment = RegisterStep2Fragment.createInstance(model);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
         fragmentTransaction.commit();
     }
