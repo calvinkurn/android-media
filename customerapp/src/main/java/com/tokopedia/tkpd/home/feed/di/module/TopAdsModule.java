@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.tokopedia.core.base.common.service.TopAdsService;
 import com.tokopedia.core.base.di.qualifier.TopAdsQualifier;
 import com.tokopedia.tkpd.home.feed.data.factory.TopAdsDataSourceFactory;
-import com.tokopedia.tkpd.home.feed.data.mapper.TopAdsMapperResult;
+import com.tokopedia.tkpd.home.feed.data.mapper.TopAdsMapper;
 import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.TopAdsDbManager;
 import com.tokopedia.tkpd.home.feed.di.scope.DataFeedScope;
 
@@ -27,8 +27,8 @@ public class TopAdsModule {
 
     @DataFeedScope
     @Provides
-    TopAdsMapperResult provideTopAdsMapperResult(Gson gson) {
-        return new TopAdsMapperResult(gson);
+    TopAdsMapper provideTopAdsMapperResult(Gson gson) {
+        return new TopAdsMapper(gson);
     }
 
     @DataFeedScope
@@ -41,7 +41,7 @@ public class TopAdsModule {
     @Provides
     TopAdsDataSourceFactory provideTopAdsDataSourceFactory(TopAdsDbManager topAdsDbManager,
                                                            TopAdsService topAdsService,
-                                                           TopAdsMapperResult topAdsMapper) {
+                                                           TopAdsMapper topAdsMapper) {
 
         return new TopAdsDataSourceFactory(topAdsDbManager, topAdsService, topAdsMapper);
     }

@@ -21,17 +21,17 @@ import dagger.Provides;
 @Module(includes = {ActivityModule.class, NetModule.class})
 public class AppModule {
 
-    private final Context mContext;
+    private final Context context;
 
     public AppModule(Context context) {
-        mContext = context;
+        this.context = context;
     }
 
     @ApplicationScope
     @Provides
     @ApplicationContext
     public Context provideContext() {
-        return mContext.getApplicationContext();
+        return context.getApplicationContext();
     }
 
     @ApplicationScope

@@ -16,16 +16,16 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class FeedResponse {
     @SerializedName("data")
-    Result data;
+    private Result data;
 
     @SerializedName("status")
-    String status;
+    private String status;
 
     @SerializedName("config")
-    Config config;
+    private Config config;
 
     @SerializedName("server_process_time")
-    String serverProcessTime;
+    private String serverProcessTime;
 
     public Result getData() {
         return data;
@@ -61,34 +61,34 @@ public class FeedResponse {
 
     public static class Result {
         @SerializedName("locations")
-        String locations;
+        private String locations;
 
         @SerializedName("share_url")
-        String shareUrl;
+        private String shareUrl;
 
         @SerializedName("department_id")
-        String departmentId;
+        private String departmentId;
 
         @SerializedName("hashtag")
-        String hashtag;
+        private String hashtag;
 
         @SerializedName("has_catalog")
-        String hasCatalog;
+        private String hasCatalog;
 
         @SerializedName("search_url")
-        String searchUrl;
+        private String searchUrl;
 
         @SerializedName("st")
-        String st;
+        private String st;
 
         @SerializedName("products")
-        Products[] products;
+        private Products[] products;
 
         @SerializedName("paging")
-        Paging paging;
+        private Paging paging;
 
         @SerializedName("breadcrumb")
-        String breadcrumb;
+        private String breadcrumb;
 
         public String getLocations() {
             return locations;
@@ -173,72 +173,72 @@ public class FeedResponse {
 
     public static class Products {
         @SerializedName("shop_lucky")
-        String shopLucky;
+        private String shopLucky;
 
         @SerializedName("product_id")
-        String productId;
+        private String productId;
 
         @SerializedName("shop_id")
-        String shopId;
+        private String shopId;
 
         @SerializedName("condition")
-        String condition;
+        private String condition;
 
         @SerializedName("product_price")
-        String productPrice;
+        private String productPrice;
 
         @SerializedName("product_review_count")
-        String productReviewCount;
+        private String productReviewCount;
 
         @SerializedName("product_sold_count")
-        String productSoldCount;
+        private String productSoldCount;
 
         @SerializedName("product_name")
-        String productName;
+        private String productName;
 
         @SerializedName("product_wholesale")
-        String productWholesale;
+        private String productWholesale;
 
         @SerializedName("product_url")
-        String productUrl;
+        private String productUrl;
 
         @SerializedName("shop_name")
-        String shopName;
+        private String shopName;
 
         @SerializedName("product_talk_count")
-        String productTalkCount;
+        private String productTalkCount;
 
         @SerializedName("shop_location")
-        String shopLocation;
+        private String shopLocation;
 
         @SerializedName("is_owner")
-        String isOwner;
+        private String isOwner;
 
         @SerializedName("rate")
-        String rate;
+        private String rate;
 
         @SerializedName("product_image")
-        String productImage;
+        private String productImage;
 
         @SerializedName("product_image_full")
-        String productImageFull;
+        private String productImageFull;
 
         @SerializedName("shop_url")
-        String shopUrl;
+        private String shopUrl;
 
         @SerializedName("shop_gold_status")
-        String shopGoldStatus;
+        private String shopGoldStatus;
 
         @SerializedName("preorder")
-        String preorder;
+        private String preorder;
 
         @SerializedName("labels")
-        List<Label> labels;
+        private List<Label> labels;
 
         @SerializedName("badges")
-        List<Badge> badges;
+        private List<Badge> badges;
 
-        public String getShopLucky() {
+        String getShopLucky() {
             return shopLucky;
         }
 
@@ -246,7 +246,7 @@ public class FeedResponse {
             this.shopLucky = shopLucky;
         }
 
-        public String getProductId() {
+        String getProductId() {
             return productId;
         }
 
@@ -270,7 +270,7 @@ public class FeedResponse {
             this.condition = condition;
         }
 
-        public String getProductPrice() {
+        String getProductPrice() {
             return productPrice;
         }
 
@@ -294,7 +294,7 @@ public class FeedResponse {
             this.productSoldCount = productSoldCount;
         }
 
-        public String getProductName() {
+        String getProductName() {
             return productName;
         }
 
@@ -318,7 +318,7 @@ public class FeedResponse {
             this.productUrl = productUrl;
         }
 
-        public String getShopName() {
+        String getShopName() {
             return shopName;
         }
 
@@ -358,7 +358,7 @@ public class FeedResponse {
             this.rate = rate;
         }
 
-        public String getProductImage() {
+        String getProductImage() {
             return productImage;
         }
 
@@ -382,7 +382,7 @@ public class FeedResponse {
             this.shopUrl = shopUrl;
         }
 
-        public String getShopGoldStatus() {
+        String getShopGoldStatus() {
             return shopGoldStatus;
         }
 
@@ -398,7 +398,7 @@ public class FeedResponse {
             this.badges = badges;
         }
 
-        public List<Label> getLabels() {
+        List<Label> getLabels() {
             return labels;
         }
 
@@ -409,10 +409,10 @@ public class FeedResponse {
 
     public static class Paging {
         @SerializedName("uri_previous")
-        String uriPrevious;
+        private String uriPrevious;
 
         @SerializedName("uri_next")
-        String uriNext;
+        private String uriNext;
 
         public String getUriPrevious() {
             return uriPrevious;
@@ -430,7 +430,7 @@ public class FeedResponse {
             this.uriNext = uriNext;
         }
 
-        public String getUrlParam(String key) {
+        String getUrlParam(String key) {
             Uri uri = Uri.parse(uriNext);
             return uri.getQueryParameter(key);
         }
@@ -445,16 +445,16 @@ public class FeedResponse {
 
     public static class Config {
         @SerializedName("backoff_multi")
-        String backoffMulti;
+        private String backoffMulti;
 
         @SerializedName("timeout")
-        String timeout;
+        private String timeout;
 
         @SerializedName("max_retries")
-        String maxRetries;
+        private String maxRetries;
     }
 
-    public static ProductItem toProductItem(Products product) {
+     static ProductItem toProductItem(Products product) {
         ProductItem productItem = new ProductItem();
         productItem.setId(product.getProductId());
         productItem.setImgUri(product.getProductImage());

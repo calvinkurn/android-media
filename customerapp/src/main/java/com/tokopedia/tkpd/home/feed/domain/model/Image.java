@@ -5,24 +5,24 @@ package com.tokopedia.tkpd.home.feed.domain.model;
  */
 
 public class Image {
-    private String mUrl;
-    private String sUrl;
+    private String mediumUrl;
+    private String smallUrl;
     private String xsUrl;
 
     public String getUrl() {
-        return mUrl;
+        return mediumUrl;
     }
 
     public void setUrl(String url) {
-        mUrl = url;
+        mediumUrl = url;
     }
 
-    public String getsUrl() {
-        return sUrl;
+    public String getSmallUrl() {
+        return smallUrl;
     }
 
-    public void setsUrl(String sUrl) {
-        this.sUrl = sUrl;
+    public void setSmallUrl(String smallUrl) {
+        this.smallUrl = smallUrl;
     }
 
     public String getXsUrl() {

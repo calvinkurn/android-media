@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.database.model.DbRecentProduct;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.tkpd.home.feed.data.mapper.RecentProductMapperResult;
+import com.tokopedia.tkpd.home.feed.data.mapper.RecentProductMapper;
 import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.RecentProductDbManager;
 import com.tokopedia.tkpd.home.feed.domain.model.ProductFeed;
 
@@ -21,27 +21,27 @@ import rx.functions.Action1;
 
 public class CloudRecentProductDataSource {
 
-    private Context mContext;
-    private RecentProductDbManager mDbManager;
-    private final MojitoService mService;
-    private RecentProductMapperResult mMapperResult;
+    private Context context;
+    private RecentProductDbManager recentProductDbManager;
+    private final MojitoService mojitoService;
+    private RecentProductMapper recentProductMapper;
 
     public CloudRecentProductDataSource(Context context,
-                                        RecentProductDbManager dbManager,
-                                        MojitoService service,
-                                        RecentProductMapperResult mapperResult) {
+                                        RecentProductDbManager recentProductDbManager,
+                                        MojitoService mojitoService,
+                                        RecentProductMapper recentProductMapper) {
 
-        mContext = context;
-        mDbManager = dbManager;
-        mService = service;
-        mMapperResult = mapperResult;
+        this.context = context;
+        this.recentProductDbManager = recentProductDbManager;
+        this.mojitoService = mojitoService;
+        this.recentProductMapper = recentProductMapper;
     }
 
     public Observable<List<ProductFeed>> getRecentProduct() {
 
-        return mService.getRecentProduct(SessionHandler.getLoginID(mContext))
+        return mojitoService.getRecentProduct(SessionHandler.getLoginID(context))
                 .doOnNext(saveToCache())
-                .map(mMapperResult);
+                .map(recentProductMapper);
     }
 
     private Action1<Response<String>> saveToCache() {
@@ -53,7 +53,7 @@ public class CloudRecentProductDataSource {
                     recentProductDb.setId(1);
                     recentProductDb.setLastUpdated(System.currentTimeMillis());
                     recentProductDb.setContentRecentProduct(response.body());
-                    mDbManager.store(recentProductDb);
+                    recentProductDbManager.store(recentProductDb);
                 }
             }
         };

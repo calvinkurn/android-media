@@ -16,20 +16,19 @@ import rx.Observable;
 
 public class GetFeedUseCase extends UseCaseWithParams<GetFeedUseCase.RequestParams, Feed> {
 
-    private final FeedRepository mFeedRepository;
-
+    private final FeedRepository feedRepository;
 
     GetFeedUseCase(ThreadExecutor threadExecutor,
                    PostExecutionThread postExecutionThread,
                    FeedRepository feedRepository) {
         super(threadExecutor, postExecutionThread);
-        mFeedRepository = feedRepository;
+        this.feedRepository = feedRepository;
 
     }
 
     @Override
     protected Observable<Feed> createObservable(RequestParams requestValue) {
-        return mFeedRepository.getFeed(requestValue.getValues());
+        return feedRepository.getFeed(requestValue.getValues());
     }
 
     public static class RequestParams implements DefaultParams {

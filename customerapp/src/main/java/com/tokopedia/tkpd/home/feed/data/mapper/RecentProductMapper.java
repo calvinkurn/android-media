@@ -23,13 +23,13 @@ import rx.functions.Func1;
  * @author Kulomady on 12/9/16.
  */
 
-public class RecentProductMapperResult
+public class RecentProductMapper
         implements Func1<Response<String>, List<ProductFeed>> {
 
-    private final Gson mGson;
+    private final Gson gson;
 
-    public RecentProductMapperResult(Gson gson) {
-        mGson = gson;
+    public RecentProductMapper(Gson gson) {
+        this.gson = gson;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class RecentProductMapperResult
 
     private List<ProductFeed> mappingResponse(Response<String> response) {
         if (response.body() != null && response.isSuccessful()) {
-            RecentProductResponse recentProduct = mGson
+            RecentProductResponse recentProduct = gson
                     .fromJson(response.body(), RecentProductResponse.class);
 
             if (recentProduct != null

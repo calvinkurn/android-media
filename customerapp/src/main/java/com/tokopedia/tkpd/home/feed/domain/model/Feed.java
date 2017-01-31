@@ -7,8 +7,8 @@ import java.util.List;
  */
 
 public class Feed {
-    private List<ProductFeed> mProducts;
-    private Paging mPaging;
+    private List<ProductFeed> products;
+    private Paging paging;
     private String shareUrl;
     private String locations;
     private String departmentId;
@@ -28,19 +28,19 @@ public class Feed {
     }
 
     public List<ProductFeed> getProducts() {
-        return mProducts;
+        return products;
     }
 
     public void setProducts(List<ProductFeed> products) {
-        mProducts = products;
+        this.products = products;
     }
 
     public Paging getPaging() {
-        return mPaging;
+        return paging;
     }
 
     public void setPaging(Paging paging) {
-        mPaging = paging;
+        this.paging = paging;
     }
 
     public String getShareUrl() {

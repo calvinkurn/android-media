@@ -24,58 +24,58 @@ import rx.Observable;
 
 public class FeedRepositoryImpl implements FeedRepository {
 
-    private final FeedDataSourceFactory mFeedDataSourceFactory;
-    private final HomeDataSourceFactory mHomeDataSourceFactory;
-    private final TopAdsDataSourceFactory mTopAdsDataSourceFactory;
-    private RecentProductSourceFactory mRecentProducFactory;
+    private final FeedDataSourceFactory feedDataSourceFactory;
+    private final HomeDataSourceFactory homeDataSourceFactory;
+    private final TopAdsDataSourceFactory topAdsDataSourceFactory;
+    private RecentProductSourceFactory recentProductSourceFactory;
 
     public FeedRepositoryImpl(FeedDataSourceFactory feedDataSourceFactory,
                               HomeDataSourceFactory homeDataSourceFactory,
                               TopAdsDataSourceFactory topAdsDataSourceFactory,
                               RecentProductSourceFactory recentProducFactory) {
-        mFeedDataSourceFactory = feedDataSourceFactory;
-        mHomeDataSourceFactory = homeDataSourceFactory;
-        mTopAdsDataSourceFactory = topAdsDataSourceFactory;
-        mRecentProducFactory = recentProducFactory;
+        this.feedDataSourceFactory = feedDataSourceFactory;
+        this.homeDataSourceFactory = homeDataSourceFactory;
+        this.topAdsDataSourceFactory = topAdsDataSourceFactory;
+        recentProductSourceFactory = recentProducFactory;
     }
 
     @Override
     public Observable<List<ProductFeed>> getRecentViewProduct() {
         CloudRecentProductDataSource recentProductDataSource
-                = mRecentProducFactory.createRecentProductDataSource();
+                = recentProductSourceFactory.createRecentProductDataSource();
         return recentProductDataSource.getRecentProduct();
     }
 
     @Override
     public Observable<List<String>> getListShopId() {
         FavoritShopIdDataSource listShopIdDataSource
-                = mHomeDataSourceFactory.createFavoriteShopIdDataSource();
+                = homeDataSourceFactory.createFavoriteShopIdDataSource();
 
         return listShopIdDataSource.getListShopId();
     }
 
     @Override
     public Observable<Feed> getFeed(TKPDMapParam<String, String> queryMap) {
-        CloudFeedDataStore feedDataSource = mFeedDataSourceFactory.createFeedDataSource();
+        CloudFeedDataStore feedDataSource = feedDataSourceFactory.createFeedDataSource();
         return feedDataSource.getFeed(queryMap);
     }
 
     @Override
     public Observable<List<TopAds>> getTopAds(TKPDMapParam<String, String> topAdsParams) {
-        TopAdsDataSource topAdsDataStore = mTopAdsDataSourceFactory.createTopAdsDataSource();
+        TopAdsDataSource topAdsDataStore = topAdsDataSourceFactory.createTopAdsDataSource();
         return topAdsDataStore.getTopAdsCloud(topAdsParams);
     }
 
     @Override
     public Observable<Feed> getFeedCache() {
-        return mFeedDataSourceFactory
+        return feedDataSourceFactory
                 .createFeedCacheDataSource()
                 .getFeedCache();
     }
 
     @Override
     public Observable<List<TopAds>> getTopAdsCache() {
-        return mTopAdsDataSourceFactory
+        return topAdsDataSourceFactory
                 .createTopAdsLocalDataStore().getTopAdsCache();
 
     }
@@ -83,7 +83,9 @@ public class FeedRepositoryImpl implements FeedRepository {
 
     @Override
     public Observable<List<ProductFeed>> getRecentViewProductFromCache() {
-        return mRecentProducFactory.createRecentProductCacheDataStore().getRecentProductFromCache();
+        return recentProductSourceFactory
+                .createRecentProductCacheDataStore()
+                .getRecentProductFromCache();
     }
 
 }

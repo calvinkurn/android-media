@@ -6,7 +6,7 @@ import com.tokopedia.core.base.common.service.AceService;
 import com.tokopedia.core.database.model.DbFeed;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.tkpd.home.feed.data.mapper.FeedMapperResult;
+import com.tokopedia.tkpd.home.feed.data.mapper.FeedMapper;
 import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.FeedDbManager;
 import com.tokopedia.tkpd.home.feed.domain.model.Feed;
 
@@ -20,24 +20,24 @@ import rx.functions.Action1;
 public class CloudFeedDataStore {
     private static final String KEY_PARAMS_USER_ID = "user_id";
 
-    private Context mContext;
-    private AceService mAceService;
-    private FeedMapperResult mFeedMapperResult;
-    private FeedDbManager mFeedDbManager;
+    private Context context;
+    private AceService aceService;
+    private FeedMapper feedMapper;
+    private FeedDbManager feedDbManager;
 
     public CloudFeedDataStore(Context context, AceService aceService,
-                              FeedMapperResult feedMapperResult, FeedDbManager feedDbManager) {
+                              FeedMapper feedMapper, FeedDbManager feedDbManager) {
         super();
 
-        mContext = context;
-        mAceService = aceService;
-        mFeedMapperResult = feedMapperResult;
-        mFeedDbManager = feedDbManager;
+        this.context = context;
+        this.aceService = aceService;
+        this.feedMapper = feedMapper;
+        this.feedDbManager = feedDbManager;
     }
 
     public Observable<Feed> getFeed(TKPDMapParam<String, String> params) {
-        params.put(KEY_PARAMS_USER_ID, SessionHandler.getLoginID(mContext));
-        return mAceService.getProductFeed(params).doOnNext(saveToCache()).map(mFeedMapperResult);
+        params.put(KEY_PARAMS_USER_ID, SessionHandler.getLoginID(context));
+        return aceService.getProductFeed(params).doOnNext(saveToCache()).map(feedMapper);
     }
 
     private Action1<Response<String>> saveToCache() {
@@ -49,7 +49,7 @@ public class CloudFeedDataStore {
                     dbFeed.setId(1); //set 1 in order to force replace
                     dbFeed.setLastUpdated(System.currentTimeMillis());
                     dbFeed.setContentFeed(stringResponse.body());
-                    mFeedDbManager.store(dbFeed);
+                    feedDbManager.store(dbFeed);
                 }
             }
         };

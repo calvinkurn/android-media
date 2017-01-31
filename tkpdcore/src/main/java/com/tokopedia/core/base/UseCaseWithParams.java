@@ -16,24 +16,24 @@ import rx.subscriptions.Subscriptions;
 public abstract class UseCaseWithParams
         <P extends DefaultParams, T> implements InteractorParams<P, T> {
 
-    private final ThreadExecutor mThreadExecutor;
-    private final PostExecutionThread mPostExecutionThread;
-    private Subscription mSubscription = Subscriptions.empty();
+    private final ThreadExecutor threadExecutor;
+    private final PostExecutionThread postExecutionThread;
+    private Subscription subscription = Subscriptions.empty();
 
     protected UseCaseWithParams(ThreadExecutor threadExecutor,
                                 PostExecutionThread postExecutionThread) {
 
-        mThreadExecutor = threadExecutor;
-        mPostExecutionThread = postExecutionThread;
+        this.threadExecutor = threadExecutor;
+        this.postExecutionThread = postExecutionThread;
     }
 
     protected abstract Observable<T> createObservable(P requestParams);
 
     @Override
     public void execute(P requestParams, Subscriber<T> subscriber) {
-        this.mSubscription = createObservable(requestParams)
-                .subscribeOn(Schedulers.from(mThreadExecutor))
-                .observeOn(mPostExecutionThread.getScheduler())
+        this.subscription = createObservable(requestParams)
+                .subscribeOn(Schedulers.from(threadExecutor))
+                .observeOn(postExecutionThread.getScheduler())
                 .subscribe(subscriber);
     }
 
@@ -43,8 +43,8 @@ public abstract class UseCaseWithParams
     }
 
     public void unsubscribe() {
-        if (mSubscription.isUnsubscribed()) {
-            mSubscription.unsubscribe();
+        if (subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
         }
     }
 }

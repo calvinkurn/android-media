@@ -25,12 +25,12 @@ import rx.functions.Func3;
  */
 
 public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
-    private final ThreadExecutor mThreadExecutor;
-    private final PostExecutionThread mPostExecutionThread;
-    private final FeedRepository mFeedRepository;
-    private final GetRecentProductUsecase mGetRecentProductUsecase;
-    private final GetListShopIdUseCase mGetListShopIdUseCase;
-    private final GetTopAdsUseCase mGetTopAdsUseCase;
+    private final ThreadExecutor threadExecutor;
+    private final PostExecutionThread postExecutionThread;
+    private final FeedRepository feedRepository;
+    private final GetRecentProductUsecase getRecentProductUsecase;
+    private final GetListShopIdUseCase getListShopIdUseCase;
+    private final GetTopAdsUseCase getTopAdsUseCase;
 
     public GetAllFeedDataPageUseCase(ThreadExecutor threadExecutor,
                                      PostExecutionThread postExecutionThread,
@@ -40,12 +40,12 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
                                      GetTopAdsUseCase getTopAdsUseCase) {
 
         super(threadExecutor, postExecutionThread);
-        mThreadExecutor = threadExecutor;
-        mPostExecutionThread = postExecutionThread;
-        mFeedRepository = feedRepository;
-        mGetRecentProductUsecase = getRecentProductUsecase;
-        mGetListShopIdUseCase = getListShopIdUseCase;
-        mGetTopAdsUseCase = getTopAdsUseCase;
+        this.threadExecutor = threadExecutor;
+        this.postExecutionThread = postExecutionThread;
+        this.feedRepository = feedRepository;
+        this.getRecentProductUsecase = getRecentProductUsecase;
+        this.getListShopIdUseCase = getListShopIdUseCase;
+        this.getTopAdsUseCase = getTopAdsUseCase;
     }
 
     @Override
@@ -90,7 +90,7 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
     }
 
     private Observable<List<ProductFeed>> getRecentProductObservable() {
-        return mGetRecentProductUsecase.execute()
+        return getRecentProductUsecase.execute()
                 .onErrorReturn(new Func1<Throwable, List<ProductFeed>>() {
                     @Override
                     public List<ProductFeed> call(Throwable throwable) {
@@ -101,7 +101,7 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
 
     private Observable<Feed> getFeedObservable() {
         final String emptyString = "";
-        return mGetListShopIdUseCase
+        return getListShopIdUseCase
                 .execute()
                 .map(new Func1<List<String>, String>() {
                     @Override
@@ -119,9 +119,9 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
                     @Override
                     public Observable<Feed> call(String shopIdListInString) {
 
-                        return new GetFeedUseCase(mThreadExecutor,
-                                mPostExecutionThread,
-                                mFeedRepository)
+                        return new GetFeedUseCase(threadExecutor,
+                                postExecutionThread,
+                                feedRepository)
                                 .execute(getFeedRequestParams(shopIdListInString));
 
                     }
@@ -137,7 +137,7 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
     }
 
     private Observable<List<TopAds>> getTopAdsObservable() {
-        return mGetTopAdsUseCase.execute(new GetTopAdsUseCase.RequestParams())
+        return getTopAdsUseCase.execute(new GetTopAdsUseCase.RequestParams())
                 .onErrorReturn(new Func1<Throwable, List<TopAds>>() {
                     @Override
                     public List<TopAds> call(Throwable throwable) {

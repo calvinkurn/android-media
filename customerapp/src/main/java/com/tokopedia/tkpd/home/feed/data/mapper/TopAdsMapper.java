@@ -19,13 +19,13 @@ import rx.functions.Func1;
  * @author Kulomady on 12/9/16.
  */
 
-public class TopAdsMapperResult implements Func1<Response<String>, List<TopAds>> {
+public class TopAdsMapper implements Func1<Response<String>, List<TopAds>> {
 
-    private final Gson mGson;
+    private final Gson gson;
 
-    public TopAdsMapperResult(Gson gson) {
+    public TopAdsMapper(Gson gson) {
 
-        mGson = gson;
+        this.gson = gson;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class TopAdsMapperResult implements Func1<Response<String>, List<TopAds>>
 
         if (response.isSuccessful() && response.body() != null) {
             TopAdsResponse topAdsResponse
-                    = mGson.fromJson(response.body(), TopAdsResponse.class);
+                    = gson.fromJson(response.body(), TopAdsResponse.class);
             if (topAdsResponse != null
                     && topAdsResponse.data != null && topAdsResponse.data.size() > 0) {
                 return mappingValidResponse(topAdsResponse.data);

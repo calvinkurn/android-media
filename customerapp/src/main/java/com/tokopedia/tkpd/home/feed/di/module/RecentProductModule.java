@@ -7,7 +7,7 @@ import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.di.qualifier.MojitoQualifier;
 import com.tokopedia.tkpd.home.feed.data.factory.RecentProductSourceFactory;
-import com.tokopedia.tkpd.home.feed.data.mapper.RecentProductMapperResult;
+import com.tokopedia.tkpd.home.feed.data.mapper.RecentProductMapper;
 import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.RecentProductDbManager;
 import com.tokopedia.tkpd.home.feed.di.scope.DataFeedScope;
 
@@ -31,8 +31,8 @@ public class RecentProductModule {
 
     @DataFeedScope
     @Provides
-    RecentProductMapperResult provideRecentProductMapper(Gson gson) {
-        return new RecentProductMapperResult(gson);
+    RecentProductMapper provideRecentProductMapper(Gson gson) {
+        return new RecentProductMapper(gson);
     }
 
     @DataFeedScope
@@ -46,7 +46,7 @@ public class RecentProductModule {
     RecentProductSourceFactory provideDataSourceFactory(@ActivityContext Context context,
                                                         MojitoService mojitoService,
                                                         RecentProductDbManager recentDbManager,
-                                                        RecentProductMapperResult mapperResult) {
+                                                        RecentProductMapper mapperResult) {
 
         return new RecentProductSourceFactory(
                 context,

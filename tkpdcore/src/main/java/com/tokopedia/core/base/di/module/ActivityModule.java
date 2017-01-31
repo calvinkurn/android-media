@@ -14,16 +14,16 @@ import dagger.Provides;
  */
 @Module
 public class ActivityModule {
-    private final Activity mContext;
+    private final Activity context;
 
     public ActivityModule(Activity context) {
-        mContext = context;
+        this.context = context;
     }
     @ApplicationScope
     @Provides
     @ActivityContext
     public Context provideContext() {
-        return mContext;
+        return context;
     }
 
 }

@@ -19,25 +19,25 @@ import javax.inject.Inject;
 public class FeedPresenter extends BasePresenter<FeedContract.View>
         implements FeedContract.Presenter {
 
-    private GetAllFeedDataPageUseCase mFeedDataPageUseCase;
-    private GetDataFeedCacheUseCase mFeedDataCachePageUseCase;
-    private LoadMoreFeedUseCase mLoadMoreFeedUseCase;
+    private GetAllFeedDataPageUseCase feedDataPageUseCase;
+    private GetDataFeedCacheUseCase feedDataCachePageUseCase;
+    private LoadMoreFeedUseCase loadMoreFeedUseCase;
 
-    private PagingHandler mPagingHandler;
-    private GetFeedUseCase.RequestParams mRequestParams;
+    private PagingHandler pagingHandler;
+    private GetFeedUseCase.RequestParams requestParams;
 
     @Inject
     public FeedPresenter(GetAllFeedDataPageUseCase feedDataPageUseCase,
                          GetDataFeedCacheUseCase feedDataCachePageUseCase,
                          LoadMoreFeedUseCase loadMoreFeedUseCase) {
 
-        mFeedDataPageUseCase = feedDataPageUseCase;
-        mFeedDataCachePageUseCase = feedDataCachePageUseCase;
-        mLoadMoreFeedUseCase = loadMoreFeedUseCase;
-        mRequestParams = new GetFeedUseCase
+        this.feedDataPageUseCase = feedDataPageUseCase;
+        this.feedDataCachePageUseCase = feedDataCachePageUseCase;
+        this.loadMoreFeedUseCase = loadMoreFeedUseCase;
+        requestParams = new GetFeedUseCase
                 .RequestParams(GetFeedUseCase.RequestParams.defaultParamsValue());
 
-        mPagingHandler = new PagingHandler();
+        pagingHandler = new PagingHandler();
     }
 
 
@@ -45,15 +45,15 @@ public class FeedPresenter extends BasePresenter<FeedContract.View>
     @Override
     public void detachView() {
         super.detachView();
-        mFeedDataPageUseCase.unsubcribe();
-        mLoadMoreFeedUseCase.unsubscribe();
+        feedDataPageUseCase.unsubcribe();
+        loadMoreFeedUseCase.unsubscribe();
     }
 
     @Override
     public void initializeDataFeed() {
         checkViewAttached();
         getView().hideContentView();
-        mFeedDataCachePageUseCase.execute(new FeedCacheSubscriber());
+        feedDataCachePageUseCase.execute(new FeedCacheSubscriber());
     }
 
     @Override
@@ -61,21 +61,21 @@ public class FeedPresenter extends BasePresenter<FeedContract.View>
         checkViewAttached();
         getView().showRefreshLoading();
         getView().disableLoadmore();
-        mFeedDataPageUseCase.execute(new RefreshFeedSubcriber());
+        feedDataPageUseCase.execute(new RefreshFeedSubcriber());
     }
 
     @Override
     public void loadMoreDataFeed() {
-        if (mPagingHandler.CheckNextPage()) {
+        if (pagingHandler.CheckNextPage()) {
             checkViewAttached();
-            mPagingHandler.nextPage();
-            mRequestParams.getValues()
+            pagingHandler.nextPage();
+            requestParams.getValues()
                     .put(GetFeedUseCase.RequestParams.KEY_START, String.valueOf(getPagingIndex()));
 
-            mRequestParams.setIncludeWithTopAds(isPageOdd());
+            requestParams.setIncludeWithTopAds(isPageOdd());
 
-            mLoadMoreFeedUseCase.execute(
-                    mRequestParams,
+            loadMoreFeedUseCase.execute(
+                    requestParams,
                     new LoadMoreFeedSubcriber());
         }
 
@@ -85,14 +85,14 @@ public class FeedPresenter extends BasePresenter<FeedContract.View>
 
     private void setPagging(ProductFeedViewModel productFeedViewModel) {
         productFeedViewModel.getPagingHandlerModel();
-        mPagingHandler.setHasNext(
+        pagingHandler.setHasNext(
                 PagingHandler.CheckHasNext(productFeedViewModel.getPagingHandlerModel()));
 
-        mPagingHandler.setPagingHandlerModel(productFeedViewModel.getPagingHandlerModel());
+        pagingHandler.setPagingHandlerModel(productFeedViewModel.getPagingHandlerModel());
     }
 
     private void doCheckLoadMore() {
-        if (mPagingHandler.CheckNextPage()) {
+        if (pagingHandler.CheckNextPage()) {
             getView().enableLoadmore();
         } else {
             getView().disableLoadmore();
@@ -100,15 +100,15 @@ public class FeedPresenter extends BasePresenter<FeedContract.View>
     }
 
     private int getPagingIndex() {
-        return mPagingHandler != null ?
-                mPagingHandler.getPagingHandlerModel() != null
-                        ? mPagingHandler.getPagingHandlerModel().getStartIndex()
+        return pagingHandler != null ?
+                pagingHandler.getPagingHandlerModel() != null
+                        ? pagingHandler.getPagingHandlerModel().getStartIndex()
                         : 0
                 : 0;
     }
 
     private boolean isPageOdd() {
-        return mPagingHandler.getPage() % 2 != 0;
+        return pagingHandler.getPage() % 2 != 0;
     }
 
     private class FeedCacheSubscriber extends DefaultSubscriber<DataFeed> {

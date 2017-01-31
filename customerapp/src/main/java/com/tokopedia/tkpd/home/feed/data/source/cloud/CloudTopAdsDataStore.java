@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.home.feed.data.source.cloud;
 import com.tokopedia.core.base.common.service.TopAdsService;
 import com.tokopedia.core.database.model.DbTopAds;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.tkpd.home.feed.data.mapper.TopAdsMapperResult;
+import com.tokopedia.tkpd.home.feed.data.mapper.TopAdsMapper;
 import com.tokopedia.tkpd.home.feed.data.source.TopAdsDataSource;
 import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.TopAdsDbManager;
 import com.tokopedia.tkpd.home.feed.domain.model.TopAds;
@@ -19,24 +19,24 @@ import rx.functions.Action1;
  */
 public class CloudTopAdsDataStore implements TopAdsDataSource {
 
-    private TopAdsDbManager mDbManager;
-    private TopAdsService mTopAdsService;
-    private TopAdsMapperResult mTopAdsMapperResult;
+    private TopAdsDbManager topAdsDbManager;
+    private TopAdsService topAdsService;
+    private TopAdsMapper topAdsMapper;
 
     public CloudTopAdsDataStore(TopAdsDbManager dbManager,
                                 TopAdsService topAdsService,
-                                TopAdsMapperResult topAdsMapperResult) {
+                                TopAdsMapper topAdsMapper) {
         super();
-        mDbManager = dbManager;
-        mTopAdsService = topAdsService;
-        mTopAdsMapperResult = topAdsMapperResult;
+        topAdsDbManager = dbManager;
+        this.topAdsService = topAdsService;
+        this.topAdsMapper = topAdsMapper;
     }
 
     @Override
     public Observable<List<TopAds>> getTopAdsCloud(TKPDMapParam<String, String> param) {
-        return mTopAdsService.getTopAds(param)
+        return topAdsService.getTopAds(param)
                 .doOnNext(saveToCache())
-                .map(mTopAdsMapperResult);
+                .map(topAdsMapper);
     }
 
 
@@ -56,7 +56,7 @@ public class CloudTopAdsDataStore implements TopAdsDataSource {
                     dbTopAds.setId(1);
                     dbTopAds.setLastUpdated(System.currentTimeMillis());
                     dbTopAds.setContentTopAds(response.body());
-                    mDbManager.store(dbTopAds);
+                    topAdsDbManager.store(dbTopAds);
                 }
 
             }

@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.home.feed.data.factory;
 import android.content.Context;
 
 import com.tokopedia.core.base.common.service.AceService;
-import com.tokopedia.tkpd.home.feed.data.mapper.FeedMapperResult;
+import com.tokopedia.tkpd.home.feed.data.mapper.FeedMapper;
 import com.tokopedia.tkpd.home.feed.data.source.cloud.CloudFeedDataStore;
 import com.tokopedia.tkpd.home.feed.data.source.local.LocalFeedDataSource;
 import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.FeedDbManager;
@@ -14,27 +14,27 @@ import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.FeedDbManager;
 
 public class FeedDataSourceFactory {
 
-    private Context mContext;
-    private final AceService mAceService;
-    private FeedMapperResult mFeedMapperResult;
-    private FeedDbManager mFeedDbManager;
+    private Context context;
+    private final AceService aceService;
+    private FeedMapper feedMapper;
+    private FeedDbManager feedDbManager;
 
     public FeedDataSourceFactory(Context context,
                                  AceService aceService,
-                                 FeedMapperResult feedMapperResult, FeedDbManager feedDbManager) {
-        mContext = context;
-        mAceService = aceService;
-        mFeedMapperResult = feedMapperResult;
-        mFeedDbManager = feedDbManager;
+                                 FeedMapper feedMapper, FeedDbManager feedDbManager) {
+        this.context = context;
+        this.aceService = aceService;
+        this.feedMapper = feedMapper;
+        this.feedDbManager = feedDbManager;
     }
 
     public CloudFeedDataStore createFeedDataSource() {
 
-        return new CloudFeedDataStore(mContext, mAceService, mFeedMapperResult, mFeedDbManager);
+        return new CloudFeedDataStore(context, aceService, feedMapper, feedDbManager);
     }
 
     public LocalFeedDataSource createFeedCacheDataSource() {
-        return new LocalFeedDataSource(mFeedDbManager, mFeedMapperResult);
+        return new LocalFeedDataSource(feedDbManager, feedMapper);
     }
 
 }

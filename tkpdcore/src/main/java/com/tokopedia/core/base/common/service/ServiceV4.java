@@ -18,7 +18,7 @@ import static com.tokopedia.core.network.apiservices.etc.apis.home.ProductFeedAp
  * @author Kulomady on 12/9/16.
  */
 
-public interface ServiceVersion4 {
+public interface ServiceV4 {
 
     @FormUrlEncoded
     @POST(GET_LIST_FAVE_SHOP_ID)

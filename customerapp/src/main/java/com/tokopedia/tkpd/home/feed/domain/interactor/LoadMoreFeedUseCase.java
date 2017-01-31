@@ -1,19 +1,15 @@
 package com.tokopedia.tkpd.home.feed.domain.interactor;
 
-import com.tokopedia.core.base.DefaultParams;
 import com.tokopedia.core.base.UseCaseWithParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.base.utils.StringUtils;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.tkpd.home.feed.domain.FeedRepository;
 import com.tokopedia.tkpd.home.feed.domain.model.DataFeed;
 import com.tokopedia.tkpd.home.feed.domain.model.Feed;
 import com.tokopedia.tkpd.home.feed.domain.model.TopAds;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import rx.Observable;
@@ -28,25 +24,25 @@ public class LoadMoreFeedUseCase
         extends UseCaseWithParams<GetFeedUseCase.RequestParams, DataFeed> {
 
 
-    private final ThreadExecutor mThreadExecutor;
-    private final PostExecutionThread mPostExecutionThread;
-    private FeedRepository mFeedRepository;
-    private final GetListShopIdUseCase mGetListShopIdUseCase;
-    private GetTopAdsUseCase mGetTopAdsUseCase;
+    private final ThreadExecutor threadExecutor;
+    private final PostExecutionThread postExecutionThread;
+    private FeedRepository feedRepository;
+    private final GetListShopIdUseCase getListShopIdUseCase;
+    private GetTopAdsUseCase getTopAdsUseCase;
 
     public LoadMoreFeedUseCase(ThreadExecutor threadExecutor,
                                PostExecutionThread postExecutionThread,
                                FeedRepository feedRepository,
                                GetListShopIdUseCase getListShopIdUseCase,
-                               GetTopAdsUseCase GetTopAdsUseCase) {
+                               GetTopAdsUseCase getTopAdsUseCase) {
 
         super(threadExecutor, postExecutionThread);
 
-        mThreadExecutor = threadExecutor;
-        mPostExecutionThread = postExecutionThread;
-        mFeedRepository = feedRepository;
-        mGetListShopIdUseCase = getListShopIdUseCase;
-        mGetTopAdsUseCase = GetTopAdsUseCase;
+        this.threadExecutor = threadExecutor;
+        this.postExecutionThread = postExecutionThread;
+        this.feedRepository = feedRepository;
+        this.getListShopIdUseCase = getListShopIdUseCase;
+        this.getTopAdsUseCase = getTopAdsUseCase;
     }
 
 
@@ -109,7 +105,7 @@ public class LoadMoreFeedUseCase
 
     private Observable<Feed> getFeedObservable(final GetFeedUseCase.RequestParams requestParams) {
         final String emptyString = "";
-        return mGetListShopIdUseCase
+        return getListShopIdUseCase
                 .execute()
                 .map(new Func1<List<String>, String>() {
                     @Override
@@ -129,9 +125,9 @@ public class LoadMoreFeedUseCase
                         requestParams.getValues()
                                 .put(GetFeedUseCase.RequestParams.KEY_SHOP_ID, shopIdListInString);
 
-                        return new GetFeedUseCase(mThreadExecutor,
-                                mPostExecutionThread,
-                                mFeedRepository)
+                        return new GetFeedUseCase(threadExecutor,
+                                postExecutionThread,
+                                feedRepository)
                                 .execute(requestParams);
 
                     }
@@ -147,11 +143,7 @@ public class LoadMoreFeedUseCase
     }
 
     private Observable<List<TopAds>> getTopAdsObservable() {
-        TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.put(TopAdsApi.PAGE, LoadMoreFeedUseCase.RequestParams.PARAM_TOPADS_PAGE_DEFAULT);
-        params.put(TopAdsApi.ITEM, LoadMoreFeedUseCase.RequestParams.PARAM_TOPADS_ITEM_DEFAULT);
-        params.put(TopAdsApi.SRC, TopAdsApi.SRC_PRODUCT_FEED);
-        return mGetTopAdsUseCase.execute(new GetTopAdsUseCase.RequestParams())
+        return getTopAdsUseCase.execute(new GetTopAdsUseCase.RequestParams())
                 .onErrorReturn(new Func1<Throwable, List<TopAds>>() {
                     @Override
                     public List<TopAds> call(Throwable throwable) {
@@ -160,20 +152,5 @@ public class LoadMoreFeedUseCase
                     }
                 });
     }
-
-    public static final class RequestParams implements DefaultParams {
-        private final HashMap<String, String> values;
-        private static final String PARAM_TOPADS_PAGE_DEFAULT = "1";
-        private static final String PARAM_TOPADS_ITEM_DEFAULT = "4";
-
-        public RequestParams(HashMap<String, String> values) {
-            this.values = values;
-        }
-
-        public HashMap<String, String> getValues() {
-            return values;
-        }
-    }
-
 
 }

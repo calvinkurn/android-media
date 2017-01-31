@@ -2,8 +2,8 @@ package com.tokopedia.tkpd.home.feed.data.factory;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.common.service.ServiceVersion4;
-import com.tokopedia.tkpd.home.feed.data.mapper.GetShopIdMapperResult;
+import com.tokopedia.core.base.common.service.ServiceV4;
+import com.tokopedia.tkpd.home.feed.data.mapper.GetShopIdMapper;
 import com.tokopedia.tkpd.home.feed.data.source.FavoritShopIdDataSource;
 import com.tokopedia.tkpd.home.feed.data.source.cloud.CloudFavoriteShopIdDataSource;
 
@@ -13,20 +13,20 @@ import com.tokopedia.tkpd.home.feed.data.source.cloud.CloudFavoriteShopIdDataSou
 
 public class HomeDataSourceFactory {
 
-    private Context mContext;
-    private ServiceVersion4 mServiceVersion4;
-    private GetShopIdMapperResult mGetShopIdMapperResult;
+    private Context context;
+    private ServiceV4 serviceV4;
+    private GetShopIdMapper getShopIdMapper;
 
     public HomeDataSourceFactory(Context context,
-                                 ServiceVersion4 serviceVersion4,
-                                 GetShopIdMapperResult getShopIdMapperResult) {
-        mContext = context;
-        mServiceVersion4 = serviceVersion4;
-        mGetShopIdMapperResult = getShopIdMapperResult;
+                                 ServiceV4 serviceV4,
+                                 GetShopIdMapper getShopIdMapper) {
+        this.context = context;
+        this.serviceV4 = serviceV4;
+        this.getShopIdMapper = getShopIdMapper;
     }
 
     public FavoritShopIdDataSource createFavoriteShopIdDataSource() {
-        return new CloudFavoriteShopIdDataSource(mContext, mServiceVersion4, mGetShopIdMapperResult);
+        return new CloudFavoriteShopIdDataSource(context, serviceV4, getShopIdMapper);
     }
 
 }

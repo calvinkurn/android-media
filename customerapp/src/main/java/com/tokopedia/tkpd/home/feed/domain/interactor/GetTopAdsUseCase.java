@@ -26,19 +26,19 @@ public class GetTopAdsUseCase
     private static final String KEY_SRC = "src";
     private static final String KEY_PAGE = "page";
 
-    private FeedRepository mFeedRepository;
+    private FeedRepository feedRepository;
 
 
     public GetTopAdsUseCase(ThreadExecutor threadExecutor,
                             PostExecutionThread postExecutionThread,
                             FeedRepository feedRepository) {
         super(threadExecutor, postExecutionThread);
-        mFeedRepository = feedRepository;
+        this.feedRepository = feedRepository;
     }
 
     @Override
     protected Observable<List<TopAds>> createObservable(RequestParams requestParams) {
-        return mFeedRepository.getTopAds(requestParams.getValues());
+        return feedRepository.getTopAds(requestParams.getValues());
     }
 
     static final class RequestParams implements DefaultParams {

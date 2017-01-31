@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.home.feed.data.source.local;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.tkpd.home.feed.data.mapper.TopAdsMapperResult;
+import com.tokopedia.tkpd.home.feed.data.mapper.TopAdsMapper;
 import com.tokopedia.tkpd.home.feed.data.source.TopAdsDataSource;
 import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.TopAdsDbManager;
 import com.tokopedia.tkpd.home.feed.domain.model.TopAds;
@@ -15,13 +15,13 @@ import rx.Observable;
  */
 public class LocalTopAdsDataStore implements TopAdsDataSource {
 
-    private final TopAdsDbManager mDbManager;
-    private final TopAdsMapperResult mTopAdsMapperResult;
+    private final TopAdsDbManager topAdsDbManager;
+    private final TopAdsMapper topAdsMapper;
 
-    public LocalTopAdsDataStore(TopAdsDbManager dbManager, TopAdsMapperResult topAdsMapperResult) {
-        mDbManager = dbManager;
+    public LocalTopAdsDataStore(TopAdsDbManager dbManager, TopAdsMapper topAdsMapper) {
+        topAdsDbManager = dbManager;
 
-        mTopAdsMapperResult = topAdsMapperResult;
+        this.topAdsMapper = topAdsMapper;
     }
 
     @Override
@@ -31,9 +31,9 @@ public class LocalTopAdsDataStore implements TopAdsDataSource {
 
     @Override
     public Observable<List<TopAds>> getTopAdsCache() {
-        if (mDbManager.isExpired(System.currentTimeMillis())) {
+        if (topAdsDbManager.isExpired(System.currentTimeMillis())) {
             return Observable.empty();
         }
-        return mDbManager.getData().map(mTopAdsMapperResult);
+        return topAdsDbManager.getData().map(topAdsMapper);
     }
 }

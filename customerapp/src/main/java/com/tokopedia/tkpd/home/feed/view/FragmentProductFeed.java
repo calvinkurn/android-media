@@ -47,7 +47,7 @@ public class FragmentProductFeed extends BaseFragment implements FeedContract.Vi
         DefaultRetryListener.OnClickRetry, ListenerFabClick, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.index_main_recycler_view)
-    RecyclerView mRecyclerView;
+    RecyclerView contentRecyclerView;
     @BindView(R.id.swipe_refresh_layout)
     SwipeToRefresh swipeRefreshLayout;
     @BindView(R.id.fab_speed_dial)
@@ -215,12 +215,12 @@ public class FragmentProductFeed extends BaseFragment implements FeedContract.Vi
 
     @Override
     public void hideContentView() {
-        mRecyclerView.setVisibility(View.GONE);
+        contentRecyclerView.setVisibility(View.GONE);
     }
 
     @Override
     public void showContentView() {
-        mRecyclerView.setVisibility(View.VISIBLE);
+        contentRecyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -246,10 +246,10 @@ public class FragmentProductFeed extends BaseFragment implements FeedContract.Vi
 
 
     private void prepareView(View parentView) {
-        mRecyclerView.setLayoutManager(gridLayoutManager);
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setAdapter(adapter);
-        mRecyclerView.addOnScrollListener(onRecyclerViewListener());
+        contentRecyclerView.setLayoutManager(gridLayoutManager);
+        contentRecyclerView.setHasFixedSize(true);
+        contentRecyclerView.setAdapter(adapter);
+        contentRecyclerView.addOnScrollListener(onRecyclerViewListener());
         swipeRefreshLayout.setOnRefreshListener(this);
         adapter.setOnRetryListenerRV(onAdapterRetryListener());
         setFabListener();

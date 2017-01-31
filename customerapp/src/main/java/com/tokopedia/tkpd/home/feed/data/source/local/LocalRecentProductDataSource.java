@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.home.feed.data.source.local;
 
-import com.tokopedia.tkpd.home.feed.data.mapper.RecentProductMapperResult;
+import com.tokopedia.tkpd.home.feed.data.mapper.RecentProductMapper;
 import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.RecentProductDbManager;
 import com.tokopedia.tkpd.home.feed.domain.model.ProductFeed;
 
@@ -13,20 +13,20 @@ import rx.Observable;
  */
 
 public class LocalRecentProductDataSource {
-    private RecentProductMapperResult mMapperResult;
-    private RecentProductDbManager mDbManager;
+    private RecentProductMapper recentProductMapper;
+    private RecentProductDbManager recentProductDbManager;
 
 
     public LocalRecentProductDataSource(RecentProductDbManager dbManager,
-                                        RecentProductMapperResult mapperResult) {
-        mDbManager = dbManager;
-        mMapperResult = mapperResult;
+                                        RecentProductMapper mapperResult) {
+        recentProductDbManager = dbManager;
+        recentProductMapper = mapperResult;
     }
 
     public Observable<List<ProductFeed>> getRecentProductFromCache() {
-        if (mDbManager.isExpired(System.currentTimeMillis())) {
+        if (recentProductDbManager.isExpired(System.currentTimeMillis())) {
             return Observable.empty();
         }
-        return mDbManager.getData().map(mMapperResult);
+        return recentProductDbManager.getData().map(recentProductMapper);
     }
 }

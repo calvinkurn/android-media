@@ -15,18 +15,18 @@ import rx.Observable;
  */
 
 public class GetRecentProductUsecase extends UseCase<List<ProductFeed>> {
-    private final FeedRepository mFeedRepository;
+    private final FeedRepository feedRepository;
 
     public GetRecentProductUsecase(ThreadExecutor threadExecutor,
                                    PostExecutionThread postExecutionThread,
                                    FeedRepository feedRepository) {
         super(threadExecutor, postExecutionThread);
-        mFeedRepository = feedRepository;
+        this.feedRepository = feedRepository;
     }
 
     @Override
     public Observable<List<ProductFeed>> createObservable() {
-        return mFeedRepository.getRecentViewProduct();
+        return feedRepository.getRecentViewProduct();
     }
 
 }

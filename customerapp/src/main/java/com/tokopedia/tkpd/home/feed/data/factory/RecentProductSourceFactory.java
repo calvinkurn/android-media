@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.home.feed.data.factory;
 import android.content.Context;
 
 import com.tokopedia.core.base.common.service.MojitoService;
-import com.tokopedia.tkpd.home.feed.data.mapper.RecentProductMapperResult;
+import com.tokopedia.tkpd.home.feed.data.mapper.RecentProductMapper;
 import com.tokopedia.tkpd.home.feed.data.source.cloud.CloudRecentProductDataSource;
 import com.tokopedia.tkpd.home.feed.data.source.local.LocalRecentProductDataSource;
 import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.RecentProductDbManager;
@@ -14,29 +14,29 @@ import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.RecentProductDbM
 
 public class RecentProductSourceFactory {
 
-    private Context mContext;
-    private MojitoService mMojitoService;
-    private RecentProductDbManager mDbManager;
-    private RecentProductMapperResult mMapperResult;
+    private Context context;
+    private MojitoService mojitoService;
+    private RecentProductDbManager recentProductDbManager;
+    private RecentProductMapper recentProductMapper;
 
     public RecentProductSourceFactory(Context context,
                                       MojitoService mojitoService,
                                       RecentProductDbManager dbManager,
-                                      RecentProductMapperResult mapperResult) {
-        mContext = context;
-        mMojitoService = mojitoService;
-        mDbManager = dbManager;
-        mMapperResult = mapperResult;
+                                      RecentProductMapper mapperResult) {
+        this.context = context;
+        this.mojitoService = mojitoService;
+        recentProductDbManager = dbManager;
+        recentProductMapper = mapperResult;
 
     }
 
     public CloudRecentProductDataSource createRecentProductDataSource() {
 
         return new CloudRecentProductDataSource(
-                mContext, mDbManager, mMojitoService, mMapperResult);
+                context, recentProductDbManager, mojitoService, recentProductMapper);
     }
 
     public LocalRecentProductDataSource createRecentProductCacheDataStore() {
-        return new LocalRecentProductDataSource(mDbManager, mMapperResult);
+        return new LocalRecentProductDataSource(recentProductDbManager, recentProductMapper);
     }
 }

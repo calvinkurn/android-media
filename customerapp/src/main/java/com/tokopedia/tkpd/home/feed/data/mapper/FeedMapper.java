@@ -21,11 +21,11 @@ import rx.functions.Func1;
  * @author Kulomady on 12/9/16.
  */
 
-public class FeedMapperResult implements Func1<Response<String>, Feed> {
-    private final Gson mGson;
+public class FeedMapper implements Func1<Response<String>, Feed> {
+    private final Gson gson;
 
-    public FeedMapperResult(Gson gson) {
-        mGson = gson;
+    public FeedMapper(Gson gson) {
+        this.gson = gson;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class FeedMapperResult implements Func1<Response<String>, Feed> {
 
     private Feed mappingResponse(Response<String> response) {
         if (response.isSuccessful() && response.body() != null) {
-            ProductFeedData3 feedResponse = mGson.fromJson(response.body(), ProductFeedData3.class);
+            ProductFeedData3 feedResponse = gson.fromJson(response.body(), ProductFeedData3.class);
             if (feedResponse != null) {
                 return mappingValidFeedResponse(feedResponse);
             } else {

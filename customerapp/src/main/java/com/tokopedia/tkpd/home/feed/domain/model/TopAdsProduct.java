@@ -16,7 +16,7 @@ public class TopAdsProduct extends Product {
     private String categoryId;
     private boolean preorder;
     private boolean wholesale;
-    private int mShoId;
+    private int shoId;
 
     public boolean isPreorder() {
         return preorder;
@@ -76,11 +76,11 @@ public class TopAdsProduct extends Product {
     }
 
     public void setShopId(int shoId) {
-        mShoId = shoId;
+        this.shoId = shoId;
     }
 
     public int getShoId() {
-        return mShoId;
+        return shoId;
     }
 
 

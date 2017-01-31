@@ -22,7 +22,7 @@ import rx.functions.Func3;
  */
 
 public class GetDataFeedCacheUseCase extends UseCase<DataFeed> {
-    private final FeedRepository mFeedRepository;
+    private final FeedRepository feedRepository;
 
 
     public GetDataFeedCacheUseCase(ThreadExecutor threadExecutor,
@@ -30,7 +30,7 @@ public class GetDataFeedCacheUseCase extends UseCase<DataFeed> {
                                    FeedRepository feedRepository) {
 
         super(threadExecutor, postExecutionThread);
-        mFeedRepository = feedRepository;
+        this.feedRepository = feedRepository;
     }
 
     @Override
@@ -74,15 +74,15 @@ public class GetDataFeedCacheUseCase extends UseCase<DataFeed> {
     }
 
     private Observable<List<ProductFeed>> getRecentProductObservable() {
-        return mFeedRepository.getRecentViewProductFromCache();
+        return feedRepository.getRecentViewProductFromCache();
     }
 
     private Observable<Feed> getFeedObservable() {
-        return mFeedRepository.getFeedCache();
+        return feedRepository.getFeedCache();
     }
 
     private Observable<List<TopAds>> getTopAdsObservable() {
-        return mFeedRepository.getTopAdsCache();
+        return feedRepository.getTopAdsCache();
     }
 
 

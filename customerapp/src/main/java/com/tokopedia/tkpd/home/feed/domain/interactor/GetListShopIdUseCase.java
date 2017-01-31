@@ -15,17 +15,17 @@ import rx.Observable;
 
 public class GetListShopIdUseCase extends UseCase<List<String>> {
 
-    private FeedRepository mFeedRepository;
+    private FeedRepository feedRepository;
 
     public GetListShopIdUseCase(ThreadExecutor threadExecutor,
                                 PostExecutionThread postExecutionThread,
                                 FeedRepository feedRepository) {
         super(threadExecutor, postExecutionThread);
-        mFeedRepository = feedRepository;
+        this.feedRepository = feedRepository;
     }
 
     @Override
     public Observable<List<String>> createObservable() {
-        return mFeedRepository.getListShopId();
+        return feedRepository.getListShopId();
     }
 }

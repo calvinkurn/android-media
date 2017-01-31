@@ -7,7 +7,7 @@ import java.util.List;
  * @author Kulomady on 12/8/16.
  */
 public class ProductFeed extends Product {
-    private Shop mShop;
+    private Shop shop;
     private String freeReturn;
     private List<Badge> badges = new ArrayList<>();
     private String wholesale;
@@ -39,11 +39,11 @@ public class ProductFeed extends Product {
     }
 
     public Shop getShop() {
-        return mShop;
+        return shop;
     }
 
     public void setShop(Shop shop) {
-        mShop = shop;
+        this.shop = shop;
     }
 
     public String getFreeReturn() {

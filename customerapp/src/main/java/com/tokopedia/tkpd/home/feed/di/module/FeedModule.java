@@ -7,7 +7,7 @@ import com.tokopedia.core.base.common.service.AceService;
 import com.tokopedia.core.base.di.qualifier.AceQualifier;
 import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.tkpd.home.feed.data.factory.FeedDataSourceFactory;
-import com.tokopedia.tkpd.home.feed.data.mapper.FeedMapperResult;
+import com.tokopedia.tkpd.home.feed.data.mapper.FeedMapper;
 import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.FeedDbManager;
 import com.tokopedia.tkpd.home.feed.di.scope.DataFeedScope;
 
@@ -31,8 +31,8 @@ public class FeedModule {
 
     @DataFeedScope
     @Provides
-    FeedMapperResult provideFeedMapper(Gson gson) {
-        return new FeedMapperResult(gson);
+    FeedMapper provideFeedMapper(Gson gson) {
+        return new FeedMapper(gson);
     }
 
     @DataFeedScope
@@ -45,10 +45,10 @@ public class FeedModule {
     @Provides
     FeedDataSourceFactory provideFeedDataStoreFactory(@ActivityContext Context context,
                                                       AceService aceService,
-                                                      FeedMapperResult feedMapperResult,
+                                                      FeedMapper feedMapper,
                                                       FeedDbManager feedDbManager) {
 
-        return new FeedDataSourceFactory(context, aceService, feedMapperResult, feedDbManager);
+        return new FeedDataSourceFactory(context, aceService, feedMapper, feedDbManager);
     }
 
 }

@@ -12,7 +12,7 @@ import rx.functions.Func1;
  * @author Kulomady on 12/9/16.
  */
 
-public class GetShopIdMapperResult
+public class GetShopIdMapper
         implements Func1<Response<GetListFaveShopIdResponse>, List<String>> {
 
     @Override
