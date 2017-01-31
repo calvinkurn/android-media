@@ -5,6 +5,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.session.register.RegisterConstant;
+import com.tokopedia.session.register.model.gson.ValidateEmailResult;
 import com.tokopedia.session.session.intentservice.RegisterService;
 
 import org.json.JSONObject;
@@ -44,12 +45,19 @@ public class RegisterNetworkInteractorImpl implements RegisterNetworkInteractor,
                         if (response.isSuccessful()) {
                             final TkpdResponse tkpdResponse = response.body();
                             if (!tkpdResponse.isError()) {
-                                JSONObject result = tkpdResponse.getJsonData();
-                                boolean isActive = "1".equals(result.optString("email_status"));
-                                if (isActive)
-                                    return goToLogin(response);
-                                else
-                                    return goToRegister(response);
+                                ValidateEmailResult result = response.body().convertDataObj(ValidateEmailResult.class);
+                                switch(result.getAction()){
+                                    case GO_TO_REGISTER:
+                                        return goToRegister(response);
+                                    case GO_TO_ACTIVATION_PAGE:
+                                        return goToActivationPage(response);
+                                    case GO_TO_LOGIN:
+                                        return goToLogin(response);
+                                    case GO_TO_RESET_PASSWORD:
+                                        return goToResetPassword(response);
+                                    default:
+                                        return goToRegister(response);
+                                }
                             } else {
                                 throw new RuntimeException(response.body().getErrorMessageJoined());
                             }
@@ -58,6 +66,16 @@ public class RegisterNetworkInteractorImpl implements RegisterNetworkInteractor,
                         }
                     }
                 });
+    }
+
+    private Observable<Integer> goToActivationPage(Response<TkpdResponse> response) {
+        int action = GO_TO_ACTIVATION_PAGE;
+        return Observable.just(action);
+    }
+
+    private Observable<Integer> goToResetPassword(Response<TkpdResponse> response) {
+        int action = GO_TO_RESET_PASSWORD;
+        return Observable.just(action);
     }
 
     @Override

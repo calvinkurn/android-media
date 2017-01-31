@@ -419,6 +419,19 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
             ((RegisterActivity) getActivity()).goToStep2(pass);
     }
 
+    @Override
+    public void goToActivationPage() {
+        dismissLoadingProgress();
+        if (getActivity() instanceof RegisterActivity)
+            ((RegisterActivity) getActivity()).goToSendActivation(email.getText().toString(), name.getText().toString());
+    }
+
+    @Override
+    public void goToResetPasswordPage() {
+        dismissLoadingProgress();
+
+    }
+
     private boolean isEmailAddressFromDevice() {
         List<String> list = getEmailListOfAccountsUserHasLoggedInto();
         boolean result = false;

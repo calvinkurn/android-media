@@ -19,7 +19,7 @@
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name="com.tokopedia.session.register.activity.RegisterActivity"
-            android:label="@string/title_register"
+            android:label="@string/title_activity_register"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" />
 

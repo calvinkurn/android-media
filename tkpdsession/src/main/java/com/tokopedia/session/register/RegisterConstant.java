@@ -6,14 +6,17 @@ package com.tokopedia.session.register;
 public interface RegisterConstant {
 
     int PASSWORD_MINIMUM_LENGTH = 6;
+    int IS_EMAIL_ACTIVE = 1;
 
     String NAME = "NAME";
     String PASSWORD = "PASSWORD";
     String EMAIL = "EMAIL";
     String IS_AUTO_VERIFY = "ISAUTOVERIFY";
 
-    int GO_TO_REGISTER = 1;
+    int GO_TO_REGISTER = 0;
+    int GO_TO_ACTIVATION_PAGE = 1;
     int GO_TO_LOGIN = 2;
+    int GO_TO_RESET_PASSWORD = 3;
 
     String PARAM_BIRTHDAY = "birth_day";// 1
     String PARAM_BIRTHMONTH = "birth_month";// 2

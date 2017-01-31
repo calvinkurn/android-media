@@ -138,6 +138,14 @@ public class RegisterStep1PresenterImpl implements RegisterStep1Presenter, Regis
             case GO_TO_REGISTER:
                 viewListener.goToRegisterStep2();
                 break;
+            case GO_TO_ACTIVATION_PAGE:
+                viewListener.goToActivationPage();
+                break;
+            case GO_TO_RESET_PASSWORD:
+                viewListener.goToResetPasswordPage();
+                break;
+            default:
+                throw new RuntimeException("ERROR UNKNOWN ACTION");
         }
     }
 

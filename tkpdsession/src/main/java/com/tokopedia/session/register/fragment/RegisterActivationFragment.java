@@ -82,6 +82,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
         Bundle bundle = new Bundle();
         bundle.putBoolean(AccountsService.USING_HMAC, true);
         bundle.putString(AccountsService.AUTH_KEY, AuthUtil.KEY.KEY_WSV4);
+
         presenter = new RegisterActivationPresenterImpl(this,
                 new RegisterNetworkInteractorImpl(new AccountsService(bundle)),
                 new CompositeSubscription());

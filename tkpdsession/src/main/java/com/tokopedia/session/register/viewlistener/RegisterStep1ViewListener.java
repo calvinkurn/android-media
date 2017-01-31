@@ -41,4 +41,8 @@ public interface RegisterStep1ViewListener {
     void dismissLoadingProgress();
 
     void goToRegisterStep2();
+
+    void goToActivationPage();
+
+    void goToResetPasswordPage();
 }

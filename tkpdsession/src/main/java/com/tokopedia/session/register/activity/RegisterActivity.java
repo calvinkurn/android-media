@@ -82,17 +82,11 @@ public class RegisterActivity extends BasePresenterActivity {
     }
 
     public void goToStep2(RegisterStep1ViewModel model) {
-
-        RegisterActivationFragment fragment = RegisterActivationFragment.createInstance(model.getEmail(), model.getName());
+        RegisterStep2Fragment fragment = RegisterStep2Fragment.createInstance(model);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
         fragmentTransaction.commit();
-
-//        RegisterStep2Fragment fragment = RegisterStep2Fragment.createInstance(model);
-//        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-//        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
-//        fragmentTransaction.commit();
     }
 
     public void goToSendActivation(String email, String name) {
