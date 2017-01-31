@@ -96,7 +96,7 @@ public class GetShopProductRetrofit {
         Map<String, String> params = new ArrayMap<>();
         params.put("shop_id", shopId);
         params.put("shop_domain", shopDomain);
-        params.put("page", Integer.toString(param.getPage()));
+        params.put("page", String.valueOf(param.getPage()));
         params.put("keyword", param.getKeyword());
         params.put("etalase_id", param.getEtalaseId());
         params.put("order_by", param.getOrderBy());

@@ -49,6 +49,15 @@ public class OfficialShopHomeFragment extends Fragment {
 
     private static final String TAG = OfficialShopHomeFragment.class.getSimpleName();
     public static final String SHOP_URL = "SHOP_URL";
+    public static final String TOKOPEDIA_HOST = "tokopedia";
+
+    private static final String URL_QUERY_SORT = "sort";
+    private static final String URL_QUERY_KEYWORD = "keyword";
+    private static final String URL_QUERY_PAGE = "page";
+
+    private static final String URL_PATH_ETALASE = "etalase";
+    private static final String URL_PATH_PRODUCT = "product";
+    private static final String URL_PATH_PAGE = "page";
 
     private OfficialShopInteractionListener mOfficialShopInteractionListener;
 
@@ -184,21 +193,21 @@ public class OfficialShopHomeFragment extends Fragment {
 
     private boolean overrideUrl(String url) {
         Uri uri = Uri.parse(url);
-        if (uri.getScheme().equals("tokopedia")) {
+        if (uri.getScheme().equals(TOKOPEDIA_HOST)) {
             List<String> paths = uri.getPathSegments();
             if (paths.size() > 1) {
                 switch (paths.get(1)) {
-                    case "etalase":
+                    case URL_PATH_ETALASE:
                         String id = uri.getLastPathSegment();
                         GetShopProductParam getShopProductParam = buildProductListParameter(uri);
                         getShopProductParam.setEtalaseId(id);
                         mOfficialShopInteractionListener.OnProductListPageRedirected(getShopProductParam);
                         break;
-                    case "product":
+                    case URL_PATH_PRODUCT:
                         String productId = uri.getLastPathSegment();
                         mOfficialShopInteractionListener.OnProductInfoPageRedirected(productId);
                         break;
-                    case "page":
+                    case URL_PATH_PAGE:
                         String page = uri.getLastPathSegment();
                         GetShopProductParam getShopProductParam1 = buildProductListParameter(uri);
                         if (page != null) {
@@ -223,13 +232,13 @@ public class OfficialShopHomeFragment extends Fragment {
         GetShopProductParam getShopProductParam = new GetShopProductParam();
         for (String parameterName : parameterNames) {
             switch (parameterName) {
-                case "sort":
+                case URL_QUERY_SORT:
                     getShopProductParam.setOrderBy(uri.getQueryParameter(parameterName));
                     break;
-                case "keyword":
+                case URL_QUERY_KEYWORD:
                     getShopProductParam.setKeyword(uri.getQueryParameter(parameterName));
                     break;
-                case "page":
+                case URL_QUERY_PAGE:
                     getShopProductParam.setPage(Integer.parseInt(uri.getQueryParameter(parameterName)));
                     break;
             }

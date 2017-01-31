@@ -75,6 +75,7 @@ import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
 public class ShopInfoActivity extends TActivity
         implements OfficialShopHomeFragment.OfficialShopInteractionListener {
     public static final int REQUEST_CODE_LOGIN = 561;
+    private static final String URL_RECHARGE_HOST = "pulsa.tokopedia.com";
 
     private class ViewHolder {
         ViewPager pager;
@@ -789,7 +790,7 @@ public class ShopInfoActivity extends TActivity
 
     private boolean isNeededToLogin(String url) {
         switch (Uri.parse(url).getHost()){
-            case "pulsa.tokopedia.com":
+            case URL_RECHARGE_HOST:
                 return true;
         }
         return false;
@@ -797,7 +798,7 @@ public class ShopInfoActivity extends TActivity
 
     private void openWebView(String url) {
         Intent intent = new Intent(this, BannerWebView.class);
-        intent.putExtra("url", url);
+        intent.putExtra(BannerWebView.EXTRA_URL, url);
         startActivity(intent);
     }
 }
