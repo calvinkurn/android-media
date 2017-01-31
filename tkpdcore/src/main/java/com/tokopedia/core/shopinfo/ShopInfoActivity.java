@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.BuildConfig;
@@ -63,6 +64,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.TkpdState;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
@@ -75,6 +78,7 @@ import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
 public class ShopInfoActivity extends TActivity
         implements OfficialShopHomeFragment.OfficialShopInteractionListener {
     public static final int REQUEST_CODE_LOGIN = 561;
+    private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String URL_RECHARGE_HOST = "pulsa.tokopedia.com";
 
     private class ViewHolder {
@@ -718,9 +722,11 @@ public class ShopInfoActivity extends TActivity
                     initFacadeAndLoadShopInfo();
                     break;
                 case REQUEST_CODE_LOGIN:
-                    if (!TextUtils.isEmpty(redirectionUrl)){
-                        String url = URLGenerator.generateURLSessionLoginV4(redirectionUrl, this);
-                        openWebView(url);
+                    if (!TextUtils.isEmpty(redirectionUrl)) {
+                        String encodedUrl = encodeUrl(redirectionUrl);
+                        if (encodedUrl != null) {
+                            openWebView(URLGenerator.generateURLSessionLoginV4(encodedUrl, this));
+                        }
                     }
                     break;
             }
@@ -770,10 +776,12 @@ public class ShopInfoActivity extends TActivity
 
     @Override
     public void OnWebViewPageRedirected(String url) {
-        if (isNeededToLogin(url)){
+        if (isNeededToLogin(url)) {
             if (SessionHandler.isV4Login(this)) {
-                url = URLGenerator.generateURLSessionLoginV4(url, this);
-                openWebView(url);
+                String encodedUrl = encodeUrl(url);
+                if (encodedUrl != null) {
+                    openWebView(URLGenerator.generateURLSessionLoginV4(encodedUrl, this));
+                }
             } else {
                 redirectionUrl = url;
                 Intent intent = SessionRouter.getLoginActivityIntent(this);
@@ -788,8 +796,19 @@ public class ShopInfoActivity extends TActivity
 
     }
 
+    private String encodeUrl(String url) {
+        String encodedUrl;
+        try {
+            encodedUrl = URLEncoder.encode(url, FORMAT_UTF_8);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return encodedUrl;
+    }
+
     private boolean isNeededToLogin(String url) {
-        switch (Uri.parse(url).getHost()){
+        switch (Uri.parse(url).getHost()) {
             case URL_RECHARGE_HOST:
                 return true;
         }
@@ -797,6 +816,7 @@ public class ShopInfoActivity extends TActivity
     }
 
     private void openWebView(String url) {
+        CommonUtils.dumper(url);
         Intent intent = new Intent(this, BannerWebView.class);
         intent.putExtra(BannerWebView.EXTRA_URL, url);
         startActivity(intent);
