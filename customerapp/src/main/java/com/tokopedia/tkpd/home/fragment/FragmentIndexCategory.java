@@ -95,7 +95,8 @@ import java.util.Map;
  * modified by mady add feature Recharge and change home menu
  * modified by alifa add Top Picks
  */
-public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
+public class
+FragmentIndexCategory extends TkpdBaseV4Fragment implements
         CategoryView,
         RechargeCategoryView,
         SectionListCategoryAdapter.OnCategoryClickedListener,
