@@ -1,4 +1,4 @@
-package com.tokopedia.core.base;
+package com.tokopedia.core.base.domain;
 
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -10,39 +10,38 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.Subscriptions;
 
 /**
- * @author Kulomady on 12/7/16.
+ * @author Kulomady on 2/1/17.
  */
 
 public abstract class UseCase<T> implements Interactor<T> {
-
     private ThreadExecutor threadExecutor;
     private PostExecutionThread postExecutionThread;
     private Subscription subscription = Subscriptions.empty();
 
     public UseCase(ThreadExecutor threadExecutor,
                    PostExecutionThread postExecutionThread) {
+
         this.threadExecutor = threadExecutor;
         this.postExecutionThread = postExecutionThread;
     }
 
-    protected abstract Observable<T> createObservable();
+    public abstract Observable<T> createObservable(RequestParams requestParams);
 
-    @Override
-    public void execute(Subscriber<T> subscriber) {
-        this.subscription = createObservable()
+    public void execute(RequestParams requestParams, Subscriber<T> subscriber) {
+        this.subscription = createObservable(requestParams)
                 .subscribeOn(Schedulers.from(threadExecutor))
                 .observeOn(postExecutionThread.getScheduler())
                 .subscribe(subscriber);
     }
 
-    @Override
-    public Observable<T> execute() {
-        return createObservable();
+    public void unsubscribe() {
+        if (!this.subscription.isUnsubscribed()) {
+            this.subscription.unsubscribe();
+        }
     }
 
-    public void unsubcribe() {
-        if (subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
+    @Override
+    public Observable<T> getExecuteObservable(RequestParams requestParams) {
+        return createObservable(requestParams);
     }
 }

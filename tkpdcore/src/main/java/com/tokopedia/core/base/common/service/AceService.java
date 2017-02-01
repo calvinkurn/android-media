@@ -16,6 +16,6 @@ import static com.tokopedia.core.network.apiservices.etc.apis.home.ProductFeedAp
 public interface AceService {
 
     @GET(SEARCH_V2_4_PRODUCT)
-    Observable<Response<String>> getProductFeed(@QueryMap Map<String, String> params);
+    Observable<Response<String>> getProductFeed(@QueryMap Map<String, Object> params);
 
 }

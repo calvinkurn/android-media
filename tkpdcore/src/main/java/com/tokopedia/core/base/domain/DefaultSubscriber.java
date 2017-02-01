@@ -1,5 +1,5 @@
 
-package com.tokopedia.core.base;
+package com.tokopedia.core.base.domain;
 
 /**
  * Default subscriber base class to be used whenever we want default error handling.

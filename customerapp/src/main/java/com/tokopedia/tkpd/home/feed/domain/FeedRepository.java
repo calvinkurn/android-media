@@ -19,9 +19,9 @@ public interface FeedRepository {
 
     Observable<List<String>> getListShopId();
 
-    Observable<Feed> getFeed(TKPDMapParam<String, String> queryMap);
+    Observable<Feed> getFeed(TKPDMapParam<String, Object> queryMap);
 
-    Observable<List<TopAds>> getTopAds(TKPDMapParam<String, String> topAdsParams);
+    Observable<List<TopAds>> getTopAds(TKPDMapParam<String, Object> topAdsParams);
 
     Observable<Feed> getFeedCache();
 

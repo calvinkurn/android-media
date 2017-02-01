@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.home.feed.domain.interactor;
 
-import com.tokopedia.core.base.UseCase;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.home.feed.domain.FeedRepository;
@@ -24,9 +25,9 @@ public class GetRecentProductUsecase extends UseCase<List<ProductFeed>> {
         this.feedRepository = feedRepository;
     }
 
+
     @Override
-    public Observable<List<ProductFeed>> createObservable() {
+    public Observable<List<ProductFeed>> createObservable(RequestParams requestParams) {
         return feedRepository.getRecentViewProduct();
     }
-
 }

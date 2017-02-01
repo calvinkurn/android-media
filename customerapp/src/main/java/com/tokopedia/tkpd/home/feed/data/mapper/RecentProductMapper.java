@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.tokopedia.core.network.entity.home.ProductItemData;
 import com.tokopedia.core.var.ProductItem;
-import com.tokopedia.tkpd.home.feed.data.source.cloud.entity.RecentProductResponse;
+import com.tokopedia.tkpd.home.feed.data.source.cloud.response.RecentProductResponse;
 import com.tokopedia.tkpd.home.feed.domain.model.Badge;
 import com.tokopedia.tkpd.home.feed.domain.model.Label;
 import com.tokopedia.tkpd.home.feed.domain.model.ProductFeed;

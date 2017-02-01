@@ -55,13 +55,13 @@ public class FeedRepositoryImpl implements FeedRepository {
     }
 
     @Override
-    public Observable<Feed> getFeed(TKPDMapParam<String, String> queryMap) {
+    public Observable<Feed> getFeed(TKPDMapParam<String, Object> queryMap) {
         CloudFeedDataStore feedDataSource = feedDataSourceFactory.createFeedDataSource();
         return feedDataSource.getFeed(queryMap);
     }
 
     @Override
-    public Observable<List<TopAds>> getTopAds(TKPDMapParam<String, String> topAdsParams) {
+    public Observable<List<TopAds>> getTopAds(TKPDMapParam<String, Object> topAdsParams) {
         TopAdsDataSource topAdsDataStore = topAdsDataSourceFactory.createTopAdsDataSource();
         return topAdsDataStore.getTopAdsCloud(topAdsParams);
     }

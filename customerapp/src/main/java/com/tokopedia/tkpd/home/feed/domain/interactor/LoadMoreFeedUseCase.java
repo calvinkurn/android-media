@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.home.feed.domain.interactor;
 
-import com.tokopedia.core.base.UseCaseWithParams;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.base.utils.StringUtils;
@@ -21,8 +22,9 @@ import rx.functions.Func2;
  */
 
 public class LoadMoreFeedUseCase
-        extends UseCaseWithParams<GetFeedUseCase.RequestParams, DataFeed> {
+        extends UseCase<DataFeed> {
 
+    public static final String KEY_IS_INCLUDE_TOPADS = "isIncludeTopAds";
 
     private final ThreadExecutor threadExecutor;
     private final PostExecutionThread postExecutionThread;
@@ -45,10 +47,11 @@ public class LoadMoreFeedUseCase
         this.getTopAdsUseCase = getTopAdsUseCase;
     }
 
-
     @Override
-    protected Observable<DataFeed> createObservable(GetFeedUseCase.RequestParams requestParams) {
-        if (requestParams.isIncludeWithTopAds()) {
+    public Observable<DataFeed> createObservable(RequestParams requestParams) {
+        boolean isIncludeTopAds = requestParams.getBoolean(KEY_IS_INCLUDE_TOPADS,false);
+        requestParams.clearValue(KEY_IS_INCLUDE_TOPADS);
+        if (isIncludeTopAds) {
             return Observable.zip(
                     getFeedObservable(requestParams),
                     getTopAdsObservable(),
@@ -78,9 +81,7 @@ public class LoadMoreFeedUseCase
             });
 
         }
-
     }
-
 
     private DataFeed getInvalidDataFeed() {
         DataFeed dataFeed = new DataFeed();
@@ -103,10 +104,10 @@ public class LoadMoreFeedUseCase
         return dataFeed;
     }
 
-    private Observable<Feed> getFeedObservable(final GetFeedUseCase.RequestParams requestParams) {
+    private Observable<Feed> getFeedObservable(final RequestParams requestParams) {
         final String emptyString = "";
         return getListShopIdUseCase
-                .execute()
+                .createObservable(RequestParams.EMPTY)
                 .map(new Func1<List<String>, String>() {
                     @Override
                     public String call(List<String> shopIdInList) {
@@ -122,13 +123,13 @@ public class LoadMoreFeedUseCase
                 .flatMap(new Func1<String, Observable<Feed>>() {
                     @Override
                     public Observable<Feed> call(String shopIdListInString) {
-                        requestParams.getValues()
-                                .put(GetFeedUseCase.RequestParams.KEY_SHOP_ID, shopIdListInString);
+                        requestParams.getParameters()
+                                .put(GetFeedUseCase.KEY_SHOP_ID, shopIdListInString);
 
                         return new GetFeedUseCase(threadExecutor,
                                 postExecutionThread,
                                 feedRepository)
-                                .execute(requestParams);
+                                .createObservable(requestParams);
 
                     }
                 })
@@ -143,7 +144,7 @@ public class LoadMoreFeedUseCase
     }
 
     private Observable<List<TopAds>> getTopAdsObservable() {
-        return getTopAdsUseCase.execute(new GetTopAdsUseCase.RequestParams())
+        return getTopAdsUseCase.createObservable(getTopAdsDefaultParams())
                 .onErrorReturn(new Func1<Throwable, List<TopAds>>() {
                     @Override
                     public List<TopAds> call(Throwable throwable) {
@@ -152,5 +153,14 @@ public class LoadMoreFeedUseCase
                     }
                 });
     }
+
+    private RequestParams getTopAdsDefaultParams() {
+        RequestParams params = RequestParams.create();
+        params.putString(GetTopAdsUseCase.KEY_PAGE,GetTopAdsUseCase.TOPADS_PAGE_DEFAULT_VALUE);
+        params.putString(GetTopAdsUseCase.KEY_ITEM,GetTopAdsUseCase.TOPADS_ITEM_DEFAULT_VALUE);
+        params.putString(GetTopAdsUseCase.KEY_SRC,GetTopAdsUseCase.SRC_PRODUCT_FEED);
+        return params;
+    }
+
 
 }

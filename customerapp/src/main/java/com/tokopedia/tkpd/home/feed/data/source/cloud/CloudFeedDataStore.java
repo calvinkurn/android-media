@@ -35,7 +35,7 @@ public class CloudFeedDataStore {
         this.feedDbManager = feedDbManager;
     }
 
-    public Observable<Feed> getFeed(TKPDMapParam<String, String> params) {
+    public Observable<Feed> getFeed(TKPDMapParam<String, Object> params) {
         params.put(KEY_PARAMS_USER_ID, SessionHandler.getLoginID(context));
         return aceService.getProductFeed(params).doOnNext(saveToCache()).map(feedMapper);
     }

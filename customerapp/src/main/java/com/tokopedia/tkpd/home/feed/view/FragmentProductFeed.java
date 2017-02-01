@@ -18,7 +18,8 @@ import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.base.presentation.BaseFragment;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
@@ -30,7 +31,7 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.adapter.DataFeedAdapter;
-import com.tokopedia.tkpd.home.feed.di.component.DataFeedComponent;
+import com.tokopedia.tkpd.home.feed.di.component.DaggerDataFeedComponent;
 import com.tokopedia.tkpd.home.util.DefaultRetryListener;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 
-public class FragmentProductFeed extends BaseFragment implements FeedContract.View,
+public class FragmentProductFeed extends BaseDaggerFragment implements FeedContract.View,
         DefaultRetryListener.OnClickRetry, ListenerFabClick, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.index_main_recycler_view)
@@ -111,7 +112,12 @@ public class FragmentProductFeed extends BaseFragment implements FeedContract.Vi
 
     @Override
     protected void initInjector() {
-        getComponent(DataFeedComponent.class).inject(this);
+        AppComponent component = getComponent(AppComponent.class);
+        DaggerDataFeedComponent feedComponent
+                = (DaggerDataFeedComponent) DaggerDataFeedComponent
+                .builder()
+                .appComponent(component).build();
+        feedComponent.inject(this);
     }
 
 

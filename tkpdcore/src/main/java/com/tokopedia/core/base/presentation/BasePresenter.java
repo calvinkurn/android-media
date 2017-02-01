@@ -1,8 +1,5 @@
 package com.tokopedia.core.base.presentation;
 
-import rx.Subscription;
-import rx.subscriptions.CompositeSubscription;
-
 /**
  * @author kulomady on 11/20/16.
  */
@@ -10,7 +7,6 @@ import rx.subscriptions.CompositeSubscription;
 public class BasePresenter<T extends CustomerView> implements CustomerPresenter<T> {
 
     private T view;
-    private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     @Override
     public void attachView(T view) {
@@ -20,7 +16,6 @@ public class BasePresenter<T extends CustomerView> implements CustomerPresenter<
     @Override
     public void detachView() {
         this.view = null;
-        this.mCompositeSubscription.clear();
     }
 
     public void checkViewAttached() {
@@ -31,10 +26,6 @@ public class BasePresenter<T extends CustomerView> implements CustomerPresenter<
 
     public T getView() {
         return view;
-    }
-
-    protected void addSubcription(Subscription subscriptions) {
-        this.mCompositeSubscription.add(subscriptions);
     }
 
     public static class CustomerViewNotAttachedException extends RuntimeException {

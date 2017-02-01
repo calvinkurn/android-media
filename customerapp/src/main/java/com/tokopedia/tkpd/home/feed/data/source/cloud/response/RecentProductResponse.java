@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.home.feed.data.source.cloud.entity;
+package com.tokopedia.tkpd.home.feed.data.source.cloud.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

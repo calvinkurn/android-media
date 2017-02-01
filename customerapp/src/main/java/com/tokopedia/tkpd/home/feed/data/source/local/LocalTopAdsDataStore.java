@@ -25,7 +25,7 @@ public class LocalTopAdsDataStore implements TopAdsDataSource {
     }
 
     @Override
-    public Observable<List<TopAds>> getTopAdsCloud(TKPDMapParam<String, String> queryMap) {
+    public Observable<List<TopAds>> getTopAdsCloud(TKPDMapParam<String, Object> queryMap) {
         return Observable.empty();
     }
 

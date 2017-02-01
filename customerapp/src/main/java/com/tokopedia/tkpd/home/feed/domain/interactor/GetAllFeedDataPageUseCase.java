@@ -2,11 +2,11 @@ package com.tokopedia.tkpd.home.feed.domain.interactor;
 
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.base.UseCase;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.base.utils.StringUtils;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.tkpd.home.feed.domain.FeedRepository;
 import com.tokopedia.tkpd.home.feed.domain.model.DataFeed;
 import com.tokopedia.tkpd.home.feed.domain.model.Feed;
@@ -48,9 +48,9 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
         this.getTopAdsUseCase = getTopAdsUseCase;
     }
 
-    @Override
-    public Observable<DataFeed> createObservable() {
 
+    @Override
+    public Observable<DataFeed> createObservable(RequestParams requestParams) {
         return Observable.zip(
                 getRecentProductObservable(),
                 getFeedObservable(),
@@ -71,7 +71,6 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
         });
     }
 
-
     @NonNull
     private DataFeed getValidDataFeed(List<ProductFeed> products, Feed feed, List<TopAds> topAds) {
         DataFeed dataFeed = new DataFeed();
@@ -90,7 +89,7 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
     }
 
     private Observable<List<ProductFeed>> getRecentProductObservable() {
-        return getRecentProductUsecase.execute()
+        return getRecentProductUsecase.createObservable(RequestParams.EMPTY)
                 .onErrorReturn(new Func1<Throwable, List<ProductFeed>>() {
                     @Override
                     public List<ProductFeed> call(Throwable throwable) {
@@ -102,7 +101,7 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
     private Observable<Feed> getFeedObservable() {
         final String emptyString = "";
         return getListShopIdUseCase
-                .execute()
+                .createObservable(RequestParams.EMPTY)
                 .map(new Func1<List<String>, String>() {
                     @Override
                     public String call(List<String> shopIdInList) {
@@ -122,7 +121,7 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
                         return new GetFeedUseCase(threadExecutor,
                                 postExecutionThread,
                                 feedRepository)
-                                .execute(getFeedRequestParams(shopIdListInString));
+                                .createObservable(getFeedRequestParams(shopIdListInString));
 
                     }
                 })
@@ -137,7 +136,7 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
     }
 
     private Observable<List<TopAds>> getTopAdsObservable() {
-        return getTopAdsUseCase.execute(new GetTopAdsUseCase.RequestParams())
+        return getTopAdsUseCase.createObservable(getTopAdsDefaultParams())
                 .onErrorReturn(new Func1<Throwable, List<TopAds>>() {
                     @Override
                     public List<TopAds> call(Throwable throwable) {
@@ -147,16 +146,24 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
                 });
     }
 
-    @NonNull
-    private GetFeedUseCase.RequestParams getFeedRequestParams(String shopIdListInString) {
-        TKPDMapParam<String, String> params = GetFeedUseCase.RequestParams.defaultParamsValue();
-        params.put(GetFeedUseCase.RequestParams.KEY_SHOP_ID, shopIdListInString);
-        return new GetFeedUseCase.RequestParams(params);
+    private RequestParams getTopAdsDefaultParams() {
+        RequestParams params = RequestParams.create();
+        params.putString(GetTopAdsUseCase.KEY_PAGE,GetTopAdsUseCase.TOPADS_PAGE_DEFAULT_VALUE);
+        params.putString(GetTopAdsUseCase.KEY_ITEM,GetTopAdsUseCase.TOPADS_ITEM_DEFAULT_VALUE);
+        params.putString(GetTopAdsUseCase.KEY_SRC,GetTopAdsUseCase.SRC_PRODUCT_FEED);
+        return params;
     }
 
-
-
-
+    @NonNull
+    private RequestParams getFeedRequestParams(String shopIdListInString) {
+        RequestParams params = RequestParams.create();
+        params.putString(GetFeedUseCase.KEY_ROWS,GetFeedUseCase.ROW_VALUE_DEFAULT);
+        params.putString(GetFeedUseCase.KEY_START, GetFeedUseCase.START_VALUE_DEFAULT);
+        params.putString((GetFeedUseCase.KEY_DEVICE), GetFeedUseCase.DEVICE_VALUE_DEFAULT);
+        params.putString(GetFeedUseCase.KEY_OB, GetFeedUseCase.OB_VALUE_DEFAULT);
+        params.putString(GetFeedUseCase.KEY_SHOP_ID,shopIdListInString);
+        return params;
+    }
 
 
 

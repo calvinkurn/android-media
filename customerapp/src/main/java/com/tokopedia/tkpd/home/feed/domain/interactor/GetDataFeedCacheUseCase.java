@@ -2,7 +2,8 @@ package com.tokopedia.tkpd.home.feed.domain.interactor;
 
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.base.UseCase;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.home.feed.domain.FeedRepository;
@@ -34,8 +35,7 @@ public class GetDataFeedCacheUseCase extends UseCase<DataFeed> {
     }
 
     @Override
-    public Observable<DataFeed> createObservable() {
-
+    public Observable<DataFeed> createObservable(RequestParams requestParams) {
         return Observable.zip(
                 getRecentProductObservable(),
                 getFeedObservable(),

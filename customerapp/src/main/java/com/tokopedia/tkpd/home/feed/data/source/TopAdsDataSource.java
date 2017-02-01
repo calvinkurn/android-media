@@ -13,7 +13,7 @@ import rx.Observable;
 
 public interface TopAdsDataSource {
 
-    Observable<List<TopAds>> getTopAdsCloud(TKPDMapParam<String, String> queryMap);
+    Observable<List<TopAds>> getTopAdsCloud(TKPDMapParam<String, Object> queryMap);
 
     Observable<List<TopAds>> getTopAdsCache();
 }

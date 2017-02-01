@@ -33,7 +33,7 @@ public class CloudTopAdsDataStore implements TopAdsDataSource {
     }
 
     @Override
-    public Observable<List<TopAds>> getTopAdsCloud(TKPDMapParam<String, String> param) {
+    public Observable<List<TopAds>> getTopAdsCloud(TKPDMapParam<String, Object> param) {
         return topAdsService.getTopAds(param)
                 .doOnNext(saveToCache())
                 .map(topAdsMapper);

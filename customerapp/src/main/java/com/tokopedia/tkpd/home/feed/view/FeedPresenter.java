@@ -1,6 +1,9 @@
 package com.tokopedia.tkpd.home.feed.view;
 
-import com.tokopedia.core.base.DefaultSubscriber;
+import android.support.annotation.NonNull;
+
+import com.tokopedia.core.base.domain.DefaultSubscriber;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BasePresenter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.tkpd.home.feed.domain.interactor.GetAllFeedDataPageUseCase;
@@ -22,9 +25,7 @@ public class FeedPresenter extends BasePresenter<FeedContract.View>
     private GetAllFeedDataPageUseCase feedDataPageUseCase;
     private GetDataFeedCacheUseCase feedDataCachePageUseCase;
     private LoadMoreFeedUseCase loadMoreFeedUseCase;
-
     private PagingHandler pagingHandler;
-    private GetFeedUseCase.RequestParams requestParams;
 
     @Inject
     public FeedPresenter(GetAllFeedDataPageUseCase feedDataPageUseCase,
@@ -34,9 +35,6 @@ public class FeedPresenter extends BasePresenter<FeedContract.View>
         this.feedDataPageUseCase = feedDataPageUseCase;
         this.feedDataCachePageUseCase = feedDataCachePageUseCase;
         this.loadMoreFeedUseCase = loadMoreFeedUseCase;
-        requestParams = new GetFeedUseCase
-                .RequestParams(GetFeedUseCase.RequestParams.defaultParamsValue());
-
         pagingHandler = new PagingHandler();
     }
 
@@ -45,7 +43,7 @@ public class FeedPresenter extends BasePresenter<FeedContract.View>
     @Override
     public void detachView() {
         super.detachView();
-        feedDataPageUseCase.unsubcribe();
+        feedDataPageUseCase.unsubscribe();
         loadMoreFeedUseCase.unsubscribe();
     }
 
@@ -53,7 +51,7 @@ public class FeedPresenter extends BasePresenter<FeedContract.View>
     public void initializeDataFeed() {
         checkViewAttached();
         getView().hideContentView();
-        feedDataCachePageUseCase.execute(new FeedCacheSubscriber());
+        feedDataCachePageUseCase.execute(RequestParams.EMPTY, new FeedCacheSubscriber());
     }
 
     @Override
@@ -61,7 +59,7 @@ public class FeedPresenter extends BasePresenter<FeedContract.View>
         checkViewAttached();
         getView().showRefreshLoading();
         getView().disableLoadmore();
-        feedDataPageUseCase.execute(new RefreshFeedSubcriber());
+        feedDataPageUseCase.execute(RequestParams.EMPTY, new RefreshFeedSubcriber());
     }
 
     @Override
@@ -69,19 +67,25 @@ public class FeedPresenter extends BasePresenter<FeedContract.View>
         if (pagingHandler.CheckNextPage()) {
             checkViewAttached();
             pagingHandler.nextPage();
-            requestParams.getValues()
-                    .put(GetFeedUseCase.RequestParams.KEY_START, String.valueOf(getPagingIndex()));
-
-            requestParams.setIncludeWithTopAds(isPageOdd());
-
             loadMoreFeedUseCase.execute(
-                    requestParams,
+                    getFeedRequestParams(),
                     new LoadMoreFeedSubcriber());
+        }else{
+            getView().disableLoadmore();
         }
 
     }
 
-
+    @NonNull
+    private RequestParams getFeedRequestParams() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetFeedUseCase.KEY_ROWS,GetFeedUseCase.ROW_VALUE_DEFAULT);
+        requestParams.putString(GetFeedUseCase.KEY_START, String.valueOf(getPagingIndex()));
+        requestParams.putString((GetFeedUseCase.KEY_DEVICE), GetFeedUseCase.DEVICE_VALUE_DEFAULT);
+        requestParams.putString(GetFeedUseCase.KEY_OB, GetFeedUseCase.OB_VALUE_DEFAULT);
+        requestParams.putBoolean(LoadMoreFeedUseCase.KEY_IS_INCLUDE_TOPADS,isPageOdd());
+        return requestParams;
+    }
 
     private void setPagging(ProductFeedViewModel productFeedViewModel) {
         productFeedViewModel.getPagingHandlerModel();
