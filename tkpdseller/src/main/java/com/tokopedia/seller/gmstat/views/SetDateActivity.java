@@ -107,7 +107,6 @@ public class SetDateActivity extends BasePresenterActivity implements SetDateFra
     private void inflateNewFragment(Fragment fragment, String tag) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.set_date_fragment_container, fragment, tag);
-        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 

@@ -133,7 +133,6 @@ public abstract class BaseGMStatActivity extends DrawerPresenterActivity
     private void inflateNewFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_gmstat_fragment_container, fragment, GMStatActivityFragment.TAG);
-        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
