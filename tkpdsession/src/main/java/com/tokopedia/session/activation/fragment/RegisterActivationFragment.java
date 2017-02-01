@@ -34,6 +34,11 @@ import rx.subscriptions.CompositeSubscription;
 public class RegisterActivationFragment extends BasePresenterFragment<RegisterActivationPresenter>
         implements RegisterConstant, RegisterActivationView {
 
+    private static final String ARGS_AUTO_ACTIVATE = "ARGS_AUTO_ACTIVATE";
+    private static final String ARGS_EMAIL = "ARGS_EMAIL";
+    private static final String ARGS_NAME = "ARGS_NAME";
+
+
     @BindView(R2.id.head)
     TextView nameEditText;
     @BindView(R2.id.email)
@@ -43,11 +48,12 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     TkpdProgressDialog progressDialog;
 
-    public static RegisterActivationFragment createInstance(String email, String name) {
+    public static RegisterActivationFragment createInstance(String email, String name, boolean isAutoActivate) {
         RegisterActivationFragment fragment = new RegisterActivationFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(EMAIL, email);
-        bundle.putString(NAME, name);
+        bundle.putString(ARGS_EMAIL, email);
+        bundle.putString(ARGS_NAME, name);
+        bundle.putBoolean(ARGS_AUTO_ACTIVATE, isAutoActivate);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -59,7 +65,9 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     @Override
     protected void onFirstTimeLaunched() {
-
+        if (getArguments().getBoolean(ARGS_AUTO_ACTIVATE, false)) {
+            presenter.resendActivation();
+        }
     }
 
     @Override
@@ -106,9 +114,9 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
     @Override
     protected void initView(View view) {
         resendButton.setBackgroundResource(com.tokopedia.core.R.drawable.bg_rounded_corners);
-        nameEditText.setText(String.format("Halo, %s", getArguments().getString(NAME, "")));
-        email.setText(getArguments().getString(EMAIL));
-        SnackbarManager.make(getActivity(), "Akun anda belum diaktivasi. Cek email anda untuk mengaktivasi akun.", Snackbar.LENGTH_LONG).show();
+        nameEditText.setText(String.format("Halo, %s", getArguments().getString(ARGS_NAME, "")));
+        email.setText(getArguments().getString(ARGS_EMAIL, ""));
+//        SnackbarManager.make(getActivity(), "Akun anda belum diaktivasi. Cek email anda untuk mengaktivasi akun.", Snackbar.LENGTH_LONG).show();
     }
 
     @Override

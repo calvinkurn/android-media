@@ -40,7 +40,7 @@ public interface RegisterStep1ViewListener {
 
     void goToRegisterStep2();
 
-    void goToActivationPage();
+    void goToAutomaticActivationPage();
 
     void goToAutomaticResetPassword();
 

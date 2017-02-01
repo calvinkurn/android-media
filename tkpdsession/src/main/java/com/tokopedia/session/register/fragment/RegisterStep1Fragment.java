@@ -422,9 +422,9 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
     }
 
     @Override
-    public void goToActivationPage() {
+    public void goToAutomaticActivationPage() {
         dismissLoadingProgress();
-        startActivity(ActivationActivity.getCallingIntent(getActivity(),
+        startActivity(ActivationActivity.getAutomaticActivationIntent(getActivity(),
                 email.getText().toString(),
                 name.getText().toString()));
         getActivity().finish();
