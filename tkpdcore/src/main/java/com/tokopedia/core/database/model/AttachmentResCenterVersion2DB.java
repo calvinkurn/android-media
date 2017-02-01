@@ -14,7 +14,7 @@ import com.tokopedia.core.database.DbFlowDatabase;
  * Created on 4/20/16.
  */
 @Table(database = DbFlowDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
-public class AttachmentResCenterDB extends BaseModel implements Parcelable {
+public class AttachmentResCenterVersion2DB extends BaseModel implements Parcelable {
 
     public static final String MODULE_CREATE_RESCENTER = "0";
     public static final String MODULE_REJECT_ADMIN_SOLUTION = "1";
@@ -56,7 +56,7 @@ public class AttachmentResCenterDB extends BaseModel implements Parcelable {
         return id;
     }
 
-    public AttachmentResCenterDB() {
+    public AttachmentResCenterVersion2DB() {
     }
 
     @Override
@@ -73,9 +73,11 @@ public class AttachmentResCenterDB extends BaseModel implements Parcelable {
         dest.writeString(this.imageUrl);
         dest.writeString(this.modulName);
         dest.writeString(this.imageUUID);
+        dest.writeString(this.picSrc);
+        dest.writeString(this.picObj);
     }
 
-    protected AttachmentResCenterDB(Parcel in) {
+    protected AttachmentResCenterVersion2DB(Parcel in) {
         this.id = in.readLong();
         this.resolutionID = in.readString();
         this.orderID = in.readString();
@@ -83,17 +85,19 @@ public class AttachmentResCenterDB extends BaseModel implements Parcelable {
         this.imageUrl = in.readString();
         this.modulName = in.readString();
         this.imageUUID = in.readString();
+        this.picSrc = in.readString();
+        this.picObj = in.readString();
     }
 
-    public static final Creator<AttachmentResCenterDB> CREATOR = new Creator<AttachmentResCenterDB>() {
+    public static final Creator<AttachmentResCenterVersion2DB> CREATOR = new Creator<AttachmentResCenterVersion2DB>() {
         @Override
-        public AttachmentResCenterDB createFromParcel(Parcel source) {
-            return new AttachmentResCenterDB(source);
+        public AttachmentResCenterVersion2DB createFromParcel(Parcel source) {
+            return new AttachmentResCenterVersion2DB(source);
         }
 
         @Override
-        public AttachmentResCenterDB[] newArray(int size) {
-            return new AttachmentResCenterDB[size];
+        public AttachmentResCenterVersion2DB[] newArray(int size) {
+            return new AttachmentResCenterVersion2DB[size];
         }
     };
 }

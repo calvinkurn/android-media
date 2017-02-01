@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.CommonUtils;
@@ -22,16 +24,22 @@ public class LuckyShopImage {
 
     public static void loadImage(final ImageView image, String url) {
         if (url != null && !url.equals("")) {
-            ImageHandler.loadImageBitmap2(image.getContext(), url,
-                    new SimpleTarget<Bitmap>() {
+            Glide.with(image.getContext())
+                    .load(url)
+                    .asBitmap()
+                    .dontAnimate()
+                    .placeholder(R.drawable.loading_page)
+                    .error(R.drawable.error_drawable)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
                             if (bitmap.getHeight() <= 1 && bitmap.getWidth() <= 1) {
                                 image.setVisibility(View.GONE);
                             } else {
-                                Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 30, 30, true);
                                 image.setVisibility(View.VISIBLE);
-                                image.setImageBitmap(scaled);
+                                image.setImageBitmap(bitmap);
                             }
                         }
 
@@ -47,16 +55,22 @@ public class LuckyShopImage {
     public static void loadImage(Context context, String url, final LinearLayout container) {
         if (url != null && !url.equals("")) {
             final View view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null);
-            ImageHandler.loadImageBitmap2(view.getContext(), url,
-                    new SimpleTarget<Bitmap>() {
+            Glide.with(context)
+                    .load(url)
+                    .asBitmap()
+                    .dontAnimate()
+                    .placeholder(R.drawable.loading_page)
+                    .error(R.drawable.error_drawable)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
                             ImageView image = (ImageView) view.findViewById(R.id.badge);
                             if (bitmap.getHeight() <= 1 && bitmap.getWidth() <= 1) {
                                 view.setVisibility(View.GONE);
                             } else {
-                                Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 30, 30, true);
-                                image.setImageBitmap(scaled);
+                                image.setImageBitmap(bitmap);
                                 view.setVisibility(View.VISIBLE);
                                 container.addView(view);
                             }
