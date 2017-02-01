@@ -12,7 +12,7 @@ import retrofit2.Retrofit;
  */
 public class ShopService extends AuthService<ShopApi> {
 
-    private static final String URL_SHOP = "https://ws-staging.tokopedia.com/v4/shop/";
+    private static final String URL_SHOP = "https://ws.tokopedia.com/v4/shop/";
 
     public ShopService() {
         super();

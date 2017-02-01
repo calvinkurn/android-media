@@ -10,7 +10,7 @@ import retrofit2.Retrofit;
  */
 public class ActionService extends AuthService<ActionApi> {
 
-    private static final String URL_ACTION = "https://ws-staging.tokopedia.com/v4/action/";
+    private static final String URL_ACTION = "https://ws.tokopedia.com/v4/action/";
 
     public ActionService(){}
 
