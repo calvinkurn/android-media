@@ -311,6 +311,5 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
 
     private void sendGTMClick(){
         UnifyTracking.eventRegister(AppEventTracking.EventLabel.REGISTER_STEP_1);
-
     }
 }

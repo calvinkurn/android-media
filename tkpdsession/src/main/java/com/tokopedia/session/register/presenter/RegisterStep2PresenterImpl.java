@@ -15,7 +15,6 @@ import com.tokopedia.session.register.interactor.RegisterNetworkInteractor;
 import com.tokopedia.session.register.model.RegisterViewModel;
 import com.tokopedia.session.register.model.gson.RegisterResult;
 import com.tokopedia.session.register.viewlistener.RegisterStep2ViewListener;
-import com.tokopedia.session.session.presenter.RegisterNewNextImpl;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -181,8 +180,7 @@ public class RegisterStep2PresenterImpl implements RegisterStep2Presenter, Regis
             isValid = false;
             sendGTMRegisterError(AppEventTracking.EventLabel.HANDPHONE);
         } else {
-            boolean validatePhoneNumber = RegisterNewNextImpl
-                    .validatePhoneNumber(viewListener.getPhone().getText().toString().replace("-", ""));
+            boolean validatePhoneNumber = validatePhoneNumber(viewListener.getPhone().getText().toString().replace("-", ""));
             if (!validatePhoneNumber) {
                 viewListener.setPhoneError(viewListener.getString(com.tokopedia.core.R.string.error_invalid_phone_number));
                 isValid = false;
@@ -203,5 +201,12 @@ public class RegisterStep2PresenterImpl implements RegisterStep2Presenter, Regis
         UnifyTracking.eventRegisterError(label);
     }
 
+    public static boolean validatePhoneNumber(String phoneNo) {
+        for (int i = MIN_PHONE_NUMBER; i <= MAX_PHONE_NUMBER; i++) {
+            if (phoneNo.matches("\\d{" + i + "}")) return true;
+        }
+        return false;
+
+    }
 
 }

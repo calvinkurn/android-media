@@ -4,7 +4,6 @@ import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -27,6 +26,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -266,6 +267,21 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
                 presenter.registerNext();
             }
         });
+
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goToLogin();
+            }
+        });
+    }
+
+    private void goToLogin() {
+        getActivity().finish();
+
+        startActivity(Login.getCallingIntent(
+                getActivity())
+        );
     }
 
     @Override
@@ -394,6 +410,7 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
 
     @Override
     public void goToRegisterStep2() {
+        UnifyTracking.eventRegister(AppEventTracking.EventLabel.REGISTER_STEP_1);
         dismissLoadingProgress();
         RegisterStep1ViewModel pass = new RegisterStep1ViewModel();
         pass.setName(name.getText().toString());
@@ -414,13 +431,14 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
     }
 
     @Override
-    public void goToResetPasswordPage() {
+    public void goToAutomaticResetPassword() {
         dismissLoadingProgress();
-        startActivity(new Intent(getActivity(), ForgotPasswordActivity.class));
+        startActivity(ForgotPasswordActivity.getAutomaticResetPasswordIntent(getActivity(),
+                email.getText().toString()));
     }
 
     @Override
-    public void goToLogin() {
+    public void goToAutomaticLogin() {
         dismissLoadingProgress();
         getActivity().finish();
 

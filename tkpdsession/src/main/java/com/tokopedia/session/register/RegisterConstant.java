@@ -5,6 +5,8 @@ package com.tokopedia.session.register;
  */
 public interface RegisterConstant {
 
+    int MAX_PHONE_NUMBER = 13;
+    int MIN_PHONE_NUMBER = 6;
     int PASSWORD_MINIMUM_LENGTH = 6;
     int IS_EMAIL_ACTIVE = 1;
 

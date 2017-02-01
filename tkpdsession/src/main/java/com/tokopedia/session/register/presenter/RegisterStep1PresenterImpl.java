@@ -127,7 +127,7 @@ public class RegisterStep1PresenterImpl implements RegisterStep1Presenter, Regis
     private void startAction(Integer action) {
         switch (action) {
             case GO_TO_LOGIN:
-                viewListener.goToLogin();
+                viewListener.goToAutomaticLogin();
                 break;
             case GO_TO_REGISTER:
                 viewListener.goToRegisterStep2();
@@ -136,7 +136,7 @@ public class RegisterStep1PresenterImpl implements RegisterStep1Presenter, Regis
                 viewListener.goToActivationPage();
                 break;
             case GO_TO_RESET_PASSWORD:
-                viewListener.goToResetPasswordPage();
+                viewListener.goToAutomaticResetPassword();
                 break;
             default:
                 throw new RuntimeException("ERROR UNKNOWN ACTION");

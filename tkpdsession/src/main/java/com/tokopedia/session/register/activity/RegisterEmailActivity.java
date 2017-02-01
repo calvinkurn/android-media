@@ -43,7 +43,6 @@ public class RegisterEmailActivity extends BasePresenterActivity {
 
         RegisterStep1Fragment fragment = RegisterStep1Fragment.createInstance();
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
             fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
         } else {
@@ -76,6 +75,7 @@ public class RegisterEmailActivity extends BasePresenterActivity {
         RegisterStep2Fragment fragment = RegisterStep2Fragment.createInstance(model);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.addToBackStack(RegisterStep2Fragment.class.getSimpleName());
         fragmentTransaction.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
         fragmentTransaction.commit();
     }

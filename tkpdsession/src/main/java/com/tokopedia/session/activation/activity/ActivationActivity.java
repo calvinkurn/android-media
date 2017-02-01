@@ -82,4 +82,11 @@ public class ActivationActivity extends BasePresenterActivity {
         callingIntent.putExtra(INTENT_EXTRA_PARAM_NAME, name);
         return callingIntent;
     }
+
+    public static Intent getCallingIntent(Context context, String email) {
+        Intent callingIntent = new Intent(context, ActivationActivity.class);
+        callingIntent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
+        callingIntent.putExtra(INTENT_EXTRA_PARAM_NAME, "");
+        return callingIntent;
+    }
 }

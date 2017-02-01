@@ -42,8 +42,8 @@ public interface RegisterStep1ViewListener {
 
     void goToActivationPage();
 
-    void goToResetPasswordPage();
+    void goToAutomaticResetPassword();
 
-    void goToLogin();
+    void goToAutomaticLogin();
 
 }
