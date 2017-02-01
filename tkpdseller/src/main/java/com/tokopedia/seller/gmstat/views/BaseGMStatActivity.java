@@ -137,6 +137,12 @@ public abstract class BaseGMStatActivity extends DrawerPresenterActivity
         fragmentTransaction.commit();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
     //[START] unused methods
     @Override
     protected void setupURIPass(Uri data) {
