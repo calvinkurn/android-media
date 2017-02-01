@@ -69,6 +69,17 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
     @Override
     protected void goToFilter() {
         Intent intent = new Intent(getActivity(), TopAdsFilterProductActivity.class);
-        startActivityForResult(intent, 0);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_STATUS_VALUE, status);
+        startActivityForResult(intent, REQUEST_CODE_AD_FILTER);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        // check if the request code is the same
+        if (requestCode == REQUEST_CODE_AD_FILTER && intent != null) {
+            status = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_STATUS_VALUE, status);
+            searchAd();
+        }
     }
 }

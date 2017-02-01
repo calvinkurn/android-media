@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -25,6 +26,11 @@ public class TopAdsFilterGroupNameFragment extends TopAdsFilterRadioButtonFragme
     }
 
     @Override
+    public Intent addResult(Intent intent) {
+        return intent;
+    }
+
+    @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_top_ads_filter_content_group_name;
     }
@@ -37,7 +43,7 @@ public class TopAdsFilterGroupNameFragment extends TopAdsFilterRadioButtonFragme
         for (int i = 0; i < statusNameList.length; i++) {
             RadioButtonItem radioButtonItem = new RadioButtonItem();
             radioButtonItem.setName(statusNameList[i]);
-            radioButtonItem.setValue(Integer.valueOf(statusValueList[i]));
+            radioButtonItem.setValue(statusValueList[i]);
             radioButtonItemList.add(radioButtonItem);
         }
         return radioButtonItemList;

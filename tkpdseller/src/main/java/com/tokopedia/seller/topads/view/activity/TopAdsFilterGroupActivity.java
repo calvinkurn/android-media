@@ -1,5 +1,8 @@
 package com.tokopedia.seller.topads.view.activity;
 
+import android.os.Bundle;
+
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterContentFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterStatusFragment;
 
@@ -12,10 +15,18 @@ import java.util.List;
 
 public class TopAdsFilterGroupActivity extends TopAdsFilterActivity {
 
+    private int selectedFilterStatus;
+
+    @Override
+    protected void setupBundlePass(Bundle extras) {
+        super.setupBundlePass(extras);
+        selectedFilterStatus = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_STATUS_VALUE);
+    }
+
     @Override
     protected List<TopAdsFilterContentFragment> getFilterContentList() {
         List<TopAdsFilterContentFragment> filterContentFragmentList = new ArrayList<>();
-        filterContentFragmentList.add(new TopAdsFilterStatusFragment());
+        filterContentFragmentList.add(TopAdsFilterStatusFragment.createInstance(selectedFilterStatus));
         return filterContentFragmentList;
     }
 

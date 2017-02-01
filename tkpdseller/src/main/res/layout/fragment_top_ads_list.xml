@@ -25,5 +25,5 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_add_black_48dp_00"/>
+        android:src="@drawable/ic_action_filter_white_24dp"/>
 </RelativeLayout>

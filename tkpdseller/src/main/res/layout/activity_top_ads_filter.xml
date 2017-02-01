@@ -37,7 +37,6 @@
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:enabled="false"
             android:text="@string/label_top_ads_choose_credit"/>
     </LinearLayout>
 </LinearLayout>

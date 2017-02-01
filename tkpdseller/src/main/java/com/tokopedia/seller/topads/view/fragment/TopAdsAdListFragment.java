@@ -42,7 +42,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         TopAdsListPromoViewListener, SearchView.OnQueryTextListener, TopAdsAdListAdapter.Callback {
 
     private static final int START_PAGE = 1;
-    protected static final int REQUEST_CODE_AD_STATUS = TopAdsAdListFragment.class.hashCode();
+    protected static final int REQUEST_CODE_AD_STATUS = 2;
+    protected static final int REQUEST_CODE_AD_FILTER = 3;
 
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;

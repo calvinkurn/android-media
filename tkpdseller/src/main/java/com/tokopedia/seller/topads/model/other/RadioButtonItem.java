@@ -9,14 +9,14 @@ import android.os.Parcelable;
 
 public class RadioButtonItem {
 
-    private int value;
+    private String value;
     private String name;
 
-    public int getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(String value) {
         this.value = value;
     }
 

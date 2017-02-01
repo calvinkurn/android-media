@@ -1,11 +1,16 @@
 package com.tokopedia.seller.topads.view.activity;
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.model.other.FilterTitleItem;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterContentFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterListFragment;
@@ -23,6 +28,7 @@ public abstract class TopAdsFilterActivity extends BasePresenterActivity impleme
 
     private TopAdsFilterListFragment topAdsFilterListFragment;
     private List<TopAdsFilterContentFragment> filterContentFragmentList;
+    private Button submitButton;
 
     protected abstract List<TopAdsFilterContentFragment> getFilterContentList();
 
@@ -49,6 +55,14 @@ public abstract class TopAdsFilterActivity extends BasePresenterActivity impleme
     @Override
     protected void initView() {
         int selectedPosition = 0;
+        submitButton = (Button) findViewById(R.id.button_submit);
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setFilterChangedResult();
+                finish();
+            }
+        });
         filterContentFragmentList = getFilterContentList();
         topAdsFilterListFragment = TopAdsFilterListFragment.createInstance(getFilterTitleItemList(), selectedPosition);
         topAdsFilterListFragment.setCallback(this);
@@ -91,6 +105,14 @@ public abstract class TopAdsFilterActivity extends BasePresenterActivity impleme
     @Override
     public void onItemSelected(int position) {
         changeContent(filterContentFragmentList.get(position));
+    }
+
+    private void setFilterChangedResult() {
+        Intent intent = new Intent();
+        for (TopAdsFilterContentFragment topAdsFilterContentFragment : filterContentFragmentList) {
+            topAdsFilterContentFragment.addResult(intent);
+        }
+        setResult(Activity.RESULT_OK, intent);
     }
 
     @Override
