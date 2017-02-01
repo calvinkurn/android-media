@@ -1,12 +1,12 @@
-package com.tokopedia.session.register.presenter;
+package com.tokopedia.session.activation.presenter;
 
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.session.R;
-import com.tokopedia.session.register.interactor.RegisterNetworkInteractor;
-import com.tokopedia.session.register.viewlistener.RegisterActivationView;
+import com.tokopedia.session.activation.interactor.ActivationNetworkInteractor;
+import com.tokopedia.session.activation.viewListener.RegisterActivationView;
 
 import org.json.JSONObject;
 
@@ -28,11 +28,11 @@ public class RegisterActivationPresenterImpl implements RegisterActivationPresen
 
 
     private final RegisterActivationView viewListener;
-    private final RegisterNetworkInteractor networkInteractor;
+    private final ActivationNetworkInteractor networkInteractor;
     private final CompositeSubscription compositeSubscription;
 
     public RegisterActivationPresenterImpl(RegisterActivationView viewListener,
-                                           RegisterNetworkInteractor networkInteractor,
+                                           ActivationNetworkInteractor networkInteractor,
                                            CompositeSubscription compositeSubscription) {
         this.viewListener = viewListener;
         this.networkInteractor = networkInteractor;

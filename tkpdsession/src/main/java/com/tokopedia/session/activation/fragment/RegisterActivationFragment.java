@@ -1,4 +1,4 @@
-package com.tokopedia.session.register.fragment;
+package com.tokopedia.session.activation.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -18,11 +18,11 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.session.R;
+import com.tokopedia.session.activation.interactor.ActivationNetworkInteractorImpl;
 import com.tokopedia.session.register.RegisterConstant;
-import com.tokopedia.session.register.interactor.RegisterNetworkInteractorImpl;
-import com.tokopedia.session.register.presenter.RegisterActivationPresenter;
-import com.tokopedia.session.register.presenter.RegisterActivationPresenterImpl;
-import com.tokopedia.session.register.viewlistener.RegisterActivationView;
+import com.tokopedia.session.activation.presenter.RegisterActivationPresenter;
+import com.tokopedia.session.activation.presenter.RegisterActivationPresenterImpl;
+import com.tokopedia.session.activation.viewListener.RegisterActivationView;
 
 import butterknife.BindView;
 import rx.subscriptions.CompositeSubscription;
@@ -84,7 +84,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
         bundle.putString(AccountsService.AUTH_KEY, AuthUtil.KEY.KEY_WSV4);
 
         presenter = new RegisterActivationPresenterImpl(this,
-                new RegisterNetworkInteractorImpl(new AccountsService(bundle)),
+                new ActivationNetworkInteractorImpl(new AccountsService(bundle)),
                 new CompositeSubscription());
     }
 

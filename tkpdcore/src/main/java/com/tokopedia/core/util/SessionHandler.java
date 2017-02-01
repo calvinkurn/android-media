@@ -65,6 +65,9 @@ public class SessionHandler {
     private static final String REFRESH_TOKEN = "REFRESH_TOKEN";
     private static final String TOKEN_TYPE = "TOKEN_TYPE";
     private static final String IS_FIRST_TIME_STORAGE = "IS_FIRST_TIME_STORAGE";
+    private static final String LOGIN_UUID_KEY = "LOGIN_UUID";
+    private static final String UUID_KEY = "uuid";
+    private static final String DEFAULT_UUID_VALUE = "";
 
     private Context context;
 
@@ -110,7 +113,7 @@ public class SessionHandler {
         editor.putString(LOGIN_ID, u_id);
         editor.putString(FULL_NAME, u_name);
         editor.putString(SHOP_ID, shop_id);
-        editor.putBoolean(IS_MSISDN_VERIFIED,isMsisdnVerified);
+        editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
         editor.commit();
         TrackingUtils.eventPushUserID();
         Crashlytics.setUserIdentifier(u_id);
@@ -181,7 +184,7 @@ public class SessionHandler {
     }
 
     private static void logoutInstagram(Context context) {
-        if(isV4Login(context) && context instanceof AppCompatActivity) {
+        if (isV4Login(context) && context instanceof AppCompatActivity) {
             ((AppCompatActivity) context).setContentView(R.layout.activity_webview_general);
             WebView webView = (WebView) ((AppCompatActivity) context).findViewById(R.id.webview);
             WebSettings ws = webView.getSettings();
@@ -196,7 +199,7 @@ public class SessionHandler {
 //
 //                }
 //            }));
-            webView.setWebViewClient(new WebViewClient(){
+            webView.setWebViewClient(new WebViewClient() {
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
                     return super.shouldOverrideUrlLoading(view, url);
@@ -220,8 +223,8 @@ public class SessionHandler {
 
     public void forceLogout() {
         Crashlytics.log(1, "FORCE LOGOUT",
-                "User Id: "+getLoginID(context)+
-                " Device Id: "+GCMHandler.getRegistrationId(context));
+                "User Id: " + getLoginID(context) +
+                        " Device Id: " + GCMHandler.getRegistrationId(context));
         PasswordGenerator.clearTokenStorage(context);
         GCMHandler.clearRegistrationId(context);
         clearUserData();
@@ -293,7 +296,7 @@ public class SessionHandler {
         return u_name;
     }
 
-    public static boolean isGoldMerchant(Context context){
+    public static boolean isGoldMerchant(Context context) {
         Boolean isGoldMerchant = false;
         SharedPreferences sharedPrefs = context.getSharedPreferences(SHOP_DOMAIN, Context.MODE_PRIVATE);
         int isGM = sharedPrefs.getInt(IS_GOLD_MERCHANT, -1);
@@ -301,7 +304,7 @@ public class SessionHandler {
         return isGoldMerchant;
     }
 
-    public static void setGoldMerchant(Context context, int goldMerchant){
+    public static void setGoldMerchant(Context context, int goldMerchant) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(SHOP_DOMAIN, Context.MODE_PRIVATE);
         Editor edit = sharedPrefs.edit();
         edit.putInt(IS_GOLD_MERCHANT, goldMerchant);
@@ -484,7 +487,7 @@ public class SessionHandler {
         return sharedPrefs.getString(TEMP_PHONE_NUMBER, "");
     }
 
-    public void setTempLoginName (String userPhone) {
+    public void setTempLoginName(String userPhone) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
         editor.putString(TEMP_NAME, userPhone);
@@ -500,14 +503,14 @@ public class SessionHandler {
     public void setToken(String accessToken, String tokenType, String refreshToken) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
-        saveToSharedPref(editor,ACCESS_TOKEN, accessToken);
-        saveToSharedPref(editor,TOKEN_TYPE, tokenType);
-        saveToSharedPref(editor,REFRESH_TOKEN, refreshToken);
+        saveToSharedPref(editor, ACCESS_TOKEN, accessToken);
+        saveToSharedPref(editor, TOKEN_TYPE, tokenType);
+        saveToSharedPref(editor, REFRESH_TOKEN, refreshToken);
         editor.apply();
     }
 
     private void saveToSharedPref(Editor editor, String key, String value) {
-        if(value!=null) {
+        if (value != null) {
             editor.putString(key, value);
         }
     }
@@ -534,8 +537,13 @@ public class SessionHandler {
     }
 
     public static boolean isUserSeller(Context context) {
-        if(!SessionHandler.getShopID(context).isEmpty() && !SessionHandler.getShopID(context).equals("0"))
+        if (!SessionHandler.getShopID(context).isEmpty() && !SessionHandler.getShopID(context).equals("0"))
             return true;
         return false;
+    }
+
+    public static String getUUID(Context context) {
+        return new LocalCacheHandler(context, LOGIN_UUID_KEY)
+                .getString(UUID_KEY, DEFAULT_UUID_VALUE);
     }
 }

@@ -34,6 +34,7 @@ import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.service.DownloadService;
@@ -41,6 +42,7 @@ import com.tokopedia.core.service.constant.DownloadServiceConstant;
 import com.tokopedia.core.session.model.CreatePasswordModel;
 import com.tokopedia.core.session.model.LoginFacebookViewModel;
 import com.tokopedia.core.session.model.LoginGoogleModel;
+import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -48,7 +50,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.session.register.activity.RegisterActivity;
+import com.tokopedia.session.register.activity.RegisterEmailActivity;
 import com.tokopedia.session.session.fragment.ActivationResentFragment;
 import com.tokopedia.session.session.fragment.ForgotPasswordFragment;
 import com.tokopedia.session.session.fragment.LoginFragment;
@@ -99,6 +101,10 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         , RegisterResultReceiver.Receiver
         , ResetPasswordResultReceiver.Receiver
         , OTPResultReceiver.Receiver {
+
+    private static final String INTENT_EXTRA_PARAM_EMAIL = "INTENT_EXTRA_PARAM_EMAIL";
+    private static final String INTENT_EXTRA_PARAM_PASSWORD = "INTENT_EXTRA_PARAM_PASSWORD";
+    private static final String INTENT_AUTOMATIC_LOGIN = "INTENT_AUTOMATIC_LOGIN";
 
     //    int whichFragmentKey;
     LocalCacheHandler cacheGTM;
@@ -168,6 +174,17 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         resetPasswordReceiver.setReceiver(this);
         otpReceiver = new OTPResultReceiver(new Handler());
         otpReceiver.setReceiver(this);
+
+        if (getIntent().getExtras().getBoolean(INTENT_AUTOMATIC_LOGIN)) {
+            Bundle bundle = new Bundle();
+            LoginViewModel loginViewModel = new LoginViewModel();
+            loginViewModel.setPassword(getIntent().getExtras().getString(INTENT_EXTRA_PARAM_PASSWORD));
+            loginViewModel.setUsername(getIntent().getExtras().getString(INTENT_EXTRA_PARAM_EMAIL));
+            loginViewModel.setUuid(SessionHandler.getUUID(this));
+            bundle.putParcelable(DownloadService.LOGIN_VIEW_MODEL_KEY, Parcels.wrap(loginViewModel));
+            bundle.putBoolean(DownloadService.IS_NEED_LOGIN, true);
+            LoginService.startLogin(this, loginReceiver, bundle, DownloadServiceConstant.LOGIN_ACCOUNTS_TOKEN);
+        }
     }
 
     @Override
@@ -330,15 +347,8 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     @Override
     public void moveToRegister() {
-//        Fragment fragment = RegisterNewViewFragment.newInstance();
-//        moveToFragment(fragment, true, REGISTER_FRAGMENT_TAG, TkpdState.DrawerPosition.REGISTER);
-//
-//        // Change the header
-//        session.setWhichFragment(TkpdState.DrawerPosition.REGISTER);
-//        setToolbarTitle();
-//        invalidateOptionsMenu();
-
-        startActivity(new Intent(this, RegisterActivity.class));
+        finish();
+        startActivity(new Intent(this, RegisterEmailActivity.class));
     }
 
     @Override
@@ -693,16 +703,16 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     private void finishTask(Fragment fragment, int type, Bundle resultData) {
         switch (type) {
             case OTPService.ACTION_REQUEST_OTP_WITH_CALL:
-                if(fragment instanceof FragmentSecurityQuestion && resultData.getString(OTPService.EXTRA_BUNDLE) != null){
+                if (fragment instanceof FragmentSecurityQuestion && resultData.getString(OTPService.EXTRA_BUNDLE) != null) {
                     session.sendGTMEvent(resultData, type);
                     session.sendLocalyticsEvent(resultData, type);
-                    ((FragmentSecurityQuestion)fragment).onSuccessRequestOTPWithCall(resultData.getString(OTPService.EXTRA_BUNDLE));
+                    ((FragmentSecurityQuestion) fragment).onSuccessRequestOTPWithCall(resultData.getString(OTPService.EXTRA_BUNDLE));
                 }
             case OTPService.ACTION_REQUEST_OTP:
-                if(fragment instanceof FragmentSecurityQuestion && resultData.getString(OTPService.EXTRA_BUNDLE) != null){
+                if (fragment instanceof FragmentSecurityQuestion && resultData.getString(OTPService.EXTRA_BUNDLE) != null) {
                     session.sendGTMEvent(resultData, type);
                     session.sendLocalyticsEvent(resultData, type);
-                    ((FragmentSecurityQuestion)fragment).onSuccessRequestOTP(resultData.getString(OTPService.EXTRA_BUNDLE));
+                    ((FragmentSecurityQuestion) fragment).onSuccessRequestOTP(resultData.getString(OTPService.EXTRA_BUNDLE));
                 }
             case DownloadService.LOGIN_EMAIL:
             case DownloadService.SECURITY_QUESTION_GET:
@@ -760,8 +770,8 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                 }
         }
 
-        if(fragment instanceof FragmentSecurityQuestion && resultData.getString(OTPService.EXTRA_ERROR) != null){
-            ((FragmentSecurityQuestion)fragment).showError(resultData.getString(OTPService.EXTRA_ERROR));
+        if (fragment instanceof FragmentSecurityQuestion && resultData.getString(OTPService.EXTRA_ERROR) != null) {
+            ((FragmentSecurityQuestion) fragment).showError(resultData.getString(OTPService.EXTRA_ERROR));
         }
     }
 
@@ -916,5 +926,15 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         if (text != null) {
             SnackbarManager.make(this, text, Snackbar.LENGTH_LONG).show();
         }
+    }
+
+    public static Intent getAutomaticLoginIntent(Context context, String email, String password) {
+        Intent callingIntent = SessionRouter.getLoginActivityIntent(context);
+        callingIntent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
+        callingIntent.putExtra(INTENT_EXTRA_PARAM_PASSWORD, password);
+        callingIntent.putExtra(INTENT_AUTOMATIC_LOGIN, true);
+        callingIntent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+        callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
+        return callingIntent;
     }
 }

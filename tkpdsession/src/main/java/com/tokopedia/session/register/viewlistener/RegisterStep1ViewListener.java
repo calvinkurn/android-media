@@ -3,8 +3,6 @@ package com.tokopedia.session.register.viewlistener;
 import android.app.Activity;
 import android.widget.EditText;
 
-import com.tokopedia.core.customView.RechargeEditText;
-
 /**
  * Created by nisie on 1/27/17.
  */
@@ -45,4 +43,7 @@ public interface RegisterStep1ViewListener {
     void goToActivationPage();
 
     void goToResetPasswordPage();
+
+    void goToLogin();
+
 }

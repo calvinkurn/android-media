@@ -1,4 +1,4 @@
-package com.tokopedia.session.register.viewlistener;
+package com.tokopedia.session.activation.viewListener;
 
 /**
  * Created by nisie on 1/31/17.

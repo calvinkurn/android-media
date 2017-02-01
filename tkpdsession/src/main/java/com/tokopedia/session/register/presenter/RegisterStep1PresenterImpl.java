@@ -5,10 +5,9 @@ import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.nishikino.Nishikino;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.NetworkUtil;
@@ -18,17 +17,12 @@ import com.tokopedia.session.register.interactor.RegisterNetworkInteractor;
 import com.tokopedia.session.register.util.RegisterUtil;
 import com.tokopedia.session.register.viewlistener.RegisterStep1ViewListener;
 
-import org.json.JSONObject;
-
 import java.net.UnknownHostException;
 
-import retrofit2.Response;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-
-import static android.R.attr.action;
 
 /**
  * Created by nisie on 1/27/17.
@@ -133,7 +127,7 @@ public class RegisterStep1PresenterImpl implements RegisterStep1Presenter, Regis
     private void startAction(Integer action) {
         switch (action) {
             case GO_TO_LOGIN:
-                goToLogin();
+                viewListener.goToLogin();
                 break;
             case GO_TO_REGISTER:
                 viewListener.goToRegisterStep2();
@@ -148,12 +142,6 @@ public class RegisterStep1PresenterImpl implements RegisterStep1Presenter, Regis
                 throw new RuntimeException("ERROR UNKNOWN ACTION");
         }
     }
-
-    private void goToLogin() {
-        viewListener.dismissLoadingProgress();
-        viewListener.showSnackbar("SUKSES LOGIN");
-    }
-
 
     private TKPDMapParam<String, String> getValidateEmailParam() {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
@@ -213,10 +201,7 @@ public class RegisterStep1PresenterImpl implements RegisterStep1Presenter, Regis
     }
 
     private void sendGTMRegisterError(Context context, String label) {
-        Nishikino.init(context).startAnalytics().sendButtonClick(
-                AppEventTracking.Event.REGISTER_ERROR,
-                AppEventTracking.Category.REGISTER,
-                AppEventTracking.Action.REGISTER_ERROR,
-                label);
+        UnifyTracking.eventRegisterError(label);
+
     }
 }

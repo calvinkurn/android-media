@@ -26,7 +26,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customView.PasswordView;
@@ -35,14 +34,16 @@ import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.session.R;
+import com.tokopedia.session.activation.activity.ActivationActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
-import com.tokopedia.session.register.activity.RegisterActivity;
+import com.tokopedia.session.register.activity.RegisterEmailActivity;
 import com.tokopedia.session.register.adapter.AutoCompleteTextAdapter;
 import com.tokopedia.session.register.interactor.RegisterNetworkInteractorImpl;
 import com.tokopedia.session.register.model.RegisterStep1ViewModel;
 import com.tokopedia.session.register.presenter.RegisterStep1Presenter;
 import com.tokopedia.session.register.presenter.RegisterStep1PresenterImpl;
 import com.tokopedia.session.register.viewlistener.RegisterStep1ViewListener;
+import com.tokopedia.session.session.activity.Login;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -103,10 +104,8 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
     @BindView(R2.id.name)
     EditText name;
 
-    public static RegisterStep1Fragment createInstance(Bundle bundle) {
-        RegisterStep1Fragment fragment = new RegisterStep1Fragment();
-        fragment.setArguments(bundle);
-        return fragment;
+    public static RegisterStep1Fragment createInstance() {
+        return new RegisterStep1Fragment();
     }
 
     @Override
@@ -401,21 +400,35 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
         pass.setPassword(registerPassword.getText().toString());
         pass.setEmail(email.getText().toString());
         pass.setAutoVerify(isEmailAddressFromDevice());
-        if (getActivity() instanceof RegisterActivity)
-            ((RegisterActivity) getActivity()).goToStep2(pass);
+        if (getActivity() instanceof RegisterEmailActivity)
+            ((RegisterEmailActivity) getActivity()).goToStep2(pass);
     }
 
     @Override
     public void goToActivationPage() {
         dismissLoadingProgress();
-        if (getActivity() instanceof RegisterActivity)
-            ((RegisterActivity) getActivity()).goToSendActivation(email.getText().toString(), name.getText().toString());
+        startActivity(ActivationActivity.getCallingIntent(getActivity(),
+                email.getText().toString(),
+                name.getText().toString()));
+        getActivity().finish();
     }
 
     @Override
     public void goToResetPasswordPage() {
         dismissLoadingProgress();
         startActivity(new Intent(getActivity(), ForgotPasswordActivity.class));
+    }
+
+    @Override
+    public void goToLogin() {
+        dismissLoadingProgress();
+        getActivity().finish();
+
+        startActivity(Login.getAutomaticLoginIntent(
+                getActivity(),
+                email.getText().toString(),
+                registerPassword.getText().toString())
+        );
     }
 
     private boolean isEmailAddressFromDevice() {

@@ -2,13 +2,11 @@ package com.tokopedia.session.register.fragment;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
@@ -28,15 +26,11 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.service.DownloadService;
-import com.tokopedia.core.session.model.LoginViewModel;
-import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.util.AppEventTracking;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.session.R;
+import com.tokopedia.session.activation.activity.ActivationActivity;
 import com.tokopedia.session.register.RegisterConstant;
-import com.tokopedia.session.register.activity.RegisterActivity;
 import com.tokopedia.session.register.interactor.RegisterNetworkInteractorImpl;
 import com.tokopedia.session.register.model.RegisterStep1ViewModel;
 import com.tokopedia.session.register.model.RegisterViewModel;
@@ -45,21 +39,13 @@ import com.tokopedia.session.register.presenter.RegisterStep2Presenter;
 import com.tokopedia.session.register.presenter.RegisterStep2PresenterImpl;
 import com.tokopedia.session.register.util.RegisterUtil;
 import com.tokopedia.session.register.viewlistener.RegisterStep2ViewListener;
-import com.tokopedia.session.session.model.LoginModel;
-import com.tokopedia.session.session.model.RegisterSuccessModel;
-import com.tokopedia.session.session.presenter.LoginImpl;
 import com.tokopedia.session.session.presenter.RegisterNewImpl;
-import com.tokopedia.session.session.presenter.RegisterNewNext;
-import com.tokopedia.session.session.presenter.RegisterNewNextView;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
 import rx.subscriptions.CompositeSubscription;
-
-import static com.google.ads.conversiontracking.l.g;
 
 /**
  * Created by nisie on 1/27/17.
@@ -411,14 +397,19 @@ public class RegisterStep2Fragment extends BasePresenterFragment<RegisterStep2Pr
         if (registerResult.getIsActive() == RegisterResult.USER_INACTIVE) {
             sendLocalyticsRegisterEvent(registerResult.getUserId());
             sendGTMRegisterEvent();
-
-            ((RegisterActivity) getActivity()).goToSendActivation(
-                    presenter.getViewModel().getRegisterStep1ViewModel().getEmail(),
-                    presenter.getViewModel().getRegisterStep1ViewModel().getName());
+            goToRegisterActivation();
         } else {
             onErrorRegister(getString(R.string.alert_email_address_is_already_registered));
         }
 
+    }
+
+    private void goToRegisterActivation() {
+        startActivity(ActivationActivity.getCallingIntent(
+                getActivity(),
+                presenter.getViewModel().getRegisterStep1ViewModel().getEmail(),
+                presenter.getViewModel().getRegisterStep1ViewModel().getName()));
+        getActivity().finish();
     }
 
     private void sendLocalyticsRegisterEvent(int userId) {

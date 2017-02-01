@@ -2,29 +2,21 @@ package com.tokopedia.session.register.interactor;
 
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.register.model.gson.ValidateEmailResult;
-import com.tokopedia.session.session.intentservice.RegisterService;
-
-import org.json.JSONObject;
 
 import retrofit2.Response;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by nisie on 1/27/17.
  */
 
-public class RegisterNetworkInteractorImpl implements RegisterNetworkInteractor, RegisterConstant{
+public class RegisterNetworkInteractorImpl implements RegisterNetworkInteractor, RegisterConstant {
 
-    AccountsService accountsService;
+    private AccountsService accountsService;
 
     public RegisterNetworkInteractorImpl(AccountsService accountsService) {
         this.accountsService = accountsService;
@@ -37,7 +29,7 @@ public class RegisterNetworkInteractorImpl implements RegisterNetworkInteractor,
     }
 
     @Override
-    public Observable<Integer> smartRegister(TKPDMapParam<String, String> param) {
+    public Observable<Integer> smartRegister(final TKPDMapParam<String, String> param) {
         return getValidateEmailObservable(param)
                 .flatMap(new Func1<Response<TkpdResponse>, Observable<Integer>>() {
                     @Override
@@ -46,17 +38,17 @@ public class RegisterNetworkInteractorImpl implements RegisterNetworkInteractor,
                             final TkpdResponse tkpdResponse = response.body();
                             if (!tkpdResponse.isError()) {
                                 ValidateEmailResult result = response.body().convertDataObj(ValidateEmailResult.class);
-                                switch(result.getAction()){
+                                switch (result.getAction()) {
                                     case GO_TO_REGISTER:
-                                        return goToRegister(response);
+                                        return goToRegister();
                                     case GO_TO_ACTIVATION_PAGE:
-                                        return goToActivationPage(response);
+                                        return goToActivationPage();
                                     case GO_TO_LOGIN:
-                                        return goToLogin(response);
+                                        return goToLogin();
                                     case GO_TO_RESET_PASSWORD:
-                                        return goToResetPassword(response);
+                                        return goToResetPassword();
                                     default:
-                                        return goToRegister(response);
+                                        return goToRegister();
                                 }
                             } else {
                                 throw new RuntimeException(response.body().getErrorMessageJoined());
@@ -68,12 +60,22 @@ public class RegisterNetworkInteractorImpl implements RegisterNetworkInteractor,
                 });
     }
 
-    private Observable<Integer> goToActivationPage(Response<TkpdResponse> response) {
+    private Observable<Integer> goToRegister() {
+        int action = GO_TO_REGISTER;
+        return Observable.just(action);
+    }
+
+    private Observable<Integer> goToLogin() {
+        int action = GO_TO_LOGIN;
+        return Observable.just(action);
+    }
+
+    private Observable<Integer> goToActivationPage() {
         int action = GO_TO_ACTIVATION_PAGE;
         return Observable.just(action);
     }
 
-    private Observable<Integer> goToResetPassword(Response<TkpdResponse> response) {
+    private Observable<Integer> goToResetPassword() {
         int action = GO_TO_RESET_PASSWORD;
         return Observable.just(action);
     }
@@ -83,28 +85,4 @@ public class RegisterNetworkInteractorImpl implements RegisterNetworkInteractor,
         return accountsService.getApi().doRegister(param);
     }
 
-    @Override
-    public Observable<Response<TkpdResponse>> resendActivation(TKPDMapParam<String, String> param) {
-        return accountsService.getApi().resentActivation(param);
-    }
-
-    private Observable<Integer> goToRegister(Response<TkpdResponse> tkpdResponse) {
-        int action = GO_TO_REGISTER;
-        return Observable.just(action);
-    }
-
-    private TKPDMapParam<String, String> getLoginParam() {
-        return new TKPDMapParam<>();
-    }
-
-    private Observable<Integer> goToLogin(Response<TkpdResponse> loginParam) {
-        int action = GO_TO_LOGIN;
-        return Observable.just(action);
-//                .flatMap(new Func1<TKPDMapParam<String, String>, Observable<Response<TkpdResponse>>>() {
-//                    @Override
-//                    public Observable<Response<TkpdResponse>> call(TKPDMapParam<String, String> stringStringTKPDMapParam) {
-//                        return null;
-//                    }
-//                });
-    }
 }

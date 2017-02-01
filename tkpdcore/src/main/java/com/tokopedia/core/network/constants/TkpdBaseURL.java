@@ -14,7 +14,7 @@ public interface TkpdBaseURL {
     String CLOVER_DOMAIN = "https://points.tokopedia.com/";
     String TOPADS_DOMAIN = "https://ta.tokopedia.com/";
     String TOPADS_STAGING_DOMAIN = "http://ta-staging.tokopedia.com/";
-    String MOJITO_DOMAIN = "https://mojito.tokopedia.com/";
+    String MOJITO_DOMAIN = "https://mojito-staging.tokopedia.com/";
     String MOJITO_STAGING_DOMAIN = "https://mojito-staging.tokopedia.com/";
     String HADES_DOMAIN = "https://hades.tokopedia.com";
     String RECHARGE_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
@@ -33,8 +33,8 @@ public interface TkpdBaseURL {
     String PULSA_WEB_DOMAIN = "https://pulsa.tokopedia.com";
     String PULSA_WEB_STAGING_DOMAIN = "https://pulsa-staging.tokopedia.com";
     String GOLD_MERCHANT_DOMAIN = "https://goldmerchant.tokopedia.com";
-    String WEB_DOMAIN = "https://www.tokopedia.com/";
-    String MOBILE_DOMAIN = "https://m.tokopedia.com/";
+    String WEB_DOMAIN = "https://staging.tokopedia.com/";
+    String MOBILE_DOMAIN = "https://m-staging.tokopedia.com/";
 
     interface Product {
         String URL_PRODUCT = BASE_DOMAIN + "v4/product/";
