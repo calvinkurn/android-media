@@ -12,11 +12,14 @@ public abstract class BasePresenterActivity<P> extends TActivity {
     private static final String TAG = BasePresenterActivity.class.getSimpleName();
 
     protected P presenter;
+    protected boolean isAfterRotate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(isAfterRotate(savedInstanceState)){
+            setupVar(savedInstanceState);
+        }else{
             setupVar();
         }
         if (getIntent().getExtras() != null) {
@@ -34,16 +37,16 @@ public abstract class BasePresenterActivity<P> extends TActivity {
         setActionVar();
     }
 
+    protected void setupVar(Bundle savedInstanceState) { /*leave empty*/ }
+
     protected void initViews() {
         ButterKnife.bind(this);
     }
 
-    protected void setupVar(){
-        // leave empty
-    }
+    protected void setupVar(){ /*leave empty*/ }
 
     protected boolean isAfterRotate(Bundle savedInstanceState){
-        return savedInstanceState != null;
+        return isAfterRotate = savedInstanceState != null;
     }
 
     @Override

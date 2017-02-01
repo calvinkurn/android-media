@@ -65,6 +65,8 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateRaw;
+import static com.tokopedia.seller.gmstat.views.BaseGMStatActivity.IS_GOLD_MERCHANT;
+import static com.tokopedia.seller.gmstat.views.BaseGMStatActivity.SHOP_ID;
 import static com.tokopedia.seller.gmstat.views.DataTransactionViewHelper.dpToPx;
 import static com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper.getDates;
 
@@ -118,6 +120,8 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     private GMStatHeaderViewHelper gmstatHeaderViewHelper;
     private GrossGraphChartConfig grossGraphChartConfig;
     private GMNetworkErrorHelper gmNetworkErrorHelper;
+    private long shopId;
+    private boolean isGoldMerchant;
 
     public GMStatActivityFragment() {
     }
@@ -298,13 +302,29 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
             this.gmstat = (GMStat) activity;
 
             // get shop id from activity.
-            long shopId;
             try {
-                shopId = Long.parseLong(gmstat.getShopId());
+                if(gmstat.getShopId() != null)
+                    shopId = Long.parseLong(gmstat.getShopId());
             } catch (NumberFormatException nfe) {
                 throw new RuntimeException(nfe.getMessage() + "\n [need valid shop id]");
             }
 
+            isGoldMerchant = gmstat.isGoldMerchant();
+
+            gmFragmentPresenter = new GMFragmentPresenterImpl(this, gmstat, shopId);
+        }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        fetchSaveInstanceSate(savedInstanceState);
+    }
+
+    private void fetchSaveInstanceSate(Bundle savedInstanceState) {
+        if(savedInstanceState != null){
+            shopId= savedInstanceState.getLong(SHOP_ID);
+            isGoldMerchant = savedInstanceState.getBoolean(IS_GOLD_MERCHANT);
             gmFragmentPresenter = new GMFragmentPresenterImpl(this, gmstat, shopId);
         }
     }
@@ -614,6 +634,13 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(SHOP_ID, shopId);
+        outState.putBoolean(IS_GOLD_MERCHANT, isGoldMerchant);
+    }
+
+    @Override
     public void onFailure() {
 
     }
@@ -655,6 +682,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
 
     @Override
     public void onRestoreState(Bundle savedState) {
+
     }
 
     @Override

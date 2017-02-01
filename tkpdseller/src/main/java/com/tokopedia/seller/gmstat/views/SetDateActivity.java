@@ -43,11 +43,11 @@ public class SetDateActivity extends BasePresenterActivity implements SetDateFra
     /**
      * @return true if first time, false if already in foreground.
      */
-    @Override
-    protected boolean isAfterRotate(Bundle savedInstanceState) {
-        isAfterRotate = super.isAfterRotate(savedInstanceState);
-        return !isAfterRotate;
-    }
+//    @Override
+//    protected boolean isAfterRotate(Bundle savedInstanceState) {
+//        isAfterRotate = super.isAfterRotate(savedInstanceState);
+//        return !isAfterRotate;
+//    }
 
     @Override
     protected void setupVar() {

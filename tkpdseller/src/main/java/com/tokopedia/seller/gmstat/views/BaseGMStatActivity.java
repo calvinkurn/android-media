@@ -36,7 +36,7 @@ public abstract class BaseGMStatActivity extends DrawerPresenterActivity
     private boolean isGoldMerchant;
     private String shopId;
 
-    private boolean isAfterRotate;
+//    private boolean isAfterRotate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +50,29 @@ public abstract class BaseGMStatActivity extends DrawerPresenterActivity
         inject();
     }
 
+    @Override
+    protected void setupVar(Bundle savedInstanceState) {
+        super.setupVar(savedInstanceState);
+        fetchSaveInstance(savedInstanceState);
+        inject();
+    }
+
+    private void fetchSaveInstance(Bundle savedInstanceState) {
+        if(savedInstanceState == null)
+            return;
+
+        isGoldMerchant = savedInstanceState.getBoolean(IS_GOLD_MERCHANT, false);
+        shopId = savedInstanceState.getString(SHOP_ID);
+    }
+
     /**
      * @return true if first time, false if already in foreground.
      */
-    @Override
-    protected boolean isAfterRotate(Bundle savedInstanceState) {
-        isAfterRotate = super.isAfterRotate(savedInstanceState);
-        return !isAfterRotate;
-    }
+//    @Override
+//    protected boolean isAfterRotate(Bundle savedInstanceState) {
+//        isAfterRotate = super.isAfterRotate(savedInstanceState);
+//        return !isAfterRotate;
+//    }
 
     private void fetchIntent(Bundle extras) {
         if (extras != null) {
@@ -140,6 +155,13 @@ public abstract class BaseGMStatActivity extends DrawerPresenterActivity
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(IS_GOLD_MERCHANT, isGoldMerchant);
+        outState.putString(SHOP_ID, shopId);
     }
 
     //[START] unused methods
