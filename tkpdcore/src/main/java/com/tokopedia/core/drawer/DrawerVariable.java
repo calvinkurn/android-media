@@ -40,6 +40,7 @@ import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
 import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
 import com.tokopedia.core.drawer.var.NotificationItem;
 import com.tokopedia.core.drawer.var.UserType;
+import com.tokopedia.core.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.myproduct.ManageProduct;
@@ -443,6 +444,10 @@ public class DrawerVariable {
                 context.startActivity(wishList);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.WISHLIST);
                 break;
+            case TkpdState.DrawerPosition.GOLD_MERCHANT:
+                Intent intentGoldMerchant = new Intent(context, GoldMerchantRedirectActivity.class);
+                context.startActivity(intentGoldMerchant);
+                break;
             case TkpdState.DrawerPosition.SETTINGS:
                 context.startActivity(new Intent(context, ManageGeneral.class));
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.SETTING);
@@ -714,6 +719,8 @@ public class DrawerVariable {
         model.data.add(model.peopleMenu);
         if (!Session.getShopID().equals("0") && !Session.getShopID().equals("")) {
             model.data.add(model.shopMenu);
+            model.data.add(new DrawerItem("Gold_Merchant", 0, R.drawable.ic_goldmerchant_drawer,
+                    TkpdState.DrawerPosition.GOLD_MERCHANT,false));
         }
         model.data.add(new DrawerItem("Pengaturan", 0, R.drawable.icon_setting, TkpdState.DrawerPosition.SETTINGS, false));
         if (!TrackingUtils.getBoolean(AppEventTracking.GTM.CONTACT_US)) {
