@@ -81,7 +81,7 @@ public class CategoryImpl implements Category {
     }
 
     @Override
-    public void fetchBrands(OnGetBrandsListener listener) {
+    public void fetchBrands(final OnGetBrandsListener listener) {
         Subscriber<Response<Brands>> subscriber = new Subscriber<Response<Brands>>() {
             @Override
             public void onCompleted() {
@@ -96,6 +96,7 @@ public class CategoryImpl implements Category {
             @Override
             public void onNext(Response<Brands> response) {
 
+                listener.onSuccess(response.body());
                 CommonUtils.dumper("mohito " + response.body().getData().get(0).getShopName());
 
             }

@@ -48,6 +48,8 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.home.Banner;
+import com.tokopedia.core.network.entity.home.Brand;
+import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
@@ -65,6 +67,8 @@ import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.TopPicksView;
+import com.tokopedia.tkpd.home.adapter.BrandsItemRecyclerViewAdapter;
+import com.tokopedia.tkpd.home.adapter.BrandsRecyclerViewAdapter;
 import com.tokopedia.tkpd.home.adapter.RecyclerViewCategoryMenuAdapter;
 import com.tokopedia.tkpd.home.adapter.SectionListCategoryAdapter;
 import com.tokopedia.tkpd.home.adapter.TickerAnnouncementAdapter;
@@ -121,6 +125,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private TopPicksPresenter topPicksPresenter;
     private RecyclerViewCategoryMenuAdapter recyclerViewCategoryMenuAdapter;
     private TopPicksAdapter topPicksAdapter;
+    private BrandsRecyclerViewAdapter brandsRecyclerViewAdapter;
+
     private GetShopInfoRetrofit getShopInfoRetrofit;
 
     private class ViewHolder {
@@ -136,6 +142,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         NestedScrollView wrapperScrollview;
         RecyclerView categoriesRecylerview;
         RecyclerView topPicksRecyclerView;
+        RecyclerView brandsRecyclerView;
         public LinearLayout wrapperLinearLayout;
 
 
@@ -212,6 +219,12 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         category.fetchBanners(onGetPromoListener());
         category.fetchSlides(onGetPromoListener());
         category.fetchBrands(new Category.OnGetBrandsListener() {
+
+            @Override
+            public void onSuccess(Brands brands) {
+                brandsRecyclerViewAdapter.setDataList(brands);
+                brandsRecyclerViewAdapter.notifyDataSetChanged();
+            }
         });
     }
 
@@ -366,6 +379,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.wrapperScrollview = (NestedScrollView) holder.MainView.findViewById(R.id.category_scrollview);
         initCategoryRecyclerView();
         initTopPicks();
+        initBrands();
 
     }
 
@@ -531,6 +545,30 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
         UnifyTracking.eventHomeCategory(title);
     }
+
+    /**
+     * Brands a.k.a. Official Store
+     * Created by Hafizh Herdi 20173001
+     */
+    private void initBrands(){
+        holder.brandsRecyclerView = (RecyclerView) holder.MainView.findViewById(R.id.rv_brands_list);
+        holder.brandsRecyclerView.setHasFixedSize(true);
+        holder.brandsRecyclerView.setNestedScrollingEnabled(false);
+        brandsRecyclerViewAdapter = new BrandsRecyclerViewAdapter(getContext(), new BrandsItemRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClicked(String name, Brand brand, int position) {
+
+            }
+        });
+        brandsRecyclerViewAdapter.setHomeMenuWidth(getHomeBrandsWidth());
+        holder.brandsRecyclerView.setLayoutManager(
+                new LinearLayoutManager(getActivity(),
+                        LinearLayoutManager.HORIZONTAL,
+                        false)
+        );
+        holder.brandsRecyclerView.setAdapter(brandsRecyclerViewAdapter);
+    }
+
 
     /* TOP PICKS */
     private void initTopPicks() {
@@ -870,5 +908,14 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         return widthOfHomeMenuView;
     }
 
+    private int getHomeBrandsWidth() {
+        WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int widthOfHomeMenuView = (width / 4);
+        return widthOfHomeMenuView;
+    }
 
 }

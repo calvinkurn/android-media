@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.home.presenter;
 
+import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.tkpd.home.facade.FacadePromo;
 
@@ -25,6 +26,6 @@ public interface Category {
     }
 
     interface OnGetBrandsListener{
-
+        void onSuccess(Brands brands);
     }
 }
