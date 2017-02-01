@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -163,7 +164,7 @@ public abstract class BaseGMStatActivity extends DrawerPresenterActivity
 
     @Override
     public String getScreenName() {
-        return null;
+        return AppScreen.STATISTIC_PAGE;
     }
     //[END] unused methods
 }

@@ -429,6 +429,9 @@ public class DrawerVariableSeller extends DrawerVariable {
                 intent.putExtra(GMStatActivity.SHOP_ID, SessionHandler.getShopID(context));
                 intent.putExtra(GMStatActivity.IS_GOLD_MERCHANT, SessionHandler.isGoldMerchant(context));
                 context.startActivity(intent);
+
+                // analytic below : https://phab.tokopedia.com/T18496
+                UnifyTracking.eventClickGMStat();
                 break;
             case TkpdState.DrawerPosition.SELLER_TOP_ADS:
                 intent = new Intent(context, TopAdsDashboardActivity.class);

@@ -14,10 +14,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import com.tkpd.library.utils.network.MessageErrorException;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.seller.R;
@@ -150,6 +153,22 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
                     }
                 }
         );
+
+        // analytic below : https://phab.tokopedia.com/T18496
+        final ScrollView contentGMStat = (ScrollView) rootView.findViewById(R.id.content_gmstat);
+        contentGMStat.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                View view = contentGMStat.getChildAt(contentGMStat.getChildCount()-1);
+                int diff = (view.getBottom()+contentGMStat.getPaddingBottom()
+                        -(contentGMStat.getHeight()+contentGMStat.getScrollY()));
+
+                // if diff is zero, then the bottom has been reached
+                if (diff == 0) {
+                    onScrollGMStatTracking();
+                }
+            }
+        });
     }
 
     private List<NExcel> joinDateAndGrossGraph(List<Integer> dateGraph, List<Integer> grossGraph) {
@@ -234,6 +253,16 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
     @Override
     public void bindHeader(long sDate, long eDate, int lastSelectionPeriod, int selectionType) {
         gmstatHeaderViewHelper.bindDate(sDate, eDate, lastSelectionPeriod, selectionType);
+    }
+
+    @Override
+    public void onLoadGMStatTracking() {
+        UnifyTracking.eventLoadGMStat();
+    }
+
+    @Override
+    public void onScrollGMStatTracking() {
+        UnifyTracking.eventScrollGMStat();
     }
 
     /**
@@ -550,7 +579,8 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
 
     @Override
     public void onComplete() {
-
+        // tracking below : https://phab.tokopedia.com/T18496
+        onLoadGMStatTracking();
     }
 
     @Override

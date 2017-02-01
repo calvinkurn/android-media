@@ -42,4 +42,8 @@ public interface GMFragmentView {
     void resetToLoading();
 
     void bindHeader(long sDate, long eDate, int lastSelectionPeriod, int selectionType);
+
+    void onLoadGMStatTracking();
+
+    void onScrollGMStatTracking();
 }

@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.util.MethodChecker;
@@ -80,6 +81,9 @@ public class MarketInsightViewHelper {
 
     public void addProductMarketInsight() {
         ProductActivity.moveToAddProduct(view.getContext());
+
+        // analytic below : https://phab.tokopedia.com/T18496
+        UnifyTracking.eventClickGMStatMarketInsight();
     }
 
     public void moveToGMSubscribe() {

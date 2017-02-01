@@ -6,6 +6,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.util.MethodChecker;
@@ -66,6 +67,9 @@ public class PopularProductViewHelper {
 
         itemView.getContext().startActivity(ProductInfoActivity.createInstance(
                 itemView.getContext(), getPopularProduct.getProductId() + ""));
+
+        // analytic below : https://phab.tokopedia.com/T18496
+        clickGMStat();
     }
 
     private void initView(View itemView) {
@@ -93,6 +97,9 @@ public class PopularProductViewHelper {
                     @Override
                     public void onClick(View v) {
                         moveToAddProduct();
+
+                        // analytic below : https://phab.tokopedia.com/T18496
+                        clickAddProductTracking();
                     }
                 });
 
@@ -130,6 +137,16 @@ public class PopularProductViewHelper {
         );
 
         lastThirtyDaysAgo = itemView.getContext().getString(R.string.last_thirty_days_ago);
+    }
+
+    private void clickAddProductTracking(){
+        UnifyTracking.eventClickAddProduct();
+    }
+
+    private void clickGMStat(){
+        if(getPopularProduct != null){
+            UnifyTracking.eventClickGMStatProduct(getPopularProduct.getProductName());
+        }
     }
 
     public void bindData(GetPopularProduct getPopularProduct, ImageHandler imageHandler) {
