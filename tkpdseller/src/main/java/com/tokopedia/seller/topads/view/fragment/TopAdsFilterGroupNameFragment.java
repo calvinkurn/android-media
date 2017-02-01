@@ -17,10 +17,7 @@ import java.util.List;
  * Created by Nathaniel on 1/31/2017.
  */
 
-public class TopAdsFilterGroupNameFragment extends TopAdsFilterContentFragment {
-
-    private TopAdsBasicRadioButtonAdapter adapter;
-    private RecyclerView recyclerView;
+public class TopAdsFilterGroupNameFragment extends TopAdsFilterRadioButtonFragment {
 
     @Override
     public String getTitle(Context context) {
@@ -33,17 +30,7 @@ public class TopAdsFilterGroupNameFragment extends TopAdsFilterContentFragment {
     }
 
     @Override
-    protected void initView(View view) {
-        super.initView(view);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
-        adapter = new TopAdsBasicRadioButtonAdapter();
-        recyclerView.setAdapter(adapter);
-        adapter.setData(getStatusList());
-    }
-
-    private List<RadioButtonItem> getStatusList() {
+    protected List<RadioButtonItem> getRadioButtonList() {
         List<RadioButtonItem> radioButtonItemList = new ArrayList<>();
         String[] statusValueList = getResources().getStringArray(R.array.filter_group_name_list_values);
         String[] statusNameList = getResources().getStringArray(R.array.filter_group_name_list_names);

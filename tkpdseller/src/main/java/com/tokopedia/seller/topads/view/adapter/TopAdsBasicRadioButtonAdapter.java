@@ -9,6 +9,7 @@ import android.widget.RadioButton;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.model.other.RadioButtonItem;
+import com.tokopedia.seller.topads.view.fragment.TopAdsFilterListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,23 +20,34 @@ import java.util.List;
 
 public class TopAdsBasicRadioButtonAdapter extends BaseLinearRecyclerViewAdapter {
 
+    public interface Callback {
+
+        void onItemSelected(RadioButtonItem radioButtonItem, int position);
+
+    }
+
     private static final int VIEW_DATA = 100;
 
     private List<RadioButtonItem> data;
-    private int checkedPosition;
+    private int selectedPosition;
+    private Callback callback;
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
 
     public void setData(List<RadioButtonItem> data) {
         this.data = data;
         notifyDataSetChanged();
     }
 
-    public void setCheckedPosition(int checkedPosition) {
-        this.checkedPosition = checkedPosition;
+    public void setSelectedPosition(int selectedPosition) {
+        this.selectedPosition = selectedPosition;
     }
 
     public TopAdsBasicRadioButtonAdapter() {
         data = new ArrayList<>();
-        checkedPosition = 0;
+        selectedPosition = 0;
     }
 
     @Override
@@ -75,30 +87,33 @@ public class TopAdsBasicRadioButtonAdapter extends BaseLinearRecyclerViewAdapter
     }
 
     private void bindProduct(final ViewHolder holder, int position) {
-        RadioButtonItem radioButtonItem = data.get(position);
-        holder.radioButton.setChecked(position == checkedPosition);
+        final RadioButtonItem radioButtonItem = data.get(position);
+        holder.radioButton.setChecked(position == selectedPosition);
         holder.radioButton.setText(radioButtonItem.getName());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSelectItem(holder.getAdapterPosition());
+                onSelectItem(radioButtonItem, holder.getAdapterPosition());
             }
         });
         holder.radioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSelectItem(holder.getAdapterPosition());
+                onSelectItem(radioButtonItem, holder.getAdapterPosition());
             }
         });
     }
 
-    private void onSelectItem(int position) {
-        checkedPosition = position;
+    private void onSelectItem(RadioButtonItem radioButtonItem, int position) {
+        selectedPosition = position;
         notifyDataSetChanged();
+        if (callback != null) {
+            callback.onItemSelected(radioButtonItem, position);
+        }
     }
 
     public RadioButtonItem getSelectedItem() {
-        return data.get(checkedPosition);
+        return data.get(selectedPosition);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
