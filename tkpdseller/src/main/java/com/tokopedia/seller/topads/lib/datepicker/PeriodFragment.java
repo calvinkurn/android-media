@@ -13,6 +13,8 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.seller.R;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -23,6 +25,8 @@ import java.util.List;
 
 public class PeriodFragment extends Fragment {
 
+    public static final String PERIOD_HELPER_DATA = "periodHelperData";
+    public static final String PERIOD_RANGE_MODEL_DATA = "periodRangeModelData";
     RecyclerView periodRecyclerView;
     Button saveDate;
     LinearLayout periodLinLay;
@@ -142,6 +146,26 @@ public class PeriodFragment extends Fragment {
             periodLinLay.addView(view);
         }
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(PERIOD_HELPER_DATA, Parcels.wrap(periodChooseViewHelpers));
+        outState.putParcelable(PERIOD_RANGE_MODEL_DATA, Parcels.wrap(periodRangeModelList));
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        fetchInstanceState(savedInstanceState);
+    }
+
+    private void fetchInstanceState(Bundle savedInstanceState) {
+        if(savedInstanceState != null){
+            periodChooseViewHelpers = Parcels.unwrap(savedInstanceState.getParcelable(PERIOD_HELPER_DATA));
+            periodRangeModelList = Parcels.unwrap(savedInstanceState.getParcelable(PERIOD_RANGE_MODEL_DATA));
+        }
     }
 
     private void saveDate() {
