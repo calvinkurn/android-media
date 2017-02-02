@@ -3,7 +3,6 @@ package com.tokopedia.seller.gmstat.views;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -81,7 +80,6 @@ public class PeriodFragment extends BasePresenterFragment {
             return isNoneAll == basePeriodModels.size();
         }
     };
-    private int lastSelection;
 
     public static Fragment newInstance(int lastSelectionPeriod) {
         Fragment fragment = new PeriodFragment();
@@ -127,35 +125,32 @@ public class PeriodFragment extends BasePresenterFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.period_layout, container, false);
 
-        if(savedInstanceState ==null) {
-            Bundle bundle = getArguments();
-            if (bundle != null) {
-                lastSelection = bundle.getInt(SELECTION_PERIOD, 1);
-            }
+        int lastSelection = 1;
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            lastSelection = bundle.getInt(SELECTION_PERIOD, 1);
         }
         initViews(rootView);
 
         //[START] old code
         PeriodAdapter periodAdapter = new PeriodAdapter();
 
-        if(basePeriodModels ==null) {
-            basePeriodModels = new ArrayList<>();
-            PeriodRangeModel e = new PeriodRangeModel(false, 1);
-            e.headerText = "Kemarin";
-            basePeriodModels.add(e);
-            e = new PeriodRangeModel(true, 7);
-            e.headerText = "7 hari terakhir";
-            basePeriodModels.add(e);
-            e = new PeriodRangeModel(true, 31);
-            e.headerText = "30 hari terakhir";
-            basePeriodModels.add(e);
+        basePeriodModels = new ArrayList<>();
+        PeriodRangeModel e = new PeriodRangeModel(false, 1);
+        e.headerText = "Kemarin";
+        basePeriodModels.add(e);
+        e = new PeriodRangeModel(true, 7);
+        e.headerText = "7 hari terakhir";
+        basePeriodModels.add(e);
+        e = new PeriodRangeModel(true, 31);
+        e.headerText = "30 hari terakhir";
+        basePeriodModels.add(e);
 
-            //[START] set last selection
-            PeriodRangeModel periodRangeModel = (PeriodRangeModel) basePeriodModels.get(lastSelection);
-            periodRangeModel.isChecked = true;
-            basePeriodModels.set(lastSelection, periodRangeModel);
-            //[END] set last selection
-        }
+        //[START] set last selection
+        PeriodRangeModel periodRangeModel = (PeriodRangeModel) basePeriodModels.get(lastSelection);
+        periodRangeModel.isChecked = true;
+        basePeriodModels.set(lastSelection, periodRangeModel);
+        //[END] set last selection
 
         periodAdapter.setBasePeriodModels(basePeriodModels);
 
@@ -163,16 +158,14 @@ public class PeriodFragment extends BasePresenterFragment {
         periodRecyclerView.setAdapter(periodAdapter);
         //[END] old code
 
-        if(periodChooseViewHelpers == null) {
-            periodChooseViewHelpers = new ArrayList<>();
-            for (int i = 0; i < basePeriodModels.size(); i++) {
-                @SuppressWarnings("ConstantConditions") View view = LayoutInflater.from(container.getContext()).inflate(R.layout.periode_layout, periodLinLay, false);
-                PeriodChooseViewHelper periodChooseViewHelper = new PeriodChooseViewHelper(view, i);
-                periodChooseViewHelper.bindData((PeriodRangeModel) basePeriodModels.get(i));
-                periodChooseViewHelper.setPeriodListener(periodListener);
-                periodChooseViewHelpers.add(periodChooseViewHelper);
-                periodLinLay.addView(view);
-            }
+        periodChooseViewHelpers = new ArrayList<>();
+        for (int i = 0; i < basePeriodModels.size(); i++) {
+            @SuppressWarnings("ConstantConditions") View view = LayoutInflater.from(container.getContext()).inflate(R.layout.periode_layout, periodLinLay, false);
+            PeriodChooseViewHelper periodChooseViewHelper = new PeriodChooseViewHelper(view, i);
+            periodChooseViewHelper.bindData((PeriodRangeModel) basePeriodModels.get(i));
+            periodChooseViewHelper.setPeriodListener(periodListener);
+            periodChooseViewHelpers.add(periodChooseViewHelper);
+            periodLinLay.addView(view);
         }
         return rootView;
     }
