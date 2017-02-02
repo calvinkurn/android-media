@@ -268,9 +268,14 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     @Override
     public void onRechargeTextChanged(CharSequence s, int start, int before, int count) {
-        if (isDeleteChar(before, count)) isAlreadyHavePhonePrefixInView = false;
         String temp = s.toString();
         temp = validateTextPrefix(temp);
+        if (temp.length() <= 4) {
+            if (isDeleteChar(before, count)) {
+                isAlreadyHavePhonePrefixInView = false;
+                hideFormAndImageOperator();
+            }
+        }
         phoneNumber = s.toString();
         if (!category.getAttributes().getValidatePrefix()) {
             if (s.length()>=minLengthDefaultOperator) {
