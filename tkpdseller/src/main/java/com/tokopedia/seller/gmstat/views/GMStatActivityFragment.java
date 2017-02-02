@@ -462,10 +462,23 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         baseGMModels.add(grossIncome);
 
         List<Integer> dateGraph = getTransactionGraph.getDateGraph();
+        //[START] use date from network
         List<String> dates = getDates(dateGraph, GMStatActivityFragment.this.monthNamesAbrev);
         if (dates != null) {
             grossIncome.textDescription = dates.get(0) + " - " + dates.get(1);
         }
+        //[END] use date from network
+        //[START] override sDate and eDate with local selection.
+        if(sDate != -1 || eDate != -1) {
+            String sDateWithYear = GoldMerchantDateUtils.getDateWithYear(
+                    GoldMerchantDateUtils.getDateFormatForInput(sDate), monthNamesAbrev);
+            String eDateWithYear = GoldMerchantDateUtils.getDateWithYear(
+                    GoldMerchantDateUtils.getDateFormatForInput(eDate), monthNamesAbrev);
+            grossIncome.textDescription = sDateWithYear + " - " + eDateWithYear;
+
+            dateGraph = GoldMerchantDateUtils.generateDateRanges(sDate,eDate);
+        }
+        //[END] override sDate and eDate with local selection.
         List<Integer> grossGraph = getTransactionGraph.getGrossGraph();
         List<NExcel> nExcels = joinDateAndGrossGraph(dateGraph, grossGraph);
 

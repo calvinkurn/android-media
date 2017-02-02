@@ -96,4 +96,56 @@ public class GoldMerchantDateUtils {
         DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy", locale);
         return dateFormat.format(instance.getTime());
     }
+
+    public static String getDateFormatForInput(long timeInMillis) {
+        Calendar instance = Calendar.getInstance();
+        instance.setTimeInMillis(timeInMillis);
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", locale);
+        return dateFormat.format(instance.getTime());
+    }
+
+    public static List<Integer> generateDateRanges(long sDate, long eDate){
+        // calculate range
+        Calendar sCDate = Calendar.getInstance();
+        sCDate.setTimeInMillis(sDate);
+        Calendar eCDate = Calendar.getInstance();
+        eCDate.setTimeInMillis(eDate);
+        // create list integer
+        List<Integer> result = new ArrayList<>();
+        int diffDays = daysBetween(eCDate, sCDate);
+        result.add(Integer.parseInt(getDateFormatForInput(sCDate.getTimeInMillis())));
+        for(int i=1;i<=diffDays;i++){
+            sCDate.add(Calendar.DAY_OF_MONTH, i);
+            result.add(Integer.parseInt(getDateFormatForInput(sCDate.getTimeInMillis())));
+        }
+        Log.d(TAG, "generateDateRanges ["+result+"]");
+        return result;
+    }
+
+    public static int daysBetween(Calendar day1, Calendar day2){
+        Calendar dayOne = (Calendar) day1.clone(),
+                dayTwo = (Calendar) day2.clone();
+
+        if (dayOne.get(Calendar.YEAR) == dayTwo.get(Calendar.YEAR)) {
+            return Math.abs(dayOne.get(Calendar.DAY_OF_YEAR) - dayTwo.get(Calendar.DAY_OF_YEAR));
+        } else {
+            if (dayTwo.get(Calendar.YEAR) > dayOne.get(Calendar.YEAR)) {
+                //swap them
+                Calendar temp = dayOne;
+                dayOne = dayTwo;
+                dayTwo = temp;
+            }
+            int extraDays = 0;
+
+            int dayOneOriginalYearDays = dayOne.get(Calendar.DAY_OF_YEAR);
+
+            while (dayOne.get(Calendar.YEAR) > dayTwo.get(Calendar.YEAR)) {
+                dayOne.add(Calendar.YEAR, -1);
+                // getActualMaximum() important for leap years
+                extraDays += dayOne.getActualMaximum(Calendar.DAY_OF_YEAR);
+            }
+
+            return extraDays - dayTwo.get(Calendar.DAY_OF_YEAR) + dayOneOriginalYearDays ;
+        }
+    }
 }

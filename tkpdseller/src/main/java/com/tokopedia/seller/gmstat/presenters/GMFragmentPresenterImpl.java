@@ -2,6 +2,7 @@ package com.tokopedia.seller.gmstat.presenters;
 
 import android.content.res.AssetManager;
 import android.support.annotation.IntRange;
+import android.util.Log;
 
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.core.rxjava.RxUtils;
@@ -12,6 +13,7 @@ import com.tokopedia.seller.gmstat.models.GetProductGraph;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
 import com.tokopedia.seller.gmstat.models.GetTransactionGraph;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
+import com.tokopedia.seller.gmstat.views.models.PeriodRangeModel;
 
 import java.util.List;
 
@@ -23,17 +25,18 @@ import rx.subscriptions.CompositeSubscription;
 
 public class GMFragmentPresenterImpl implements GMFragmentPresenter {
 
-    boolean isFetchData = false, isFirstTime = false;
+    private boolean isFetchData = false, isFirstTime = false;
     @IntRange(from = 0, to = 2)
+    private
     int lastSelectionPeriod = 1;
-    CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private long sDate = -1, eDate = -1;
     private long shopId;
     private float[] mValues = new float[10];
     private String[] mLabels = new String[10];
     private int selectionType;
     private GMFragmentView gmFragmentView;
-    GMStatNetworkController.GetGMStat gmStatListener = new GMStatNetworkController.GetGMStat() {
+    private GMStatNetworkController.GetGMStat gmStatListener = new GMStatNetworkController.GetGMStat() {
         @Override
         public void onSuccessGetShopCategory(GetShopCategory getShopCategory) {
             gmFragmentView.onSuccessGetShopCategory(getShopCategory);
@@ -159,7 +162,21 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
         if (assets == null)
             return;
 
+
+        resetDateSelection();
         gmStat.getGmStatNetworkController().fetchDataEmptyState(gmStatListener, assets);
+    }
+
+    /**
+     * reset sDate-eDate to 7 days
+     */
+    private void resetDateSelection(){
+        PeriodRangeModel periodRangeModel = new PeriodRangeModel(true, 7);
+        String description = periodRangeModel.getDescription();
+        Log.d("GMFragmentPresenterImpl", "["+description+"]");
+        sDate = periodRangeModel.startDate;
+        eDate = periodRangeModel.endDate;
+        isFirstTime = false;
     }
 
     public void setsDate(long sDate) {

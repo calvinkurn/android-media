@@ -27,7 +27,8 @@ import static com.tokopedia.seller.gmstat.views.SetDateConstant.PERIOD_TYPE;
 import static com.tokopedia.seller.gmstat.views.SetDateConstant.SELECTION_PERIOD;
 
 /**
- * Created by normansyahputa on 1/19/17.
+ * Created on 1/19/17.
+ * @author normansyahputa
  */
 
 public class PeriodFragment extends BasePresenterFragment {

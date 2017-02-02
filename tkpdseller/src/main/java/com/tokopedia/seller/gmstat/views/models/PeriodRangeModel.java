@@ -10,7 +10,8 @@ import java.util.Locale;
 import static com.tokopedia.seller.gmstat.views.models.StartOrEndPeriodModel.YESTERDAY;
 
 /**
- * Created by normansyahputa on 1/18/17.
+ * Created on 1/18/17.
+ * @author normansyahputa
  */
 
 public class PeriodRangeModel extends BasePeriodModel implements Parcelable {

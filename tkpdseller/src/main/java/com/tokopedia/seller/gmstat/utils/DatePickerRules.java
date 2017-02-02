@@ -249,7 +249,7 @@ public class DatePickerRules {
         }
     }
 
-    boolean isEqual(long sDate, long eDate) {
+    public static boolean isEqual(long sDate, long eDate) {
         Calendar c1 = Calendar.getInstance();
         Calendar c2 = Calendar.getInstance();
 
