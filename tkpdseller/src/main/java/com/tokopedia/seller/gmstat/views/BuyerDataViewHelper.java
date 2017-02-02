@@ -118,7 +118,7 @@ public class BuyerDataViewHelper {
             } else {
                 biggerGender += gender[1];
                 headerPieBuyerData.setText(biggerGender);
-                if(femalePercent <= 0){
+                if(malePercent <= 0){
                     malePie.setVisibility(View.GONE);
                 }else
                     malePie.setText(String.format(locale, UPPER_BUYER_FORMAT, (int) malePercent, gender[0]));
