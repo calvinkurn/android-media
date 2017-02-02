@@ -20,6 +20,7 @@ public class GetFeedUseCase extends UseCase<Feed> {
     public static final String KEY_START = "start";
     public static final String KEY_DEVICE = "device";
     public static final String KEY_OB = "ob";
+    public static final String KEY_IS_FIRST_PAGE = "isFirstPage";
     public static final String ROW_VALUE_DEFAULT = "12";
     public static final String START_VALUE_DEFAULT = "0";
     public static final String DEVICE_VALUE_DEFAULT = "android";
@@ -36,7 +37,9 @@ public class GetFeedUseCase extends UseCase<Feed> {
 
     @Override
     public Observable<Feed> createObservable(RequestParams requestParams) {
-        return feedRepository.getFeed(requestParams.getParameters());
+        boolean isFirstPage = requestParams.getBoolean(KEY_IS_FIRST_PAGE, false);
+        requestParams.clearValue(KEY_IS_FIRST_PAGE);
+        return feedRepository.getFeed(isFirstPage,requestParams.getParameters());
     }
 
 }

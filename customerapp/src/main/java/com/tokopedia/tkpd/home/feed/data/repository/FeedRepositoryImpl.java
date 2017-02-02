@@ -55,9 +55,9 @@ public class FeedRepositoryImpl implements FeedRepository {
     }
 
     @Override
-    public Observable<Feed> getFeed(TKPDMapParam<String, Object> queryMap) {
+    public Observable<Feed> getFeed(boolean isFirstPage, TKPDMapParam<String, Object> queryMap) {
         CloudFeedDataStore feedDataSource = feedDataSourceFactory.createFeedDataSource();
-        return feedDataSource.getFeed(queryMap);
+        return feedDataSource.getFeed(isFirstPage,queryMap);
     }
 
     @Override

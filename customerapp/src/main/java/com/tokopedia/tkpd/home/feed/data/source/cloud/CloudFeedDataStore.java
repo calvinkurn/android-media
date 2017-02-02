@@ -35,9 +35,16 @@ public class CloudFeedDataStore {
         this.feedDbManager = feedDbManager;
     }
 
-    public Observable<Feed> getFeed(TKPDMapParam<String, Object> params) {
+    public Observable<Feed> getFeed(boolean isFirstPage, TKPDMapParam<String, Object> params) {
         params.put(KEY_PARAMS_USER_ID, SessionHandler.getLoginID(context));
-        return aceService.getProductFeed(params).doOnNext(saveToCache()).map(feedMapper);
+        if(isFirstPage) {
+            return aceService.getProductFeed(params)
+                    .doOnNext(saveToCache())
+                    .map(feedMapper);
+        }else{
+            return aceService.getProductFeed(params)
+                    .map(feedMapper);
+        }
     }
 
     private Action1<Response<String>> saveToCache() {

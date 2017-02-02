@@ -77,6 +77,8 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         unbinder = ButterKnife.bind(this, parentView);
         prepareView(parentView);
         feedPresenter.attachView(this);
+        feedPresenter.initializeDataFeed();
+        feedPresenter.refreshDataFeed();
         return parentView;
     }
 
@@ -84,8 +86,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     @Override
     public void onResume() {
         super.onResume();
-        feedPresenter.initializeDataFeed();
-        feedPresenter.refreshDataFeed();
         String shopID = SessionHandler.getShopID(getActivity());
         String invalidShopId = "0";
         if (shopID == null || invalidShopId.equals(shopID) || shopID.length() == 0) {

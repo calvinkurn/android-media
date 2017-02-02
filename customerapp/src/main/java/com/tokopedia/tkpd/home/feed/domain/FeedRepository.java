@@ -19,7 +19,7 @@ public interface FeedRepository {
 
     Observable<List<String>> getListShopId();
 
-    Observable<Feed> getFeed(TKPDMapParam<String, Object> queryMap);
+    Observable<Feed> getFeed(boolean isFirstPage, TKPDMapParam<String, Object> queryMap);
 
     Observable<List<TopAds>> getTopAds(TKPDMapParam<String, Object> topAdsParams);
 

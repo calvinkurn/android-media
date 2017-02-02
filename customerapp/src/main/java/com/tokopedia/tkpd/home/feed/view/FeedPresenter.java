@@ -39,7 +39,6 @@ public class FeedPresenter extends BasePresenter<FeedContract.View>
     }
 
 
-
     @Override
     public void detachView() {
         super.detachView();
@@ -70,7 +69,7 @@ public class FeedPresenter extends BasePresenter<FeedContract.View>
             loadMoreFeedUseCase.execute(
                     getFeedRequestParams(),
                     new LoadMoreFeedSubcriber());
-        }else{
+        } else {
             getView().disableLoadmore();
         }
 
@@ -79,20 +78,18 @@ public class FeedPresenter extends BasePresenter<FeedContract.View>
     @NonNull
     private RequestParams getFeedRequestParams() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(GetFeedUseCase.KEY_ROWS,GetFeedUseCase.ROW_VALUE_DEFAULT);
+        requestParams.putString(GetFeedUseCase.KEY_ROWS, GetFeedUseCase.ROW_VALUE_DEFAULT);
         requestParams.putString(GetFeedUseCase.KEY_START, String.valueOf(getPagingIndex()));
         requestParams.putString((GetFeedUseCase.KEY_DEVICE), GetFeedUseCase.DEVICE_VALUE_DEFAULT);
         requestParams.putString(GetFeedUseCase.KEY_OB, GetFeedUseCase.OB_VALUE_DEFAULT);
-        requestParams.putBoolean(LoadMoreFeedUseCase.KEY_IS_INCLUDE_TOPADS,isPageOdd());
+        requestParams.putBoolean(LoadMoreFeedUseCase.KEY_IS_INCLUDE_TOPADS, isPageOdd());
+        requestParams.putBoolean(GetFeedUseCase.KEY_IS_FIRST_PAGE, false);
         return requestParams;
     }
 
-    private void setPagging(ProductFeedViewModel productFeedViewModel) {
-        productFeedViewModel.getPagingHandlerModel();
-        pagingHandler.setHasNext(
-                PagingHandler.CheckHasNext(productFeedViewModel.getPagingHandlerModel()));
-
-        pagingHandler.setPagingHandlerModel(productFeedViewModel.getPagingHandlerModel());
+    private void setPagging(PagingHandler.PagingHandlerModel pagging) {
+        pagingHandler.setHasNext(PagingHandler.CheckHasNext(pagging));
+        pagingHandler.setPagingHandlerModel(pagging);
     }
 
     private void doCheckLoadMore() {
@@ -134,7 +131,7 @@ public class FeedPresenter extends BasePresenter<FeedContract.View>
             if (isViewAttached()) {
                 getView().hideRefreshLoading();
                 ProductFeedViewModel productFeedViewModel = new ProductFeedViewModel(dataFeed);
-                setPagging(productFeedViewModel);
+                setPagging(productFeedViewModel.getPagingHandlerModel());
                 if (productFeedViewModel.getData().size() > 0) {
                     getView().showContentView();
                     getView().showFeedDataFromCache(productFeedViewModel.getData());
@@ -164,7 +161,7 @@ public class FeedPresenter extends BasePresenter<FeedContract.View>
         public void onNext(DataFeed dataFeed) {
             if (isViewAttached()) {
                 ProductFeedViewModel productFeedViewModel = new ProductFeedViewModel(dataFeed);
-                setPagging(productFeedViewModel);
+                setPagging(productFeedViewModel.getPagingHandlerModel());
                 getView().showLoadMoreFeed(productFeedViewModel.getData());
                 doCheckLoadMore();
             }
@@ -193,14 +190,20 @@ public class FeedPresenter extends BasePresenter<FeedContract.View>
                 getView().hideRefreshLoading();
                 getView().showContentView();
                 ProductFeedViewModel productFeedViewModel = new ProductFeedViewModel(dataFeed);
-                setPagging(productFeedViewModel);
                 if (productFeedViewModel.getData().size() > 0) {
+                    setPagging(productFeedViewModel.getPagingHandlerModel());
                     getView().refreshFeedData(productFeedViewModel.getData());
+                    doCheckLoadMore();
                 } else {
                     getView().showRefreshFailed();
+//                    resetPaggingToFirstPage();
                 }
-                doCheckLoadMore();
             }
+        }
+
+        private void resetPaggingToFirstPage() {
+            pagingHandler.resetPage();
+            pagingHandler.setHasNext(true);
         }
     }
 }

@@ -162,6 +162,7 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
         params.putString((GetFeedUseCase.KEY_DEVICE), GetFeedUseCase.DEVICE_VALUE_DEFAULT);
         params.putString(GetFeedUseCase.KEY_OB, GetFeedUseCase.OB_VALUE_DEFAULT);
         params.putString(GetFeedUseCase.KEY_SHOP_ID,shopIdListInString);
+        params.putBoolean(GetFeedUseCase.KEY_IS_FIRST_PAGE,true);
         return params;
     }
 
