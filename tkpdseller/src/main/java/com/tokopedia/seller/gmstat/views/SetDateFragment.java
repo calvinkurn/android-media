@@ -14,20 +14,30 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.views.adapter.SetDatePagerAdapter;
 
+import static com.tokopedia.seller.gmstat.views.BaseGMStatActivity.IS_GOLD_MERCHANT;
+import static com.tokopedia.seller.gmstat.views.SetDateConstant.CUSTOM_END_DATE;
+import static com.tokopedia.seller.gmstat.views.SetDateConstant.CUSTOM_START_DATE;
 import static com.tokopedia.seller.gmstat.views.SetDateConstant.CUSTOM_TYPE;
 import static com.tokopedia.seller.gmstat.views.SetDateConstant.PERIOD_TYPE;
+import static com.tokopedia.seller.gmstat.views.SetDateConstant.SELECTION_PERIOD;
+import static com.tokopedia.seller.gmstat.views.SetDateConstant.SELECTION_TYPE;
 
 /**
  * Created by normansyahputa on 11/25/16.
  */
 
 public class SetDateFragment extends BasePresenterFragment {
+    public static final String TAG = "SetDateFragment";
     public static final String START_DATE = "START_DATE";
     public static final String END_DATE = "END_DATE";
     private SetDate setDate;
     private TabLayout slidingTabs;
     private ViewPager setDateViewPager;
     private SetDatePagerAdapter setDatePagerAdapter;
+    private boolean isGMStat;
+    private int selectionPeriod;
+    private long sDate;
+    private long eDate;
 
     public static String reverseDate(String[] split) {
         String reverse = "";
@@ -42,6 +52,22 @@ public class SetDateFragment extends BasePresenterFragment {
         super.onAttach(activity);
         if (activity != null && activity instanceof SetDate) {
             setDate = (SetDate) activity;
+
+            isGMStat = setDate.isGMStat();
+            selectionPeriod = setDate.selectionPeriod();
+            sDate = setDate.sDate();
+            eDate = setDate.eDate();
+        }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(savedInstanceState != null){
+            isGMStat = savedInstanceState.getBoolean(IS_GOLD_MERCHANT, false);
+            selectionPeriod = savedInstanceState.getInt(SELECTION_PERIOD);
+            sDate = savedInstanceState.getLong(CUSTOM_START_DATE);
+            eDate = savedInstanceState.getLong(CUSTOM_END_DATE);
         }
     }
 
@@ -50,9 +76,17 @@ public class SetDateFragment extends BasePresenterFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.set_date_layout, container, false);
         initViews(rootView);
-        setDatePagerAdapter = new SetDatePagerAdapter(getActivity().getFragmentManager(),
-                getActivity(), setDate.isGMStat(), setDate.selectionPeriod(),
-                setDate.sDate(), setDate.eDate());
+
+        setupViewPager();
+        return rootView;
+    }
+
+    protected void setupViewPager() {
+        if(setDatePagerAdapter == null)
+            setDatePagerAdapter = new SetDatePagerAdapter(getFragmentManager(),
+                    getActivity(), isGMStat, selectionPeriod,
+                    sDate, eDate);
+
         setDateViewPager.setAdapter(setDatePagerAdapter);
         slidingTabs.setupWithViewPager(setDateViewPager);
 
@@ -64,7 +98,15 @@ public class SetDateFragment extends BasePresenterFragment {
                 setDateViewPager.setCurrentItem(1);
                 break;
         }
-        return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(IS_GOLD_MERCHANT, isGMStat);
+        outState.putInt(SELECTION_PERIOD, selectionPeriod);
+        outState.putLong(CUSTOM_START_DATE, sDate);
+        outState.putLong(CUSTOM_END_DATE, eDate);
     }
 
     public void initViews(View rootView) {
@@ -87,7 +129,14 @@ public class SetDateFragment extends BasePresenterFragment {
 
     @Override
     protected boolean isRetainInstance() {
-        return false;
+        return true;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        setRetainInstance(true);
     }
 
     @Override

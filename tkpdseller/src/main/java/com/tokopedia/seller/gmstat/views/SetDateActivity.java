@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.R;
@@ -23,7 +24,6 @@ import static com.tokopedia.seller.gmstat.views.SetDateConstant.SELECTION_TYPE;
 public class SetDateActivity extends BasePresenterActivity implements SetDateFragment.SetDate {
 
     private boolean isGoldMerchant;
-    private boolean isAfterRotate;
     private int selectionPeriod;
     private int selectionType;
     private long sDate = -1, eDate = -1;
@@ -37,7 +37,7 @@ public class SetDateActivity extends BasePresenterActivity implements SetDateFra
     @Override
     protected void initView() {
         if (!isAfterRotate)
-            inflateNewFragment(new SetDateFragment(), GMStatActivityFragment.TAG);
+            inflateNewFragment(new SetDateFragment(), SetDateFragment.TAG);
     }
 
     /**
@@ -77,6 +77,10 @@ public class SetDateActivity extends BasePresenterActivity implements SetDateFra
         intent.putExtra(SELECTION_TYPE, selectionType);
         setResult(MOVE_TO_SET_DATE, intent);
         finish();
+    }
+
+    public FragmentManager getFragmentManagerV4(){
+        return getSupportFragmentManager();
     }
 
     @Override

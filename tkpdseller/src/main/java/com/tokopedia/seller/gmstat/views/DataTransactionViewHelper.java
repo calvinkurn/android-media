@@ -28,7 +28,8 @@ import static com.tokopedia.seller.gmstat.views.GMStatActivityFragment.NoDataAva
 import static com.tokopedia.seller.gmstat.views.PopularProductViewHelper.getFormattedString;
 
 /**
- * Created by normansyahputa on 11/10/16.
+ * Created on 11/10/16.
+ * @author normansyahputa
  */
 
 public class DataTransactionViewHelper {
@@ -129,6 +130,7 @@ public class DataTransactionViewHelper {
         if (!isGoldMerchant) {
             transactionDataContainerGoldMerchant.setVisibility(View.VISIBLE);
             transactionDataContainerNonGoldMerchant.setVisibility(View.VISIBLE);
+            setEmptyStatePercentage();
 
             return;
         }
@@ -136,9 +138,7 @@ public class DataTransactionViewHelper {
         /* empty state */
         if (getTransactionGraph == null || getTransactionGraph.getFinishedTrans() == 0) {
 
-            transactionCountIcon.setVisibility(View.GONE);
-            percentage.setTextColor(gredyColor);
-            percentage.setText(R.string.no_data);
+            setEmptyStatePercentage();
 
             displayGraphic(getTransactionGraph, true);
             return;
@@ -178,6 +178,12 @@ public class DataTransactionViewHelper {
         }
 
         displayGraphic(getTransactionGraph, false);
+    }
+
+    protected void setEmptyStatePercentage() {
+        transactionCountIcon.setVisibility(View.GONE);
+        percentage.setTextColor(gredyColor);
+        percentage.setText(R.string.no_data);
     }
 
     public void displayGraphic(GetTransactionGraph getTransactionGraph, boolean emptyState) {

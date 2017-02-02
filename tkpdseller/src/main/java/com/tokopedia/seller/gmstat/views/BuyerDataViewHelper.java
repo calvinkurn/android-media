@@ -109,13 +109,19 @@ public class BuyerDataViewHelper {
             if (malePercent >= femalePercent) {
                 biggerGender += gender[0];
                 headerPieBuyerData.setText(biggerGender);
-                malePie.setText(String.format(locale, UPPER_BUYER_FORMAT, (int) femalePercent, gender[1]));
+                if(femalePercent <= 0){
+                    malePie.setVisibility(View.GONE);
+                }else
+                    malePie.setText(String.format(locale, UPPER_BUYER_FORMAT, (int) femalePercent, gender[1]));
                 femalePie.setText(String.format(locale, LOWER_BUYER_FORMAT, (int) malePercent));
                 buyerDataPieChart.setProgress((float) malePercent);
             } else {
                 biggerGender += gender[1];
                 headerPieBuyerData.setText(biggerGender);
-                malePie.setText(String.format(locale, UPPER_BUYER_FORMAT, (int) malePercent, gender[0]));
+                if(femalePercent <= 0){
+                    malePie.setVisibility(View.GONE);
+                }else
+                    malePie.setText(String.format(locale, UPPER_BUYER_FORMAT, (int) malePercent, gender[0]));
                 femalePie.setText(String.format(locale, LOWER_BUYER_FORMAT, (int) femalePercent));
                 buyerDataPieChart.setProgress((float) femalePercent);
             }
