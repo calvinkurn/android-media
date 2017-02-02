@@ -1,6 +1,7 @@
 package com.tokopedia.core.inboxreputation.activity;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
@@ -42,6 +44,16 @@ public class InboxReputationActivity extends DrawerPresenterActivity
     ViewPager viewPager;
     @BindView(R2.id.indicator)
     TabLayout indicator;
+
+    @DeepLink({
+            "tokopedia://review"
+    })
+    public static Intent getCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, InboxReputationActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
 
     @Override
     public String getScreenName() {
@@ -139,7 +151,7 @@ public class InboxReputationActivity extends DrawerPresenterActivity
         if (isTaskRoot() && GlobalConfig.isSellerApp()) {
             startActivity(SellerAppRouter.getSellerHomeActivity(this));
             finish();
-        } else if (isTaskRoot()){
+        } else if (isTaskRoot()) {
             startActivity(HomeRouter.getHomeActivity(this));
             finish();
         }
