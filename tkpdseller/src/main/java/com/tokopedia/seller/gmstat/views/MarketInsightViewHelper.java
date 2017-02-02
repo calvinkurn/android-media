@@ -1,5 +1,6 @@
 package com.tokopedia.seller.gmstat.views;
 
+import android.content.res.Resources;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -48,6 +49,7 @@ public class MarketInsightViewHelper {
     private View view;
     private boolean isGoldMerchant;
     private MarketInsightAdapter marketInsightAdapter;
+    private Resources resourceManager;
 
     public MarketInsightViewHelper(View view, boolean isGoldMerchant) {
         this.view = view;
@@ -92,6 +94,7 @@ public class MarketInsightViewHelper {
     }
 
     private void initView(final View view) {
+        resourceManager = view.getResources();
 
         marketInsightRecyclerView = (RecyclerView) view.findViewById(R.id.market_insight_recyclerview);
 
@@ -229,10 +232,15 @@ public class MarketInsightViewHelper {
 
         // create dummy data as replacement for non gold merchant user.
         List<GetKeyword.SearchKeyword> searchKeyword = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 1; i <= 3; i++) {
             GetKeyword.SearchKeyword searchKeyword1 = new GetKeyword.SearchKeyword();
             searchKeyword1.setFrequency(1000);
-            searchKeyword1.setKeyword("kaos");
+            searchKeyword1.setKeyword(
+                    String.format(
+                            resourceManager.getString(R.string.market_insight_item_non_gm_text),
+                            Integer.toString(i)
+                    )
+            );
             searchKeyword.add(searchKeyword1);
         }
 

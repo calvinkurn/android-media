@@ -174,4 +174,5 @@
     <string name="label_top_ads_empty_group">Tanpa Grup</string>
     <string name="label_top_ads_favorit">Favorit</string>
     <string name="save_date">Simpan</string>
+    <string name="market_insight_item_non_gm_text">Kata Kunci %s</string>
 </resources>
