@@ -2,11 +2,11 @@ package com.tokopedia.seller.gmsubscribe.view.product.presenter;
 
 
 import android.util.Log;
-import com.tokopedia.seller.gmsubscribe.common.domain.RequestParams;
-import com.tokopedia.seller.gmsubscribe.common.presentation.BasePresenter;
-import com.tokopedia.seller.gmsubscribe.domain.interactor.GetGMSubscribeCurrentProductUseCase;
-import com.tokopedia.seller.gmsubscribe.domain.interactor.GetGMSubscribeExtendProductUseCase;
-import com.tokopedia.seller.gmsubscribe.domain.model.product.GMProductDomainModel;
+import com.tokopedia.seller.common.domain.RequestParams;
+import com.tokopedia.seller.common.presentation.BasePresenter;
+import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetGMSubscribeCurrentProductUseCase;
+import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetGMSubscribeExtendProductUseCase;
+import com.tokopedia.seller.gmsubscribe.domain.product.model.GMProductDomainModel;
 import com.tokopedia.seller.gmsubscribe.view.product.viewmodel.GMProductViewModel;
 import java.util.ArrayList;
 import java.util.List;

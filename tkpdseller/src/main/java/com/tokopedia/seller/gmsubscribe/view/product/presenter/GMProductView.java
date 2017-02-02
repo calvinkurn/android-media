@@ -1,7 +1,7 @@
 package com.tokopedia.seller.gmsubscribe.view.product.presenter;
 
 
-import com.tokopedia.seller.gmsubscribe.common.presentation.CustomerView;
+import com.tokopedia.seller.common.presentation.CustomerView;
 import com.tokopedia.seller.gmsubscribe.view.product.viewmodel.GMProductViewModel;
 
 import java.util.List;
