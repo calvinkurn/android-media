@@ -220,9 +220,6 @@ public class ManagePasswordFragment extends BasePresenterFragment<ManagePassword
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() == 0){
-                    setWrapperError(wrapper, getString(R.string.error_field_required));
-                }
             }
         };
     }

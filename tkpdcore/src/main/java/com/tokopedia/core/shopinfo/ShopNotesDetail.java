@@ -1,10 +1,8 @@
 package com.tokopedia.core.shopinfo;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -23,8 +21,6 @@ import rx.subscriptions.CompositeSubscription;
 public class ShopNotesDetail extends TActivity {
 
     private CompositeSubscription compositeSubscription= new CompositeSubscription();
-
-
 
     private class ViewHolder{
         TextView title;

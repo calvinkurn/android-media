@@ -346,6 +346,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
             bottomNavigation.hideBottomNavigation();
             bottomNavigation.setBehaviorTranslationEnabled(false);
             browseProductActivityModel.setFragmentId(BrowseProductRouter.VALUES_HISTORY_FRAGMENT_ID);
+            showLoading(false);
         }
         Runtime.getRuntime().gc();
     }

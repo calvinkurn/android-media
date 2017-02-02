@@ -10,7 +10,7 @@ import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderShop;
 
 /**
- * Created by Angga.Prasetiyo on 28/04/2016.
+ * @author Angga.Prasetiyo on 28/04/2016.
  */
 public interface TxDetailPresenter {
     void processInvoice(TxDetailActivity txDetailActivity, OrderData data);

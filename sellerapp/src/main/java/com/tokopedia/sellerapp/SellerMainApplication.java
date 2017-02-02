@@ -4,7 +4,11 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
+import com.raizlabs.android.dbflow.config.FlowConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tokopedia.core.util.GlobalConfig;
+
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.sellerapp.daggerModules.AppModule;
 
@@ -28,6 +32,7 @@ public class SellerMainApplication extends SellerRouterApplication {
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION;
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
+        initializeDatabase();
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             com.tokopedia.core.util.GlobalConfig.VERSION_NAME = pInfo.versionName;
@@ -56,5 +61,11 @@ public class SellerMainApplication extends SellerRouterApplication {
 
     public static SellerMainApplication get(Context context){
         return (SellerMainApplication) context.getApplicationContext();
+    }
+
+    public void initializeDatabase() {
+        FlowManager.init(new FlowConfig.Builder(this)
+                .addDatabaseHolder(TkpdSellerGeneratedDatabaseHolder.class)
+                .build());
     }
 }

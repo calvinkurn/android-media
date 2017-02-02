@@ -93,6 +93,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private static final String LAST_INPUT_KEY = "lastInputKey";
     private static final int LOGIN_REQUEST_CODE = 198;
     private static final String KEY_PHONEBOOK = "phoneBook";
+    private String phoneNumber = "";
 
     //endregion
 
@@ -222,11 +223,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     public void onResume() {
         super.onResume();
         if (!getUserVisibleHint()) return;
-        if (isAlreadyHavePhonePrefixInView) {
-            showFormAndImageOperator();
-        } else {
-            hideFormAndImageOperator();
-        }
 
     }
 
@@ -272,8 +268,10 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     @Override
     public void onRechargeTextChanged(CharSequence s, int start, int before, int count) {
+        if (isDeleteChar(before, count)) isAlreadyHavePhonePrefixInView = false;
         String temp = s.toString();
         temp = validateTextPrefix(temp);
+        phoneNumber = s.toString();
         if (!category.getAttributes().getValidatePrefix()) {
             if (s.length()>=minLengthDefaultOperator) {
                 this.rechargePresenter.validateWithOperator(
@@ -287,9 +285,11 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             if (temp.length() >= 3) {
                 String phonePrefix = temp.substring(0, temp.length() <= 4 ? temp.length() : 4);
                 if (s.length() >= 3) {
-                    this.rechargePresenter.validatePhonePrefix(phonePrefix,
-                            category.getId(),
-                            category.getAttributes().getValidatePrefix());
+                    if (!isAlreadyHavePhonePrefixInView) {
+                        this.rechargePresenter.validatePhonePrefix(phonePrefix,
+                                category.getId(),
+                                category.getAttributes().getValidatePrefix());
+                    }
                 } else {
                     isAlreadyHavePhonePrefixInView = false;
                     hideFormAndImageOperator();
@@ -304,6 +304,10 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             setPhoneBookVisibility();
             hideFormAndImageOperator();
         }
+    }
+
+    private Boolean isDeleteChar(int before, int count) {
+        return before == 1 && count == 0;
     }
 
     @Override

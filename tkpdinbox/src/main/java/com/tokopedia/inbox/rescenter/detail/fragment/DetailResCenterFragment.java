@@ -18,7 +18,7 @@ import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.database.model.AttachmentResCenterDB;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
@@ -61,6 +61,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     private static final int EDIT_RESOLUTION_REQUEST_CODE = 6789;
     private static final int CHOOSE_ADDRESS = 7890;
     private static final int CHOOSE_ADDRESS_MIGRATE_VERSION = 7891;
+    private static final int CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION = 7892;
     private static final int EDIT_ADDRESS = 5678;
 
     private ActivityParamenterPassData passData;
@@ -231,7 +232,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     }
 
     @Override
-    public void showAttachment(List<AttachmentResCenterDB> data) {
+    public void showAttachment(List<AttachmentResCenterVersion2DB> data) {
         replyEditorView.renderAttachmentData(data);
     }
 
@@ -253,6 +254,12 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
                 if (resultCode == Activity.RESULT_OK) {
                     Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
                     presenter.actionInputAddressMigrateVersion(getActivity(), destination.getAddressId());
+                }
+                break;
+            case CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION:
+                if (resultCode == Activity.RESULT_OK) {
+                    Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
+                    presenter.actionInputAddressAcceptAdminSolution(getActivity(), destination.getAddressId());
                 }
                 break;
             case EDIT_ADDRESS:
@@ -460,6 +467,13 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
         intent.putExtra("resolution_center", true);
         startActivityForResult(intent, CHOOSE_ADDRESS);
+    }
+
+    @Override
+    public void openInputAddressForAcceptAdmin() {
+        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+        intent.putExtra("resolution_center", true);
+        startActivityForResult(intent, CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION);
     }
 
     @Override

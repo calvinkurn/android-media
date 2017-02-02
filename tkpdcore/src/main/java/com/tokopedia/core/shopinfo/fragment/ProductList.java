@@ -3,12 +3,10 @@ package com.tokopedia.core.shopinfo.fragment;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.text.Html;
 import android.text.InputType;
 import android.util.Log;
 import android.util.TypedValue;
@@ -20,7 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
@@ -28,8 +25,8 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.V2BaseFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.adapter.ShopProductListAdapter;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
@@ -65,7 +62,7 @@ public class ProductList extends V2BaseFragment {
     private List<String> etalaseIdList = new ArrayList<>();
     private ShopProductListAdapter adapter;
     private SimpleSpinnerAdapter etalaseAdapter;
-    private GetShopProductParam getShopParam;
+    private GetShopProductParam productShopParam;
     private String shopId;
     private String shopDomain;
     private GetShopInfoRetrofit facadeShopInfo;
@@ -119,7 +116,7 @@ public class ProductList extends V2BaseFragment {
         if (etalaseModel == null) {
             getEtalase();
         }
-        if (getShopParam.page == 1) {
+        if (productShopParam.getPage() == 1) {
             getProductNextPage();
         }
     }
@@ -130,14 +127,16 @@ public class ProductList extends V2BaseFragment {
     }
 
     private void loadModelsFromBundle(Bundle savedInstanceState) {
-        getShopParam = savedInstanceState.getParcelable("shop_param");
+        productShopParam = savedInstanceState.getParcelable("shop_param");
 //        etalaseList = savedInstanceState.getParcelableArrayList("etalase"); TODO ganti orientasi
 //        prodList = savedInstanceState.getParcelableArrayList("product_list");
     }
 
     private void initModels() {
-        getShopParam = new GetShopProductParam();
-        getShopParam.etalaseId = getActivity().getIntent().getExtras().getString(ETALASE_ID, "etalase");
+        productShopParam = new GetShopProductParam();
+        productShopParam.setEtalaseId(
+                getActivity().getIntent().getExtras().getString(ETALASE_ID, "etalase")
+        );
         productModel = new ProductModel();
         productModel.list = new ArrayList<>();
     }
@@ -146,7 +145,7 @@ public class ProductList extends V2BaseFragment {
     public void onSaveInstanceState(Bundle outState) {
 
         super.onSaveInstanceState(outState);
-        outState.putParcelable("shop_param", getShopParam);
+        outState.putParcelable("shop_param", productShopParam);
 //        outState.putParcelableArrayList("etalase", etalaseList); TODO save orientasi
 //        outState.putParcelableArrayList("product_list", prodList);
     }
@@ -158,7 +157,7 @@ public class ProductList extends V2BaseFragment {
 
     @Override
     protected void onCreateView() {
-        if (productModel.list.isEmpty() && getShopParam.page > 0)
+        if (productModel.list.isEmpty() && productShopParam.getPage() > 0)
             if (!adapter.isRetry())
                 setLoading();
             else
@@ -182,8 +181,8 @@ public class ProductList extends V2BaseFragment {
         holder.searchView = (SearchView) findViewById(R.id.search_product);
         holder.list.setLayoutManager(adapter.getLayoutManager(getActivity()));
         holder.list.setAdapter(adapter);
-        adapter.setListType(getShopParam.listState);
-        adapter.setSelectedEtalasePos(getShopParam.selectedEtalase);
+        adapter.setListType(productShopParam.getListState());
+        adapter.setSelectedEtalasePos(productShopParam.getSelectedEtalase());
         adapter.setEtalaseAdapter(etalaseAdapter);
         configSearchView();
     }
@@ -232,7 +231,7 @@ public class ProductList extends V2BaseFragment {
                 closeButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        getShopParam.keyword = "";
+                        productShopParam.setKeyword("");
                         if (!adapter.isLoading()) {
                             refreshProductList();
                         }
@@ -255,7 +254,7 @@ public class ProductList extends V2BaseFragment {
         holder.searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                getShopParam.keyword = "";
+                productShopParam.setKeyword("");
                 if (!adapter.isLoading()) {
                     refreshProductList();
                 }
@@ -266,12 +265,9 @@ public class ProductList extends V2BaseFragment {
         holder.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                getShopParam.keyword = query;
+                productShopParam.setKeyword(query);
                 if (!adapter.isLoading()) {
                     refreshProductList();
-                }
-                if (getActivity() != null) {
-                    CommonUtils.dumper("GAv4 clicked search " + query);
                 }
                 InputMethodManager imm = (InputMethodManager) getActivity().getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(holder.searchView.getWindowToken(), 0);
@@ -281,7 +277,7 @@ public class ProductList extends V2BaseFragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                getShopParam.keyword = newText;
+                productShopParam.setKeyword(newText);
                 return false;
             }
         });
@@ -356,10 +352,7 @@ public class ProductList extends V2BaseFragment {
         return new ShopProductListAdapter.ProductListAdapterListener() {
             @Override
             public void onListTypeChange() {
-                if (getActivity() != null) {
-                    CommonUtils.dumper("GAv4 clicked change list");
-                }
-                getShopParam.listState = adapter.getListType();
+                productShopParam.setListState(adapter.getListType());
             }
 
             @Override
@@ -377,9 +370,11 @@ public class ProductList extends V2BaseFragment {
 
             @Override
             public void onProductClick(int pos) {
-                Intent intent = ProductInfoActivity.createInstance(getActivity(),
-                        getProductDataToPass(pos));
-                getActivity().startActivity(intent);
+                getActivity().startActivity(
+                        ProductDetailRouter.createInstanceProductDetailInfoActivity(
+                                getActivity(), getProductDataToPass(pos)
+                        )
+                );
             }
 
             @Override
@@ -392,9 +387,9 @@ public class ProductList extends V2BaseFragment {
     }
 
     private void actionChangeEtalase(int pos) {
-        if (getShopParam.selectedEtalase != pos) {
-            getShopParam.etalaseId = etalaseIdList.get(pos);
-            getShopParam.selectedEtalase = pos;
+        if (productShopParam.getSelectedEtalase() != pos) {
+            productShopParam.setEtalaseId(etalaseIdList.get(pos));
+            productShopParam.setSelectedEtalase(pos);
             refreshProductList();
         }
     }
@@ -411,7 +406,7 @@ public class ProductList extends V2BaseFragment {
                 TextView textView = (TextView) v.findViewById(android.R.id.text1);
 
                 try {
-                    if (Integer.parseInt(getShopParam.orderBy) - 2 == position) {
+                    if (Integer.parseInt(productShopParam.getOrderBy()) - 2 == position) {
                         textView.setTextColor(getActivity().getApplicationContext().getResources().getColor(R.color.green_500));
                     } else {
                         textView.setTextColor(getActivity().getApplicationContext().getResources().getColor(R.color.black));
@@ -427,7 +422,7 @@ public class ProductList extends V2BaseFragment {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                getShopParam.orderBy = Value[which + 1];
+                productShopParam.setOrderBy(Value[which + 1]);
                 if (!adapter.isLoading())
                     refreshProductList();
             }
@@ -450,9 +445,9 @@ public class ProductList extends V2BaseFragment {
                 productModel.list.addAll(model.list);
                 adapter.notifyDataSetChanged();
                 if (!model.list.isEmpty())
-                    getShopParam.page++;
+                    productShopParam.setPage(productShopParam.getPage() + 1);
                 else
-                    getShopParam.page = -1;
+                    productShopParam.setPage(-1);
             }
 
             @Override
@@ -460,7 +455,7 @@ public class ProductList extends V2BaseFragment {
                 removeLoading();
                 switch (connectionTypeError) {
                     case GetShopProductRetrofit.CONNECTION_TYPE_ERROR:
-                        if (getShopParam.page == 1 && productModel.list.size() == 0) {
+                        if (productShopParam.getPage() == 1 && productModel.list.size() == 0) {
 
                             adapter.showEmptyState(message, new ShopProductListAdapter.RetryClickedListener() {
                                 @Override
@@ -500,11 +495,11 @@ public class ProductList extends V2BaseFragment {
                 etalaseModel = model;
                 updateEtalaseNameList();
                 if (getArguments().getString(ETALASE_ID_BUNDLE) != null) {
-                    getShopParam.selectedEtalase = etalaseIdList.indexOf(getArguments().getString(ETALASE_ID_BUNDLE));
+                    productShopParam.setSelectedEtalase(etalaseIdList.indexOf(getArguments().getString(ETALASE_ID_BUNDLE)));
                 } else {
-                    getShopParam.selectedEtalase = etalaseNameList.indexOf(getActivity().getIntent().getExtras().getString(ETALASE_NAME, getString(R.string.title_all_etalase)));
+                    productShopParam.setSelectedEtalase(etalaseNameList.indexOf(getActivity().getIntent().getExtras().getString(ETALASE_NAME, getString(R.string.title_all_etalase))));
                 }
-                adapter.setSelectedEtalasePos(getShopParam.selectedEtalase);
+                adapter.setSelectedEtalasePos(productShopParam.getSelectedEtalase());
                 adapter.notifyDataSetChanged();
             }
 
@@ -537,19 +532,33 @@ public class ProductList extends V2BaseFragment {
     }
 
     private boolean canLoadItem() {
-        return !adapter.isLoading() && getShopParam.page > 0;
+        return !adapter.isLoading() && productShopParam.getPage() > 0;
     }
 
     private void refreshProductList() {
         productModel.list.clear();
         adapter.notifyDataSetChanged();
         adapter.addLoading();
-        getShopParam.page = 1;
-        facadeShopProd.getShopProduct(getShopParam);
+        productShopParam.setPage(1);
+        facadeShopProd.getShopProduct(productShopParam);
+    }
+
+    public void refreshProductList(GetShopProductParam getShopProductParam) {
+        if (adapter != null) {
+            int etalaseIndex = etalaseIdList.indexOf(getShopProductParam.getEtalaseId());
+            if (etalaseIndex != -1) {
+                adapter.setSelectedEtalasePos(etalaseIndex);
+            }
+        }
+        this.productShopParam = getShopProductParam;
+        productModel.list.clear();
+        adapter.notifyDataSetChanged();
+        adapter.addLoading();
+        facadeShopProd.getShopProduct(getShopProductParam);
     }
 
     private void getProductNextPage() {
-        facadeShopProd.getShopProduct(getShopParam);
+        facadeShopProd.getShopProduct(productShopParam);
     }
 
     private void setLoading() {

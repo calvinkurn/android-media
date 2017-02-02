@@ -1,6 +1,8 @@
 package com.tkpd.library.utils;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -42,8 +44,8 @@ public class ImageHandler {
     public static Bitmap ResizeBitmap(Bitmap bitmap, float bounding) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
-        float xScale = ((float) bounding) / width;
-        float yScale = ((float) bounding) / height;
+        float xScale = bounding / width;
+        float yScale = bounding / height;
         float scale = (xScale <= yScale) ? xScale : yScale;
         Matrix matrix = new Matrix();
         matrix.postScale(scale, scale);
@@ -110,10 +112,6 @@ public class ImageHandler {
         }
     }
 
-//    public static void LoadImageBitmapwithUIL(final ImageView imageview, final String url, ImageLoadingListener listener) {
-//        ImageLoader.getInstance().displayImage(url, imageview, initOptions(), listener);
-//    }
-
     public static int calculateInSampleSize(BitmapFactory.Options options) {
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -155,36 +153,22 @@ public class ImageHandler {
         return output;
     }
 
-//    public static DisplayImageOptions initOptions() {
-//        DisplayImageOptions options = new DisplayImageOptions.Builder()
-//                .showStubImage(R.drawable.loading_page) // resource or drawable
-//                .showImageForEmptyUri(R.drawable.error_drawable) // resource or drawable
-//                .showImageOnFail(R.drawable.error_drawable)
-//                .bitmapConfig(Config.RGB_565)// resource or drawable
-//                .cacheOnDisc(true)
-//                .cacheInMemory(true)
-//                .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
-//                .build();
-//
-//        return options;
-//    }
-
     public static void loadImageWithoutFit(Context context, ImageView imageview, String url) {
         Glide.with(context)
                 .load(url)
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imageview);
     }
 
     public static void loadImageThumbs(Context context, ImageView imageview, String url) {
         Glide.with(context)
                 .load(url)
+                .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
-                .thumbnail(0.5f)
-                .crossFade()
+                .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(imageview);
     }
@@ -259,9 +243,9 @@ public class ImageHandler {
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .centerCrop()
                 .into(target);
-
     }
 
     public static void loadImageBitmapNotification(Context context, String url, FCMMessagingService.OnGetFileListener listener) {
@@ -368,6 +352,18 @@ public class ImageHandler {
     public static void loadImageRounded2(Context context, final ImageView imageview, final String url) {
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
+                    .load(url)
+                    .asBitmap()
+                    .dontAnimate()
+                    .placeholder(R.drawable.loading_page)
+                    .error(R.drawable.error_drawable)
+                    .into(getRoundedImageViewTarget(imageview, 5.0f));
+        }
+    }
+
+    public static void loadImageRounded2(Fragment fragment, final ImageView imageview, final String url) {
+        if (url != null && !url.isEmpty()) {
+            Glide.with(fragment)
                     .load(url)
                     .asBitmap()
                     .dontAnimate()

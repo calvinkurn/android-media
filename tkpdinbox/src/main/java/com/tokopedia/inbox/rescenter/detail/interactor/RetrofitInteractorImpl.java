@@ -225,6 +225,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     public void postAddress(@NonNull final Context context,
                             @NonNull final Map<String, String> params,
                             @NonNull final OnPostAddressListener listener) {
+
+        listener.onStart();
+
         Observable<Response<TkpdResponse>> observable = resCenterActService.getApi()
                 .inputAddressResolution(AuthUtil.generateParams(context, params));
 
@@ -306,6 +309,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     public void editAddress(@NonNull final Context context,
                             @NonNull final Map<String, String> params,
                             @NonNull final OnPostAddressListener listener) {
+
+        listener.onStart();
+
         Observable<Response<TkpdResponse>> observable = resCenterActService.getApi()
                 .editAddressResolution(AuthUtil.generateParams(context, params));
 

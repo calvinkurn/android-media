@@ -48,8 +48,7 @@ import java.util.Map;
 import rx.subscriptions.CompositeSubscription;
 
 /**
- * ConfirmPaymentPresenterImpl
- * Created by Angga.Prasetiyo on 20/06/2016.
+ * @author Angga.Prasetiyo on 20/06/2016.
  */
 public class ConfirmPaymentPresenterImpl implements ConfirmPaymentPresenter {
     private final ConfirmPaymentViewListener viewListener;
@@ -211,6 +210,7 @@ public class ConfirmPaymentPresenterImpl implements ConfirmPaymentPresenter {
                     > formEditData.getDatetime().getDayInt()) {
                 if (Integer.parseInt(data.getPaymentMonth())
                         >= formEditData.getDatetime().getMonthInt()) {
+                    //noinspection WrongConstant
                     if (Integer.parseInt(data.getPaymentYear())
                             == Calendar.getInstance().get(Calendar.YEAR)) {
                         viewListener.renderErrorDate(context.getString(R.string.error_payment_date_not_valid));
@@ -290,7 +290,8 @@ public class ConfirmPaymentPresenterImpl implements ConfirmPaymentPresenter {
                 return false;
             }
         }
-        if (!data.getPaymentMethod().equals("5") && ((data.getPaymentAmount() == null || data.getPaymentAmount().isEmpty()))) {
+        if (!data.getPaymentMethod().equals("5")
+                && ((data.getPaymentAmount() == null || data.getPaymentAmount().isEmpty()))) {
             viewListener.renderErrorPaymentAmount("Jumlah Pembayaran harus diisi");
             return false;
         } else {

@@ -1,10 +1,7 @@
 package com.tokopedia.core.home.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +15,9 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.entity.home.recentView.Badge;
 import com.tokopedia.core.network.entity.home.recentView.RecentView;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.var.ProductItem;
 
 import java.util.List;
 
@@ -96,12 +92,11 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
             public void onClick(View view) {
                 if(position < data.size()) {
                     UnifyTracking.eventFeedRecent(data.get(position).getProductName());
-                    Bundle bundle = new Bundle();
-                    Intent intent = new Intent(context, ProductInfoActivity.class);
-                    bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS,
-                            getProductDataToPass(data.get(position)));
-                    intent.putExtras(bundle);
-                    context.startActivity(intent);
+                    context.startActivity(
+                            ProductDetailRouter.createInstanceProductDetailInfoActivity(
+                                    context, getProductDataToPass(data.get(position))
+                            )
+                    );
                 }
             }
         };
@@ -124,9 +119,7 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
 
 
     private void setBadges(ViewHolder holder, RecentView data) {
-        if (holder.badgesContainer !=null && holder.badgesContainer.getChildCount() != 0) {
-            holder.badgesContainer.removeAllViews();
-        }
+        holder.badgesContainer.removeAllViews();
         if (data.getBadges() != null) {
             for (Badge badges : data.getBadges())  {
                 View view = LayoutInflater.from(context).inflate(R.layout.badge_layout_small, null);

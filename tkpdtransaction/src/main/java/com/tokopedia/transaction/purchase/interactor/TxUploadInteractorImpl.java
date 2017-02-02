@@ -31,8 +31,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
- * TxUploadInteractorImpl
- * Created by anggaprasetiyo on 8/11/16.
+ * @author anggaprasetiyo on 8/11/16.
  */
 public class TxUploadInteractorImpl implements TxUploadInteractor {
     private static final String PARAM_USER_ID = "user_id";
@@ -54,8 +53,8 @@ public class TxUploadInteractorImpl implements TxUploadInteractor {
     }
 
     @Override
-    public void uploadImageProof(final Context context, final String imagePath, final TxVerData txVerData,
-                                 final OnImageProofUpload listener) {
+    public void uploadImageProof(final Context context, final String imagePath,
+                                 final TxVerData txVerData, final OnImageProofUpload listener) {
         Map<String, String> params = new HashMap<>();
         params.put("new_add", "2");
         Observable<GeneratedHost> observableGeneratedHost = generateHostActService.getApi()
@@ -72,7 +71,9 @@ public class TxUploadInteractorImpl implements TxUploadInteractor {
                                 new HashMap<String, String>());
                         File file = null;
                         try {
-                            file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(imagePath));
+                            file = ImageUploadHandler.writeImageToTkpdPath(
+                                    ImageUploadHandler.compressImage(imagePath)
+                            );
                         } catch (IOException e) {
                             throw new RuntimeException(context.getString(R.string.error_upload_image));
                         }
@@ -126,8 +127,9 @@ public class TxUploadInteractorImpl implements TxUploadInteractor {
                         Map<String, String> params = new HashMap<>();
                         params.put("pic_src", picSrc);
                         params.put("pic_obj", picObj);
-                        return txActService.getApi()
-                                .uploadValidProofByPayment(AuthUtil.generateParams(context, params));
+                        return txActService.getApi().uploadValidProofByPayment(
+                                AuthUtil.generateParams(context, params)
+                        );
                     }
                 };
         compositeSubscription.add(observableGeneratedHost
@@ -145,13 +147,16 @@ public class TxUploadInteractorImpl implements TxUploadInteractor {
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        listener.onFailed("Gagal Mengupload gambar, silahkan coba lagi");
+                        listener.onFailed(context.getString(R.string.label_error_upload_image));
                     }
 
                     @Override
                     public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
-                        if (tkpdResponseResponse.isSuccessful() && !tkpdResponseResponse.body().isError())
-                            listener.onSuccess(tkpdResponseResponse.body().getStatusMessages().get(0));
+                        if (tkpdResponseResponse.isSuccessful()
+                                && !tkpdResponseResponse.body().isError())
+                            listener.onSuccess(
+                                    tkpdResponseResponse.body().getStatusMessages().get(0)
+                            );
                     }
                 }));
     }

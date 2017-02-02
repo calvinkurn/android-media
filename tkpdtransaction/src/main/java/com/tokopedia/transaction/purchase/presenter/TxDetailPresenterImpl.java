@@ -13,8 +13,6 @@ import android.view.Window;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity;
-import com.tokopedia.inbox.inboxmessage.fragment.SendMessageFragment;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -73,7 +71,9 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     public void processShowComplain(Context context, OrderButton orderButton) {
         Uri uri = Uri.parse(orderButton.getButtonResCenterUrl());
         String res_id = uri.getQueryParameter("id");
-        viewListener.navigateToActivity(InboxRouter.getDetailResCenterActivityIntent(context, res_id));
+        viewListener.navigateToActivity(
+                InboxRouter.getDetailResCenterActivityIntent(context, res_id)
+        );
     }
 
     @SuppressWarnings("deprecation")
@@ -95,8 +95,9 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                          * n=0&id=<ORDER_ID>&t=5&s=6 -> tanya kurir
                          */
                         viewListener.navigateToActivityRequest(
-                                InboxRouter.getCreateResCenterActivityIntent(context, orderData.getOrderDetail().getDetailOrderId(), 5, 6),
-                                TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE
+                                InboxRouter.getCreateResCenterActivityIntent(
+                                        context, orderData.getOrderDetail().getDetailOrderId(), 5, 6
+                                ), TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE
                         );
                     }
                 });
@@ -109,8 +110,9 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                          * n=0&id=<ORDER_ID>&t=5&s=1 --> pengembalian dana
                          */
                         viewListener.navigateToActivityRequest(
-                                InboxRouter.getCreateResCenterActivityIntent(context, orderData.getOrderDetail().getDetailOrderId(), 5, 1),
-                                TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE
+                                InboxRouter.getCreateResCenterActivityIntent(
+                                        context, orderData.getOrderDetail().getDetailOrderId(), 5, 1
+                                ), TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE
                         );
                     }
                 });
@@ -166,15 +168,15 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     @SuppressWarnings("deprecation")
     @Override
     public void processAskSeller(Context context, OrderData orderData) {
-        Intent intent = new Intent(context, SendMessageActivity.class);
+        Intent intent = InboxRouter.getSendMessageActivityIntent(context);
         Bundle bundle = new Bundle();
-        bundle.putString(SendMessageFragment.PARAM_SHOP_ID,
+        bundle.putString(InboxRouter.PARAM_SHOP_ID,
                 orderData.getOrderShop().getShopId());
-        bundle.putString(SendMessageFragment.PARAM_OWNER_FULLNAME,
+        bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME,
                 orderData.getOrderShop().getShopName());
-        bundle.putString(SendMessageFragment.PARAM_CUSTOM_SUBJECT,
+        bundle.putString(InboxRouter.PARAM_CUSTOM_SUBJECT,
                 orderData.getOrderDetail().getDetailInvoice());
-        bundle.putString(SendMessageFragment.PARAM_CUSTOM_MESSAGE,
+        bundle.putString(InboxRouter.PARAM_CUSTOM_MESSAGE,
                 MethodChecker.fromHtml(
                         context.getString(R.string.custom_content_message_ask_seller)
                                 .replace("XXX",
@@ -189,7 +191,8 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     }
 
     @Override
-    public void processRequestCancelOrder(final Activity activity, String reason, OrderData orderData) {
+    public void processRequestCancelOrder(final Activity activity, String reason,
+                                          OrderData orderData) {
         viewListener.showProgressLoading();
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
         params.put("order_id", orderData.getOrderDetail().getDetailOrderId());
@@ -313,19 +316,25 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     private Dialog generateDialogFreeReturn(final Context context, final OrderData orderData) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(context.getString(R.string.label_title_dialog_order_received_free_return));
-        builder.setMessage(MethodChecker.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
+        builder.setMessage(
+                MethodChecker.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg())
+        );
         builder.setNeutralButton(context.getString(R.string.title_open_dispute),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         LocalCacheHandler cache = new LocalCacheHandler(context,
                                 ConstantOnBoarding.CACHE_FREE_RETURN);
                         if (cache.getBoolean(ConstantOnBoarding.HAS_SEEN_FREE_RETURN_ONBOARDING)) {
-                            viewListener.navigateToActivityRequest(InboxRouter.getCreateResCenterActivityIntent(context, orderData.getOrderDetail().getDetailOrderId()),
-                                    TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE
+                            viewListener.navigateToActivityRequest(
+                                    InboxRouter.getCreateResCenterActivityIntent(
+                                            context, orderData.getOrderDetail().getDetailOrderId()
+                                    ), TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE
                             );
                         } else {
-                            viewListener.navigateToActivityRequest(InboxRouter.getFreeReturnOnBoardingActivityIntent(context, orderData.getOrderDetail().getDetailOrderId()),
-                                    TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE
+                            viewListener.navigateToActivityRequest(
+                                    InboxRouter.getFreeReturnOnBoardingActivityIntent(
+                                            context, orderData.getOrderDetail().getDetailOrderId()
+                                    ), TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE
                             );
                         }
                     }

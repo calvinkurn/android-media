@@ -17,12 +17,7 @@ import android.view.View;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.Cart;
-import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
 import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.tkpd.R;
-
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -31,6 +26,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.customadapter.ListViewHotProductParent;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
+import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
 import com.tokopedia.core.interfaces.IndexHomeInterafaces;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.myproduct.ProductActivity;
@@ -38,13 +34,16 @@ import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.WrappedTabPageIndicator;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.FragmentIndexFavoriteV2;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
@@ -403,7 +402,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
                     intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                     startActivity(intent);
                 } else {
-                    startActivity(new Intent(getBaseContext(), Cart.class));
+                    startActivity(TransactionCartRouter.createInstanceCartActivity(this));
                 }
                 return true;
             default:

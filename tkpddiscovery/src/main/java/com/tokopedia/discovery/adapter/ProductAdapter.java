@@ -16,7 +16,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,9 +25,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
@@ -47,6 +46,7 @@ import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.Badge;
@@ -111,10 +111,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case TkpdState.RecyclerView.VIEW_PRODUCT:
-                return new ViewHolderProductitem(LayoutInflater.from(context).inflate(R.layout.listview_product_item_list, parent, false));
+                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_list, parent, false));
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
-                return new ViewHolderProductitem(LayoutInflater.from(context).inflate(R.layout.listview_product_item_grid, parent, false));
+                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_grid, parent, false));
             case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
             case TkpdState.RecyclerView.VIEW_TOP_ADS:
                 return ProductFeedAdapter.createViewTopAds(parent);
@@ -389,10 +389,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
      * @return
      */
     private boolean checkAvailableData(int position) {
-        if (position > data.size()) {
-            return false;
-        }
-        return true;
+        return position <= data.size();
     }
 
     /**
@@ -478,7 +475,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     // SETTER AND GETTER BELOW
 
     public boolean checkHasNext() {
-        return pagingHandlerModel.getStartIndex() == -1 ? false : true;
+        return pagingHandlerModel.getStartIndex() != -1;
     }
 
     public PagingHandler.PagingHandlerModel getPagingHandlerModel() {
@@ -624,10 +621,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         private Context context;
         private ProductItem data;
 
-        public ViewHolderProductitem(View itemView) {
+        public ViewHolderProductitem(Context context, View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            this.context = itemView.getContext();
+            this.context = context;
         }
 
         public void bindData(ProductItem data, ViewHolderProductitem viewHolder) {
@@ -637,8 +634,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             else
                 title.setText(MethodChecker.fromHtml(data.name));
             price.setText(data.price);
-            if (data.getShop_location() != null)
-                location.setText(MethodChecker.fromHtml(data.getShop_location()));
+            if (data.getShopLocation() != null)
+                location.setText(MethodChecker.fromHtml(data.getShopLocation()));
             else
                 location.setVisibility(View.INVISIBLE);
 
@@ -678,7 +675,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         public void onClick() {
             Bundle bundle = new Bundle();
             Intent intent = new Intent(context, ProductInfoActivity.class);
-            bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_ITEM, data);
+            bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
             intent.putExtras(bundle);
             context.startActivity(intent);
         }
