@@ -108,7 +108,7 @@ public class RegisterStep1PresenterImpl implements RegisterStep1Presenter, Regis
                                     viewListener.onErrorValidateEmail(
                                             viewListener.getString(R.string.default_request_error_forbidden_auth));
                                 }
-                            }, Integer.parseInt(e.toString()));
+                            }, Integer.parseInt(e.getLocalizedMessage()));
                         } else if (e instanceof RuntimeException && e.getLocalizedMessage() != null) {
                             viewListener.onErrorValidateEmail(e.getLocalizedMessage());
                         } else {

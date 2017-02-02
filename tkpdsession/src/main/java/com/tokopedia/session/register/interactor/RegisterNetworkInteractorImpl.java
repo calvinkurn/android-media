@@ -10,12 +10,15 @@ import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+
 /**
  * Created by nisie on 1/27/17.
  */
 
 public class RegisterNetworkInteractorImpl implements RegisterNetworkInteractor, RegisterConstant {
 
+    private static final String TOO_MANY_REQUEST = "TOO_MANY_REQUEST";
     private AccountsService accountsService;
 
     public RegisterNetworkInteractorImpl(AccountsService accountsService) {
@@ -36,7 +39,10 @@ public class RegisterNetworkInteractorImpl implements RegisterNetworkInteractor,
                     public Observable<Integer> call(Response<TkpdResponse> response) {
                         if (response.isSuccessful()) {
                             final TkpdResponse tkpdResponse = response.body();
-                            if (!tkpdResponse.isError()) {
+                            if (!tkpdResponse.isError()
+                                    && !response.body().getStatus().equals(TOO_MANY_REQUEST)
+                                    && response.body().getErrorMessages() != null
+                                    && response.body().getErrorMessages().size() != 0) {
                                 ValidateEmailResult result = response.body().convertDataObj(ValidateEmailResult.class);
                                 switch (result.getAction()) {
                                     case GO_TO_REGISTER:

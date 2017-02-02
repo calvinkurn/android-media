@@ -30,8 +30,6 @@ public interface RegisterStep1ViewListener {
 
     void setActionsEnabled(boolean isEnabled);
 
-    void onSuccessValidateEmail(boolean isActive);
-
     void onErrorValidateEmail(String errorMessage);
 
     void showLoadingProgress();

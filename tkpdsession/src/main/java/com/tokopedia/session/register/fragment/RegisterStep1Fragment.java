@@ -384,13 +384,8 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
     }
 
     @Override
-    public void onSuccessValidateEmail(boolean isActive) {
-        dismissLoadingProgress();
-    }
-
-
-    @Override
     public void onErrorValidateEmail(String errorMessage) {
+        dismissLoadingProgress();
         showSnackbar(errorMessage);
     }
 
