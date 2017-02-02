@@ -178,6 +178,21 @@ android {
             compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
         }
     }
+
+    productFlavors {
+        staging {
+            applicationIdSuffix ".staging"
+            versionNameSuffix "-staging"
+        }
+        alpha {
+            applicationIdSuffix ".alpha"
+            versionNameSuffix "-alpha"
+        }
+        live {
+
+        }
+    }
+
 }
 
 repositories {

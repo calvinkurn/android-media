@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.rescenter.detail.model.passdata;
 
-import com.tokopedia.core.database.model.AttachmentResCenterDB;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.inbox.rescenter.detail.model.actionresponsedata.ResCenterActionData;
 
 import java.util.List;
@@ -32,7 +32,7 @@ public class ActionParameterPassData {
     private String filePath;
     private ResCenterActionData resCenterActionData;
     private Boolean byPassFlag;
-    private List<AttachmentResCenterDB> listImages;
+    private List<AttachmentResCenterVersion2DB> listImages;
     private String conversationID;
     private String shipmentID;
     private String shippingRefNum;
@@ -214,11 +214,11 @@ public class ActionParameterPassData {
         return byPassFlag;
     }
 
-    public void setListImages(List<AttachmentResCenterDB> listImages) {
+    public void setListImages(List<AttachmentResCenterVersion2DB> listImages) {
         this.listImages = listImages;
     }
 
-    public List<AttachmentResCenterDB> getListImages() {
+    public List<AttachmentResCenterVersion2DB> getListImages() {
         return listImages;
     }
 
