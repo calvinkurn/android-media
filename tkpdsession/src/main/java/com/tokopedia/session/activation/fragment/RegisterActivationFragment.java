@@ -114,7 +114,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
     @Override
     protected void initView(View view) {
         resendButton.setBackgroundResource(com.tokopedia.core.R.drawable.bg_rounded_corners);
-        nameEditText.setText(String.format("Halo, %s", getArguments().getString(ARGS_NAME, "")));
+        nameEditText.setText("Halo,");
         email.setText(getArguments().getString(ARGS_EMAIL, ""));
 //        SnackbarManager.make(getActivity(), "Akun anda belum diaktivasi. Cek email anda untuk mengaktivasi akun.", Snackbar.LENGTH_LONG).show();
     }

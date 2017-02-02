@@ -26,6 +26,7 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
     private static final String TAG = "FORGOT_PASSWORD_FRAGMENT";
     private static final String INTENT_EXTRA_PARAM_EMAIL = "INTENT_EXTRA_PARAM_EMAIL";
     private static final String INTENT_EXTRA_AUTO_RESET = "INTENT_EXTRA_AUTO_RESET";
+    private static final String INTENT_EXTRA_REMOVE_FOOTER = "INTENT_EXTRA_REMOVE_FOOTER";
 
     public static Intent createInstance(Context context) {
         return new Intent(context, ForgotPasswordActivity.class);
@@ -61,7 +62,8 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
             ForgotPasswordFragment fragment = ForgotPasswordFragment.createInstance(
                     getIntent().getExtras().getString(INTENT_EXTRA_PARAM_EMAIL, ""),
-                    getIntent().getExtras().getBoolean(INTENT_EXTRA_AUTO_RESET,false));
+                    getIntent().getExtras().getBoolean(INTENT_EXTRA_AUTO_RESET,false),
+                    getIntent().getExtras().getBoolean(INTENT_EXTRA_REMOVE_FOOTER,false));
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentTransaction.add(R.id.container, fragment, TAG);
@@ -123,6 +125,7 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
         Intent intent = new Intent(context, ForgotPasswordActivity.class);
         intent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
         intent.putExtra(INTENT_EXTRA_AUTO_RESET, true);
+        intent.putExtra(INTENT_EXTRA_REMOVE_FOOTER,true);
         return intent;
     }
 }

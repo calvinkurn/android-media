@@ -37,6 +37,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.activity.ActivationActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
+import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.register.activity.RegisterEmailActivity;
 import com.tokopedia.session.register.adapter.AutoCompleteTextAdapter;
 import com.tokopedia.session.register.interactor.RegisterNetworkInteractorImpl;
@@ -67,7 +68,7 @@ import rx.subscriptions.CompositeSubscription;
 
 @RuntimePermissions
 public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Presenter>
-        implements RegisterStep1ViewListener {
+        implements RegisterStep1ViewListener, RegisterConstant {
 
     @BindView(R2.id.register_email)
     AutoCompleteTextView email;
@@ -111,7 +112,7 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
 
     @Override
     protected boolean isRetainInstance() {
-        return false;
+        return true;
     }
 
     @Override
@@ -188,6 +189,16 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
         loginButton.setText(spannable, TextView.BufferType.SPANNABLE);
 
         registerNextButton.setBackgroundResource(com.tokopedia.core.R.drawable.bg_rounded_corners);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if(savedInstanceState != null){
+            name.setText(savedInstanceState.getString(NAME,""));
+            email.setText(savedInstanceState.getString(EMAIL,""));
+            registerPassword.setText(savedInstanceState.getString(PASSWORD,""));
+        }
     }
 
     @Override
@@ -488,4 +499,11 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
         presenter.onDestroyView();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(NAME, name.getText().toString());
+        outState.putString(EMAIL, email.getText().toString());
+        outState.putString(PASSWORD, registerPassword.getText().toString());
+    }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.session.forgotpassword.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
@@ -22,6 +23,9 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.session.forgotpassword.interactor.ForgotPasswordRetrofitInteractorImpl;
 import com.tokopedia.session.forgotpassword.listener.ForgotPasswordFragmentView;
 import com.tokopedia.session.forgotpassword.presenter.ForgotPasswordFragmentPresenter;
@@ -39,6 +43,7 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
 
     private static final String ARGS_EMAIL = "ARGS_EMAIL";
     private static final String ARGS_AUTO_RESET = "ARGS_AUTO_RESET";
+    private static final String ARGS_REMOVE_FOOTER = "ARGS_REMOVE_FOOTER";
     @BindView(R2.id.front_view)
     View FrontView;
     @BindView(R2.id.success_view)
@@ -56,11 +61,12 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
 
     TkpdProgressDialog progressDialog;
 
-    public static ForgotPasswordFragment createInstance(String email, boolean isAutoReset) {
+    public static ForgotPasswordFragment createInstance(String email, boolean isAutoReset, boolean isRemoveFooter) {
         ForgotPasswordFragment fragment = new ForgotPasswordFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARGS_EMAIL, email);
         bundle.putBoolean(ARGS_AUTO_RESET, isAutoReset);
+        bundle.putBoolean(ARGS_REMOVE_FOOTER, isRemoveFooter);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -77,8 +83,11 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
 
     @Override
     protected void onFirstTimeLaunched() {
-        if(getArguments().getBoolean(ARGS_AUTO_RESET)){
+        if (getArguments().getBoolean(ARGS_AUTO_RESET)) {
             presenter.resetPassword();
+        }
+        if (getArguments().getBoolean(ARGS_REMOVE_FOOTER, false)) {
+            registerButton.setVisibility(View.GONE);
         }
     }
 
@@ -208,7 +217,12 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
     }
 
     private void goToRegister() {
-        //TODO : move to Register Initial
+        Intent intent;
+        intent = SessionRouter.getLoginActivityIntent(context);
+        intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.REGISTER);
+        intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
+        context.startActivity(intent);
+        getActivity().finish();
     }
 
     @Override

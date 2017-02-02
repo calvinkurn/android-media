@@ -5,7 +5,7 @@ package com.tokopedia.core.network.constants;
  */
 public interface TkpdBaseURL {
 
-    String LIVE_DOMAIN = "https://ws-staging.tokopedia.com/";
+    String LIVE_DOMAIN = "https://ws.tokopedia.com/";
     String STAGE_DOMAIN = "https://ws-staging.tokopedia.com/";
     String ALPHA_DOMAIN = "https://ws-alpha.tokopedia.com/";
     String BASE_DOMAIN = LIVE_DOMAIN;
@@ -14,16 +14,14 @@ public interface TkpdBaseURL {
     String CLOVER_DOMAIN = "https://points.tokopedia.com/";
     String TOPADS_DOMAIN = "https://ta.tokopedia.com/";
     String TOPADS_STAGING_DOMAIN = "http://ta-staging.tokopedia.com/";
-    String MOJITO_DOMAIN = "https://mojito-staging.tokopedia.com/";
-    String MOJITO_STAGING_DOMAIN = "https://mojito.tokopedia.com/";
+    String MOJITO_DOMAIN = "https://mojito.tokopedia.com/";
+    String MOJITO_STAGING_DOMAIN = "https://mojito-staging.tokopedia.com/";
     String HADES_DOMAIN = "https://hades.tokopedia.com";
     String RECHARGE_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
     String RECHARGE_STAGING_DOMAIN = "https://pulsa-api-staging.tokopedia.com/";
-    String ACCOUNTS_DOMAIN = "https://accounts-staging.tokopedia.com/";
+    String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
     String ACCOUNTS_STAGING_DOMAIN = "https://accounts-staging.tokopedia.com/";
     String ACCOUNTS_ALPHA_DOMAIN = "https://accounts-alpha.tokopedia.com/";
-    String ACCOUNTS_API_DOMAIN = "https://accounts-staging.tokopedia.com/api/";
-
     String INBOX_DOMAIN = "https://inbox.tokopedia.com";
     String JS_DOMAIN = "https://js.tokopedia.com/";
     String JS_STAGING_DOMAIN = "https://js-staging.tokopedia.com/";

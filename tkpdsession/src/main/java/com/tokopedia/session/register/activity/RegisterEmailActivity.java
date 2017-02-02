@@ -45,8 +45,6 @@ public class RegisterEmailActivity extends BasePresenterActivity {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
             fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
-        } else {
-            fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         }
         fragmentTransaction.commit();
     }
