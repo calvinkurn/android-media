@@ -21,9 +21,11 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
             productAd = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
         }
 
-        getFragmentManager().beginTransaction().disallowAddToBackStack()
-                .add(R.id.container, TopAdsDetailProductFragment.createInstance(productAd), TopAdsDetailProductFragment.class.getSimpleName())
-                .commit();
+        if(savedInstanceState == null) {
+            getFragmentManager().beginTransaction().disallowAddToBackStack()
+                    .add(R.id.container, TopAdsDetailProductFragment.createInstance(productAd), TopAdsDetailProductFragment.class.getSimpleName())
+                    .commit();
+        }
     }
 
     @Override

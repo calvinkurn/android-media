@@ -24,8 +24,6 @@ import java.util.List;
  */
 
 public class PeriodFragment extends Fragment {
-
-    public static final String PERIOD_HELPER_DATA = "periodHelperData";
     public static final String PERIOD_RANGE_MODEL_DATA = "periodRangeModelData";
     RecyclerView periodRecyclerView;
     Button saveDate;
@@ -151,7 +149,6 @@ public class PeriodFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(PERIOD_HELPER_DATA, Parcels.wrap(periodChooseViewHelpers));
         outState.putParcelable(PERIOD_RANGE_MODEL_DATA, Parcels.wrap(periodRangeModelList));
     }
 
@@ -163,7 +160,6 @@ public class PeriodFragment extends Fragment {
 
     private void fetchInstanceState(Bundle savedInstanceState) {
         if(savedInstanceState != null){
-            periodChooseViewHelpers = Parcels.unwrap(savedInstanceState.getParcelable(PERIOD_HELPER_DATA));
             periodRangeModelList = Parcels.unwrap(savedInstanceState.getParcelable(PERIOD_RANGE_MODEL_DATA));
         }
     }
