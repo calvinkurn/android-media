@@ -13,6 +13,7 @@ import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.gmsubscribe.view.product.presenter.GMProductPresenter;
+import com.tokopedia.seller.gmsubscribe.view.product.presenter.GMProductPresenterImpl;
 import com.tokopedia.seller.gmsubscribe.view.product.presenter.GMProductView;
 import com.tokopedia.seller.gmsubscribe.view.product.recyclerview.GMProductAdapter;
 import com.tokopedia.seller.gmsubscribe.view.product.recyclerview.GMProductAdapterCallback;
@@ -29,7 +30,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public abstract class GMProductFragment
-        extends BasePresenterFragment<GMProductPresenter>
+        extends BasePresenterFragment<GMProductPresenterImpl>
         implements GMProductView, GMProductAdapterCallback {
 
     public static final String TAG = "GMProductFragment";
@@ -89,7 +90,7 @@ public abstract class GMProductFragment
 
     @Override
     public void onSaveState(Bundle bundle) {
-
+        presenter.detachView();
     }
 
     @Override
@@ -131,6 +132,7 @@ public abstract class GMProductFragment
 
     @Override
     protected void initView(View view) {
+        presenter.attachView(this);
         buttonSelectProduct.setText(stringButton);
         adapter = new GMProductAdapter(this);
         recyclerView.setAdapter(adapter);

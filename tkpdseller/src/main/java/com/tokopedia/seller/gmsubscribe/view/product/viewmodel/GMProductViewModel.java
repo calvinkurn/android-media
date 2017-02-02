@@ -1,5 +1,7 @@
 package com.tokopedia.seller.gmsubscribe.view.product.viewmodel;
 
+import com.tokopedia.seller.gmsubscribe.domain.model.product.GMProductDomainModel;
+
 /**
  * Created by sebastianuskh on 1/26/17.
  */
@@ -12,6 +14,17 @@ public class GMProductViewModel {
     private String lastPrice;
     private String name;
     private String notes;
+
+    public GMProductViewModel(GMProductDomainModel domainModel) {
+        setProductId(String.valueOf(domainModel.getProductId()));
+        setName(domainModel.getName());
+        setNotes(domainModel.getNotes());
+        setPrice(domainModel.getPrice());
+        setBestDeal(domainModel.isBestDeal());
+        setFreeDays(domainModel.getFreeDays());
+        setNextInv(domainModel.getNextInv());
+        setLastPrice(domainModel.getLastPrice());
+    }
 
     public void setProductId(String productId) {
         this.productId = productId;
