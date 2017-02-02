@@ -17,18 +17,24 @@ import java.util.List;
 public class TopAdsFilterProductActivity extends TopAdsFilterActivity {
 
     private int selectedFilterStatus;
+    private int selectedGroupId;
+    private int currentGroupId;
+    private String currentGroupName;
 
     @Override
     protected void setupBundlePass(Bundle extras) {
         super.setupBundlePass(extras);
-        selectedFilterStatus = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_STATUS_VALUE);
+        selectedFilterStatus = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS);
+        selectedGroupId = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID);
+        currentGroupId = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_CURRENT_GROUP_ID);
+        currentGroupName = extras.getString(TopAdsExtraConstant.EXTRA_FILTER_CURRENT_GROUP_NAME);
     }
 
     @Override
     protected List<TopAdsFilterContentFragment> getFilterContentList() {
         List<TopAdsFilterContentFragment> filterContentFragmentList = new ArrayList<>();
         filterContentFragmentList.add(TopAdsFilterStatusFragment.createInstance(selectedFilterStatus));
-        filterContentFragmentList.add(new TopAdsFilterGroupNameFragment());
+        filterContentFragmentList.add(TopAdsFilterGroupNameFragment.createInstance(selectedGroupId, currentGroupId, currentGroupName));
         return filterContentFragmentList;
     }
 

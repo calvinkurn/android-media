@@ -21,7 +21,6 @@ public abstract class TopAdsFilterRadioButtonFragment extends TopAdsFilterConten
 
     private TopAdsBasicRadioButtonAdapter adapter;
     private RecyclerView recyclerView;
-    protected int selectedPosition;
     protected RadioButtonItem selectedRadioButtonItem;
 
     protected abstract List<RadioButtonItem> getRadioButtonList();
@@ -40,13 +39,12 @@ public abstract class TopAdsFilterRadioButtonFragment extends TopAdsFilterConten
         adapter = new TopAdsBasicRadioButtonAdapter();
         recyclerView.setAdapter(adapter);
         adapter.setData(getRadioButtonList());
-        adapter.setSelectedPosition(selectedPosition);
+        adapter.setSelectedPosition(selectedRadioButtonItem.getPosition());
         adapter.setCallback(this);
     }
 
     @Override
     public void onItemSelected(RadioButtonItem radioButtonItem, int position) {
         selectedRadioButtonItem = radioButtonItem;
-        selectedPosition = position;
     }
 }

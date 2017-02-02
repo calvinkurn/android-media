@@ -11,9 +11,7 @@ import com.tokopedia.seller.topads.model.data.ProductAd;
 import com.tokopedia.seller.topads.presenter.TopAdsProductAdListPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsProductAdListPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailProductActivity;
-import com.tokopedia.seller.topads.view.activity.TopAdsFilterGroupActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsFilterProductActivity;
-import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 /**
@@ -69,7 +67,8 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
     @Override
     protected void goToFilter() {
         Intent intent = new Intent(getActivity(), TopAdsFilterProductActivity.class);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_STATUS_VALUE, status);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, group);
         startActivityForResult(intent, REQUEST_CODE_AD_FILTER);
     }
 
@@ -78,7 +77,8 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
         super.onActivityResult(requestCode, resultCode, intent);
         // check if the request code is the same
         if (requestCode == REQUEST_CODE_AD_FILTER && intent != null) {
-            status = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_STATUS_VALUE, status);
+            status = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
+            group = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, group);
             searchAd();
         }
     }

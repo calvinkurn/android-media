@@ -1,6 +1,5 @@
 package com.tokopedia.seller.topads.view.fragment;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,15 +17,15 @@ import java.util.List;
 
 public class TopAdsFilterStatusFragment extends TopAdsFilterRadioButtonFragment {
 
+    private int selectedStatus;
+
     public static TopAdsFilterStatusFragment createInstance(int status) {
         TopAdsFilterStatusFragment fragment = new TopAdsFilterStatusFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(TopAdsExtraConstant.EXTRA_FILTER_STATUS_VALUE, status);
+        bundle.putInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
         fragment.setArguments(bundle);
         return fragment;
     }
-
-    private int selectedStatus;
 
     @Override
     protected int getFragmentLayout() {
@@ -36,7 +35,7 @@ public class TopAdsFilterStatusFragment extends TopAdsFilterRadioButtonFragment 
     @Override
     protected void setupArguments(Bundle bundle) {
         super.setupArguments(bundle);
-        selectedStatus = bundle.getInt(TopAdsExtraConstant.EXTRA_FILTER_STATUS_VALUE);
+        selectedStatus = bundle.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, selectedStatus);
     }
 
     @Override
@@ -48,13 +47,24 @@ public class TopAdsFilterStatusFragment extends TopAdsFilterRadioButtonFragment 
             RadioButtonItem radioButtonItem = new RadioButtonItem();
             radioButtonItem.setName(statusNameList[i]);
             radioButtonItem.setValue(statusValueList[i]);
+            radioButtonItem.setPosition(i);
             radioButtonItemList.add(radioButtonItem);
-            if (selectedStatus == Integer.parseInt(statusValueList[i])) {
+        }
+        updateSelectedPosition(radioButtonItemList);
+        return radioButtonItemList;
+    }
+
+    private void updateSelectedPosition(List<RadioButtonItem> radioButtonItemList) {
+        if (selectedRadioButtonItem != null) {
+            return;
+        }
+        for (int i = 0; i < radioButtonItemList.size(); i++) {
+            RadioButtonItem radioButtonItem = radioButtonItemList.get(i);
+            if (Integer.valueOf(radioButtonItem.getValue()) == selectedStatus) {
                 selectedRadioButtonItem = radioButtonItem;
-                selectedPosition = i;
+                break;
             }
         }
-        return radioButtonItemList;
     }
 
     @Override
@@ -64,7 +74,7 @@ public class TopAdsFilterStatusFragment extends TopAdsFilterRadioButtonFragment 
 
     @Override
     public Intent addResult(Intent intent) {
-        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_STATUS_VALUE, Integer.parseInt(selectedRadioButtonItem.getValue()));
+        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, Integer.parseInt(selectedRadioButtonItem.getValue()));
         return intent;
     }
 }

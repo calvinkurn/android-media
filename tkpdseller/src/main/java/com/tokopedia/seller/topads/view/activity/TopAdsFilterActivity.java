@@ -5,12 +5,14 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.model.other.FilterTitleItem;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterContentFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterListFragment;
@@ -54,6 +56,10 @@ public abstract class TopAdsFilterActivity extends BasePresenterActivity impleme
 
     @Override
     protected void initView() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(false);
+        }
         int selectedPosition = 0;
         submitButton = (Button) findViewById(R.id.button_submit);
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -118,5 +124,21 @@ public abstract class TopAdsFilterActivity extends BasePresenterActivity impleme
     @Override
     public String getScreenName() {
         return null;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_top_ads_filter, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.menu_close) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

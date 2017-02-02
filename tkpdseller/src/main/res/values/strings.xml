@@ -91,9 +91,9 @@
     <string name="label_top_ads_active">Aktif</string>
     <string name="label_top_ads_not_sent">Tidak Terkirim</string>
     <string name="label_top_ads_not_active">Tidak Aktif</string>
-    <string name="label_top_ads_all_group">Semua Grup</string>
-    <string name="label_top_ads_in_group">Ada Di Grup</string>
-    <string name="label_top_ads_not_in_group">Tidak Ada Grup</string>
+    <string name="label_top_ads_all_product">Semua Produk</string>
+    <string name="label_top_ads_inside_group">Di Dalam Grup</string>
+    <string name="label_top_ads_outside_group">Di Luar Grup</string>
     <string name="label_top_ads_name">Name</string>
     <string name="label_top_ads_status">Status</string>
     <string name="label_top_ads_max_bid">Biaya Maks</string>

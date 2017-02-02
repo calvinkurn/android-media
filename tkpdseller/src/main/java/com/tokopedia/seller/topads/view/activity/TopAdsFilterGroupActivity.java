@@ -20,7 +20,7 @@ public class TopAdsFilterGroupActivity extends TopAdsFilterActivity {
     @Override
     protected void setupBundlePass(Bundle extras) {
         super.setupBundlePass(extras);
-        selectedFilterStatus = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_STATUS_VALUE);
+        selectedFilterStatus = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS);
     }
 
     @Override
