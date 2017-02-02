@@ -176,5 +176,11 @@
     <string name="gmsubscribe_feature_pantaupasar">Pantau\nPermintaan Pasar</string>
     <string name="gmsubscribe_feature_kurs">Atur Harga\nKurs Dollar</string>
 
+    <string name="gmsubscribe_current_product_selector">Paket Berlangganan</string>
+    <string name="gmsubscribe_extend_product_selector">Paket Berlangganan</string>
+    <string name="gmsubscribe_product_button_subscribe">Berlangganan</string>
+    <string name="gmsubscribe_product_button_change">Ubah</string>
+    <string name="gmsubscribe_product_button_activate">Aktifkan</string>
+
 
 </resources>

@@ -1,0 +1,89 @@
+package com.tokopedia.seller.gmsubscribe.view.product.recyclerview;
+
+import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.R2;
+import com.tokopedia.seller.gmsubscribe.view.product.viewmodel.GMProductViewModel;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+/**
+ * Created by sebastianuskh on 11/23/16.
+ */
+
+public class GMProductViewHolder extends RecyclerView.ViewHolder {
+
+    private final Context mContext;
+
+    @BindView(R2.id.title_package)
+    TextView titlePackage;
+
+    @BindView(R2.id.promo_package)
+    TextView promoPackage;
+
+    @BindView(R2.id.description_package)
+    TextView descriptionPackage;
+
+    @BindView(R2.id.description_free_days)
+    TextView descriptionFreeDays;
+
+    @BindView(R2.id.price_package)
+    TextView pricePackage;
+
+    @BindView(R2.id.icon_check)
+    ImageView iconCheck;
+
+    @BindView(R2.id.layout_view)
+    RelativeLayout layoutView;
+
+    public GMProductViewHolder(View itemView) {
+        super(itemView);
+        ButterKnife.bind(this, itemView);
+        mContext = itemView.getContext();
+    }
+
+    public void renderData(GMProductViewModel gmProductViewModel, boolean isSelected) {
+        titlePackage.setText(gmProductViewModel.getName());
+        descriptionPackage.setText(gmProductViewModel.getNotes());
+        promoPackage.setVisibility(
+                gmProductViewModel.isBestDeal()? View.VISIBLE : View.GONE);
+        pricePackage.setText(gmProductViewModel.getPrice());
+        if(!gmProductViewModel.getFreeDays().isEmpty()){
+            descriptionFreeDays.setVisibility(View.VISIBLE);
+            descriptionFreeDays.setText(gmProductViewModel.getFreeDays());
+        }
+        if(isSelected){
+            setSelected();
+        } else {
+            setUnselected();
+        }
+    }
+
+    public void setSelected() {
+        iconCheck.setVisibility(View.VISIBLE);
+        try {
+            layoutView.setBackgroundResource(R.drawable.background_gmsubscribe_product_item_unselected);
+        } catch (NoSuchMethodError e) {
+            layoutView.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.background_gmsubscribe_product_item_selected));
+        }
+    }
+
+    public void setUnselected(){
+        iconCheck.setVisibility(View.GONE);
+        try {
+            layoutView.setBackgroundResource(R.drawable.background_gmsubscribe_product_item_unselected);
+        } catch (NoSuchMethodError e) {
+            layoutView.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.background_gmsubscribe_product_item_unselected));
+        }
+    }
+
+
+
+}

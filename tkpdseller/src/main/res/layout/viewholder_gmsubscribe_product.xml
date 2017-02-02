@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="12dp"
+    android:paddingStart="12dp"
+    android:paddingEnd="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="14dp"
+    android:paddingBottom="13dp"
+    android:layout_margin="8dp"
+    android:background="@drawable/background_gmsubscribe_product_item_unselected">
+
+    <TextView
+        android:id="@+id/title_package"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="6 Bulan"
+        android:textSize="16sp"
+        android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/promo_package"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/title_package"
+        android:layout_toRightOf="@+id/title_package"
+        android:text="BEST DEAL!"
+        android:visibility="gone"
+        android:textSize="12sp"
+        android:textColor="@color/tkpd_main_green"
+        android:layout_alignBaseline="@id/title_package"
+        />
+
+    <TextView
+        android:id="@+id/description_package"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_package"
+        android:layout_alignLeft="@id/title_package"
+        android:layout_alignStart="@id/title_package"
+        android:text="Bonus Kredit TopAds Rp 150.000"
+        android:textSize="14sp"
+        />
+
+    <TextView
+        android:id="@+id/description_free_days"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/description_package"
+        android:layout_alignLeft="@id/title_package"
+        android:layout_alignStart="@id/title_package"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        android:textSize="14sp"
+        />
+
+    <TextView
+        android:id="@+id/price_package"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/description_free_days"
+        android:layout_alignLeft="@id/title_package"
+        android:layout_alignStart="@id/title_package"
+        android:text="Rp 550.000"
+        android:textSize="16sp"
+        android:textColor="@color/gmsubscribe_product_price_color"
+        />
+
+    <ImageView
+        android:id="@+id/icon_check"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_gmsubscribe_product_item_selected"/>
+
+
+</RelativeLayout>

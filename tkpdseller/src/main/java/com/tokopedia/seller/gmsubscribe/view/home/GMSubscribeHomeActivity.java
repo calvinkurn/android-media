@@ -13,7 +13,7 @@ import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmsubscribe.view.checkout.GMCheckoutActivity;
-import com.tokopedia.seller.gmsubscribe.view.product.GMProductActivity;
+import com.tokopedia.seller.gmsubscribe.view.product.activity.GMProductActivity;
 
 /**
  * Created by sebastianuskh on 11/23/16.
