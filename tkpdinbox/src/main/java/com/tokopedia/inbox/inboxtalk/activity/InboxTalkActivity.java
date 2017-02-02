@@ -2,6 +2,7 @@ package com.tokopedia.inbox.inboxtalk.activity;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.view.ActionMode;
 import android.view.View;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.gcm.FCMMessagingService;
 import com.tokopedia.core.R;
@@ -23,6 +25,7 @@ import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.inbox.inboxtalk.fragment.InboxTalkFragment;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkResultReceiver;
@@ -59,6 +62,16 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
     private Boolean fromNotif = false;
     private Boolean forceUnread;
     InboxTalkResultReceiver mReceiver;
+
+    @DeepLink({
+            "tokopedia://talk"
+    })
+    public static Intent getCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, InboxTalkActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
 
     @Override
     public void onStart() {
