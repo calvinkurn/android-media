@@ -147,7 +147,7 @@ public class CategoryImpl implements Category {
 
     @Override
     public void resetTickerState() {
-        tickerCacheHandler.putArrayListString(TICKER_CLOSED_CACHE_KEY, new ArrayList<String>());
+        tickerCacheHandler.putBoolean(TICKER_CLOSED_CACHE_KEY,false);
     }
 
     @Override

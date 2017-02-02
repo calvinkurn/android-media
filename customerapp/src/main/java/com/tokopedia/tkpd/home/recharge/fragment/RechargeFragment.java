@@ -755,7 +755,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     private String getUrlCheckout() {
-        String url = "https://pulsa-staging.tokopedia.com"+"?" +
+        String url = "https://pulsa.tokopedia.com"+"?" +
                 "action=init_data" +
                 "&client_number=" + rechargeEditText.getText() +
                 "&product_id=" + selectedProduct.getId().toString() +

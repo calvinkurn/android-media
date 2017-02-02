@@ -367,10 +367,14 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             currentTicker=0;
     }
 
+    private boolean isTickerRotating() {
+        return (tickers != null && tickers.size()>1 && tickerHandler!=null && tickerIncrementPage!=null);
+    }
+
     @Override
     public void onStart() {
         startSlide();
-        if (tickers.size()>1 && tickerHandler!=null && tickerIncrementPage!=null) {
+        if (isTickerRotating()) {
             startSlideTicker();
         }
         super.onStart();
@@ -392,7 +396,9 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onStop() {
         stopSlide();
-        stopSlideTicker();
+        if (isTickerRotating()) {
+            stopSlideTicker();
+        }
         super.onStop();
     }
 
