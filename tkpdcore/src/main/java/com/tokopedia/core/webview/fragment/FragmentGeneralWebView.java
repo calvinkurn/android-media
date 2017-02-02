@@ -73,7 +73,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 super.onProgressChanged(view, newProgress);
             }
         });
-        WebViewGeneral.loadAuthUrlWithFlags(url);
+        WebViewGeneral.loadAuthUrl(url);
         return fragmentView;
     }
 
