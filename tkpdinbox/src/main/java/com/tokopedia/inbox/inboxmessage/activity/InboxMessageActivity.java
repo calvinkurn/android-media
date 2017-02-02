@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.inboxmessage.activity;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
@@ -42,6 +44,16 @@ public class InboxMessageActivity extends DrawerPresenterActivity
     TabLayout indicator;
 
     InboxMessageResultReceiver mReceiver;
+
+    @DeepLink({
+            "tokopedia://message"
+    })
+    public static Intent getCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, InboxMessageActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
 
     @Override
     public String getScreenName() {
