@@ -27,7 +27,6 @@ import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.GetListFaveShopId;
 import com.tokopedia.core.network.entity.home.ProductFeedData3;
-import com.tokopedia.core.network.entity.home.recentView.RecentView;
 import com.tokopedia.core.network.entity.home.recentView.RecentViewData;
 import com.tokopedia.core.network.entity.topads.TopAds;
 import com.tokopedia.core.network.entity.topads.TopAdsResponse;
@@ -183,7 +182,7 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
             public void onSuccess(ProductFeedTransformData productFeedTransformData) {
 
                 List<RecyclerViewItem> result = new ArrayList<RecyclerViewItem>();
-                List<RecentView> listProduct = new ArrayList<RecentView>();
+                List<ProductItem> listProduct = new ArrayList<>();
                 listProduct.addAll(productFeedTransformData.getHorizontalProductList().getRecentViewList());
                 result.add(new HistoryProductListItem(listProduct));
                 GetListFaveShopId getListFaveShopId = productFeedTransformData.getGetListFaveShopId();
@@ -565,7 +564,7 @@ public class ProductFeed2Impl implements ProductFeed, DiscoveryListener {
                                 final List<RecyclerViewItem> result = new ArrayList<RecyclerViewItem>();
 //                                FileUtils.writeStringAsFileExt(mContext, productFeedTransformData.getHorizontalProductList() + "", "check_horizontal.txt");
                                 // set history product
-                                List<RecentView> listProduct = productFeedTransformData.getHorizontalProductList().getRecentViewList();
+                                List<ProductItem> listProduct = productFeedTransformData.getHorizontalProductList().getRecentViewList();
                                 result.add(new HistoryProductListItem(listProduct));
                                 // set product feed real data
                                 List<ProductItem> listProductItems = productFeedTransformData.getListProductItems();
