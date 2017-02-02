@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="25dp"
+        android:text="@string/gmsubscribe_subfeature_title"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        />
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="3"
+    android:gravity="bottom"
+    android:layout_margin="15dp">
+
+        <com.tokopedia.seller.gmsubscribe.view.home.widget.GMSubFeatureView
+            android:id="@+id/sub_feature_etalase"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:feature_img="@drawable/ic_gmsubscribe_subfeature_etalase"
+            app:feature_desc="@string/gmsubscribe_subfeature_etalase" />
+
+        <com.tokopedia.seller.gmsubscribe.view.home.widget.GMSubFeatureView
+            android:id="@+id/sub_feature_admin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:feature_img="@drawable/ic_gmsubscribe_subfeature_admin"
+            app:feature_desc="@string/gmsubscribe_feature_admin" />
+
+        <com.tokopedia.seller.gmsubscribe.view.home.widget.GMSubFeatureView
+            android:id="@+id/sub_feature_cashback"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:feature_img="@drawable/ic_gmsubscribe_subfeature_cashback"
+            app:feature_desc="@string/gmsubscribe_feature_cashback" />
+
+    </LinearLayout>
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="3"
+    android:gravity="bottom"
+    android:layout_margin="15dp">
+
+        <com.tokopedia.seller.gmsubscribe.view.home.widget.GMSubFeatureView
+            android:id="@+id/sub_feature_video"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:feature_img="@drawable/ic_gmsubscribe_subfeature_video"
+            app:feature_desc="@string/gmsubscribe_feature_video" />
+
+        <com.tokopedia.seller.gmsubscribe.view.home.widget.GMSubFeatureView
+            android:id="@+id/sub_feature_pantaupasar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:feature_img="@drawable/ic_gmsubscribe_subfeature_pantaupasar"
+            app:feature_desc="@string/gmsubscribe_feature_pantaupasar" />
+
+        <com.tokopedia.seller.gmsubscribe.view.home.widget.GMSubFeatureView
+            android:id="@+id/sub_feature_kurs"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:feature_img="@drawable/ic_gmsubscribe_subfeature_kurs"
+            app:feature_desc="@string/gmsubscribe_feature_kurs" />
+
+    </LinearLayout>
+
+</merge>

@@ -1,0 +1,52 @@
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.tokopedia.seller.gmsubscribe.view.home.widget.GMMainFeatureView
+        android:id="@+id/feature_gold_badge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:feature_img="@drawable/ic_gmsubscribe_feature_badge"
+        app:feature_title="@string/gmsubscribe_feature_gold_badge"
+        app:feature_desc="@string/gmsubscribe_feature_gold_badge_desc"
+        />
+
+    <com.tokopedia.seller.gmsubscribe.view.home.widget.GMMainFeatureView
+        android:id="@+id/feature_topads"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:feature_img="@drawable/ic_gmsubscribe_feature_topads"
+        app:feature_title="@string/gmsubscribe_feature_topads"
+        app:feature_desc="@string/gmsubscribe_feature_topads_desc"
+        />
+
+    <com.tokopedia.seller.gmsubscribe.view.home.widget.GMMainFeatureView
+        android:id="@+id/feature_stats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:feature_img="@drawable/ic_gmsubscribe_feature_statistic"
+        app:feature_title="@string/gmsubscribe_feature_statistic"
+        app:feature_desc="@string/gmsubscribe_feature_statistic_desc"
+        />
+
+    <com.tokopedia.seller.gmsubscribe.view.home.widget.GMMainFeatureView
+        android:id="@+id/feature_gold_ticket"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:feature_img="@drawable/ic_gmsubscribe_feature_ticket"
+        app:feature_title="@string/gmsubscribe_feature_ticket"
+        app:feature_desc="@string/gmsubscribe_feature_ticket_desc"
+        />
+
+    <com.tokopedia.seller.gmsubscribe.view.home.widget.GMMainFeatureView
+        android:id="@+id/feature_cover"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:feature_img="@drawable/ic_gmsubscribe_feature_cover"
+        app:feature_title="@string/gmsubscribe_feature_cover"
+        app:feature_desc="@string/gmsubscribe_feature_cover_desc"
+        />
+    
+</LinearLayout>

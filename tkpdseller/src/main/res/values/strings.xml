@@ -151,4 +151,30 @@
     <string name="label_top_ads_empty_group">Tanpa Grup</string>
     <string name="label_top_ads_favorit">Favorit</string>
     <string name="save_date">Simpan</string>
+
+
+    <string name="gm_home_title">Gold Merchant</string>
+    <string name="gm_home_subtitle">Nikmati beragam keistimewaan untuk toko Anda</string>
+    <string name="gmsubscribe_home_button_finish">Pilih Paket Berlangganan</string>
+
+    <string name="gmsubscribe_feature_gold_badge">Gold Badge</string>
+    <string name="gmsubscribe_feature_gold_badge_desc">Tampilan produk dan toko akan terlihat lebih beda serta lebih terpercaya</string>
+    <string name="gmsubscribe_feature_topads">TopAds</string>
+    <string name="gmsubscribe_feature_topads_desc">Promosi produk dan toko jadi lebih efektif dan efisien</string>
+    <string name="gmsubscribe_feature_statistic">Statistik Toko</string>
+    <string name="gmsubscribe_feature_statistic_desc">Pantau perkembangan toko hingga detail penjualan jadi lebih mudah</string>
+    <string name="gmsubscribe_feature_ticket">Gold Ticket</string>
+    <string name="gmsubscribe_feature_ticket_desc">Tiket kendala yang Anda kirim jadi prioritas Tim Customer Care kami</string>
+    <string name="gmsubscribe_feature_cover">Sampul Toko</string>
+    <string name="gmsubscribe_feature_cover_desc">Jadikan halaman toko Anda lebih menarik dengan upload kreasi sampul foto Anda sendiri</string>
+
+    <string name="gmsubscribe_subfeature_title">Fitur-fitur Gold Merchant ini juga dapat\nmembantu memaksimalkan penjualanmu</string>
+    <string name="gmsubscribe_subfeature_etalase">Tambahan\n150 Etalase</string>
+    <string name="gmsubscribe_feature_admin">Gratis\n1 Admin Toko</string>
+    <string name="gmsubscribe_feature_cashback">Cashback/TopPoints</string>
+    <string name="gmsubscribe_feature_video">Tambah\nVideo Produk</string>
+    <string name="gmsubscribe_feature_pantaupasar">Pantau\nPermintaan Pasar</string>
+    <string name="gmsubscribe_feature_kurs">Atur Harga\nKurs Dollar</string>
+
+
 </resources>

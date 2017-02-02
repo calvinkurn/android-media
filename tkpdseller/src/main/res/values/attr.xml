@@ -35,4 +35,12 @@
         <attr name="chart_barSpacing" format="dimension"/>
         <attr name="chart_setSpacing" format="dimension"/>
     </declare-styleable>
+
+    <!--gm subscribe home attr-->
+    <declare-styleable name="GMFeatureHomeView">
+        <attr name="feature_img" format="reference"/>
+        <attr name="feature_title" format="string"/>
+        <attr name="feature_desc" format="string"/>
+    </declare-styleable>
+
 </resources>

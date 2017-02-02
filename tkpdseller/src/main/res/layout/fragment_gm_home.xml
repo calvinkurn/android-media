@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <include layout="@layout/layout_gm_subscribe_home_header"/>
+
+        <include layout="@layout/layout_gm_subscribe_home_main_features"/>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
+        <include layout="@layout/layout_gm_subscribe_home_sub_features"/>
+
+        <Button
+            android:id="@+id/button_home_to_select_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/gmsubscribe_home_button_finish"
+            android:textColor="@color/white"
+            android:layout_margin="5dp"
+            android:background="@color/tkpd_button"/>
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

@@ -90,7 +90,10 @@
             android:screenOrientation="portrait"
             android:label="@string/title_activity_statistic"
             android:name=".topads.view.activity.TopAdsStatisticShopActivity"/>
-
+        <activity
+            android:name=".gmsubscribe.view.home.GMSubscribeHomeActivity"
+            android:label="@string/gm_home_title"
+            android:screenOrientation="portrait"/>
         <service
             android:name=".selling.SellingService"
             android:exported="false" />
