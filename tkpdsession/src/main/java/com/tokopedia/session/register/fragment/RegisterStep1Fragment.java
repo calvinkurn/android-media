@@ -194,11 +194,12 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if(savedInstanceState != null){
-            name.setText(savedInstanceState.getString(NAME,""));
-            email.setText(savedInstanceState.getString(EMAIL,""));
-            registerPassword.setText(savedInstanceState.getString(PASSWORD,""));
+        if (savedInstanceState != null) {
+            name.setText(savedInstanceState.getString(NAME, ""));
+            email.setText(savedInstanceState.getString(EMAIL, ""));
+            registerPassword.setText(savedInstanceState.getString(PASSWORD, ""));
         }
+
     }
 
     @Override
@@ -214,8 +215,10 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
         List<String> list = getEmailListOfAccountsUserHasLoggedInto();
         if (list.size() > 0) {
             String mEmail = list.get(0);
-            email.setText(mEmail);
-            email.setSelection(mEmail.length());
+            if (email.getText().equals("")) {
+                email.setText(mEmail);
+                email.setSelection(mEmail.length());
+            }
         }
         email.setThreshold(0);
         AutoCompleteTextAdapter adapter = new AutoCompleteTextAdapter(
