@@ -67,7 +67,7 @@ import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.TopPicksView;
 import com.tokopedia.tkpd.home.adapter.RecyclerViewCategoryMenuAdapter;
 import com.tokopedia.tkpd.home.adapter.SectionListCategoryAdapter;
-import com.tokopedia.tkpd.home.adapter.TickerAnnouncementAdapter;
+import com.tokopedia.tkpd.home.adapter.TickerAdapter;
 import com.tokopedia.tkpd.home.adapter.TopPicksAdapter;
 import com.tokopedia.tkpd.home.adapter.TopPicksItemAdapter;
 import com.tokopedia.tkpd.home.facade.FacadePromo;
@@ -93,16 +93,18 @@ import java.util.Map;
 /**
  * Created by Nisie on 1/07/15.
  * modified by mady add feature Recharge and change home menu
- * modified by alifa add Top Picks
+ * modified by alifa add Top Picks, ticker enhancement
  */
 public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         CategoryView,
         RechargeCategoryView,
         SectionListCategoryAdapter.OnCategoryClickedListener,
         SectionListCategoryAdapter.OnGimmicClickedListener, HomeCatMenuView, TopPicksView,
-        TopPicksItemAdapter.OnTitleClickedListener, TopPicksItemAdapter.OnItemClickedListener, TopPicksAdapter.OnClickViewAll{
+        TopPicksItemAdapter.OnTitleClickedListener, TopPicksItemAdapter.OnItemClickedListener,
+        TopPicksAdapter.OnClickViewAll, TickerAdapter.OnTickerClosed{
 
-    private static final long SLIDE_DELAY = 8000;
+    private static final long SLIDE_DELAY = 5000;
+    private static final long TICKER_DELAY = 5000;
     public static final String TAG = FragmentIndexCategory.class.getSimpleName();
     private static final String BASE_URL = "www.tokopedia.com";
     private static final String BASE_MOBILE_URL = "m.tokopedia.com";
@@ -113,9 +115,14 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private PromoImagePagerAdapter pagerAdapter;
     private Runnable incrementPage;
     private Handler mHandler;
+    private Runnable tickerIncrementPage;
+    private Handler tickerHandler;
     Category category;
     private RechargeCategoryPresenter rechargeCategoryPresenter;
-    TickerAnnouncementAdapter tickerAdapter;
+    TickerAdapter tickerAdapter;
+    private int currentTicker = 0;
+    ArrayList<Ticker.Tickers> tickers = new ArrayList<>();
+    ArrayList<Ticker.Tickers> tickerShowed = new ArrayList<>();
 
     private HomeCatMenuPresenter homeCatMenuPresenter;
     private TopPicksPresenter topPicksPresenter;
@@ -132,12 +139,11 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         private TextView promoLink;
         TabLayout tabLayoutRecharge;
         WrapContentViewPager viewpagerRecharge;
-        RecyclerView announcementContainer;
+        RecyclerView tickerContainer;
         NestedScrollView wrapperScrollview;
         RecyclerView categoriesRecylerview;
         RecyclerView topPicksRecyclerView;
         public LinearLayout wrapperLinearLayout;
-
 
         private ViewHolder() {
         }
@@ -189,23 +195,32 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void getAnnouncement() {
-        category.fetchTickers(new Category.FetchTickersListener() {
-            @Override
-            public void onSuccess(final ArrayList<Ticker.Tickers> tickers) {
-                if (tickers.size() > 0) {
-
-                    holder.announcementContainer.setVisibility(View.VISIBLE);
-                    tickerAdapter.addItem(tickers);
+        if (!category.isTickerClosed()) {
+            category.fetchTickers(new Category.FetchTickersListener() {
+                @Override
+                public void onSuccess(final ArrayList<Ticker.Tickers> tickersResponse) {
+                    holder.tickerContainer.setVisibility(View.VISIBLE);
+                    if (tickersResponse.size() > 1) {
+                        tickerIncrementPage = runnableIncrementTicker();
+                        tickerHandler = new Handler();
+                        holder.tickerContainer.setVisibility(View.VISIBLE);
+                        tickers.addAll(tickersResponse);
+                        tickerShowed.add(tickers.get(currentTicker));
+                        tickerAdapter.addItem(tickerShowed);
+                        startSlideTicker();
+                    } else if (tickersResponse.size() == 1) {
+                        tickerAdapter.addItem(tickersResponse);
+                    }
                     holder.wrapperScrollview.smoothScrollTo(0, 0);
                 }
-            }
 
-            @Override
-            public void onError() {
-                holder.announcementContainer.setVisibility(View.GONE);
+                @Override
+                public void onError() {
+                    holder.tickerContainer.setVisibility(View.GONE);
 
-            }
-        });
+                }
+            });
+        }
     }
 
     private void getPromo() {
@@ -277,21 +292,21 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void prepareView() {
-        holder.announcementContainer.setLayoutManager(new LinearLayoutManager(
+        holder.tickerContainer.setLayoutManager(new LinearLayoutManager(
                 getActivity(), LinearLayoutManager.VERTICAL, false)
         );
-        holder.announcementContainer.setAdapter(tickerAdapter);
-        holder.announcementContainer.setNestedScrollingEnabled(false);
+        holder.tickerContainer.setAdapter(tickerAdapter);
+        holder.tickerContainer.setNestedScrollingEnabled(false);
     }
 
     private void initVar() {
-        category = new CategoryImpl(this);
+        category = new CategoryImpl(getActivity(),this);
         holder = new ViewHolder();
         model = new Model();
         pagerAdapter = new PromoImagePagerAdapter(model.listBanner);
         incrementPage = runnableIncrement();
         mHandler = new Handler();
-        tickerAdapter = TickerAnnouncementAdapter.createInstance(getActivity());
+        tickerAdapter = TickerAdapter.createInstance(getActivity(),this);
         rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(getActivity(), this);
         homeCatMenuPresenter = new HomeCatMenuPresenterImpl(this);
         topPicksPresenter = new TopPicksPresenterImpl(this);
@@ -300,6 +315,11 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private void startSlide() {
         mHandler.removeCallbacks(incrementPage);
         mHandler.postDelayed(incrementPage, SLIDE_DELAY);
+    }
+
+    private void startSlideTicker() {
+        tickerHandler.removeCallbacks(tickerIncrementPage);
+        tickerHandler.postDelayed(tickerIncrementPage, TICKER_DELAY);
     }
 
     private Runnable runnableIncrement() {
@@ -323,9 +343,36 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         };
     }
 
+    private Runnable runnableIncrementTicker() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    tickerShowed.clear();
+                    incrementTicker();
+                    tickerShowed.add(tickers.get(currentTicker));
+                    tickerAdapter.notifyDataSetChanged();
+                    tickerHandler.postDelayed(tickerIncrementPage, TICKER_DELAY);
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        };
+    }
+
+    private void incrementTicker() {
+        currentTicker++;
+        if (currentTicker >= tickers.size())
+            currentTicker=0;
+    }
+
     @Override
     public void onStart() {
         startSlide();
+        if (tickers.size()>1 && tickerHandler!=null && tickerIncrementPage!=null) {
+            startSlideTicker();
+        }
         super.onStart();
     }
 
@@ -345,12 +392,17 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onStop() {
         stopSlide();
+        stopSlideTicker();
         super.onStop();
     }
 
 
     private void stopSlide() {
         mHandler.removeCallbacks(incrementPage);
+    }
+
+    private void stopSlideTicker() {
+        tickerHandler.removeCallbacks(tickerIncrementPage);
     }
 
     private void initView(LayoutInflater inflater, ViewGroup container) {
@@ -360,7 +412,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.tabLayoutRecharge = (TabLayout) holder.MainView.findViewById(R.id.tablayout_recharge);
         holder.viewpagerRecharge = (WrapContentViewPager) holder.MainView.findViewById(R.id.viewpager_pulsa);
         ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
-        holder.announcementContainer = (RecyclerView) holder.MainView.findViewById(R.id.announcement_ticker);
+        holder.tickerContainer = (RecyclerView) holder.MainView.findViewById(R.id.announcement_ticker);
         holder.wrapperScrollview = (NestedScrollView) holder.MainView.findViewById(R.id.category_scrollview);
         initCategoryRecyclerView();
         initTopPicks();
@@ -866,6 +918,12 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         int width = size.x;
         int widthOfHomeMenuView = (int) (width / 2);
         return widthOfHomeMenuView;
+    }
+
+    @Override
+    public void onItemClicked() {
+        holder.tickerContainer.setVisibility(View.GONE);
+        category.closeTicker();
     }
 
 

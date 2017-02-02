@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.network.entity.home.Ticker;
+import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.core.home.BannerWebView;
@@ -30,18 +31,20 @@ import butterknife.ButterKnife;
 /**
  * Created by Nisie on 7/18/16.
  */
-public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnouncementAdapter.ViewHolder> {
+public class TickerAdapter extends RecyclerView.Adapter<TickerAdapter.ViewHolder> {
 
     private ArrayList<Ticker.Tickers> tickers;
+    private TickerAdapter.OnTickerClosed onTickerClosed;
     Context context;
 
-    public static TickerAnnouncementAdapter createInstance(Context context) {
-        return new TickerAnnouncementAdapter(context);
+    public static TickerAdapter createInstance(Context context, TickerAdapter.OnTickerClosed onTickerClosed) {
+        return new TickerAdapter(context, onTickerClosed);
     }
 
-    TickerAnnouncementAdapter(Context context) {
+    TickerAdapter(Context context, TickerAdapter.OnTickerClosed onTickerClosed) {
         this.context = context;
         this.tickers = new ArrayList<>();
+        this.onTickerClosed = onTickerClosed;
     }
 
     public void addItem(ArrayList<Ticker.Tickers> tickers) {
@@ -112,9 +115,9 @@ public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnoun
         holder.btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tickers.remove(position);
+                onTickerClosed.onItemClicked();
+                tickers.clear();
                 notifyDataSetChanged();
-
             }
         });
     }
@@ -122,6 +125,10 @@ public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnoun
     @Override
     public int getItemCount() {
         return tickers.size();
+    }
+
+    public interface OnTickerClosed {
+        void onItemClicked();
     }
 
 }

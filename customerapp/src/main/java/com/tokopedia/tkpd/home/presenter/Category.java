@@ -17,6 +17,9 @@ public interface Category {
     void fetchBanners(final FacadePromo.GetPromoListener listener);
     void fetchSlides(final FacadePromo.GetPromoListener listener);
     void fetchTickers(final FetchTickersListener listener);
+    void closeTicker();
+    boolean isTickerClosed();
+    void resetTickerState();
 
     interface FetchTickersListener{
         void onSuccess(ArrayList<Ticker.Tickers> tickers);
