@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Shipment implements Parcelable{
+public class Shipment implements Parcelable {
 
     @SerializedName("shipping_max_add_fee")
     @Expose

@@ -9,7 +9,6 @@ import android.util.Log;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
-import com.tokopedia.core.network.apiservices.product.TalkActService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -34,7 +33,6 @@ public class TalkAddNewIntentService extends IntentService {
     public static final String PARAM_ADD_TALK = "add_talk";
 
     KunyitService kunyitService;
-    TalkActService talkActService;
     ResultReceiver receiver;
 
     public static final int STATUS_SUCCESS_ADD = 7813;
@@ -56,7 +54,6 @@ public class TalkAddNewIntentService extends IntentService {
         if (intent != null) {
             Bundle bundle = intent.getBundleExtra(EXTRA_BUNDLE);
             kunyitService = new KunyitService();
-            talkActService = new TalkActService();
             receiver = intent.getParcelableExtra(EXTRA_RECEIVER);
             handleAddNewTalk(bundle, receiver);
         }
@@ -66,7 +63,7 @@ public class TalkAddNewIntentService extends IntentService {
         AddNewTalkPass param = (AddNewTalkPass) bundle.get(PARAM_ADD_TALK);
         final Bundle resultData = new Bundle();
         resultData.putParcelable(PARAM_ADD_TALK, param);
-        talkActService.getApi().addProductTalk(AuthUtil.
+        kunyitService.getApi().addProductTalk(AuthUtil.
                 generateParams(getBaseContext(), param.getAddTalkNewPass()))
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())

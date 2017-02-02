@@ -38,8 +38,6 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
     public EditText verification;
     @BindView(R2.id.verify_phone_button)
     public View verificationBtn;
-    @BindView(R2.id.password)
-    public EditText password;
 
     public ContactView(Context context) {
         super(context);

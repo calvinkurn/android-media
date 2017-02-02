@@ -3,6 +3,7 @@ package com.tokopedia.inbox.rescenter.utils;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.inbox.rescenter.detail.model.actionresponsedata.UploadResCenterImageData;
+import com.tokopedia.inbox.rescenter.shipping.model.NewUploadResCenterImageData;
 
 import okhttp3.RequestBody;
 import retrofit2.http.Header;
@@ -45,5 +46,23 @@ public interface UploadImageResCenter {
             @Part("file_path") RequestBody filePath,// 7
             @Part("server_id") RequestBody serverID,// 8
             @Part("web_service") RequestBody webService
+    );
+
+    @Multipart
+    @POST("/upload/attachment")
+    Observable<NewUploadResCenterImageData> uploadImageNew(
+            @Header("Content-MD5") String contentMD5,
+            @Header("Date") String date,
+            @Header("Authorization") String authorization,
+            @Header("X-Method") String xMethod,
+            @Part("user_id") RequestBody userId,
+            @Part("device_id") RequestBody deviceId,
+            @Part("hash") RequestBody hash,
+            @Part("device_time") RequestBody deviceTime,
+            @Part("fileToUpload\"; filename=\"image.jpg") RequestBody imageFile,
+            @Part("id") RequestBody imageId,
+            @Part("token") RequestBody token,
+            @Part("web_service") RequestBody web_service
+
     );
 }

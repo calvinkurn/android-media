@@ -9,7 +9,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.database.model.AttachmentResCenterDB;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -84,26 +84,6 @@ public class DetailResCenterService extends IntentService implements DetailResCe
         context.startService(intent);
     }
 
-    public static void startActionInputShippingRefNum(@NonNull Context context,
-                                                      @NonNull String resolutionID,
-                                                      @NonNull DetailResCenterReceiver mReceiver) {
-        Intent intent = new Intent(context, DetailResCenterService.class);
-        intent.putExtra(EXTRA_PARAM_ACTION_TYPE, ACTION_INPUT_SHIPPING_REF_NUM);
-        intent.putExtra(EXTRA_PARAM_RESOLUTION_ID, resolutionID);
-        intent.putExtra(EXTRA_PARAM_RECEIVER, mReceiver);
-        context.startService(intent);
-    }
-
-    public static void startActionUpdateShippingRefNum(@NonNull Context context,
-                                                       @NonNull String resolutionID,
-                                                       @NonNull DetailResCenterReceiver mReceiver) {
-        Intent intent = new Intent(context, DetailResCenterService.class);
-        intent.putExtra(EXTRA_PARAM_ACTION_TYPE, ACTION_UPDATE_SHIPPING_REF_NUM);
-        intent.putExtra(EXTRA_PARAM_RESOLUTION_ID, resolutionID);
-        intent.putExtra(EXTRA_PARAM_RECEIVER, mReceiver);
-        context.startService(intent);
-    }
-
     public static void startActionFinishReturSolution(@NonNull Context context,
                                                       @NonNull String resolutionID,
                                                       @NonNull DetailResCenterReceiver mReceiver) {
@@ -167,12 +147,6 @@ public class DetailResCenterService extends IntentService implements DetailResCe
                     break;
                 case ACTION_REPLY_CONVERSATION:
                     processObservableReplySolution(resCenterPass);
-                    break;
-                case ACTION_INPUT_SHIPPING_REF_NUM:
-                    processObservableInputShippingRefNum(resCenterPass);
-                    break;
-                case ACTION_UPDATE_SHIPPING_REF_NUM:
-                    processObservableUpdateShippingRefNum(resCenterPass);
                     break;
                 case ACTION_ACCEPT_ADMIN_SOLUTION:
                     processObservableAcceptAdminSolution(resCenterPass);
@@ -238,14 +212,6 @@ public class DetailResCenterService extends IntentService implements DetailResCe
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         switch (typeAction) {
-                            case ACTION_INPUT_SHIPPING_REF_NUM:
-                                LocalCacheManager.ReturnPackage.Builder(resolutionID)
-                                        .clear();
-                                break;
-                            case ACTION_UPDATE_SHIPPING_REF_NUM:
-                                LocalCacheManager.ReturnPackage.Builder(resolutionID)
-                                        .clear();
-                                break;
                             case ACTION_ACCEPT_ADMIN_SOLUTION:
                                 // nothing spesific at the end develop, join in default section
                                 break;
@@ -332,46 +298,11 @@ public class DetailResCenterService extends IntentService implements DetailResCe
                 .subscribe(getDefaultSubscriber());
     }
 
-    private void processObservableInputShippingRefNum(ActionParameterPassData actionParameterPassData) {
-        LocalCacheManager.ReturnPackage cache = LocalCacheManager.ReturnPackage
-                .Builder(resolutionID)
-                .getCache();
-
-        actionParameterPassData.setShipmentID(cache.getShippingID());
-        actionParameterPassData.setShippingRefNum(cache.getShippingRefNum());
-
-        ResCenterActService resCenterActService = new ResCenterActService();
-        resCenterActService
-                .getApi()
-                .inputResiResolution(AuthUtil.generateParams(getApplicationContext(), NetworkParam.inputShippingRefNum(actionParameterPassData)))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getDefaultSubscriber());
-    }
-
     private void processObservableAcceptAdminSolution(ActionParameterPassData actionParameterPassData) {
         ResCenterActService resCenterActService = new ResCenterActService();
         resCenterActService
                 .getApi()
                 .acceptAdminResolution(AuthUtil.generateParams(getApplicationContext(), NetworkParam.acceptAdminSolution(actionParameterPassData)))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getDefaultSubscriber());
-    }
-
-    private void processObservableUpdateShippingRefNum(ActionParameterPassData actionParameterPassData) {
-        LocalCacheManager.ReturnPackage cache = LocalCacheManager.ReturnPackage
-                .Builder(resolutionID)
-                .getCache();
-
-        actionParameterPassData.setConversationID(cache.getConversationID());
-        actionParameterPassData.setShipmentID(cache.getShippingID());
-        actionParameterPassData.setShippingRefNum(cache.getShippingRefNum());
-
-        ResCenterActService resCenterActService = new ResCenterActService();
-        resCenterActService
-                .getApi()
-                .editResiResolution(AuthUtil.generateParams(getApplicationContext(), NetworkParam.updateShippingRefNum(actionParameterPassData)))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getDefaultSubscriber());
@@ -632,9 +563,9 @@ public class DetailResCenterService extends IntentService implements DetailResCe
     }
 
     private Observable<ActionParameterPassData> getObservableUploadingFile(final ActionParameterPassData actionParameterPassData) {
-        return Observable.zip(Observable.just(actionParameterPassData), uploading(actionParameterPassData), new Func2<ActionParameterPassData, List<AttachmentResCenterDB>, ActionParameterPassData>() {
+        return Observable.zip(Observable.just(actionParameterPassData), uploading(actionParameterPassData), new Func2<ActionParameterPassData, List<AttachmentResCenterVersion2DB>, ActionParameterPassData>() {
             @Override
-            public ActionParameterPassData call(ActionParameterPassData actionParameterPassData, List<AttachmentResCenterDB> listAttachment) {
+            public ActionParameterPassData call(ActionParameterPassData actionParameterPassData, List<AttachmentResCenterVersion2DB> listAttachment) {
                 int j = 0;
                 String attachmentCompiledString = "";
                 for (int i = 0; i < listAttachment.size(); i++) {
@@ -659,12 +590,12 @@ public class DetailResCenterService extends IntentService implements DetailResCe
         });
     }
 
-    private Observable<List<AttachmentResCenterDB>> uploading(final ActionParameterPassData actionParameterPassData) {
+    private Observable<List<AttachmentResCenterVersion2DB>> uploading(final ActionParameterPassData actionParameterPassData) {
         return Observable
                 .from(actionParameterPassData.getListImages())
-                .flatMap(new Func1<AttachmentResCenterDB, Observable<AttachmentResCenterDB>>() {
+                .flatMap(new Func1<AttachmentResCenterVersion2DB, Observable<AttachmentResCenterVersion2DB>>() {
                     @Override
-                    public Observable<AttachmentResCenterDB> call(AttachmentResCenterDB attachmentResCenterDB) {
+                    public Observable<AttachmentResCenterVersion2DB> call(AttachmentResCenterVersion2DB attachmentResCenterDB) {
                         NetworkCalculator networkCalculator = new NetworkCalculator(NetworkConfig.POST, getApplicationContext(),
                                 "http://" + actionParameterPassData.getUploadHost())
                                 .setIdentity()
@@ -701,9 +632,9 @@ public class DetailResCenterService extends IntentService implements DetailResCe
                                         serverId
                                 );
 
-                        return Observable.zip(Observable.just(attachmentResCenterDB), upload, new Func2<AttachmentResCenterDB, UploadResCenterImageData, AttachmentResCenterDB>() {
+                        return Observable.zip(Observable.just(attachmentResCenterDB), upload, new Func2<AttachmentResCenterVersion2DB, UploadResCenterImageData, AttachmentResCenterVersion2DB>() {
                             @Override
-                            public AttachmentResCenterDB call(AttachmentResCenterDB attachmentResCenterDB, UploadResCenterImageData uploadResCenterImageData) {
+                            public AttachmentResCenterVersion2DB call(AttachmentResCenterVersion2DB attachmentResCenterDB, UploadResCenterImageData uploadResCenterImageData) {
                                 if (uploadResCenterImageData != null) {
                                     if (uploadResCenterImageData.getData() != null) {
                                         attachmentResCenterDB.imageUrl = uploadResCenterImageData.getData().getFileUrl();

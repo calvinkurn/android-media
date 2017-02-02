@@ -10,7 +10,6 @@ import android.os.ResultReceiver;
  */
 @SuppressLint("ParcelCreator")
 public class ATCResultReceiver extends ResultReceiver {
-    private static final String TAG = ATCResultReceiver.class.getSimpleName();
     private Receiver mReceiver;
 
     public ATCResultReceiver(Handler handler) {

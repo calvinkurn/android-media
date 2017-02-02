@@ -23,8 +23,9 @@ public class URLGenerator {
         Uri uri = Uri.parse(url);
         String path = uri.getLastPathSegment();
         String queryStart = uri.getQuery();
-        String urlFinal = getBaseUrl() + "wvlogin?token="
-                + PasswordGenerator.getAppId(context)
+        String urlFinal = getBaseUrl() + SEAMLESS_LOGIN
+                + "token=" + GCMHandler.getRegistrationId(context)
+                + "&os_type=1"
                 + "&uid=" + SessionHandler.getLoginID(context)
                 + "&url=" + url;
         Log.i("Loyalty System", url);
@@ -35,8 +36,9 @@ public class URLGenerator {
         Uri uri = Uri.parse(url);
         String path = uri.getLastPathSegment();
         String queryStart = uri.getQuery();
-        String urlFinal = getBaseUrl() + "wvlogin?token="
-                + PasswordGenerator.getAppId(context)
+        String urlFinal = getBaseUrl() + SEAMLESS_LOGIN
+                + "token=" + GCMHandler.getRegistrationId(context)
+                + "&os_type=1"
                 + "&uid=" + SessionHandler.getLoginID(context)
                 + "&url=" + url;
         return urlFinal;
@@ -46,8 +48,9 @@ public class URLGenerator {
         Uri uri = Uri.parse(url);
         String path = uri.getLastPathSegment();
         String queryStart = uri.getQuery();
-        String urlFinal = getBaseUrl() + "wvlogin?token="
-                + GCMHandler.getRegistrationId(context)
+        String urlFinal = getBaseUrl() + SEAMLESS_LOGIN
+                + "token=" + GCMHandler.getRegistrationId(context)
+                + "&os_type=1"
                 + "&uid=" + SessionHandler.getLoginID(context)
                 + "&url=" + url;
         return urlFinal;
@@ -61,7 +64,7 @@ public class URLGenerator {
                 + "&url=" + url;
     }
 
-    private static String getBaseUrl() {
+    public static String getBaseUrl() {
         String baseUrl = TkpdBaseURL.JS_DOMAIN;
         if (BuildConfig.DEBUG) {
             SharedPreferences pref = MainApplication.getAppContext()

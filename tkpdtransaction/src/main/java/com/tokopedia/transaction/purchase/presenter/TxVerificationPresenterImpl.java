@@ -21,10 +21,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Angga.Prasetiyo on 24/05/2016.
+ * @author Angga.Prasetiyo on 24/05/2016.
  */
 public class TxVerificationPresenterImpl implements TxVerificationPresenter {
-    private static final String TAG = TxVerificationPresenterImpl.class.getSimpleName();
     private final TxVerViewListener viewListener;
     private final TxOrderNetInteractorImpl netInteractor;
     private final TxUploadInteractor txUploadInteractor;

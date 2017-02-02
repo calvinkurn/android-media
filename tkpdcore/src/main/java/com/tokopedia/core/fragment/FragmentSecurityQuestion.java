@@ -1,11 +1,14 @@
 package com.tokopedia.core.fragment;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -27,6 +30,8 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -63,6 +68,7 @@ import static android.R.attr.permission;
 @RuntimePermissions
 public class FragmentSecurityQuestion extends Fragment implements SecurityQuestionView, IncomingSmsReceiver.ReceiveSMSListener {
 
+    private static final String CAN_REQUEST_OTP_IMMEDIATELY = "auto_request_otp";
     private TkpdProgressDialog Progress;
     SecurityQuestion securityQuestion;
     private static final String FORMAT = "%02d:%02d";
@@ -173,6 +179,14 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
             securityQuestion.initDataAfterRotate();
         smsReceiver.registerSmsReceiver(getActivity());
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            showCheckSMSPermission();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @TargetApi(Build.VERSION_CODES.M)
+    private void showCheckSMSPermission() {
         if (ContextCompat.checkSelfPermission(getActivity(),
                 Manifest.permission.READ_SMS) == PackageManager.PERMISSION_DENIED
                 && !getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
@@ -194,9 +208,10 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                         }
                     })
                     .show();
-        }else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)){
+        } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
             FragmentSecurityQuestionPermissionsDispatcher.checkSmsPermissionWithCheck(FragmentSecurityQuestion.this);
         }
+        securityQuestion.doSendAnalytics();
     }
 
     @Override
@@ -336,7 +351,8 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     public void showViewOtp() {
         vOtp.setVisibility(View.VISIBLE);
         vSecurity.setVisibility(View.GONE);
-        securityQuestion.doRequestOtp();
+        if (TrackingUtils.getGtmString(CAN_REQUEST_OTP_IMMEDIATELY).equals("true"))
+            securityQuestion.doRequestOtp();
         titleOTP.setText("Halo, " + SessionHandler.getTempLoginName(getActivity()));
 
 
@@ -354,7 +370,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                                   ds.setColor(getResources().getColor(R.color.tkpd_main_green));
                               }
                           }
-                , getString(R.string.action_send_otp_with_call).indexOf("kirim OTP melalui telepon")
+                , getString(R.string.action_send_otp_with_call).indexOf("kirim")
                 , getString(R.string.action_send_otp_with_call).length()
                 , 0);
 

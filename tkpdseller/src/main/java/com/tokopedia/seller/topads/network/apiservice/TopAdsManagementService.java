@@ -3,7 +3,9 @@ package com.tokopedia.seller.topads.network.apiservice;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 import com.tokopedia.seller.topads.network.apiservice.api.TopAdsManagementApi;
+import com.tokopedia.seller.topads.network.interceptor.TopAdsAuthInterceptor;
 
+import okhttp3.Interceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -24,5 +26,10 @@ public class TopAdsManagementService extends AuthService<TopAdsManagementApi> {
     @Override
     public TopAdsManagementApi getApi() {
         return api;
+    }
+
+    @Override
+    public Interceptor getAuthInterceptor() {
+        return new TopAdsAuthInterceptor();
     }
 }

@@ -9,8 +9,7 @@ import com.tokopedia.transaction.purchase.model.ConfirmationData;
 import com.tokopedia.transaction.purchase.services.TxActionIntentService;
 
 /**
- * TxActionReceiver
- * Created by Angga.Prasetiyo on 04/07/2016.
+ * @author Angga.Prasetiyo on 04/07/2016.
  */
 public class TxActionReceiver extends BroadcastReceiver {
     public static final String TX_ACTION_RECEIVER = TxActionReceiver.class.getName();

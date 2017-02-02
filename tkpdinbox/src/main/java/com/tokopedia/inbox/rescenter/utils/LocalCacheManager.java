@@ -1,14 +1,12 @@
 package com.tokopedia.inbox.rescenter.utils;
 
 import com.raizlabs.android.dbflow.sql.language.SQLite;
-import com.tokopedia.core.database.model.AttachmentResCenterDB;
-import com.tokopedia.core.database.model.AttachmentResCenterDB_Table;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB_Table;
 import com.tokopedia.core.database.model.InboxResCenterFilterDB;
 import com.tokopedia.core.database.model.InboxResCenterFilterDB_Table;
 import com.tokopedia.core.database.model.ReplyConversationDB;
 import com.tokopedia.core.database.model.ReplyConversationDB_Table;
-import com.tokopedia.core.database.model.ReturnPackageDB;
-import com.tokopedia.core.database.model.ReturnPackageDB_Table;
 import com.tokopedia.core.database.model.StateResCenterDetailDB;
 import com.tokopedia.core.database.model.StateResCenterDetailDB_Table;
 
@@ -184,75 +182,6 @@ public class LocalCacheManager {
         }
     }
 
-    public static class ReturnPackage {
-        private String resolutionID;
-        private String conversationID;
-        private String shippingID;
-        private String shippingRefNum;
-
-        public ReturnPackage() {
-        }
-
-        public static ReturnPackage Builder(String resolutionID) {
-            ReturnPackage foo = new ReturnPackage();
-            foo.resolutionID = resolutionID;
-            return foo;
-        }
-
-        public ReturnPackage setConversationID(String conversationID) {
-            this.conversationID = conversationID;
-            return this;
-        }
-
-        public ReturnPackage setShippingID(String shippingID) {
-            this.shippingID = shippingID;
-            return this;
-        }
-
-        public ReturnPackage setShippingRefNum(String shippingRefNum) {
-            if (shippingRefNum != null) {
-                this.shippingRefNum = shippingRefNum;
-            }
-            return this;
-        }
-
-        public String getConversationID() {
-            return conversationID;
-        }
-
-        public String getShippingID() {
-            return shippingID;
-        }
-
-        public String getShippingRefNum() {
-            return shippingRefNum;
-        }
-
-        public void save() {
-            ReturnPackageDB db = new ReturnPackageDB();
-            db.resolutionID = resolutionID;
-            db.conversationID = conversationID;
-            db.shippingID = shippingID;
-            db.shippingRefNum = shippingRefNum;
-            db.save();
-        }
-
-        public ReturnPackage getCache() {
-            ReturnPackageDB cache = SQLite.select().from(ReturnPackageDB.class).where(ReturnPackageDB_Table.resolutionID.is(resolutionID)).querySingle();
-            if (cache == null) {
-                return this;
-            }
-            setShippingID(cache.shippingID);
-            setShippingRefNum(cache.shippingRefNum);
-            setConversationID(cache.conversationID);
-            return this;
-        }
-
-        public void clear() {
-            SQLite.delete().from(ReturnPackageDB.class).where(ReturnPackageDB_Table.resolutionID.is(resolutionID)).execute();
-        }
-    }
-
     public static class ImageAttachment {
 
         private String resolutionID;
@@ -287,31 +216,31 @@ public class LocalCacheManager {
         }
 
         public void save() {
-            AttachmentResCenterDB db = new AttachmentResCenterDB();
+            AttachmentResCenterVersion2DB db = new AttachmentResCenterVersion2DB();
             db.resolutionID = resolutionID;
             db.imagePath = getImageLocalPath();
             db.imageUrl = getImageUrl();
-            db.modulName = AttachmentResCenterDB.MODULE_DETAIL_RESCENTER;
+            db.modulName = AttachmentResCenterVersion2DB.MODULE_DETAIL_RESCENTER;
             db.save();
         }
 
-        public List<AttachmentResCenterDB> getCache() {
-            List<AttachmentResCenterDB> mList = SQLite.select().from(AttachmentResCenterDB.class)
-                    .where(AttachmentResCenterDB_Table.resolutionID.is(resolutionID))
+        public List<AttachmentResCenterVersion2DB> getCache() {
+            List<AttachmentResCenterVersion2DB> mList = SQLite.select().from(AttachmentResCenterVersion2DB.class)
+                    .where(AttachmentResCenterVersion2DB_Table.resolutionID.is(resolutionID))
                     .queryList();
             return mList;
         }
 
         public void clearAll() {
-            for (AttachmentResCenterDB data : getCache()) {
+            for (AttachmentResCenterVersion2DB data : getCache()) {
                 data.delete();
             }
         }
 
-        public void remove(AttachmentResCenterDB attachmentReplyResCenterDB) {
-            SQLite.delete().from(AttachmentResCenterDB.class)
-                    .where(AttachmentResCenterDB_Table.resolutionID.is(resolutionID))
-                    .and(AttachmentResCenterDB_Table.id.is(attachmentReplyResCenterDB.getId()))
+        public void remove(AttachmentResCenterVersion2DB attachmentReplyResCenterDB) {
+            SQLite.delete().from(AttachmentResCenterVersion2DB.class)
+                    .where(AttachmentResCenterVersion2DB_Table.resolutionID.is(resolutionID))
+                    .and(AttachmentResCenterVersion2DB_Table.id.is(attachmentReplyResCenterDB.getId()))
                     .execute();
         }
     }
@@ -394,33 +323,33 @@ public class LocalCacheManager {
         }
 
         public void save() {
-            AttachmentResCenterDB db = new AttachmentResCenterDB();
+            AttachmentResCenterVersion2DB db = new AttachmentResCenterVersion2DB();
             db.orderID = orderID;
             db.imagePath = getImageLocalPath();
             db.imageUrl = getImageUrl();
-            db.modulName = AttachmentResCenterDB.MODULE_CREATE_RESCENTER;
+            db.modulName = AttachmentResCenterVersion2DB.MODULE_CREATE_RESCENTER;
             db.save();
         }
 
-        public List<AttachmentResCenterDB> getCache() {
-            List<AttachmentResCenterDB> mList = SQLite.select().from(AttachmentResCenterDB.class)
-                    .where(AttachmentResCenterDB_Table.orderID.is(orderID))
-                    .and(AttachmentResCenterDB_Table.modulName.is(AttachmentResCenterDB.MODULE_CREATE_RESCENTER))
+        public List<AttachmentResCenterVersion2DB> getCache() {
+            List<AttachmentResCenterVersion2DB> mList = SQLite.select().from(AttachmentResCenterVersion2DB.class)
+                    .where(AttachmentResCenterVersion2DB_Table.orderID.is(orderID))
+                    .and(AttachmentResCenterVersion2DB_Table.modulName.is(AttachmentResCenterVersion2DB.MODULE_CREATE_RESCENTER))
                     .queryList();
             return mList;
         }
 
         public void clearAll() {
-            for (AttachmentResCenterDB data : getCache()) {
+            for (AttachmentResCenterVersion2DB data : getCache()) {
                 data.delete();
             }
         }
 
-        public void remove(AttachmentResCenterDB attachmentReplyResCenterDB) {
-            SQLite.delete().from(AttachmentResCenterDB.class)
-                    .where(AttachmentResCenterDB_Table.orderID.is(orderID))
-                    .and(AttachmentResCenterDB_Table.modulName.is(AttachmentResCenterDB.MODULE_CREATE_RESCENTER))
-                    .and(AttachmentResCenterDB_Table.id.is(attachmentReplyResCenterDB.getId()))
+        public void remove(AttachmentResCenterVersion2DB attachmentReplyResCenterDB) {
+            SQLite.delete().from(AttachmentResCenterVersion2DB.class)
+                    .where(AttachmentResCenterVersion2DB_Table.orderID.is(orderID))
+                    .and(AttachmentResCenterVersion2DB_Table.modulName.is(AttachmentResCenterVersion2DB.MODULE_CREATE_RESCENTER))
+                    .and(AttachmentResCenterVersion2DB_Table.id.is(attachmentReplyResCenterDB.getId()))
                     .execute();
         }
     }
@@ -459,33 +388,110 @@ public class LocalCacheManager {
         }
 
         public void save() {
-            AttachmentResCenterDB db = new AttachmentResCenterDB();
+            AttachmentResCenterVersion2DB db = new AttachmentResCenterVersion2DB();
             db.resolutionID = resolutionId;
             db.imagePath = getImageLocalPath();
             db.imageUrl = getImageUrl();
-            db.modulName = AttachmentResCenterDB.MODULE_EDIT_RESCENTER;
+            db.modulName = AttachmentResCenterVersion2DB.MODULE_EDIT_RESCENTER;
             db.save();
         }
 
-        public List<AttachmentResCenterDB> getCache() {
-            List<AttachmentResCenterDB> mList = SQLite.select().from(AttachmentResCenterDB.class)
-                    .where(AttachmentResCenterDB_Table.resolutionID.is(resolutionId))
-                    .and(AttachmentResCenterDB_Table.modulName.is(AttachmentResCenterDB.MODULE_EDIT_RESCENTER))
+        public List<AttachmentResCenterVersion2DB> getCache() {
+            List<AttachmentResCenterVersion2DB> mList = SQLite.select().from(AttachmentResCenterVersion2DB.class)
+                    .where(AttachmentResCenterVersion2DB_Table.resolutionID.is(resolutionId))
+                    .and(AttachmentResCenterVersion2DB_Table.modulName.is(AttachmentResCenterVersion2DB.MODULE_EDIT_RESCENTER))
                     .queryList();
             return mList;
         }
 
         public void clearAll() {
-            for (AttachmentResCenterDB data : getCache()) {
+            for (AttachmentResCenterVersion2DB data : getCache()) {
                 data.delete();
             }
         }
 
-        public void remove(AttachmentResCenterDB attachmentReplyResCenterDB) {
-            SQLite.delete().from(AttachmentResCenterDB.class)
-                    .where(AttachmentResCenterDB_Table.resolutionID.is(resolutionId))
-                    .and(AttachmentResCenterDB_Table.modulName.is(AttachmentResCenterDB.MODULE_EDIT_RESCENTER))
-                    .and(AttachmentResCenterDB_Table.id.is(attachmentReplyResCenterDB.getId()))
+        public void remove(AttachmentResCenterVersion2DB attachmentReplyResCenterDB) {
+            SQLite.delete().from(AttachmentResCenterVersion2DB.class)
+                    .where(AttachmentResCenterVersion2DB_Table.resolutionID.is(resolutionId))
+                    .and(AttachmentResCenterVersion2DB_Table.modulName.is(AttachmentResCenterVersion2DB.MODULE_EDIT_RESCENTER))
+                    .and(AttachmentResCenterVersion2DB_Table.id.is(attachmentReplyResCenterDB.getId()))
+                    .execute();
+        }
+    }
+
+    public static class AttachmentShippingResCenter {
+
+        private String resolutionId;
+        private String imageLocalPath;
+        private String imageUrl;
+        private String imageUUID;
+
+
+        public AttachmentShippingResCenter() {
+        }
+
+        public static AttachmentShippingResCenter Builder(String resolutionID) {
+            AttachmentShippingResCenter foo = new AttachmentShippingResCenter();
+            foo.resolutionId = resolutionID;
+            return foo;
+        }
+
+        public String getImageLocalPath() {
+            return imageLocalPath;
+        }
+
+        public AttachmentShippingResCenter setImageLocalPath(String imageLocalPath) {
+            this.imageLocalPath = imageLocalPath;
+            return this;
+        }
+
+        public String getImageUrl() {
+            return imageUrl;
+        }
+
+        public AttachmentShippingResCenter setImageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
+            return this;
+        }
+
+        public String getImageUUID() {
+            return imageUUID;
+        }
+
+        public AttachmentShippingResCenter setImageUUID(String imageUUID) {
+            this.imageUUID = imageUUID;
+            return this;
+        }
+
+        public void save() {
+            AttachmentResCenterVersion2DB db = new AttachmentResCenterVersion2DB();
+            db.resolutionID = resolutionId;
+            db.imagePath = getImageLocalPath();
+            db.imageUrl = getImageUrl();
+            db.imageUUID = getImageUUID();
+            db.modulName = AttachmentResCenterVersion2DB.MODULE_SHIPPING_RESCENTER;
+            db.save();
+        }
+
+        public List<AttachmentResCenterVersion2DB> getCache() {
+            List<AttachmentResCenterVersion2DB> mList = SQLite.select().from(AttachmentResCenterVersion2DB.class)
+                    .where(AttachmentResCenterVersion2DB_Table.resolutionID.is(resolutionId))
+                    .and(AttachmentResCenterVersion2DB_Table.modulName.is(AttachmentResCenterVersion2DB.MODULE_SHIPPING_RESCENTER))
+                    .queryList();
+            return mList;
+        }
+
+        public void clearAll() {
+            for (AttachmentResCenterVersion2DB data : getCache()) {
+                data.delete();
+            }
+        }
+
+        public void remove(AttachmentResCenterVersion2DB attachmentReplyResCenterDB) {
+            SQLite.delete().from(AttachmentResCenterVersion2DB.class)
+                    .where(AttachmentResCenterVersion2DB_Table.resolutionID.is(resolutionId))
+                    .and(AttachmentResCenterVersion2DB_Table.modulName.is(AttachmentResCenterVersion2DB.MODULE_SHIPPING_RESCENTER))
+                    .and(AttachmentResCenterVersion2DB_Table.id.is(attachmentReplyResCenterDB.getId()))
                     .execute();
         }
     }

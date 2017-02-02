@@ -1,7 +1,18 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
+    }
+}
+
 apply plugin: 'com.android.library'
 apply plugin: 'android-apt'
+apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
+apply plugin: 'maven'
 
 def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
@@ -74,6 +85,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+    }
 }
 
 dependencies {
@@ -93,3 +111,4 @@ dependencies {
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
 }
+

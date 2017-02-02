@@ -1,6 +1,8 @@
 package com.tkpd.library.utils;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -42,8 +44,8 @@ public class ImageHandler {
     public static Bitmap ResizeBitmap(Bitmap bitmap, float bounding) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
-        float xScale = ((float) bounding) / width;
-        float yScale = ((float) bounding) / height;
+        float xScale = bounding / width;
+        float yScale = bounding / height;
         float scale = (xScale <= yScale) ? xScale : yScale;
         Matrix matrix = new Matrix();
         matrix.postScale(scale, scale);
@@ -166,9 +168,8 @@ public class ImageHandler {
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
-                .thumbnail(0.5f)
-                .centerCrop()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(imageview);
     }
 
@@ -236,7 +237,6 @@ public class ImageHandler {
 
 
     public static void loadImageBitmap2(Context context, String url, SimpleTarget<Bitmap> target) {
-        Glide.clear(target);
         Glide.with(context)
                 .load(url)
                 .asBitmap()
@@ -352,6 +352,18 @@ public class ImageHandler {
     public static void loadImageRounded2(Context context, final ImageView imageview, final String url) {
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
+                    .load(url)
+                    .asBitmap()
+                    .dontAnimate()
+                    .placeholder(R.drawable.loading_page)
+                    .error(R.drawable.error_drawable)
+                    .into(getRoundedImageViewTarget(imageview, 5.0f));
+        }
+    }
+
+    public static void loadImageRounded2(Fragment fragment, final ImageView imageview, final String url) {
+        if (url != null && !url.isEmpty()) {
+            Glide.with(fragment)
                     .load(url)
                     .asBitmap()
                     .dontAnimate()

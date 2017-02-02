@@ -18,12 +18,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.facebook.login.LoginFragment;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.router.SessionRouter;
@@ -75,7 +75,6 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
     Snackbar snackbar;
 
     LocalCacheHandler isNotFirstRun;
-    LocalCacheHandler cacheGTM;
 
     List<LoginProviderModel.ProvidersBean> listProvider;
     private String backgroundUrl;
@@ -216,11 +215,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
 
     @Override
     protected void initialVar() {
-        cacheGTM = new LocalCacheHandler(getActivity(), AppEventTracking.GTM_CACHE);
-        cacheGTM.putString(AppEventTracking.GTMCacheKey.SESSION_STATE,
-                AppEventTracking.GTMCacheValue.LOGIN);
-        cacheGTM.applyEditor();
-
+        UserAuthenticationAnalytics.setActiveLogin();
     }
 
     @Override
@@ -308,8 +303,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
                         listProvider.get(position).getName());
                 getActivity().getWindow().setSoftInputMode(
                         WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-                storeCacheGTM(AppEventTracking.GTMCacheKey.LOGIN_TYPE,
-                        listProvider.get(position).getName());
+                UserAuthenticationAnalytics.setActiveAuthenticationMedium(listProvider.get(position).getName());
             }
         };
     }
@@ -317,14 +311,12 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
     @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
     public void onGoogleClick() {
         presenter.loginGoogle(getActivity());
-        storeCacheGTM(AppEventTracking.GTMCacheKey.LOGIN_TYPE,
-                AppEventTracking.GTMCacheValue.GMAIL);
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.GMAIL);
     }
 
     private void onFacebookClick() {
         presenter.loginFacebook(getActivity());
-        storeCacheGTM(AppEventTracking.GTMCacheKey.LOGIN_TYPE,
-                AppEventTracking.GTMCacheValue.FACEBOOK);
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.FACEBOOK);
     }
 
     @Override
@@ -386,11 +378,6 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         };
     }
 
-
-    private void storeCacheGTM(String key, String value) {
-        cacheGTM.putString(key, value);
-        cacheGTM.applyEditor();
-    }
     @Override
     public void setBackground(String backgroundURL) {
         if(backgroundURL != null) {

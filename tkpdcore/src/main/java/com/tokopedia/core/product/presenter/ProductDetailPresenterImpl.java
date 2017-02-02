@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -28,7 +27,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
-import com.tokopedia.core.inboxmessage.activity.SendMessageActivity;
 import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.dialog.DialogToEtalase;
@@ -41,16 +39,17 @@ import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
-import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.reputationproduct.ReputationProduct;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.session.presenter.Session;
@@ -205,7 +204,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public void processToSendMessage(@NonNull Context context, @NonNull Bundle bundle) {
         Intent intent;
         if (SessionHandler.isV4Login(context)) {
-            intent = new Intent(context, SendMessageActivity.class).putExtras(bundle);
+            intent = InboxRouter.getSendMessageActivityIntent(context).putExtras(bundle);
             viewListener.navigateToActivity(intent);
         } else {
             intent = SessionRouter.getLoginActivityIntent(context);
@@ -235,7 +234,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 )));
         attributes.put("Wishlist", successResult.getInfo().getProductAlreadyWishlist() == 1 ? "Yes" : "No");
         attributes.put("Favorite Seller", successResult.getShopInfo().getShopAlreadyFavorited() == 1 ? "Yes" : "No");
-        ScreenTracking.sendLocaProductDetailEvent(successResult, attributes);
+        UnifyTracking.sendLocaProductDetailEvent(successResult, attributes);
     }
 
     @Override
