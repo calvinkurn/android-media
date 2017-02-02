@@ -125,6 +125,8 @@ public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFrag
                 finishLoading();
                 phoneNumber.setEnabled(true);
                 phoneNumber.setText(SessionHandler.getPhoneNumber());
+                presenter.requestOTP(getPhoneNumber().trim());
+
             }
 
             @Override
