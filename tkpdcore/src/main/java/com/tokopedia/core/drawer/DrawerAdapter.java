@@ -470,13 +470,15 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private void setTokoCashLayoutValue(HeaderViewHolder holder, DrawerHeader headerValue) {
-        if(isTokoCashDisabled(headerValue) || isTokoNoAction(headerValue)) {
+        if(isTokoCashDisabled(headerValue)) {
            holder.topCashLayout.setVisibility(View.GONE);
         } else if(isUnregistered(headerValue)) {
             holder.topCashLayout.setVisibility(View.VISIBLE);
             holder.tokoCashRedirectArrow.setVisibility(View.GONE);
             holder.tokoCashActivationButton.setVisibility(View.VISIBLE);
-            holder.tokoCashActivationButton.setText(headerValue.tokoCashText);
+            holder.loadingTopCash.setVisibility(View.GONE);
+            holder.topCashLayout
+                    .setOnClickListener(onLayoutTopCashSelected(headerValue.tokoCashURL));
         } else {
             holder.tokoCashLabel.setText(headerValue.tokoCashText);
             holder.topCashLayout
@@ -487,16 +489,12 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    private boolean isTokoNoAction(DrawerHeader headerValue) {
-        return !headerValue.tokoCashToWallet && !headerValue.tokoCashOtherAction;
-    }
-
     private boolean isTokoCashDisabled(DrawerHeader headerValue) {
-        return headerValue.tokoCashValue == null || headerValue.tokoCashText.isEmpty();
+        return headerValue.tokoCashText == null;
     }
 
     private boolean isUnregistered(DrawerHeader headerValue) {
-        return !headerValue.tokoCashToWallet && headerValue.tokoCashOtherAction;
+        return !headerValue.tokoCashText.isEmpty() && !headerValue.tokoCashToWallet;
     }
 
     private View.OnClickListener onLayoutTopCashSelected(final String redirectURL) {
