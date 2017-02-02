@@ -89,7 +89,9 @@ public class TopAdsFilterGroupNameFragment extends TopAdsFilterRadioButtonFragme
 
     @Override
     public Intent addResult(Intent intent) {
-        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, Integer.parseInt(selectedRadioButtonItem.getValue()));
+        if (selectedRadioButtonItem != null) {
+            intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, Integer.parseInt(selectedRadioButtonItem.getValue()));
+        }
         return intent;
     }
 }

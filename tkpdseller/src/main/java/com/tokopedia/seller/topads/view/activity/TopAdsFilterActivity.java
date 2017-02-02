@@ -34,6 +34,8 @@ public abstract class TopAdsFilterActivity extends BasePresenterActivity impleme
 
     protected abstract List<TopAdsFilterContentFragment> getFilterContentList();
 
+    protected abstract Intent getDefaultIntentResult();
+
     @Override
     protected void setupURIPass(Uri data) {
 
@@ -114,7 +116,7 @@ public abstract class TopAdsFilterActivity extends BasePresenterActivity impleme
     }
 
     private void setFilterChangedResult() {
-        Intent intent = new Intent();
+        Intent intent = getDefaultIntentResult();
         for (TopAdsFilterContentFragment topAdsFilterContentFragment : filterContentFragmentList) {
             topAdsFilterContentFragment.addResult(intent);
         }

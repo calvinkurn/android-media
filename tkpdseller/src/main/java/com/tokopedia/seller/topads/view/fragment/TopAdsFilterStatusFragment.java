@@ -74,7 +74,9 @@ public class TopAdsFilterStatusFragment extends TopAdsFilterRadioButtonFragment 
 
     @Override
     public Intent addResult(Intent intent) {
-        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, Integer.parseInt(selectedRadioButtonItem.getValue()));
+        if (selectedRadioButtonItem != null) {
+            intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, Integer.parseInt(selectedRadioButtonItem.getValue()));
+        }
         return intent;
     }
 }

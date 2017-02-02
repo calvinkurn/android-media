@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
@@ -36,6 +37,14 @@ public class TopAdsFilterProductActivity extends TopAdsFilterActivity {
         filterContentFragmentList.add(TopAdsFilterStatusFragment.createInstance(selectedFilterStatus));
         filterContentFragmentList.add(TopAdsFilterGroupNameFragment.createInstance(selectedGroupId, currentGroupId, currentGroupName));
         return filterContentFragmentList;
+    }
+
+    @Override
+    protected Intent getDefaultIntentResult() {
+        Intent intent = new Intent();
+        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, selectedFilterStatus);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, selectedGroupId);
+        return intent;
     }
 
     @Override
