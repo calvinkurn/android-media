@@ -19,11 +19,9 @@ public class TopAdsDetailShopActivity extends TActivity {
         if (getIntent() != null && getIntent().getExtras() != null) {
             ad = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
         }
-        if(savedInstanceState == null) {
-            getFragmentManager().beginTransaction().disallowAddToBackStack()
-                    .add(R.id.container, TopAdsDetailShopFragment.createInstance(ad), TopAdsDetailProductFragment.class.getSimpleName())
-                    .commit();
-        }
+        getFragmentManager().beginTransaction().disallowAddToBackStack()
+                .replace(R.id.container, TopAdsDetailShopFragment.createInstance(ad), TopAdsDetailProductFragment.class.getSimpleName())
+                .commit();
     }
 
     @Override

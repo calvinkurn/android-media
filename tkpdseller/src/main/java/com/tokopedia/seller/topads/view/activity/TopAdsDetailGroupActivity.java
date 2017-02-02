@@ -18,16 +18,14 @@ public class TopAdsDetailGroupActivity extends TActivity {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_top_ads_detail_group);
 
-        if(getIntent() != null && getIntent().getExtras() != null) {
+        if (getIntent() != null && getIntent().getExtras() != null) {
             groupAd = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
             groupId = getIntent().getIntExtra(TopAdsExtraConstant.EXTRA_AD_ID_GROUP, -1);
         }
 
-        if(savedInstanceState == null) {
-            getFragmentManager().beginTransaction().disallowAddToBackStack()
-                    .add(R.id.container, TopAdsDetailGroupFragment.createInstance(groupAd, groupId), TopAdsDetailGroupFragment.class.getSimpleName())
-                    .commit();
-        }
+        getFragmentManager().beginTransaction().disallowAddToBackStack()
+                .replace(R.id.container, TopAdsDetailGroupFragment.createInstance(groupAd, groupId), TopAdsDetailGroupFragment.class.getSimpleName())
+                .commit();
     }
 
     @Override
