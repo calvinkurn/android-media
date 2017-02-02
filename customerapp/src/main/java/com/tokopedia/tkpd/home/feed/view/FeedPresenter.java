@@ -69,8 +69,6 @@ public class FeedPresenter extends BasePresenter<FeedContract.View>
             loadMoreFeedUseCase.execute(
                     getFeedRequestParams(),
                     new LoadMoreFeedSubcriber());
-        } else {
-            getView().disableLoadmore();
         }
 
     }

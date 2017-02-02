@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.floatbutton.ListenerFabClick;
@@ -25,6 +26,7 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.instoped.InstagramAuth;
 import com.tokopedia.core.myproduct.ProductActivity;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -53,6 +55,8 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     SwipeToRefresh swipeRefreshLayout;
     @BindView(R.id.fab_speed_dial)
     FabSpeedDial fabAddProduct;
+    @BindView(R.id.main_content)
+    LinearLayout mainContentLinearLayout;
 
     @Inject
     FeedPresenter feedPresenter;
@@ -231,7 +235,13 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     public void showRefreshFailed() {
-        adapter.setIsRetry(true);
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                feedPresenter.refreshDataFeed();
+            }
+        }).showRetrySnackbar();
     }
 
 

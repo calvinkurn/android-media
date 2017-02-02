@@ -31,7 +31,6 @@ public class RecentProductSourceFactory {
     }
 
     public CloudRecentProductDataSource createRecentProductDataSource() {
-
         return new CloudRecentProductDataSource(
                 context, recentProductDbManager, mojitoService, recentProductMapper);
     }

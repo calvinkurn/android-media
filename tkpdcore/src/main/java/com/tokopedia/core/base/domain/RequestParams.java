@@ -5,7 +5,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 /**
  * @author kulomady on 12/24/16.
  */
-public final class RequestParams {
+public class RequestParams {
     public static final RequestParams EMPTY = RequestParams.create();
 
     private final TKPDMapParam<String, Object> parameters = new TKPDMapParam<>();
