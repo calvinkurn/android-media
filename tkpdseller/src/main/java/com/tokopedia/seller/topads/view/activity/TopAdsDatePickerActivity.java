@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.topads.lib.datepicker.DatePickerActivity;
-import com.tokopedia.seller.topads.lib.datepicker.SetDateFragment;
 import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenter;
 
 import java.util.Date;
@@ -81,8 +80,8 @@ public abstract class TopAdsDatePickerActivity<T> extends BasePresenterActivity<
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == REQUEST_CODE_DATE && intent != null) {
-            long startDateTime = intent.getLongExtra(SetDateFragment.START_DATE, -1);
-            long endDateTime = intent.getLongExtra(SetDateFragment.END_DATE, -1);
+            long startDateTime = intent.getLongExtra(DatePickerActivity.START_DATE, -1);
+            long endDateTime = intent.getLongExtra(DatePickerActivity.END_DATE, -1);
             int selectionDatePickerType = intent.getIntExtra(DatePickerActivity.SELECTION_TYPE, 0);
             int selectionDatePeriodIndex = intent.getIntExtra(DatePickerActivity.SELECTION_PERIOD, 0);
             if (startDateTime > 0 && endDateTime > 0) {

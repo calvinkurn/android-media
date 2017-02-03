@@ -30,130 +30,14 @@ import static com.tokopedia.seller.topads.lib.datepicker.DatePickerActivity.PERI
  * Created by normansyahputa on 11/25/16.
  */
 
-public class SetDateFragment extends Fragment {
-    private SetDate setDate;
-    private static final Locale locale = new Locale("in", "ID");
+public class SetDateFragment {
 
     public interface SetDate {
         void returnStartAndEndDate(long startDate, long endDate, int lastSelection, int selectionType);
 
-        boolean isGMStat();
-
-        int selectionPeriod();
-
-        int selectionType();
-
         long sDate();
 
         long eDate();
-
-        long getMinStartDate();
-
-        long getMaxStartDate();
-
-        int getMaxDateRange();
-
-        ArrayList<PeriodRangeModel> getPeriodRangeModelList();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context != null && context instanceof SetDate) {
-            setDate = (SetDate) context;
-        }
-    }
-
-    TabLayout slidingTabs;
-    ViewPager setDateViewPager;
-    SetDatePagerAdapter setDatePagerAdapter;
-
-    public static final String START_DATE = "START_DATE";
-    public static final String END_DATE = "END_DATE";
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_date_picker, container, false);
-        slidingTabs = (TabLayout) rootView.findViewById(R.id.sliding_tabs);
-        setDateViewPager = (ViewPager) rootView.findViewById(R.id.set_date_viewpager);
-
-        setDatePagerAdapter = new SetDatePagerAdapter(getActivity().getSupportFragmentManager(),
-                getActivity(), setDate.isGMStat(), setDate.selectionPeriod(),
-                setDate.sDate(), setDate.eDate(), setDate.getMinStartDate(), setDate.getMaxStartDate(), setDate.getMaxDateRange(), setDate.getPeriodRangeModelList());
-        setDateViewPager.setAdapter(setDatePagerAdapter);
-        slidingTabs.setupWithViewPager(setDateViewPager);
-
-        switch (setDate.selectionType()) {
-            case PERIOD_TYPE:
-                setDateViewPager.setCurrentItem(0);
-                break;
-            case CUSTOM_TYPE:
-                setDateViewPager.setCurrentItem(1);
-                break;
-        }
-        return rootView;
-    }
-
-    public static class SetDatePagerAdapter extends FragmentPagerAdapter {
-        final int PAGE_COUNT = 2;
-        private Context context;
-        private boolean isGM;
-        private int lastSelectionPeriod;
-        private long sDate;
-        private long eDate;
-        private long minStartDate;
-        private long maxEndDate;
-        private int maxDateRange;
-        private ArrayList<PeriodRangeModel> periodRangeModelList;
-
-        public SetDatePagerAdapter(FragmentManager fm, Context context, boolean isGM,
-                                   int lastSelectionPeriod, long sDate, long eDate,
-                                   long minStartDate, long maxEndDate, int maxDateRange, ArrayList<PeriodRangeModel> periodRangeModelList) {
-            super(fm);
-            this.context = context;
-            this.isGM = isGM;
-            this.lastSelectionPeriod = lastSelectionPeriod;
-            this.sDate = sDate;
-            this.eDate = eDate;
-            this.minStartDate = minStartDate;
-            this.maxEndDate = maxEndDate;
-            this.maxDateRange = maxDateRange;
-            this.periodRangeModelList = periodRangeModelList;
-            Log.d("MNORMANSYAH", "sDate " + getDateFormat(sDate) + " eDate " + getDateFormat(eDate));
-        }
-
-        @Override
-        public int getCount() {
-            if (!isGM)
-                return 1;
-            return PAGE_COUNT;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            switch (position) {
-                case 0:
-                    return PeriodFragment.newInstance(lastSelectionPeriod, periodRangeModelList);
-                case 1:
-                default:
-                    return CustomDateFragment.newInstance(sDate, eDate, minStartDate, maxEndDate, maxDateRange);
-            }
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            String title = "";
-            switch (position) {
-                case 0:
-                    title = context.getString(R.string.label_date_period);
-                    break;
-                case 1:
-                    title = context.getString(R.string.label_date_custom);
-                    break;
-            }
-            return title;
-        }
     }
 
     public interface PeriodListener {
@@ -180,35 +64,5 @@ public class SetDateFragment extends Fragment {
         public BasePeriodModel() {
 
         }
-    }
-
-    public static String getDateFormat(long timeInMillis) {
-        Calendar instance = Calendar.getInstance();
-        instance.setTimeInMillis(timeInMillis);
-        DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy", locale);
-        return dateFormat.format(instance.getTime());
-    }
-
-    public static String getDateWithYear(int date, String[] monthNames) {
-        List<String> dateRaw = getDateRaw(date);
-        String year = dateRaw.get(2);
-        String month = dateRaw.get(1);
-        month = monthNames[Integer.parseInt(month) - 1];
-
-        String day = String.valueOf(Integer.valueOf(dateRaw.get(0)));
-
-        return day + " " + month + " " + year;
-    }
-
-    private static List<String> getDateRaw(int date) {
-        List<String> result = new ArrayList<>();
-        String s = Integer.toString(date);
-        String year = s.substring(0, 4);
-        String month = s.substring(4, 6);
-        String day = s.substring(6);
-        result.add(day);
-        result.add(month);
-        result.add(year);
-        return result;
     }
 }

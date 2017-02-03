@@ -1,9 +1,5 @@
 package com.tokopedia.seller.topads.lib.datepicker;
 
-import android.util.Log;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -12,7 +8,6 @@ import java.util.Locale;
  */
 
 public class DatePickerRules {
-    private static final Locale locale = new Locale("in", "ID");
     public long minSDate;
     private long maxLimit;
     private long minLimit;

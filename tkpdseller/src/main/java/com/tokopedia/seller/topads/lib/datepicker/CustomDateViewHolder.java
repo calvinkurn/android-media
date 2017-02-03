@@ -57,14 +57,14 @@ public class CustomDateViewHolder extends RecyclerView.ViewHolder {
         if (startOrEndPeriodModel.isEndDate) {
             String endDate = startOrEndPeriodModel.getEndDate();
             String[] split = endDate.split(" ");
-            customDate.setText(SetDateFragment.getDateWithYear(Integer.parseInt(SetDateFragment.reverseDate(split)), monthNamesAbrev));
+            customDate.setText(DatePickerUtils.getDateWithYear(Integer.parseInt(SetDateFragment.reverseDate(split)), monthNamesAbrev));
             cal = Calendar.getInstance();
             cal.setTimeInMillis(startOrEndPeriodModel.endDate);
         }
         if (startOrEndPeriodModel.isStartDate) {
             String startDate = startOrEndPeriodModel.getStartDate();
             String[] split = startDate.split(" ");
-            customDate.setText(SetDateFragment.getDateWithYear(Integer.parseInt(SetDateFragment.reverseDate(split)), monthNamesAbrev));
+            customDate.setText(DatePickerUtils.getDateWithYear(Integer.parseInt(SetDateFragment.reverseDate(split)), monthNamesAbrev));
             cal = Calendar.getInstance();
             cal.setTimeInMillis(startOrEndPeriodModel.startDate);
         }

@@ -67,12 +67,12 @@ public class BasePeriodViewHolder extends RecyclerView.ViewHolder {
         }
         String[] monthNamesAbrev = itemView.getContext().getResources().getStringArray(R.array.month_names_abrev);
         if (split.length > 1) {
-            String res = String.format("%s - %s", SetDateFragment.getDateWithYear(split[0], monthNamesAbrev), SetDateFragment.getDateWithYear(split[1], monthNamesAbrev));
+            String res = String.format("%s - %s", DatePickerUtils.getDateWithYear(split[0], monthNamesAbrev), DatePickerUtils.getDateWithYear(split[1], monthNamesAbrev));
             periodDate.setText(res);
         }
 
         if (split.length == 1) {
-            String res = String.format("%s", SetDateFragment.getDateWithYear(split[0], monthNamesAbrev));
+            String res = String.format("%s", DatePickerUtils.getDateWithYear(split[0], monthNamesAbrev));
             periodDate.setText(res);
         }
     }
