@@ -7,7 +7,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.view.MenuItem;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
@@ -20,7 +19,7 @@ import java.util.List;
  * Created by normansyahputa on 12/7/16.
  */
 
-public class DatePickerActivity extends TActivity implements SetDateFragment.SetDate {
+public class DatePickerActivity extends TActivity {
 
     public static final int OFFSCREEN_PAGE_LIMIT = 2;
 
@@ -37,25 +36,26 @@ public class DatePickerActivity extends TActivity implements SetDateFragment.Set
     public static final String START_DATE = "START_DATE";
     public static final String END_DATE = "END_DATE";
 
-    public static final int MOVE_TO_SET_DATE = 1;
-    public static final int PERIOD_TYPE = 0;
-    public static final int CUSTOM_TYPE = 1;
-
+    public static final int RESULT_CODE = 1;
+    public static final int SELECTION_TYPE_PERIOD_DATE = 0;
+    public static final int SELECTION_TYPE_CUSTOM_DATE = 1;
 
     private ViewPager viewPager;
     private TabLayout tabLayout;
-
-    private boolean isGoldMerchant;
-    private boolean isAfterRotate;
+    private DatePickerTabListener tabListener;
 
     private int selectionPeriod;
     private int selectionType;
-    private long sDate = -1;
-    private long eDate = -1;
+    private long startDate;
+    private long endDate;
     private long minStartDate;
     private long maxStartDate;
     private int maxDateRange;
+    private boolean isGoldMerchant;
+
     private ArrayList<PeriodRangeModel> periodRangeModelList;
+    private PeriodFragment periodFragment;
+    private CustomDateFragment customDateFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,26 +65,46 @@ public class DatePickerActivity extends TActivity implements SetDateFragment.Set
         viewPager = (ViewPager) findViewById(R.id.pager);
         tabLayout = (TabLayout) findViewById(R.id.indicator);
 
-        if (!isAfterRotate) {
-            fetchIntent(getIntent().getExtras());
-        }
+        fetchIntent(getIntent().getExtras());
 
         viewPager.setAdapter(getViewPagerAdapter());
         viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabListener = new DatePickerTabListener(viewPager);
+        tabLayout.setOnTabSelectedListener(tabListener);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_date_period));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_date_custom));
         String title = getIntent().getExtras().getString(PAGE_TITLE);
         if (!TextUtils.isEmpty(title)) {
             getSupportActionBar().setTitle(title);
         }
-        isAfterRotate = savedInstanceState != null;
     }
 
     private PagerAdapter getViewPagerAdapter() {
         List<Fragment> fragmentList = new ArrayList<>();
-        fragmentList.add(PeriodFragment.newInstance(selectionPeriod, periodRangeModelList));
-        fragmentList.add(CustomDateFragment.newInstance(sDate, eDate, minStartDate, maxStartDate, maxDateRange));
+        periodFragment = PeriodFragment.newInstance(selectionPeriod, periodRangeModelList);
+        periodFragment.setCallback(new PeriodFragment.Callback() {
+            @Override
+            public void onDateSubmitted(int selectionPeriodResult, long startDateResult, long endDateResult) {
+                selectionType = SELECTION_TYPE_PERIOD_DATE;
+                selectionPeriod = selectionPeriodResult;
+                startDate = startDateResult;
+                endDate = endDateResult;
+                setResult();
+            }
+        });
+        fragmentList.add(periodFragment);
+        customDateFragment = CustomDateFragment.newInstance(startDate, endDate, minStartDate, maxStartDate, maxDateRange);
+        customDateFragment.setCallback(new CustomDateFragment.Callback() {
+            @Override
+            public void onDateSubmitted(long startDateResult, long endDateResult) {
+                selectionType = SELECTION_TYPE_CUSTOM_DATE;
+                startDate = startDateResult;
+                endDate = endDateResult;
+                setResult();
+            }
+        });
+        fragmentList.add(customDateFragment);
         return new TopAdsDashboardPagerAdapter(getFragmentManager(), fragmentList);
     }
 
@@ -92,9 +112,9 @@ public class DatePickerActivity extends TActivity implements SetDateFragment.Set
         if (extras != null) {
             isGoldMerchant = extras.getBoolean(IS_GOLD_MERCHANT, false);
             selectionPeriod = extras.getInt(SELECTION_PERIOD, 1);
-            selectionType = extras.getInt(SELECTION_TYPE, PERIOD_TYPE);
-            sDate = extras.getLong(CUSTOM_START_DATE, -1);
-            eDate = extras.getLong(CUSTOM_END_DATE, -1);
+            selectionType = extras.getInt(SELECTION_TYPE, SELECTION_TYPE_PERIOD_DATE);
+            startDate = extras.getLong(CUSTOM_START_DATE, -1);
+            endDate = extras.getLong(CUSTOM_END_DATE, -1);
             minStartDate = extras.getLong(MIN_START_DATE, -1);
             maxStartDate = extras.getLong(MAX_END_DATE, -1);
             maxDateRange = extras.getInt(MAX_DATE_RANGE, -1);
@@ -102,40 +122,14 @@ public class DatePickerActivity extends TActivity implements SetDateFragment.Set
         }
     }
 
-    @Override
-    public void returnStartAndEndDate(long startDate, long endDate, int lastSelection, int selectionType) {
+    public void setResult() {
         Intent intent = new Intent();
         intent.putExtra(START_DATE, startDate);
         intent.putExtra(END_DATE, endDate);
-        if (lastSelection < 0) {
-            lastSelection = selectionPeriod;
-        }
-        intent.putExtra(SELECTION_PERIOD, lastSelection);
+        intent.putExtra(SELECTION_PERIOD, selectionPeriod);
         intent.putExtra(SELECTION_TYPE, selectionType);
-        setResult(MOVE_TO_SET_DATE, intent);
+        setResult(RESULT_CODE, intent);
         finish();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == com.tokopedia.core.R.id.home) {
-            return true;
-        } else if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public long sDate() {
-        return sDate;
-    }
-
-    @Override
-    public long eDate() {
-        return eDate;
     }
 
     @Override

@@ -14,7 +14,6 @@ import android.widget.LinearLayout;
 import com.tokopedia.seller.R;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -23,14 +22,20 @@ import java.util.List;
 
 public class PeriodFragment extends Fragment {
 
-    RecyclerView periodRecyclerView;
-    Button saveDate;
-    LinearLayout periodLinLay;
+    public interface Callback {
 
-    List<PeriodChooseViewHelper> periodChooseViewHelpers;
-    ArrayList<PeriodRangeModel> periodRangeModelList;
-    List<SetDateFragment.BasePeriodModel> basePeriodModels;
-    SetDateFragment.PeriodListener periodListener = new SetDateFragment.PeriodListener() {
+        void onDateSubmitted(int selectionPeriod, long startDate, long endDate);
+
+    }
+
+    private RecyclerView recycleView;
+    private Button submitButton;
+    private LinearLayout periodLayout;
+
+    private List<PeriodChooseViewHelper> periodChooseViewHelpers;
+    private ArrayList<PeriodRangeModel> periodRangeModelList;
+    private List<SetDateFragment.BasePeriodModel> basePeriodModels;
+    private SetDateFragment.PeriodListener periodListener = new SetDateFragment.PeriodListener() {
         @Override
         public void updateCheck(boolean checked, int index) {
 
@@ -74,11 +79,17 @@ public class PeriodFragment extends Fragment {
             return isNoneAll == basePeriodModels.size();
         }
     };
-    private PeriodAdapter periodAdapter;
-    private long maxEndDate;
 
-    public static Fragment newInstance(int selectionPeriod, ArrayList<PeriodRangeModel> periodRangeModelList) {
-        Fragment fragment = new PeriodFragment();
+    private PeriodAdapter periodAdapter;
+
+    private Callback callback;
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
+
+    public static PeriodFragment newInstance(int selectionPeriod, ArrayList<PeriodRangeModel> periodRangeModelList) {
+        PeriodFragment fragment = new PeriodFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(DatePickerActivity.SELECTION_PERIOD, selectionPeriod);
         bundle.putParcelableArrayList(DatePickerActivity.DATE_PERIOD_LIST, periodRangeModelList);
@@ -89,23 +100,22 @@ public class PeriodFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_period_layout, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_date_picker_period, container, false);
 
-        periodRecyclerView = (RecyclerView) rootView.findViewById(R.id.period_recyclerview);
-        saveDate = (Button) rootView.findViewById(R.id.save_date);
-        saveDate.setOnClickListener(new View.OnClickListener() {
+        recycleView = (RecyclerView) rootView.findViewById(R.id.period_recyclerview);
+        submitButton = (Button) rootView.findViewById(R.id.save_date);
+        submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 saveDate();
             }
         });
-        periodLinLay = (LinearLayout) rootView.findViewById(R.id.period_linlay);
+        periodLayout = (LinearLayout) rootView.findViewById(R.id.period_linlay);
 
         int lastSelection = 1;
         Bundle bundle = getArguments();
         if (bundle != null) {
             lastSelection = bundle.getInt(DatePickerActivity.SELECTION_PERIOD, 1);
-            maxEndDate = bundle.getLong(DatePickerActivity.MAX_END_DATE, Calendar.getInstance().getTimeInMillis());
             periodRangeModelList = bundle.getParcelableArrayList(DatePickerActivity.DATE_PERIOD_LIST);
         }
 
@@ -126,33 +136,30 @@ public class PeriodFragment extends Fragment {
 
         periodAdapter.setBasePeriodModels(basePeriodModels);
 
-        periodRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        periodRecyclerView.setAdapter(periodAdapter);
+        recycleView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        recycleView.setAdapter(periodAdapter);
         //[END] old code
 
         periodChooseViewHelpers = new ArrayList<>();
         for (int i = 0; i < basePeriodModels.size(); i++) {
-            @SuppressWarnings("ConstantConditions") View view = LayoutInflater.from(container.getContext()).inflate(R.layout.periode_layout, periodLinLay, false);
+            @SuppressWarnings("ConstantConditions") View view = LayoutInflater.from(container.getContext()).inflate(R.layout.periode_layout, periodLayout, false);
             PeriodChooseViewHelper periodChooseViewHelper = new PeriodChooseViewHelper(view, i);
             periodChooseViewHelper.bindData((PeriodRangeModel) basePeriodModels.get(i));
             periodChooseViewHelper.setPeriodListener(periodListener);
             periodChooseViewHelpers.add(periodChooseViewHelper);
-            periodLinLay.addView(view);
+            periodLayout.addView(view);
         }
         return rootView;
     }
 
     private void saveDate() {
-        if (getActivity() != null && getActivity() instanceof SetDateFragment.SetDate) {
+        if (callback != null) {
             for (int i = 0; i < basePeriodModels.size(); i++) {
                 PeriodRangeModel prm = (PeriodRangeModel) basePeriodModels.get(i);
                 if (prm.isChecked) {
-                    long sDate = prm.startDate;
-                    long eDate = prm.endDate;
-                    ((SetDateFragment.SetDate) getActivity()).returnStartAndEndDate(sDate, eDate, i, DatePickerActivity.PERIOD_TYPE);
+                    callback.onDateSubmitted(i, prm.startDate, prm.endDate);
                 }
             }
-
         }
     }
 }
