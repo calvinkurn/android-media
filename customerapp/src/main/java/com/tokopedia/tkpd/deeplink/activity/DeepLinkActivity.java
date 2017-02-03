@@ -185,6 +185,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     private void initDeepLink() {
         if (uriData != null) {
+            presenter.checkUriLogin(uriData);
             if (presenter.isLandingPageWebView(uriData)) {
                 CommonUtils.dumper("GAv4 Escape HADES webview");
                 presenter.processDeepLinkAction(uriData);

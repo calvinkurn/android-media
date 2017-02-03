@@ -87,6 +87,9 @@
                     android:host="accounts.tokopedia.com"
                     android:scheme="https" />
                 <data
+                    android:host="accounts-staging.tokopedia.com"
+                    android:scheme="https" />
+                <data
                     android:host="apps.tokopedia.com"
                     android:scheme="http" />
                 <data
