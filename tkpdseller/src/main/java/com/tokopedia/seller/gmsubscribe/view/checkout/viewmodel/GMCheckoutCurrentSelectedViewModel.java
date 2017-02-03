@@ -1,5 +1,7 @@
 package com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel;
 
+import com.tokopedia.seller.gmsubscribe.domain.product.model.GMProductDomainModel;
+
 /**
  * Created by sebastianuskh on 1/27/17.
  */
@@ -7,6 +9,12 @@ public class GMCheckoutCurrentSelectedViewModel {
     private String title;
     private String description;
     private String price;
+
+    public GMCheckoutCurrentSelectedViewModel(GMProductDomainModel domainModel) {
+        setTitle(domainModel.getName());
+        setPrice(domainModel.getNotes());
+        setPrice(domainModel.getPrice());
+    }
 
     public String getTitle() {
         return title;

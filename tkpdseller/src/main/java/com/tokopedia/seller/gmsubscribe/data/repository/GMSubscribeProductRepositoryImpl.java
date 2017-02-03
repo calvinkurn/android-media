@@ -3,6 +3,7 @@ package com.tokopedia.seller.gmsubscribe.data.repository;
 import com.tokopedia.seller.gmsubscribe.data.factory.GMSubscribeProductFactory;
 import com.tokopedia.seller.gmsubscribe.data.source.product.GMSubscribeProductSource;
 import com.tokopedia.seller.gmsubscribe.domain.product.GMSubscribeProductRepository;
+import com.tokopedia.seller.gmsubscribe.domain.product.model.GMAutoSubscribeDomainModel;
 import com.tokopedia.seller.gmsubscribe.domain.product.model.GMProductDomainModel;
 
 import java.util.List;
@@ -31,4 +32,17 @@ public class GMSubscribeProductRepositoryImpl implements GMSubscribeProductRepos
         GMSubscribeProductSource gmSubscribeProductSource = gmSubscribeProductFactory.createGMSubscribeProductSource();
         return gmSubscribeProductSource.getExtendProductSelection();
     }
+
+    @Override
+    public Observable<GMProductDomainModel> getCurrentProductSelectedData(Integer productId) {
+        GMSubscribeProductSource gmSubscribeProductSource = gmSubscribeProductFactory.createGMSubscribeProductSource();
+        return gmSubscribeProductSource.getCurrentProductSelectedData(productId);
+    }
+
+    @Override
+    public Observable<GMAutoSubscribeDomainModel> getExtendProductSelectedData(Integer autoSubscribeProductId, Integer productId) {
+        GMSubscribeProductSource gmSubscribeProductSource = gmSubscribeProductFactory.createGMSubscribeProductSource();
+        return gmSubscribeProductSource.getExtendProductSelectedData(autoSubscribeProductId, productId);
+    }
+
 }

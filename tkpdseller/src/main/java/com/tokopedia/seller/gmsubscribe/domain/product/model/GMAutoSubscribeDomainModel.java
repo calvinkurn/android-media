@@ -1,22 +1,13 @@
-package com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel;
-
-import com.tokopedia.seller.gmsubscribe.domain.product.model.GMAutoSubscribeDomainModel;
+package com.tokopedia.seller.gmsubscribe.domain.product.model;
 
 /**
  * Created by sebastianuskh on 1/30/17.
  */
-public class GMAutoSubscribeViewModel {
+public class GMAutoSubscribeDomainModel {
     private String title;
     private String price;
     private String nextAutoSubscribe;
     private String paymentMethod;
-
-    public GMAutoSubscribeViewModel(GMAutoSubscribeDomainModel gmAutoSubscribeDomainModel) {
-        setTitle(gmAutoSubscribeDomainModel.getTitle());
-        setPrice(gmAutoSubscribeDomainModel.getPrice());
-        setNextAutoSubscribe(gmAutoSubscribeDomainModel.getNextAutoSubscribe());
-        setPaymentMethod(gmAutoSubscribeDomainModel.getPaymentMethod());
-    }
 
     public void setTitle(String title) {
         this.title = title;
@@ -48,5 +39,12 @@ public class GMAutoSubscribeViewModel {
 
     public String getPaymentMethod() {
         return paymentMethod;
+    }
+
+    public static GMAutoSubscribeDomainModel createFromGenericModel(GMProductDomainModel domainModel) {
+        GMAutoSubscribeDomainModel autoSubscribeDomainModel = new GMAutoSubscribeDomainModel();
+        autoSubscribeDomainModel.setTitle(domainModel.getName());
+        autoSubscribeDomainModel.setPrice(domainModel.getPrice());
+        return autoSubscribeDomainModel;
     }
 }

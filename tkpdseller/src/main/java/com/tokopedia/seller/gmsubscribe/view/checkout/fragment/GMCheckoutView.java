@@ -1,6 +1,7 @@
 package com.tokopedia.seller.gmsubscribe.view.checkout.fragment;
 
 
+import com.tokopedia.seller.common.presentation.CustomerView;
 import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GMAutoSubscribeViewModel;
 import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GMCheckoutCurrentSelectedViewModel;
 import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GMCheckoutViewModel;
@@ -10,7 +11,7 @@ import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GMVoucherViewMod
  * Created by sebastianuskh on 1/27/17.
  */
 
-public interface GMCheckoutView {
+public interface GMCheckoutView extends CustomerView {
     void renderCurrentSelectedProduct(GMCheckoutCurrentSelectedViewModel gmCheckoutCurrentSelectedViewModel);
 
     void updateSelectedProduct(int selectedProduct);
