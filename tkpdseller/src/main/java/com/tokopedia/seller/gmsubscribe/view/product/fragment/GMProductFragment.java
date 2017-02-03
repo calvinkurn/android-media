@@ -51,7 +51,11 @@ public abstract class GMProductFragment
     @OnClick(R2.id.button_select_product)
     void confirmSelection() {
         Log.d(TAG, "Selected data now is : " + currentSelectedProductId);
-        listener.finishProductSelection(currentSelectedProductId, returnType);
+        if(currentSelectedProductId != UNDEFINED_DEFAULT_SELECTED) {
+            listener.finishProductSelection(currentSelectedProductId, returnType);
+        } else {
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.gm_subscribe_no_product_selected));
+        }
     }
 
     private CompositeSubscription subscriber;
@@ -80,6 +84,7 @@ public abstract class GMProductFragment
         super.onResume();
         listener.setDrawer(false);
         listener.changeActionBarTitle(getTitle());
+        getPackage();
     }
 
     @Override
@@ -157,8 +162,10 @@ public abstract class GMProductFragment
 
     @Override
     protected void setActionVar() {
-        getPackage();
+
     }
+
+
 
     @Override
     public void onPause() {
@@ -179,7 +186,7 @@ public abstract class GMProductFragment
             public void onRetryClicked() {
                 getPackage();
             }
-        });
+        }).showRetrySnackbar();
     }
 
     @Override

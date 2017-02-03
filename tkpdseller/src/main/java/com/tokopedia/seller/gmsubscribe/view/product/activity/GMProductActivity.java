@@ -24,7 +24,6 @@ public class GMProductActivity extends BasePresenterActivity implements GMProduc
     public static final int FIRST_SELECT_AUTO_PRODUCT = 12;
     public static final int CHANGE_SELECT_AUTO_PRODUCT = 13;
     public static final String SELECT_PRODUCT_TAG = "SELECT_PRODUCT_TAG";
-    public static final String CURRENT_SELECTION = "CURRENT_SELECTION";
     public static final int UNSELECTED = -1;
     public static final String SELECTED_PRODUCT = "SELECTED_PRODUCT";
 
@@ -74,7 +73,7 @@ public class GMProductActivity extends BasePresenterActivity implements GMProduc
     @Override
     protected void setupBundlePass(Bundle bundle) {
         selectionType = bundle.getInt(PRODUCT_SELECTION_TYPE);
-        currentSelected = bundle.getInt(CURRENT_SELECTION, UNSELECTED);
+        currentSelected = bundle.getInt(SELECTED_PRODUCT, UNSELECTED);
     }
 
     @Override

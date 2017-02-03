@@ -197,6 +197,7 @@
     <string name="gmsubscribe_voucher_code_title">Gunakan Voucher Tokopedia</string>
     <string name="gmsubscribe_voucher_hint">Kode Voucher</string>
     <string name="gmsubscribe_voucher_code_check_button">Cek</string>
+    <string name="gm_subscribe_no_product_selected">Silahkan Pilih Produk Terlebih Dahulu</string>
 
 
 </resources>

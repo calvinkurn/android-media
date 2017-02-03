@@ -191,7 +191,7 @@ public class GMCheckoutFragment
             public void onRetryClicked() {
                 presenter.getCurrentSelectedProduct(selectedProduct);
             }
-        });
+        }).showRetrySnackbar();
     }
 
     @Override
@@ -201,12 +201,17 @@ public class GMCheckoutFragment
             public void onRetryClicked() {
                 presenter.getExtendSelectedProduct(selectedProduct, autoExtendSelectedProduct);
             }
-        });
+        }).showRetrySnackbar();
     }
 
     @Override
     public void failedCheckout() {
-        NetworkErrorHelper.showSnackbar(getActivity());
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                goToCheckout();
+            }
+        });
     }
 
     @Override
@@ -233,13 +238,17 @@ public class GMCheckoutFragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(codeVoucherViewHolder.isVoucherOpen()){
-                    presenter.checkoutWithVoucherCheckGMSubscribe(selectedProduct, autoExtendSelectedProduct, codeVoucherViewHolder.getVoucherCode());
-                } else {
-                    presenter.checkoutGMSubscribe(selectedProduct, autoExtendSelectedProduct, codeVoucherViewHolder.getVoucherCode());
-                }
+                goToCheckout();
             }
         };
+    }
+
+    private void goToCheckout() {
+        if(codeVoucherViewHolder.isVoucherOpen()){
+            presenter.checkoutWithVoucherCheckGMSubscribe(selectedProduct, autoExtendSelectedProduct, codeVoucherViewHolder.getVoucherCode());
+        } else {
+            presenter.checkoutGMSubscribe(selectedProduct, autoExtendSelectedProduct, codeVoucherViewHolder.getVoucherCode());
+        }
     }
 
     @Override
