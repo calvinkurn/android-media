@@ -1,5 +1,7 @@
 package com.tokopedia.seller.gmsubscribe.view.checkout.presenter;
 
+import android.util.Log;
+
 import com.tokopedia.seller.common.presentation.BasePresenter;
 import com.tokopedia.seller.gmsubscribe.domain.cart.exception.GMVoucherCheckException;
 import com.tokopedia.seller.gmsubscribe.domain.cart.interactor.CheckGMSubscribeVoucherUseCase;
@@ -25,6 +27,7 @@ import rx.Subscriber;
 
 public class GMCheckoutPresenterImpl extends BasePresenter<GMCheckoutView> implements GMCheckoutPresenter{
 
+    private static final String TAG = "Checkout Presenter";
     private final GetCurrentSelectedProductUseCase getCurrentSelectedProduct;
     private final GetAutoSubscribeSelectedProductUseCase getAutoSubscribeSelectedProductUseCase;
     private final CheckGMSubscribeVoucherUseCase checkGMSubscribeVoucherUseCase;
@@ -84,6 +87,16 @@ public class GMCheckoutPresenterImpl extends BasePresenter<GMCheckoutView> imple
         );
     }
 
+    @Override
+    public void detachView() {
+        super.detachView();
+        getCurrentSelectedProduct.unsubscribe();
+        getAutoSubscribeSelectedProductUseCase.unsubscribe();
+        checkGMSubscribeVoucherUseCase.unsubscribe();
+        checkoutGMSubscribeUseCase.unsubscribe();
+        checkoutGMSubscribeWithVoucherCheckUseCase.unsubscribe();
+    }
+
     private class GetCurrentSelectedProductSubscriber extends Subscriber<GMProductDomainModel> {
         @Override
         public void onCompleted() {
@@ -92,6 +105,7 @@ public class GMCheckoutPresenterImpl extends BasePresenter<GMCheckoutView> imple
 
         @Override
         public void onError(Throwable e) {
+            Log.e(TAG, "Error");
 
         }
 
@@ -109,7 +123,7 @@ public class GMCheckoutPresenterImpl extends BasePresenter<GMCheckoutView> imple
 
         @Override
         public void onError(Throwable e) {
-
+            Log.e(TAG, "Error");
         }
 
         @Override
@@ -145,7 +159,7 @@ public class GMCheckoutPresenterImpl extends BasePresenter<GMCheckoutView> imple
 
         @Override
         public void onError(Throwable e) {
-
+            Log.e(TAG, "Error");
         }
 
         @Override

@@ -14,7 +14,11 @@ import rx.Observable;
  */
 
 public class GMSubscribeCartRepositoryImpl implements GMSubscribeCartRepository {
-    private GMSubscribeCartFactory gmSubscribeCartFactory;
+    private final GMSubscribeCartFactory gmSubscribeCartFactory;
+
+    public GMSubscribeCartRepositoryImpl(GMSubscribeCartFactory gmSubscribeCartFactory) {
+        this.gmSubscribeCartFactory = gmSubscribeCartFactory;
+    }
 
     @Override
     public Observable<GMVoucherCheckDomainModel> checkVoucher(Integer selectedProduct, String voucherCode) {

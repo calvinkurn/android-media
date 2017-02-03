@@ -9,7 +9,9 @@ import android.widget.Button;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.gmsubscribe.di.GMCheckoutDependencyInjection;
 import com.tokopedia.seller.gmsubscribe.view.checkout.presenter.GMCheckoutPresenter;
+import com.tokopedia.seller.gmsubscribe.view.checkout.presenter.GMCheckoutPresenterImpl;
 import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GMAutoSubscribeViewModel;
 import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GMCheckoutCurrentSelectedViewModel;
 import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GMCheckoutViewModel;
@@ -27,7 +29,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by sebastianuskh on 2/3/17.
  */
 public class GMCheckoutFragment
-        extends BasePresenterFragment<GMCheckoutPresenter>
+        extends BasePresenterFragment<GMCheckoutPresenterImpl>
         implements GMCheckoutView,
         CurrentSelectedProductViewHolderCallback,
         AutoSubscribeViewHolderCallback,
@@ -83,7 +85,7 @@ public class GMCheckoutFragment
     @Override
     protected void initialPresenter() {
         subscription = new CompositeSubscription();
-
+        presenter = GMCheckoutDependencyInjection.createPresenter();
     }
 
     @Override
@@ -113,7 +115,14 @@ public class GMCheckoutFragment
         codeVoucherViewHolder = new CodeVoucherViewHolder(this, view);
         buttonContinueCheckout = (Button) view.findViewById(R.id.button_checkout_gm_subscribe);
         buttonContinueCheckout.setOnClickListener(getContinueCheckoutListener());
+        presenter.attachView(this);
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
     }
 
     @Override

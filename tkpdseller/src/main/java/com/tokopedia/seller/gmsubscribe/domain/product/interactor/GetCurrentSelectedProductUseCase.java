@@ -12,7 +12,7 @@ import rx.Observable;
 /**
  * Created by sebastianuskh on 2/3/17.
  */
-public abstract class GetCurrentSelectedProductUseCase extends UseCase<GMProductDomainModel> {
+public class GetCurrentSelectedProductUseCase extends UseCase<GMProductDomainModel> {
     public static final String PRODUCT_SELECTED_ID = "PRODUCT_SELECTED_ID";
     public static final int UNDEFINED_SELECTED = -1;
 
