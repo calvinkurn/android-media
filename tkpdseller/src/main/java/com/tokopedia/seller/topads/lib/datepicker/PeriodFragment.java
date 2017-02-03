@@ -102,8 +102,8 @@ public class PeriodFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_date_picker_period, container, false);
 
-        recycleView = (RecyclerView) rootView.findViewById(R.id.period_recyclerview);
-        submitButton = (Button) rootView.findViewById(R.id.save_date);
+        recycleView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        submitButton = (Button) rootView.findViewById(R.id.button_submit);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -153,12 +153,13 @@ public class PeriodFragment extends Fragment {
     }
 
     private void saveDate() {
-        if (callback != null) {
-            for (int i = 0; i < basePeriodModels.size(); i++) {
-                PeriodRangeModel prm = (PeriodRangeModel) basePeriodModels.get(i);
-                if (prm.isChecked) {
-                    callback.onDateSubmitted(i, prm.startDate, prm.endDate);
-                }
+        if (callback == null) {
+            return;
+        }
+        for (int i = 0; i < basePeriodModels.size(); i++) {
+            PeriodRangeModel prm = (PeriodRangeModel) basePeriodModels.get(i);
+            if (prm.isChecked) {
+                callback.onDateSubmitted(i, prm.startDate, prm.endDate);
             }
         }
     }

@@ -36,9 +36,9 @@ public class DatePickerActivity extends TActivity {
     public static final String START_DATE = "START_DATE";
     public static final String END_DATE = "END_DATE";
 
-    public static final int RESULT_CODE = 1;
     public static final int SELECTION_TYPE_PERIOD_DATE = 0;
     public static final int SELECTION_TYPE_CUSTOM_DATE = 1;
+    public static final int RESULT_CODE = 1;
 
     private ViewPager viewPager;
     private TabLayout tabLayout;
@@ -51,7 +51,7 @@ public class DatePickerActivity extends TActivity {
     private long minStartDate;
     private long maxStartDate;
     private int maxDateRange;
-    private boolean isGoldMerchant;
+    private boolean goldMerchant;
 
     private ArrayList<PeriodRangeModel> periodRangeModelList;
     private PeriodFragment periodFragment;
@@ -110,11 +110,11 @@ public class DatePickerActivity extends TActivity {
 
     private void fetchIntent(Bundle extras) {
         if (extras != null) {
-            isGoldMerchant = extras.getBoolean(IS_GOLD_MERCHANT, false);
-            selectionPeriod = extras.getInt(SELECTION_PERIOD, 1);
-            selectionType = extras.getInt(SELECTION_TYPE, SELECTION_TYPE_PERIOD_DATE);
             startDate = extras.getLong(CUSTOM_START_DATE, -1);
             endDate = extras.getLong(CUSTOM_END_DATE, -1);
+            selectionPeriod = extras.getInt(SELECTION_PERIOD, 1);
+            selectionType = extras.getInt(SELECTION_TYPE, SELECTION_TYPE_PERIOD_DATE);
+            goldMerchant = extras.getBoolean(IS_GOLD_MERCHANT, false);
             minStartDate = extras.getLong(MIN_START_DATE, -1);
             maxStartDate = extras.getLong(MAX_END_DATE, -1);
             maxDateRange = extras.getInt(MAX_DATE_RANGE, -1);

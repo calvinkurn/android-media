@@ -28,13 +28,14 @@ public class CustomDateFragment extends Fragment {
     }
 
     private RecyclerView recyclerView;
+    private Button submitButton;
+
     private PeriodAdapter periodAdapter;
     private long startDate;
     private long endDate;
     private long minStartDate;
     private long maxEndDate;
     private int maxDateRange;
-    private Button saveButton;
     private Callback callback;
 
     public void setCallback(Callback callback) {
@@ -64,11 +65,11 @@ public class CustomDateFragment extends Fragment {
             maxEndDate = bundle.getLong(DatePickerActivity.MAX_END_DATE, -1);
             maxDateRange = bundle.getInt(DatePickerActivity.MAX_DATE_RANGE, -1);
         }
-        View rootView = inflater.inflate(R.layout.fragment_date_picker_period, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_date_picker_custom, container, false);
 
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.period_recyclerview);
-        saveButton = (Button) rootView.findViewById(R.id.save_date);
-        saveButton.setOnClickListener(new View.OnClickListener() {
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        submitButton = (Button) rootView.findViewById(R.id.button_submit);
+        submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 saveDate();
