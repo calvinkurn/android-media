@@ -24,9 +24,7 @@ import java.util.List;
  * Created by Nathaniel on 1/27/2017.
  */
 
-public abstract class TopAdsFilterActivity extends BasePresenterActivity implements TopAdsFilterListFragment.Callback {
-
-    public static final String FILTER_CONTENT_LIST = "FILTER_CONTENT_LIST";
+public abstract class TopAdsFilterActivity extends BasePresenterActivity implements TopAdsFilterListFragment.Callback, TopAdsFilterContentFragment.Callback {
 
     private TopAdsFilterListFragment topAdsFilterListFragment;
     private List<TopAdsFilterContentFragment> filterContentFragmentList;
@@ -98,6 +96,7 @@ public abstract class TopAdsFilterActivity extends BasePresenterActivity impleme
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container_filter_content, filterContentFragment);
         fragmentTransaction.commit();
+        filterContentFragment.setCallback(this);
     }
 
     private ArrayList<FilterTitleItem> getFilterTitleItemList() {
@@ -105,9 +104,16 @@ public abstract class TopAdsFilterActivity extends BasePresenterActivity impleme
         for (TopAdsFilterContentFragment filterContentFragment : filterContentFragmentList) {
             FilterTitleItem filterTitleItem = new FilterTitleItem();
             filterTitleItem.setTitle(filterContentFragment.getTitle(this));
+            filterTitleItem.setActive(filterContentFragment.isActive());
             filterTitleItemList.add(filterTitleItem);
         }
         return filterTitleItemList;
+    }
+
+    @Override
+    public void onStatusChanged(boolean active) {
+        int position = topAdsFilterListFragment.getCurrentPosition();
+        topAdsFilterListFragment.setActive(position, active);
     }
 
     @Override

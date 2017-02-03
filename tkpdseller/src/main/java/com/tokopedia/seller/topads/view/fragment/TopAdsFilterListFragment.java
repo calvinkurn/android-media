@@ -13,7 +13,6 @@ import com.tokopedia.seller.topads.model.other.FilterTitleItem;
 import com.tokopedia.seller.topads.view.adapter.TopAdsFilterAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Nathaniel on 1/27/2017.
@@ -27,14 +26,11 @@ public class TopAdsFilterListFragment extends BasePresenterFragment implements T
 
     }
 
-    private static final String EXTRA_TITLE_ITEM_LIST = "EXTRA_TITLE_ITEM_LIST";
-    private static final String EXTRA_ITEM_SELECTED_POSITION = "EXTRA_ITEM_SELECTED_POSITION";
-
     public static TopAdsFilterListFragment createInstance(ArrayList<FilterTitleItem> filterTitleItemList, int selectedPosition) {
         TopAdsFilterListFragment fragment = new TopAdsFilterListFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(EXTRA_TITLE_ITEM_LIST, filterTitleItemList);
-        bundle.putInt(EXTRA_ITEM_SELECTED_POSITION, selectedPosition);
+        bundle.putParcelableArrayList(TopAdsExtraConstant.EXTRA_TITLE_ITEM_LIST, filterTitleItemList);
+        bundle.putInt(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION, selectedPosition);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -86,8 +82,8 @@ public class TopAdsFilterListFragment extends BasePresenterFragment implements T
 
     @Override
     protected void setupArguments(Bundle bundle) {
-        filterTitleItemList = bundle.getParcelableArrayList(EXTRA_TITLE_ITEM_LIST);
-        selectedItem = bundle.getInt(EXTRA_ITEM_SELECTED_POSITION);
+        filterTitleItemList = bundle.getParcelableArrayList(TopAdsExtraConstant.EXTRA_TITLE_ITEM_LIST);
+        selectedItem = bundle.getInt(TopAdsExtraConstant.EXTRA_ITEM_SELECTED_POSITION);
     }
 
     @Override
@@ -103,7 +99,7 @@ public class TopAdsFilterListFragment extends BasePresenterFragment implements T
         recyclerView.setAdapter(adapter);
         adapter.setData(filterTitleItemList);
         adapter.setCallback(this);
-        adapter.selectItem(selectedItem);
+        selectItem(selectedItem);
     }
 
     @Override
@@ -128,9 +124,19 @@ public class TopAdsFilterListFragment extends BasePresenterFragment implements T
         }
     }
 
+    public void setActive(int position, boolean active) {
+        FilterTitleItem filterTitleItem = filterTitleItemList.get(position);
+        filterTitleItem.setActive(active);
+        adapter.notifyItemChanged(position);
+    }
+
     public void selectItem(int position) {
         if (isAdded()) {
             adapter.selectItem(position);
         }
+    }
+
+    public int getCurrentPosition() {
+        return selectedItem;
     }
 }

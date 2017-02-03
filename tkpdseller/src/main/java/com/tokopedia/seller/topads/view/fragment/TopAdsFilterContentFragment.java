@@ -14,9 +14,34 @@ import com.tokopedia.core.app.BasePresenterFragment;
 
 public abstract class TopAdsFilterContentFragment extends BasePresenterFragment {
 
+    public interface Callback {
+
+        void onStatusChanged(boolean active);
+
+    }
+
     public abstract String getTitle(Context context);
 
     public abstract Intent addResult(Intent intent);
+
+    protected Callback callback;
+
+    /**
+     * Sign for title filter list
+     */
+    private boolean active;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
 
     @Override
     protected boolean isRetainInstance() {

@@ -27,7 +27,9 @@ public class TopAdsFilterGroupActivity extends TopAdsFilterActivity {
     @Override
     protected List<TopAdsFilterContentFragment> getFilterContentList() {
         List<TopAdsFilterContentFragment> filterContentFragmentList = new ArrayList<>();
-        filterContentFragmentList.add(TopAdsFilterStatusFragment.createInstance(selectedFilterStatus));
+        TopAdsFilterStatusFragment topAdsFilterStatusFragment = TopAdsFilterStatusFragment.createInstance(selectedFilterStatus);
+        topAdsFilterStatusFragment.setActive(true);
+        filterContentFragmentList.add(topAdsFilterStatusFragment);
         return filterContentFragmentList;
     }
 

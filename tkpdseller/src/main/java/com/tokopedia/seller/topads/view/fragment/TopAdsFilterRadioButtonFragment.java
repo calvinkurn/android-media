@@ -46,5 +46,8 @@ public abstract class TopAdsFilterRadioButtonFragment extends TopAdsFilterConten
     @Override
     public void onItemSelected(RadioButtonItem radioButtonItem, int position) {
         selectedRadioButtonItem = radioButtonItem;
+        if (callback != null) {
+            callback.onStatusChanged(true);
+        }
     }
 }
