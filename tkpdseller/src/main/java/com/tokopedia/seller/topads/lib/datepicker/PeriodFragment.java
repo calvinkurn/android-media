@@ -3,8 +3,6 @@ package com.tokopedia.seller.topads.lib.datepicker;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +26,6 @@ public class PeriodFragment extends Fragment {
 
     }
 
-    private RecyclerView recycleView;
     private Button submitButton;
     private LinearLayout periodLayout;
 
@@ -80,8 +77,6 @@ public class PeriodFragment extends Fragment {
         }
     };
 
-    private PeriodAdapter periodAdapter;
-
     private Callback callback;
 
     public void setCallback(Callback callback) {
@@ -102,47 +97,37 @@ public class PeriodFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_date_picker_period, container, false);
 
-        recycleView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
         submitButton = (Button) rootView.findViewById(R.id.button_submit);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveDate();
+                submitDate();
             }
         });
         periodLayout = (LinearLayout) rootView.findViewById(R.id.period_linlay);
 
-        int lastSelection = 1;
+        int selection = 1;
         Bundle bundle = getArguments();
         if (bundle != null) {
-            lastSelection = bundle.getInt(DatePickerActivity.SELECTION_PERIOD, 1);
+            selection = bundle.getInt(DatePickerActivity.SELECTION_PERIOD, 1);
             periodRangeModelList = bundle.getParcelableArrayList(DatePickerActivity.DATE_PERIOD_LIST);
         }
-
-        //[START] old code
-        periodAdapter = new PeriodAdapter();
 
         basePeriodModels = new ArrayList<>();
         for (PeriodRangeModel periodRangeModel : periodRangeModelList) {
             basePeriodModels.add(periodRangeModel);
         }
 
-        if (lastSelection < basePeriodModels.size()) {
+        if (selection < basePeriodModels.size()) {
             //[START] set last selection
-            PeriodRangeModel periodRangeModel = (PeriodRangeModel) basePeriodModels.get(lastSelection);
+            PeriodRangeModel periodRangeModel = (PeriodRangeModel) basePeriodModels.get(selection);
             periodRangeModel.isChecked = true;
-            basePeriodModels.set(lastSelection, periodRangeModel);
+            basePeriodModels.set(selection, periodRangeModel);
         }
-
-        periodAdapter.setBasePeriodModels(basePeriodModels);
-
-        recycleView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        recycleView.setAdapter(periodAdapter);
-        //[END] old code
 
         periodChooseViewHelpers = new ArrayList<>();
         for (int i = 0; i < basePeriodModels.size(); i++) {
-            @SuppressWarnings("ConstantConditions") View view = LayoutInflater.from(container.getContext()).inflate(R.layout.periode_layout, periodLayout, false);
+            @SuppressWarnings("ConstantConditions") View view = LayoutInflater.from(container.getContext()).inflate(R.layout.item_date_picker_periode, periodLayout, false);
             PeriodChooseViewHelper periodChooseViewHelper = new PeriodChooseViewHelper(view, i);
             periodChooseViewHelper.bindData((PeriodRangeModel) basePeriodModels.get(i));
             periodChooseViewHelper.setPeriodListener(periodListener);
@@ -152,7 +137,7 @@ public class PeriodFragment extends Fragment {
         return rootView;
     }
 
-    private void saveDate() {
+    private void submitDate() {
         if (callback == null) {
             return;
         }

@@ -23,10 +23,10 @@ import java.util.Locale;
 public class PeriodAdapter extends RecyclerView.Adapter {
     private static final Locale locale = new Locale("in", "ID");
     DatePickerRules datePickerRules;
-    List<SetDateFragment.BasePeriodModel> basePeriodModels;
-    DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy", locale);
+    private List<SetDateFragment.BasePeriodModel> basePeriodModels;
+    private DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy", locale);
     private RecyclerView mRecyclerView;
-    SetDateFragment.PeriodListener periodListener = new SetDateFragment.PeriodListener() {
+    private SetDateFragment.PeriodListener periodListener = new SetDateFragment.PeriodListener() {
         @Override
         public void updateCheck(boolean checked, int index) {
             for (int i = 0; i < basePeriodModels.size(); i++) {
@@ -49,16 +49,10 @@ public class PeriodAdapter extends RecyclerView.Adapter {
         }
     };
 
-    @Deprecated
-    public PeriodAdapter() {
-        basePeriodModels = new ArrayList<>();
-    }
-
     public PeriodAdapter(final View itemView, long sDate, long eDate, long minStartDate, long maxEndDate, int maxDateRange) {
         basePeriodModels = new ArrayList<>();
 
         Calendar instance = Calendar.getInstance();
-//            instance.add(Calendar.DATE, -1);
         long tomorrow = instance.getTimeInMillis();
 
         Log.d("MNORMANSYAH", "max limit ## " + dateFormat.format(tomorrow) +
@@ -100,12 +94,10 @@ public class PeriodAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case PeriodRangeModel.TYPE:
-                return new BasePeriodViewHolder(LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.periode_layout, parent, false));
+                return new BasePeriodViewHolder(LayoutInflater.from(parent.getContext()) .inflate(R.layout.item_date_picker_periode, parent, false));
             case StartOrEndPeriodModel.TYPE:
             default:
-                return new CustomDateViewHolder(LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.custom_layout, parent, false));
+                return new CustomDateViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_date_picker_custom, parent, false));
         }
     }
 
