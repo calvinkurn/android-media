@@ -63,6 +63,7 @@ public class AutoSubscribeViewHolder {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
+                    checkbox.setChecked(false);
                     if (callback.isAutoSubscribeUnselected()) {
                         callback.selectAutoSubscribePackageFirstTime();
                     } else {
@@ -77,6 +78,7 @@ public class AutoSubscribeViewHolder {
 
     public void renderAutoSubscribeProduct(GMAutoSubscribeViewModel gmAutoSubscribeViewModel) {
         setShowAutoSubscribeDetail(true);
+        checkbox.setChecked(true);
         renderView(gmAutoSubscribeViewModel);
     }
 

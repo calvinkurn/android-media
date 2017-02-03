@@ -19,4 +19,6 @@ public interface GMProductView extends CustomerView {
     void showProgressDialog();
 
     void dismissProgressDialog();
+
+    void clearPackage();
 }

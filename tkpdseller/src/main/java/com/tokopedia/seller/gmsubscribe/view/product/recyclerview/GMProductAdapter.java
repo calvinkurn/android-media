@@ -90,4 +90,9 @@ public class GMProductAdapter extends BaseLinearRecyclerViewAdapter {
         data.addAll(lists);
         notifyDataSetChanged();
     }
+
+    public void clearDatas() {
+        data.clear();
+        notifyDataSetChanged();
+    }
 }

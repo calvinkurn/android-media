@@ -9,6 +9,7 @@ import java.util.List;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.functions.Func3;
 
 /**
  * Created by sebastianuskh on 2/2/17.
@@ -34,10 +35,15 @@ public class GMSubscribeProductSource {
     }
 
     public Observable<GMAutoSubscribeDomainModel> getExtendProductSelectedData(Integer autoSubscribeProductId, Integer productId) {
-        return getExtendProductSelection()
-                .map(new SelectedProductFinder(autoSubscribeProductId))
-                .map(new ConvertToAutoSubscribeData())
-                .flatMap(new GetNextAutoSubscribeDate(productId));
+        return Observable.zip(
+                getExtendProductSelection().map(new SelectedProductFinder(autoSubscribeProductId)),
+                getCurrentProductSelectedData(productId),
+                getPaymentMethod(),
+                new CombineExtendedProductSelected());
+    }
+
+    public Observable<String> getPaymentMethod() {
+        return gmSubscribeProductListSource.getData().map(new GetPaymentMethod());
     }
 
 
@@ -73,40 +79,22 @@ public class GMSubscribeProductSource {
         }
     }
 
-    private class ConvertToAutoSubscribeData implements Func1<GMProductDomainModel, GMAutoSubscribeDomainModel> {
+    private class GetPaymentMethod implements Func1<GMProductDomainModelGroup, String> {
         @Override
-        public GMAutoSubscribeDomainModel call(GMProductDomainModel domainModel) {
-            return GMAutoSubscribeDomainModel.createFromGenericModel(domainModel);
+        public String call(GMProductDomainModelGroup gmProductDomainModelGroup) {
+            return gmProductDomainModelGroup.getPaymentMethod();
         }
     }
 
-    private class GetNextAutoSubscribeDate implements Func1<GMAutoSubscribeDomainModel, Observable<GMAutoSubscribeDomainModel>> {
-        private final Integer currentProductId;
-
-        private GetNextAutoSubscribeDate(Integer currentProductId) {
-            this.currentProductId = currentProductId;
-        }
-
+    private class CombineExtendedProductSelected implements Func3<GMProductDomainModel, GMProductDomainModel, String, GMAutoSubscribeDomainModel> {
         @Override
-        public Observable<GMAutoSubscribeDomainModel> call(GMAutoSubscribeDomainModel gmAutoSubscribeDomainModel) {
-            return getCurrentProductSelectedData(currentProductId)
-                    .map(new SetDateToAutoSubscribeDomainModel(gmAutoSubscribeDomainModel));
-        }
-
-        private class SetDateToAutoSubscribeDomainModel implements Func1<GMProductDomainModel, GMAutoSubscribeDomainModel> {
-            private final GMAutoSubscribeDomainModel autoSubscribeDomainModel;
-
-            public SetDateToAutoSubscribeDomainModel(GMAutoSubscribeDomainModel autoSubscribeDomainModel) {
-                this.autoSubscribeDomainModel = autoSubscribeDomainModel;
-            }
-
-            @Override
-            public GMAutoSubscribeDomainModel call(GMProductDomainModel domainModel) {
-                autoSubscribeDomainModel.setNextAutoSubscribe(domainModel.getNextInv());
-                return autoSubscribeDomainModel;
-            }
+        public GMAutoSubscribeDomainModel call(GMProductDomainModel autoSubscribeDomainModel, GMProductDomainModel currentProductDomainModel, String paymentMethod) {
+            GMAutoSubscribeDomainModel resultDomainModel = new GMAutoSubscribeDomainModel();
+            resultDomainModel.setTitle(autoSubscribeDomainModel.getName());
+            resultDomainModel.setPrice(autoSubscribeDomainModel.getPrice());
+            resultDomainModel.setNextAutoSubscribe(currentProductDomainModel.getNextInv());
+            resultDomainModel.setPaymentMethod(paymentMethod);
+            return resultDomainModel;
         }
     }
-
-
 }

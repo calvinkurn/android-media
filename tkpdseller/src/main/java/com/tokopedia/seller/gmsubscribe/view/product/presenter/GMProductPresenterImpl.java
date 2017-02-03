@@ -28,6 +28,7 @@ public class GMProductPresenterImpl extends BasePresenter<GMProductView> impleme
     @Override
     public void getCurrentPackageSelection() {
         checkViewAttached();
+        getView().clearPackage();
         getView().showProgressDialog();
         getGMSubscribeCurrentProductUseCase.execute(RequestParams.EMPTY, new ProductListSubscriber());
     }

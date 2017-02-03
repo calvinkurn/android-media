@@ -84,7 +84,6 @@ public abstract class GMProductFragment
         super.onResume();
         listener.setDrawer(false);
         listener.changeActionBarTitle(getTitle());
-        getPackage();
     }
 
     @Override
@@ -162,10 +161,8 @@ public abstract class GMProductFragment
 
     @Override
     protected void setActionVar() {
-
+        getPackage();
     }
-
-
 
     @Override
     public void onPause() {
@@ -207,6 +204,11 @@ public abstract class GMProductFragment
     @Override
     public Integer getSelectedProductId(){
         return currentSelectedProductId;
+    }
+
+    @Override
+    public void clearPackage() {
+        adapter.clearDatas();
     }
 
     protected abstract String getTitle();
