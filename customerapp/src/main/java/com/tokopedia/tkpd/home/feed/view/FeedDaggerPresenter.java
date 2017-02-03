@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.BasePresenter;
+import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.tkpd.home.feed.domain.interactor.GetAllFeedDataPageUseCase;
 import com.tokopedia.tkpd.home.feed.domain.interactor.GetDataFeedCacheUseCase;
@@ -19,7 +19,7 @@ import javax.inject.Inject;
  * @author Kulomady on 12/15/16.
  */
 
-public class FeedPresenter extends BasePresenter<FeedContract.View>
+public class FeedDaggerPresenter extends BaseDaggerPresenter<FeedContract.View>
         implements FeedContract.Presenter {
 
     private GetAllFeedDataPageUseCase feedDataPageUseCase;
@@ -28,9 +28,9 @@ public class FeedPresenter extends BasePresenter<FeedContract.View>
     private PagingHandler pagingHandler;
 
     @Inject
-    public FeedPresenter(GetAllFeedDataPageUseCase feedDataPageUseCase,
-                         GetDataFeedCacheUseCase feedDataCachePageUseCase,
-                         LoadMoreFeedUseCase loadMoreFeedUseCase) {
+    public FeedDaggerPresenter(GetAllFeedDataPageUseCase feedDataPageUseCase,
+                               GetDataFeedCacheUseCase feedDataCachePageUseCase,
+                               LoadMoreFeedUseCase loadMoreFeedUseCase) {
 
         this.feedDataPageUseCase = feedDataPageUseCase;
         this.feedDataCachePageUseCase = feedDataCachePageUseCase;

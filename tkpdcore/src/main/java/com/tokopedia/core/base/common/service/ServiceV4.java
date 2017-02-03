@@ -12,8 +12,6 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
 import rx.Observable;
 
-import static com.tokopedia.core.network.apiservices.etc.apis.home.ProductFeedApi.GET_LIST_FAVE_SHOP_ID;
-
 /**
  * @author Kulomady on 12/9/16.
  */
@@ -21,15 +19,16 @@ import static com.tokopedia.core.network.apiservices.etc.apis.home.ProductFeedAp
 public interface ServiceV4 {
 
     @FormUrlEncoded
-    @POST(GET_LIST_FAVE_SHOP_ID)
+    @POST(TkpdBaseURL.Etc.PATH_GET_LIST_FAVE_SHOP_ID)
     Observable<Response<GetListFaveShopIdResponse>> getListFaveShopId(
             @FieldMap Map<String, String> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.Etc.URL_HOME + TkpdBaseURL.Etc.PATH_GET_WISHLIST)
+    @POST(TkpdBaseURL.Etc.PATH_GET_WISHLIST)
     Observable<Response<String>> getWishlist(@FieldMap TKPDMapParam<String, String> param);
 
+
     @FormUrlEncoded
-    @POST(TkpdBaseURL.Etc.URL_HOME + TkpdBaseURL.Etc.PATH_GET_FAVORITE_SHOP)
+    @POST(TkpdBaseURL.Etc.PATH_GET_FAVORITE_SHOP)
     Observable<Response<String>> getFavoriteShop(@FieldMap Map<String, String> params);
 }

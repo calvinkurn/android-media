@@ -59,7 +59,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     LinearLayout mainContentLinearLayout;
 
     @Inject
-    FeedPresenter feedPresenter;
+    FeedDaggerPresenter feedPresenter;
 
     private GridLayoutManager gridLayoutManager;
     private DataFeedAdapter adapter;
