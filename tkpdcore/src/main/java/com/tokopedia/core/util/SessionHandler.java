@@ -14,8 +14,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.crashlytics.android.Crashlytics;
-import com.facebook.login.LoginManager;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -256,7 +254,6 @@ public class SessionHandler {
                 SessionHandler.setGTMLoginID(context,SessionHandler.getLoginID(context));
                 return SessionHandler.getLoginID(context);
             }else{
-                CommonUtils.dumper("GAv4 Anomali user id 0");
                 return "";
             }
 
@@ -272,13 +269,13 @@ public class SessionHandler {
 
     public static void setShopDomain(Context context, String domain) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        sharedPrefs.edit().putString("SHOP_DOMAIN", domain).apply();
+        sharedPrefs.edit().putString(SHOP_DOMAIN, domain).apply();
     }
 
     public static String getShopDomain(Context context) {
         String domain = null;
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        domain = sharedPrefs.getString("SHOP_DOMAIN", "");
+        domain = sharedPrefs.getString(SHOP_DOMAIN, "");
         return domain;
     }
 
