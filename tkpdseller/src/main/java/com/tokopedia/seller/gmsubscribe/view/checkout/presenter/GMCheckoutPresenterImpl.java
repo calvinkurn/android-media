@@ -49,6 +49,7 @@ public class GMCheckoutPresenterImpl extends BasePresenter<GMCheckoutView> imple
 
     @Override
     public void getCurrentSelectedProduct(int productId) {
+        getView().showProgressDialog();
         getCurrentSelectedProduct.execute(
                 GetCurrentSelectedProductUseCase.createRequestParams(productId),
                 new GetCurrentSelectedProductSubscriber()
@@ -57,6 +58,7 @@ public class GMCheckoutPresenterImpl extends BasePresenter<GMCheckoutView> imple
 
     @Override
     public void getExtendSelectedProduct(int currentProductId, int autoSubscribeProductId) {
+        getView().showProgressDialog();
         getAutoSubscribeSelectedProductUseCase.execute(
                 GetAutoSubscribeSelectedProductUseCase.createRequestParams(currentProductId, autoSubscribeProductId),
                 new GetAutoSubcribeSelectedProductSubscriber()
@@ -65,6 +67,7 @@ public class GMCheckoutPresenterImpl extends BasePresenter<GMCheckoutView> imple
 
     @Override
     public void checkVoucherCode(String voucherCode, Integer selectedProduct) {
+        getView().showProgressDialog();
         checkGMSubscribeVoucherUseCase.execute(
                 CheckGMSubscribeVoucherUseCase.createRequestParams(selectedProduct, voucherCode),
                 new GetCheckGMSubscribeVoucherCodeSubscriber()
@@ -73,6 +76,7 @@ public class GMCheckoutPresenterImpl extends BasePresenter<GMCheckoutView> imple
 
     @Override
     public void checkoutGMSubscribe(Integer selectedProduct, Integer autoExtendSelectedProduct, String voucherCode) {
+        getView().showProgressDialog();
         checkoutGMSubscribeUseCase.execute(
                 CheckoutGMSubscribeUseCase.generateParams(selectedProduct, autoExtendSelectedProduct, voucherCode),
                 new CheckoutGMSubscribeSubsriber()
@@ -81,6 +85,7 @@ public class GMCheckoutPresenterImpl extends BasePresenter<GMCheckoutView> imple
 
     @Override
     public void checkoutWithVoucherCheckGMSubscribe(Integer selectedProduct, Integer autoExtendSelectedProduct, String voucherCode) {
+        getView().showProgressDialog();
         checkoutGMSubscribeWithVoucherCheckUseCase.execute(
                 CheckoutGMSubscribeUseCase.generateParams(selectedProduct, autoExtendSelectedProduct, voucherCode),
                 new CheckoutGMSubscribeWithVoucherCheckSubscriber()
@@ -106,11 +111,13 @@ public class GMCheckoutPresenterImpl extends BasePresenter<GMCheckoutView> imple
         @Override
         public void onError(Throwable e) {
             Log.e(TAG, "Error");
-
+            getView().dismissProgressDialog();
+            getView().failedGetCurrentProduct();
         }
 
         @Override
         public void onNext(GMProductDomainModel gmProductDomainModel) {
+            getView().dismissProgressDialog();
             getView().renderCurrentSelectedProduct(new GMCheckoutCurrentSelectedViewModel(gmProductDomainModel));
         }
     }
@@ -124,10 +131,13 @@ public class GMCheckoutPresenterImpl extends BasePresenter<GMCheckoutView> imple
         @Override
         public void onError(Throwable e) {
             Log.e(TAG, "Error");
+            getView().dismissProgressDialog();
+            getView().failedGetAutoSubscribeProduct();
         }
 
         @Override
         public void onNext(GMAutoSubscribeDomainModel gmAutoSubscribeDomainModel) {
+            getView().dismissProgressDialog();
             getView().renderAutoSubscribeProduct(new GMAutoSubscribeViewModel(gmAutoSubscribeDomainModel));
         }
     }
@@ -140,6 +150,7 @@ public class GMCheckoutPresenterImpl extends BasePresenter<GMCheckoutView> imple
 
         @Override
         public void onError(Throwable e) {
+            getView().dismissProgressDialog();
             if(e instanceof GMVoucherCheckException){
                 getView().renderVoucherView(GMVoucherViewModel.generateClassWithError(e.getMessage()));
             }
@@ -147,6 +158,7 @@ public class GMCheckoutPresenterImpl extends BasePresenter<GMCheckoutView> imple
 
         @Override
         public void onNext(GMVoucherCheckDomainModel gmVoucherCheckDomainModel) {
+            getView().dismissProgressDialog();
             getView().renderVoucherView(GMVoucherViewModel.mapFromDomain(gmVoucherCheckDomainModel));
         }
     }
@@ -160,10 +172,13 @@ public class GMCheckoutPresenterImpl extends BasePresenter<GMCheckoutView> imple
         @Override
         public void onError(Throwable e) {
             Log.e(TAG, "Error");
+            getView().dismissProgressDialog();
+            getView().failedCheckout();
         }
 
         @Override
         public void onNext(GMCheckoutDomainModel gmCheckoutDomainModel) {
+            getView().dismissProgressDialog();
             getView().goToDynamicPayment(GMCheckoutViewModel.mapFromDomain(gmCheckoutDomainModel));
         }
     }
@@ -176,13 +191,17 @@ public class GMCheckoutPresenterImpl extends BasePresenter<GMCheckoutView> imple
 
         @Override
         public void onError(Throwable e) {
+            getView().dismissProgressDialog();
             if(e instanceof GMVoucherCheckException){
                 getView().renderVoucherView(GMVoucherViewModel.generateClassWithError(e.getMessage()));
+            } else {
+                getView().showGenericError();
             }
         }
 
         @Override
         public void onNext(GMCheckoutDomainModel gmCheckoutDomainModel) {
+            getView().dismissProgressDialog();
             getView().goToDynamicPayment(GMCheckoutViewModel.mapFromDomain(gmCheckoutDomainModel));
         }
     }

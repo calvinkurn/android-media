@@ -8,7 +8,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
@@ -59,6 +61,7 @@ public abstract class GMProductFragment
     private RecyclerView.LayoutManager layoutManager;
     private GMProductAdapter adapter;
     private GMProductFragmentListener listener;
+    private TkpdProgressDialog progressDialog;
 
     public static GMProductFragment createFragment(GMProductFragment fragment,
                                                    String buttonString,
@@ -139,6 +142,7 @@ public abstract class GMProductFragment
         recyclerView.setAdapter(adapter);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
+        progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.MAIN_PROGRESS);
     }
 
     @Override
@@ -169,8 +173,28 @@ public abstract class GMProductFragment
     }
 
     @Override
+    public void errorGetProductList() {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                getPackage();
+            }
+        });
+    }
+
+    @Override
     public void selectedProductId(Integer selectedProductId){
         currentSelectedProductId = selectedProductId;
+    }
+
+    @Override
+    public void showProgressDialog() {
+        progressDialog.showDialog();
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        progressDialog.dismiss();
     }
 
     @Override

@@ -28,12 +28,14 @@ public class GMProductPresenterImpl extends BasePresenter<GMProductView> impleme
     @Override
     public void getCurrentPackageSelection() {
         checkViewAttached();
+        getView().showProgressDialog();
         getGMSubscribeCurrentProductUseCase.execute(RequestParams.EMPTY, new ProductListSubscriber());
     }
 
     @Override
     public void getExtendPackageSelection() {
         checkViewAttached();
+        getView().showProgressDialog();
         getGMSubscribeExtendProductUseCase.execute(RequestParams.EMPTY, new ProductListSubscriber());
     }
 
@@ -54,11 +56,14 @@ public class GMProductPresenterImpl extends BasePresenter<GMProductView> impleme
         @Override
         public void onError(Throwable e) {
             Log.e(TAG, "error here");
+            getView().dismissProgressDialog();
+            getView().errorGetProductList();
         }
 
         @Override
         public void onNext(List<GMProductDomainModel> gmProductDomainModels) {
             Log.d(TAG, "Present the data");
+            getView().dismissProgressDialog();
             if(isViewAttached()) {
                 List<GMProductViewModel> viewModels = new ArrayList<>();
                 for (GMProductDomainModel domainModel : gmProductDomainModels) {

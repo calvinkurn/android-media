@@ -23,4 +23,16 @@ public interface GMCheckoutView extends CustomerView {
     void renderVoucherView(GMVoucherViewModel gmVoucherViewModel);
 
     void goToDynamicPayment(GMCheckoutViewModel gmCheckoutDomainModel);
+
+    void failedGetCurrentProduct();
+
+    void failedGetAutoSubscribeProduct();
+
+    void failedCheckout();
+
+    void showProgressDialog();
+
+    void dismissProgressDialog();
+
+    void showGenericError();
 }

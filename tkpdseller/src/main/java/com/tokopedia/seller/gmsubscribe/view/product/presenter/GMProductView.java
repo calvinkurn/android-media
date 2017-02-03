@@ -13,4 +13,10 @@ import java.util.List;
 public interface GMProductView extends CustomerView {
 
     void renderProductList(List<GMProductViewModel> gmProductDomainModels);
+
+    void errorGetProductList();
+
+    void showProgressDialog();
+
+    void dismissProgressDialog();
 }

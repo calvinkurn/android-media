@@ -72,14 +72,36 @@ public class SessionAuthInterceptor implements Interceptor {
     protected void generateHmacAuthRequest(Request originRequest, Request.Builder newRequest)
             throws IOException {
         SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
-        Map<String, String> authHeaders = generateHeaders(sessionHandler.getAccessToken(MainApplication.getAppContext()));
+        Map<String, String> authHeaders = new HashMap<>();
+        authHeaders = prepareHeader(authHeaders, originRequest);
         generateHeader(authHeaders, originRequest , newRequest);
     }
 
-    private Map<String, String> generateHeaders(String token) {
-        HashMap finalHeader = new HashMap();
-        finalHeader.put("Authorization", "Bearer " + token);
-        return finalHeader;
+    Map<String, String> prepareHeader(Map<String, String> authHeaders, Request originRequest) {
+        switch (originRequest.method()) {
+            case "PATCH":
+            case "POST":
+                authHeaders = getHeaderMap(originRequest.url().uri().getPath(),
+                        generateParamBodyString(originRequest), originRequest.method(), authKey);
+                authHeaders = generateHeaders(authHeaders);
+                break;
+            case "GET":
+                authHeaders = getHeaderMap(originRequest.url().uri().getPath(),
+                        generateQueryString(originRequest), originRequest.method(), authKey);
+                authHeaders = generateHeaders(authHeaders);
+                break;
+        }
+        return authHeaders;
+    }
+
+    protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey) {
+        return AuthUtil.generateNewHeaders(path, strParam, method, authKey);
+    }
+
+    private Map<String, String> generateHeaders(Map<String, String> authHeaders) {
+        SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
+        authHeaders.put("Authorization", "Bearer " + sessionHandler.getAccessToken(MainApplication.getAppContext()));
+        return authHeaders;
     }
 
     void generateHeader(Map<String, String> authHeaders, Request originRequest, Request.Builder newRequest){

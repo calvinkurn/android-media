@@ -7,7 +7,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmsubscribe.di.GMCheckoutDependencyInjection;
 import com.tokopedia.seller.gmsubscribe.view.checkout.presenter.GMCheckoutPresenter;
@@ -47,6 +49,7 @@ public class GMCheckoutFragment
     private CompositeSubscription subscription;
     private GMCheckoutFragmentCallback callback;
     private Button buttonContinueCheckout;
+    private TkpdProgressDialog progressDialog;
 
 
     public static Fragment createFragment(int selectedFragment){
@@ -116,7 +119,7 @@ public class GMCheckoutFragment
         buttonContinueCheckout = (Button) view.findViewById(R.id.button_checkout_gm_subscribe);
         buttonContinueCheckout.setOnClickListener(getContinueCheckoutListener());
         presenter.attachView(this);
-
+        progressDialog = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
     }
 
     @Override
@@ -182,6 +185,31 @@ public class GMCheckoutFragment
     }
 
     @Override
+    public void failedGetCurrentProduct() {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.getCurrentSelectedProduct(selectedProduct);
+            }
+        });
+    }
+
+    @Override
+    public void failedGetAutoSubscribeProduct() {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.getExtendSelectedProduct(selectedProduct, autoExtendSelectedProduct);
+            }
+        });
+    }
+
+    @Override
+    public void failedCheckout() {
+        NetworkErrorHelper.showSnackbar(getActivity());
+    }
+
+    @Override
     public void selectAutoSubscribePackageFirstTime() {
         callback.selectAutoSubscribePackageFirstTime();
     }
@@ -213,5 +241,21 @@ public class GMCheckoutFragment
             }
         };
     }
+
+    @Override
+    public void showProgressDialog(){
+        progressDialog.showDialog();
+    }
+
+    @Override
+    public void dismissProgressDialog(){
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void showGenericError() {
+        NetworkErrorHelper.showSnackbar(getActivity());
+    }
+
 }
 
