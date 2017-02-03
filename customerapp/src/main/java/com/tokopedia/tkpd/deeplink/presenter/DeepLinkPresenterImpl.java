@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -18,6 +19,7 @@ import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.fragment.FragmentShopPreview;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -104,6 +106,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             List<String> linkSegment = uriData.getPathSegments();
             String screenName;
             int type = getDeepLinkType(uriData);
+            CommonUtils.dumper("FCM wvlogin deeplink type "+type);
             switch (type) {
                 case HOMEPAGE:
                     screenName = AppScreen.SCREEN_INDEX_HOME;
@@ -132,11 +135,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_SHOP_INFO;
                     break;
                 case ACCOUNTS:
-                    openWebView(null, uriData);
+                    openWebView(uriData);
                     screenName = AppScreen.SCREEN_LOGIN;
                     break;
                 case OTHER:
-                    openWebView(linkSegment, uriData);
+                    openWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
                     break;
                 case INVOICE:
@@ -148,7 +151,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_RECHARGE;
                     break;
                 default:
-                    openWebView(linkSegment, uriData);
+                    openWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
                     break;
             }
@@ -269,9 +272,16 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return false;
     }
 
-    private void openWebView(List<String> linkSegment, Uri uriData) {
-        Fragment fragment = FragmentGeneralWebView.createInstance(uriData.toString());
+    private void openWebView(Uri uriData) {
+        CommonUtils.dumper("wvlogin URL links "+getUrl(uriData.toString()));
+        String url = getUrl(uriData.toString());
+        Fragment fragment = FragmentGeneralWebView.createInstance(url);
         viewListener.inflateFragment(fragment, "WEB_VIEW");
+    }
+
+    private String getUrl(String data) {
+        Log.d(TAG, "getUrl: " + URLGenerator.generateURLSessionLoginV4(data, context));
+        return URLGenerator.generateURLSessionLoginV4(data, context);
     }
 
     private void openShopInfo(List<String> linkSegment, Uri uriData) {
@@ -280,6 +290,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openDetailProduct(List<String> linkSegment, Uri uriData) {
+        CommonUtils.dumper("wvlogin opened product");
         Fragment fragment = ProductDetailFragment.newInstanceForDeeplink(ProductPass.Builder.aProductPass()
                 .setProductKey(linkSegment.get(1))
                 .setShopDomain(linkSegment.get(0))
