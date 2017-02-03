@@ -47,7 +47,7 @@ public class SignInInteractorImpl implements SignInInteractor{
 
     public static SignInInteractorImpl createInstance(Context context) {
         SignInInteractorImpl interactor = new SignInInteractorImpl();
-        interactor.sessionHandler = new SessionHandler(contexgt);
+        interactor.sessionHandler = new SessionHandler(context);
         interactor.context = context;
         return interactor;
     }
