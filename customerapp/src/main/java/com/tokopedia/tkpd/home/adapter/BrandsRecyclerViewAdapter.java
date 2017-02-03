@@ -2,13 +2,15 @@ package com.tokopedia.tkpd.home.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
 
+import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.network.entity.home.Brand;
 import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.tkpd.R;
 
@@ -21,9 +23,9 @@ public class BrandsRecyclerViewAdapter extends RecyclerView.Adapter<BrandsRecycl
     private Context context;
     private Brands brands;
     private int homeWidth;
-    private BrandsItemRecyclerViewAdapter.OnItemClickListener clickListener;
+    private OnItemClickListener clickListener;
 
-    public BrandsRecyclerViewAdapter(Context ctx, BrandsItemRecyclerViewAdapter.OnItemClickListener itemListener){
+    public BrandsRecyclerViewAdapter(Context ctx, OnItemClickListener itemListener){
         context = ctx;
         clickListener = itemListener;
         brands = new Brands();
@@ -39,6 +41,9 @@ public class BrandsRecyclerViewAdapter extends RecyclerView.Adapter<BrandsRecycl
 
     @Override
     public ItemRowHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        CommonUtils.dumper("mohito on create viewholder brandsrecviewadapter");
+
         @SuppressLint("InflateParams") View v = LayoutInflater.from(
                 parent.getContext()).inflate(R.layout.item_brands_category, null
         );
@@ -46,16 +51,20 @@ public class BrandsRecyclerViewAdapter extends RecyclerView.Adapter<BrandsRecycl
     }
 
     @Override
-    public void onBindViewHolder(ItemRowHolder holder, int position) {
+    public void onBindViewHolder(final ItemRowHolder holder, int position) {
 
-        holder.itemTitle.setText("Official Store");
-        BrandsItemRecyclerViewAdapter itemAdapter = new BrandsItemRecyclerViewAdapter(brands,
-                homeWidth, clickListener);
-        holder.recyclerViewList.setHasFixedSize(true);
-        holder.recyclerViewList.setLayoutManager(
-                new LinearLayoutManager(context,
-                        LinearLayoutManager.HORIZONTAL, false));
-        holder.recyclerViewList.setAdapter(itemAdapter);
+        CommonUtils.dumper("mohito on bind viewholder brandsrecviewadapter "+position);
+
+        if(position<brands.getData().size()){
+            final Brand singleBrand = brands.getData().get(position);
+            ImageHandler.LoadImage(holder.ivBrands,singleBrand.getLogoUrl());
+            holder.ivBrands.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    clickListener.onItemClicked("",singleBrand, holder.getAdapterPosition());
+                }
+            });
+        }
 
     }
 
@@ -68,16 +77,17 @@ public class BrandsRecyclerViewAdapter extends RecyclerView.Adapter<BrandsRecycl
     }
 
     class ItemRowHolder extends RecyclerView.ViewHolder {
-
-        TextView itemTitle;
-        RecyclerView recyclerViewList;
+        ImageView ivBrands;
 
         ItemRowHolder(View view) {
             super(view);
-            this.itemTitle = (TextView) view.findViewById(R.id.tv_title);
-            this.recyclerViewList = (RecyclerView) view.findViewById(R.id.rv_view_list);
+            this.ivBrands = (ImageView) view.findViewById(R.id.iv_brands);
         }
 
+    }
+
+    public interface OnItemClickListener {
+        void onItemClicked(String name, Brand brand, int position);
     }
 
 }

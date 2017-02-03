@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/category_scrollview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -76,15 +77,45 @@
             android:nestedScrollingEnabled="false"
             android:scrollbars="none" />
 
+        <RelativeLayout
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:id="@id/rl_title_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:padding="2dp">
+
+            <TextView
+                android:id="@id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:paddingBottom="13dp"
+                android:textColor="@color/grey_750"
+                tools:text="Sample title" />
+            <View
+                android:layout_width="25dp"
+                android:layout_height="3dp"
+                android:layout_below="@id/tv_title"
+                android:background="@color/deep_orange_500" />
+
+        </RelativeLayout>
+
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view_toppicks"
+            android:id="@id/rv_brands_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"
             android:scrollbars="none" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@id/rv_brands_list"
+            android:id="@+id/recycler_view_toppicks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"

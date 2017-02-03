@@ -67,7 +67,6 @@ import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.TopPicksView;
-import com.tokopedia.tkpd.home.adapter.BrandsItemRecyclerViewAdapter;
 import com.tokopedia.tkpd.home.adapter.BrandsRecyclerViewAdapter;
 import com.tokopedia.tkpd.home.adapter.RecyclerViewCategoryMenuAdapter;
 import com.tokopedia.tkpd.home.adapter.SectionListCategoryAdapter;
@@ -136,6 +135,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         private CirclePageIndicator bannerIndicator;
         private RelativeLayout bannerContainer;
         private TextView promoLink;
+        private TextView tvBrandsTitle;
         TabLayout tabLayoutRecharge;
         WrapContentViewPager viewpagerRecharge;
         RecyclerView announcementContainer;
@@ -222,6 +222,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
             @Override
             public void onSuccess(Brands brands) {
+                CommonUtils.dumper("mohito get brands "+brands.getData().size());
                 brandsRecyclerViewAdapter.setDataList(brands);
                 brandsRecyclerViewAdapter.notifyDataSetChanged();
             }
@@ -551,13 +552,16 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
      * Created by Hafizh Herdi 20173001
      */
     private void initBrands(){
+        CommonUtils.dumper("mohito called init brands");
         holder.brandsRecyclerView = (RecyclerView) holder.MainView.findViewById(R.id.rv_brands_list);
+        holder.tvBrandsTitle = (TextView) holder.MainView.findViewById(R.id.tv_title);
+        holder.tvBrandsTitle.setText("Official Store");
         holder.brandsRecyclerView.setHasFixedSize(true);
         holder.brandsRecyclerView.setNestedScrollingEnabled(false);
-        brandsRecyclerViewAdapter = new BrandsRecyclerViewAdapter(getContext(), new BrandsItemRecyclerViewAdapter.OnItemClickListener() {
+        brandsRecyclerViewAdapter = new BrandsRecyclerViewAdapter(getContext(), new BrandsRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClicked(String name, Brand brand, int position) {
-
+                CommonUtils.dumper("mohito, clicked brands "+brand.getShopAppsUrl());
             }
         });
         brandsRecyclerViewAdapter.setHomeMenuWidth(getHomeBrandsWidth());
