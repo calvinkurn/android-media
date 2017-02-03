@@ -53,7 +53,7 @@ public class GMProductPresenterImpl extends BasePresenter<GMProductView> impleme
 
         @Override
         public void onError(Throwable e) {
-
+            Log.e(TAG, "error here");
         }
 
         @Override

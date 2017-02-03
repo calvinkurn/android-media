@@ -94,6 +94,9 @@
             android:name=".gmsubscribe.view.home.GMSubscribeHomeActivity"
             android:label="@string/gm_home_title"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".gmsubscribe.view.product.activity.GMProductActivity"
+            android:screenOrientation="portrait"/>
         <service
             android:name=".selling.SellingService"
             android:exported="false" />

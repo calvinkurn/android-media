@@ -12,6 +12,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
+import com.tokopedia.seller.gmsubscribe.di.GMProductDependencyInjection;
 import com.tokopedia.seller.gmsubscribe.view.product.presenter.GMProductPresenter;
 import com.tokopedia.seller.gmsubscribe.view.product.presenter.GMProductPresenterImpl;
 import com.tokopedia.seller.gmsubscribe.view.product.presenter.GMProductView;
@@ -106,7 +107,7 @@ public abstract class GMProductFragment
     @Override
     protected void initialPresenter() {
         subscriber = RxUtils.getNewCompositeSubIfUnsubscribed(subscriber);
-
+        presenter = GMProductDependencyInjection.getPresenter();
     }
 
     @Override
