@@ -16,10 +16,10 @@ public class PeriodChooseViewHelper {
     TextView periodHeader;
     TextView periodDate;
     View overlaySetDate;
-
+    SetDateFragment.PeriodListener periodListener;
     private View itemView;
     private int position;
-
+    private PeriodRangeModel periodRangeModel;
     public PeriodChooseViewHelper(View itemView, int position) {
         this.itemView = itemView;
         this.position = position;
@@ -35,9 +35,6 @@ public class PeriodChooseViewHelper {
             }
         });
     }
-
-    private PeriodRangeModel periodRangeModel;
-    SetDateFragment.PeriodListener periodListener;
 
     public void setPeriodListener(SetDateFragment.PeriodListener periodListener) {
         this.periodListener = periodListener;

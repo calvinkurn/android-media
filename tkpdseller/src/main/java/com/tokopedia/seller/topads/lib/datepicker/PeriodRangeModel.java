@@ -15,18 +15,24 @@ import java.util.Locale;
 
 @Parcel
 public class PeriodRangeModel extends SetDateFragment.BasePeriodModel implements Parcelable {
-    private static final Locale locale = new Locale("in", "ID");
     public static final int TYPE = 1;
+    public static final Creator<PeriodRangeModel> CREATOR = new Creator<PeriodRangeModel>() {
+        @Override
+        public PeriodRangeModel createFromParcel(android.os.Parcel source) {
+            return new PeriodRangeModel(source);
+        }
+
+        @Override
+        public PeriodRangeModel[] newArray(int size) {
+            return new PeriodRangeModel[size];
+        }
+    };
+    private static final Locale locale = new Locale("in", "ID");
     public boolean isChecked;
     public long startDate = -1;
     public long endDate = -1;
-
     private String formatText = "%s - %s";
     private String label;
-
-    public String getLabel() {
-        return label;
-    }
 
     public PeriodRangeModel() {
         super(TYPE);
@@ -37,6 +43,19 @@ public class PeriodRangeModel extends SetDateFragment.BasePeriodModel implements
         this.startDate = startDate;
         this.endDate = endDate;
         this.label = label;
+    }
+
+    public PeriodRangeModel(android.os.Parcel in) {
+        super();
+        this.isChecked = in.readByte() != 0;
+        this.startDate = in.readLong();
+        this.endDate = in.readLong();
+        this.formatText = in.readString();
+        this.label = in.readString();
+    }
+
+    public String getLabel() {
+        return label;
     }
 
     public String getDescription() {
@@ -69,25 +88,4 @@ public class PeriodRangeModel extends SetDateFragment.BasePeriodModel implements
         dest.writeString(this.formatText);
         dest.writeString(this.label);
     }
-
-    public PeriodRangeModel(android.os.Parcel in) {
-        super();
-        this.isChecked = in.readByte() != 0;
-        this.startDate = in.readLong();
-        this.endDate = in.readLong();
-        this.formatText = in.readString();
-        this.label = in.readString();
-    }
-
-    public static final Creator<PeriodRangeModel> CREATOR = new Creator<PeriodRangeModel>() {
-        @Override
-        public PeriodRangeModel createFromParcel(android.os.Parcel source) {
-            return new PeriodRangeModel(source);
-        }
-
-        @Override
-        public PeriodRangeModel[] newArray(int size) {
-            return new PeriodRangeModel[size];
-        }
-    };
 }

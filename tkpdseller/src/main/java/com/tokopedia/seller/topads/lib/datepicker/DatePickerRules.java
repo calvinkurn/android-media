@@ -1,7 +1,6 @@
 package com.tokopedia.seller.topads.lib.datepicker;
 
 import java.util.Calendar;
-import java.util.Locale;
 
 /**
  * Created by Nathaniel on 1/16/2017.
@@ -9,21 +8,13 @@ import java.util.Locale;
 
 public class DatePickerRules {
     public long minSDate;
+    public long maxEDate;
+    public long sDate = -1;
+    public long eDate = -1;
+    DatePickerRulesListener datePickerRulesListener;
     private long maxLimit;
     private long minLimit;
     private int rangeLimit;
-    public long maxEDate;
-
-    public long sDate = -1;
-    public long eDate = -1;
-
-    public interface DatePickerRulesListener {
-
-        void successDate(long sDate, long eDate);
-
-    }
-
-    DatePickerRulesListener datePickerRulesListener;
 
     public DatePickerRules(long maxEDate, long minSDate, int rangeLimit) {
         this.maxLimit = maxEDate;
@@ -85,5 +76,11 @@ public class DatePickerRules {
         if (datePickerRulesListener != null) {
             datePickerRulesListener.successDate(sDate, endDate);
         }
+    }
+
+    public interface DatePickerRulesListener {
+
+        void successDate(long sDate, long eDate);
+
     }
 }

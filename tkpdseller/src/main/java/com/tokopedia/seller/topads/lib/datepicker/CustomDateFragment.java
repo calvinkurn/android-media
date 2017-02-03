@@ -22,13 +22,25 @@ import java.util.List;
 
 public class CustomDateFragment extends Fragment {
     RecyclerView periodRecyclerView;
-    private PeriodAdapter periodAdapter;
     LinearLayout periodLinLay;
+    private PeriodAdapter periodAdapter;
     private long sDate, eDate;
     private long minStartDate;
     private long maxEndDate;
     private int maxDateRange;
     private Button saveDate;
+
+    public static Fragment newInstance(long sDate, long eDate, long minStartDate, long maxEndDate, int maxDateRange) {
+        Fragment fragment = new CustomDateFragment();
+        Bundle bundle = new Bundle();
+        bundle.putLong(DatePickerActivity.CUSTOM_START_DATE, sDate);
+        bundle.putLong(DatePickerActivity.CUSTOM_END_DATE, eDate);
+        bundle.putLong(DatePickerActivity.MIN_START_DATE, minStartDate);
+        bundle.putLong(DatePickerActivity.MAX_END_DATE, maxEndDate);
+        bundle.putInt(DatePickerActivity.MAX_DATE_RANGE, maxDateRange);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Nullable
     @Override
@@ -88,17 +100,5 @@ public class CustomDateFragment extends Fragment {
             long eDate = periodAdapter.datePickerRules.eDate;
             ((SetDateFragment.SetDate) getActivity()).returnStartAndEndDate(sDate, eDate, -1, DatePickerActivity.CUSTOM_TYPE);
         }
-    }
-
-    public static Fragment newInstance(long sDate, long eDate, long minStartDate, long maxEndDate, int maxDateRange) {
-        Fragment fragment = new CustomDateFragment();
-        Bundle bundle = new Bundle();
-        bundle.putLong(DatePickerActivity.CUSTOM_START_DATE, sDate);
-        bundle.putLong(DatePickerActivity.CUSTOM_END_DATE, eDate);
-        bundle.putLong(DatePickerActivity.MIN_START_DATE, minStartDate);
-        bundle.putLong(DatePickerActivity.MAX_END_DATE, maxEndDate);
-        bundle.putInt(DatePickerActivity.MAX_DATE_RANGE, maxDateRange);
-        fragment.setArguments(bundle);
-        return fragment;
     }
 }

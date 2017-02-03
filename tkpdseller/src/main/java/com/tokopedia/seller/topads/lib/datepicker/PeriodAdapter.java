@@ -25,7 +25,7 @@ public class PeriodAdapter extends RecyclerView.Adapter {
     DatePickerRules datePickerRules;
     List<SetDateFragment.BasePeriodModel> basePeriodModels;
     DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy", locale);
-
+    private RecyclerView mRecyclerView;
     SetDateFragment.PeriodListener periodListener = new SetDateFragment.PeriodListener() {
         @Override
         public void updateCheck(boolean checked, int index) {
@@ -89,8 +89,6 @@ public class PeriodAdapter extends RecyclerView.Adapter {
         datePickerRules.seteDate(eDate);
         datePickerRules.setsDate(sDate);
     }
-
-    private RecyclerView mRecyclerView;
 
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {

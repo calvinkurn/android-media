@@ -29,20 +29,7 @@ public class PeriodFragment extends Fragment {
 
     List<PeriodChooseViewHelper> periodChooseViewHelpers;
     ArrayList<PeriodRangeModel> periodRangeModelList;
-    private PeriodAdapter periodAdapter;
-    private long maxEndDate;
-
-    public static Fragment newInstance(int selectionPeriod, ArrayList<PeriodRangeModel> periodRangeModelList) {
-        Fragment fragment = new PeriodFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(DatePickerActivity.SELECTION_PERIOD, selectionPeriod);
-        bundle.putParcelableArrayList(DatePickerActivity.DATE_PERIOD_LIST, periodRangeModelList);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
     List<SetDateFragment.BasePeriodModel> basePeriodModels;
-
     SetDateFragment.PeriodListener periodListener = new SetDateFragment.PeriodListener() {
         @Override
         public void updateCheck(boolean checked, int index) {
@@ -87,6 +74,17 @@ public class PeriodFragment extends Fragment {
             return isNoneAll == basePeriodModels.size();
         }
     };
+    private PeriodAdapter periodAdapter;
+    private long maxEndDate;
+
+    public static Fragment newInstance(int selectionPeriod, ArrayList<PeriodRangeModel> periodRangeModelList) {
+        Fragment fragment = new PeriodFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(DatePickerActivity.SELECTION_PERIOD, selectionPeriod);
+        bundle.putParcelableArrayList(DatePickerActivity.DATE_PERIOD_LIST, periodRangeModelList);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Nullable
     @Override

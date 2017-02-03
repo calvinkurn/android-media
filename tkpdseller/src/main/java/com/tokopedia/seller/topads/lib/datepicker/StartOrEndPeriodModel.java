@@ -11,12 +11,14 @@ import java.util.Locale;
 
 public class StartOrEndPeriodModel extends SetDateFragment.BasePeriodModel {
 
-    private static final Locale locale = new Locale("in", "ID");
-
     public static final int TYPE = 2;
     public static final int YESTERDAY = -1;
     public static final int SEVEN_AGO = -8;
     public static final int SIXTY_DAYS_AGO = -61;
+    private static final Locale locale = new Locale("in", "ID");
+    public long minStartDate;
+    public long maxEndDate;
+    public int maxDateRange;
     /**
      * isEndDate 60 hari sebelum hari ini
      */
@@ -25,13 +27,8 @@ public class StartOrEndPeriodModel extends SetDateFragment.BasePeriodModel {
      * yesterday
      */
     isEndDate;
-
     String textHeader;
-
     long startDate = -1, endDate = -1;
-    public long minStartDate;
-    public long maxEndDate;
-    public int maxDateRange;
 
     private StartOrEndPeriodModel() {
         super(TYPE);
@@ -42,14 +39,6 @@ public class StartOrEndPeriodModel extends SetDateFragment.BasePeriodModel {
         this.isStartDate = isStartDate;
         this.isEndDate = isEndDate;
         this.textHeader = textHeader;
-    }
-
-    public void setEndDate(long endDate) {
-        this.endDate = endDate;
-    }
-
-    public void setStartDate(long startDate) {
-        this.startDate = startDate;
     }
 
     public void setMaxDateRange(int maxDateRange) {
@@ -80,6 +69,10 @@ public class StartOrEndPeriodModel extends SetDateFragment.BasePeriodModel {
             return "21/01/1992";
     }
 
+    public void setStartDate(long startDate) {
+        this.startDate = startDate;
+    }
+
     public String getEndDate() {
         if (isEndDate) {
             Calendar cal = Calendar.getInstance();
@@ -95,5 +88,9 @@ public class StartOrEndPeriodModel extends SetDateFragment.BasePeriodModel {
         } else {
             return "21/01/1992";
         }
+    }
+
+    public void setEndDate(long endDate) {
+        this.endDate = endDate;
     }
 }

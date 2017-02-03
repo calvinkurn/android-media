@@ -24,11 +24,6 @@ public class CustomDateViewHolder extends RecyclerView.ViewHolder {
 
     DatePickerRules datePickerRules;
     private Calendar cal;
-
-    public void setDatePickerRules(DatePickerRules datePickerRules) {
-        this.datePickerRules = datePickerRules;
-    }
-
     private StartOrEndPeriodModel startOrEndPeriodModel;
 
     public CustomDateViewHolder(View itemView) {
@@ -48,6 +43,10 @@ public class CustomDateViewHolder extends RecyclerView.ViewHolder {
                 onChooseDate();
             }
         });
+    }
+
+    public void setDatePickerRules(DatePickerRules datePickerRules) {
+        this.datePickerRules = datePickerRules;
     }
 
     public void bindData(StartOrEndPeriodModel startOrEndPeriodModel) {

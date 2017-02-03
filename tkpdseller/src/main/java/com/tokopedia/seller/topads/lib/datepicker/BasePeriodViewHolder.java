@@ -18,20 +18,8 @@ public class BasePeriodViewHolder extends RecyclerView.ViewHolder {
     CheckBox checkBoxPeriod;
     TextView periodHeader;
     TextView periodDate;
-
-    private PeriodRangeModel periodRangeModel;
     SetDateFragment.PeriodListener periodListener;
-
-    public void setPeriodListener(SetDateFragment.PeriodListener periodListener) {
-        this.periodListener = periodListener;
-    }
-
-    public void onCheckBoxPeriod(boolean checked) {
-        periodRangeModel.isChecked = checked;
-        if (periodListener != null) {
-            periodListener.updateCheck(checked, getLayoutPosition());
-        }
-    }
+    private PeriodRangeModel periodRangeModel;
 
     public BasePeriodViewHolder(View itemView) {
         super(itemView);
@@ -44,6 +32,17 @@ public class BasePeriodViewHolder extends RecyclerView.ViewHolder {
                 onCheckBoxPeriod(b);
             }
         });
+    }
+
+    public void setPeriodListener(SetDateFragment.PeriodListener periodListener) {
+        this.periodListener = periodListener;
+    }
+
+    public void onCheckBoxPeriod(boolean checked) {
+        periodRangeModel.isChecked = checked;
+        if (periodListener != null) {
+            periodListener.updateCheck(checked, getLayoutPosition());
+        }
     }
 
     public void bindData(PeriodRangeModel periodRangeModel) {
