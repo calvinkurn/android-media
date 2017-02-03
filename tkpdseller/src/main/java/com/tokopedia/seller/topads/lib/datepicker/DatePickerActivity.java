@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * Created by normansyahputa on 12/7/16.
  */
 
-public class SetDateActivity extends AppCompatActivity implements SetDateFragment.SetDate {
+public class DatePickerActivity extends AppCompatActivity implements SetDateFragment.SetDate {
 
     public static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
     public static final int MOVE_TO_SET_DATE = 1;
@@ -75,6 +75,7 @@ public class SetDateActivity extends AppCompatActivity implements SetDateFragmen
             getSupportActionBar().setTitle(title);
         }
         isAfterRotate = savedInstanceState != null;
+
     }
 
     private void fetchIntent(Bundle extras) {

@@ -35,11 +35,11 @@ public class CustomDateFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Bundle bundle = getArguments();
         if (bundle != null) {
-            sDate = bundle.getLong(SetDateActivity.CUSTOM_START_DATE, -1);
-            eDate = bundle.getLong(SetDateActivity.CUSTOM_END_DATE, -1);
-            minStartDate = bundle.getLong(SetDateActivity.MIN_START_DATE, -1);
-            maxEndDate = bundle.getLong(SetDateActivity.MAX_END_DATE, -1);
-            maxDateRange = bundle.getInt(SetDateActivity.MAX_DATE_RANGE, -1);
+            sDate = bundle.getLong(DatePickerActivity.CUSTOM_START_DATE, -1);
+            eDate = bundle.getLong(DatePickerActivity.CUSTOM_END_DATE, -1);
+            minStartDate = bundle.getLong(DatePickerActivity.MIN_START_DATE, -1);
+            maxEndDate = bundle.getLong(DatePickerActivity.MAX_END_DATE, -1);
+            maxDateRange = bundle.getInt(DatePickerActivity.MAX_DATE_RANGE, -1);
         }
         View rootView = inflater.inflate(R.layout.fragment_period_layout, container, false);
 
@@ -86,7 +86,7 @@ public class CustomDateFragment extends Fragment {
         if (getActivity() != null && getActivity() instanceof SetDateFragment.SetDate) {
             long sDate = periodAdapter.datePickerRules.sDate;
             long eDate = periodAdapter.datePickerRules.eDate;
-            ((SetDateFragment.SetDate) getActivity()).returnStartAndEndDate(sDate, eDate, -1, SetDateActivity.CUSTOM_TYPE);
+            ((SetDateFragment.SetDate) getActivity()).returnStartAndEndDate(sDate, eDate, -1, DatePickerActivity.CUSTOM_TYPE);
         }
     }
 
@@ -97,11 +97,11 @@ public class CustomDateFragment extends Fragment {
     public static Fragment newInstance(long sDate, long eDate, long minStartDate, long maxEndDate, int maxDateRange) {
         Fragment fragment = new CustomDateFragment();
         Bundle bundle = new Bundle();
-        bundle.putLong(SetDateActivity.CUSTOM_START_DATE, sDate);
-        bundle.putLong(SetDateActivity.CUSTOM_END_DATE, eDate);
-        bundle.putLong(SetDateActivity.MIN_START_DATE, minStartDate);
-        bundle.putLong(SetDateActivity.MAX_END_DATE, maxEndDate);
-        bundle.putInt(SetDateActivity.MAX_DATE_RANGE, maxDateRange);
+        bundle.putLong(DatePickerActivity.CUSTOM_START_DATE, sDate);
+        bundle.putLong(DatePickerActivity.CUSTOM_END_DATE, eDate);
+        bundle.putLong(DatePickerActivity.MIN_START_DATE, minStartDate);
+        bundle.putLong(DatePickerActivity.MAX_END_DATE, maxEndDate);
+        bundle.putInt(DatePickerActivity.MAX_DATE_RANGE, maxDateRange);
         fragment.setArguments(bundle);
         return fragment;
     }

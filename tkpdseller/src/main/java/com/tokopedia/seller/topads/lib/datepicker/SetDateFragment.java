@@ -23,8 +23,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import static com.tokopedia.seller.topads.lib.datepicker.SetDateActivity.CUSTOM_TYPE;
-import static com.tokopedia.seller.topads.lib.datepicker.SetDateActivity.PERIOD_TYPE;
+import static com.tokopedia.seller.topads.lib.datepicker.DatePickerActivity.CUSTOM_TYPE;
+import static com.tokopedia.seller.topads.lib.datepicker.DatePickerActivity.PERIOD_TYPE;
 
 /**
  * Created by normansyahputa on 11/25/16.

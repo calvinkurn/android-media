@@ -35,8 +35,8 @@ public class PeriodFragment extends Fragment {
     public static Fragment newInstance(int selectionPeriod, ArrayList<PeriodRangeModel> periodRangeModelList) {
         Fragment fragment = new PeriodFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(SetDateActivity.SELECTION_PERIOD, selectionPeriod);
-        bundle.putParcelableArrayList(SetDateActivity.DATE_PERIOD_LIST, periodRangeModelList);
+        bundle.putInt(DatePickerActivity.SELECTION_PERIOD, selectionPeriod);
+        bundle.putParcelableArrayList(DatePickerActivity.DATE_PERIOD_LIST, periodRangeModelList);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -106,9 +106,9 @@ public class PeriodFragment extends Fragment {
         int lastSelection = 1;
         Bundle bundle = getArguments();
         if (bundle != null) {
-            lastSelection = bundle.getInt(SetDateActivity.SELECTION_PERIOD, 1);
-            maxEndDate = bundle.getLong(SetDateActivity.MAX_END_DATE, Calendar.getInstance().getTimeInMillis());
-            periodRangeModelList = bundle.getParcelableArrayList(SetDateActivity.DATE_PERIOD_LIST);
+            lastSelection = bundle.getInt(DatePickerActivity.SELECTION_PERIOD, 1);
+            maxEndDate = bundle.getLong(DatePickerActivity.MAX_END_DATE, Calendar.getInstance().getTimeInMillis());
+            periodRangeModelList = bundle.getParcelableArrayList(DatePickerActivity.DATE_PERIOD_LIST);
         }
 
         //[START] old code
@@ -151,7 +151,7 @@ public class PeriodFragment extends Fragment {
                 if (prm.isChecked) {
                     long sDate = prm.startDate;
                     long eDate = prm.endDate;
-                    ((SetDateFragment.SetDate) getActivity()).returnStartAndEndDate(sDate, eDate, i, SetDateActivity.PERIOD_TYPE);
+                    ((SetDateFragment.SetDate) getActivity()).returnStartAndEndDate(sDate, eDate, i, DatePickerActivity.PERIOD_TYPE);
                 }
             }
 
