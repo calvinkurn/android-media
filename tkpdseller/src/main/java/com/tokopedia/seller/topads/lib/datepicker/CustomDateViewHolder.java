@@ -16,7 +16,7 @@ import com.tokopedia.seller.R;
 
 import java.util.Calendar;
 
-public class CustomViewHolder extends RecyclerView.ViewHolder {
+public class CustomDateViewHolder extends RecyclerView.ViewHolder {
 
     TextView customHeader;
     TextView customDate;
@@ -31,7 +31,7 @@ public class CustomViewHolder extends RecyclerView.ViewHolder {
 
     private StartOrEndPeriodModel startOrEndPeriodModel;
 
-    public CustomViewHolder(View itemView) {
+    public CustomDateViewHolder(View itemView) {
         super(itemView);
         customHeader = (TextView) itemView.findViewById(R.id.custom_header);
         customDate = (TextView) itemView.findViewById(R.id.custom_date);

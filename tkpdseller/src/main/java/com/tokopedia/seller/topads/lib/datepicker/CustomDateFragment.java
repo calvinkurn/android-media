@@ -20,7 +20,7 @@ import java.util.List;
  * Created by Nathaniel on 1/16/2017.
  */
 
-public class CustomFragment extends Fragment {
+public class CustomDateFragment extends Fragment {
     RecyclerView periodRecyclerView;
     private PeriodAdapter periodAdapter;
     LinearLayout periodLinLay;
@@ -91,11 +91,11 @@ public class CustomFragment extends Fragment {
     }
 
     public static Fragment newInstance() {
-        return new CustomFragment();
+        return new CustomDateFragment();
     }
 
     public static Fragment newInstance(long sDate, long eDate, long minStartDate, long maxEndDate, int maxDateRange) {
-        Fragment fragment = new CustomFragment();
+        Fragment fragment = new CustomDateFragment();
         Bundle bundle = new Bundle();
         bundle.putLong(SetDateActivity.CUSTOM_START_DATE, sDate);
         bundle.putLong(SetDateActivity.CUSTOM_END_DATE, eDate);

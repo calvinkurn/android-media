@@ -137,7 +137,7 @@ public class SetDateFragment extends Fragment {
                     return PeriodFragment.newInstance(lastSelectionPeriod, periodRangeModelList);
                 case 1:
                 default:
-                    return CustomFragment.newInstance(sDate, eDate, minStartDate, maxEndDate, maxDateRange);
+                    return CustomDateFragment.newInstance(sDate, eDate, minStartDate, maxEndDate, maxDateRange);
             }
         }
 

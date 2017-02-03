@@ -106,7 +106,7 @@ public class PeriodAdapter extends RecyclerView.Adapter {
                         .inflate(R.layout.periode_layout, parent, false));
             case StartOrEndPeriodModel.TYPE:
             default:
-                return new CustomViewHolder(LayoutInflater.from(parent.getContext())
+                return new CustomDateViewHolder(LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.custom_layout, parent, false));
         }
     }
@@ -120,10 +120,10 @@ public class PeriodAdapter extends RecyclerView.Adapter {
                 bpvh.bindData((PeriodRangeModel) basePeriodModels.get(position));
                 break;
             case StartOrEndPeriodModel.TYPE:
-                CustomViewHolder customViewHolder = (CustomViewHolder) holder;
-//                    customViewHolder.setDateValidationListener(dateValidationListener);
-                customViewHolder.setDatePickerRules(datePickerRules);
-                customViewHolder.bindData((StartOrEndPeriodModel) basePeriodModels.get(position));
+                CustomDateViewHolder customDateViewHolder = (CustomDateViewHolder) holder;
+//                    customDateViewHolder.setDateValidationListener(dateValidationListener);
+                customDateViewHolder.setDatePickerRules(datePickerRules);
+                customDateViewHolder.bindData((StartOrEndPeriodModel) basePeriodModels.get(position));
                 break;
         }
     }
