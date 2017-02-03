@@ -10,12 +10,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.lib.datepicker.DatePickerActivity;
 import com.tokopedia.seller.topads.lib.datepicker.DatePickerUtils;
 import com.tokopedia.seller.topads.lib.datepicker.adapter.PeriodAdapter;
+import com.tokopedia.seller.topads.lib.datepicker.constant.DatePickerConstant;
 import com.tokopedia.seller.topads.lib.datepicker.model.StartOrEndPeriodModel;
+import com.tokopedia.seller.topads.lib.datepicker.widget.DatePickerLabelView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +28,7 @@ import java.util.List;
  * Created by Nathaniel on 1/16/2017.
  */
 
-public class DatePickerCustomFragment extends Fragment {
+public class DatePickerCustomFragment extends TkpdFragment {
 
     public interface Callback {
 
@@ -31,6 +36,8 @@ public class DatePickerCustomFragment extends Fragment {
 
     }
 
+    private DatePickerLabelView startDatePickerLabelView;
+    private DatePickerLabelView endDatePickerLabelView;
     private RecyclerView recyclerView;
     private Button submitButton;
 
@@ -69,19 +76,35 @@ public class DatePickerCustomFragment extends Fragment {
             maxEndDate = bundle.getLong(DatePickerActivity.MAX_END_DATE, -1);
             maxDateRange = bundle.getInt(DatePickerActivity.MAX_DATE_RANGE, -1);
         }
-        View rootView = inflater.inflate(R.layout.fragment_date_picker_custom, container, false);
+        View view = inflater.inflate(R.layout.fragment_date_picker_custom, container, false);
+        startDatePickerLabelView = (DatePickerLabelView) view.findViewById(R.id.date_picker_start_date);
+        endDatePickerLabelView = (DatePickerLabelView) view.findViewById(R.id.date_picker_end_date);
+        startDatePickerLabelView.setOnContentClick(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
-        submitButton = (Button) rootView.findViewById(R.id.button_submit);
+            }
+        });
+        endDatePickerLabelView.setOnContentClick(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        submitButton = (Button) view.findViewById(R.id.button_submit);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 saveDate();
             }
         });
-        recyclerView.setVisibility(View.VISIBLE);
-        periodAdapter = new PeriodAdapter(rootView, startDate, endDate, minStartDate, maxEndDate, maxDateRange);
+        DateFormat dateFormat = new SimpleDateFormat(DatePickerConstant.DATE_FORMAT, DatePickerConstant.LOCALE);
 
+        startDatePickerLabelView.setContent(dateFormat.format(startDate));
+        endDatePickerLabelView.setContent(dateFormat.format(endDate));
+
+        periodAdapter = new PeriodAdapter(view, startDate, endDate, minStartDate, maxEndDate, maxDateRange);
         List<DatePickerUtils.BasePeriodModel> basePeriodModels = new ArrayList<>();
         StartOrEndPeriodModel startOrEndPeriodModel = new StartOrEndPeriodModel(true, false, "Tanggal Mulai");
         startOrEndPeriodModel.setStartDate(startDate);
@@ -104,12 +127,17 @@ public class DatePickerCustomFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(periodAdapter);
 
-        return rootView;
+        return view;
     }
 
     public void saveDate() {
         if (callback != null) {
             callback.onDateSubmitted(periodAdapter.datePickerRules.sDate, periodAdapter.datePickerRules.eDate);
         }
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 }

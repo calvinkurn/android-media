@@ -117,7 +117,6 @@ public class PeriodAdapter extends RecyclerView.Adapter {
                 break;
             case StartOrEndPeriodModel.TYPE:
                 CustomDateViewHolder customDateViewHolder = (CustomDateViewHolder) holder;
-//                    customDateViewHolder.setDateValidationListener(dateValidationListener);
                 customDateViewHolder.setDatePickerRules(datePickerRules);
                 customDateViewHolder.bindData((StartOrEndPeriodModel) basePeriodModels.get(position));
                 break;

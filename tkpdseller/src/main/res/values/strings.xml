@@ -113,6 +113,9 @@
     <string name="label_date_period">Periode</string>
     <string name="label_date_custom">Kustom</string>
 
+    <string name="label_date_picker_start_date">Tanggal Mulai</string>
+    <string name="label_date_picker_end_date">Tanggal Selesai</string>
+
     <!-- untuk tanggal gmstat -->
     <string-array name="month_names">
         <item>Januari</item>

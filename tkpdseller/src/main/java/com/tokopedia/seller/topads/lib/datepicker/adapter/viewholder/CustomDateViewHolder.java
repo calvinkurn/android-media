@@ -31,8 +31,8 @@ public class CustomDateViewHolder extends RecyclerView.ViewHolder {
 
     public CustomDateViewHolder(View itemView) {
         super(itemView);
-        customHeader = (TextView) itemView.findViewById(R.id.custom_header);
-        customDate = (TextView) itemView.findViewById(R.id.custom_date);
+        customHeader = (TextView) itemView.findViewById(R.id.text_view_title);
+        customDate = (TextView) itemView.findViewById(R.id.text_view_content);
         customDropDown = (ImageView) itemView.findViewById(R.id.custom_drop_down);
         customDate.setOnClickListener(new View.OnClickListener() {
             @Override

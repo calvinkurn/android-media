@@ -1,17 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.tokopedia.seller.topads.lib.datepicker.widget.DatePickerLabelView
+        android:id="@+id/date_picker_start_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:date_picker_title="@string/label_date_picker_start_date"/>
+
+    <com.tokopedia.seller.topads.lib.datepicker.widget.DatePickerLabelView
+        android:id="@+id/date_picker_end_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:date_picker_title="@string/label_date_picker_end_date"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
     <Button
         android:id="@+id/button_submit"
-        android:layout_alignParentBottom="true"
         style="@style/Button.TopAds.Submit.Green"
         android:layout_width="match_parent"
         android:layout_marginBottom="5dp"
@@ -19,4 +33,4 @@
         android:layout_marginRight="5dp"
         android:text="@string/save_date"/>
 
-</RelativeLayout>
+</LinearLayout>

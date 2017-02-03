@@ -8,6 +8,7 @@ import java.util.List;
  */
 
 public class DatePickerUtils {
+
     public static String getDateWithYear(int date, String[] monthNames) {
         List<String> dateRaw = getDateRaw(date);
         String year = dateRaw.get(2);
