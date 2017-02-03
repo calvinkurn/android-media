@@ -17,7 +17,6 @@ public interface Category {
     void fetchBanners(final FacadePromo.GetPromoListener listener);
     void fetchSlides(final FacadePromo.GetPromoListener listener);
     void fetchTickers(final FetchTickersListener listener);
-    void fetchBrands(final OnGetBrandsListener listener);
 
     interface FetchTickersListener{
         void onSuccess(Ticker.Tickers[] tickers);
@@ -25,7 +24,4 @@ public interface Category {
 
     }
 
-    interface OnGetBrandsListener{
-        void onSuccess(Brands brands);
-    }
 }

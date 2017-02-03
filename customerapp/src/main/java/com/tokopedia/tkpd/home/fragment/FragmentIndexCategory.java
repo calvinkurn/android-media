@@ -66,6 +66,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
+import com.tokopedia.tkpd.home.OnGetBrandsListener;
 import com.tokopedia.tkpd.home.TopPicksView;
 import com.tokopedia.tkpd.home.adapter.BrandsRecyclerViewAdapter;
 import com.tokopedia.tkpd.home.adapter.RecyclerViewCategoryMenuAdapter;
@@ -74,6 +75,8 @@ import com.tokopedia.tkpd.home.adapter.TickerAnnouncementAdapter;
 import com.tokopedia.tkpd.home.adapter.TopPicksAdapter;
 import com.tokopedia.tkpd.home.adapter.TopPicksItemAdapter;
 import com.tokopedia.tkpd.home.facade.FacadePromo;
+import com.tokopedia.tkpd.home.presenter.BrandsPresenter;
+import com.tokopedia.tkpd.home.presenter.BrandsPresenterImpl;
 import com.tokopedia.tkpd.home.presenter.Category;
 import com.tokopedia.tkpd.home.presenter.CategoryImpl;
 import com.tokopedia.tkpd.home.presenter.CategoryView;
@@ -125,6 +128,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private RecyclerViewCategoryMenuAdapter recyclerViewCategoryMenuAdapter;
     private TopPicksAdapter topPicksAdapter;
     private BrandsRecyclerViewAdapter brandsRecyclerViewAdapter;
+    private BrandsPresenter brandsPresenter;
 
     private GetShopInfoRetrofit getShopInfoRetrofit;
 
@@ -135,7 +139,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         private CirclePageIndicator bannerIndicator;
         private RelativeLayout bannerContainer;
         private TextView promoLink;
-        private TextView tvBrandsTitle;
         TabLayout tabLayoutRecharge;
         WrapContentViewPager viewpagerRecharge;
         RecyclerView announcementContainer;
@@ -192,6 +195,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         getPromo();
         homeCatMenuPresenter.fetchHomeCategoryMenu(false);
         topPicksPresenter.fetchTopPicks();
+        brandsPresenter.fetchBrands();
 
     }
 
@@ -218,15 +222,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private void getPromo() {
         category.fetchBanners(onGetPromoListener());
         category.fetchSlides(onGetPromoListener());
-        category.fetchBrands(new Category.OnGetBrandsListener() {
-
-            @Override
-            public void onSuccess(Brands brands) {
-                CommonUtils.dumper("mohito get brands "+brands.getData().size());
-                brandsRecyclerViewAdapter.setDataList(brands);
-                brandsRecyclerViewAdapter.notifyDataSetChanged();
-            }
-        });
     }
 
     private FacadePromo.GetPromoListener onGetPromoListener() {
@@ -311,6 +306,13 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(getActivity(), this);
         homeCatMenuPresenter = new HomeCatMenuPresenterImpl(this);
         topPicksPresenter = new TopPicksPresenterImpl(this);
+        brandsPresenter = new BrandsPresenterImpl(new OnGetBrandsListener() {
+            @Override
+            public void onSuccess(Brands brands) {
+                brandsRecyclerViewAdapter.setDataList(brands);
+                brandsRecyclerViewAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void startSlide() {
@@ -552,19 +554,18 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
      * Created by Hafizh Herdi 20173001
      */
     private void initBrands(){
-        CommonUtils.dumper("mohito called init brands");
         holder.brandsRecyclerView = (RecyclerView) holder.MainView.findViewById(R.id.rv_brands_list);
-        holder.tvBrandsTitle = (TextView) holder.MainView.findViewById(R.id.tv_title);
-        holder.tvBrandsTitle.setText("Official Store");
         holder.brandsRecyclerView.setHasFixedSize(true);
         holder.brandsRecyclerView.setNestedScrollingEnabled(false);
-        brandsRecyclerViewAdapter = new BrandsRecyclerViewAdapter(getContext(), new BrandsRecyclerViewAdapter.OnItemClickListener() {
+        brandsRecyclerViewAdapter = new BrandsRecyclerViewAdapter(new BrandsRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClicked(String name, Brand brand, int position) {
-                CommonUtils.dumper("mohito, clicked brands "+brand.getShopAppsUrl());
+                Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
+                intent.putExtras(ShopInfoActivity.createBundle(brand.getShopId()+"", ""));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getActivity().startActivity(intent);
             }
         });
-        brandsRecyclerViewAdapter.setHomeMenuWidth(getHomeBrandsWidth());
         holder.brandsRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getActivity(),
                         LinearLayoutManager.HORIZONTAL,
@@ -662,6 +663,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             public void onRetryClicked() {
                 homeCatMenuPresenter.fetchHomeCategoryMenu(true);
                 topPicksPresenter.fetchTopPicks();
+                brandsPresenter.fetchBrands();
             }
         }).showRetrySnackbar();
     }
@@ -722,6 +724,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         category.unSubscribe();
         homeCatMenuPresenter.OnDestroy();
         topPicksPresenter.onDestroy();
+        brandsPresenter.onDestroy();
     }
 
     //region recharge
@@ -909,16 +912,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         display.getSize(size);
         int width = size.x;
         int widthOfHomeMenuView = (int) (width / 2);
-        return widthOfHomeMenuView;
-    }
-
-    private int getHomeBrandsWidth() {
-        WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-        int widthOfHomeMenuView = (width / 4);
         return widthOfHomeMenuView;
     }
 
