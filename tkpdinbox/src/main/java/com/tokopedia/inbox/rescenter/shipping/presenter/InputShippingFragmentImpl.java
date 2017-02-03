@@ -9,7 +9,7 @@ import android.view.View;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.database.model.AttachmentResCenterDB;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -53,7 +53,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     @Override
     public void onRestoreState(Bundle savedState) {
         viewListener.setParamsModel((InputShippingParamsGetModel) savedState.getParcelable(EXTRA_PARAM_MODEL));
-        viewListener.setAttachmentData(savedState.<AttachmentResCenterDB>getParcelableArrayList(EXTRA_PARAM_ATTACHMENT));
+        viewListener.setAttachmentData(savedState.<AttachmentResCenterVersion2DB>getParcelableArrayList(EXTRA_PARAM_ATTACHMENT));
     }
 
     @Override

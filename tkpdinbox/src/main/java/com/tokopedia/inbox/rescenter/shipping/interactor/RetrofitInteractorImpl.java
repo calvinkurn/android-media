@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.tokopedia.core.database.model.AttachmentResCenterDB;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
@@ -287,21 +287,21 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
 
     private Observable<ShippingParamsPostModel> getObservableUploadingFile(Context context, ShippingParamsPostModel passData) {
-        return Observable.zip(Observable.just(passData), doUploadFile(context, passData), new Func2<ShippingParamsPostModel, List<AttachmentResCenterDB>, ShippingParamsPostModel>() {
+        return Observable.zip(Observable.just(passData), doUploadFile(context, passData), new Func2<ShippingParamsPostModel, List<AttachmentResCenterVersion2DB>, ShippingParamsPostModel>() {
             @Override
-            public ShippingParamsPostModel call(ShippingParamsPostModel inputModel, List<AttachmentResCenterDB> attachmentResCenterDBs) {
+            public ShippingParamsPostModel call(ShippingParamsPostModel inputModel, List<AttachmentResCenterVersion2DB> attachmentResCenterDBs) {
                 inputModel.setAttachmentList(attachmentResCenterDBs);
                 return inputModel;
             }
         });
     }
 
-    private Observable<List<AttachmentResCenterDB>> doUploadFile(final Context context, final ShippingParamsPostModel inputModel) {
+    private Observable<List<AttachmentResCenterVersion2DB>> doUploadFile(final Context context, final ShippingParamsPostModel inputModel) {
         return Observable
                 .from(inputModel.getAttachmentList())
-                .flatMap(new Func1<AttachmentResCenterDB, Observable<AttachmentResCenterDB>>() {
+                .flatMap(new Func1<AttachmentResCenterVersion2DB, Observable<AttachmentResCenterVersion2DB>>() {
                     @Override
-                    public Observable<AttachmentResCenterDB> call(AttachmentResCenterDB attachmentResCenterDB) {
+                    public Observable<AttachmentResCenterVersion2DB> call(AttachmentResCenterVersion2DB attachmentResCenterDB) {
                         String uploadUrl = "http://" + inputModel.getUploadHost();
                         NetworkCalculator networkCalculator = new NetworkCalculator(NetworkConfig.POST, context, uploadUrl)
                                 .setIdentity()
@@ -352,9 +352,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                         web_service
                                 );
 
-                        return Observable.zip(Observable.just(attachmentResCenterDB), upload, new Func2<AttachmentResCenterDB, NewUploadResCenterImageData, AttachmentResCenterDB>() {
+                        return Observable.zip(Observable.just(attachmentResCenterDB), upload, new Func2<AttachmentResCenterVersion2DB, NewUploadResCenterImageData, AttachmentResCenterVersion2DB>() {
                             @Override
-                            public AttachmentResCenterDB call(AttachmentResCenterDB attachmentResCenterDB, NewUploadResCenterImageData responseData) {
+                            public AttachmentResCenterVersion2DB call(AttachmentResCenterVersion2DB attachmentResCenterDB, NewUploadResCenterImageData responseData) {
                                 if (responseData != null) {
                                     if (responseData.getData() != null) {
                                         attachmentResCenterDB.picSrc = responseData.getData().getPicSrc();

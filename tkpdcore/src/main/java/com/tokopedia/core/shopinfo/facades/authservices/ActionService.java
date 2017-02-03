@@ -1,6 +1,7 @@
 package com.tokopedia.core.shopinfo.facades.authservices;
 
 
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 
 import retrofit2.Retrofit;
@@ -9,8 +10,6 @@ import retrofit2.Retrofit;
  * Created by Tkpd_Eka on 12/7/2015.
  */
 public class ActionService extends AuthService<ActionApi> {
-
-    private static final String URL_ACTION = "https://ws.tokopedia.com/v4/action/";
 
     public ActionService(){}
 
@@ -21,7 +20,7 @@ public class ActionService extends AuthService<ActionApi> {
 
     @Override
     protected String getBaseUrl() {
-        return URL_ACTION;
+        return TkpdBaseURL.BASE_ACTION;
     }
 
     @Override

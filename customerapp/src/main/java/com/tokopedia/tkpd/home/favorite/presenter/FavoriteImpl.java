@@ -92,7 +92,7 @@ public class FavoriteImpl implements Favorite {
         }
         view.initAdapter(data);
         view.initLayoutManager();
-        favoriteInteractor = new FavoriteInteractorImpl();
+        favoriteInteractor = new FavoriteInteractorImpl(context);
     }
 
     @Override

@@ -537,13 +537,14 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     }
 
     private boolean isAllowedCourier(AtcFormData data) {
+        boolean allowedInstant = data.getForm().getDestination().getLatitude()!=null
+                && !data.getForm().getDestination().getLatitude().isEmpty();
         for (int i = 0; i<data.getForm().getShipment().size(); i++) {
             for(int j = 0; j<data.getForm().getShipment().get(i).getShipmentPackage().size(); j++) {
                 ShipmentPackage shipmentPackage = data.getForm().getShipment().get(i)
                         .getShipmentPackage().get(j);
                 boolean packageAvailable = shipmentPackage.getPackageAvailable() == 1;
                 boolean isGojek = shipmentPackage.getShipmentId().equals(GOJEK_ID);
-                boolean allowedInstant = !data.getForm().getDestination().getLatitude().isEmpty();
                 if (packageAvailable && !isGojek)
                     return true;
                 else if(allowedInstant)

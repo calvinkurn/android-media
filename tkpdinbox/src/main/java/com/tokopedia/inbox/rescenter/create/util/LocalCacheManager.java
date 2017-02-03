@@ -2,8 +2,8 @@ package com.tokopedia.inbox.rescenter.create.util;
 
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.tokopedia.core.database.model.AttachmentResCenterDB;
-import com.tokopedia.core.database.model.AttachmentResCenterDB_Table;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB_Table;
 
 import java.util.List;
 
@@ -46,33 +46,33 @@ public class LocalCacheManager {
         }
 
         public void save() {
-            AttachmentResCenterDB db = new AttachmentResCenterDB();
+            AttachmentResCenterVersion2DB db = new AttachmentResCenterVersion2DB();
             db.orderID = orderID;
             db.imagePath = getImageLocalPath();
             db.imageUrl = getImageUrl();
-            db.modulName = AttachmentResCenterDB.MODULE_CREATE_RESCENTER;
+            db.modulName = AttachmentResCenterVersion2DB.MODULE_CREATE_RESCENTER;
             db.save();
         }
 
-        public List<AttachmentResCenterDB> getCache() {
-            List<AttachmentResCenterDB> mList = new Select().from(AttachmentResCenterDB.class)
-                    .where(AttachmentResCenterDB_Table.orderID.is(orderID))
-                    .and(AttachmentResCenterDB_Table.modulName.is(AttachmentResCenterDB.MODULE_CREATE_RESCENTER))
+        public List<AttachmentResCenterVersion2DB> getCache() {
+            List<AttachmentResCenterVersion2DB> mList = new Select().from(AttachmentResCenterVersion2DB.class)
+                    .where(AttachmentResCenterVersion2DB_Table.orderID.is(orderID))
+                    .and(AttachmentResCenterVersion2DB_Table.modulName.is(AttachmentResCenterVersion2DB.MODULE_CREATE_RESCENTER))
                     .queryList();
             return mList;
         }
 
         public void clearAll() {
-            for (AttachmentResCenterDB data : getCache()) {
+            for (AttachmentResCenterVersion2DB data : getCache()) {
                 data.delete();
             }
         }
 
-        public void remove(AttachmentResCenterDB attachmentReplyResCenterDB) {
-            new Delete().from(AttachmentResCenterDB.class)
-                    .where(AttachmentResCenterDB_Table.orderID.is(orderID))
-                    .and(AttachmentResCenterDB_Table.modulName.is(AttachmentResCenterDB.MODULE_CREATE_RESCENTER))
-                    .and(AttachmentResCenterDB_Table.id.is(attachmentReplyResCenterDB.getId()))
+        public void remove(AttachmentResCenterVersion2DB attachmentReplyResCenterDB) {
+            new Delete().from(AttachmentResCenterVersion2DB.class)
+                    .where(AttachmentResCenterVersion2DB_Table.orderID.is(orderID))
+                    .and(AttachmentResCenterVersion2DB_Table.modulName.is(AttachmentResCenterVersion2DB.MODULE_CREATE_RESCENTER))
+                    .and(AttachmentResCenterVersion2DB_Table.id.is(attachmentReplyResCenterDB.getId()))
                     .execute();
         }
     }

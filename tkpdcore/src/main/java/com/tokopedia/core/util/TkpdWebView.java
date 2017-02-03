@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.util.AttributeSet;
 import android.webkit.WebView;
 
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
 import java.io.UnsupportedEncodingException;
@@ -15,6 +16,9 @@ import java.util.Map;
  * Created by nisie on 11/30/16.
  */
 public class TkpdWebView extends WebView {
+
+    private static final String PARAM_URL = "url";
+    private static final String FORMAT_UTF_8 = "UTF-8";
 
     public TkpdWebView(Context context) {
         super(context);
@@ -36,9 +40,13 @@ public class TkpdWebView extends WebView {
         loadUrl(url,
                 AuthUtil.generateHeaders(
                         Uri.parse(url).getPath(),
-                        Uri.parse(generateUri(url)).getQuery(),
+                        getQuery(Uri.parse(url).getQuery()),
                         "GET",
                         AuthUtil.KEY.KEY_WSV4));
+    }
+
+    private String getQuery(String query) {
+        return query != null ? query : "";
     }
 
     public void loadAuthUrlWithFlags(String url) {
@@ -57,11 +65,24 @@ public class TkpdWebView extends WebView {
                 + "&" + app_version;
 
         try {
-            url += "?" + URLEncoder.encode(flags, "UTF-8");
-
+            if (Uri.parse(uri).getQuery() == null) {
+                url += "?" + URLEncoder.encode(flags, FORMAT_UTF_8);
+            } else if (isSeamlessUrl(uri)
+                    && (Uri.parse(uri).getQueryParameter(PARAM_URL)) != null
+                    && Uri.parse(Uri.parse(uri).getQueryParameter(PARAM_URL)).getQuery() == null) {
+                url += "?" + URLEncoder.encode(flags, FORMAT_UTF_8);
+            } else {
+                flags = "&" + flags;
+                url += URLEncoder.encode(flags, FORMAT_UTF_8);
+            }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+
         return url;
+    }
+
+    private boolean isSeamlessUrl(String uri) {
+        return uri.startsWith(URLGenerator.getBaseUrl());
     }
 }

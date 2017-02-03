@@ -3,6 +3,7 @@ package com.tokopedia.core.analytics;
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.localytics.android.Localytics;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.Product;
@@ -67,6 +68,24 @@ public class PaymentTracking extends TrackingUtils {
         getAFEngine().sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
     }
 
+    /* new from TopPayActivity revamped*/
+    public static void eventTransactionAF(
+            String paymentId, String grandTotalBeforeFee, JSONArray afJSON, int qty,
+            Map[] productList
+    ) {
+        Map<String, Object> afValue = new HashMap<>();
+        afValue.put(AFInAppEventParameterName.REVENUE, grandTotalBeforeFee);
+        afValue.put(AFInAppEventParameterName.CONTENT_ID, afJSON.toString());
+        afValue.put(AFInAppEventParameterName.QUANTITY, qty);
+        afValue.put(AFInAppEventParameterName.RECEIPT_ID, paymentId);
+        afValue.put(AFInAppEventType.ORDER_ID, paymentId);
+        afValue.put(AFInAppEventParameterName.CURRENCY, "IDR");
+        afValue.put("product", productList);
+
+        getAFEngine().sendTrackEvent(AFInAppEventType.PURCHASE, afValue);
+        getAFEngine().sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
+    }
+
     public static void atcLoca(ProductCartPass productCartPass, String productId,
                                String priceItem, Map<String, String> values) {
         eventLoca("event : " + MainApplication.getAppContext().getString(R.string.event_add_to_cart), values);
@@ -100,6 +119,7 @@ public class PaymentTracking extends TrackingUtils {
     }
 
     public static void eventCartCheckout(Checkout checkout) {
+        CommonUtils.dumper("GAv4 CHECKOUT EVENT");
         getGTMEngine()
                 .eventCheckout(checkout)
                 .sendScreen(AppScreen.SCREEN_CART_SUMMARY_CHECKOUT)

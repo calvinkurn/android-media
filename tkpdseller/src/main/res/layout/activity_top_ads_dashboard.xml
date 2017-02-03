@@ -7,7 +7,7 @@
     android:layout_centerHorizontal="true"
     android:orientation="vertical">
 
-    <include layout="@layout/layout_tab_indicator_main_fixed"/>
+    <include layout="@layout/layout_tab_top_ads_indicator_main_fixed"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

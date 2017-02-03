@@ -3,16 +3,30 @@ package com.tokopedia.transaction.cart.presenter;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.PaymentTracking;
+import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.core.analytics.model.Product;
+import com.tokopedia.core.analytics.nishikino.model.Checkout;
+import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.cart.listener.ITopPayView;
+import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.services.TopPayIntentService;
 
+import org.json.JSONArray;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author anggaprasetiyo on 12/16/16.
@@ -95,5 +109,95 @@ public class TopPayPresenter implements ITopPayPresenter {
         LocalCacheHandler cache = view.getLocalCacheHandlerNotification();
         cache.putInt(TkpdCache.Key.IS_HAS_CART, 0);
         cache.applyEditor();
+    }
+
+    @Override
+    public void processCheckoutAnalytics(LocalCacheHandler cacheHandler, String gateway){
+
+        Gson afGSON = new Gson();
+        Checkout checkoutData = afGSON.fromJson(
+                cacheHandler.getString(Jordan.CACHE_KEY_DATA_CHECKOUT),
+                new TypeToken<Checkout>() {
+                }.getType());
+
+        checkoutData.setCheckoutOption(gateway);
+
+        PaymentTracking.eventCartCheckout(checkoutData);
+    }
+
+    @Override
+    public void processPaymentAnalytics(
+            LocalCacheHandler cacheHandler, ThanksTopPayData thanksTopPayData
+    ) throws Exception {
+        Gson afGSON = new Gson();
+        Map[] mapResult = afGSON.fromJson(
+                cacheHandler.getString(Jordan.CACHE_AF_KEY_ALL_PRODUCTS),
+                new TypeToken<Map[]>() {
+                }.getType()
+        );
+        ArrayList<Product> locaProducts = afGSON.fromJson(
+                cacheHandler.getString(Jordan.CACHE_LC_KEY_ALL_PRODUCTS),
+                new TypeToken<ArrayList<Product>>() {
+                }.getType()
+        );
+        ArrayList<Purchase> purchases = afGSON.fromJson(
+                cacheHandler.getString(Jordan.CACHE_KEY_DATA_AR_ALLPURCHASE),
+                new TypeToken<ArrayList<Purchase>>() {
+                }.getType()
+        );
+
+        JSONArray arrJas = new JSONArray(
+                cacheHandler.getArrayListString(Jordan.CACHE_AF_KEY_JSONIDS)
+        );
+        String revenue = cacheHandler.getString(Jordan.CACHE_AF_KEY_REVENUE);
+        int qty = cacheHandler.getInt(Jordan.CACHE_AF_KEY_QTY);
+        String totalShipping = cacheHandler.getLong(Jordan.CACHE_LC_KEY_SHIPPINGRATE) + "";
+
+        CommonUtils.dumper("GAv4 process analytics "+revenue+" data "+arrJas);
+
+        /**
+         * GTM Block
+         *
+         */
+        if (purchases != null) {
+            if (!purchases.isEmpty()) {
+                for (Purchase purchase : purchases) {
+                    purchase.setTransactionID(thanksTopPayData.getParameter().getPaymentId());
+                    PaymentTracking.eventTransactionGTM(purchase);
+                }
+            }
+        }
+
+
+        /**
+         * Localytics Block
+         *
+         */
+        Map<String, String> values = new HashMap<>();
+        values.put(
+                view.getStringFromResource(com.tokopedia.core.R.string.event_payment_method),
+                thanksTopPayData.getParameter().getGatewayName());
+        values.put(
+                view.getStringFromResource(
+                        com.tokopedia.core.R.string.event_value_total_transaction
+                ), revenue
+        );
+        values.put(view.getStringFromResource(
+                com.tokopedia.core.R.string.value_total_quantity), qty + ""
+        );
+        values.put(view.getStringFromResource(
+                com.tokopedia.core.R.string.value_shipping_fee), totalShipping + ""
+        );
+
+        PaymentTracking.eventTransactionLoca(values, locaProducts);
+
+        /**
+         * AppsFlyer Block
+         *
+         */
+        PaymentTracking.eventTransactionAF(
+                thanksTopPayData.getParameter().getPaymentId(),
+                revenue, arrJas, qty, mapResult
+        );
     }
 }
