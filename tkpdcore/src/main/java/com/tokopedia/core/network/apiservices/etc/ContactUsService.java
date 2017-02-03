@@ -19,7 +19,7 @@ public class ContactUsService extends AuthService<ContactUsApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.ContactUs.URL_CONTACT_US +"/";
+        return TkpdBaseURL.BASE_CONTACT_US;
     }
 
     @Override
