@@ -34,9 +34,8 @@ public class GMSubscribeProductListSource {
     }
 
     public Observable<GMProductDomainModelGroup> getData() {
-        return gmSubscribeProductCache
+        return gmSubscribeProductCloud
                 .getProduct()
-                .onErrorResumeNext(new GetDataFromCloud())
                 .flatMap(new ConvertToObject());
     }
 

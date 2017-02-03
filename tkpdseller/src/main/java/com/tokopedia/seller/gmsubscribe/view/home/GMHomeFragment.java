@@ -84,7 +84,7 @@ public class GMHomeFragment extends BasePresenterFragment {
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_gm_home;
+        return R.layout.fragment_gmsubscribe_home;
     }
 
     @Override

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/cards_ui"
+    android:layout_marginTop="18dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginEnd="10dp"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="5"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="22dp"
+        >
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_shop_gold"
+                android:layout_gravity="center_horizontal"/>
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textview_gm_checkout_selected_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="6 Bulan"
+                android:textSize="14sp"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="5dp"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/textivew_gm_checkout_description_package"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bonus Kredit TopAds Rp 150.000"
+                android:textSize="14sp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/prompt_price"
+                android:textSize="11sp"
+                />
+
+            <TextView
+                android:id="@+id/textview_gm_checkout_price_package"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp 550.000"
+                android:textSize="14sp"
+                android:textColor="@color/tkpd_prod_price"
+                />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+
+    <TextView
+        android:id="@+id/gm_subscribe_checkout_change_selected"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/gmsubscribe_button_change"
+        android:textColor="@color/tkpd_main_green"
+        android:textAlignment="center"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"/>
+
+
+</LinearLayout>

@@ -182,5 +182,21 @@
     <string name="gmsubscribe_product_button_change">Ubah</string>
     <string name="gmsubscribe_product_button_activate">Aktifkan</string>
 
+    <string name="gmsubscribe_checkout_title">Gold Checkout</string>
+    <string name="gmsubscribe_continue_checkout">Lanjut</string>
+    <string name="gmsubscribe_button_change">Ubah</string>
+
+    <string name="gmsubscribe_auto_subscribe_title">Aktifkan Perpanjangan Otomatis</string>
+    <string name="gmsubscribe_auto_subscribe_subtitle">Keanggotaan Gold Merchant Anda dapat diperpanjang secara otomatis menggunakan Saldo Tokopedia</string>
+
+    <string name="gmsubscribe_auto_package_title">Paket Perpanjangan Otomatis</string>
+    <string name="gmsubscribe_auto_package_price">Harga</string>
+    <string name="gmsubscribe_auto_package_next_subscribe">Tanggal Tagihan Berikutnya</string>
+    <string name="gmsubscribe_auto_package_payment_method">Metode Pembayaran</string>
+    <string name="gmsubscribe_change_auto">Ubah</string>
+    <string name="gmsubscribe_voucher_code_title">Gunakan Voucher Tokopedia</string>
+    <string name="gmsubscribe_voucher_hint">Kode Voucher</string>
+    <string name="gmsubscribe_voucher_code_check_button">Cek</string>
+
 
 </resources>

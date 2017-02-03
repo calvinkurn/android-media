@@ -97,6 +97,10 @@
         <activity
             android:name=".gmsubscribe.view.product.activity.GMProductActivity"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".gmsubscribe.view.checkout.activity.GMCheckoutActivity"
+            android:label="@string/gmsubscribe_checkout_title"
+            android:screenOrientation="portrait"/>
         <service
             android:name=".selling.SellingService"
             android:exported="false" />
