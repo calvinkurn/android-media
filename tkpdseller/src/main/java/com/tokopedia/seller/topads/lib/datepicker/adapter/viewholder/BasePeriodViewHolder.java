@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.lib.datepicker;
+package com.tokopedia.seller.topads.lib.datepicker.adapter.viewholder;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -8,6 +8,8 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.lib.datepicker.DatePickerUtils;
+import com.tokopedia.seller.topads.lib.datepicker.model.PeriodRangeModel;
 
 /**
  * Created by Nathaniel on 1/16/2017.
@@ -18,7 +20,7 @@ public class BasePeriodViewHolder extends RecyclerView.ViewHolder {
     CheckBox checkBoxPeriod;
     TextView periodHeader;
     TextView periodDate;
-    SetDateFragment.PeriodListener periodListener;
+    DatePickerUtils.PeriodListener periodListener;
     private PeriodRangeModel periodRangeModel;
 
     public BasePeriodViewHolder(View itemView) {
@@ -34,7 +36,7 @@ public class BasePeriodViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public void setPeriodListener(SetDateFragment.PeriodListener periodListener) {
+    public void setPeriodListener(DatePickerUtils.PeriodListener periodListener) {
         this.periodListener = periodListener;
     }
 
@@ -62,7 +64,7 @@ public class BasePeriodViewHolder extends RecyclerView.ViewHolder {
         int i;
         for (i = 0; i < range.length; i++) {
             String[] split1 = range[i].split(" ");
-            split[i] = Integer.parseInt(SetDateFragment.reverseDate(split1));
+            split[i] = Integer.parseInt(DatePickerUtils.reverseDate(split1));
         }
         String[] monthNamesAbrev = itemView.getContext().getResources().getStringArray(R.array.month_names_abrev);
         if (split.length > 1) {

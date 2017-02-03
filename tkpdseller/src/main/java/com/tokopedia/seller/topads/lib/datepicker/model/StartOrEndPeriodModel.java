@@ -1,4 +1,6 @@
-package com.tokopedia.seller.topads.lib.datepicker;
+package com.tokopedia.seller.topads.lib.datepicker.model;
+
+import com.tokopedia.seller.topads.lib.datepicker.DatePickerUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -9,7 +11,7 @@ import java.util.Locale;
  * Created by Nathaniel on 1/16/2017.
  */
 
-public class StartOrEndPeriodModel extends SetDateFragment.BasePeriodModel {
+public class StartOrEndPeriodModel extends DatePickerUtils.BasePeriodModel {
 
     public static final int TYPE = 2;
     public static final int YESTERDAY = -1;
@@ -22,13 +24,14 @@ public class StartOrEndPeriodModel extends SetDateFragment.BasePeriodModel {
     /**
      * isEndDate 60 hari sebelum hari ini
      */
-    boolean isStartDate,
+    public boolean isStartDate;
     /**
      * yesterday
      */
-    isEndDate;
-    String textHeader;
-    long startDate = -1, endDate = -1;
+    public boolean isEndDate;
+    public String textHeader;
+    public long startDate = -1;
+    public long endDate = -1;
 
     private StartOrEndPeriodModel() {
         super(TYPE);

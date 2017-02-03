@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.lib.datepicker;
+package com.tokopedia.seller.topads.lib.datepicker.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -10,6 +10,10 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.lib.datepicker.DatePickerActivity;
+import com.tokopedia.seller.topads.lib.datepicker.DatePickerUtils;
+import com.tokopedia.seller.topads.lib.datepicker.PeriodChooseViewHelper;
+import com.tokopedia.seller.topads.lib.datepicker.model.PeriodRangeModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +35,8 @@ public class PeriodFragment extends Fragment {
 
     private List<PeriodChooseViewHelper> periodChooseViewHelpers;
     private ArrayList<PeriodRangeModel> periodRangeModelList;
-    private List<SetDateFragment.BasePeriodModel> basePeriodModels;
-    private SetDateFragment.PeriodListener periodListener = new SetDateFragment.PeriodListener() {
+    private List<DatePickerUtils.BasePeriodModel> basePeriodModels;
+    private DatePickerUtils.PeriodListener periodListener = new DatePickerUtils.PeriodListener() {
         @Override
         public void updateCheck(boolean checked, int index) {
 

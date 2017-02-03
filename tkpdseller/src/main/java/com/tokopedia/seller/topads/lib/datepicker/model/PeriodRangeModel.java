@@ -1,6 +1,8 @@
-package com.tokopedia.seller.topads.lib.datepicker;
+package com.tokopedia.seller.topads.lib.datepicker.model;
 
 import android.os.Parcelable;
+
+import com.tokopedia.seller.topads.lib.datepicker.DatePickerUtils;
 
 import org.parceler.Parcel;
 
@@ -14,7 +16,7 @@ import java.util.Locale;
  */
 
 @Parcel
-public class PeriodRangeModel extends SetDateFragment.BasePeriodModel implements Parcelable {
+public class PeriodRangeModel extends DatePickerUtils.BasePeriodModel implements Parcelable {
     public static final int TYPE = 1;
     public static final Creator<PeriodRangeModel> CREATOR = new Creator<PeriodRangeModel>() {
         @Override

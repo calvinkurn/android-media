@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.lib.datepicker;
+package com.tokopedia.seller.topads.lib.datepicker.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -7,6 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.lib.datepicker.DatePickerUtils;
+import com.tokopedia.seller.topads.lib.datepicker.adapter.viewholder.BasePeriodViewHolder;
+import com.tokopedia.seller.topads.lib.datepicker.adapter.viewholder.CustomDateViewHolder;
+import com.tokopedia.seller.topads.lib.datepicker.model.DatePickerRules;
+import com.tokopedia.seller.topads.lib.datepicker.model.PeriodRangeModel;
+import com.tokopedia.seller.topads.lib.datepicker.model.StartOrEndPeriodModel;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -22,11 +28,11 @@ import java.util.Locale;
 @SuppressWarnings("deprecation")
 public class PeriodAdapter extends RecyclerView.Adapter {
     private static final Locale locale = new Locale("in", "ID");
-    DatePickerRules datePickerRules;
-    private List<SetDateFragment.BasePeriodModel> basePeriodModels;
+    public DatePickerRules datePickerRules;
+    private List<DatePickerUtils.BasePeriodModel> basePeriodModels;
     private DateFormat dateFormat = new SimpleDateFormat("dd MM yyyy", locale);
     private RecyclerView mRecyclerView;
-    private SetDateFragment.PeriodListener periodListener = new SetDateFragment.PeriodListener() {
+    private DatePickerUtils.PeriodListener periodListener = new DatePickerUtils.PeriodListener() {
         @Override
         public void updateCheck(boolean checked, int index) {
             for (int i = 0; i < basePeriodModels.size(); i++) {
@@ -128,7 +134,7 @@ public class PeriodAdapter extends RecyclerView.Adapter {
         throw new RuntimeException("please register type to PeriodAdapter");
     }
 
-    public void setBasePeriodModels(List<SetDateFragment.BasePeriodModel> basePeriodModels) {
+    public void setBasePeriodModels(List<DatePickerUtils.BasePeriodModel> basePeriodModels) {
         this.basePeriodModels = basePeriodModels;
     }
 

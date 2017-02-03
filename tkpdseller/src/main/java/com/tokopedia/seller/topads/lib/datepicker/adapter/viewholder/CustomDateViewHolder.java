@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.lib.datepicker;
+package com.tokopedia.seller.topads.lib.datepicker.adapter.viewholder;
 
 /**
  * Created by Nathaniel on 1/16/2017.
@@ -13,6 +13,9 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.lib.datepicker.DatePickerUtils;
+import com.tokopedia.seller.topads.lib.datepicker.model.DatePickerRules;
+import com.tokopedia.seller.topads.lib.datepicker.model.StartOrEndPeriodModel;
 
 import java.util.Calendar;
 
@@ -56,14 +59,14 @@ public class CustomDateViewHolder extends RecyclerView.ViewHolder {
         if (startOrEndPeriodModel.isEndDate) {
             String endDate = startOrEndPeriodModel.getEndDate();
             String[] split = endDate.split(" ");
-            customDate.setText(DatePickerUtils.getDateWithYear(Integer.parseInt(SetDateFragment.reverseDate(split)), monthNamesAbrev));
+            customDate.setText(DatePickerUtils.getDateWithYear(Integer.parseInt(DatePickerUtils.reverseDate(split)), monthNamesAbrev));
             cal = Calendar.getInstance();
             cal.setTimeInMillis(startOrEndPeriodModel.endDate);
         }
         if (startOrEndPeriodModel.isStartDate) {
             String startDate = startOrEndPeriodModel.getStartDate();
             String[] split = startDate.split(" ");
-            customDate.setText(DatePickerUtils.getDateWithYear(Integer.parseInt(SetDateFragment.reverseDate(split)), monthNamesAbrev));
+            customDate.setText(DatePickerUtils.getDateWithYear(Integer.parseInt(DatePickerUtils.reverseDate(split)), monthNamesAbrev));
             cal = Calendar.getInstance();
             cal.setTimeInMillis(startOrEndPeriodModel.startDate);
         }

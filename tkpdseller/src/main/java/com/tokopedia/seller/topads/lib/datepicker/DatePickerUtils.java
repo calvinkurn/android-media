@@ -30,4 +30,30 @@ public class DatePickerUtils {
         result.add(year);
         return result;
     }
+
+    public static String reverseDate(String[] split) {
+        String reverse = "";
+        for (int i = split.length - 1; i >= 0; i--) {
+            reverse += split[i];
+        }
+        return reverse;
+    }
+
+    public interface PeriodListener {
+        void updateCheck(boolean checked, int index);
+
+        boolean isAllNone(boolean checked, int index);
+    }
+
+    public static class BasePeriodModel {
+        public int type = -1;
+
+        public BasePeriodModel(int type) {
+            this.type = type;
+        }
+
+        public BasePeriodModel() {
+
+        }
+    }
 }

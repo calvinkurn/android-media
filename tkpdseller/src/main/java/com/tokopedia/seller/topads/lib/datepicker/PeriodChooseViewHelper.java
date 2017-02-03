@@ -6,6 +6,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.lib.datepicker.model.PeriodRangeModel;
 
 /**
  * Created by Nathaniel on 1/16/2017.
@@ -16,7 +17,7 @@ public class PeriodChooseViewHelper {
     TextView periodHeader;
     TextView periodDate;
     View overlaySetDate;
-    SetDateFragment.PeriodListener periodListener;
+    DatePickerUtils.PeriodListener periodListener;
     private View itemView;
     private int position;
     private PeriodRangeModel periodRangeModel;
@@ -36,7 +37,7 @@ public class PeriodChooseViewHelper {
         });
     }
 
-    public void setPeriodListener(SetDateFragment.PeriodListener periodListener) {
+    public void setPeriodListener(DatePickerUtils.PeriodListener periodListener) {
         this.periodListener = periodListener;
     }
 
@@ -75,7 +76,7 @@ public class PeriodChooseViewHelper {
         int i;
         for (i = 0; i < range.length; i++) {
             String[] split1 = range[i].split(" ");
-            split[i] = Integer.parseInt(SetDateFragment.reverseDate(split1));
+            split[i] = Integer.parseInt(DatePickerUtils.reverseDate(split1));
         }
 
         String[] monthNamesAbrev = itemView.getContext().getResources().getStringArray(R.array.month_names_abrev);

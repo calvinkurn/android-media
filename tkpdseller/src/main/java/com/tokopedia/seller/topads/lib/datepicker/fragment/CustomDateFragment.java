@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.lib.datepicker;
+package com.tokopedia.seller.topads.lib.datepicker.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -11,6 +11,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.lib.datepicker.DatePickerActivity;
+import com.tokopedia.seller.topads.lib.datepicker.DatePickerUtils;
+import com.tokopedia.seller.topads.lib.datepicker.adapter.PeriodAdapter;
+import com.tokopedia.seller.topads.lib.datepicker.model.StartOrEndPeriodModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +82,7 @@ public class CustomDateFragment extends Fragment {
         recyclerView.setVisibility(View.VISIBLE);
         periodAdapter = new PeriodAdapter(rootView, startDate, endDate, minStartDate, maxEndDate, maxDateRange);
 
-        List<SetDateFragment.BasePeriodModel> basePeriodModels = new ArrayList<>();
+        List<DatePickerUtils.BasePeriodModel> basePeriodModels = new ArrayList<>();
         StartOrEndPeriodModel startOrEndPeriodModel = new StartOrEndPeriodModel(true, false, "Tanggal Mulai");
         startOrEndPeriodModel.setStartDate(startDate);
         startOrEndPeriodModel.setEndDate(endDate);
