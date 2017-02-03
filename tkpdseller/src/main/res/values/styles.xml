@@ -125,6 +125,21 @@
         <item name="android:background">@drawable/bg_button_green</item>
     </style>
 
+    <style name="ImageViewStatus">
+        <item name="android:layout_width">10dp</item>
+        <item name="android:layout_height">10dp</item>
+        <item name="android:background">@drawable/ic_status_green</item>
+    </style>
+
+    <style name="Fab">
+        <item name="android:id">@id/fab_speed_dial</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="backgroundTint">@color/green_500</item>
+        <item name="fabSize">normal</item>
+        <item name="layout_anchorGravity">bottom|right|end</item>
+    </style>
+
     <style name="FabSpeedDial">
         <item name="android:id">@id/fab_speed_dial</item>
         <item name="android:layout_width">wrap_content</item>

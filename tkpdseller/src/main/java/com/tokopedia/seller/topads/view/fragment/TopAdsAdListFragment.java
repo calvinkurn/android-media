@@ -4,6 +4,7 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -41,27 +42,30 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         TopAdsListPromoViewListener, SearchView.OnQueryTextListener, TopAdsAdListAdapter.Callback {
 
     private static final int START_PAGE = 1;
-    protected static final int REQUEST_CODE_AD_STATUS = TopAdsAdListFragment.class.hashCode();
+    protected static final int REQUEST_CODE_AD_STATUS = 2;
+    protected static final int REQUEST_CODE_AD_FILTER = 3;
 
-    RecyclerView recyclerView;
-    SwipeToRefresh swipeToRefresh;
-    View mainView;
+    private RecyclerView recyclerView;
+    private SwipeToRefresh swipeToRefresh;
+    private FloatingActionButton fabFilter;
 
     protected String keyword;
     protected int status;
     protected int page;
+
     protected int totalItem;
+    private boolean searchMode;
 
     protected TopAdsAdListAdapter adapter;
-    private RefreshHandler refresh;
     private LinearLayoutManager layoutManager;
-    private SearchView searchView;
     private SnackbarRetry snackBarRetry;
     private ProgressDialog progressDialog;
 
     protected abstract void searchAd();
 
     protected abstract TopAdsEmptyAdDataBinder getEmptyViewBinder();
+
+    protected abstract void goToFilter();
 
     public TopAdsAdListFragment() {
         // Required empty public constructor
@@ -82,9 +86,15 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         super.initView(view);
         recyclerView = (RecyclerView) view.findViewById(R.id.list_product);
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
-        mainView = view.findViewById(R.id.mainView);
+        fabFilter = (FloatingActionButton) view.findViewById(R.id.fab_filter);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+        fabFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToFilter();
+            }
+        });
     }
 
     @Override
@@ -114,7 +124,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         super.initialVar();
         page = START_PAGE;
         totalItem = Integer.MAX_VALUE;
-        refresh = new RefreshHandler(getActivity(), mainView, new RefreshHandler.OnRefreshHandlerListener() {
+        searchMode = false;
+        new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
                 searchAd(START_PAGE);
@@ -172,6 +183,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     public void onSearchAdLoaded(@NonNull List adList, int totalItem) {
         swipeToRefresh.setEnabled(true);
         this.totalItem = totalItem;
+        if (totalItem > 0 && !searchMode) {
+            updateEmptyViewNoResult();
+        }
         if (page == START_PAGE) {
             adapter.clearData();
             layoutManager.scrollToPositionWithOffset(0, 0);
@@ -180,9 +194,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         hideLoading();
         if (adapter.getDataSize() < 1) {
             adapter.showEmptyFull(true);
-            if (TextUtils.isEmpty(keyword)) {
-                searchView.setVisibility(View.GONE);
-            }
         }
     }
 
@@ -245,44 +256,11 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     @Override
     public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
+        menu.clear();
         inflater.inflate(R.menu.promo_topads, menu);
-        final MenuItem searchItem = menu.findItem(R.id.menu_search);
-        searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setOnQueryTextListener(this);
-        searchView.setOnSearchClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateEmptyViewNoResult();
-                setItemsVisibility(menu, searchItem, false);
-            }
-        });
-        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-            @Override
-            public boolean onClose() {
-                setItemsVisibility(menu, searchItem, true);
-                return false;
-            }
-        });
-        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                return true;
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                setItemsVisibility(menu, searchItem, true);
-                return true;
-            }
-        });
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    private void setItemsVisibility(Menu menu, MenuItem exception, boolean visible) {
-        for (int i = 0; i < menu.size(); ++i) {
-            MenuItem item = menu.getItem(i);
-            if (item != exception) item.setVisible(visible);
-        }
     }
 
     @Override

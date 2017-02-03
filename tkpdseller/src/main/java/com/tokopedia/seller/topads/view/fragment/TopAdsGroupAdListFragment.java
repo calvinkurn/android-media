@@ -10,6 +10,7 @@ import com.tokopedia.seller.topads.model.data.GroupAd;
 import com.tokopedia.seller.topads.presenter.TopAdsGroupAdListPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsGroupAdListPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailGroupActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsFilterGroupActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
@@ -59,7 +60,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
 
     @Override
     public void onClicked(Ad ad) {
-        if(ad instanceof GroupAd){
+        if (ad instanceof GroupAd) {
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD, (GroupAd) ad);
             startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
@@ -67,8 +68,25 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     }
 
     @Override
+    protected void goToFilter() {
+        Intent intent = new Intent(getActivity(), TopAdsFilterGroupActivity.class);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
+        startActivityForResult(intent, REQUEST_CODE_AD_FILTER);
+    }
+
+    @Override
     public void onEmptyContentItemTextClicked() {
         Intent intent = new Intent(getActivity(), TopAdsProductAdListActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        // check if the request code is the same
+        if (requestCode == REQUEST_CODE_AD_FILTER && intent != null) {
+            status = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
+            searchAd();
+        }
     }
 }

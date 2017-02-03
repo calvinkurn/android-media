@@ -97,7 +97,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
 
     void onProductItemClicked() {
         Intent intent = new Intent(getActivity(), TopAdsProductAdListActivity.class);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_GROUP, groupAd.getId());
+        intent.putExtra(TopAdsExtraConstant.EXTRA_GROUP, groupAd);
         startActivity(intent);
     }
 }
