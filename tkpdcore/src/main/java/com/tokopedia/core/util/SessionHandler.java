@@ -175,7 +175,7 @@ public class SessionHandler {
         InboxReputationCacheManager reputationDetailCache = new InboxReputationCacheManager();
         reputationDetailCache.deleteAll();
         logoutInstagram(context);
-        MethodChecker.removeAllCookies();
+        MethodChecker.removeAllCookies(context);
 
 
     }

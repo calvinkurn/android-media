@@ -91,6 +91,9 @@ public class ManageShopNotesActivity extends BasePresenterActivity {
                 if (shopNote != null) {
                     bundle.putBoolean(PARAM_IS_EDIT, true);
                     bundle.putParcelable(PARAM_SHOP_NOTE, shopNote);
+                } else {
+                    bundle.putBoolean(PARAM_IS_EDIT, false);
+                    bundle.putParcelable(PARAM_SHOP_NOTE, null);
                 }
 
                 ManageShopNotesFormFragment fragment = ManageShopNotesFormFragment.createInstance(bundle);

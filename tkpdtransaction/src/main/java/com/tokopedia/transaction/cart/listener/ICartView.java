@@ -2,6 +2,7 @@ package com.tokopedia.transaction.cart.listener;
 
 import android.support.annotation.NonNull;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.transaction.base.IBaseView;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
@@ -92,4 +93,6 @@ public interface ICartView extends IBaseView {
     void trackingCartDropShipperEvent();
 
     void trackingCartCancelEvent();
+
+    LocalCacheHandler getLocalCacheHandlerNotificationData();
 }

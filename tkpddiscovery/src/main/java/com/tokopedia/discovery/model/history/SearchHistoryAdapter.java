@@ -88,6 +88,7 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public void setNewSearchSuggestion(String query, SearchDataModel dataModel) {
+        searchHistoryModel.setSearchTerm(query);
         for (SearchDataModel.Data data : dataModel.getData()) {
             if(data.getId().equals("autocomplete")){
                 ArrayList<SearchHistoryModel.Data> autocomplete = new ArrayList<>();

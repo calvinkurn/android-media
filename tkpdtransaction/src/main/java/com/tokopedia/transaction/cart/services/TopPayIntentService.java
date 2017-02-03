@@ -10,6 +10,7 @@ import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutDropShipperData;
+import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.receivers.TopPayBroadcastReceiver;
 import com.tokopedia.transaction.exception.HttpErrorException;
@@ -66,7 +67,7 @@ public class TopPayIntentService extends IntentService {
         if (cartDataInteractor == null) cartDataInteractor = new CartDataInteractor();
         cartDataInteractor.getThanksTopPay(AuthUtil.generateParamsNetwork(this, params),
                 Schedulers.immediate(),
-                new Subscriber<Boolean>() {
+                new Subscriber<ThanksTopPayData>() {
                     @Override
                     public void onCompleted() {
 
@@ -107,14 +108,18 @@ public class TopPayIntentService extends IntentService {
                     }
 
                     @Override
-                    public void onNext(Boolean aBoolean) {
-                        if (aBoolean) {
+                    public void onNext(ThanksTopPayData thanksTopPayData) {
+                        if (thanksTopPayData.getIsSuccess() == 1) {
                             Intent intent = new Intent(
                                     TopPayBroadcastReceiver.ACTION_GET_THANKS_TOP_PAY
                             );
                             intent.putExtra(
                                     TopPayBroadcastReceiver.EXTRA_RESULT_CODE_TOP_PAY_ACTION,
                                     TopPayBroadcastReceiver.RESULT_CODE_TOP_PAY_SUCCESS
+                            );
+                            intent.putExtra(
+                                    TopPayBroadcastReceiver.EXTRA_TOP_PAY_THANKS_TOP_PAY_ACTION,
+                                    thanksTopPayData
                             );
                             intent.putExtra(
                                     TopPayBroadcastReceiver.EXTRA_MESSAGE_TOP_PAY_ACTION,

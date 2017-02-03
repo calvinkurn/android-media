@@ -71,6 +71,9 @@ public class CartData implements Parcelable {
     @SerializedName("grand_total_without_lp_idr")
     @Expose
     private String grandTotalWithoutLPIDR;
+    @SerializedName("cart_shipping_rate")
+    @Expose
+    private long cartShippingRate;
 
     public String getGrandTotalWithoutLP() {
         return grandTotalWithoutLP;
@@ -232,6 +235,13 @@ public class CartData implements Parcelable {
         this.grandTotalWithoutLPIDR = grandTotalWithoutLPIDR;
     }
 
+    public long getCartShippingRate() {
+        return cartShippingRate;
+    }
+
+    public void setCartShippingRate(long cartShippingRate) {
+        this.cartShippingRate = cartShippingRate;
+    }
 
     public CartData() {
     }
@@ -264,6 +274,7 @@ public class CartData implements Parcelable {
         dest.writeInt(this.lpAmount);
         dest.writeString(this.grandTotalWithoutLP);
         dest.writeString(this.grandTotalWithoutLPIDR);
+        dest.writeLong(this.cartShippingRate);
     }
 
     protected CartData(Parcel in) {
@@ -287,6 +298,7 @@ public class CartData implements Parcelable {
         this.lpAmount = in.readInt();
         this.grandTotalWithoutLP = in.readString();
         this.grandTotalWithoutLPIDR = in.readString();
+        this.cartShippingRate = in.readLong();
     }
 
     public static final Creator<CartData> CREATOR = new Creator<CartData>() {

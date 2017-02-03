@@ -15,6 +15,7 @@ import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
 import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
 
@@ -54,7 +55,7 @@ public class MethodChecker {
     }
 
 
-    public static void removeAllCookies() {
+    public static void removeAllCookies(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             CookieManager.getInstance().removeAllCookies(new ValueCallback<Boolean>() {
                 @Override
@@ -62,8 +63,14 @@ public class MethodChecker {
                     CommonUtils.dumper("Success Clear Cookie");
                 }
             });
-        } else
-            CookieManager.getInstance().removeAllCookie();
+        } else {
+            CookieSyncManager cookieSyncMngr = CookieSyncManager.createInstance(context);
+            cookieSyncMngr.startSync();
+            CookieManager cookieManager = CookieManager.getInstance();
+            cookieManager.removeAllCookie();
+            cookieManager.removeSessionCookie();
+            cookieSyncMngr.stopSync();
+        }
     }
 
     public static Uri getUri(Context context, File outputMediaFile) {

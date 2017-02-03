@@ -26,15 +26,7 @@ public interface RechargeInteractor {
 
     void getStatus(OnGetStatus onGetStatus);
 
-    void storeCategoryData(CategoryData categoryData);
-
-    void storeOperatorData(OperatorData operatorData);
-
-    void storeProductData(ProductData productData);
-
     void storeRecentData(RecentData recentData);
-
-    void storeStatus(Status status);
 
     void getRecentData(int categoryId,OnGetRecentNumberListener listener);
 

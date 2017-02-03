@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.BuildConfig;
@@ -37,25 +39,33 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.shopinfo.adapter.ShopTabPagerAdapter;
 import com.tokopedia.core.shopinfo.facades.ActionShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
+import com.tokopedia.core.shopinfo.fragment.OfficialShopHomeFragment;
 import com.tokopedia.core.shopinfo.fragment.ProductList;
+import com.tokopedia.core.shopinfo.models.GetShopProductParam;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.TkpdState;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
@@ -65,7 +75,11 @@ import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
  * Edited by HAFIZH on 23-01-2017
  */
 
-public class ShopInfoActivity extends TActivity {
+public class ShopInfoActivity extends TActivity
+        implements OfficialShopHomeFragment.OfficialShopInteractionListener {
+    public static final int REQUEST_CODE_LOGIN = 561;
+    private static final String FORMAT_UTF_8 = "UTF-8";
+    private static final String URL_RECHARGE_HOST = "pulsa.tokopedia.com";
 
     private class ViewHolder {
         ViewPager pager;
@@ -110,6 +124,7 @@ public class ShopInfoActivity extends TActivity {
     private String shopInfoString;
     private String adKey;
     private ShopTabPagerAdapter adapter;
+    private String redirectionUrl;
     public static final String LOGIN_ACTION = BuildConfig.APPLICATION_ID + ".LOGIN_ACTION";
     private BroadcastReceiver loginReceiver = new BroadcastReceiver() {
         @Override
@@ -173,18 +188,6 @@ public class ShopInfoActivity extends TActivity {
         }
 
         sendEventLoca();
-    }
-
-    public void switchTab(String etalaseId) {
-        try {
-            if (!etalaseId.equals("all")) {
-                ProductList productListFragment = (ProductList) adapter.getItem(1);
-                productListFragment.setSelectedEtalase(etalaseId);
-            }
-            holder.pager.setCurrentItem(1, true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -288,7 +291,14 @@ public class ShopInfoActivity extends TActivity {
                     showRetry();
                     holder.retryButton.setOnClickListener(onRetryClick());
                 } else
-                    SnackbarManager.make(ShopInfoActivity.this, getString(R.string.error_load_shop), Snackbar.LENGTH_INDEFINITE).setAction("Coba lagi", onRetryClick()).show();
+                    SnackbarManager
+                            .make(
+                                    ShopInfoActivity.this,
+                                    getString(R.string.error_load_shop),
+                                    Snackbar.LENGTH_INDEFINITE
+                            )
+                            .setAction("Coba lagi", onRetryClick())
+                            .show();
             }
         };
     }
@@ -711,6 +721,14 @@ public class ShopInfoActivity extends TActivity {
                 case REQ_RELOAD:
                     initFacadeAndLoadShopInfo();
                     break;
+                case REQUEST_CODE_LOGIN:
+                    if (!TextUtils.isEmpty(redirectionUrl)) {
+                        String encodedUrl = encodeUrl(redirectionUrl);
+                        if (encodedUrl != null) {
+                            openWebView(URLGenerator.generateURLSessionLoginV4(encodedUrl, this));
+                        }
+                    }
+                    break;
             }
         }
     }
@@ -736,5 +754,71 @@ public class ShopInfoActivity extends TActivity {
 
     private void sendEventLoca() {
         ScreenTracking.eventLoca(AppScreen.SCREEN_VIEWED_SHOP_PAGE);
+    }
+
+    @Override
+    public void OnProductListPageRedirected(GetShopProductParam productParam) {
+        if (!productParam.getEtalaseId().equalsIgnoreCase("all")) {
+            ProductList productListFragment = (ProductList) adapter.getItem(1);
+            productListFragment.refreshProductList(productParam);
+        }
+        holder.pager.setCurrentItem(1, true);
+    }
+
+    @Override
+    public void OnProductInfoPageRedirected(String productId) {
+        Bundle bundle = new Bundle();
+        Intent intent = new Intent(this, ProductInfoActivity.class);
+        bundle.putString(ProductDetailRouter.EXTRA_PRODUCT_ID, productId);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    @Override
+    public void OnWebViewPageRedirected(String url) {
+        if (isNeededToLogin(url)) {
+            if (SessionHandler.isV4Login(this)) {
+                String encodedUrl = encodeUrl(url);
+                if (encodedUrl != null) {
+                    openWebView(URLGenerator.generateURLSessionLoginV4(encodedUrl, this));
+                }
+            } else {
+                redirectionUrl = url;
+                Intent intent = SessionRouter.getLoginActivityIntent(this);
+                intent.putExtra(Session.WHICH_FRAGMENT_KEY,
+                        TkpdState.DrawerPosition.LOGIN);
+                startActivityForResult(intent, REQUEST_CODE_LOGIN);
+            }
+        } else {
+            openWebView(url);
+        }
+
+
+    }
+
+    private String encodeUrl(String url) {
+        String encodedUrl;
+        try {
+            encodedUrl = URLEncoder.encode(url, FORMAT_UTF_8);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return encodedUrl;
+    }
+
+    private boolean isNeededToLogin(String url) {
+        switch (Uri.parse(url).getHost()) {
+            case URL_RECHARGE_HOST:
+                return true;
+        }
+        return false;
+    }
+
+    private void openWebView(String url) {
+        CommonUtils.dumper(url);
+        Intent intent = new Intent(this, BannerWebView.class);
+        intent.putExtra(BannerWebView.EXTRA_URL, url);
+        startActivity(intent);
     }
 }
