@@ -215,7 +215,7 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
         List<String> list = getEmailListOfAccountsUserHasLoggedInto();
         if (list.size() > 0) {
             String mEmail = list.get(0);
-            if (email.getText().equals("")) {
+            if (email.getText().toString().equals("")) {
                 email.setText(mEmail);
                 email.setSelection(mEmail.length());
             }
