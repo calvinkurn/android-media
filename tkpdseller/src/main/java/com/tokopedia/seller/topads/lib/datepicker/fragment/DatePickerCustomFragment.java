@@ -23,7 +23,7 @@ import java.util.List;
  * Created by Nathaniel on 1/16/2017.
  */
 
-public class CustomDateFragment extends Fragment {
+public class DatePickerCustomFragment extends Fragment {
 
     public interface Callback {
 
@@ -46,8 +46,8 @@ public class CustomDateFragment extends Fragment {
         this.callback = callback;
     }
 
-    public static CustomDateFragment newInstance(long sDate, long eDate, long minStartDate, long maxEndDate, int maxDateRange) {
-        CustomDateFragment fragment = new CustomDateFragment();
+    public static DatePickerCustomFragment newInstance(long sDate, long eDate, long minStartDate, long maxEndDate, int maxDateRange) {
+        DatePickerCustomFragment fragment = new DatePickerCustomFragment();
         Bundle bundle = new Bundle();
         bundle.putLong(DatePickerActivity.CUSTOM_START_DATE, sDate);
         bundle.putLong(DatePickerActivity.CUSTOM_END_DATE, eDate);

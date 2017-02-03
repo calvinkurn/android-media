@@ -22,7 +22,7 @@ import java.util.List;
  * Created by Nathaniel on 1/16/2017.
  */
 
-public class PeriodFragment extends Fragment {
+public class DatePickerPeriodFragment extends Fragment {
 
     public interface Callback {
 
@@ -87,8 +87,8 @@ public class PeriodFragment extends Fragment {
         this.callback = callback;
     }
 
-    public static PeriodFragment newInstance(int selectionPeriod, ArrayList<PeriodRangeModel> periodRangeModelList) {
-        PeriodFragment fragment = new PeriodFragment();
+    public static DatePickerPeriodFragment newInstance(int selectionPeriod, ArrayList<PeriodRangeModel> periodRangeModelList) {
+        DatePickerPeriodFragment fragment = new DatePickerPeriodFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(DatePickerActivity.SELECTION_PERIOD, selectionPeriod);
         bundle.putParcelableArrayList(DatePickerActivity.DATE_PERIOD_LIST, periodRangeModelList);

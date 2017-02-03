@@ -10,8 +10,8 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.lib.datepicker.fragment.CustomDateFragment;
-import com.tokopedia.seller.topads.lib.datepicker.fragment.PeriodFragment;
+import com.tokopedia.seller.topads.lib.datepicker.fragment.DatePickerCustomFragment;
+import com.tokopedia.seller.topads.lib.datepicker.fragment.DatePickerPeriodFragment;
 import com.tokopedia.seller.topads.lib.datepicker.model.PeriodRangeModel;
 import com.tokopedia.seller.topads.view.adapter.TopAdsDashboardPagerAdapter;
 
@@ -57,8 +57,8 @@ public class DatePickerActivity extends TActivity {
     private boolean goldMerchant;
 
     private ArrayList<PeriodRangeModel> periodRangeModelList;
-    private PeriodFragment periodFragment;
-    private CustomDateFragment customDateFragment;
+    private DatePickerPeriodFragment periodFragment;
+    private DatePickerCustomFragment mDatePickerCustomFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +85,8 @@ public class DatePickerActivity extends TActivity {
 
     private PagerAdapter getViewPagerAdapter() {
         List<Fragment> fragmentList = new ArrayList<>();
-        periodFragment = PeriodFragment.newInstance(selectionPeriod, periodRangeModelList);
-        periodFragment.setCallback(new PeriodFragment.Callback() {
+        periodFragment = DatePickerPeriodFragment.newInstance(selectionPeriod, periodRangeModelList);
+        periodFragment.setCallback(new DatePickerPeriodFragment.Callback() {
             @Override
             public void onDateSubmitted(int selectionPeriodResult, long startDateResult, long endDateResult) {
                 selectionType = SELECTION_TYPE_PERIOD_DATE;
@@ -97,8 +97,8 @@ public class DatePickerActivity extends TActivity {
             }
         });
         fragmentList.add(periodFragment);
-        customDateFragment = CustomDateFragment.newInstance(startDate, endDate, minStartDate, maxStartDate, maxDateRange);
-        customDateFragment.setCallback(new CustomDateFragment.Callback() {
+        mDatePickerCustomFragment = DatePickerCustomFragment.newInstance(startDate, endDate, minStartDate, maxStartDate, maxDateRange);
+        mDatePickerCustomFragment.setCallback(new DatePickerCustomFragment.Callback() {
             @Override
             public void onDateSubmitted(long startDateResult, long endDateResult) {
                 selectionType = SELECTION_TYPE_CUSTOM_DATE;
@@ -107,7 +107,7 @@ public class DatePickerActivity extends TActivity {
                 setResult();
             }
         });
-        fragmentList.add(customDateFragment);
+        fragmentList.add(mDatePickerCustomFragment);
         return new TopAdsDashboardPagerAdapter(getFragmentManager(), fragmentList);
     }
 
