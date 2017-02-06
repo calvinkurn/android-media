@@ -29,6 +29,18 @@ public class BaseLinearRecyclerViewAdapter extends DataBindAdapter{
         retryView.setOnRetryListenerRV(onRetryClicked());
     }
 
+    public void setLoadingView(LoadingDataBinder loadingView) {
+        this.loadingView = loadingView;
+    }
+
+    public void setEmptyView(NoResultDataBinder emptyView) {
+        this.emptyView = emptyView;
+    }
+
+    public void setRetryView(RetryDataBinder retryView) {
+        this.retryView = retryView;
+    }
+
     @Override
     public int getItemCount() {
         return empty + loading + retry;
@@ -94,7 +106,6 @@ public class BaseLinearRecyclerViewAdapter extends DataBindAdapter{
             retry = 0;
         }
         retryView.setIsFullScreen(false);
-
         notifyDataSetChanged();
     }
 
@@ -120,6 +131,16 @@ public class BaseLinearRecyclerViewAdapter extends DataBindAdapter{
         this.listener = listener;
     }
 
+    public void showEmptyFull(boolean isEmpty) {
+        if (isEmpty) {
+            empty = 1;
+        } else {
+            empty = 0;
+        }
+        emptyView.setIsFullScreen(isEmpty);
+        notifyDataSetChanged();
+    }
+
     public void showLoadingFull(boolean isLoading) {
         if (isLoading) {
             loading = 1;
@@ -127,7 +148,6 @@ public class BaseLinearRecyclerViewAdapter extends DataBindAdapter{
             loading = 0;
         }
         loadingView.setIsFullScreen(isLoading);
-
         notifyDataSetChanged();
     }
 
@@ -140,5 +160,4 @@ public class BaseLinearRecyclerViewAdapter extends DataBindAdapter{
         retryView.setIsFullScreen(isRetry);
         notifyDataSetChanged();
     }
-
 }

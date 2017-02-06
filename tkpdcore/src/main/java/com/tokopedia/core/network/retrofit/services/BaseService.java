@@ -26,11 +26,18 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public abstract class BaseService<T> {
     private static final String TAG = BaseService.class.getSimpleName();
+
     protected T api;
 
+    protected abstract void initApiService(Retrofit retrofit);
+
+    protected abstract String getBaseUrl();
+
+    public abstract T getApi();
+
     public BaseService() {
-        OkHttpClient.Builder client = new OkHttpClient.Builder();
-        Interceptor authInterceptor = new TkpdBaseInterceptor();
+        OkHttpClient.Builder client = getOkHttpClientBuilder();
+        Interceptor authInterceptor = getAuthInterceptor();
         client.interceptors().add(authInterceptor);
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -40,8 +47,26 @@ public abstract class BaseService<T> {
                 .setPrettyPrinting()
                 .serializeNulls()
                 .create();
-
         Retrofit.Builder retrofit = new Retrofit.Builder();
+        retrofit.baseUrl(getProcessedBaseUrl());
+        retrofit.addConverterFactory(new GeneratedHostConverter());
+        retrofit.addConverterFactory(new TkpdResponseConverter());
+        retrofit.addConverterFactory(new StringResponseConverter());
+        retrofit.addConverterFactory(GsonConverterFactory.create(gson));
+        retrofit.addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+        retrofit.client(client.build());
+        initApiService(retrofit.build());
+    }
+
+    public OkHttpClient.Builder getOkHttpClientBuilder() {
+        return new OkHttpClient.Builder();
+    }
+
+    public Interceptor getAuthInterceptor() {
+        return new TkpdBaseInterceptor();
+    }
+
+    public String getProcessedBaseUrl() {
         String baseUrl = getBaseUrl();
         if (baseUrl.startsWith("https://ws") & BuildConfig.DEBUG) {
             String path = baseUrl.substring(baseUrl.indexOf("v4"));
@@ -53,23 +78,10 @@ public abstract class BaseService<T> {
             String path = baseUrl.substring(baseUrl.indexOf("promo"));
             SharedPreferences pref = MainApplication.getAppContext()
                     .getSharedPreferences("DOMAIN_WS_4", Context.MODE_PRIVATE);
-            if(pref.getString("DOMAIN_WS4", TkpdBaseURL.BASE_DOMAIN).equals(TkpdBaseURL.STAGE_DOMAIN)){
+            if (pref.getString("DOMAIN_WS4", TkpdBaseURL.BASE_DOMAIN).equals(TkpdBaseURL.STAGE_DOMAIN)) {
                 baseUrl = TkpdBaseURL.TOPADS_STAGING_DOMAIN + path;
             }
         }
-        retrofit.baseUrl(baseUrl);
-        retrofit.addConverterFactory(new GeneratedHostConverter());
-        retrofit.addConverterFactory(new TkpdResponseConverter());
-        retrofit.addConverterFactory(new StringResponseConverter());
-        retrofit.addConverterFactory(GsonConverterFactory.create(gson));
-        retrofit.addCallAdapterFactory(RxJavaCallAdapterFactory.create());
-        retrofit.client(client.build());
-        initApiService(retrofit.build());
+        return baseUrl;
     }
-
-    protected abstract void initApiService(Retrofit retrofit);
-
-    protected abstract String getBaseUrl();
-
-    public abstract T getApi();
 }

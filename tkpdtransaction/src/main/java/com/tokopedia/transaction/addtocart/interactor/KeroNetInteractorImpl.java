@@ -50,8 +50,12 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
 
             @Override
             public void onNext(Response<String> stringResponse) {
-                Rates rates = new Gson().fromJson(stringResponse.body(), Rates.class);
-                listener.onSuccess(rates.getData());
+                if(stringResponse.body() != null) {
+                    Rates rates = new Gson().fromJson(stringResponse.body(), Rates.class);
+                    listener.onSuccess(rates.getData());
+                } else {
+                    throw new RuntimeException("Empty Response");
+                }
             }
         };
 
@@ -75,7 +79,7 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                calculateKeroCartAddressShipping(context, param, listener);
+                listener.onFailure();
             }
 
             @Override
@@ -84,7 +88,7 @@ public class KeroNetInteractorImpl implements KeroNetInteractor {
                     Rates rates = new Gson().fromJson(response.body(), Rates.class);
                     listener.onSuccess(rates.getData().getAttributes());
                 } else {
-                    calculateKeroCartAddressShipping(context, param, listener);
+                    listener.onFailure();
                 }
             }
         };

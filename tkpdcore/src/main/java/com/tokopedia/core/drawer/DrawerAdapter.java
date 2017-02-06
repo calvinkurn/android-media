@@ -1,5 +1,6 @@
 package com.tokopedia.core.drawer;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -19,6 +20,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer.model.DrawerHeader;
 import com.tokopedia.core.drawer.model.DrawerItem;
@@ -30,8 +32,6 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.List;
-
-import static com.tokopedia.core.drawer.var.UserType.TYPE_PEOPLE;
 
 /**
  * Created by Nisie on 5/08/15.
@@ -61,13 +61,17 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TextView name;
         TextView deposit;
         TextView topPoint;
+        TextView tokoCashValueView;
+        TextView tokoCashLabel;
         ImageView coverImg;
         RelativeLayout gradientBlack;
         LinearLayout drawerPointsLayout;
         RelativeLayout saldoLayout;
         RelativeLayout topPointsLayout;
+        RelativeLayout topCashLayout;
         View loadingSaldo;
         View loadingLoyalty;
+        View loadingTopCash;
 
         public HeaderViewHolder(View itemView) {
             super(itemView);
@@ -75,13 +79,17 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             name = (TextView) itemView.findViewById(R.id.name_text);
             deposit = (TextView) itemView.findViewById(R.id.deposit_text);
             topPoint = (TextView) itemView.findViewById(R.id.toppoints_text);
+            tokoCashLabel = (TextView) itemView.findViewById(R.id.toko_cash_label);
+            tokoCashValueView = (TextView) itemView.findViewById(R.id.top_cash_value);
             coverImg = (ImageView) itemView.findViewById(R.id.cover_img);
             gradientBlack = (RelativeLayout) itemView.findViewById(R.id.gradient_black);
             drawerPointsLayout = (LinearLayout) itemView.findViewById(R.id.drawer_points_layout);
             saldoLayout = (RelativeLayout) itemView.findViewById(R.id.drawer_saldo);
             topPointsLayout = (RelativeLayout) itemView.findViewById(R.id.drawer_top_points);
+            topCashLayout = (RelativeLayout) itemView.findViewById(R.id.drawer_top_cash);
             loadingSaldo = itemView.findViewById(R.id.loading_saldo);
             loadingLoyalty = itemView.findViewById(R.id.loading_loyalty);
+            loadingTopCash = itemView.findViewById(R.id.loading_top_cash);
         }
     }
 
@@ -352,6 +360,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             holder.topPoint.setText(header.Loyalty);
         }
 
+        setTokoCashLayoutValue(holder, header);
+
         holder.saldoLayout.setOnClickListener(onDepositClicked());
         holder.topPointsLayout.setOnClickListener(onTopPointsClicked(header.LoyaltyUrl));
         holder.name.setOnClickListener(onPeopleClicked());
@@ -453,4 +463,44 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private void sendGTMNavigationEvent(String label) {
         UnifyTracking.eventDrawerClick(label);
     }
+
+    private void setTokoCashLayoutValue(HeaderViewHolder holder, DrawerHeader headerValue) {
+        if(isTokoCashDisabled(headerValue) || isTokoNoAction(headerValue)) {
+           holder.topCashLayout.setVisibility(View.GONE);
+        }else {
+            holder.tokoCashLabel.setText(headerValue.tokoCashText);
+            holder.topCashLayout
+                    .setOnClickListener(onLayoutTopCashSelected(headerValue.tokoCashURL));
+            holder.tokoCashValueView.setText(headerValue.tokoCashValue);
+            holder.topCashLayout.setVisibility(View.VISIBLE);
+            holder.loadingTopCash.setVisibility(View.GONE);
+        }
+    }
+
+    private boolean isTokoNoAction(DrawerHeader headerValue) {
+        return !headerValue.tokoCashToWallet && !headerValue.tokoCashOtherAction;
+    }
+
+    private boolean isTokoCashDisabled(DrawerHeader headerValue) {
+        return headerValue.tokoCashValue == null || headerValue.tokoCashText.isEmpty();
+    }
+
+    private View.OnClickListener onLayoutTopCashSelected(final String redirectURL) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerListener.OnClosed();
+                Bundle bundle = new Bundle();
+                bundle.putString("url", redirectURL);
+                if(context instanceof Activity){
+                    if(((Activity) context).getApplication() instanceof TkpdCoreRouter) {
+                        ((TkpdCoreRouter)((Activity) context).getApplication())
+                                .goToWallet(context, bundle);
+                    }
+                }
+                finishActivity();
+            }
+        };
+    }
+
 }

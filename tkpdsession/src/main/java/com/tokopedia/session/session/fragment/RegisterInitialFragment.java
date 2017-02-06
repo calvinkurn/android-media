@@ -242,6 +242,13 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     }
 
     @Override
+    public void moveToFragmentSecurityQuestion(int security1, int security2, int userId) {
+        if (getActivity() != null) {// && !((AppCompatActivity)mContext).isFinishing()
+            ((SessionView) getActivity()).moveToFragmentSecurityQuestion(security1, security2, userId);
+        }
+    }
+
+    @Override
     public void showProvider(List<LoginProviderModel.ProvidersBean> data) {
         listProvider = data;
         loginButton.setEnabled(true);

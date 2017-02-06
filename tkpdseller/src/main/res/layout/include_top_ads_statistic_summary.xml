@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/LabelLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp">
+
+    <RelativeLayout
+        android:id="@+id/layout_date"
+        style="@style/LabelLayout">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_calendar_grey"/>
+
+        <ImageView
+            android:id="@+id/arrow_left"
+            android:layout_width="@dimen/topads_arrow_left_width"
+            android:layout_height="@dimen/topads_arrow_left_height"
+            android:src="@drawable/arrow_left"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            />
+
+        <TextView
+            android:id="@+id/text_view_range_date"
+            style="@style/TextView.TopAdsDate"
+            android:layout_toLeftOf="@id/arrow_left"
+            android:layout_toStartOf="@id/arrow_left"
+            android:layout_marginRight="@dimen/topads_arrow_left_margin"
+            android:layout_marginEnd="@dimen/topads_arrow_left_margin"
+            tools:text="@string/app_name"/>
+    </RelativeLayout>
+
+    <include layout="@layout/include_separator_horizontal"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView
+            android:id="@+id/statistic_label_view_impression"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:content="@string/top_ads_statistic_info_default_value"
+            app:title="@string/label_top_ads_impression"/>
+
+        <include layout="@layout/include_separator_vertical"/>
+
+        <com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView
+            android:id="@+id/statistic_label_view_click"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:content="@string/top_ads_statistic_info_default_value"
+            app:title="@string/label_top_ads_click"/>
+    </LinearLayout>
+
+    <include layout="@layout/include_separator_horizontal"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView
+            android:id="@+id/statistic_label_view_ctr"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:content="@string/top_ads_statistic_info_default_value"
+            app:title="@string/label_top_ads_ctr"/>
+
+        <include layout="@layout/include_separator_vertical"/>
+
+        <com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView
+            android:id="@+id/statistic_label_view_conversion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:content="@string/top_ads_statistic_info_default_value"
+            app:title="@string/label_top_ads_conversion"/>
+
+    </LinearLayout>
+
+    <include layout="@layout/include_separator_horizontal"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView
+            android:id="@+id/statistic_label_view_average"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:content="@string/top_ads_statistic_info_default_value"
+            app:title="@string/label_top_ads_average"/>
+
+        <include layout="@layout/include_separator_vertical"/>
+
+        <com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView
+            android:id="@+id/statistic_label_view_cost"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:content="@string/top_ads_statistic_info_default_value"
+            app:title="@string/label_top_ads_cost"/>
+
+    </LinearLayout>
+</LinearLayout>

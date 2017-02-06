@@ -37,13 +37,12 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.inbox.inboxmessage.activity.SendMessageActivity;
-import com.tokopedia.inbox.inboxmessage.fragment.SendMessageFragment;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.share.ShareActivity;
@@ -58,6 +57,9 @@ import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.List;
+
+import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
+
 
 public class ShopInfoActivity extends TActivity {
 
@@ -446,7 +448,7 @@ public class ShopInfoActivity extends TActivity {
         holder.indicator.setupWithViewPager(holder.pager);
         holder.pager.addOnPageChangeListener(new
                 TabLayout.TabLayoutOnPageChangeListener(holder.indicator));
-        holder.indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(holder.pager));
+        holder.indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(this,holder.pager));
         shopModel.info.shopName = MethodChecker.fromHtml(shopModel.info.shopName).toString();
         setListener();
         holder.collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
@@ -680,17 +682,17 @@ public class ShopInfoActivity extends TActivity {
         Intent intent;
         Bundle bundle = new Bundle();
         if (SessionHandler.isV4Login(this)) {
-            intent = new Intent(this, SendMessageActivity.class);
-            bundle.putString(SendMessageFragment.PARAM_SHOP_ID, shopModel.info.shopId);
-            bundle.putString(SendMessageFragment.PARAM_OWNER_FULLNAME, shopModel.info.shopName);
+            intent = InboxRouter.getSendMessageActivityIntent(ShopInfoActivity.this);
+            bundle.putString(InboxRouter.PARAM_SHOP_ID, shopModel.info.shopId);
+            bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, shopModel.info.shopName);
             intent.putExtras(bundle);
             startActivity(intent);
         } else {
             bundle.putBoolean("login", true);
             intent = SessionRouter.getLoginActivityIntent(this);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-            bundle.putString(SendMessageFragment.PARAM_SHOP_ID, shopModel.info.shopId);
-            bundle.putString(SendMessageFragment.PARAM_OWNER_FULLNAME, shopModel.info.shopName);
+            bundle.putString(InboxRouter.PARAM_SHOP_ID, shopModel.info.shopId);
+            bundle.putString(PARAM_OWNER_FULLNAME, shopModel.info.shopName);
             intent.putExtras(bundle);
             startActivityForResult(intent, REQ_RELOAD);
         }
