@@ -29,6 +29,7 @@ import java.util.List;
 import butterknife.BindView;
 
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION;
+import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER;
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER;
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER;
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION;
@@ -71,6 +72,17 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
         return new Intent(context, PurchaseActivity.class)
                 .setData(uri.build())
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_DELIVER_ORDER)
+                .putExtras(extras);
+    }
+
+    @DeepLink({
+            "tokopedia://buyer/history"
+    })
+    public static Intent getCallingIntentPurchaseHistory(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, PurchaseActivity.class)
+                .setData(uri.build())
+                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_ALL_ORDER)
                 .putExtras(extras);
     }
 
@@ -142,7 +154,7 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
                 getString(R.string.title_tab_purchase_status_order));
         tabContents.add(TAB_POSITION_PURCHASE_DELIVER_ORDER,
                 getString(R.string.title_tab_purchase_confirm_deliver));
-        tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER,
+        tabContents.add(TAB_POSITION_PURCHASE_ALL_ORDER,
                 getString(R.string.title_tab_purchase_transactions));
     }
 
@@ -210,7 +222,7 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
             case TAB_POSITION_PURCHASE_DELIVER_ORDER:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING);
                 break;
-            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER:
+            case TAB_POSITION_PURCHASE_ALL_ORDER:
                 switch (stateTxFilterID) {
                     case TransactionPurchaseRouter.TRANSACTION_CANCELED_FILTER_ID:
                         drawer.setDrawerPosition(
