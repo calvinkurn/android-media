@@ -132,6 +132,7 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
                             dynamicFilterPresenter.getBreadCrumb(), dynamicFilterPresenter.getFilterCategory(),
                             dynamicFilterPresenter.getCurrentCategory());
             setFragment(categoryFragment, DynamicFilterCategoryFragment.FRAGMENT_TAG, R.id.dynamic_filter_detail);
+            saveCheckedPosition(dynamicFilterPresenter.getCurrentCategory(),true);
         } else {
             setFragment(DynamicFilterOtherFragment.newInstance(data), DynamicFilterOtherFragment.FRAGMENT_TAG, R.id.dynamic_filter_detail);
         }
