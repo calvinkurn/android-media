@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.TaskStackBuilder;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
@@ -16,6 +18,17 @@ import com.tokopedia.transaction.cart.fragment.CartFragment;
  */
 
 public class CartActivity extends BasePresenterActivity {
+
+    @DeepLink("tokopedia://cart")
+    public static Intent getCallingIntent(Context context, Bundle extras) {
+        Intent intent = new Intent(context, CartActivity.class).putExtras(extras);
+        intent.putExtras(extras);
+        if (extras.getString(DeepLink.URI) != null) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            intent.setData(uri.build());
+        }
+        return intent;
+    }
 
     public static Intent createInstance(Context context) {
         return new Intent(context, CartActivity.class);
