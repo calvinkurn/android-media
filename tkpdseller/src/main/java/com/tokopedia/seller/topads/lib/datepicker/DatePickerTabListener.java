@@ -11,7 +11,7 @@ import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 
 public class DatePickerTabListener extends GlobalMainTabSelectedListener {
 
-    private TopAdsDashboardList topAdsDashboardList;
+    private DatePickerList mDatePickerList;
 
     public DatePickerTabListener(ViewPager mViewPager) {
         super(mViewPager);
@@ -20,16 +20,16 @@ public class DatePickerTabListener extends GlobalMainTabSelectedListener {
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         super.onTabSelected(tab);
-        if (topAdsDashboardList != null) {
-            topAdsDashboardList.onSelected(tab.getPosition());
+        if (mDatePickerList != null) {
+            mDatePickerList.onSelected(tab.getPosition());
         }
     }
 
-    public void setTopAdsDashboardList(TopAdsDashboardList topAdsDashboardList) {
-        this.topAdsDashboardList = topAdsDashboardList;
+    public void setDatePickerList(DatePickerList datePickerList) {
+        this.mDatePickerList = datePickerList;
     }
 
-    public interface TopAdsDashboardList {
+    public interface DatePickerList {
         void onSelected(int positon);
     }
 }

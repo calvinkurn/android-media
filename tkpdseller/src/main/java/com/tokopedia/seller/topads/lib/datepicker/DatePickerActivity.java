@@ -13,7 +13,6 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.lib.datepicker.fragment.DatePickerCustomFragment;
 import com.tokopedia.seller.topads.lib.datepicker.fragment.DatePickerPeriodFragment;
 import com.tokopedia.seller.topads.lib.datepicker.model.PeriodRangeModel;
-import com.tokopedia.seller.topads.view.adapter.TopAdsDashboardPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,7 +106,7 @@ public class DatePickerActivity extends TActivity {
             }
         });
         fragmentList.add(mDatePickerCustomFragment);
-        return new TopAdsDashboardPagerAdapter(getFragmentManager(), fragmentList);
+        return new DatePickerTabPagerAdapter(getFragmentManager(), fragmentList);
     }
 
     private void fetchIntent(Bundle extras) {
