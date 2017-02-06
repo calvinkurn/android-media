@@ -445,8 +445,7 @@ public class DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.WISHLIST);
                 break;
             case TkpdState.DrawerPosition.GOLD_MERCHANT:
-                Intent intentGoldMerchant = new Intent(context, GoldMerchantRedirectActivity.class);
-                context.startActivity(intentGoldMerchant);
+                startIntent(GoldMerchantRedirectActivity.class);
                 break;
             case TkpdState.DrawerPosition.SETTINGS:
                 context.startActivity(new Intent(context, ManageGeneral.class));
