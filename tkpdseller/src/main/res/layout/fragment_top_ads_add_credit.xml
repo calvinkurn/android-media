@@ -9,13 +9,14 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
+        android:paddingTop="12dp"
         android:layout_height="0dp"
         android:layout_weight="1">
     </android.support.v7.widget.RecyclerView>
 
     <Button
         android:id="@+id/button_submit"
-        style="@style/Button.TopAds"
+        style="@style/Button.TopAds.Submit"
         android:layout_width="match_parent"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"

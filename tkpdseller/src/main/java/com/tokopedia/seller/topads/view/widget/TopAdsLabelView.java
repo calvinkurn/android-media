@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -22,6 +23,7 @@ public class TopAdsLabelView extends FrameLayout {
     private String titleText;
     private String valueText;
     private int colorValue;
+    private int contentTextStyleValue;
 
     public TopAdsLabelView(Context context) {
         super(context);
@@ -45,6 +47,7 @@ public class TopAdsLabelView extends FrameLayout {
             titleText = styledAttributes.getString(R.styleable.TopAdsLabelView_title);
             valueText = styledAttributes.getString(R.styleable.TopAdsLabelView_content);
             colorValue = styledAttributes.getColor(R.styleable.TopAdsLabelView_content_color, ContextCompat.getColor(getContext(), R.color.grey));
+            contentTextStyleValue = styledAttributes.getInt(R.styleable.TopAdsLabelView_content_textStyle, Typeface.NORMAL);
         } finally {
             styledAttributes.recycle();
         }
@@ -56,6 +59,7 @@ public class TopAdsLabelView extends FrameLayout {
         titleTextView.setText(titleText);
         contentTextView.setText(valueText);
         contentTextView.setTextColor(colorValue);
+        contentTextView.setTypeface(null, contentTextStyleValue);
         invalidate();
         requestLayout();
     }
@@ -74,6 +78,12 @@ public class TopAdsLabelView extends FrameLayout {
 
     public void setContent(String textValue) {
         contentTextView.setText(textValue);
+        invalidate();
+        requestLayout();
+    }
+
+    public void setContentTypeface(int typefaceType) {
+        contentTextView.setTypeface(null, typefaceType);
         invalidate();
         requestLayout();
     }

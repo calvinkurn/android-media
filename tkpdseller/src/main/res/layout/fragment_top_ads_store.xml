@@ -30,7 +30,7 @@
                 android:visibility="gone">
 
                 <include
-                    layout="@layout/include_top_ads_shop_ad"
+                    layout="@layout/include_top_ads_ad"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </FrameLayout>

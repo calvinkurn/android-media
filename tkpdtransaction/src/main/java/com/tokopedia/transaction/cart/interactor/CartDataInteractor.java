@@ -16,6 +16,7 @@ import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
 import com.tokopedia.transaction.cart.model.cartdata.CartData;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
 import com.tokopedia.transaction.cart.model.shipmentcart.EditShipmentCart;
+import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.exception.HttpErrorException;
@@ -166,38 +167,22 @@ public class CartDataInteractor implements ICartDataInteractor {
 
     @Override
     public void getThanksTopPay(TKPDMapParam<String, String> params,
-                                Scheduler schedulers, Subscriber<Boolean> subscriber) {
+                                Scheduler schedulers, Subscriber<ThanksTopPayData> subscriber) {
         Observable<Response<TkpdResponse>> observable
                 = txActService.getApi().getThanksDynamicPayment(params);
         compositeSubscription.add(observable
-                .map(new Func1<Response<TkpdResponse>, Boolean>() {
+                .flatMap(new Func1<Response<TkpdResponse>, Observable<ThanksTopPayData>>() {
                     @Override
-                    public Boolean call(Response<TkpdResponse> response) {
+                    public Observable<ThanksTopPayData> call(Response<TkpdResponse> response) {
                         if (response.isSuccessful()) {
                             if (!response.body().isError()) {
-                                if (!response.body().getJsonData().isNull("is_success")) {
-                                    try {
-                                        return response.body()
-                                                .getJsonData().getInt("is_success") == 1;
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                        throw new RuntimeException(
-                                                new RuntimeException(
-                                                        ErrorNetMessage.MESSAGE_ERROR_DEFAULT
-                                                )
-                                        );
-                                    }
-                                } else {
-                                    throw new RuntimeException(
-                                            new RuntimeException(
-                                                    ErrorNetMessage.MESSAGE_ERROR_DEFAULT
-                                            )
-                                    );
-                                }
+                                return Observable.just(response.body().convertDataObj(
+                                        ThanksTopPayData.class)
+                                );
                             } else {
                                 throw new RuntimeException(
                                         new ResponseErrorException(
-                                                response.body().getErrorMessageJoined()
+                                                response.body().getErrorMessages().get(0)
                                         )
                                 );
                             }

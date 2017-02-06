@@ -2,6 +2,7 @@ package com.tokopedia.core.network.retrofit.services;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -36,6 +37,16 @@ public abstract class BaseService<T> {
     public abstract T getApi();
 
     public BaseService() {
+        String processedBaseUrl = getProcessedBaseUrl();
+        generateBaseService(processedBaseUrl);
+    }
+
+    public BaseService(String overrideUrl) {
+        String processedBaseUrl = getProcessedBaseUrl(overrideUrl);
+        generateBaseService(processedBaseUrl);
+    }
+
+    private void generateBaseService(String processedBaseUrl) {
         OkHttpClient.Builder client = getOkHttpClientBuilder();
         Interceptor authInterceptor = getAuthInterceptor();
         client.interceptors().add(authInterceptor);
@@ -48,7 +59,7 @@ public abstract class BaseService<T> {
                 .serializeNulls()
                 .create();
         Retrofit.Builder retrofit = new Retrofit.Builder();
-        retrofit.baseUrl(getProcessedBaseUrl());
+        retrofit.baseUrl(processedBaseUrl);
         retrofit.addConverterFactory(new GeneratedHostConverter());
         retrofit.addConverterFactory(new TkpdResponseConverter());
         retrofit.addConverterFactory(new StringResponseConverter());
@@ -68,6 +79,11 @@ public abstract class BaseService<T> {
 
     public String getProcessedBaseUrl() {
         String baseUrl = getBaseUrl();
+        return getProcessedBaseUrl(baseUrl);
+    }
+
+    @NonNull
+    private String getProcessedBaseUrl(String baseUrl) {
         if (baseUrl.startsWith("https://ws") & BuildConfig.DEBUG) {
             String path = baseUrl.substring(baseUrl.indexOf("v4"));
             SharedPreferences pref = MainApplication.getAppContext()

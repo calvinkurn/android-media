@@ -97,7 +97,6 @@ public class SetDateFragment extends Fragment {
 
     public static class SetDatePagerAdapter extends FragmentPagerAdapter {
         final int PAGE_COUNT = 2;
-        private String tabTitles[] = new String[]{"PERIODE", "KUSTOM"};
         private Context context;
         private boolean isGM;
         private int lastSelectionPeriod;
@@ -144,8 +143,16 @@ public class SetDateFragment extends Fragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            // Generate title based on item position
-            return tabTitles[position];
+            String title = "";
+            switch (position) {
+                case 0:
+                    title = context.getString(R.string.label_date_period);
+                    break;
+                case 1:
+                    title = context.getString(R.string.label_date_custom);
+                    break;
+            }
+            return title;
         }
     }
 

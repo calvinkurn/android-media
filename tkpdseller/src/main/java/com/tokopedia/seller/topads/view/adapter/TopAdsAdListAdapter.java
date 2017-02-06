@@ -76,7 +76,7 @@ public class TopAdsAdListAdapter<T extends Ad> extends BaseLinearRecyclerViewAda
         }
         final Ad ad = data.get(position);
         topAdsViewHolder.bindObject(ad);
-        topAdsViewHolder.mainView.setOnClickListener(new View.OnClickListener() {
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (callback != null) {

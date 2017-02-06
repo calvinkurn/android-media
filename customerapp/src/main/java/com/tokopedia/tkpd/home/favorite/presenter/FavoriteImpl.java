@@ -94,7 +94,7 @@ public class FavoriteImpl implements Favorite {
         }
         view.initAdapter(data);
         view.initLayoutManager();
-        favoriteInteractor = new FavoriteInteractorImpl();
+        favoriteInteractor = new FavoriteInteractorImpl(context);
     }
 
     @Override
@@ -423,6 +423,7 @@ public class FavoriteImpl implements Favorite {
                     if (e.getMessage() != null && RetrofitUtils.isSessionInvalid(e.getMessage())) {
                         NetworkHandler.forceLogout(mContext);
                     } else {
+                        e.printStackTrace();
                         Log.e(TAG, messageTAG + "onError : " + e.getLocalizedMessage());
                         view.displayProgressBar(false);
                         if (data.size() == 0) {

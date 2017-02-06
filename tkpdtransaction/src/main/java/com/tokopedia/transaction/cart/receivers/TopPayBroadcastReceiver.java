@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 
 /**
@@ -25,6 +26,8 @@ public class TopPayBroadcastReceiver extends BroadcastReceiver {
             = "EXTRA_RESULT_CODE_TOP_PAY_ACTION";
     public static final String EXTRA_TOP_PAY_PARAMETER_DATA_TOP_PAY_ACTION
             = "EXTRA_TOP_PAY_PARAMETER_DATA_TOP_PAY_ACTION";
+    public static final String EXTRA_TOP_PAY_THANKS_TOP_PAY_ACTION
+            = "EXTRA_TOP_PAY_THANKS_TOP_PAY_ACTION";
     public static final String EXTRA_MESSAGE_TOP_PAY_ACTION = "EXTRA_MESSAGE_TOP_PAY_ACTION";
 
     private ActionTopPayThanksListener topPayGetThanksListener;
@@ -70,7 +73,9 @@ public class TopPayBroadcastReceiver extends BroadcastReceiver {
             switch (resultCode) {
                 case RESULT_CODE_TOP_PAY_SUCCESS:
                     topPayGetThanksListener.onGetThanksTopPaySuccess(
-                            intent.getExtras().getString(EXTRA_MESSAGE_TOP_PAY_ACTION)
+                            (ThanksTopPayData) intent.getExtras().getParcelable(
+                                    EXTRA_TOP_PAY_THANKS_TOP_PAY_ACTION
+                            )
                     );
                     break;
                 case RESULT_CODE_TOP_PAY_ERROR:
@@ -108,7 +113,7 @@ public class TopPayBroadcastReceiver extends BroadcastReceiver {
     }
 
     public interface ActionTopPayThanksListener {
-        void onGetThanksTopPaySuccess(String message);
+        void onGetThanksTopPaySuccess(ThanksTopPayData data);
 
         void onGetThanksTopPayFailed(String message);
 

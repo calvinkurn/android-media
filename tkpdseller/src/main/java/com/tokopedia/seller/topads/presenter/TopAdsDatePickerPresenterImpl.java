@@ -22,8 +22,8 @@ import java.util.Locale;
  */
 public class TopAdsDatePickerPresenterImpl implements TopAdsDatePickerPresenter {
 
-    private static final int DIFF_ONE_WEEK = 7;
-    private static final int DIFF_ONE_MONTH = 30;
+    private static final int DIFF_ONE_WEEK = 6;
+    private static final int DIFF_ONE_MONTH = 29;
 
     private static final String RANGE_DATE_FORMAT = "dd MMM yyyy";
     private static final String RANGE_DATE_FORMAT_WITHOUT_YEAR = "dd MMM";

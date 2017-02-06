@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.view.adapter.viewholder;
 
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -19,11 +20,11 @@ public class TopAdsViewHolder extends RecyclerView.ViewHolder {
     public View statusActiveDot;
     public TextView statusActive;
     public TextView promoPriceUsed;
-    public TextView totalPricePromo;
+    public TextView dailySpentTextView;
+    public TextView dailyTotalTextView;
     public TextView pricePromoPerClick;
     public View progressBarLayout;
     public ProgressBar progressBarPromo;
-    public View mainView;
 
     public TopAdsViewHolder(View view) {
         super(view);
@@ -31,11 +32,16 @@ public class TopAdsViewHolder extends RecyclerView.ViewHolder {
         statusActiveDot = view.findViewById(R.id.status_active_dot);
         statusActive = (TextView) view.findViewById(R.id.status_active);
         promoPriceUsed = (TextView) view.findViewById(R.id.promo_price_used);
-        totalPricePromo = (TextView) view.findViewById(R.id.total_price_promo);
+        dailySpentTextView = (TextView) view.findViewById(R.id.text_view_daily_spent);
+        dailyTotalTextView = (TextView) view.findViewById(R.id.text_view_daily_total);
         pricePromoPerClick = (TextView) view.findViewById(R.id.price_promo_per_click);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         progressBarPromo = (ProgressBar) view.findViewById(R.id.progress_bar);
-        mainView = view.findViewById(R.id.mainView);
+
+        // programmatically styling for ProgressBar
+        // http://stackoverflow.com/questions/16893209/how-to-customize-a-progress-bar-in-android
+        Drawable draw=view.getContext().getResources().getDrawable(R.drawable.top_ads_progressbar);
+        progressBarPromo.setProgressDrawable(draw);
     }
 
     public void bindObject(Ad ad) {
@@ -43,7 +49,7 @@ public class TopAdsViewHolder extends RecyclerView.ViewHolder {
         statusActive.setText(ad.getStatusDesc());
         switch (ad.getStatus()) {
             case TopAdsConstant.STATUS_AD_ACTIVE:
-                statusActiveDot.setBackgroundResource(R.drawable.green_circle);
+                statusActiveDot.setBackgroundResource(R.drawable.ic_status_green);
                 break;
             default:
                 statusActiveDot.setBackgroundResource(R.drawable.grey_circle);
@@ -54,7 +60,8 @@ public class TopAdsViewHolder extends RecyclerView.ViewHolder {
         if (!TextUtils.isEmpty(ad.getPriceDailyBar())) {
             progressBarLayout.setVisibility(View.VISIBLE);
             progressBarPromo.setProgress((int) Double.parseDouble(ad.getPriceDailyBar()));
-            totalPricePromo.setText(promoPriceUsed.getContext().getString(R.string.top_ads_bid_format_text, ad.getPriceDailySpentFmt(), ad.getPriceDailyFmt()));
+            dailySpentTextView.setText(ad.getPriceDailySpentFmt());
+            dailyTotalTextView.setText(ad.getPriceDailyFmt());
         } else {
             progressBarLayout.setVisibility(View.GONE);
         }

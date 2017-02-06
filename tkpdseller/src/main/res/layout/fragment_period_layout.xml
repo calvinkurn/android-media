@@ -8,7 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
@@ -20,13 +19,11 @@
     <Button
         android:id="@+id/save_date"
         android:layout_alignParentBottom="true"
+        style="@style/Button.TopAds.Submit.Green"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:text="@string/save_date"
-        android:textColor="#ffffff"
-        android:textSize="13sp"
-        android:background="#42b549"/>
+        android:text="@string/save_date"/>
+
 </RelativeLayout>

@@ -11,6 +11,7 @@ import android.webkit.WebView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -187,7 +188,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
         protected boolean onOverrideUrl(Uri url) {
             try {
                 if (url.getLastPathSegment().equals("contact-us.pl")) {
-                    webView.loadAuthUrlWithFlags(URLGenerator.generateURLContactUs(TkpdBaseURL.ContactUs.URL_CONTACT_US, context));
+                    webView.loadAuthUrlWithFlags(URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, context));
                     return true;
                 } else if (url.getQueryParameter("action") != null &&
                         url.getQueryParameter("action").equals("create_ticket")) {
@@ -199,6 +200,11 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
                     bundle.putString(ContactUsActivity.PARAM_ORDER_ID,
                             url.getQueryParameter(ORDER_ID) == null ? "" : url.getQueryParameter(ORDER_ID));
                     listener.onGoToCreateTicket(bundle);
+                    return true;
+                } else if (url.getQueryParameter("action") != null &&
+                        url.getQueryParameter("action").equals("return")) {
+                    CommonUtils.UniversalToast(getActivity(), getString(R.string.finish_contact_us));
+                    getActivity().finish();
                     return true;
                 } else {
                     return false;
