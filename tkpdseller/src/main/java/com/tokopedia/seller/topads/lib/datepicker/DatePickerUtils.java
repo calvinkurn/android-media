@@ -1,5 +1,12 @@
 package com.tokopedia.seller.topads.lib.datepicker;
 
+import android.content.Context;
+
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.lib.datepicker.constant.DatePickerConstant;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +15,13 @@ import java.util.List;
  */
 
 public class DatePickerUtils {
+
+    public static String getReadableDate(Context context, long date) {
+        String[] monthNamesAbrev = context.getResources().getStringArray(R.array.month_names_abrev);
+        DateFormat dateFormat = new SimpleDateFormat(DatePickerConstant.DATE_FORMAT, DatePickerConstant.LOCALE);
+        String[] split = dateFormat.format(date).split(" ");
+        return getDateWithYear(Integer.parseInt(DatePickerUtils.reverseDate(split)), monthNamesAbrev);
+    }
 
     public static String getDateWithYear(int date, String[] monthNames) {
         List<String> dateRaw = getDateRaw(date);
@@ -38,12 +52,6 @@ public class DatePickerUtils {
             reverse += split[i];
         }
         return reverse;
-    }
-
-    public interface PeriodListener {
-        void updateCheck(boolean checked, int index);
-
-        boolean isAllNone(boolean checked, int index);
     }
 
     public static class BasePeriodModel {

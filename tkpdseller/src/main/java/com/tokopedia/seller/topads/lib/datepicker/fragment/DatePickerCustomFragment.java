@@ -169,12 +169,8 @@ public class DatePickerCustomFragment extends TkpdFragment {
     }
 
     private void updateDateView() {
-        String[] monthNamesAbrev = getActivity().getResources().getStringArray(R.array.month_names_abrev);
-        DateFormat dateFormat = new SimpleDateFormat(DatePickerConstant.DATE_FORMAT, DatePickerConstant.LOCALE);
-        String[] split = dateFormat.format(startDate).split(" ");
-        startDatePickerLabelView.setContent(DatePickerUtils.getDateWithYear(Integer.parseInt(DatePickerUtils.reverseDate(split)), monthNamesAbrev));
-        split = dateFormat.format(endDate).split(" ");
-        endDatePickerLabelView.setContent(DatePickerUtils.getDateWithYear(Integer.parseInt(DatePickerUtils.reverseDate(split)), monthNamesAbrev));
+        startDatePickerLabelView.setContent(DatePickerUtils.getReadableDate(getActivity(), startDate));
+        endDatePickerLabelView.setContent(DatePickerUtils.getReadableDate(getActivity(), endDate));
     }
 
     public void saveDate() {
