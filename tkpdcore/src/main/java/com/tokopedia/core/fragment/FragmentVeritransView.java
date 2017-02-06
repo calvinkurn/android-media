@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.R;
+import com.tokopedia.core.util.TkpdWebView;
 
 /**
  * Created by Kris on 6/25/2015.
@@ -78,7 +79,7 @@ public class FragmentVeritransView extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.dialog_web_view, container, false);
-        webView = (WebView) view.findViewById(R.id.view);
+        webView = (TkpdWebView) view.findViewById(R.id.view);
         clearWebViewHistory();
         return view;
     }
@@ -94,7 +95,7 @@ public class FragmentVeritransView extends Fragment {
     private Context context;
     private View view;
     private String url;
-    private WebView webView;
+    private TkpdWebView webView;
     private OnRedirectListener listener;
     private TkpdProgressDialog dialog;
     private int timeoutCounter;
@@ -117,7 +118,7 @@ public class FragmentVeritransView extends Fragment {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.addJavascriptInterface(new TheJavaScriptInterface(), "HTMLOUT");
         webView.setWebViewClient(new VtWebViewClient());
-        webView.loadUrl(url);
+        webView.loadAuthUrlWithFlags(url);
     }
     private Runnable runnable = new Runnable() {
         @Override

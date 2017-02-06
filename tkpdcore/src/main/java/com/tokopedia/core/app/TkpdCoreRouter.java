@@ -1,6 +1,8 @@
 package com.tokopedia.core.app;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tokopedia.core.drawer.DrawerVariable;
@@ -16,6 +18,7 @@ public interface TkpdCoreRouter {
     void removeInstopedToken();
     void goToManageProduct(Context context);
     void clearEtalaseCache();
-    void goToEditProduct(Context context, boolean isEdit, String productId);
+    Intent goToEditProduct(Context context, boolean isEdit, String productId);
     void resetAddProductCache(Context context);
+    void goToWallet(Context context, Bundle bundle);
 }

@@ -38,6 +38,7 @@ import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.EtalaseDB;
 import com.tokopedia.core.myproduct.model.ActResponseModelData;
 import com.tokopedia.core.myproduct.utils.VerificationUtils;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.seller.myproduct.model.EditPriceParam;
@@ -45,7 +46,6 @@ import com.tokopedia.seller.myproduct.model.ManageProductModel;
 import com.tokopedia.seller.myproduct.presenter.NetworkInteractor;
 import com.tokopedia.seller.myproduct.presenter.NetworkInteractorImpl;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
@@ -224,7 +224,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
         if (data.getIsSuccess() == 1) {
             showSnackBar(context.getString(R.string.title_quick_success));
             KeyboardHandler keyboardHandler = new KeyboardHandler();
-            keyboardHandler.hideSoftKeyboard(context);
+            KeyboardHandler.hideSoftKeyboard(context);
             clearCheckdData();
             ((ManageProduct) context).ClearData();
             ((ManageProduct) context).CheckCache();
@@ -270,7 +270,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
             holder.EditBut = (TextView) convertView.findViewById(R.id.edit_but);
             holder.CopyBut = (TextView) convertView.findViewById(R.id.copy_but);
             holder.UnderRev = (TextView) convertView.findViewById(R.id.review_warning);
-            holder.EditorArea = (View) convertView.findViewById(R.id.editor_area);
+            holder.EditorArea = convertView.findViewById(R.id.editor_area);
             holder.Prices = (EditText) convertView.findViewById(R.id.price);
             holder.Currency = (Spinner) convertView.findViewById(R.id.currency);
             holder.MainView = convertView.findViewById(R.id.main_view);

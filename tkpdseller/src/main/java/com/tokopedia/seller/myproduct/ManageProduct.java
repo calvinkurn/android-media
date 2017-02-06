@@ -81,8 +81,9 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.prototype.ProductCache;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
@@ -524,13 +525,11 @@ public class ManageProduct extends TkpdActivity implements
             public void onItemClick(AdapterView<?> arg0, View arg1,
                                     int position, long arg3) {
                 if (lvadapter.getCount() > 0) {
-                    Bundle bundle = new Bundle();
-                    //				Intent intent = new Intent(ManageProduct.this, ProductDetailPresenter.class);
-                    Intent intent = new Intent(ManageProduct.this, ProductInfoActivity.class);
-                    bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS,
-                            lvadapter.getProductDataToPass(position));
-                    intent.putExtras(bundle);
-                    startActivityForResult(intent, 2);
+                    startActivityForResult(
+                            ProductDetailRouter.createInstanceProductDetailInfoActivity(
+                                    ManageProduct.this, lvadapter.getProductId(position)
+                            ), 2
+                    );
                 }
             }
         };
@@ -1197,7 +1196,6 @@ public class ManageProduct extends TkpdActivity implements
 
         List<CategoryDB> level1 =
                 DbManagerImpl.getInstance().getDepartmentParent();
-        ;
         data = new ArrayList<>();
         data_id = new ArrayList<>();
         for (CategoryDB lvl1 : level1) {

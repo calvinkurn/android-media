@@ -145,7 +145,6 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
 
                             @Override
                             public void onNext(Response<TopAdsResponse> topAdsResponseResponse) {
-                                Log.d(TAG,  "TOPADS Response -> " + topAdsResponseResponse.body().toString());
                                 TopAdsResponse.TopAdsContainer topAdsContainer = new TopAdsResponse.TopAdsContainer(
                                         topAdsResponseResponse.body()
                                 );

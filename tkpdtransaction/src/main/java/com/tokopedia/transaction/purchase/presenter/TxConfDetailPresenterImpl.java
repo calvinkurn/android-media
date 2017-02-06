@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Angga.Prasetiyo on 15/06/2016.
+ * @author Angga.Prasetiyo on 15/06/2016.
  */
 public class TxConfDetailPresenterImpl implements TxConfDetailPresenter {
     private static final String TAG = TxConfDetailPresenterImpl.class.getSimpleName();

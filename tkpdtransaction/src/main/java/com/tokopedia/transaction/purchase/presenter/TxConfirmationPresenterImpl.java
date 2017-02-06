@@ -31,10 +31,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by Angga.Prasetiyo on 13/05/2016.
+ * @author Angga.Prasetiyo on 13/05/2016.
  */
 public class TxConfirmationPresenterImpl implements TxConfirmationPresenter {
-    private static final String TAG = TxConfirmationPresenterImpl.class.getSimpleName();
     private final TxConfViewListener viewListener;
     private final TxOrderNetInteractorImpl netInteractor;
 
@@ -145,7 +144,7 @@ public class TxConfirmationPresenterImpl implements TxConfirmationPresenter {
         final AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(context);
         myAlertDialog.setMessage(context.getString(R.string.message_confirm_delete));
 
-        final Set<TxConfData> datasCancel = new HashSet<TxConfData>();
+        final Set<TxConfData> datasCancel = new HashSet<>();
         for (TxConfData data : datas) {
             datasCancel.add(data);
         }
@@ -219,7 +218,8 @@ public class TxConfirmationPresenterImpl implements TxConfirmationPresenter {
                 });
     }
 
-    private Dialog createDialogCancelPaymentVoucher(final Context context, final Set<TxConfData> datas,
+    private Dialog createDialogCancelPaymentVoucher(final Context context,
+                                                    final Set<TxConfData> datas,
                                                     CancelFormData data) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         LayoutInflater inflater = LayoutInflater.from(context);

@@ -32,7 +32,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import com.sromku.simple.fb.SimpleFacebook;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.DownloadResultSender;
@@ -105,7 +104,6 @@ public class ProductActivity extends BaseProductActivity implements
 
     private static final String TAG = "ProductActivity";
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
-    SimpleFacebook simplefacebook;
 
     @BindView(R2.id.toolbar)
     Toolbar toolbar;
@@ -170,9 +168,6 @@ public class ProductActivity extends BaseProductActivity implements
         /* Starting Download Service */
         addProductReceiver = getProductServiceReceiver();
         supportFragmentManager = getSupportFragmentManager();
-
-
-        simplefacebook = SimpleFacebook.getInstance(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -644,7 +639,6 @@ public class ProductActivity extends BaseProductActivity implements
             }
         }
 
-        simplefacebook.onActivityResult(requestCode, resultCode, data);
     }
 
     public static Intent moveToEditFragment(Context context, boolean isEdit, String productId) {

@@ -9,10 +9,11 @@ import retrofit2.Retrofit;
  * @author noiz354 on 8/3/16.
  */
 public class ProductActAfterService extends AuthService<UploadImageProduct> {
+    public static final String WEB_SERVICE_V4_ACTION_UPLOAD_IMAGE_HELPER = "/web-service/v4/action/upload-image-helper/";
     String baseUrl;
 
     public ProductActAfterService(String baseUrl){
-        super(baseUrl, true);
+        super(baseUrl, 1);
         this.baseUrl = baseUrl;
     }
 
@@ -23,7 +24,7 @@ public class ProductActAfterService extends AuthService<UploadImageProduct> {
 
     @Override
     protected String getBaseUrl() {
-        return baseUrl+"/web-service/v4/action/upload-image-helper/";
+        return baseUrl+WEB_SERVICE_V4_ACTION_UPLOAD_IMAGE_HELPER;
     }
 
     @Override

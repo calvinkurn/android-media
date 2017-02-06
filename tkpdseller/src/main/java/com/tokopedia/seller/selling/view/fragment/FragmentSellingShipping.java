@@ -139,7 +139,6 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
                 presenter.onMultiConfirm(actionMode, multiSelector.getSelectedPositions());
                 adapter.notifyDataSetChanged();
                 return true;
-
             }
             return false;
         }

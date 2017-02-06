@@ -13,7 +13,7 @@ public class MyShopActAfterService extends AuthService<OpenShopPicture> {
     String baseUrl;
 
     public MyShopActAfterService(String baseUrl) {
-        super(baseUrl, true);
+        super(baseUrl, 1);
         this.baseUrl = baseUrl;
     }
 

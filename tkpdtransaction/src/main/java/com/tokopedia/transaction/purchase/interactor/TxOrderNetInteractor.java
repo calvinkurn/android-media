@@ -17,8 +17,10 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
+import rx.Subscriber;
+
 /**
- * Created by Angga.Prasetiyo on 11/04/2016.
+ * @author Angga.Prasetiyo on 11/04/2016.
  */
 public interface TxOrderNetInteractor {
 
@@ -28,7 +30,8 @@ public interface TxOrderNetInteractor {
         int PULL_REFRESH = 2;
     }
 
-    void getCancelPaymentForm(Context context, Map<String, String> params, OnCancelPaymentForm listener);
+    void getCancelPaymentForm(Context context, Map<String, String> params,
+                              OnCancelPaymentForm listener);
 
     void cancelPayment(Context context, Map<String, String> params, OnCancelPayment listener);
 
@@ -56,8 +59,8 @@ public interface TxOrderNetInteractor {
     void deliverReject(@NonNull Context context, @NonNull Map<String, String> params,
                        @NonNull OnDeliverReject listener);
 
-    void getInvoiceData(@NonNull Context context, @NonNull Map<String, String> params,
-                        @NonNull OnGetInvoiceData listener);
+    void getInvoiceData(TKPDMapParam<String, String> paramNetwork,
+                        Subscriber<TxVerInvoiceData> subscriberGetTXInvoiceData);
 
     void uploadValidProofByPayment(Context context, Map<String, String> params,
                                    OnUploadProof listener);
@@ -169,13 +172,6 @@ public interface TxOrderNetInteractor {
         void onNoConnection(String message);
 
         void onEmptyData();
-    }
-
-    interface OnGetInvoiceData {
-
-        void onSuccess(TxVerInvoiceData data);
-
-        void onError(String message);
     }
 
     interface OnUploadProof {

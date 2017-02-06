@@ -331,7 +331,7 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
             sendGTMRegisterError(AppEventTracking.EventLabel.FULLNAME);
             return false;
         }
-        if (vPassword.length() == 0 && vPassword.isEnabled()) {
+        if (vPassword.length() == 0 && vPassword.getVisibility()==View.VISIBLE) {
             vPassword.setError(getText(R.string.error_field_required));
             vPassword.requestFocus();
             sendGTMRegisterError(AppEventTracking.EventLabel.PASSWORD);
@@ -433,28 +433,22 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
     public void setAllowedField() {
         if(allowedFieldList!=null){
             makeItEnabled(vName,false);
-            makeItEnabled(vPassword,false);
             makeItEnabled(vPhoneNumber, false);
+            vPassword.setVisibility(View.GONE);
             vPasswordRetype.setVisibility(View.GONE);
             for(String key : allowedFieldList){
                 switch (key){
-                    case "password":
-                        makeItEnabled(vPassword, true);
-                        vPasswordRetype.setVisibility(View.VISIBLE);
-                        float scale = getResources().getDisplayMetrics().density;
-                        int dpAsPixels = (int) (5*scale + 0.5f);
-                        vPassword.setPadding(0,0,dpAsPixels,0);
-                        vPassword.setText("");
-                        vPasswordRetype.setText("");
-                        break;
                     case "name":
                         makeItEnabled(vName, true);
                         vName.requestFocus();
                         vName.setText("");
                         break;
+                    case "password":
+                        vPassword.setVisibility(View.VISIBLE);
+                        vPasswordRetype.setVisibility(View.VISIBLE);
+                        break;
                     case "phone":
                         makeItEnabled(vPhoneNumber,true);
-
                         break;
                     default:
                         break;

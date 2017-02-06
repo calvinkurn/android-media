@@ -1,7 +1,6 @@
 package com.tokopedia.core.analytics;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.text.TextUtils;
 
 import com.appsflyer.AFInAppEventParameterName;
@@ -97,15 +96,6 @@ public class ScreenTracking extends TrackingUtils {
         getGTMEngine()
                 .eventAuthenticate(authenticated)
                 .sendScreen(screenName);
-    }
-
-    public static void sendLocaProductDetailEvent(ProductDetailData successResult, Map<String,String> attributes){
-        getLocaEngine().sendEventProductView(
-                successResult.getInfo().getProductName(),
-                Integer.toString(successResult.getInfo().getProductId()),
-                successResult.getInfo().getProductCatalogName(),
-                attributes
-        );
     }
 
     public static void sendLocaCartEvent(Map<String, String> attributes){

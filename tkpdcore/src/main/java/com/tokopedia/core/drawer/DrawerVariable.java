@@ -38,9 +38,9 @@ import com.tokopedia.core.drawer.model.DrawerItem;
 import com.tokopedia.core.drawer.model.DrawerItemList;
 import com.tokopedia.core.drawer.model.DrawerSeparator;
 import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
+import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
 import com.tokopedia.core.drawer.var.NotificationItem;
 import com.tokopedia.core.drawer.var.UserType;
-import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.InboxRouter;
@@ -51,7 +51,6 @@ import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
@@ -68,6 +67,13 @@ public class DrawerVariable {
     private static final String IS_INBOX_OPENED = "IS_INBOX_OPENED";
     private static final String IS_SHOP_OPENED = "IS_SHOP_OPENED";
     private static final String IS_PEOPLE_OPENED = "IS_PEOPLE_OPENED";
+
+    private static final String CACHE_TOKO_CASH_TEXT = "CACHE_TOKO_CASH_TEXT";
+    private static final String CACHE_TOKO_CASH_URL = "CACHE_TOKO_CASH_URL";
+    private static final String CACHE_TOKO_CASH_LABEL = "CACHE_TOKO_CASH_LABEL";
+    private static final String CACHE_TOKO_CASH_ACTION_TYPE = "CACHE_TOKO_CASH_ACTION_TYPE";
+    private static final String CACHE_TOKO_CASH_OTHER_ACTION = "CACHE_TOKO_CASH_OTHER_ACTION";
+    private static final String CACHE_TOKO_CASH_LINK = "CACHE_TOKO_CASH_LINK";
 
     private NetworkInteractor networkInteractor;
     public AppCompatActivity context;
@@ -399,11 +405,13 @@ public class DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISPLAY);
                 break;
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
-                startIntent(InboxMessageActivity.class);
+                intent = InboxRouter.getInboxMessageActivityIntent(context);
+                context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
                 break;
             case TkpdState.DrawerPosition.INBOX_TALK:
-                startIntent(InboxTalkActivity.class);
+                intent = InboxRouter.getInboxTalkActivityIntent(context);
+                context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISCUSSION);
                 break;
             case TkpdState.DrawerPosition.INBOX_REVIEW:
@@ -587,6 +595,7 @@ public class DrawerVariable {
 
             getDeposit();
             getNotification();
+            getTokoCash();
 
             if (interval > 9000 || model.header.Loyalty.equals("")) {
                 getLoyalty();
@@ -642,6 +651,8 @@ public class DrawerVariable {
         model.header.shopIcon = Cache.getString("shop_pic_uri", "");
         model.header.Loyalty = Cache.getString("loyalty", "");
         model.header.LoyaltyUrl = Cache.getString("loyalty_url", "");
+
+        setTokoCashValueFromCache();
     }
 
     private void setCachePeopleMenu() {
@@ -950,5 +961,62 @@ public class DrawerVariable {
 
     public static void startIntent(Context context, Class<?> cls) {
         context.startActivity(new Intent(context, cls));
+    }
+
+    private void getTokoCash() {
+        networkInteractor.getTokoCash(context.getApplicationContext(),
+                new NetworkInteractor.TopCashListener() {
+            @Override
+            public void onSuccess(TopCashItem topCashItem) {
+                populateTokoCashData(topCashItem);
+                putTokoCashValueOnCache();
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(String message) {
+
+            }
+
+            @Override
+            public void onTokenExpire() {
+                Intent intent = new Intent();
+                intent.setAction("com.tokopedia.tkpd.FORCE_LOGOUT");
+                MainApplication.getAppContext().sendBroadcast(intent);
+            }
+        });
+    }
+
+    private void populateTokoCashData(TopCashItem topCashItem) {
+        model.header.tokoCashURL = topCashItem.getData().getRedirectUrl();
+        model.header.tokoCashLink = topCashItem.getData().getLink();
+        if(model.header.tokoCashLink == 1) {
+            model.header.tokoCashValue = topCashItem.getData().getBalance();
+            model.header.tokoCashText = topCashItem.getData().getText();
+            model.header.tokoCashToWallet = true;
+        } else {
+            model.header.tokoCashText = topCashItem.getData().getText();
+            model.header.tokoCashToWallet = false;
+            if(topCashItem.getData().getAction() != null)
+                model.header.tokoCashOtherAction = true;
+        }
+    }
+
+    private void setTokoCashValueFromCache() {
+        model.header.tokoCashValue = Cache.getString(CACHE_TOKO_CASH_TEXT);
+        model.header.tokoCashURL = Cache.getString(CACHE_TOKO_CASH_URL);
+        model.header.tokoCashText = Cache.getString(CACHE_TOKO_CASH_LABEL);
+        model.header.tokoCashLink = Cache.getInt(CACHE_TOKO_CASH_LINK);
+        model.header.tokoCashToWallet = Cache.getBoolean(CACHE_TOKO_CASH_ACTION_TYPE);
+        model.header.tokoCashOtherAction = Cache.getBoolean(CACHE_TOKO_CASH_OTHER_ACTION);
+    }
+
+    private void putTokoCashValueOnCache() {
+        Cache.putString(CACHE_TOKO_CASH_TEXT, model.header.tokoCashValue);
+        Cache.putString(CACHE_TOKO_CASH_URL, model.header.tokoCashURL);
+        Cache.putString(CACHE_TOKO_CASH_LABEL, model.header.tokoCashText);
+        Cache.putInt(CACHE_TOKO_CASH_LINK, model.header.tokoCashLink);
+        Cache.putBoolean(CACHE_TOKO_CASH_ACTION_TYPE,model.header.tokoCashToWallet);
+        model.header.tokoCashOtherAction = Cache.getBoolean(CACHE_TOKO_CASH_OTHER_ACTION);
     }
 }

@@ -96,7 +96,7 @@ public class ShareData implements Parcelable {
     }
 
     public String getDescription() {
-        return description;
+        return String.valueOf(MethodChecker.fromHtml(description));
     }
 
     public void setDescription(String description) {

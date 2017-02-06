@@ -13,6 +13,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.login.LoginManager;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -35,7 +36,7 @@ import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.session.DialogLogoutFragment;
 import com.tokopedia.core.session.model.RegisterViewModel;
 import com.tokopedia.core.session.presenter.RegisterNext;
-import com.tokopedia.core.talk.inboxtalk.database.InboxTalkCacheManager;
+import com.tokopedia.core.talk.cache.database.InboxTalkCacheManager;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 
@@ -174,7 +175,7 @@ public class SessionHandler {
         InboxReputationCacheManager reputationDetailCache = new InboxReputationCacheManager();
         reputationDetailCache.deleteAll();
         logoutInstagram(context);
-        MethodChecker.removeAllCookies();
+        MethodChecker.removeAllCookies(context);
 
 
     }

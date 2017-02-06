@@ -19,15 +19,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.tkpd.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.entity.home.recentView.RecentView;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
@@ -61,6 +60,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         public ImageView productImage;
         public ImageView deleteWishlistBut;
         public TextView buyWishlistBut;
+        public TextView location;
 
 
         public ViewHolder(View itemView) {
@@ -75,6 +75,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
             wishlistContent = (LinearLayout) itemView.findViewById(R.id.wishlist);
             buyWishlistBut = (TextView) itemView.findViewById(R.id.buy_button);
             deleteWishlistBut = (ImageView) itemView.findViewById(R.id.delete_but);
+            location = (TextView) itemView.findViewById(R.id.location);
         }
 
         public Context getContext() {
@@ -137,6 +138,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
             viewHolder.productName.setText(Html.fromHtml(product.name));
             viewHolder.productPrice.setText(product.price);
             viewHolder.shopName.setText(Html.fromHtml(product.shop));
+            viewHolder.location.setText(product.getShopLocation());
             setProductImage(viewHolder, product.getImgUri());
             if (product.labels == null) {
                 product.labels = new ArrayList<Label>();
@@ -156,13 +158,12 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
             setBadges(viewHolder, product);
             setLabels(viewHolder, product);
             viewHolder.mainContent.setOnClickListener(onProductItemClicked(position));
-            setBadges(viewHolder, product);
-            setLabels(viewHolder, product);
         } else if (data.get(position) instanceof RecentView) {
             RecentView product = (RecentView) data.get(position);
             viewHolder.productName.setText(Html.fromHtml(product.getProductName()));
             viewHolder.productPrice.setText(product.getProductPrice());
             viewHolder.shopName.setText(Html.fromHtml(product.getShopName()));
+            viewHolder.location.setText(product.getShopLocation());
             setProductImage(viewHolder, product.getProductImage());
             if (product.getLabels() == null) {
                 product.setLabels(new ArrayList<com.tokopedia.core.network.entity.home.recentView.Label>());
@@ -194,6 +195,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         viewHolder.productName.setText(Html.fromHtml(product.name));
         viewHolder.productPrice.setText(product.price);
         viewHolder.shopName.setText(Html.fromHtml(product.shop));
+        viewHolder.location.setText(product.getShopLocation());
         setProductImage(viewHolder, product.getImgUri());
         if(product.labels == null) {
             product.labels = new ArrayList<Label>();
@@ -252,18 +254,17 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
 
                     Bundle bundle = new Bundle();
                     Intent intent = new Intent(context, ProductInfoActivity.class);
-                    bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_ITEM, data.get(position));
+                    bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data.get(position));
                     intent.putExtras(bundle);
                     context.startActivity(intent);
                 } else if (data.get(position) instanceof RecentView) {
                     RecentView product = (RecentView) data.get(position);
                     UnifyTracking.eventWishlistView(product.getProductName());
-                    Bundle bundle = new Bundle();
-                    Intent intent = new Intent(context, ProductInfoActivity.class);
-                    bundle.putParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS,
-                            getProductDataToPass((RecentView) data.get(position)));
-                    intent.putExtras(bundle);
-                    context.startActivity(intent);
+                    context.startActivity(
+                            ProductDetailRouter.createInstanceProductDetailInfoActivity(
+                                    context, getProductDataToPass((RecentView) data.get(position))
+                            )
+                    );
                 }
             }
         };
@@ -283,6 +284,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     private void setBadgesRecentView(ViewHolder holder, RecentView data) {
+        holder.badgeContainer.removeAllViews();
         if (data.getBadges() != null && holder.badgeContainer.getChildCount() == 0) {
             for (com.tokopedia.core.network.entity.home.recentView.Badge badges : data.getBadges()) {
                 LuckyShopImage.loadImage(context, badges.getImageUrl(), holder.badgeContainer);

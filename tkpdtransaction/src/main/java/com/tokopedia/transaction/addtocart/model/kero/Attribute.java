@@ -13,7 +13,7 @@ import java.util.List;
  * @author Herdi_WORK on 22.09.16.
  */
 
-public class Attribute implements Parcelable{
+public class Attribute implements Parcelable {
 
     @SerializedName("id")
     @Expose

@@ -3,7 +3,7 @@ package com.tokopedia.inbox.rescenter.detail.listener;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.tokopedia.core.database.model.AttachmentResCenterDB;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.DetailResCenterData;
@@ -40,7 +40,7 @@ public interface DetailResCenterView {
 
     void refreshPage();
 
-    void showAttachment(List<AttachmentResCenterDB> data);
+    void showAttachment(List<AttachmentResCenterVersion2DB> data);
 
     void setFailSaveRespond();
 
@@ -77,6 +77,8 @@ public interface DetailResCenterView {
     void openEditSolution(String paramID);
 
     void openInputAddress();
+
+    void openInputAddressForAcceptAdmin();
 
     void openInputAddressMigrateVersion();
 

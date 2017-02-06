@@ -37,7 +37,6 @@ import com.tokopedia.core.drawer.model.DrawerSeparator;
 import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
 import com.tokopedia.core.drawer.var.NotificationItem;
 import com.tokopedia.core.drawer.var.UserType;
-import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.seller.myproduct.ManageProduct;
@@ -46,11 +45,11 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.ToolbarVariable;
+import com.tokopedia.seller.topads.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.views.GMStatActivity;
 import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
@@ -101,6 +100,7 @@ public class DrawerVariableSeller extends DrawerVariable {
         private DrawerItemList shopMenu;
         private DrawerItemList inboxMenu;
         private DrawerItemList gmSubscribeMenu;
+        private DrawerItem topAdsMenu;
         private List<RecyclerViewItem> data;
 
         public Model() {
@@ -110,6 +110,7 @@ public class DrawerVariableSeller extends DrawerVariable {
             shopMenu = new DrawerItemList("Penjualan", 0, R.drawable.icon_penjualan, TkpdState.DrawerPosition.SHOP, true);
             inboxMenu = new DrawerItemList("Kotak Masuk", 0, R.drawable.icon_inbox, TkpdState.DrawerPosition.INBOX, true);
             gmSubscribeMenu = new DrawerItemList("Gold Merchant", 0, R.drawable.ic_goldmerchant_drawer, TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE, true);
+            topAdsMenu = new DrawerItem(context.getString(R.string.title_top_ads), 0, R.drawable.ic_top_ads, TkpdState.DrawerPosition.SELLER_TOP_ADS, false);
         }
 
     }
@@ -381,11 +382,13 @@ public class DrawerVariableSeller extends DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISPLAY);
                 break;
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
-                startIntent(InboxMessageActivity.class);
+                intent = InboxRouter.getInboxMessageActivityIntent(context);
+                context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
                 break;
             case TkpdState.DrawerPosition.INBOX_TALK:
-                startIntent(InboxTalkActivity.class);
+                intent = InboxRouter.getInboxTalkActivityIntent(context);
+                context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISCUSSION);
                 break;
             case TkpdState.DrawerPosition.INBOX_REVIEW:
@@ -425,6 +428,10 @@ public class DrawerVariableSeller extends DrawerVariable {
                 intent = new Intent(context, GMStatActivity.class);
                 intent.putExtra(GMStatActivity.SHOP_ID, SessionHandler.getShopID(context));
                 intent.putExtra(GMStatActivity.IS_GOLD_MERCHANT, SessionHandler.isGoldMerchant(context));
+                context.startActivity(intent);
+                break;
+            case TkpdState.DrawerPosition.SELLER_TOP_ADS:
+                intent = new Intent(context, TopAdsDashboardActivity.class);
                 context.startActivity(intent);
                 break;
             default:
@@ -497,7 +504,7 @@ public class DrawerVariableSeller extends DrawerVariable {
         if (Cache.getBoolean(IS_SHOP_OPENED, false)) {
             expandGroup(getDrawerListPosition(TkpdState.DrawerPosition.SHOP));
         }
-        if (Cache.getBoolean(IS_GM_SUBSCRIBE_OPENED, false)){
+        if (Cache.getBoolean(IS_GM_SUBSCRIBE_OPENED, false)) {
             expandGroup(getDrawerListPosition(TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE));
         }
     }
@@ -654,8 +661,8 @@ public class DrawerVariableSeller extends DrawerVariable {
             model.data.add(model.header);
             model.data.add(model.sellerHome);
             model.data.add(model.gmSubscribeMenu);
-            model.data.add(new DrawerItem("Statistik", 0, R.drawable.statistik_icon, TkpdState.DrawerPosition.SELLER_GM_STAT,
-                    false));
+            model.data.add(new DrawerItem("Statistik", 0, R.drawable.statistik_icon, TkpdState.DrawerPosition.SELLER_GM_STAT, false));
+            model.data.add(model.topAdsMenu);
             model.data.add(model.inboxMenu);
             model.data.add(model.shopMenu);
             model.data.add(new DrawerItem("Pengaturan", 0, R.drawable.icon_setting, TkpdState.DrawerPosition.SETTINGS,

@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.hardware.camera2.params.Face;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.R;
 import com.tokopedia.core.Router;
@@ -55,6 +58,7 @@ public class DialogLogoutFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final Activity activity = getActivity();
+        FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         progressDialog = new TkpdProgressDialog(activity, TkpdProgressDialog.NORMAL_PROGRESS);
         return new AlertDialog.Builder(getActivity())
                 .setIcon(getDrawable())
@@ -87,7 +91,7 @@ public class DialogLogoutFragment extends DialogFragment {
                         .subscribe(new Subscriber<Response<TkpdResponse>>() {
                             @Override
                             public void onCompleted() {
-
+                                LoginManager.getInstance().logOut();
                             }
 
                             @Override

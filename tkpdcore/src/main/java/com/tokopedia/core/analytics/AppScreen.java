@@ -193,6 +193,7 @@ public final class AppScreen {
     public static final String SCREEN_SHOP_INFO = "Shop info detail page";
     public static final String SCREEN_PRODUCT_IMAGE_PREVIEW = "Preview Image Product page";
     public static final String SCREEN_LOYALTY = "Loyalty page";
+    public static final String SCREEN_WALLET = "Wallet page";
     public static final String SCREEN_CREDIT_CARD_BUY = "Credit card buy page";
     public static final String SCREEN_CREDIT_CARD_CART_BUY = "Credit card buy cart page";
     public static final String SCREEN_DOWNLOAD_INVOICE = "Download invoice page";
@@ -215,6 +216,7 @@ public final class AppScreen {
     public static final String SCREEN_GM_SUBSCRIBE = "Gold Merchant Subscribe";
     public static final String SCREEN_SELLER_HOME = "Seller Home";
     public static final String SCREEN_PHONE_VERIFICATION = "Phone Verification Screen";
+    public static final String SCREEN_OTP_SQ = "Security Question Screen";
 
     public static final String SCREEN_INBOX_MAIN = "Inbox Page";
     public static final String SCREEN_INBOX_SENT = "Inbox - Sent Page";
@@ -230,6 +232,11 @@ public final class AppScreen {
     public static final String SCREEN_HOME_CATEGORY = "event : Viewed Home - Category";
     public static final String SCREEN_HOME_FEED = "event : Viewed Home - Product feed Page";
     public static final String SCREEN_VIEWED_SHOP_PAGE = "event : Viewed Shop Page";
+    public static final String SCREEN_VIEWED_ADD_TO_CART = "event : Viewed Add To Cart Page";
+    public static final String SCREEN_VIEWED_FAV_STORE = "event : Viewed Home - Fav Store Page";
+    public static final String SCREEN_VIEWED_WISHLIST = "event : Viewed Wishlist Page ";
+    public static final String SCREEN_VIEWED_LOGIN = "event : Viewed Login Page ";
+    public static final String SCREEN_VIEWED_TRANSACTION_SHOP = "event : Viewed Transaction Shop Page ";
     public static final String SCREEN_VIEWED_SEARCH_PAGE = "event : Viewed Search Page";
     public static final String EVENT_ADDED_PRODUCT = "event : Add Product";
     public static final String EVENT_ADDED_WISHLIST = "event : Add to wishlist";

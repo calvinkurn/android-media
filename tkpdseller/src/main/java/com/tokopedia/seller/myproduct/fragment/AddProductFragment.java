@@ -42,7 +42,6 @@ import android.widget.Spinner;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.sromku.simple.fb.SimpleFacebook;
 import com.tkpd.library.ui.expandablelayout.ExpandableRelativeLayout;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.widget.ClickToSelectEditText;
@@ -70,6 +69,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.CategoryDB_Table;
@@ -419,7 +419,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
      * for example, if user tap save then it will move to manage product
      */
     boolean isCreateNewActivity = false;
-    private SimpleFacebook mSimpleFacebook;
     public TwitterHandler th;
     private ShareSocmedHandler shareSocmed;
 
@@ -650,7 +649,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mSimpleFacebook.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -1729,7 +1727,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             }
             wholesaleLayout.setupParams(models);
         }
-        mSimpleFacebook = SimpleFacebook.getInstance(getActivity());
         dismissErrorProductName();
         dismissPriceError();
         dismissWeightError();

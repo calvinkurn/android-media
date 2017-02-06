@@ -177,6 +177,35 @@ public class TkpdResponse {
         this.statusMessages = statusMessages;
     }
 
+    public String getStatusMessageJoined() {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (!statusMessages.isEmpty()) {
+            for (int i = 0, statusMessagesSize = statusMessages.size(); i < statusMessagesSize; i++) {
+                String string = statusMessages.get(i);
+                stringBuilder.append(string);
+                if (i != statusMessages.size() - 1) {
+                    stringBuilder.append("\n");
+                }
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+    public String getErrorMessageJoined() {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (!errorMessages.isEmpty()) {
+            for (int i = 0, statusMessagesSize = errorMessages.size(); i < statusMessagesSize; i++) {
+                String string = errorMessages.get(i);
+                stringBuilder.append(string);
+                if (i != errorMessages.size() - 1) {
+                    stringBuilder.append("\n");
+                }
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+
     @SuppressWarnings("unchecked")
     public <T> T convertDataObj(Class<T> clazz) {
         if (objData == null) {

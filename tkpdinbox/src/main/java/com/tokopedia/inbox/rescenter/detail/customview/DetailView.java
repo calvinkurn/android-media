@@ -18,6 +18,7 @@ import android.webkit.WebViewClient;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.inbox.rescenter.create.customview.BaseView;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
 import com.tokopedia.inbox.rescenter.detail.listener.DetailResCenterView;
@@ -34,7 +35,7 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
     public static final String TAG = DetailView.class.getSimpleName();
 
     @BindView(R2.id.webview)
-    WebView webView;
+    TkpdWebView webView;
 
     private Detail resolutionDetailModel;
 
@@ -80,28 +81,33 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
 //        );
 //    }
 
+//    private String getUrl(String data) {
+//        Log.d(TAG, "getUrl: " + URLGenerator.generateURLSessionLoginV4(data, getContext()));
+//        return URLGenerator.generateURLSessionLoginV4(data, getContext());
+//    }
+
+//    public String getPath(String resolutionLinkEncode) {
+//        Log.d(TAG, "getPath: " + Uri.parse(getUrl(resolutionLinkEncode)).getPath());
+//        return Uri.parse(getUrl(resolutionLinkEncode)).getPath();
+//    }
+//
+//    public String getQuery(String resolutionLinkEncode) {
+//        Log.d(TAG, "getQuery: " + Uri.parse(getUrl(resolutionLinkEncode)).getQuery());
+//        return Uri.parse(getUrl(resolutionLinkEncode)).getQuery();
+//    }
+
     @Override
     public void renderData(@NonNull DetailResCenterData.Detail data) {
         this.resolutionDetailModel = data;
         WebSettings webSettings = webView.getSettings();
         webSettings.setBuiltInZoomControls(false);
         webView.setWebViewClient(new MyWebClient());
-        webView.loadUrl(getUrl(data.getResolutionLinkEncode()));
+        webView.loadAuthUrlWithFlags(getUrl(data.getResolutionLinkEncode()));
     }
 
     private String getUrl(String data) {
-        Log.d(TAG, "getUrl: " + URLGenerator.generateURLSessionLoginV4(data, getContext()));
-        return URLGenerator.generateURLSessionLoginV4(data, getContext());
-    }
-
-    public String getPath(String resolutionLinkEncode) {
-        Log.d(TAG, "getPath: " + Uri.parse(getUrl(resolutionLinkEncode)).getPath());
-        return Uri.parse(getUrl(resolutionLinkEncode)).getPath();
-    }
-
-    public String getQuery(String resolutionLinkEncode) {
-        Log.d(TAG, "getQuery: " + Uri.parse(getUrl(resolutionLinkEncode)).getQuery());
-        return Uri.parse(getUrl(resolutionLinkEncode)).getQuery();
+        Log.d(TAG, "getImageUrl: " + URLGenerator.generateURLSessionLogin(data, getContext()));
+        return URLGenerator.generateURLSessionLogin(data, getContext());
     }
 
     private class MyWebClient extends WebViewClient {
@@ -211,8 +217,8 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
                 listener.showConfirmationDialog(R.string.msg_accept_admin, new ConfirmationDialog.Listener() {
                     @Override
                     public void onSubmitButtonClick() {
-                        if (resolutionDetailModel.getResolutionLast().getLastShowAcceptReturButton() == 1) {
-                            listener.openInputAddress();
+                        if (resolutionDetailModel.getResolutionLast().getLastShowAcceptAdminReturButton() == 1) {
+                            listener.openInputAddressForAcceptAdmin();
                         } else {
                             listener.actionAcceptAdmin(paramID);
                         }

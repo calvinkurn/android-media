@@ -11,8 +11,8 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.shopinfo.fragment.ShopTalkViewFragment;
-import com.tokopedia.core.talk.inboxtalk.intentservice.InboxTalkIntentService;
-import com.tokopedia.core.talk.inboxtalk.intentservice.InboxTalkResultReceiver;
+import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
+import com.tokopedia.core.talk.receiver.intentservice.InboxTalkResultReceiver;
 import com.tokopedia.core.talkview.fragment.InboxTalkViewFragment;
 import com.tokopedia.core.talkview.fragment.ProductTalkViewFragment;
 import com.tokopedia.core.talkview.fragment.TalkViewFragment;
@@ -61,8 +61,7 @@ public class TalkViewActivity extends TActivity
                 fragment = ProductTalkViewFragment.createInstance(bundle);
             }
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.container, fragment, TalkViewActivity.class.getSimpleName());
-            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.add(R.id.container, fragment, TalkViewActivity.class.getSimpleName());
             fragmentTransaction.commit();
         }
         UnifyTracking.eventDiscussionProductDetail(bundle.getString("from", "N/A"));

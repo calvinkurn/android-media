@@ -12,8 +12,7 @@ import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
 import com.tokopedia.transaction.purchase.utils.ParamUtil;
 
 /**
- * TxActionIntentService
- * Created by Angga.Prasetiyo on 01/07/2016.
+ * @author Angga.Prasetiyo on 01/07/2016.
  */
 public class TxActionIntentService extends IntentService {
     public static final String EXTRA_ACTION = "EXTRA_ACTION";
@@ -118,7 +117,9 @@ public class TxActionIntentService extends IntentService {
                 new TxOrderNetInteractor.PaymentActionListener() {
                     @Override
                     public void onSuccess(ConfirmationData data) {
-                        TxListUIReceiver.sendBroadcastForceRefreshListData(TxActionIntentService.this);
+                        TxListUIReceiver.sendBroadcastForceRefreshListData(
+                                TxActionIntentService.this
+                        );
                         broadcastIntent.putExtra(EXTRA_RESULT, RESULT_EDIT_PAYMENT_SUCCESS);
                         broadcastIntent.putExtra(EXTRA_RESULT_CONFIRM_PAYMENT, data);
                         sendBroadcast(broadcastIntent);

@@ -1,15 +1,14 @@
 package com.tokopedia.transaction.purchase.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.model.TxSummaryItem;
 
 import java.text.MessageFormat;
@@ -20,53 +19,68 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * TxSummaryAdapter
- * Created by Angga.Prasetiyo on 07/04/2016.
+ * @author Angga.Prasetiyo on 07/04/2016.
  */
-public class TxSummaryAdapter extends ArrayAdapter<TxSummaryItem> {
+public class TxSummaryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final int TYPE_ITEM_SUMMARY = R.layout.holder_item_transaction_summary_tx_module;
+
     public final LayoutInflater inflater;
     private List<TxSummaryItem> dataList = new ArrayList<>();
+    private Context context;
+    private ActionListener actionListener;
 
-    public TxSummaryAdapter(Context context) {
-        super(context, R.layout.gridview_tx_center);
+    public TxSummaryAdapter(Context context, ActionListener actionListener) {
+        this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.dataList = new ArrayList<>();
+        this.actionListener = actionListener;
     }
 
     public void setDataList(List<TxSummaryItem> dataList) {
         this.dataList.clear();
         this.dataList = dataList;
+        this.notifyDataSetChanged();
     }
 
     @Override
-    public TxSummaryItem getItem(int position) {
-        return dataList.get(position);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(viewType, parent, false);
+        if (viewType == TYPE_ITEM_SUMMARY) {
+            return new ViewHolder(view);
+        }
+        return null;
     }
 
     @Override
-    public int getCount() {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof ViewHolder) {
+            final ViewHolder viewHolder = (ViewHolder) holder;
+            final TxSummaryItem item = dataList.get(position);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (actionListener != null) actionListener.onItemClicked(item);
+                }
+            });
+            if (item != null) {
+                viewHolder.tvName.setText(item.getName());
+                viewHolder.tvCount.setText(MessageFormat.format("{0}", item.getCount()));
+                viewHolder.tvDesc.setText(item.getDesc());
+            }
+        }
+    }
+
+    @Override
+    public int getItemCount() {
         return dataList.size();
     }
 
-    @NonNull
     @Override
-    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-        ViewHolder holder;
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.gridview_tx_center, parent, false);
-            holder = new ViewHolder(convertView);
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-        holder.tvName.setText(getItem(position).getName());
-        holder.tvCount.setText(MessageFormat.format("{0}", getItem(position).getCount()));
-        holder.tvDesc.setText(getItem(position).getDesc());
-        return convertView;
+    public int getItemViewType(int position) {
+        return TYPE_ITEM_SUMMARY;
     }
 
-
-    class ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R2.id.menu_title)
         TextView tvName;
         @BindView(R2.id.menu_count)
@@ -75,7 +89,12 @@ public class TxSummaryAdapter extends ArrayAdapter<TxSummaryItem> {
         TextView tvDesc;
 
         public ViewHolder(View view) {
+            super(view);
             ButterKnife.bind(this, view);
         }
+    }
+
+    public interface ActionListener {
+        void onItemClicked(TxSummaryItem txSummaryItem);
     }
 }

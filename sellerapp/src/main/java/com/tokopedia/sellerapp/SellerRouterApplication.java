@@ -2,11 +2,14 @@ package com.tokopedia.sellerapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer.DrawerVariable;
+import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -48,8 +51,8 @@ public class SellerRouterApplication extends MainApplication implements TkpdCore
     }
 
     @Override
-    public void goToEditProduct(Context context, boolean isEdit, String productId) {
-        context.startActivity(ProductActivity.moveToEditFragment(context, isEdit, productId));
+    public Intent goToEditProduct(Context context, boolean isEdit, String productId) {
+        return ProductActivity.moveToEditFragment(context, isEdit, productId);
     }
 
     @Override
@@ -59,10 +62,20 @@ public class SellerRouterApplication extends MainApplication implements TkpdCore
     }
 
     @Override
+    public void goToWallet(Context context, Bundle bundle) {
+
+    }
+
+    @Override
     public void goToHome(Context context) {
         Intent intent = new Intent(context,
                 SellerHomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void goToProductDetail(Context context, String productUrl) {
+        DeepLinkChecker.openProduct(productUrl, context);
     }
 }

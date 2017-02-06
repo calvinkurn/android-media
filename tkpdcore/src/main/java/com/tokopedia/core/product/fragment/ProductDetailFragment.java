@@ -48,12 +48,12 @@ import com.tokopedia.core.product.dialog.ReportProductDialogFragment;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
-import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.product.presenter.ProductDetailPresenter;
 import com.tokopedia.core.product.presenter.ProductDetailPresenterImpl;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.MethodChecker;
@@ -364,6 +364,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         this.interactionListener.onProductDetailLoaded(successResult);
         this.presenter.sendAnalytics(successResult);
         this.presenter.sendAppsFlyerData(context, successResult, AFInAppEventType.CONTENT_VIEW);
+        this.presenter.sendLocalytics(context, successResult);
         this.presenter.startIndexingApp(appIndexHandler, successResult);
         this.refreshMenu();
     }
@@ -754,7 +755,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void moveToEditFragment(boolean isEdit, String productId) {
         if(getActivity().getApplication() instanceof TkpdCoreRouter){
-            ((TkpdCoreRouter)getActivity().getApplication()).goToEditProduct(context, isEdit, productId);
+            Intent intent = ((TkpdCoreRouter)getActivity().getApplication()).goToEditProduct(context, isEdit, productId);
+            navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT);
         }
     }
 

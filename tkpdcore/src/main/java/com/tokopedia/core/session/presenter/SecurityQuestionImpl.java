@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginInterruptModel;
 import com.tokopedia.core.session.model.OTPModel;
@@ -346,4 +348,8 @@ public class SecurityQuestionImpl implements SecurityQuestion {
         questionFormModel = model;
     }
 
+    @Override
+    public void doSendAnalytics() {
+        ScreenTracking.screen(AppScreen.SCREEN_OTP_SQ);
+    }
 }

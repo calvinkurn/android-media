@@ -318,6 +318,7 @@ public class WishListImpl implements WishList {
             product.setLuckyShop(wishlists.get(i).getShop().getLuckyMerchant());
             product.setBadges(wishlists.get(i).getBadges());
             product.setLabels(wishlists.get(i).getLabels());
+            product.setShopLocation(wishlists.get(i).getShop().getLocation());
             products.add(product);
         }
 

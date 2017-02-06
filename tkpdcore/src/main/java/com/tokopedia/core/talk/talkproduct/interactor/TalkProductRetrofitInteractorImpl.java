@@ -33,13 +33,11 @@ public class TalkProductRetrofitInteractorImpl implements TalkProductRetrofitInt
 
     TalkProductPresenter presenter;
     CompositeSubscription compositeSubscription;
-    ProductService productService;
     KunyitService kunyitService;
 
     public static TalkProductRetrofitInteractor createInstance(TalkProductPresenterImpl presenter) {
         TalkProductRetrofitInteractorImpl facade = new TalkProductRetrofitInteractorImpl();
         facade.presenter = presenter;
-        facade.productService = new ProductService();
         facade.kunyitService = new KunyitService();
         facade.compositeSubscription = new CompositeSubscription();
         return facade;
@@ -47,10 +45,8 @@ public class TalkProductRetrofitInteractorImpl implements TalkProductRetrofitInt
 
     @Override
     public void getTalkProduct(final Context context, Map<String, String> param, final GetTalkProductListener listener) {
-//        Observable<Response<TkpdResponse>> observable = productService.getApi()
-//                .getTalk(AuthUtil.generateParams(context,param));
-        Observable<Response<TkpdResponse>> observable = productService.getApi()
-                .getTalk(AuthUtil.generateParams(context, param));
+        Observable<Response<TkpdResponse>> observable = kunyitService.getApi()
+                .getProductTalk(AuthUtil.generateParams(context, param));
 
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override
