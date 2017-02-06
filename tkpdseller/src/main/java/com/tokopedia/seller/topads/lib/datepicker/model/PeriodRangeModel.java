@@ -3,6 +3,7 @@ package com.tokopedia.seller.topads.lib.datepicker.model;
 import android.content.Context;
 import android.os.Parcelable;
 
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.lib.datepicker.DatePickerUtils;
 
 import org.parceler.Parcel;
@@ -16,18 +17,38 @@ import java.util.Locale;
  * Created by Nathaniel on 1/16/2017.
  */
 
-@Parcel
-public class PeriodRangeModel extends DatePickerUtils.BasePeriodModel implements Parcelable {
-    public static final int TYPE = 1;
+public class PeriodRangeModel implements Parcelable {
 
-    public boolean isChecked;
-    public long startDate = -1;
-    public long endDate = -1;
-    private String formatText = "%s - %s";
+    private long startDate;
+    private long endDate;
     private String label;
 
+    public long getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(long startDate) {
+        this.startDate = startDate;
+    }
+
+    public long getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(long endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     public PeriodRangeModel() {
-        super(TYPE);
+
     }
 
     public PeriodRangeModel(long startDate, long endDate, String label) {
@@ -37,26 +58,13 @@ public class PeriodRangeModel extends DatePickerUtils.BasePeriodModel implements
         this.label = label;
     }
 
-    public PeriodRangeModel(android.os.Parcel in) {
-        super();
-        this.isChecked = in.readByte() != 0;
-        this.startDate = in.readLong();
-        this.endDate = in.readLong();
-        this.formatText = in.readString();
-        this.label = in.readString();
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
     public String getDescription(Context context) {
         String startDateText = DatePickerUtils.getReadableDate(context, startDate);
         String endDateText = DatePickerUtils.getReadableDate(context, endDate);
         if (startDateText.equalsIgnoreCase(endDateText)) {
             return startDateText;
         } else {
-            return String.format(formatText, startDateText, endDateText);
+            return context.getString(R.string.date_picker_date_range_format_text, startDateText, endDateText);
         }
     }
 
@@ -67,11 +75,15 @@ public class PeriodRangeModel extends DatePickerUtils.BasePeriodModel implements
 
     @Override
     public void writeToParcel(android.os.Parcel dest, int flags) {
-        dest.writeByte(this.isChecked ? (byte) 1 : (byte) 0);
         dest.writeLong(this.startDate);
         dest.writeLong(this.endDate);
-        dest.writeString(this.formatText);
         dest.writeString(this.label);
+    }
+
+    protected PeriodRangeModel(android.os.Parcel in) {
+        this.startDate = in.readLong();
+        this.endDate = in.readLong();
+        this.label = in.readString();
     }
 
     public static final Creator<PeriodRangeModel> CREATOR = new Creator<PeriodRangeModel>() {

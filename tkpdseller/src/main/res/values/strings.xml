@@ -115,6 +115,7 @@
 
     <string name="label_date_picker_start_date">Tanggal Mulai</string>
     <string name="label_date_picker_end_date">Tanggal Selesai</string>
+    <string name="date_picker_date_range_format_text">%1$s - %2$s</string>
 
     <!-- untuk tanggal gmstat -->
     <string-array name="month_names">

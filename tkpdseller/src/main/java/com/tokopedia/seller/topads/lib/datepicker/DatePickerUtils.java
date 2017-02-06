@@ -53,16 +53,4 @@ public class DatePickerUtils {
         }
         return reverse;
     }
-
-    public static class BasePeriodModel {
-        public int type = -1;
-
-        public BasePeriodModel(int type) {
-            this.type = type;
-        }
-
-        public BasePeriodModel() {
-
-        }
-    }
 }

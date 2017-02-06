@@ -2,7 +2,6 @@ package com.tokopedia.seller.topads.lib.datepicker.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +12,8 @@ import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.lib.datepicker.DatePickerActivity;
 import com.tokopedia.seller.topads.lib.datepicker.DatePickerUtils;
-import com.tokopedia.seller.topads.lib.datepicker.constant.DatePickerConstant;
 import com.tokopedia.seller.topads.lib.datepicker.widget.DatePickerLabelView;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
@@ -25,6 +21,12 @@ import java.util.Calendar;
  */
 
 public class DatePickerCustomFragment extends TkpdFragment {
+
+    public interface Callback {
+
+        void onDateSubmitted(long startDate, long endDate);
+
+    }
 
     private DatePickerLabelView startDatePickerLabelView;
     private DatePickerLabelView endDatePickerLabelView;
@@ -182,11 +184,5 @@ public class DatePickerCustomFragment extends TkpdFragment {
     @Override
     protected String getScreenName() {
         return null;
-    }
-
-    public interface Callback {
-
-        void onDateSubmitted(long startDate, long endDate);
-
     }
 }

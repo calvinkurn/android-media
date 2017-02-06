@@ -62,18 +62,17 @@ public class DatePickerPeriodFragment extends Fragment {
                 submitDate();
             }
         });
-        int selection = 0;
-        Bundle bundle = getArguments();
-        ArrayList<PeriodRangeModel> periodRangeModelList = new ArrayList<>();
-        if (bundle != null) {
-            selection = bundle.getInt(DatePickerActivity.SELECTION_PERIOD, 1);
-            periodRangeModelList = bundle.getParcelableArrayList(DatePickerActivity.DATE_PERIOD_LIST);
-        }
         adapter = new DatePickerPeriodAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
-        adapter.setSelectedPosition(selection);
-        adapter.setData(periodRangeModelList);
+
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            int selection = bundle.getInt(DatePickerActivity.SELECTION_PERIOD, 0);
+            ArrayList<PeriodRangeModel> periodRangeModelList = bundle.getParcelableArrayList(DatePickerActivity.DATE_PERIOD_LIST);
+            adapter.setSelectedPosition(selection);
+            adapter.setData(periodRangeModelList);
+        }
     }
 
     private void submitDate() {
@@ -81,6 +80,6 @@ public class DatePickerPeriodFragment extends Fragment {
             return;
         }
         PeriodRangeModel selectedDate = adapter.getSelectedDate();
-        callback.onDateSubmitted(adapter.getSelectedPosition(), selectedDate.startDate, selectedDate.endDate);
+        callback.onDateSubmitted(adapter.getSelectedPosition(), selectedDate.getStartDate(), selectedDate.getEndDate());
     }
 }
