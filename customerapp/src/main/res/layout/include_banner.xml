@@ -5,10 +5,10 @@
     android:layout_marginTop="@dimen/margin_vs"
     android:orientation="vertical">
 
-    <android.support.v4.view.ViewPager
+    <com.tokopedia.tkpd.home.banner.view.BannerLoopViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/promo_image_height" />
+        android:layout_height="@dimen/promo_image_height"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,18 +24,15 @@
             android:layout_gravity="left"
             android:layout_weight="1">
 
-            <com.tkpd.library.viewpagerindicator.CirclePageIndicator
-                android:id="@+id/indicator"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/pageTurningPoint"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:layout_marginLeft="2dp"
-                android:padding="@dimen/padding_vs"
-                android:layout_gravity="center_vertical"
-                app:fillColor="@color/deep_orange_500"
-                app:pageColor="@color/grey_500"
-                app:radius="4dp"
-                app:centered="true"/>
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:orientation="horizontal" />
 
         </LinearLayout>
 
@@ -46,10 +43,10 @@
             android:layout_weight="1"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
+            android:drawableRight="@drawable/ic_chevron_right"
             android:focusableInTouchMode="false"
             android:gravity="center_vertical|right"
             android:text="@string/lihat_smua_promo"
-            android:drawableRight="@drawable/ic_chevron_right"
             android:textColor="@color/green_400"
             android:textSize="13sp" />
     </LinearLayout>

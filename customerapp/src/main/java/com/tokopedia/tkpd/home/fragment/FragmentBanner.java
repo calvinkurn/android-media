@@ -47,21 +47,15 @@ public class FragmentBanner extends Fragment implements View.OnTouchListener {
     private Unbinder unbind;
     private static final String TAG = FragmentBanner.class.getSimpleName();
     private static final String PROMO_ITEM = "PROMO_ITEM";
-    private static final String PROMO_POS = "PROMO_POS";
-    private static final String PROMO_SIZE = "PROMO_SIZE";
     private static final String BASE_URL = "www.tokopedia.com";
     private static final String BASE_MOBILE_URL = "m.tokopedia.com";
     private GetShopInfoRetrofit getShopInfoRetrofit;
     private FacadePromo.PromoItem promoItem;
-    private int pos;
-    private int size;
 
-    public static FragmentBanner newInstance(FacadePromo.PromoItem promoItem, int position, int size) {
+    public static FragmentBanner newInstance(FacadePromo.PromoItem promoItem) {
 
         Bundle args = new Bundle();
         args.putParcelable(PROMO_ITEM, promoItem);
-        args.putInt(PROMO_POS, position);
-        args.putInt(PROMO_SIZE, size);
         FragmentBanner fragment = new FragmentBanner();
         fragment.setArguments(args);
         return fragment;
@@ -71,8 +65,6 @@ public class FragmentBanner extends Fragment implements View.OnTouchListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         promoItem = getArguments().getParcelable(PROMO_ITEM);
-        pos = getArguments().getInt(PROMO_POS);
-        size = getArguments().getInt(PROMO_SIZE);
     }
 
     @Nullable
@@ -88,18 +80,7 @@ public class FragmentBanner extends Fragment implements View.OnTouchListener {
         super.onActivityCreated(savedInstanceState);
         ImageHandler.loadImageFit2(getContext(), image, promoItem.imgUrl);
         int margin = (int) getResources().getDimension(R.dimen.slider_margin);
-        int default_margin = (int) getResources().getDimension(R.dimen.banner_margin);
-        if(size>1){
-            if(pos == 0){
-                setMargin(default_margin, margin);
-            } else if (0 < pos && pos < size - 1) {
-                setMargin(margin, margin);
-            } else {
-                setMargin(margin, default_margin);
-            }
-        } else {
-            setMargin(default_margin, default_margin);
-        }
+        setMargin(margin, margin);
         image.setOnTouchListener(this);
     }
 

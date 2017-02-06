@@ -1,24 +1,17 @@
 package com.tokopedia.tkpd.home.fragment;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Point;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -27,16 +20,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -58,23 +48,22 @@ import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.home.banner.holder.BannerHolderView;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.TopPicksView;
-import com.tokopedia.tkpd.home.adapter.BannerPagerAdapter;
 import com.tokopedia.tkpd.home.adapter.RecyclerViewCategoryMenuAdapter;
 import com.tokopedia.tkpd.home.adapter.SectionListCategoryAdapter;
 import com.tokopedia.tkpd.home.adapter.TickerAnnouncementAdapter;
 import com.tokopedia.tkpd.home.adapter.TopPicksAdapter;
 import com.tokopedia.tkpd.home.adapter.TopPicksItemAdapter;
+import com.tokopedia.tkpd.home.banner.ConvenientBanner;
+import com.tokopedia.tkpd.home.banner.holder.BannerViewHolderCreator;
 import com.tokopedia.tkpd.home.facade.FacadePromo;
 import com.tokopedia.tkpd.home.presenter.Category;
 import com.tokopedia.tkpd.home.presenter.CategoryImpl;
@@ -87,8 +76,6 @@ import com.tokopedia.tkpd.home.recharge.adapter.RechargeViewPagerAdapter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,7 +92,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         RechargeCategoryView,
         SectionListCategoryAdapter.OnCategoryClickedListener,
         SectionListCategoryAdapter.OnGimmicClickedListener, HomeCatMenuView, TopPicksView,
-        TopPicksItemAdapter.OnTitleClickedListener, TopPicksItemAdapter.OnItemClickedListener, TopPicksAdapter.OnClickViewAll{
+        TopPicksItemAdapter.OnTitleClickedListener, TopPicksItemAdapter.OnItemClickedListener, TopPicksAdapter.OnClickViewAll {
 
     private static final long SLIDE_DELAY = 5000;
     public static final String TAG = FragmentIndexCategory.class.getSimpleName();
@@ -113,13 +100,10 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     private ViewHolder holder;
     private Model model;
-    private BannerPagerAdapter pagerAdapter;
-    private Runnable incrementPage;
-    private Handler mHandler;
     Category category;
     private RechargeCategoryPresenter rechargeCategoryPresenter;
     TickerAnnouncementAdapter tickerAdapter;
-    public static final String BANNER_RECEIVER_INTENT = BuildConfig.APPLICATION_ID+".BANNER_RECEIVER_INTENT";
+    public static final String BANNER_RECEIVER_INTENT = BuildConfig.APPLICATION_ID + ".BANNER_RECEIVER_INTENT";
     private HomeCatMenuPresenter homeCatMenuPresenter;
     private TopPicksPresenter topPicksPresenter;
     private RecyclerViewCategoryMenuAdapter recyclerViewCategoryMenuAdapter;
@@ -127,16 +111,17 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private BroadcastReceiver stopBannerReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            stopSlide();
+            if(holder.bannerPager!=null){
+                holder.bannerPager.stopTurning();
+            }
         }
     };
+
     private class ViewHolder {
         private View MainView;
         private View banner;
-        private ViewPager bannerViewPager;
-        private CirclePageIndicator bannerIndicator;
+        private ConvenientBanner bannerPager;
         private RelativeLayout bannerContainer;
-        private TextView promoLink;
         TabLayout tabLayoutRecharge;
         WrapContentViewPager viewpagerRecharge;
         RecyclerView announcementContainer;
@@ -200,7 +185,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             @Override
             public void onSuccess(final Ticker.Tickers[] tickers) {
                 if (tickers.length > 0) {
-
                     holder.announcementContainer.setVisibility(View.VISIBLE);
                     tickerAdapter.addItem(tickers);
                     holder.wrapperScrollview.smoothScrollTo(0, 0);
@@ -210,7 +194,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             @Override
             public void onError() {
                 holder.announcementContainer.setVisibility(View.GONE);
-
             }
         });
     }
@@ -238,34 +221,35 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     private void setBanner(List<FacadePromo.PromoItem> promoList) {
         if (!promoList.isEmpty()) {
-            holder.banner = getActivity().getLayoutInflater().inflate(R.layout.banner, holder.bannerContainer);
-            holder.bannerViewPager = (ViewPager) holder.banner.findViewById(R.id.view_pager);
-            holder.bannerIndicator = (CirclePageIndicator) holder.banner.findViewById(R.id.indicator);
-            holder.promoLink = (TextView) holder.banner.findViewById(R.id.promo_link);
-            holder.bannerViewPager.setAdapter(pagerAdapter);
-            holder.bannerViewPager.setPageMargin(getResources().getDimensionPixelOffset(R.dimen.viewpager_margin));
-            holder.bannerViewPager.setOffscreenPageLimit(2);
-            holder.bannerIndicator.setSnap(true);
-            holder.bannerIndicator.setViewPager(holder.bannerViewPager);
-            holder.promoLink.setOnClickListener(onPromoLinkClicked());
-            model.listBanner.clear();
-            model.listBanner.addAll(promoList);
-            pagerAdapter.setPromoList(promoList);
-
-            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) holder.bannerViewPager.getLayoutParams();
-            DisplayMetrics metrics = new DisplayMetrics();
-            getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-            //param.height = metrics.widthPixels / 2;
-            holder.bannerViewPager.setLayoutParams(param);
-            holder.wrapperScrollview.smoothScrollTo(0, 0);
-            startSlide();
+            holder.banner = getActivity().getLayoutInflater().inflate(R.layout.home_banner, holder.bannerContainer);
+            holder.bannerPager = (ConvenientBanner) holder.banner.findViewById(R.id.bannerViewPager);
+            holder.bannerPager.setPages(getFragmentManager(), new BannerViewHolderCreator<BannerHolderView>() {
+                @Override
+                public BannerHolderView createHolder() {
+                    return new BannerHolderView();
+                }
+            }, promoList)
+                    .setPageIndicator(new int[]{R.drawable.indicator, R.drawable.indicator_focus});
+            holder.bannerPager.getViewPager().setPageMargin(getResources()
+                    .getDimensionPixelOffset(R.dimen.viewpager_margin));
+            holder.bannerPager.setOnPromoLinkClickListener(onPromoLinkClicked());
+            holder.bannerPager.getViewPager().setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if(motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+                        holder.bannerPager.stopTurning();
+                      }
+                    return false;
+                }
+            });
+            holder.bannerPager.startTurning(SLIDE_DELAY);
         } else {
             ((ViewGroup) holder.bannerContainer.getParent()).removeView(holder.banner);
         }
     }
 
-    private View.OnClickListener onPromoLinkClicked(){
-        return new View.OnClickListener(){
+    private View.OnClickListener onPromoLinkClicked() {
+        return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), BannerWebView.class);
@@ -287,44 +271,14 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         category = new CategoryImpl(this);
         holder = new ViewHolder();
         model = new Model();
-        pagerAdapter = new BannerPagerAdapter(getFragmentManager());
-        incrementPage = runnableIncrement();
-        mHandler = new Handler();
         tickerAdapter = TickerAnnouncementAdapter.createInstance(getActivity());
         rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(getActivity(), this);
         homeCatMenuPresenter = new HomeCatMenuPresenterImpl(this);
         topPicksPresenter = new TopPicksPresenterImpl(this);
     }
 
-    private void startSlide() {
-        mHandler.removeCallbacks(incrementPage);
-        mHandler.postDelayed(incrementPage, SLIDE_DELAY);
-    }
-
-    private Runnable runnableIncrement() {
-        return new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    int currentItem = holder.bannerViewPager.getCurrentItem();
-                    int maxItems = holder.bannerViewPager.getAdapter().getCount();
-                    if (maxItems != 0) {
-                        holder.bannerViewPager.setCurrentItem((currentItem + 1) % maxItems, true);
-                    } else {
-                        holder.bannerViewPager.setCurrentItem(0, true);
-                    }
-                    mHandler.postDelayed(incrementPage, SLIDE_DELAY);
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        };
-    }
-
     @Override
     public void onStart() {
-        startSlide();
         super.onStart();
     }
 
@@ -349,13 +303,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onStop() {
-        stopSlide();
         super.onStop();
-    }
-
-
-    private void stopSlide() {
-        mHandler.removeCallbacks(incrementPage);
     }
 
     private void initView(LayoutInflater inflater, ViewGroup container) {
@@ -443,7 +391,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.topPicksRecyclerView = (RecyclerView) holder.MainView.findViewById(R.id.recycler_view_toppicks);
         holder.topPicksRecyclerView.setHasFixedSize(true);
         holder.topPicksRecyclerView.setNestedScrollingEnabled(false);
-        topPicksAdapter = new TopPicksAdapter(getContext(),this,this,this);
+        topPicksAdapter = new TopPicksAdapter(getContext(), this, this, this);
         topPicksAdapter.setHomeMenuWidth(getHomeMenuWidth());
         holder.topPicksRecyclerView.setLayoutManager(
                 new NonScrollLinearLayoutManager(getActivity(),
@@ -456,8 +404,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void renderTopPicks(ArrayList<Toppick> toppicks) {
 
-            topPicksAdapter.setDataList(toppicks);
-            topPicksAdapter.notifyDataSetChanged();
+        topPicksAdapter.setDataList(toppicks);
+        topPicksAdapter.notifyDataSetChanged();
 
     }
 
@@ -492,8 +440,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     public void openWebViewTopPicksURL(String url) {
-        if (url!="") {
-            startActivity(TopPicksWebView.newInstance(getActivity(),url));
+        if (url != "") {
+            startActivity(TopPicksWebView.newInstance(getActivity(), url));
         }
     }
 
@@ -616,7 +564,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.viewpagerRecharge.setAdapter(rechargeViewPagerAdapter);
         holder.viewpagerRecharge.getAdapter().notifyDataSetChanged();
         LocalCacheHandler handler = new LocalCacheHandler(getActivity(), "tabSelection");
-        if (handler.getInt("rechargeSelectedPosition") != null && handler.getInt("rechargeSelectedPosition")<rechargeCategory.getData().size()) {
+        if (handler.getInt("rechargeSelectedPosition") != null && handler.getInt("rechargeSelectedPosition") < rechargeCategory.getData().size()) {
             holder.viewpagerRecharge.setCurrentItem(handler.getInt("rechargeSelectedPosition"));
             LocalCacheHandler.clearCache(getActivity(), "tabSelection");
         } else {
