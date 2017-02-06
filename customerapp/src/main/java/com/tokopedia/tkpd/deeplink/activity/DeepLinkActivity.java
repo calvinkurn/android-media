@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.deeplink.activity;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -39,6 +41,20 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         DeepLinkView, DeepLinkWebViewHandleListener,
         ProductDetailFragment.OnFragmentInteractionListener,
         FragmentGeneralWebView.OnFragmentInteractionListener, ICatalogActionFragment {
+    private static final String EXTRA_STATE_APP_WEB_VIEW = "EXTRA_STATE_APP_WEB_VIEW";
+    private static final String APPLINK_URL = "encoded_url";
+    private Bundle mExtras;
+
+    @DeepLink({
+            "tokopedia://webview/{encoded_url}"
+    })
+    public static Intent getCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, DeepLinkActivity.class)
+                .setData(uri.build())
+                .putExtra(EXTRA_STATE_APP_WEB_VIEW, true)
+                .putExtras(extras);
+    }
 
     private static final String TAG = DeepLinkActivity.class.getSimpleName();
     private Uri uriData;
@@ -62,7 +78,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-
+        mExtras = extras;
     }
 
     @Override
@@ -184,7 +200,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     private void initDeepLink() {
-        if (uriData != null) {
+        if (uriData != null || getIntent().getBooleanExtra(EXTRA_STATE_APP_WEB_VIEW, false)) {
             if (presenter.isLandingPageWebView(uriData)) {
                 CommonUtils.dumper("GAv4 Escape HADES webview");
                 presenter.processDeepLinkAction(uriData);
