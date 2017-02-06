@@ -768,7 +768,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 "&product_id=" + selectedProduct.getId().toString() +
                 "&operator_id=" + selectedProduct.getRelationships().getOperator().getData().getId().toString() +
                 "&is_promo=" + (selectedProduct.getAttributes().getPromo() != null ? "1" : "0") +
-                "&atoken" + generateATokenRechargeCheckout() +
+                "&atoken=" + generateATokenRechargeCheckout() +
                 "&instant_checkout=" + (buyWithCreditCheckbox.isChecked() ? "1" : "0") +
                 "&utm_source=" + bundle.getString(ARG_UTM_SOURCE, "android") +
                 "&utm_medium=" + bundle.getString(ARG_UTM_MEDIUM, "widget") +
