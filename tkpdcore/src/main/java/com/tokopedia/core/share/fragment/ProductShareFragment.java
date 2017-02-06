@@ -33,6 +33,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.model.ProductDB;
 import com.tokopedia.core.database.model.ProductDB_Table;
 import com.tokopedia.core.myproduct.service.ProductService;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.presenter.ProductSharePresenter;
 import com.tokopedia.core.share.presenter.ProductSharePresenterImpl;
@@ -220,7 +221,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
                 if (!messageError.equals(ProductService.INVALID_MESSAGE_ERROR)) {
                     progressBar.setVisibility(View.GONE);
                     errorImage.setVisibility(View.VISIBLE);
-                    loadingAddProduct.setText(messageError + "\n" +getString(R.string.error_failed_add_product));
+                    loadingAddProduct.setText(messageError + "\n" + getString(R.string.error_failed_add_product));
                     loadingAddProduct.setVisibility(View.VISIBLE);
                     setIconShareVisibility(View.GONE);
                     setVisibilityTitle(View.GONE);
@@ -260,23 +261,23 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
                                 .from(ProductDB.class)
                                 .where(ProductDB_Table.productId.is((int) productServerId))
                                 .querySingle();
-                        if (ProductDB!= null && ProductDB.getImages() != null)
+                        if (ProductDB != null && ProductDB.getImages() != null)
                             ProductDB.setPictureDBs(ProductDB.getImages());
-                        if (ProductDB!= null && ProductDB.getWholeSales() != null)
+                        if (ProductDB != null && ProductDB.getWholeSales() != null)
                             ProductDB.setWholesalePriceDBs(ProductDB.getWholeSales());
                         shareData = new ShareData();
-                        if (ProductDB!= null && ProductDB.getNameProd() != null)
+                        if (ProductDB != null && ProductDB.getNameProd() != null)
                             shareData.setName(ProductDB.getNameProd());
 
-                        if (ProductDB!= null && ProductDB.getPictureDBs()!= null
+                        if (ProductDB != null && ProductDB.getPictureDBs() != null
                                 && CommonUtils.checkCollectionNotNull(ProductDB.getPictureDBs()))
                             shareData.setImgUri(ProductDB.getPictureDBs().get(0).getPath());
 
-                        if (ProductDB!= null && ProductDB.getProductUrl() != null)
+                        if (ProductDB != null && ProductDB.getProductUrl() != null)
                             shareData.setUri(ProductDB.getProductUrl());
-                        if (ProductDB!= null && ProductDB.getDescProd() != null)
+                        if (ProductDB != null && ProductDB.getDescProd() != null)
                             shareData.setDescription(ProductDB.getDescProd());
-                        if (ProductDB!= null)
+                        if (ProductDB != null)
                             shareData.setPrice(ProductDB.getPriceProd() + "");
                     }
                 }, 100);//[END] move to manage product
@@ -321,10 +322,10 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId()==R.id.action_close) {
+        if (item.getItemId() == R.id.action_close) {
             getActivity().onBackPressed();
             return true;
-        } else if (item.getItemId()==R.id.home) {
+        } else if (item.getItemId() == R.id.home) {
             getFragmentManager().popBackStack();
             return true;
         }
@@ -400,29 +401,34 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
                 FacebookCallback<Sharer.Result>() {
                     @Override
                     public void onSuccess(Sharer.Result result) {
-                        SnackbarManager.make(getActivity(),getString(R.string.success_share_product)
+                        SnackbarManager.make(getActivity(), getString(R.string.success_share_product)
                                 , Snackbar.LENGTH_SHORT).show();
                         presenter.setFacebookCache();
                     }
+
                     @Override
                     public void onCancel() {
                     }
+
                     @Override
                     public void onError(FacebookException error) {
-                        Log.i(TAG, "onError: "+error);
+                        Log.i(TAG, "onError: " + error);
                     }
                 });
 
         if (ShareDialog.canShow(ShareLinkContent.class)) {
-            ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                    .setImageUrl(Uri.parse(shareData.getImgUri()))
-                    .setContentTitle(shareData.getName())
-                    .setContentDescription(shareData.getUri())
-                    .setContentUrl(Uri.parse(shareData.getUri()))
-                    .setQuote(shareData.getDescription())
-                    .build();
-
-            shareDialog.show(linkContent);
+            if (shareData != null && shareData.getImgUri() != null && shareData.getUri() != null) {
+                ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                        .setImageUrl(Uri.parse(shareData.getImgUri()))
+                        .setContentTitle(shareData.getName())
+                        .setContentDescription(shareData.getUri())
+                        .setContentUrl(Uri.parse(shareData.getUri()))
+                        .setQuote(shareData.getDescription())
+                        .build();
+                shareDialog.show(linkContent);
+                return;
+            }
         }
+        NetworkErrorHelper.showSnackbar(getActivity());
     }
 }

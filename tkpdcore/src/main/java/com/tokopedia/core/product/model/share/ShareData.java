@@ -139,6 +139,9 @@ public class ShareData implements Parcelable {
     }
 
     public String renderShareUri() {
+        if (getUri() == null){
+            throw new RuntimeException("url not allowed to be null");
+        }
         String campaign = "Product";
         if (getType() != null)
             campaign = getType();
