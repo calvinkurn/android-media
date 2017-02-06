@@ -1,11 +1,14 @@
 package com.tokopedia.transaction.purchase.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.inputmethod.InputMethodManager;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
@@ -25,6 +28,11 @@ import java.util.List;
 
 import butterknife.BindView;
 
+import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION;
+import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER;
+import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER;
+import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION;
+
 
 /**
  * @author by anggaprasetiyo on 8/26/16.
@@ -32,6 +40,39 @@ import butterknife.BindView;
 public class PurchaseActivity extends DrawerPresenterActivity implements
         TxSummaryFragment.OnCenterMenuClickListener, FCMMessagingService.NotificationListener,
         PurchaseTabAdapter.Listener, TxListFragment.StateFilterListener {
+
+    @DeepLink({
+            "tokopedia://buyer/payment"
+    })
+    public static Intent getCallingIntentPurchaseVerification(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, PurchaseActivity.class)
+                .setData(uri.build())
+                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_VERIFICATION)
+                .putExtras(extras);
+    }
+
+    @DeepLink({
+            "tokopedia://buyer/order"
+    })
+    public static Intent getCallingIntentPurchaseStatus(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, PurchaseActivity.class)
+                .setData(uri.build())
+                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_STATUS_ORDER)
+                .putExtras(extras);
+    }
+
+    @DeepLink({
+            "tokopedia://buyer/shipping-confirm"
+    })
+    public static Intent getCallingIntentPurchaseShipping(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, PurchaseActivity.class)
+                .setData(uri.build())
+                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_DELIVER_ORDER)
+                .putExtras(extras);
+    }
 
     @BindView(R2.id.pager)
     ViewPager viewPager;
@@ -60,7 +101,7 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        drawerPosition = extras.getInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
+        drawerPosition = extras.getInt(EXTRA_STATE_TAB_POSITION,
                 TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY);
         stateTxFilterID = extras.getString(TransactionPurchaseRouter.EXTRA_STATE_TX_FILTER,
                 TransactionPurchaseRouter.ALL_STATUS_FILTER_ID);
@@ -95,11 +136,11 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
         tabContents = new ArrayList<>();
         tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY,
                 getString(R.string.title_tab_purchase_summary));
-        tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION,
+        tabContents.add(TAB_POSITION_PURCHASE_VERIFICATION,
                 getString(R.string.title_tab_purchase_status_payment));
-        tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER,
+        tabContents.add(TAB_POSITION_PURCHASE_STATUS_ORDER,
                 getString(R.string.title_tab_purchase_status_order));
-        tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER,
+        tabContents.add(TAB_POSITION_PURCHASE_DELIVER_ORDER,
                 getString(R.string.title_tab_purchase_confirm_deliver));
         tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER,
                 getString(R.string.title_tab_purchase_transactions));
@@ -160,13 +201,13 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION);
                 break;
-            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION:
+            case TAB_POSITION_PURCHASE_VERIFICATION:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS);
                 break;
-            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER:
+            case TAB_POSITION_PURCHASE_STATUS_ORDER:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS);
                 break;
-            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER:
+            case TAB_POSITION_PURCHASE_DELIVER_ORDER:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING);
                 break;
             case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER:
