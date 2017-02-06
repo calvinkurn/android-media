@@ -34,6 +34,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -560,6 +561,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         brandsRecyclerViewAdapter = new BrandsRecyclerViewAdapter(new BrandsRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClicked(String name, Brand brand, int position) {
+                UnifyTracking.eventClickOfficialStore(AppEventTracking.EventLabel.OFFICIAL_STORE+name);
                 Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
                 intent.putExtras(ShopInfoActivity.createBundle(brand.getShopId()+"", ""));
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

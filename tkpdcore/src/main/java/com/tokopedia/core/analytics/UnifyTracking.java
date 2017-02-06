@@ -1048,4 +1048,13 @@ public class UnifyTracking extends TrackingUtils {
                 label
         ).getEvent());
     }
+
+    public static void eventClickOfficialStore(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.OFFICIAL_STORE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.CLICK,
+                label
+        ).getEvent());
+    }
 }

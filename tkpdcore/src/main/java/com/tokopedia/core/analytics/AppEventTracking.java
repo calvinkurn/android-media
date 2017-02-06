@@ -96,6 +96,7 @@ public interface AppEventTracking {
         String DEPOSIT = "clickSaldo";
         String OTP = "clickOTP";
         String TOP_PICKS = "clickToppicks";
+        String OFFICIAL_STORE = "clickOfficialStore";
     }
 
     interface Category {
@@ -294,6 +295,7 @@ public interface AppEventTracking {
         String CANCEL = "Cancel";
         String DETAILS = "Details";
         String ORDER_DETAIL = "Order Detail";
+        String OFFICIAL_STORE = "Official Store - ";
     }
 
     interface SOCIAL_MEDIA {

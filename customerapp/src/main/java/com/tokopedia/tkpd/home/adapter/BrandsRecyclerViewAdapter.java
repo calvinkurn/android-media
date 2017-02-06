@@ -47,7 +47,7 @@ public class BrandsRecyclerViewAdapter extends RecyclerView.Adapter<BrandsRecycl
             holder.ivBrands.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    clickListener.onItemClicked("",singleBrand, holder.getAdapterPosition());
+                    clickListener.onItemClicked(singleBrand.getShopName(),singleBrand, holder.getAdapterPosition());
                 }
             });
         }
