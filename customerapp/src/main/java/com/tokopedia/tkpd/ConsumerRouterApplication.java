@@ -10,6 +10,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.transaction.webview.WalletWebView;
@@ -49,6 +50,12 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
     public void goToWallet(Context context, Bundle bundle) {
         Intent intent = new Intent(context, WalletWebView.class);
         intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void goToMerchantRedirect(Context context) {
+        Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
         context.startActivity(intent);
     }
 }

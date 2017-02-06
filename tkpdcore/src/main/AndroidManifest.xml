@@ -508,9 +508,6 @@
 
         <activity android:name=".manage.general.ManageWebViewActivity"
                   android:screenOrientation="portrait"/>
-        <activity android:name=".goldmerchant.GoldMerchantRedirectActivity"
-            android:screenOrientation="portrait"
-            android:label="Gold Merchant"/>
         <!--=======================================================-->
         <!--RECEIVERS REGISTRY-->
         <!--=======================================================-->

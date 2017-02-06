@@ -13,4 +13,6 @@ public interface TkpdCoreRouter {
     DrawerVariable getDrawer(AppCompatActivity activity);
 
     void goToWallet(Context context, Bundle bundle);
+
+    void goToMerchantRedirect(Context context);
 }

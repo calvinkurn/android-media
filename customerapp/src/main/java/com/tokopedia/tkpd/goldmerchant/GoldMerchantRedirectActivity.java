@@ -1,4 +1,4 @@
-package com.tokopedia.core.goldmerchant;
+package com.tokopedia.tkpd.goldmerchant;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -6,14 +6,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
 import com.tokopedia.core.app.TActivity;
-
+import com.tokopedia.tkpd.R;
 
 /**
- * Created by kris on 2/1/17. Tokopedia
+ * Created by kris on 2/6/17. Tokopedia
  */
-
 
 public class GoldMerchantRedirectActivity extends TActivity{
     @Override
@@ -27,8 +25,19 @@ public class GoldMerchantRedirectActivity extends TActivity{
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_gold_merchant_redirect);
         TextView proceedButton = (TextView) findViewById(R.id.proceed_button);
+        TextView backButton = (TextView) findViewById(R.id.back_button);
         proceedButton.setOnClickListener(onProceedButtonClicked());
+        backButton.setOnClickListener(onBackButtonClickedListener());
     }
+
+    private View.OnClickListener onBackButtonClickedListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        }
+    };
     private View.OnClickListener onProceedButtonClicked() {
         return new View.OnClickListener() {
             @Override
@@ -41,4 +50,5 @@ public class GoldMerchantRedirectActivity extends TActivity{
             }
         };
     }
+
 }
