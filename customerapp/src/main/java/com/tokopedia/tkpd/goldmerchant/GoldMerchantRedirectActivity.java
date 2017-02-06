@@ -36,8 +36,8 @@ public class GoldMerchantRedirectActivity extends TActivity{
             public void onClick(View v) {
                 finish();
             }
-        }
-    };
+        };
+    }
     private View.OnClickListener onProceedButtonClicked() {
         return new View.OnClickListener() {
             @Override
