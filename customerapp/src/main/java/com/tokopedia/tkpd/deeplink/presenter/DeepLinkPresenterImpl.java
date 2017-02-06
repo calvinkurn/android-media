@@ -27,8 +27,16 @@ import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.RechargeRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.session.model.AccountsModel;
+import com.tokopedia.core.session.model.AccountsParameter;
+import com.tokopedia.core.session.model.InfoModel;
+import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
+import com.tokopedia.session.session.interactor.SignInInteractor;
+import com.tokopedia.session.session.interactor.SignInInteractorImpl;
+import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.tkpd.IConsumerModuleRouter;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
@@ -63,10 +71,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private final Activity context;
     private final DeepLinkView viewListener;
+    SignInInteractor interactor;
 
     public DeepLinkPresenterImpl(DeepLinkActivity activity) {
         this.viewListener = activity;
         this.context = activity;
+        this.interactor = SignInInteractorImpl.createInstance(activity);
     }
 
     @Override
@@ -95,6 +105,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 return false;
             default:
                 return true;
+        }
+    }
+
+    @Override
+    public void checkUriLogin(Uri uriData) {
+        if(getDeepLinkType(uriData) == ACCOUNTS && uriData.getPath().contains("activation")){
+            if(!SessionHandler.isV4Login(context)){
+                login(uriData);
+            }
         }
     }
 
@@ -157,6 +176,40 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             }
             sendCampaignGTM(uriData.toString(), screenName);
         }
+    }
+
+    private void login(Uri uriData) {
+        interactor.handleAccounts(parseUriData(uriData), new SignInInteractor.SignInListener() {
+            @Override
+            public void onSuccess(AccountsModel result) {
+
+            }
+
+            @Override
+            public void onError(String error) {
+
+            }
+
+            @Override
+            public void moveToSecurityQuestion(SecurityModel securityModel) {
+
+            }
+
+            @Override
+            public void moveToCreatePassword(InfoModel infoModel) {
+
+            }
+        });
+    }
+
+    private AccountsParameter parseUriData(Uri uriData) {
+        AccountsParameter data = new AccountsParameter();
+        data.setEmail(" ");
+        data.setPassword(uriData.getPathSegments().get(1));
+        data.setAttempt(uriData.getQueryParameter("a"));
+        data.setGrantType(Login.GRANT_PASSWORD);
+        data.setPasswordType(SignInInteractor.ACTIVATION_CODE);
+        return data;
     }
 
 
@@ -407,7 +460,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         List<String> linkSegment = uriData.getPathSegments();
         if (uriData.toString().contains("accounts.tokopedia.com"))
             return ACCOUNTS;
-
         try {
             if (isExcludedHostUrl(uriData))
                 return OTHER;

@@ -91,6 +91,8 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
     public void validateEmail(final Context context, final String name, final String email, final String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email",email);
+        params.put("password","asdfjadnsfjnajd");
+        params.put("os_type","1");
         facade.validateEmail(context, params , new RegisterInteractor.ValidateEmailListener() {
             @Override
             public void onSuccess(boolean isActive) {
