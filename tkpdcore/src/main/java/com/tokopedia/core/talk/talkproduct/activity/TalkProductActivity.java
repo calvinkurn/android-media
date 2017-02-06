@@ -2,13 +2,18 @@ package com.tokopedia.core.talk.talkproduct.activity;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.TaskStackBuilder;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkResultReceiver;
 import com.tokopedia.core.talk.talkproduct.fragment.TalkProductFragment;
@@ -25,6 +30,23 @@ public class TalkProductActivity extends TActivity implements InboxTalkResultRec
 
     InboxTalkResultReceiver mReceiver;
 
+    @DeepLink("tokopedia://product/{product_id}/talk")
+    public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
+        Intent detailsIntent = new Intent(context, TalkProductActivity.class).putExtras(extras);
+        detailsIntent.putExtras(extras);
+        Intent parentIntent = new Intent(context, ProductInfoActivity.class);
+        parentIntent.putExtras(extras);
+        if (extras.getString(DeepLink.URI) != null) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            detailsIntent.setData(uri.build());
+            parentIntent.setData(uri.build());
+        }
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntent(parentIntent);
+        taskStackBuilder.addNextIntent(detailsIntent);
+        return taskStackBuilder;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +61,7 @@ public class TalkProductActivity extends TActivity implements InboxTalkResultRec
         productName = getIntent().getExtras().getString("prod_name");
         productImage = getIntent().getExtras().getString("product_image");
 
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             Fragment fragment = TalkProductFragment.createInstance(getIntent().getExtras());
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.container, fragment, TalkProductActivity.class.getSimpleName());
@@ -62,12 +84,12 @@ public class TalkProductActivity extends TActivity implements InboxTalkResultRec
                 case InboxTalkIntentService.STATUS_SUCCESS_FOLLOW:
                 case InboxTalkIntentService.STATUS_SUCCESS_DELETE:
                 case InboxTalkIntentService.STATUS_SUCCESS_REPORT:
-                    onReceiveResultSuccess(fragment,resultData,resultCode);
+                    onReceiveResultSuccess(fragment, resultData, resultCode);
                     break;
                 case InboxTalkIntentService.STATUS_ERROR_FOLLOW:
                 case InboxTalkIntentService.STATUS_ERROR_DELETE:
                 case InboxTalkIntentService.STATUS_ERROR_REPORT:
-                    onReceiveResultError(fragment, resultData,resultCode);
+                    onReceiveResultError(fragment, resultData, resultCode);
                     break;
             }
         }

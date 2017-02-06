@@ -2,16 +2,22 @@ package com.tokopedia.core.reputationproduct;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
+import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.review.fragment.ProductReviewFragment;
 
 import java.util.ArrayList;
@@ -33,6 +39,23 @@ public class ReputationProduct extends TActivity {
     private TabLayout indicator;
 
     private List<ProductReviewFragment> fragmentList;
+
+    @DeepLink("tokopedia://product/{product_id}/review")
+    public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
+        Intent detailsIntent = new Intent(context, ReputationProduct.class).putExtras(extras);
+        detailsIntent.putExtras(extras);
+        Intent parentIntent = new Intent(context, ProductInfoActivity.class);
+        parentIntent.putExtras(extras);
+        if (extras.getString(DeepLink.URI) != null) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            detailsIntent.setData(uri.build());
+            parentIntent.setData(uri.build());
+        }
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntent(parentIntent);
+        taskStackBuilder.addNextIntent(detailsIntent);
+        return taskStackBuilder;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
