@@ -77,6 +77,7 @@ public class DatePickerActivity extends TActivity {
         tabLayout.setOnTabSelectedListener(tabListener);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_date_period));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_date_custom));
+        viewPager.setCurrentItem(selectionType);
         String title = getIntent().getExtras().getString(PAGE_TITLE);
         if (!TextUtils.isEmpty(title)) {
             getSupportActionBar().setTitle(title);
@@ -89,7 +90,6 @@ public class DatePickerActivity extends TActivity {
         periodFragment.setCallback(new DatePickerPeriodFragment.Callback() {
             @Override
             public void onDateSubmitted(int selectionPeriodResult, long startDateResult, long endDateResult) {
-                selectionType = SELECTION_TYPE_PERIOD_DATE;
                 selectionPeriod = selectionPeriodResult;
                 startDate = startDateResult;
                 endDate = endDateResult;
@@ -101,7 +101,6 @@ public class DatePickerActivity extends TActivity {
         mDatePickerCustomFragment.setCallback(new DatePickerCustomFragment.Callback() {
             @Override
             public void onDateSubmitted(long startDateResult, long endDateResult) {
-                selectionType = SELECTION_TYPE_CUSTOM_DATE;
                 startDate = startDateResult;
                 endDate = endDateResult;
                 setResult();
@@ -130,7 +129,7 @@ public class DatePickerActivity extends TActivity {
         intent.putExtra(START_DATE, startDate);
         intent.putExtra(END_DATE, endDate);
         intent.putExtra(SELECTION_PERIOD, selectionPeriod);
-        intent.putExtra(SELECTION_TYPE, selectionType);
+        intent.putExtra(SELECTION_TYPE, viewPager.getCurrentItem());
         setResult(RESULT_CODE, intent);
         finish();
     }

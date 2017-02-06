@@ -75,10 +75,6 @@ public class CustomDateViewHolder extends RecyclerView.ViewHolder {
     public void onChooseDate() {
         if (startOrEndPeriodModel == null || !(this.itemView.getContext() instanceof Activity))
             return;
-        Calendar minDate = Calendar.getInstance();
-        minDate.setTimeInMillis(startOrEndPeriodModel.minStartDate);
-        Calendar maxDate = Calendar.getInstance();
-        maxDate.setTimeInMillis(startOrEndPeriodModel.maxEndDate);
         DatePickerUtil datePicker =
                 new DatePickerUtil(
                         (Activity) this.itemView.getContext(),

@@ -6,23 +6,25 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.tokopedia.seller.topads.lib.datepicker.widget.DatePickerLabelView
-        android:id="@+id/date_picker_start_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:date_picker_title="@string/label_date_picker_start_date"/>
-
-    <com.tokopedia.seller.topads.lib.datepicker.widget.DatePickerLabelView
-        android:id="@+id/date_picker_end_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:date_picker_title="@string/label_date_picker_end_date"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <com.tokopedia.seller.topads.lib.datepicker.widget.DatePickerLabelView
+            android:id="@+id/date_picker_start_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:date_picker_title="@string/label_date_picker_start_date"/>
+
+        <com.tokopedia.seller.topads.lib.datepicker.widget.DatePickerLabelView
+            android:id="@+id/date_picker_end_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:date_picker_title="@string/label_date_picker_end_date"/>
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/button_submit"

@@ -1,28 +1,24 @@
 package com.tokopedia.seller.topads.lib.datepicker.fragment;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.lib.datepicker.DatePickerActivity;
 import com.tokopedia.seller.topads.lib.datepicker.DatePickerUtils;
-import com.tokopedia.seller.topads.lib.datepicker.adapter.PeriodAdapter;
 import com.tokopedia.seller.topads.lib.datepicker.constant.DatePickerConstant;
-import com.tokopedia.seller.topads.lib.datepicker.model.StartOrEndPeriodModel;
 import com.tokopedia.seller.topads.lib.datepicker.widget.DatePickerLabelView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Calendar;
 
 /**
  * Created by Nathaniel on 1/16/2017.
@@ -30,28 +26,15 @@ import java.util.List;
 
 public class DatePickerCustomFragment extends TkpdFragment {
 
-    public interface Callback {
-
-        void onDateSubmitted(long startDate, long endDate);
-
-    }
-
     private DatePickerLabelView startDatePickerLabelView;
     private DatePickerLabelView endDatePickerLabelView;
-    private RecyclerView recyclerView;
     private Button submitButton;
-
-    private PeriodAdapter periodAdapter;
     private long startDate;
     private long endDate;
     private long minStartDate;
     private long maxEndDate;
     private int maxDateRange;
     private Callback callback;
-
-    public void setCallback(Callback callback) {
-        this.callback = callback;
-    }
 
     public static DatePickerCustomFragment newInstance(long sDate, long eDate, long minStartDate, long maxEndDate, int maxDateRange) {
         DatePickerCustomFragment fragment = new DatePickerCustomFragment();
@@ -65,9 +48,20 @@ public class DatePickerCustomFragment extends TkpdFragment {
         return fragment;
     }
 
+    public void setCallback(Callback callback) {
+        this.callback = callback;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_date_picker_custom, container, false);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         Bundle bundle = getArguments();
         if (bundle != null) {
             startDate = bundle.getLong(DatePickerActivity.CUSTOM_START_DATE, -1);
@@ -76,22 +70,20 @@ public class DatePickerCustomFragment extends TkpdFragment {
             maxEndDate = bundle.getLong(DatePickerActivity.MAX_END_DATE, -1);
             maxDateRange = bundle.getInt(DatePickerActivity.MAX_DATE_RANGE, -1);
         }
-        View view = inflater.inflate(R.layout.fragment_date_picker_custom, container, false);
         startDatePickerLabelView = (DatePickerLabelView) view.findViewById(R.id.date_picker_start_date);
         endDatePickerLabelView = (DatePickerLabelView) view.findViewById(R.id.date_picker_end_date);
         startDatePickerLabelView.setOnContentClick(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                openStartDatePicker();
             }
         });
         endDatePickerLabelView.setOnContentClick(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                openEndDatePicker();
             }
         });
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         submitButton = (Button) view.findViewById(R.id.button_submit);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,45 +91,106 @@ public class DatePickerCustomFragment extends TkpdFragment {
                 saveDate();
             }
         });
+        updateDateView();
+    }
+
+    private void openStartDatePicker() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(startDate);
+        DatePickerUtil datePicker = new DatePickerUtil(getActivity(),
+                calendar.get(Calendar.DAY_OF_MONTH),
+                calendar.get(Calendar.MONTH) + 1,
+                calendar.get(Calendar.YEAR)
+        );
+        datePicker.setMinDate(minStartDate);
+        datePicker.setMaxDate(maxEndDate);
+        datePicker.DatePickerCalendar(new DatePickerUtil.onDateSelectedListener() {
+            @Override
+            public void onDateSelected(int year, int monthOfYear, int dayOfMonth) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, monthOfYear - 1, dayOfMonth);
+                updateStartDate(calendar.getTimeInMillis());
+            }
+
+            private void updateStartDate(long selectedDate) {
+                startDate = selectedDate;
+                Calendar endDateCalendar = Calendar.getInstance();
+                endDateCalendar.setTimeInMillis(selectedDate);
+                endDateCalendar.add(Calendar.DATE, maxDateRange);
+                if (endDate > endDateCalendar.getTimeInMillis()) {
+                    endDate = endDateCalendar.getTimeInMillis();
+                }
+                if (endDate > maxEndDate) {
+                    endDate = maxEndDate;
+                }
+                if (endDate < startDate) {
+                    endDate = startDate;
+                }
+                updateDateView();
+            }
+        });
+    }
+
+    private void openEndDatePicker() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(endDate);
+        DatePickerUtil datePicker = new DatePickerUtil(getActivity(),
+                calendar.get(Calendar.DAY_OF_MONTH),
+                calendar.get(Calendar.MONTH) + 1,
+                calendar.get(Calendar.YEAR)
+        );
+        datePicker.setMinDate(minStartDate);
+        datePicker.setMaxDate(maxEndDate);
+        datePicker.DatePickerCalendar(new DatePickerUtil.onDateSelectedListener() {
+            @Override
+            public void onDateSelected(int year, int monthOfYear, int dayOfMonth) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, monthOfYear - 1, dayOfMonth);
+                updateStartDate(calendar.getTimeInMillis());
+            }
+
+            private void updateStartDate(long selectedDate) {
+                endDate = selectedDate;
+                Calendar startDateCalendar = Calendar.getInstance();
+                startDateCalendar.setTimeInMillis(selectedDate);
+                startDateCalendar.add(Calendar.DATE, -maxDateRange);
+                if (startDate < startDateCalendar.getTimeInMillis()) {
+                    startDate = startDateCalendar.getTimeInMillis();
+                }
+                if (startDate < minStartDate) {
+                    startDate = minStartDate;
+                }
+                if (startDate > endDate) {
+                    startDate = endDate;
+                }
+                updateDateView();
+            }
+        });
+    }
+
+    private void updateDateView() {
+        String[] monthNamesAbrev = getActivity().getResources().getStringArray(R.array.month_names_abrev);
         DateFormat dateFormat = new SimpleDateFormat(DatePickerConstant.DATE_FORMAT, DatePickerConstant.LOCALE);
-
-        startDatePickerLabelView.setContent(dateFormat.format(startDate));
-        endDatePickerLabelView.setContent(dateFormat.format(endDate));
-
-        periodAdapter = new PeriodAdapter(view, startDate, endDate, minStartDate, maxEndDate, maxDateRange);
-        List<DatePickerUtils.BasePeriodModel> basePeriodModels = new ArrayList<>();
-        StartOrEndPeriodModel startOrEndPeriodModel = new StartOrEndPeriodModel(true, false, "Tanggal Mulai");
-        startOrEndPeriodModel.setStartDate(startDate);
-        startOrEndPeriodModel.setEndDate(endDate);
-        startOrEndPeriodModel.setMinStartDate(minStartDate);
-        startOrEndPeriodModel.setMaxEndDate(maxEndDate);
-        startOrEndPeriodModel.setMaxDateRange(maxDateRange);
-        basePeriodModels.add(startOrEndPeriodModel);
-
-        startOrEndPeriodModel = new StartOrEndPeriodModel(false, true, "Tanggal Selesai");
-        startOrEndPeriodModel.setStartDate(startDate);
-        startOrEndPeriodModel.setEndDate(endDate);
-        startOrEndPeriodModel.setMinStartDate(minStartDate);
-        startOrEndPeriodModel.setMaxEndDate(maxEndDate);
-        startOrEndPeriodModel.setMaxDateRange(maxDateRange);
-        basePeriodModels.add(startOrEndPeriodModel);
-
-        periodAdapter.setBasePeriodModels(basePeriodModels);
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        recyclerView.setAdapter(periodAdapter);
-
-        return view;
+        String[] split = dateFormat.format(startDate).split(" ");
+        startDatePickerLabelView.setContent(DatePickerUtils.getDateWithYear(Integer.parseInt(DatePickerUtils.reverseDate(split)), monthNamesAbrev));
+        split = dateFormat.format(endDate).split(" ");
+        endDatePickerLabelView.setContent(DatePickerUtils.getDateWithYear(Integer.parseInt(DatePickerUtils.reverseDate(split)), monthNamesAbrev));
     }
 
     public void saveDate() {
         if (callback != null) {
-            callback.onDateSubmitted(periodAdapter.datePickerRules.sDate, periodAdapter.datePickerRules.eDate);
+            callback.onDateSubmitted(startDate, endDate);
         }
     }
 
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    public interface Callback {
+
+        void onDateSubmitted(long startDate, long endDate);
+
     }
 }
