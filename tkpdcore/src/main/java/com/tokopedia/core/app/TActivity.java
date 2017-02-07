@@ -408,7 +408,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
     @Override
     public void onLogout(Boolean success) {
         if (success) {
-//            finish();
+            finish();
             Intent intent;
             if (GlobalConfig.isSellerApp()) {
                 intent = new Intent(this, WelcomeActivity.class);
