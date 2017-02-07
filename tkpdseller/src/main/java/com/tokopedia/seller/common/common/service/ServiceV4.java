@@ -25,11 +25,11 @@ public interface ServiceV4 {
     Observable<Response<GetListFaveShopIdResponse>> getListFaveShopId(
             @FieldMap Map<String, String> params);
 
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Etc.URL_HOME + TkpdBaseURL.Etc.PATH_GET_WISHLIST)
-    Observable<Response<String>> getWishlist(@FieldMap TKPDMapParam<String, String> param);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Etc.URL_HOME + TkpdBaseURL.Etc.PATH_GET_FAVORITE_SHOP)
-    Observable<Response<String>> getFavoriteShop(@FieldMap Map<String, String> params);
+//    @FormUrlEncoded
+//    @POST(TkpdBaseURL.Etc.GET_WISHLIST_URL)
+//    Observable<Response<String>> getWishlist(@FieldMap TKPDMapParam<String, String> param);
+//
+//    @FormUrlEncoded
+//    @POST(TkpdBaseURL.Etc.GET_FAVORITE_SHOP_URL)
+//    Observable<Response<String>> getFavoriteShop(@FieldMap Map<String, String> params);
 }

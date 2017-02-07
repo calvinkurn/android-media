@@ -101,6 +101,9 @@
             android:name=".gmsubscribe.view.checkout.activity.GMCheckoutActivity"
             android:label="@string/gmsubscribe_checkout_title"
             android:screenOrientation="portrait"/>
+        <activity android:name=".gmsubscribe.view.payment.GMDynamicPaymentActivity"
+            android:label="Pembayaran"
+            android:screenOrientation="portrait"/>
         <service
             android:name=".selling.SellingService"
             android:exported="false" />

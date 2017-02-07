@@ -50,10 +50,7 @@ public class GMDynamicPaymentActivity extends BasePresenterActivity {
     private static final String CHARSET_UTF_8 = "UTF-8";
 
 
-    @BindView(R2.id.webview)
     WebView webView;
-
-    @BindView(R2.id.progressbar)
     ProgressBar progressBar;
     private String callbackUrl;
     private String paymentUrl;
@@ -101,7 +98,8 @@ public class GMDynamicPaymentActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-
+        webView = (WebView) findViewById(R.id.webview);
+        progressBar = (ProgressBar) findViewById(R.id.progressbar);
     }
 
     @SuppressLint("SetJavaScriptEnabled")

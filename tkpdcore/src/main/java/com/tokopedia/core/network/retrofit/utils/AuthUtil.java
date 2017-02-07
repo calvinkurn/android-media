@@ -27,6 +27,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class AuthUtil {
     private static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
     private static final String CONTENT_TYPE_JSON = "application/json";
+    private static final String CONTENT_TYPE_JSON_UT = "application/json; charset=UTF-8";
     private static final String MAC_ALGORITHM = "HmacSHA1";
     private static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ";
 
@@ -63,7 +64,7 @@ public class AuthUtil {
     }
 
     public static Map<String, String> generateNewHeaders(String path, String strParam, String method, String authKey) {
-        Map<String, String> finalHeader = getDefaultNewHeaderMap(path, strParam, method, CONTENT_TYPE, authKey, DATE_FORMAT);
+        Map<String, String> finalHeader = getDefaultNewHeaderMap(path, strParam, method, CONTENT_TYPE_JSON_UT, authKey, DATE_FORMAT);
         finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
         return finalHeader;
     }

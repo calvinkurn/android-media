@@ -349,6 +349,8 @@ public class TkpdBaseURL {
         public static final String PATH_GET_WISHLIST = "get_wishlist.pl";
 
         public static final String PATH_GET_DATA_SOURCE_TICKER = "get_data_source_ticker.pl";
+        public static final String GET_FAVORITE_SHOP_URL = URL_HOME + PATH_GET_FAVORITE_SHOP;
+        public static final String GET_WISHLIST_URL = URL_HOME + PATH_GET_WISHLIST;
     }
 
     public static class ResCenter {
