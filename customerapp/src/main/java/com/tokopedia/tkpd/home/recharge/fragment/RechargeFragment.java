@@ -26,6 +26,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -121,6 +123,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     TextView errorNominal;
     @BindView(R.id.btn_buy)
     Button buyButton;
+    @BindView(R.id.radio_group_container)
+    LinearLayout radGroupContainer;
 
     //endregion
 
@@ -131,6 +135,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private List<Product> productList;
     private List<RechargeOperatorModel> operatorList;
     private Product selectedProduct;
+    private RechargeOperatorModel selectedOperator;
     private String selectedOperatorId;
     private LocalCacheHandler cacheHandlerPhoneBook;
     private LastOrder lastOrder;
@@ -282,9 +287,13 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         phoneNumber = s.toString();
         if (!category.getAttributes().getValidatePrefix()) {
             if (s.length() >= minLengthDefaultOperator) {
-                this.rechargePresenter.validateWithOperator(
-                        category.getId(),
-                        category.getAttributes().getDefaultOperatorId());
+                if (selectedOperator != null && selectedOperator.showProduct) {
+                    this.rechargePresenter.validateWithOperator(
+                            category.getId(),
+                            category.getAttributes().getDefaultOperatorId());
+                } else {
+                    hideFormAndShowImageOperator();
+                }
             } else {
                 isAlreadyHavePhonePrefixInView = false;
                 hideFormAndImageOperator();
@@ -391,32 +400,35 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @Override
     public void renderDataOperators(List<RechargeOperatorModel> operators) {
         Collections.sort(operators, new OperatorComparator());
-        operatorList = operators;
-        spnOperator.setVisibility(View.VISIBLE);
-        OperatorAdapter adapterOperator = new OperatorAdapter(
-                getActivity(),
-                android.R.layout.simple_spinner_item,
-                operators
-        );
-        Log.d("alifa", " " + adapterOperator);
-        spnOperator.setAdapter(adapterOperator);
-        spnOperator.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                rechargeEditText.setText("");
-                selectedOperatorId = Integer.toString(operatorList.get(i).operatorId);
-                if (!category.getAttributes().getClientNumber().getIsShown()) {
-                    setUpForNotUsingTextEdit();
-                } else {
-                    rechargePresenter.updateMinLenghAndOperator(selectedOperatorId);
+        if (operators.size() <= 2) {
+            addRadioButtonOperator(operators);
+        } else {
+            operatorList = operators;
+            spnOperator.setVisibility(View.VISIBLE);
+            OperatorAdapter adapterOperator = new OperatorAdapter(
+                    getActivity(),
+                    android.R.layout.simple_spinner_item,
+                    operators
+            );
+            spnOperator.setAdapter(adapterOperator);
+            spnOperator.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    rechargeEditText.setText("");
+                    selectedOperatorId = Integer.toString(operatorList.get(i).operatorId);
+                    if (!category.getAttributes().getClientNumber().getIsShown()) {
+                        setUpForNotUsingTextEdit();
+                    } else {
+                        rechargePresenter.updateMinLenghAndOperator(selectedOperatorId);
+                    }
                 }
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
 
-            }
-        });
+                }
+            });
+        }
     }
 
     private void setSpnNominalSelectionBasedLastOrder(List<Product> productList) {
@@ -438,6 +450,14 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 break;
             }
         }
+    }
+
+    private void hideFormAndShowImageOperator() {
+        if (spnNominal != null) spnNominal.setVisibility(View.GONE);
+        if (wrapperLinearLayout != null) wrapperLinearLayout.setVisibility(View.GONE);
+        if (nominalTextview != null) nominalTextview.setVisibility(View.GONE);
+        if (rechargeEditText != null) rechargeEditText.setImgOperatorVisible();
+        if (errorNominal != null) errorNominal.setVisibility(View.GONE);
     }
 
     @Override
@@ -537,8 +557,12 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         if (!category.getAttributes().getValidatePrefix()) {
             selectedOperatorId = category.getAttributes().getDefaultOperatorId();
             this.rechargePresenter.updateMinLenghAndOperator(selectedOperatorId);
-            if (!category.getAttributes().getClientNumber().getIsShown()) {
-                setUpForNotUsingTextEdit();
+
+            if (category.getAttributes().getShowOperator()) {
+                if (!category.getAttributes().getClientNumber().getIsShown()) {
+                    setUpForNotUsingTextEdit();
+                }
+                this.rechargePresenter.getListOperatorFromCategory(category.getId());
             }
         }
 
@@ -551,6 +575,33 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 category.getId(),
                 selectedOperatorId);
     }
+
+    private void addRadioButtonOperator(final List<RechargeOperatorModel> operators) {
+        spnOperator.setVisibility(View.GONE);
+        radGroupContainer.setVisibility(View.VISIBLE);
+
+        RadioGroup radGroup = new RadioGroup(getActivity());
+        radGroupContainer.addView(radGroup);
+        radGroup.setOrientation(LinearLayout.HORIZONTAL);
+
+        for (int i = 0; i < operators.size(); i++) {
+            RadioButton radioButton = new RadioButton(getActivity());
+            radioButton.setId(i);
+            radioButton.setText(operators.get(i).name);
+            radGroup.addView(radioButton);
+        }
+        radGroup.check(0);
+        radGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                selectedOperator = operators.get(i);
+                selectedOperatorId = Integer.toString(operators.get(i).operatorId);
+                rechargePresenter.validateWithOperator(category.getId(), selectedOperatorId);
+                rechargePresenter.updateMinLenghAndOperator(selectedOperatorId);
+            }
+        });
+    }
+
 
     private void setTextToEditTextOrSetVisibilityForm() {
         cacheHandlerPhoneBook = new LocalCacheHandler(getActivity(), KEY_PHONEBOOK);
