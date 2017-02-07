@@ -15,6 +15,8 @@ import java.util.Date;
 public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<T> {
 
     private static final int REQUEST_CODE_DATE = 5;
+    public static final String START_DATE = "start_date";
+    public static final String END_DATE = "end_date";
 
     protected Date startDate;
     protected Date endDate;
@@ -34,12 +36,18 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
 
     @Override
     public void onSaveState(Bundle state) {
-
+        if(startDate != null && endDate != null) {
+            state.putLong(START_DATE, startDate.getTime());
+            state.putLong(END_DATE, endDate.getTime());
+        }
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-
+        if(startDate == null && endDate == null) {
+            startDate = new Date(savedState.getLong(START_DATE));
+            endDate = new Date(savedState.getLong(END_DATE));
+        }
     }
 
     @Override
