@@ -728,12 +728,12 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     }
 
     @Override
-    public void afterTextChanged(Editable s) {
-        if (subscription == null || subscription.isUnsubscribed()) quantityChangedEvent(s);
+    public void afterTextChanged(Editable quantity) {
+        if (subscription == null || subscription.isUnsubscribed()) quantityChangedEvent(quantity);
     }
 
-    private void quantityChangedEvent(Editable s) {
-        orderData.setQuantity(s.length() == 0 ?
+    private void quantityChangedEvent(Editable quantity) {
+        orderData.setQuantity(quantity.length() == 0 ?
                 0 : Integer.parseInt(etQuantity.getText().toString()));
         if (orderData.getQuantity() < orderData.getMinOrder()) {
             tilAmount.setError(getString(R.string.error_min_order)
@@ -746,9 +746,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             showErrorMessage(getString(R.string.error_no_address));
         } else {
             CommonUtils.dumper("rates/v1 kerorates called aftertextchanged");
-            presenter.calculateWeight(orderData.getInitWeight(), s.toString());
-            orderData.setWeight(CommonUtils.round((Double.parseDouble(orderData.getInitWeight()) *
-                    Double.parseDouble(s.toString())), 4) + "");
+            orderData.setWeight(presenter.calculateWeight(orderData.getInitWeight(),
+                    quantity.toString()));
             tilAmount.setError(null);
             tilAmount.setErrorEnabled(false);
             presenter.calculateAllPrices(AddToCartActivity.this, orderData);

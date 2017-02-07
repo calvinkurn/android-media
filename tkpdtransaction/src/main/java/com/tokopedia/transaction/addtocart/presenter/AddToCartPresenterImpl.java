@@ -564,8 +564,8 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
     @Override
     public String calculateWeight(String initialWeight, String quantity) {
-        return CommonUtils.round((Double.parseDouble(initialWeight) *
-                Double.parseDouble(quantity)), 4) + "";
+        return String.valueOf(CommonUtils.round((Double.parseDouble(initialWeight) *
+                Double.parseDouble(quantity)), 4));
     }
 
 }
