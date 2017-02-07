@@ -23,6 +23,8 @@ import com.tkpd.library.utils.DownloadResultSender;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.instoped.model.InstagramMediaModelParc;
 import com.tokopedia.core.myproduct.dialog.DialogFragmentImageAddProduct;
@@ -391,6 +393,19 @@ public class ProductSocMedActivity extends BaseProductActivity implements Produc
         if(dialog!=null){
             ((ChooserDialogFragment)dialog).dismiss();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // analytic below : https://phab.tokopedia.com/T18496
+        ScreenTracking.sendScreen(this, new ScreenTracking.IOpenScreenAnalytics() {
+            @Override
+            public String getScreenName() {
+                return AppScreen.SCREEN_INSTOPED;
+            }
+        });
     }
 
     @Override

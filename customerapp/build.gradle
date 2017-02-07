@@ -221,10 +221,10 @@ dependencies {
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
 
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile "org.mockito:mockito-core:2.0.57-beta"
+    testCompile rootProject.ext.testDependencies.mockitorCore
     testCompile 'junit:junit:4.12'
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
