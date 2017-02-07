@@ -8,12 +8,12 @@ import rx.plugins.RxJavaObservableExecutionHook;
 /**
  * Created by pt2121 on 3/7/15.
  */
-public class BetterExecutionHook extends RxJavaObservableExecutionHook {
+public class RxJavaExecutionHook extends RxJavaObservableExecutionHook {
 
-    BetterExecutionBridge betterExecutionBridge;
+    RxJavaExecutionBridge rxJavaExecutionBridge;
 
-    public BetterExecutionHook(BetterExecutionBridge betterExecutionBridge) {
-        this.betterExecutionBridge = betterExecutionBridge;
+    public RxJavaExecutionHook(RxJavaExecutionBridge rxJavaExecutionBridge) {
+        this.rxJavaExecutionBridge = rxJavaExecutionBridge;
     }
 
     @Override
@@ -28,12 +28,12 @@ public class BetterExecutionHook extends RxJavaObservableExecutionHook {
         onSubscribe.call(new Subscriber<T>() {
             @Override
             public void onCompleted() {
-                betterExecutionBridge.onEnd();
+                rxJavaExecutionBridge.onEnd();
             }
 
             @Override
             public void onError(Throwable e) {
-                betterExecutionBridge.onEnd();
+                rxJavaExecutionBridge.onEnd();
             }
 
             @Override
@@ -41,7 +41,7 @@ public class BetterExecutionHook extends RxJavaObservableExecutionHook {
 
             }
         });
-        betterExecutionBridge.onStart();
+        rxJavaExecutionBridge.onStart();
         return onSubscribe;
 
     }

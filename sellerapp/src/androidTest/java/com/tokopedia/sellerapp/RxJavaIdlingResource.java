@@ -8,7 +8,7 @@ import rx.plugins.RxJavaPlugins;
 /**
  * Created by pt2121 on 3/7/15.
  */
-public class BetterIdlingResource implements IdlingResource, BetterExecutionBridge {
+public class RxJavaIdlingResource implements IdlingResource, RxJavaExecutionBridge {
 
     private static final boolean isLogged = false;
 
@@ -16,9 +16,9 @@ public class BetterIdlingResource implements IdlingResource, BetterExecutionBrid
 
     private Integer idler = 0;
 
-    public BetterIdlingResource() {
+    public RxJavaIdlingResource() {
         try {
-            RxJavaPlugins.getInstance().registerObservableExecutionHook(new BetterExecutionHook(this));
+            RxJavaPlugins.getInstance().registerObservableExecutionHook(new RxJavaExecutionHook(this));
         } catch (Exception e) {
         }
     }
