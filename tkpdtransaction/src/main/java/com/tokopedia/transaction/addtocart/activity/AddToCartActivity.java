@@ -746,6 +746,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             showErrorMessage(getString(R.string.error_no_address));
         } else {
             CommonUtils.dumper("rates/v1 kerorates called aftertextchanged");
+            presenter.calculateWeight(orderData.getInitWeight(), s.toString());
             orderData.setWeight(CommonUtils.round((Double.parseDouble(orderData.getInitWeight()) *
                     Double.parseDouble(s.toString())), 4) + "");
             tilAmount.setError(null);
