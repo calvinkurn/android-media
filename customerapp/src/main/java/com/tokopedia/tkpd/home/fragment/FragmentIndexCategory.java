@@ -147,6 +147,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         RecyclerView categoriesRecylerview;
         RecyclerView topPicksRecyclerView;
         RecyclerView brandsRecyclerView;
+        RelativeLayout rlBrands;
         public LinearLayout wrapperLinearLayout;
 
 
@@ -310,8 +311,14 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         brandsPresenter = new BrandsPresenterImpl(new OnGetBrandsListener() {
             @Override
             public void onSuccess(Brands brands) {
+                holder.rlBrands.setVisibility(View.VISIBLE);
                 brandsRecyclerViewAdapter.setDataList(brands);
                 brandsRecyclerViewAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError() {
+                holder.rlBrands.setVisibility(View.GONE);
             }
         });
     }
@@ -381,6 +388,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
         holder.announcementContainer = (RecyclerView) holder.MainView.findViewById(R.id.announcement_ticker);
         holder.wrapperScrollview = (NestedScrollView) holder.MainView.findViewById(R.id.category_scrollview);
+        holder.rlBrands = (RelativeLayout) holder.MainView.findViewById(R.id.rl_title_layout);
         initCategoryRecyclerView();
         initTopPicks();
         initBrands();

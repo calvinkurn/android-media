@@ -76,7 +76,15 @@
             android:layout_height="wrap_content"
             android:scrollbars="none" />
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_toppicks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:scrollbars="none" />
+
         <RelativeLayout
+            android:visibility="invisible"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:id="@id/rl_title_layout"
@@ -112,13 +120,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"
-            android:scrollbars="none" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view_toppicks"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
+            android:layout_marginBottom="10dp"
             android:scrollbars="none" />
 
     </LinearLayout>

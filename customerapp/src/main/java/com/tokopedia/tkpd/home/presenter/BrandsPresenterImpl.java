@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.home.presenter;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.network.apiservices.etc.apis.home.CategoryApi;
 import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -47,7 +46,7 @@ public class BrandsPresenterImpl implements BrandsPresenter, ErrorListener {
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
             }
 
             @Override
@@ -55,9 +54,10 @@ public class BrandsPresenterImpl implements BrandsPresenter, ErrorListener {
 
                 if (response != null && response.body() != null)
                     brandsListener.onSuccess(response.body());
-                else
+                else{
                     new ErrorHandler(BrandsPresenterImpl.this, response.code());
-
+                    brandsListener.onError();
+                }
             }
         };
 
@@ -87,6 +87,6 @@ public class BrandsPresenterImpl implements BrandsPresenter, ErrorListener {
 
     @Override
     public void onForbidden() {
-
+        
     }
 }

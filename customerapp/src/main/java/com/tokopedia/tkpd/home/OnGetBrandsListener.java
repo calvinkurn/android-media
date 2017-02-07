@@ -9,5 +9,6 @@ import com.tokopedia.core.network.entity.home.Brands;
 public interface OnGetBrandsListener {
 
         void onSuccess(Brands brands);
+        void onError();
 
 }
