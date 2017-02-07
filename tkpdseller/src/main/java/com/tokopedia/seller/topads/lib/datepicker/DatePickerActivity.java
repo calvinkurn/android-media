@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 
 import com.tokopedia.core.app.TActivity;
@@ -21,7 +23,7 @@ import java.util.List;
  * Created by normansyahputa on 12/7/16.
  */
 
-public class DatePickerActivity extends TActivity {
+public class DatePickerActivity extends TActivity implements DatePickerPeriodFragment.Callback, DatePickerCustomFragment.Callback {
 
     public static final int OFFSCREEN_PAGE_LIMIT = 2;
 
@@ -43,8 +45,6 @@ public class DatePickerActivity extends TActivity {
     public static final int RESULT_CODE = 1;
 
     private ViewPager viewPager;
-    private TabLayout tabLayout;
-    private DatePickerTabListener tabListener;
 
     private int selectionPeriod;
     private int selectionType;
@@ -56,7 +56,7 @@ public class DatePickerActivity extends TActivity {
     private boolean goldMerchant;
 
     private ArrayList<PeriodRangeModel> periodRangeModelList;
-    private DatePickerPeriodFragment periodFragment;
+    private DatePickerPeriodFragment datePickerPeriodFragment;
     private DatePickerCustomFragment mDatePickerCustomFragment;
 
     @Override
@@ -64,15 +64,24 @@ public class DatePickerActivity extends TActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_date_picker);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.indicator);
         viewPager = (ViewPager) findViewById(R.id.pager);
-        tabLayout = (TabLayout) findViewById(R.id.indicator);
+
+        setSupportActionBar(toolbar);
+        ActionBar supportActionBar = getSupportActionBar();
+        if (supportActionBar != null) {
+            supportActionBar.setDisplayHomeAsUpEnabled(true);
+            supportActionBar.setDisplayShowHomeEnabled(true);
+            supportActionBar.setHomeButtonEnabled(true);
+        }
 
         fetchIntent(getIntent().getExtras());
-
         viewPager.setAdapter(getViewPagerAdapter());
         viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabListener = new DatePickerTabListener(viewPager);
+
+        DatePickerTabListener tabListener = new DatePickerTabListener(viewPager);
         tabLayout.setOnTabSelectedListener(tabListener);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_date_period));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_date_custom));
@@ -80,33 +89,34 @@ public class DatePickerActivity extends TActivity {
         String title = getIntent().getExtras().getString(PAGE_TITLE);
         if (!TextUtils.isEmpty(title)) {
             getSupportActionBar().setTitle(title);
+            getSupportActionBar().show();
         }
     }
 
     private PagerAdapter getViewPagerAdapter() {
         List<Fragment> fragmentList = new ArrayList<>();
-        periodFragment = DatePickerPeriodFragment.newInstance(selectionPeriod, periodRangeModelList);
-        periodFragment.setCallback(new DatePickerPeriodFragment.Callback() {
-            @Override
-            public void onDateSubmitted(int selectionPeriodResult, long startDateResult, long endDateResult) {
-                selectionPeriod = selectionPeriodResult;
-                startDate = startDateResult;
-                endDate = endDateResult;
-                setResult();
-            }
-        });
-        fragmentList.add(periodFragment);
+        datePickerPeriodFragment = DatePickerPeriodFragment.newInstance(selectionPeriod, periodRangeModelList);
+        datePickerPeriodFragment.setCallback(this);
+        fragmentList.add(datePickerPeriodFragment);
         mDatePickerCustomFragment = DatePickerCustomFragment.newInstance(startDate, endDate, minStartDate, maxStartDate, maxDateRange);
-        mDatePickerCustomFragment.setCallback(new DatePickerCustomFragment.Callback() {
-            @Override
-            public void onDateSubmitted(long startDateResult, long endDateResult) {
-                startDate = startDateResult;
-                endDate = endDateResult;
-                setResult();
-            }
-        });
+        mDatePickerCustomFragment.setCallback(this);
         fragmentList.add(mDatePickerCustomFragment);
         return new DatePickerTabPagerAdapter(getFragmentManager(), fragmentList);
+    }
+
+    @Override
+    public void onDateSubmitted(long startDate, long endDate) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+        setResult();
+    }
+
+    @Override
+    public void onDateSubmitted(int selectionPeriod, long startDate, long endDate) {
+        this.selectionPeriod = selectionPeriod;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        setResult();
     }
 
     private void fetchIntent(Bundle extras) {

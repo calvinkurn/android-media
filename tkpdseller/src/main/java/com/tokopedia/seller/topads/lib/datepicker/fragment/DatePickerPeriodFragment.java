@@ -76,10 +76,9 @@ public class DatePickerPeriodFragment extends Fragment {
     }
 
     private void submitDate() {
-        if (callback == null) {
-            return;
+        if (callback != null) {
+            PeriodRangeModel selectedDate = adapter.getSelectedDate();
+            callback.onDateSubmitted(adapter.getSelectedPosition(), selectedDate.getStartDate(), selectedDate.getEndDate());
         }
-        PeriodRangeModel selectedDate = adapter.getSelectedDate();
-        callback.onDateSubmitted(adapter.getSelectedPosition(), selectedDate.getStartDate(), selectedDate.getEndDate());
     }
 }
