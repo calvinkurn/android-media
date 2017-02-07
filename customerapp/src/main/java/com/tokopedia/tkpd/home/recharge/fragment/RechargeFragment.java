@@ -762,13 +762,14 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     private String getUrlCheckout() {
+        String clientNumber = rechargeEditText.getText();
         String url = TkpdBaseURL.PULSA_WEB_DOMAIN + "?" +
                 "action=init_data" +
-                "&client_number=" + rechargeEditText.getText() +
+                "&client_number=" + clientNumber +
                 "&product_id=" + selectedProduct.getId().toString() +
                 "&operator_id=" + selectedProduct.getRelationships().getOperator().getData().getId().toString() +
                 "&is_promo=" + (selectedProduct.getAttributes().getPromo() != null ? "1" : "0") +
-                "&atoken=" + generateATokenRechargeCheckout() +
+                "&atoken=" + generateATokenRechargeCheckout(clientNumber) +
                 "&instant_checkout=" + (buyWithCreditCheckbox.isChecked() ? "1" : "0") +
                 "&utm_source=" + bundle.getString(ARG_UTM_SOURCE, "android") +
                 "&utm_medium=" + bundle.getString(ARG_UTM_MEDIUM, "widget") +
@@ -781,10 +782,9 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
 
-    private String generateATokenRechargeCheckout() {
+    private String generateATokenRechargeCheckout(String clientNumber) {
         return SessionHandler.getLoginID(getActivity()) +
-                "_" + SessionHandler.getRefreshToken(getActivity()) +
-                "_" + System.currentTimeMillis();
+                "_" + clientNumber + "_" + System.currentTimeMillis();
     }
 
     @Override
