@@ -13,6 +13,13 @@
         android:visibility="gone"
         android:layout_gravity="center" />
 
+    <LinearLayout
+        android:id="@+id/radio_group_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone" />
+
     <Spinner
         android:id="@+id/spnOperator"
         android:layout_width="fill_parent"
