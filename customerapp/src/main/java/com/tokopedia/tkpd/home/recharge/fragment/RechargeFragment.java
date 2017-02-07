@@ -544,7 +544,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
         ClientNumber clientNumber = categoryAttributes.getClientNumber();
         tlpLabelTextView.setText(clientNumber.getText());
-        tlpLabelTextView.setHint(clientNumber.getPlaceholder());
+        rechargeEditText.setHint(clientNumber.getPlaceholder());
         buyWithCreditCheckbox.setVisibility(
                 categoryAttributes.getInstantCheckoutAvailable() ? View.VISIBLE : View.INVISIBLE
         );
