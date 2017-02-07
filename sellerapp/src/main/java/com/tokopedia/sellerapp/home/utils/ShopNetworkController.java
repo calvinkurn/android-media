@@ -69,27 +69,27 @@ public class ShopNetworkController extends BaseNetworkController {
         new ErrorHandler(new ErrorListener() {
             @Override
             public void onUnknown() {
-                commonListener.onError(new MessageErrorException("unknown"));
+                commonListener.onError(new RuntimeException("unknown"));
             }
 
             @Override
             public void onTimeout() {
-                commonListener.onError(new MessageErrorException("timeout"));
+                commonListener.onError(new RuntimeException("timeout"));
             }
 
             @Override
             public void onServerError() {
-                commonListener.onError(new MessageErrorException("server_error"));
+                commonListener.onError(new RuntimeException("server_error"));
             }
 
             @Override
             public void onBadRequest() {
-                commonListener.onError(new MessageErrorException("bad_request"));
+                commonListener.onError(new RuntimeException("bad_request"));
             }
 
             @Override
             public void onForbidden() {
-                commonListener.onError(new MessageErrorException("forbidden"));
+                commonListener.onError(new RuntimeException("forbidden"));
             }
         }, code);
     }

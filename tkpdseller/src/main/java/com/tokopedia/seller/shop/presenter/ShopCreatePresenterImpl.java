@@ -581,7 +581,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
 
     private void saveCache(String shopID) {
         SessionHandler session = new SessionHandler(view.getMainContext());
-        session.SetLoginSession(session.getLoginID(), session.getLoginName(), shopID, SessionHandler.isMsisdnVerified());
+        session.setLoginSession(session.getLoginID(), session.getLoginName(), shopID, SessionHandler.isMsisdnVerified());
         LocalCacheHandler.clearCache(view.getMainContext(), "USER_INFO");
     }
 
