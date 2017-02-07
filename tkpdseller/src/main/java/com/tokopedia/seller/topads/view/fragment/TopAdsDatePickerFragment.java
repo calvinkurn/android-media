@@ -7,8 +7,7 @@ import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenter;
-import com.tokopedia.seller.topads.lib.datepicker.SetDateActivity;
-import com.tokopedia.seller.topads.lib.datepicker.SetDateFragment;
+import com.tokopedia.seller.topads.lib.datepicker.DatePickerActivity;
 
 import java.util.Date;
 
@@ -97,10 +96,10 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == REQUEST_CODE_DATE && intent != null) {
-            long startDateTime = intent.getLongExtra(SetDateFragment.START_DATE, -1);
-            long endDateTime = intent.getLongExtra(SetDateFragment.END_DATE, -1);
-            int selectionDatePickerType = intent.getIntExtra(SetDateActivity.SELECTION_TYPE, 0);
-            int selectionDatePeriodIndex = intent.getIntExtra(SetDateActivity.SELECTION_PERIOD, 0);
+            long startDateTime = intent.getLongExtra(DatePickerActivity.START_DATE, -1);
+            long endDateTime = intent.getLongExtra(DatePickerActivity.END_DATE, -1);
+            int selectionDatePickerType = intent.getIntExtra(DatePickerActivity.SELECTION_TYPE, 0);
+            int selectionDatePeriodIndex = intent.getIntExtra(DatePickerActivity.SELECTION_PERIOD, 0);
             if (startDateTime > 0 && endDateTime > 0) {
                 datePickerPresenter.saveDate(new Date(startDateTime), new Date(endDateTime));
                 datePickerPresenter.saveSelectionDatePicker(selectionDatePickerType, selectionDatePeriodIndex);

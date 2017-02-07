@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/custom_layout_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/text_view_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#61000000"
+        android:textSize="14sp"
+        tools:text="@string/app_name"/>
+
+    <LinearLayout
+        android:id="@+id/layout_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:foreground="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_view_content"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="16sp"
+            android:layout_weight="1"
+            android:textColor="#42b549"
+            android:textSize="16sp"
+            tools:text="@string/app_name"/>
+
+
+        <ImageView
+            android:id="@+id/custom_drop_down"
+            android:layout_width="9dp"
+            android:layout_height="6dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_rec_down_set_date"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/custom_break_point"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1F000000"/>
+</LinearLayout>

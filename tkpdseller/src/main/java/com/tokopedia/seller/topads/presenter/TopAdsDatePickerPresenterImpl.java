@@ -8,8 +8,8 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.seller.topads.interactor.TopAdsDatePickerInteractorImpl;
-import com.tokopedia.seller.topads.lib.datepicker.PeriodRangeModel;
-import com.tokopedia.seller.topads.lib.datepicker.SetDateActivity;
+import com.tokopedia.seller.topads.lib.datepicker.DatePickerActivity;
+import com.tokopedia.seller.topads.lib.datepicker.model.PeriodRangeModel;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -99,14 +99,14 @@ public class TopAdsDatePickerPresenterImpl implements TopAdsDatePickerPresenter 
 
     @Override
     public Intent getDatePickerIntent(Activity activity, Date startDate, Date endDate) {
-        Intent intent = new Intent(activity, SetDateActivity.class);
-        intent.putExtra(SetDateActivity.IS_GOLD_MERCHANT, true);
+        Intent intent = new Intent(activity, DatePickerActivity.class);
+        intent.putExtra(DatePickerActivity.IS_GOLD_MERCHANT, true);
         Calendar todayCalendar = Calendar.getInstance();
         Calendar lastYearCalendar = Calendar.getInstance();
         lastYearCalendar.add(Calendar.YEAR, -1);
 
-        intent.putExtra(SetDateActivity.CUSTOM_START_DATE, startDate.getTime());
-        intent.putExtra(SetDateActivity.CUSTOM_END_DATE, endDate.getTime());
+        intent.putExtra(DatePickerActivity.CUSTOM_START_DATE, startDate.getTime());
+        intent.putExtra(DatePickerActivity.CUSTOM_END_DATE, endDate.getTime());
 
         todayCalendar.set(Calendar.HOUR_OF_DAY, 23);
         todayCalendar.set(Calendar.MINUTE, 59);
@@ -117,15 +117,15 @@ public class TopAdsDatePickerPresenterImpl implements TopAdsDatePickerPresenter 
         lastYearCalendar.set(Calendar.SECOND, 0);
         lastYearCalendar.set(Calendar.MILLISECOND, 0);
 
-        intent.putExtra(SetDateActivity.MIN_START_DATE, lastYearCalendar.getTimeInMillis());
-        intent.putExtra(SetDateActivity.MAX_END_DATE, todayCalendar.getTimeInMillis());
-        intent.putExtra(SetDateActivity.MAX_DATE_RANGE, TopAdsConstant.MAX_DATE_RANGE);
+        intent.putExtra(DatePickerActivity.MIN_START_DATE, lastYearCalendar.getTimeInMillis());
+        intent.putExtra(DatePickerActivity.MAX_END_DATE, todayCalendar.getTimeInMillis());
+        intent.putExtra(DatePickerActivity.MAX_DATE_RANGE, TopAdsConstant.MAX_DATE_RANGE);
 
-        intent.putExtra(SetDateActivity.DATE_PERIOD_LIST, getPeriodRangeList());
-        intent.putExtra(SetDateActivity.SELECTION_PERIOD, topAdsDatePickerInteractor.getLastSelectionDatePickerIndex());
-        intent.putExtra(SetDateActivity.SELECTION_TYPE, topAdsDatePickerInteractor.getLastSelectionDatePickerType());
+        intent.putExtra(DatePickerActivity.DATE_PERIOD_LIST, getPeriodRangeList());
+        intent.putExtra(DatePickerActivity.SELECTION_PERIOD, topAdsDatePickerInteractor.getLastSelectionDatePickerIndex());
+        intent.putExtra(DatePickerActivity.SELECTION_TYPE, topAdsDatePickerInteractor.getLastSelectionDatePickerType());
 
-        intent.putExtra(SetDateActivity.PAGE_TITLE, activity.getString(R.string.title_date_picker));
+        intent.putExtra(DatePickerActivity.PAGE_TITLE, activity.getString(R.string.title_date_picker));
         return intent;
     }
 

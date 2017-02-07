@@ -83,7 +83,7 @@
             android:label="@string/title_group_ad_detail"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.lib.datepicker.SetDateActivity"
+            android:name=".topads.lib.datepicker.DatePickerActivity"
             android:label="@string/title_top_ads_dashboard"
             android:screenOrientation="portrait" />
         <activity
