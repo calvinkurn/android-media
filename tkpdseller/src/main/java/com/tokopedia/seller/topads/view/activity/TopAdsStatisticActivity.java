@@ -4,7 +4,9 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -144,12 +146,14 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
 
     @NonNull
     private SnackbarRetry getSnackbarWithAction() {
-        return NetworkErrorHelper.createSnackbarWithAction(this, new NetworkErrorHelper.RetryClickedListener() {
+        SnackbarRetry snackBar = NetworkErrorHelper.createSnackbarWithAction(this, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 loadData();
             }
         });
+        snackBar.setColorActionRetry(ContextCompat.getColor(this, R.color.green_400));
+        return snackBar;
     }
 
     @Override

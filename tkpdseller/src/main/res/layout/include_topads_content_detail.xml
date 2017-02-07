@@ -4,6 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+        android:id="@+id/title_price_and_schedule"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="@string/label_topads_price_and_schedule"
+        app:title_textStyle="bold"/>
+
+    <include layout="@layout/include_separator_horizontal"/>
+
+    <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
         android:id="@+id/max_bid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,7 +50,19 @@
         android:layout_height="wrap_content"
         app:title="@string/label_top_ads_daily_budget"/>
 
-    <include layout="@layout/include_separator_horizontal"/>
+    <include
+        layout="@layout/include_separator_horizontal"/>
+
+    <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+        android:id="@+id/title_statistic_review"
+        android:layout_marginTop="@dimen/topads_detail_padding_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:title_textStyle="bold"
+        app:title="@string/topads_title_review_statistic"/>
+
+    <include
+        layout="@layout/include_separator_horizontal"/>
 
     <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
         android:id="@+id/sent"

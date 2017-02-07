@@ -4,7 +4,9 @@ import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
@@ -110,6 +112,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
                 dashboardProductFragment.loadData();
             }
         });
+        snackbarRetry.setColorActionRetry(ContextCompat.getColor(this, R.color.green_400));
         fabSpeedDial.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

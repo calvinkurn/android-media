@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -14,8 +15,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
 
+import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
@@ -45,6 +48,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     TopAdsLabelView ctr;
     TopAdsLabelView favorite;
 
+    SwipeToRefresh swipeToRefresh;
     protected Ad adFromIntent;
     protected ProgressDialog progressDialog;
     private SnackbarRetry snackbarRetryOnAd;
@@ -76,6 +80,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         click = (TopAdsLabelView) view.findViewById(R.id.click);
         ctr = (TopAdsLabelView) view.findViewById(R.id.ctr);
         favorite = (TopAdsLabelView) view.findViewById(R.id.favorite);
+        swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
         snackbarRetryOnAd = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
@@ -93,6 +98,8 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
                 turnOffAd();
             }
         });
+        snackbarRetryOffAd.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
+        snackbarRetryOnAd.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
     }
 
     @Override
@@ -103,7 +110,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     @Override
     protected void loadData() {
-        progressDialog.show();
+        showLoading();
         ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(datePickerPresenter.getRangeDateFormat(startDate, endDate));
         if (adFromIntent != null) {
             onAdLoaded(adFromIntent);
@@ -111,6 +118,22 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         } else {
             refreshAd();
         }
+    }
+
+    private void showLoading() {
+        swipeToRefresh.setRefreshing(true);
+        progressDialog.show();
+    }
+
+    @Override
+    protected void initialVar() {
+        super.initialVar();
+        RefreshHandler refresh = new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
+            @Override
+            public void onRefresh(View view) {
+                loadData();
+            }
+        });
     }
 
     @Override
@@ -132,13 +155,18 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     @Override
     public void onAdLoaded(Ad ad) {
-        progressDialog.dismiss();
+        hideLoading();
         loadAdDetail(ad);
+    }
+
+    private void hideLoading() {
+        progressDialog.dismiss();
+        swipeToRefresh.setRefreshing(false);
     }
 
     @Override
     public void onLoadAdError() {
-        progressDialog.dismiss();
+        hideLoading();
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
@@ -157,7 +185,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     public void onTurnOnAdError() {
         setStatusSwitch(!status.isChecked());
-        progressDialog.dismiss();
+        hideLoading();
         snackbarRetryOnAd.showRetrySnackbar();
     }
 
@@ -171,7 +199,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     public void onTurnOffAdError() {
         setStatusSwitch(!status.isChecked());
-        progressDialog.dismiss();
+        hideLoading();
         snackbarRetryOffAd.showRetrySnackbar();
     }
 
