@@ -106,9 +106,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -236,7 +233,6 @@ public class ManageProduct extends TkpdActivity implements
             });
         }
     };
-    private Unbinder unbinder;
     private String messageTAG = "ManageProduct";
 
     @Override

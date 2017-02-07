@@ -75,9 +75,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -105,10 +102,7 @@ public class ProductActivity extends BaseProductActivity implements
     private static final String TAG = "ProductActivity";
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 
-    @BindView(R2.id.toolbar)
     Toolbar toolbar;
-
-    @BindView(R2.id.add_product_container)
     FrameLayout container;
 
     FloatingActionButton fab;
@@ -137,7 +131,6 @@ public class ProductActivity extends BaseProductActivity implements
 
     // fragment productActifity, moved there because it is needed for twitter dialog
     Fragment productActifityFragment = null;
-    private Unbinder unbinder;
     private String messageTAG = "Product";
     private BroadcastReceiver addProductReceiver;
     private String imagePathCamera;
@@ -175,7 +168,8 @@ public class ProductActivity extends BaseProductActivity implements
         }
 
         setContentView(R.layout.activity_product2);
-        unbinder = ButterKnife.bind(this);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        container = (FrameLayout) findViewById(R.id.add_product_container);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

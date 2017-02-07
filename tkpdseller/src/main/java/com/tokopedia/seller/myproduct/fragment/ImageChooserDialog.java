@@ -12,16 +12,12 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.myproduct.adapter.ItemImageAndText;
 import com.tokopedia.seller.myproduct.adapter.ItemImageAdapter;
 
 import org.parceler.Parcels;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Toped18 on 8/31/2016.
@@ -33,16 +29,9 @@ public class ImageChooserDialog extends DialogFragment {
     public static final String LISTENER = "LISTENER";
 
 
-    @BindView(R2.id.title_dialog)
     TextView titleDialog;
-
-    @BindView(R2.id.recycler_view_item_image)
     RecyclerView itemImage;
-
-    @BindView(R2.id.title_cancel)
     TextView cancelDialog;
-
-    @BindView(R2.id.title_confirm)
     TextView confirmDialog;
 
     private List<? extends ItemImageAndText> items;
@@ -84,7 +73,11 @@ public class ImageChooserDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         View v = inflater.inflate(R.layout.item_image_chooser, container, false);
-        ButterKnife.bind(this, v);
+        titleDialog = (TextView) v.findViewById(R.id.title_dialog);
+        itemImage = (RecyclerView) v.findViewById(R.id.recycler_view_item_image);
+        cancelDialog = (TextView) v.findViewById(R.id.title_cancel);
+        confirmDialog = (TextView) v.findViewById(R.id.title_confirm);
+
         itemAdapter = new ItemImageAdapter(items, listener);
         if (selectedCatalog != null)
             itemAdapter.setSelected(selectedCatalog);

@@ -11,12 +11,8 @@ import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
 
@@ -58,17 +54,16 @@ public class MediaAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     public class VHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.img)
         public SquareImageView img;
-        @BindView(R2.id.overlay)
         public View overlay;
 
         OnImageClickedListener listener;
 
         public VHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            img = (SquareImageView) itemView.findViewById(R.id.img);
             img.setOnClickListener(onImageClicked());
+            overlay = itemView.findViewById(R.id.overlay);
         }
 
         public void setOnImageClickedListener(OnImageClickedListener listener){

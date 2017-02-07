@@ -20,10 +20,6 @@ import com.tokopedia.core.util.MethodChecker;
 import java.io.File;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 import static com.tokopedia.core.myproduct.model.constant.ImageModelType.ACTIVE;
 import static com.tokopedia.core.myproduct.model.constant.ImageModelType.INACTIVE;
 import static com.tokopedia.core.myproduct.model.constant.ImageModelType.SELECTED;
@@ -103,9 +99,7 @@ public class SmallPhotoAdapter extends RecyclerView.Adapter<SmallPhotoAdapter.Vi
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.border_small_imageview_layout)
         FrameLayout borderSmallImageViewLayout;
-        @BindView(R2.id.picture_small_gallery_imageview)
         ImageView pictureSmallGalleryImageView;
 
         SmallPhotoAdapterTouch smallPhotoAdapterTouch;
@@ -124,7 +118,14 @@ public class SmallPhotoAdapter extends RecyclerView.Adapter<SmallPhotoAdapter.Vi
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            borderSmallImageViewLayout = (FrameLayout) itemView.findViewById(R.id.border_small_imageview_layout);
+            borderSmallImageViewLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HolderClick();
+                }
+            });
+            pictureSmallGalleryImageView = (ImageView) itemView.findViewById(R.id.picture_small_gallery_imageview);
         }
 
         public void bindView(ImageModel imageModel, int position
@@ -146,7 +147,6 @@ public class SmallPhotoAdapter extends RecyclerView.Adapter<SmallPhotoAdapter.Vi
             }
         }
 
-        @OnClick(R2.id.border_small_imageview_layout)
         public void HolderClick() {
             if (getSmallPhotoAdapterTouch() != null)
                 getSmallPhotoAdapterTouch().movePosition(position);

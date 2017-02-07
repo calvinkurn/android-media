@@ -7,13 +7,10 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tokopedia.seller.R2;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.myproduct.utils.CurrencyFormatter;
 import com.tokopedia.seller.myproduct.utils.PriceUtils;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by sebastianuskh on 12/2/16.
@@ -25,13 +22,8 @@ public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements 
     private WholesaleAdapter listener;
     private final int currency;
 
-    @BindView(R2.id.wholesale_item_qty_one)
     EditText qtyOne;
-
-    @BindView(R2.id.wholesale_item_qty_two)
     EditText qtyTwo;
-
-    @BindView(R2.id.wholesale_item_qty_price)
     EditText qtyPrice;
 
     private boolean onPriceEdit = false;
@@ -92,14 +84,21 @@ public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements 
         }
     };
 
-    @OnClick(R2.id.button_delete_wholesale)
     void deleteWholesale(){
         listener.removeWholesaleItem(position);
     }
 
     public WholesaleViewHolderImpl(View itemView, int currency) {
         super(itemView);
-        ButterKnife.bind(this, itemView);
+        qtyOne = (EditText) itemView.findViewById(R.id.wholesale_item_qty_one);
+        qtyTwo = (EditText) itemView.findViewById(R.id.wholesale_item_qty_two);
+        qtyPrice = (EditText) itemView.findViewById(R.id.wholesale_item_qty_price);
+        itemView.findViewById(R.id.button_delete_wholesale).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteWholesale();
+            }
+        });
         this.currency = currency;
     }
 

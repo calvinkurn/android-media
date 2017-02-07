@@ -14,13 +14,9 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.myproduct.adapter.ItemImageAndText;
 import com.tokopedia.core.myproduct.model.CatalogDataModel;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.myproduct.fragment.ImageChooserDialog;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by sebastianuskh on 8/31/16.
@@ -29,10 +25,7 @@ import butterknife.ButterKnife;
 public class ClickToSelectWithImage extends FrameLayout {
     Context context;
 
-    @BindView(R2.id.image_selected)
     ImageView imageSelected;
-
-    @BindView(R2.id.desc_selected)
     TextView descSelected;
 
     ImageChooserDialog imageChooserDialog;
@@ -67,7 +60,8 @@ public class ClickToSelectWithImage extends FrameLayout {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.item_selector, this, true);
-        ButterKnife.bind(this);
+        imageSelected = (ImageView) findViewById(R.id.image_selected);
+        descSelected = (TextView) findViewById(R.id.desc_selected);
     }
 
     public void setSelection(ItemImageAndText item) {

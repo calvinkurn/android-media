@@ -69,7 +69,6 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.CategoryDB_Table;
@@ -127,12 +126,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnFocusChange;
-import butterknife.OnTextChanged;
-import butterknife.Unbinder;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -158,7 +151,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     public static final String PRODUCT_DB = "product_db";
     public static final String ADD_PRODUCT_MULTIPLE_IMAGE_PATH = "ADD_PRODUCT_MULTIPLE_IMAGE_PATH";
     public static final String NO_CATALOG_OPTION = "Tidak menggunakan katalog";
-    private Unbinder unbinder;
 
     @Override
     protected String getScreenName() {
@@ -236,18 +228,11 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         initPhotoAdapter(newPhotos);
     }
 
-    @BindView(R2.id.add_product_copy)
     ViewStub addProductCopy;
-
-    @BindView(R2.id.add_product_submit_ll)
     ViewStub addProductSubmit;
     AddProductSubmit addProductSubmitContainer;
-
-    @BindView(R2.id.add_product_soc_med_submit_ll)
     ViewStub addProductSocMedSubmit;
     AddProductSocMedSubmit addProductSocMedSubmitContainer;
-
-    @BindView(R2.id.add_product_share)
     ViewStub addProductShare;
     AddProductShare addProductShareContainer;
     private AddProductPresenter addProduct;
@@ -290,92 +275,43 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
      */
     public int positionAtSocMed;
 
-    @BindView(R2.id.add_product_add_to_new_etalase_layout)
     ExpandableRelativeLayout addProductAddToNewEtalaseLayout;
-    @BindView(R2.id.add_product_add_to_new_etalase_alert)
     TextInputLayout addProductAddToNewEtalaseAlert;
-    @BindView(R2.id.add_product_add_to_new_etalase)
     EditText addProductAddToNewEtalase;
-
-    @BindView(R2.id.add_product_imagechveron)
     ImageView chevron;
-
-    @BindView(R2.id.add_product_minimum_order_alert)
     TextInputLayout addProductMinimumOrderAlert;
-    @BindView(R2.id.add_product_minimum_order)
     EditText addProductMinimumOrder;
-
-    @BindView(R2.id.add_product_product_name_alert)
     TextInputLayout addProductPRoductNameAlert;
-    @BindView(R2.id.add_product_product_name)
     EditText addProductProductName;
-
     String selectedCurrencyDesc = "Rp";
-    @BindView(R2.id.add_product_currency)
     ClickToSelectEditText<SimpleTextModel> addProductCurrency;
-    @BindView(R2.id.add_product_price)
     EditText addProductPrice;
-    @BindView(R2.id.add_product_price_alert)
     TextInputLayout addProductPriceAlert;
-
     RecyclerView.Adapter photoAdapter;
-    @BindView(R2.id.add_product_images)
     RecyclerView addProductImages;
     ArrayList<ImageModel> photos;
-
     TextDeleteAdapter categoryAdapter;
-    @BindView(R2.id.add_product_category_spinner)
     RecyclerView addProductCategorySpinner;
     ArrayList<TextDeleteModel> categoryModels;
-
-    @BindView(R2.id.add_product_weight_unit)
     ClickToSelectEditText addProductWeightUnit;
-    @BindView(R2.id.add_product_weight)
     EditText addProductWeight;
-    @BindView(R2.id.add_product_weight_alert)
     TextInputLayout addProductWeightAlert;
-
-    @BindView(R2.id.add_product_tittle_wholesale)
     RelativeLayout addProductTitleWholeSale;
-
-    @BindView(R2.id.add_product_wholesale_container)
     ExpandableRelativeLayout wholeSaleContainer;
-
-    @BindView(R2.id.add_product_wholesale_layout)
     WholesaleLayout wholesaleLayout;
-
-    @BindView(R2.id.add_product_add_to)
     RecyclerView addProductAddTo;
     ArrayList<EtalaseModel> etalaseModels;
     ArrayList<TextDeleteModel> displayEtalaseModels;
     TextDeleteAdapter etalaseAdapter;
-
-    @BindView(R2.id.add_product_parent)
     NestedScrollView addProductParent;
-
-
-    @BindView(R2.id.add_product_desc)
     LimitedEditText addProductDesc;
-
-    @BindView(R2.id.add_product_product_desc_layout)
     TextInputLayout addProductProductDescLayout;
-
-    @BindView(R2.id.add_product_condition)
     Spinner addProductCondition;
-
-    @BindView(R2.id.add_product_insurance)
     Spinner addProductInsurance;
-
-    @BindView(R2.id.chevron_preorder)
     ImageView addProductChevronPreorder;
-    @BindView(R2.id.preorder_content)
     ExpandableRelativeLayout addProductPreOderContent;
-    @BindView(R2.id.edittext_preorder)
     EditText addProductEdittextPreorder;
-
-    @BindView(R2.id.add_product_catalog_layout)
     LinearLayout addProductCatalogLayout;
-    @BindView(R2.id.add_product_catalog)
     ClickToSelectWithImage addProductCatalog;
     ArrayList<CatalogDataModel.Catalog> catalogs;
 
@@ -422,7 +358,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     public TwitterHandler th;
     private ShareSocmedHandler shareSocmed;
 
-    @OnTextChanged(R2.id.add_product_add_to_new_etalase)
     public void onTextChangedEtalase(CharSequence s, int start, int before,
                                      int count) {
         Pair<Boolean, String> validate = VerificationUtils.validateNewEtalaseName(getActivity(), s.toString());
@@ -830,7 +765,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
         parentView = inflater.inflate(R.layout.fragment_add_product, container, false);
 
-        unbinder = ButterKnife.bind(this, parentView);
+        bindView(parentView);
 
         if (addProductType != null) {
             if (type == AddProductType.ADD.getType()) {
@@ -971,6 +906,151 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         initVar();
         setupUI(addProductParent);
         return parentView;
+    }
+
+    private void bindView(View view) {
+        addProductAddToNewEtalaseLayout = (ExpandableRelativeLayout) view.findViewById(R.id.add_product_add_to_new_etalase_layout);
+        addProductAddToNewEtalaseAlert = (TextInputLayout) view.findViewById(R.id.add_product_add_to_new_etalase_alert);
+        addProductAddToNewEtalase = (EditText) view.findViewById(R.id.add_product_add_to_new_etalase);
+        addProductAddToNewEtalase.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                onTextChangedEtalase(s, start, before, count);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        chevron = (ImageView) view.findViewById(R.id.add_product_imagechveron);
+        addProductMinimumOrderAlert = (TextInputLayout) view.findViewById(R.id.add_product_minimum_order_alert);
+        addProductMinimumOrder = (EditText) view.findViewById(R.id.add_product_minimum_order);
+        addProductMinimumOrder.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                onTextChangedMinOrder(s, start, before, count);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        addProductPRoductNameAlert = (TextInputLayout) view.findViewById(R.id.add_product_product_name_alert);
+        addProductProductName = (EditText) view.findViewById(R.id.add_product_product_name);
+        addProductProductName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                onTextChangedProdName(s, start, before, count);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        addProductCurrency = (ClickToSelectEditText<SimpleTextModel>) view.findViewById(R.id.add_product_currency);
+        addProductPrice = (EditText) view.findViewById(R.id.add_product_price);
+        addProductPrice.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                onFocusChangePrice(v, hasFocus);
+            }
+        });
+        addProductPrice.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                onTextChangedPrice(s, start, before, count);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        addProductPriceAlert = (TextInputLayout) view.findViewById(R.id.add_product_price_alert);
+        addProductImages = (RecyclerView) view.findViewById(R.id.add_product_images);
+        addProductCategorySpinner = (RecyclerView) view.findViewById(R.id.add_product_category_spinner);
+        addProductWeightUnit = (ClickToSelectEditText) view.findViewById(R.id.add_product_weight_unit);
+        addProductWeight = (EditText) view.findViewById(R.id.add_product_weight);
+        addProductWeight.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                onTextChangedMinWeight(s, start, before, count);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        addProductWeightAlert = (TextInputLayout) view.findViewById(R.id.add_product_weight_alert);
+        addProductTitleWholeSale = (RelativeLayout) view.findViewById(R.id.add_product_tittle_wholesale);
+        addProductTitleWholeSale.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleWholeSale();
+            }
+        });
+        wholeSaleContainer = (ExpandableRelativeLayout) view.findViewById(R.id.add_product_wholesale_container);
+        wholesaleLayout = (WholesaleLayout) view.findViewById(R.id.add_product_wholesale_layout);
+        addProductAddTo = (RecyclerView) view.findViewById(R.id.add_product_add_to);
+        addProductParent = (NestedScrollView) view.findViewById(R.id.add_product_parent);
+        addProductDesc = (LimitedEditText) view.findViewById(R.id.add_product_desc);
+        addProductProductDescLayout = (TextInputLayout) view.findViewById(R.id.add_product_product_desc_layout);
+        addProductCondition = (Spinner) view.findViewById(R.id.add_product_condition);
+        addProductInsurance = (Spinner) view.findViewById(R.id.add_product_insurance);
+        addProductChevronPreorder = (ImageView) view.findViewById(R.id.chevron_preorder);
+        addProductPreOderContent = (ExpandableRelativeLayout) view.findViewById(R.id.preorder_content);
+        addProductEdittextPreorder = (EditText) view.findViewById(R.id.edittext_preorder);
+        addProductEdittextPreorder.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                onTextChangedPreOrder(s, start, before, count);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        addProductCatalogLayout = (LinearLayout) view.findViewById(R.id.add_product_catalog_layout);
+        addProductCatalog = (ClickToSelectWithImage) view.findViewById(R.id.add_product_catalog);
+        addProductCopy = (ViewStub) view.findViewById(R.id.add_product_copy);
+        addProductSubmit = (ViewStub) view.findViewById(R.id.add_product_submit_ll);
+        addProductSocMedSubmit = (ViewStub) view.findViewById(R.id.add_product_soc_med_submit_ll);
+        addProductShare = (ViewStub) view.findViewById(R.id.add_product_share);
     }
 
     private static boolean checkFileSize(File imagePath) {
@@ -1861,8 +1941,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         addProductAddTo.setAdapter(etalaseAdapter);
     }
 
-    @OnFocusChange(R2.id.add_product_price)
-    public void onFocusChange(View v, boolean hasFocus) {
+    public void onFocusChangePrice(View v, boolean hasFocus) {
         switch (v.getId()) {
             case R2.id.add_product_price:
                 Log.d(TAG, messageTAG + " price has focus " + hasFocus);
@@ -1874,7 +1953,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         }
     }
 
-    @OnTextChanged(R2.id.edittext_preorder)
     public void onTextChangedPreOrder(CharSequence s, int start, int before,
                                       int count) {
         Pair<Boolean, String> validate = VerificationUtils.validatePreOrder(getActivity(), s.toString());
@@ -1885,7 +1963,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         }
     }
 
-    @OnTextChanged(R2.id.add_product_minimum_order)
     public void onTextChangedMinOrder(CharSequence s, int start, int before,
                                       int count) {
         validateMinOrder(s);
@@ -1902,7 +1979,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         }
     }
 
-    @OnTextChanged(R2.id.add_product_weight)
     public void onTextChangedMinWeight(CharSequence s, int start, int before,
                                        int count) {
         validateProdWeight(s);
@@ -1928,7 +2004,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         addProductWeightAlert.setErrorEnabled(false);
     }
 
-    @OnTextChanged(R2.id.add_product_product_name)
     public void onTextChangedProdName(CharSequence s, int start, int before,
                                       int count) {
         if (addProductProductName.isEnabled()) {
@@ -1951,8 +2026,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         addProductPRoductNameAlert.setErrorEnabled(false);
     }
 
-    @OnTextChanged(R2.id.add_product_price)
-    public void onTextChanged(CharSequence s, int start, int before,
+    public void onTextChangedPrice(CharSequence s, int start, int before,
                               int count) {
 
         Log.d(TAG, messageTAG + s + " [] " + start + " [] " + before + " [] " + count + " [] " + selectedCurrencyDesc);
@@ -2552,12 +2626,10 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
     }
 
-    @OnClick(R2.id.title_preorder)
     public void togglePreOder() {
         togglePreorder();
     }
 
-    @OnClick(R2.id.add_product_tittle_wholesale)
     public void toggleWholeSale() {
         Pair<Boolean, String> verif = VerificationUtils.validatePrice(getActivity(), selectedCurrencyDesc, addProductPrice.getText().toString(), "checkwholesale");
         if (!verif.getModel1()) {

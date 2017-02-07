@@ -20,7 +20,6 @@ import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.PictureDB;
 import com.tokopedia.core.myproduct.model.ImageModel;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.myproduct.BaseProductActivity;
 import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.seller.myproduct.ProductSocMedActivity;
@@ -31,15 +30,11 @@ import java.io.File;
 import java.net.URI;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by m.normansyah on 08/12/2015.
  */
 public class PhotoAdapter  extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>{
     List<ImageModel> datas;
-//    MultiSelector multiSelector;
     int limit;
     private static final int UNLIMITED_SELECTION =  -1;
 
@@ -49,9 +44,7 @@ public class PhotoAdapter  extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
 
     public PhotoAdapter(List<ImageModel> datas, int limit){
         this.datas = datas;
-//        this.multiSelector = multiSelector;
         this.limit = limit;
-//        setHasStableIds(true);
     }
 
     @Override
@@ -71,19 +64,11 @@ public class PhotoAdapter  extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         return datas.size();
     }
 
-//    @Override
-//    public long getItemId(int position) {
-//         return datas.get(position).hashCode()+position;
-//    }
-
     public class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener
-//            , View.OnLongClickListener
     {
 
-        @BindView(R2.id.picture_gallery_imageview)
         ImageView mImageView;
-        @BindView(R2.id.main_picture_info)
         TextView mainPicInfo;
 
         // helper variable
@@ -95,19 +80,10 @@ public class PhotoAdapter  extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            mImageView = (ImageView) itemView.findViewById(R.id.picture_gallery_imageview);
+            mainPicInfo = (TextView) itemView.findViewById(R.id.main_picture_info);
             wm = (WindowManager) itemView.getContext().getSystemService(Context.WINDOW_SERVICE);
             itemView.setOnClickListener(this);
-//            itemView.setLongClickable(true);
-//            itemView.setOnLongClickListener(this);
-
-//            if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                setSelectionModeStateListAnimator(null);
-//                setDefaultModeStateListAnimator(null);
-//            }
-//            // Default selection mode background drawable is this
-//            setSelectionModeBackgroundDrawable(null);
-//            setDefaultModeBackgroundDrawable(null);
         }
 
         public void bindView(ImageModel imageModel, int position){

@@ -3,6 +3,7 @@ package com.tokopedia.seller.myproduct.view;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -10,14 +11,8 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ConnectionDetector;
 import com.tkpd.library.utils.TwitterHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.seller.myproduct.utils.DelegateOnClick;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
-import butterknife.OnClick;
 
 /**
  * Created by noiz354 on 5/13/16.
@@ -29,59 +24,54 @@ public class AddProductShare {
     ConnectionDetector cd;
     DelegateOnClick delegateOnClick;
 
-    @BindView(R2.id.add_product_facebook_but)
     RelativeLayout facebookShareBut;
-
-    @BindView(R2.id.twitter_but)
     RelativeLayout twitterShareBut;
-
-    @BindView(R2.id.add_product_facebook)
     ImageView facebookShare;
-
-    @BindView(R2.id.add_product_twitter)
     ImageView addProductTwitter;
-
-    @BindView(R2.id.facebook_checkbut)
     CheckBox facebookCheckBut;
-
-    @BindView(R2.id.twitter_checkbut)
     CheckBox twitterCheckBut;
-
-    @BindView(R2.id.add_product_facebook_text)
     TextView facebookTextView;
-
-    @BindView(R2.id.berbagi_title)
     TextView berbagiTitleTextView;
 
     public AddProductShare(View view){
-        ButterKnife.bind(this, view);
+        facebookShareBut = (RelativeLayout) view.findViewById(R.id.add_product_facebook_but);
+        facebookShareBut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if ( delegateOnClick != null && delegateOnClick instanceof AddProductFragment){
+                    isFacebookAuth = !isFacebookAuth;
+                    facebookCheckBut.setChecked(isFacebookAuth);
+                }
+            }
+        });
+        twitterShareBut = (RelativeLayout) view.findViewById(R.id.twitter_but);
+        twitterShareBut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                twitterCall();
+            }
+        });
+        facebookShare = (ImageView) view.findViewById(R.id.add_product_facebook);
+        addProductTwitter = (ImageView) view.findViewById(R.id.add_product_twitter);
+        facebookCheckBut = (CheckBox) view.findViewById(R.id.facebook_checkbut);
+        facebookCheckBut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean checked) {
+                butFacebookToggle(checked);
+                isFacebookAuth = checked;
+            }
+        });
+        twitterCheckBut = (CheckBox) view.findViewById(R.id.twitter_checkbut);
+        twitterCheckBut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                butTwitterToggle(isChecked);
+            }
+        });
+        facebookTextView = (TextView) view.findViewById(R.id.add_product_facebook_text);
+        berbagiTitleTextView = (TextView) view.findViewById(R.id.berbagi_title);
+
         setToShareButton(view);
-    }
-
-//    static int count =0;
-
-    @OnCheckedChanged(R2.id.facebook_checkbut)
-    public void facebookChecked(boolean checked){
-        butFacebookToggle(checked);
-        isFacebookAuth = checked;
-    }
-
-    @OnCheckedChanged(R2.id.twitter_checkbut)
-    public void twitterChecked(boolean checked){
-        butTwitterToggle(checked);
-    }
-
-    @OnClick(R2.id.add_product_facebook_but)
-    public void authorizeFacebook(){
-        if ( delegateOnClick != null && delegateOnClick instanceof AddProductFragment){
-            isFacebookAuth = !isFacebookAuth;
-            facebookCheckBut.setChecked(isFacebookAuth);
-        }
-    }
-
-    @OnClick(R2.id.twitter_but)
-    public void authorizeTwitter() {
-        twitterCall();
     }
 
     private void twitterCall() {

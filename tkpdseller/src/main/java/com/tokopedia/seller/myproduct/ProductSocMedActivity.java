@@ -48,10 +48,6 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tokopedia.core.instoped.InstagramMediaModelUtil.convertTo;
 import static com.tokopedia.core.myproduct.utils.VerificationUtils.validateAllInstoped;
@@ -67,13 +63,8 @@ public class ProductSocMedActivity extends BaseProductActivity implements
         ImageChooserDialog.SelectWithImage
 {
     public static final String DEFAULT_HTTP = "http://www.glamour.com/images/fashion/2016/03/Iskra-02-main.jpg";
-    @BindView(R2.id.toolbar)
     Toolbar toolbar;
-
-    @BindView(R2.id.products_soc_med_thumbnail)
     RecyclerView productsSocMedThumnNail;
-
-    @BindView(R2.id.product_soc_med_viewpager)
     ViewPager productSocMedViewPager;
 
     PagerAdapter2 pagerAdapter;
@@ -158,14 +149,15 @@ public class ProductSocMedActivity extends BaseProductActivity implements
     private List<InstagramMediaModel> images = new ArrayList<>();
 
     TkpdProgressDialog tkpdProgressDialog;
-    private Unbinder unbinder;
     private BroadcastReceiver addProductReceiver;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_products_socmed);
-        unbinder = ButterKnife.bind(this);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        productsSocMedThumnNail = (RecyclerView) findViewById(R.id.products_soc_med_thumbnail);
+        productSocMedViewPager = (ViewPager) findViewById(R.id.product_soc_med_viewpager);
 
         toolbar.setTitle(R.string.title_activity_add_product);
         setSupportActionBar(toolbar);
@@ -313,7 +305,6 @@ public class ProductSocMedActivity extends BaseProductActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
     }
 
     @Override

@@ -23,9 +23,6 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * Created by sebastianuskh on 1/3/17.
@@ -35,10 +32,8 @@ public class InstopedActivity extends TActivity implements InstagramActivityList
 
     private static final String FRAGMENT_TO_SHOW = "FRAGMENT_TO_SHOW";
     private String FRAGMENT;
-    private Unbinder unbinder;
     private FragmentManager supportFragmentManager;
-    @BindView(R2.id.toolbar)
-    Toolbar toolbar;
+    private Toolbar toolbar;
 
     public static void startInstopedActivity(Context context){
         Intent moveToProductActivity = new Intent(context, InstopedActivity.class);
@@ -58,7 +53,7 @@ public class InstopedActivity extends TActivity implements InstagramActivityList
 
         fetchExtras(getIntent());
         setContentView(R.layout.activity_instoped);
-        unbinder = ButterKnife.bind(this);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

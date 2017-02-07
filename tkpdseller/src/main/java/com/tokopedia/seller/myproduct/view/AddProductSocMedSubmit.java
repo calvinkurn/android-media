@@ -4,15 +4,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.seller.myproduct.ProductSocMedActivity;
 import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.seller.myproduct.utils.AddProductType;
 import com.tokopedia.seller.myproduct.utils.DelegateOnClick;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by noiz354 on 5/13/16.
@@ -20,13 +15,24 @@ import butterknife.OnClick;
 public class AddProductSocMedSubmit {
     DelegateOnClick delegateOnClick;
 
-    @BindView(R2.id.add_product_soc_med_submit)
     TextView add;
-    @BindView(R2.id.add_product_soc_med_delete)
     TextView delete;
 
     public AddProductSocMedSubmit(View view){
-        ButterKnife.bind(this, view);
+        add = (TextView) view.findViewById(R.id.add_product_soc_med_submit);
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submit();
+            }
+        });
+        delete = (TextView) view.findViewById(R.id.add_product_soc_med_delete);
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delete();
+            }
+        });
     }
 
     public DelegateOnClick getDelegateOnClick() {
@@ -37,7 +43,6 @@ public class AddProductSocMedSubmit {
         this.delegateOnClick = delegateOnClick;
     }
 
-    @OnClick(R2.id.add_product_soc_med_submit)
     public void submit(){
         if(delegateOnClick != null && delegateOnClick instanceof AddProductFragment){
             if(((AddProductFragment)delegateOnClick).addProductType == AddProductType.EDIT){
@@ -48,7 +53,6 @@ public class AddProductSocMedSubmit {
         }
     }
 
-    @OnClick(R2.id.add_product_soc_med_delete)
     public void delete(){
         if(delegateOnClick != null && delegateOnClick instanceof AddProductFragment){
             AddProductFragment delegateOnClick = (AddProductFragment) this.delegateOnClick;
