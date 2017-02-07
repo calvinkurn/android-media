@@ -459,6 +459,10 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
             public void onError(Throwable e) {
                 if (e instanceof ShopNetworkController.MessageErrorException) {
                     Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                }else{
+                    if (snackbarRetryUndefinite != null) {
+                        snackbarRetryUndefinite.showRetrySnackbar();
+                    }
                 }
             }
 
@@ -485,6 +489,10 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
             public void onError(Throwable e) {
                 if (e instanceof ShopNetworkController.MessageErrorException) {
                     Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                }else{
+                    if (snackbarRetryUndefinite != null) {
+                        snackbarRetryUndefinite.showRetrySnackbar();
+                    }
                 }
             }
 
@@ -553,6 +561,10 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
             public void onError(Throwable e) {
                 if (e instanceof ShopNetworkController.MessageErrorException) {
                     Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                }else{
+                    if (snackbarRetryUndefinite != null) {
+                        snackbarRetryUndefinite.showRetrySnackbar();
+                    }
                 }
             }
 
