@@ -163,7 +163,6 @@ public class ManageProduct extends TkpdActivity implements
     private String mEtalase;
     private String IsAllowShop = "0";
     private ListViewManageProdAdapter lvadapter;
-    @BindView(R2.id.prod_list)
     SimpleListView lvListProd;
     private Boolean loading = false;
     private AlertDialog.Builder SortMenu;
@@ -207,13 +206,11 @@ public class ManageProduct extends TkpdActivity implements
     private boolean isMultiSelect = false;
     private TkpdProgressDialog progress;
 
-    @BindView(R2.id.blur_image)
     ImageView blurImage;
     private PagingHandler mPaging = new PagingHandler();
     private RetryHandler retryHandler;
     private SimpleSpinnerAdapter simpleSpinnerAdapter;
 
-    @BindView(R2.id.fab_speed_dial)
     FabSpeedDial fabAddProduct;
 
 
@@ -252,7 +249,9 @@ public class ManageProduct extends TkpdActivity implements
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_manage_product);
         compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
-        unbinder = ButterKnife.bind(this);
+        lvListProd = (SimpleListView) findViewById(R.id.prod_list);
+        blurImage = (ImageView) findViewById(R.id.blur_image);
+        fabAddProduct = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
 
         checkLogin();
         if (this.isFinishing()) {
