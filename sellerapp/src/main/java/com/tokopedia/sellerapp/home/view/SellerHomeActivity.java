@@ -319,7 +319,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
         shopId = SessionHandler.getShopID(this);
         imageHandler = new ImageHandler(this);
 
-        drawer.setDrawerPosition(TkpdState.DrawerPosition.INDEX_HOME);
+        drawer.setDrawerPosition(TkpdState.DrawerPosition.SELLER_INDEX_HOME);
 
         GCMHandler gcmHandler = new GCMHandler(this);
         Gson gson = new GsonBuilder().create();
