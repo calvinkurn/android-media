@@ -289,8 +289,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             if (s.length() >= minLengthDefaultOperator) {
                 if (selectedOperator != null && selectedOperator.showProduct) {
                     this.rechargePresenter.validateWithOperator(
-                            category.getId(),
-                            category.getAttributes().getDefaultOperatorId());
+                            category.getId(), selectedOperatorId);
                 } else {
                     hideFormAndShowImageOperator();
                 }
@@ -454,7 +453,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     private void hideFormAndShowImageOperator() {
         if (spnNominal != null) spnNominal.setVisibility(View.GONE);
-        if (wrapperLinearLayout != null) wrapperLinearLayout.setVisibility(View.GONE);
+        if (wrapperLinearLayout != null) wrapperLinearLayout.setVisibility(View.VISIBLE);
         if (nominalTextview != null) nominalTextview.setVisibility(View.GONE);
         if (rechargeEditText != null) rechargeEditText.setImgOperatorVisible();
         if (errorNominal != null) errorNominal.setVisibility(View.GONE);
@@ -558,10 +557,11 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             selectedOperatorId = category.getAttributes().getDefaultOperatorId();
             this.rechargePresenter.updateMinLenghAndOperator(selectedOperatorId);
 
+            if (!category.getAttributes().getClientNumber().getIsShown()) {
+                setUpForNotUsingTextEdit();
+            }
+
             if (category.getAttributes().getShowOperator()) {
-                if (!category.getAttributes().getClientNumber().getIsShown()) {
-                    setUpForNotUsingTextEdit();
-                }
                 this.rechargePresenter.getListOperatorFromCategory(category.getId());
             }
         }
