@@ -1864,5 +1864,10 @@ di Tokopedia Sekarang!</string>
     <string name="address_not_supported_add_to_cart">Layanan kurir tidak mendukung pengiriman dari lokasi penjual ke lokasi pembeli</string>
     <string name="finish_contact_us">Terima kasih telah menghubungi, senang bisa membantu anda.</string>
     <string name="hello_blank_name">Halo,</string>
+    <string name="create_tokopedia_account">Buat Akun Tokopedia</string>
+    <string name="fill_your_profile">Isi data dirimu</string>
+    <string name="already_has_account_sign_in">Sudah punya akun? Masuk</string>
+    <string name="_2">2</string>
+    <string name="_1">1</string>
 
 </resources>

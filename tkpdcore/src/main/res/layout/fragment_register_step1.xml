@@ -64,7 +64,7 @@
                         android:layout_height="@dimen/margin_med"
                         android:background="@drawable/circle_green"
                         android:gravity="center"
-                        android:text="1"
+                        android:text="@string/_1"
                         android:textColor="@color/white" />
 
                     <TextView
@@ -81,7 +81,7 @@
                         android:layout_height="@dimen/margin_med"
                         android:background="@drawable/circle"
                         android:gravity="center"
-                        android:text="2"
+                        android:text="@string/_2"
                         android:textColor="@color/white" />
 
                 </LinearLayout>
@@ -104,7 +104,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="40"
                         android:gravity="left"
-                        android:text="Buat Akun Tokopedia"
+                        android:text="@string/create_tokopedia_account"
                         android:textSize="@dimen/fontvs"
                         android:textStyle="bold" />
 
@@ -113,7 +113,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="45"
                         android:gravity="right"
-                        android:text="Isi data dirimu"
+                        android:text="@string/fill_your_profile"
                         android:textSize="@dimen/fontvs"
                         android:textStyle="bold" />
 
@@ -224,7 +224,7 @@
         android:background="@color/grey_300"
         android:gravity="center"
         android:padding="@dimen/padding_med"
-        android:text="Sudah punya akun? Masuk"
+        android:text="@string/already_has_account_sign_in"
         android:textColor="@color/grey_500" />
 
 </RelativeLayout>
