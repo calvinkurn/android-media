@@ -2,6 +2,9 @@ package com.tokopedia.tkpd.home.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -10,13 +13,17 @@ import android.text.style.URLSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.network.entity.home.Ticker;
+import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.core.home.BannerWebView;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,21 +31,23 @@ import butterknife.ButterKnife;
 /**
  * Created by Nisie on 7/18/16.
  */
-public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnouncementAdapter.ViewHolder> {
+public class TickerAdapter extends RecyclerView.Adapter<TickerAdapter.ViewHolder> {
 
-    private Ticker.Tickers[] tickers;
+    private ArrayList<Ticker.Tickers> tickers;
+    private TickerAdapter.OnTickerClosed onTickerClosed;
     Context context;
 
-    public static TickerAnnouncementAdapter createInstance(Context context) {
-        return new TickerAnnouncementAdapter(context);
+    public static TickerAdapter createInstance(Context context, TickerAdapter.OnTickerClosed onTickerClosed) {
+        return new TickerAdapter(context, onTickerClosed);
     }
 
-    TickerAnnouncementAdapter(Context context) {
+    TickerAdapter(Context context, TickerAdapter.OnTickerClosed onTickerClosed) {
         this.context = context;
-        this.tickers = new Ticker.Tickers[]{};
+        this.tickers = new ArrayList<>();
+        this.onTickerClosed = onTickerClosed;
     }
 
-    public void addItem(Ticker.Tickers[] tickers) {
+    public void addItem(ArrayList<Ticker.Tickers> tickers) {
         this.tickers = tickers;
         notifyDataSetChanged();
     }
@@ -46,7 +55,7 @@ public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnoun
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.announcement_ticker_container)
-        LinearLayout announcementContainer;
+        RelativeLayout announcementContainer;
 
         @BindView(R.id.ticker_title)
         TextView title;
@@ -54,6 +63,8 @@ public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnoun
         @BindView(R.id.ticker_message)
         TextView message;
 
+        @BindView(R.id.btn_close)
+        ImageView btnClose;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -63,19 +74,19 @@ public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnoun
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View parentView = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_ticker_announcement, parent, false);
-        return new ViewHolder(parentView);
+        return new ViewHolder(
+                LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_ticker, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        if (tickers[position].getTitle() != null && tickers[position].getTitle().length() == 0) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        if (tickers.get(position).getTitle() != null && tickers.get(position).getTitle().length() == 0) {
             holder.title.setVisibility(View.GONE);
         } else {
             holder.title.setVisibility(View.VISIBLE);
-            holder.title.setText(tickers[position].getTitle());
+            holder.title.setText(tickers.get(position).getTitle());
         }
-        holder.message.setText(tickers[position].getMessage());
+        holder.message.setText(tickers.get(position).getMessage());
         holder.message.setMovementMethod(new SelectableSpannedMovementMethod());
 
         Spannable sp = (Spannable)holder.message.getText();
@@ -93,10 +104,30 @@ public class TickerAnnouncementAdapter extends RecyclerView.Adapter<TickerAnnoun
             }, sp.getSpanStart(url), sp.getSpanEnd(url), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         holder.message.setText(style);
+
+        Drawable background = holder.announcementContainer.getBackground();
+        if (background instanceof GradientDrawable && tickers.get(position).getColor() != null) {
+            GradientDrawable gradientDrawable = (GradientDrawable) background;
+            gradientDrawable.setColor(Color.parseColor(tickers.get(position).getColor()));
+        }
+
+        holder.btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onTickerClosed.onItemClicked();
+                tickers.clear();
+                notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return tickers.length;
+        return tickers.size();
     }
+
+    public interface OnTickerClosed {
+        void onItemClicked();
+    }
+
 }

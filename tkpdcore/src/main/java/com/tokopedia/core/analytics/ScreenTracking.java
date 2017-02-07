@@ -52,7 +52,7 @@ public class ScreenTracking extends TrackingUtils {
             this.mActivity = activity;
             authEvent = new Authenticated();
             authEvent.setUserFullName(SessionHandler.getLoginName(activity));
-            authEvent.setUserID(SessionHandler.getLoginID(activity));
+            authEvent.setUserID(SessionHandler.getGTMLoginID(activity));
             authEvent.setShopID(SessionHandler.getShopID(activity));
             authEvent.setUserSeller(SessionHandler.getShopID(activity).equals("0") ? 0 : 1);
         }

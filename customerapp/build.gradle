@@ -172,6 +172,28 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
     }
 
+    productFlavors {
+        staging {
+            applicationIdSuffix ".staging"
+            versionNameSuffix "-staging"
+        }
+        alpha {
+            applicationIdSuffix ".alpha"
+            versionNameSuffix "-alpha"
+        }
+        live {
+
+        }
+    }
+
+//    variantFilter { variant ->
+//        def names = variant.flavors*.name
+//        // To check for a certain build type, use variant.buildType.name == "<buildType>"
+//        if (names.contains("staging") && names.contains("demo")) {
+//            // Gradle ignores any variants that satisfy the conditions above.
+//            setIgnore(true)
+//        }
+//    }
 }
 
 dependencies {
