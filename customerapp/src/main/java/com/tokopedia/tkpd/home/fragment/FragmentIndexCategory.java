@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.res.ResourcesCompat;
@@ -102,8 +103,8 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     private ViewHolder holder;
     private Model model;
-    private PromoImagePagerAdapter pagerAdapter;
-
+    private Runnable tickerIncrementPage;
+    private Handler tickerHandler;
     Category category;
     private RechargeCategoryPresenter rechargeCategoryPresenter;
     TickerAdapter tickerAdapter;
@@ -287,11 +288,43 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         category = new CategoryImpl(getActivity(),this);
         holder = new ViewHolder();
         model = new Model();
-        pagerAdapter = new PromoImagePagerAdapter(model.listBanner);
         tickerAdapter = TickerAdapter.createInstance(getActivity(),this);
         rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(getActivity(), this);
         homeCatMenuPresenter = new HomeCatMenuPresenterImpl(this);
         topPicksPresenter = new TopPicksPresenterImpl(this);
+    }
+
+    private void startSlideTicker() {
+        tickerHandler.removeCallbacks(tickerIncrementPage);
+        tickerHandler.postDelayed(tickerIncrementPage, TICKER_DELAY);
+    }
+
+    private Runnable runnableIncrementTicker() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    tickerShowed.clear();
+                    incrementTicker();
+                    tickerShowed.add(tickers.get(currentTicker));
+                    tickerAdapter.notifyDataSetChanged();
+                    tickerHandler.postDelayed(tickerIncrementPage, TICKER_DELAY);
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        };
+    }
+
+    private void incrementTicker() {
+        currentTicker++;
+        if (currentTicker >= tickers.size())
+            currentTicker=0;
+    }
+
+    private boolean isTickerRotating() {
+        return (tickers != null && tickers.size()>1 && tickerHandler!=null && tickerIncrementPage!=null);
     }
 
     @Override

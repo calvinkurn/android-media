@@ -7,11 +7,11 @@ import java.util.ArrayList;
 
 public class BannerPageChangeListener implements ViewPager.OnPageChangeListener {
     private ArrayList<ImageView> pointViews;
-    private int[] page_indicatorId;
+    private int[] pageIndicatorId;
     private ViewPager.OnPageChangeListener onPageChangeListener;
-    public BannerPageChangeListener(ArrayList<ImageView> pointViews, int page_indicatorId[]){
+    public BannerPageChangeListener(ArrayList<ImageView> pointViews, int pageIndicatorId[]){
         this.pointViews=pointViews;
-        this.page_indicatorId = page_indicatorId;
+        this.pageIndicatorId = pageIndicatorId;
     }
     @Override
     public void onPageScrollStateChanged(int state) {
@@ -26,9 +26,9 @@ public class BannerPageChangeListener implements ViewPager.OnPageChangeListener 
     @Override
     public void onPageSelected(int index) {
         for (int i = 0; i < pointViews.size(); i++) {
-            pointViews.get(index).setImageResource(page_indicatorId[1]);
+            pointViews.get(index).setImageResource(pageIndicatorId[1]);
             if (index != i) {
-                pointViews.get(i).setImageResource(page_indicatorId[0]);
+                pointViews.get(i).setImageResource(pageIndicatorId[0]);
             }
         }
         if(onPageChangeListener != null)onPageChangeListener.onPageSelected(index);

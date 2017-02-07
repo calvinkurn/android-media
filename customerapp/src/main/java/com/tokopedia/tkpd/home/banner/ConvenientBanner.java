@@ -29,7 +29,7 @@ import java.util.List;
 
 public class ConvenientBanner<T> extends LinearLayout {
     private List<T> mDatas;
-    private int[] page_indicatorId;
+    private int[] pageIndicatorId;
     private ArrayList<ImageView> mPointViews = new ArrayList<ImageView>();
     private BannerPageChangeListener pageChangeListener;
     private ViewPager.OnPageChangeListener onPageChangeListener;
@@ -117,8 +117,8 @@ public class ConvenientBanner<T> extends LinearLayout {
         pageAdapter = new BannerPageAdapter(fragmentManager, holderCreator, mDatas);
         viewPager.setAdapter(pageAdapter,canLoop);
 
-        if (page_indicatorId != null)
-            setPageIndicator(page_indicatorId);
+        if (pageIndicatorId != null)
+            setPageIndicator(pageIndicatorId);
         return this;
     }
 
@@ -126,8 +126,8 @@ public class ConvenientBanner<T> extends LinearLayout {
      */
     public void notifyDataSetChanged(){
         viewPager.getAdapter().notifyDataSetChanged();
-        if (page_indicatorId != null)
-            setPageIndicator(page_indicatorId);
+        if (pageIndicatorId != null)
+            setPageIndicator(pageIndicatorId);
     }
 
     /**
@@ -146,7 +146,7 @@ public class ConvenientBanner<T> extends LinearLayout {
     public ConvenientBanner setPageIndicator(int[] page_indicatorId) {
         loPageTurningPoint.removeAllViews();
         mPointViews.clear();
-        this.page_indicatorId = page_indicatorId;
+        this.pageIndicatorId = page_indicatorId;
         if(mDatas==null)return this;
         for (int count = 0; count < mDatas.size(); count++) {
             ImageView pointView = new ImageView(getContext());
