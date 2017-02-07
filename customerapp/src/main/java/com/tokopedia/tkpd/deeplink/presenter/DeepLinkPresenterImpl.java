@@ -154,7 +154,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_SHOP_INFO;
                     break;
                 case ACCOUNTS:
-                    openWebView(uriData);
+                    if(!uriData.getPath().contains("activation")) {
+                        openWebView(uriData);
+                    }
                     screenName = AppScreen.SCREEN_LOGIN;
                     break;
                 case OTHER:
