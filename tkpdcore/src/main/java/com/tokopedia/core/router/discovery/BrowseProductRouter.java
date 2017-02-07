@@ -33,7 +33,7 @@ public class BrowseProductRouter {
 
     public static final String VALUES_DYNAMIC_FILTER_HOT_PRODUCT = "hot_product";
 
-    private final static String VALUES_DEFAULT_DEPARTMENT_ID = "0";
+    public final static String VALUES_DEFAULT_DEPARTMENT_ID = "0";
 
     private static final String BROWSE_PRODUCT_ACTIVITY
             = "com.tokopedia.discovery.activity.BrowseProductActivity";
