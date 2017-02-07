@@ -101,7 +101,7 @@ public interface AppEventTracking {
         String SCROLL_GM_STAT = "scrollGMStat";
         String CLICK_ADD_PRODUCT = "clickAddProduct";
         String CLICK_INSTOPED = "clickInstoped";
-        String CLICK_MANAGE_PRODUCT = "clickManageProduct\n";
+        String CLICK_MANAGE_PRODUCT = "clickManageProduct";
     }
 
     interface Category {
