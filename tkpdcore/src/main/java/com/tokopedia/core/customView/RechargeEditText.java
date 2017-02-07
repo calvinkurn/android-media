@@ -158,6 +158,10 @@ public class RechargeEditText extends LinearLayout implements
         this.autoCompleteTextView.setText(text);
     }
 
+    public void setHint(String hint) {
+        this.autoCompleteTextView.setHint(hint);
+    }
+
     public void setRechargeEditTextListener(RechargeEditTextListener rechargeEditTextListener) {
         this.rechargeEditTextListener = rechargeEditTextListener;
     }
