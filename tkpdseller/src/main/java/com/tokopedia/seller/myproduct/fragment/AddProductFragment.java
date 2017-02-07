@@ -2699,7 +2699,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
         addProduct.unsubscribe();
     }
 
