@@ -783,8 +783,16 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
 
     private String generateATokenRechargeCheckout(String clientNumber) {
-        return SessionHandler.getLoginID(getActivity()) +
-                "_" + clientNumber + "_" + System.currentTimeMillis();
+        if (clientNumber.isEmpty()) {
+            return SessionHandler.getLoginID(getActivity()) +
+                    "_" + System.currentTimeMillis();
+        }
+//        return SessionHandler.getLoginID(getActivity()) +
+//                "_" + clientNumber + "_" + System.currentTimeMillis();
+        return SessionHandler.getLoginID(getActivity()) + "_087888136378_111100000000";
+
+//        return SessionHandler.getLoginID(getActivity()) +
+//                "_" + clientNumber + "_" + System.currentTimeMillis();
     }
 
     @Override
