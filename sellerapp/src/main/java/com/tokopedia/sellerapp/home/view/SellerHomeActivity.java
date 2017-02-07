@@ -24,6 +24,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.util.DisplayMetrics;
@@ -1034,7 +1035,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
 
         Authenticated authEvent = new Authenticated();
         authEvent.setUserFullName(SessionHandler.getLoginName(this));
-        authEvent.setUserID(SessionHandler.getLoginID(this));
+        authEvent.setUserID(SessionHandler.getGTMLoginID(this));
         authEvent.setShopID(SessionHandler.getShopID(this));
         authEvent.setUserSeller(SessionHandler.getShopID(this).equals("0") ? 0 : 1);
 
