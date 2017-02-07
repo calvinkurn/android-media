@@ -52,12 +52,6 @@ public class MockShopApi implements ShopApi {
         return null;
     }
 
-//    @Override
-//    public Observable<Response<TkpdResponse>> getShopInfo(@QueryMap Map<String, String> params) {
-//        Response<TkpdResponse> tkpdResponse = Response.success(new TkpdResponse());
-//        return shopApiBehaviorDelegate.returning(Calls.response(tkpdResponse)).getShopInfo(params);
-//    }
-
     @Override
     public Observable<Response<TkpdResponse>> getLocation(@FieldMap Map<String, String> params) {
         return null;
@@ -79,11 +73,6 @@ public class MockShopApi implements ShopApi {
     }
 
     public Observable<Response<TkpdResponse>> getTalk(@FieldMap Map<String, String> params) {
-        return null;
-    }
-
-    @Override
-    public Observable<GetShopNotes> getNotesBasic(@Header("Content-MD5") String contentMD5, @Header("Date") String date, @Header("Authorization") String authorization, @Header("X-Method") String xMethod, @Field("user_id") String userId, @Field("device_id") String deviceId, @Field("hash") String hash, @Field("device_time") String deviceTime, @Field("shop_domain") String shopDomain) {
         return null;
     }
 

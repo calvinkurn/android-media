@@ -768,23 +768,6 @@ public class DrawerVariableSeller extends DrawerVariable {
 
     @Override
     public void getNotification() {
-//        if (!isLogin()) {
-//            return;
-//        }
-//        networkInteractor.getNotification(context, new NetworkInteractor.NotificationListener() {
-//            @Override
-//            public void onSuccess(NotificationItem notificationItem) {
-//                setNotificationShop(notificationItem);
-//                setNotificationInbox(notificationItem);
-//                toolbar.updateToolbar(notificationItem);
-//                adapter.notifyDataSetChanged();
-//            }
-//
-//            @Override
-//            public void onError(String message) {
-//
-//            }
-//        });
     }
 
     private void setNotificationShop(NotificationItem notificationItem) {
