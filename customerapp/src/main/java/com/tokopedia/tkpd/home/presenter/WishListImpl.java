@@ -264,6 +264,11 @@ public class WishListImpl implements WishList {
     }
 
     @Override
+    public boolean isLoadedFirstPage() {
+        return mPaging.getPage() >= 1;
+    }
+
+    @Override
     public void subscribe() {
         RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
     }
