@@ -20,19 +20,6 @@ import static org.mockito.Mockito.mock;
 @Module
 public class TestUtilModules {
 
-//    @Provides
-//    @Singleton
-//    public RxWrapper<LoginResponseParser> provideRxWrapper(){
-//        return new TestRxWrapper<>();
-//    }
-//
-//    @Provides
-//    @Singleton
-//    public Printer providePrinter(){
-//        return mock(Printer.class);
-////        return new Printer();
-//    }
-//
     @Provides
     @Singleton
     public ImageHandler provideImageHandler(Context context){
