@@ -24,6 +24,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.util.DisplayMetrics;
@@ -320,7 +321,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
         shopId = SessionHandler.getShopID(this);
         imageHandler = new ImageHandler(this);
 
-        drawer.setDrawerPosition(TkpdState.DrawerPosition.INDEX_HOME);
+        drawer.setDrawerPosition(TkpdState.DrawerPosition.SELLER_INDEX_HOME);
 
         GCMHandler gcmHandler = new GCMHandler(this);
         Gson gson = new GsonBuilder().create();
@@ -460,6 +461,10 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
             public void onError(Throwable e) {
                 if (e instanceof MessageErrorException) {
                     Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                }else{
+                    if (snackbarRetryUndefinite != null) {
+                        snackbarRetryUndefinite.showRetrySnackbar();
+                    }
                 }
             }
 
@@ -486,6 +491,10 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
             public void onError(Throwable e) {
                 if (e instanceof MessageErrorException) {
                     Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                }else{
+                    if (snackbarRetryUndefinite != null) {
+                        snackbarRetryUndefinite.showRetrySnackbar();
+                    }
                 }
             }
 
@@ -554,6 +563,10 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
             public void onError(Throwable e) {
                 if (e instanceof MessageErrorException) {
                     Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                }else{
+                    if (snackbarRetryUndefinite != null) {
+                        snackbarRetryUndefinite.showRetrySnackbar();
+                    }
                 }
             }
 
@@ -1036,7 +1049,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
 
         Authenticated authEvent = new Authenticated();
         authEvent.setUserFullName(SessionHandler.getLoginName(this));
-        authEvent.setUserID(SessionHandler.getLoginID(this));
+        authEvent.setUserID(SessionHandler.getGTMLoginID(this));
         authEvent.setShopID(SessionHandler.getShopID(this));
         authEvent.setUserSeller(SessionHandler.getShopID(this).equals("0") ? 0 : 1);
 

@@ -125,6 +125,8 @@ public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFrag
                 finishLoading();
                 phoneNumber.setEnabled(true);
                 phoneNumber.setText(SessionHandler.getPhoneNumber());
+                presenter.requestOTP(getPhoneNumber().trim());
+
             }
 
             @Override
@@ -423,6 +425,7 @@ public class MsisdnFragment extends BasePresenterFragment<MsisdnVerificationFrag
     public void processOTP(String otpCode) {
         if (vInputOtp != null)
             vInputOtp.setText(otpCode);
+        presenter.verifyOTP(otpCode);
     }
 
     public void setListener(PhoneVerificationUtil.MSISDNListener listener) {

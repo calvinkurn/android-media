@@ -34,6 +34,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
@@ -211,6 +212,7 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         View wrapperBuyerRequestCancel;
         TextView buyerRequestCancel;
         TextView dateRequestCancel;
+        TextView askBuyer;
     }
 
     public static class Model {
@@ -317,6 +319,7 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         holder.wrapperBuyerRequestCancel = rootView.findViewById(R.id.wrapper_buyer_request_cancel);
         holder.buyerRequestCancel = (TextView) rootView.findViewById(R.id.buyer_request_cancel);
         holder.dateRequestCancel = (TextView) rootView.findViewById(R.id.date_buyer_request_cancel);
+        holder.askBuyer = (TextView) rootView.findViewById(R.id.ask_buyer);
     }
 
     private void setViewDataV4() {
@@ -434,6 +437,21 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         holder.PartialButton.setOnClickListener(onPartialListener());
         holder.Invoice.setOnClickListener(onInvoiceListener());
         holder.BuyerName.setOnClickListener(onBuyerName());
+        holder.askBuyer.setOnClickListener(onAskBuyerClickListener());
+    }
+
+    private View.OnClickListener onAskBuyerClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = InboxRouter.getSendMessageActivityIntent(getActivity());
+                Bundle bundle = new Bundle();
+                bundle.putString(InboxRouter.PARAM_USER_ID, order.getOrderCustomer().getCustomerId());
+                bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, order.getOrderCustomer().getCustomerName());
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        };
     }
 
     private View.OnClickListener onBuyerName() {
