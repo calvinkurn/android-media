@@ -1,0 +1,110 @@
+package com.tokopedia.seller.gmstat.views.helper;
+
+import android.util.Log;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.TextView;
+
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.gmstat.views.listeners.PeriodListener;
+import com.tokopedia.seller.gmstat.views.models.PeriodRangeModel;
+
+import static com.tokopedia.seller.gmstat.utils.GMStatConstant.RANGE_DATE_FORMAT;
+import static com.tokopedia.seller.gmstat.utils.GMStatConstant.SINGLE_DATE_FORMAT;
+import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateWithYear;
+import static com.tokopedia.seller.gmstat.views.SetDateFragment.reverseDate;
+
+/**
+ * Created by normansyahputa on 1/19/17.
+ */
+
+public class PeriodChooseViewHelper {
+
+    private int position;
+    private CheckBox checkBoxPeriod;
+    private TextView periodHeader;
+    private TextView periodDate;
+    private PeriodRangeModel periodRangeModel;
+    private PeriodListener periodListener;
+    private String[] monthNamesAbrev;
+
+    public PeriodChooseViewHelper(View itemView, int position) {
+        this.position = position;
+        initView(itemView);
+    }
+
+    private void initView(View itemView) {
+        checkBoxPeriod = (CheckBox) itemView.findViewById(R.id.checkbox_period);
+        periodHeader = (TextView) itemView.findViewById(R.id.period_header);
+        periodDate = (TextView) itemView.findViewById(R.id.period_date);
+        itemView.findViewById(R.id.overlay_set_date).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onCheckForOther();
+            }
+        });
+        monthNamesAbrev = itemView.getResources().getStringArray(R.array.month_names_abrev);
+    }
+
+    public void setPeriodListener(PeriodListener periodListener) {
+        this.periodListener = periodListener;
+    }
+
+    private void onCheckForOther() {
+        if (periodListener.isAllNone(!checkBoxPeriod.isChecked(), position)) {
+            return;
+        }
+        checkBoxPeriod.setChecked(!checkBoxPeriod.isChecked());
+        onCheckBoxPeriod(!checkBoxPeriod.isChecked());
+    }
+
+    private void onCheckBoxPeriod(boolean checked) {
+        periodRangeModel.isChecked = checked;
+        if (periodListener != null) {
+            periodListener.updateCheck(checked, position);
+        }
+    }
+
+    public void resetToFalse() {
+        checkBoxPeriod.setChecked(false);
+    }
+
+    public void bindData(PeriodRangeModel periodRangeModel) {
+        this.periodRangeModel = periodRangeModel;
+        if (periodRangeModel.isChecked) {
+            checkBoxPeriod.setChecked(true);
+        } else {
+            checkBoxPeriod.setChecked(false);
+        }
+
+        if (periodRangeModel.range == 1 && !periodRangeModel.isRange) {
+            periodHeader.setText(R.string.yesterday);
+        } else if (periodRangeModel.isRange) {
+            if (periodRangeModel.range == 7) {
+                periodHeader.setText(R.string.seven_days_ago);
+            } else if (periodRangeModel.range == 31) {
+                periodHeader.setText(R.string.thirty_days_ago);
+            }
+        }
+
+        String description = periodRangeModel.getDescription();
+        Log.d("MNORMANSYAH", "description : " + description);
+        String[] range = description.split("-");
+        int[] split = new int[range.length];
+        int i;
+        for (i = 0; i < range.length; i++) {
+            String[] split1 = range[i].split(" ");
+            split[i] = Integer.parseInt(reverseDate(split1));
+        }
+
+        if (split.length > 1) {
+            String res = String.format(RANGE_DATE_FORMAT, getDateWithYear(split[0], monthNamesAbrev), getDateWithYear(split[1], monthNamesAbrev));
+            periodDate.setText(res);
+        }
+
+        if (split.length == 1) {
+            String res = String.format(SINGLE_DATE_FORMAT, getDateWithYear(split[0], monthNamesAbrev));
+            periodDate.setText(res);
+        }
+    }
+}
