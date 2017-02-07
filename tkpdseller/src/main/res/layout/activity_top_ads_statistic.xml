@@ -12,12 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/tkpd_main_green"
-        app:tabMode="scrollable"
-        app:tabGravity="fill"
-        app:tabIndicatorColor="@color/white"
-        app:tabIndicatorHeight="4dp"
-        app:tabSelectedTextColor="@color/white"
-        app:tabTextAppearance="@style/CustomTitlePageIndicator" />
+        style="@style/TabBar"
+        app:tabMode="scrollable"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"

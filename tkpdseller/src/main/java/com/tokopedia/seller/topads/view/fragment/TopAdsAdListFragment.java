@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -229,6 +230,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         if (snackBarRetry == null) {
             snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), listener);
             snackBarRetry.showRetrySnackbar();
+            snackBarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
         }
     }
 

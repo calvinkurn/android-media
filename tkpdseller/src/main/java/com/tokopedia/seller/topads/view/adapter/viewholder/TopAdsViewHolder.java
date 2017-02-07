@@ -10,6 +10,8 @@ import android.widget.TextView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.model.data.Ad;
+import com.tokopedia.seller.topads.model.data.Product;
+import com.tokopedia.seller.topads.model.data.ProductAd;
 
 /**
  * Created by zulfikarrahman on 11/28/16.
@@ -57,13 +59,18 @@ public class TopAdsViewHolder extends RecyclerView.ViewHolder {
         }
         pricePromoPerClick.setText(promoPriceUsed.getContext().getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
         promoPriceUsed.setText(ad.getStatTotalSpent());
-        if (!TextUtils.isEmpty(ad.getPriceDailyBar())) {
+
+        int groupId = -1;
+        if(ad instanceof ProductAd){
+            groupId = ((ProductAd) ad).getGroupId();
+        }
+        if (TextUtils.isEmpty(ad.getPriceDailyBar()) || groupId > 0) {
+            progressBarLayout.setVisibility(View.GONE);
+        } else {
             progressBarLayout.setVisibility(View.VISIBLE);
             progressBarPromo.setProgress((int) Double.parseDouble(ad.getPriceDailyBar()));
             dailySpentTextView.setText(ad.getPriceDailySpentFmt());
             dailyTotalTextView.setText(ad.getPriceDailyFmt());
-        } else {
-            progressBarLayout.setVisibility(View.GONE);
         }
     }
 }

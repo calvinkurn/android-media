@@ -24,6 +24,7 @@ public class TopAdsLabelView extends FrameLayout {
     private String valueText;
     private int colorValue;
     private int contentTextStyleValue;
+    private int titleTextStyleValue;
 
     public TopAdsLabelView(Context context) {
         super(context);
@@ -48,6 +49,7 @@ public class TopAdsLabelView extends FrameLayout {
             valueText = styledAttributes.getString(R.styleable.TopAdsLabelView_content);
             colorValue = styledAttributes.getColor(R.styleable.TopAdsLabelView_content_color, ContextCompat.getColor(getContext(), R.color.grey));
             contentTextStyleValue = styledAttributes.getInt(R.styleable.TopAdsLabelView_content_textStyle, Typeface.NORMAL);
+            titleTextStyleValue = styledAttributes.getInt(R.styleable.TopAdsLabelView_title_textStyle, Typeface.NORMAL);
         } finally {
             styledAttributes.recycle();
         }
@@ -60,6 +62,7 @@ public class TopAdsLabelView extends FrameLayout {
         contentTextView.setText(valueText);
         contentTextView.setTextColor(colorValue);
         contentTextView.setTypeface(null, contentTextStyleValue);
+        titleTextView.setTypeface(null, titleTextStyleValue);
         invalidate();
         requestLayout();
     }
@@ -78,6 +81,12 @@ public class TopAdsLabelView extends FrameLayout {
 
     public void setContent(String textValue) {
         contentTextView.setText(textValue);
+        invalidate();
+        requestLayout();
+    }
+
+    public void setTitleContentTypeFace(int typeFace){
+        titleTextView.setTypeface(null, typeFace);
         invalidate();
         requestLayout();
     }
