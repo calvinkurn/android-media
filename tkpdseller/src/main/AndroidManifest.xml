@@ -96,6 +96,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".gmsubscribe.view.product.activity.GMProductActivity"
+            android:label="@string/gmsubscribe_current_product_selector"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".gmsubscribe.view.checkout.activity.GMCheckoutActivity"

@@ -1,7 +1,9 @@
 package com.tokopedia.seller.gmsubscribe.view.product.recyclerview;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -37,6 +39,9 @@ public class GMProductViewHolder extends RecyclerView.ViewHolder {
     @BindView(R2.id.price_package)
     TextView pricePackage;
 
+    @BindView(R2.id.last_price_package)
+    TextView lastPricePakcage;
+
     @BindView(R2.id.icon_check)
     ImageView iconCheck;
 
@@ -53,17 +58,28 @@ public class GMProductViewHolder extends RecyclerView.ViewHolder {
         titlePackage.setText(gmProductViewModel.getName());
         descriptionPackage.setText(gmProductViewModel.getNotes());
         promoPackage.setVisibility(
-                gmProductViewModel.isBestDeal()? View.VISIBLE : View.GONE);
+                gmProductViewModel.isBestDeal() ? View.VISIBLE : View.GONE);
         pricePackage.setText(gmProductViewModel.getPrice());
-        if(!gmProductViewModel.getFreeDays().isEmpty()){
+        if (!gmProductViewModel.getFreeDays().isEmpty()) {
             descriptionFreeDays.setVisibility(View.VISIBLE);
             descriptionFreeDays.setText(gmProductViewModel.getFreeDays());
         }
-        if(isSelected){
+        if (!gmProductViewModel.getLastPrice().isEmpty()) {
+            setViewForLastPrice(gmProductViewModel.getLastPrice());
+        }
+        if (isSelected) {
             setSelected();
         } else {
             setUnselected();
         }
+    }
+
+    private void setViewForLastPrice(String lastPrice) {
+        pricePackage.setPaintFlags(pricePackage.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        pricePackage.setTextColor(mContext.getResources().getColor(R.color.primary_text_default_material_light));
+        pricePackage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        lastPricePakcage.setText(lastPrice);
+        lastPricePakcage.setVisibility(View.VISIBLE);
     }
 
     public void setSelected() {
@@ -75,7 +91,7 @@ public class GMProductViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    public void setUnselected(){
+    public void setUnselected() {
         iconCheck.setVisibility(View.GONE);
         try {
             layoutView.setBackgroundResource(R.drawable.background_gmsubscribe_product_item_unselected);
@@ -83,7 +99,6 @@ public class GMProductViewHolder extends RecyclerView.ViewHolder {
             layoutView.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.background_gmsubscribe_product_item_unselected));
         }
     }
-
 
 
 }

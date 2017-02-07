@@ -176,7 +176,7 @@ public class GMProductActivity extends BasePresenterActivity implements GMProduc
 
     @Override
     public void changeActionBarTitle(String title) {
-
+        toolbar.setTitleText(title);
     }
 
     @Override

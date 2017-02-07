@@ -4,11 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview_package_chooser"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
     <Button
         android:id="@+id/button_select_product"
         android:layout_width="match_parent"
@@ -17,6 +12,14 @@
         android:layout_margin="5dp"
         android:background="@color/tkpd_button"
         android:layout_alignParentBottom="true"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview_package_chooser"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/button_select_product"/>
+
+
 
 </RelativeLayout>
 
