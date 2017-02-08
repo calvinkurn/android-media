@@ -58,6 +58,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     private static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     private static final long DISMISS_TIME = 10000;
+    private static final String HADES = "TAG HADES";
     private Boolean isPause = false;
     private boolean isDialogNotConnectionShown = false;
     protected Boolean isAllowFetchDepartmentView = false;
@@ -174,7 +175,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
      */
     private void fetchDepartment() {
         if (!HadesService.getIsHadesRunning()) {
-            Log.i("HADES TAG", "START DOWNLOAAAD");
+            Log.i(HADES, "START DOWNLOAAAD");
             HadesService.startDownload(this, HadesConstant.STATE_DEPARTMENT);
         }
 
@@ -242,17 +243,17 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     @Override
     public void onHadesRunning() {
-        Log.i("HADES TAG", "LAGI JALAN NEEEEH");
+        Log.i(HADES, "LAGI JALAN NEEEEH");
     }
 
     @Override
     public void onHadesComplete() {
-        Log.i("HADES TAG", "UDAH KELAR NEEEEH");
+        Log.i(HADES, "UDAH KELAR NEEEEH");
     }
 
     @Override
     public void onHadesNoConenction() {
-        Log.i("TAG HADES", this.getClass().getSimpleName() + " " + getIsAllowFetchDepartmentView());
+        Log.i(HADES, this.getClass().getSimpleName() + " " + getIsAllowFetchDepartmentView());
         if (getIsAllowFetchDepartmentView() && !isDialogNotConnectionShown) {
             DialogNoConnection.create(this, new DialogNoConnection.ActionListener() {
                 @Override
@@ -267,7 +268,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     @Override
     public void onHadesTimeout() {
-        Log.i("TAG HADES", this.getClass().getSimpleName() + " " + getIsAllowFetchDepartmentView());
+        Log.i(HADES, this.getClass().getSimpleName() + " " + getIsAllowFetchDepartmentView());
         if (getIsAllowFetchDepartmentView() && !isDialogNotConnectionShown) {
             DialogNoConnection.create(this, new DialogNoConnection.ActionListener() {
                 @Override
