@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.MenuItem;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -42,7 +41,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         ProductDetailFragment.OnFragmentInteractionListener,
         FragmentGeneralWebView.OnFragmentInteractionListener, ICatalogActionFragment {
 
-    private TkpdProgressDialog mProgressDialog;
+    private TkpdProgressDialog progressDialog;
 
     private static final String TAG = DeepLinkActivity.class.getSimpleName();
     private Uri uriData;
@@ -207,11 +206,11 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && isDestroyed())
             return;
 
-        if (mProgressDialog != null && mProgressDialog.isProgress()) return;
+        if (progressDialog != null && progressDialog.isProgress()) return;
 
-        mProgressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.showDialog();
+        progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
+        progressDialog.setCancelable(false);
+        progressDialog.showDialog();
     }
 
     @Override

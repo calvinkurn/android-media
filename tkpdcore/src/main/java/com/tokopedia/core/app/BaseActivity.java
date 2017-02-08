@@ -54,21 +54,21 @@ import rx.schedulers.Schedulers;
 
 public class BaseActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
         HadesBroadcastReceiver.ReceiveListener,
-        ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics{
+        ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
 
     private static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     private static final long DISMISS_TIME = 10000;
     private Boolean isPause = false;
     private boolean isDialogNotConnectionShown = false;
     protected Boolean isAllowFetchDepartmentView = false;
-    HadesBroadcastReceiver mReceiverHades;
-    ErrorNetworkReceiver mReceiverLogout;
-    SessionHandler sessionHandler;
+    private HadesBroadcastReceiver hadesBroadcastReceiver;
+    private ErrorNetworkReceiver logoutNetworkReceiver;
+    private SessionHandler sessionHandler;
+    private CategoryDatabaseManager categoryDatabaseManager;
+    private GCMHandler gcmHandler;
+    private GlobalCacheManager globalCacheManager;
+    private LocalCacheHandler cache;
     public PhoneVerificationUtil phoneVerificationUtil;
-    CategoryDatabaseManager categoryDatabaseManager;
-    GCMHandler gcmHandler;
-    GlobalCacheManager globalCacheManager;
-    LocalCacheHandler cache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,9 +80,9 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         sessionHandler = new SessionHandler(getBaseContext());
         categoryDatabaseManager = new CategoryDatabaseManager();
         gcmHandler = new GCMHandler(this);
-        mReceiverHades = new HadesBroadcastReceiver();
+        hadesBroadcastReceiver = new HadesBroadcastReceiver();
         phoneVerificationUtil = new PhoneVerificationUtil(this);
-        mReceiverLogout = new ErrorNetworkReceiver();
+        logoutNetworkReceiver = new ErrorNetworkReceiver();
         globalCacheManager = new GlobalCacheManager();
         Localytics.registerPush(gcmHandler.getSenderID());
 
@@ -185,9 +185,9 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     protected void onDestroy() {
         super.onDestroy();
         unregisterHadesReceiver();
-        if (!GlobalConfig.isSellerApp()) {
-            if (phoneVerificationUtil != null)
-                phoneVerificationUtil.unSubscribe();
+        if (!GlobalConfig.isSellerApp()
+                && phoneVerificationUtil != null) {
+            phoneVerificationUtil.unSubscribe();
         }
         unregisterForceLogoutReceiver();
         HockeyAppHelper.unregisterManager();
@@ -281,25 +281,25 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     }
 
     private void registerHadesReceiver() {
-        mReceiverHades.setReceiver(this);
+        hadesBroadcastReceiver.setReceiver(this);
         IntentFilter mStatusIntentFilter = new IntentFilter(HadesService.ACTION_FETCH_DEPARTMENT);
-        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiverHades, mStatusIntentFilter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(hadesBroadcastReceiver, mStatusIntentFilter);
     }
 
     private void unregisterHadesReceiver() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mReceiverHades);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(hadesBroadcastReceiver);
     }
 
     private void registerForceLogoutReceiver() {
-        mReceiverLogout.setReceiver(this);
+        logoutNetworkReceiver.setReceiver(this);
         IntentFilter filter = new IntentFilter();
         filter.addAction(FORCE_LOGOUT);
-        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiverLogout, filter);
+        LocalBroadcastManager.getInstance(this).registerReceiver(logoutNetworkReceiver, filter);
     }
 
     private void unregisterForceLogoutReceiver() {
-        mReceiverLogout.setReceiver(null);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mReceiverLogout);
+        logoutNetworkReceiver.setReceiver(null);
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(logoutNetworkReceiver);
     }
 
     public Boolean getIsAllowFetchDepartmentView() {
@@ -314,7 +314,8 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     @Override
     public void onServerError() {
-        final Snackbar snackBar = SnackbarManager.make(this, getString(R.string.msg_server_error_2), Snackbar.LENGTH_INDEFINITE)
+        final Snackbar snackBar = SnackbarManager.make(this,
+                getString(R.string.msg_server_error_2), Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.action_report, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -336,11 +337,11 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                     @Override
                     public void onDialogClicked() {
                         sessionHandler.forceLogout();
-                        if(GlobalConfig.isSellerApp()){
+                        if (GlobalConfig.isSellerApp()) {
                             Intent intent = SellerRouter.getAcitivitySplashScreenActivity(getBaseContext());
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
-                        }else {
+                        } else {
                             Intent intent = new Intent(getBaseContext(), SplashScreen.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
