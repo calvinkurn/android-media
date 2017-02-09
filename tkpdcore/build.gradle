@@ -95,7 +95,7 @@ dependencies {
     })
 
     testCompile rootProject.ext.testDependencies.junit
-    testCompile rootProject.ext.testDependencies.mockitoCore
+    testCompile rootProject.ext.testDependencies.mockitorCore
     testCompile rootProject.ext.testDependencies.assertJ
 
     compile rootProject.ext.serviceDependencies.hockeyApp
