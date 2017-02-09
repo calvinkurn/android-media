@@ -105,12 +105,6 @@
 
         <service android:name=".shop.ShopEditService"
             android:exported="false"/>
-        <activity android:name=".gmstat.views.SetDateActivity"
-            android:label="@string/set_date"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3"
-            />
-
     </application>
 
 </manifest>

@@ -100,7 +100,6 @@ public class TopAdsDatePickerPresenterImpl implements TopAdsDatePickerPresenter 
     @Override
     public Intent getDatePickerIntent(Activity activity, Date startDate, Date endDate) {
         Intent intent = new Intent(activity, DatePickerActivity.class);
-        intent.putExtra(DatePickerActivity.IS_GOLD_MERCHANT, true);
         Calendar todayCalendar = Calendar.getInstance();
         Calendar lastYearCalendar = Calendar.getInstance();
         lastYearCalendar.add(Calendar.YEAR, -1);

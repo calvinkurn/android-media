@@ -27,7 +27,6 @@ public class DatePickerActivity extends TActivity implements DatePickerPeriodFra
 
     public static final int OFFSCREEN_PAGE_LIMIT = 2;
 
-    public static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
     public static final String SELECTION_TYPE = "SELECTION_TYPE";
     public static final String SELECTION_PERIOD = "SELECTION_PERIOD";
     public static final String CUSTOM_START_DATE = "CUSTOM_START_DATE";
@@ -53,7 +52,6 @@ public class DatePickerActivity extends TActivity implements DatePickerPeriodFra
     private long minStartDate;
     private long maxStartDate;
     private int maxDateRange;
-    private boolean goldMerchant;
 
     private ArrayList<PeriodRangeModel> periodRangeModelList;
     private DatePickerPeriodFragment datePickerPeriodFragment;
@@ -125,7 +123,6 @@ public class DatePickerActivity extends TActivity implements DatePickerPeriodFra
             endDate = extras.getLong(CUSTOM_END_DATE, -1);
             selectionPeriod = extras.getInt(SELECTION_PERIOD, 1);
             selectionType = extras.getInt(SELECTION_TYPE, SELECTION_TYPE_PERIOD_DATE);
-            goldMerchant = extras.getBoolean(IS_GOLD_MERCHANT, false);
             minStartDate = extras.getLong(MIN_START_DATE, -1);
             maxStartDate = extras.getLong(MAX_END_DATE, -1);
             maxDateRange = extras.getInt(MAX_DATE_RANGE, -1);

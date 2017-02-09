@@ -10,6 +10,7 @@ import android.view.View;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.library.LoaderImageView;
 import com.tokopedia.seller.gmstat.library.LoaderTextView;
+import com.tokopedia.seller.lib.datepicker.DatePickerActivity;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -182,12 +183,11 @@ public class GMStatHeaderViewHelper {
         if (!isGmStat)
             return;
 
-        Intent moveToSetDate = new Intent(gmStatActivityFragment.getActivity(), SetDateActivity.class);
-        moveToSetDate.putExtra(IS_GOLD_MERCHANT, isGmStat);
-        moveToSetDate.putExtra(SELECTION_PERIOD, lastSelection);
-        moveToSetDate.putExtra(SELECTION_TYPE, selectionType);
-        moveToSetDate.putExtra(CUSTOM_START_DATE, sDate);
-        moveToSetDate.putExtra(CUSTOM_END_DATE, eDate);
+        Intent moveToSetDate = new Intent(gmStatActivityFragment.getActivity(), DatePickerActivity.class);
+        moveToSetDate.putExtra(DatePickerActivity.SELECTION_PERIOD, lastSelection);
+        moveToSetDate.putExtra(DatePickerActivity.SELECTION_TYPE, selectionType);
+        moveToSetDate.putExtra(DatePickerActivity.CUSTOM_START_DATE, sDate);
+        moveToSetDate.putExtra(DatePickerActivity.CUSTOM_END_DATE, eDate);
         gmStatActivityFragment.getActivity().startActivityForResult(moveToSetDate, MOVE_TO_SET_DATE);
     }
 
