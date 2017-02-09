@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.lib.datepicker;
+package com.tokopedia.seller.lib.datepicker;
 
 import android.app.Fragment;
 import android.app.FragmentManager;

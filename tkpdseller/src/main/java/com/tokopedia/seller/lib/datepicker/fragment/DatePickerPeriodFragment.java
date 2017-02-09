@@ -1,6 +1,5 @@
-package com.tokopedia.seller.topads.lib.datepicker.fragment;
+package com.tokopedia.seller.lib.datepicker.fragment;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,10 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.lib.datepicker.DatePickerActivity;
-import com.tokopedia.seller.topads.lib.datepicker.adapter.DatePickerPeriodAdapter;
-import com.tokopedia.seller.topads.lib.datepicker.model.PeriodRangeModel;
+import com.tokopedia.seller.lib.datepicker.adapter.DatePickerPeriodAdapter;
+import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
+import com.tokopedia.seller.lib.datepicker.model.PeriodRangeModel;
 
 import java.util.ArrayList;
 
@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * Created by Nathaniel on 1/16/2017.
  */
 
-public class DatePickerPeriodFragment extends Fragment {
+public class DatePickerPeriodFragment extends TkpdFragment {
 
     public interface Callback {
 
@@ -39,8 +39,8 @@ public class DatePickerPeriodFragment extends Fragment {
     public static DatePickerPeriodFragment newInstance(int selectionPeriod, ArrayList<PeriodRangeModel> periodRangeModelList) {
         DatePickerPeriodFragment fragment = new DatePickerPeriodFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(DatePickerActivity.SELECTION_PERIOD, selectionPeriod);
-        bundle.putParcelableArrayList(DatePickerActivity.DATE_PERIOD_LIST, periodRangeModelList);
+        bundle.putInt(DatePickerConstant.EXTRA_SELECTION_PERIOD, selectionPeriod);
+        bundle.putParcelableArrayList(DatePickerConstant.EXTRA_DATE_PERIOD_LIST, periodRangeModelList);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -67,18 +67,29 @@ public class DatePickerPeriodFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         Bundle bundle = getArguments();
+        ArrayList<PeriodRangeModel> periodRangeModelList = null;
         if (bundle != null) {
-            int selection = bundle.getInt(DatePickerActivity.SELECTION_PERIOD, 0);
-            ArrayList<PeriodRangeModel> periodRangeModelList = bundle.getParcelableArrayList(DatePickerActivity.DATE_PERIOD_LIST);
+            int selection = bundle.getInt(DatePickerConstant.EXTRA_SELECTION_PERIOD, 0);
+            periodRangeModelList = bundle.getParcelableArrayList(DatePickerConstant.EXTRA_DATE_PERIOD_LIST);
             adapter.setSelectedPosition(selection);
-            adapter.setData(periodRangeModelList);
         }
+        if (periodRangeModelList == null) {
+            periodRangeModelList = new ArrayList<>();
+        }
+        adapter.setData(periodRangeModelList);
     }
 
     private void submitDate() {
         if (callback != null) {
             PeriodRangeModel selectedDate = adapter.getSelectedDate();
             callback.onDateSubmitted(adapter.getSelectedPosition(), selectedDate.getStartDate(), selectedDate.getEndDate());
+        } else {
+            getActivity().finish();
         }
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 }

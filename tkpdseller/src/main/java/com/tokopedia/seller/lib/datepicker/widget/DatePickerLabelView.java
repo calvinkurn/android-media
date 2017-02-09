@@ -1,9 +1,7 @@
-package com.tokopedia.seller.topads.lib.datepicker.widget;
+package com.tokopedia.seller.lib.datepicker.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Typeface;
-import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;

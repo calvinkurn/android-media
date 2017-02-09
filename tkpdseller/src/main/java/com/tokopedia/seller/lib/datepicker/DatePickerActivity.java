@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.lib.datepicker;
+package com.tokopedia.seller.lib.datepicker;
 
 import android.app.Fragment;
 import android.content.Intent;
@@ -12,9 +12,10 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.lib.datepicker.fragment.DatePickerCustomFragment;
-import com.tokopedia.seller.topads.lib.datepicker.fragment.DatePickerPeriodFragment;
-import com.tokopedia.seller.topads.lib.datepicker.model.PeriodRangeModel;
+import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
+import com.tokopedia.seller.lib.datepicker.fragment.DatePickerCustomFragment;
+import com.tokopedia.seller.lib.datepicker.fragment.DatePickerPeriodFragment;
+import com.tokopedia.seller.lib.datepicker.model.PeriodRangeModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,21 +28,6 @@ public class DatePickerActivity extends TActivity implements DatePickerPeriodFra
 
     public static final int OFFSCREEN_PAGE_LIMIT = 2;
 
-    public static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
-    public static final String SELECTION_TYPE = "SELECTION_TYPE";
-    public static final String SELECTION_PERIOD = "SELECTION_PERIOD";
-    public static final String CUSTOM_START_DATE = "CUSTOM_START_DATE";
-    public static final String CUSTOM_END_DATE = "CUSTOM_END_DATE";
-    public static final String MIN_START_DATE = "MIN_START_DATE";
-    public static final String MAX_END_DATE = "MAX_END_DATE";
-    public static final String MAX_DATE_RANGE = "MAX_DATE_RANGE";
-    public static final String DATE_PERIOD_LIST = "DATE_PERIOD_LIST";
-    public static final String PAGE_TITLE = "PAGE_TITLE";
-    public static final String START_DATE = "START_DATE";
-    public static final String END_DATE = "END_DATE";
-
-    public static final int SELECTION_TYPE_PERIOD_DATE = 0;
-    public static final int SELECTION_TYPE_CUSTOM_DATE = 1;
     public static final int RESULT_CODE = 1;
 
     private ViewPager viewPager;
@@ -53,7 +39,6 @@ public class DatePickerActivity extends TActivity implements DatePickerPeriodFra
     private long minStartDate;
     private long maxStartDate;
     private int maxDateRange;
-    private boolean goldMerchant;
 
     private ArrayList<PeriodRangeModel> periodRangeModelList;
     private DatePickerPeriodFragment datePickerPeriodFragment;
@@ -86,7 +71,7 @@ public class DatePickerActivity extends TActivity implements DatePickerPeriodFra
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_date_period));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_date_custom));
         viewPager.setCurrentItem(selectionType);
-        String title = getIntent().getExtras().getString(PAGE_TITLE);
+        String title = getIntent().getExtras().getString(DatePickerConstant.EXTRA_PAGE_TITLE);
         if (!TextUtils.isEmpty(title)) {
             getSupportActionBar().setTitle(title);
             getSupportActionBar().show();
@@ -121,24 +106,23 @@ public class DatePickerActivity extends TActivity implements DatePickerPeriodFra
 
     private void fetchIntent(Bundle extras) {
         if (extras != null) {
-            startDate = extras.getLong(CUSTOM_START_DATE, -1);
-            endDate = extras.getLong(CUSTOM_END_DATE, -1);
-            selectionPeriod = extras.getInt(SELECTION_PERIOD, 1);
-            selectionType = extras.getInt(SELECTION_TYPE, SELECTION_TYPE_PERIOD_DATE);
-            goldMerchant = extras.getBoolean(IS_GOLD_MERCHANT, false);
-            minStartDate = extras.getLong(MIN_START_DATE, -1);
-            maxStartDate = extras.getLong(MAX_END_DATE, -1);
-            maxDateRange = extras.getInt(MAX_DATE_RANGE, -1);
-            periodRangeModelList = extras.getParcelableArrayList(DATE_PERIOD_LIST);
+            startDate = extras.getLong(DatePickerConstant.EXTRA_START_DATE, -1);
+            endDate = extras.getLong(DatePickerConstant.EXTRA_END_DATE, -1);
+            selectionPeriod = extras.getInt(DatePickerConstant.EXTRA_SELECTION_PERIOD, 1);
+            selectionType = extras.getInt(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_PERIOD_DATE);
+            minStartDate = extras.getLong(DatePickerConstant.EXTRA_MIN_START_DATE, -1);
+            maxStartDate = extras.getLong(DatePickerConstant.EXTRA_MAX_END_DATE, -1);
+            maxDateRange = extras.getInt(DatePickerConstant.EXTRA_MAX_DATE_RANGE, -1);
+            periodRangeModelList = extras.getParcelableArrayList(DatePickerConstant.EXTRA_DATE_PERIOD_LIST);
         }
     }
 
     public void setResult() {
         Intent intent = new Intent();
-        intent.putExtra(START_DATE, startDate);
-        intent.putExtra(END_DATE, endDate);
-        intent.putExtra(SELECTION_PERIOD, selectionPeriod);
-        intent.putExtra(SELECTION_TYPE, viewPager.getCurrentItem());
+        intent.putExtra(DatePickerConstant.EXTRA_START_DATE, startDate);
+        intent.putExtra(DatePickerConstant.EXTRA_END_DATE, endDate);
+        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, selectionPeriod);
+        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, viewPager.getCurrentItem());
         setResult(RESULT_CODE, intent);
         finish();
     }
