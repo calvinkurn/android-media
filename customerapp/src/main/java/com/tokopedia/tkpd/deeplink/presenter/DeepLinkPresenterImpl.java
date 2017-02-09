@@ -184,24 +184,31 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         interactor.handleAccounts(parseUriData(uriData), new SignInInteractor.SignInListener() {
             @Override
             public void onSuccess(AccountsModel result) {
-                context.finish();
+                finishLogin();
             }
 
             @Override
             public void onError(String error) {
-                context.finish();
+                finishLogin();
             }
 
             @Override
             public void moveToSecurityQuestion(SecurityModel securityModel) {
-                context.finish();
+                finishLogin();
             }
 
             @Override
             public void moveToCreatePassword(InfoModel infoModel) {
-                context.finish();
+                finishLogin();
             }
         });
+    }
+
+    private void finishLogin() {
+        Intent intent = HomeRouter.getHomeActivity(context);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
+        context.finish();
     }
 
     private AccountsParameter parseUriData(Uri uriData) {
