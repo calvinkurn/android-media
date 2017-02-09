@@ -156,6 +156,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 case ACCOUNTS:
                     if(!uriData.getPath().contains("activation")) {
                         openWebView(uriData);
+                    }else {
+                        context.finish();
                     }
                     screenName = AppScreen.SCREEN_LOGIN;
                     break;
