@@ -55,6 +55,7 @@ public class ActReputationRetrofitInteractorImpl implements
     private static final String PARAM_IMAGE_ID = "id";
     private static final String PARAM_TOKEN = "token";
     private static final String PARAM_WEB_SERVICE = "web_service";
+    private static final String TOO_MANY_REQUEST = "TOO_MANY_REQUEST";
 
     private final CompositeSubscription compositeSubscription;
     private final ReputationActService reputationActService;
@@ -98,6 +99,8 @@ public class ActReputationRetrofitInteractorImpl implements
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(ActResult.class));
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
                     } else {
                         if (response.body().isNullData()) listener.onNullData();
                         else listener.onError(response.body().getErrorMessages().get(0));
@@ -236,6 +239,8 @@ public class ActReputationRetrofitInteractorImpl implements
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(ActResult.class));
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
                     } else {
                         if (response.body().isNullData()) listener.onNullData();
                         else listener.onError(response.body().getErrorMessages().get(0));
@@ -382,6 +387,8 @@ public class ActReputationRetrofitInteractorImpl implements
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(ActResult.class));
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
                     } else {
                         if (response.body().isNullData()) listener.onNullData();
                         else listener.onError(response.body().getErrorMessages().get(0));
@@ -458,6 +465,8 @@ public class ActReputationRetrofitInteractorImpl implements
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(ActResult.class));
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
                     } else {
                         if (response.body().isNullData()) listener.onNullData();
                         else listener.onError(response.body().getErrorMessages().get(0));
@@ -530,6 +539,8 @@ public class ActReputationRetrofitInteractorImpl implements
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(ActResult.class));
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
                     } else {
                         if (response.body().isNullData()) listener.onNullData();
                         else listener.onError(response.body().getErrorMessages().get(0));
@@ -602,6 +613,8 @@ public class ActReputationRetrofitInteractorImpl implements
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(ActResult.class));
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
                     } else {
                         if (response.body().isNullData()) listener.onNullData();
                         else listener.onError(response.body().getErrorMessages().get(0));
@@ -674,6 +687,8 @@ public class ActReputationRetrofitInteractorImpl implements
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(ActResult.class));
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
                     } else {
                         if (response.body().isNullData()) listener.onNullData();
                         else listener.onError(response.body().getErrorMessages().get(0));
@@ -745,6 +760,8 @@ public class ActReputationRetrofitInteractorImpl implements
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(ActResult.class));
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
                     } else {
                         if (response.body().isNullData()) listener.onNullData();
                         else listener.onError(response.body().getErrorMessages().get(0));
