@@ -366,6 +366,14 @@ public class MsisdnVerificationFragment extends DialogFragment
         super.onDestroyView();
         unbinder.unbind();
         presenter.onDestroyView();
+        destroyTimer();
+    }
+
+    private void destroyTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
     }
 
     @Override
