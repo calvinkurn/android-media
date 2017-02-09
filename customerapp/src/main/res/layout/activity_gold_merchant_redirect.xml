@@ -55,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
-            android:text="@string/gold_merchant_redirect_title"
+            android:text="@string/title_gold_merchant_redirect"
             android:textStyle="bold"
             android:gravity="center"
             android:layout_marginBottom="@dimen/margin_med"/>
