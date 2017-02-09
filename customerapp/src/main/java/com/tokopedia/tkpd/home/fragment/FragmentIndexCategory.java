@@ -629,7 +629,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             public void onItemClicked(String name, Brand brand, int position) {
                 UnifyTracking.eventClickOfficialStore(AppEventTracking.EventLabel.OFFICIAL_STORE+name);
                 Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-                intent.putExtras(ShopInfoActivity.createBundle(brand.getShopId()+"", ""));
+                intent.putExtras(ShopInfoActivity.createBundle(String.valueOf(brand.getShopId()), ""));
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getActivity().startActivity(intent);
             }
