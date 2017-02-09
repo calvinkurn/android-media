@@ -131,4 +131,8 @@ public class AppsflyerContainer implements IAppsflyerContainer {
                 });
     }
 
+    @Override
+    public String getUniqueID() {
+        return AppsFlyerLib.getInstance().getAppsFlyerUID(context);
+    }
 }

@@ -188,6 +188,9 @@ public class TrackingUtils extends TrackingConfig {
         return getGTMEngine().getDouble(key);
     }
 
+    public static String getAFUniqueID(){
+        return getAFEngine().getUniqueID();
+    }
 
 }
 
