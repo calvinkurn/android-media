@@ -1,0 +1,47 @@
+package com.tokopedia.tkpd.truecaller;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.util.Log;
+
+import com.tokopedia.tkpd.R;
+import com.truecaller.android.sdk.ITrueCallback;
+import com.truecaller.android.sdk.TrueClient;
+import com.truecaller.android.sdk.TrueError;
+import com.truecaller.android.sdk.TrueProfile;
+
+public class TruecallerActivity extends Activity implements ITrueCallback{
+
+    private TrueClient mTrueClient;
+    private String TAG= "";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_truecaller);
+        mTrueClient = new TrueClient(this, this);
+        mTrueClient.getTruecallerUserProfile(this);
+    }
+
+    @Override
+    public void onSuccesProfileShared(@NonNull TrueProfile trueProfile) {
+        setResult(RESULT_OK, new Intent().putExtra("phone",trueProfile.phoneNumber));
+    }
+
+    @Override
+    public void onFailureProfileShared(@NonNull TrueError trueError) {
+        setResult(RESULT_OK, null);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(mTrueClient.onActivityResult(requestCode,resultCode,data)){
+            return;
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+}

@@ -32,6 +32,7 @@ import com.tokopedia.core.fragment.FragmentSecurityQuestion;
 import com.tokopedia.core.msisdn.activity.MsisdnActivity;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
+import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -93,11 +94,11 @@ import permissions.dispatcher.RuntimePermissions;
  */
 @RuntimePermissions
 public class Login extends GoogleActivity implements SessionView, GoogleActivity.GoogleListener
-        , DownloadResultReceiver.Receiver
-        , LoginResultReceiver.Receiver
-        , RegisterResultReceiver.Receiver
-        , ResetPasswordResultReceiver.Receiver
-        , OTPResultReceiver.Receiver {
+            , DownloadResultReceiver.Receiver
+            , LoginResultReceiver.Receiver
+            , RegisterResultReceiver.Receiver
+            , ResetPasswordResultReceiver.Receiver
+            , OTPResultReceiver.Receiver {
 
     //    int whichFragmentKey;
     LocalCacheHandler cacheGTM;
@@ -167,6 +168,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         resetPasswordReceiver.setReceiver(this);
         otpReceiver = new OTPResultReceiver(new Handler());
         otpReceiver.setReceiver(this);
+
     }
 
     @Override
@@ -244,7 +246,6 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     if (SessionHandler.isFirstTimeUser(this) || !SessionHandler.isUserSeller(this)) {
                         //  Launch app intro
                         Intent intent = SellerAppRouter.getSellerOnBoardingActivity(this);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         return;
                     }
@@ -255,9 +256,9 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     } else {
                         intent = moveToCreateShop(this);
                     }
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
                             HomeRouter.INIT_STATE_FRAGMENT_FEED);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 }
                 break;
@@ -362,6 +363,16 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     }
 
     @Override
+    public void verifyTruecaller() {
+        if(GlobalConfig.isSellerApp()){
+            startActivityForResult(SellerAppRouter.getTruecallerIntent(this),100);
+        }else {
+            startActivityForResult(CustomerRouter.getTruecallerIntent(this),100);
+        }
+    }
+
+
+    @Override
     public void moveToForgotPassword() {
         Log.d(TAG, messageTAG + supportFragmentManager.getBackStackEntryCount());
 //        if (supportFragmentManager.getBackStackEntryCount() > 1) {
@@ -374,11 +385,6 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         session.setWhichFragment(TkpdState.DrawerPosition.FORGOT_PASSWORD);
         setToolbarTitle();
         invalidateOptionsMenu();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -913,6 +919,21 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     public void showError(String text) {
         if (text != null) {
             SnackbarManager.make(this, text, Snackbar.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==100){
+            if(resultCode == RESULT_OK){
+                FragmentSecurityQuestion fragment = (FragmentSecurityQuestion) supportFragmentManager.findFragmentByTag(SECURITY_QUESTION_TAG);
+                if(data!=null && data.getStringExtra("phone")!=null){
+                    fragment.onSuccessProfileShared(data.getStringExtra("phone"));
+                }else {
+                    fragment.onFailedProfileShared();
+                }
+            }
         }
     }
 }

@@ -223,6 +223,11 @@ dependencies {
     compile project(':tkpdseller')
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
+
+    compile ("true.caller.sdk:truecaller:0.5") {
+        exclude group: 'com.android.support'
+    }
+
     compile('de.hdodenhof:circleimageview:2.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }

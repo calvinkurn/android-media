@@ -194,6 +194,18 @@
                     app:pinLineColors="@color/pin_line_colors" />
 
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/verify_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Lanjutkan dengan TrueCaller"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:padding="@dimen/padding_small"
+                android:background="#127FFF"
+                android:layout_marginTop="@dimen/margin_small"/>
+
         </LinearLayout>
     </ScrollView>
 
