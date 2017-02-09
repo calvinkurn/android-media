@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.tkpd.library.utils.AnalyticsLog;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.MethodChecker;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,11 +64,28 @@ public class TkpdAuthInterceptor implements Interceptor {
         } else if (isServerError(response.code())) {
             showServerErrorSnackbar();
             sendErrorNetworkAnalytics(response);
-            throw new IOException();
+        } else if (isForbiddenRequest(response)
+                && isTimezoneNotAutomatic()) {
+            showTimezoneErrorSnackbar();
         }
 
 
         return createNewResponse(response, bodyResponse);
+    }
+
+    private void showTimezoneErrorSnackbar() {
+        CommonUtils.dumper("NISNIS showTimezoneErrorSnackbar");
+        Intent intent = new Intent();
+        intent.setAction("com.tokopedia.tkpd.TIMEZONE_ERROR");
+        MainApplication.getAppContext().sendBroadcast(intent);
+    }
+
+    private boolean isTimezoneNotAutomatic() {
+        return MethodChecker.isTimezoneNotAutomatic();
+    }
+
+    private boolean isForbiddenRequest(Response response) {
+        return response.code() == 403;
     }
 
     protected void generateHmacAuthRequest(Request originRequest, Request.Builder newRequest)

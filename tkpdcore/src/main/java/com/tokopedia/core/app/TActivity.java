@@ -23,6 +23,7 @@ import android.widget.FrameLayout;
 
 import com.localytics.android.Localytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -553,6 +554,19 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
                 snackBar.dismiss();
             }
         }, 10000);
+    }
+
+    @Override
+    public void onTimezoneError() {
+        final Snackbar snackBar = SnackbarManager.make(this, getString(R.string.check_timezone),
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.action_check, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS));
+                    }
+                });
+        snackBar.show();
     }
 
     public void showForceLogoutDialog() {
