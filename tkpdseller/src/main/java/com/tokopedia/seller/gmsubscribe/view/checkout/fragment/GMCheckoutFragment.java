@@ -181,7 +181,11 @@ public class GMCheckoutFragment
 
     @Override
     public void goToDynamicPayment(GMCheckoutViewModel gmCheckoutDomainModel) {
-        callback.goToDynamicPayment(gmCheckoutDomainModel.getPaymentUrl(), gmCheckoutDomainModel.getParameter());
+        callback.goToDynamicPayment(
+                gmCheckoutDomainModel.getPaymentUrl(),
+                gmCheckoutDomainModel.getParameter(),
+                gmCheckoutDomainModel.getCallbackUrl(),
+                gmCheckoutDomainModel.getPaymentId());
     }
 
     @Override

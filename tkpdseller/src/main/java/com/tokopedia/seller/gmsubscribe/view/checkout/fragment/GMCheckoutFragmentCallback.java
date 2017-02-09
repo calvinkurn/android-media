@@ -12,5 +12,5 @@ public interface GMCheckoutFragmentCallback {
 
     void changeAutoSubscribePackage(Integer autoExtendSelectedProduct);
 
-    void goToDynamicPayment(String paymentUrl, String parameter);
+    void goToDynamicPayment(String url, String gmCheckoutDomainModelParameter, String callbackUrl, Integer paymentId);
 }

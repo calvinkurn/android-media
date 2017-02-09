@@ -103,7 +103,7 @@ public class GMProductActivity extends BasePresenterActivity implements GMProduc
 
     @Override
     protected void setActionVar() {
-        switch (selectionType){
+        switch (selectionType) {
             case FIRST_SELECT_PRODUCT:
                 selectCurrentSelectedFirstTime();
                 break;
@@ -163,7 +163,7 @@ public class GMProductActivity extends BasePresenterActivity implements GMProduc
     private void inflateFragment(Fragment fragment, boolean isAddToBackStack, String tag) {
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.replace(R.id.parent_view, fragment, tag);
-        if(isAddToBackStack) {
+        if (isAddToBackStack) {
             ft.addToBackStack(null);
         }
         ft.commit();
@@ -176,7 +176,9 @@ public class GMProductActivity extends BasePresenterActivity implements GMProduc
 
     @Override
     public void changeActionBarTitle(String title) {
-        toolbar.setTitleText(title);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
     }
 
     @Override

@@ -6,6 +6,8 @@ package com.tokopedia.seller.gmsubscribe.domain.cart.model;
 public class GMCheckoutDomainModel {
     private String paymentUrl;
     private String parameter;
+    private String callbackUrl;
+    private Integer paymentId;
 
     public void setPaymentUrl(String paymentUrl) {
         this.paymentUrl = paymentUrl;
@@ -21,5 +23,21 @@ public class GMCheckoutDomainModel {
 
     public String getParameter() {
         return parameter;
+    }
+
+    public void setCallbackUrl(String callbackUrl) {
+        this.callbackUrl = callbackUrl;
+    }
+
+    public void setPaymentId(Integer paymentId) {
+        this.paymentId = paymentId;
+    }
+
+    public String getCallbackUrl() {
+        return callbackUrl;
+    }
+
+    public Integer getPaymentId() {
+        return paymentId;
     }
 }

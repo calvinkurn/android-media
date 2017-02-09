@@ -153,6 +153,8 @@ public class GMCheckoutPresenterImpl extends BasePresenter<GMCheckoutView> imple
             getView().dismissProgressDialog();
             if(e instanceof GMVoucherCheckException){
                 getView().renderVoucherView(GMVoucherViewModel.generateClassWithError(e.getMessage()));
+            } else {
+                getView().showGenericError();
             }
         }
 

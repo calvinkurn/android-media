@@ -1,7 +1,11 @@
 package com.tokopedia.seller.gmsubscribe.data.mapper;
 
 import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.model.checkout.GMCheckoutServiceModel;
+import com.tokopedia.seller.gmsubscribe.domain.cart.exception.GMCheckoutCheckException;
 import com.tokopedia.seller.gmsubscribe.domain.cart.model.GMCheckoutDomainModel;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import rx.functions.Func1;
 
@@ -11,14 +15,20 @@ import rx.functions.Func1;
 public class GMSubscribeCheckoutMapper implements Func1<GMCheckoutServiceModel, GMCheckoutDomainModel> {
     @Override
     public GMCheckoutDomainModel call(GMCheckoutServiceModel gmCheckoutServiceModel) {
-        return mapServiceToDomain(gmCheckoutServiceModel);
+        try {
+            return mapServiceToDomain(gmCheckoutServiceModel);
+        } catch (UnsupportedEncodingException e) {
+            throw new GMCheckoutCheckException("Unsuported URL toppay");
+        }
     }
 
-    private GMCheckoutDomainModel mapServiceToDomain(GMCheckoutServiceModel gmCheckoutServiceModel) {
+    private GMCheckoutDomainModel mapServiceToDomain(GMCheckoutServiceModel gmCheckoutServiceModel) throws UnsupportedEncodingException {
         GMCheckoutDomainModel domainModel = new GMCheckoutDomainModel();
-        domainModel.setPaymentUrl(gmCheckoutServiceModel.getPaymentUrl());
-        String parameterUnencoded = decodeUrl(gmCheckoutServiceModel.getParameter());
+        domainModel.setPaymentUrl(gmCheckoutServiceModel.getPaymentURL());
+        String parameterUnencoded = decodeUrl(gmCheckoutServiceModel.getParameter1());
         domainModel.setParameter(parameterUnencoded);
+        domainModel.setCallbackUrl(gmCheckoutServiceModel.getCallbackurl());
+        domainModel.setPaymentId(Integer.valueOf(gmCheckoutServiceModel.getPaymentId()));
         return domainModel;
     }
 
