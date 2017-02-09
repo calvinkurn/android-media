@@ -69,7 +69,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     private GCMHandler gcmHandler;
     private GlobalCacheManager globalCacheManager;
     private LocalCacheHandler cache;
-    public PhoneVerificationUtil phoneVerificationUtil;
+    private PhoneVerificationUtil phoneVerificationUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -368,4 +368,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         return null;
     }
 
+    public PhoneVerificationUtil getPhoneVerificationUtil() {
+        return phoneVerificationUtil;
+    }
 }
