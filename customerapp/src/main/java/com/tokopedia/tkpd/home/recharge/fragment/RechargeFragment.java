@@ -556,10 +556,9 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
 
         if (!category.getAttributes().getValidatePrefix()) {
-            selectedOperatorId = category.getAttributes().getDefaultOperatorId();
-            this.rechargePresenter.updateMinLenghAndOperator(selectedOperatorId);
-
             if (!category.getAttributes().getClientNumber().getIsShown()) {
+                selectedOperatorId = category.getAttributes().getDefaultOperatorId();
+                this.rechargePresenter.updateMinLenghAndOperator(selectedOperatorId);
                 setUpForNotUsingTextEdit();
             }
 
@@ -595,7 +594,10 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             radioButton.setTextColor(ContextCompat.getColor(getActivity(), R.color.grey_600));
             radGroup.addView(radioButton);
         }
-        radGroup.check(0);
+        radGroup.check(radGroup.getChildAt(0).getId());
+        selectedOperator = operators.get(radGroup.getChildAt(0).getId());
+        selectedOperatorId = Integer.toString(selectedOperator.operatorId);
+        minLengthDefaultOperator = selectedOperator.minimumLength;
         radGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
