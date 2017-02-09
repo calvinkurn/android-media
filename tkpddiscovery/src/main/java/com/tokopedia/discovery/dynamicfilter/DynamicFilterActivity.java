@@ -127,12 +127,20 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
     @Override
     public void setFragmentBasedOnData(Filter data) {
         if (data.getTitle().equals(Filter.TITLE_CATEGORY)) {
-            DynamicFilterCategoryFragment categoryFragment =
-                    DynamicFilterCategoryFragment.newInstance(
-                            dynamicFilterPresenter.getBreadCrumb(), dynamicFilterPresenter.getFilterCategory(),
-                            dynamicFilterPresenter.getCurrentCategory());
-            setFragment(categoryFragment, DynamicFilterCategoryFragment.FRAGMENT_TAG, R.id.dynamic_filter_detail);
-            saveCheckedPosition(dynamicFilterPresenter.getCurrentCategory(),true);
+            if (dynamicFilterPresenter.getCurrentCategory().equals("0") || dynamicFilterPresenter.getCurrentCategory().equals("")) {
+                DynamicFilterCategoryFragment categoryFragment =
+                        DynamicFilterCategoryFragment.newInstance(
+                                dynamicFilterPresenter.getBreadCrumb(), dynamicFilterPresenter.getFilterCategory(),
+                                dynamicFilterPresenter.getCurrentCategory(),false);
+                setFragment(categoryFragment, DynamicFilterCategoryFragment.FRAGMENT_TAG, R.id.dynamic_filter_detail);
+            } else {
+                DynamicFilterCategoryFragment categoryFragment =
+                        DynamicFilterCategoryFragment.newInstance(
+                                dynamicFilterPresenter.getBreadCrumb(), dynamicFilterPresenter.getFilterCategory(),
+                                dynamicFilterPresenter.getCurrentCategory(),true);
+                setFragment(categoryFragment, DynamicFilterCategoryFragment.FRAGMENT_TAG, R.id.dynamic_filter_detail);
+            }
+
         } else {
             setFragment(DynamicFilterOtherFragment.newInstance(data), DynamicFilterOtherFragment.FRAGMENT_TAG, R.id.dynamic_filter_detail);
         }
