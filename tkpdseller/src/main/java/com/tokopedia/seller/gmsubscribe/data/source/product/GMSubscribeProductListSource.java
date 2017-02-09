@@ -34,8 +34,10 @@ public class GMSubscribeProductListSource {
     }
 
     public Observable<GMProductDomainModelGroup> getData() {
-        return gmSubscribeProductCloud
+        return gmSubscribeProductCache
                 .getProduct()
+                .flatMap(new CheckCache())
+                .onErrorResumeNext(new GetDataFromCloud())
                 .flatMap(new ConvertToObject());
     }
 
@@ -62,4 +64,14 @@ public class GMSubscribeProductListSource {
         }
     }
 
+    private class CheckCache implements Func1<String, Observable<String>> {
+        @Override
+        public Observable<String> call(String s) {
+            if(s == null ){
+                throw new RuntimeException();
+            } else {
+                return Observable.just(s);
+            }
+        }
+    }
 }
