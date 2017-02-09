@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.view.home;
+package com.tokopedia.seller.gmsubscribe.view.home.fragment;
 
 /**
  * Created by sebastianuskh on 1/19/17.

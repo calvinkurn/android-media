@@ -1,4 +1,4 @@
-package com.tokopedia.seller.gmsubscribe.view.home;
+package com.tokopedia.seller.gmsubscribe.view.home.activity;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -13,6 +13,8 @@ import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmsubscribe.view.checkout.activity.GMCheckoutActivity;
+import com.tokopedia.seller.gmsubscribe.view.home.fragment.GMHomeFragment;
+import com.tokopedia.seller.gmsubscribe.view.home.fragment.GMHomeFragmentCallback;
 import com.tokopedia.seller.gmsubscribe.view.product.activity.GMProductActivity;
 
 /**
@@ -21,7 +23,7 @@ import com.tokopedia.seller.gmsubscribe.view.product.activity.GMProductActivity;
 
 public class GMSubscribeHomeActivity
         extends DrawerPresenterActivity
-        implements GMHomeFragmentCallback{
+        implements GMHomeFragmentCallback {
 
 
     public static final int REQUEST_PRODUCT = 1;

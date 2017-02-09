@@ -45,4 +45,10 @@ public class GMSubscribeProductRepositoryImpl implements GMSubscribeProductRepos
         return gmSubscribeProductSource.getExtendProductSelectedData(autoSubscribeProductId, productId);
     }
 
+    @Override
+    public Observable<Boolean> clearGMProductCache() {
+        GMSubscribeProductSource gmSubscribeProductSource = gmSubscribeProductFactory.createGMSubscribeProductSource();
+        return gmSubscribeProductSource.clearGMSubscribeProductCache();
+    }
+
 }

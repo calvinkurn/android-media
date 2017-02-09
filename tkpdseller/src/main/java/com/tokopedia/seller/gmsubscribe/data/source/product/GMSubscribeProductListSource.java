@@ -41,6 +41,10 @@ public class GMSubscribeProductListSource {
                 .flatMap(new ConvertToObject());
     }
 
+    public Observable<Boolean> clearData() {
+        return gmSubscribeProductCache.clearCache();
+    }
+
     private class GetDataFromCloud implements Func1<Throwable, Observable<String>> {
         @Override
         public Observable<String> call(Throwable throwable) {

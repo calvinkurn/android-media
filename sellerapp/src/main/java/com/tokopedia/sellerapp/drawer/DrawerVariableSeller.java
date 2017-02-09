@@ -49,7 +49,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.ToolbarVariable;
-import com.tokopedia.seller.gmsubscribe.view.home.GMSubscribeHomeActivity;
+import com.tokopedia.seller.gmsubscribe.view.home.activity.GMSubscribeHomeActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.gmstat.views.GMStatActivity;

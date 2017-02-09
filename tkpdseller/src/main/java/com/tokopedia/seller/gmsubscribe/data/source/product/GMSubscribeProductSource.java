@@ -46,6 +46,10 @@ public class GMSubscribeProductSource {
         return gmSubscribeProductListSource.getData().map(new GetPaymentMethod());
     }
 
+    public Observable<Boolean> clearGMSubscribeProductCache() {
+        return gmSubscribeProductListSource.clearData();
+    }
+
 
     private class GetCurrentProductSelection implements Func1<GMProductDomainModelGroup, List<GMProductDomainModel>> {
         @Override

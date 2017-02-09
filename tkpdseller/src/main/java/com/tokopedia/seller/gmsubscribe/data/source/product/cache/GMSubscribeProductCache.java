@@ -33,4 +33,9 @@ public class GMSubscribeProductCache {
         globalCacheManager.store();
 
     }
+
+    public Observable<Boolean> clearCache() {
+        globalCacheManager.delete(GM_SUBSCRIBE_PRODUCT);
+        return Observable.just(true);
+    }
 }

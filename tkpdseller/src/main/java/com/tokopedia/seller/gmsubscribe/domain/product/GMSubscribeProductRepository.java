@@ -19,4 +19,6 @@ public interface GMSubscribeProductRepository {
     Observable<GMProductDomainModel> getCurrentProductSelectedData(Integer productId);
 
     Observable<GMAutoSubscribeDomainModel> getExtendProductSelectedData(Integer autoSubscribeProductId, Integer productId);
+
+    Observable<Boolean> clearGMProductCache();
 }

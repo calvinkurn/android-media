@@ -1,13 +1,16 @@
-package com.tokopedia.seller.gmsubscribe.view.home;
+package com.tokopedia.seller.gmsubscribe.view.home.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.View;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
+import com.tokopedia.seller.gmsubscribe.di.GMHomeDependencyInjection;
+import com.tokopedia.seller.gmsubscribe.view.home.presenter.GMHomePresenterImpl;
 
 import butterknife.OnClick;
 
@@ -15,10 +18,11 @@ import butterknife.OnClick;
  * Created by sebastianuskh on 12/2/16.
  */
 
-public class GMHomeFragment extends BasePresenterFragment {
+public class GMHomeFragment extends BasePresenterFragment<GMHomePresenterImpl> implements GMHomeView{
 
     public static final String TAG = "GMHomeFragment";
     private GMHomeFragmentCallback listener;
+    private TkpdProgressDialog progressDialog;
 
     /** BUTTERKNIFE BINDING */
     @OnClick(R2.id.button_home_to_select_product)
@@ -65,7 +69,7 @@ public class GMHomeFragment extends BasePresenterFragment {
 
     @Override
     protected void initialPresenter() {
-
+        presenter = GMHomeDependencyInjection.getPresenter();
     }
 
     @Override
@@ -89,7 +93,13 @@ public class GMHomeFragment extends BasePresenterFragment {
 
     @Override
     protected void initView(View view) {
+        presenter.attachView(this);
+    }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
     }
 
     @Override
@@ -99,13 +109,22 @@ public class GMHomeFragment extends BasePresenterFragment {
 
     @Override
     protected void initialVar() {
-
+        progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
     }
 
     @Override
     protected void setActionVar() {
-
+        presenter.clearGMProductCache();
     }
 
 
+    @Override
+    public void showProgressDialog() {
+        progressDialog.showDialog();
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        progressDialog.dismiss();
+    }
 }
