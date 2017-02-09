@@ -2,6 +2,7 @@ package com.tokopedia.seller.gmsubscribe.di;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
@@ -51,7 +52,7 @@ public class GMHomeDependencyInjection {
         clientBuilder.interceptors().add(logInterceptor);
         OkHttpClient client =  clientBuilder.build();
 
-        Retrofit retrofit = createRetrofit("http://goldmerchant-staging.tokopedia.com",
+        Retrofit retrofit = createRetrofit(TkpdBaseURL.GOLD_MERCHANT_DOMAIN,
                 client,
                 hostConverter,
                 tkpdResponseConverter,

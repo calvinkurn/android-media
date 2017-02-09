@@ -34,6 +34,7 @@ public class TkpdBaseURL {
     public static String WEB_DOMAIN = "https://www.tokopedia.com/";
     public static String MOBILE_DOMAIN = "https://m.tokopedia.com/";
     public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us/";
+    public static String TOKOPEDIA_CART_DOMAIN = "https://tkpd-cart.tokopedia.com";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
 
     public static class Product {
@@ -606,6 +607,7 @@ public class TkpdBaseURL {
 
     public static class GoldMerchant{
         public static final String GET_PRODUCT_VIDEO = "/v1/product/video/";
+        public static final String GET_GM_SUBSCRIBE_PRODUCT = "/v1/gold/product";
     }
 
     public static class FCM{
@@ -623,5 +625,10 @@ public class TkpdBaseURL {
     public static class TopCash{
         public static final String GET_WALLET = ACCOUNTS_DOMAIN + "api/v1/wallet/";
         public static final String PATH_WALLET = "balance";
+    }
+
+    public class TkpdCart {
+        public static final String CHECK_VOUCHER = "/v1/voucher/verify";
+        public static final String CHECKOUT_ORDER = "v1/cart/order";
     }
 }

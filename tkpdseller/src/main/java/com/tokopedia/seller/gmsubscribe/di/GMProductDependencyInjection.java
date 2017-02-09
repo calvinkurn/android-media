@@ -2,6 +2,7 @@ package com.tokopedia.seller.gmsubscribe.di;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
@@ -33,8 +34,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class GMProductDependencyInjection {
 
-    public static final String GOLD_MERCHANT_BASE_URL = "http://goldmerchant-staging.tokopedia.com";
-
     public static GMProductPresenterImpl getPresenter() {
         GlobalCacheManager globalCacheManager = new GlobalCacheManager();
         GMSubscribeProductCache gmSubscribeProductCache = new GMSubscribeProductCache(globalCacheManager);
@@ -50,7 +49,7 @@ public class GMProductDependencyInjection {
         OkHttpClient client =  clientBuilder.build();
         Gson gson = new Gson();
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(GOLD_MERCHANT_BASE_URL)
+                .baseUrl(TkpdBaseURL.GOLD_MERCHANT_DOMAIN)
                 .client(client)
                 .addConverterFactory(new GeneratedHostConverter())
                 .addConverterFactory(new TkpdResponseConverter())

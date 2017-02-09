@@ -18,7 +18,8 @@ public class SellerAppBaseUrl {
     public static final String BASE_KERO_DOMAIN = "https://kero-staging.tokopedia.com/";
     public static final String BASE_JAHE_DOMAIN = "https://jahe-staging.tokopedia.com/";
     public static final String BASE_PULSA_WEB_DOMAIN = "https://pulsa-alpha.tokopedia.com/";
-    public static final String BASE_GOLD_MERCHANT_DOMAIN = "https://goldmerchant.tokopedia.com/";
+    public static final String BASE_GOLD_MERCHANT_DOMAIN = "https://goldmerchant-alpha.tokopedia.com/";
     public static final String BASE_WEB_DOMAIN = "https://alpha.tokopedia.com/";
     public static final String BASE_MOBILE_DOMAIN = "https://m-alpha.tokopedia.com/";
+    public static final String TOKOPEDIA_CART_DOMAIN = "https://tkpd-cart-alpha.tokopedia.com";
 }

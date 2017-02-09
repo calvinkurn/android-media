@@ -1,6 +1,6 @@
 package com.tokopedia.seller.gmsubscribe.data.source.product.cloud;
 
-import com.tokopedia.seller.network.api.GoldMerchantApi;
+import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.api.GoldMerchantApi;
 
 import retrofit2.Retrofit;
 import rx.Observable;

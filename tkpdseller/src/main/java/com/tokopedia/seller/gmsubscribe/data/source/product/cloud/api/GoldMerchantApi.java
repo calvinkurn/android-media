@@ -1,0 +1,15 @@
+package com.tokopedia.seller.gmsubscribe.data.source.product.cloud.api;
+
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+
+import retrofit2.http.GET;
+import rx.Observable;
+
+/**
+ * Created by sebastianuskh on 2/2/17.
+ */
+public interface GoldMerchantApi {
+
+    @GET(TkpdBaseURL.GoldMerchant.GET_GM_SUBSCRIBE_PRODUCT)
+    Observable<String> getGoldMerchantProductList();
+}
