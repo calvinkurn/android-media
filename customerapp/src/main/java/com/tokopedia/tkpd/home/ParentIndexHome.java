@@ -27,6 +27,7 @@ import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.customadapter.ListViewHotProductParent;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.interfaces.IndexHomeInterafaces;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.myproduct.ProductActivity;
@@ -216,6 +217,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
                 }
             });
         }
+
+        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
     }
 
 
