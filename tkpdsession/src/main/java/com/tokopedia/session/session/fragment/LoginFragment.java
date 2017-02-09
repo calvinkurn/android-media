@@ -590,6 +590,7 @@ public class LoginFragment extends Fragment implements LoginView {
                     tv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            UnifyTracking.eventCTAAction(AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
                             onFacebookClick();
                         }
                     });
@@ -597,6 +598,7 @@ public class LoginFragment extends Fragment implements LoginView {
                     tv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            UnifyTracking.eventCTAAction(AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
                             LoginFragmentPermissionsDispatcher.onGooglePlusClickedWithCheck(LoginFragment.this);
                         }
                     });
@@ -607,6 +609,7 @@ public class LoginFragment extends Fragment implements LoginView {
                         public void onClick(View v) {
                             loginProvideOnClick(listProvider.get(finalI).getUrl(),
                                     listProvider.get(finalI).getName());
+                            UnifyTracking.eventCTAAction(listProvider.get(finalI).getName());
                         }
                     });
                 }

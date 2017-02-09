@@ -43,6 +43,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.service.DownloadService;
@@ -126,6 +127,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventRegisterChannel("Email");
                 UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.EMAIL);
                 ((SessionView) getActivity()).moveToRegister();
             }
@@ -276,6 +278,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
                     tv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            UnifyTracking.eventRegisterChannel(AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
                             onFacebookClick();
                         }
                     });
@@ -284,6 +287,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
                         @Override
                         public void onClick(View v) {
                             RegisterInitialFragmentPermissionsDispatcher.onGoogleClickWithCheck(RegisterInitialFragment.this);
+                            UnifyTracking.eventRegisterChannel(AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
                         }
                     });
                 } else {
@@ -293,6 +297,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
                         public void onClick(View v) {
                             loginProvideOnClick(listProvider.get(finalI).getUrl(),
                                     listProvider.get(finalI).getName());
+                            UnifyTracking.eventRegisterChannel(listProvider.get(finalI).getName());
                         }
                     });
                 }
