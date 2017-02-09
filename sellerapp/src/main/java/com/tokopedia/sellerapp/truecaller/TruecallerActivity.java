@@ -23,27 +23,6 @@ public class TruecallerActivity extends Activity implements ITrueCallback{
         super.onCreate(savedInstanceState);
         mTrueClient = new TrueClient(this, this);
         mTrueClient.getTruecallerUserProfile(this);
-
-//        Context var1 = this;
-//        String var2 = null;
-//
-//        ApplicationInfo var3 = null;
-//        try {
-//            var3 = var1.getPackageManager().getApplicationInfo(var1.getPackageName(), PackageManager.GET_META_DATA);
-//        } catch (PackageManager.NameNotFoundException var5) {
-//
-//        }
-//
-//        if(null != var3 && null != var3.metaData) {
-//            Object var4 = var3.metaData.get("com.truecaller.android.sdk.PartnerKey");
-//            if(var4 instanceof String) {
-//                var2 = (String)var4;
-//            }
-//
-//
-//        } else {
-//
-//        }
     }
 
     @Override
