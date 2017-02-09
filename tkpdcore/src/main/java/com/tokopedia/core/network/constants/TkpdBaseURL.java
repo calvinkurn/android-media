@@ -34,7 +34,7 @@ public class TkpdBaseURL {
     public static String GOLD_MERCHANT_STAGING_DOMAIN = "http://goldmerchant-staging.tokopedia.com";
     public static String WEB_DOMAIN = "https://www.tokopedia.com/";
     public static String MOBILE_DOMAIN = "https://m.tokopedia.com/";
-    public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us/";
+    public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
 
     public static class Product {
