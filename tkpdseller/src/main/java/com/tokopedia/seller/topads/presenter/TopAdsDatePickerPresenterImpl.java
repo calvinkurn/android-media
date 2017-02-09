@@ -8,8 +8,8 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.seller.topads.interactor.TopAdsDatePickerInteractorImpl;
-import com.tokopedia.seller.topads.lib.datepicker.DatePickerActivity;
-import com.tokopedia.seller.topads.lib.datepicker.model.PeriodRangeModel;
+import com.tokopedia.seller.lib.datepicker.DatePickerActivity;
+import com.tokopedia.seller.lib.datepicker.model.PeriodRangeModel;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

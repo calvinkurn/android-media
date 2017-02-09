@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.lib.datepicker.constant;
+package com.tokopedia.seller.lib.datepicker.constant;
 
 import java.util.Locale;
 

@@ -5,7 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.seller.topads.lib.datepicker.DatePickerActivity;
+import com.tokopedia.seller.lib.datepicker.DatePickerActivity;
 import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenter;
 
 import java.util.Date;
