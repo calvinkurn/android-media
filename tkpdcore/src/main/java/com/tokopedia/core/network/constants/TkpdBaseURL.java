@@ -330,7 +330,7 @@ public class TkpdBaseURL {
         public static final String PATH_GET_SHOP_REVIEW = "get_shop_review.pl";
     }
 
-    public static class Etc {
+    public static final class Etc {
         public static final String URL_ADDRESS = BASE_DOMAIN + "v4/address/";
         public static final String URL_DEPARTMENT = BASE_DOMAIN + "v4/department/";
         public static final String URL_HOME = BASE_DOMAIN + "v4/home/";
@@ -350,6 +350,7 @@ public class TkpdBaseURL {
         public static final String PATH_GET_WISHLIST = "get_wishlist.pl";
 
         public static final String PATH_GET_DATA_SOURCE_TICKER = "get_data_source_ticker.pl";
+        public static final String PATH_GET_LIST_FAVE_SHOP_ID = "/v4/home/get_list_fave_shop_id.pl";
     }
 
     public static class ResCenter {
@@ -518,6 +519,8 @@ public class TkpdBaseURL {
         public static final String URL_TOPADS_SHOP = TOPADS_DOMAIN + "promo/v1/display/";
 
         public static final String PATH_DISPLAY_SHOP = "promo/v1/display/shops";
+        public static final String PATH_GET_PROMO_TOP_ADS = "/promo/v1.1/display/products";
+        public static final String PATH_GET_SHOP_TOP_ADS = "promo/v1/display/shops";
     }
 
     public static class Mojito {

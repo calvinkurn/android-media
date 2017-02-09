@@ -69,7 +69,7 @@
             android:value="@string/key_appsflyer" />
         <meta-data
             android:name="com.truecaller.android.sdk.PartnerKey"
-            android:value="mkNUh4ab3d69abd1f48d3998a200fc76187c9" />
+            android:value="5NZEN7bfc93cb61794a429bb97263648fa073" />
 
         <activity android:name=".onboarding.activity.OnboardingSellerActivity" />
         <activity
