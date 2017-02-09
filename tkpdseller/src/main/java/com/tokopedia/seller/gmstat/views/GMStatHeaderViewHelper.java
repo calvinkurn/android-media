@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateWithYear;
-import static com.tokopedia.seller.gmstat.views.SetDateConstant.PERIOD_TYPE;
 
 /**
  * Created by normansyahputa on 11/21/16.
@@ -50,7 +49,7 @@ public class GMStatHeaderViewHelper {
     private long sDate;
     private long eDate;
     private int lastSelection;
-    private int selectionType = PERIOD_TYPE;
+    private int selectionType = DatePickerConstant.SELECTION_TYPE_PERIOD_DATE;
     private boolean isLoading = true;
 
     public GMStatHeaderViewHelper(View itemView, boolean isGmStat) {
@@ -203,8 +202,8 @@ public class GMStatHeaderViewHelper {
         minCalendar.set(Calendar.SECOND, 0);
         minCalendar.set(Calendar.MILLISECOND, 0);
 
-        intent.putExtra(DatePickerConstant.EXTRA_CUSTOM_START_DATE, sDate);
-        intent.putExtra(DatePickerConstant.EXTRA_CUSTOM_END_DATE, eDate);
+        intent.putExtra(DatePickerConstant.EXTRA_START_DATE, sDate);
+        intent.putExtra(DatePickerConstant.EXTRA_END_DATE, eDate);
 
         intent.putExtra(DatePickerConstant.EXTRA_MIN_START_DATE, minCalendar.getTimeInMillis());
         intent.putExtra(DatePickerConstant.EXTRA_MAX_END_DATE, maxCalendar.getTimeInMillis());

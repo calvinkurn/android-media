@@ -98,23 +98,23 @@ public class TopAdsDatePickerPresenterImpl implements TopAdsDatePickerPresenter 
     @Override
     public Intent getDatePickerIntent(Activity activity, Date startDate, Date endDate) {
         Intent intent = new Intent(activity, DatePickerActivity.class);
-        Calendar todayCalendar = Calendar.getInstance();
-        todayCalendar.set(Calendar.HOUR_OF_DAY, 23);
-        todayCalendar.set(Calendar.MINUTE, 59);
-        todayCalendar.set(Calendar.SECOND, 59);
-
         Calendar maxCalendar = Calendar.getInstance();
-        maxCalendar.add(Calendar.YEAR, -1);
-        maxCalendar.set(Calendar.HOUR_OF_DAY, 0);
-        maxCalendar.set(Calendar.MINUTE, 0);
-        maxCalendar.set(Calendar.SECOND, 0);
-        maxCalendar.set(Calendar.MILLISECOND, 0);
+        maxCalendar.set(Calendar.HOUR_OF_DAY, 23);
+        maxCalendar.set(Calendar.MINUTE, 59);
+        maxCalendar.set(Calendar.SECOND, 59);
 
-        intent.putExtra(DatePickerConstant.EXTRA_CUSTOM_START_DATE, startDate.getTime());
-        intent.putExtra(DatePickerConstant.EXTRA_CUSTOM_END_DATE, endDate.getTime());
+        Calendar minCalendar = Calendar.getInstance();
+        minCalendar.add(Calendar.YEAR, -1);
+        minCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        minCalendar.set(Calendar.MINUTE, 0);
+        minCalendar.set(Calendar.SECOND, 0);
+        minCalendar.set(Calendar.MILLISECOND, 0);
 
-        intent.putExtra(DatePickerConstant.EXTRA_MIN_START_DATE, maxCalendar.getTimeInMillis());
-        intent.putExtra(DatePickerConstant.EXTRA_MAX_END_DATE, todayCalendar.getTimeInMillis());
+        intent.putExtra(DatePickerConstant.EXTRA_START_DATE, startDate.getTime());
+        intent.putExtra(DatePickerConstant.EXTRA_END_DATE, endDate.getTime());
+
+        intent.putExtra(DatePickerConstant.EXTRA_MIN_START_DATE, minCalendar.getTimeInMillis());
+        intent.putExtra(DatePickerConstant.EXTRA_MAX_END_DATE, maxCalendar.getTimeInMillis());
         intent.putExtra(DatePickerConstant.EXTRA_MAX_DATE_RANGE, TopAdsConstant.MAX_DATE_RANGE);
 
         intent.putExtra(DatePickerConstant.EXTRA_DATE_PERIOD_LIST, getPeriodRangeList());

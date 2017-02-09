@@ -106,8 +106,8 @@ public class DatePickerActivity extends TActivity implements DatePickerPeriodFra
 
     private void fetchIntent(Bundle extras) {
         if (extras != null) {
-            startDate = extras.getLong(DatePickerConstant.EXTRA_CUSTOM_START_DATE, -1);
-            endDate = extras.getLong(DatePickerConstant.EXTRA_CUSTOM_END_DATE, -1);
+            startDate = extras.getLong(DatePickerConstant.EXTRA_START_DATE, -1);
+            endDate = extras.getLong(DatePickerConstant.EXTRA_END_DATE, -1);
             selectionPeriod = extras.getInt(DatePickerConstant.EXTRA_SELECTION_PERIOD, 1);
             selectionType = extras.getInt(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_PERIOD_DATE);
             minStartDate = extras.getLong(DatePickerConstant.EXTRA_MIN_START_DATE, -1);

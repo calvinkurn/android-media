@@ -41,8 +41,8 @@ public class DatePickerCustomFragment extends TkpdFragment {
     public static DatePickerCustomFragment newInstance(long sDate, long eDate, long minStartDate, long maxEndDate, int maxDateRange) {
         DatePickerCustomFragment fragment = new DatePickerCustomFragment();
         Bundle bundle = new Bundle();
-        bundle.putLong(DatePickerConstant.EXTRA_CUSTOM_START_DATE, sDate);
-        bundle.putLong(DatePickerConstant.EXTRA_CUSTOM_END_DATE, eDate);
+        bundle.putLong(DatePickerConstant.EXTRA_START_DATE, sDate);
+        bundle.putLong(DatePickerConstant.EXTRA_END_DATE, eDate);
         bundle.putLong(DatePickerConstant.EXTRA_MIN_START_DATE, minStartDate);
         bundle.putLong(DatePickerConstant.EXTRA_MAX_END_DATE, maxEndDate);
         bundle.putInt(DatePickerConstant.EXTRA_MAX_DATE_RANGE, maxDateRange);
@@ -66,8 +66,8 @@ public class DatePickerCustomFragment extends TkpdFragment {
         super.onViewCreated(view, savedInstanceState);
         Bundle bundle = getArguments();
         if (bundle != null) {
-            startDate = bundle.getLong(DatePickerConstant.EXTRA_CUSTOM_START_DATE, -1);
-            endDate = bundle.getLong(DatePickerConstant.EXTRA_CUSTOM_END_DATE, -1);
+            startDate = bundle.getLong(DatePickerConstant.EXTRA_START_DATE, -1);
+            endDate = bundle.getLong(DatePickerConstant.EXTRA_END_DATE, -1);
             minStartDate = bundle.getLong(DatePickerConstant.EXTRA_MIN_START_DATE, -1);
             maxEndDate = bundle.getLong(DatePickerConstant.EXTRA_MAX_END_DATE, -1);
             maxDateRange = bundle.getInt(DatePickerConstant.EXTRA_MAX_DATE_RANGE, -1);
