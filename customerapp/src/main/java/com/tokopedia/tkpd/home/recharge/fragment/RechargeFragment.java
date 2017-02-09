@@ -12,6 +12,8 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.Log;
@@ -585,9 +587,12 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         radGroup.setOrientation(LinearLayout.HORIZONTAL);
 
         for (int i = 0; i < operators.size(); i++) {
-            RadioButton radioButton = new RadioButton(getActivity());
+            AppCompatRadioButton radioButton = new AppCompatRadioButton(getActivity());
             radioButton.setId(i);
             radioButton.setText(operators.get(i).name);
+            radioButton.setSupportButtonTintList(ContextCompat.getColorStateList(getActivity(), R.color.green_500));
+            radioButton.setTextSize(getResources().getDimension(R.dimen.text_size_xxxsmall));
+            radioButton.setTextColor(ContextCompat.getColor(getActivity(), R.color.grey_600));
             radGroup.addView(radioButton);
         }
         radGroup.check(0);
@@ -601,7 +606,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             }
         });
     }
-
 
     private void setTextToEditTextOrSetVisibilityForm() {
         cacheHandlerPhoneBook = new LocalCacheHandler(getActivity(), KEY_PHONEBOOK);
