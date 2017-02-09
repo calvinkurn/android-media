@@ -158,7 +158,7 @@
     <string name="gmsubscribe_home_button_finish">Pilih Paket Berlangganan</string>
 
     <string name="gmsubscribe_feature_gold_badge">Gold Badge</string>
-    <string name="gmsubscribe_feature_gold_badge_desc">Tampilan produk dan toko akan terlihat lebih beda serta lebih terpercaya</string>
+    <string name="gmsubscribe_feature_gold_badge_desc">Tampilan produk dan toko akan terlihat beda serta lebih terpercaya</string>
     <string name="gmsubscribe_feature_topads">TopAds</string>
     <string name="gmsubscribe_feature_topads_desc">Promosi produk dan toko jadi lebih efektif dan efisien</string>
     <string name="gmsubscribe_feature_statistic">Statistik Toko</string>
@@ -171,7 +171,7 @@
     <string name="gmsubscribe_subfeature_title">Fitur-fitur Gold Merchant ini juga dapat\nmembantu memaksimalkan penjualanmu</string>
     <string name="gmsubscribe_subfeature_etalase">Tambahan\n150 Etalase</string>
     <string name="gmsubscribe_feature_admin">Gratis\n1 Admin Toko</string>
-    <string name="gmsubscribe_feature_cashback">Cashback/TopPoints</string>
+    <string name="gmsubscribe_feature_cashback">Cashback TopPoints</string>
     <string name="gmsubscribe_feature_video">Tambah\nVideo Produk</string>
     <string name="gmsubscribe_feature_pantaupasar">Pantau\nPermintaan Pasar</string>
     <string name="gmsubscribe_feature_kurs">Atur Harga\nKurs Dollar</string>

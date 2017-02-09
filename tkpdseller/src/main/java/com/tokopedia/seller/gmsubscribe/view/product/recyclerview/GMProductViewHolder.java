@@ -85,7 +85,7 @@ public class GMProductViewHolder extends RecyclerView.ViewHolder {
     public void setSelected() {
         iconCheck.setVisibility(View.VISIBLE);
         try {
-            layoutView.setBackgroundResource(R.drawable.background_gmsubscribe_product_item_unselected);
+            layoutView.setBackgroundResource(R.drawable.background_gmsubscribe_product_item_selected);
         } catch (NoSuchMethodError e) {
             layoutView.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.background_gmsubscribe_product_item_selected));
         }

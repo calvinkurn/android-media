@@ -34,7 +34,7 @@
         android:text="BEST DEAL!"
         android:visibility="gone"
         android:textSize="12sp"
-        android:textColor="@color/tkpd_main_green"
+        android:textColor="@color/gmsubscribe_product_price_color"
         android:layout_alignBaseline="@id/title_package"
         />
 

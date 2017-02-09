@@ -12,8 +12,12 @@ public class GMCheckoutCurrentSelectedViewModel {
 
     public GMCheckoutCurrentSelectedViewModel(GMProductDomainModel domainModel) {
         setTitle(domainModel.getName());
-        setPrice(domainModel.getNotes());
-        setPrice(domainModel.getPrice());
+        setDescription(domainModel.getNotes());
+        if(domainModel.getLastPrice().isEmpty()) {
+            setPrice(domainModel.getPrice());
+        } else {
+            setPrice(domainModel.getLastPrice());
+        }
     }
 
     public String getTitle() {

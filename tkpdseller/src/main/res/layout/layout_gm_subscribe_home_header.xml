@@ -10,7 +10,7 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/ic_shop_gold"/>
+        android:src="@drawable/ic_gmsubscribe_gold_badge"/>
 
     <TextView
         android:id="@+id/main_title_gm_subscribe_home"
