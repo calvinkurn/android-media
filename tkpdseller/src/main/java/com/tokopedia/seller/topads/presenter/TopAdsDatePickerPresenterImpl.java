@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.seller.topads.interactor.TopAdsDatePickerInteractorImpl;
@@ -21,9 +22,6 @@ import java.util.Locale;
  * Created by Nisie on 5/9/16.
  */
 public class TopAdsDatePickerPresenterImpl implements TopAdsDatePickerPresenter {
-
-    private static final int DIFF_ONE_WEEK = 6;
-    private static final int DIFF_ONE_MONTH = 29;
 
     private static final String RANGE_DATE_FORMAT = "dd MMM yyyy";
     private static final String RANGE_DATE_FORMAT_WITHOUT_YEAR = "dd MMM";
@@ -50,7 +48,7 @@ public class TopAdsDatePickerPresenterImpl implements TopAdsDatePickerPresenter 
     @Override
     public Date getStartDate() {
         Calendar startCalendar = Calendar.getInstance();
-        startCalendar.add(Calendar.DAY_OF_YEAR, -DIFF_ONE_WEEK);
+        startCalendar.add(Calendar.DAY_OF_YEAR, -DatePickerConstant.DIFF_ONE_WEEK);
         return topAdsDatePickerInteractor.getStartDate(startCalendar.getTime());
     }
 
@@ -101,22 +99,21 @@ public class TopAdsDatePickerPresenterImpl implements TopAdsDatePickerPresenter 
     public Intent getDatePickerIntent(Activity activity, Date startDate, Date endDate) {
         Intent intent = new Intent(activity, DatePickerActivity.class);
         Calendar todayCalendar = Calendar.getInstance();
-        Calendar lastYearCalendar = Calendar.getInstance();
-        lastYearCalendar.add(Calendar.YEAR, -1);
-
-        intent.putExtra(DatePickerActivity.CUSTOM_START_DATE, startDate.getTime());
-        intent.putExtra(DatePickerActivity.CUSTOM_END_DATE, endDate.getTime());
-
         todayCalendar.set(Calendar.HOUR_OF_DAY, 23);
         todayCalendar.set(Calendar.MINUTE, 59);
         todayCalendar.set(Calendar.SECOND, 59);
 
-        lastYearCalendar.set(Calendar.HOUR_OF_DAY, 0);
-        lastYearCalendar.set(Calendar.MINUTE, 0);
-        lastYearCalendar.set(Calendar.SECOND, 0);
-        lastYearCalendar.set(Calendar.MILLISECOND, 0);
+        Calendar maxCalendar = Calendar.getInstance();
+        maxCalendar.add(Calendar.YEAR, -1);
+        maxCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        maxCalendar.set(Calendar.MINUTE, 0);
+        maxCalendar.set(Calendar.SECOND, 0);
+        maxCalendar.set(Calendar.MILLISECOND, 0);
 
-        intent.putExtra(DatePickerActivity.MIN_START_DATE, lastYearCalendar.getTimeInMillis());
+        intent.putExtra(DatePickerActivity.CUSTOM_START_DATE, startDate.getTime());
+        intent.putExtra(DatePickerActivity.CUSTOM_END_DATE, endDate.getTime());
+
+        intent.putExtra(DatePickerActivity.MIN_START_DATE, maxCalendar.getTimeInMillis());
         intent.putExtra(DatePickerActivity.MAX_END_DATE, todayCalendar.getTimeInMillis());
         intent.putExtra(DatePickerActivity.MAX_DATE_RANGE, TopAdsConstant.MAX_DATE_RANGE);
 
@@ -136,10 +133,10 @@ public class TopAdsDatePickerPresenterImpl implements TopAdsDatePickerPresenter 
         startCalendar.add(Calendar.DATE, -1);
         periodRangeList.add(new PeriodRangeModel(startCalendar.getTimeInMillis(), startCalendar.getTimeInMillis(), context.getString(R.string.yesterday)));
         startCalendar = Calendar.getInstance();
-        startCalendar.add(Calendar.DATE, -DIFF_ONE_WEEK);
+        startCalendar.add(Calendar.DATE, -DatePickerConstant.DIFF_ONE_WEEK);
         periodRangeList.add(new PeriodRangeModel(startCalendar.getTimeInMillis(), endCalendar.getTimeInMillis(), context.getString(R.string.seven_days_ago)));
         startCalendar = Calendar.getInstance();
-        startCalendar.add(Calendar.DATE, -DIFF_ONE_MONTH);
+        startCalendar.add(Calendar.DATE, -DatePickerConstant.DIFF_ONE_MONTH);
         periodRangeList.add(new PeriodRangeModel(startCalendar.getTimeInMillis(), endCalendar.getTimeInMillis(), context.getString(R.string.thirty_days_ago)));
         startCalendar = Calendar.getInstance();
         startCalendar.set(Calendar.DATE, 1);

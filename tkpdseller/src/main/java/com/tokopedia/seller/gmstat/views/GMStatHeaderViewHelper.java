@@ -1,5 +1,6 @@
 package com.tokopedia.seller.gmstat.views;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
@@ -11,27 +12,30 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.library.LoaderImageView;
 import com.tokopedia.seller.gmstat.library.LoaderTextView;
 import com.tokopedia.seller.lib.datepicker.DatePickerActivity;
+import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
+import com.tokopedia.seller.lib.datepicker.model.PeriodRangeModel;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateWithYear;
-import static com.tokopedia.seller.gmstat.views.BaseGMStatActivity.IS_GOLD_MERCHANT;
-import static com.tokopedia.seller.gmstat.views.SetDateConstant.CUSTOM_END_DATE;
-import static com.tokopedia.seller.gmstat.views.SetDateConstant.CUSTOM_START_DATE;
 import static com.tokopedia.seller.gmstat.views.SetDateConstant.PERIOD_TYPE;
-import static com.tokopedia.seller.gmstat.views.SetDateConstant.SELECTION_PERIOD;
-import static com.tokopedia.seller.gmstat.views.SetDateConstant.SELECTION_TYPE;
 
 /**
  * Created by normansyahputa on 11/21/16.
  */
 
 public class GMStatHeaderViewHelper {
+
+    private static final int MAX_DATE_RANGE = 60;
+    private static final String MIN_DATE = "25/07/2015";
+    private static final String DATE_FORMAT = "dd/MM/yyyy";
 
     static final int MOVE_TO_SET_DATE = 1;
     private static final Locale locale = new Locale("in", "ID");
@@ -175,20 +179,58 @@ public class GMStatHeaderViewHelper {
     }
 
     public void onClick(GMStatActivityFragment gmStatActivityFragment) {
-        if (!isLoading) {
+        if (!isLoading || !isGmStat) {
             return;
         }
+        Intent intent = new Intent(gmStatActivityFragment.getActivity(), DatePickerActivity.class);
+        Calendar maxCalendar = Calendar.getInstance();
+        maxCalendar.add(Calendar.DATE, -1);
+        maxCalendar.set(Calendar.HOUR_OF_DAY, 23);
+        maxCalendar.set(Calendar.MINUTE, 59);
+        maxCalendar.set(Calendar.SECOND, 59);
 
-        // prevent to set date if non gold merchant.
-        if (!isGmStat)
-            return;
+        DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
+        Date minDate = new Date();
+        try {
+            minDate = dateFormat.parse(MIN_DATE);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar minCalendar = Calendar.getInstance();
+        minCalendar.setTime(minDate);
+        minCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        minCalendar.set(Calendar.MINUTE, 0);
+        minCalendar.set(Calendar.SECOND, 0);
+        minCalendar.set(Calendar.MILLISECOND, 0);
 
-        Intent moveToSetDate = new Intent(gmStatActivityFragment.getActivity(), DatePickerActivity.class);
-        moveToSetDate.putExtra(DatePickerActivity.SELECTION_PERIOD, lastSelection);
-        moveToSetDate.putExtra(DatePickerActivity.SELECTION_TYPE, selectionType);
-        moveToSetDate.putExtra(DatePickerActivity.CUSTOM_START_DATE, sDate);
-        moveToSetDate.putExtra(DatePickerActivity.CUSTOM_END_DATE, eDate);
-        gmStatActivityFragment.getActivity().startActivityForResult(moveToSetDate, MOVE_TO_SET_DATE);
+        intent.putExtra(DatePickerActivity.CUSTOM_START_DATE, sDate);
+        intent.putExtra(DatePickerActivity.CUSTOM_END_DATE, eDate);
+
+        intent.putExtra(DatePickerActivity.MIN_START_DATE, minCalendar.getTimeInMillis());
+        intent.putExtra(DatePickerActivity.MAX_END_DATE, maxCalendar.getTimeInMillis());
+        intent.putExtra(DatePickerActivity.MAX_DATE_RANGE, MAX_DATE_RANGE);
+
+        intent.putExtra(DatePickerActivity.DATE_PERIOD_LIST, getPeriodRangeList(gmStatActivityFragment.getActivity()));
+        intent.putExtra(DatePickerActivity.SELECTION_PERIOD, lastSelection);
+        intent.putExtra(DatePickerActivity.SELECTION_TYPE, selectionType);
+
+        intent.putExtra(DatePickerActivity.PAGE_TITLE, gmStatActivityFragment.getActivity().getString(R.string.set_date));
+        gmStatActivityFragment.getActivity().startActivityForResult(intent, MOVE_TO_SET_DATE);
+    }
+
+    private ArrayList<PeriodRangeModel> getPeriodRangeList(Context context) {
+        ArrayList<PeriodRangeModel> periodRangeList = new ArrayList<>();
+        Calendar startCalendar = Calendar.getInstance();
+        Calendar endCalendar = Calendar.getInstance();
+        startCalendar.add(Calendar.DATE, -1);
+        periodRangeList.add(new PeriodRangeModel(startCalendar.getTimeInMillis(), startCalendar.getTimeInMillis(), context.getString(R.string.yesterday)));
+        startCalendar = Calendar.getInstance();
+        startCalendar.add(Calendar.DATE, -DatePickerConstant.DIFF_ONE_WEEK);
+        periodRangeList.add(new PeriodRangeModel(startCalendar.getTimeInMillis(), endCalendar.getTimeInMillis(), context.getString(R.string.seven_days_ago)));
+        startCalendar = Calendar.getInstance();
+        startCalendar.add(Calendar.DATE, -DatePickerConstant.DIFF_ONE_MONTH);
+        periodRangeList.add(new PeriodRangeModel(startCalendar.getTimeInMillis(), endCalendar.getTimeInMillis(), context.getString(R.string.thirty_days_ago)));
+        return periodRangeList;
     }
 
     public long geteDate() {
