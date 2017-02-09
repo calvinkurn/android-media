@@ -10,6 +10,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.Build;
+import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.github.anrwatchdog.ANRError;
@@ -52,6 +53,7 @@ public class MainApplication extends TkpdMultiDexApplication {
 	private static Boolean isResetNotification = false;
 	private static Boolean isResetDrawer = false;
 	private static Boolean isResetCart = false;
+    private static Boolean isResetTickerState = true;
 	private static int currActivityState;
 	private static NotificationVariable nv;
 	private static String currActivityName;
@@ -87,6 +89,7 @@ public class MainApplication extends TkpdMultiDexApplication {
         initializeAnalytics();
         initANRWatchDogs();
         PACKAGE_NAME = getPackageName();
+        isResetTickerState=true;
 
         //[START] this is for dev process
 		initDB();
@@ -182,6 +185,14 @@ public class MainApplication extends TkpdMultiDexApplication {
     public static Boolean resetCartStatus(Boolean status) {
         isResetCart = status;
         return isResetCart;
+    }
+
+    public static Boolean getIsResetTickerState() {
+        return isResetTickerState;
+    }
+
+    public static void setIsResetTickerState(Boolean isResetTickerState) {
+        MainApplication.isResetTickerState = isResetTickerState;
     }
 
     public static Boolean getNotificationStatus() {

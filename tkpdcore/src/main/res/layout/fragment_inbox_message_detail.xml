@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -67,7 +68,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_marginTop="@dimen/margin_vs"
-            android:background="@color/white"
+            android:background="@drawable/cards_ui"
             android:paddingBottom="@dimen/padding_vs"
             android:paddingTop="@dimen/padding_vs"
             android:visibility="visible">
