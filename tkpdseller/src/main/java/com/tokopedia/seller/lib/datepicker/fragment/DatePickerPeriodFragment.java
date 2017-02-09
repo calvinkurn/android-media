@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.datepicker.DatePickerActivity;
 import com.tokopedia.seller.lib.datepicker.adapter.DatePickerPeriodAdapter;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
  * Created by Nathaniel on 1/16/2017.
  */
 
-public class DatePickerPeriodFragment extends Fragment {
+public class DatePickerPeriodFragment extends TkpdFragment {
 
     public interface Callback {
 
@@ -67,18 +68,29 @@ public class DatePickerPeriodFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         Bundle bundle = getArguments();
+        ArrayList<PeriodRangeModel> periodRangeModelList = null;
         if (bundle != null) {
             int selection = bundle.getInt(DatePickerActivity.SELECTION_PERIOD, 0);
-            ArrayList<PeriodRangeModel> periodRangeModelList = bundle.getParcelableArrayList(DatePickerActivity.DATE_PERIOD_LIST);
+            periodRangeModelList = bundle.getParcelableArrayList(DatePickerActivity.DATE_PERIOD_LIST);
             adapter.setSelectedPosition(selection);
-            adapter.setData(periodRangeModelList);
         }
+        if (periodRangeModelList == null) {
+            periodRangeModelList = new ArrayList<>();
+        }
+        adapter.setData(periodRangeModelList);
     }
 
     private void submitDate() {
         if (callback != null) {
             PeriodRangeModel selectedDate = adapter.getSelectedDate();
             callback.onDateSubmitted(adapter.getSelectedPosition(), selectedDate.getStartDate(), selectedDate.getEndDate());
+        } else {
+            getActivity().finish();
         }
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 }

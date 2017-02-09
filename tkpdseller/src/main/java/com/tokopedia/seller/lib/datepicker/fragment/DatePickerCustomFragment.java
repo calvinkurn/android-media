@@ -178,6 +178,8 @@ public class DatePickerCustomFragment extends TkpdFragment {
     public void saveDate() {
         if (callback != null) {
             callback.onDateSubmitted(startDate, endDate);
+        } else {
+            getActivity().finish();
         }
     }
 
