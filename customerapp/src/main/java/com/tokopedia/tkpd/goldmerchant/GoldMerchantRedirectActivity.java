@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.tkpd.R;
 
@@ -16,7 +17,7 @@ import com.tokopedia.tkpd.R;
 public class GoldMerchantRedirectActivity extends TActivity{
     @Override
     public String getScreenName() {
-        return null;
+        return AppScreen.GOLD_MERCHANT_REDIRECT;
     }
     private static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
 

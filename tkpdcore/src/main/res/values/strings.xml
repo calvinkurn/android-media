@@ -393,7 +393,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="title_see_all_addr">Lihat semua &gt;</string>
     <string name="error_load_shop">Terjadi kesalahan ketika mengambil informasi toko</string>
     <string name="error_empty_report">Mohon diisi</string>
-    <string name="gold_merchant_redirect_title">Tidak dapat mengakses Gold Merchant</string>
+    <string name="title_gold_merchant_redirect">Tidak dapat mengakses Gold Merchant</string>
     <string name="gold_merchant_redirect_text">Akses maupun pembelian fitur Gold Merchant hanya
         dapat dilakukan di aplikasi Seller.</string>
     <!-- Strings related shop info -->
