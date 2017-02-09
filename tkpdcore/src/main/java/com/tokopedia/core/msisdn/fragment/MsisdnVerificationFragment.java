@@ -339,6 +339,8 @@ public class MsisdnVerificationFragment extends DialogFragment
     public void processOTP(String otpCode) {
         if (otpEditText != null)
             otpEditText.setText(otpCode);
+        presenter.verifyOTP(otpCode.trim());
+
     }
 
     public void setListener(PhoneVerificationUtil.MSISDNListener listener) {

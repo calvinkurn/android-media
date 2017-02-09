@@ -14,7 +14,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 import com.tokopedia.sellerapp.onboarding.fragment.OnBoardingSellerFragment;
-import com.tokopedia.session.session.activity.Login;
 
 public class OnboardingSellerActivity extends OnboardingActivity{
     private SessionHandler sessionHandler;

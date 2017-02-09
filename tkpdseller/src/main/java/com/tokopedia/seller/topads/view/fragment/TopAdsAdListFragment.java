@@ -61,6 +61,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     private LinearLayoutManager layoutManager;
     private SnackbarRetry snackBarRetry;
     private ProgressDialog progressDialog;
+    private RecyclerView.OnScrollListener onScrollListener;
 
     protected abstract void searchAd();
 
@@ -101,12 +102,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     protected void setViewListener() {
         super.setViewListener();
-        swipeToRefresh.setEnabled(false);
-        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        onScrollListener = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -117,7 +113,13 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
                     adapter.showLoading(true);
                 }
             }
-        });
+        };
+        swipeToRefresh.setEnabled(false);
+        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
+        recyclerView.addOnScrollListener(onScrollListener);
     }
 
     @Override
@@ -152,6 +154,12 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_empty_promo_not_found_title_empty_text));
         emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_empty_promo_not_found_content_empty_text));
         adapter.setEmptyView(emptyGroupAdsDataBinder);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void updateEmptyViewDefault(){
+        adapter.setEmptyView(getEmptyViewBinder());
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -182,6 +190,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     @Override
     public void onSearchAdLoaded(@NonNull List adList, int totalItem) {
+        recyclerView.removeOnScrollListener(onScrollListener);
+        recyclerView.addOnScrollListener(onScrollListener);
         swipeToRefresh.setEnabled(true);
         this.totalItem = totalItem;
         if (totalItem > 0 && !searchMode) {
@@ -209,6 +219,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
                 }
             });
         } else {
+            recyclerView.removeOnScrollListener(onScrollListener);
             swipeToRefresh.setEnabled(false);
             adapter.showRetryFull(true);
         }
@@ -253,6 +264,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     public boolean onQueryTextSubmit(String query) {
         keyword = query;
         searchAd(START_PAGE);
+        updateEmptyViewNoResult();
         return true;
     }
 

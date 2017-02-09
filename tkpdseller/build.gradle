@@ -20,7 +20,6 @@ def getArtifactVersionCode() {
 
 def getTkpdCore() {
     return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
 }
 
 publishing {
@@ -76,6 +75,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
 
     }
     buildTypes {

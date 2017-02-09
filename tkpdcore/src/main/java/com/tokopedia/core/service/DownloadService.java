@@ -463,7 +463,7 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                             result.putInt(TYPE, ANSWER_SECURITY_QUESTION);
                             if (jsonObject.optBoolean("is_login", false) == true) {
                                 final LoginInterruptModel loginInterruptModel = (LoginInterruptModel) parseJSON(ANSWER_SECURITY_QUESTION, jsonObject);
-                                sessionHandler.SetLoginSession(loginInterruptModel.isLogin(),
+                                sessionHandler.setLoginSession(loginInterruptModel.isLogin(),
                                         loginInterruptModel.getUserId(), loginInterruptModel.getFullName(), loginInterruptModel.getShopId() + "",
                                         loginInterruptModel.getMsisdnIsVerified());
                                 sessionHandler.setGoldMerchant(getApplicationContext(), loginInterruptModel.getShopIsGold());
@@ -505,7 +505,7 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                             LoginBypassSuccessModel loginBypassSuccessModel = (LoginBypassSuccessModel) parseJSON(LOGIN_BYPASS, jsonObject);
                             if (loginBypassSuccessModel.getIsRegisterDevice() == 1) {
                                 SessionHandler session = new SessionHandler(getApplicationContext());
-                                session.SetLoginSession(true, session.getLoginID(), session.getLoginName(), session.getShopID(), SessionHandler.isMsisdnVerified());
+                                session.setLoginSession(true, session.getLoginID(), session.getLoginName(), session.getShopID(), SessionHandler.isMsisdnVerified());
                             }
                             result = new Bundle();
                             result.putInt(TYPE, type);

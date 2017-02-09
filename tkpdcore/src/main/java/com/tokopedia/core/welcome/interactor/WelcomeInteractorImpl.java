@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.google.gson.GsonBuilder;
+import com.tokopedia.core.R;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
@@ -43,7 +44,7 @@ public class WelcomeInteractorImpl implements WelcomeInteractor {
     }
 
     @Override
-    public void downloadProvider(Context activity, final DiscoverLoginListener listener) {
+    public void downloadProvider(final Context context, final DiscoverLoginListener listener) {
         if(compositeSubscription.isUnsubscribed()){
             this.compositeSubscription = new CompositeSubscription();
         }
@@ -85,23 +86,23 @@ public class WelcomeInteractorImpl implements WelcomeInteractor {
 
                         @Override
                         public void onTimeout() {
-                            listener.onError("Network Timeout Error!");
+                            listener.onError(context.getString(R.string.default_request_error_timeout));
                             listener.onTimeout();
                         }
 
                         @Override
                         public void onServerError() {
-                            listener.onError("Network Internal Server Error!");
+                            listener.onError(context.getString(R.string.default_request_error_internal_server));
                         }
 
                         @Override
                         public void onBadRequest() {
-                            listener.onError("Network Bad Request Error!");
+                            listener.onError(context.getString(R.string.default_request_error_bad_request));
                         }
 
                         @Override
                         public void onForbidden() {
-
+                            listener.onError(context.getString(R.string.default_request_error_forbidden_auth));
                         }
                     }, response.code());
                 }
