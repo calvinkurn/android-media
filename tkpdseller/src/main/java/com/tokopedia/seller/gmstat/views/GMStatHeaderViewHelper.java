@@ -203,18 +203,18 @@ public class GMStatHeaderViewHelper {
         minCalendar.set(Calendar.SECOND, 0);
         minCalendar.set(Calendar.MILLISECOND, 0);
 
-        intent.putExtra(DatePickerActivity.CUSTOM_START_DATE, sDate);
-        intent.putExtra(DatePickerActivity.CUSTOM_END_DATE, eDate);
+        intent.putExtra(DatePickerConstant.EXTRA_CUSTOM_START_DATE, sDate);
+        intent.putExtra(DatePickerConstant.EXTRA_CUSTOM_END_DATE, eDate);
 
-        intent.putExtra(DatePickerActivity.MIN_START_DATE, minCalendar.getTimeInMillis());
-        intent.putExtra(DatePickerActivity.MAX_END_DATE, maxCalendar.getTimeInMillis());
-        intent.putExtra(DatePickerActivity.MAX_DATE_RANGE, MAX_DATE_RANGE);
+        intent.putExtra(DatePickerConstant.EXTRA_MIN_START_DATE, minCalendar.getTimeInMillis());
+        intent.putExtra(DatePickerConstant.EXTRA_MAX_END_DATE, maxCalendar.getTimeInMillis());
+        intent.putExtra(DatePickerConstant.EXTRA_MAX_DATE_RANGE, MAX_DATE_RANGE);
 
-        intent.putExtra(DatePickerActivity.DATE_PERIOD_LIST, getPeriodRangeList(gmStatActivityFragment.getActivity()));
-        intent.putExtra(DatePickerActivity.SELECTION_PERIOD, lastSelection);
-        intent.putExtra(DatePickerActivity.SELECTION_TYPE, selectionType);
+        intent.putExtra(DatePickerConstant.EXTRA_DATE_PERIOD_LIST, getPeriodRangeList(gmStatActivityFragment.getActivity()));
+        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, lastSelection);
+        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, selectionType);
 
-        intent.putExtra(DatePickerActivity.PAGE_TITLE, gmStatActivityFragment.getActivity().getString(R.string.set_date));
+        intent.putExtra(DatePickerConstant.EXTRA_PAGE_TITLE, gmStatActivityFragment.getActivity().getString(R.string.set_date));
         gmStatActivityFragment.getActivity().startActivityForResult(intent, MOVE_TO_SET_DATE);
     }
 

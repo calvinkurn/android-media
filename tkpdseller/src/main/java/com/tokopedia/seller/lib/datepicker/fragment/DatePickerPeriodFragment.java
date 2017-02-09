@@ -1,6 +1,5 @@
 package com.tokopedia.seller.lib.datepicker.fragment;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,8 +11,8 @@ import android.widget.Button;
 
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.datepicker.DatePickerActivity;
 import com.tokopedia.seller.lib.datepicker.adapter.DatePickerPeriodAdapter;
+import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
 import com.tokopedia.seller.lib.datepicker.model.PeriodRangeModel;
 
 import java.util.ArrayList;
@@ -40,8 +39,8 @@ public class DatePickerPeriodFragment extends TkpdFragment {
     public static DatePickerPeriodFragment newInstance(int selectionPeriod, ArrayList<PeriodRangeModel> periodRangeModelList) {
         DatePickerPeriodFragment fragment = new DatePickerPeriodFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(DatePickerActivity.SELECTION_PERIOD, selectionPeriod);
-        bundle.putParcelableArrayList(DatePickerActivity.DATE_PERIOD_LIST, periodRangeModelList);
+        bundle.putInt(DatePickerConstant.EXTRA_SELECTION_PERIOD, selectionPeriod);
+        bundle.putParcelableArrayList(DatePickerConstant.EXTRA_DATE_PERIOD_LIST, periodRangeModelList);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -70,8 +69,8 @@ public class DatePickerPeriodFragment extends TkpdFragment {
         Bundle bundle = getArguments();
         ArrayList<PeriodRangeModel> periodRangeModelList = null;
         if (bundle != null) {
-            int selection = bundle.getInt(DatePickerActivity.SELECTION_PERIOD, 0);
-            periodRangeModelList = bundle.getParcelableArrayList(DatePickerActivity.DATE_PERIOD_LIST);
+            int selection = bundle.getInt(DatePickerConstant.EXTRA_SELECTION_PERIOD, 0);
+            periodRangeModelList = bundle.getParcelableArrayList(DatePickerConstant.EXTRA_DATE_PERIOD_LIST);
             adapter.setSelectedPosition(selection);
         }
         if (periodRangeModelList == null) {

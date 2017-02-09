@@ -10,8 +10,8 @@ import android.widget.Button;
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.datepicker.DatePickerActivity;
 import com.tokopedia.seller.lib.datepicker.DatePickerUtils;
+import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
 import com.tokopedia.seller.lib.datepicker.widget.DatePickerLabelView;
 
 import java.util.Calendar;
@@ -41,11 +41,11 @@ public class DatePickerCustomFragment extends TkpdFragment {
     public static DatePickerCustomFragment newInstance(long sDate, long eDate, long minStartDate, long maxEndDate, int maxDateRange) {
         DatePickerCustomFragment fragment = new DatePickerCustomFragment();
         Bundle bundle = new Bundle();
-        bundle.putLong(DatePickerActivity.CUSTOM_START_DATE, sDate);
-        bundle.putLong(DatePickerActivity.CUSTOM_END_DATE, eDate);
-        bundle.putLong(DatePickerActivity.MIN_START_DATE, minStartDate);
-        bundle.putLong(DatePickerActivity.MAX_END_DATE, maxEndDate);
-        bundle.putInt(DatePickerActivity.MAX_DATE_RANGE, maxDateRange);
+        bundle.putLong(DatePickerConstant.EXTRA_CUSTOM_START_DATE, sDate);
+        bundle.putLong(DatePickerConstant.EXTRA_CUSTOM_END_DATE, eDate);
+        bundle.putLong(DatePickerConstant.EXTRA_MIN_START_DATE, minStartDate);
+        bundle.putLong(DatePickerConstant.EXTRA_MAX_END_DATE, maxEndDate);
+        bundle.putInt(DatePickerConstant.EXTRA_MAX_DATE_RANGE, maxDateRange);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -66,11 +66,11 @@ public class DatePickerCustomFragment extends TkpdFragment {
         super.onViewCreated(view, savedInstanceState);
         Bundle bundle = getArguments();
         if (bundle != null) {
-            startDate = bundle.getLong(DatePickerActivity.CUSTOM_START_DATE, -1);
-            endDate = bundle.getLong(DatePickerActivity.CUSTOM_END_DATE, -1);
-            minStartDate = bundle.getLong(DatePickerActivity.MIN_START_DATE, -1);
-            maxEndDate = bundle.getLong(DatePickerActivity.MAX_END_DATE, -1);
-            maxDateRange = bundle.getInt(DatePickerActivity.MAX_DATE_RANGE, -1);
+            startDate = bundle.getLong(DatePickerConstant.EXTRA_CUSTOM_START_DATE, -1);
+            endDate = bundle.getLong(DatePickerConstant.EXTRA_CUSTOM_END_DATE, -1);
+            minStartDate = bundle.getLong(DatePickerConstant.EXTRA_MIN_START_DATE, -1);
+            maxEndDate = bundle.getLong(DatePickerConstant.EXTRA_MAX_END_DATE, -1);
+            maxDateRange = bundle.getInt(DatePickerConstant.EXTRA_MAX_DATE_RANGE, -1);
         }
         startDatePickerLabelView = (DatePickerLabelView) view.findViewById(R.id.date_picker_start_date);
         endDatePickerLabelView = (DatePickerLabelView) view.findViewById(R.id.date_picker_end_date);

@@ -110,18 +110,18 @@ public class TopAdsDatePickerPresenterImpl implements TopAdsDatePickerPresenter 
         maxCalendar.set(Calendar.SECOND, 0);
         maxCalendar.set(Calendar.MILLISECOND, 0);
 
-        intent.putExtra(DatePickerActivity.CUSTOM_START_DATE, startDate.getTime());
-        intent.putExtra(DatePickerActivity.CUSTOM_END_DATE, endDate.getTime());
+        intent.putExtra(DatePickerConstant.EXTRA_CUSTOM_START_DATE, startDate.getTime());
+        intent.putExtra(DatePickerConstant.EXTRA_CUSTOM_END_DATE, endDate.getTime());
 
-        intent.putExtra(DatePickerActivity.MIN_START_DATE, maxCalendar.getTimeInMillis());
-        intent.putExtra(DatePickerActivity.MAX_END_DATE, todayCalendar.getTimeInMillis());
-        intent.putExtra(DatePickerActivity.MAX_DATE_RANGE, TopAdsConstant.MAX_DATE_RANGE);
+        intent.putExtra(DatePickerConstant.EXTRA_MIN_START_DATE, maxCalendar.getTimeInMillis());
+        intent.putExtra(DatePickerConstant.EXTRA_MAX_END_DATE, todayCalendar.getTimeInMillis());
+        intent.putExtra(DatePickerConstant.EXTRA_MAX_DATE_RANGE, TopAdsConstant.MAX_DATE_RANGE);
 
-        intent.putExtra(DatePickerActivity.DATE_PERIOD_LIST, getPeriodRangeList());
-        intent.putExtra(DatePickerActivity.SELECTION_PERIOD, topAdsDatePickerInteractor.getLastSelectionDatePickerIndex());
-        intent.putExtra(DatePickerActivity.SELECTION_TYPE, topAdsDatePickerInteractor.getLastSelectionDatePickerType());
+        intent.putExtra(DatePickerConstant.EXTRA_DATE_PERIOD_LIST, getPeriodRangeList());
+        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, topAdsDatePickerInteractor.getLastSelectionDatePickerIndex());
+        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, topAdsDatePickerInteractor.getLastSelectionDatePickerType());
 
-        intent.putExtra(DatePickerActivity.PAGE_TITLE, activity.getString(R.string.title_date_picker));
+        intent.putExtra(DatePickerConstant.EXTRA_PAGE_TITLE, activity.getString(R.string.title_date_picker));
         return intent;
     }
 
