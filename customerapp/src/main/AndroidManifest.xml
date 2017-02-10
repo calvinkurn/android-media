@@ -104,9 +104,13 @@
         <meta-data
             android:name="APPSFLYER_KEY"
             android:value="@string/key_appsflyer" />
+        <!--<meta-data-->
+            <!--android:name="com.truecaller.android.sdk.PartnerKey"-->
+            <!--android:value="uid3Fac0bc435d9fd4fa38d6ceef911f7d39e" />-->
+        <!---->
         <meta-data
             android:name="com.truecaller.android.sdk.PartnerKey"
-            android:value="uid3Fac0bc435d9fd4fa38d6ceef911f7d39e" />
+            android:value="SjVFHa23dea572b1f4639907d58ccc3bff344" />
 
         <activity
             android:name=".home.ParentIndexHome"
