@@ -33,9 +33,10 @@
     </LinearLayout>
 
     <ImageButton
+        android:scaleType="fitXY"
         android:id="@+id/image_button_add_deposit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/topads_dashboard_size_image_plus"
+        android:layout_height="@dimen/topads_dashboard_size_image_plus"
         android:background="@null"
         android:src="@drawable/ic_add_green"/>
 </LinearLayout>

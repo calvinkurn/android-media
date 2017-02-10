@@ -49,19 +49,19 @@ public class TopAdsFilterGroupNameFragment extends TopAdsFilterRadioButtonFragme
     protected List<RadioButtonItem> getRadioButtonList() {
         List<RadioButtonItem> radioButtonItemList = new ArrayList<>();
         int position = 0;
-        if (!TextUtils.isEmpty(currentGroupName)) {
-            RadioButtonItem radioButtonItem = new RadioButtonItem();
-            radioButtonItem.setName(currentGroupName);
-            radioButtonItem.setValue(String.valueOf(currentGroupId));
-            radioButtonItem.setPosition(position++);
-            radioButtonItemList.add(radioButtonItem);
-        }
         String[] statusValueList = getResources().getStringArray(R.array.filter_group_name_list_values);
         String[] statusNameList = getResources().getStringArray(R.array.filter_group_name_list_names);
         for (int i = 0; i < statusNameList.length; i++) {
             RadioButtonItem radioButtonItem = new RadioButtonItem();
             radioButtonItem.setName(statusNameList[i]);
             radioButtonItem.setValue(statusValueList[i]);
+            radioButtonItem.setPosition(position++);
+            radioButtonItemList.add(radioButtonItem);
+        }
+        if (!TextUtils.isEmpty(currentGroupName)) {
+            RadioButtonItem radioButtonItem = new RadioButtonItem();
+            radioButtonItem.setName(currentGroupName);
+            radioButtonItem.setValue(String.valueOf(currentGroupId));
             radioButtonItem.setPosition(position++);
             radioButtonItemList.add(radioButtonItem);
         }

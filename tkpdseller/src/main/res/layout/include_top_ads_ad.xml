@@ -50,8 +50,7 @@
 
         <TextView
             style="@style/TextView.TopAdsListTitle"
-            android:text="@string/label_top_ads_sent"
-            android:textStyle="normal"/>
+            android:text="@string/label_top_ads_sent"/>
 
         <TextView
             android:id="@+id/promo_price_used"

@@ -4,9 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?android:attr/selectableItemBackground"
-    android:orientation="horizontal"
-    android:paddingLeft="@dimen/top_ads_dashboard_padding_cards"
-    android:paddingStart="@dimen/top_ads_dashboard_padding_cards">
+    android:orientation="horizontal">
 
     <RadioButton
         android:id="@+id/radio_button"

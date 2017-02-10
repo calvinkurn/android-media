@@ -35,6 +35,7 @@ import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
  */
 public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> extends TopAdsDatePickerFragment<T> implements TopAdsDetailViewListener, CompoundButton.OnCheckedChangeListener {
 
+    TopAdsLabelView priceAndSchedule;
     TopAdsLabelView name;
     TopAdsLabelSwitch status;
     TopAdsLabelView maxBid;
@@ -81,6 +82,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         ctr = (TopAdsLabelView) view.findViewById(R.id.ctr);
         favorite = (TopAdsLabelView) view.findViewById(R.id.favorite);
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+        priceAndSchedule = (TopAdsLabelView) view.findViewById(R.id.title_price_and_schedule);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
         snackbarRetryOnAd = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
@@ -215,7 +217,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
                 break;
         }
         status.setSwitchStatusText(ad.getStatusDesc());
-        maxBid.setContent(ad.getPriceBidFmt());
+        maxBid.setContent(getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
         avgCost.setContent(ad.getStatAvgClick());
         start.setContent(ad.getStartDate() + " - " + ad.getStartTime());
         if (TextUtils.isEmpty(ad.getEndTime())) {
@@ -223,7 +225,11 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         } else {
             end.setContent(getString(R.string.top_ads_range_date_text, ad.getEndDate(), ad.getEndTime()));
         }
-        dailyBudget.setContent(ad.getPriceDailyFmt());
+        if(TextUtils.isEmpty(ad.getPriceDailySpentFmt())) {
+            dailyBudget.setContent(ad.getPriceDailyFmt());
+        }else{
+            dailyBudget.setContent(getString(R.string.topads_format_daily_budget, ad.getPriceDailySpentFmt(), ad.getPriceDailyFmt()));
+        }
         sent.setContent(ad.getStatTotalSpent());
         impr.setContent(ad.getStatTotalImpression());
         click.setContent(ad.getStatTotalClick());
