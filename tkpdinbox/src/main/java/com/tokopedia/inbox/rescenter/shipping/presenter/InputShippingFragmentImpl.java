@@ -320,8 +320,8 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         }
 
         if (isInstanceForEdit()
-                && isShippingRefNumEditted(params.getShippingNumber())
-                && isShippingEditted(params.getShippingID())) {
+                && isShippingRefNumSame(params.getShippingNumber())
+                        && isShippingsSame(params.getShippingID())) {
             viewListener.getShippingRefNum().setError(viewListener.getActivity().getString(R.string.error_update_receipt_number));
             return false;
         }
@@ -334,12 +334,12 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                 && !viewListener.getParamsModel().getConversationID().isEmpty();
     }
 
-    private boolean isShippingRefNumEditted(String shippingRefNum) {
+    private boolean isShippingRefNumSame(String shippingRefNum) {
         return shippingRefNum.equals(viewListener.getParamsModel().getShippingRefNum());
     }
 
-    private boolean isShippingEditted(String shippingID) {
-        return !shippingID.equals(viewListener.getParamsModel().getShippingID());
+    private boolean isShippingsSame(String shippingID) {
+        return shippingID.equals(viewListener.getParamsModel().getShippingID());
     }
 
     private ResCenterKurir.Kurir getSelectedKurir() throws Exception {
