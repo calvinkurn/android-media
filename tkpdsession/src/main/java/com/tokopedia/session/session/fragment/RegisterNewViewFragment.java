@@ -129,7 +129,7 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
     public void showErrorValidateEmail() {
 //        showProgress(false);
         showErrorValidateEmail(getString(R.string.alert_email_address_is_already_registered));
-        presenter.sendGTMRegisterError(getActivity(), AppEventTracking.EventLabel.EMAIL);
+        presenter.sendGTMRegisterError(AppEventTracking.EventLabel.EMAIL);
     }
 
     @Override
@@ -139,7 +139,7 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
         snackbar.show();
         enableDisableAllFieldsForEmailValidationForm(true);
 
-        presenter.sendGTMRegisterError(getActivity(), AppEventTracking.EventLabel.EMAIL);
+        presenter.sendGTMRegisterError(AppEventTracking.EventLabel.EMAIL);
     }
 
     @Override
@@ -277,12 +277,12 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
             setWrapperError(wrapperPassword, getString(R.string.error_field_required));
             focusView = registerPassword;
             cancel = true;
-            presenter.sendGTMRegisterError(getActivity(), AppEventTracking.EventLabel.PASSWORD);
+            presenter.sendGTMRegisterError(AppEventTracking.EventLabel.PASSWORD);
         } else if (mPassword.length() < PASSWORD_MINIMUM_LENGTH) {
             setWrapperError(wrapperPassword, getString(R.string.error_invalid_password));
             focusView = registerPassword;
             cancel = true;
-            presenter.sendGTMRegisterError(getActivity(), AppEventTracking.EventLabel.PASSWORD);
+            presenter.sendGTMRegisterError(AppEventTracking.EventLabel.PASSWORD);
         }
 
         // Check for a valid email address.
@@ -290,12 +290,12 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
             setWrapperError(wrapperEmail, getString(R.string.error_field_required));
             focusView = registerName;
             cancel = true;
-            presenter.sendGTMRegisterError(getActivity(), AppEventTracking.EventLabel.EMAIL);
+            presenter.sendGTMRegisterError(AppEventTracking.EventLabel.EMAIL);
         } else if (!CommonUtils.EmailValidation(mEmail)) {
             setWrapperError(wrapperEmail, getString(R.string.error_invalid_email));
             focusView = registerName;
             cancel = true;
-            presenter.sendGTMRegisterError(getActivity(), AppEventTracking.EventLabel.EMAIL);
+            presenter.sendGTMRegisterError(AppEventTracking.EventLabel.EMAIL);
         }
 
         // Check for a valid name.
@@ -303,17 +303,17 @@ public class RegisterNewViewFragment extends BaseFragment<RegisterNew> implement
             setWrapperError(wrapperName, getString(R.string.error_field_required));
             focusView = name;
             cancel = true;
-//            sendGTMRegisterError(AppEventTracking.EventLabel.FULLNAME);
+            presenter.sendGTMRegisterError(AppEventTracking.EventLabel.FULLNAME);
         }else if(RegisterNewImpl.RegisterUtil.checkRegexNameLocal(mName)){
             setWrapperError(wrapperName, getString(R.string.error_illegal_character));
             focusView = name;
             cancel = true;
-//            sendGTMRegisterError(AppEventTracking.EventLabel.FULLNAME);
+            presenter.sendGTMRegisterError(AppEventTracking.EventLabel.FULLNAME);
         }else if(RegisterNewImpl.RegisterUtil.isExceedMaxCharacter(mName)){
             setWrapperError(wrapperName, getString(R.string.error_max_35_character));
             focusView = name;
             cancel = true;
-//            sendGTMRegisterError(AppEventTracking.EventLabel.FULLNAME);
+            presenter.sendGTMRegisterError(AppEventTracking.EventLabel.FULLNAME);
         }
 
         if (cancel) {

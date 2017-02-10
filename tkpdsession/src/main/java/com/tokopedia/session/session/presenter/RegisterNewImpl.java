@@ -226,12 +226,8 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
 
 
     @Override
-    public void sendGTMRegisterError(Context context, String label) {
-        Nishikino.init(context).startAnalytics().sendButtonClick(
-                AppEventTracking.Event.REGISTER_ERROR,
-                AppEventTracking.Category.REGISTER,
-                AppEventTracking.Action.REGISTER_ERROR,
-                label);
+    public void sendGTMRegisterError(String label) {
+        UnifyTracking.eventRegisterError(label);
     }
 
     @Override
