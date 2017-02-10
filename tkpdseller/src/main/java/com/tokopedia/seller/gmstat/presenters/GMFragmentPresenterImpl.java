@@ -2,6 +2,7 @@ package com.tokopedia.seller.gmstat.presenters;
 
 import android.content.res.AssetManager;
 import android.support.annotation.IntRange;
+import android.util.Log;
 
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
 import com.tokopedia.core.rxjava.RxUtils;

@@ -34,6 +34,8 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer.DrawerVariable;
@@ -585,5 +587,14 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         intent.putExtra(Intent.EXTRA_SUBJECT, "Masalah Server Error");
         intent.putExtra(Intent.EXTRA_TEXT, "Versi Aplikasi: " + GlobalConfig.VERSION_CODE);
         startActivity(Intent.createChooser(intent, "Kirim Email"));
+    }
+
+    protected AppComponent getApplicationComponent() {
+        return ((MainApplication) getApplication())
+                .getApplicationComponent(getActivityModule());
+    }
+
+    protected ActivityModule getActivityModule() {
+        return new ActivityModule(this);
     }
 }

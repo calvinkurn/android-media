@@ -72,7 +72,7 @@ public class OnboardingSellerActivity extends OnboardingActivity{
     @Override
     public void onDonePressed() {
         if (isUserHasShop()) {
-            startActivity(new Intent(this, SellerHomeActivity.class));
+            startActivity(new Intent(this, SellerHomeActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
         } else if (SessionHandler.isMsisdnVerified()){
             Intent intent = SellerRouter.getAcitivityShopCreateEdit(this);
             intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
