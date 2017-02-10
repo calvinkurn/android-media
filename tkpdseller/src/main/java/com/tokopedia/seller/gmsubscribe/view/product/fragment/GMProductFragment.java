@@ -97,7 +97,7 @@ public abstract class GMProductFragment
 
     @Override
     public void onSaveState(Bundle bundle) {
-        presenter.detachView();
+
     }
 
     @Override
@@ -146,6 +146,12 @@ public abstract class GMProductFragment
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.MAIN_PROGRESS);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
     }
 
     @Override

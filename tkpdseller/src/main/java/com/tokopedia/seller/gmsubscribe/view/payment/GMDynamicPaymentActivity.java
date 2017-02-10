@@ -163,15 +163,15 @@ public class GMDynamicPaymentActivity extends BasePresenterActivity {
             if (url.contains(callbackUrl)) {
                 view.stopLoading();
                 processRedirectUrlContainsTopPayCallbackUrl(url);
-                return true;
+                return super.shouldOverrideUrlLoading(view, url);
             } else if (url.contains(CONTAINS_ACCOUNT_URL)) {
                 view.stopLoading();
                 processRedirectUrlContainsAccountUrl(url);
-                return true;
+                return super.shouldOverrideUrlLoading(view, url);
             } else if (url.contains(CONTAINS_LOGIN_URL)) {
                 view.stopLoading();
                 processRedirectUrlContainsLoginUrl();
-                return true;
+                return super.shouldOverrideUrlLoading(view, url);
             } else {
                 return super.shouldOverrideUrlLoading(view, url);
             }

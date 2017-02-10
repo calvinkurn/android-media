@@ -83,7 +83,7 @@ public class GMProductAdapter extends BaseLinearRecyclerViewAdapter {
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return data.size() + super.getItemCount();
     }
 
     public void addItem(List<GMProductViewModel> lists){
