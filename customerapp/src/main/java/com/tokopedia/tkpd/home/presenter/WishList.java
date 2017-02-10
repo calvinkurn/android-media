@@ -82,4 +82,6 @@ public interface WishList {
     void deleteWishlist(Context context, String productId);
 
     void addToCart(Context context, String productId);
+
+    boolean isLoadedFirstPage();
 }

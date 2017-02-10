@@ -3,9 +3,7 @@ package com.tokopedia.core.session;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.hardware.camera2.params.Face;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -31,11 +29,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdUrl;
 
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import retrofit2.Response;
@@ -166,23 +160,6 @@ public class DialogLogoutFragment extends DialogFragment {
         return response.getErrorMessages().contains(temp);
     }
 
-    private void logoutWsNew(Context context) {
-        com.tokopedia.core.network.NetworkHandler network = new com.tokopedia.core.network.NetworkHandler(context, TkpdUrl.GCM_HELPER);
-        network.AddParam("act", "remove_user_id_from_gcm");
-        network.Commit(new com.tokopedia.core.network.NetworkHandler.NetworkHandlerListener() {
-            @Override
-            public void onSuccess(Boolean status) {
-            }
-
-            @Override
-            public void getResponse(JSONObject Result) {
-            }
-
-            @Override
-            public void getMessageError(ArrayList<String> MessageError) {
-            }
-        });
-    }
 
     @Override
     public void onResume() {
@@ -194,7 +171,6 @@ public class DialogLogoutFragment extends DialogFragment {
             public void onClick(View v) {
                 progressDialog.showDialog();
                 logoutToTheInternet(getActivity());
-                logoutWsNew(getActivity());
                 okButton.setClickable(false);
 
                 UnifyTracking.eventLogoutLoca();

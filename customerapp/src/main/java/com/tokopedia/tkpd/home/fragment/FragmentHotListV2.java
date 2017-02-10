@@ -179,7 +179,7 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
 //                switch (getResources().getConfiguration().orientation){
 //                    case Configuration.ORIENTATION_LANDSCAPE:
 //                        headerColumnSize = 2;
-//                        regularColumnSize = FragmentProductFeed.LANDSCAPE_COLUMN;
+//                        regularColumnSize = DaggerFragmentProductFeed.LANDSCAPE_COLUMN;
 //                        footerColumnSize = 2;
 //                        break;
 //                    case Configuration.ORIENTATION_PORTRAIT:

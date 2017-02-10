@@ -518,6 +518,9 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     public void processOtp(String otpCode) {
         if (vInputOtp != null)
             vInputOtp.setText(otpCode);
+        securityQuestion.saveOTPAnswer(otpCode);// this is for rotation
+        securityQuestion.doAnswerQuestion(otpCode);
+
     }
 
     @Override

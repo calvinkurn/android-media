@@ -23,7 +23,6 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.UploadImageHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.transaction.purchase.activity.TxDetailActivity;
 import com.tokopedia.transaction.purchase.activity.TxHistoryActivity;
@@ -137,25 +136,6 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
         Intent intent = new Intent(context, TrackingActivity.class);
         intent.putExtra("OrderID", orderData.getOrderDetail().getDetailOrderId());
         viewListener.navigateToActivity(intent);
-    }
-
-    @Override
-    public void processUploadProof(Context context, OrderData orderData) {
-        UploadImageHandler uploadImage = new UploadImageHandler((Activity) context,
-                "image-upload-tcpdn.pl", "image");
-        uploadImage.AddEntity("upload_proof", "1");
-        uploadImage.Commit(new UploadImageHandler.UploadImageInterface() {
-
-            @Override
-            public void onUploadStart() {
-                viewListener.showProgressLoading();
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-        });
     }
 
     @Override

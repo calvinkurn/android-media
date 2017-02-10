@@ -34,6 +34,8 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer.DrawerVariable;
@@ -56,7 +58,6 @@ import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.PhoneVerificationUtil;
-import com.tokopedia.core.util.RequestManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdCache;
@@ -291,8 +292,6 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
     protected void onDestroy() {
         super.onDestroy();
         isPause = true;
-        RequestManager.clearRequestList(this.getClass().getSimpleName());
-        RequestManager.cancelAllRequest();
         unbindLogService();
         unregisterHadesReceiver();
         if (!GlobalConfig.isSellerApp()) {
@@ -585,5 +584,14 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
         intent.putExtra(Intent.EXTRA_SUBJECT, "Masalah Server Error");
         intent.putExtra(Intent.EXTRA_TEXT, "Versi Aplikasi: " + GlobalConfig.VERSION_CODE);
         startActivity(Intent.createChooser(intent, "Kirim Email"));
+    }
+
+    protected AppComponent getApplicationComponent() {
+        return ((MainApplication) getApplication())
+                .getApplicationComponent(getActivityModule());
+    }
+
+    protected ActivityModule getActivityModule() {
+        return new ActivityModule(this);
     }
 }
