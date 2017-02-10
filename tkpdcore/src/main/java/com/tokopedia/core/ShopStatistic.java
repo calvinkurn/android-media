@@ -3,7 +3,6 @@ package com.tokopedia.core;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.network.NetworkHandler;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -78,7 +76,6 @@ public class ShopStatistic extends TActivity {
 	private LinearLayout medal;
 	private View openDetailStatistic;
 	//private ListViewShipmentSupport ShippingAgencyAdapter;
-	private NetworkHandler network;
 	// TODO HEre
 	//private LinearLayout PaymentSupportListView;
 	//private ListViewShipmentSupport PaymentAdapter;

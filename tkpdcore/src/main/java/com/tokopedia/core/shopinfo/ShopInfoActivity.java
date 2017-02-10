@@ -462,7 +462,7 @@ public class ShopInfoActivity extends TActivity
         holder.indicator.setupWithViewPager(holder.pager);
         holder.pager.addOnPageChangeListener(new
                 TabLayout.TabLayoutOnPageChangeListener(holder.indicator));
-        holder.indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(holder.pager));
+        holder.indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(this,holder.pager));
         shopModel.info.shopName = MethodChecker.fromHtml(shopModel.info.shopName).toString();
         setListener();
         holder.collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);

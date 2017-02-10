@@ -80,8 +80,7 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
             parentViewHolder.setCheckboxVisibility(View.GONE);
             parentViewHolder.dynamicParentViewHolderText.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
-                    toggleGroup(position);
+                public void onClick(View v) {toggleGroup(position);
                 }
             });
         } else if (dynamicObject.getIndentation() == 1) {

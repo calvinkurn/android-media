@@ -58,7 +58,6 @@ import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.PhoneVerificationUtil;
-import com.tokopedia.core.util.RequestManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdCache;
@@ -293,8 +292,6 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
     protected void onDestroy() {
         super.onDestroy();
         isPause = true;
-        RequestManager.clearRequestList(this.getClass().getSimpleName());
-        RequestManager.cancelAllRequest();
         unbindLogService();
         unregisterHadesReceiver();
         if (!GlobalConfig.isSellerApp()) {

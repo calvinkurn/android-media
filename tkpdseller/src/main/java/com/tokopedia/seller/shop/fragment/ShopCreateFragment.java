@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -30,13 +29,11 @@ import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.PhoneVerificationUtil;
 import com.tokopedia.seller.shop.ShopEditorActivity;
 import com.tokopedia.seller.shop.presenter.ShopCreatePresenter;
 import com.tokopedia.seller.shop.presenter.ShopCreatePresenterImpl;
 import com.tokopedia.seller.shop.presenter.ShopCreateView;
-import com.tokopedia.core.util.PhoneVerificationUtil;
-import com.tokopedia.core.util.UploadImageReVamp;
-
 
 import java.io.File;
 
@@ -54,6 +51,7 @@ import static com.tokopedia.seller.shop.presenter.ShopCreatePresenter.TAG_ERROR;
  */
 public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implements ShopCreateView {
 
+    public static final int REQUEST_CAMERA = 111;
     private TkpdProgressDialog progressDialog;
 
     // SUBMIT BUTTON
@@ -336,7 +334,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         String imageLocation = null;
-        if(requestCode == UploadImageReVamp.REQUEST_CAMERA || requestCode == ImageGallery.TOKOPEDIA_GALLERY) {
+        if(requestCode == REQUEST_CAMERA || requestCode == ImageGallery.TOKOPEDIA_GALLERY) {
             switch (resultCode) {
                 case GalleryBrowser.RESULT_CODE:
                     imageLocation = data.getStringExtra(ImageGallery.EXTRA_URL);
