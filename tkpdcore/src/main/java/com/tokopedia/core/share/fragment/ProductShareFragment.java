@@ -95,7 +95,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     @BindView(R2.id.text_subtitle)
     TextView subtitle;
     private BroadcastReceiver addProductReceiver;
-    private boolean isAdding;
+    private boolean isAdding = false;
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
     private ProductShareFragmentCallback fragmentCallback;
@@ -294,15 +294,13 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
 
     @Override
     protected void setViewListener() {
+        addingProduct(isAdding);
         addProductReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Bundle bundle = intent.getExtras();
                 int status = bundle.getInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR);
                 switch (status){
-                    case TkpdState.ProductService.STATUS_RUNNING:
-                        addingProduct(true);
-                        break;
                     case TkpdState.ProductService.STATUS_DONE:
                         setData(bundle);
                         addingProduct(false);
