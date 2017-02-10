@@ -57,15 +57,26 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
         }
     };
 
+    public static DynamicFilterCategoryFragment newInstance(boolean isFromCategory) {
+
+        DynamicFilterCategoryFragment dynamicFilterCategoryFragment = new DynamicFilterCategoryFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(DynamicFilterPresenter.EXTRA_FROM_CATEGORY, isFromCategory);
+        dynamicFilterCategoryFragment.setArguments(bundle);
+        return dynamicFilterCategoryFragment;
+
+    }
+
 
     public static DynamicFilterCategoryFragment newInstance(List<Breadcrumb> breadCrumb, List<Filter> filterList,
-                                                            String currentCategory) {
+                                                            String currentCategory, boolean isFromCategory) {
 
         DynamicFilterCategoryFragment dynamicFilterCategoryFragment = new DynamicFilterCategoryFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(DynamicFilterPresenter.EXTRA_PRODUCT_BREADCRUMB_LIST, Parcels.wrap(breadCrumb));
         bundle.putParcelable(DynamicFilterPresenter.EXTRA_FILTER_CATEGORY_LIST, Parcels.wrap(filterList));
         bundle.putString(DynamicFilterPresenter.EXTRA_CURRENT_CATEGORY, currentCategory);
+        bundle.putBoolean(DynamicFilterPresenter.EXTRA_FROM_CATEGORY, isFromCategory);
         dynamicFilterCategoryFragment.setArguments(bundle);
         return dynamicFilterCategoryFragment;
 
@@ -138,6 +149,10 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
         });
         dynamicCategoryAdapter.addAll(dynamicParentObject);
         dynamicCategoryAdapter.expandCheckedCategory();
+        Bundle bundle = this.getArguments();
+        if (bundle != null && bundle.containsKey(DynamicFilterPresenter.EXTRA_FROM_CATEGORY)
+                && bundle.getBoolean(DynamicFilterPresenter.EXTRA_FROM_CATEGORY))
+            dynamicCategoryAdapter.expandGroup(0);
     }
 
     @Override
