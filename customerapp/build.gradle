@@ -74,7 +74,7 @@ android {
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion '25'
+    buildToolsVersion '24.0.2'
     useLibrary 'org.apache.http.legacy'
     sourceSets {
 
@@ -199,7 +199,7 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
-    /*compile (rootProject.ext.tkpdDependencies.inbox) {
+    compile (rootProject.ext.tkpdDependencies.inbox) {
         exclude group: 'com.tokopedia.core'
     }
     compile (rootProject.ext.tkpdDependencies.discovery) {
@@ -207,7 +207,7 @@ dependencies {
     }
     compile (rootProject.ext.tkpdDependencies.transaction) {
         exclude group: 'com.tokopedia.core'
-    }
+    }/*
     compile (rootProject.ext.tkpdDependencies.seller) {
         exclude group: 'com.tokopedia.core'
     }
@@ -215,11 +215,11 @@ dependencies {
         exclude group: 'com.tokopedia.core'
     }
     compile (rootProject.ext.tkpdDependencies.core)*/
-    compile project(':tkpddiscovery')
-    compile project(':tkpdtransaction')
+//    compile project(':tkpddiscovery')
+//    compile project(':tkpdtransaction')
     compile project(':tkpdseller')
     compile project(':tkpdsession')
-    compile project(':tkpdinbox')
+//    compile project(':tkpdinbox')
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'

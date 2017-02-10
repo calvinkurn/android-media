@@ -1029,6 +1029,12 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         addProductChevronPreorder = (ImageView) view.findViewById(R.id.chevron_preorder);
         addProductPreOderContent = (ExpandableRelativeLayout) view.findViewById(R.id.preorder_content);
         addProductEdittextPreorder = (EditText) view.findViewById(R.id.edittext_preorder);
+        view.findViewById(R.id.title_preorder).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                togglePreOder();
+            }
+        });
         addProductEdittextPreorder.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

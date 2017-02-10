@@ -1648,7 +1648,7 @@ public class ProductService extends IntentService implements ProductServiceConst
 
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
         params.put(PIC_OBJ, net.getContent().get(PIC_OBJ));
-        return RetrofitUtils.createRetrofit().create(ProductActApi.class).editPicture(AuthUtil.generateParamsNetwork(getApplicationContext(),params));
+        return new ProductActService().getApi().editPicture(AuthUtil.generateParamsNetwork(getApplicationContext(),params));
     }
 
     public Observable<Response<TkpdResponse>> deleteEditProduct(String productId, String userId, String deviceId, String pictureId, String shopId) {
