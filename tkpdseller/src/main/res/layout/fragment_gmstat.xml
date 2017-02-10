@@ -47,7 +47,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-                    <com.tokopedia.seller.gmstat.views.williamchart.chart.view.LineChartView
+                    <com.tokopedia.seller.lib.williamchart.view.LineChartView
                         android:id="@+id/gross_income_graph2"
                         android:layout_width="match_parent"
                         android:layout_height="240dp"
