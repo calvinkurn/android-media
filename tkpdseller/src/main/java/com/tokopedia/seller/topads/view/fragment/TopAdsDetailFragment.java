@@ -216,7 +216,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         }
         status.setSwitchStatusText(ad.getStatusDesc());
         maxBid.setContent(ad.getPriceBidFmt());
-        avgCost.setContent(ad.getStatTotalSpent());
+        avgCost.setContent(ad.getStatAvgClick());
         start.setContent(ad.getStartDate() + " - " + ad.getStartTime());
         if (TextUtils.isEmpty(ad.getEndTime())) {
             end.setContent(ad.getEndDate());
