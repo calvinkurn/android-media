@@ -66,6 +66,7 @@ import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.customView.SimpleListView;
 import com.tokopedia.core.customadapter.ListViewManageProdAdapter;
@@ -296,6 +297,9 @@ public class ManageProduct extends TkpdActivity implements
                 if (!fabAddProduct.isShown()) {
                     fabAddProduct.setVisibility(View.VISIBLE);
                 }
+
+                // analytic below : https://phab.tokopedia.com/T18496
+                UnifyTracking.eventClickAPManageProductPlus();
             }
         });
 
@@ -307,6 +311,8 @@ public class ManageProduct extends TkpdActivity implements
                 if (id == R.id.action_instagram) {
                     onAddInstagram();
 
+                    // analytic below : https://phab.tokopedia.com/T18496
+                    UnifyTracking.eventClickInstoped();
                 } else if (id == R.id.action_gallery) {
                     ManageProductPermissionsDispatcher.onAddFromGalleryWithCheck(ManageProduct.this);
 
@@ -718,6 +724,9 @@ public class ManageProduct extends TkpdActivity implements
         if (item.getItemId() == R.id.add_product) {
             if (isProdManager == 1) {
                 ProductActivity.moveToAddProduct(this);
+
+                // analytic below : https://phab.tokopedia.com/T18496
+                UnifyTracking.eventClickAPManageProductTop();
             } else {
                 CommonUtils.UniversalToast(getBaseContext(),
                         getString(R.string.error_permission));

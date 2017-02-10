@@ -4,6 +4,9 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.tkpd.library.utils.network.BaseNetworkController;
+import com.tkpd.library.utils.network.CommonListener;
+import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.network.apiservices.transaction.DepositService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -16,8 +19,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
-import static com.tokopedia.sellerapp.home.utils.ShopNetworkController.onResponseError;
 
 /**
  * Created by normansyahputa on 8/31/16.
@@ -57,7 +58,7 @@ public class DepositNetworkController extends BaseNetworkController {
                                         DepositModel.Data depositModel = gson.fromJson(stringData, DepositModel.Data.class);
                                         depositListener.onSuccess(depositModel);
                                     }else {
-                                        throw new ShopNetworkController.MessageErrorException(response.body().getErrorMessages().get(0));
+                                        throw new MessageErrorException(response.body().getErrorMessages().get(0));
                                     }
                                 } else {
                                     onResponseError(response.code(), depositListener);
@@ -72,7 +73,7 @@ public class DepositNetworkController extends BaseNetworkController {
         return depositService.getApi().getDeposit(AuthUtil.generateParams(userId, deviceId, new HashMap<String, String>()));
     }
 
-    public interface DepositListener extends ShopNetworkController.CommonListener{
+    public interface DepositListener extends CommonListener {
         void onSuccess(DepositModel.Data depositModel);
     }
 }

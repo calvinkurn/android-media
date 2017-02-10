@@ -20,7 +20,7 @@ public class TopAdsDetailShopActivity extends TActivity {
             ad = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
         }
         getFragmentManager().beginTransaction().disallowAddToBackStack()
-                .add(R.id.container, TopAdsDetailShopFragment.createInstance(ad), TopAdsDetailProductFragment.class.getSimpleName())
+                .replace(R.id.container, TopAdsDetailShopFragment.createInstance(ad), TopAdsDetailProductFragment.class.getSimpleName())
                 .commit();
     }
 

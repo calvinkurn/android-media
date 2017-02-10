@@ -172,7 +172,23 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_ADD_PRODUCT;
+        String screenName = null;
+        switch (addProductType){
+            case COPY:
+                screenName = AppScreen.SCREEN_COPY_PRODUCT;
+                break;
+            case ADD_FROM_SOCIAL_MEDIA:
+            case ADD:
+            case ADD_MULTIPLE_FROM_GALERY:
+            case EDIT:
+            case MODIFY:
+            case ADD_FROM_GALLERY:
+            default:
+                screenName = AppScreen.SCREEN_ADD_PRODUCT;
+                break;
+        }
+
+        return screenName;
     }
 
     public void removeImageSelected(int i) {
