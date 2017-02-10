@@ -165,6 +165,8 @@
     <string name="label_top_ads_promo_group">Nama Grup</string>
     <string name="label_topads_price_and_schedule">Biaya &amp; Jadwal</string>
     <string name="topads_title_review_statistic">Ringkasan Statistik</string>
+    <string name="topads_format_daily_budget">%1$s / %2$s</string>
+    <string name="topads_label_title_price_promo">Biaya Promo</string>
 
     <string name="label_today">Hari Ini</string>
     <string name="label_this_month">Bulan Ini</string>

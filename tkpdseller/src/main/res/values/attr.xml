@@ -19,6 +19,7 @@
             <flag name="bold" value="1" />
             <flag name="italic" value="2" />
         </attr>
+        <attr name="content_small" format="boolean"/>
     </declare-styleable>
     <declare-styleable name="loader_view">
         <attr name="width_weight" format="float" />

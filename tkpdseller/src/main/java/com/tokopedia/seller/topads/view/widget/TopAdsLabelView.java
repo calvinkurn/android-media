@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -27,6 +28,7 @@ public class TopAdsLabelView extends FrameLayout {
     private int colorValue;
     private int contentTextStyleValue;
     private int titleTextStyleValue;
+    private boolean contentSmall;
 
     public TopAdsLabelView(Context context) {
         super(context);
@@ -52,6 +54,7 @@ public class TopAdsLabelView extends FrameLayout {
             colorValue = styledAttributes.getColor(R.styleable.TopAdsLabelView_content_color, ContextCompat.getColor(getContext(), R.color.grey));
             contentTextStyleValue = styledAttributes.getInt(R.styleable.TopAdsLabelView_content_textStyle, Typeface.NORMAL);
             titleTextStyleValue = styledAttributes.getInt(R.styleable.TopAdsLabelView_title_textStyle, Typeface.NORMAL);
+            contentSmall = styledAttributes.getBoolean(R.styleable.TopAdsLabelView_content_small, false);
         } finally {
             styledAttributes.recycle();
         }
@@ -65,8 +68,16 @@ public class TopAdsLabelView extends FrameLayout {
         contentTextView.setTextColor(colorValue);
         contentTextView.setTypeface(null, contentTextStyleValue);
         titleTextView.setTypeface(null, titleTextStyleValue);
+        if(contentSmall){
+            setContentSmall();
+        }
         invalidate();
         requestLayout();
+    }
+
+    public void setContentSmall() {
+        titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        contentTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
     }
 
     private void init() {
