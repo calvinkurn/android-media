@@ -163,6 +163,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_rupiah">Rp</string>
     <string name="error_image_resolution">Ukuran minimal gambar adalah 300x300 pixel</string>
     <string name="dialog_delete_product">Apakah Anda ingin menghapus produk ini?</string>
+    <string name="dialog_cancel_add_product">Perubahan yang anda lakukan tidak akan tersimpan. Lanjutkan?</string>
     <string name="dialog_no_memory_card">No memory card!</string>
     <string name="dialog_upload_option">Bagaimana Anda ingin mengatur gambar Anda ?</string>
     <string name="title_gallery">Gallery</string>

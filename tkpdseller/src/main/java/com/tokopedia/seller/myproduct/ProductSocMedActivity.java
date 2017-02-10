@@ -1,7 +1,10 @@
 package com.tokopedia.seller.myproduct;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -15,7 +18,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.Window;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ArrayFragmentStatePagerAdapter;
@@ -547,4 +552,35 @@ public class ProductSocMedActivity extends BaseProductActivity implements
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK) {
+            //Ask the user if they want to quit
+            AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
+            myAlertDialog.setMessage(getString(com.tokopedia.seller.R.string.dialog_cancel_add_product));
+
+            myAlertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
+
+            myAlertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface arg0, int arg1) {
+
+                }
+            });
+            Dialog dialog = myAlertDialog.create();
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.show();
+
+            return true;
+        }
+        else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
+
 }
