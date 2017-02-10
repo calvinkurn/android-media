@@ -103,7 +103,7 @@
                         android:id="@+id/percentage" />
                 </LinearLayout>
             </RelativeLayout>
-            <com.tokopedia.seller.gmstat.views.williamchart.chart.view.LineChartView
+            <com.tokopedia.seller.lib.williamchart.view.LineChartView
                 android:id="@+id/transaction_chart"
                 android:layout_width="0dp"
                 android:layout_weight="0.7"
