@@ -62,7 +62,7 @@ public class TkpdAuthInterceptor implements Interceptor {
         } else if (isServerError(response.code())) {
             showServerErrorSnackbar();
             sendErrorNetworkAnalytics(response);
-            throw new IOException();
+//            throw new IOException();
         }
 
 
