@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
@@ -20,6 +21,7 @@ public class TopAdsLabelView extends FrameLayout {
 
     TextView titleTextView;
     TextView contentTextView;
+    ImageView arrow;
     private String titleText;
     private String valueText;
     private int colorValue;
@@ -71,6 +73,7 @@ public class TopAdsLabelView extends FrameLayout {
         View view = inflate(getContext(), R.layout.item_detail_topads_layout, this);
         titleTextView = (TextView) view.findViewById(R.id.title_text_view);
         contentTextView = (TextView) view.findViewById(R.id.content_text_view);
+        arrow = (ImageView) view.findViewById(R.id.arrow_left);
     }
 
     public void setTitle(String textTitle) {
@@ -101,6 +104,14 @@ public class TopAdsLabelView extends FrameLayout {
         contentTextView.setTextColor(colorValue);
         invalidate();
         requestLayout();
+    }
+
+    public void setVisibleArrow(boolean isVisible){
+        if(isVisible){
+            arrow.setVisibility(VISIBLE);
+        }else{
+            arrow.setVisibility(GONE);
+        }
     }
 
     public String getTitle() {

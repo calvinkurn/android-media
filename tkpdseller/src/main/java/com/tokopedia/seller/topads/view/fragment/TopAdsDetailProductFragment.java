@@ -110,11 +110,21 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         if (isHasGroupAd()) {
             promoGroupLabelView.setContent(groupName);
             promoGroupLabelView.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.green_200));
+            hiddenItemProductHasGroup();
         } else {
             promoGroupLabelView.setContent(getString(R.string.label_top_ads_empty_group));
             promoGroupLabelView.setContentColorValue(ContextCompat.getColor(getActivity(), android.R.color.tab_indicator_text));
         }
 
+    }
+
+    /**
+     * hidden start, end and daily budget when product has group
+     */
+    private void hiddenItemProductHasGroup() {
+        start.setVisibility(View.GONE);
+        end.setVisibility(View.GONE);
+        dailyBudget.setVisibility(View.GONE);
     }
 
     private boolean isHasGroupAd() {

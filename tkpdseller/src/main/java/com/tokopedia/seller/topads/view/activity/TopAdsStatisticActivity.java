@@ -11,10 +11,13 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
+import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
@@ -45,6 +48,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
 
     ViewPager viewPager;
     TabLayout tabLayout;
+    SwipeToRefresh swipeToRefresh;
 
     private List<Cell> cells;
     int currentPositonPager;
@@ -78,6 +82,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
         super.initView();
         viewPager = (ViewPager) findViewById(R.id.pager);
         tabLayout = (TabLayout) findViewById(R.id.tab);
+        swipeToRefresh = (SwipeToRefresh) findViewById(R.id.swipe_refresh_layout);
         viewPager.setAdapter(getViewPagerAdapter());
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(currentPositonPager);
@@ -111,6 +116,13 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
             }
         });
         tabLayout.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
+        RefreshHandler refresh = new RefreshHandler(this, getWindow().getDecorView().getRootView(), new RefreshHandler.OnRefreshHandlerListener() {
+            @Override
+            public void onRefresh(View view) {
+                swipeToRefresh.setRefreshing(true);
+                loadData();
+            }
+        });
     }
 
     protected void loadData() {
@@ -158,6 +170,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
 
     @Override
     public void updateDataCell(List<Cell> cells) {
+        swipeToRefresh.setRefreshing(false);
         snackbarRetry.hideRetrySnackbar();
         this.cells = cells;
         Fragment fragment = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, viewPager.getCurrentItem());
@@ -179,6 +192,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
     @Override
     public void dismissLoading() {
         progressDialog.dismiss();
+        swipeToRefresh.setRefreshing(false);
     }
 
     @Override

@@ -9,14 +9,20 @@
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab"
+        style="@style/TabBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/tkpd_main_green"
-        style="@style/TabBar"
-        app:tabMode="scrollable"/>
+        app:tabMode="scrollable" />
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/pager"
+    <com.tokopedia.core.customwidget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.tokopedia.core.customwidget.SwipeToRefresh>
 </LinearLayout>
