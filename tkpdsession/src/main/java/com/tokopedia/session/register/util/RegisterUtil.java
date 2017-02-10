@@ -1,5 +1,8 @@
 package com.tokopedia.session.register.util;
 
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.session.R;
+
 /**
  * Created by nisie on 1/27/17.
  */
@@ -21,19 +24,19 @@ public class RegisterUtil {
     public static String formatDateTextString(int mDateDay, int mDateMonth, int mDateYear) {
         String bulan;
         switch(mDateMonth) {
-            case 1: bulan = "Januari"; break;
-            case 2: bulan = "Februari"; break;
-            case 3: bulan = "Maret"; break;
-            case 4: bulan = "April"; break;
-            case 5: bulan = "May"; break;
-            case 6: bulan = "Juni"; break;
-            case 7: bulan = "Juli"; break;
-            case 8: bulan = "Agustus"; break;
-            case 9: bulan = "September"; break;
-            case 10: bulan = "Oktober"; break;
-            case 11: bulan = "November"; break;
-            case 12: bulan = "Desember"; break;
-            default: bulan = "inputan salah"; break;
+            case 1: bulan = MainApplication.getAppContext().getString(R.string.january); break;
+            case 2: bulan = MainApplication.getAppContext().getString(R.string.february); break;
+            case 3: bulan = MainApplication.getAppContext().getString(R.string.march); break;
+            case 4: bulan = MainApplication.getAppContext().getString(R.string.april); break;
+            case 5: bulan = MainApplication.getAppContext().getString(R.string.may); break;
+            case 6: bulan = MainApplication.getAppContext().getString(R.string.june); break;
+            case 7: bulan = MainApplication.getAppContext().getString(R.string.july); break;
+            case 8: bulan = MainApplication.getAppContext().getString(R.string.august); break;
+            case 9: bulan = MainApplication.getAppContext().getString(R.string.september); break;
+            case 10: bulan = MainApplication.getAppContext().getString(R.string.october); break;
+            case 11: bulan = MainApplication.getAppContext().getString(R.string.november); break;
+            case 12: bulan = MainApplication.getAppContext().getString(R.string.december); break;
+            default: bulan = MainApplication.getAppContext().getString(R.string.wrong_input); break;
         }
         return String.format("%d %s %d", mDateDay, bulan, mDateYear);
     }
