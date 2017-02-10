@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.InputFilter;
@@ -359,8 +360,9 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @Override
     public void renderDataProducts(List<Product> productList) {
         Collections.sort(productList, new ProductComparator());
-        if (rechargeEditText.getText().length() > 0 || !category.getAttributes().getClientNumber().getIsShown()) {
-            if (productList != null && productList.size() > 0) {
+        if (rechargeEditText.getText().length() > 0
+                || !category.getAttributes().getClientNumber().getIsShown()) {
+            if (productList.size() > 0) {
                 this.productList = productList;
                 isAlreadyHavePhonePrefixInView = true;
                 NominalAdapter adapter = new NominalAdapter(
@@ -454,7 +456,9 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     public void setOperatorView(RechargeOperatorModel operator) {
         try {
             this.minLengthDefaultOperator = operator.minimumLength;
-            this.rechargeEditText.getAutoCompleteTextView().setFilters(new InputFilter[]{new InputFilter.LengthFilter(operator.maximumLength)});
+            this.rechargeEditText.getAutoCompleteTextView().setFilters(
+                    new InputFilter[]{new InputFilter.LengthFilter(operator.maximumLength)}
+            );
             if (operator.nominalText != null && operator.nominalText.length() > 0)
                 this.nominalTextview.setText(operator.nominalText);
             if (!operator.showProduct) {
@@ -711,7 +715,9 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             if (cursorPhone.getCount() > 0) {
                 if (cursorPhone.moveToNext()) {
                     if (Integer.parseInt(cursorPhone.getString(
-                            cursorPhone.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                            cursorPhone.getColumnIndex(
+                                    ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0
+                            ) {
                         String givenName = cursorPhone.getString(
                                 cursorPhone.getColumnIndex(
                                         ContactsContract.Contacts.DISPLAY_NAME
@@ -769,7 +775,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 "&product_id=" + selectedProduct.getId().toString() +
                 "&operator_id=" + selectedProduct.getRelationships().getOperator().getData().getId().toString() +
                 "&is_promo=" + (selectedProduct.getAttributes().getPromo() != null ? "1" : "0") +
-                "&atoken=" + generateATokenRechargeCheckout(clientNumber) +
+                "&atoken=" + generateATokenRechargeCheckout() +
                 "&instant_checkout=" + (buyWithCreditCheckbox.isChecked() ? "1" : "0") +
                 "&utm_source=" + bundle.getString(ARG_UTM_SOURCE, "android") +
                 "&utm_medium=" + bundle.getString(ARG_UTM_MEDIUM, "widget") +
@@ -782,17 +788,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
 
-    private String generateATokenRechargeCheckout(String clientNumber) {
-        if (clientNumber.isEmpty()) {
-            return SessionHandler.getLoginID(getActivity()) +
-                    "_" + System.currentTimeMillis();
-        }
-//        return SessionHandler.getLoginID(getActivity()) +
-//                "_" + clientNumber + "_" + System.currentTimeMillis();
-        return SessionHandler.getLoginID(getActivity()) + "_087888136378_111100000000";
-
-//        return SessionHandler.getLoginID(getActivity()) +
-//                "_" + clientNumber + "_" + System.currentTimeMillis();
+    private String generateATokenRechargeCheckout() {
+        return SessionHandler.getLoginID(getActivity()) + "_" + System.currentTimeMillis();
     }
 
     @Override
@@ -855,8 +852,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     //endregion
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         RechargeFragmentPermissionsDispatcher.onRequestPermissionsResult(
                 RechargeFragment.this, requestCode, grantResults);
