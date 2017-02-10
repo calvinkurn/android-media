@@ -20,7 +20,7 @@
             android:id="@+id/data_transaction_header_loading_ic"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            app:srcCompat="@drawable/ic_icon_transaksi"/>
+            android:src="@drawable/ic_icon_transaksi"/>
         <com.tokopedia.seller.gmstat.library.LoaderTextView
             android:layout_gravity="center_vertical"
             app:use_gradient="true"
@@ -78,7 +78,7 @@
                 android:layout_width="47dp"
                 android:layout_height="10dp"
                 android:paddingTop="3dp"
-                app:srcCompat="@mipmap/arrow_up_percentage"
+                android:src="@mipmap/arrow_up_percentage"
                 android:layout_below="@+id/transaction_count_loading"
                 android:id="@+id/transaction_count_icon_loading" />
 

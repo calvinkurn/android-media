@@ -59,7 +59,7 @@
                 android:id="@+id/gross_income_graph2_loading"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:srcCompat="@mipmap/page_1"
+                android:src="@mipmap/page_1"
                 android:layout_gravity="center_vertical"
                 app:use_gradient="true"
                 android:visibility="gone"
