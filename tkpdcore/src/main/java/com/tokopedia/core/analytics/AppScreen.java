@@ -31,7 +31,9 @@ public final class AppScreen {
             return AFInAppEventType.CONTENT_VIEW;
         }
     }
-
+    public static final String STATISTIC_PAGE = "Statistic Page";
+    public static final String SCREEN_COPY_PRODUCT = "Salin Product Page";
+    public static final String SCREEN_INSTOPED = "Instoped Upload Page";
     public static final String SCREEN_INDEX_HOME = "Index Main";
     public static final String SCREEN_LOGIN = "Login page";
     public static final String SCREEN_REGISTER = "Register page";

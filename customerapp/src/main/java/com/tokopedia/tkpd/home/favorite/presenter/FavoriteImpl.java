@@ -2,14 +2,12 @@ package com.tokopedia.tkpd.home.favorite.presenter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.tokopedia.tkpd.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
@@ -29,13 +27,13 @@ import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.ShopItem;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.SimpleHomeActivity;
 import com.tokopedia.tkpd.home.favorite.interactor.FavoriteInteractor;
 import com.tokopedia.tkpd.home.favorite.interactor.FavoriteInteractorImpl;
 import com.tokopedia.tkpd.home.favorite.model.params.TopAddParams;
 import com.tokopedia.tkpd.home.favorite.model.params.WishlistFromNetworkParams;
 import com.tokopedia.tkpd.home.favorite.view.FavoriteView;
-import com.tokopedia.tkpd.home.fragment.FragmentProductFeed;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.model.FavoriteTransformData;
@@ -94,7 +92,7 @@ public class FavoriteImpl implements Favorite {
         }
         view.initAdapter(data);
         view.initLayoutManager();
-        favoriteInteractor = new FavoriteInteractorImpl();
+        favoriteInteractor = new FavoriteInteractorImpl(context);
     }
 
     @Override
@@ -182,7 +180,7 @@ public class FavoriteImpl implements Favorite {
                         (HorizontalShopList) FavoriteImpl.this.data.get(TOP_ADS_START);
 
                 cacheHome.setRecommendedShopCache(horizontalShopList.getShopItemList());
-                mContext.sendBroadcast(new Intent(FragmentProductFeed.ACTION));
+//                mContext.sendBroadcast(new Intent(FragmentProductFeed.ACTION));
             }
         };
     }
@@ -423,6 +421,7 @@ public class FavoriteImpl implements Favorite {
                     if (e.getMessage() != null && RetrofitUtils.isSessionInvalid(e.getMessage())) {
                         NetworkHandler.forceLogout(mContext);
                     } else {
+                        e.printStackTrace();
                         Log.e(TAG, messageTAG + "onError : " + e.getLocalizedMessage());
                         view.displayProgressBar(false);
                         if (data.size() == 0) {

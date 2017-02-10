@@ -96,6 +96,12 @@ public interface AppEventTracking {
         String DEPOSIT = "clickSaldo";
         String OTP = "clickOTP";
         String TOP_PICKS = "clickToppicks";
+        String CLICK_GM_STAT = "clickGMStat";
+        String LOAD_GM_STAT = "loadGMStat";
+        String SCROLL_GM_STAT = "scrollGMStat";
+        String CLICK_ADD_PRODUCT = "clickAddProduct";
+        String CLICK_INSTOPED = "clickInstoped";
+        String CLICK_MANAGE_PRODUCT = "clickManageProduct";
     }
 
     interface Category {
@@ -145,6 +151,11 @@ public interface AppEventTracking {
         String TOP_PICKS_HOME = "Toppicks Home";
         String TOP_PICKS = "Toppicks";
         String CATALOG = "Katalog";
+        String FULLY_LOAD = "Fully Loaded";
+        String GM_STAT = "GM Stat";
+        String GM_STATISTIC_PRODUCT = "GM Statistic - Product";
+        String GM_STATISTIC_PRODUCT_INSIGHT = "GM Statistic - Product Insight";
+        String MANAGE_PRODUCT = "Manage Product";
     }
 
     interface Action {
@@ -174,6 +185,8 @@ public interface AppEventTracking {
         String SUBSCRIBE = "Subscribe";
         String ERROR = "Error";
         String SUCCESS = "Success";
+        String LOAD = "Load";
+        String SCROLL = "Scroll";
     }
 
     interface EventLabel {
@@ -294,6 +307,16 @@ public interface AppEventTracking {
         String CANCEL = "Cancel";
         String DETAILS = "Details";
         String ORDER_DETAIL = "Order Detail";
+        String STATISTIC = "Statistic";
+        String STATISTIC_PAGE = "Statistic Page";
+        String ONE_HUNDRED_PERCENT = "100%";
+        String ADD_PRODUCT = "Add Product";
+        String ADD_PRODUCT_PLUS = "Add Product - Plus";
+        String ADD_PRODUCT_TOP = "Add Product - Top";
+        String INSTOPED = "Instoped";
+        String CHANGE_PRICE_PRODUCT_LIST = "Ubah Harga - Product List";
+        String CHANGE_PRICE_DROP_DOWN = "Ubah Harga - Dropdown";
+        String COPY_PRODUCT = "Copy";
     }
 
     interface SOCIAL_MEDIA {

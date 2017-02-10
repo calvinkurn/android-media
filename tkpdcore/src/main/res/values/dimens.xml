@@ -63,7 +63,8 @@
 
     <!-- Inbox Message -->
     <dimen name="checked_indicator_msg">100dp</dimen>
-    <dimen name="message_width">200dp</dimen>
+    <dimen name="message_width">300dp</dimen>
+    <dimen name="message_corner">12dp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>

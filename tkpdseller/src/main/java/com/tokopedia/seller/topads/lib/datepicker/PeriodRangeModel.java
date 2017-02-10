@@ -12,8 +12,6 @@ import java.util.Locale;
 /**
  * Created by Nathaniel on 1/16/2017.
  */
-
-@Parcel
 public class PeriodRangeModel extends SetDateFragment.BasePeriodModel implements Parcelable {
     private static final Locale locale = new Locale("in", "ID");
     public static final int TYPE = 1;
