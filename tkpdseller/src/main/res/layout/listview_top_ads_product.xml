@@ -23,7 +23,7 @@
 
         <TextView
             android:id="@+id/text_view_title"
-            style="@style/TextView.Title"
+            style="@style/TextView.TopAds.Title"
             tools:text="@string/app_name"/>
 
         <TextView

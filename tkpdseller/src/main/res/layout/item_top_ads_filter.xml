@@ -18,7 +18,8 @@
 
     <TextView
         android:id="@+id/text_view_title"
-        style="@style/TextView"
+        style="@style/TextView.TopAds.Title"
         android:layout_marginLeft="@dimen/top_ads_dashboard_padding_cards"
+        android:layout_marginStart="@dimen/top_ads_dashboard_padding_cards"
         tools:text="@string/app_name"/>
 </LinearLayout>
