@@ -13,66 +13,56 @@
         <item name="android:textSize">@dimen/text_size_xlarge</item>
     </style>
 
-    <style name="TextView.TopAdsListTitle">
+    <style name="TextView.TopAds">
         <item name="android:ellipsize">end</item>
         <item name="android:textSize">@dimen/font_medium</item>
-        <item name="android:textStyle">bold</item>
         <item name="android:maxLines">1</item>
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/black_seventy_percent</item>
     </style>
 
-    <style name="TextView.TopAdsListContent">
-        <item name="android:textColor">@color/black_fifty_four_percent</item>
-        <item name="android:textSize">@dimen/font_small</item>
-        <item name="android:textStyle">normal</item>
-        <item name="android:lines">1</item>
+    <style name="TextView.TopAds.Headline">
+        <item name="android:textSize">@dimen/text_size_xxxlarge</item>
+        <item name="android:textColor">@color/font_top_ads_green</item>
+        <item name="android:text">@string/top_ads_statistic_info_default_value</item>
     </style>
 
-    <style name="TextView.TopAdsShopTitle">
-        <item name="android:textColor">@color/black_seventy_percent</item>
-        <item name="android:textSize">@dimen/font_small</item>
+    <style name="TextView.TopAds.Caption1">
+        <item name="android:textSize">@dimen/text_size_small</item>
+        <item name="android:textColor">@color/font_top_ads_black_54</item>
+    </style>
+
+    <style name="TextView.TopAds.Title">
+        <item name="android:textSize">@dimen/font_medium</item>
+    </style>
+
+    <style name="TextView.TopAds.Title.One">
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TextView.TopAdsShopContent">
+    <style name="TextView.TopAds.Title.Two">
+        <item name="android:textColor">@color/font_top_ads_green</item>
+    </style>
+
+    <style name="TextView.TopAds.Body">
         <item name="android:textSize">@dimen/font_small</item>
-        <item name="android:textColor">@color/black_fifty_four_percent</item>
     </style>
 
-    <style name="TextView.TopAdsDate">
-        <item name="android:textSize">@dimen/font_medium</item>
-        <item name="android:textColor">@color/tkpd_main_green</item>
+    <style name="TextView.TopAds.Body.Small1">
+        <item name="android:textColor">@color/font_top_ads_black_70</item>
     </style>
 
-    <style name="TextView.TopAdsTitleEmptyView">
-        <item name="android:textSize">@dimen/fontm</item>
-        <item name="android:textColor">@color/black_seventy_percent</item>
+    <style name="TextView.TopAds.Body.Small2">
+        <item name="android:textColor">@color/font_top_ads_black_54</item>
     </style>
 
-    <style name="TextView.TopAdsContentEmptyView">
-        <item name="android:textSize">@dimen/text_size_small</item>
-        <item name="android:textColor">@color/black_fifty_four_percent</item>
+    <style name="TextView.TopAds.Body.Small3">
+        <item name="android:textColor">@color/font_top_ads_black_70</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TextView.DashboardStatisticTitle">trans_black_90
-        <item name="android:textSize">@dimen/text_size_small</item>
-        <item name="android:textColor">@color/trans_black_40</item>
-    </style>
 
-    <style name="TextView.DashboardStatisticContent">
-        <item name="android:textSize">@dimen/text_size_xxxlarge</item>
-        <item name="android:textColor">@color/green_200</item>
-        <item name="android:text">@string/top_ads_statistic_info_default_value</item>
-    </style>
-
-    <style name="TextView.ListSummary">
-        <item name="android:textSize">@dimen/text_size_xlarge</item>
-        <item name="android:textColor">@color/green_200</item>
-        <item name="android:text">@string/top_ads_statistic_info_default_value</item>
-    </style>
-
-    <style name="TextView.Promoted">
+    <style name="TextView.TopAds.Body.Promoted">
         <item name="android:textSize">@dimen/text_size_small</item>
         <item name="android:textColor">@color/blue_link</item>
     </style>

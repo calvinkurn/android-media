@@ -23,14 +23,14 @@
 
     <TextView
         android:id="@+id/text_view_empty_title_text"
-        style="@style/TextView.TopAdsTitleEmptyView"
+        style="@style/TextView.TopAds.Body.Small1"
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
         tools:text="@string/top_ads_empty_group_title_promo_text"/>
 
     <TextView
         android:id="@+id/text_view_empty_content_text"
-        style="@style/TextView.TopAdsContentEmptyView"
+        style="@style/TextView.TopAds.Body.Small2"
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
         tools:text="@string/top_ads_empty_group_promo_content_empty_text"/>

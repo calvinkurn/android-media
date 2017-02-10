@@ -28,12 +28,12 @@
 
         <TextView
             android:id="@+id/text_view_promoted"
-            style="@style/TextView.Promoted"
+            style="@style/TextView.TopAds.Body.Promoted"
             tools:text="@string/label_top_ads_promoted"/>
 
         <TextView
             android:id="@+id/text_view_group_name"
-            style="@style/TextView.Promoted"
+            style="@style/TextView.TopAds.Body.Promoted"
             tools:text="@string/app_name"/>
     </LinearLayout>
 </LinearLayout>
