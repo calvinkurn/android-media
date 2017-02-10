@@ -26,7 +26,7 @@
         android:layout_width="fill_parent"
         android:layout_height="40dp"
         android:layout_gravity="bottom"
-        android:spinnerMode="dropdown"
+        android:spinnerMode="dialog"
         android:visibility="gone"
         style="@style/Base.Widget.AppCompat.Spinner.Underlined"
         >
