@@ -4,11 +4,12 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.MenuItem;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -39,6 +40,8 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         DeepLinkView, DeepLinkWebViewHandleListener,
         ProductDetailFragment.OnFragmentInteractionListener,
         FragmentGeneralWebView.OnFragmentInteractionListener, ICatalogActionFragment {
+
+    private TkpdProgressDialog progressDialog;
 
     private static final String TAG = DeepLinkActivity.class.getSimpleName();
     private Uri uriData;
@@ -175,14 +178,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         }
     }
 
-    @Override
-    protected void onFinishFetechedDepartment() {
-        super.onFinishFetechedDepartment();
-        Log.i("GAv4 HADES TAG", "DO SOMETHING AFTER FINISH");
-        dissmisProgressService();
-        if (uriData != null) presenter.processDeepLinkAction(uriData);
-    }
-
     private void initDeepLink() {
         if (uriData != null) {
             if (presenter.isLandingPageWebView(uriData)) {
@@ -203,6 +198,19 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
                 showProgressService();
             }
         }
+    }
+
+    private void showProgressService() {
+        if (isFinishing())
+            return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && isDestroyed())
+            return;
+
+        if (progressDialog != null && progressDialog.isProgress()) return;
+
+        progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
+        progressDialog.setCancelable(false);
+        progressDialog.showDialog();
     }
 
     @Override
