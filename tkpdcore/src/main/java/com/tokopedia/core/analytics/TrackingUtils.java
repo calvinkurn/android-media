@@ -86,12 +86,12 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void eventOnline(){
         getGTMEngine()
-                .eventOnline(SessionHandler.getLoginID(MainApplication.getAppContext()));
+                .eventOnline(SessionHandler.getGTMLoginID(MainApplication.getAppContext()));
     }
 
     public static void eventPushUserID(){
         getGTMEngine()
-                .pushUserId(SessionHandler.getLoginID(MainApplication.getAppContext()));
+                .pushUserId(SessionHandler.getGTMLoginID(MainApplication.getAppContext()));
     }
 
     public static void eventNetworkError(String error){

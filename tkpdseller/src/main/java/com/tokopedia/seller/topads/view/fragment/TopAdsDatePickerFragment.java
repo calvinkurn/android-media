@@ -39,7 +39,8 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
 
     @Override
     public void onRestoreState(Bundle savedState) {
-
+        startDate = datePickerPresenter.getStartDate();
+        endDate = datePickerPresenter.getEndDate();
     }
 
     @Override

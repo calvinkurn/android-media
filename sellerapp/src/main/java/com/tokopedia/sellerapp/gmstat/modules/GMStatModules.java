@@ -3,8 +3,8 @@ package com.tokopedia.sellerapp.gmstat.modules;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.sellerapp.gmstat.apis.GMStatApi;
-import com.tokopedia.sellerapp.gmstat.utils.GMStatNetworkController;
+import com.tokopedia.seller.gmstat.apis.GMStatApi;
+import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -13,7 +13,7 @@ import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
 
-import static com.tokopedia.sellerapp.gmstat.utils.GMStatConstant.GMSTAT_TAG;
+import static com.tokopedia.seller.gmstat.utils.GMStatConstant.GMSTAT_TAG;
 
 /**
  * Created by normansyahputa on 11/2/16.

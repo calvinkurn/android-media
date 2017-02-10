@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.tkpd.library.utils.network.BaseNetworkController;
+import com.tkpd.library.utils.network.CommonListener;
 import com.tokopedia.core.network.apiservices.shop.MyShopOrderService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -16,8 +18,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
-import static com.tokopedia.sellerapp.home.utils.ShopNetworkController.onResponseError;
 
 /**
  * Created by normansyahputa on 9/1/16.
@@ -70,7 +70,7 @@ public class ShopTransactionController extends BaseNetworkController {
         return myShopOrderService.getApi().getOrderNew(AuthUtil.generateParams(userId, deviceId, getNewOrderParam(getNewOrderModel)));
     }
 
-    public interface GetNewOrder extends ShopNetworkController.CommonListener{
+    public interface GetNewOrder extends CommonListener {
         void onSuccess(OrderShippingData orderShippingData);
     }
 

@@ -24,6 +24,8 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customadapter.ListViewHotProductParent;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
@@ -45,9 +47,9 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.FragmentIndexFavoriteV2;
+import com.tokopedia.tkpd.home.feed.view.FragmentProductFeed;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
-import com.tokopedia.tkpd.home.fragment.FragmentProductFeed;
 
 import org.parceler.Parcels;
 
@@ -56,13 +58,15 @@ import java.util.List;
 
 import rx.subscriptions.CompositeSubscription;
 
+//import com.tokopedia.tkpd.home.fragment.DaggerFragmentProductFeed;
+
 /**
  * Created by Nisie on 1/07/15.
  * modified by m.normansyah on 4/02/2016, fetch list of bank.
  * modified by alvarisi on 6/15/2016, tab selection tracking.
  * modified by Hafizh Herdi on 6/15/2016, dynamic personalization message.
  */
-public class ParentIndexHome extends TkpdActivity implements NotificationListener {
+public class ParentIndexHome extends TkpdActivity implements NotificationListener, HasComponent {
 
     public static final int INIT_STATE_FRAGMENT_HOME = 0;
     public static final int INIT_STATE_FRAGMENT_FEED = 1;
@@ -102,6 +106,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
 
     public ViewPager getViewPager() {
         return mViewPager;
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 
 

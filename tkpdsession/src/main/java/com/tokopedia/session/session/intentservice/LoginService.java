@@ -547,7 +547,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
     }
 
     private void setLoginSession(AccountsModel accountsModel){
-        sessionHandler.SetLoginSession(Boolean.parseBoolean(accountsModel.getIsLogin()),
+        sessionHandler.setLoginSession(Boolean.parseBoolean(accountsModel.getIsLogin()),
                 accountsModel.getUserId() + "",
                 accountsModel.getFullName(), accountsModel.getShopId() + "",
                 accountsModel.getMsisdnIsVerifiedBoolean());
