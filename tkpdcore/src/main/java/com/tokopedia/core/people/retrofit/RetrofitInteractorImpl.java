@@ -194,7 +194,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                     if (!response.body().isError()) {
                         data.setPeopleFavShopData(response.body().convertDataObj(PeopleFavShop.class));
                     } else {
-                        if (response.body().getErrorMessages() != null && !response.body().getErrorMessages().isEmpty()) {
+                        if (isHasErrorMessage(response)) {
                             data.setByPass(true);
                             data.setErrorType(RESPONSE_ERROR_DATA);
                             data.setErrorMessage(response.body().getErrorMessages().get(0));
@@ -224,7 +224,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                     if (!response.body().isError()) {
                         data.setPeopleAddressData(response.body().convertDataObj(PeopleAddressData.class));
                     } else {
-                        if (response.body().getErrorMessages() != null && !response.body().getErrorMessages().isEmpty()) {
+                        if (isHasErrorMessage(response)) {
                             data.setByPass(true);
                             data.setErrorType(RESPONSE_ERROR_DATA);
                             data.setErrorMessage(response.body().getErrorMessages().get(0));
@@ -243,6 +243,11 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         });
     }
 
+    private boolean isHasErrorMessage(Response<TkpdResponse> response) {
+        return response.body().getErrorMessages() != null
+                && !response.body().getErrorMessages().isEmpty();
+    }
+
     private Observable<InputOutputData> getPeoplePrivacy(InputOutputData data) {
         PeopleService peopleService = new PeopleService();
         Observable<Response<TkpdResponse>> observable1 = peopleService.getApi().getPrivacy(data.getParams());
@@ -254,7 +259,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                     if (!response.body().isError()) {
                         data.setPeoplePrivacyData(response.body().convertDataObj(PeoplePrivacyData.class));
                     } else {
-                        if (response.body().getErrorMessages() != null && !response.body().getErrorMessages().isEmpty()) {
+                        if (isHasErrorMessage(response)) {
                             data.setByPass(true);
                             data.setErrorType(RESPONSE_ERROR_DATA);
                             data.setErrorMessage(response.body().getErrorMessages().get(0));
@@ -284,7 +289,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                     if (!response.body().isError()) {
                         data.setPeopleInfoData(response.body().convertDataObj(PeopleInfoData.class));
                     } else {
-                        if (response.body().getErrorMessages() != null && !response.body().getErrorMessages().isEmpty()) {
+                        if (isHasErrorMessage(response)) {
                             data.setByPass(true);
                             data.setErrorType(RESPONSE_ERROR_DATA);
                             data.setErrorMessage(response.body().getErrorMessages().get(0));
