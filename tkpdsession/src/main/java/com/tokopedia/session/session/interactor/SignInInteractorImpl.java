@@ -34,7 +34,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by stevenfredian on 1/19/17.
@@ -142,7 +141,7 @@ public class SignInInteractorImpl implements SignInInteractor{
                         }
                         //showing error
                         else if(accountsParameter.getErrorModel()!=null){
-                            listener.onError(accountsParameter.getErrorModel().getError_description());
+                            listener.onError(accountsParameter.getErrorModel().getErrorDescription());
                         }
                         // need create password
                         else{
@@ -218,7 +217,7 @@ public class SignInInteractorImpl implements SignInInteractor{
 
     private Observable<AccountsParameter> getObservableAccountsInfo(AccountsParameter accountsParameter) {
         TokenModel tokenModel = accountsParameter.getTokenModel();
-        String authKey = tokenModel.getTokenType() + " "+ tokenModel.getAccessToken();
+        String authKey = String.format("%s %s", tokenModel.getTokenType(), tokenModel.getAccessToken());
         Bundle bundle = new Bundle();
         bundle.putString(AccountsService.AUTH_KEY, authKey);
         AccountsService accountService = new AccountsService(bundle);
@@ -247,7 +246,7 @@ public class SignInInteractorImpl implements SignInInteractor{
         params.put(USER_ID, String.valueOf(accountsParameter.getInfoModel().getUserId()));
         params = MapNulRemover.removeNull(params);
         TokenModel tokenModel = accountsParameter.getTokenModel();
-        String authKey = tokenModel.getTokenType() + " " + tokenModel.getAccessToken();
+        String authKey = String.format("%s %s", tokenModel.getTokenType(), tokenModel.getAccessToken());
         Bundle bundle = new Bundle();
         bundle.putString(AccountsService.AUTH_KEY, authKey);
         bundle.putString(AccountsService.WEB_SERVICE, AccountsService.WS);
@@ -259,29 +258,21 @@ public class SignInInteractorImpl implements SignInInteractor{
             public AccountsParameter call(AccountsParameter accountsParameter, Response<TkpdResponse> responseData) {
                 if (responseData.isSuccessful()) {
                     TkpdResponse response = responseData.body();
-                    JSONObject jsonObject = null;
-                    try {
-                        jsonObject = new JSONObject(response.getStringData());
-                    } catch (JSONException je) {
-                        Log.e("", je.getLocalizedMessage());
-                    }
                     if (!response.isError()) {
-                        SecurityModel securityModel = new GsonBuilder().create()
-                                .fromJson(jsonObject.toString(), SecurityModel.class);
-                        if (securityModel.getIs_login().equals(false) || securityModel.getIs_login().equals("false")) {
+                        SecurityModel securityModel = response.convertDataObj(SecurityModel.class);
+                        if (securityModel.getIs_login().equals("false")) {
                             accountsParameter.setSecurityModel(securityModel);
                             accountsParameter.setMoveSecurity(true);
                             accountsParameter.setActivationResent(false);
                         } else {
-                            AccountsModel accountsModel = new GsonBuilder()
-                                    .create().fromJson(jsonObject.toString(), AccountsModel.class);
+                            AccountsModel accountsModel = response.convertDataObj(AccountsModel.class);
                             accountsParameter.setMoveSecurity(false);
                             accountsParameter.setActivationResent(false);
                             accountsParameter.setAccountsModel(accountsModel);
                         }
                     } else {
                         ErrorModel errorModel = new ErrorModel();
-                        errorModel.setError_description(response.getErrorMessages().toString());
+                        errorModel.setErrorDescription(response.getErrorMessages().toString());
                         accountsParameter.setErrorModel(errorModel);
                     }
 
@@ -296,8 +287,8 @@ public class SignInInteractorImpl implements SignInInteractor{
 
     private void setLoginSession(AccountsModel accountsModel){
         sessionHandler.SetLoginSession(Boolean.parseBoolean(accountsModel.getIsLogin()),
-                accountsModel.getUserId() + "",
-                accountsModel.getFullName(), accountsModel.getShopId() + "",
+                String.valueOf(accountsModel.getUserId()),
+                accountsModel.getFullName(), String.valueOf(accountsModel.getShopId()),
                 accountsModel.getMsisdnIsVerifiedBoolean());
     }
 }
