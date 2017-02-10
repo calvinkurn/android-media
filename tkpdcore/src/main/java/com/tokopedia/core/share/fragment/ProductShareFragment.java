@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -27,7 +26,6 @@ import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.DownloadResultSender;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -41,8 +39,6 @@ import com.tokopedia.core.var.TkpdState;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Angga.Prasetiyo on 11/12/2015.
@@ -102,6 +98,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     private boolean isAdding;
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
+    private ProductShareFragmentCallback fragmentCallback;
 
     public static ProductShareFragment newInstance(@NonNull ShareData shareData) {
         ProductShareFragment fragment = new ProductShareFragment();
@@ -163,7 +160,11 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
 
     @Override
     protected void initialListener(Activity activity) {
-
+        if(activity instanceof ProductShareFragmentCallback){
+            fragmentCallback = (ProductShareFragmentCallback) activity;
+        } else {
+            throw new RuntimeException("Please implement ProductShareFragmentCallback in activity");
+        }
     }
 
     @Override
@@ -203,6 +204,18 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
                 }
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        fragmentCallback.registerReceiver(addProductReceiver, TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        fragmentCallback.uregisterReceiver(addProductReceiver);
     }
 
     public void onError(Bundle resultData) {

@@ -2801,6 +2801,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                     case EDIT:
                         Log.d(TAG, messageTAG + "berhasil masuk sini ");
                         getActivity().startActivity(new Intent(getActivity(), ManageProduct.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        getActivity().finish();
                         break;
                     default:
                         throw new RuntimeException("please register your action type !!");
