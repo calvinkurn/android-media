@@ -558,6 +558,7 @@ public abstract class TActivity extends AppCompatActivity implements SessionHand
 
     @Override
     public void onTimezoneError() {
+
         final Snackbar snackBar = SnackbarManager.make(this, getString(R.string.check_timezone),
                 Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.action_check, new View.OnClickListener() {
