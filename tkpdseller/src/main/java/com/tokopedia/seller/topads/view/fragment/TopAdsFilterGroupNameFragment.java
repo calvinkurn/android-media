@@ -84,7 +84,7 @@ public class TopAdsFilterGroupNameFragment extends TopAdsFilterRadioButtonFragme
 
     @Override
     public String getTitle(Context context) {
-        return context.getString(R.string.label_top_ads_promo_group);
+        return context.getString(R.string.label_top_ads_groups);
     }
 
     @Override

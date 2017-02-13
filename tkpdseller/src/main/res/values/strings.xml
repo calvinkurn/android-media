@@ -99,7 +99,7 @@
 
     <!-- Top Ads ad list -->
     <string name="label_top_ads_daily_spend">Anggaran Harian</string>
-    <string name="top_ads_bid_format_text">%1$s - %2$s</string>
+    <string name="top_ads_bid_format_text">%1$s %2$s</string>
     <string name="top_ads_group_name_format_text">%1$s: %2$s</string>
     <string name="top_ads_spent_separator">/</string>
     <string name="top_ads_empty_shop_title_text">Promo Toko Anda Kosong</string>
@@ -162,7 +162,6 @@
     <string name="label_top_ads_daily_budget">Anggaran Harian</string>
     <string name="label_top_ads_sent">Terpakai</string>
     <string name="label_top_ads_favorite">Terjual</string>
-    <string name="label_top_ads_promo_group">Nama Grup</string>
     <string name="label_topads_price_and_schedule">Biaya &amp; Jadwal</string>
     <string name="topads_title_review_statistic">Ringkasan Statistik</string>
     <string name="topads_format_daily_budget">%1$s / %2$s</string>
