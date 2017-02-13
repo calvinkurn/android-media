@@ -2850,14 +2850,14 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
             myAlertDialog.setMessage(getString(R.string.dialog_delete_product));
 
-            myAlertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            myAlertDialog.setPositiveButton(getString(R.string.positive_button_dialog), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface arg0, int arg1) {
                     AddProductFragment.this.removeFragment();
                 }
 
             });
 
-            myAlertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            myAlertDialog.setNegativeButton(getString(R.string.positive_button_dialog), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface arg0, int arg1) {
 
                 }

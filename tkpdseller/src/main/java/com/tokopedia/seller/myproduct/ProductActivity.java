@@ -873,14 +873,14 @@ public class ProductActivity extends BaseProductActivity implements
                 AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
                 myAlertDialog.setMessage(getString(R.string.dialog_cancel_add_product));
 
-                myAlertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                myAlertDialog.setPositiveButton(getString(R.string.positive_button_dialog), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();
                     }
                 });
 
-                myAlertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                myAlertDialog.setNegativeButton(getString(R.string.negative_button_dialog), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface arg0, int arg1) {
 
                     }

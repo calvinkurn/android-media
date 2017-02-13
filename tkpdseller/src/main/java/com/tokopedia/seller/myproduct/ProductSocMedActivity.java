@@ -27,8 +27,7 @@ import com.tkpd.library.utils.ArrayFragmentStatePagerAdapter;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultSender;
 import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.seller.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
@@ -569,14 +568,14 @@ public class ProductSocMedActivity extends BaseProductActivity implements
             AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
             myAlertDialog.setMessage(getString(com.tokopedia.seller.R.string.dialog_cancel_add_product));
 
-            myAlertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            myAlertDialog.setPositiveButton(getString(R.string.positive_button_dialog), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     finish();
                 }
             });
 
-            myAlertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            myAlertDialog.setNegativeButton(getString(R.string.negative_button_dialog), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface arg0, int arg1) {
 
                 }
