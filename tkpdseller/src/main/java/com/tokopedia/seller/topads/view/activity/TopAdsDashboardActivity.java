@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
@@ -154,5 +153,11 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
     @Override
     public void onLoadDataSuccess() {
         snackbarRetry.hideRetrySnackbar();
+    }
+
+    @Override
+    public void onCreditAdded() {
+        dashboardShopFragment.populateDeposit();
+        dashboardProductFragment.populateDeposit();
     }
 }
