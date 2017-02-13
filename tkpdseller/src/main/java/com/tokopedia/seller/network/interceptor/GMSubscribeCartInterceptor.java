@@ -35,6 +35,7 @@ public class GMSubscribeCartInterceptor extends TkpdAuthInterceptor{
     private static final String CONTENT_TYPE_JSON_UT = "application/json; charset=UTF-8";
     private static final String HEADER_AUTHORIZATION = "Authorization";
     private static final String X_TKPD_HEADER_AUTHORIZATION = "X-TKPD-Authorization";
+    private static final String BEARER = "Bearer ";
 
     @Override
     protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey) {
@@ -45,7 +46,7 @@ public class GMSubscribeCartInterceptor extends TkpdAuthInterceptor{
 
         headerMap.remove(HEADER_AUTHORIZATION);
         SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
-        String bearerAutorization = sessionHandler.getAccessToken(MainApplication.getAppContext());
+        String bearerAutorization = BEARER + sessionHandler.getAccessToken(MainApplication.getAppContext());
         headerMap.put(HEADER_AUTHORIZATION, bearerAutorization);
 
         return headerMap;
