@@ -393,7 +393,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                         //showing error
                         else if(accountsParameter.getErrorModel()!=null){
                             result.putInt(TYPE, typeAccess);
-                            result.putString(MESSAGE_ERROR_FLAG, accountsParameter.getErrorModel().getError_description());
+                            result.putString(MESSAGE_ERROR_FLAG, accountsParameter.getErrorModel().getErrorDescription());
                             receiver.send(DownloadService.STATUS_ERROR, result);
                         }
                         // need create password
@@ -534,7 +534,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                         }
                     } else {
                         ErrorModel errorModel = new ErrorModel();
-                        errorModel.setError_description(response.getErrorMessages().toString());
+                        errorModel.setErrorDescription(response.getErrorMessages().toString());
                         accountsParameter.setErrorModel(errorModel);
                     }
 
