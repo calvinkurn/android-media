@@ -100,7 +100,7 @@
     <!-- Top Ads ad list -->
     <string name="label_top_ads_daily_spend">Anggaran Harian</string>
     <string name="top_ads_bid_format_text">%1$s - %2$s</string>
-    <string name="top_ads_group_name_format_text">%1$s : %2$s</string>
+    <string name="top_ads_group_name_format_text">%1$s: %2$s</string>
     <string name="top_ads_spent_separator">/</string>
     <string name="top_ads_empty_shop_title_text">Promo Toko Anda Kosong</string>
     <string name="top_ads_empty_shop_content_text">Tambah promo untuk mempromosikan toko anda</string>
