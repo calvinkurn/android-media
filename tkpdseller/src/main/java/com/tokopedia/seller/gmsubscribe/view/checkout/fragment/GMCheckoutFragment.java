@@ -279,8 +279,7 @@ public class GMCheckoutFragment
 
     @Override
     public void dismissKeyboardFromVoucherEditText() {
-        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(codeVoucherViewHolder.getEditText().getWindowToken(), 0);
+        codeVoucherViewHolder.dismissKeyboard();
     }
 
 }

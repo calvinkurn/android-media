@@ -65,7 +65,7 @@ public class GMProductAdapter extends BaseLinearRecyclerViewAdapter {
         });
         holder.renderData(data.get(position),
                 Integer.valueOf(data.get(position).getProductId())
-                        == listener.getSelectedProductId()
+                        .equals(listener.getSelectedProductId())
         );
     }
 
