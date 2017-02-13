@@ -5,4 +5,6 @@ package com.tokopedia.seller.gmsubscribe.view.checkout.widget;
  */
 public interface CodeVoucherViewHolderCallback {
     void checkVoucher(String voucherCode);
+
+    void dismissKeyboardFromVoucherEditText();
 }

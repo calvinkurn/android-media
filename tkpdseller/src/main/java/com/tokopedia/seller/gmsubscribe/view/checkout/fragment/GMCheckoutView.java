@@ -35,4 +35,6 @@ public interface GMCheckoutView extends CustomerView {
     void dismissProgressDialog();
 
     void showGenericError();
+
+    void dismissKeyboardFromVoucherEditText();
 }

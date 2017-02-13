@@ -50,6 +50,7 @@ public class CodeVoucherViewHolder {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 setShowVoucherCodeDetail(isChecked);
+                callback.dismissKeyboardFromVoucherEditText();
             }
         };
     }
@@ -76,5 +77,9 @@ public class CodeVoucherViewHolder {
 
     public String getVoucherCode() {
         return voucherEditText.getText().toString();
+    }
+
+    public View getEditText() {
+        return voucherEditText;
     }
 }
