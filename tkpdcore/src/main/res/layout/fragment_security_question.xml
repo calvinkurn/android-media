@@ -204,6 +204,7 @@
                 android:gravity="center"
                 android:padding="@dimen/padding_small"
                 android:background="#127FFF"
+                android:visibility="gone"
                 android:layout_marginTop="@dimen/margin_small"/>
 
         </LinearLayout>
