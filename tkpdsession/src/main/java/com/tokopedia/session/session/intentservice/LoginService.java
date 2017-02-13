@@ -409,7 +409,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                 });
     }
 
-    private Observable<AccountsParameter> getObservableAccountsToken(AccountsParameter accountsParameter) {
+    public Observable<AccountsParameter> getObservableAccountsToken(AccountsParameter accountsParameter) {
         Bundle bundle = new Bundle();
         Map<String, String> params = new HashMap<>();
         Parcelable parcelable = accountsParameter.getParcelable();
@@ -468,7 +468,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
         });
     }
 
-    private Observable<AccountsParameter> getObservableAccountsInfo(AccountsParameter accountsParameter) {
+    public Observable<AccountsParameter> getObservableAccountsInfo(AccountsParameter accountsParameter) {
         TokenModel tokenModel = accountsParameter.getTokenModel();
         String authKey = tokenModel.getTokenType() + " "+ tokenModel.getAccessToken();
         Bundle bundle = new Bundle();
@@ -492,7 +492,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
         });
     }
 
-    private Observable<AccountsParameter> getObservableMakeLogin(AccountsParameter accountsParameter) {
+    public Observable<AccountsParameter> getObservableMakeLogin(AccountsParameter accountsParameter) {
         Map<String, String> params = new HashMap<>();
         params = AuthUtil.generateParams(getApplicationContext(), params);
         params.put(Login.UUID_KEY, accountsParameter.getUUID());
