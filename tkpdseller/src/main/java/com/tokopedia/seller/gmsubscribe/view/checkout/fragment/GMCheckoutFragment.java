@@ -282,5 +282,10 @@ public class GMCheckoutFragment
         codeVoucherViewHolder.dismissKeyboard();
     }
 
+    @Override
+    public Context getContext(){
+        return getActivity();
+    }
+
 }
 
