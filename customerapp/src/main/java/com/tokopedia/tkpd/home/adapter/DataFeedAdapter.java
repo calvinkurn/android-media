@@ -32,7 +32,6 @@ import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.SimpleHomeActivity;
-import com.tokopedia.tkpd.home.presenter.ProductFeed2Impl;
 
 import org.parceler.Parcels;
 
@@ -51,6 +50,7 @@ import static com.tokopedia.core.var.ProductItem.PRODUCT_ITEM_TYPE;
 public class DataFeedAdapter extends ProductAdapter {
 
     public static final String TAG = DataFeedAdapter.class.getSimpleName();
+    public static final String MODEL_FLAG = "MODEL_FLAG";
     private ParentIndexHome.ChangeTabListener hotListListener;
     private HistoryProductRecyclerViewAdapter historyAdapter;
 
@@ -234,7 +234,7 @@ public class DataFeedAdapter extends ProductAdapter {
     }
 
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(ProductFeed2Impl.MODEL_FLAG, Parcels.wrap(data));
+        outState.putParcelable(MODEL_FLAG, Parcels.wrap(data));
     }
 
     public HistoryProductRecyclerViewAdapter getHistoryAdapter() {

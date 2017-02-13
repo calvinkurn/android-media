@@ -318,12 +318,12 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                             return Observable.zip(Observable.just(passData), generateHost, new Func2<ActionParameterPassData, GeneratedHost, ActionParameterPassData>() {
                                 @Override
                                 public ActionParameterPassData call(ActionParameterPassData passData, GeneratedHost generatedHost) {
-                                    if (generatedHost != null) {
+                                    if (generatedHost.getMessageError() == null || generatedHost.getMessageError().isEmpty()) {
                                         passData.setServerID(String.valueOf(generatedHost.getServerId()));
                                         passData.setUploadHost(generatedHost.getUploadHost());
                                         return passData;
                                     } else {
-                                        throw new RuntimeException("ERROR GENERATE HOST");
+                                        throw new RuntimeException(generatedHost.getMessageError().get(0));
                                     }
                                 }
                             });
@@ -640,12 +640,12 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                             return Observable.zip(Observable.just(passData), generateHost, new Func2<ActionParameterPassData, GeneratedHost, ActionParameterPassData>() {
                                 @Override
                                 public ActionParameterPassData call(ActionParameterPassData passData, GeneratedHost generatedHost) {
-                                    if (generatedHost != null) {
+                                    if (generatedHost.getMessageError() == null || generatedHost.getMessageError().isEmpty()) {
                                         passData.setServerID(String.valueOf(generatedHost.getServerId()));
                                         passData.setUploadHost(generatedHost.getUploadHost());
                                         return passData;
                                     } else {
-                                        throw new RuntimeException("ERROR GENERATE HOST");
+                                        throw new RuntimeException(generatedHost.getMessageError().get(0));
                                     }
                                 }
                             });
@@ -852,12 +852,12 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                             return Observable.zip(Observable.just(passData), generateHost, new Func2<ActionParameterPassData, GeneratedHost, ActionParameterPassData>() {
                                 @Override
                                 public ActionParameterPassData call(ActionParameterPassData passData, GeneratedHost generatedHost) {
-                                    if (generatedHost != null) {
+                                    if (generatedHost.getMessageError() == null || generatedHost.getMessageError().isEmpty()) {
                                         passData.setServerID(String.valueOf(generatedHost.getServerId()));
                                         passData.setUploadHost(generatedHost.getUploadHost());
                                         return passData;
                                     } else {
-                                        throw new RuntimeException("ERROR GENERATE HOST");
+                                        throw new RuntimeException(generatedHost.getMessageError().get(0));
                                     }
                                 }
                             });

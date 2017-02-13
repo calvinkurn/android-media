@@ -10,16 +10,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.network.NetworkHandler;
 import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.var.TkpdCache;
 
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -132,30 +128,6 @@ public class MaintenancePage extends Activity {
                     }
                 });
 
-    }
-
-    private NetworkHandler.NetworkHandlerListener onCheckListener() {
-        return new NetworkHandler.NetworkHandlerListener() {
-            @Override
-            public void onSuccess(Boolean status) {
-
-            }
-
-            @Override
-            public void getResponse(JSONObject Result) {
-                if (Result.optString("status", "OK").equals(UNDER_MAINTENANCE))
-                    hideProgressBar();
-                else {
-                    setMaintenanceDone();
-                    goToIndexHome();
-                }
-            }
-
-            @Override
-            public void getMessageError(ArrayList<String> MessageError) {
-
-            }
-        };
     }
 
     private void setMaintenanceDone() {

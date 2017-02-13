@@ -798,8 +798,12 @@ public class ActReputationRetrofitInteractorImpl implements
                 .map(new Func1<GeneratedHost, ActReviewPass>() {
                     @Override
                     public ActReviewPass call(GeneratedHost generatedHost) {
-                        paramReview.setGeneratedHost(generatedHost);
-                        return paramReview;
+                        if (generatedHost.getMessageError() == null || generatedHost.getMessageError().isEmpty()) {
+                            paramReview.setGeneratedHost(generatedHost);
+                            return paramReview;
+                        } else {
+                            throw new RuntimeException(generatedHost.getMessageError().get(0));
+                        }
                     }
                 });
     }

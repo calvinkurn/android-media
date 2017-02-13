@@ -27,10 +27,6 @@
             android:label="@string/title_activity_shipping_confirmation_detail"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ShippingConfirmationProdConf"
-            android:label="@string/title_activity_shipping_confirmation_prod_conf"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".topads.view.activity.TopAdsDashboardActivity"
             android:label="@string/title_top_ads_dashboard"
             android:screenOrientation="portrait" />
@@ -106,14 +102,17 @@
             android:label="Pembayaran"
             android:screenOrientation="portrait"/>
         <service
-            android:name=".selling.SellingService"
-            android:exported="false" />
-        <service
-            android:name=".selling.SellingService"
-            android:exported="false" />
-        <service
-            android:name=".shop.ShopEditService"
-            android:exported="false" />
+            android:name="com.tokopedia.seller.selling.SellingService"
+            android:exported="false"/>
+
+        <service android:name=".shop.ShopEditService"
+            android:exported="false"/>
+        <activity android:name=".gmstat.views.SetDateActivity"
+            android:label="@string/set_date"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3"
+            />
+
     </application>
 
 </manifest>

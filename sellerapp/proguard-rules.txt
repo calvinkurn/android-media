@@ -325,6 +325,7 @@
 }
 -keepnames !abstract class coffee.*
 -keepnames class dagger.Lazy
+-dontwarn com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar
 
 
 
