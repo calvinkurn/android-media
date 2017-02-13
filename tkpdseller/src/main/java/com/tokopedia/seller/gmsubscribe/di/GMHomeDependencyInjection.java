@@ -16,7 +16,7 @@ import com.tokopedia.seller.gmsubscribe.data.source.product.cache.GMSubscribePro
 import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.GMSubscribeProductCloud;
 import com.tokopedia.seller.gmsubscribe.domain.product.interactor.ClearGMSubscribeProductCacheUseCase;
 import com.tokopedia.seller.gmsubscribe.view.home.presenter.GMHomePresenterImpl;
-import com.tokopedia.seller.network.interceptor.SessionAuthInterceptor;
+import com.tokopedia.seller.network.interceptor.GMSubscribeInterceptor;
 
 import java.util.concurrent.TimeUnit;
 
@@ -45,7 +45,7 @@ public class GMHomeDependencyInjection {
         clientBuilder.connectTimeout(45L, TimeUnit.SECONDS);
         clientBuilder.readTimeout(45L, TimeUnit.SECONDS);
         clientBuilder.writeTimeout(45L, TimeUnit.SECONDS);
-        SessionAuthInterceptor authInterceptor = new SessionAuthInterceptor();
+        GMSubscribeInterceptor authInterceptor = new GMSubscribeInterceptor();
         clientBuilder.interceptors().add(authInterceptor);
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);

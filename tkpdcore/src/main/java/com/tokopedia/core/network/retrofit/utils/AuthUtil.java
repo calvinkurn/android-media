@@ -27,7 +27,6 @@ import javax.crypto.spec.SecretKeySpec;
 public class AuthUtil {
     private static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
     private static final String CONTENT_TYPE_JSON = "application/json";
-    private static final String CONTENT_TYPE_JSON_UT = "application/json; charset=UTF-8";
     private static final String MAC_ALGORITHM = "HmacSHA1";
     private static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ";
 
@@ -37,7 +36,6 @@ public class AuthUtil {
     private static final String HEADER_CONTENT_MD5 = "Content-MD5";
     private static final String HEADER_DATE = "Date";
     private static final String HEADER_AUTHORIZATION = "Authorization";
-    private static final String NEW_HEADER_AUTHORIZATION = "X-TKPD-Authorization";
     private static final String HEADER_USER_ID = "X-User-ID";
     private static final String HEADER_DEVICE = "X-Device";
     private static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
@@ -52,8 +50,6 @@ public class AuthUtil {
     private static final String PARAM_OS_TYPE = "os_type";
     private static final String PARAM_TIMESTAMP = "device_time";
 
-
-
     /**
      * default key is KEY_WSV$
      */
@@ -61,12 +57,6 @@ public class AuthUtil {
         public static String KEY_WSV4 = "web_service_v4";
         public static String KEY_MOJITO = "mojito_api_v1";
         public static String KEY_KEROPPI = "Keroppi";
-    }
-
-    public static Map<String, String> generateNewHeaders(String path, String strParam, String method, String authKey) {
-        Map<String, String> finalHeader = getDefaultNewHeaderMap(path, strParam, method, CONTENT_TYPE_JSON_UT, authKey, DATE_FORMAT);
-        finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
-        return finalHeader;
     }
 
     public static Map<String, String> generateHeaders(String path, String strParam, String method, String authKey) {
@@ -80,26 +70,6 @@ public class AuthUtil {
         finalHeader.put(HEADER_USER_ID, SessionHandler.getLoginID(MainApplication.getAppContext()));
         finalHeader.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
         return finalHeader;
-    }
-
-    private static Map<String, String> getDefaultNewHeaderMap(String path, String strParam, String method, String contentType, String authKey, String dateFormat) {
-        String date = generateDate(dateFormat);
-        String contentMD5 = generateContentMd5(strParam);
-
-        String authString = method + "\n" + contentMD5 + "\n" + contentType + "\n" + date + "\n" + path;
-        String signature = calculateRFC2104HMAC(authString, authKey);
-
-        Map<String, String> headerMap = new ArrayMap<>();
-        headerMap.put(HEADER_CONTENT_TYPE, contentType);
-        headerMap.put(HEADER_X_METHOD, method);
-        headerMap.put(HEADER_REQUEST_METHOD, method);
-        headerMap.put(HEADER_CONTENT_MD5, contentMD5);
-        headerMap.put(HEADER_DATE, date);
-        headerMap.put(NEW_HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
-        headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
-        headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
-        headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
-        return headerMap;
     }
 
     public static Map<String, String> getDefaultHeaderMap(String path, String strParam, String method,

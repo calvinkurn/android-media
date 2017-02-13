@@ -33,7 +33,7 @@
             android:text="@string/gmsubscribe_home_button_finish"
             android:textColor="@color/white"
             android:layout_margin="5dp"
-            android:background="@color/tkpd_button"/>
+            android:background="@color/tkpd_main_green"/>
 
     </LinearLayout>
 

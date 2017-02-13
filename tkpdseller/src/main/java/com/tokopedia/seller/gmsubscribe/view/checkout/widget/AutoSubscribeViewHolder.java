@@ -71,6 +71,7 @@ public class AutoSubscribeViewHolder {
                     }
                 } else {
                     setShowAutoSubscribeDetail(false);
+                    callback.clearAutoSubscribePackage();
                 }
             }
         };

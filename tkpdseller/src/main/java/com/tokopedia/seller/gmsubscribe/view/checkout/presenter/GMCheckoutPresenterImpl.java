@@ -68,6 +68,7 @@ public class GMCheckoutPresenterImpl extends BasePresenter<GMCheckoutView> imple
     @Override
     public void checkVoucherCode(String voucherCode, Integer selectedProduct) {
         getView().showProgressDialog();
+        getView().dismissKeyboardFromVoucherEditText();
         checkGMSubscribeVoucherUseCase.execute(
                 CheckGMSubscribeVoucherUseCase.createRequestParams(selectedProduct, voucherCode),
                 new GetCheckGMSubscribeVoucherCodeSubscriber()

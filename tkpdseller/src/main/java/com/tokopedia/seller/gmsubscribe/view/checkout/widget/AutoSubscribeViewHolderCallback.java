@@ -8,5 +8,5 @@ public interface AutoSubscribeViewHolderCallback {
     void selectAutoSubscribePackageFirstTime();
     void changeAutoSubscribePackage();
     boolean isAutoSubscribeUnselected();
-
+    void clearAutoSubscribePackage();
 }

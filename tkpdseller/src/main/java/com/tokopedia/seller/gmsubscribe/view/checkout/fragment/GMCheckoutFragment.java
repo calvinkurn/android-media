@@ -2,9 +2,11 @@ package com.tokopedia.seller.gmsubscribe.view.checkout.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -230,7 +232,12 @@ public class GMCheckoutFragment
 
     @Override
     public boolean isAutoSubscribeUnselected() {
-        return autoExtendSelectedProduct == UNDEFINED_SELECTED_AUTO_EXTEND;
+        return autoExtendSelectedProduct.equals(UNDEFINED_SELECTED_AUTO_EXTEND);
+    }
+
+    @Override
+    public void clearAutoSubscribePackage() {
+        autoExtendSelectedProduct = UNDEFINED_SELECTED_AUTO_EXTEND;
     }
 
     @Override
@@ -268,6 +275,12 @@ public class GMCheckoutFragment
     @Override
     public void showGenericError() {
         NetworkErrorHelper.showSnackbar(getActivity());
+    }
+
+    @Override
+    public void dismissKeyboardFromVoucherEditText() {
+        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(codeVoucherViewHolder.getEditText().getWindowToken(), 0);
     }
 
 }

@@ -118,7 +118,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center">
+            android:gravity="center|right">
 
             <ImageView
                 android:layout_width="14dp"
@@ -129,9 +129,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:textStyle="bold"
                 android:text="@string/gmsubscribe_change_auto"
-                android:textColor="@color/tkpd_main_green" />
+                android:textColor="@color/tkpd_main_green"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
