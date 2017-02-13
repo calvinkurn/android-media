@@ -15,6 +15,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginRight="17dp"
+            android:layout_marginEnd="17dp"
             >
             <ImageView
                 android:id="@+id/image_gm_subscribe_main_feature"
@@ -37,6 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/gmsubscribe_feature_gold_badge"
+                android:layout_marginBottom="3dp"
                 android:textStyle="bold"
                 android:textSize="16sp"/>
 
@@ -44,7 +47,8 @@
                 android:id="@+id/desc_gm_subscribe_main_feature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/gmsubscribe_feature_gold_badge_desc"/>
+                android:text="@string/gmsubscribe_feature_gold_badge_desc"
+                android:lineSpacingExtra="5dp"/>
 
         </LinearLayout>
 

@@ -2,6 +2,7 @@
     android:id="@+id/header_gm_subscribe_home"
     android:layout_width="match_parent"
     android:layout_height="200dp"
+    android:layout_marginBottom="10dp"
     android:background="@drawable/background_gmsubscribe_home_main_header"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -10,9 +11,11 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
         android:src="@drawable/ic_gmsubscribe_gold_badge"/>
 
     <TextView
+        android:layout_marginBottom="2dp"
         android:id="@+id/main_title_gm_subscribe_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

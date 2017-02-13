@@ -1,22 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center_horizontal">
+    android:layout_height="100dp"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:weightSum="1">
 
-    <ImageView
-        android:id="@+id/image_gm_subscribe_sub_feature"
-        android:layout_width="37dp"
-        android:layout_height="42dp"
-        android:src="@drawable/ic_gmsubscribe_subfeature_etalase"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_weight="0.6">
 
-    <TextView
-        android:id="@+id/desc_gm_subscribe_sub_feature"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:text="@string/gmsubscribe_subfeature_etalase"/>
+        <ImageView
+            android:scaleType="fitCenter"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/image_gm_subscribe_sub_feature"
+            android:layout_width="45dp"
+            android:layout_height="42dp"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/ic_gmsubscribe_subfeature_etalase" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_weight="0.4">
+
+        <TextView
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:id="@+id/desc_gm_subscribe_sub_feature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/gmsubscribe_subfeature_etalase"
+            android:textAlignment="center" />
+    </RelativeLayout>
 
 </LinearLayout>
