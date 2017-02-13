@@ -13,7 +13,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatRadioButton;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,6 +27,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -286,9 +286,9 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             }
         }
         phoneNumber = s.toString();
-        if (!category.getAttributes().getValidatePrefix()) {
+        if (!isValidatePrefix()) {
             if (s.length() >= minLengthDefaultOperator) {
-                if (selectedOperator != null && selectedOperator.showProduct) {
+                if (isOperatorShowProduct()) {
                     this.rechargePresenter.validateWithOperator(
                             category.getId(), selectedOperatorId);
                 } else {
@@ -321,6 +321,14 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             setPhoneBookVisibility();
             hideFormAndImageOperator();
         }
+    }
+
+    private boolean isValidatePrefix() {
+        return category.getAttributes().getValidatePrefix();
+    }
+
+    private boolean isOperatorShowProduct() {
+        return selectedOperator != null && selectedOperator.showProduct;
     }
 
     private Boolean isDeleteChar(int before, int count) {
@@ -585,10 +593,9 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         radGroup.setOrientation(LinearLayout.HORIZONTAL);
 
         for (int i = 0; i < operators.size(); i++) {
-            AppCompatRadioButton radioButton = new AppCompatRadioButton(getActivity());
+            RadioButton radioButton = new RadioButton(getActivity());
             radioButton.setId(i);
             radioButton.setText(operators.get(i).name);
-            radioButton.setSupportButtonTintList(ContextCompat.getColorStateList(getActivity(), R.color.green_500));
             radioButton.setTextSize(getResources().getDimension(R.dimen.text_size_xxxsmall));
             radioButton.setTextColor(ContextCompat.getColor(getActivity(), R.color.grey_600));
             radGroup.addView(radioButton);
