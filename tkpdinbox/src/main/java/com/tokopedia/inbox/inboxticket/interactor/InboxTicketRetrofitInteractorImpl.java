@@ -461,8 +461,12 @@ public class InboxTicketRetrofitInteractorImpl implements InboxTicketRetrofitInt
                 .map(new Func1<GeneratedHost, InboxTicketParam>() {
                     @Override
                     public InboxTicketParam call(GeneratedHost generatedHost) {
-                        param.setGeneratedHost(generatedHost);
-                        return param;
+                        if (generatedHost.getMessageError() == null || generatedHost.getMessageError().isEmpty()) {
+                            param.setGeneratedHost(generatedHost);
+                            return param;
+                        } else {
+                            throw new RuntimeException(generatedHost.getMessageError().get(0));
+                        }
                     }
                 });
     }

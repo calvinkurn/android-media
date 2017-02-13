@@ -98,12 +98,12 @@ public class CreateResCenterService extends IntentService {
                             return Observable.zip(Observable.just(actionParameterPassData), generateHost, new Func2<ActionParameterPassData, GeneratedHost, ActionParameterPassData>() {
                                 @Override
                                 public ActionParameterPassData call(ActionParameterPassData actionParameterPassData, GeneratedHost generatedHost) {
-                                    if (generatedHost != null) {
+                                    if (generatedHost.getMessageError() == null || generatedHost.getMessageError().isEmpty()) {
                                         actionParameterPassData.setServerID(String.valueOf(generatedHost.getServerId()));
                                         actionParameterPassData.setUploadHost(generatedHost.getUploadHost());
                                         return actionParameterPassData;
                                     } else {
-                                        throw new RuntimeException("ERROR GENERATE HOST");
+                                        throw new RuntimeException(generatedHost.getMessageError().get(0));
                                     }
                                 }
                             });
