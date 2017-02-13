@@ -34,7 +34,7 @@ public class TkpdBaseURL {
     public static String WEB_DOMAIN = "https://www.tokopedia.com/";
     public static String MOBILE_DOMAIN = "https://m.tokopedia.com/";
     public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us/";
-    public static String TOKOPEDIA_CART_DOMAIN = "https://tkpd-cart.tokopedia.com";
+    public static String TOKOPEDIA_CART_DOMAIN = "https://fs.tokopedia.net/";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
 
     public static class Product {
@@ -628,7 +628,7 @@ public class TkpdBaseURL {
     }
 
     public class TkpdCart {
-        public static final String CHECK_VOUCHER = "/v1/voucher/verify";
-        public static final String CHECKOUT_ORDER = "v1/cart/order";
+        public static final String CHECK_VOUCHER = "tkpdcart/v1/voucher/verify";
+        public static final String CHECKOUT_ORDER = "tkpdcart/v1/cart/order";
     }
 }
