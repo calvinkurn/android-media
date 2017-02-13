@@ -30,6 +30,8 @@ import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelSwitch;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
+import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAction;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -52,6 +54,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     SwipeToRefresh swipeToRefresh;
     protected Ad adFromIntent;
     protected ProgressDialog progressDialog;
+    private SnackbarRetry snackbarRetryRefresh;
     private SnackbarRetry snackbarRetryOnAd;
     private SnackbarRetry snackbarRetryOffAd;
 
@@ -85,21 +88,27 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         priceAndSchedule = (TopAdsLabelView) view.findViewById(R.id.title_price_and_schedule);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
-        snackbarRetryOnAd = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+        snackbarRetryRefresh = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                refreshAd();
+            }
+        });
+        snackbarRetryOnAd = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 setStatusSwitch(true);
                 turnOnAd();
             }
         });
-
-        snackbarRetryOffAd = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+        snackbarRetryOffAd = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 setStatusSwitch(false);
                 turnOffAd();
             }
         });
+        snackbarRetryRefresh.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
         snackbarRetryOffAd.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
         snackbarRetryOnAd.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
     }
@@ -123,8 +132,9 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     private void showLoading() {
-        swipeToRefresh.setRefreshing(true);
-        progressDialog.show();
+        if (!swipeToRefresh.isRefreshing()) {
+            progressDialog.show();
+        }
     }
 
     @Override
@@ -148,11 +158,11 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     protected void turnOnAd() {
-        progressDialog.show();
+        showLoading();
     }
 
     protected void turnOffAd() {
-        progressDialog.show();
+        showLoading();
     }
 
     @Override
@@ -169,12 +179,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     public void onLoadAdError() {
         hideLoading();
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                refreshAd();
-            }
-        }).showRetrySnackbar();
+        snackbarRetryRefresh.showRetrySnackbar();
     }
 
     @Override
