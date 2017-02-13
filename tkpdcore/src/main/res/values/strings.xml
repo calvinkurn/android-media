@@ -1866,6 +1866,11 @@ di Tokopedia Sekarang!</string>
     <string name="mark_as_unread">Tandai belum dibaca</string>
     <string name="address_not_supported_add_to_cart">Layanan kurir tidak mendukung pengiriman dari lokasi penjual ke lokasi pembeli</string>
     <string name="finish_contact_us">Terima kasih telah menghubungi, senang bisa membantu anda.</string>
+    <string name="mail_to_feedback">mailto:android.feedback@tokopedia.com</string>
+    <string name="server_error_problem">Masalah Server Error</string>
+    <string name="application_version_text">"Versi Aplikasi: "</string>
+    <string name="send_email">Kirim Email</string>
+    <string name="see_all">Lihat Semua</string>
 
     <string name="title_ask_buyer_selling">Tanya Pembeli</string>
 
