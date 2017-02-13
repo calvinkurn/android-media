@@ -930,8 +930,8 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                 FragmentSecurityQuestion fragment = (FragmentSecurityQuestion) supportFragmentManager.findFragmentByTag(SECURITY_QUESTION_TAG);
                 if(data!=null && data.getStringExtra("phone")!=null){
                     fragment.onSuccessProfileShared(data.getStringExtra("phone"));
-                }else {
-                    fragment.onFailedProfileShared();
+                }else if(data!=null && data.getStringExtra("error")!=null){
+                    fragment.onFailedProfileShared(data.getStringExtra("error"));
                 }
             }
         }

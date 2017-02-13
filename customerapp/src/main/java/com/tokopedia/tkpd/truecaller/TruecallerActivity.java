@@ -32,7 +32,15 @@ public class TruecallerActivity extends Activity implements ITrueCallback{
 
     @Override
     public void onFailureProfileShared(@NonNull TrueError trueError) {
-        setResult(RESULT_OK, null);
+        switch (trueError.getErrorType()){
+            case TrueError.ERROR_TYPE_USER_DENIED:
+            case TrueError.ERROR_TYPE_UNAUTHORIZED_USER:
+                setResult(RESULT_OK, new Intent().putExtra("error",getString(R.string.error_user_truecaller)));
+                break;
+            default:
+                setResult(RESULT_OK, new Intent().putExtra("error",getString(R.string.error_fetch_truecaller)));
+                break;
+        }
     }
 
     @Override

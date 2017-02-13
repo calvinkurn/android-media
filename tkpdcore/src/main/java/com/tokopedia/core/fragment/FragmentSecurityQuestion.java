@@ -117,8 +117,8 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         void onFailed();
     }
 
-    public void onFailedProfileShared() {
-        SnackbarManager.make(getActivity(), getString(R.string.error_fetch_truecaller), Snackbar.LENGTH_LONG).show();
+    public void onFailedProfileShared(String error) {
+        SnackbarManager.make(getActivity(), error, Snackbar.LENGTH_LONG).show();
     }
 
     public void onSuccessProfileShared(String phoneNumber) {

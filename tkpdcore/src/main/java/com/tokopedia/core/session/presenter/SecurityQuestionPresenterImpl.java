@@ -367,16 +367,16 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
         VerifyPhoneInteractor.VerifyPhoneListener listener = new VerifyPhoneInteractor.VerifyPhoneListener() {
             @Override
             public void onError(String error) {
-                view.showError(error);
+                view.showError(context.getString(R.string.error_user_truecaller));
             }
-
             @Override
             public void onThrowable(Throwable e) {
-
+                view.showError(context.getString(R.string.default_request_error_unknown));
             }
 
             @Override
             public void onTimeout() {
+                view.showError(context.getString(R.string.default_request_error_timeout));
             }
 
             @Override

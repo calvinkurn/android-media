@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.sellerapp.R;
 import com.truecaller.android.sdk.ITrueCallback;
 import com.truecaller.android.sdk.TrueClient;
 import com.truecaller.android.sdk.TrueError;
@@ -33,7 +34,15 @@ public class TruecallerActivity extends Activity implements ITrueCallback{
 
     @Override
     public void onFailureProfileShared(@NonNull TrueError trueError) {
-        setResult(RESULT_OK, null);
+        switch (trueError.getErrorType()){
+            case TrueError.ERROR_TYPE_USER_DENIED:
+            case TrueError.ERROR_TYPE_UNAUTHORIZED_USER:
+                setResult(RESULT_OK, new Intent().putExtra("error",getString(R.string.error_user_truecaller)));
+                break;
+            default:
+                setResult(RESULT_OK, new Intent().putExtra("error",getString(R.string.error_fetch_truecaller)));
+                break;
+        }
         finish();
     }
 
