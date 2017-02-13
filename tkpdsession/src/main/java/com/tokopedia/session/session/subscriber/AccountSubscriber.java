@@ -75,7 +75,7 @@ public class AccountSubscriber extends rx.Subscriber<Response<String>> implement
         ErrorModel errorModel = new GsonBuilder().create().fromJson(response, ErrorModel.class);
         if (errorModel.getError() != null) {
             result.putBoolean(DO_LOGIN, false);
-            result.putString(MESSAGE_ERROR_FLAG, errorModel.getError_description());
+            result.putString(MESSAGE_ERROR_FLAG, errorModel.getErrorDescription());
             receiver.send(DownloadService.STATUS_ERROR, result);
         } else {
             switch (type) {

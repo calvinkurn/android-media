@@ -40,15 +40,9 @@ public interface SessionView {
 
     String getBirthdayFromGoogle(Person user);
 
-    void moveToNewRegisterNext(String name, String email, String password, boolean isAutoVerify);
-
     void moveToRegisterPassPhone(CreatePasswordModel model, List<String> createPasswordList, Bundle data);
 
-    void moveToActivationResend(String email, Bundle bundle);
-
     void moveToRegister();
-
-    void moveToForgotPassword();
 
     void updateUI(boolean isSignedIn);
 

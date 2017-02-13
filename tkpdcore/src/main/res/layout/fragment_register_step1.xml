@@ -1,8 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/cards_ui_2"
-    tools:context="com.tokopedia.tkpd.session.RegisterNewViewFragment">
+    android:background="@drawable/cards_ui_2">
 
     <!-- Login progress -->
 
@@ -34,8 +34,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_above="@id/login_button">
+        android:layout_above="@id/login_button"
+        android:layout_alignParentTop="true">
+
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
@@ -62,16 +63,16 @@
                         android:layout_width="@dimen/margin_med"
                         android:layout_height="@dimen/margin_med"
                         android:background="@drawable/circle_green"
-                        android:textColor="@color/white"
-                        android:text="1"
-                        android:gravity="center"/>
+                        android:gravity="center"
+                        android:text="@string/_1"
+                        android:textColor="@color/white" />
 
                     <TextView
-                        android:layout_marginLeft="@dimen/margin_small"
-                        android:layout_marginRight="@dimen/margin_small"
                         android:layout_width="135dp"
                         android:layout_height="0.1dp"
                         android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/margin_small"
+                        android:layout_marginRight="@dimen/margin_small"
                         android:background="@color/time_color"
                         android:gravity="center" />
 
@@ -79,45 +80,47 @@
                         android:layout_width="@dimen/margin_med"
                         android:layout_height="@dimen/margin_med"
                         android:background="@drawable/circle"
-                        android:textColor="@color/white"
-                        android:text="2"
-                        android:gravity="center"/>
+                        android:gravity="center"
+                        android:text="@string/_2"
+                        android:textColor="@color/white" />
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="100"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:weightSum="100">
 
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_weight="5"
-                        android:layout_height="match_parent"></LinearLayout>
+                        android:layout_height="match_parent"
+                        android:layout_weight="5"></LinearLayout>
+
                     <TextView
+                        android:id="@+id/textView4"
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="40"
-                        android:layout_height="wrap_content"
                         android:gravity="left"
-                        android:text="Buat Akun Tokopedia"
+                        android:text="@string/create_tokopedia_account"
                         android:textSize="@dimen/fontvs"
-                        android:textStyle="bold"
-                        android:id="@+id/textView4" />
+                        android:textStyle="bold" />
+
                     <TextView
                         android:layout_width="0dp"
-                        android:layout_weight="45"
                         android:layout_height="wrap_content"
+                        android:layout_weight="45"
                         android:gravity="right"
-                        android:text="Isi data dirimu"
+                        android:text="@string/fill_your_profile"
                         android:textSize="@dimen/fontvs"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_weight="10"
-                        android:layout_height="match_parent"></LinearLayout>
+                        android:layout_height="match_parent"
+                        android:layout_weight="10"></LinearLayout>
                 </LinearLayout>
 
             </LinearLayout>
@@ -134,10 +137,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/title_full_name"
-                    android:maxLines="1"
+                    android:imeOptions="actionNext"
                     android:inputType="textCapWords"
-                    android:singleLine="true"
-                    android:imeOptions="actionNext"/>
+                    android:maxLines="1"
+                    android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -146,16 +149,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small">
+
                 <AutoCompleteTextView
-                    android:id="@+id/register_name"
+                    android:id="@+id/register_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:hint="@string/title_email"
-                    android:maxLines="1"
+                    android:imeOptions="actionNext"
                     android:inputType="textEmailAddress"
-                    android:textColor="@color/black"
-                    android:imeOptions="actionNext" />
+                    android:maxLines="1"
+                    android:textColor="@color/black" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -163,25 +167,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small">
+
                 <com.tokopedia.core.customView.PasswordView
                     android:id="@+id/register_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_password"
-                    android:inputType="textPassword"
-                    android:maxLines="1"
-                    android:textColor="@color/black"
                     android:imeActionId="@+id/register_button"
                     android:imeActionLabel="Lanjut"
                     android:imeOptions="actionUnspecified"
-                    android:typeface="sans"/>
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:textColor="@color/black"
+                    android:typeface="sans" />
             </android.support.design.widget.TextInputLayout>
 
             <RelativeLayout
+                android:id="@+id/register_next"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
-                android:id="@+id/register_next">
+                android:layout_marginTop="@dimen/margin_small">
+
                 <TextView
                     android:id="@+id/register_next_button"
                     android:layout_width="match_parent"
@@ -195,14 +201,14 @@
                     android:textStyle="bold" />
 
                 <ProgressBar
+                    android:id="@+id/register_next_progress"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:id="@+id/register_next_progress"
-                    android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
-                    android:visibility="invisible"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="5dp"
                     android:layout_marginTop="2dp"
-                    android:layout_marginRight="5dp" />
+                    android:visibility="invisible" />
 
             </RelativeLayout>
         </LinearLayout>
@@ -210,15 +216,15 @@
 
     <TextView
         android:id="@+id/login_button"
-        android:padding="@dimen/padding_med"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/grey_300"
-        android:text="Sudah punya akun? Masuk"
-        android:gravity="center"
-        android:textColor="@color/grey_500"
-        android:layout_alignParentBottom="true"
         android:layout_alignLeft="@+id/register_status"
-        android:layout_alignStart="@+id/register_status" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/register_status"
+        android:background="@color/grey_300"
+        android:gravity="center"
+        android:padding="@dimen/padding_med"
+        android:text="@string/already_has_account_sign_in"
+        android:textColor="@color/grey_500" />
 
 </RelativeLayout>

@@ -393,7 +393,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                         //showing error
                         else if(accountsParameter.getErrorModel()!=null){
                             result.putInt(TYPE, typeAccess);
-                            result.putString(MESSAGE_ERROR_FLAG, accountsParameter.getErrorModel().getError_description());
+                            result.putString(MESSAGE_ERROR_FLAG, accountsParameter.getErrorModel().getErrorDescription());
                             receiver.send(DownloadService.STATUS_ERROR, result);
                         }
                         // need create password
@@ -409,7 +409,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                 });
     }
 
-    private Observable<AccountsParameter> getObservableAccountsToken(AccountsParameter accountsParameter) {
+    public Observable<AccountsParameter> getObservableAccountsToken(AccountsParameter accountsParameter) {
         Bundle bundle = new Bundle();
         Map<String, String> params = new HashMap<>();
         Parcelable parcelable = accountsParameter.getParcelable();
@@ -468,7 +468,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
         });
     }
 
-    private Observable<AccountsParameter> getObservableAccountsInfo(AccountsParameter accountsParameter) {
+    public Observable<AccountsParameter> getObservableAccountsInfo(AccountsParameter accountsParameter) {
         TokenModel tokenModel = accountsParameter.getTokenModel();
         String authKey = tokenModel.getTokenType() + " "+ tokenModel.getAccessToken();
         Bundle bundle = new Bundle();
@@ -492,7 +492,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
         });
     }
 
-    private Observable<AccountsParameter> getObservableMakeLogin(AccountsParameter accountsParameter) {
+    public Observable<AccountsParameter> getObservableMakeLogin(AccountsParameter accountsParameter) {
         Map<String, String> params = new HashMap<>();
         params = AuthUtil.generateParams(getApplicationContext(), params);
         params.put(Login.UUID_KEY, accountsParameter.getUUID());
@@ -534,7 +534,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                         }
                     } else {
                         ErrorModel errorModel = new ErrorModel();
-                        errorModel.setError_description(response.getErrorMessages().toString());
+                        errorModel.setErrorDescription(response.getErrorMessages().toString());
                         accountsParameter.setErrorModel(errorModel);
                     }
 
