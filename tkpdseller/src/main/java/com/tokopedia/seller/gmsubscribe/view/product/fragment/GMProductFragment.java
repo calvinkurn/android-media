@@ -178,8 +178,10 @@ public abstract class GMProductFragment
     @Override
     public void renderProductList(List<GMProductViewModel> gmProductDomainModels) {
         Log.d(TAG, "data rendered");
-        int selected = findBestDeal(gmProductDomainModels);
-        selectedProductId(selected);
+        if(getSelectedProductId().equals(UNDEFINED_DEFAULT_SELECTED)) {
+            int selected = findBestDeal(gmProductDomainModels);
+            selectedProductId(selected);
+        }
         adapter.addItem(gmProductDomainModels);
     }
 
@@ -187,7 +189,7 @@ public abstract class GMProductFragment
         int selected = 0;
         for (int i = 0; i < gmProductDomainModels.size(); i ++){
             if(gmProductDomainModels.get(i).isBestDeal()) {
-                selected = i;
+                selected = Integer.parseInt(gmProductDomainModels.get(i).getProductId());
                 break;
             }
         }

@@ -1,7 +1,9 @@
 package com.tokopedia.seller.gmsubscribe.view.checkout.widget;
 
+import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -50,9 +52,19 @@ public class CodeVoucherViewHolder {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 setShowVoucherCodeDetail(isChecked);
-                callback.dismissKeyboardFromVoucherEditText();
+                if(isChecked) {
+                    focusToVoucherEditText();
+                } else {
+                    dismissKeyboard();
+                }
             }
         };
+    }
+
+    private void focusToVoucherEditText() {
+        voucherEditText.requestFocus();
+        InputMethodManager imm = (InputMethodManager) callback.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(voucherEditText, InputMethodManager.SHOW_IMPLICIT);
     }
 
     private void setShowVoucherCodeDetail(boolean isChecked) {
@@ -79,7 +91,8 @@ public class CodeVoucherViewHolder {
         return voucherEditText.getText().toString();
     }
 
-    public View getEditText() {
-        return voucherEditText;
+    public void dismissKeyboard() {
+        InputMethodManager imm = (InputMethodManager)callback.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(voucherEditText.getWindowToken(), 0);
     }
 }
