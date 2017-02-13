@@ -230,7 +230,12 @@ public class GMCheckoutFragment
 
     @Override
     public boolean isAutoSubscribeUnselected() {
-        return autoExtendSelectedProduct == UNDEFINED_SELECTED_AUTO_EXTEND;
+        return autoExtendSelectedProduct.equals(UNDEFINED_SELECTED_AUTO_EXTEND);
+    }
+
+    @Override
+    public void clearAutoSubscribePackage() {
+        autoExtendSelectedProduct = UNDEFINED_SELECTED_AUTO_EXTEND;
     }
 
     @Override
