@@ -29,6 +29,8 @@ import com.tkpd.library.utils.DownloadResultSender;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.instoped.model.InstagramMediaModelParc;
 import com.tokopedia.seller.myproduct.dialog.DialogFragmentImageAddProduct;
@@ -216,12 +218,6 @@ public class ProductSocMedActivity extends BaseProductActivity implements
 
         addProductReceiver = getProductServiceReceiver();
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        registerReceiver(addProductReceiver, new IntentFilter(TkpdState.ProductService.BROADCAST_ADD_PRODUCT));
     }
 
     @Override
@@ -440,6 +436,19 @@ public class ProductSocMedActivity extends BaseProductActivity implements
         if(dialog!=null){
             ((ChooserDialogFragment)dialog).dismiss();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(addProductReceiver, new IntentFilter(TkpdState.ProductService.BROADCAST_ADD_PRODUCT));
+        // analytic below : https://phab.tokopedia.com/T18496
+        ScreenTracking.sendScreen(this, new ScreenTracking.IOpenScreenAnalytics() {
+            @Override
+            public String getScreenName() {
+                return AppScreen.SCREEN_INSTOPED;
+            }
+        });
     }
 
     @Override

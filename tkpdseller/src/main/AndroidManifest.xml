@@ -26,16 +26,9 @@
             android:name=".ShippingConfirmationDetail"
             android:label="@string/title_activity_shipping_confirmation_detail"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".ShippingConfirmationProdConf"
-            android:label="@string/title_activity_shipping_confirmation_prod_conf"
-            android:screenOrientation="portrait" />
 
         <activity android:name="com.tokopedia.seller.instoped.InstopedActivity"
             android:screenOrientation="portrait"/>
-        <service
-            android:name=".selling.SellingService"
-            android:exported="false" />
 
         <activity
             android:name=".topads.view.activity.TopAdsDashboardActivity"
@@ -147,10 +140,17 @@
             android:label="@string/title_activity_statistic"
             android:name=".topads.view.activity.TopAdsStatisticShopActivity"/>
 
-        <service android:name=".shop.ShopEditService"
+        <service
+            android:name="com.tokopedia.seller.selling.SellingService"
             android:exported="false"/>
 
-
+        <service android:name=".shop.ShopEditService"
+            android:exported="false"/>
+        <activity android:name=".gmstat.views.SetDateActivity"
+            android:label="@string/set_date"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3"
+            />
 
     </application>
 

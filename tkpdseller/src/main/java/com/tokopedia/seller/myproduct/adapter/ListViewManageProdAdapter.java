@@ -34,6 +34,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.EtalaseDB;
 import com.tokopedia.core.myproduct.model.ActResponseModelData;
@@ -385,6 +386,9 @@ public class ListViewManageProdAdapter extends BaseAdapter
                     holder.PriceView.setVisibility(View.GONE);
                     holder.Currency.setVisibility(View.VISIBLE);
                     holder.SaveBut.setVisibility(View.VISIBLE);
+
+                    // analytic below : https://phab.tokopedia.com/T18496
+                    UnifyTracking.eventChangeCurrencyProductList();
                 }
             }
         });
@@ -428,11 +432,6 @@ public class ListViewManageProdAdapter extends BaseAdapter
             @Override
             public boolean onKey(View arg0, int arg1, KeyEvent arg2) {
                 if (arg2.getKeyCode() == KeyEvent.KEYCODE_ENTER && !IsLoading) {
-//					holder.Prices.setVisibility(View.GONE);
-//					holder.Currency.setVisibility(View.GONE);
-//					holder.PriceView.setVisibility(View.VISIBLE);
-//					holder.SaveBut.setVisibility(View.GONE);
-//					EditPrice(position, holder.Currency.getSelectedItemPosition()+1, holder.Prices.getText().toString());
                 }
                 return false;
             }
@@ -460,11 +459,6 @@ public class ListViewManageProdAdapter extends BaseAdapter
 
             @Override
             public void onClick(View arg0) {
-//				Intent intent = new Intent(context, EditProduct.class);
-//				bundle.putString("product_id", ProductID);
-//				bundle.putBoolean("is_edit", true);
-//				intent.putExtras(bundle);
-//				context.startActivityForResult(intent, 1);
                 if (!multiselect) {
                     boolean isEdit = true;
                     Intent intent = ProductActivity.moveToEditFragment(context, isEdit, ProductID);
@@ -491,12 +485,6 @@ public class ListViewManageProdAdapter extends BaseAdapter
 
             @Override
             public void onClick(View v) {
-//				Bundle bundle = new Bundle();
-//				Intent intent = new Intent(context, EditProduct.class);
-//				bundle.putString("product_id", ProductID);
-//				bundle.putBoolean("is_edit", false);
-//				intent.putExtras(bundle);
-//				context.startActivityForResult(intent, 1);
                 if (!multiselect) {
                     boolean isEdit = true;
                     Intent intent = ProductActivity.moveToEditFragment(context, isEdit, ProductID);
@@ -511,21 +499,12 @@ public class ListViewManageProdAdapter extends BaseAdapter
             public void onClick(View v) {
                 if (!multiselect) {
                     showPopup(v, position, holder);
+
+                    // analytic below : https://phab.tokopedia.com/T18496
+                    UnifyTracking.eventChangeCurrencyDropDown();
                 }
             }
         });
-
-//		holder.itemManageProduct.setOnClickListener(new OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//				Bundle bundle = new Bundle();
-//				//				Intent intent = new Intent(ManageProduct.this, ProductDetailPresenter.class);
-//				Intent intent = new Intent(context, ProductInfoActivity.class);
-//				bundle.putString("product_id", getProductId(position));
-//				intent.putExtras(bundle);
-//				context.startActivityForResult(intent, 2);
-//			}
-//		});
         return convertView;
     }
 
@@ -556,25 +535,18 @@ public class ListViewManageProdAdapter extends BaseAdapter
                 Bundle bundle;
                 boolean isEdit;
                 boolean isCopy;
-                if (item.getItemId() == R.id.action_edit) {//			        	bundle = new Bundle();
-//						intent = new Intent(context, EditProduct.class);
-//						bundle.putString("product_id", ProductID);
-//						bundle.putBoolean("is_edit", true);
-//						intent.putExtras(bundle);
-//						context.startActivityForResult(intent, 1);
+                if (item.getItemId() == R.id.action_edit) {
                     isEdit = true;
                     intent = ProductActivity.moveToEditFragment(context, isEdit, ProductID);
                     context.startActivityForResult(intent, 1);
                     return true;
-                } else if (item.getItemId() == R.id.action_copy) {//			        	bundle = new Bundle();
-//						intent = new Intent(context, EditProduct.class);
-//						bundle.putString("product_id", ProductID);
-//						bundle.putBoolean("is_edit", false);
-//						intent.putExtras(bundle);
-//						context.startActivityForResult(intent, 1);
+                } else if (item.getItemId() == R.id.action_copy) {
                     isCopy = true;
                     intent = ProductActivity.moveToCopyFragment(context, isCopy, ProductID);
                     context.startActivityForResult(intent, 1);
+
+                    // analytic below : https://phab.tokopedia.com/T18496
+                    UnifyTracking.eventCopyProduct();
                     return true;
                 } else if (item.getItemId() == R.id.action_edit_price) {
                     holder.Prices.setVisibility(View.VISIBLE);

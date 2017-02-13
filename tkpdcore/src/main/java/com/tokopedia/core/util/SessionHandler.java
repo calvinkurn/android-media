@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.net.http.SslError;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.webkit.SslErrorHandler;
@@ -13,7 +14,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.crashlytics.android.Crashlytics;
-import com.facebook.login.LoginManager;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -45,6 +45,7 @@ import java.util.Arrays;
 public class SessionHandler {
     private static final String IS_LOGIN = "IS_LOGIN";
     private static final String LOGIN_ID = "LOGIN_ID";
+    private static final String GTM_LOGIN_ID = "GTM_LOGIN_ID";
     private static final String SHOP_ID = "SHOP_ID";
     private static final String STATE_BROWSE = "STATE_BROWSE";
     private static final String FULL_NAME = "FULL_NAME";
@@ -90,10 +91,11 @@ public class SessionHandler {
 
     }
 
-    public void SetLoginSession(String u_id, String u_name, String shop_id, boolean isMsisdnVerified) {
+    public void setLoginSession(String u_id, String u_name, String shop_id, boolean isMsisdnVerified) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
         editor.putString(LOGIN_ID, u_id);
+        editor.putString(GTM_LOGIN_ID, u_id);
         editor.putString(FULL_NAME, u_name);
         editor.putString(SHOP_ID, shop_id);
         editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
@@ -103,11 +105,12 @@ public class SessionHandler {
         //return status;
     }
 
-    public void SetLoginSession(boolean isLogin, String u_id, String u_name, String shop_id, boolean isMsisdnVerified) {
+    public void setLoginSession(boolean isLogin, String u_id, String u_name, String shop_id, boolean isMsisdnVerified) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
         editor.putBoolean(IS_LOGIN, isLogin);
         editor.putString(LOGIN_ID, u_id);
+        editor.putString(GTM_LOGIN_ID, u_id);
         editor.putString(FULL_NAME, u_name);
         editor.putString(SHOP_ID, shop_id);
         editor.putBoolean(IS_MSISDN_VERIFIED,isMsisdnVerified);
@@ -234,29 +237,47 @@ public class SessionHandler {
     }
 
     public String getLoginID() {
-        String u_id = null;
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        u_id = sharedPrefs.getString(LOGIN_ID, null);
-        return u_id;
+        return getLoginID(context);
     }
 
     public static String getLoginID(Context context) {
-        String u_id = null;
+        String u_id;
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         u_id = sharedPrefs.getString(LOGIN_ID, "");
         return u_id;
     }
 
+    public static String getGTMLoginID(Context context) {
+        String u_id;
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        u_id = sharedPrefs.getString(GTM_LOGIN_ID, "");
+        if(TextUtils.isEmpty(u_id)){
+            if(!TextUtils.isEmpty(SessionHandler.getLoginID(context))){
+                SessionHandler.setGTMLoginID(context,SessionHandler.getLoginID(context));
+                return SessionHandler.getLoginID(context);
+            }else{
+                return "";
+            }
+
+        }else{
+            return u_id;
+        }
+    }
+
+    public static void setGTMLoginID(Context context, String userID) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        sharedPrefs.edit().putString(GTM_LOGIN_ID, userID).apply();
+    }
+
     public static void setShopDomain(Context context, String domain) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        sharedPrefs.edit().putString("SHOP_DOMAIN", domain);
-        sharedPrefs.edit().commit();
+        sharedPrefs.edit().putString(SHOP_DOMAIN, domain).apply();
     }
 
     public static String getShopDomain(Context context) {
         String domain = null;
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        domain = sharedPrefs.getString("SHOP_DOMAIN", "");
+        domain = sharedPrefs.getString(SHOP_DOMAIN, "");
         return domain;
     }
 

@@ -140,7 +140,6 @@ public class WelcomeFragmentPresenterImpl implements WelcomeFragmentPresenter {
         intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
         view.getActivity().startActivity(intent);
-        view.getActivity().finish();
     }
 
     @Override
@@ -150,7 +149,6 @@ public class WelcomeFragmentPresenterImpl implements WelcomeFragmentPresenter {
         intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
         view.getActivity().startActivity(intent);
-        view.getActivity().finish();
     }
 
     @Override
@@ -162,6 +160,5 @@ public class WelcomeFragmentPresenterImpl implements WelcomeFragmentPresenter {
         intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
         view.getActivity().startActivity(intent);
-        view.getActivity().finish();
     }
 }

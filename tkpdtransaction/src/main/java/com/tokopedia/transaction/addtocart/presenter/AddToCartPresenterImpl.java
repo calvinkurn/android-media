@@ -85,6 +85,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.renderFormProductInfo(data.getForm().getProductDetail());
                         viewListener.renderFormAddress(data.getForm().getDestination());
                         viewListener.hideInitLoading();
+                        setInitialWeight(data);
                         if (isAllowKeroAccess(data) && isAllowedCourier(data)) {
                             calculateKeroRates(context, data);
                         } else {
@@ -554,4 +555,17 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
         viewListener.showAddressErrorMessage();
         return false;
     }
+
+    private void setInitialWeight(AtcFormData data) {
+        data.getForm().getProductDetail().setProductWeight(calculateWeight(
+                data.getForm().getProductDetail().getProductWeight(),
+                data.getForm().getProductDetail().getProductMinOrder()));
+    }
+
+    @Override
+    public String calculateWeight(String initialWeight, String quantity) {
+        return String.valueOf(CommonUtils.round((Double.parseDouble(initialWeight) *
+                Double.parseDouble(quantity)), 4));
+    }
+
 }

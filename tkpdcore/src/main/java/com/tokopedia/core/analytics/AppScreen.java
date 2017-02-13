@@ -33,7 +33,9 @@ public final class AppScreen {
             return AFInAppEventType.CONTENT_VIEW;
         }
     }
-
+    public static final String STATISTIC_PAGE = "Statistic Page";
+    public static final String SCREEN_COPY_PRODUCT = "Salin Product Page";
+    public static final String SCREEN_INSTOPED = "Instoped Upload Page";
     public static final String SCREEN_INDEX_HOME = "Index Main";
     public static final String SCREEN_LOGIN = "Login page";
     public static final String SCREEN_REGISTER = "Register page";
@@ -242,8 +244,4 @@ public final class AppScreen {
     public static final String EVENT_ADDED_WISHLIST = "event : Add to wishlist";
     public static final String EVENT_CLICKED_HOTLIST= "event : Clicked Hot List";
     public static final String SCREEN_VIEWED_WISHLIST_PAGE = "event : Viewed Wishlist Page";
-
-
-    public static final String SCREEN_INSTOPED = "Instoped Select Image";
-
 }

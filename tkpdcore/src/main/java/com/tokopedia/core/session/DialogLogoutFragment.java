@@ -3,10 +3,9 @@ package com.tokopedia.core.session;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.hardware.camera2.params.Face;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +15,8 @@ import android.widget.Toast;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.LocalCacheHandler;
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -30,11 +31,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdUrl;
 
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import retrofit2.Response;
@@ -123,35 +120,14 @@ public class DialogLogoutFragment extends DialogFragment {
                                         progressDialog.dismiss();
                                         dismiss();
                                     } else {
-                                        Toast.makeText(activity, response.getErrorMessages().get(0), Toast.LENGTH_LONG).show();
+                                        progressDialog.dismiss();
+                                        dismiss();
+                                        SnackbarManager.make(activity, response.getErrorMessages().get(0), Snackbar.LENGTH_LONG).show();
                                     }
                                 } else {
-                                    new ErrorHandler(new ErrorListener() {
-                                        @Override
-                                        public void onUnknown() {
-                                            Toast.makeText(activity, "Network Unknown Error!", Toast.LENGTH_LONG).show();
-                                        }
-
-                                        @Override
-                                        public void onTimeout() {
-                                            Toast.makeText(activity, "Network Timeout Error!", Toast.LENGTH_LONG).show();
-                                        }
-
-                                        @Override
-                                        public void onServerError() {
-                                            Toast.makeText(activity, "Network Internal Server Error!", Toast.LENGTH_LONG).show();
-                                        }
-
-                                        @Override
-                                        public void onBadRequest() {
-                                            Toast.makeText(activity, "Network Bad Request Error!", Toast.LENGTH_LONG).show();
-                                        }
-
-                                        @Override
-                                        public void onForbidden() {
-                                            Toast.makeText(activity, "Network Forbidden Error!", Toast.LENGTH_LONG).show();
-                                        }
-                                    }, responseData.code());
+                                    progressDialog.dismiss();
+                                    dismiss();
+                                    SnackbarManager.make(activity, getString(R.string.default_request_error_timeout), Snackbar.LENGTH_LONG).show();
                                 }
                             }
                         })
@@ -163,23 +139,6 @@ public class DialogLogoutFragment extends DialogFragment {
         return response.getErrorMessages().contains(temp);
     }
 
-    private void logoutWsNew(Context context) {
-        com.tokopedia.core.network.NetworkHandler network = new com.tokopedia.core.network.NetworkHandler(context, TkpdUrl.GCM_HELPER);
-        network.AddParam("act", "remove_user_id_from_gcm");
-        network.Commit(new com.tokopedia.core.network.NetworkHandler.NetworkHandlerListener() {
-            @Override
-            public void onSuccess(Boolean status) {
-            }
-
-            @Override
-            public void getResponse(JSONObject Result) {
-            }
-
-            @Override
-            public void getMessageError(ArrayList<String> MessageError) {
-            }
-        });
-    }
 
     @Override
     public void onResume() {
@@ -191,7 +150,6 @@ public class DialogLogoutFragment extends DialogFragment {
             public void onClick(View v) {
                 progressDialog.showDialog();
                 logoutToTheInternet(getActivity());
-                logoutWsNew(getActivity());
                 okButton.setClickable(false);
 
                 UnifyTracking.eventLogoutLoca();

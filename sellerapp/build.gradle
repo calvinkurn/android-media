@@ -90,7 +90,14 @@ android {
             res.srcDirs = ['src/main/res']
         }
 
-        instrumentTest.setRoot('tests')
+        String sharedTestDir = 'src/sharedTest/java'
+        test {
+            java.srcDir sharedTestDir
+        }
+        androidTest {
+            java.srcDir sharedTestDir
+        }
+
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
@@ -154,6 +161,7 @@ android {
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
         vectorDrawables.useSupportLibrary = true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
 
@@ -195,47 +203,81 @@ repositories {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-
     /*compile (rootProject.ext.tkpdDependencies.inbox) {
-        exclude group: 'com.tokopedia.core'
-    }
-    compile (rootProject.ext.tkpdDependencies.discovery) {
-        exclude group: 'com.tokopedia.core'
-    }
-    compile (rootProject.ext.tkpdDependencies.transaction) {
-        exclude group: 'com.tokopedia.core'
-    }
-    compile (rootProject.ext.tkpdDependencies.seller) {
-        exclude group: 'com.tokopedia.core'
-    }
-    compile (rootProject.ext.tkpdDependencies.session) {
-        exclude group: 'com.tokopedia.core'
-    }
-    compile (rootProject.ext.tkpdDependencies.core)*/
+            exclude group: 'com.tokopedia.core'
+        }
+        compile (rootProject.ext.tkpdDependencies.discovery) {
+            exclude group: 'com.tokopedia.core'
+        }
+        compile (rootProject.ext.tkpdDependencies.transaction) {
+            exclude group: 'com.tokopedia.core'
+        }
+        compile (rootProject.ext.tkpdDependencies.seller) {
+            exclude group: 'com.tokopedia.core'
+        }
+        compile (rootProject.ext.tkpdDependencies.session) {
+            exclude group: 'com.tokopedia.core'
+        }
+        compile (rootProject.ext.tkpdDependencies.core)*/
     compile project(':tkpddiscovery')
     compile project(':tkpdseller')
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
-
     compile('de.hdodenhof:circleimageview:2.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    compile('me.henrytao:smooth-app-bar-layout:24.1.1.0') {
+    compile(rootProject.ext.miscDependencies.smoothAppBarLayout) {
         exclude group: "com.android.support"
     }
     compile 'com.daimajia.numberprogressbar:library:1.2@aar'
     compile rootProject.ext.butterKnifeDependencies.butterKnife
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+
+    provided rootProject.ext.miscDependencies.javaxAnnotation
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
+    // Required -- JUnit 4 framework
+    testCompile rootProject.ext.testDependencies.junit
+
+    // Optional -- Mockito framework
+    testCompile rootProject.ext.testDependencies.mockitorCore
+
+    testCompile rootProject.ext.miscDependencies.rxJava
+
+    androidTestCompile rootProject.ext.miscDependencies.rxJava
+
+    androidTestCompile rootProject.ext.testDependencies.uiautomator
+
+    androidTestCompile rootProject.ext.testDependencies.spoon
+    androidTestCompile rootProject.ext.testDependencies.androidAnnotation
+
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile(name: 'rounded-corner-0.0.1', ext: 'aar')
-    compile(name: 'williamchart-2.3.0', ext: 'aar')
-    compile(name: 'circle-progress-1.1.1', ext: 'aar')
-    compile 'com.shootr:KMNumbers:1.0.0'
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:multidex:1.0.1'
-    provided 'javax.annotation:jsr250-api:1.0'
-    compile 'com.google.dagger:dagger:2.5'
-    apt "com.google.dagger:dagger-compiler:2.5"
+
+    androidTestCompile (rootProject.ext.testDependencies.androidTestRunner){
+        exclude module: 'support-annotations'
+    }
+    androidTestCompile (rootProject.ext.testDependencies.androidRulesVersion){
+        exclude module: 'support-annotations'
+    }
+
+    androidTestCompile (rootProject.ext.testDependencies.espressoIntents){
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+
+    androidTestCompile rootProject.ext.testDependencies.retrofitMock
+    androidTestCompile rootProject.ext.testDependencies.retrofitMockWebser
+
+    androidTestApt rootProject.ext.miscDependencies.daggerCompiler
+    androidTestCompile rootProject.ext.miscDependencies.dagger
+    androidTestCompile rootProject.ext.miscDependencies.gson
+    androidTestCompile rootProject.ext.miscDependencies.parcelerApi
+    androidTestApt rootProject.ext.miscDependencies.parceler
+
+    androidTestCompile rootProject.ext.testDependencies.dexMaker
+    androidTestCompile(rootProject.ext.testDependencies.dexMakerMockito) {
+        exclude group: 'org.hamcrest', module: 'hamcrest-core'
+    }
 }

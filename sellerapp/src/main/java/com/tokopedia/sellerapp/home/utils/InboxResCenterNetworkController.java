@@ -5,6 +5,9 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.tkpd.library.utils.network.BaseNetworkController;
+import com.tkpd.library.utils.network.CommonListener;
+import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -20,8 +23,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
-import static com.tokopedia.sellerapp.home.utils.ShopNetworkController.onResponseError;
 
 /**
  * Created by normansyahputa on 8/31/16.
@@ -61,7 +62,7 @@ public class InboxResCenterNetworkController extends BaseNetworkController {
                                         ResCenterInboxData shopModel = gson.fromJson(stringData, ResCenterInboxData.class);
                                         inboxResCenterListener.onSuccess(shopModel);
                                     }else {
-                                        throw new ShopNetworkController.MessageErrorException(response.body().getErrorMessages().get(0));
+                                        throw new MessageErrorException(response.body().getErrorMessages().get(0));
                                     }
                                 } else {
                                     onResponseError(response.code(), inboxResCenterListener);
@@ -80,7 +81,7 @@ public class InboxResCenterNetworkController extends BaseNetworkController {
         return inboxResCenterService.getApi().getResCenter(AuthUtil.generateParams(userId, deviceId, paramGetInbox(resCenterInboxDataPass)));
     }
 
-    public interface InboxResCenterListener extends ShopNetworkController.CommonListener {
+    public interface InboxResCenterListener extends CommonListener {
         void onSuccess(ResCenterInboxData resCenterInboxData);
     }
 

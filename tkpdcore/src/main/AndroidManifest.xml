@@ -176,10 +176,6 @@
             android:label="@string/title_activity_etalase_shop_editor"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.ShopEditor"
-            android:label="@string/title_activity_shop_editor"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.PaymentEditor"
             android:label="@string/title_activity_payment_editor"
             android:screenOrientation="portrait" />
@@ -196,10 +192,6 @@
             android:label="@string/title_activity_manage_people"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.ManagePrivacy"
-            android:label="@string/title_activity_manage_privacy"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity"
             android:label="@string/title_activity_manage_notification"
             android:screenOrientation="portrait" />
@@ -210,10 +202,6 @@
         <activity
             android:name="com.tokopedia.core.peoplefave.activity.PeopleFavoritedShop"
             android:label="@string/title_activity_people_favorited_shop"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.ManagePeoplePassword"
-            android:label="@string/title_activity_manage_people_password"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.deposit.activity.DepositActivity"
@@ -315,10 +303,6 @@
         <activity
             android:name="com.tokopedia.core.BuyCreditCart"
             android:label="@string/title_activity_buy_credit_cart"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.CreditCardActivity"
-            android:label="@string/title_activity_credit_card"
             android:screenOrientation="portrait" />
         <activity android:name="com.localytics.android.PushTrackingActivity" />
         <activity
