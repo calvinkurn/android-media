@@ -377,9 +377,9 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @Override
     public void renderDataProducts(List<Product> productList) {
         Collections.sort(productList, new ProductComparator());
-        if (rechargeEditText.getText().length() > 0
-                || !category.getAttributes().getClientNumber().getIsShown()) {
-            if (productList.size() > 0) {
+        if (rechargeEditText.getText().length() >= minLengthDefaultOperator ||
+                !category.getAttributes().getClientNumber().getIsShown()) {
+            if (productList != null && productList.size() > 0) {
                 this.productList = productList;
                 isAlreadyHavePhonePrefixInView = true;
                 NominalAdapter adapter = new NominalAdapter(
@@ -474,7 +474,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         this.hideFormAndImageOperator();
     }
 
-
     @Override
     public void showImageOperator(String imageUrl) {
         this.rechargeEditText.setImgOperator(imageUrl);
@@ -501,7 +500,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
         }
     }
-
 
     @Override
     public void hideProgressFetchData() {
@@ -561,7 +559,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         setTextToEditTextOrSetVisibilityForm();
         setPhoneBookVisibility();
 
-
         if (!category.getAttributes().getValidatePrefix()) {
             if (!category.getAttributes().getClientNumber().getIsShown()) {
                 selectedOperatorId = category.getAttributes().getDefaultOperatorId();
@@ -573,7 +570,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 this.rechargePresenter.getListOperatorFromCategory(category.getId());
             }
         }
-
     }
 
     private void setUpForNotUsingTextEdit() {
