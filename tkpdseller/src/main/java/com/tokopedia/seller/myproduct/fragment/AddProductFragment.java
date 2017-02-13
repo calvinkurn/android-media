@@ -2857,7 +2857,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
             });
 
-            myAlertDialog.setNegativeButton(getString(R.string.positive_button_dialog), new DialogInterface.OnClickListener() {
+            myAlertDialog.setNegativeButton(getString(R.string.negative_button_dialog), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface arg0, int arg1) {
 
                 }
