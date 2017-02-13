@@ -6,7 +6,7 @@ import com.tokopedia.seller.instoped.fragment.InstagramMediaFragment;
  * Created by sebastianuskh on 1/3/17.
  */
 public interface InstagramActivityListener {
-    void triggerAppBarAnimation(boolean b);
+    void triggerAppBarAnimation(boolean turnedOn);
 
     InstagramMediaFragment.OnGetInstagramMediaListener onGetInstagramMediaListener();
 }

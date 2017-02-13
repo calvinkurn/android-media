@@ -4,18 +4,14 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.DownloadResultReceiver;
-import com.tkpd.library.utils.DownloadResultSender;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -30,14 +26,11 @@ import com.tokopedia.core.product.presenter.ProductInfoPresenterImpl;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
-import com.tokopedia.core.share.fragment.ProductShareFragmentCallback;
-import com.tokopedia.core.var.TkpdState;
 
 public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresenter> implements
         ProductInfoView,
         ProductDetailFragment.OnFragmentInteractionListener,
-        ProductInfoResultReceiver.Receiver,
-        ProductShareFragmentCallback {
+        ProductInfoResultReceiver.Receiver{
     public static final String SHARE_DATA = "SHARE_DATA";
     public static final String IS_ADDING_PRODUCT = "IS_ADDING_PRODUCT";
 
@@ -254,15 +247,5 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
 
     private void onReceiveResultSuccess(Fragment fragment, Bundle resultData, int resultCode) {
         ((ProductDetailFragment) fragment).onSuccessAction(resultData, resultCode);
-    }
-
-    @Override
-    public void registerReceiver(BroadcastReceiver receiver, String intentFilter) {
-        registerReceiver(receiver, new IntentFilter(intentFilter));
-    }
-
-    @Override
-    public void uregisterReceiver(BroadcastReceiver receiver) {
-        unregisterReceiver(receiver);
     }
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -98,7 +99,6 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     private boolean isAdding = false;
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
-    private ProductShareFragmentCallback fragmentCallback;
 
     public static ProductShareFragment newInstance(@NonNull ShareData shareData) {
         ProductShareFragment fragment = new ProductShareFragment();
@@ -160,11 +160,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
 
     @Override
     protected void initialListener(Activity activity) {
-        if(activity instanceof ProductShareFragmentCallback){
-            fragmentCallback = (ProductShareFragmentCallback) activity;
-        } else {
-            throw new RuntimeException("Please implement ProductShareFragmentCallback in activity");
-        }
+
     }
 
     @Override
@@ -209,13 +205,13 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     @Override
     public void onResume() {
         super.onResume();
-        fragmentCallback.registerReceiver(addProductReceiver, TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
+        getActivity().registerReceiver(addProductReceiver, new IntentFilter(TkpdState.ProductService.BROADCAST_ADD_PRODUCT));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        fragmentCallback.uregisterReceiver(addProductReceiver);
+        getActivity().unregisterReceiver(addProductReceiver);
     }
 
     public void onError(Bundle resultData) {
