@@ -381,7 +381,7 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
 
             @Override
             public void onSuccess(int result, String uuid) {
-gi                if(result == 0){
+                if(result == 0){
                     view.showError(context.getString(R.string.error_user_truecaller));
                 }else {
                     storeUUID(context, uuid);
