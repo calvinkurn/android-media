@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -39,8 +38,6 @@ import com.tokopedia.core.share.presenter.ProductSharePresenterImpl;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Angga.Prasetiyo on 11/12/2015.
@@ -270,7 +267,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
 
                         if (ProductDB!= null && ProductDB.getPictureDBs()!= null
                                 && CommonUtils.checkCollectionNotNull(ProductDB.getPictureDBs()))
-                            shareData.setImgUri(ProductDB.getPictureDBs().get(0).getPath());
+                            shareData.setImgUri(ProductDB.getPictureDBs().get(0).getPictureImageSourceUrl());
 
                         if (ProductDB!= null && ProductDB.getProductUrl() != null)
                             shareData.setUri(ProductDB.getProductUrl());
