@@ -30,7 +30,7 @@ import okio.Buffer;
 /**
  * Created by sebastianuskh on 2/2/17.
  */
-public class GMSubscribeCartInterceptor extends TkpdAuthInterceptor{
+public class GMSubscribeInterceptor extends TkpdAuthInterceptor{
     private static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ";
     private static final String CONTENT_TYPE_JSON_UT = "application/json; charset=UTF-8";
     private static final String HEADER_AUTHORIZATION = "Authorization";

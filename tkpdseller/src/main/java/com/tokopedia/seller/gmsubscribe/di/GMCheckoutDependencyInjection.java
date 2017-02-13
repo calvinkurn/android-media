@@ -25,7 +25,7 @@ import com.tokopedia.seller.gmsubscribe.domain.cart.interactor.CheckoutGMSubscri
 import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetAutoSubscribeSelectedProductUseCase;
 import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetCurrentSelectedProductUseCase;
 import com.tokopedia.seller.gmsubscribe.view.checkout.presenter.GMCheckoutPresenterImpl;
-import com.tokopedia.seller.network.interceptor.GMSubscribeCartInterceptor;
+import com.tokopedia.seller.network.interceptor.GMSubscribeInterceptor;
 
 import java.util.concurrent.TimeUnit;
 
@@ -59,7 +59,7 @@ public class GMCheckoutDependencyInjection {
         clientBuilder.connectTimeout(45L, TimeUnit.SECONDS);
         clientBuilder.readTimeout(45L, TimeUnit.SECONDS);
         clientBuilder.writeTimeout(45L, TimeUnit.SECONDS);
-        GMSubscribeCartInterceptor authInterceptor = new GMSubscribeCartInterceptor();
+        GMSubscribeInterceptor authInterceptor = new GMSubscribeInterceptor();
         clientBuilder.interceptors().add(authInterceptor);
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
