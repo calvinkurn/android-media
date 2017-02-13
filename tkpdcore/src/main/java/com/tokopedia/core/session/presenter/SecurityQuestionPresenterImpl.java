@@ -367,7 +367,7 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
         VerifyPhoneInteractor.VerifyPhoneListener listener = new VerifyPhoneInteractor.VerifyPhoneListener() {
             @Override
             public void onError(String error) {
-                view.showError(context.getString(R.string.error_user_truecaller));
+                view.showError(error);
             }
             @Override
             public void onThrowable(Throwable e) {
@@ -381,8 +381,8 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
 
             @Override
             public void onSuccess(int result, String uuid) {
-                if(result == 0){
-                    view.showError(null);
+gi                if(result == 0){
+                    view.showError(context.getString(R.string.error_user_truecaller));
                 }else {
                     storeUUID(context, uuid);
                     fetchDataFromInternet(SecurityQuestionPresenter.MAKE_LOGIN,null);
