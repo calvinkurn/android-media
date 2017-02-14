@@ -431,13 +431,6 @@ ShippingConfirmationDetail extends TActivity {
         startActivity(PeopleInfoNoDrawerActivity.createInstance(ShippingConfirmationDetail.this, UserID));
     }
 
-    @OnClick(R2.id.confirm_button)
-    public void onConfirmButton() {
-        Intent intent = new Intent(ShippingConfirmationDetail.this, ShippingConfirmationProdConf.class);
-        intent.putExtras(getIntent().getExtras());
-        startActivityForResult(intent, 0);
-    }
-
     private void Loading() {
         mProgressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
         mProgressDialog.showDialog();

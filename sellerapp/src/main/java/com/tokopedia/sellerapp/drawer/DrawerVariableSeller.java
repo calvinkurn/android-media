@@ -39,7 +39,7 @@ import com.tokopedia.core.drawer.var.NotificationItem;
 import com.tokopedia.core.drawer.var.UserType;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.myproduct.ManageProduct;
+import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
@@ -51,7 +51,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.ToolbarVariable;
 import com.tokopedia.seller.topads.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.sellerapp.R;
-import com.tokopedia.sellerapp.gmstat.views.GMStatActivity;
+import com.tokopedia.sellerapp.gmstat.activities.GMStatActivity;
 import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
@@ -429,6 +429,9 @@ public class DrawerVariableSeller extends DrawerVariable {
                 intent.putExtra(GMStatActivity.SHOP_ID, SessionHandler.getShopID(context));
                 intent.putExtra(GMStatActivity.IS_GOLD_MERCHANT, SessionHandler.isGoldMerchant(context));
                 context.startActivity(intent);
+
+                // analytic below : https://phab.tokopedia.com/T18496
+                UnifyTracking.eventClickGMStat();
                 break;
             case TkpdState.DrawerPosition.SELLER_TOP_ADS:
                 intent = new Intent(context, TopAdsDashboardActivity.class);
@@ -765,23 +768,6 @@ public class DrawerVariableSeller extends DrawerVariable {
 
     @Override
     public void getNotification() {
-        if (!isLogin()) {
-            return;
-        }
-        networkInteractor.getNotification(context, new NetworkInteractor.NotificationListener() {
-            @Override
-            public void onSuccess(NotificationItem notificationItem) {
-                setNotificationShop(notificationItem);
-                setNotificationInbox(notificationItem);
-                toolbar.updateToolbar(notificationItem);
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onError(String message) {
-
-            }
-        });
     }
 
     private void setNotificationShop(NotificationItem notificationItem) {

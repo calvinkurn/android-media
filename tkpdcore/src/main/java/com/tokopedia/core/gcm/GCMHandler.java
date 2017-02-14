@@ -192,6 +192,10 @@ public class GCMHandler {
         FCMCacheManager.clearRegistrationId(context);
     }
 
+    public void commitGCMProcess(GCMHandlerListener any) {
+
+    }
+
     public class GCMParam {
         int statusCode;
         String statusMessage;

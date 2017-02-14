@@ -45,6 +45,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tkpd.library.utils.network.ManyRequestErrorException;
+import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AppScreen;
@@ -57,7 +59,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
-import com.tokopedia.core.myproduct.ManageProduct;
+import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.apiservices.shop.MyShopOrderService;
@@ -93,7 +95,7 @@ import com.tokopedia.sellerapp.home.model.rescenter.ResCenterInboxData;
 import com.tokopedia.sellerapp.home.model.shopmodel.ShopModel;
 import com.tokopedia.sellerapp.home.utils.CollapsingToolbarLayoutCust;
 import com.tokopedia.sellerapp.home.utils.DepositNetworkController;
-import com.tokopedia.sellerapp.home.utils.ImageHandler;
+import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.sellerapp.home.utils.InboxResCenterNetworkController;
 import com.tokopedia.sellerapp.home.utils.NotifNetworkController;
 import com.tokopedia.sellerapp.home.utils.ShopController;
@@ -199,7 +201,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
 
     @OnClick({R.id.message_see_more, R.id.message__card_view_container})
     public void messageSeeMore() {
-        startActivity(InboxRouter.getInboxMessageActivityIntent(this));
+        this.startActivity(InboxRouter.getInboxMessageActivityIntent(this));
     }
 
     @OnClick({R.id.complain_see_more, R.id.complain_container})
@@ -457,7 +459,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof ShopNetworkController.MessageErrorException) {
+                if (e instanceof MessageErrorException) {
                     Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
                 }else{
                     if (snackbarRetryUndefinite != null) {
@@ -487,7 +489,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof ShopNetworkController.MessageErrorException) {
+                if (e instanceof MessageErrorException) {
                     Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
                 }else{
                     if (snackbarRetryUndefinite != null) {
@@ -559,7 +561,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof ShopNetworkController.MessageErrorException) {
+                if (e instanceof MessageErrorException) {
                     Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
                 }else{
                     if (snackbarRetryUndefinite != null) {
@@ -665,12 +667,12 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof ShopNetworkController.MessageErrorException) {
+                if (e instanceof MessageErrorException) {
                     if (snackbarRetryUndefinite != null) {
                         snackbarRetryUndefinite.showRetrySnackbar();
                     }
 //                    Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                } else if (e instanceof ShopNetworkController.ManyRequestErrorException) {
+                } else if (e instanceof ManyRequestErrorException) {
                     if (snackbarRetryUndefinite != null) {
                         snackbarRetryUndefinite.showRetrySnackbar();
                     }

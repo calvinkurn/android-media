@@ -31,9 +31,10 @@ public class TkpdBaseURL {
     public static String PULSA_WEB_DOMAIN = "https://pulsa.tokopedia.com";
     public static String PULSA_WEB_STAGING_DOMAIN = "https://pulsa-staging.tokopedia.com";
     public static String GOLD_MERCHANT_DOMAIN = "https://goldmerchant.tokopedia.com";
+    public static String GOLD_MERCHANT_STAGING_DOMAIN = "http://goldmerchant-staging.tokopedia.com";
     public static String WEB_DOMAIN = "https://www.tokopedia.com/";
     public static String MOBILE_DOMAIN = "https://m.tokopedia.com/";
-    public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us/";
+    public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
 
     public static class Product {
@@ -329,7 +330,7 @@ public class TkpdBaseURL {
         public static final String PATH_GET_SHOP_REVIEW = "get_shop_review.pl";
     }
 
-    public static class Etc {
+    public static final class Etc {
         public static final String URL_ADDRESS = BASE_DOMAIN + "v4/address/";
         public static final String URL_DEPARTMENT = BASE_DOMAIN + "v4/department/";
         public static final String URL_HOME = BASE_DOMAIN + "v4/home/";
@@ -349,6 +350,7 @@ public class TkpdBaseURL {
         public static final String PATH_GET_WISHLIST = "get_wishlist.pl";
 
         public static final String PATH_GET_DATA_SOURCE_TICKER = "get_data_source_ticker.pl";
+        public static final String PATH_GET_LIST_FAVE_SHOP_ID = "/v4/home/get_list_fave_shop_id.pl";
     }
 
     public static class ResCenter {
@@ -517,6 +519,8 @@ public class TkpdBaseURL {
         public static final String URL_TOPADS_SHOP = TOPADS_DOMAIN + "promo/v1/display/";
 
         public static final String PATH_DISPLAY_SHOP = "promo/v1/display/shops";
+        public static final String PATH_GET_PROMO_TOP_ADS = "/promo/v1.1/display/products";
+        public static final String PATH_GET_SHOP_TOP_ADS = "promo/v1/display/shops";
     }
 
     public static class Mojito {
@@ -530,6 +534,7 @@ public class TkpdBaseURL {
         public static final String API_HOME_CATEGORY_MENU = "/api/v1/layout/category";
         public static final String PATH_USER_RECENT_VIEW = "users/";
         public static final String PATH_RECENT_VIEW = "/recentview/products/v1";
+        public static final String API_V1_BRANDS = "/os/api/v1/brands/list";
     }
 
 

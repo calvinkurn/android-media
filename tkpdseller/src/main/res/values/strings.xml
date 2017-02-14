@@ -1,6 +1,64 @@
 <resources>
     <string name="app_name">tkpdseller</string>
 
+    <string name="title_activity_gmstat">Statistik</string>
+    <string name="action_settings">Settings</string>
+    <string name="set_date">Atur Tanggal</string>
+    <string name="title_transaction_success">Transaksi Berhasil</string>
+    <string name="no_data">Tidak ada data</string>
+    <string name="data_product_title">Data Produk</string>
+    <string name="popular_product_title">Produk terlaris</string>
+    <string name="number_of_selled">x Terjual</string>
+    <string name="yesterday">Kemarin</string>
+    <string name="seven_days_ago">7 hari terakhir</string>
+    <string name="thirty_days_ago">30 hari terakhir</string>
+
+    <!-- untuk tanggal gmstat -->
+    <string-array name="month_names">
+        <item>Januari</item>
+        <item>Februari</item>
+        <item>Maret</item>
+        <item>April</item>
+        <item>Mei</item>
+        <item>Juni</item>
+        <item>Juli</item>
+        <item>Agustus</item>
+        <item>September</item>
+        <item>Oktober</item>
+        <item>November</item>
+        <item>Desember</item>
+    </string-array>
+
+    <!-- untuk tanggal gmstat -->
+    <string-array name="month_names_abrev">
+        <item>Jan</item>
+        <item>Feb</item>
+        <item>Mar</item>
+        <item>Apr</item>
+        <item>Mei</item>
+        <item>Jun</item>
+        <item>Jul</item>
+        <item>Agu</item>
+        <item>Sep</item>
+        <item>Okt</item>
+        <item>Nov</item>
+        <item>Des</item>
+    </string-array>
+
+    <string-array name="gender">
+        <item>Pria</item>
+        <item>Wanita</item>
+    </string-array>
+
+    <string name="try_again">COBA KEMBALI</string>
+    <string name="unknown_exception_description">Tidak ada koneksi.\nSilahkan coba kembali</string>
+    <string name="message_exception_description">Terjadi kesalahan koneksi.\nSilahkan coba kembali"</string>
+    <string name="default_exception_description">Kesalahan tidak diketahui</string>
+    <string name="prefix_footer_market_insight">Kata kunci ini berdasarkan kategori dari </string>
+    <string name="last_thirty_days_ago">Data dalam 30 hari terakhir</string>
+
+
+
     <string name="title_top_ads_dashboard">TopAds</string>
     <string name="title_top_ads_product">Produk</string>
     <string name="title_top_ads_store">Toko</string>
@@ -100,44 +158,9 @@
     <string name="label_top_ads_promo_group">Nama Grup</string>
 
     <string name="label_today">Hari Ini</string>
-    <string name="yesterday">Kemarin</string>
-    <string name="seven_days_ago">7 hari terakhir</string>
-    <string name="thirty_days_ago">30 hari terakhir</string>
     <string name="label_this_month">Bulan Ini</string>
     <string name="label_date_period">Periode</string>
     <string name="label_date_custom">Kustom</string>
-
-    <!-- untuk tanggal gmstat -->
-    <string-array name="month_names">
-        <item>Januari</item>
-        <item>Februari</item>
-        <item>Maret</item>
-        <item>April</item>
-        <item>Mei</item>
-        <item>Juni</item>
-        <item>Juli</item>
-        <item>Agustus</item>
-        <item>September</item>
-        <item>Oktober</item>
-        <item>November</item>
-        <item>Desember</item>
-    </string-array>
-
-    <!-- untuk tanggal gmstat -->
-    <string-array name="month_names_abrev">
-        <item>Jan</item>
-        <item>Feb</item>
-        <item>Mar</item>
-        <item>Apr</item>
-        <item>Mei</item>
-        <item>Jun</item>
-        <item>Jul</item>
-        <item>Agu</item>
-        <item>Sep</item>
-        <item>Okt</item>
-        <item>Nov</item>
-        <item>Des</item>
-    </string-array>
 
     <!-- Top Ads Statistic-->
     <string name="title_top_ads_statistic_graph_impression">Jumlah orang yang melihat promo anda.</string>
@@ -151,4 +174,8 @@
     <string name="label_top_ads_empty_group">Tanpa Grup</string>
     <string name="label_top_ads_favorit">Favorit</string>
     <string name="save_date">Simpan</string>
+    <string name="market_insight_item_non_gm_text">Kata Kunci %s</string>
+
+    <string name="positive_button_dialog">Ya</string>
+    <string name="negative_button_dialog">Tidak</string>
 </resources>

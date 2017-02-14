@@ -11,7 +11,13 @@ import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.instoped.InstopedActivity;
+import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
+import com.tokopedia.seller.myproduct.ManageProduct;
+import com.tokopedia.seller.myproduct.ProductActivity;
+import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
+import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
 /**
@@ -25,6 +31,38 @@ public class SellerRouterApplication extends MainApplication implements TkpdCore
     }
 
     @Override
+    public void startInstopedActivity(Context context) {
+        InstopedActivity.startInstopedActivity(context);
+    }
+
+    @Override
+    public void removeInstopedToken() {
+        InstagramMediaPresenterImpl.removeToken();
+    }
+
+    @Override
+    public void goToManageProduct(Context context) {
+        Intent intent = new Intent(context, ManageProduct.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void clearEtalaseCache() {
+        AddProductPresenterImpl.clearEtalaseCache(getApplicationContext());
+    }
+
+    @Override
+    public Intent goToEditProduct(Context context, boolean isEdit, String productId) {
+        return ProductActivity.moveToEditFragment(context, isEdit, productId);
+    }
+
+    @Override
+    public void resetAddProductCache(Context context) {
+        AddProductPresenterImpl.clearEtalaseCache(context);
+        AddProductPresenterImpl.clearDepartementCache(context);
+    }
+
+    @Override
     public void goToWallet(Context context, Bundle bundle) {
 
     }
@@ -35,6 +73,14 @@ public class SellerRouterApplication extends MainApplication implements TkpdCore
                 SellerHomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void goToGMSubscribe(Context context) {
+        if(context == null)
+            throw new RuntimeException("unable to process to next view !!");
+
+        context.startActivity(new Intent(context, GMSubscribeActivity.class));
     }
 
     @Override

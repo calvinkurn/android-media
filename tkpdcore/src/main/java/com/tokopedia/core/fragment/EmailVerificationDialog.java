@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,28 +22,9 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.manage.people.profile.interactor.ManagePeopleProfileInteractor;
 import com.tokopedia.core.manage.people.profile.interactor.ManagePeopleProfileInteractorImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.NetworkHandler;
-import com.tokopedia.core.network.NetworkHandler.NetworkHandlerListener;
-import com.tokopedia.core.network.apiservices.user.PeopleActService;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.ErrorListener;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.var.TkpdUrl;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import retrofit2.Response;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 public class EmailVerificationDialog extends DialogFragment {
 

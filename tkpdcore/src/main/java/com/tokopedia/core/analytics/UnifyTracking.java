@@ -1,7 +1,5 @@
 package com.tokopedia.core.analytics;
 
-import android.text.Html;
-
 import com.appsflyer.AFInAppEventType;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
@@ -1046,6 +1044,122 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.CATALOG,
                 AppEventTracking.Action.CLICK,
                 label
+        ).getEvent());
+    }
+
+    public static void eventClickOfficialStore(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.OFFICIAL_STORE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.CLICK,
+                label
+        ).getEvent());
+    }
+
+    public static void eventLoadGMStat() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.LOAD_GM_STAT,
+                AppEventTracking.Category.FULLY_LOAD,
+                AppEventTracking.Action.LOAD,
+                AppEventTracking.EventLabel.STATISTIC_PAGE
+        ).getEvent());
+    }
+
+    public static void eventScrollGMStat() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SCROLL_GM_STAT,
+                AppEventTracking.Category.GM_STAT,
+                AppEventTracking.Action.SCROLL,
+                AppEventTracking.EventLabel.ONE_HUNDRED_PERCENT
+        ).getEvent());
+    }
+
+    public static void eventClickAddProduct(String eventCategory, String eventLabel){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_ADD_PRODUCT,
+                eventCategory,
+                AppEventTracking.Action.CLICK,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventClickAPManageProductPlus(){
+        eventClickAddProduct(
+                AppEventTracking.Category.MANAGE_PRODUCT,
+                AppEventTracking.EventLabel.ADD_PRODUCT_PLUS
+        );
+    }
+
+    public static void eventClickAPManageProductTop(){
+        eventClickAddProduct(
+                AppEventTracking.Category.MANAGE_PRODUCT,
+                AppEventTracking.EventLabel.ADD_PRODUCT_TOP
+        );
+    }
+
+    public static void eventClickAddProduct() {
+        eventClickAddProduct(
+                AppEventTracking.Category.GM_STATISTIC_PRODUCT,
+                AppEventTracking.EventLabel.ADD_PRODUCT
+                );
+    }
+
+    public static void eventClickGMStatProduct(String eventLabel) {
+        eventClickGMStat(AppEventTracking.Category.GM_STATISTIC_PRODUCT, eventLabel);
+    }
+
+    public static void eventClickGMStat(){
+        eventClickGMStat(AppEventTracking.Category.HAMBURGER,
+                AppEventTracking.EventLabel.STATISTIC);
+    }
+
+    private static void eventClickGMStat(String eventCategory, String eventLabel){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_GM_STAT,
+                eventCategory,
+                AppEventTracking.Action.CLICK,
+                eventLabel
+        ).getEvent());
+    }
+
+    public static void eventClickGMStatMarketInsight(){
+        eventClickGMStat(AppEventTracking.Category.GM_STATISTIC_PRODUCT_INSIGHT,
+                AppEventTracking.EventLabel.ADD_PRODUCT);
+    }
+
+    public static void eventClickInstoped() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_INSTOPED,
+                AppEventTracking.Category.MANAGE_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.INSTOPED
+        ).getEvent());
+    }
+
+    public static void eventChangeCurrencyProductList() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
+                AppEventTracking.Category.MANAGE_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.CHANGE_PRICE_PRODUCT_LIST
+        ).getEvent());
+    }
+
+    public static void eventChangeCurrencyDropDown() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
+                AppEventTracking.Category.MANAGE_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.CHANGE_PRICE_DROP_DOWN
+        ).getEvent());
+    }
+
+    public static void eventCopyProduct() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
+                AppEventTracking.Category.MANAGE_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.COPY_PRODUCT
         ).getEvent());
     }
 }
