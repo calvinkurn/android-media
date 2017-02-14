@@ -25,6 +25,7 @@ public class CodeVoucherViewHolder {
     private final EditText voucherEditText;
     private final Button voucherButton;
     private final TextView successMessage;
+    private final View viewOpenVoucher;
 
     public CodeVoucherViewHolder(CodeVoucherViewHolderCallback callback, View view) {
         this.callback = callback;
@@ -34,8 +35,19 @@ public class CodeVoucherViewHolder {
         this.voucherEditText = (EditText) view.findViewById(R.id.gm_voucher_check_edittext);
         this.voucherButton = (Button) view.findViewById(R.id.gm_voucher_code_check_button);
         this.successMessage = (TextView) view.findViewById(R.id.textview_voucher_message_success);
+        this.viewOpenVoucher = view.findViewById(R.id.view_to_open_voucher_code);
         voucherButton.setOnClickListener(getVoucherChecked());
         checkbox.setOnCheckedChangeListener(getVoucherCheckedListener());
+        viewOpenVoucher.setOnClickListener(onClickOpenSubscribe());
+    }
+
+    private View.OnClickListener onClickOpenSubscribe() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkbox.setChecked(!checkbox.isChecked());
+            }
+        };
     }
 
     public View.OnClickListener getVoucherChecked() {

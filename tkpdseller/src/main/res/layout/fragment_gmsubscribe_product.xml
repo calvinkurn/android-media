@@ -5,12 +5,14 @@
     android:layout_height="match_parent">
 
     <Button
+        android:padding="@dimen/gmsubscribe_padding_button"
         android:id="@+id/button_select_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:layout_margin="5dp"
         android:textAllCaps="false"
+        style="?android:attr/borderlessButtonStyle"
         android:background="@drawable/bg_button_orange"
         android:layout_alignParentBottom="true"/>
 
