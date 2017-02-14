@@ -27,6 +27,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.SellerModuleRouter;
 
 import java.io.UnsupportedEncodingException;
 
@@ -163,6 +164,7 @@ public class GMDynamicPaymentActivity extends BasePresenterActivity {
             if (url.contains(callbackUrl)) {
                 view.stopLoading();
                 processRedirectUrlContainsTopPayCallbackUrl(url);
+                return true;
             } else if (url.contains(CONTAINS_ACCOUNT_URL)) {
                 view.stopLoading();
                 processRedirectUrlContainsAccountUrl(url);
@@ -249,7 +251,7 @@ public class GMDynamicPaymentActivity extends BasePresenterActivity {
 
     private void processRedirectUrlContainsTopPayCallbackUrl(String url) {
         if(getApplication() instanceof SellerModuleRouter){
-            ((SellerModuleRouter)getApplication).goToHome(this);
+            ((SellerModuleRouter)getApplication() ).goToHome(this);
         }
     }
 
