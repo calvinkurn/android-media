@@ -188,7 +188,7 @@ public class SimpleHomeActivity extends TActivity
                 getSupportFragmentManager().popBackStack();
                 return true;
             case R.id.action_cart:
-                return TActivity.onCartOptionSelected(this);
+                return onCartOptionSelected(this);
         }
 
         return super.onOptionsItemSelected(item);

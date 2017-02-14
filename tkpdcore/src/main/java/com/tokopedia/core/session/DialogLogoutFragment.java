@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -15,12 +16,13 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
+import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
-import com.tokopedia.core.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.core.network.apiservices.user.SessionService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
@@ -107,9 +109,7 @@ public class DialogLogoutFragment extends DialogFragment {
 //                                        CacheHomeInteractorImpl.deleteAllCache();
                                         new GlobalCacheManager().deleteAll();
                                         // clear etalase
-                                        LocalCacheHandler fetchEtalaseTimer = AddProductPresenterImpl.initCacheIfNotNull(activity,
-                                                AddProductPresenterImpl.FETCH_ETALASE);
-                                        fetchEtalaseTimer.setExpire(0);
+                                        Router.clearEtalase(getActivity());
                                         DbManagerImpl.getInstance().removeAllEtalase();
                                         SessionHandler.clearUserData(activity);
                                         NotificationModHandler notif = new NotificationModHandler(activity);
@@ -120,35 +120,14 @@ public class DialogLogoutFragment extends DialogFragment {
                                         progressDialog.dismiss();
                                         dismiss();
                                     } else {
-                                        Toast.makeText(activity, response.getErrorMessages().get(0), Toast.LENGTH_LONG).show();
+                                        progressDialog.dismiss();
+                                        dismiss();
+                                        SnackbarManager.make(activity, response.getErrorMessages().get(0), Snackbar.LENGTH_LONG).show();
                                     }
                                 } else {
-                                    new ErrorHandler(new ErrorListener() {
-                                        @Override
-                                        public void onUnknown() {
-                                            Toast.makeText(activity, "Network Unknown Error!", Toast.LENGTH_LONG).show();
-                                        }
-
-                                        @Override
-                                        public void onTimeout() {
-                                            Toast.makeText(activity, "Network Timeout Error!", Toast.LENGTH_LONG).show();
-                                        }
-
-                                        @Override
-                                        public void onServerError() {
-                                            Toast.makeText(activity, "Network Internal Server Error!", Toast.LENGTH_LONG).show();
-                                        }
-
-                                        @Override
-                                        public void onBadRequest() {
-                                            Toast.makeText(activity, "Network Bad Request Error!", Toast.LENGTH_LONG).show();
-                                        }
-
-                                        @Override
-                                        public void onForbidden() {
-                                            Toast.makeText(activity, "Network Forbidden Error!", Toast.LENGTH_LONG).show();
-                                        }
-                                    }, responseData.code());
+                                    progressDialog.dismiss();
+                                    dismiss();
+                                    SnackbarManager.make(activity, getString(R.string.default_request_error_timeout), Snackbar.LENGTH_LONG).show();
                                 }
                             }
                         })

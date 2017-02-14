@@ -9,4 +9,6 @@ public interface ForgotPasswordFragmentPresenter {
     void initData(String o);
 
     void onDestroyView();
+
+    void resetPassword();
 }
