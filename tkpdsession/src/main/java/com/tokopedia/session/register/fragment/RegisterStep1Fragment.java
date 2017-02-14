@@ -70,7 +70,6 @@ import rx.subscriptions.CompositeSubscription;
 public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Presenter>
         implements RegisterStep1ViewListener, RegisterConstant {
 
-    @BindView(R2.id.register_email)
     AutoCompleteTextView email;
 
     @BindView(R2.id.register_password)
@@ -164,6 +163,8 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
     @Override
     protected void initView(View view) {
         final Typeface typeface = registerPassword.getTypeface();
+
+        email = (AutoCompleteTextView) view.findViewById(R.id.register_email);
 
 
         String sourceString = "Sudah punya akun? Masuk";
