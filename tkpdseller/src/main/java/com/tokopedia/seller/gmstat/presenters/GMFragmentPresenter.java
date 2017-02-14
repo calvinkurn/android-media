@@ -1,6 +1,7 @@
 package com.tokopedia.seller.gmstat.presenters;
 
 import android.content.res.AssetManager;
+import android.os.Bundle;
 
 /**
  * Created by normansyahputa on 1/2/17.
@@ -16,4 +17,8 @@ public interface GMFragmentPresenter {
     void onPause();
 
     void displayDefaultValue(AssetManager assets);
+
+    void saveState(Bundle savedInstanceState);
+
+    void restoreState(Bundle savedInstanceState);
 }

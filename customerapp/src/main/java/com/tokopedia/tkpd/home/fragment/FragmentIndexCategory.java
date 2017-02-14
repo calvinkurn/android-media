@@ -28,6 +28,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -42,6 +43,8 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.home.Banner;
+import com.tokopedia.core.network.entity.home.Brand;
+import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
@@ -49,6 +52,7 @@ import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
@@ -57,7 +61,9 @@ import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.banner.holder.BannerHolderView;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
+import com.tokopedia.tkpd.home.OnGetBrandsListener;
 import com.tokopedia.tkpd.home.TopPicksView;
+import com.tokopedia.tkpd.home.adapter.BrandsRecyclerViewAdapter;
 import com.tokopedia.tkpd.home.adapter.RecyclerViewCategoryMenuAdapter;
 import com.tokopedia.tkpd.home.adapter.SectionListCategoryAdapter;
 import com.tokopedia.tkpd.home.adapter.TickerAdapter;
@@ -66,6 +72,8 @@ import com.tokopedia.tkpd.home.adapter.TopPicksItemAdapter;
 import com.tokopedia.tkpd.home.banner.ConvenientBanner;
 import com.tokopedia.tkpd.home.banner.holder.BannerViewHolderCreator;
 import com.tokopedia.tkpd.home.facade.FacadePromo;
+import com.tokopedia.tkpd.home.presenter.BrandsPresenter;
+import com.tokopedia.tkpd.home.presenter.BrandsPresenterImpl;
 import com.tokopedia.tkpd.home.presenter.Category;
 import com.tokopedia.tkpd.home.presenter.CategoryImpl;
 import com.tokopedia.tkpd.home.presenter.CategoryView;
@@ -117,6 +125,9 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private TopPicksPresenter topPicksPresenter;
     private RecyclerViewCategoryMenuAdapter recyclerViewCategoryMenuAdapter;
     private TopPicksAdapter topPicksAdapter;
+    private BrandsRecyclerViewAdapter brandsRecyclerViewAdapter;
+    private BrandsPresenter brandsPresenter;
+
     private BroadcastReceiver stopBannerReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -137,6 +148,8 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         NestedScrollView wrapperScrollview;
         RecyclerView categoriesRecylerview;
         RecyclerView topPicksRecyclerView;
+        RecyclerView brandsRecyclerView;
+        RelativeLayout rlBrands;
         public LinearLayout wrapperLinearLayout;
 
         private ViewHolder() {
@@ -185,6 +198,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         getPromo();
         homeCatMenuPresenter.fetchHomeCategoryMenu(false);
         topPicksPresenter.fetchTopPicks();
+        brandsPresenter.fetchBrands();
 
     }
 
@@ -293,6 +307,19 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(getActivity(), this);
         homeCatMenuPresenter = new HomeCatMenuPresenterImpl(this);
         topPicksPresenter = new TopPicksPresenterImpl(this);
+        brandsPresenter = new BrandsPresenterImpl(new OnGetBrandsListener() {
+            @Override
+            public void onSuccess(Brands brands) {
+                holder.rlBrands.setVisibility(View.VISIBLE);
+                brandsRecyclerViewAdapter.setDataList(brands);
+                brandsRecyclerViewAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError() {
+                holder.rlBrands.setVisibility(View.GONE);
+            }
+        });
     }
 
     private void startSlideTicker() {
@@ -376,8 +403,10 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
         holder.tickerContainer = (RecyclerView) holder.MainView.findViewById(R.id.announcement_ticker);
         holder.wrapperScrollview = (NestedScrollView) holder.MainView.findViewById(R.id.category_scrollview);
+        holder.rlBrands = (RelativeLayout) holder.MainView.findViewById(R.id.rl_title_layout);
         initCategoryRecyclerView();
         initTopPicks();
+        initBrands();
 
     }
 
@@ -446,6 +475,33 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
         UnifyTracking.eventHomeCategory(title);
     }
+
+    /**
+     * Brands a.k.a. Official Store
+     * Created by Hafizh Herdi 20173001
+     */
+    private void initBrands(){
+        holder.brandsRecyclerView = (RecyclerView) holder.MainView.findViewById(R.id.rv_brands_list);
+        holder.brandsRecyclerView.setHasFixedSize(true);
+        holder.brandsRecyclerView.setNestedScrollingEnabled(false);
+        brandsRecyclerViewAdapter = new BrandsRecyclerViewAdapter(new BrandsRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClicked(String name, Brand brand, int position) {
+                UnifyTracking.eventClickOfficialStore(AppEventTracking.EventLabel.OFFICIAL_STORE+name);
+                Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
+                intent.putExtras(ShopInfoActivity.createBundle(String.valueOf(brand.getShopId()), ""));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getActivity().startActivity(intent);
+            }
+        });
+        holder.brandsRecyclerView.setLayoutManager(
+                new LinearLayoutManager(getActivity(),
+                        LinearLayoutManager.HORIZONTAL,
+                        false)
+        );
+        holder.brandsRecyclerView.setAdapter(brandsRecyclerViewAdapter);
+    }
+
 
     /* TOP PICKS */
     private void initTopPicks() {
@@ -535,6 +591,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
             public void onRetryClicked() {
                 homeCatMenuPresenter.fetchHomeCategoryMenu(true);
                 topPicksPresenter.fetchTopPicks();
+                brandsPresenter.fetchBrands();
             }
         }).showRetrySnackbar();
     }
@@ -595,6 +652,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         category.unSubscribe();
         homeCatMenuPresenter.OnDestroy();
         topPicksPresenter.onDestroy();
+        brandsPresenter.onDestroy();
     }
 
     //region recharge

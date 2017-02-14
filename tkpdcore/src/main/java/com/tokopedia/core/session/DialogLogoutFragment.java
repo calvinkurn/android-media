@@ -18,11 +18,11 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
+import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
-import com.tokopedia.core.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.core.network.apiservices.user.SessionService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
@@ -109,9 +109,7 @@ public class DialogLogoutFragment extends DialogFragment {
 //                                        CacheHomeInteractorImpl.deleteAllCache();
                                         new GlobalCacheManager().deleteAll();
                                         // clear etalase
-                                        LocalCacheHandler fetchEtalaseTimer = AddProductPresenterImpl.initCacheIfNotNull(activity,
-                                                AddProductPresenterImpl.FETCH_ETALASE);
-                                        fetchEtalaseTimer.setExpire(0);
+                                        Router.clearEtalase(getActivity());
                                         DbManagerImpl.getInstance().removeAllEtalase();
                                         SessionHandler.clearUserData(activity);
                                         NotificationModHandler notif = new NotificationModHandler(activity);
