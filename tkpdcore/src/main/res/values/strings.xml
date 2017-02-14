@@ -15,6 +15,8 @@
     <string name="title_warning">Peringatan</string>
     <string name="error_connection">Masalah Koneksi</string>
     <string name="title_retry">Coba Lagi</string>
+    <string name="navigate_back">Kembali</string>
+    <string name="navigate_browser">Lanjut ke Aplikasi Seller</string>
     <!-- Strings related notification -->
     <string name="title_new_message">Pesan baru</string>
     <string name="title_share">Bagikan</string>
@@ -392,6 +394,10 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="title_see_all_addr">Lihat semua &gt;</string>
     <string name="error_load_shop">Terjadi kesalahan ketika mengambil informasi toko</string>
     <string name="error_empty_report">Mohon diisi</string>
+    <string name="title_gold_merchant_redirect">Akses maupun pembelian fitur Gold Merchant hanya
+        dapat dilakukan di aplikasi TopSeller</string>
+    <string name="gold_merchant_redirect_text">Gunakan aplikasi TopSeller untuk mengelola toko
+        online, terima order dan upload produk, kapan pun dan di mana pun.</string>
     <!-- Strings related shop info -->
 
 
