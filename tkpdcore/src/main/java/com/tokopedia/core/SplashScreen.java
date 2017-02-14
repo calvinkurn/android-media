@@ -14,10 +14,10 @@ import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
-import com.tokopedia.core.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginBypassModel;
@@ -171,9 +171,9 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
             Log.i("DATABASE DATABSE UWOOO", "clearing the database flag");
             LocalCacheHandler.clearCache(this, CategoryDatabaseManager.KEY_STORAGE_NAME);
             LocalCacheHandler.clearCache(this, DataManagerImpl.SHIPPING_CITY_DURATION_STORAGE);
-            LocalCacheHandler.clearCache(this, AddProductPresenterImpl.FETCH_DEP_CHILD);
-            LocalCacheHandler.clearCache(this, AddProductPresenterImpl.FETCH_DEP_PARENT);
-            LocalCacheHandler.clearCache(this, AddProductPresenterImpl.FETCH_ETALASE);
+            if(getApplication() instanceof TkpdCoreRouter){
+                ((TkpdCoreRouter)getApplication()).resetAddProductCache(this);
+            }
         }
 
         flagDB.putBoolean("reset_db_flag", true);

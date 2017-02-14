@@ -7,11 +7,11 @@ import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.jpeg.JpegDirectory;
 import com.drew.metadata.png.PngDirectory;
+import com.tokopedia.core.util.Pair;
 
 import java.io.File;
 import java.io.IOException;
 
-import static com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
 
 /**
  * Created by m.normansyah on 18/12/2015.
