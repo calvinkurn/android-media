@@ -6,4 +6,5 @@
     <color name="tkpd_button">#ff5722</color>
     <color name="gmsubscribe_product_price_color">#ff5722</color>
     <color name="gmsubscribe_product_line_color">#e0e0e0</color>
+    <color name="gmsubscribe_content_textview_color">#61000000</color>
 </resources>
