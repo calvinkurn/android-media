@@ -24,9 +24,13 @@ import com.tkpd.library.TkpdMultiDexApplication;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.DaggerAppComponent;
+import com.tokopedia.core.base.di.module.ActivityModule;
+import com.tokopedia.core.base.di.module.AppModule;
+import com.tokopedia.core.base.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.RequestManager;
 import com.tokopedia.core.var.NotificationVariable;
 
 import java.util.List;
@@ -58,6 +62,8 @@ public class MainApplication extends TkpdMultiDexApplication {
     public static String PACKAGE_NAME;
     public static MainApplication instance;
     private static GlobalConfig GlobalConfig;
+
+    private DaggerAppComponent.Builder daggerBuilder;
 
     public int getApplicationType(){
         return DEFAULT_APPLICATION_TYPE;
@@ -91,6 +97,9 @@ public class MainApplication extends TkpdMultiDexApplication {
 
         Localytics.autoIntegrate(this);
 
+        daggerBuilder = DaggerAppComponent.builder()
+                .appModule(new AppModule(this))
+                .netModule(new NetModule());
     }
 
 
@@ -126,7 +135,6 @@ public class MainApplication extends TkpdMultiDexApplication {
      * Intialize the request manager and the image cache
      */
     private void init() {
-        RequestManager.init(this);
     }
 
     /**
@@ -350,4 +358,9 @@ public class MainApplication extends TkpdMultiDexApplication {
         GlobalConfig = globalConfig;
     }
 
+
+    public AppComponent getApplicationComponent(ActivityModule activityModule) {
+        return daggerBuilder.activityModule(activityModule)
+                .build();
+    }
 }

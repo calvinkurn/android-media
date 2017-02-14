@@ -443,7 +443,8 @@ public class HotListImpl implements HotList {
         @Override
         public void onError(Throwable e) {
             Log.e(TAG, messageTAG + e.getLocalizedMessage());
-            if (e.getLocalizedMessage().contains("Unable to resolve host")) {
+            if (e.getLocalizedMessage() != null &&
+                    e.getLocalizedMessage().contains("Unable to resolve host")) {
                 listener.noConnection();
             }
         }
