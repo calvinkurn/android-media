@@ -542,8 +542,8 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
         }
     }
 
-    private void createOverflowMenu(View v, SellingStatusTxModel model) {
-        PopupMenu menu = new PopupMenu(getActivity(), v);
+    private void createOverflowMenu(View v, final SellingStatusTxModel model) {
+        final PopupMenu menu = new PopupMenu(getActivity(), v);
         if (model.ShippingID.equals(TkpdState.SHIPPING_ID.GOJEK)) {
             menu.getMenuInflater().inflate(R.menu.shipping_status_menu_track_only, menu.getMenu());
         } else {
