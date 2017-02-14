@@ -18,12 +18,12 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.manager.ProductDetailCacheManager;
 import com.tokopedia.core.database.manager.ProductOtherCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.inboxreputation.interactor.CacheInboxReputationInteractorImpl;
 import com.tokopedia.core.inboxreputation.interactor.InboxReputationCacheManager;
-import com.tokopedia.core.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.core.message.interactor.CacheInteractorImpl;
 import com.tokopedia.core.msisdn.fragment.MsisdnVerificationFragment;
 import com.tokopedia.core.prototype.InboxCache;
@@ -217,7 +217,9 @@ public class SessionHandler {
             webView.loadUrl("https://instagram.com/accounts/logout/");
             webView.setVisibility(View.GONE);
         }
-        InstagramMediaPresenterImpl.removeToken();
+        if(context.getApplicationContext() instanceof TkpdCoreRouter){
+            ((TkpdCoreRouter)context.getApplicationContext()).removeInstopedToken();
+        }
     }
 
     private void clearUserData() {
