@@ -55,6 +55,7 @@ public class CodeVoucherViewHolder {
                 if(isChecked) {
                     focusToVoucherEditText();
                 } else {
+                    voucherEditText.setText("");
                     dismissKeyboard();
                 }
             }
