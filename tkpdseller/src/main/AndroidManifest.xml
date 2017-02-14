@@ -26,10 +26,10 @@
             android:name=".ShippingConfirmationDetail"
             android:label="@string/title_activity_shipping_confirmation_detail"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".ShippingConfirmationProdConf"
-            android:label="@string/title_activity_shipping_confirmation_prod_conf"
-            android:screenOrientation="portrait" />
+
+        <activity android:name="com.tokopedia.seller.instoped.InstopedActivity"
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".topads.view.activity.TopAdsDashboardActivity"
             android:label="@string/title_top_ads_dashboard"
@@ -82,6 +82,55 @@
             android:name=".shop.ShopEditorActivity"
             android:label="@string/shop_setting"
             android:theme="@style/ShopAppTheme" />
+
+        <activity
+            android:name=".myproduct.ManageProduct"
+            android:label="@string/title_activity_manage_product"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name=".myproduct.ProductActivity"
+            android:label="@string/title_activity_add_product"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="tkpdevel.com"
+                    android:scheme="http" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".myproduct.ProductSocMedActivity"
+            android:label="Add Product Social Media"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3" />
+
+        <service
+            android:name=".myproduct.service.ProductService"
+            android:exported="false" />
+
         <activity
             android:screenOrientation="portrait"
             android:label="@string/title_activity_statistic"
@@ -106,14 +155,17 @@
             android:label="Pembayaran"
             android:screenOrientation="portrait"/>
         <service
-            android:name=".selling.SellingService"
-            android:exported="false" />
-        <service
-            android:name=".selling.SellingService"
-            android:exported="false" />
-        <service
-            android:name=".shop.ShopEditService"
-            android:exported="false" />
+            android:name="com.tokopedia.seller.selling.SellingService"
+            android:exported="false"/>
+
+        <service android:name=".shop.ShopEditService"
+            android:exported="false"/>
+        <activity android:name=".gmstat.views.SetDateActivity"
+            android:label="@string/set_date"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3"
+            />
+
     </application>
 
 </manifest>

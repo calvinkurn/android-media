@@ -65,6 +65,8 @@ public class SellerMainApplication extends SellerRouterApplication {
         TkpdBaseURL.TOKOPEDIA_CART_DOMAIN  = SellerAppBaseUrl.TOKOPEDIA_CART_DOMAIN;
         TkpdBaseURL.WEB_DOMAIN = SellerAppBaseUrl.BASE_WEB_DOMAIN;
         TkpdBaseURL.MOBILE_DOMAIN = SellerAppBaseUrl.BASE_MOBILE_DOMAIN;
+        TkpdBaseURL.BASE_CONTACT_US = SellerAppBaseUrl.BASE_WEB_DOMAIN + "contact-us";
+
     }
 
     public void setComponent() {

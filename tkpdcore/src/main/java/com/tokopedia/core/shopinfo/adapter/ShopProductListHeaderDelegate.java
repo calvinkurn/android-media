@@ -69,16 +69,9 @@ public class ShopProductListHeaderDelegate {
         vholder = (VHolder) holder;
         vholder.toggle.setOnClickListener(onToggleView());
         vholder.filterClick.setOnClickListener(onFilterClick());
-        vholder.etalase.setOnItemSelectedListener(onEtalaseSelected());
-        vholder.etalase.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    listener.onSpinnerEtalaseClick();
-                }
-                return false;
-            }
-        });
+        SpinnerInteractionListener listener = onEtalaseSelected();
+        vholder.etalase.setOnItemSelectedListener(listener);
+        vholder.etalase.setOnTouchListener(listener);
         if(vholder.etalase.getAdapter() == null)
             vholder.etalase.setAdapter(etalaseAdapter);
         vholder.toggle.setImageResource(toggleIcon);
@@ -90,23 +83,49 @@ public class ShopProductListHeaderDelegate {
         return spinnerSelectedPos > -1;
     }
 
-    private AdapterView.OnItemSelectedListener onEtalaseSelected() {
-        return new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+    public class SpinnerInteractionListener implements AdapterView.OnItemSelectedListener, View.OnTouchListener {
+
+        boolean userSelect = false;
+        int spinnerLastPos = 0;
+        ProductHeaderListListener listener;
+
+        public SpinnerInteractionListener(ProductHeaderListListener listener, int spnLastPost){
+            this.spinnerLastPos = spnLastPost;
+            this.listener = listener;
+        }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent motionEvent) {
+            userSelect = true;
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                listener.onSpinnerEtalaseClick();
+            }
+            return false;
+        }
+
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int pos, long i) {
+            if (userSelect) {
                 if(i != spinnerLastPos) {
-                    spinnerLastPos = i;
-                    listener.onEtalaseClick(i);
+                    spinnerLastPos = pos;
+                    listener.onEtalaseClick(pos);
                 }
-                if(i == spinnerSelectedPos)
-                    spinnerSelectedPos = -1;
+                userSelect = false;
             }
+            if(i == spinnerSelectedPos)
+                spinnerSelectedPos = -1;
+        }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+        }
 
-            }
-        };
+    }
+
+
+
+    private SpinnerInteractionListener onEtalaseSelected() {
+        return new SpinnerInteractionListener(listener,spinnerLastPos);
     }
 
     private View.OnClickListener onFilterClick() {

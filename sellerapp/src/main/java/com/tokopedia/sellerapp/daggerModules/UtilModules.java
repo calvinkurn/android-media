@@ -2,7 +2,7 @@ package com.tokopedia.sellerapp.daggerModules;
 
 import android.content.Context;
 
-import com.tokopedia.sellerapp.home.utils.ImageHandler;
+import com.tkpd.library.utils.image.ImageHandler;
 
 import javax.inject.Singleton;
 

@@ -8,7 +8,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
 def getArtifactVersionCode() {
-    return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
+    return project.hasProperty('artifactVersion') ? artifactVersion : '1.3';
 }
 
 buildscript {
@@ -90,6 +90,14 @@ dependencies {
     compile(rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    testCompile rootProject.ext.testDependencies.junit
+    testCompile rootProject.ext.testDependencies.mockitorCore
+    testCompile rootProject.ext.testDependencies.assertJ
+
     compile rootProject.ext.serviceDependencies.hockeyApp
     compile rootProject.ext.serviceDependencies.anrWatchDogs
 
@@ -148,6 +156,10 @@ dependencies {
     compile rootProject.ext.miscDependencies.rxJava
     compile rootProject.ext.miscDependencies.rxJavaMath
 
+    provided rootProject.ext.miscDependencies.javaxAnnotation
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
 }
 
 apply plugin: 'com.google.gms.google-services'
@@ -155,7 +167,7 @@ apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '24.0.2'
     useLibrary 'org.apache.http.legacy'
     sourceSets {
 

@@ -4,6 +4,8 @@ package com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.model.checkout;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class GMCheckoutServiceModel {
 
     @SerializedName("paymentURL")
@@ -18,6 +20,13 @@ public class GMCheckoutServiceModel {
     @SerializedName("payment_id")
     @Expose
     private String paymentId;
+
+    @SerializedName("code")
+    @Expose
+    private String code;
+    @SerializedName("error")
+    @Expose
+    private List<String> error = null;
 
     public String getPaymentURL() {
         return paymentURL;
@@ -51,4 +60,19 @@ public class GMCheckoutServiceModel {
         this.paymentId = paymentId;
     }
 
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public List<String> getError() {
+        return error;
+    }
+
+    public void setError(List<String> error) {
+        this.error = error;
+    }
 }

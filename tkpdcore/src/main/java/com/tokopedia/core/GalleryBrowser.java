@@ -20,8 +20,8 @@ import com.tokopedia.core.customadapter.ImageGalleryAdapter;
 import com.tokopedia.core.customadapter.ImageGalleryAlbumAdapter;
 import com.tokopedia.core.myproduct.model.FolderModel;
 import com.tokopedia.core.myproduct.model.ImageModel;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryView;
+import com.tokopedia.core.newgallery.presenter.ImageGalleryImpl;
+import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
 import com.tokopedia.core.util.RequestPermissionUtil;
 
 import java.util.ArrayList;

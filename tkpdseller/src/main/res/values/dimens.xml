@@ -1,4 +1,3 @@
-<?xml version='1.0' encoding='UTF-8'?>
 <resources>
 
     <!-- General Dimens -->
@@ -14,17 +13,35 @@
     <dimen name="topads_arrow_left_height">16dp</dimen>
     <dimen name="gmsubscribe_height_widget_sub_feature">110dp</dimen>
 
-    <!-- william chart dimens -->
+
+    <!-- gmstat -->
+    <dimen name="gmstat_height_header_date">52dp</dimen>
+    <dimen name="gmstat_card_elevation">1dp</dimen>
+    <dimen name="gmstat_padding_item_left_right">16dp</dimen>
+    <dimen name="gmstat_margin_cardview">-2dp</dimen>
+    <dimen name="gmstat_margin_bottom">8dp</dimen>
+    <dimen name="gmstat_height_view_transaction">200dp</dimen>
+    <dimen name="card_insets">1dp</dimen>
+    <dimen name="gmstat_margin_bottom_double">16dp</dimen>
+    <dimen name="gmstat_padding_item_top_transaction">6dp</dimen>
+
     <!-- ChartView -->
+
     <!-- Axis thickness-->
     <dimen name="axis_thickness">2dp</dimen>
+
     <!-- Text Labels size -->
     <dimen name="font_size">10dp</dimen>
+
     <!-- Grid thickness-->
     <dimen name="grid_thickness">1dp</dimen>
+
+
     <!-- LineChartView -->
     <!-- Dot region radius used on click -->
     <dimen name="dot_region_radius">18dp</dimen>
+
+
     <!-- BarChartView -->
     <dimen name="bar_spacing">6dp</dimen>
     <dimen name="set_spacing">3dp</dimen>
