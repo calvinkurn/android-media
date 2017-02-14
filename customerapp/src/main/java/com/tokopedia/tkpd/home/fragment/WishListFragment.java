@@ -95,7 +95,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         unbinder = ButterKnife.bind(this, parentView);
         wishList.subscribe();
         wishList.initAnalyticsHandler(getActivity());
-        ScreenTracking.screen(getScreenName());
         prepareView();
         setListener();
         return parentView;
