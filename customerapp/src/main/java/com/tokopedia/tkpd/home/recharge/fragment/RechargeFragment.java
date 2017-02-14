@@ -31,6 +31,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.database.model.RechargeOperatorModel;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -268,9 +269,14 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     @Override
     public void onRechargeTextChanged(CharSequence s, int start, int before, int count) {
-        if (isDeleteChar(before, count)) isAlreadyHavePhonePrefixInView = false;
         String temp = s.toString();
         temp = validateTextPrefix(temp);
+        if (temp.length() <= 4) {
+            if (isDeleteChar(before, count)) {
+                isAlreadyHavePhonePrefixInView = false;
+                hideFormAndImageOperator();
+            }
+        }
         phoneNumber = s.toString();
         if (!category.getAttributes().getValidatePrefix()) {
             if (s.length()>=minLengthDefaultOperator) {
@@ -755,7 +761,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     private String getUrlCheckout() {
-        String url = "https://pulsa.tokopedia.com"+"?" +
+        String url = TkpdBaseURL.PULSA_WEB_DOMAIN + "?" +
                 "action=init_data" +
                 "&client_number=" + rechargeEditText.getText() +
                 "&product_id=" + selectedProduct.getId().toString() +

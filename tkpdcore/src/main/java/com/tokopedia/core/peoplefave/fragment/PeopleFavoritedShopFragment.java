@@ -181,7 +181,7 @@ public class PeopleFavoritedShopFragment extends BasePresenterFragment<PeopleFav
 
     @Override
     public boolean isOwner() {
-        return sessionHandler.getLoginID().equals(userID);
+        return sessionHandler.getLoginID() != null && sessionHandler.getLoginID().equals(userID);
     }
 
     @Override

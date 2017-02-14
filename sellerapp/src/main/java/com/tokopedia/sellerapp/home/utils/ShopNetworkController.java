@@ -4,9 +4,9 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.tkpd.library.utils.network.BaseNetworkController;
+import com.tkpd.library.utils.network.CommonListener;
 import com.tokopedia.core.network.apiservices.shop.ShopService;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.sellerapp.home.model.shopmodel.ShopModel;
@@ -65,35 +65,6 @@ public class ShopNetworkController extends BaseNetworkController {
         });
     }
 
-    public static void onResponseError(int code, final CommonListener commonListener) {
-        new ErrorHandler(new ErrorListener() {
-            @Override
-            public void onUnknown() {
-                commonListener.onError(new MessageErrorException("unknown"));
-            }
-
-            @Override
-            public void onTimeout() {
-                commonListener.onError(new MessageErrorException("timeout"));
-            }
-
-            @Override
-            public void onServerError() {
-                commonListener.onError(new MessageErrorException("server_error"));
-            }
-
-            @Override
-            public void onBadRequest() {
-                commonListener.onError(new MessageErrorException("bad_request"));
-            }
-
-            @Override
-            public void onForbidden() {
-                commonListener.onError(new MessageErrorException("forbidden"));
-            }
-        }, code);
-    }
-
     public Observable<Response<TkpdResponse>> getShopInfo(String userid, String deviceId, ShopInfoParam shopInfoParam){
         return shopService.getApi().getInfo(AuthUtil.generateParams(userid, deviceId, paramShopInfo(shopInfoParam)));
     }
@@ -110,11 +81,6 @@ public class ShopNetworkController extends BaseNetworkController {
         public String shopId;
         public String shopDomain;
         public int showAll;
-    }
-
-    public interface CommonListener {
-        void onError(Throwable e);
-        void onFailure();
     }
 
     public interface GetShopInfo extends CommonListener {

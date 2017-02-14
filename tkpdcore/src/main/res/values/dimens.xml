@@ -63,7 +63,8 @@
 
     <!-- Inbox Message -->
     <dimen name="checked_indicator_msg">100dp</dimen>
-    <dimen name="message_width">200dp</dimen>
+    <dimen name="message_width">300dp</dimen>
+    <dimen name="message_corner">12dp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
@@ -137,7 +138,7 @@
     <dimen name="text_size_xxxlarge">30sp</dimen>
 
     <dimen name="keyline_1">16dp</dimen>
-    <dimen name="promo_image_height">175dp</dimen>
+    <dimen name="promo_image_height">185dp</dimen>
 
     <dimen name="setting_button">24dp</dimen>
 
@@ -172,4 +173,7 @@
 
     <dimen name="padding_left_schedule_shop_close">5dp</dimen>
     <dimen name="bottom_navigation_elevation">20dp</dimen>
+    <dimen name="viewpager_margin">-42dp</dimen>
+    <dimen name="slider_margin">22dp</dimen>
+    <dimen name="banner_margin">2dp</dimen>
 </resources>
