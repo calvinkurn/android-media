@@ -1460,6 +1460,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="choose_this_location">Pilih lokasi ini</string>
     <string name="title_pickup_location">Lokasi Pickup</string>
     <string name="title_pickup_button">Pickup</string>
+    <string name="retry_pickup_button">Retry Pickup</string>
     <string name="hint_gojek_pick_address">Cari Lokasi</string>
 
     <string name="desc_summary_day_reso">
