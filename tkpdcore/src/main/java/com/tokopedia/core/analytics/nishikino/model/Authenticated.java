@@ -105,7 +105,7 @@ public class Authenticated extends BaseGTMModel {
         contactInfo.put(KEY_GENDER, gender);
     }
 
-    public void setAFUniqueId(Object gender){
+    public void setAfUniqueId(Object gender){
         contactInfo.put(KEY_AF_UNIQUE_ID, gender);
     }
 

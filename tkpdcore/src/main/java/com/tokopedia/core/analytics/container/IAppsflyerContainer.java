@@ -24,5 +24,5 @@ public interface IAppsflyerContainer {
      */
     void getAdsID(AppsflyerContainer.AFAdsIDCallback callback);
 
-    String getUniqueID();
+    String getUniqueId();
 }
