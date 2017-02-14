@@ -11,6 +11,7 @@
     <dimen name="topads_arrow_left_margin">8dp</dimen>
     <dimen name="topads_arrow_left_width">8dp</dimen>
     <dimen name="topads_arrow_left_height">16dp</dimen>
+    <dimen name="gmsubscribe_height_widget_sub_feature">110dp</dimen>
 
 
     <!-- gmstat -->
@@ -44,4 +45,7 @@
     <!-- BarChartView -->
     <dimen name="bar_spacing">6dp</dimen>
     <dimen name="set_spacing">3dp</dimen>
+    <dimen name="gmsubscribe_line_height_textview">5dp</dimen>
+    <dimen name="gmsubscribe_padding_button">16dp</dimen>
+
 </resources>

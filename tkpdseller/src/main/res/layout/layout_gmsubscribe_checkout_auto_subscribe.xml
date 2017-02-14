@@ -7,6 +7,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/view_to_open_auto_subscribe"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/gmsubscribe_background_card_without_corner"
@@ -44,13 +45,13 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/gm_subscribe_auto_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/gmsubscribe_background_card_without_corner"
         android:orientation="horizontal"
         android:padding="17dp"
-        android:visibility="gone"
         android:weightSum="4">
 
         <LinearLayout
@@ -60,56 +61,40 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@string/gmsubscribe_auto_package_title"
-                android:textSize="12sp" />
+                style="@style/GMSubscribeContentTextviewSmall" />
 
             <TextView
                 android:id="@+id/text_view_current_auto_package_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:textSize="14sp" />
+                style="@style/GMSubscribeContentTextviewMedium"/>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/gmsubscribe_auto_package_price"
-                android:textSize="12sp" />
+                style="@style/GMSubscribeContentTextviewSmall"
+                android:text="@string/gmsubscribe_auto_package_price"/>
 
             <TextView
                 android:id="@+id/text_view_current_auto_package_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:textSize="14sp" />
+                style="@style/GMSubscribeContentTextviewMedium"/>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/gmsubscribe_auto_package_next_subscribe"
-                android:textSize="12sp" />
+                style="@style/GMSubscribeContentTextviewSmall"
+                android:text="@string/gmsubscribe_auto_package_next_subscribe"/>
 
             <TextView
                 android:id="@+id/text_view_current_auto_package_next_subscribe"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:textSize="14sp" />
+                style="@style/GMSubscribeContentTextviewMedium"/>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="@string/gmsubscribe_auto_package_payment_method"
-                android:textSize="12sp" />
+                style="@style/GMSubscribeContentTextviewSmall"/>
 
             <TextView
                 android:id="@+id/text_view_current_auto_package_payment_method"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:textSize="14sp" />
+                style="@style/GMSubscribeContentTextviewMedium"/>
 
         </LinearLayout>
 

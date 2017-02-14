@@ -6,13 +6,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
+        android:lineSpacingExtra="@dimen/gmsubscribe_line_height_textview"
         android:text="@string/gmsubscribe_subfeature_title"
         android:textAlignment="center"
         android:textSize="16sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="@dimen/gmsubscribe_height_widget_sub_feature"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:gravity="bottom"
@@ -47,7 +48,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="@dimen/gmsubscribe_height_widget_sub_feature"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginBottom="15dp"

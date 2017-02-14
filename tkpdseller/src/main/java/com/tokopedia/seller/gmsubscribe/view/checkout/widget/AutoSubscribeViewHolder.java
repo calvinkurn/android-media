@@ -26,6 +26,7 @@ public class AutoSubscribeViewHolder {
     private final TextView autoSubscribePackageNextSubscribe;
     private final TextView autoSubscribePackagePaymentMethod;
     private final LinearLayout autoSubscribeChangePackage;
+    private final View viewOpenSubscribe;
 
     public AutoSubscribeViewHolder(AutoSubscribeViewHolderCallback callback, View view) {
         this.callback = callback;
@@ -40,7 +41,17 @@ public class AutoSubscribeViewHolder {
         autoSubscribePackagePaymentMethod = (TextView) view.findViewById(R.id.text_view_current_auto_package_payment_method);
         autoSubscribeChangePackage = (LinearLayout) view.findViewById(R.id.icon_change_gm_subscribe_auto);
         autoSubscribeChangePackage.setOnClickListener(getChangeAutoSubscribePackage());
+        viewOpenSubscribe = view.findViewById(R.id.view_to_open_auto_subscribe);
+        viewOpenSubscribe.setOnClickListener(onClickOpenSubscribe());
+    }
 
+    private View.OnClickListener onClickOpenSubscribe() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkbox.setChecked(!checkbox.isChecked());
+            }
+        };
     }
 
     public void setShowAutoSubscribeDetail(boolean isShow){
