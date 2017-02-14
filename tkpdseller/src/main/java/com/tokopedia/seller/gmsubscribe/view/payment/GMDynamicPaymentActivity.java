@@ -163,7 +163,6 @@ public class GMDynamicPaymentActivity extends BasePresenterActivity {
             if (url.contains(callbackUrl)) {
                 view.stopLoading();
                 processRedirectUrlContainsTopPayCallbackUrl(url);
-                return super.shouldOverrideUrlLoading(view, url);
             } else if (url.contains(CONTAINS_ACCOUNT_URL)) {
                 view.stopLoading();
                 processRedirectUrlContainsAccountUrl(url);
@@ -249,7 +248,9 @@ public class GMDynamicPaymentActivity extends BasePresenterActivity {
     }
 
     private void processRedirectUrlContainsTopPayCallbackUrl(String url) {
-
+        if(getApplication() instanceof SellerModuleRouter){
+            ((SellerModuleRouter)getApplication).goToHome(this);
+        }
     }
 
     private class TopPayWebViewChromeClient extends WebChromeClient {
