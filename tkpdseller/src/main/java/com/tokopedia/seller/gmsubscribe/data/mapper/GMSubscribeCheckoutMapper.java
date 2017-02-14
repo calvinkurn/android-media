@@ -17,12 +17,15 @@ public class GMSubscribeCheckoutMapper implements Func1<GMCheckoutServiceModel, 
     public GMCheckoutDomainModel call(GMCheckoutServiceModel gmCheckoutServiceModel) {
         try {
             return mapServiceToDomain(gmCheckoutServiceModel);
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             throw new GMCheckoutCheckException("Unsuported URL toppay");
         }
     }
 
-    private GMCheckoutDomainModel mapServiceToDomain(GMCheckoutServiceModel gmCheckoutServiceModel) throws UnsupportedEncodingException {
+    private GMCheckoutDomainModel mapServiceToDomain(GMCheckoutServiceModel gmCheckoutServiceModel) throws Exception {
+        if(gmCheckoutServiceModel.getError() != null){
+            throw new GMCheckoutCheckException("Unsuported URL toppay");
+        }
         GMCheckoutDomainModel domainModel = new GMCheckoutDomainModel();
         domainModel.setPaymentUrl(gmCheckoutServiceModel.getPaymentURL());
         String parameterUnencoded = decodeUrl(gmCheckoutServiceModel.getParameter1());

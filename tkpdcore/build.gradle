@@ -8,7 +8,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
 def getArtifactVersionCode() {
-    return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
+    return project.hasProperty('artifactVersion') ? artifactVersion : '1.3';
 }
 
 buildscript {
