@@ -10,13 +10,12 @@
     <TextView
         android:id="@+id/title_product"
         style="@style/TextView.TopAds.Title.One"
-        android:layout_marginBottom="@dimen/margin_vs"
         tools:text="@string/app_name"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_vs"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -37,14 +36,14 @@
     <TextView
         android:id="@+id/price_promo_per_click"
         style="@style/TextView.TopAds.Body.Small2"
-        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_vs"
         tools:text="@string/app_name"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/padding_small">
+        android:layout_marginTop="@dimen/top_ads_dashboard_padding_cards_small"
+        android:orientation="horizontal">
 
         <TextView
             style="@style/TextView.TopAds.Title.One"
@@ -60,17 +59,16 @@
     </LinearLayout>
 
     <TextView
-        android:visibility="gone"
         android:id="@+id/group_name"
         style="@style/TextView.TopAds.Body.Small2"
-        android:layout_marginBottom="@dimen/top_ads_dashboard_padding_cards_small"
+        android:layout_marginTop="@dimen/margin_vs"
         tools:text="@string/app_name"/>
 
     <LinearLayout
         android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/top_ads_dashboard_padding_cards_small"
+        android:layout_marginTop="@dimen/top_ads_dashboard_padding_cards_small"
         android:orientation="vertical">
 
         <ProgressBar

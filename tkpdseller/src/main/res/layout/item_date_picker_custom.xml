@@ -22,15 +22,15 @@
         android:layout_height="wrap_content"
         android:foreground="?attr/selectableItemBackground"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingBottom="10dp"
+        android:paddingTop="16sp">
 
         <TextView
             android:id="@+id/text_view_content"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
             android:layout_marginLeft="2dp"
-            android:layout_marginTop="16sp"
             android:layout_weight="1"
             android:textColor="#42b549"
             android:textSize="16sp"

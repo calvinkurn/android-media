@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/top_ads_dashboard_padding_cards_small"
     android:paddingLeft="@dimen/top_ads_item_padding_left"
     android:paddingRight="@dimen/top_ads_item_padding_left">
 

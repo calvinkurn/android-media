@@ -49,6 +49,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
 
     @Override
     protected void searchAd() {
+        super.searchAd();
         presenter.searchAd(startDate, endDate, keyword, status, groupId, page);
     }
 

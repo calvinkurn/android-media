@@ -13,7 +13,6 @@
         <item name="android:ellipsize">end</item>
         <item name="android:textSize">@dimen/font_medium</item>
         <item name="android:maxLines">1</item>
-        <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/black_seventy_percent</item>
     </style>
 
@@ -57,6 +56,9 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="TextView.TopAds.Body.Small4">
+        <item name="android:textColor">@color/font_top_ads_green</item>
+    </style>
 
     <style name="TextView.TopAds.Body.Promoted">
         <item name="android:textSize">@dimen/text_size_small</item>
@@ -89,7 +91,7 @@
 
     <style name="TopAdsRadioButton" parent="@style/RadioButton">
         <item name="android:button">@drawable/top_ads_set_date_radio_button</item>
-        <item name="android:textColor">@color/black_fifty_four_percent</item>
+        <item name="android:textColor">@color/font_top_ads_black_70</item>
     </style>
 
     <style name="Button.TopAds" parent="Widget.AppCompat.Button">
