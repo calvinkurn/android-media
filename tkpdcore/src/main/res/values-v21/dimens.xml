@@ -9,4 +9,5 @@
     <dimen name="mini_fab_margin_top">@dimen/keyline_1_minus_8dp</dimen>
     <dimen name="mini_fab_margin_right">@dimen/keyline_1_minus_8dp</dimen>
     <dimen name="mini_fab_margin_bottom">@dimen/keyline_1_minus_8dp</dimen>
+    <dimen name="margin_top_ticker">0dp</dimen>
 </resources>
