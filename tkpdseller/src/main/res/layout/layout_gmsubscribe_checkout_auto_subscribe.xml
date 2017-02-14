@@ -45,6 +45,7 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/gm_subscribe_auto_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
