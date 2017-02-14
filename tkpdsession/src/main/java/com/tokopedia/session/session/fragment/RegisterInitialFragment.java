@@ -127,7 +127,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventRegisterChannel("Email");
+                UnifyTracking.eventRegisterChannel(AppEventTracking.GTMCacheValue.EMAIL);
                 UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.EMAIL);
                 ((SessionView) getActivity()).moveToRegister();
             }
