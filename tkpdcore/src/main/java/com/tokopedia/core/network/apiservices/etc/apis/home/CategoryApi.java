@@ -2,6 +2,7 @@ package com.tokopedia.core.network.apiservices.etc.apis.home;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.Banner;
+import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.home.Slide;
 import com.tokopedia.core.network.entity.home.Ticker;
 
@@ -42,7 +43,9 @@ public interface CategoryApi {
     // query param
     String API_V1_BANNERS = "/api/v1/banners";
     String API_V1_SLIDES = "/api/v1/slides";
+    String API_V1_BRANDS = "/os/api/v1/brands/list";
     String API_V1_ANNOUNCEMENT_TICKER = "/api/v1/tickers";
+    String DEVICE = "device";
     String PAGE_SIZE = "page[size]";
     String FILTER_STATE = "filter[state]";
     String FILTER_EXPIRED = "filter[expired]";
@@ -82,5 +85,11 @@ public interface CategoryApi {
             @Header(HEADER_USER_ID) String user_id,
             @Query(PAGE_SIZE) String size,
             @Query(FILTER_DEVICE) String device
+    );
+
+    @GET(API_V1_BRANDS)
+    Observable<Response<Brands>> getBrands(
+            @Header(HEADER_USER_ID) String user_id,
+            @Query(DEVICE) String device
     );
 }
