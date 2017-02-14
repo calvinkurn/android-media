@@ -723,9 +723,6 @@ public class SquareMenuButton
 
                     @Override
                     public void onAnimationCancel(Animator animation) {
-//                        animationPlaying = false;
-//                        SquareMenuButton.this.setEnabled(true);
-//                        enableClick();
                     }
 
                     @Override
@@ -966,12 +963,8 @@ public class SquareMenuButton
                 @Override
                 public void onClick(View v) {
                     if (animationPlaying){
-                        Log.d("SquareMenuButton", "animationPlaying : "
-                                +animationPlaying+" stuck here !!");
                         return;
                     }
-                    Log.d("SquareMenuButton", "animationPlaying : "
-                            +animationPlaying+" exit here !!");
                     disableClickWhenAnimating();
                     shoot();
                 }
@@ -982,12 +975,8 @@ public class SquareMenuButton
                 @Override
                 public void onClick(View v) {
                     if (animationPlaying){
-                        Log.d("SquareMenuButton", "animationPlaying : "
-                                +animationPlaying+" stuck here !!");
                         return;
                     }
-                    Log.d("SquareMenuButton", "animationPlaying : "
-                            +animationPlaying+" exit here !!");
                     disableClickWhenAnimating();
                     shoot();
                 }
