@@ -24,12 +24,16 @@ import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.DatePickerV2;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.PagingHandler;
@@ -104,7 +108,9 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
         initPresenter();
 
         presenter.getStatusTransactionList(isVisibleToUser, SellingStatusTransactionImpl.Type.TRANSACTION);
-        presenter.checkValidationToSendGoogleAnalytic(isVisibleToUser, getActivity());
+        ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_TXSTATUS);
+        ScreenTracking.eventLoca(AppScreen.SCREEN_LOCA_TXSTATUS);
+        ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST);
         super.setUserVisibleHint(isVisibleToUser);
     }
 
@@ -123,7 +129,7 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
                 if (ValidationTextUtil.isValidSalesQuery(search)) {
                     presenter.refreshOnFilter();
                 } else {
-                    Snackbar.make(filterView, getActivity().getString(R.string.keyword_min_3_char), Snackbar.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getActivity().getString(R.string.keyword_min_3_char), Toast.LENGTH_SHORT).show();
                 }
             } else if (TextUtils.isEmpty(search)) {
                 presenter.refreshOnFilter();
@@ -437,6 +443,16 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     }
 
     @Override
+    public void showFab() {
+        fab.show();
+    }
+
+    @Override
+    public void hideFab() {
+        fab.hide();
+    }
+
+    @Override
     public void onMessageError(int type, Object... data) {
 
     }
@@ -445,6 +461,12 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     public void onPause() {
         presenter.finishConnection();
         super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        UnifyTracking.eventViewShopTransactionPage();
     }
 
     private void createEditRefDialog(final SellingStatusTxModel model) {
@@ -489,16 +511,14 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
             @Override
             public void onSuccess(String refNum) {
                 progressDialog.dismiss();
-                adapter.clearData();
-                presenter.getStatusTransactionList(getUserVisibleHint(), SellingStatusTransactionImpl.Type.TRANSACTION);
+                presenter.onRefreshView();;
             }
 
             @Override
             public void onFailed(String errorMsg) {
                 CommonUtils.UniversalToast(getActivity(), errorMsg);
-                adapter.clearData();
                 progressDialog.dismiss();
-                presenter.getStatusTransactionList(getUserVisibleHint(), SellingStatusTransactionImpl.Type.TRANSACTION);
+                presenter.onRefreshView();
             }
         };
     }

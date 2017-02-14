@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -100,7 +101,6 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mainView = inflater.inflate(R.layout.fragment_shop_shipping, container, false);
         initiateVariables(mainView);
-        mainProgressDialog.setCancelable(false);
         hideAllView();
         setHasOptionsMenu(isEditShipping());
         return mainView;
@@ -124,6 +124,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     public void onResume() {
         super.onResume();
         refreshView();
+        NetworkErrorHelper.removeEmptyState(getView());
         if(editShippingPresenter.getOpenShopModel() != null) {
             editShippingPresenter.bindDataToViewOpenShop(editShippingPresenter.getOpenShopModel());
         } else if (editShippingPresenter.getShopModel() != null) {
@@ -148,6 +149,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     private void initiateVariables(View mainView){
         mapMode = getArguments().getInt(MAP_MODE);
         mainProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.MAIN_PROGRESS);
+        mainProgressDialog.setCancelable(true);
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         editShippingPresenter = new EditShippingPresenterImpl(this);
         inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);

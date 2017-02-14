@@ -30,12 +30,13 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.database.model.RechargeOperatorModel;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customView.RechargeEditText;
-import com.tokopedia.core.database.model.RechargeOperatorModelDBAttrs;
 import com.tokopedia.core.database.model.category.Category;
 import com.tokopedia.core.database.model.category.CategoryAttributes;
 import com.tokopedia.core.database.model.category.ClientNumber;
@@ -47,7 +48,6 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
 import com.tokopedia.tkpd.home.recharge.activity.RechargePaymentWebView;
 import com.tokopedia.tkpd.home.recharge.adapter.NominalAdapter;
@@ -94,6 +94,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private static final String LAST_INPUT_KEY = "lastInputKey";
     private static final int LOGIN_REQUEST_CODE = 198;
     private static final String KEY_PHONEBOOK = "phoneBook";
+    private String phoneNumber = "";
 
     //endregion
 
@@ -126,7 +127,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private boolean isAlreadyHavePhonePrefixInView;
     private Category category;
     private List<Product> productList;
-    private List<RechargeOperatorModelDBAttrs> operatorList;
+    private List<RechargeOperatorModel> operatorList;
     private Product selectedProduct;
     private String selectedOperatorId;
     private LocalCacheHandler cacheHandlerPhoneBook;
@@ -223,11 +224,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     public void onResume() {
         super.onResume();
         if (!getUserVisibleHint()) return;
-        if (isAlreadyHavePhonePrefixInView) {
-            showFormAndImageOperator();
-        } else {
-            hideFormAndImageOperator();
-        }
 
     }
 
@@ -275,6 +271,13 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     public void onRechargeTextChanged(CharSequence s, int start, int before, int count) {
         String temp = s.toString();
         temp = validateTextPrefix(temp);
+        if (temp.length() <= 4) {
+            if (isDeleteChar(before, count)) {
+                isAlreadyHavePhonePrefixInView = false;
+                hideFormAndImageOperator();
+            }
+        }
+        phoneNumber = s.toString();
         if (!category.getAttributes().getValidatePrefix()) {
             if (s.length()>=minLengthDefaultOperator) {
                 this.rechargePresenter.validateWithOperator(
@@ -288,9 +291,11 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             if (temp.length() >= 3) {
                 String phonePrefix = temp.substring(0, temp.length() <= 4 ? temp.length() : 4);
                 if (s.length() >= 3) {
-                    this.rechargePresenter.validatePhonePrefix(phonePrefix,
-                            category.getId(),
-                            category.getAttributes().getValidatePrefix());
+                    if (!isAlreadyHavePhonePrefixInView) {
+                        this.rechargePresenter.validatePhonePrefix(phonePrefix,
+                                category.getId(),
+                                category.getAttributes().getValidatePrefix());
+                    }
                 } else {
                     isAlreadyHavePhonePrefixInView = false;
                     hideFormAndImageOperator();
@@ -305,6 +310,10 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             setPhoneBookVisibility();
             hideFormAndImageOperator();
         }
+    }
+
+    private Boolean isDeleteChar(int before, int count) {
+        return before == 1 && count == 0;
     }
 
     @Override
@@ -377,7 +386,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     @Override
-    public void renderDataOperators(List<RechargeOperatorModelDBAttrs> operators) {
+    public void renderDataOperators(List<RechargeOperatorModel> operators) {
         Collections.sort(operators, new OperatorComparator());
         operatorList=operators;
         spnOperator.setVisibility(View.VISIBLE);
@@ -408,7 +417,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     private void setSpnNominalSelectionBasedLastOrder(List<Product> productList) {
-        if (lastOrder != null) {
+        if (lastOrder != null  && lastOrder.getData() != null
+                && lastOrder.getData().getAttributes() != null ) {
             int lastProductId = lastOrder.getData().getAttributes().getProduct_id();
             for (int i = 0; i < productList.size(); i++) {
                 if (productList.get(i).getId().equals(lastProductId)) {
@@ -440,7 +450,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     @Override
-    public void setOperatorView(RechargeOperatorModelDBAttrs operator) {
+    public void setOperatorView(RechargeOperatorModel operator) {
         try {
             this.minLengthDefaultOperator = operator.minimumLength;
             this.rechargeEditText.getAutoCompleteTextView().setFilters(new InputFilter[]{new InputFilter.LengthFilter(operator.maximumLength)});
@@ -751,7 +761,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     private String getUrlCheckout() {
-        String url = "https://pulsa.tokopedia.com"+"?" +
+        String url = TkpdBaseURL.PULSA_WEB_DOMAIN + "?" +
                 "action=init_data" +
                 "&client_number=" + rechargeEditText.getText() +
                 "&product_id=" + selectedProduct.getId().toString() +

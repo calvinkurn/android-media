@@ -6,9 +6,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.Menu;
 
-import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productother.ProductOther;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.util.AppIndexHandler;
 
@@ -49,7 +50,7 @@ public interface ProductDetailPresenter {
 
     void processToCart(@NonNull Context context, @NonNull ProductCartPass data);
 
-    void sendAnalytics(@NonNull Context context, @NonNull ProductDetailData successResult);
+    void sendAnalytics(@NonNull ProductDetailData successResult);
 
     void processToPicturePreview(@NonNull Context context, @NonNull Bundle bundle);
 
@@ -78,6 +79,8 @@ public interface ProductDetailPresenter {
     void saveStateProductDetail(Bundle outState, String key, ProductDetailData value);
 
     void saveStateProductOthers(Bundle outState, String key, List<ProductOther> values);
+
+    void saveStateVideoData(Bundle outState, String key, VideoData value);
 
     void processStateData(Bundle savedInstanceState);
 

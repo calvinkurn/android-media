@@ -1,5 +1,6 @@
 package com.tokopedia.seller.shop.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +15,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.apiservices.shop.MyShopActService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -498,6 +500,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
                 }
                 break;
             case ShopEditService.STATUS_FINISHED:
+                UnifyTracking.eventCreateShopSuccess();
                 switch (type) {
                     case ShopEditService.CREATE_SHOP:
                         view.showProgress(false);
@@ -541,7 +544,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
                         // shop url
                         openShopValidationData.getData().getShopUrl());
                 saveCache(openShopValidationData.getData().getShopId().toString());
-                ShopEditorActivity.finishActivity(bundle, view.getMainContext());
+                ShopEditorActivity.finishActivity(bundle, (Activity) view.getMainContext());
 
             } else {
                 String unknownError = "Kesalahan Tidak Diketahui";
@@ -563,7 +566,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
                         // shop url
                         openShopSubmitData.getData().getShopUrl());
                 saveCache(openShopSubmitData.getData().getShopId().toString());
-                ShopEditorActivity.finishActivity(bundle, view.getMainContext());
+                ShopEditorActivity.finishActivity(bundle, (Activity) view.getMainContext());
 
             } else {
                 String unknownError = "Kesalahan Tidak Diketahui";
@@ -578,7 +581,7 @@ public class ShopCreatePresenterImpl extends ShopCreatePresenter implements Down
 
     private void saveCache(String shopID) {
         SessionHandler session = new SessionHandler(view.getMainContext());
-        session.SetLoginSession(session.getLoginID(), session.getLoginName(), shopID, SessionHandler.isMsisdnVerified());
+        session.setLoginSession(session.getLoginID(), session.getLoginName(), shopID, SessionHandler.isMsisdnVerified());
         LocalCacheHandler.clearCache(view.getMainContext(), "USER_INFO");
     }
 

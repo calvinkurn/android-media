@@ -1,24 +1,22 @@
 package com.tokopedia.core.discovery.model;
 
+import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
-import org.parceler.Parcel;
-
 /**
  * Created by noiz354 on 3/23/16.
  */
 
-public class HotListBannerModel {
+public class HotListBannerModel implements Parcelable {
     @SerializedName("query")
     public Query query;
 
     @SerializedName("info")
     public Info info;
 
-    @Parcel
     public static class Query implements Parcelable {
         @SerializedName("ob")
         public String ob;
@@ -190,4 +188,38 @@ public class HotListBannerModel {
             return hotListBannerModel;
         }
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.query, flags);
+        dest.writeParcelable(this.info, flags);
+    }
+
+    public HotListBannerModel() {
+    }
+
+    protected HotListBannerModel(Parcel in) {
+        this.query = in.readParcelable(Query.class.getClassLoader());
+        this.info = in.readParcelable(Info.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<HotListBannerModel> CREATOR
+            = new Parcelable.Creator<HotListBannerModel>() {
+
+        @Override
+        public HotListBannerModel createFromParcel(Parcel source) {
+            return new HotListBannerModel(source);
+        }
+
+        @Override
+        public HotListBannerModel[] newArray(int size) {
+            return new HotListBannerModel[size];
+        }
+    };
 }

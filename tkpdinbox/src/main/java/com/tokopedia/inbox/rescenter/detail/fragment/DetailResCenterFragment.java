@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -19,16 +18,16 @@ import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.database.model.AttachmentResCenterDB;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.rescenter.detail.customview.DetailView;
 import com.tokopedia.inbox.rescenter.detail.customview.ReplyEditorView;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
-import com.tokopedia.inbox.rescenter.detail.dialog.InputShippingRefNumDialog;
 import com.tokopedia.inbox.rescenter.detail.dialog.TrackShippingDialog;
 import com.tokopedia.inbox.rescenter.detail.listener.DetailResCenterView;
 import com.tokopedia.inbox.rescenter.detail.listener.ResCenterView;
@@ -61,6 +60,8 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     private static final String TAG = DetailResCenterFragment.class.getSimpleName();
     private static final int EDIT_RESOLUTION_REQUEST_CODE = 6789;
     private static final int CHOOSE_ADDRESS = 7890;
+    private static final int CHOOSE_ADDRESS_MIGRATE_VERSION = 7891;
+    private static final int CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION = 7892;
     private static final int EDIT_ADDRESS = 5678;
 
     private ActivityParamenterPassData passData;
@@ -231,7 +232,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     }
 
     @Override
-    public void showAttachment(List<AttachmentResCenterDB> data) {
+    public void showAttachment(List<AttachmentResCenterVersion2DB> data) {
         replyEditorView.renderAttachmentData(data);
     }
 
@@ -247,6 +248,18 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
                 if (resultCode == Activity.RESULT_OK) {
                     Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
                     presenter.actionInputAddress(getActivity(), destination.getAddressId());
+                }
+                break;
+            case CHOOSE_ADDRESS_MIGRATE_VERSION:
+                if (resultCode == Activity.RESULT_OK) {
+                    Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
+                    presenter.actionInputAddressMigrateVersion(getActivity(), destination.getAddressId());
+                }
+                break;
+            case CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION:
+                if (resultCode == Activity.RESULT_OK) {
+                    Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
+                    presenter.actionInputAddressAcceptAdminSolution(getActivity(), destination.getAddressId());
                 }
                 break;
             case EDIT_ADDRESS:
@@ -280,7 +293,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     @Override
     public void showInvalidTrackingDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(Html.fromHtml(getActivity().getString(R.string.error_520_tracking)));
+        builder.setMessage(MethodChecker.fromHtml(getActivity().getString(R.string.error_520_tracking)));
         builder.setPositiveButton(getActivity().getString(R.string.title_ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -290,15 +303,6 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         Dialog dialog = builder.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.show();
-    }
-
-    @Override
-    public void showInputShippingRefNumDialog(String resolutionID, InputShippingRefNumDialog.Listener listener) {
-        InputShippingRefNumDialog.Builder(getActivity(), resolutionID)
-                .initView()
-                .initPrevious()
-                .initValue(listener)
-                .show();
     }
 
     @Override
@@ -424,37 +428,13 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     }
 
     @Override
-    public void openInputShippingRef(String paramID) {
-        presenter.showShippingRefNumDialog(false,
-                getActivity(),
-                new InputShippingRefNumDialog.Listener() {
-                    @Override
-                    public void onSubmitButtonClick() {
-                        presenter.actionInputShippingRefNum();
-                    }
-
-                    @Override
-                    public void onScanButtonClick() {
-                        presenter.showScanBarcode(getActivity());
-                    }
-                });
+    public void openInputShippingRef() {
+        presenter.onNewShippingClickListener(getActivity());
     }
 
     @Override
     public void openEditShippingRef(String url) {
-        presenter.onOverflowShippingRefNumClick(context,
-                url,
-                new InputShippingRefNumDialog.Listener() {
-                    @Override
-                    public void onSubmitButtonClick() {
-                        presenter.actionEditShippingRefNum();
-                    }
-
-                    @Override
-                    public void onScanButtonClick() {
-                        presenter.showScanBarcode(getActivity());
-                    }
-                });
+        presenter.onEditShippingClickListener(getActivity(), url);
     }
 
     @Override
@@ -487,6 +467,20 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
         intent.putExtra("resolution_center", true);
         startActivityForResult(intent, CHOOSE_ADDRESS);
+    }
+
+    @Override
+    public void openInputAddressForAcceptAdmin() {
+        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+        intent.putExtra("resolution_center", true);
+        startActivityForResult(intent, CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION);
+    }
+
+    @Override
+    public void openInputAddressMigrateVersion() {
+        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+        intent.putExtra("resolution_center", true);
+        startActivityForResult(intent, CHOOSE_ADDRESS_MIGRATE_VERSION);
     }
 
     @Override

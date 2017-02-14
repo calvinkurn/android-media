@@ -19,11 +19,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.util.DisplayMetrics;
@@ -44,21 +45,21 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tkpd.library.utils.network.ManyRequestErrorException;
+import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.deposit.activity.DepositActivity;
-import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.drawer.DrawerVariableSeller;
+import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
-import com.tokopedia.core.myproduct.ManageProduct;
+import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.apiservices.shop.MyShopOrderService;
@@ -66,16 +67,17 @@ import com.tokopedia.core.network.apiservices.shop.ShopService;
 import com.tokopedia.core.network.apiservices.transaction.DepositService;
 import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.talk.inboxtalk.activity.InboxTalkActivity;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
 import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
 import com.tokopedia.sellerapp.home.boommenu.BoomMenuButton;
 import com.tokopedia.sellerapp.home.boommenu.SquareMenuButton;
@@ -93,7 +95,7 @@ import com.tokopedia.sellerapp.home.model.rescenter.ResCenterInboxData;
 import com.tokopedia.sellerapp.home.model.shopmodel.ShopModel;
 import com.tokopedia.sellerapp.home.utils.CollapsingToolbarLayoutCust;
 import com.tokopedia.sellerapp.home.utils.DepositNetworkController;
-import com.tokopedia.sellerapp.home.utils.ImageHandler;
+import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.sellerapp.home.utils.InboxResCenterNetworkController;
 import com.tokopedia.sellerapp.home.utils.NotifNetworkController;
 import com.tokopedia.sellerapp.home.utils.ShopController;
@@ -112,10 +114,10 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-import static com.tokopedia.core.drawer.DrawerVariableSeller.goToShopNewOrder;
 import static com.tokopedia.core.drawer.DrawerVariable.startIntent;
+import static com.tokopedia.sellerapp.drawer.DrawerVariableSeller.goToShopNewOrder;
 
-public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.GCMHandlerListener,
+public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerListener,
         SessionHandler.onLogoutListener {
     private static final String ARG_TRUECALLER_PACKAGE = "com.truecaller";
     public static final String messageTAG = SellerHomeActivity.class.getSimpleName();
@@ -194,12 +196,12 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
 
     @OnClick({R.id.discussion_see_more, R.id.discussion_container})
     public void discussionSeeMore() {
-        startIntent(this, InboxTalkActivity.class);
+        startActivity(InboxRouter.getInboxTalkActivityIntent(this));
     }
 
     @OnClick({R.id.message_see_more, R.id.message__card_view_container})
     public void messageSeeMore() {
-        startIntent(this, InboxMessageActivity.class);
+        this.startActivity(InboxRouter.getInboxMessageActivityIntent(this));
     }
 
     @OnClick({R.id.complain_see_more, R.id.complain_container})
@@ -241,7 +243,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
     @BindView(R.id.drawer_layout_nav)
     DrawerLayout drawerLayoutNav;
 
-    FckToolbarVariable toolbar;
+    SellerToolbarVariable toolbar;
 
     SnackbarRetry snackbarRetry;
     SnackbarRetry snackbarRetryUndefinite;
@@ -319,7 +321,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
         shopId = SessionHandler.getShopID(this);
         imageHandler = new ImageHandler(this);
 
-        drawer.setDrawerPosition(TkpdState.DrawerPosition.INDEX_HOME);
+        drawer.setDrawerPosition(TkpdState.DrawerPosition.SELLER_INDEX_HOME);
 
         GCMHandler gcmHandler = new GCMHandler(this);
         Gson gson = new GsonBuilder().create();
@@ -351,7 +353,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
 
     private void initDrawer() {
         drawer = new DrawerVariableSeller(this);
-        toolbar = new FckToolbarVariable(this, sellerHomeToolbar);
+        toolbar = new SellerToolbarVariable(this, sellerHomeToolbar);
         toolbar.createToolbarWithDrawer();
         drawer.setToolbar(toolbar);
         drawer.createDrawer();
@@ -457,8 +459,12 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof ShopNetworkController.MessageErrorException) {
+                if (e instanceof MessageErrorException) {
                     Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                }else{
+                    if (snackbarRetryUndefinite != null) {
+                        snackbarRetryUndefinite.showRetrySnackbar();
+                    }
                 }
             }
 
@@ -483,8 +489,12 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof ShopNetworkController.MessageErrorException) {
+                if (e instanceof MessageErrorException) {
                     Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                }else{
+                    if (snackbarRetryUndefinite != null) {
+                        snackbarRetryUndefinite.showRetrySnackbar();
+                    }
                 }
             }
 
@@ -551,8 +561,12 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof ShopNetworkController.MessageErrorException) {
+                if (e instanceof MessageErrorException) {
                     Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                }else{
+                    if (snackbarRetryUndefinite != null) {
+                        snackbarRetryUndefinite.showRetrySnackbar();
+                    }
                 }
             }
 
@@ -619,7 +633,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
                     sellerHomeTransactionView.init(shopModel);
                 }
 
-                sellerHomeShopname.setText(Html.fromHtml(shopModel.info.shopName));
+                sellerHomeShopname.setText(MethodChecker.fromHtml(shopModel.info.shopName));
                 sellerHomeShopPlace.setText(shopModel.info.shopLocation);
 
                 imageHandler.loadImage(sellerHomeShopCover, shopModel.info.shopCover);
@@ -653,12 +667,12 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof ShopNetworkController.MessageErrorException) {
+                if (e instanceof MessageErrorException) {
                     if (snackbarRetryUndefinite != null) {
                         snackbarRetryUndefinite.showRetrySnackbar();
                     }
 //                    Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                } else if (e instanceof ShopNetworkController.ManyRequestErrorException) {
+                } else if (e instanceof ManyRequestErrorException) {
                     if (snackbarRetryUndefinite != null) {
                         snackbarRetryUndefinite.showRetrySnackbar();
                     }
@@ -863,7 +877,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
                 R.drawable.ic_settings
         };
         for (int i = 0; i < drawables.length; i++)
-            drawables[i] = ContextCompat.getDrawable(this, drawablesResource[i]);
+            drawables[i] = AppCompatDrawableManager.get().getDrawable(this, drawablesResource[i]);
 
         String[] STRINGS = new String[]{
                 "Atur Produk",
@@ -1035,7 +1049,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
 
         Authenticated authEvent = new Authenticated();
         authEvent.setUserFullName(SessionHandler.getLoginName(this));
-        authEvent.setUserID(SessionHandler.getLoginID(this));
+        authEvent.setUserID(SessionHandler.getGTMLoginID(this));
         authEvent.setShopID(SessionHandler.getShopID(this));
         authEvent.setUserSeller(SessionHandler.getShopID(this).equals("0") ? 0 : 1);
 
@@ -1055,7 +1069,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandler.
     public void onStart() {
         super.onStart();
         if(appInstalledOrNot(ARG_TRUECALLER_PACKAGE)){
-//            TrackingUtils.eventTrueCaller(SessionHandler.getLoginID(this));
+            UnifyTracking.eventTrueCaller(SessionHandler.getLoginID(this));
         }
     }
     private boolean appInstalledOrNot(String uri) {

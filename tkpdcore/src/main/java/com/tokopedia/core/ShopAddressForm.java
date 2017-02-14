@@ -3,6 +3,7 @@ package com.tokopedia.core;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,6 +56,7 @@ public class ShopAddressForm extends TActivity {
     private final int HIDE_MENU = 1;
     private final int SHOW_MENU = 0;
 
+    private View rootView;
     private View mainView;
     private EditText AddressName;
     private EditText PostCode;
@@ -176,7 +178,7 @@ public class ShopAddressForm extends TActivity {
         progress.dismiss();
         mState = HIDE_MENU;
         invalidateOptionsMenu();
-        NetworkErrorHelper.showEmptyState(this, getWindow().getDecorView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+        NetworkErrorHelper.showEmptyState(this, rootView, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 mState = SHOW_MENU;
@@ -204,6 +206,7 @@ public class ShopAddressForm extends TActivity {
         compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        rootView = findViewById(R.id.rootView);
         mainView = findViewById(R.id.mainView);
         BtnSave = (TextView) findViewById(R.id.btn_save);
         PostCode = (EditText) findViewById(R.id.post_code);
@@ -613,7 +616,8 @@ public class ShopAddressForm extends TActivity {
 
             @Override
             public void onError(Throwable e) {
-                NetworkErrorHelper.showEmptyState(ShopAddressForm.this, getWindow().getDecorView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                mProgressDialog.dismiss();
+                NetworkErrorHelper.showEmptyState(ShopAddressForm.this, rootView, new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
                         SaveAddressV4();
@@ -639,6 +643,7 @@ public class ShopAddressForm extends TActivity {
                             gson.fromJson(jsonObject.toString(), SaveAddress.class);
                     mProgressDialog.dismiss();
                     if (data.getIsSuccess() == 1) {
+                        NetworkErrorHelper.removeEmptyState(rootView);
                         Intent intent = new Intent(ShopAddressForm.this, ManageShopAddress.class);
                         Bundle bundle = new Bundle();
                         bundle.putBoolean("is_new", IsNewForm);
@@ -670,7 +675,7 @@ public class ShopAddressForm extends TActivity {
 
         HashMap<String, String> saveAddressParam = PrepareParamSaveAddress(
                 AddressName.getText().toString(),
-                Address.getText().toString().replaceAll("\\n", "<br />"),
+                Address.getText().toString(),
                 ProvinceID.get(SpinnerProvince.getSelectedItemPosition() - 1).toString(),
                 RegencyID.get(SpinnerRegency.getSelectedItemPosition() - 1).toString(),
                 SubDistrictID.get(SpinnerSubDistrict.getSelectedItemPosition() - 1).toString(),

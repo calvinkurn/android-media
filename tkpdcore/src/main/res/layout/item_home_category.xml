@@ -15,12 +15,6 @@
         android:layout_marginBottom="5dp"
         android:padding="5dp">
 
-        <View
-            android:id="@+id/sparator"
-            android:layout_width="1px"
-            android:layout_height="match_parent"
-            android:background="@color/grey" />
-
         <ImageView
             android:id="@+id/itemImage"
             android:layout_width="32dp"
@@ -43,6 +37,12 @@
             android:padding="5dp"
             android:textColor="@color/tkpd_dark_gray"
             android:textSize="12sp" />
+
+        <View
+            android:id="@+id/sparator"
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/grey_300" />
 
     </LinearLayout>
 

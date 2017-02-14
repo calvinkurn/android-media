@@ -4,27 +4,25 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.MenuItem;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
-import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
@@ -42,6 +40,8 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         DeepLinkView, DeepLinkWebViewHandleListener,
         ProductDetailFragment.OnFragmentInteractionListener,
         FragmentGeneralWebView.OnFragmentInteractionListener, ICatalogActionFragment {
+
+    private TkpdProgressDialog progressDialog;
 
     private static final String TAG = DeepLinkActivity.class.getSimpleName();
     private Uri uriData;
@@ -178,21 +178,40 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         }
     }
 
-    @Override
-    protected void onFinishFetechedDepartment() {
-        super.onFinishFetechedDepartment();
-        Log.i("HADES TAG", "DO SOMETHING AFTER FINISH");
-        dissmisProgressService();
-        if (uriData != null) presenter.processDeepLinkAction(uriData);
+    private void initDeepLink() {
+        if (uriData != null) {
+            presenter.checkUriLogin(uriData);
+            if (presenter.isLandingPageWebView(uriData)) {
+                CommonUtils.dumper("GAv4 Escape HADES webview");
+                presenter.processDeepLinkAction(uriData);
+            } else {
+                if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
+                    CommonUtils.dumper("GAv4 Entering HADES");
+                    showProgressService();
+                }else{
+                    CommonUtils.dumper("GAv4 Escape HADES non webview");
+                    presenter.processDeepLinkAction(uriData);
+                }
+            }
+        } else  {
+            if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
+                CommonUtils.dumper("GAv4 Entering HADES null Uri");
+                showProgressService();
+            }
+        }
     }
 
-    private void initDeepLink() {
-        Log.i("HADES TAG", "HADES RUNNING??? " + HadesService.getIsHadesRunning());
-        if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
-            showProgressService();
-        } else {
-            if (uriData != null) presenter.processDeepLinkAction(uriData);
-        }
+    private void showProgressService() {
+        if (isFinishing())
+            return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && isDestroyed())
+            return;
+
+        if (progressDialog != null && progressDialog.isProgress()) return;
+
+        progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
+        progressDialog.setCancelable(false);
+        progressDialog.showDialog();
     }
 
     @Override

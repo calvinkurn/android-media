@@ -138,7 +138,7 @@ public class ShopNotesAdapter extends BaseLinearRecyclerViewAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        if (isLastItemPosition(position) && (list.isEmpty() || isLoading() || isRetry())) {
+        if (isLastItemPosition(position) && (list.isEmpty() || isEmpty() || isLoading() || isRetry())) {
             return super.getItemViewType(position);
         } else {
             return VIEW_NOTE;

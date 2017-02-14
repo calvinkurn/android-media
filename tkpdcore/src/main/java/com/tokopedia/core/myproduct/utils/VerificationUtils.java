@@ -6,13 +6,14 @@ import android.util.Log;
 
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
 import static com.tokopedia.core.myproduct.model.constant.ImageModelType.SELECTED;
-import static com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.myproduct.adapter.WholesaleAdapter;
 import com.tokopedia.core.myproduct.model.ImageModel;
 import com.tokopedia.core.myproduct.model.TextDeleteModel;
 import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
+import com.tokopedia.core.util.Pair;
 
 import java.util.List;
 
@@ -59,6 +60,14 @@ public class VerificationUtils {
 
         if (etalaseName.trim().isEmpty()){
             return new Pair<>(false, context.getString(R.string.error_empty_new_etalase_name));
+        }
+
+        if (etalaseName.trim().length() < 3){
+            return new Pair<>(false, context.getString(R.string.etalase_less_than_three_char));
+        }
+
+        if(!DbManagerImpl.getInstance().isEtalaseEmpty(etalaseName)){
+            return new Pair<>(false, context.getString(R.string.error_etalase_exist));
         }
 
         return new Pair<>(true, null);
@@ -335,7 +344,7 @@ public class VerificationUtils {
         boolean resBoolean = false;
         String resString = null;
         String productName = text[0];
-        if (TextUtils.isEmpty(productName)) {
+        if (TextUtils.isEmpty(productName) || productName.equals("0")) {
             resString = context.getString(R.string.error_empty_product_name);
             resBoolean = false;
         }else if(productName.length()>70){
@@ -364,6 +373,11 @@ public class VerificationUtils {
                 switch (currency){
                     case "Rp":
                         String priceText = text[1].replace(",","").replace(".", "");
+                        if(priceText.equals("")){
+                            resBoolean = false;
+                            resString = context.getString(R.string.error_empty_price);
+                            return new Pair<>(resBoolean, resString);
+                        }
                         if(Double.parseDouble(priceText) == 100){
                             resBoolean = false;
                             resString = context.getString(R.string.error_minimum_price_wholesale);
@@ -372,6 +386,11 @@ public class VerificationUtils {
                         break;
                     case "US$":
                         priceText = text[1].replace(",","");
+                        if(priceText.equals("")){
+                            resBoolean = false;
+                            resString = context.getString(R.string.error_empty_price);
+                            return new Pair<>(resBoolean, resString);
+                        }
                         if(Double.parseDouble(priceText) == 1){
                             resBoolean = false;
                             resString = context.getString(R.string.error_minimum_price_wholesale);

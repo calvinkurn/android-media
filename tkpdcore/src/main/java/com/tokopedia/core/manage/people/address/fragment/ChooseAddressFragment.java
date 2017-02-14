@@ -2,9 +2,13 @@ package com.tokopedia.core.manage.people.address.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -14,12 +18,18 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.manage.people.address.ManageAddressConstant;
+import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
+import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.address.adapter.ChooseAddressAdapter;
 import com.tokopedia.core.manage.people.address.listener.ChooseAddressFragmentView;
+import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.manage.people.address.presenter.ChooseAddressFragmentPresenter;
 import com.tokopedia.core.manage.people.address.presenter.ChooseAddressFragmentPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 
@@ -27,7 +37,8 @@ import butterknife.BindView;
  * Created by Alifa on 10/11/2016.
  */
 
-public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFragmentPresenter> implements ChooseAddressFragmentView {
+public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFragmentPresenter> implements ChooseAddressFragmentView,
+        ChooseAddressActivity.OnChooseAddressViewListener {
 
     @BindView(R2.id.main_view)
     View mainView;
@@ -67,7 +78,7 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
     @Override
     protected void onFirstTimeLaunched() {
         setActionsEnabled(false);
-        presenter.setCache(search.getText()!=null ? search.getText().toString() : "");
+        presenter.setCache(search.getText() != null ? search.getText().toString() : "");
 
     }
 
@@ -83,7 +94,7 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
 
     @Override
     protected boolean getOptionsMenuEnable() {
-        return false;
+        return true;
     }
 
     @Override
@@ -110,7 +121,7 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
         return new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
-                presenter.onRefresh(search.getText()!=null ? search.getText().toString() : "");
+                presenter.onRefresh(search.getText() != null ? search.getText().toString() : "");
             }
         };
     }
@@ -136,7 +147,7 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
                 super.onScrollStateChanged(recyclerView, newState);
                 int lastItemPosition = linearLayoutManager.findLastVisibleItemPosition();
                 int visibleItem = linearLayoutManager.getItemCount() - 1;
-                presenter.loadMore(lastItemPosition, visibleItem,search.getText()!=null ? search.getText().toString() : "");
+                presenter.loadMore(lastItemPosition, visibleItem, search.getText() != null ? search.getText().toString() : "");
             }
         };
     }
@@ -149,8 +160,8 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
     @Override
     protected void initialVar() {
 
-        adapter = ChooseAddressAdapter.createInstance(getActivity());
-        adapter.setOnRetryListenerRV(presenter.onRetry(search.getText()!=null ? search.getText().toString() : ""));
+        adapter = ChooseAddressAdapter.createInstance(getActivity(), presenter);
+        adapter.setOnRetryListenerRV(presenter.onRetry(search.getText() != null ? search.getText().toString() : ""));
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         addressRV.setLayoutManager(linearLayoutManager);
         addressRV.setAdapter(adapter);
@@ -217,7 +228,7 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
 
     @Override
     public void refresh() {
-        presenter.onRefresh(search.getText()!=null ? search.getText().toString() : "");
+        presenter.onRefresh(search.getText() != null ? search.getText().toString() : "");
     }
 
     @Override
@@ -232,7 +243,7 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.setCache(search.getText()!=null ? search.getText().toString() : "");
+                presenter.setCache(search.getText() != null ? search.getText().toString() : "");
             }
         });
     }
@@ -243,7 +254,7 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.setCache(search.getText()!=null ? search.getText().toString() : "");
+                presenter.setCache(search.getText() != null ? search.getText().toString() : "");
             }
         }).showRetrySnackbar();
     }
@@ -254,7 +265,7 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.setCache(search.getText()!=null ? search.getText().toString() : "");
+                presenter.setCache(search.getText() != null ? search.getText().toString() : "");
             }
         });
     }
@@ -265,7 +276,7 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), error, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.setCache(search.getText()!=null ? search.getText().toString() : "");
+                presenter.setCache(search.getText() != null ? search.getText().toString() : "");
             }
         }).showRetrySnackbar();
     }
@@ -274,5 +285,65 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDestroyView();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (getActivity().getIntent().getBooleanExtra("resolution_center", false)) {
+            inflater.inflate(R.menu.manage_people_address, menu);
+        } else {
+            super.onCreateOptionsMenu(menu, inflater);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_add_address) {
+            presenter.setOnAddAddressClick(getActivity());
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case ManageAddressConstant.REQUEST_CODE_PARAM_CREATE:
+                    presenter.onSuccessCreateAddress();
+                    break;
+                case ChooseAddressFragmentPresenterImpl.REQUEST_CHOOSE_ADDRESS_CODE:
+                    presenter.onSuccessEditAddress();
+                default:
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void resetSearch() {
+        search.setText("");
+    }
+
+    @Override
+    public void navigateToAddAddress(Bundle bundle) {
+        Intent intent = new Intent(getActivity(), AddAddressActivity.class);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
+    }
+
+    @Override
+    public void navigateToEditAddress(Bundle bundle) {
+        Intent intent = new Intent(getActivity(), AddAddressActivity.class);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, ChooseAddressFragmentPresenterImpl.REQUEST_CHOOSE_ADDRESS_CODE);
+    }
+
+
+    @Override
+    public ArrayList<Destination> onActivityBackPressed() {
+        return getAdapter().getList();
     }
 }

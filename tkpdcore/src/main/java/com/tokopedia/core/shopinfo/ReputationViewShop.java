@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,7 +29,6 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.inboxreputation.adapter.ImageUploadAdapter;
@@ -42,16 +40,18 @@ import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.reputationproduct.adapter.ListViewReputationAdapter;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.LabelUtils;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.ToolTipUtils;
 import com.tokopedia.core.var.TkpdState;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -66,7 +66,49 @@ public class ReputationViewShop extends TActivity {
 
     public static final String EXTRA_PRODUCT_ID = "product_id";
 
-    private ListViewReputationAdapter.Model model;
+    public static class Model implements Serializable {
+        public String reviewId;
+        public Boolean Editable;
+        public String username;
+        public String userId;
+        public String avatarUrl;
+        public String date;
+        public String comment;
+        public String userLabel;
+        public int starQuality;
+        public int starAccuracy;
+        public int smiley;
+        public String counterSmiley;
+        public int counterLike;
+        public int counterDislike;
+        public int counterResponse;
+        public String shopName;
+        public String shopId;
+        public String shopAvatarUrl;
+        public String responseMessage;
+        public String responseDate;
+        public String userNameResponder;
+        public String avatarUrlResponder;
+        public String labelIdResponder;
+        public String userLabelResponder;
+        public String userIdResponder;
+        public String productId;
+        public String productName;
+        public String shopReputation;
+        public int typeMedal;
+        public int levelMedal;
+        public boolean isGetLikeDislike;
+        public int statusLikeDislike;
+        public int positive;
+        public int negative;
+        public int netral;
+        public int noReputationUserScore;
+        public String productAvatar;
+        public String reputationId;
+        public List<ImageUpload> imageUploads;
+    }
+    
+    private Model model;
     private ViewHolder holder;
     private ViewHolderComment holderComment;
     private LabelUtils labelHeader;
@@ -221,9 +263,9 @@ public class ReputationViewShop extends TActivity {
 
         ImageHandler.loadImageCircle2(this, holder.avatar, model.avatarUrl);
 //        ImageHandler.LoadImageCircle(holder.avatar, model.avatarUrl);
-        holder.username.setText(Html.fromHtml(model.username).toString());
+        holder.username.setText(MethodChecker.fromHtml(model.username).toString());
         holder.date.setText(model.date);
-        holder.comment.setText(Html.fromHtml(model.comment).toString());
+        holder.comment.setText(MethodChecker.fromHtml(model.comment).toString());
         labelHeader.giveSquareLabel(model.userLabel);
         setCounter();
         setSmiley();
@@ -442,7 +484,7 @@ public class ReputationViewShop extends TActivity {
 
     private void OnLikeConnection() {
         showProgressDialog();
-        ListViewReputationAdapter.Model UnUpdatedModel = model;
+        Model UnUpdatedModel = model;
         switch (model.statusLikeDislike) {
             case 0:
                 setTemporaryActivatedLike();
@@ -531,7 +573,7 @@ public class ReputationViewShop extends TActivity {
 
     private void OnDislikeConnection() {
         showProgressDialog();
-        ListViewReputationAdapter.Model UnUpdatedModel = model;
+        Model UnUpdatedModel = model;
         switch (model.statusLikeDislike) {
             case 0:
                 setTemporaryActivatedDislike();
@@ -550,7 +592,7 @@ public class ReputationViewShop extends TActivity {
         updateLikeDislike(UnUpdatedModel);
     }
 
-    private void updateLikeDislike(final ListViewReputationAdapter.Model model) {
+    private void updateLikeDislike(final Model model) {
         networkInteractor.likeDislikeReview(this, getLikeDislikeParam(), new ActReputationRetrofitInteractor.ActReputationListener() {
             @Override
             public void onSuccess(ActResult result) {
@@ -608,7 +650,7 @@ public class ReputationViewShop extends TActivity {
         return pass.getLikeDislikeParam();
     }
 
-    private void revertBack(ListViewReputationAdapter.Model model) {
+    private void revertBack(Model model) {
         this.model = model;
         setCounter();
     }
@@ -853,8 +895,8 @@ public class ReputationViewShop extends TActivity {
         return model.counterResponse != 0;
     }
 
-    private ListViewReputationAdapter.Model getIntentModel() {
-        return ((ListViewReputationAdapter.Model) getIntent().getSerializableExtra("data_model"));
+    private Model getIntentModel() {
+        return ((Model) getIntent().getSerializableExtra("data_model"));
     }
 
     @Override

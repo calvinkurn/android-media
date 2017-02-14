@@ -39,10 +39,6 @@ public interface ManagePeopleProfileFragmentView {
 
     void showSnackBarView(String message);
 
-    String getPassword();
-
-    void setPasswordError(String errorMessage);
-
     String getPhone();
 
     void setPhoneError(String errorMessage);

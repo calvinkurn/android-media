@@ -17,6 +17,9 @@ import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
+import com.tokopedia.core.manage.people.address.presenter.ChooseAddressFragmentPresenter;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.manage.people.address.presenter.ChooseAddressFragmentPresenterImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +35,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class ChooseAddressAdapter extends BaseLinearRecyclerViewAdapter {
     private static final int VIEW_ADDRESS = 100;
+    private final ChooseAddressFragmentPresenter presenter;
 
     private ArrayList<Destination> list;
     private final Context context;
@@ -55,16 +59,15 @@ public class ChooseAddressAdapter extends BaseLinearRecyclerViewAdapter {
 
         @Override
         public void onClick(View view) {
-            Intent intent = ((Activity) context).getIntent();
-            intent.putExtra(ManageAddressConstant.EXTRA_ADDRESS, list.get(getAdapterPosition()));
-            ((Activity) context).setResult(RESULT_OK, intent);
-            ((Activity) context).finish();
+            Destination destination = list.get(getAdapterPosition());
+            presenter.setOnChooseAddressClick(context, destination);
         }
     }
 
-    public ChooseAddressAdapter(Context context) {
+    public ChooseAddressAdapter(Context context, ChooseAddressFragmentPresenter presenter) {
         this.context = context;
         this.list = new ArrayList<>();
+        this.presenter = presenter;
     }
 
     @Override
@@ -93,18 +96,13 @@ public class ChooseAddressAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     private void bindAddress(final ViewHolder holder, final int position) {
-        holder.titleAddress.setText(Html.fromHtml(list.get(position).getAddressName()));
-        holder.addressDetail.setText(Html.fromHtml(list.get(position).getAddressDetail()));
+        holder.titleAddress.setText(MethodChecker.fromHtml(list.get(position).getAddressName()));
+        holder.addressDetail.setText(MethodChecker.fromHtml(list.get(position).getAddressDetail()));
         holder.btnEdit.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, AddAddressActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(ManageAddressConstant.EDIT_PARAM, list.get(position));
-                bundle.putBoolean(ManageAddressConstant.IS_EDIT, true);
-                intent.putExtras(bundle);
-                context.startActivity(intent);
+                presenter.setOnEditAddressClick(context, list.get(position));
             }
         });
 
@@ -126,11 +124,11 @@ public class ChooseAddressAdapter extends BaseLinearRecyclerViewAdapter {
 
     @Override
     public int getItemCount() {
-        return list.size() + super.getItemCount() ;
+        return list.size() + super.getItemCount();
     }
 
-    public static ChooseAddressAdapter createInstance(Context context) {
-        return new ChooseAddressAdapter(context);
+    public static ChooseAddressAdapter createInstance(Context context, ChooseAddressFragmentPresenter presenter) {
+        return new ChooseAddressAdapter(context, presenter);
     }
 
     public ArrayList<Destination> getList() {

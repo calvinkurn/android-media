@@ -51,23 +51,6 @@ public interface ShopApi {
     @POST(TkpdBaseURL.Shop.PATH_GET_SHOP_REVIEW)
     Observable<Response<TkpdResponse>> getReview(@FieldMap Map<String, String> params);
 
-    @GET(TkpdBaseURL.Shop.PATH_GEt_SHOP_TALK)
-    Observable<Response<TkpdResponse>> getTalk(@QueryMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Shop.URL_SHOP + TkpdBaseURL.Shop.PATH_GET_SHOP_NOTES)
-    Observable<GetShopNotes> getNotesBasic(
-            @Header("Content-MD5") String contentMD5,// 1
-            @Header("Date") String date,// 2
-            @Header("Authorization") String authorization, // 3
-            @Header("X-Method") String xMethod,// 4
-            @Field("user_id") String userId,// 5
-            @Field("device_id") String deviceId, // 6
-            @Field("hash") String hash,// 7
-            @Field("device_time") String deviceTime,// 8
-            @Field("shop_domain") String shopDomain// 9
-    );
-
     @FormUrlEncoded
     @POST(TkpdBaseURL.Shop.PATH_GET_SHOP_NOTES)
     Observable<GetShopNotes> getNotes2(@FieldMap Map<String, String> params);

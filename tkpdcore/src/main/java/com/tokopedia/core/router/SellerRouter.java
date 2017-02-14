@@ -5,7 +5,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.core.GCMListenerService;
 import com.tokopedia.core.util.RouterUtils;
 
 /**
@@ -15,10 +14,13 @@ import com.tokopedia.core.util.RouterUtils;
 public class SellerRouter {
 
     private static final String ACTIVITY_SELLING_TRANSACTION = "com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction";
+    private static final String ACTIVITY_TOPADS_DASHBOARD = "com.tokopedia.seller.topads.view.activity.TopAdsDashboardActivity";
 
     private static final String FRAGMENT_SELLING_NEW_ORDER = "com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder";
 
     private static final String ACTIVITY_SHOP_CREATE_EDIT = "com.tokopedia.seller.shop.ShopEditorActivity";
+
+    private static final String ACTIVITY_SPLASH_SCREEN = "com.tokopedia.sellerapp.SplashScreenActivity";
 
     public interface ShopSettingConstant{
         String FRAGMENT_TO_SHOW = "FragmentToShow";
@@ -43,7 +45,15 @@ public class SellerRouter {
         return Fragment.instantiate(context, FRAGMENT_SELLING_NEW_ORDER);
     }
 
+    public static Intent getActivityTopadsDashboard(Context context) {
+        return RouterUtils.getActivityIntent(context, ACTIVITY_TOPADS_DASHBOARD);
+    }
+
     public static ComponentName getActivitySellingTransactionName(Context context) {
         return RouterUtils.getActivityComponentName(context, ACTIVITY_SELLING_TRANSACTION);
+    }
+
+    public static Intent getAcitivitySplashScreenActivity(Context context) {
+        return RouterUtils.getActivityIntent(context, ACTIVITY_SPLASH_SCREEN);
     }
 }

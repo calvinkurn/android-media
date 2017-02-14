@@ -11,7 +11,7 @@ import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
-import com.tokopedia.core.session.presenter.Login;
+import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.session.session.subscriber.BaseAccountSubscriber;
 import com.tokopedia.core.util.SessionHandler;
 

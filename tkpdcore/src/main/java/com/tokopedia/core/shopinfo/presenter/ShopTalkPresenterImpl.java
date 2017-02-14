@@ -286,6 +286,7 @@ public class ShopTalkPresenterImpl implements ShopTalkPresenter {
         param.put("shop_domain", viewListener.getActivity().getIntent().getExtras().getString(ShopInfoActivity.SHOP_DOMAIN, ""));
         param.put("shop_id", viewListener.getActivity().getIntent().getExtras().getString(ShopInfoActivity.SHOP_ID, ""));
         param.put("page", String.valueOf(paging.getPage()));
+        param.put("type","s");
         return param;
     }
 
@@ -296,5 +297,9 @@ public class ShopTalkPresenterImpl implements ShopTalkPresenter {
 
     }
 
+    @Override
+    public void unsubscribe() {
+        networkInteractor.unSubscribeObservable();
+    }
 
 }

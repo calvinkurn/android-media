@@ -192,13 +192,13 @@ public class CreditCardUtils {
     }
 
     private void setViewValue() {
-        holder.forename.setText(Html.fromHtml(model.forename));
-        holder.surname.setText(Html.fromHtml(model.surname));
-        holder.address.setText(Html.fromHtml(model.address));
-        holder.province.setText(Html.fromHtml(model.province));
-        holder.city.setText(Html.fromHtml(model.city));
-        holder.phone.setText(Html.fromHtml(model.phone));
-        holder.postCode.setText(Html.fromHtml(model.postCode));
+        holder.forename.setText(MethodChecker.fromHtml(model.forename));
+        holder.surname.setText(MethodChecker.fromHtml(model.surname));
+        holder.address.setText(MethodChecker.fromHtml(model.address));
+        holder.province.setText(MethodChecker.fromHtml(model.province));
+        holder.city.setText(MethodChecker.fromHtml(model.city));
+        holder.phone.setText(MethodChecker.fromHtml(model.phone));
+        holder.postCode.setText(MethodChecker.fromHtml(model.postCode));
         holder.ccName.requestFocus();
     }
 

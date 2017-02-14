@@ -25,6 +25,8 @@ public class AccountsParameter implements Parcelable {
     private boolean activationResent;
     private AccountsModel accountsModel;
     private ErrorModel errorModel;
+    private String attempt;
+    private String passwordType;
 
     public ErrorModel getErrorModel() {
         return errorModel;
@@ -107,7 +109,6 @@ public class AccountsParameter implements Parcelable {
         this.socialType = socialType;
     }
 
-
     public Parcelable getParcelable() {
         return parcelable;
     }
@@ -156,6 +157,21 @@ public class AccountsParameter implements Parcelable {
         this.loginType = loginType;
     }
 
+    public String getAttempt() {
+        return attempt;
+    }
+
+    public void setAttempt(String attempt) {
+        this.attempt = attempt;
+    }
+
+    public String getPasswordType() {
+        return passwordType;
+    }
+
+    public void setPasswordType(String passwordType) {
+        this.passwordType = passwordType;
+    }
 
     public AccountsParameter() {
     }
@@ -174,7 +190,7 @@ public class AccountsParameter implements Parcelable {
         dest.writeInt(this.socialType);
         dest.writeString(this.code);
         dest.writeString(this.redirectUri);
-        dest.writeParcelable(this.tokenModel,flags);
+        dest.writeParcelable(this.tokenModel, flags);
         dest.writeParcelable(this.parcelable, flags);
         dest.writeParcelable(this.infoModel, flags);
         dest.writeString(this.UUID);
@@ -183,6 +199,8 @@ public class AccountsParameter implements Parcelable {
         dest.writeByte(this.activationResent ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.accountsModel, flags);
         dest.writeParcelable(this.errorModel, flags);
+        dest.writeString(this.attempt);
+        dest.writeString(this.passwordType);
     }
 
     protected AccountsParameter(Parcel in) {
@@ -202,6 +220,8 @@ public class AccountsParameter implements Parcelable {
         this.activationResent = in.readByte() != 0;
         this.accountsModel = in.readParcelable(AccountsModel.class.getClassLoader());
         this.errorModel = in.readParcelable(ErrorModel.class.getClassLoader());
+        this.attempt = in.readString();
+        this.passwordType = in.readString();
     }
 
     public static final Creator<AccountsParameter> CREATOR = new Creator<AccountsParameter>() {

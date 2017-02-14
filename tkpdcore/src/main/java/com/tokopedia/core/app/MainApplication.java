@@ -10,7 +10,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.Build;
-
+import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.github.anrwatchdog.ANRError;
@@ -20,16 +20,17 @@ import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowLog;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdCoreGeneratedDatabaseHolder;
-import com.sromku.simple.fb.Permission;
-import com.sromku.simple.fb.SimpleFacebookConfiguration;
 import com.tkpd.library.TkpdMultiDexApplication;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.BuildConfig;
-import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.DaggerAppComponent;
+import com.tokopedia.core.base.di.module.ActivityModule;
+import com.tokopedia.core.base.di.module.AppModule;
+import com.tokopedia.core.base.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.RequestManager;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.var.NotificationVariable;
 
 import java.util.List;
@@ -51,6 +52,7 @@ public class MainApplication extends TkpdMultiDexApplication {
 	private static Boolean isResetNotification = false;
 	private static Boolean isResetDrawer = false;
 	private static Boolean isResetCart = false;
+    private static Boolean isResetTickerState = true;
 	private static int currActivityState;
 	private static NotificationVariable nv;
 	private static String currActivityName;
@@ -60,6 +62,8 @@ public class MainApplication extends TkpdMultiDexApplication {
     public static String PACKAGE_NAME;
     public static MainApplication instance;
     private static GlobalConfig GlobalConfig;
+
+    private DaggerAppComponent.Builder daggerBuilder;
 
     public int getApplicationType(){
         return DEFAULT_APPLICATION_TYPE;
@@ -84,6 +88,7 @@ public class MainApplication extends TkpdMultiDexApplication {
         initializeAnalytics();
         initANRWatchDogs();
         PACKAGE_NAME = getPackageName();
+        isResetTickerState=true;
 
         //[START] this is for dev process
 		initDB();
@@ -91,6 +96,10 @@ public class MainApplication extends TkpdMultiDexApplication {
 		initDbFlow();
 
         Localytics.autoIntegrate(this);
+
+        daggerBuilder = DaggerAppComponent.builder()
+                .appModule(new AppModule(this))
+                .netModule(new NetModule());
     }
 
 
@@ -126,7 +135,6 @@ public class MainApplication extends TkpdMultiDexApplication {
      * Intialize the request manager and the image cache
      */
     private void init() {
-        RequestManager.init(this);
     }
 
     /**
@@ -134,20 +142,7 @@ public class MainApplication extends TkpdMultiDexApplication {
      */
 
     private void initFacebook() {
-        Permission[] permissions = new Permission[]
-                {
-                        Permission.USER_PHOTOS,
-                        Permission.EMAIL,
-                        Permission.PUBLISH_ACTION
-                };
 
-        SimpleFacebookConfiguration configuration = new SimpleFacebookConfiguration.Builder()
-                .setAppId(getString(R.string.app_id))
-                .setNamespace("og_tokopedia")
-                .setPermissions(permissions)
-                .build();
-
-//		SimpleFacebook.setConfiguration(configuration);
     }
 
 
@@ -188,6 +183,14 @@ public class MainApplication extends TkpdMultiDexApplication {
     public static Boolean resetCartStatus(Boolean status) {
         isResetCart = status;
         return isResetCart;
+    }
+
+    public static Boolean getIsResetTickerState() {
+        return isResetTickerState;
+    }
+
+    public static void setIsResetTickerState(Boolean isResetTickerState) {
+        MainApplication.isResetTickerState = isResetTickerState;
     }
 
     public static Boolean getNotificationStatus() {
@@ -355,4 +358,9 @@ public class MainApplication extends TkpdMultiDexApplication {
         GlobalConfig = globalConfig;
     }
 
+
+    public AppComponent getApplicationComponent(ActivityModule activityModule) {
+        return daggerBuilder.activityModule(activityModule)
+                .build();
+    }
 }

@@ -47,22 +47,7 @@ public class TkpdResponse {
             e.printStackTrace();
             return null;
         }
-        try {
-            if (!jsonResponse.isNull("data")) {
-                jsonData = jsonResponse.getJSONObject("data");
-            } else {
-                jsonData = null;
-            }
 
-            isNullData = jsonData == null;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            jsonData = null;
-        }
-        if (jsonData == null) {
-            isError = true;
-            msgError.add("Data Tidak Ditemukan");
-        }
 
         try {
             if (!jsonResponse.isNull("message_error")) {
@@ -79,6 +64,23 @@ public class TkpdResponse {
             }
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+
+        try {
+            if (!jsonResponse.isNull("data")) {
+                jsonData = jsonResponse.getJSONObject("data");
+            } else {
+                jsonData = null;
+            }
+
+            isNullData = jsonData == null;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            jsonData = null;
+        }
+        if (jsonData == null) {
+            isError = true;
+            if (msgError.isEmpty()) msgError.add("Data Tidak Ditemukan");
         }
 
         try {
@@ -174,6 +176,35 @@ public class TkpdResponse {
     public void setStatusMessages(List<String> statusMessages) {
         this.statusMessages = statusMessages;
     }
+
+    public String getStatusMessageJoined() {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (!statusMessages.isEmpty()) {
+            for (int i = 0, statusMessagesSize = statusMessages.size(); i < statusMessagesSize; i++) {
+                String string = statusMessages.get(i);
+                stringBuilder.append(string);
+                if (i != statusMessages.size() - 1) {
+                    stringBuilder.append("\n");
+                }
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+    public String getErrorMessageJoined() {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (!errorMessages.isEmpty()) {
+            for (int i = 0, statusMessagesSize = errorMessages.size(); i < statusMessagesSize; i++) {
+                String string = errorMessages.get(i);
+                stringBuilder.append(string);
+                if (i != errorMessages.size() - 1) {
+                    stringBuilder.append("\n");
+                }
+            }
+        }
+        return stringBuilder.toString();
+    }
+
 
     @SuppressWarnings("unchecked")
     public <T> T convertDataObj(Class<T> clazz) {

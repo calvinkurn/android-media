@@ -3,7 +3,6 @@ package com.tokopedia.core;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,11 +15,11 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.network.NetworkHandler;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.activity.ShopFavoritedActivity;
+import com.tokopedia.core.util.MethodChecker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,7 +76,6 @@ public class ShopStatistic extends TActivity {
 	private LinearLayout medal;
 	private View openDetailStatistic;
 	//private ListViewShipmentSupport ShippingAgencyAdapter;
-	private NetworkHandler network;
 	// TODO HEre
 	//private LinearLayout PaymentSupportListView;
 	//private ListViewShipmentSupport PaymentAdapter;
@@ -177,9 +175,9 @@ public class ShopStatistic extends TActivity {
 			ShopAddrParam = ShopAddressList.toString();
 			if(ShopAddressList.length() == 1)
 				SeeAllAddr.setVisibility(View.INVISIBLE);
-			DetailShopName.setText(Html.fromHtml(MainShopAddr.getString("addr_name")).toString());
-				ShopAddress.setText(Html.fromHtml(MainShopAddr.getString("address"))  + "\n"
-						+ Html.fromHtml(MainShopAddr.getString("area")));
+			DetailShopName.setText(MethodChecker.fromHtml(MainShopAddr.getString("addr_name")).toString());
+				ShopAddress.setText(MethodChecker.fromHtml(MainShopAddr.getString("address"))  + "\n"
+						+ MethodChecker.fromHtml(MainShopAddr.getString("area")));
 				if(MainShopAddr.getString("phone")!="null")
 				ShopPhone.setText(MainShopAddr.getString("phone"));
 				else
@@ -198,7 +196,7 @@ public class ShopStatistic extends TActivity {
 			if(Result.getInt("is_owner") != 0)
 				IsOwner = true;
 			
-			ShopName.setText(Html.fromHtml(ShopInfo.getString("shop_name")));
+			ShopName.setText(MethodChecker.fromHtml(ShopInfo.getString("shop_name")));
 			ShopTag.setText(getIntent().getExtras().getString("shop_tag"));
 			ShopDesc.setText(getIntent().getExtras().getString("shop_desc"));
 			LastLogin.setText(Result.getString("last_login"));
@@ -217,7 +215,7 @@ public class ShopStatistic extends TActivity {
 			//ShopAvatar.setImageBitmap((Bitmap)getIntent().getExtras().getParcelable("shop_avatar"));
 			ImageHandler.loadImageCircle2(this, ShopAvatar, getIntent().getExtras().getString("shop_ava_uri"));
 //			ImageHandler.LoadImageCircle(ShopAvatar, getIntent().getExtras().getString("shop_ava_uri"));
-			OwnerName.setText(Html.fromHtml(OwnerInfo.getString("full_name")));
+			OwnerName.setText(MethodChecker.fromHtml(OwnerInfo.getString("full_name")));
 			ImageHandler.loadImageCircle2(this, OwnerPicture, OwnerInfo.getString("owner_img"));
 //			ImageHandler.LoadImageCircle(OwnerPicture, OwnerInfo.getString("owner_img"));
 			OwnerId = OwnerInfo.getString("user_id");

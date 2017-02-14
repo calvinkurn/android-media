@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.View;
 import android.view.WindowManager;
@@ -17,12 +18,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.facebook.login.LoginFragment;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.router.SessionRouter;
@@ -74,10 +75,12 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
     Snackbar snackbar;
 
     LocalCacheHandler isNotFirstRun;
-    LocalCacheHandler cacheGTM;
+    Spannable spannable;
 
     List<LoginProviderModel.ProvidersBean> listProvider;
     private String backgroundUrl;
+    String sourceString = "Belum punya akun? "+ "Daftar";
+    private ClickableSpan clickableSpan;
 
     public static WelcomeFragment createInstance(Bundle bundle) {
         WelcomeFragment fragment = new WelcomeFragment();
@@ -109,6 +112,15 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
                         | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+        spannable.setSpan(clickableSpan
+                , sourceString.indexOf("Daftar")
+                , sourceString.length()
+                ,0);
+
+        register.setText(spannable, TextView.BufferType.SPANNABLE);
+        register.setMovementMethod(LinkMovementMethod.getInstance());
+
     }
 
     @Override
@@ -158,43 +170,8 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                 intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
                 startActivity(intent);
-//                getActivity().finish();
             }
         });
-
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = SessionRouter.getLoginActivityIntent(context);
-                intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.REGISTER);
-                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
-                startActivity(intent);
-//                getActivity().finish();
-            }
-        });
-
-        String sourceString = "Belum punya akun? "+ "Daftar";
-
-        Spannable spannable = new SpannableString(sourceString);
-
-        spannable.setSpan(new ClickableSpan() {
-                              @Override
-                              public void onClick(View view) {
-
-                              }
-
-                              @Override
-                              public void updateDrawState(TextPaint ds) {
-                                  ds.setUnderlineText(true);
-                                  ds.setColor(getResources().getColor(R.color.tkpd_main_green));
-                              }
-                          }
-                , sourceString.indexOf("Daftar")
-                , sourceString.length()
-                ,0);
-
-        register.setText(spannable, TextView.BufferType.SPANNABLE);
-
         isNotFirstRun = new LocalCacheHandler(getActivity(), "FirstRun");
 
         if(isNotFirstRun.getBoolean("firstRun").equals(false)){
@@ -202,6 +179,24 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
             isNotFirstRun.applyEditor();
             showPopUp();
         }
+
+        spannable = new SpannableString(sourceString);
+
+        clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = SessionRouter.getLoginActivityIntent(context);
+                intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.REGISTER);
+                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
+                startActivity(intent);
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                ds.setUnderlineText(true);
+                ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+            }
+        };
     }
 
     private void showPopUp() {
@@ -216,11 +211,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
 
     @Override
     protected void initialVar() {
-        cacheGTM = new LocalCacheHandler(getActivity(), AppEventTracking.GTM_CACHE);
-        cacheGTM.putString(AppEventTracking.GTMCacheKey.SESSION_STATE,
-                AppEventTracking.GTMCacheValue.LOGIN);
-        cacheGTM.applyEditor();
-
+        UserAuthenticationAnalytics.setActiveLogin();
     }
 
     @Override
@@ -308,8 +299,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
                         listProvider.get(position).getName());
                 getActivity().getWindow().setSoftInputMode(
                         WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-                storeCacheGTM(AppEventTracking.GTMCacheKey.LOGIN_TYPE,
-                        listProvider.get(position).getName());
+                UserAuthenticationAnalytics.setActiveAuthenticationMedium(listProvider.get(position).getName());
             }
         };
     }
@@ -317,14 +307,12 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
     @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
     public void onGoogleClick() {
         presenter.loginGoogle(getActivity());
-        storeCacheGTM(AppEventTracking.GTMCacheKey.LOGIN_TYPE,
-                AppEventTracking.GTMCacheValue.GMAIL);
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.GMAIL);
     }
 
     private void onFacebookClick() {
         presenter.loginFacebook(getActivity());
-        storeCacheGTM(AppEventTracking.GTMCacheKey.LOGIN_TYPE,
-                AppEventTracking.GTMCacheValue.FACEBOOK);
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.FACEBOOK);
     }
 
     @Override
@@ -386,11 +374,6 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         };
     }
 
-
-    private void storeCacheGTM(String key, String value) {
-        cacheGTM.putString(key, value);
-        cacheGTM.applyEditor();
-    }
     @Override
     public void setBackground(String backgroundURL) {
         if(backgroundURL != null) {
@@ -415,7 +398,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        WelcomeFragmentPermissionsDispatcher.onRequestPermissionsResult(WelcomeFragment.this,requestCode, grantResults);
+        WelcomeFragmentPermissionsDispatcher.onRequestPermissionsResult(WelcomeFragment.this,requestCode, grantResults);
     }
 
     @OnShowRationale(Manifest.permission.GET_ACCOUNTS)

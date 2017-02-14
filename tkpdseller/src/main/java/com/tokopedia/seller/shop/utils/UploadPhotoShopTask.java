@@ -6,11 +6,11 @@ import android.util.Log;
 
 import com.tokopedia.core.database.model.PictureDB;
 import com.tokopedia.core.myproduct.model.GenerateHostModel;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.myproduct.utils.MetadataUtil;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.v4.NetworkConfig;
+import com.tokopedia.core.util.Pair;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -63,7 +63,7 @@ public class UploadPhotoShopTask extends AsyncTask<byte[], String, String> {
         File photo = writeImageToTkpdPath(jpeg[0]);
 
         //[START] save to db for images
-        ImageGalleryImpl.Pair<Integer, Integer> resolution = null;
+        Pair<Integer, Integer> resolution = null;
         try {
             resolution = MetadataUtil.getWidthFromImage(photo.getAbsolutePath());
         } catch (MetadataUtil.UnSupportedimageFormatException e) {

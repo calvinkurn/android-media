@@ -11,10 +11,10 @@ import android.util.Log;
 
 import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
-import com.tokopedia.core.network.NetworkHandler;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -25,27 +25,25 @@ import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.ErrorModel;
 import com.tokopedia.core.session.model.InfoModel;
-import com.tokopedia.session.session.model.LoginEmailModel;
 import com.tokopedia.core.session.model.LoginFacebookViewModel;
 import com.tokopedia.core.session.model.LoginGoogleModel;
-import com.tokopedia.session.session.model.LoginThirdModel;
 import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.session.model.TokenModel;
-import com.tokopedia.core.session.presenter.Login;
+import com.tokopedia.core.util.AppEventTracking;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.session.session.model.LoginEmailModel;
+import com.tokopedia.session.session.model.LoginThirdModel;
+import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.session.session.presenter.LoginImpl;
 import com.tokopedia.session.session.subscriber.AccountSubscriber;
 import com.tokopedia.session.session.subscriber.BaseAccountSubscriber;
-import com.tokopedia.core.util.AppEventTracking;
-import com.tokopedia.core.util.PasswordGenerator;
-import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -93,7 +91,10 @@ public class LoginService extends IntentService implements DownloadServiceConsta
         intent.putExtra(TYPE, type);
         intent.putExtra(IS_NEED_LOGIN, isNeedLogin);
 
-        /* Send optional extras to Download IntentService */
+        LocalCacheHandler loginUuid = new LocalCacheHandler(context, Login.LOGIN_UUID_KEY);
+        String uuid = loginUuid.getString(Login.UUID_KEY, Login.DEFAULT_UUID_VALUE);
+        intent.putExtra(Login.UUID_KEY, uuid);
+
         switch (type){
             case LOGIN_ACCOUNTS_TOKEN :
                 LoginViewModel model= Parcels.unwrap(bundle.getParcelable(LOGIN_VIEW_MODEL_KEY));
@@ -173,12 +174,12 @@ public class LoginService extends IntentService implements DownloadServiceConsta
 
                 loginType = LOGIN_GOOGLE;
 
-                loginThirdAppV2(loginGoogleModel);
                 sendAuthenticateGTMEvent(loginGoogleModel);
 
                 data.setGrantType(Login.GRANT_SDK);
                 data.setSocialType(Login.GooglePlusType);
                 data.setParcelable(Parcels.wrap(loginGoogleModel));
+                data.setUUID(intent.getStringExtra(Login.UUID_KEY));
                 handleAccounts(data);
                 break;
 
@@ -190,12 +191,12 @@ public class LoginService extends IntentService implements DownloadServiceConsta
 
                 loginType = LOGIN_FACEBOOK;
 
-                loginThirdAppV2(loginFacebookViewModel);
                 sendAuthenticateGTMEvent(loginFacebookViewModel);
 
                 data.setGrantType(Login.GRANT_SDK);
                 data.setSocialType(Login.FacebookType);
                 data.setParcelable(Parcels.wrap(loginFacebookViewModel));
+                data.setUUID(intent.getStringExtra(Login.UUID_KEY));
                 handleAccounts(data);
                 break;
 
@@ -206,6 +207,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                 data.setCode(intent.getStringExtra(Login.CODE));
                 data.setRedirectUri("https://" + intent.getStringExtra(Login.REDIRECT_URI));
                 data.setGrantType(Login.GRANT_WEBVIEW);
+                data.setUUID(intent.getStringExtra(Login.UUID_KEY));
                 handleAccounts(data);
                 break;
 
@@ -226,7 +228,6 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                 break;
 
             case MAKE_LOGIN:
-                loginV2(intent.getStringExtra(Login.UUID_KEY));
 
                 Map<String,String> params = new HashMap<>();
                 params = AuthUtil.generateParams(this, params);
@@ -385,12 +386,6 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                                 sessionHandler.setGoldMerchant(getApplicationContext(), accountsModel.getShopIsGold());
                             }
 
-                            if(loginType == LOGIN_EMAIL){
-                                loginV2(accountsParameter.getUUID());
-                            }else if(loginType == LOGIN_WEBVIEW){
-                                loginThirdAppV2(accountsParameter);
-                            }
-
                             result.putBoolean(LOGIN_MOVE_SECURITY, accountsParameter.isMoveSecurity());
                             result.putBoolean(LOGIN_ACTIVATION_RESENT, accountsParameter.isActivationResent());
                             receiver.send(DownloadService.STATUS_FINISHED, result);
@@ -398,7 +393,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                         //showing error
                         else if(accountsParameter.getErrorModel()!=null){
                             result.putInt(TYPE, typeAccess);
-                            result.putString(MESSAGE_ERROR_FLAG, accountsParameter.getErrorModel().getError_description());
+                            result.putString(MESSAGE_ERROR_FLAG, accountsParameter.getErrorModel().getErrorDescription());
                             receiver.send(DownloadService.STATUS_ERROR, result);
                         }
                         // need create password
@@ -414,7 +409,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                 });
     }
 
-    private Observable<AccountsParameter> getObservableAccountsToken(AccountsParameter accountsParameter) {
+    public Observable<AccountsParameter> getObservableAccountsToken(AccountsParameter accountsParameter) {
         Bundle bundle = new Bundle();
         Map<String, String> params = new HashMap<>();
         Parcelable parcelable = accountsParameter.getParcelable();
@@ -473,7 +468,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
         });
     }
 
-    private Observable<AccountsParameter> getObservableAccountsInfo(AccountsParameter accountsParameter) {
+    public Observable<AccountsParameter> getObservableAccountsInfo(AccountsParameter accountsParameter) {
         TokenModel tokenModel = accountsParameter.getTokenModel();
         String authKey = tokenModel.getTokenType() + " "+ tokenModel.getAccessToken();
         Bundle bundle = new Bundle();
@@ -497,7 +492,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
         });
     }
 
-    private Observable<AccountsParameter> getObservableMakeLogin(AccountsParameter accountsParameter) {
+    public Observable<AccountsParameter> getObservableMakeLogin(AccountsParameter accountsParameter) {
         Map<String, String> params = new HashMap<>();
         params = AuthUtil.generateParams(getApplicationContext(), params);
         params.put(Login.UUID_KEY, accountsParameter.getUUID());
@@ -539,7 +534,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                         }
                     } else {
                         ErrorModel errorModel = new ErrorModel();
-                        errorModel.setError_description(response.getErrorMessages().toString());
+                        errorModel.setErrorDescription(response.getErrorMessages().toString());
                         accountsParameter.setErrorModel(errorModel);
                     }
 
@@ -551,109 +546,8 @@ public class LoginService extends IntentService implements DownloadServiceConsta
         });
     }
 
-    private void loginV2(String uuid){
-        com.tokopedia.core.network.NetworkHandler network
-                = new com.tokopedia.core.network.NetworkHandler(getApplicationContext(), "http://www.tokopedia.com/ws-new/login.pl");
-        PasswordGenerator Password = new PasswordGenerator(getApplicationContext());
-        network.AddParam("user_email", emailV2);
-        network.AddParam("user_pass", passwordV2);
-        network.AddParam("uuid", uuid);
-        network.AddParam("app_id", Password.getAppId());
-        network.Commit(new com.tokopedia.core.network.NetworkHandler.NetworkHandlerListener() {
-            @Override
-            public void onSuccess(Boolean status) {
-            }
-
-            @Override
-            public void getResponse(JSONObject Result) {
-            }
-
-            @Override
-            public void getMessageError(ArrayList<String> MessageError) {
-            }
-        });
-    }
-
-    private void loginThirdAppV2(LoginGoogleModel loginGoogleModel) {
-        PasswordGenerator Password = new PasswordGenerator(getApplicationContext());
-        NetworkHandler network = new com.tokopedia.core.network.NetworkHandler(getApplicationContext(), "http://www.tokopedia.com/ws-new/third-app-login.pl");
-        network.AddParam("act", "do_login");
-        network.AddParam("name", loginGoogleModel.getFullName());
-        network.AddParam("app_type", Login.GooglePlusType);
-        network.AddParam("birthday", loginGoogleModel.getBirthday());
-        network.AddParam("gender", loginGoogleModel.getGender());
-        network.AddParam("email", loginGoogleModel.getEmail());
-        network.AddParam("id", loginGoogleModel.getGoogleId());
-        network.AddParam("app_id", Password.getAppId());
-        network.Commit(new com.tokopedia.core.network.NetworkHandler.NetworkHandlerListener() {
-            @Override
-            public void onSuccess(Boolean status) {
-            }
-
-            @Override
-            public void getResponse(JSONObject Result) {
-            }
-
-            @Override
-            public void getMessageError(ArrayList<String> MessageError) {
-            }
-        });
-    }
-
-    private void loginThirdAppV2(LoginFacebookViewModel loginFacebookViewModel) {
-        PasswordGenerator Password = new PasswordGenerator(getApplicationContext());
-        NetworkHandler network = new com.tokopedia.core.network.NetworkHandler(getApplicationContext(), "http://www.tokopedia.com/ws-new/third-app-login.pl");
-        network.AddParam("act", "do_login");
-        network.AddParam("name", loginFacebookViewModel.getFullName());
-        network.AddParam("app_type", Login.FacebookType);
-        network.AddParam("birthday", loginFacebookViewModel.getBirthday());
-        network.AddParam("gender", loginFacebookViewModel.getGender());
-        network.AddParam("fb_token", loginFacebookViewModel.getFbToken());
-        network.AddParam("app_id", Password.getAppId());
-        network.Commit(new com.tokopedia.core.network.NetworkHandler.NetworkHandlerListener() {
-            @Override
-            public void onSuccess(Boolean status) {
-            }
-
-            @Override
-            public void getResponse(JSONObject Result) {
-            }
-
-            @Override
-            public void getMessageError(ArrayList<String> MessageError) {
-            }
-        });
-    }
-
-    private void loginThirdAppV2(AccountsParameter accountsParameter) {
-        NetworkHandler network = new NetworkHandler(getApplicationContext(), "http://www.tokopedia.com/ws-new/third-app-login.pl");
-        TokenModel tokenModel = accountsParameter.getTokenModel();
-        String authKey = tokenModel.getTokenType() + " "+ tokenModel.getAccessToken();
-        network.AddHeader("authorization",authKey);
-        network.AddParam("act", "do_login_yahoo");
-        network.AddParam("app_type", Login.WebViewType);
-        network.AddParam("birthday", accountsParameter.getInfoModel().getBday());
-        network.AddParam("app_id", PasswordGenerator.getAppId(getApplicationContext()));
-        network.Commit(new com.tokopedia.core.network.NetworkHandler.NetworkHandlerListener() {
-            @Override
-            public void onSuccess(Boolean status) {
-                Log.d("onSuccess", String.valueOf(status));
-            }
-
-            @Override
-            public void getResponse(JSONObject Result) {
-                Log.d("onResponse",Result.toString());
-            }
-
-            @Override
-            public void getMessageError(ArrayList<String> MessageError) {
-                Log.d("onError",MessageError.toString());
-            }
-        });
-    }
-
     private void setLoginSession(AccountsModel accountsModel){
-        sessionHandler.SetLoginSession(Boolean.parseBoolean(accountsModel.getIsLogin()),
+        sessionHandler.setLoginSession(Boolean.parseBoolean(accountsModel.getIsLogin()),
                 accountsModel.getUserId() + "",
                 accountsModel.getFullName(), accountsModel.getShopId() + "",
                 accountsModel.getMsisdnIsVerifiedBoolean());

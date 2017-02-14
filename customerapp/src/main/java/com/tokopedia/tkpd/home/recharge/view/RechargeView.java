@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.home.recharge.view;
 
-import com.tokopedia.core.database.model.RechargeOperatorModelDBAttrs;
+import com.tokopedia.core.database.model.RechargeOperatorModel;
 import com.tokopedia.core.database.recharge.product.Product;
 
 import java.util.List;
@@ -14,13 +14,13 @@ public interface RechargeView {
 
     void renderDataProducts(List<Product> products);
 
-    void renderDataOperators(List<RechargeOperatorModelDBAttrs> operators);
+    void renderDataOperators(List<RechargeOperatorModel> operators);
 
     void renderDataProductsEmpty(String message);
 
     void showImageOperator(String image);
 
-    void setOperatorView(RechargeOperatorModelDBAttrs operator);
+    void setOperatorView(RechargeOperatorModel operator);
 
     void hideProgressFetchData();
 

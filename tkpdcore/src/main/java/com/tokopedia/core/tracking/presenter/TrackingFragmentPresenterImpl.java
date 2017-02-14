@@ -11,15 +11,15 @@ import com.tokopedia.core.tracking.listener.TrackingFragmentView;
 import com.tokopedia.core.tracking.model.tracking.TrackingResponse;
 
 /**
- * Created by Alifa on 10/12/2016.
+ * @author Alifa on 10/12/2016.
  */
 
-public class TrackingFragmentPresenterImpl implements  TrackingFragmentPresenter {
+public class TrackingFragmentPresenterImpl implements TrackingFragmentPresenter {
 
     public static final int REQUEST_TRACKING_CODE = 1;
-    TrackingFragmentView viewListener;
-    TrackingRetrofitInteractor networkInteractor;
-    String orderId;
+    private TrackingFragmentView viewListener;
+    private TrackingRetrofitInteractor networkInteractor;
+    private String orderId;
 
     public TrackingFragmentPresenterImpl(TrackingFragment viewListener) {
         this.viewListener = viewListener;
@@ -29,16 +29,14 @@ public class TrackingFragmentPresenterImpl implements  TrackingFragmentPresenter
 
     private TKPDMapParam<String, String> getParamTracking() {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        if (orderId!=null)
+        if (orderId != null)
             params.put("order_id", this.orderId);
         return params;
     }
 
 
-
     @Override
     public void loadTrackingData(String orderId) {
-
         this.orderId = orderId;
         Log.d("alifa", "loadTrackingData: " + this.orderId);
         networkInteractor.getDataTracking(viewListener.getActivity(), getParamTracking(),
@@ -53,20 +51,20 @@ public class TrackingFragmentPresenterImpl implements  TrackingFragmentPresenter
                     @Override
                     public void onTimeout(String message) {
                         viewListener.finishLoading();
-                        viewListener.showErrorMessage();
+                        viewListener.showErrorMessage(message);
                     }
 
                     @Override
                     public void onError(String error) {
                         viewListener.finishLoading();
-                        viewListener.showErrorMessage();
+                        viewListener.showErrorMessage(error);
 
                     }
 
                     @Override
                     public void onNullData() {
                         viewListener.finishLoading();
-                        viewListener.showErrorMessage();
+                        viewListener.showErrorMessage("");
                     }
 
                     @Override
@@ -77,18 +75,18 @@ public class TrackingFragmentPresenterImpl implements  TrackingFragmentPresenter
                 });
     }
 
-    public void showData(TrackingResponse data) {
+    private void showData(TrackingResponse data) {
         if (data.getTrackOrder().getInvalid() != 1) {
             viewListener.updateHeaderView(data);
             viewListener.renderTrackingData(data);
         } else {
-            viewListener.showErrorMessage();
+            viewListener.showErrorMessage("");
         }
     }
 
 
     @Override
     public void onDestroyView() {
-
+        networkInteractor.unsubscribe();
     }
 }

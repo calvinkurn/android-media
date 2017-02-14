@@ -1,15 +1,15 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/background_light"
     tools:context=".ShopOrderDetail">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -18,14 +18,14 @@
             android:layout_marginRight="@dimen/margin_small"
             android:layout_marginTop="@dimen/margin_small"
             android:background="@drawable/bg_yellow_border_yelow"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".50"
                 android:orientation="vertical"
-                android:padding="@dimen/padding_small" >
+                android:padding="@dimen/padding_small">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -49,7 +49,7 @@
                 android:layout_weight=".50"
                 android:gravity="right"
                 android:orientation="vertical"
-                android:padding="@dimen/padding_small" >
+                android:padding="@dimen/padding_small">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -78,24 +78,48 @@
             android:layout_marginTop="@dimen/margin_vs"
             android:background="@drawable/cards_ui_2"
             android:orientation="vertical"
-            android:padding="@dimen/padding_small" >
+            android:padding="@dimen/padding_small">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/invoice_text"
-                    android:focusable="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/margin_vs"
+                    android:focusable="false"
                     android:gravity="center"
                     android:textColor="@color/href_link"
-                    android:textSize="@dimen/fonts" 
-                    android:textIsSelectable="true"/>
+                    android:textIsSelectable="true"
+                    android:textSize="@dimen/fonts" />
             </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:background="@drawable/cards_ui_2"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_small">
+
+            <TextView
+                android:text="@string/title_ask_buyer_selling"
+                android:id="@+id/ask_buyer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_vs"
+                android:focusable="false"
+                android:gravity="center"
+                android:textColor="@color/href_link"
+                android:textIsSelectable="true"
+                android:textSize="@dimen/fonts" />
+
         </LinearLayout>
 
         <View
@@ -106,15 +130,15 @@
             android:background="@drawable/gradient_black_alt" />
 
         <LinearLayout
-            android:paddingBottom="@dimen/margin_vs"
+            android:id="@+id/wrapper_list_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_vs"
             android:layout_marginLeft="@dimen/margin_small"
             android:layout_marginRight="@dimen/margin_small"
             android:background="@drawable/see_all_bg"
-            android:id="@+id/wrapper_list_product"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/margin_vs">
 
             <ListView
                 android:id="@+id/product_list"
@@ -125,21 +149,57 @@
         </LinearLayout>
 
         <LinearLayout
-
-            android:layout_marginBottom="@dimen/margin_vs"
+            android:id="@+id/wrapper_buyer_request_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_vs"
             android:layout_marginLeft="@dimen/margin_small"
             android:layout_marginRight="@dimen/margin_small"
             android:background="@drawable/see_all_bg"
             android:orientation="vertical"
-            android:padding="@dimen/padding_vs" >
+            android:padding="@dimen/margin_vs"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/date_buyer_request_cancel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:gravity="left" />
+
+            <TextView
+                android:id="@+id/title_buyer_request_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:maxLines="2"
+                android:text="@string/buyer_request_cancel_reason"
+                android:textColor="@color/red_500" />
+
+            <TextView
+                android:id="@+id/buyer_request_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:textColor="@color/red_500" />
+        </LinearLayout>
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:background="@drawable/see_all_bg"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_vs">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_vs"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="@dimen/half_screen_2pad"
@@ -160,7 +220,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_vs"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="@dimen/half_screen_2pad"
@@ -178,12 +238,12 @@
             </LinearLayout>
 
             <LinearLayout
-                android:visibility="gone"
                 android:id="@+id/wrapper_insurance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_vs"
-                android:orientation="horizontal" >
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="@dimen/half_screen_2pad"
@@ -204,7 +264,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_vs"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="0dp"
@@ -226,7 +286,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="0dp"
@@ -256,14 +316,14 @@
             android:layout_marginRight="@dimen/margin_small"
             android:background="@drawable/tkpd_address_card"
             android:orientation="vertical"
-            android:padding="@dimen/padding_vs" >
+            android:padding="@dimen/padding_vs">
 
             <LinearLayout
                 android:id="@+id/sender_form"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_vs"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -316,16 +376,15 @@
                         android:layout_height="wrap_content"
                         android:text="&#x25cf; "
                         android:textColor="@color/tkpd_status_red"
-                        android:textSize="18dp"
-                        />
+                        android:textSize="18dp" />
 
                     <TextView
                         android:id="@+id/label_pickup_location"
                         android:layout_width="@dimen/half_screen_2pad"
                         android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/dot_pickup_location"
                         android:layout_alignBottom="@id/dot_pickup_location"
                         android:layout_alignTop="@id/dot_pickup_location"
+                        android:layout_toRightOf="@id/dot_pickup_location"
                         android:gravity="center_vertical"
                         android:text="@string/title_pickup_location"
                         android:textColor="@color/label_color"
@@ -335,8 +394,8 @@
                         android:id="@+id/pickup_detail_location"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/label_pickup_location"
                         android:layout_alignLeft="@id/label_pickup_location"
+                        android:layout_below="@id/label_pickup_location"
                         android:gravity="left"
                         android:text="Alamat Pickup"
                         android:textIsSelectable="true"
@@ -354,16 +413,15 @@
                         android:layout_height="wrap_content"
                         android:text="&#x25cf; "
                         android:textColor="@color/label_buyer"
-                        android:textSize="18dp"
-                        />
+                        android:textSize="18dp" />
 
                     <TextView
                         android:id="@+id/label_destination_location"
                         android:layout_width="@dimen/half_screen_2pad"
                         android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/dot_destination_location"
-                        android:layout_alignTop="@id/dot_destination_location"
                         android:layout_alignBottom="@id/dot_destination_location"
+                        android:layout_alignTop="@id/dot_destination_location"
+                        android:layout_toRightOf="@id/dot_destination_location"
                         android:gravity="center_vertical"
                         android:text="@string/title_destination_address"
                         android:textColor="@color/label_color"
@@ -373,8 +431,8 @@
                         android:id="@+id/destination_detail_location"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/label_destination_location"
                         android:layout_alignLeft="@id/label_destination_location"
+                        android:layout_below="@id/label_destination_location"
                         android:gravity="left"
                         android:text="Alamat Pickup"
                         android:textIsSelectable="true"
@@ -385,11 +443,12 @@
             </LinearLayout>
 
 
-            <LinearLayout android:id="@+id/layout_destination_default"
+            <LinearLayout
+                android:id="@+id/layout_destination_default"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_vs"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="@dimen/half_screen_2pad"
@@ -412,7 +471,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_vs"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="@dimen/half_screen_2pad"

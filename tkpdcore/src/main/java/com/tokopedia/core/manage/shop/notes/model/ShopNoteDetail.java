@@ -1,7 +1,10 @@
 package com.tokopedia.core.manage.shop.notes.model;
 
+import android.text.Spanned;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 /**
  * Created by nisie on 11/2/16.
@@ -56,8 +59,8 @@ public class ShopNoteDetail {
         DbId = dbId;
     }
 
-    public String getNotes_content() {
-        return notes_content;
+    public Spanned getNotes_content() {
+        return MethodChecker.fromHtml(notes_content.replace("\n", "<br />"));
     }
 
     public void setNotes_content(String notes_content) {
@@ -113,7 +116,7 @@ public class ShopNoteDetail {
     }
 
     public String getNotes_title() {
-        return notes_title;
+        return MethodChecker.fromHtml(notes_title).toString();
     }
 
     public void setNotes_title(String notes_title) {

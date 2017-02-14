@@ -22,7 +22,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.database.model.AttachmentResCenterDB;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.rescenter.create.customdialog.BaseUploadImageDialog;
 import com.tokopedia.inbox.rescenter.edit.customadapter.AttachmentAdapter;
@@ -77,7 +77,7 @@ public class BuyerEditSolutionResCenterFragment
     View loading;
 
     private ActionParameterPassData passData;
-    private List<AttachmentResCenterDB> attachmentData;
+    private List<AttachmentResCenterVersion2DB> attachmentData;
     private AttachmentAdapter attachmentAdapter;
     private UploadImageEditResCenterDialog uploadImageDialog;
 
@@ -312,7 +312,7 @@ public class BuyerEditSolutionResCenterFragment
 
     @Override
     public void showTimeOut(NetworkErrorHelper.RetryClickedListener clickedListener) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), clickedListener);
+        NetworkErrorHelper.showSnackbar(getActivity());
     }
 
     @Override
@@ -373,7 +373,7 @@ public class BuyerEditSolutionResCenterFragment
         super.onActivityResult(requestCode, resultCode, data);
         uploadImageDialog.onResult(requestCode, resultCode, data, new BaseUploadImageDialog.UploadImageDialogListener() {
             @Override
-            public void onSuccess(List<AttachmentResCenterDB> data) {
+            public void onSuccess(List<AttachmentResCenterVersion2DB> data) {
                 attachmentData.clear();
                 attachmentData.addAll(data);
                 attachmentAdapter.notifyDataSetChanged();

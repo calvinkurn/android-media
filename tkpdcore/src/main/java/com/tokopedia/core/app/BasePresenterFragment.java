@@ -191,4 +191,5 @@ public abstract class BasePresenterFragment<P> extends TkpdFragment {
      */
     protected abstract void setActionVar();
 
+
 }

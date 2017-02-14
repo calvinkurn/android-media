@@ -1,12 +1,14 @@
 package com.tokopedia.core.product.listener;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 
 import java.util.List;
@@ -245,12 +247,14 @@ public interface ProductDetailView extends ViewListener {
      */
     void updateWishListStatus(int status);
 
+    void loadVideo(VideoData data);
+
     /**
      * refresh options menu di action bar
      */
     void refreshMenu();
 
-    void showProductDetailRetry(String errorMessage);
+    void showProductDetailRetry();
 
     void showProductOthersRetry();
 
@@ -269,4 +273,8 @@ public interface ProductDetailView extends ViewListener {
     void showTickerGTM(String message);
 
     void hideTickerGTM();
+
+    void showFullScreenError();
+
+    void moveToEditFragment(boolean isEdit, String productId);
 }

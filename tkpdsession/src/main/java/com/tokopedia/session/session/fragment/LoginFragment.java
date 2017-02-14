@@ -38,19 +38,30 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.core.session.presenter.*;
+import com.tokopedia.session.activation.activity.ActivationActivity;
+import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.session.session.model.LoginModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.model.LoginViewModel;
+import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.session.session.presenter.LoginImpl;
 import com.tokopedia.session.session.presenter.LoginView;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -81,7 +92,7 @@ import permissions.dispatcher.RuntimePermissions;
 public class LoginFragment extends Fragment implements LoginView {
     // demo only
     int anTestInt = 0;
-    com.tokopedia.core.session.presenter.Login login;
+    Login login;
 
     Context mContext;
 
@@ -113,6 +124,7 @@ public class LoginFragment extends Fragment implements LoginView {
     List<LoginProviderModel.ProvidersBean> listProvider;
     Snackbar snackbar;
     private Unbinder unbinder;
+    private CallbackManager callbackManager;
 
     public static LoginFragment newInstance(String mEmail, boolean goToIndex, String login, String name, String url) {
         Bundle extras = new Bundle();
@@ -145,8 +157,13 @@ public class LoginFragment extends Fragment implements LoginView {
         login.fetchDataAfterRotate(savedInstanceState);
         login.fetchIntenValues(getArguments());
 
+        UserAuthenticationAnalytics.setActiveLogin();
+
         if (savedInstanceState != null)
             Log.d(TAG, LoginFragment.class.getSimpleName() + " : get testing data : " + (anTestInt = savedInstanceState.getInt(TEST_INT_KEY)));
+
+        FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
     }
 
     @Override
@@ -158,15 +175,15 @@ public class LoginFragment extends Fragment implements LoginView {
         setListener();
 
         String temp = getArguments().getString("login");
-        if(temp!=null){
-            if(temp.equals(DownloadService.FACEBOOK)){
+        if (temp != null) {
+            if (temp.equals(DownloadService.FACEBOOK)) {
                 onFacebookClick();
-            }else if(temp.equals(DownloadService.GOOGLE)){
-                onGoogleClick();
-            }else if(temp.equals(DownloadService.WEBVIEW)){
+            } else if (temp.equals(DownloadService.GOOGLE)) {
+                LoginFragmentPermissionsDispatcher.onGooglePlusClickedWithCheck(LoginFragment.this);
+            } else if (temp.equals(DownloadService.WEBVIEW)) {
                 String url = getArguments().getString("url");
                 String name = getArguments().getString("name");
-                loginProvideOnClick(url,name);
+                loginProvideOnClick(url, name);
             }
         }
         accountSignIn.setBackgroundResource(R.drawable.bg_rounded_corners);
@@ -178,7 +195,8 @@ public class LoginFragment extends Fragment implements LoginView {
     public void onResume() {
         super.onResume();
         login.initData();
-        login.sendGTMScreen(getActivity());
+        ScreenTracking.screen(AppScreen.SCREEN_LOGIN);
+        UnifyTracking.eventViewLoginPage();
         mEmailView.addTextChangedListener(watcher(wrapperEmail));
         mPasswordView.addTextChangedListener(watcher(wrapperPassword));
     }
@@ -188,7 +206,7 @@ public class LoginFragment extends Fragment implements LoginView {
         super.onDestroyView();
         login.unSubscribe();
         unbinder.unbind();
-        KeyboardHandler.DropKeyboard(getActivity(),getView());
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
         dismissSnackbar();
     }
 
@@ -223,7 +241,7 @@ public class LoginFragment extends Fragment implements LoginView {
     @Override
     public void setListener() {
 
-        String sourceString = "Belum punya akun? "+ "Daftar Sekarang";
+        String sourceString = "Belum punya akun? " + "Daftar Sekarang";
 
         Spannable spannable = new SpannableString(sourceString);
 
@@ -241,7 +259,7 @@ public class LoginFragment extends Fragment implements LoginView {
                           }
                 , sourceString.indexOf("Daftar")
                 , sourceString.length()
-                ,0);
+                , 0);
 
         registerButton.setText(spannable, TextView.BufferType.SPANNABLE);
 
@@ -308,17 +326,16 @@ public class LoginFragment extends Fragment implements LoginView {
                         model.setPassword(mPasswordView.getText().toString());
                         model.setIsEmailClick(true);
                         login.sendDataFromInternet(LoginModel.EmailType, model);
-                        login.sendCTAAction();
+                        UnifyTracking.eventCTAAction();
                     }
                 }
             }
         });
 
-
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                login.sendGTMRegisterThrougLogin();
+                UnifyTracking.eventRegisterThroughLogin();
                 ((SessionView) getActivity()).moveToRegisterInitial();
             }
         });
@@ -326,9 +343,8 @@ public class LoginFragment extends Fragment implements LoginView {
         forgotPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getActivity() instanceof SessionView) {
-                    ((SessionView) getActivity()).moveToForgotPassword();
-                }
+                getActivity().finish();
+                startActivity(ForgotPasswordActivity.getCallingIntent(getActivity(), mEmailView.getText().toString()));
             }
         });
     }
@@ -349,7 +365,7 @@ public class LoginFragment extends Fragment implements LoginView {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() == 0){
+                if (s.length() == 0) {
                     setWrapperError(wrapper, getString(R.string.error_field_required));
                 }
             }
@@ -357,12 +373,15 @@ public class LoginFragment extends Fragment implements LoginView {
     }
 
     public void onFacebookClick() {
-        login.loginFacebook();
+        if (AccessToken.getCurrentAccessToken() != null) {
+            LoginManager.getInstance().logOut();
+        }
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.FACEBOOK);
+        processFacebookLogin();
     }
 
-    public void onGoogleClick() {
-        showProgress(true);
-        ((GoogleActivity) getActivity()).onSignInClicked();
+    private void processFacebookLogin() {
+        login.doFacebookLogin(this, callbackManager);
     }
 
     @Override
@@ -378,7 +397,7 @@ public class LoginFragment extends Fragment implements LoginView {
     public void showProgress(final boolean isShow) {
         //[START] save progress for rotation
         login.updateViewModel(LoginViewModel.ISPROGRESSSHOW, isShow);
-        if(isShow && snackbar!=null) snackbar.dismiss();
+        if (isShow && snackbar != null) snackbar.dismiss();
         //[END] save progress for rotation
 
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
@@ -438,8 +457,8 @@ public class LoginFragment extends Fragment implements LoginView {
     @Override
     public FocusPair validateSignIn() {
         // Reset errors.
-        setWrapperError(wrapperEmail,null);
-        setWrapperError(wrapperPassword,null);
+        setWrapperError(wrapperEmail, null);
+        setWrapperError(wrapperPassword, null);
 
         // Store values at the time of the login attempt.
         Log.d(TAG, messageTAG + " login : " + login);
@@ -453,12 +472,12 @@ public class LoginFragment extends Fragment implements LoginView {
             setWrapperError(wrapperPassword, getString(R.string.error_field_required));
             focusPair.setView(mPasswordView);
             focusPair.setIsFocus(true);
-            login.sendGTMLoginError(AppEventTracking.EventLabel.PASSWORD);
+            UnifyTracking.eventLoginError(AppEventTracking.EventLabel.PASSWORD);
         } else if (password.length() < 4) {
             setWrapperError(wrapperPassword, getString(R.string.error_incorrect_password));
             focusPair.setView(mPasswordView);
             focusPair.setIsFocus(true);
-            login.sendGTMLoginError(AppEventTracking.EventLabel.PASSWORD);
+            UnifyTracking.eventLoginError(AppEventTracking.EventLabel.PASSWORD);
         }
 
         // Check for a valid email address.
@@ -466,22 +485,22 @@ public class LoginFragment extends Fragment implements LoginView {
             setWrapperError(wrapperEmail, getString(R.string.error_field_required));
             focusPair.setView(mEmailView);
             focusPair.setIsFocus(true);
-            login.sendGTMLoginError(AppEventTracking.EventLabel.EMAIL);
+            UnifyTracking.eventLoginError(AppEventTracking.EventLabel.EMAIL);
         } else if (!CommonUtils.EmailValidation(email)) {
             setWrapperError(wrapperEmail, getString(R.string.error_invalid_email));
             focusPair.setView(mEmailView);
             focusPair.setIsFocus(true);
-            login.sendGTMLoginError(AppEventTracking.EventLabel.EMAIL);
+            UnifyTracking.eventLoginError(AppEventTracking.EventLabel.EMAIL);
         }
 
         return focusPair;
     }
 
     private void setWrapperError(TextInputLayout wrapper, String s) {
-        if(s == null) {
+        if (s == null) {
             wrapper.setError(s);
             wrapper.setErrorEnabled(false);
-        }else {
+        } else {
             wrapper.setErrorEnabled(true);
             wrapper.setError(s);
         }
@@ -544,6 +563,8 @@ public class LoginFragment extends Fragment implements LoginView {
 
     @Override
     public void showProvider(List<LoginProviderModel.ProvidersBean> data) {
+        accountSignIn.setEnabled(true);
+        registerButton.setEnabled(true);
         listProvider = data;
         if (listProvider != null && checkHasNoProvider()) {
             login.saveProvider(listProvider);
@@ -556,12 +577,12 @@ public class LoginFragment extends Fragment implements LoginView {
             for (int i = 0; i < listProvider.size(); i++) {
                 String color = listProvider.get(i).getColor();
                 int colorInt;
-                if(color==null) {
+                if (color == null) {
                     colorInt = Color.parseColor("#FFFFFF");
-                }else{
+                } else {
                     colorInt = Color.parseColor(color);
                 }
-                LoginTextView tv = new LoginTextView(getActivity(),colorInt);
+                LoginTextView tv = new LoginTextView(getActivity(), colorInt);
                 tv.setTextLogin(listProvider.get(i).getName());
                 tv.setImage(listProvider.get(i).getImage());
                 tv.setRoundCorner(10);
@@ -576,7 +597,7 @@ public class LoginFragment extends Fragment implements LoginView {
                     tv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            onGoogleClick();
+                            LoginFragmentPermissionsDispatcher.onGooglePlusClickedWithCheck(LoginFragment.this);
                         }
                     });
                 } else {
@@ -598,6 +619,7 @@ public class LoginFragment extends Fragment implements LoginView {
 
     @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
     public void onGooglePlusClicked() {
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.GMAIL);
         showProgress(true);
         ((GoogleActivity) getActivity()).onSignInClicked();
     }
@@ -618,9 +640,11 @@ public class LoginFragment extends Fragment implements LoginView {
     }
 
     public boolean checkHasNoProvider() {
-        for (int i = linearLayout.getChildCount() - 1; i >= 0; i--) {
-            if (linearLayout.getChildAt(i) instanceof LoginTextView) {
-                return false;
+        if (linearLayout != null) {
+            for (int i = linearLayout.getChildCount() - 1; i >= 0; i--) {
+                if (linearLayout.getChildAt(i) instanceof LoginTextView) {
+                    return false;
+                }
             }
         }
         return true;
@@ -638,7 +662,7 @@ public class LoginFragment extends Fragment implements LoginView {
         newFragment.show(getFragmentManager().beginTransaction(), "dialog");
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(name);
     }
 
     @Override
@@ -657,7 +681,7 @@ public class LoginFragment extends Fragment implements LoginView {
             if (mContext != null && mContext instanceof SessionView) {
                 Bundle bundle = new Bundle();
                 bundle.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, DownloadService.LOGIN_WEBVIEW);
-                ((SessionView) mContext).moveToActivationResend(mEmailView.getText().toString(),bundle);
+                startActivity(ActivationActivity.getCallingIntent(getActivity(), mEmailView.getText().toString()));
             }
         }
         switch (type) {
@@ -666,6 +690,8 @@ public class LoginFragment extends Fragment implements LoginView {
                 snackbar = SnackbarManager.make(getActivity(), "Gagal mendownload provider", Snackbar.LENGTH_INDEFINITE)
                         .setAction("Coba lagi", retryDiscover());
                 snackbar.show();
+                accountSignIn.setEnabled(false);
+                registerButton.setEnabled(false);
                 break;
             default:
                 snackbar = SnackbarManager.make(getActivity(), text, Snackbar.LENGTH_LONG);
@@ -704,8 +730,13 @@ public class LoginFragment extends Fragment implements LoginView {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case 100:
+                if (resultCode == Activity.RESULT_CANCELED) {
+                    KeyboardHandler.DropKeyboard(getActivity(), getView());
+                    break;
+                }
                 Bundle bundle = data.getBundleExtra("bundle");
                 if (bundle.getString("path").contains("error")) {
                     snackbar = SnackbarManager.make(getActivity(), bundle.getString("message"), Snackbar.LENGTH_LONG);
@@ -715,7 +746,7 @@ public class LoginFragment extends Fragment implements LoginView {
                 } else if (bundle.getString("path").contains("activation-social")) {
                     Bundle lbundle = new Bundle();
                     lbundle.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, DownloadService.REGISTER_WEBVIEW);
-                    ((SessionView) mContext).moveToActivationResend(mEmailView.getText().toString(),lbundle);
+                    startActivity(ActivationActivity.getCallingIntent(getActivity(), mEmailView.getText().toString()));
                 }
                 break;
             default:
@@ -724,14 +755,14 @@ public class LoginFragment extends Fragment implements LoginView {
     }
 
     private void dismissSnackbar() {
-        if(snackbar!=null) snackbar.dismiss();
+        if (snackbar != null) snackbar.dismiss();
     }
 
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        LoginFragmentPermissionsDispatcher.onRequestPermissionsResult(LoginFragment.this,requestCode, grantResults);
+        LoginFragmentPermissionsDispatcher.onRequestPermissionsResult(LoginFragment.this, requestCode, grantResults);
     }
 
     @OnShowRationale(Manifest.permission.GET_ACCOUNTS)

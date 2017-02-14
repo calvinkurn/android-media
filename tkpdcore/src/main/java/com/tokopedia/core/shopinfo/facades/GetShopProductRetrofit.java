@@ -75,18 +75,17 @@ public class GetShopProductRetrofit {
 
             @Override
             public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
-                if(tkpdResponseResponse.isSuccessful()) {
+                if (tkpdResponseResponse.isSuccessful()) {
                     TkpdResponse response = tkpdResponseResponse.body();
                     if (!response.isError()) {
                         ProductModel productModel = new Gson().fromJson(response.getStringData(), ProductModel.class);
                         onGetShopProductListener.onSuccess(productModel);
-                    }else{
-                        if(response.getErrorMessages() != null && response.getErrorMessages().size() >0)
-                        {
+                    } else {
+                        if (response.getErrorMessages() != null && response.getErrorMessages().size() > 0) {
                             onGetShopProductListener.onFailure(WS_TYPE_ERROR, response.getErrorMessages().toString().replace("[", "").replace("]", ""));
                         }
                     }
-                }else{
+                } else {
                     onGetShopProductListener.onFailure(CONNECTION_TYPE_ERROR, context.getString(R.string.error_connection_problem));
                 }
             }
@@ -97,10 +96,10 @@ public class GetShopProductRetrofit {
         Map<String, String> params = new ArrayMap<>();
         params.put("shop_id", shopId);
         params.put("shop_domain", shopDomain);
-        params.put("page", Integer.toString(param.page));
-        params.put("keyword", param.keyword);
-        params.put("etalase_id", param.etalaseId);
-        params.put("order_by", param.orderBy);
+        params.put("page", String.valueOf(param.getPage()));
+        params.put("keyword", param.getKeyword());
+        params.put("etalase_id", param.getEtalaseId());
+        params.put("order_by", param.getOrderBy());
         params.put("per_page", "12");
         params.put("wholesale", "1");
         return params;

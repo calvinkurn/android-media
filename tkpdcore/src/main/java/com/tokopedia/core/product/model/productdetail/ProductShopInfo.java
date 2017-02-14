@@ -6,6 +6,7 @@ import android.text.Html;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.util.MethodChecker;
 
 /**
  * Created by Angga.Prasetiyo on 28/10/2015.
@@ -34,6 +35,9 @@ public class ProductShopInfo implements Parcelable{
     @SerializedName("shop_description")
     @Expose
     private String shopDescription;
+    @SerializedName("shop_is_official")
+    @Expose
+    private Integer shopIsOfficial;
     @SerializedName("shop_cover")
     @Expose
     private String shopCover;
@@ -158,6 +162,14 @@ public class ProductShopInfo implements Parcelable{
 
     public void setShopDescription(String shopDescription) {
         this.shopDescription = shopDescription;
+    }
+
+    public Integer getShopIsOfficial() {
+        return shopIsOfficial;
+    }
+
+    public void setShopIsOfficial(Integer shopIsOfficial) {
+        this.shopIsOfficial = shopIsOfficial;
     }
 
     public String getShopCover() {
@@ -305,7 +317,7 @@ public class ProductShopInfo implements Parcelable{
     }
 
     public String getShopStatusMessage() {
-        return Html.fromHtml(shopStatusMessage).toString();
+        return MethodChecker.fromHtml(shopStatusMessage).toString();
     }
 
     public void setShopStatusMessage(String shopStatusMessage) {
@@ -313,7 +325,7 @@ public class ProductShopInfo implements Parcelable{
     }
 
     public String getShopStatusTitle() {
-        return Html.fromHtml(shopStatusTitle).toString();
+        return MethodChecker.fromHtml(shopStatusTitle).toString();
     }
 
     public void setShopStatusTitle(String shopStatusTitle) {
@@ -344,6 +356,7 @@ public class ProductShopInfo implements Parcelable{
         shopTagline = in.readString();
         shopUrl = in.readString();
         shopDescription = in.readString();
+        shopIsOfficial = in.readByte() == 0x00 ? null : in.readInt();
         shopCover = in.readString();
         shopHasTerms = in.readByte() == 0x00 ? null : in.readInt();
         shopIsGold = in.readByte() == 0x00 ? null : in.readInt();
@@ -382,6 +395,12 @@ public class ProductShopInfo implements Parcelable{
         dest.writeString(shopTagline);
         dest.writeString(shopUrl);
         dest.writeString(shopDescription);
+        if (shopIsOfficial == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(shopIsOfficial);
+        }
         dest.writeString(shopCover);
         if (shopHasTerms == null) {
             dest.writeByte((byte) (0x00));
@@ -483,6 +502,7 @@ public class ProductShopInfo implements Parcelable{
         private String shopTagline;
         private String shopUrl;
         private String shopDescription;
+        private Integer shopIsOfficial;
         private String shopCover;
         private Integer shopHasTerms;
         private Integer shopIsGold;
@@ -542,6 +562,11 @@ public class ProductShopInfo implements Parcelable{
 
         public Builder setShopDescription(String shopDescription) {
             this.shopDescription = shopDescription;
+            return this;
+        }
+
+        public Builder setShopIsOfficial(Integer shopIsOfficial) {
+            this.shopIsOfficial = shopIsOfficial;
             return this;
         }
 
@@ -641,7 +666,33 @@ public class ProductShopInfo implements Parcelable{
         }
 
         public Builder but() {
-            return aProductShopInfo().setShopIsClosedReason(shopIsClosedReason).setShopLucky(shopLucky).setShopId(shopId).setShopOwnerLastLogin(shopOwnerLastLogin).setShopTagline(shopTagline).setShopUrl(shopUrl).setShopDescription(shopDescription).setShopCover(shopCover).setShopHasTerms(shopHasTerms).setShopIsGold(shopIsGold).setShopOpenSince(shopOpenSince).setShopMinBadgeScore(shopMinBadgeScore).setShopLocation(shopLocation).setShopIsClosedUntil(shopIsClosedUntil).setShopName(shopName).setShopReputation(shopReputation).setShopStats(shopStats).setShopOwnerId(shopOwnerId).setShopAlreadyFavorited(shopAlreadyFavorited).setShopIsOwner(shopIsOwner).setShopStatus(shopStatus).setShopIsClosedNote(shopIsClosedNote).setShopReputationBadge(shopReputationBadge).setShopAvatar(shopAvatar).setShopTotalFavorit(shopTotalFavorit).setShopDomain(shopDomain);
+            return aProductShopInfo()
+                    .setShopIsClosedReason(shopIsClosedReason)
+                    .setShopLucky(shopLucky).setShopId(shopId)
+                    .setShopOwnerLastLogin(shopOwnerLastLogin)
+                    .setShopTagline(shopTagline)
+                    .setShopUrl(shopUrl)
+                    .setShopDescription(shopDescription)
+                    .setShopCover(shopCover)
+                    .setShopHasTerms(shopHasTerms)
+                    .setShopIsGold(shopIsGold)
+                    .setShopOpenSince(shopOpenSince)
+                    .setShopMinBadgeScore(shopMinBadgeScore)
+                    .setShopLocation(shopLocation)
+                    .setShopIsClosedUntil(shopIsClosedUntil)
+                    .setShopName(shopName)
+                    .setShopReputation(shopReputation)
+                    .setShopStats(shopStats)
+                    .setShopOwnerId(shopOwnerId)
+                    .setShopAlreadyFavorited(shopAlreadyFavorited)
+                    .setShopIsOwner(shopIsOwner)
+                    .setShopStatus(shopStatus)
+                    .setShopIsClosedNote(shopIsClosedNote)
+                    .setShopReputationBadge(shopReputationBadge)
+                    .setShopAvatar(shopAvatar)
+                    .setShopTotalFavorit(shopTotalFavorit)
+                    .setShopDomain(shopDomain)
+                    .setShopIsOfficial(shopIsOfficial);
         }
 
         public ProductShopInfo build() {
@@ -653,6 +704,7 @@ public class ProductShopInfo implements Parcelable{
             productShopInfo.setShopTagline(shopTagline);
             productShopInfo.setShopUrl(shopUrl);
             productShopInfo.setShopDescription(shopDescription);
+            productShopInfo.setShopIsOfficial(shopIsOfficial);
             productShopInfo.setShopCover(shopCover);
             productShopInfo.setShopHasTerms(shopHasTerms);
             productShopInfo.setShopIsGold(shopIsGold);

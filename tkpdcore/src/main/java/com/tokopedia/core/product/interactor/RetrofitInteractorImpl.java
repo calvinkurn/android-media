@@ -7,6 +7,7 @@ import android.util.Log;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.core.network.apiservices.ace.AceSearchService;
+import com.tokopedia.core.network.apiservices.goldmerchant.ProductVideoService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.product.ProductActService;
 import com.tokopedia.core.network.apiservices.product.ProductService;
@@ -23,6 +24,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.listener.ReportProductDialogView;
 import com.tokopedia.core.product.model.etalase.EtalaseData;
+import com.tokopedia.core.product.model.goldmerchant.ProductVideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
@@ -64,6 +66,8 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     private final FaveShopActService faveShopActService;
     private final AceSearchService aceSearchService;
     private final MojitoAuthService mojitoAuthService;
+    private final ProductVideoService productVideoService;
+    private final int SERVER_ERROR_CODE = 500;
 
     public RetrofitInteractorImpl() {
         this.productService = new ProductService();
@@ -73,6 +77,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         this.compositeSubscription = new CompositeSubscription();
         this.aceSearchService = new AceSearchService();
         this.mojitoAuthService = new MojitoAuthService();
+        this.productVideoService = new ProductVideoService();
     }
 
     @Override
@@ -95,14 +100,14 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                 if (e instanceof UnknownHostException) {
                     listener.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION);
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onTimeout(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                    listener.onTimeout();
                 } else {
                     listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
 
             @Override
-            public void onNext(Response<TkpdResponse> response) {
+            public void onNext(final Response<TkpdResponse> response) {
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(ProductDetailData.class));
@@ -121,7 +126,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
                         @Override
                         public void onTimeout() {
-                            listener.onTimeout(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                            if (response.code() != SERVER_ERROR_CODE)
+                                listener.onTimeout();
+                            else listener.onReportServerProblem();
                         }
 
                         @Override
@@ -547,6 +554,41 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     }
 
     @Override
+    public void requestProductVideo(@NonNull Context context,
+                                    @NonNull String productId,
+                                    @NonNull final VideoLoadedListener listener) {
+
+        Observable<Response<ProductVideoData>> observable = productVideoService.getApi()
+                .fetchVideo(productId);
+
+        Subscriber<Response<ProductVideoData>> subscriber =
+                new Subscriber<Response<ProductVideoData>>() {
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Response<ProductVideoData> productVideoDataResponse) {
+                        if(productVideoDataResponse.body() != null)
+                            listener.onSuccess(productVideoDataResponse.body().getData().get(0));
+                    }
+                };
+        compositeSubscription.add(observable
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber));
+
+    }
+
+    @Override
     public void unSubscribeObservable() {
         compositeSubscription.unsubscribe();
     }
@@ -644,12 +686,12 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     @Override
     public void downloadReportType(final Context context, Integer productId, final ReportProductDialogView viewListener) {
         ProductService productService = new ProductService();
-        final CompositeSubscription compositeSubscription = new CompositeSubscription();
         compositeSubscription.add(
                 productService.getApi()
                         .getProductReportType(AuthUtil.generateParams(context,
                                 NetworkParam.paramDownloadReportType(productId)))
                         .subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber<Response<TkpdResponse>>() {
                             @Override

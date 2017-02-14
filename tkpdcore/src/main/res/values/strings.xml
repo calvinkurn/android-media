@@ -163,6 +163,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_rupiah">Rp</string>
     <string name="error_image_resolution">Ukuran minimal gambar adalah 300x300 pixel</string>
     <string name="dialog_delete_product">Apakah Anda ingin menghapus produk ini?</string>
+    <string name="dialog_cancel_add_product">Perubahan yang anda lakukan tidak akan tersimpan. Lanjutkan?</string>
     <string name="dialog_no_memory_card">No memory card!</string>
     <string name="dialog_upload_option">Bagaimana Anda ingin mengatur gambar Anda ?</string>
     <string name="title_gallery">Gallery</string>
@@ -318,6 +319,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
 Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="tx_success_from">Transaksi Sukses dari </string>
     <string name="tx_title">Transaksi</string>
+    <string name="title_product_video">Video Produk</string>
+    <string name="success_share_product">Sukses membagikan produk</string>
     <!-- Strings related product info -->
 
 
@@ -551,7 +554,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
         <item>3</item>
         <item>4</item>
     </string-array>
-    <string name="sort_browse_catalog_product_sold">Product Terjual</string>
+    <string name="sort_browse_catalog_product_sold">Produk Terjual</string>
     <string name="sort_browse_catalog_lowest_price">Harga Terendah</string>
     <string name="sort_browse_catalog_highest_price">Harga Tertinggi</string>
     <string name="sort_browse_catalog_all_condition">Semua Kondisi</string>
@@ -639,7 +642,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="title_payment_method">Metode Pembayaran</string>
     <string name="title_total_payment">Total Pembayaran</string>
     <string name="title_total_payment_left">Total Yang Harus Dibayar</string>
-    <string name="tittle_checkout">Checkout</string>
+    <string name="tittle_checkout">Pilih Metode Pembayaran</string>
     <string name="title_tokopedia_balance">Saldo Tokopedia</string>
     <string name="title_use_tokopedia_balance">Ingin gunakan saldo Tokopedia-mu ?</string>
     <string name="title_use_promo_code">Gunakan Kode Voucher Tokopedia</string>
@@ -863,7 +866,7 @@ Namun tidak perlu khawatir karena staff kami selalu melakukan pengecekan.]]>
     <string name="ORDER_DELIVERED">600</string>
     <string name="ORDER_DELIVERY_FAILURE">630</string>
     <string name="ORDER_DELIVERY_AUTOMATIC">699</string>
-    <string name="title_package_received">Paket diterima</string>
+    <string name="title_package_received">Paket Diterima</string>
     <string name="title_package_not_received">Paket belum diterima</string>
     <string name="dialog_package_received">
  <![CDATA[
@@ -946,6 +949,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_remaining_tokopedia">Saldo tersedia</string>
     <string name="msg_payment_success">Terima kasih, Anda telah sukses mengkonfirmasi dengan menggunakan metode pembayaran</string>
     <string name="title_activity_people_tx_details">Detil Transaksi</string>
+    <string name="title_activity_cart_shipment">Ubah Pengiriman</string>
     <string name="title_payment_confirmation">KONFIRMASI</string>
     <!-- <string name="title_payment_verification">VERIFIKASI</string> -->
     <string name="title_payment_verification">Ubah Pembayaran</string>
@@ -1099,12 +1103,12 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_sender_phone">No. Telp pengirim (Dropshipper)</string>
     <string name="msg_under_maintenance">Tokopedia sedang maintenance, silahkan coba beberapa saat lagi</string>
     <string name="title_otp">Masukkan Kode Verifikasi</string>
-    <string name="title_otp_email">Kirim OTP ke Email</string>
-    <string name="title_otp_phone">Kirim OTP ke HP</string>
-    <string name="send_otp">Kirim OTP</string>
-    <string name="msg_send_otp">Sukses mengirim OTP</string>
-    <string name="error_max_otp">Kode OTP maksimum 6 digit</string>
-    <string name="error_min_otp">Kode OTP minimum 6 digit</string>
+    <string name="title_otp_email">Kirim Email Verifikasi</string>
+    <string name="title_otp_phone">Kirim SMS Verifikasi</string>
+    <string name="send_otp">Kirim Kode Verifikasi</string>
+    <string name="msg_send_otp">Sukses mengirim Kode Verifikasi</string>
+    <string name="error_max_otp">Kode Verifikasi maksimum 6 digit</string>
+    <string name="error_min_otp">Kode Verifikasi minimum 6 digit</string>
     <string name="error_select_category">Kategori harus dipilih</string>
     <string name="title_order_processed">Order telah diproses</string>
     <string name="item_all_stats_unfinish">Transaksi Belum Selesai</string>
@@ -1214,16 +1218,16 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_activity_buy_credit">BuyCredit</string>
     <!--string related to Security Question -->
     <string name="msg_security_question">Hi Toppers, Mohon kesediaannya menjawab pertanyaan berikut untuk membantu kami memastikan bahwa Anda adalah pemilik akun Tokopedia ini.</string>
-    <string name="bar_security_question">Verifikasi Keamanan</string>
+    <string name="bar_security_question">Pertanyaan Keamanan</string>
     <string name="title_security_question">Halo, User</string>
-    <string name="content_security_question">Kami telah mengirimkan kode verifikasi ke nomor ponsel/email kamu.</string>
-    <string name="content_security_question_phone">Kami telah mengirimkan kode verifikasi ke nomor ponsel kamu.</string>
-    <string name="content_security_question_email">Kami telah mengirimkan kode verifikasi ke email kamu.</string>
-    <string name="msg_otp">Hi Toppers, Mohon kesediaannya mengisi kode OTP berikut untuk membantu kami memastikan bahwa Anda adalah pemilik akun Tokopedia ini.</string>
+    <string name="content_security_question">Kami telah mengirimkan Kode Verifikasi ke nomor ponsel/email kamu.</string>
+    <string name="content_security_question_phone">Kami telah mengirimkan Kode Verifikasi ke nomor ponsel </string>
+    <string name="content_security_question_email">Kami telah mengirimkan Kode Verifikasi ke email kamu.</string>
+    <string name="msg_otp">Hi Toppers, Mohon kesediaannya mengisi Kode Verifikasi berikut untuk membantu kami memastikan bahwa Anda adalah pemilik akun Tokopedia ini.</string>
     <string name="title_error_security">Kode Verifikasi Salah</string>
     <string name="msg_error_security">Silakan coba lagi agar bisa login dan menggunakan akun Anda.</string>
-    <string name="title_error_otp">Kode OTP Salah</string>
-    <string name="title_mismatch_otp">Kode OTP tidak benar.</string>
+    <string name="title_error_otp">Kode Verifikasi Salah</string>
+    <string name="title_mismatch_otp">Kode Verifikasi tidak benar.</string>
     <string name="phone_number_otp">Nomor Ponsel</string>
     <!-- String Buy Credit -->
     <string name="title_choose_provider">Pilih Provider</string>
@@ -1373,7 +1377,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_still_need_help">Masih Memerlukan Bantuan?</string>
     <string name="title_choose_problem">Pilih Masalah</string>
     <string name="title_choose_detail_problem">Pilih Detail Masalah</string>
-    <string name="title_problem_category">Kategori Masalah</string>
+    <string name="title_problem_category">Masalah</string>
     <string name="title_problem_detail">Keterangan Masalah Anda</string>
     <string name="title_invoice_no">No Invoice</string>
     <string name="title_invoice_no_and_user_name">No Invoice / Nama Penerima</string>
@@ -1394,6 +1398,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_shipping_fee_max">Maksimum biaya pengiriman tambahan</string>
     <string name="title_loyalty_points">TopPoints terpakai</string>
     <string name="loyalty_points_info">TopPoints</string>
+    <string name="toko_cash_info">TokoCash</string>
     <string name="msg_lucky_merchant">Anda berhasil menjadi Lucky Merchant</string>
     <string name="msg_lucky_merchant_detail">Kesempatan mendapatkan pesanan lebih banyak setiap harinya</string>
     <string name="msg_lucky_valid">Berlaku sampai 30 hari kedepan</string>
@@ -1659,13 +1664,14 @@ di Tokopedia Sekarang!</string>
     <string name="error_minimum_price_wholesale">Harga satuan sudah harga terendah</string>
     <string name="error_empty_product_name">Nama produk harus diisi</string>
     <string name="error_empty_price">Harga harus diisi</string>
+
     <string name="error_empty_weight">Berat harus diisi</string>
     <string name="error_empty_preorder">Pre order harus diisi</string>
 
 
     <string name="msg_server_error_2">Terjadi Kendala Pada Server, Silahkan Laporkan</string>
     <string name="filter_description">Silahkan pilih menu di sebelah kiri untuk menemukan produk yang lebih spesifik</string>
-    <string name="msg_filter_invalid_amount">Invalid amount price</string>
+    <string name="msg_filter_invalid_amount">Harga tidak sesuai</string>
     <string name="no_catalog_selected">Tidak ada katalog</string>
     <string name="ibg_report_bug">Laporkan Bug</string>
     <string name="ibg_report_feedback">Kritik dan Saran</string>
@@ -1719,6 +1725,7 @@ di Tokopedia Sekarang!</string>
     <string name="action_keep">Batal</string>
     <string name="title_free_return">Free Returns</string>
     <string name="title_activity_edit_resolution">Ubah Solusi</string>
+    <string name="title_activity_input_shipping">Input Resi</string>
     <string name="title_message_for_seller">Pesan untuk penjual</string>
     <string name="title_message_for_buyer">Pesan untuk pembeli</string>
     <string name="title_summary_trouble_product">X123 produk Y123</string>
@@ -1744,15 +1751,16 @@ di Tokopedia Sekarang!</string>
     <string name="action_report_as_spam">Laporkan sebagai spam</string>
     <string name="error_empty_home_menu">Data Home Menu Kosong</string>
     <string name="error_home_menu">Home Menu Error</string>
+    <string name="title_home">Home</string>
     <string name="try_again">Terjadi kesalahan. Mohon coba kembali.</string>
 
-    <string name="need_permission_camera">Aplikasi ini membutuhkan izin untuk mengakses Kamera. Perbolehkan Android meminta izin?</string>
-    <string name="need_permission_storage">Aplikasi ini membutuhkan izin untuk mengakses Media Penyimpanan. Perbolehkan Android meminta izin?</string>
-    <string name="need_permission_multi">Aplikasi ini membutuhkan beberapa izin. Perbolehkan Android meminta izin?</string>
-    <string name="need_permission_contacts">Aplikasi ini membutuhkan izin untuk mengakses Kontak. Perbolehkan Android meminta izin?</string>
-    <string name="need_permission_location">Aplikasi ini membutuhkan izin untuk mengakses Lokasi. Perbolehkan Android meminta izin?</string>
-    <string name="need_permission_get_accounts">Aplikasi ini membutuhkan izin untuk mengakses akun. Perbolehkan Android meminta izin?</string>
-
+    <string name="need_permission_camera">Aplikasi ini membutuhkan izin untuk mengakses Kamera. Perbolehkan?</string>
+    <string name="need_permission_storage">Aplikasi ini membutuhkan izin untuk mengakses Media Penyimpanan. Perbolehkan?</string>
+    <string name="need_permission_multi">Aplikasi ini membutuhkan beberapa izin. Perbolehkan?</string>
+    <string name="need_permission_contacts">Aplikasi ini membutuhkan izin untuk mengakses Kontak. Perbolehkan?</string>
+    <string name="need_permission_location">Aplikasi ini membutuhkan izin untuk mengakses Lokasi. Perbolehkan?</string>
+    <string name="need_permission_get_accounts">Aplikasi ini membutuhkan izin untuk mengakses akun. Perbolehkan?</string>
+    <string name="need_permission_SMS">Aplikasi ini membutuhkan izin membaca SMS Verifikasi untuk mempermudah verifikasi. Perbolehkan?</string>
 
     <string name="permission_camera_denied">Anda tidak memberikan izin akses untuk Kamera.</string>
     <string name="permission_storage_denied">Anda tidak memberikan izin akses untuk Media Penyimpanan.</string>
@@ -1760,6 +1768,7 @@ di Tokopedia Sekarang!</string>
     <string name="permission_contacts_denied">Anda tidak memberikan izin akses untuk Kontak.</string>
     <string name="permission_location_denied">Anda tidak memberikan izin akses untuk Lokasi.</string>
     <string name="permission_get_accounts_denied">Anda tidak memberikan izin akses untuk mengambil akun.</string>
+    <string name="permission_sms_denied">Anda tidak memberikan izin akses untuk membaca sms.</string>
 
     <string name="permission_camera_neverask">Anda tidak memberikan izin akses untuk Kamera. Anda bisa memberikan izin melalui Pengaturan.</string>
     <string name="permission_storage_neverask">Anda tidak memberikan izin akses untuk Media Penyimpanan. Anda bisa memberikan izin melalui Pengaturan.</string>
@@ -1767,6 +1776,8 @@ di Tokopedia Sekarang!</string>
     <string name="permission_contacts_neverask">Anda tidak memberikan izin akses untuk Kontak. Anda bisa memberikan izin melalui Pengaturan.</string>
     <string name="permission_location_neverask">Anda tidak memberikan izin akses untuk Lokasi. Anda bisa memberikan izin melalui Pengaturan.</string>
     <string name="permission_get_accounts_neverask">Anda tidak memberikan izin akses untuk mengambil akun. Anda bisa memberikan izin melalui Pengaturan.</string>
+    <string name="permission_sms_neverask">Anda tidak memberikan izin akses untuk membaca sms. Anda bisa memberikan izin melalui Pengaturan.</string>
+
 
     <string name="template_people_total_fav_shop">XYZ Toko Favoritku</string>
     <string name="message_success_people_unfav">Sukses menghapus toko favorit</string>
@@ -1797,6 +1808,8 @@ di Tokopedia Sekarang!</string>
     <string name="prompt_delete_talk">Apakah anda  yakin ingin menghapus diskusi ini?</string>
     <string name="product_image">Product Image</string>
     <string name="title_delete_discussion">Hapus diskusi</string>
+    <string name="buyer_request_cancel">Pembeli mengajukan pembatalan pesanan</string>
+    <string name="buyer_request_cancel_reason">Pembeli mengajukan pembatalan pesanan dengan alasan</string>
 
     <!-- BEGIN SELLER ON BOARDING RELATED STRING RESOURCE -->
     <string name="seller_onb_1_title">Manage Dashboard</string>
@@ -1812,5 +1825,57 @@ di Tokopedia Sekarang!</string>
 
     <string name="title_msisdn">Verifikasi Nomor HP</string>
     <string name="title_try_again_in">Coba lagi dalam :</string>
+    <string name="manage_default_page_title">Pengaturan</string>
+    <string name="manage_terms_and_conditions">Syarat dan Ketentuan</string>
+    <string name="manage_privacy">Kebijakan Privasi</string>
+
+    <!--START : string related to Product Picture Download -->
+    <string name="download_picture">Mengunduh gambar</string>
+    <string name="download_in_process">Unduh gambar dalam proses</string>
+    <string name="download_failed">Gambar gagal diunduh</string>
+    <string name="download_success">Gambar berhasil diunduh</string>
+    <string name="preview_picture_open_action">BUKA</string>
+    <string name="preview_picture_download_action">Download Gambar</string>
+    <string name="download_error">Terjadi kesalahan pengunduhan gambar</string>
+    <string name="empty_returnable_note">Kebijakan Pengembalian Barang Harus Diisi</string>
+    <string name="etalase_less_than_three_char">Nama etalase tidak boleh kurang dari tiga huruf</string>
+    <string name="order_delivered_on_process">Status : On Process</string>
+
+    <string name="wholesale_max_price_error">Jumlah maksimum harga grosir sudah tercapai</string>
+    <string name="addproduct_wholesale_itemTotalError">Jumlah barang harus lebih besar dari jumlah barang pertama</string>
+    <string name="addproduct_wholesale_priceMoreBiggerError">Harga harus lebih rendah dari harga sebelumnya</string>
+    <string name="addproduct_wholesale_priceError">Terjadi kesalahan pada harga grosir</string>
+    <string name="addproduct_wholesale_priceShouldBigger100">Harga harus lebih besar dari Rp 100</string>
+    <string name="addproduct_wholesale_priceShouldLower100">Harga harus lebih kecil dari Rp 100.000.000</string>
+    <string name="error_problem">Terjadi kesalahan</string>
+    <string name="addproduct_wholesale_priceShouldBigger1Dollar">Harga harus lebih besar dari $1</string>
+    <string name="addproduct_wholesale_priceShouldLowerDollar">Harga harus lebih kecil dari $7500</string>
+    <string name="addproduct_wholesale_currencyError">Mata uang harus dipilih</string>
+
+    <string name="notification_error_ssl_cert_invalid">Invalid SSL Certificate. Apakah anda ingin melanjutkan?</string>
+    <string name="title_email_address">Alamat Email</string>
+    <string name="title_phone_optional">Nomor Telepon (Opsional)</string>
+    <string name="error_attachment">Mohon tambahkan lampiran.</string>
+    <string name="action_send_otp_with_call">Atau kirim Kode Verifikasi melalui telepon</string>
+    <string name="content_change_number">Jika nomor Anda sudah tidak aktif, silahkan Klik disini</string>
+    <string name="title_resend_otp">Kirim ulang Kode Verifikasi</string>
+
+    <string name="mark_as_read">Tandai sudah dibaca</string>
+    <string name="mark_as_unread">Tandai belum dibaca</string>
+    <string name="address_not_supported_add_to_cart">Layanan kurir tidak mendukung pengiriman dari lokasi penjual ke lokasi pembeli</string>
+    <string name="finish_contact_us">Terima kasih telah menghubungi, senang bisa membantu anda.</string>
+    <string name="mail_to_feedback">mailto:android.feedback@tokopedia.com</string>
+    <string name="server_error_problem">Masalah Server Error</string>
+    <string name="application_version_text">"Versi Aplikasi: "</string>
+    <string name="send_email">Kirim Email</string>
+    <string name="hello_blank_name">Halo,</string>
+    <string name="create_tokopedia_account">Buat Akun Tokopedia</string>
+    <string name="fill_your_profile">Isi data dirimu</string>
+    <string name="already_has_account_sign_in">Sudah punya akun? Masuk</string>
+    <string name="_2">2</string>
+    <string name="_1">1</string>
+    <string name="see_all">Lihat Semua</string>
+
+    <string name="title_ask_buyer_selling">Tanya Pembeli</string>
 
 </resources>

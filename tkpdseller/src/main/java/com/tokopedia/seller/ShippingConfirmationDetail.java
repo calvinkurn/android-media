@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,12 +21,16 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.rxjava.RxUtils;
+import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.var.NotificationVariable;
 import com.tokopedia.seller.customadapter.ListViewOrderStatus;
 import com.tokopedia.seller.customadapter.ListViewShopOrderDetail;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.seller.selling.model.orderShipping.OrderCustomer;
 import com.tokopedia.seller.selling.model.orderShipping.OrderDestination;
 import com.tokopedia.seller.selling.model.orderShipping.OrderDetail;
@@ -37,8 +40,6 @@ import com.tokopedia.seller.selling.model.orderShipping.OrderShipment;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShop;
 import com.tokopedia.seller.selling.model.shopconfirmationdetail.ShippingConfirmDetModel;
-import com.tokopedia.core.util.AppUtils;
-import com.tokopedia.core.var.NotificationVariable;
 
 import org.parceler.Parcels;
 
@@ -172,13 +173,12 @@ ShippingConfirmationDetail extends TActivity {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position,
                                     long arg3) {
-//				Intent intent = new Intent(ShippingConfirmationDetail.this, ProductDetailPresenter.class);
-                Intent intent = new Intent(ShippingConfirmationDetail.this, ProductInfoActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(PRODUCT_URI, dataProducts.get(position).ProductUrlList);
-                bundle.putString(PRODUCT_ID, dataProducts.get(position).ProductIdList);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                startActivity(
+                        ProductDetailRouter.createInstanceProductDetailInfoActivity(
+                                ShippingConfirmationDetail.this,
+                                getProductDataToPass(dataProducts.get(position))
+                        )
+                );
             }
         });
 
@@ -213,7 +213,7 @@ ShippingConfirmationDetail extends TActivity {
     private void setDataToViewV4() {
 
         OrderPayment orderPayment = orderData.getOrderPayment();
-        PaymentMethod.setText(Html.fromHtml(getString(R.string.title_payment_method) + " : <b>" + orderPayment.getPaymentGatewayName() + "</b>"));
+        PaymentMethod.setText(MethodChecker.fromHtml(getString(R.string.title_payment_method) + " : <b>" + orderPayment.getPaymentGatewayName() + "</b>"));
         Deadline.setText(orderPayment.getPaymentShippingDueDate());
 
         OrderCustomer orderCustomer = orderData.getOrderCustomer();
@@ -245,7 +245,7 @@ ShippingConfirmationDetail extends TActivity {
             phoneTokopedia = getString(R.string.title_phone) + " : " + receiverPhone;
         }
 
-        String destinationDetail = Html.fromHtml(orderDestination.getReceiverName() + "<br>" + orderDestination.getAddressStreet().replace("<br/>", "\n").replace("<br>", "\n")
+        String destinationDetail = MethodChecker.fromHtml(orderDestination.getReceiverName() + "<br>" + orderDestination.getAddressStreet().replace("<br/>", "\n").replace("<br>", "\n")
                 + "<br>" + orderDestination.getAddressDistrict() + " " + orderDestination.getAddressCity() + ", " + orderDestination.getAddressPostal()
                 + "<br>" + orderDestination.getAddressProvince() + "<br>" + phoneTokopedia).toString();
         destinationDetail = destinationDetail.replaceAll("&#39;", "'");
@@ -264,8 +264,8 @@ ShippingConfirmationDetail extends TActivity {
         }
 
         OrderShop orderShop = orderData.getOrderShop();
-        String pickupAddress = Html.fromHtml(orderShop.getAddressStreet())
-                + "\n" + Html.fromHtml(orderShop.getAddressCity()).toString() + ", " + Html.fromHtml(orderShop.getAddressPostal())
+        String pickupAddress = MethodChecker.fromHtml(orderShop.getAddressStreet())
+                + "\n" + MethodChecker.fromHtml(orderShop.getAddressCity()).toString() + ", " + MethodChecker.fromHtml(orderShop.getAddressPostal())
                 + "\n" + orderShop.getAddressProvince()
                 + "\n" + getString(R.string.title_phone) + ":" + orderShop.getShipperPhone();
         pickupLocationDetail.setText(pickupAddress);
@@ -327,7 +327,7 @@ ShippingConfirmationDetail extends TActivity {
 //			JSONObject destination = new JSONObject(order.getString("dest"));
 //			JSONObject shipping = new JSONObject(order.getString("shipping"));
 //			JSONObject shop = new JSONObject(order.getString("shop"));
-//			PaymentMethod.setText(Html.fromHtml(getString(R.string.title_payment_method) + " : <b>"+ payment.getString("pg_name")+"</b>"));
+//			PaymentMethod.setText(MethodChecker.fromHtml(getString(R.string.title_payment_method) + " : <b>"+ payment.getString("pg_name")+"</b>"));
 //			Invoice.setText(orderdata.getString("invoice"));
 //			BuyerName.setText(customer.getString("cust_name"));
 //			if (!orderdata.isNull("dropship_name")) {
@@ -361,12 +361,12 @@ ShippingConfirmationDetail extends TActivity {
 //				phoneTokopedia = getString(R.string.title_phone) + " : " +destination.getString("phone");
 //			}
 //
-//			String destinationDetail = Html.fromHtml(destination.getString("receiver_name") + "<br>" + destination.getString("address_name").replace("<br/>", "\n").replace("<br>", "\n")
+//			String destinationDetail = MethodChecker.fromHtml(destination.getString("receiver_name") + "<br>" + destination.getString("address_name").replace("<br/>", "\n").replace("<br>", "\n")
 //					+ "<br>" + destination.getString("district") + " " + destination.getString("city") + ", " + destination.getString("postal")
 //					+ "<br>" + destination.getString("province") + "<br>" + phoneTokopedia).toString();
 //			String shippingID = shipping.getString("shipping_id");
-//			String pickupAddress = Html.fromHtml(shop.optString("addr_street", ""))
-//					+ "\n" + Html.fromHtml(shop.optString("city", "")).toString() + ", " + Html.fromHtml(shop.optString("postal_code", ""))
+//			String pickupAddress = MethodChecker.fromHtml(shop.optString("addr_street", ""))
+//					+ "\n" + MethodChecker.fromHtml(shop.optString("city", "")).toString() + ", " + MethodChecker.fromHtml(shop.optString("postal_code", ""))
 //					+ "\n" + shop.optString("province")
 //					+ "\n" + getString(R.string.title_phone) + ":" + shop.optString("phone", "");
 //			pickupLocationDetail.setText(pickupAddress);
@@ -431,13 +431,6 @@ ShippingConfirmationDetail extends TActivity {
         startActivity(PeopleInfoNoDrawerActivity.createInstance(ShippingConfirmationDetail.this, UserID));
     }
 
-    @OnClick(R2.id.confirm_button)
-    public void onConfirmButton() {
-        Intent intent = new Intent(ShippingConfirmationDetail.this, ShippingConfirmationProdConf.class);
-        intent.putExtras(getIntent().getExtras());
-        startActivityForResult(intent, 0);
-    }
-
     private void Loading() {
         mProgressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
         mProgressDialog.showDialog();
@@ -462,5 +455,14 @@ ShippingConfirmationDetail extends TActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private ProductPass getProductDataToPass(ShippingConfirmDetModel.Data data) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(data.PriceList)
+                .setProductId(data.ProductIdList)
+                .setProductName(data.NameList)
+                .setProductImage(data.ImageUrlList)
+                .build();
     }
 }

@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
+apply plugin: 'io.fabric'
 
 def getDpiId(String density) {
 
@@ -14,7 +15,8 @@ def getAPKArchiveFolder(variant) {
 }
 
 def allowSplit() {
-    return !project.hasProperty('tkpdBuildType');
+    return gradle.startParameter.taskNames.contains("assembleRelease") &&
+            !project.hasProperty('tkpdBuildType');
 }
 
 def allowDistribution() {
@@ -54,15 +56,24 @@ def archiveAPK(variant, output) {
     }
 }
 
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
+
 
 android {
 
     project.ext {
-        defaultVersionCode = 2030104;
-        defaultVersionName = "2.3.1";
+        defaultVersionCode = 1000404;
+        defaultVersionName = "1.0.4";
     }
 
-    compileSdkVersion 24
+    compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion '25'
     useLibrary 'org.apache.http.legacy'
     sourceSets {
@@ -77,10 +88,16 @@ android {
             aidl.srcDirs = ['src/main/java']
             renderscript.srcDirs = ['src/main/java']
             res.srcDirs = ['src/main/res']
-            assets.srcDirs = ['assets']
         }
 
-        instrumentTest.setRoot('tests')
+        String sharedTestDir = 'src/sharedTest/java'
+        test {
+            java.srcDir sharedTestDir
+        }
+        androidTest {
+            java.srcDir sharedTestDir
+        }
+
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
@@ -97,24 +114,20 @@ android {
     }
 
     buildTypes {
-
         debug {
             minifyEnabled false
             zipAlignEnabled false
-            buildConfigField "boolean" , "ENABLE_DISTRIBUTION", allowDistribution()
+            buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
-
         release {
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
-            buildConfigField "boolean" , "ENABLE_DISTRIBUTION", allowDistribution()
+            buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
-
             if (allowSplit()) {
                 applicationVariants.all { variant ->
                     variant.outputs.each { output ->
@@ -140,13 +153,15 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 24
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
         applicationId "com.tokopedia.sellerapp"
         resConfigs "en", "id"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
+        vectorDrawables.useSupportLibrary = true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
 
@@ -163,30 +178,106 @@ android {
             compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
         }
     }
+
+    productFlavors {
+        staging {
+            applicationIdSuffix ".staging"
+            versionNameSuffix "-staging"
+        }
+        alpha {
+            applicationIdSuffix ".alpha"
+            versionNameSuffix "-alpha"
+        }
+        live {
+
+        }
+    }
+
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-
-    compile project(':tkpdinbox')
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    /*compile (rootProject.ext.tkpdDependencies.inbox) {
+            exclude group: 'com.tokopedia.core'
+        }
+        compile (rootProject.ext.tkpdDependencies.discovery) {
+            exclude group: 'com.tokopedia.core'
+        }
+        compile (rootProject.ext.tkpdDependencies.transaction) {
+            exclude group: 'com.tokopedia.core'
+        }
+        compile (rootProject.ext.tkpdDependencies.seller) {
+            exclude group: 'com.tokopedia.core'
+        }
+        compile (rootProject.ext.tkpdDependencies.session) {
+            exclude group: 'com.tokopedia.core'
+        }
+        compile (rootProject.ext.tkpdDependencies.core)*/
     compile project(':tkpddiscovery')
-//    compile project(':tkpdtransaction')
     compile project(':tkpdseller')
     compile project(':tkpdsession')
-    compile ('de.hdodenhof:circleimageview:2.1.0'){
+    compile project(':tkpdinbox')
+    compile('de.hdodenhof:circleimageview:2.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    compile ("me.henrytao:smooth-app-bar-layout:24.1.1.0") {
+    compile(rootProject.ext.miscDependencies.smoothAppBarLayout) {
         exclude group: "com.android.support"
     }
     compile 'com.daimajia.numberprogressbar:library:1.2@aar'
-    compile 'com.jakewharton:butterknife:8.4.0'
-    apt 'com.jakewharton:butterknife-compiler:8.4.0'
+    compile rootProject.ext.butterKnifeDependencies.butterKnife
+    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    provided rootProject.ext.miscDependencies.javaxAnnotation
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
+    // Required -- JUnit 4 framework
+    testCompile rootProject.ext.testDependencies.junit
+
+    // Optional -- Mockito framework
+    testCompile rootProject.ext.testDependencies.mockitorCore
+
+    testCompile rootProject.ext.miscDependencies.rxJava
+
+    androidTestCompile rootProject.ext.miscDependencies.rxJava
+
+    androidTestCompile rootProject.ext.testDependencies.uiautomator
+
+    androidTestCompile rootProject.ext.testDependencies.spoon
+    androidTestCompile rootProject.ext.testDependencies.androidAnnotation
+
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:multidex:1.0.1'
+    androidTestCompile (rootProject.ext.testDependencies.androidTestRunner){
+        exclude module: 'support-annotations'
+    }
+    androidTestCompile (rootProject.ext.testDependencies.androidRulesVersion){
+        exclude module: 'support-annotations'
+    }
+
+    androidTestCompile (rootProject.ext.testDependencies.espressoIntents){
+        exclude group: 'com.android.support', module: 'support-annotations'
+    }
+
+    androidTestCompile rootProject.ext.testDependencies.retrofitMock
+    androidTestCompile rootProject.ext.testDependencies.retrofitMockWebser
+
+    androidTestApt rootProject.ext.miscDependencies.daggerCompiler
+    androidTestCompile rootProject.ext.miscDependencies.dagger
+    androidTestCompile rootProject.ext.miscDependencies.gson
+    androidTestCompile rootProject.ext.miscDependencies.parcelerApi
+    androidTestApt rootProject.ext.miscDependencies.parceler
+
+    androidTestCompile rootProject.ext.testDependencies.dexMaker
+    androidTestCompile(rootProject.ext.testDependencies.dexMakerMockito) {
+        exclude group: 'org.hamcrest', module: 'hamcrest-core'
+    }
 }

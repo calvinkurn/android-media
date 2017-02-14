@@ -11,12 +11,12 @@ import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
 import com.tokopedia.discovery.fragment.browseparent.BrowseParentFragment;
@@ -78,7 +78,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
     public void initData(@NonNull Context context) {
         Log.d(TAG, "isAfterRotate " + isAfterRotate + " init Data network params " + p.toString());
         ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
-        if (!isAfterRotate) {
+        if (!isAfterRotate || browseProductModel == null) {
             fetchFromNetwork(context);
         }
     }

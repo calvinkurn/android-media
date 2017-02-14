@@ -6,7 +6,6 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
@@ -15,12 +14,11 @@ import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.gcm.GCMHandler.GCMHandlerListener;
-import com.tokopedia.core.myproduct.presenter.AddProductPresenterImpl;
+import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginBypassModel;
 import com.tokopedia.core.util.PasswordGenerator;
@@ -112,7 +110,8 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
 
     private void getGCMid() {
 	    GCMHandler gcm = new GCMHandler(this);
-        gcm.commitGCMProcess(getGCMHandlerListener());
+        gcm.commitFCMProcess(getGCMHandlerListener());
+        gcm.commitGCMProcess();
     }
 
     public void finishSplashScreen() {
@@ -172,9 +171,9 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
             Log.i("DATABASE DATABSE UWOOO", "clearing the database flag");
             LocalCacheHandler.clearCache(this, CategoryDatabaseManager.KEY_STORAGE_NAME);
             LocalCacheHandler.clearCache(this, DataManagerImpl.SHIPPING_CITY_DURATION_STORAGE);
-            LocalCacheHandler.clearCache(this, AddProductPresenterImpl.FETCH_DEP_CHILD);
-            LocalCacheHandler.clearCache(this, AddProductPresenterImpl.FETCH_DEP_PARENT);
-            LocalCacheHandler.clearCache(this, AddProductPresenterImpl.FETCH_ETALASE);
+            if(getApplication() instanceof TkpdCoreRouter){
+                ((TkpdCoreRouter)getApplication()).resetAddProductCache(this);
+            }
         }
 
         flagDB.putBoolean("reset_db_flag", true);

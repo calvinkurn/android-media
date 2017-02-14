@@ -21,6 +21,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -117,12 +118,13 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     public void onResume() {
         super.onResume();
         wishList.setLocalyticFlow(getActivity(), getString(R.string.home_wishlist));
-        if(wishList.isAfterRotation()){
-//            displayPull(true);
-            wishList.setData();
+        if(wishList.isAfterRotation() ){
+            if  (!wishList.isLoadedFirstPage())
+                wishList.refreshData(getActivity());
         }else{
             wishList.fetchDataFromCache(getActivity());
         }
+        UnifyTracking.eventViewWishlist();
     }
 
     @Override

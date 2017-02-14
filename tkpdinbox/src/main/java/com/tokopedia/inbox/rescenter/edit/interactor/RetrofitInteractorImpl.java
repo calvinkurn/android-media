@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.database.model.AttachmentResCenterDB;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
@@ -18,6 +18,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
+import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.inbox.rescenter.detail.model.actionresponsedata.UploadResCenterImageData;
 import com.tokopedia.inbox.rescenter.edit.facade.NetworkParam;
 import com.tokopedia.inbox.rescenter.edit.model.passdata.ActionResponseData;
@@ -26,7 +27,6 @@ import com.tokopedia.inbox.rescenter.edit.model.passdata.EditResCenterFormData;
 import com.tokopedia.inbox.rescenter.edit.model.responsedata.ActionParameterPassData;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
 import com.tokopedia.inbox.rescenter.utils.UploadImageResCenter;
-import com.tokopedia.core.util.ImageUploadHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -318,12 +318,12 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                             return Observable.zip(Observable.just(passData), generateHost, new Func2<ActionParameterPassData, GeneratedHost, ActionParameterPassData>() {
                                 @Override
                                 public ActionParameterPassData call(ActionParameterPassData passData, GeneratedHost generatedHost) {
-                                    if (generatedHost != null) {
+                                    if (generatedHost.getMessageError() == null || generatedHost.getMessageError().isEmpty()) {
                                         passData.setServerID(String.valueOf(generatedHost.getServerId()));
                                         passData.setUploadHost(generatedHost.getUploadHost());
                                         return passData;
                                     } else {
-                                        throw new RuntimeException("ERROR GENERATE HOST");
+                                        throw new RuntimeException(generatedHost.getMessageError().get(0));
                                     }
                                 }
                             });
@@ -416,9 +416,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     }
 
     private Observable<ActionParameterPassData> getObservableUploadingFile(Context context, ActionParameterPassData passData) {
-        return Observable.zip(Observable.just(passData), uploading(context, passData), new Func2<ActionParameterPassData, List<AttachmentResCenterDB>, ActionParameterPassData>() {
+        return Observable.zip(Observable.just(passData), uploading(context, passData), new Func2<ActionParameterPassData, List<AttachmentResCenterVersion2DB>, ActionParameterPassData>() {
             @Override
-            public ActionParameterPassData call(ActionParameterPassData actionParameterPassData, List<AttachmentResCenterDB> listAttachment) {
+            public ActionParameterPassData call(ActionParameterPassData actionParameterPassData, List<AttachmentResCenterVersion2DB> listAttachment) {
                 int j = 0;
                 String attachmentCompiledString = "";
                 for (int i = 0; i < listAttachment.size(); i++) {
@@ -441,13 +441,13 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         });
     }
 
-    private Observable<List<AttachmentResCenterDB>> uploading(final Context context,
-                                                              final ActionParameterPassData passData) {
+    private Observable<List<AttachmentResCenterVersion2DB>> uploading(final Context context,
+                                                                      final ActionParameterPassData passData) {
         return Observable
                 .from(passData.getAttachmentData())
-                .flatMap(new Func1<AttachmentResCenterDB, Observable<AttachmentResCenterDB>>() {
+                .flatMap(new Func1<AttachmentResCenterVersion2DB, Observable<AttachmentResCenterVersion2DB>>() {
                     @Override
-                    public Observable<AttachmentResCenterDB> call(AttachmentResCenterDB attachmentResCenterDB) {
+                    public Observable<AttachmentResCenterVersion2DB> call(AttachmentResCenterVersion2DB attachmentResCenterDB) {
                         NetworkCalculator networkCalculator = new NetworkCalculator(NetworkConfig.POST, context,
                                 "https://" + passData.getUploadHost())
                                 .setIdentity()
@@ -485,9 +485,9 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                         serverId
                                 );
 
-                        return Observable.zip(Observable.just(attachmentResCenterDB), upload, new Func2<AttachmentResCenterDB, UploadResCenterImageData, AttachmentResCenterDB>() {
+                        return Observable.zip(Observable.just(attachmentResCenterDB), upload, new Func2<AttachmentResCenterVersion2DB, UploadResCenterImageData, AttachmentResCenterVersion2DB>() {
                             @Override
-                            public AttachmentResCenterDB call(AttachmentResCenterDB attachmentResCenterDB, UploadResCenterImageData uploadResCenterImageData) {
+                            public AttachmentResCenterVersion2DB call(AttachmentResCenterVersion2DB attachmentResCenterDB, UploadResCenterImageData uploadResCenterImageData) {
                                 if (uploadResCenterImageData != null) {
                                     if (uploadResCenterImageData.getData() != null) {
                                         attachmentResCenterDB.imageUrl = uploadResCenterImageData.getData().getFileUrl();
@@ -640,12 +640,12 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                             return Observable.zip(Observable.just(passData), generateHost, new Func2<ActionParameterPassData, GeneratedHost, ActionParameterPassData>() {
                                 @Override
                                 public ActionParameterPassData call(ActionParameterPassData passData, GeneratedHost generatedHost) {
-                                    if (generatedHost != null) {
+                                    if (generatedHost.getMessageError() == null || generatedHost.getMessageError().isEmpty()) {
                                         passData.setServerID(String.valueOf(generatedHost.getServerId()));
                                         passData.setUploadHost(generatedHost.getUploadHost());
                                         return passData;
                                     } else {
-                                        throw new RuntimeException("ERROR GENERATE HOST");
+                                        throw new RuntimeException(generatedHost.getMessageError().get(0));
                                     }
                                 }
                             });
@@ -852,12 +852,12 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                             return Observable.zip(Observable.just(passData), generateHost, new Func2<ActionParameterPassData, GeneratedHost, ActionParameterPassData>() {
                                 @Override
                                 public ActionParameterPassData call(ActionParameterPassData passData, GeneratedHost generatedHost) {
-                                    if (generatedHost != null) {
+                                    if (generatedHost.getMessageError() == null || generatedHost.getMessageError().isEmpty()) {
                                         passData.setServerID(String.valueOf(generatedHost.getServerId()));
                                         passData.setUploadHost(generatedHost.getUploadHost());
                                         return passData;
                                     } else {
-                                        throw new RuntimeException("ERROR GENERATE HOST");
+                                        throw new RuntimeException(generatedHost.getMessageError().get(0));
                                     }
                                 }
                             });

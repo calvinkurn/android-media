@@ -15,7 +15,6 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.Cart;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
@@ -27,6 +26,7 @@ import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.LocationPass;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -58,10 +58,10 @@ import java.util.Map;
  * @author Angga.Prasetiyo on 11/03/2016.
  */
 public class AddToCartPresenterImpl implements AddToCartPresenter {
-    private static final String TAG = AddToCartPresenterImpl.class.getSimpleName();
     private final AddToCartNetInteractor addToCartNetInteractor;
     private final AddToCartViewListener viewListener;
     private final KeroNetInteractorImpl keroNetInteractor;
+    private static final String GOJEK_ID = "10";
 
     public AddToCartPresenterImpl(AddToCartActivity addToCartActivity) {
         this.addToCartNetInteractor = new AddToCartNetInteractorImpl();
@@ -70,7 +70,8 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     }
 
     @Override
-    public void getCartFormData(@NonNull final Context context, @NonNull final ProductCartPass data) {
+    public void getCartFormData(@NonNull final Context context,
+                                @NonNull final ProductCartPass data) {
         viewListener.showInitLoading();
         Map<String, String> param = new HashMap<>();
         param.put("product_id", data.getProductId());
@@ -84,9 +85,10 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.renderFormProductInfo(data.getForm().getProductDetail());
                         viewListener.renderFormAddress(data.getForm().getDestination());
                         viewListener.hideInitLoading();
-                        if (data.getShop().getUt() != 0 && !TextUtils.isEmpty(data.getShop().getToken())) {
+                        setInitialWeight(data);
+                        if (isAllowKeroAccess(data) && isAllowedCourier(data)) {
                             calculateKeroRates(context, data);
-                        }else{
+                        } else {
                             viewListener.hideProgressLoading();
                         }
                     }
@@ -99,7 +101,39 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     }
 
     @Override
-    public void calculateKeroRates(@NonNull Context context, @NonNull final AtcFormData atcFormData) {
+    public void getCartKeroToken(@NonNull final Context context, @NonNull ProductCartPass data,
+                                 @NonNull final Destination destination) {
+        viewListener.showInitLoading();
+        Map<String, String> param = new HashMap<>();
+        param.put("product_id", data.getProductId());
+        viewListener.disableAllForm();
+        addToCartNetInteractor.getAddToCartForm(context, param,
+                new AddToCartNetInteractor.OnGetCartFormListener() {
+                    @Override
+                    public void onSuccess(AtcFormData data) {
+                        data.getForm().setDestination(destination);
+                        viewListener.hideNetworkError();
+                        viewListener.initialOrderData(data);
+                        viewListener.renderFormProductInfo(data.getForm().getProductDetail());
+                        viewListener.renderFormAddress(data.getForm().getDestination());
+                        viewListener.hideInitLoading();
+                        if (isAllowKeroAccess(data) && isAllowedCourier(data)) {
+                            calculateKeroRates(context, data);
+                        } else {
+                            viewListener.hideProgressLoading();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        viewListener.onCartFailedLoading();
+                    }
+                });
+    }
+
+    @Override
+    public void calculateKeroRates(@NonNull Context context,
+                                   @NonNull final AtcFormData atcFormData) {
         viewListener.disableBuyButton();
         keroNetInteractor.calculateShipping(context, KeroppiParam.paramsKero(atcFormData.getShop(),
                 atcFormData.getForm().getDestination(), atcFormData.getForm().getProductDetail()),
@@ -130,6 +164,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         viewListener.enableBuyButton();
                     }
                 });
+
     }
 
     private List<Attribute> filterAvailableKeroShipment(List<Attribute> datas,
@@ -167,7 +202,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     public void calculateProduct(@NonNull final Context context,
                                  @NonNull final OrderData orderData) {
         viewListener.disableBuyButton();
-        addToCartNetInteractor.calculateCartPrice(context, AuthUtil.generateParams(context,
+        addToCartNetInteractor.calculateCartPrice(context, AuthUtil.generateParamsNetwork(context,
                 NetParamUtil.paramCalculateCart("calculate_product", orderData)),
                 new AddToCartNetInteractor.OnCalculateProduct() {
                     @Override
@@ -178,8 +213,9 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
                     @Override
                     public void onFailure() {
-                        viewListener.showCalculateProductErrorMessage(context
-                                .getString(R.string.msg_network_error));
+                        viewListener.showCalculateProductErrorMessage(
+                                context.getString(R.string.msg_network_error)
+                        );
                         viewListener.enableBuyButton();
                     }
 
@@ -194,7 +230,9 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     public void calculateKeroAddressShipping(@NonNull Context context,
                                              @NonNull final OrderData orderData) {
         keroNetInteractor.calculateKeroCartAddressShipping(context,
-                AuthUtil.generateParamsNetwork(context, KeroppiParam.paramsKeroOrderData(orderData)),
+                AuthUtil.generateParamsNetwork(
+                        context, KeroppiParam.paramsKeroOrderData(orderData)
+                ),
                 new KeroNetInteractor.OnCalculateKeroAddressShipping() {
                     @Override
                     public void onSuccess(List<Attribute> datas) {
@@ -213,8 +251,9 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
     @Override
     public Destination generateAddressData(Intent data) {
-        Destination destination = data.getExtras().getParcelable(ManageAddressConstant.EXTRA_ADDRESS);
-        return destination;
+        return Destination.convertFromBundle(
+                data.getExtras().getParcelable(ManageAddressConstant.EXTRA_ADDRESS)
+        );
     }
 
     @Override
@@ -227,7 +266,9 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
             viewListener.disableBuyButton();
             CommonUtils.dumper("rates/v1 kerorates called calculateAllShipping");
             keroNetInteractor.calculateKeroCartAddressShipping(context,
-                    AuthUtil.generateParamsNetwork(context, KeroppiParam.paramsKeroOrderData(orderData)),
+                    AuthUtil.generateParamsNetwork(
+                            context, KeroppiParam.paramsKeroOrderData(orderData)
+                    ),
                     new KeroNetInteractor.OnCalculateKeroAddressShipping() {
                         @Override
                         public void onSuccess(List<Attribute> datas) {
@@ -240,6 +281,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                         @Override
                         public void onFailure() {
                             viewListener.enableBuyButton();
+                            viewListener.showCalculateShippingErrorMessage();
                         }
                     });
         }
@@ -343,15 +385,17 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
             viewListener.showErrorMessage(context.getString(R.string.error_no_address));
             return false;
         }
-        if (orderData.getShipment().equals(TkpdState.SHIPPING_ID.GOJEK)
-                && orderData.getShipmentPackage().equals("0")
-                && viewListener.getGoogleMapLocation().isEmpty()) {
-            viewListener.showErrorMessage(context.getString(R.string.error_google_map_not_chosen));
-            return false;
-        }
-        if (orderData.getShipment().equals("0") || orderData.getShipmentPackage().equals("0")) {
-            viewListener.showErrorMessage(context.getString(R.string.title_select_agency_error));
-            return false;
+        if (orderData.getShipment() != null && orderData.getShipmentPackage() != null) {
+            if (orderData.getShipment().equals(TkpdState.SHIPPING_ID.GOJEK)
+                    && orderData.getShipmentPackage().equals("0")
+                    && viewListener.getGoogleMapLocation().isEmpty()) {
+                viewListener.showErrorMessage(context.getString(R.string.error_google_map_not_chosen));
+                return false;
+            }
+            if (orderData.getShipment().equals("0") || orderData.getShipmentPackage().equals("0")) {
+                viewListener.showErrorMessage(context.getString(R.string.title_select_agency_error));
+                return false;
+            }
         }
         return true;
     }
@@ -429,7 +473,9 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
         myAlertDialog.setPositiveButton(context.getString(R.string.title_pay),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface arg0, int arg1) {
-                        viewListener.navigateToActivity(new Intent(context, Cart.class));
+                        viewListener.navigateToActivity(
+                                TransactionCartRouter.createInstanceCartActivity(context)
+                        );
                         viewListener.closeView();
                     }
 
@@ -476,4 +522,50 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
             viewListener.hideTickerGTM();
         }
     }
+
+    @Override
+    public boolean isAllowKeroAccess(AtcFormData data) {
+        return data.getShop().getUt() != 0 && !TextUtils.isEmpty(data.getShop().getToken())
+                && !TextUtils.isEmpty(data.getShop().getAvailShippingCode())
+                && !TextUtils.isEmpty(data.getShop().getOriginId() + "")
+                && !TextUtils.isEmpty(data.getShop().getOriginPostal())
+                && !TextUtils.isEmpty(data.getForm().getDestination().getDistrictId())
+                && !TextUtils.isEmpty(data.getForm().getDestination().getPostalCode())
+                && !TextUtils.isEmpty(data.getForm().getProductDetail().getProductWeight())
+                && data.getForm().getDestination() != null
+                && !data.getForm().getDestination().getAddressId().isEmpty()
+                && !data.getForm().getDestination().getAddressId().equals("0");
+    }
+
+    private boolean isAllowedCourier(AtcFormData data) {
+        boolean allowedInstant = data.getForm().getDestination().getLatitude()!=null
+                && !data.getForm().getDestination().getLatitude().isEmpty();
+        for (int i = 0; i<data.getForm().getShipment().size(); i++) {
+            for(int j = 0; j<data.getForm().getShipment().get(i).getShipmentPackage().size(); j++) {
+                ShipmentPackage shipmentPackage = data.getForm().getShipment().get(i)
+                        .getShipmentPackage().get(j);
+                boolean packageAvailable = shipmentPackage.getPackageAvailable() == 1;
+                boolean isGojek = shipmentPackage.getShipmentId().equals(GOJEK_ID);
+                if (packageAvailable && !isGojek)
+                    return true;
+                else if(allowedInstant)
+                    return true;
+            }
+        }
+        viewListener.showAddressErrorMessage();
+        return false;
+    }
+
+    private void setInitialWeight(AtcFormData data) {
+        data.getForm().getProductDetail().setProductWeight(calculateWeight(
+                data.getForm().getProductDetail().getProductWeight(),
+                data.getForm().getProductDetail().getProductMinOrder()));
+    }
+
+    @Override
+    public String calculateWeight(String initialWeight, String quantity) {
+        return String.valueOf(CommonUtils.round((Double.parseDouble(initialWeight) *
+                Double.parseDouble(quantity)), 4));
+    }
+
 }

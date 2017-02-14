@@ -96,7 +96,7 @@ public class FragmentIndexMainHeader {
         return this;
     }
 
-    public FragmentIndexMainHeader addData(List<ProductItem> listProduct){
+    public FragmentIndexMainHeader addData(List<ProductItem> listProduct) {
         if(++step!=STEP_3)
             throw new RuntimeException("initView(int layoutId)");
         this.data.setListProduct(listProduct);

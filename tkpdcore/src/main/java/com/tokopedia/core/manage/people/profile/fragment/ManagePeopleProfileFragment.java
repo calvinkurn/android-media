@@ -17,6 +17,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.fragment.EmailVerificationDialog;
@@ -239,7 +240,6 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
         detailSection.birthDate.setError(null);
         detailSection.hobby.setError(null);
         contactSection.email.setError(null);
-        contactSection.password.setError(null);
         contactSection.phone.setError(null);
     }
 
@@ -299,7 +299,7 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     @Override
     public void showPhoneVerificationDialog(String userPhone) {
         SessionHandler.setPhoneNumber(userPhone);
-        ((TActivity) getActivity()).phoneVerificationUtil.showVerificationDialog();
+        ((BaseActivity) getActivity()).getPhoneVerificationUtil().showVerificationDialog();
     }
 
     @Override
@@ -333,17 +333,6 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), message);
         }
-    }
-
-    @Override
-    public String getPassword() {
-        return String.valueOf(contactSection.password.getText());
-    }
-
-    @Override
-    public void setPasswordError(String errorMessage) {
-        contactSection.password.setError(errorMessage);
-        contactSection.password.requestFocus();
     }
 
     @Override

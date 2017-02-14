@@ -34,6 +34,8 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
 import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
@@ -137,7 +139,6 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
                 presenter.onMultiConfirm(actionMode, multiSelector.getSelectedPositions());
                 adapter.notifyDataSetChanged();
                 return true;
-
             }
             return false;
         }
@@ -304,8 +305,10 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     public void setUserVisibleHint(boolean isVisibleToUser) {
         initPresenter();
         presenter.getShippingList(isVisibleToUser);
-        presenter.checkValidationToSendGoogleAnalytic(isVisibleToUser, getActivity());
         super.setUserVisibleHint(isVisibleToUser);
+        ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_SHIPPING);
+        ScreenTracking.eventLoca(AppScreen.SCREEN_LOCA_SHIPPING);
+        ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_CONFIRM_SHIPPING);
     }
 
     @Override
@@ -638,5 +641,15 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
             }
         });
         snackbar.show();
+    }
+
+    @Override
+    public void showFab() {
+        fab.show();
+    }
+
+    @Override
+    public void hideFab() {
+        fab.hide();
     }
 }

@@ -1,4 +1,17 @@
 <resources>
     <string name="app_name">tkpdsession</string>
-    <string name="bar_security_question" />
+    <string name="title_resend_activation_email">Kirim Ulang</string>
+    <string name="january">Januari</string>
+    <string name="february">Februari</string>
+    <string name="march">Maret</string>
+    <string name="april">April</string>
+    <string name="may">May</string>
+    <string name="june">Juni</string>
+    <string name="july">Juli</string>
+    <string name="august">Agustus</string>
+    <string name="september">September</string>
+    <string name="october">Oktober</string>
+    <string name="november">November</string>
+    <string name="december">Desember</string>
+    <string name="wrong_input">inputan salah</string>
 </resources>

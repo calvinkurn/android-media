@@ -1,10 +1,11 @@
 package com.tokopedia.core.product.model.share;
 
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Html;
+
+import com.tokopedia.core.util.MethodChecker;
 
 /**
  * Created by Angga.Prasetiyo on 11/12/2015.
@@ -24,7 +25,6 @@ public class ShareData implements Parcelable {
     private String uri;
     private String description;
     private String imgUri;
-    private Bitmap bitmap;
     private String textContent;
     private String source;
 
@@ -38,7 +38,6 @@ public class ShareData implements Parcelable {
         uri = in.readString();
         description = in.readString();
         imgUri = in.readString();
-        bitmap = in.readParcelable(Bitmap.class.getClassLoader());
         textContent = in.readString();
         source = in.readString();
     }
@@ -51,7 +50,6 @@ public class ShareData implements Parcelable {
         dest.writeString(uri);
         dest.writeString(description);
         dest.writeString(imgUri);
-        dest.writeParcelable(bitmap, flags);
         dest.writeString(textContent);
         dest.writeString(source);
     }
@@ -98,7 +96,7 @@ public class ShareData implements Parcelable {
     }
 
     public String getDescription() {
-        return description;
+        return String.valueOf(MethodChecker.fromHtml(description));
     }
 
     public void setDescription(String description) {
@@ -113,19 +111,11 @@ public class ShareData implements Parcelable {
         this.imgUri = imgUri;
     }
 
-    public Bitmap getBitmap() {
-        return bitmap;
-    }
-
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
-    }
-
     public String getTextContent() {
         if (getType() != null){
             return (this.textContent != null) ? (this.textContent + "\n" + renderShareUri()) : renderShareUri();
         }
-        return String.valueOf(Html.fromHtml("Jual " + name + " hanya " + price + ", lihat gambar klik " + uri + "\n"));
+        return String.valueOf(MethodChecker.fromHtml("Jual " + name + " hanya " + price + ", lihat gambar klik " + uri + "\n"));
     }
 
     public void setTextContent(String textContent) {
@@ -172,7 +162,6 @@ public class ShareData implements Parcelable {
         private String uri;
         private String description;
         private String imgUri;
-        private Bitmap bitmap;
         private String type;
         private String textContent;
         private String source;
@@ -209,11 +198,6 @@ public class ShareData implements Parcelable {
             return this;
         }
 
-        public Builder setBitmap(Bitmap bitmap) {
-            this.bitmap = bitmap;
-            return this;
-        }
-
         public Builder setType(String type) {
             this.type = type;
             return this;
@@ -230,7 +214,7 @@ public class ShareData implements Parcelable {
         }
 
         public Builder but() {
-            return aShareData().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setBitmap(bitmap);
+            return aShareData().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri);
         }
 
         public ShareData build() {
@@ -240,7 +224,6 @@ public class ShareData implements Parcelable {
             shareData.setUri(uri);
             shareData.setDescription(description);
             shareData.setImgUri(imgUri);
-            shareData.setBitmap(bitmap);
             shareData.setType(type);
             shareData.setTextContent(textContent);
             shareData.setSource(source);

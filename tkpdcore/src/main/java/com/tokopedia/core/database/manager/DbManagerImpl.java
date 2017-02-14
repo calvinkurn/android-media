@@ -32,18 +32,17 @@ import com.tokopedia.core.database.model.StockStatusDB;
 import com.tokopedia.core.database.model.StockStatusDB_Table;
 import com.tokopedia.core.database.model.WholesalePriceDB;
 import com.tokopedia.core.database.model.WholesalePriceDB_Table;
+import com.tokopedia.core.etalase.EtalaseVariable;
 import com.tokopedia.core.myproduct.model.CatalogDataModel;
 import com.tokopedia.core.myproduct.model.DepartmentParentModel;
 import com.tokopedia.core.myproduct.model.GetEtalaseModel;
 import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
-import com.tokopedia.core.myproduct.presenter.AddProductView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tkpd.library.utils.CommonUtils.dumper;
-import static com.tokopedia.core.myproduct.presenter.AddProductView.ETALASE_GUDANG;
 
 /**
  * Created by noiz354 on 5/18/16.
@@ -134,9 +133,9 @@ public class DbManagerImpl implements DbManager{
     @Override
     public void saveGudangIfNotInDb() {
         EtalaseDB gudang = new Select().from(EtalaseDB.class)
-                .where(EtalaseDB_Table.etalse_name.eq(ETALASE_GUDANG)).querySingle();
+                .where(EtalaseDB_Table.etalse_name.eq(EtalaseVariable.ETALASE_GUDANG)).querySingle();
         if(gudang ==null){
-            new EtalaseDB(-1, ETALASE_GUDANG, -1).save();
+            new EtalaseDB(-1, EtalaseVariable.ETALASE_GUDANG, -1).save();
             Log.d(TAG, "save gudang term in add product");
         }else{
             dumper("kata-kata gudang term in add product");
@@ -174,6 +173,19 @@ public class DbManagerImpl implements DbManager{
     }
 
     @Override
+    public boolean isEtalaseEmpty(String etalaseName) {
+        List<EtalaseDB> etalaseDBs = new Select().from(EtalaseDB.class)
+                .where(EtalaseDB_Table.etalse_name.like(etalaseName))
+                .queryList();
+
+        if(etalaseDBs != null && etalaseDBs.size() > 0){
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+    @Override
     public EtalaseDB getEtalase(String etalaseId){
         int etalaseIdInt = Integer.parseInt(etalaseId);
         EtalaseDB etalaseDB = new Select().from(EtalaseDB.class)
@@ -191,7 +203,7 @@ public class DbManagerImpl implements DbManager{
     public List<EtalaseDB> getEtalases() {
         List<EtalaseDB> allEtalaseDB = new Select().from(EtalaseDB.class)
                 .queryList();
-        EtalaseDB gudang = new EtalaseDB(-1, ETALASE_GUDANG, -1);
+        EtalaseDB gudang = new EtalaseDB(-1, EtalaseVariable.ETALASE_GUDANG, -1);
         for(int i = 0; i< allEtalaseDB.size(); i++){
             if(gudang.getEtalaseName().equals(allEtalaseDB.get(i).getEtalaseName())){
                 allEtalaseDB.remove(i);
@@ -230,26 +242,6 @@ public class DbManagerImpl implements DbManager{
         new Delete().from(WholesalePriceDB.class).where(
                 WholesalePriceDB_Table.Id.is(wholeSaleAdapterModel.getbDid())).
                 execute();
-    }
-
-    public void checkStockStatusDB(){
-        StockStatusDB stockStatusDB = new Select().from(StockStatusDB.class).where(
-                StockStatusDB_Table.stockDetail.eq(AddProductView.ETALASE_GUDANG)
-        ).querySingle();
-        if(stockStatusDB == null){
-            StockStatusDB emptyStockStatus = new StockStatusDB(AddProductView.ETALASE_GUDANG);
-            Log.i(TAG, messageTAG + "create new Stock Gudang in DB");
-            emptyStockStatus.save();
-            Log.i(TAG, messageTAG + "save : " + emptyStockStatus.Id);
-        }
-        stockStatusDB = new Select().from(StockStatusDB.class).where(
-                StockStatusDB_Table.stockDetail.eq(AddProductView.ETALASE_ETALASE)).querySingle();
-        if(stockStatusDB == null){
-            StockStatusDB availablStockStatus = new StockStatusDB(AddProductView.ETALASE_ETALASE);
-            Log.i(TAG, messageTAG + "create new Stock Etalase in DB");
-            availablStockStatus.save();
-            Log.i(TAG, messageTAG + "save : " + availablStockStatus.Id);
-        }
     }
 
     @Override

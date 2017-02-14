@@ -1,7 +1,7 @@
 package com.tokopedia.transaction.purchase.adapter;
 
 import android.content.Context;
-import android.text.Html;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -9,17 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.OneOnClick;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.customView.TextViewCopyable;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.fragment.TxListFragment;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
 
@@ -29,8 +29,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * TxListAdapter
- * Created by Angga.Prasetiyo on 21/04/2016.
+ * @author Angga.Prasetiyo on 21/04/2016.
  */
 public class TxListAdapter extends ArrayAdapter<OrderData> {
     private final LayoutInflater inflater;
@@ -42,8 +41,6 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
         void actionToDetail(OrderData data);
 
         void actionInvoice(OrderData data);
-
-        void actionUploadTx(OrderData data);
 
         void actionConfirmDeliver(OrderData data);
 
@@ -59,18 +56,21 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
     }
 
     public TxListAdapter(Context context, int instanceType, ActionListener actionListener) {
-        super(context, R.layout.listview_tx_order_stats, new ArrayList<OrderData>());
+        super(context, R.layout.holder_item_transaction_list_tx_module, new ArrayList<OrderData>());
         this.context = context;
         this.actionListener = actionListener;
         this.inflater = LayoutInflater.from(context);
         this.instanceType = instanceType;
     }
 
+    @NonNull
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         final ViewHolder holder;
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.listview_tx_order_stats, parent, false);
+            convertView = inflater.inflate(
+                    R.layout.holder_item_transaction_list_tx_module, parent, false
+            );
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {
@@ -99,12 +99,6 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
             }
         });
 
-        holder.tvUploadTx.setOnClickListener(new OneOnClick() {
-            @Override
-            public void oneOnClick(View view) {
-                actionListener.actionUploadTx(item);
-            }
-        });
         holder.mainView.setOnClickListener(new OneOnClick() {
             @Override
             public void oneOnClick(View view) {
@@ -142,11 +136,11 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
     private void renderOthersNormalContent(ViewHolder holder, OrderData item) {
         ImageHandler.loadImageCircle2(context, holder.imgShopAvatar, item.getOrderShop().getShopPic());
         String shopName = context.getString(R.string.title_buy_from)
-                + " : " + Html.fromHtml(item.getOrderShop().getShopName());
+                + " : " + MethodChecker.fromHtml(item.getOrderShop().getShopName());
         holder.tvShopName.setText(shopName);
-        holder.tvStatus.setText(Html.fromHtml(item.getOrderLast().getLastBuyerStatus()));
+        holder.tvStatus.setText(MethodChecker.fromHtml(item.getOrderLast().getLastBuyerStatus()));
         holder.tvInvoice.setText(item.getOrderDetail().getDetailInvoice());
-        holder.tvDate.setText(Html.fromHtml(item.getOrderDetail().getDetailOrderDate()));
+        holder.tvDate.setText(MethodChecker.fromHtml(item.getOrderDetail().getDetailOrderDate()));
 
         holder.tvUploadTx.setVisibility(View.GONE);
         holder.tvPreOrder.setVisibility(item.getOrderDetail().getDetailPreorder() != null
@@ -252,8 +246,6 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
         TextView tvUploadTx;
         @BindView(R2.id.status)
         TextView tvStatus;
-        @BindView(R2.id.confirm_layout)
-        LinearLayout linConfirmLayout;
         @BindView(R2.id.receive_button)
         TextView tvReceiveButton;
         @BindView(R2.id.reject_button)
@@ -275,7 +267,7 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
     private class OnMenuPopupClicked implements PopupMenu.OnMenuItemClickListener {
         private final OrderData orderData;
 
-        public OnMenuPopupClicked(OrderData item) {
+        OnMenuPopupClicked(OrderData item) {
             this.orderData = item;
         }
 
@@ -286,9 +278,6 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
                 return true;
             } else if (item.getItemId() == R.id.action_confirm_package) {
                 actionListener.actionConfirmDeliver(orderData);
-                return true;
-            } else if (item.getItemId() == R.id.action_upload) {
-                actionListener.actionUploadTx(orderData);
                 return true;
             } else if (item.getItemId() == R.id.action_open_dispute) {
                 actionListener.actionDispute(orderData, 0);

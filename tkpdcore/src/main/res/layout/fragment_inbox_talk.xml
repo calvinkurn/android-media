@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/FAB.Filter"
-            app:layout_behavior="com.tokopedia.core.talk.inboxtalk.utils.ScrollAwareFABBehavior"
+            app:layout_behavior="com.tokopedia.inbox.inboxtalk.utils.ScrollAwareFABBehavior"
             app:backgroundTint="@color/green_500"
             app:layout_anchorGravity = "bottom|right|end"
             />

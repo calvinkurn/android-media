@@ -1,83 +1,112 @@
 package com.tokopedia.transaction.purchase.adapter;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.text.Html;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.OneOnClick;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
-import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderProduct;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * TxProductListAdapter
- * Created by Angga.Prasetiyo on 28/04/2016.
+ * @author Angga.Prasetiyo on 28/04/2016.
  */
-public class TxProductListAdapter extends ArrayAdapter<OrderProduct> {
-    private final LayoutInflater inflater;
+public class TxProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final int TYPE_ITEM_PRODUCT_ITEM
+            = R.layout.holder_item_transaction_product_list_tx_module;
+
     private final ActionListener listener;
-    private final Context context;
+    private List<OrderProduct> dataList = new ArrayList<>();
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
+        if (viewType == TYPE_ITEM_PRODUCT_ITEM) {
+            return new ViewHolder(view);
+        }
+        return null;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof ViewHolder) {
+            final OrderProduct item = dataList.get(position);
+            final ViewHolder viewHolder = (ViewHolder) holder;
+            viewHolder.tvProductName.setText(MethodChecker.fromHtml(item.getProductName()));
+            viewHolder.tvNotes.setText(
+                    MethodChecker.fromHtml(
+                            item.getProductNotes().length() == 0 ?
+                                    "-" : item.getProductNotes()
+                    )
+            );
+            viewHolder.tvProductPrice.setText(
+                    MessageFormat.format(
+                            "{0} {1}",
+                            holder.itemView.getContext().getString(R.string.title_rupiah),
+                            item.getProductPrice()
+                    )
+            );
+            viewHolder.tvDeliverQty.setText(
+                    MessageFormat.format(" x {0} {1}", item.getOrderDeliverQuantity(),
+                            holder.itemView.getContext().getString(R.string.title_item))
+            );
+            viewHolder.tvTotalPrice.setText(item.getOrderSubtotalPriceIdr());
+            ImageHandler.loadImageRounded2(
+                    holder.itemView.getContext(), viewHolder.ivProductPic, item.getProductPicture()
+            );
+            viewHolder.tvProductName.setOnClickListener(new OneOnClick() {
+                @Override
+                public void oneOnClick(View view) {
+                    listener.actionToProductInfo(ProductPass.Builder.aProductPass()
+                            .setProductId(item.getProductId())
+                            .setProductName(item.getProductName())
+                            .setProductImage(item.getProductPicture())
+                            .setProductPrice(item.getProductPrice())
+                            .build());
+                }
+            });
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return dataList.size();
+    }
 
     public interface ActionListener {
         void actionToProductInfo(ProductPass productPass);
     }
 
-    public TxProductListAdapter(Context context, ActionListener listener) {
-        super(context, R.layout.listview_shop_order_detail_product, new ArrayList<OrderProduct>());
-        this.inflater = LayoutInflater.from(context);
-        this.context = context;
+    public TxProductListAdapter(ActionListener listener) {
         this.listener = listener;
     }
 
-    @SuppressLint("InflateParams")
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.listview_shop_order_detail_product, null);
-            holder = new ViewHolder(convertView);
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-        final OrderProduct item = getItem(position);
-        holder.tvProductName.setText(Html.fromHtml(item.getProductName()));
-        holder.tvProductPrice.setText(item.getProductPrice());
-        holder.tvNotes.setText(Html.fromHtml(item.getProductNotes().length()==0 ? "-" : item.getProductNotes()));
-        holder.tvDeliverQty.setText(MessageFormat.format(" x {0} {1}",
-                item.getOrderDeliverQuantity(), context.getString(R.string.title_item)));
-        holder.tvTotalPrice.setText(item.getOrderSubtotalPriceIdr());
-        ImageHandler.loadImageRounded2(context, holder.ivProductPic, item.getProductPicture());
-
-        holder.tvProductName.setOnClickListener(new OneOnClick() {
-            @Override
-            public void oneOnClick(View view) {
-                listener.actionToProductInfo(ProductPass.Builder.aProductPass()
-                        .setProductId(getItem(position).getProductId())
-                        .setProductName(getItem(position).getProductName())
-                        .setProductImage(getItem(position).getProductPicture())
-                        .setProductPrice(getItem(position).getProductPrice())
-                        .build());
-            }
-        });
-        return convertView;
+    public int getItemViewType(int position) {
+        return TYPE_ITEM_PRODUCT_ITEM;
     }
 
-    class ViewHolder {
+    public void addAllDataList(List<OrderProduct> orderProducts) {
+        this.dataList.clear();
+        this.dataList.addAll(orderProducts);
+        this.notifyDataSetChanged();
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R2.id.product_image)
         ImageView ivProductPic;
         @BindView(R2.id.product_name)
@@ -92,6 +121,7 @@ public class TxProductListAdapter extends ArrayAdapter<OrderProduct> {
         TextView tvNotes;
 
         public ViewHolder(View view) {
+            super(view);
             ButterKnife.bind(this, view);
         }
     }

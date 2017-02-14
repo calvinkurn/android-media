@@ -2,6 +2,7 @@ package com.tokopedia.inbox.rescenter.inbox.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.rescenter.inbox.model.ResCenterHeader;
 import com.tokopedia.inbox.rescenter.inbox.model.ResCenterInboxItem;
 import com.tokopedia.inbox.rescenter.inbox.model.ResolutionDetail;
@@ -210,12 +212,28 @@ public abstract class ResCenterExtendedAdapter extends RecyclerView.Adapter<Recy
     }
 
     protected void bindNoresultView(NoResultViewHolder holder) {
-        if (getItemCount() == 1) {
-            setFitToWindow(holder.noResultView);
+        Log.d(this.getClass().getSimpleName(), "bindNoresultView: 1");
+        if (isCurrentSellerTab()) {
+            Log.d(this.getClass().getSimpleName(), "bindNoresultView: 2");
+            holder.additionalInfoText.setVisibility(View.GONE);
         } else {
-            setFitToContent(holder.noResultView);
+            holder.additionalInfoText.setVisibility(View.VISIBLE);
+            if (getItemCount() == 1) {
+                Log.d(this.getClass().getSimpleName(), "bindNoresultView: 3");
+                setFitToWindow(holder.noResultView);
+            } else {
+                Log.d(this.getClass().getSimpleName(), "bindNoresultView: 4");
+                setFitToContent(holder.noResultView);
+            }
         }
     }
+
+    private boolean isCurrentSellerTab() {
+        Log.d(this.getClass().getSimpleName(), "isCurrentSellerTab: " + getCurrentTab());
+        return getCurrentTab() == TkpdState.InboxResCenter.RESO_BUYER;
+    }
+
+    protected abstract int getCurrentTab();
 
     protected void bindRetryView(RetryViewHolder holder) {
         if (getItemCount() == 1) {

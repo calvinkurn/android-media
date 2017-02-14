@@ -1,5 +1,8 @@
 package com.tokopedia.transaction.addtocart.model.kero;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -10,7 +13,7 @@ import java.util.List;
  * @author Herdi_WORK on 22.09.16.
  */
 
-public class Attribute {
+public class Attribute implements Parcelable {
 
     @SerializedName("id")
     @Expose
@@ -33,6 +36,9 @@ public class Attribute {
     @SerializedName("products")
     @Expose
     private List<Product> products = new ArrayList<Product>();
+
+    public Attribute() {
+    }
 
     /**
      * @return The id
@@ -144,4 +150,73 @@ public class Attribute {
         shipment.setProducts(new ArrayList<Product>());
         return shipment;
     }
+
+    protected Attribute(Parcel in) {
+        id = in.readByte() == 0x00 ? null : in.readInt();
+        shipperId = in.readString();
+        shipperName = in.readString();
+        originId = in.readByte() == 0x00 ? null : in.readInt();
+        destinationId = in.readByte() == 0x00 ? null : in.readInt();
+        weight = in.readByte() == 0x00 ? null : in.readInt();
+        if (in.readByte() == 0x01) {
+            products = new ArrayList<Product>();
+            in.readList(products, Product.class.getClassLoader());
+        } else {
+            products = null;
+        }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (id == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(id);
+        }
+        dest.writeString(shipperId);
+        dest.writeString(shipperName);
+        if (originId == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(originId);
+        }
+        if (destinationId == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(destinationId);
+        }
+        if (weight == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(weight);
+        }
+        if (products == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(products);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Attribute> CREATOR = new Parcelable.Creator<Attribute>() {
+        @Override
+        public Attribute createFromParcel(Parcel in) {
+            return new Attribute(in);
+        }
+
+        @Override
+        public Attribute[] newArray(int size) {
+            return new Attribute[size];
+        }
+    };
 }

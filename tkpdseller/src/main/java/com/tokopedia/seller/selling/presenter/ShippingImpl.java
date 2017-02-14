@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
 import com.tokopedia.seller.ShippingConfirmationDetail;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
 import com.tokopedia.seller.facade.FacadeShopTransaction;
@@ -178,7 +179,7 @@ public class ShippingImpl extends Shipping {
         if (remark.length() == 0) {
             remark.setError(context.getString(R.string.error_field_required));
         } else if (remark.length() < 5 && remark.length() > 0) {
-            remark.setError(context.getString(R2.string.char_should_min_5));
+            remark.setError(context.getString(R.string.char_should_min_5));
         } else if (remark.length() >= 5) {
             actionCancelShipping(pos, remark.getText().toString(), context);
             dialog.dismiss();
@@ -231,7 +232,7 @@ public class ShippingImpl extends Shipping {
             view.hideFilter();
             onRefreshHandler();
         } else {
-            showToastMessage(context.getString(R2.string.keyword_min_3_char));
+            showToastMessage(context.getString(R.string.keyword_min_3_char));
         }
     }
 
@@ -256,6 +257,7 @@ public class ShippingImpl extends Shipping {
                 view.notifyDataSetChanged(modelList);
                 onFinishConnection();
                 view.setRefreshPullEnabled(true);
+                view.showFab();
 
             }
 
@@ -270,6 +272,7 @@ public class ShippingImpl extends Shipping {
 //                }
                 view.getPaging().setHasNext(false);
                 view.setRefreshPullEnabled(true);
+                view.showFab();
                 view.removeRetry();
             }
 
@@ -278,6 +281,7 @@ public class ShippingImpl extends Shipping {
                 onFinishConnection();
                 if (modelList.size() == 0) {
                     view.addRetry();
+                    view.hideFab();
                 } else {
                     NetworkErrorHelper.showSnackbar((Activity) context);
                 }
@@ -290,6 +294,7 @@ public class ShippingImpl extends Shipping {
                 if (isDataEmpty()) {
                     view.setRefreshPullEnabled(false);
                     view.addRetry();
+                    view.hideFab();
                 } else {
                     try {
                         CommonUtils.UniversalToast(context, context.getString(R.string.msg_connection_timeout_toast));

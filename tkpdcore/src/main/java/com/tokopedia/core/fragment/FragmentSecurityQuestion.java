@@ -1,10 +1,22 @@
 package com.tokopedia.core.fragment;
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextPaint;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,13 +30,20 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.session.model.LoginInterruptModel;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.container.GTMContainer;
+import com.tokopedia.core.msisdn.IncomingSmsReceiver;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.session.model.OTPModel;
 import com.tokopedia.core.session.model.QuestionFormModel;
 import com.tokopedia.core.session.model.SecurityQuestionViewModel;
 import com.tokopedia.core.session.presenter.SecurityQuestion;
 import com.tokopedia.core.session.presenter.SecurityQuestionImpl;
 import com.tokopedia.core.session.presenter.SecurityQuestionView;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -33,18 +52,26 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
+
+import static android.R.attr.permission;
 
 /**
  * modify by m.normansyah 9-11-2015,
  * complete MVP
  */
-public class FragmentSecurityQuestion extends Fragment implements SecurityQuestionView {
+@RuntimePermissions
+public class FragmentSecurityQuestion extends Fragment implements SecurityQuestionView, IncomingSmsReceiver.ReceiveSMSListener {
 
+    private static final String CAN_REQUEST_OTP_IMMEDIATELY = "auto_request_otp";
     private TkpdProgressDialog Progress;
     SecurityQuestion securityQuestion;
     private static final String FORMAT = "%02d:%02d";
-
-
 
     @BindView(R2.id.input_text)
     EditText vAnswer;
@@ -52,8 +79,6 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     EditText vInputOtp;
     @BindView(R2.id.title_otp)
     TextView titleOTP;
-    @BindView(R2.id.phone_number)
-    EditText phoneNumber;
     @BindView(R2.id.title_security)
     TextView titleSecurity;
     @BindView(R2.id.wrapper_input_text)
@@ -68,6 +93,8 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     View vError;
     @BindView(R2.id.send_otp)
     TextView vSendOtp;
+    @BindView(R2.id.send_otp_call)
+    TextView vSendOtpCall;
     @BindView(R2.id.save_but)
     TextView vSaveBut;
     @BindView(R2.id.error_title)
@@ -76,9 +103,12 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     TextView vErrorMessage;
     @BindView(R2.id.progress)
     ProgressBar vProgress;
+    @BindView(R2.id.title_change_number)
+    TextView changeNumber;
 
     CountDownTimer countDownTimer;
     private Unbinder unbinder;
+    IncomingSmsReceiver smsReceiver;
 
     public interface SecurityQuestionListener {
         public void onSuccess();
@@ -101,7 +131,8 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     }
 
     public FragmentSecurityQuestion() {
-        // Required empty public constructor
+        this.smsReceiver = new IncomingSmsReceiver();
+        this.smsReceiver.setListener(this);
     }
 
     @Override
@@ -146,6 +177,48 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         super.onResume();
         if (securityQuestion.isAfterRotate())
             securityQuestion.initDataAfterRotate();
+        smsReceiver.registerSmsReceiver(getActivity());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            showCheckSMSPermission();
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @TargetApi(Build.VERSION_CODES.M)
+    private void showCheckSMSPermission() {
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.READ_SMS) == PackageManager.PERMISSION_DENIED
+                && !getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
+            new android.support.v7.app.AlertDialog.Builder(getActivity())
+                    .setMessage(RequestPermissionUtil.getNeedPermissionMessage(Manifest.permission.READ_SMS)
+                    )
+                    .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            FragmentSecurityQuestionPermissionsDispatcher.checkSmsPermissionWithCheck(FragmentSecurityQuestion.this);
+
+                        }
+                    })
+                    .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_SMS);
+                        }
+                    })
+                    .show();
+        } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
+            FragmentSecurityQuestionPermissionsDispatcher.checkSmsPermissionWithCheck(FragmentSecurityQuestion.this);
+        }
+        securityQuestion.doSendAnalytics();
+    }
+
+    @Override
+    public void onPause() {
+        if (smsReceiver != null)
+            getActivity().unregisterReceiver(smsReceiver);
+        super.onPause();
     }
 
     @Override
@@ -165,20 +238,20 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     }
 
     @Override
-    public void disableButton() {
-        vSendOtp.setBackground(getResources().getDrawable(R.drawable.btn_transparent_disable));
-        vSendOtp.setEnabled(false);
-        vSendOtp.setTextColor(getResources().getColor(R.color.grey_600));
+    public void startTimer() {
+
         countDownTimer = new CountDownTimer(90000, 1000) {
             public void onTick(long millisUntilFinished) {
-                try{
-                    vSendOtp.setBackground(getResources().getDrawable(R.drawable.btn_transparent_disable));
+                try {
+                    MethodChecker.setBackground(vSendOtp, getResources().getDrawable(R.drawable.btn_transparent_disable));
                     vSendOtp.setEnabled(false);
-                    vSendOtp.setText(""+String.format(FORMAT,
+                    vSendOtp.setText("" + String.format(FORMAT,
                             TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
                                     TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
                             TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
                                     TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+
+                    vSendOtpCall.setVisibility(View.GONE);
 
                 } catch (Exception e) {
                     cancel();
@@ -186,11 +259,8 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
             }
 
             public void onFinish() {
-                try{
-                    vSendOtp.setTextColor(getResources().getColor(R.color.tkpd_green_onboarding));
-                    vSendOtp.setBackground(getResources().getDrawable(R.drawable.btn_share_transaparent));
-                    vSendOtp.setText("Kirim ulang OTP");
-                    vSendOtp.setEnabled(true);
+                try {
+                    enableOtpButton();
                 } catch (Exception e) {
 
                 }
@@ -200,12 +270,29 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         vInputOtp.requestFocus();
     }
 
+    private void enableOtpButton() {
+        vSendOtp.setTextColor(getResources().getColor(R.color.tkpd_green_onboarding));
+        MethodChecker.setBackground(vSendOtp, getResources().getDrawable(R.drawable.btn_share_transaparent));
+        vSendOtp.setText(R.string.title_resend_otp);
+        vSendOtp.setEnabled(true);
+
+        vSendOtpCall.setVisibility(View.VISIBLE);
+    }
+
     @Override
     public void destroyTimer() {
-        if (countDownTimer!=null) {
+        if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
         }
+    }
+
+    @Override
+    public void disableOtpButton() {
+        MethodChecker.setBackground(vSendOtp, getResources().getDrawable(R.drawable.btn_transparent_disable));
+        vSendOtp.setEnabled(false);
+        vSendOtp.setTextColor(getResources().getColor(R.color.grey_600));
+        vSendOtpCall.setVisibility(View.GONE);
     }
 
     @Override
@@ -230,12 +317,29 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
             }
         });
+
+        vSendOtpCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                securityQuestion.doRequestOtpWithCall();
+
+            }
+        });
+        changeNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = InboxRouter.getContactUsActivityIntent(getActivity());
+                intent.putExtra("PARAM_URL", TkpdBaseURL.ContactUs.URL_CHANGE_NUMBER);
+                startActivity(intent);
+            }
+        });
     }
 
     private boolean otpIsValid() {
         boolean isValid = true;
         //TODO: OTP validation
-        if(vInputOtp.getText().length() == 0 || vInputOtp.getText().length() > 6 || vInputOtp.getText().length() < 6 ){
+        if (vInputOtp.getText().length() == 0 || vInputOtp.getText().length() > 6 || vInputOtp.getText().length() < 6) {
             isValid = false;
             displayError(true);
             vInputOtp.requestFocus();
@@ -244,56 +348,54 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     }
 
     @Override
-    public void showViewSecurity() {
-        vSecurity.setVisibility(View.VISIBLE);
-        vOtp.setVisibility(View.GONE);
-    }
-
-    @Override
     public void showViewOtp() {
         vOtp.setVisibility(View.VISIBLE);
         vSecurity.setVisibility(View.GONE);
-        titleOTP.setText("Halo, "+SessionHandler.getTempLoginName(getActivity()));
-        String phone = SessionHandler.getTempPhoneNumber(getActivity()).toString();
-        phone = phone.substring(phone.length() - 4);
-        phoneNumber.setText("XXXX-XXXX-"+phone);
-        securityQuestion.doRequestOtp();
-        //TODO: add textwathcer with auto added dash 081X-XXXX-XXXX
-        /*phoneNumber.addTextChangedListener(new PhoneNumberFormattingTextWatcher());*/
-        /*phoneNumber.addTextChangedListener(new TextWatcher() {
-            int keyDel = 0;
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                phoneNumber.setOnKeyListener(new View.OnKeyListener() {
-                    @Override
-                    public boolean onKey(View v, int keyCode, KeyEvent event) {
-                        if (keyCode == KeyEvent.KEYCODE_DEL)
-                            keyDel = 1;
-                        return false;
-                    }
-                });
-                if (keyDel == 0) {
-                    int len = phoneNumber.getText().length();
-                    if(len == 3) {
-                        phoneNumber.setText(phoneNumber.getText() + "-");
-                        phoneNumber.setSelection(phoneNumber.getText().length());
-                    }
-                } else {
-                    keyDel = 0;
-                }
-            }
-            @Override
-            public void afterTextChanged(Editable arg0) {
-                // TODO Auto-generated method stub
-            }
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                // TODO Auto-generated method stub
-            }
-        });*/
+        if (TrackingUtils.getGtmString(CAN_REQUEST_OTP_IMMEDIATELY).equals("true"))
+            securityQuestion.doRequestOtp();
+        titleOTP.setText("Halo, " + SessionHandler.getTempLoginName(getActivity()));
+
+
+        Spannable spannable = new SpannableString(getString(R.string.action_send_otp_with_call));
+
+        spannable.setSpan(new ClickableSpan() {
+                              @Override
+                              public void onClick(View view) {
+
+                              }
+
+                              @Override
+                              public void updateDrawState(TextPaint ds) {
+                                  ds.setUnderlineText(true);
+                                  ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                              }
+                          }
+                , getString(R.string.action_send_otp_with_call).indexOf("kirim")
+                , getString(R.string.action_send_otp_with_call).length()
+                , 0);
+
+        vSendOtpCall.setText(spannable, TextView.BufferType.SPANNABLE);
+
+        Spannable spannable2 = new SpannableString(getString(R.string.content_change_number));
+
+        spannable2.setSpan(new ClickableSpan() {
+                               @Override
+                               public void onClick(View view) {
+
+                               }
+
+                               @Override
+                               public void updateDrawState(TextPaint ds) {
+                                   ds.setUnderlineText(true);
+                                   ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                               }
+                           }
+                , getString(R.string.content_change_number).indexOf("Klik disini")
+                , getString(R.string.content_change_number).length()
+                , 0);
+
+        changeNumber.setText(spannable2, TextView.BufferType.SPANNABLE);
     }
-
-
 
     @Override
     public void setModel(QuestionFormModel data) {
@@ -303,23 +405,24 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
             case QuestionFormModel.OTP_No_HP_TYPE:
                 vSendOtp.setText(securityQuestion.getOtpSendString());
                 vInputOtp.setEnabled(true);
-                titleSecurity.setText(getResources().getString(R.string.content_security_question_phone));
+                String phone = SessionHandler.getTempPhoneNumber(getActivity());
+                phone = phone.substring(phone.length() - 4);
+                String contentSecurity = String.format(getResources().getString(R.string.content_security_question_phone) + " <b>XXXX-XXXX- %s </b>", phone);
+                titleSecurity.setText(MethodChecker.fromHtml(contentSecurity));
+                changeNumber.setVisibility(View.VISIBLE);
+                vSendOtpCall.setVisibility(View.VISIBLE);
                 break;
             case QuestionFormModel.OTP_Email_TYPE:
                 vSendOtp.setText(securityQuestion.getOtpSendString());
                 vInputOtp.setEnabled(true);
                 titleSecurity.setText(getResources().getString(R.string.content_security_question_email));
+                changeNumber.setVisibility(View.GONE);
+                vSendOtpCall.setVisibility(View.GONE);
                 break;
         }
         ;
         vQuestion.setText(data.getTitle());
     }
-
-    @Override
-    public void finishSecurityQuestion(LoginInterruptModel loginInterruptModel) {
-        throw new RuntimeException("don't use this anymore !!!");
-    }
-
 
     @Override
     public void requestOTP(OTPModel model) {
@@ -360,6 +463,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         Log.d(TAG, messageTAG + "retry arise !!!");
         SnackbarManager.make(getActivity(), getString(R.string.message_verification_timeout), Snackbar.LENGTH_SHORT).show();
         displayProgress(false);
+        enableOtpButton();
     }
 
     @Override
@@ -367,6 +471,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         String text = (String) data[0];
         SnackbarManager.make(getActivity(), text, Snackbar.LENGTH_SHORT).show();
         displayProgress(false);
+        enableOtpButton();
     }
 
     @Override
@@ -374,11 +479,73 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         String text = (String) data[0];
         SnackbarManager.make(getActivity(), text, Snackbar.LENGTH_SHORT).show();
         displayProgress(false);
+        enableOtpButton();
     }
 
     @Override
     public void setData(int type, Bundle data) {
         if (securityQuestion != null)
             securityQuestion.setData(type, data);
+    }
+
+    public void showError(String message) {
+        displayProgress(false);
+        if (message.equals(""))
+            NetworkErrorHelper.showSnackbar(getActivity());
+        else
+            NetworkErrorHelper.showSnackbar(getActivity(), message);
+        enableOtpButton();
+    }
+
+    public void onSuccessRequestOTPWithCall(String message) {
+        startTimer();
+        displayProgress(false);
+        SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).show();
+    }
+
+    public void onSuccessRequestOTP(String message) {
+        startTimer();
+        displayProgress(false);
+        SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onReceiveOTP(String otpCode) {
+        FragmentSecurityQuestionPermissionsDispatcher.processOtpWithCheck(FragmentSecurityQuestion.this, otpCode);
+    }
+
+    @NeedsPermission(Manifest.permission.READ_SMS)
+    public void processOtp(String otpCode) {
+        if (vInputOtp != null)
+            vInputOtp.setText(otpCode);
+        securityQuestion.saveOTPAnswer(otpCode);// this is for rotation
+        securityQuestion.doAnswerQuestion(otpCode);
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        FragmentSecurityQuestionPermissionsDispatcher.onRequestPermissionsResult(FragmentSecurityQuestion.this, requestCode, grantResults);
+    }
+
+    @OnShowRationale(Manifest.permission.READ_SMS)
+    void showRationaleForStorageAndCamera(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_SMS);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_SMS)
+    void showDeniedForCamera() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_SMS);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_SMS)
+    void showNeverAskForCamera() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_SMS);
+    }
+
+    @NeedsPermission(Manifest.permission.READ_SMS)
+    public void checkSmsPermission() {
+
     }
 }

@@ -1,8 +1,10 @@
 package com.tokopedia.sellerapp.home.fragment;
 
 import android.app.DialogFragment;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import com.tokopedia.sellerapp.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
 
 public class CloseAppsDialogFragment extends DialogFragment {
     public static final String CLOSE_APPS_CACHE = "CLOSE_APPS_CACHE";
@@ -52,6 +55,11 @@ public class CloseAppsDialogFragment extends DialogFragment {
         if (mDontShowAgain.isChecked()) {
             mHandler.putBoolean(DONT_SHOW_FLAG, true);
             mHandler.applyEditor();
+        }
+        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+            getActivity().finishAffinity();
+        }else{
+            ActivityCompat.finishAffinity(getActivity());
         }
         getActivity().finish();
     }
@@ -95,7 +103,7 @@ public class CloseAppsDialogFragment extends DialogFragment {
     public void onResume() {
         super.onResume();
         ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
-        params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
         super.onResume();

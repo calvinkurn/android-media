@@ -13,14 +13,16 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.CategoryDB_Table;
-import com.tokopedia.core.myproduct.service.ProductService;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.product.listener.ProductInfoView;
-import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
+import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.core.var.TkpdState;
 
 import java.util.List;
 
@@ -38,20 +40,24 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
 
     @Override
     public void initialFragment(@NonNull Context context, Uri uri, Bundle bundle) {
-        // [variable for add product before share]
-        int type = bundle.getInt(ProductService.TYPE, -1);
-        long productId = bundle.getLong(ProductService.PRODUCT_DATABASE_ID, -1);
-        String stockStatus = bundle.getString(ProductService.STOCK_STATUS,"");
-        // [variable for add product before share]
-        ShareData shareDa = bundle.getParcelable(ProductInfoActivity.SHARE_DATA);
 
+        boolean isAddingProduct = bundle.getBoolean(ProductInfoActivity.IS_ADDING_PRODUCT);
+
+        ShareData shareDa = bundle.getParcelable(ProductInfoActivity.SHARE_DATA);
         // [variable for add product before share]
-        if(type != -1 && productId != -1 && !stockStatus.equals("")){
-            viewListener.inflateFragment(ProductShareFragment.newInstance(type, productId, stockStatus), ProductShareFragment.TAG);
+        if(isAddingProduct){
+            viewListener.inflateFragment(ProductShareFragment.newInstance(isAddingProduct), ProductShareFragment.TAG);
         // [variable for add product before share]
         }else if(shareDa !=null){
             viewListener.inflateFragment(ProductShareFragment.newInstance(shareDa), ProductShareFragment.TAG);
-        }else if (isProductDetail(uri, bundle)) {
+        } else if (bundle !=null && uri !=null && uri.getPathSegments().size() == 2) {
+            viewListener.inflateFragment(ProductDetailFragment.newInstanceForDeeplink(ProductPass.Builder.aProductPass()
+                            .setProductKey(uri.getPathSegments().get(1))
+                            .setShopDomain(uri.getPathSegments().get(0))
+                            .setProductUri(uri.toString())
+                            .build()),
+                    ProductDetailFragment.class.getSimpleName());
+        } else if (isProductDetail(uri, bundle)) {
             viewListener.inflateFragment(ProductDetailFragment
                             .newInstance(generateProductPass(bundle, uri)),
                     ProductDetailFragment.class.getSimpleName());
@@ -87,13 +93,22 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
     private ProductPass generateProductPass(Bundle bundleData, Uri uriData) {
         ProductPass productPass;
         if (bundleData != null) {
-            productPass = bundleData.getParcelable(ProductInfoActivity.EXTRA_PRODUCT_PASS);
-            if (productPass == null) {
+            productPass = bundleData.getParcelable(ProductDetailRouter.EXTRA_PRODUCT_PASS);
+            ProductItem productItem = bundleData
+                    .getParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM);
+            if (productPass == null && productItem == null) {
                 productPass = ProductPass.Builder.aProductPass()
                         .setProductId(bundleData.getString("product_id", ""))
                         .setProductName(bundleData.getString("product_key", ""))
                         .setProductPrice(bundleData.getString("product_price", ""))
                         .setShopDomain(bundleData.getString("shop_domain", ""))
+                        .build();
+            } else if (productItem != null) {
+                productPass = ProductPass.Builder.aProductPass()
+                        .setProductPrice(productItem.getPrice())
+                        .setProductId(productItem.getId())
+                        .setProductName(productItem.getName())
+                        .setProductImage(productItem.getImgUri())
                         .build();
             }
         } else {

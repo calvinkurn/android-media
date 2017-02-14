@@ -21,8 +21,8 @@ import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 public class BannerWebView extends TActivity implements
         FragmentGeneralWebView.OnFragmentInteractionListener, DeepLinkWebViewHandleListener {
 
-    private static final int IS_WEBVIEW = 1;
     private FragmentBannerWebView fragment;
+    public static final String EXTRA_URL = "url";
 
     @Override
     public String getScreenName() {
@@ -34,7 +34,7 @@ public class BannerWebView extends TActivity implements
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_webview_container);
 
-        String url = getIntent().getExtras().getString("url");
+        String url = getIntent().getExtras().getString(EXTRA_URL);
         fragment = FragmentBannerWebView.createInstance(url);
         if (savedInstanceState == null) {
             FragmentManager fragmentManager = getFragmentManager();
@@ -72,8 +72,8 @@ public class BannerWebView extends TActivity implements
     @Override
     public void onBackPressed() {
         try {
-            if (fragment.getWebviewBanner().canGoBack()) {
-                fragment.getWebviewBanner().goBack();
+            if (fragment.getWebview().canGoBack()) {
+                fragment.getWebview().goBack();
             } else {
                 super.onBackPressed();
             }

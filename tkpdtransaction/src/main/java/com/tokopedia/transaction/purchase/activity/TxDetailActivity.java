@@ -3,15 +3,17 @@ package com.tokopedia.transaction.purchase.activity;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.IntentService;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
-import android.text.Html;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -20,21 +22,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.customView.OrderStatusView;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.product.model.passdata.ProductPass;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.adapter.TxProductListAdapter;
 import com.tokopedia.transaction.purchase.listener.TxDetailViewListener;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
 import com.tokopedia.transaction.purchase.presenter.TxDetailPresenter;
 import com.tokopedia.transaction.purchase.presenter.TxDetailPresenterImpl;
 import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
-import com.tokopedia.transaction.purchase.view.NestedListView;
+import com.tokopedia.transaction.utils.LinearLayoutManagerNonScroll;
 
 import java.text.MessageFormat;
 
@@ -53,7 +57,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     @BindView(R2.id.shop_name)
     TextView tvShopName;
     @BindView(R2.id.product_list)
-    NestedListView lvProduct;
+    RecyclerView rvProductList;
     @BindView(R2.id.shipping_cost)
     TextView tvShippingCost;
     @BindView(R2.id.additional_cost)
@@ -120,22 +124,23 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_people_tx_details;
+        return R.layout.activity_transaction_detail_tx_module;
     }
 
     @Override
     protected void initView() {
         progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
+        rvProductList.setLayoutManager(new LinearLayoutManagerNonScroll(this));
     }
 
     @Override
     protected void setViewListener() {
-        lvProduct.setAdapter(productListAdapter);
+        rvProductList.setAdapter(productListAdapter);
     }
 
     @Override
     protected void initVar() {
-        this.productListAdapter = new TxProductListAdapter(this, this);
+        this.productListAdapter = new TxProductListAdapter(this);
     }
 
     @Override
@@ -152,8 +157,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     }
 
     private void renderProductList() {
-        productListAdapter.addAll(orderData.getOrderProducts());
-        productListAdapter.notifyDataSetChanged();
+        productListAdapter.addAllDataList(orderData.getOrderProducts());
     }
 
     private void renderOrderStatus() {
@@ -185,7 +189,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
             holderFormSender.setVisibility(View.GONE);
         }
         tvInvoiceNumber.setText(orderData.getOrderDetail().getDetailInvoice());
-        tvShopName.setText(Html.fromHtml(orderData.getOrderShop().getShopName()));
+        tvShopName.setText(MethodChecker.fromHtml(orderData.getOrderShop().getShopName()));
         tvAdditionalCost.setText(orderData.getOrderDetail().getDetailTotalAddFeeIdr());
         tvShippingCost.setText(orderData.getOrderDetail().getDetailShippingPriceIdr());
         tvQuantity.setText(MessageFormat.format("{0} Barang",
@@ -193,7 +197,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
         tvGrandTotal.setText(orderData.getOrderDetail().getDetailOpenAmountIdr());
         tvTransactionDate.setText(orderData.getOrderDetail().getDetailOrderDate());
         tvDestination.setText(MessageFormat.format("{0} {1}",
-                Html.fromHtml(orderData.getOrderShipment().getShipmentName() + " -"),
+                MethodChecker.fromHtml(orderData.getOrderShipment().getShipmentName() + " -"),
                 orderData.getOrderShipment().getShipmentProduct()));
         tvDestinationDetail.setText(orderData.getOrderDestination().getDetailDestination()
                 .replace("&amp;", "&"));
@@ -277,6 +281,23 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     }
 
     @Override
+    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
+
+    }
+
+    @Override
+    public String getStringFromResource(@StringRes int resId) {
+        return getString(resId);
+    }
+
+    @Override
+    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            TKPDMapParam<String, String> originParams
+    ) {
+        return null;
+    }
+
+    @Override
     public void closeView() {
         this.finish();
     }
@@ -322,12 +343,6 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
     void actionRequestCancelOrder() {
         showDialog(getRequestCancelOrderAlertDialog());
     }
-
-    @OnClick(R2.id.upload_proof)
-    void actionUploadProof() {
-        presenter.processUploadProof(this, orderData);
-    }
-
 
     @OnClick(R2.id.see_all)
     void actionSeeAllHistories() {
@@ -406,8 +421,8 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
 
     @NonNull
     private DialogInterface.OnShowListener getRequestCancelOrderAlertDialogPositiveButtonListener(
-            final TextInputLayout tilEtReason, final EditText etReason, final AlertDialog alertDialog
-    ) {
+            final TextInputLayout tilEtReason, final EditText etReason,
+            final AlertDialog alertDialog) {
         return new DialogInterface.OnShowListener() {
             @Override
             public void onShow(final DialogInterface dialog) {
@@ -462,7 +477,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
                 .getHistoryOrderStatus()) == 400) {
             orderData.getOrderHistory().get(historyIndex)
                     .setHistoryComments(
-                            "Lama waktu proses produk : "
+                            getString(R.string.label_title_prefix_preorder_period_time_info)
                                     + orderData.getOrderDetail().getDetailPreorder()
                                     .getPreorderProcessTime()
                                     + " "

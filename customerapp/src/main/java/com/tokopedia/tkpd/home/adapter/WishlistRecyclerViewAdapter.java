@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.tkpd.R;
@@ -68,7 +69,7 @@ public class WishlistRecyclerViewAdapter extends RecyclerView.Adapter<WishlistRe
 
     @Override
     public void onBindViewHolder(WishlistRecyclerViewAdapter.ViewHolder holder, int position) {
-        holder.productName.setText(Html.fromHtml(data.get(position).name));
+        holder.productName.setText(MethodChecker.fromHtml(data.get(position).name));
         holder.productPrice.setText(data.get(position).price);
         holder.shopName.setText(data.get(position).shop);
         setProductImage(holder, data.get(position));
@@ -84,7 +85,7 @@ public class WishlistRecyclerViewAdapter extends RecyclerView.Adapter<WishlistRe
 
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(context, ProductInfoActivity.class);
-                bundle.putString("product_id", item.getId());
+                bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, item);
                 intent.putExtras(bundle);
                 context.startActivity(intent);
             }

@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -34,6 +35,7 @@ import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.session.model.CreatePasswordModel;
 import com.tokopedia.core.session.model.LoginViewModel;
+import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.session.session.presenter.RegisterNew;
 import com.tokopedia.session.session.presenter.RegisterNewImpl;
 import com.tokopedia.session.session.presenter.RegisterNewNextImpl;
@@ -198,8 +200,9 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
             case DownloadService.MAKE_LOGIN:
                 showProgress(false);
                 if (new SessionHandler(getActivity()).isV4Login()) {// go back to home
-                    getActivity().startActivity(new Intent(getActivity(), HomeRouter.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                    getActivity().finish();
+                    if (getActivity() != null && getActivity() instanceof SessionView) {
+                        ((SessionView) getActivity()).destroy();
+                    }
                 }
                 break;
         }
@@ -246,6 +249,10 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
             presenter.setData(RegisterNewImpl.convertToMap(RegisterThird.IS_CHECKED, vTos.isChecked()));
         }
         presenter.setData(RegisterNewImpl.convertToMap(RegisterThird.GENDER, DEFAULT_GENDER));
+
+        if(allowedFieldList != null) {
+            presenter.setData(RegisterNewImpl.convertToMap(RegisterThird.ALLOWED_FIELDS, allowedFieldList));
+        }
     }
 
     @Override
@@ -276,6 +283,10 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
         } else if (data.containsKey(RegisterThird.PHONENUMBER)) {
             String phoneNumber = (String) data.get(RegisterThird.PHONENUMBER);
             vPhoneNumber.setText(phoneNumber);
+        } else if (data.containsKey(RegisterThird.ALLOWED_FIELDS)) {
+            List temp = (List) data.get(RegisterThird.ALLOWED_FIELDS);
+            allowedFieldList = temp;
+            setAllowedField();
         }
 
 
@@ -284,12 +295,11 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
     private void makeItEnabled(TextView tv, boolean status){
         tv.setEnabled(status);
         if(status){
-            try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 tv.setBackground(ContextCompat.getDrawable(getActivity(),R.drawable.new_edittext_white));
-            }catch (NoSuchMethodError e){
+            }else{
                 tv.setBackgroundDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.new_edittext_white));
             }
-
         }else{
             tv.setBackgroundColor(Color.parseColor("#EEEEEE"));
         }
@@ -321,7 +331,7 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
             sendGTMRegisterError(AppEventTracking.EventLabel.FULLNAME);
             return false;
         }
-        if (vPassword.length() == 0 && vPassword.isEnabled()) {
+        if (vPassword.length() == 0 && vPassword.getVisibility()==View.VISIBLE) {
             vPassword.setError(getText(R.string.error_field_required));
             vPassword.requestFocus();
             sendGTMRegisterError(AppEventTracking.EventLabel.PASSWORD);
@@ -423,28 +433,22 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
     public void setAllowedField() {
         if(allowedFieldList!=null){
             makeItEnabled(vName,false);
-            makeItEnabled(vPassword,false);
             makeItEnabled(vPhoneNumber, false);
+            vPassword.setVisibility(View.GONE);
             vPasswordRetype.setVisibility(View.GONE);
             for(String key : allowedFieldList){
                 switch (key){
-                    case "password":
-                        makeItEnabled(vPassword, true);
-                        vPasswordRetype.setVisibility(View.VISIBLE);
-                        float scale = getResources().getDisplayMetrics().density;
-                        int dpAsPixels = (int) (5*scale + 0.5f);
-                        vPassword.setPadding(0,0,dpAsPixels,0);
-                        vPassword.setText("");
-                        vPasswordRetype.setText("");
-                        break;
                     case "name":
                         makeItEnabled(vName, true);
                         vName.requestFocus();
                         vName.setText("");
                         break;
+                    case "password":
+                        vPassword.setVisibility(View.VISIBLE);
+                        vPasswordRetype.setVisibility(View.VISIBLE);
+                        break;
                     case "phone":
                         makeItEnabled(vPhoneNumber,true);
-
                         break;
                     default:
                         break;

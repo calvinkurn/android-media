@@ -1,10 +1,7 @@
 package com.tokopedia.core.home.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +13,9 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.var.Badge;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.ProductItem;
 
 import java.util.List;
@@ -78,10 +76,13 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.productName.setText(Html.fromHtml(data.get(position).name));
-        holder.productPrice.setText(data.get(position).price);
-        holder.shopName.setText(data.get(position).shop);
-        ImageHandler.loadImageFit2(holder.getContext(), holder.productImage, data.get(position).imgUri);
+        holder.productName.setText(MethodChecker.fromHtml(data.get(position).getName()));
+        holder.productPrice.setText(data.get(position).getPrice());
+        holder.shopName.setText(data.get(position).getShop());
+
+        ImageHandler.loadImageFit2(holder.getContext(),
+                holder.productImage, data.get(position).getImgUri());
+
         setBadges(holder, data.get(position));
 
         holder.mainContent.setOnClickListener(onProductItemClicked(position));
@@ -93,11 +94,11 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
             public void onClick(View view) {
                 if(position < data.size()) {
                     UnifyTracking.eventFeedRecent(data.get(position).getName());
-                    Bundle bundle = new Bundle();
-                    Intent intent = new Intent(context, ProductInfoActivity.class);
-                    bundle.putString("product_id", data.get(position).id);
-                    intent.putExtras(bundle);
-                    context.startActivity(intent);
+                    context.startActivity(
+                            ProductDetailRouter.createInstanceProductDetailInfoActivity(
+                                    context, getProductDataToPass(data.get(position))
+                            )
+                    );
                 }
             }
         };
@@ -113,20 +114,31 @@ public class HistoryProductRecyclerViewAdapter extends RecyclerView.Adapter<Hist
         return data;
     }
 
-    public void addAll(List<ProductItem> newData){
+    public void addAll(List<ProductItem> newData) {
         data.clear();
         data.addAll(newData);
     }
 
 
-
     private void setBadges(ViewHolder holder, ProductItem data) {
-        if (data.getBadges() != null && holder.badgesContainer.getChildCount() == 0)
-            for (Badge badges : data.getBadges()) {
+        holder.badgesContainer.removeAllViews();
+        if (data.getBadges() != null) {
+            for (com.tokopedia.core.var.Badge badge : data.getBadges()) {
                 View view = LayoutInflater.from(context).inflate(R.layout.badge_layout_small, null);
                 ImageView imageBadge = (ImageView) view.findViewById(R.id.badge);
                 holder.badgesContainer.addView(view);
-                LuckyShopImage.loadImage(imageBadge, badges.getImageUrl());
+                LuckyShopImage.loadImage(imageBadge, badge.getImageUrl());
             }
+        }
+
+    }
+
+    private ProductPass getProductDataToPass(ProductItem recentView) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(recentView.getPrice())
+                .setProductId(recentView.getId())
+                .setProductName(recentView.getName())
+                .setProductImage(recentView.getImgUri())
+                .build();
     }
 }

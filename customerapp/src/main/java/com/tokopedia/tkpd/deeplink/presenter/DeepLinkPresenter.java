@@ -14,4 +14,8 @@ public interface DeepLinkPresenter {
     void processAFlistener();
 
     void sendCampaignGTM(String campaignUri, String screenName);
+
+    boolean isLandingPageWebView(Uri uri);
+
+    void checkUriLogin(Uri uriData);
 }

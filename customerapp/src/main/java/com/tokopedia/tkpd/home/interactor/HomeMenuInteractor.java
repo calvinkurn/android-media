@@ -1,9 +1,11 @@
 package com.tokopedia.tkpd.home.interactor;
 
 
+import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Response;
 import rx.Subscriber;
@@ -26,5 +28,10 @@ public interface HomeMenuInteractor {
 
         void onErrorFetchHomeCategoryListFromDb(Throwable throwable);
     }
+
+    void fetchTopPicksNetworkNetwork(Map<String, String> params, Subscriber<Response<String>> networksubscriber);
+
+    void fetchBrands(String params, Subscriber<Response<Brands>> brandsSubscriber);
+
 
 }

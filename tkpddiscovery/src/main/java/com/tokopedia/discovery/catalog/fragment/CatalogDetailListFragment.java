@@ -14,7 +14,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,8 +21,8 @@ import android.widget.TextView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.customadapter.ColoredFilterAdapter;
 import com.tokopedia.discovery.catalog.adapter.CatalogDetailAdapter;
-import com.tokopedia.discovery.catalog.adapter.CatalogLocationAdapter;
 import com.tokopedia.discovery.catalog.listener.ICatalogDetailListView;
 import com.tokopedia.discovery.catalog.model.CatalogDetailItem;
 import com.tokopedia.discovery.catalog.model.CatalogDetailListLocation;
@@ -74,6 +73,10 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
     private List<CatalogDetailListLocation> mLocationsData;
     private CatalogListWrapperData mWrapperData;
     private SlideOffViewHandler mSlideOffViewHandler;
+
+    private int selectedSortPosition = 0;
+    private int selectedLocationPosition = 0;
+    private int selectedConditionPosition = 0;
 
     public CatalogDetailListFragment() {
     }
@@ -228,8 +231,10 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
     @Override
     public void hideProgressLoading() {
         isLoading = false;
-        mLoading.setVisibility(View.GONE);
-        mContainer.setVisibility(View.VISIBLE);
+        if (mLoading != null)
+            mLoading.setVisibility(View.GONE);
+        if (mContainer != null)
+            mContainer.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -255,13 +260,14 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
     @Override
     public void showSortingDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-        ArrayAdapter<SingleItemFilter> adapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.select_dialog_item, mSortList);
+        ColoredFilterAdapter adapter = new ColoredFilterAdapter(getActivity(),
+                selectedSortPosition, mSortList);
         alertDialog.setAdapter(adapter, new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
                 mWrapperData.setOrderBy(mSortList.get(which).getId());
                 refreshData();
+                selectedSortPosition = which;
             }
         });
         alertDialog.create().show();
@@ -276,12 +282,13 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
     @Override
     public void showConditionDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-        ArrayAdapter<SingleItemFilter> adapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.select_dialog_item, mConditionList);
+        ColoredFilterAdapter adapter = new ColoredFilterAdapter(getActivity(),
+                selectedConditionPosition, mConditionList);
         alertDialog.setAdapter(adapter, new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
                 mWrapperData.setCondition(mConditionList.get(which).getId());
+                selectedConditionPosition = which;
                 refreshData();
             }
         });
@@ -291,13 +298,14 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
     @Override
     public void showLocationDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-        ArrayAdapter<CatalogDetailListLocation> adapter = new CatalogLocationAdapter(getActivity(),
-                (ArrayList<CatalogDetailListLocation>) mLocationsData);
+        ColoredFilterAdapter adapter = new ColoredFilterAdapter(getActivity(),
+                selectedLocationPosition, mLocationsData);
         alertDialog.setAdapter(adapter, new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
                 mWrapperData.setLocation(mLocationsData.get(which).getId());
                 refreshData();
+                selectedLocationPosition = which;
             }
         });
         alertDialog.create().show();

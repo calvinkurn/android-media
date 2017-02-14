@@ -6,16 +6,16 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.inputmethod.InputMethodManager;
 
-import com.tokopedia.core.GCMListenerService;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.gcm.FCMMessagingService;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.adapter.PurchaseTabAdapter;
 import com.tokopedia.transaction.purchase.fragment.TxListFragment;
 import com.tokopedia.transaction.purchase.fragment.TxSummaryFragment;
@@ -30,7 +30,7 @@ import butterknife.BindView;
  * @author by anggaprasetiyo on 8/26/16.
  */
 public class PurchaseActivity extends DrawerPresenterActivity implements
-        TxSummaryFragment.OnCenterMenuClickListener, GCMListenerService.NotificationListener,
+        TxSummaryFragment.OnCenterMenuClickListener, FCMMessagingService.NotificationListener,
         PurchaseTabAdapter.Listener, TxListFragment.StateFilterListener {
 
     @BindView(R2.id.pager)
@@ -73,7 +73,7 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_purchase;
+        return R.layout.activity_purchase_tx_module;
     }
 
     @Override
@@ -94,15 +94,15 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
     protected void initVar() {
         tabContents = new ArrayList<>();
         tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY,
-                getString(R.string.title_dashboard_purchase));
+                getString(R.string.title_tab_purchase_summary));
         tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION,
-                getString(R.string.title_payment_status));
+                getString(R.string.title_tab_purchase_status_payment));
         tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER,
-                getString(R.string.title_order_status));
+                getString(R.string.title_tab_purchase_status_order));
         tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER,
-                getString(R.string.title_receive_confirmation));
+                getString(R.string.title_tab_purchase_confirm_deliver));
         tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER,
-                getString(R.string.title_transaction_list));
+                getString(R.string.title_tab_purchase_transactions));
     }
 
     @Override
@@ -129,6 +129,30 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
     protected void setActionVar() {
         String screenName = getString(R.string.transaction_people_page);
         ScreenTracking.screenLoca(screenName);
+    }
+
+    @Override
+    public void OnMenuClick(int position, String stateTxFilter) {
+        this.stateTxFilterID = stateTxFilter;
+        this.viewPager.setCurrentItem(position);
+    }
+
+    @Override
+    public String getFilterCaseAllTransaction() {
+        return stateTxFilterID;
+    }
+
+    @Override
+    public String getStateTxFilterID() {
+        return stateTxFilterID;
+    }
+
+    @Override
+    protected void initView() {
+        super.initView();
+        if (getIntent().getExtras() != null && getIntent().getExtras()
+                .getBoolean(TransactionPurchaseRouter.EXTRA_UPDATE_BALANCE, false))
+            drawer.updateBalance();
     }
 
     private void setDrawerSidePosition(int position) {
@@ -165,30 +189,6 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
         }
     }
 
-    @Override
-    public void OnMenuClick(int position, String stateTxFilter) {
-        this.stateTxFilterID = stateTxFilter;
-        this.viewPager.setCurrentItem(position);
-    }
-
-    @Override
-    public String getFilterCaseAllTransaction() {
-        return stateTxFilterID;
-    }
-
-    @Override
-    public String getStateTxFilterID() {
-        return stateTxFilterID;
-    }
-
-    @Override
-    protected void initView() {
-        super.initView();
-        if (getIntent().getExtras() != null && getIntent().getExtras()
-                .getBoolean(TransactionPurchaseRouter.EXTRA_UPDATE_BALANCE, false))
-            drawer.updateBalance();
-    }
-
     private class OnTabPageChangeListener extends TabLayout.TabLayoutOnPageChangeListener {
 
         OnTabPageChangeListener(TabLayout tabLayout) {
@@ -207,5 +207,4 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
                     .hideSoftInputFromWindow(viewPager.getWindowToken(), 0);
         }
     }
-
 }

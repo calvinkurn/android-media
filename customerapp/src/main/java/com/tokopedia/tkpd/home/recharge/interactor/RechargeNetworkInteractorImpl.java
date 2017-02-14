@@ -36,120 +36,6 @@ public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor 
     }
 
     @Override
-    public void getStatus(@NonNull final OnGetStatusListener listener) {
-        compositeSubscription.add(rechargeService.getApi().getStatus()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Subscriber<Response<Status>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        listener.onNetworkError();
-                    }
-
-                    @Override
-                    public void onNext(Response<Status> statusResponse) {
-                        if (statusResponse.isSuccessful()) {
-                            listener.onSuccess(statusResponse.body());
-                        } else {
-                            listener.onNetworkError();
-                        }
-                    }
-                }));
-
-    }
-
-    @Override
-    public void getAllCategory(@NonNull final OnGetCategoryListener listener) {
-        compositeSubscription.add(rechargeService.getApi().getCategory()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Subscriber<Response<CategoryData>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        Log.e(TAG, "onError: ", e);
-                        listener.onNetworkError();
-                    }
-
-                        @Override
-                        public void onNext(Response<CategoryData> categoryResponse) {
-                            if (categoryResponse.isSuccessful()) {
-                                listener.onSuccess(categoryResponse.body());
-                            } else {
-                                listener.onNetworkError();
-                            }
-                        }
-                    }));
-    }
-
-    @Override
-    public void getAllOperator(@NonNull final OnGetOperatorListener listener) {
-        compositeSubscription.add(rechargeService.getApi().getOperator()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Subscriber<Response<OperatorData>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        listener.onNetworkError();
-                    }
-
-                        @Override
-                        public void onNext(Response<OperatorData> operatorResponse) {
-                            if (operatorResponse.isSuccessful()) {
-                                listener.onSuccess(operatorResponse.body());
-                            } else {
-                                listener.onNetworkError();
-                            }
-                        }
-                    }));
-    }
-
-    @Override
-    public void getAllProduct(@NonNull final OnGetProductListener listener) {
-        compositeSubscription.add(rechargeService.getApi().getProduct()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Subscriber<Response<ProductData>>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        listener.onNetworkError();
-                    }
-
-                        @Override
-                        public void onNext(Response<ProductData> productResponse) {
-                            if (productResponse.isSuccessful()) {
-                                listener.onSuccess(productResponse.body());
-                            } else {
-                                listener.onNetworkError();
-                            }
-                        }
-                    }));
-    }
-
-    @Override
     public void getRecentNumbers(Map<String, String> params, final OnGetRecentNumbersListener listener) {
         compositeSubscription.add(rechargeService.getApi().getRecentNumbers(MapNulRemover.removeNull(params))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -206,17 +92,6 @@ public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor 
                     }
                 }));
     }
-
-    @Override
-    public void getOperator(int categoryId) {
-
-    }
-
-    @Override
-    public void getProduct(int productId) {
-
-    }
-
 
     public void unsubscribe() {
         compositeSubscription.unsubscribe();

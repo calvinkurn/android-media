@@ -8,6 +8,7 @@ import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -59,7 +60,7 @@ public class TkpdAuthInterceptor implements Interceptor {
         } else if (isRequestDenied(bodyResponse)) {
             showForceLogoutDialog();
             sendForceLogoutAnalytics(response);
-        } else if (isServerError(response.code())) {
+        } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
             showServerErrorSnackbar();
             sendErrorNetworkAnalytics(response);
         }
@@ -72,24 +73,29 @@ public class TkpdAuthInterceptor implements Interceptor {
             throws IOException {
         Map<String, String> authHeaders = new HashMap<>();
         authHeaders = prepareHeader(authHeaders, originRequest);
-        generateHeader(authHeaders, originRequest , newRequest);
+        generateHeader(authHeaders, originRequest, newRequest);
     }
 
     Map<String, String> prepareHeader(Map<String, String> authHeaders, Request originRequest) {
         switch (originRequest.method()) {
+            case "PATCH":
             case "POST":
-                authHeaders = AuthUtil.generateHeaders(originRequest.url().uri().getPath(),
+                authHeaders = getHeaderMap(originRequest.url().uri().getPath(),
                         generateParamBodyString(originRequest), originRequest.method(), authKey);
                 break;
             case "GET":
-                authHeaders = AuthUtil.generateHeaders(originRequest.url().uri().getPath(),
+                authHeaders = getHeaderMap(originRequest.url().uri().getPath(),
                         generateQueryString(originRequest), originRequest.method(), authKey);
                 break;
         }
         return authHeaders;
     }
 
-    void generateHeader(Map<String, String> authHeaders, Request originRequest, Request.Builder newRequest){
+    protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey) {
+        return AuthUtil.generateHeaders(path, strParam, method, authKey);
+    }
+
+    void generateHeader(Map<String, String> authHeaders, Request originRequest, Request.Builder newRequest) {
         for (Map.Entry<String, String> entry : authHeaders.entrySet())
             newRequest.addHeader(entry.getKey(), entry.getValue());
         newRequest.method(originRequest.method(), originRequest.body());
@@ -172,6 +178,18 @@ public class TkpdAuthInterceptor implements Interceptor {
         }
     }
 
+    private boolean isHasErrorMessage(String response) {
+        JSONObject json;
+        try {
+            json = new JSONObject(response);
+            JSONArray errorMessage = json.optJSONArray("message_error");
+            return errorMessage.length() > 0;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     private Boolean isRequestDenied(String response) {
         JSONObject json;
         try {
@@ -213,7 +231,7 @@ public class TkpdAuthInterceptor implements Interceptor {
                 .protocol(oldResponse.protocol())
                 .cacheResponse(oldResponse.cacheResponse())
                 .priorResponse(oldResponse.priorResponse())
-                .code(oldResponse.code())
+                .code(isServerError(oldResponse.code()) && isHasErrorMessage(oldBodyResponse) ? 200 : oldResponse.code())
                 .request(oldResponse.request())
                 .networkResponse(oldResponse.networkResponse());
 

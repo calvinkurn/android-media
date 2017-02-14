@@ -37,6 +37,7 @@ import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.shoplocation.model.deletelocation.DeleteLocationResponse;
 import com.tokopedia.core.shoplocation.model.getshopaddress.ShopAddress;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -69,6 +70,7 @@ public class ManageShopAddress extends TActivity {
     private ArrayList<String> LocationDistrictId = new ArrayList<String>();
     private ArrayList<String> LocationAddress = new ArrayList<String>();
 
+    private View mainView;
     private LazyListView LocationListView;
     private ListViewManageShopLocation LocationAdapter;
     private NoResultHandler noResult;
@@ -97,6 +99,7 @@ public class ManageShopAddress extends TActivity {
         compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         inflateView(R.layout.activity_manage_shop_address);
+        mainView = (View) findViewById(R.id.mainView);
         noResult = new NoResultHandler(getWindow().getDecorView().getRootView());
         MainProgress = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS, getWindow().getDecorView().getRootView());
         MainProgress.setLoadingViewId(R.id.include_loading);
@@ -279,17 +282,17 @@ public class ManageShopAddress extends TActivity {
                 for (int i = 0; i < data.length(); i++) {
                     Location = new JSONObject(data.getString(i));
                     LocationId.add(Location.getString("addr_id"));
-                    LocationNameList.add(Html.fromHtml(Location.getString("addr_name")).toString());
+                    LocationNameList.add(MethodChecker.fromHtml(Location.getString("addr_name")).toString());
                     LocationPhoneList.add(Location.getString("phone"));
                     LocationFaxList.add(Location.getString("fax"));
                     LocationEmailList.add(Location.getString("email"));
                     LocationAddressList.add(
-                            Html.fromHtml(Location.getString("address")).toString()
+                            MethodChecker.fromHtml(Location.getString("address")).toString()
                                     + "\n" + Location.getString("district_name")
                                     + ", " + Location.getString("city_name")
                                     + ", " + Location.getString("postal_code")
                     );
-                    LocationAddress.add(Html.fromHtml(Location.getString("address")).toString());
+                    LocationAddress.add(MethodChecker.fromHtml(Location.getString("address")).toString());
                     LocationProvinceId.add(Location.getString("province_id"));
                     LocationCityId.add(Location.getString("city_id"));
                     LocationDistrictId.add(Location.getString("district_id"));
@@ -309,7 +312,8 @@ public class ManageShopAddress extends TActivity {
     }
 
     private void SetToUIV4(ShopAddress data) {
-        if (data.getList() != null) {
+        noResult.removeMessage();
+        if (data.getList() != null && data.getList().size() > 0) {
             LocationListView.setVisibility(View.VISIBLE);
             IsAllowShop = data.getIsAllow() + "";
             LocationId.clear();
@@ -326,7 +330,7 @@ public class ManageShopAddress extends TActivity {
             for (int i = 0; i < data.getList().size(); i++) {
                 com.tokopedia.core.shoplocation.model.getshopaddress.List Location = data.getList().get(i);
                 LocationId.add(Location.getLocationAddressId());
-                LocationNameList.add(Html.fromHtml(Location.getLocationAddressName()).toString());
+                LocationNameList.add(MethodChecker.fromHtml(Location.getLocationAddressName()).toString());
                 if (!CommonUtils.checkNullForZeroJson(Location.getLocationPhone())) {
                     Location.setLocationPhone("");
                 }
@@ -340,18 +344,18 @@ public class ManageShopAddress extends TActivity {
                 LocationFaxList.add(Location.getLocationFax());
                 LocationEmailList.add(Location.getLocationEmail());
                 LocationAddressList.add(
-                        Html.fromHtml(Location.getLocationAddress()).toString()
+                        MethodChecker.fromHtml(Location.getLocationAddress()).toString()
                                 + "\n" + Location.getLocationDistrictName()
                                 + ", " + Location.getLocationCityName()
                                 + ", " + Location.getLocationPostalCode()
                 );
-                LocationAddress.add(Html.fromHtml(Location.getLocationAddress()).toString());
+                LocationAddress.add(MethodChecker.fromHtml(Location.getLocationAddress()).toString());
                 LocationProvinceId.add(Location.getLocationProvinceId());
                 LocationCityId.add(Location.getLocationCityId());
                 LocationDistrictId.add(Location.getLocationDistrictId());
                 LocationPostList.add(Location.getLocationPostalCode());
             }
-        } else if (LocationId.size() == 0) {
+        } else {
             LocationListView.setVisibility(View.GONE);
             noResult.showMessage();
         }
@@ -387,7 +391,7 @@ public class ManageShopAddress extends TActivity {
                                 MainProgress.dismiss();
                                 mState = HIDE_MENU;
                                 invalidateOptionsMenu();
-                                NetworkErrorHelper.showEmptyState(ManageShopAddress.this, getWindow().getDecorView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                                NetworkErrorHelper.showEmptyState(ManageShopAddress.this, mainView, new NetworkErrorHelper.RetryClickedListener() {
                                     @Override
                                     public void onRetryClicked() {
                                         GetShopLocationsV4();

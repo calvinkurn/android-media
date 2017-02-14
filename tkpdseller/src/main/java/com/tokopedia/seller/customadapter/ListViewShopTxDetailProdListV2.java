@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.model.orderShipping.OrderProduct;
 
 import org.json.JSONArray;
@@ -59,11 +60,11 @@ public class ListViewShopTxDetailProdListV2 extends BaseAdapter{
             model.ProductUrl = orderProduct.getProductUrl();
             model.ProductIdList = orderProduct.getProductId()+"";
             model.ImageUrl = orderProduct.getProductPicture();
-            model.Name = Html.fromHtml(orderProduct.getProductName()).toString();
+            model.Name = MethodChecker.fromHtml(orderProduct.getProductName()).toString();
             model.Price = orderProduct.getProductPrice();
             model.TotalOrder = orderProduct.getProductQuantity()+"";
             model.TotalPrice = orderProduct.getOrderSubtotalPriceIdr();
-            model.Message = Html.fromHtml(orderProduct.getProductNotes()).toString();
+            model.Message = MethodChecker.fromHtml(orderProduct.getProductNotes()).toString();
             list.add(model);
         }
         return list;
@@ -80,11 +81,11 @@ public class ListViewShopTxDetailProdListV2 extends BaseAdapter{
                 model.ProductUrl = product.getString("product_url");
                 model.ProductIdList = product.getString("product_id");
                 model.ImageUrl = product.getString("product_pic");
-                model.Name = Html.fromHtml(product.getString("product_name")).toString();
+                model.Name = MethodChecker.fromHtml(product.getString("product_name")).toString();
                 model.Price = product.getString("product_price");
                 model.TotalOrder = product.getString("deliver_qty");
                 model.TotalPrice = product.getString("subtotal_price_idr");
-                model.Message = Html.fromHtml(product.getString("notes")).toString();
+                model.Message = MethodChecker.fromHtml(product.getString("notes")).toString();
                 list.add(model);
             }
         } catch (Exception e) {
@@ -103,11 +104,11 @@ public class ListViewShopTxDetailProdListV2 extends BaseAdapter{
                 model.ProductUrl = product.getProductUrl();
                 model.ProductIdList = product.getProductId().toString();
                 model.ImageUrl = product.getProductPicture();
-                model.Name = Html.fromHtml(product.getProductName()).toString();
+                model.Name = MethodChecker.fromHtml(product.getProductName()).toString();
                 model.Price = product.getProductPrice();
                 model.TotalOrder = product.getProductQuantity().toString();
                 model.TotalPrice = product.getOrderSubtotalPriceIdr();
-                model.Message = CommonUtils.checkNullForZeroJson(product.getProductNotes()) ? Html.fromHtml(product.getProductNotes()).toString() : "";
+                model.Message = CommonUtils.checkNullForZeroJson(product.getProductNotes()) ? MethodChecker.fromHtml(product.getProductNotes()).toString() : "";
                 list.add(model);
             }
         } catch (Exception e) {

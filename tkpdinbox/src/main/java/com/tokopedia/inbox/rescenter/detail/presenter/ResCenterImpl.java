@@ -36,7 +36,7 @@ public class ResCenterImpl implements ResCenterPresenter {
             activityParamenterPassData = bundle.getParcelable(ResCenterActivity.EXTRA_RES_CENTER_PASS);
             if (activityParamenterPassData == null) {
                 activityParamenterPassData = ActivityParamenterPassData.Builder.aResCenterPass()
-                        .setResCenterId(bundle.getString("resolution_id", ""))
+                        .setResCenterId(bundle.getString("EXTRA_RESOLUTION_ID", ""))
                         .build();
             }
         }
@@ -53,16 +53,6 @@ public class ResCenterImpl implements ResCenterPresenter {
     @Override
     public void replyConversation(Context context, String resolutionID, DetailResCenterReceiver mReceiver) {
         DetailResCenterService.startActionReply(context, resolutionID, mReceiver);
-    }
-
-    @Override
-    public void actionUpdateShippingRefNum(Context context, String resolutionID, DetailResCenterReceiver mReceiver) {
-        DetailResCenterService.startActionUpdateShippingRefNum(context, resolutionID, mReceiver);
-    }
-
-    @Override
-    public void actionInputShippingRefNum(Context context, String resolutionID, DetailResCenterReceiver mReceiver) {
-        DetailResCenterService.startActionInputShippingRefNum(context, resolutionID, mReceiver);
     }
 
     @Override

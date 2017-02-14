@@ -24,6 +24,8 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+
 import java.util.Map;
 
 import static com.tokopedia.core.analytics.AppScreen.SCREEN_HOME_PRODUCT_CATEGORY;
@@ -84,12 +86,12 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void eventOnline(){
         getGTMEngine()
-                .eventOnline(SessionHandler.getLoginID(MainApplication.getAppContext()));
+                .eventOnline(SessionHandler.getGTMLoginID(MainApplication.getAppContext()));
     }
 
     public static void eventPushUserID(){
         getGTMEngine()
-                .pushUserId(SessionHandler.getLoginID(MainApplication.getAppContext()));
+                .pushUserId(SessionHandler.getGTMLoginID(MainApplication.getAppContext()));
     }
 
     public static void eventNetworkError(String error){
@@ -126,15 +128,6 @@ public class TrackingUtils extends TrackingConfig {
         getAFEngine().sendTrackEvent(AFInAppEventType.CONTENT_VIEW, listViewEvent);
     }
 
-    public static void eventTrueCaller(String userId) {
-        Nishikino.init(MainApplication.getAppContext()).startAnalytics()
-                .sendButtonClick(
-                        AppEventTracking.Event.TRUECALLER,
-                        AppEventTracking.Category.TRUECALLER,
-                        AppEventTracking.Action.INSTALLED,
-                        userId
-                );
-    }
 
     public static void eventLocaNotificationCallback(Intent intent){
         getLocaEngine().sendNotificationCallback(intent);
@@ -173,6 +166,10 @@ public class TrackingUtils extends TrackingConfig {
         getLocaEngine().tageEventandInApp(eventName);
     }
 
+    public static void eventLocaSearched(String keyword){
+        getLocaEngine().sendEventSearchProduct(keyword,"product",null,null);
+    }
+
     static void sendGTMEvent(Map<String, Object> dataLayers){
         getGTMEngine().sendEvent(dataLayers);
     }
@@ -193,8 +190,6 @@ public class TrackingUtils extends TrackingConfig {
         return getGTMEngine().getDouble(key);
     }
 
-    public static void eventGoldMerchantSuccess() {
-        Log.e("TrackingUtils", "please provide implementation");
-    }
+
 }
 

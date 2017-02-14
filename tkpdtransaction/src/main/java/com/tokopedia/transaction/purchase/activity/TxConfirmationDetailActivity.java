@@ -1,12 +1,13 @@
 package com.tokopedia.transaction.purchase.activity;
 
 import android.app.Dialog;
+import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,12 +16,14 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.TokopediaBankAccount;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.listener.TxConfDetailViewListener;
 import com.tokopedia.transaction.purchase.model.response.txconfirmation.TxConfData;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
@@ -58,12 +61,6 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
     TextView tvDepositUsed;
     @BindView(R2.id.lv_cart)
     LinearLayout lvContainer;
-    @BindView(R2.id.check_account)
-    View btnSysAccountInfo;
-    @BindView(R2.id.cancel_button)
-    View btnCancel;
-    @BindView(R2.id.confirm_button)
-    View btnConfirm;
 
     private TxConfData txConfData;
     private TkpdProgressDialog mProgressDialog;
@@ -96,7 +93,7 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_transaction_payment_confirmation_detail;
+        return R.layout.activity_transaction_confirmation_detail_tx_module;
     }
 
     @Override
@@ -141,7 +138,7 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
                 }
 
             });
-            holder.tvShopName.setText(Html.fromHtml(data.getOrderShop().getShopName()));
+            holder.tvShopName.setText(MethodChecker.fromHtml(data.getOrderShop().getShopName()));
             holder.tvTotalPrice.setText(data.getOrderDetail().getDetailOpenAmountIdr());
             holder.tvShippingAddress.setText(data.getOrderDestination().getReceiverName());
             holder.tvShippingAgency.setText(MessageFormat.format("{0} - {1}",
@@ -168,12 +165,12 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
                     .inflate(R.layout.listview_product_cart_payment_conf, container, false);
             final HolderProductCartItem holder = new HolderProductCartItem(view);
             ImageHandler.loadImageRounded2(this, holder.ivPic, data.getProductPicture());
-            holder.tvName.setText(Html.fromHtml(data.getProductName()));
+            holder.tvName.setText(MethodChecker.fromHtml(data.getProductName()));
             holder.tvPrice.setText(data.getProductPrice());
             holder.tvWeight.setText(MessageFormat.format(" ( {0} kg ) ",
                     data.getProductWeight()));
             holder.tvPriceTotal.setText(data.getOrderSubtotalPriceIdr());
-            holder.tvNotes.setText(Html.fromHtml(alterNotesData(data.getProductNotes())));
+            holder.tvNotes.setText(MethodChecker.fromHtml(alterNotesData(data.getProductNotes())));
             holder.tvQty.setText(data.getProductQuantity());
             holder.tvNotes.setEnabled(false);
             container.addView(view);
@@ -223,6 +220,23 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
     @Override
     public void dismissDialog(Dialog dialog) {
         if (dialog.isShowing()) dialog.dismiss();
+    }
+
+    @Override
+    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
+
+    }
+
+    @Override
+    public String getStringFromResource(@StringRes int resId) {
+        return getString(resId);
+    }
+
+    @Override
+    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            TKPDMapParam<String, String> originParams
+    ) {
+        return null;
     }
 
     @Override
@@ -299,18 +313,10 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
         ImageView btnEdit;
         @BindView(R2.id.delete)
         ImageView btnDelete;
-        @BindView(R2.id.error1)
-        TextView tvError1;
-        @BindView(R2.id.error2)
-        TextView tvError2;
         @BindView(R2.id.detail_info)
         View viewDetailInfo;
         @BindView(R2.id.detail_info_but)
         View btnDetailInfo;
-        @BindView(R2.id.error_area)
-        View viewError;
-        @BindView(R2.id.main_view)
-        View viewMain;
         @BindView(R2.id.insurance)
         TextView tvInsurance;
         @BindView(R2.id.remaining_stock)
@@ -318,7 +324,7 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
         @BindView(R2.id.chevron_sign)
         ImageView ivChevron;
 
-        public HolderCartItem(View view) {
+        HolderCartItem(View view) {
             ButterKnife.bind(this, view);
         }
     }
@@ -334,14 +340,12 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
         TextView tvWeight;
         @BindView(R2.id.price_total)
         TextView tvPriceTotal;
-        @BindView(R2.id.error_msg)
-        TextView tvError;
         @BindView(R2.id.notes)
         TextView tvNotes;
         @BindView(R2.id.qty)
         TextView tvQty;
 
-        public HolderProductCartItem(View view) {
+        HolderProductCartItem(View view) {
             ButterKnife.bind(this, view);
         }
     }

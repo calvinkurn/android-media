@@ -22,6 +22,7 @@ import com.tokopedia.core.talk.talkproduct.listener.TalkAddNewView;
 import com.tokopedia.core.talk.talkproduct.model.AddNewTalkPass;
 import com.tokopedia.core.talk.talkproduct.presenter.TalkAddNewPresenter;
 import com.tokopedia.core.talk.talkproduct.presenter.TalkAddNewPresenterImpl;
+import com.tokopedia.core.util.MethodChecker;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -98,7 +99,7 @@ public class TalkAddNewFragment extends BasePresenterFragment<TalkAddNewPresente
     @Override
     protected void initView(View view) {
         mProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
-        mProdName.append(Html.fromHtml(getArguments().getString("prod_name")));
+        mProdName.append(MethodChecker.fromHtml(getArguments().getString("prod_name")));
     }
 
     @Override
@@ -164,7 +165,7 @@ public class TalkAddNewFragment extends BasePresenterFragment<TalkAddNewPresente
     }
 
     private boolean validateContent() {
-        if(TextUtils.isEmpty(mMessageText)) {
+        if(TextUtils.isEmpty(mMessageText) || mMessageText.trim().length() == 0) {
             mMessage.setError(getString(R.string.error_field_required));
             return true;
         }

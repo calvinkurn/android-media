@@ -26,10 +26,11 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.R;
+import com.tokopedia.core.Router;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.manager.DbManager;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.EtalaseDB;
-import com.tokopedia.core.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.core.network.apiservices.shop.MyShopEtalaseActService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -247,6 +248,11 @@ public class ListViewEtalaseEditor extends BaseAdapter {
 
                             @Override
                             public void onError(Throwable e) {
+                                progressdialog.dismiss();
+                                Snackbar snackbarError = SnackbarManager.make(context,
+                                        context.getString(R.string.error_connection_problem),
+                                        Snackbar.LENGTH_LONG);
+                                snackbarError.show();
                                 Log.e(STUART, SHOP_EDITOR + "on error");
                             }
 
@@ -255,6 +261,7 @@ public class ListViewEtalaseEditor extends BaseAdapter {
                                 Log.e(STUART, SHOP_EDITOR + "on next");
                                 TkpdResponse response = responseData.body();
 
+                                progressdialog.dismiss();
                                 JSONObject jsonObject = null;
                                 try {
                                     jsonObject = new JSONObject(response.getStringData());
@@ -262,7 +269,6 @@ public class ListViewEtalaseEditor extends BaseAdapter {
                                     Data data = gson.fromJson(jsonObject.toString(), Data.class);
                                     if (data.getIsSuccess() == null && response.getErrorMessages().size() > 0) {
                                         String responses = "";
-                                        progressdialog.dismiss();
                                         for (int i = 0; i < response.getErrorMessages().size(); i++) {
                                             responses += response.getErrorMessages().get(i) + " ";
                                         }
@@ -350,7 +356,7 @@ public class ListViewEtalaseEditor extends BaseAdapter {
                                         ((EtalaseShopEditor) context).OnEmpty();
 
                                     LocalCacheHandler.clearCache(context, TkpdCache.ETALASE_ADD_PROD);
-                                    LocalCacheHandler.clearCache(context, AddProductPresenterImpl.FETCH_ETALASE);
+                                    Router.clearEtalase(context);
                                 } else {
                                     Toast.makeText(context, deleteShopNote.getMessageError().get(0), Toast.LENGTH_LONG).show();
                                 }

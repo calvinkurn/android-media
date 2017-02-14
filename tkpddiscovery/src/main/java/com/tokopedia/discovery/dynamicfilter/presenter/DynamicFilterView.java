@@ -2,7 +2,7 @@ package com.tokopedia.discovery.dynamicfilter.presenter;
 
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.Filter;
 
 import java.util.List;
 import java.util.Map;
@@ -18,9 +18,9 @@ public interface DynamicFilterView {
 
     void setFragment(Fragment fragment, String TAG, int layoutId);
 
-    void setFragmentForFirstTime3(List<DynamicFilterModel.Filter> data);
+    void setFragmentForFirstTime3(List<Filter> data);
 
-    void setFragmentBasedOnData(DynamicFilterModel.Filter data);
+    void setFragmentBasedOnData(Filter data);
 
     void putSelectedFilter(String key, String value);
 

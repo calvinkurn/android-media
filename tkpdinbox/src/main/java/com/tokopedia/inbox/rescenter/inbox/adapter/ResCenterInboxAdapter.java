@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.inbox.rescenter.inbox.model.ResCenterCounterPending;
 import com.tokopedia.inbox.rescenter.inbox.model.ResCenterHeader;
 import com.tokopedia.inbox.rescenter.inbox.model.ResCenterInboxItem;
@@ -68,6 +70,7 @@ public class ResCenterInboxAdapter extends ResCenterExtendedAdapter {
         holder.mainView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                UnifyTracking.eventResolutionDetail();
                 presenter.setActionOnItemListClickListener(view.getContext(), resolutionID);
             }
         });
@@ -117,12 +120,12 @@ public class ResCenterInboxAdapter extends ResCenterExtendedAdapter {
 
         if (counterPendingModel != null) {
             String valueTotalPending = context.getString(R.string.desc_summary_day_reso).replace("XXX", String.valueOf(counterPendingModel.getTotalList())).replace("YYY", counterPendingModel.getPendingDays());
-            holder.totalPending.setText(Html.fromHtml(valueTotalPending));
+            holder.totalPending.setText(MethodChecker.fromHtml(valueTotalPending));
         }
 
         if (pendingAmountModel != null) {
             String valueAmountPending = context.getString(R.string.desc_summary_amount_reso).replace("ZZZ", pendingAmountModel);
-            holder.amountPending.setText(Html.fromHtml(valueAmountPending));
+            holder.amountPending.setText(MethodChecker.fromHtml(valueAmountPending));
         }
     }
 
@@ -153,6 +156,7 @@ public class ResCenterInboxAdapter extends ResCenterExtendedAdapter {
 
     @Override
     protected void bindNoresultView(NoResultViewHolder holder) {
+        super.bindNoresultView(holder);
         SpannableString stringNoResult = new SpannableString(context.getString(R.string.msg_no_res_center));
 
         String linkStatus = context.getString(R.string.msg_no_res_center1);
@@ -187,5 +191,10 @@ public class ResCenterInboxAdapter extends ResCenterExtendedAdapter {
     public void setList(ArrayList<ResCenterInboxItem> list) {
         this.list = list;
         notifyDataSetChanged();
+    }
+
+    @Override
+    protected int getCurrentTab() {
+        return presenter.getResCenterTabModel().typeFragment;
     }
 }

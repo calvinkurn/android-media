@@ -1,8 +1,6 @@
 package com.tokopedia.core.analytics.container;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -191,7 +189,7 @@ public class GTMContainer implements IGTMContainer {
     public GTMContainer sendScreenAuthenticated(String screenName) {
         Authenticated authEvent = new Authenticated();
         authEvent.setUserFullName(SessionHandler.getLoginName(context));
-        authEvent.setUserID(SessionHandler.getLoginID(context));
+        authEvent.setUserID(SessionHandler.getGTMLoginID(context));
         authEvent.setShopID(SessionHandler.getShopID(context));
         authEvent.setUserSeller(SessionHandler.getShopID(context).equals("0") ? 0 : 1);
 

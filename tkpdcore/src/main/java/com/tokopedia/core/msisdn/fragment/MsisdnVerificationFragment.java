@@ -1,7 +1,9 @@
 package com.tokopedia.core.msisdn.fragment;
 
+import android.Manifest;
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,26 +21,37 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.msisdn.IncomingSms;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.msisdn.MSISDNConstant;
 import com.tokopedia.core.msisdn.listener.MsisdnVerificationFragmentView;
 import com.tokopedia.core.msisdn.presenter.MsisdnVerificationFragmentPresenter;
 import com.tokopedia.core.msisdn.presenter.MsisdnVerificationFragmentPresenterImpl;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PhoneVerificationUtil;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by Nisie on 7/13/16.
  */
+@RuntimePermissions
 public class MsisdnVerificationFragment extends DialogFragment
-        implements MsisdnVerificationFragmentView, IncomingSms.ReceiveSMSListener, MSISDNConstant {
+        implements MsisdnVerificationFragmentView, IncomingSmsReceiver.ReceiveSMSListener, MSISDNConstant {
+
+    private static final String FORMAT = "%02d:%02d";
 
     @BindView(R2.id.view_verification)
     View verificationView;
@@ -78,11 +91,19 @@ public class MsisdnVerificationFragment extends DialogFragment
     private PhoneVerificationUtil.MSISDNListener listener;
     LocalCacheHandler cacheHandler;
     private Unbinder unbinder;
+    IncomingSmsReceiver smsReceiver;
+    CountDownTimer countDownTimer;
 
     public static MsisdnVerificationFragment createInstance() {
         MsisdnVerificationFragment fragment = new MsisdnVerificationFragment();
         fragment.setArguments(new Bundle());
         return fragment;
+    }
+
+    public MsisdnVerificationFragment() {
+        this.smsReceiver = new IncomingSmsReceiver();
+        this.smsReceiver.setListener(this);
+
     }
 
     @Override
@@ -109,7 +130,7 @@ public class MsisdnVerificationFragment extends DialogFragment
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
             phoneNumberEditText.setEnabled(savedInstanceState.getBoolean("phoneNumberEnabled"));
             setVisibilityVerificationView(savedInstanceState.getInt("VerificationView"));
         }
@@ -129,7 +150,7 @@ public class MsisdnVerificationFragment extends DialogFragment
     }
 
     private void setCache() {
-        if(!cacheHandler.isExpired() && cacheHandler.getBoolean(HAS_REQUEST_OTP, false)){
+        if (!cacheHandler.isExpired() && cacheHandler.getBoolean(HAS_REQUEST_OTP, false)) {
             setFinishRequestOTP();
         }
     }
@@ -144,7 +165,17 @@ public class MsisdnVerificationFragment extends DialogFragment
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
+        smsReceiver.registerSmsReceiver(getActivity());
+
         super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        if (smsReceiver != null)
+            getActivity().unregisterReceiver(smsReceiver);
+        super.onPause();
+
     }
 
     private void initialPresenter() {
@@ -175,15 +206,14 @@ public class MsisdnVerificationFragment extends DialogFragment
         sendOtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                KeyboardHandler.DropKeyboard(getActivity(),sendOtp);
-                presenter.requestOTP(phoneNumberEditText.getText().toString().trim());
-
+                onRequestOTP();
             }
         });
 
         verifyOtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventOTPVerif();
                 KeyboardHandler.DropKeyboard(getActivity(),verifyOtp);
                 presenter.verifyOTP(otpEditText.getText().toString().trim());
             }
@@ -197,6 +227,12 @@ public class MsisdnVerificationFragment extends DialogFragment
         });
     }
 
+    public void onRequestOTP() {
+        UnifyTracking.eventOTPSend();
+        KeyboardHandler.DropKeyboard(getActivity(), sendOtp);
+        presenter.requestOTP(phoneNumberEditText.getText().toString().trim());
+    }
+
     private void initialVar() {
         cacheHandler = new LocalCacheHandler(getActivity(), PHONE_VERIFICATION);
     }
@@ -207,9 +243,9 @@ public class MsisdnVerificationFragment extends DialogFragment
 
     public void showError(String errorMessage) {
         if (errorMessage.equals("")) {
-            CommonUtils.UniversalToast(getActivity(),getActivity().getString(R.string.msg_network_error));
+            CommonUtils.UniversalToast(getActivity(), getActivity().getString(R.string.msg_network_error));
         } else {
-            CommonUtils.UniversalToast(getActivity(),errorMessage);
+            CommonUtils.UniversalToast(getActivity(), errorMessage);
         }
     }
 
@@ -263,10 +299,42 @@ public class MsisdnVerificationFragment extends DialogFragment
 
     @Override
     public void onSuccessRequestOTP() {
-        CommonUtils.UniversalToast(getActivity(),getActivity().getString(R.string.success_send_otp));
+        CommonUtils.UniversalToast(getActivity(), getActivity().getString(R.string.success_send_otp));
         finishLoading();
         setFinishRequestOTP();
         setSuccessRequestOTPCache();
+        startTimer();
+    }
+
+    public void startTimer() {
+
+        countDownTimer = new CountDownTimer(90000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                try {
+                    sendOtp.setEnabled(false);
+
+                    sendOtp.setText("" + String.format(FORMAT,
+                            TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
+                                    TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
+                            TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+                                    TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+
+                } catch (Exception e) {
+                    cancel();
+                }
+            }
+
+            public void onFinish() {
+                try {
+                    sendOtp.setText(R.string.title_resend_otp);
+                    sendOtp.setEnabled(true);
+                } catch (Exception e) {
+
+                }
+            }
+
+        }.start();
+        otpEditText.requestFocus();
     }
 
     private void setFinishRequestOTP() {
@@ -282,7 +350,7 @@ public class MsisdnVerificationFragment extends DialogFragment
         noThanksButton.setVisibility(View.GONE);
         instruction.setText(getActivity().getString(R.string.verify_success));
         closeButton.setVisibility(View.VISIBLE);
-        if(listener!=null)
+        if (listener != null)
             listener.onMSISDNVerified();
     }
 
@@ -298,22 +366,28 @@ public class MsisdnVerificationFragment extends DialogFragment
         super.onDestroyView();
         unbinder.unbind();
         presenter.onDestroyView();
+        destroyTimer();
+    }
+
+    private void destroyTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
     }
 
     @Override
-    public void onReceiveSMS(String message) {
-        if (message.contains("Verifikasi Nomor Handphone")) {
-            CommonUtils.dumper("NISNISSMS " + message);
-            String regexString = Pattern.quote("kode") + "(.*?)" + Pattern.quote("sebelum");
-            Pattern pattern = Pattern.compile(regexString);
-            Matcher matcher = pattern.matcher(message);
+    public void onReceiveOTP(String otpCode) {
+        MsisdnVerificationFragmentPermissionsDispatcher.processOTPWithCheck(MsisdnVerificationFragment.this
+        ,otpCode);
+    }
 
-            while (matcher.find()) {
-                String otpCode = matcher.group(1).trim();
-                if (otpEditText != null)
-                    otpEditText.setText(otpCode);
-            }
-        }
+    @NeedsPermission(Manifest.permission.READ_SMS)
+    public void processOTP(String otpCode) {
+        if (otpEditText != null)
+            otpEditText.setText(otpCode);
+        presenter.verifyOTP(otpCode.trim());
+
     }
 
     public void setListener(PhoneVerificationUtil.MSISDNListener listener) {
@@ -324,5 +398,26 @@ public class MsisdnVerificationFragment extends DialogFragment
         return listener;
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        MsisdnVerificationFragmentPermissionsDispatcher.onRequestPermissionsResult(
+                MsisdnVerificationFragment.this, requestCode, grantResults);
+    }
+
+    @OnShowRationale(Manifest.permission.READ_SMS)
+    void showRationaleForStorageAndCamera(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_SMS);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_SMS)
+    void showDeniedForCamera() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_SMS);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_SMS)
+    void showNeverAskForCamera() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_SMS);
+    }
 
 }

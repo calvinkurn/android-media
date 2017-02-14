@@ -194,6 +194,10 @@ public class DetailResCenterData implements Parcelable {
         private String lastSolutionString;
         @SerializedName("last_category_trouble_type")
         private Integer lastCategoryTroubleType;
+        @SerializedName("last_show_accept_retur_button")
+        private Integer lastShowAcceptReturButton;
+        @SerializedName("last_show_accept_admin_retur_button")
+        private Integer lastShowAcceptAdminReturButton;
 
         public String getLastResolutionId() {
             return lastResolutionId;
@@ -379,6 +383,25 @@ public class DetailResCenterData implements Parcelable {
             this.lastCategoryTroubleType = lastCategoryTroubleType;
         }
 
+        public Integer getLastShowAcceptReturButton() {
+            return lastShowAcceptReturButton;
+        }
+
+        public void setLastShowAcceptReturButton(Integer lastShowAcceptReturButton) {
+            this.lastShowAcceptReturButton = lastShowAcceptReturButton;
+        }
+
+        public Integer getLastShowAcceptAdminReturButton() {
+            return lastShowAcceptAdminReturButton;
+        }
+
+        public void setLastShowAcceptAdminReturButton(Integer lastShowAcceptAdminReturButton) {
+            this.lastShowAcceptAdminReturButton = lastShowAcceptAdminReturButton;
+        }
+
+        public ResolutionLast() {
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -409,9 +432,8 @@ public class DetailResCenterData implements Parcelable {
             dest.writeString(this.lastUserLabel);
             dest.writeString(this.lastSolutionString);
             dest.writeValue(this.lastCategoryTroubleType);
-        }
-
-        public ResolutionLast() {
+            dest.writeValue(this.lastShowAcceptReturButton);
+            dest.writeValue(this.lastShowAcceptAdminReturButton);
         }
 
         protected ResolutionLast(Parcel in) {
@@ -438,6 +460,8 @@ public class DetailResCenterData implements Parcelable {
             this.lastUserLabel = in.readString();
             this.lastSolutionString = in.readString();
             this.lastCategoryTroubleType = (Integer) in.readValue(Integer.class.getClassLoader());
+            this.lastShowAcceptReturButton = (Integer) in.readValue(Integer.class.getClassLoader());
+            this.lastShowAcceptAdminReturButton = (Integer) in.readValue(Integer.class.getClassLoader());
         }
 
         public static final Creator<ResolutionLast> CREATOR = new Creator<ResolutionLast>() {

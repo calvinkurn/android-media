@@ -58,6 +58,7 @@
     <item name="tv_success" type="id" />
     <item name="iv_ava" type="id" />
     <item name="iv_gold" type="id" />
+    <item name="iv_official" type="id" />
     <item name="iv_lucky" type="id" />
     <item name="tv_location" type="id" />
     <item name="iv_fav" type="id" />
@@ -108,4 +109,23 @@
     <item name="icon_search_popular" type="id" />
     <item name="icon_search_hotlist" type="id" />
     <item name="icon_search_sugestion" type="id" />
+    <item name="button_add_wholesale" type="id"/>
+    <item name="header_wholesale" type="id"/>
+    <item name="ll_wrapper" type="id"/>
+    <item name="iv_brands" type="id"/>
+    <item name="rl_title_layout" type="id"/>
+    <item name="rv_view_list" type="id"/>
+    <item name="rv_brands_list" type="id"/>
+
+    <!--ids for PDP youtube-->
+    <item name="product_video_horizontal_scroll" type="id" />
+    <item name="youtube_video_place_holder" type="id" />
+    <item name="youtube_thumbnail_view" type="id"/>
+    <item name="youtube_thumbnail_loading_bar" type="id"/>
+    <item name="youtube_activity_place_holder_scroll_view" type="id"/>
+    <item name="youtube_activity_place_holder" type="id"/>
+    <item name="youtube_activity_thumbnail_loading_bar" type="id"/>
+    <item name="youtube_activity_thumbnail_view" type="id"/>
+    <item name="video_thumbnail_main_view" type="id"/>
+
 </resources>

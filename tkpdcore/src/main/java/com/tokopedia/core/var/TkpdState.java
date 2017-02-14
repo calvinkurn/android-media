@@ -73,7 +73,11 @@ public class TkpdState {
         public static final int LOGOUT = 43;
         public static final int SELLER_INDEX_HOME = 44;
         public static final int REGISTER_INITIAL = 45;
-	}
+        public static final int SELLER_GM_SUBSCRIBE = 46;
+        public static final int SELLER_GM_SUBSCRIBE_EXTEND = 47;
+        public static final int SELLER_TOP_ADS = 48;
+        public static final int SELLER_GM_STAT = 49;
+    }
 
     public class Application {
         public static final int ACTIVITY = 1;
@@ -312,6 +316,10 @@ public class TkpdState {
         public static final int GCM_REVIEW_REPLY = 123;
         public static final int GCM_REPUTATION_SMILEY = 202;
         public static final int GCM_REPUTATION_EDIT_SMILEY = 212;
+        public static final int GCM_REPUTATION_SMILEY_TO_SELLER = 222;
+        public static final int GCM_REPUTATION_EDIT_SMILEY_TO_SELLER = 232;
+        public static final int GCM_REPUTATION_SMILEY_TO_BUYER = 242;
+        public static final int GCM_REPUTATION_EDIT_SMILEY_TO_BUYER = 252;
         public static final int GCM_PURCHASE_VERIFIED = 301;
         public static final int GCM_PURCHASE_ACCEPTED = 302;
         public static final int GCM_PURCHASE_PARTIAL_PROCESSED = 303;
@@ -433,5 +441,38 @@ public class TkpdState {
     public class Geolocation {
         public static final String defaultLatitude = "-6.1753924";
         public static final String defaultLongitude = "106.8249641";
+    }
+
+    public class ProductService {
+        /* BROADCAST INTENT FILTER */
+        public static final String BROADCAST_ADD_PRODUCT = "BROADCAST_ADD_PRODUCT";
+
+        /* TYPE */
+        public static final String SERVICE_TYPE = "SERVICE_TYPE";
+        public static final int ADD_PRODUCT = 10;
+        public static final int ADD_PRODUCT_WITHOUT_IMAGE = 11;
+        public static final int EDIT_PRODUCT = 12;
+        public static final int DELETE_PRODUCT = 13;
+        public static final int INVALID_TYPE = -1;
+
+
+        /* STATUS */
+        public static final String STATUS_FLAG = "STATUS_FLAG";
+        public static final int STATUS_RUNNING = 1;
+        public static final int STATUS_DONE = 2;
+        public static final int STATUS_ERROR = 3;
+
+        /* DATA */
+        public static final String PRODUCT_DB_ID = "PRODUCT_DB_ID";
+        public static final long NO_PRODUCT_DB = -1;
+        public static final String PRODUCT_POS = "PRODUCT_POS";
+        public static final int NO_PRODUCT_POS = -1;
+        public static final String PRODUCT_ID = "PRODUCT_ID";
+        public static final int NO_PRODUCT_ID = -1;
+        public static final String MESSAGE_ERROR_FLAG = "MESSAGE_ERROR_FLAG";
+        public static final String INVALID_MESSAGE_ERROR = "default";
+
+
+
     }
 }

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -24,11 +23,10 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.session.base.BaseFragment;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.shop.presenter.ShopEditorPresenter;
 import com.tokopedia.seller.shop.presenter.ShopEditorPresenterImpl;
 import com.tokopedia.seller.shop.presenter.ShopEditorView;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.util.UploadImageReVamp;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -73,7 +71,6 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
     @BindView(R2.id.about_gm)
     TextView about_gm;
     private TkpdProgressDialog mProgressDialog;
-    private UploadImageReVamp uploadimage2;
 
     @OnClick(R2.id.shop_ava)
     public void uploadImage(View vuew) {
@@ -158,13 +155,6 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
     }
 
     @Override
-    public void initUploadImage() {
-        uploadimage2 = UploadImageReVamp.createInstance(getActivity(), "logo", UploadImageReVamp.WS_SHOP_EDITOR);
-        uploadimage2.addParam("shop_id", SessionHandler.getShopID(getActivity()));
-        uploadimage2.addParam("resolution", "215");
-    }
-
-    @Override
     public void setData(int type, Object... data) {
         switch (type) {
             case ShopEditorPresenter.SHOP_DESC_ERROR:
@@ -177,13 +167,13 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
                 mShopSloganText.setError((String) data[0]);
                 break;
             case ShopEditorPresenter.SHOP_NAME:
-                mShopNameText.setText(Html.fromHtml((String) data[0]));
+                mShopNameText.setText(MethodChecker.fromHtml((String) data[0]));
                 break;
             case ShopEditorPresenter.SHOP_SLOGAN:
-                mShopSloganText.setText(Html.fromHtml((String) data[0]));
+                mShopSloganText.setText(MethodChecker.fromHtml((String) data[0]));
                 break;
             case ShopEditorPresenter.SHOP_DESC:
-                mShopDescText.setText(Html.fromHtml((String) data[0]));
+                mShopDescText.setText(MethodChecker.fromHtml((String) data[0]));
                 break;
             default:
                 throw new RuntimeException("please register type here!!!");

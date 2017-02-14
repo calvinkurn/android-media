@@ -7,25 +7,17 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
-import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
-import com.sromku.simple.fb.SimpleFacebook;
-import com.sromku.simple.fb.entities.Feed;
-import com.sromku.simple.fb.listeners.OnPublishListener;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.myproduct.fragment.AddProductFragment;
-import com.tokopedia.core.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -60,33 +52,32 @@ public class ShareSocmedHandler {
     private Activity activity;
     private String url = null;
     private FacebookInterface fbinterface;
-    private SimpleFacebook mSimpleFacebook;
-    private OnPublishListener onPublishListener = new OnPublishListener() {
-
-        @Override
-        public void onFail(String reason) {
-            // insure that you are logged in before publishing
-            fbinterface.onShareFailed();
-        }
-
-        @Override
-        public void onException(Throwable throwable) {
-            CommonUtils.dumper("hangman sharefb exception " + throwable.toString());
-            fbinterface.onShareFailed();
-        }
-
-        @Override
-        public void onThinking() {
-
-        }
-
-        @Override
-        public void onComplete(String postId) {
-            CommonUtils.dumper("SUCCESS!" + postId);
-            fbinterface.onShareComplete();
-        }
-    };
-
+//    private OnPublishListener onPublishListener = new OnPublishListener() {
+//
+//        @Override
+//        public void onFail(String reason) {
+//            // insure that you are logged in before publishing
+//            fbinterface.onShareFailed();
+//        }
+//
+//        @Override
+//        public void onException(Throwable throwable) {
+//            CommonUtils.dumper("hangman sharefb exception " + throwable.toString());
+//            fbinterface.onShareFailed();
+//        }
+//
+//        @Override
+//        public void onThinking() {
+//
+//        }
+//
+//        @Override
+//        public void onComplete(String postId) {
+//            CommonUtils.dumper("SUCCESS!" + postId);
+//            fbinterface.onShareComplete();
+//        }
+//    };
+//
 
     public interface FacebookInterface {
         public void onShareComplete();
@@ -256,7 +247,7 @@ public class ShareSocmedHandler {
 
         if (image != null) {
             share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(f));
+            share.putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(context, f));
         }
         share.putExtra(Intent.EXTRA_REFERRER, ProductUri);
 //        share.putExtra(Intent.EXTRA_HTML_TEXT, ProductUri);
@@ -298,7 +289,7 @@ public class ShareSocmedHandler {
                     @Override
                     public File call(Boolean aBoolean) {
                         File photo = null;
-                        if(image != null) {
+                        if (image != null) {
                             FutureTarget<File> future = Glide.with(context)
                                     .load(image)
                                     .downloadOnly(4096, 2160);
@@ -337,7 +328,7 @@ public class ShareSocmedHandler {
 
                                 if (image != null) {
                                     share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                    share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+                                    share.putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(context, file));
                                 }
                                 share.putExtra(Intent.EXTRA_REFERRER, ProductUri);
                                 share.putExtra(Intent.EXTRA_HTML_TEXT, ProductUri);
@@ -378,7 +369,7 @@ public class ShareSocmedHandler {
         if (f.exists() && f.isDirectory()) {
             Log.v("FILES", "EXIST");
             File[] fs = f.listFiles();
-            if (fs.length > 5) // Hapus jika jumlah gambar temporary > 5
+            if (fs != null && fs.length > 5) // Hapus jika jumlah gambar temporary > 5
                 for (File file : fs) {
                     file.delete();
                 }
@@ -412,24 +403,25 @@ public class ShareSocmedHandler {
             }
         if (icon != null && f.exists()) {
 
-            Uri uri = Uri.fromFile(f);
-            Intent chooserIntent = createIntent(context,title, shareTxt, uri, true);
+            Uri uri = MethodChecker.getUri(context, f);
+            Intent chooserIntent = createIntent(context, title, shareTxt, uri, true);
             context.startActivity(chooserIntent);
         } else {
-            Intent chooserIntent = createIntent(context,title, shareTxt, null, false);
+            Intent chooserIntent = createIntent(context, title, shareTxt, null, false);
             context.startActivity(chooserIntent);
         }
     }
+
     private static Intent createIntent(Context context, String title, String shareTxt, Uri uri,
-                                       boolean fileExists){
+                                       boolean fileExists) {
         Intent share = new Intent(Intent.ACTION_SEND);
         String shareTitle;
-        if (fileExists){
+        if (fileExists) {
             share.setType("image/*");
             share.putExtra(Intent.EXTRA_STREAM, uri);
             share.putExtra(Intent.EXTRA_TEXT, shareTxt);
             shareTitle = "Share Image!";
-        }else {
+        } else {
             share.setType("text/plain");
             share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
             share.putExtra(Intent.EXTRA_SUBJECT, title);
@@ -488,40 +480,14 @@ public class ShareSocmedHandler {
 
     public static void ShareIntentImageUri(Activity context, String title, String shareTxt,
                                            String ProductUri, String imageUri) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        CheckTempDirectory();
-        File f = null;
-        boolean imageExists = false;
-        if (imageUri != null && !TextUtils.isEmpty(imageUri)){
-            f = UploadPhotoTask.writeImageToTkpdPath(AddProductFragment.compressImage(imageUri));
-
-            Bitmap icon = BitmapFactory.decodeFile(f == null ? imageUri : f.getAbsolutePath());
-            if (icon != null && f!= null) {
-                try {
-                    icon.compress(Bitmap.CompressFormat.JPEG, 60, bytes);
-                    f.createNewFile();
-                    FileOutputStream fo = new FileOutputStream(f);
-                    fo.write(bytes.toByteArray());
-                    if (icon != null && f.exists())
-                        imageExists = true;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
 
         Intent share = new Intent(Intent.ACTION_SEND);
-        if (imageExists) {
-            Uri uri = Uri.fromFile(f);
-            Intent chooserIntent = createIntent(context,title, shareTxt, uri, true);
-            context.startActivity(chooserIntent);
-        } else {
-            share.setType("text/plain");
-            share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-            if (title != null) share.putExtra(Intent.EXTRA_SUBJECT, title);
-            share.putExtra(Intent.EXTRA_TEXT, shareTxt);
-            context.startActivity(Intent.createChooser(share, "Share link!"));
-        }
+        share.setType("text/plain");
+        share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        if (title != null) share.putExtra(Intent.EXTRA_SUBJECT, title);
+        share.putExtra(Intent.EXTRA_TEXT, shareTxt);
+        context.startActivity(Intent.createChooser(share, "Share link!"));
+
     }
 
     /**
@@ -570,7 +536,7 @@ public class ShareSocmedHandler {
                         //targetedShare.putExtra(Intent.EXTRA_SUBJECT,"Aplikasi Tokopedia");
 //							  targetedShare.putExtra(Intent.EXTRA_TEXT, context.getString(R.string.message_share_prod_info) + " " + ProductUri);
                         if (icon != null && !info.activityInfo.packageName.equals("com.bbm")) {
-                            targetedShare.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(f));
+                            targetedShare.putExtra(Intent.EXTRA_STREAM, MethodChecker.getUri(context, f));
                             targetedShare.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         }
 
@@ -643,78 +609,5 @@ public class ShareSocmedHandler {
         fbinterface = (FacebookInterface) activity;
     }
 
-    public ShareSocmedHandler(String url, Activity activity, SimpleFacebook mSimpleFacebook) {
-        this.activity = activity;
-        this.url = url;
-        fbinterface = (FacebookInterface) activity;
-        this.mSimpleFacebook = mSimpleFacebook;
-    }
-
-    public void publishStory(String name, String desc, String picture, String url) {
-        Feed feed = new Feed.Builder()
-                .setName(name)
-                .setCaption("www.tokopedia.com")
-                .setDescription(desc)
-                .setPicture(picture)
-                .setLink(url)
-                .build();
-
-        // publish the feed
-        mSimpleFacebook.publish(feed, onPublishListener);
-    }
-
-	/*public void publishStory() {
-
-		//Session.openActiveSession((Activity) context, true, statusCallback);
-	    Session session = Session.getActiveSession();
-	    System.out.println("session");
-	    if (session != null){
-	    	System.out.println("session");
-	        // Check for publish permissions    
-	        List<String> permissions = session.getPermissions();
-	        System.out.println(permissions);
-	        if (!permissions.containsAll(PERMISSIONS)) {
-	            //pendingPublishReauthorization = true;
-	        	try {
-	            Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(activity, PERMISSIONS);
-	            session.requestNewPublishPermissions(newPermissionsRequest);
-	            return;
-	        	}catch (Exception e) {
-	        		Log.e("FACEBOOK", e.getMessage());
-	        	}
-	        }
-
-	        Bundle postParams = new Bundle();
-	        postParams.putString("name", "Tokopedia for Android");
-	        postParams.putString("caption", "Belanja Online Aman Dan Nyaman");
-	        postParams.putString("description", "Saya baru saja menambahkan produk baru di tokopedia");
-	        postParams.putString("link", url);
-	        postParams.putString("picture", "https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
-
-	        Request.Callback callback= new Request.Callback() {
-	            public void onCompleted(Response response) {
-	            	fbinterface.onShareComplete();
-	                JSONObject graphResponse = response.getGraphObject().getInnerJSONObject();
-	                String postId = null;
-	                try {
-	                    //postId = graphResponse.getString("shopId");
-	                } catch (JSONException e) {
-	                    Log.i("JSON", "JSON error "+ e.getMessage());
-	                } 
-	                FacebookRequestError error = response.getError();
-	                if (error != null) {
-	                    //Toast.makeText((Activity) context.getApplicationContext(),error.getErrorMessage(), Toast.LENGTH_SHORT).show();
-	                } else {
-	                     // Toast.makeText(getActivity().getApplicationContext(), postId, Toast.LENGTH_LONG).show();
-	                }
-	            }
-	        };
-
-	        Request request = new Request(session, "me/feed", postParams, HttpMethod.POST, callback);
-
-	        RequestAsyncTask task = new RequestAsyncTask(request);
-	        task.execute();
-	    } 
-	} */
 
 }

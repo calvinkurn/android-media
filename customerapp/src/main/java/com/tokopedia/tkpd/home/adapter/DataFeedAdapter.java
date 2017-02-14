@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,9 @@ import com.tokopedia.core.home.adapter.ProductFeedAdapter;
 import com.tokopedia.core.home.adapter.ViewHolderHistoryProduct;
 import com.tokopedia.core.home.model.HistoryProductListItem;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
@@ -31,7 +32,6 @@ import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.SimpleHomeActivity;
-import com.tokopedia.tkpd.home.presenter.ProductFeed2Impl;
 
 import org.parceler.Parcels;
 
@@ -50,6 +50,7 @@ import static com.tokopedia.core.var.ProductItem.PRODUCT_ITEM_TYPE;
 public class DataFeedAdapter extends ProductAdapter {
 
     public static final String TAG = DataFeedAdapter.class.getSimpleName();
+    public static final String MODEL_FLAG = "MODEL_FLAG";
     private ParentIndexHome.ChangeTabListener hotListListener;
     private HistoryProductRecyclerViewAdapter historyAdapter;
 
@@ -103,12 +104,12 @@ public class DataFeedAdapter extends ProductAdapter {
         if (data.getSpannedName() != null)
             holder.productName.setText(data.getSpannedName());
         else
-            holder.productName.setText(Html.fromHtml(data.name));
+            holder.productName.setText(MethodChecker.fromHtml(data.name));
         holder.productPrice.setText(data.price);
         if (data.getSpannedShop() != null)
             holder.shopName.setText(data.getSpannedShop());
         else
-            holder.shopName.setText(Html.fromHtml(data.shop));
+            holder.shopName.setText(MethodChecker.fromHtml(data.shop));
         holder.shopLocation.setText(data.shop_location);
         ImageHandler.loadImageFit2(holder.itemView.getContext(), holder.productImage, data.imgUri);
         setLabels(holder, data);
@@ -149,12 +150,13 @@ public class DataFeedAdapter extends ProductAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                Intent intent = new Intent(context, ProductInfoActivity.class);
-                bundle.putString("product_id", data.id);
-                intent.putExtras(bundle);
+
                 UnifyTracking.eventFeedView(data.getName());
-                context.startActivity(intent);
+                context.startActivity(
+                        ProductDetailRouter.createInstanceProductDetailInfoActivity(
+                                context, productPass(data)
+                        )
+                );
             }
         };
     }
@@ -232,7 +234,7 @@ public class DataFeedAdapter extends ProductAdapter {
     }
 
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(ProductFeed2Impl.MODEL_FLAG, Parcels.wrap(data));
+        outState.putParcelable(MODEL_FLAG, Parcels.wrap(data));
     }
 
     public HistoryProductRecyclerViewAdapter getHistoryAdapter() {
@@ -262,5 +264,14 @@ public class DataFeedAdapter extends ProductAdapter {
     public boolean isHistory(int position) {
         boolean isInRange = position >= 0 && position < data.size();
         return isInRange && data.get(position) != null && data.get(position) instanceof HistoryProductListItem;
+    }
+
+    private ProductPass productPass(ProductItem productItem) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(productItem.getPrice())
+                .setProductId(productItem.getId())
+                .setProductName(productItem.getName())
+                .setProductImage(productItem.getImgUri())
+                .build();
     }
 }

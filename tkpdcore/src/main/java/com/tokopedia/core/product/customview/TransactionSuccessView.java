@@ -10,6 +10,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.util.MethodChecker;
 
 import butterknife.BindView;
 
@@ -58,7 +59,7 @@ public class TransactionSuccessView extends BaseView<ProductDetailData, ProductD
                 break;
             default:
                 tvSuccessRate.setVisibility(VISIBLE);
-                tvSuccessRate.setText(Html.fromHtml("<b>"
+                tvSuccessRate.setText(MethodChecker.fromHtml("<b>"
                         + data.getStatistic().getProductSuccessRate()
                         + "%</b> "
                         + getContext().getString(R.string.tx_success_from)

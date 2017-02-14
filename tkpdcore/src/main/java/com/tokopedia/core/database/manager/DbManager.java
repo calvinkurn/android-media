@@ -40,7 +40,6 @@ public interface DbManager {
     List<CategoryDB> getDepartmentParent();
     List<CategoryDB> getDepartmentChild(int level, int depId);
     void removeAllEtalase();
-    void checkStockStatusDB();
     void saveCatalog(CatalogDataModel catalogDataModel, String productDepId, String productName);
     ArrayList<CatalogDataModel.Catalog> getCatalogList(String productDepId, String productName);
     void removePictureWithId(long imageDbId);
@@ -52,4 +51,5 @@ public interface DbManager {
     List<Bank> getBankBasedOnText(String query);
     Province getProvinceFromProvinceId(String provinceId);
     City getCity(String cityId);
+    boolean isEtalaseEmpty(String EtalaseName);
 }

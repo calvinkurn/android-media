@@ -228,7 +228,7 @@ public class ProductFeedData2 {
         productItem.setPrice(productFeed2.price);// 3
         productItem.setShop(productFeed2.shop.name);// 5
         productItem.setShopId(Integer.parseInt(productFeed2.shop.id));// 8
-        productItem.setShop_location(productFeed2.shopLocation);// 9
+        productItem.setShopLocation(productFeed2.shopLocation);// 9
 
         return productItem;
     }

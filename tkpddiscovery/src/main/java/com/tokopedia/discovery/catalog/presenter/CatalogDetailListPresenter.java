@@ -1,9 +1,12 @@
 package com.tokopedia.discovery.catalog.presenter;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.discovery.catalog.interactor.CatalogDataInteractor;
 import com.tokopedia.discovery.catalog.interactor.ICataloDataInteractor;
 import com.tokopedia.discovery.catalog.listener.ICatalogDetailListView;
@@ -11,9 +14,6 @@ import com.tokopedia.discovery.catalog.model.CatalogDetailItemProduct;
 import com.tokopedia.discovery.catalog.model.CatalogDetailItemShop;
 import com.tokopedia.discovery.catalog.model.CatalogDetailListData;
 import com.tokopedia.discovery.catalog.model.CatalogListWrapperData;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -111,10 +111,20 @@ public class CatalogDetailListPresenter implements ICatalogDetailListPresenter {
 
     @Override
     public void goToProductDetailPage(CatalogDetailItemProduct product) {
-        Bundle bundle = new Bundle();
-        Intent intent = new Intent(view.getActivity(), ProductInfoActivity.class);
-        bundle.putString("product_id", product.getId());
-        intent.putExtras(bundle);
-        view.getActivity().startActivity(intent);
+        view.getActivity().startActivity(
+                ProductDetailRouter.createInstanceProductDetailInfoActivity(
+                        view.getActivity(), getProductDataToPass(product)
+                )
+        );
     }
+
+    private ProductPass getProductDataToPass(CatalogDetailItemProduct product) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(product.getPrice())
+                .setProductId(product.getId())
+                .setProductName(product.getName())
+                .setProductImage(product.getImageUri())
+                .build();
+    }
+
 }

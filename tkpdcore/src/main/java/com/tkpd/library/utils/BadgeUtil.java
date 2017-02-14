@@ -13,10 +13,10 @@ import com.tokopedia.core.R;
 public class BadgeUtil {
     public static ImageView createDynamicBadge(Context context){
         LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(
-                context.getResources().getDimensionPixelOffset(R.dimen.large_dp), context.getResources().getDimensionPixelOffset(R.dimen.large_dp));
+                context.getResources().getDimensionPixelOffset(R.dimen.med_dp), context.getResources().getDimensionPixelOffset(R.dimen.med_dp));
         ImageView imageView=new ImageView(context);
         imageView.setLayoutParams(lparams);
-        int padding = context.getResources().getDimensionPixelOffset(R.dimen.margin_vvs);
+        int padding = context.getResources().getDimensionPixelOffset(R.dimen.margin_vvvs);
         imageView.setPadding(padding, padding, padding, padding);
      return imageView;
     }

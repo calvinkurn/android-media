@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.sellerapp.R;
-import com.tokopedia.sellerapp.home.utils.ImageHandler;
+import com.tkpd.library.utils.image.ImageHandler;
 
 /**
  * Created by normansyahputa on 9/1/16.

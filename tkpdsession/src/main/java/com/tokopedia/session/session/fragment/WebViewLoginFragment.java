@@ -30,6 +30,7 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
+import com.tokopedia.core.util.TkpdWebView;
 
 import java.util.Set;
 
@@ -52,7 +53,7 @@ public class WebViewLoginFragment extends DialogFragment {
     {
     }
 
-    private WebView webViewOauth;
+    private TkpdWebView webViewOauth;
     private ProgressBar progressBar;
 
     @Override
@@ -66,7 +67,7 @@ public class WebViewLoginFragment extends DialogFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Get field from view
-        webViewOauth = (WebView) view.findViewById(R.id.web_oauth);
+        webViewOauth = (TkpdWebView) view.findViewById(R.id.web_oauth);
         progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
         // Fetch arguments from bundle and set title
 //        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.LoginWebview);
@@ -77,7 +78,7 @@ public class WebViewLoginFragment extends DialogFragment {
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
         getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         webViewOauth.clearCache(true);
-        webViewOauth.loadUrl(url);
+        webViewOauth.loadAuthUrlWithFlags(url);
         webViewOauth.setWebViewClient(new AuthWebClient());
         webViewOauth.clearHistory();
         webViewOauth.clearFormData();
@@ -181,5 +182,12 @@ public class WebViewLoginFragment extends DialogFragment {
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, getActivity().getIntent());
+//        KeyboardHandler.hideSoftKeyboard(getActivity());
+        super.onDismiss(dialog);
     }
 }

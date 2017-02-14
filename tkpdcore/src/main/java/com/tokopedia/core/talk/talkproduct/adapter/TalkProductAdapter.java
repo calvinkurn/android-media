@@ -8,7 +8,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,7 +27,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.talk.inboxtalk.intentservice.InboxTalkIntentService;
+import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.talkproduct.fragment.TalkProductFragment;
 import com.tokopedia.core.talk.talkproduct.model.Talk;
 import com.tokopedia.core.talk.talkproduct.model.TalkUserReputation;
@@ -38,6 +37,7 @@ import com.tokopedia.core.talkview.method.DeleteTalkDialog;
 import com.tokopedia.core.talkview.method.FollowTalkDialog;
 import com.tokopedia.core.talkview.method.ReportTalkDialog;
 import com.tokopedia.core.util.LabelUtils;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.TokenHandler;
 import com.tokopedia.core.util.ToolTipUtils;
@@ -177,7 +177,7 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
         }
         String HeaderStr;
         HeaderStr = "<b>" + talk.getTalkUserName() + "</b>";
-        holder.UserView.setText(Html.fromHtml(HeaderStr));
+        holder.UserView.setText(MethodChecker.fromHtml(HeaderStr));
 //        holder.DetailLayout.setVisibility(View.GONE);
 
         holder.RepRate.setText(String.format("%s%%", talk.getTalkUserReputation().getPositivePercentage()));
@@ -204,7 +204,7 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
             }
         }
         label.giveSquareLabel(talk.getTalkUserLabel());
-        holder.MessageView.setText(Html.fromHtml(talk.getTalkMessage()));
+        holder.MessageView.setText(MethodChecker.fromHtml(talk.getTalkMessage()));
 
 
         holder.TotalCommentView.setText(talk.getTalkTotalComment());
@@ -371,7 +371,11 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
                 menuID = R.menu.follow_delete_menu;
             }
         } else {
-            menuID = R.menu.report_menu;
+            if (talk.getTalkFollowStatus() == 1) {
+                menuID = R.menu.unfollow_report_menu;
+            } else {
+                menuID = R.menu.follow_report_menu;
+            }
         }
         return menuID;
     }

@@ -2,12 +2,15 @@ package com.tokopedia.tkpd.deeplink.presenter;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.appsflyer.AppsFlyerConversionListener;
+import com.appsflyer.AppsFlyerLib;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -16,19 +19,25 @@ import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.fragment.FragmentShopPreview;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.v4.NetworkConfig;
-import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
-import com.tokopedia.core.product.model.passdata.ProductPass;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.router.home.HotListRouter;
 import com.tokopedia.core.router.home.RechargeRouter;
-import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.session.model.AccountsModel;
+import com.tokopedia.core.session.model.AccountsParameter;
+import com.tokopedia.core.session.model.InfoModel;
+import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
+import com.tokopedia.session.session.interactor.SignInInteractor;
+import com.tokopedia.session.session.interactor.SignInInteractorImpl;
+import com.tokopedia.session.session.presenter.Login;
+import com.tokopedia.tkpd.IConsumerModuleRouter;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 
@@ -62,10 +71,50 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private final Activity context;
     private final DeepLinkView viewListener;
+    SignInInteractor interactor;
 
     public DeepLinkPresenterImpl(DeepLinkActivity activity) {
         this.viewListener = activity;
         this.context = activity;
+        this.interactor = SignInInteractorImpl.createInstance(activity);
+    }
+
+    @Override
+    public boolean isLandingPageWebView(Uri uri) {
+        int type = getDeepLinkType(uri);
+        switch (type){
+            case HOMEPAGE:
+                return false;
+            case BROWSE:
+                return false;
+            case HOT:
+                return false;
+            case CATALOG:
+                return false;
+            case PRODUCT:
+                return false;
+            case SHOP:
+                return false;
+            case ACCOUNTS:
+                return true;
+            case OTHER:
+                return true;
+            case INVOICE:
+                return false;
+            case RECHARGE:
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    @Override
+    public void checkUriLogin(Uri uriData) {
+        if(getDeepLinkType(uriData) == ACCOUNTS && uriData.getPath().contains("activation")){
+            if(!SessionHandler.isV4Login(context)){
+                login(uriData);
+            }
+        }
     }
 
     public void processDeepLinkAction(Uri uriData) {
@@ -74,8 +123,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             processAFlistener();
         } else {
             List<String> linkSegment = uriData.getPathSegments();
-            String screenName = "";
+            String screenName;
             int type = getDeepLinkType(uriData);
+            CommonUtils.dumper("FCM wvlogin deeplink type "+type);
             switch (type) {
                 case HOMEPAGE:
                     screenName = AppScreen.SCREEN_INDEX_HOME;
@@ -104,11 +154,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_SHOP_INFO;
                     break;
                 case ACCOUNTS:
-                    openWebView(null, uriData);
+                    if(!uriData.getPath().contains("activation")) {
+                        openWebView(uriData);
+                    }else {
+                        context.finish();
+                    }
                     screenName = AppScreen.SCREEN_LOGIN;
                     break;
                 case OTHER:
-                    openWebView(linkSegment, uriData);
+                    openWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
                     break;
                 case INVOICE:
@@ -120,12 +174,53 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_RECHARGE;
                     break;
                 default:
-                    openWebView(linkSegment, uriData);
+                    openWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
                     break;
             }
             sendCampaignGTM(uriData.toString(), screenName);
         }
+    }
+
+    private void login(Uri uriData) {
+        interactor.handleAccounts(parseUriData(uriData), new SignInInteractor.SignInListener() {
+            @Override
+            public void onSuccess(AccountsModel result) {
+                finishLogin();
+            }
+
+            @Override
+            public void onError(String error) {
+                finishLogin();
+            }
+
+            @Override
+            public void moveToSecurityQuestion(SecurityModel securityModel) {
+                finishLogin();
+            }
+
+            @Override
+            public void moveToCreatePassword(InfoModel infoModel) {
+                finishLogin();
+            }
+        });
+    }
+
+    private void finishLogin() {
+        Intent intent = HomeRouter.getHomeActivity(context);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
+        context.finish();
+    }
+
+    private AccountsParameter parseUriData(Uri uriData) {
+        AccountsParameter data = new AccountsParameter();
+        data.setEmail(" ");
+        data.setPassword(uriData.getPathSegments().get(1));
+        data.setAttempt(uriData.getQueryParameter("a"));
+        data.setGrantType(Login.GRANT_PASSWORD);
+        data.setPasswordType(SignInInteractor.ACTIVATION_CODE);
+        return data;
     }
 
 
@@ -179,12 +274,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         if (!TextUtils.isEmpty(query)) {
             String[] pairs = query.split("&|\\?");
             for (String pair : pairs) {
-                int idx = pair.indexOf("=");
-                try {
-                    queryPairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"),
-                            URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+                int indexKey = pair.indexOf("=");
+                if (indexKey > 0 && indexKey + 1 <= pair.length()) {
+                    try {
+                        queryPairs.put(URLDecoder.decode(pair.substring(0, indexKey), "UTF-8"),
+                                URLDecoder.decode(pair.substring(indexKey + 1), "UTF-8"));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -239,9 +336,16 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return false;
     }
 
-    private void openWebView(List<String> linkSegment, Uri uriData) {
-        Fragment fragment = FragmentGeneralWebView.createInstance(uriData.toString());
+    private void openWebView(Uri uriData) {
+        CommonUtils.dumper("wvlogin URL links "+getUrl(uriData.toString()));
+        String url = getUrl(uriData.toString());
+        Fragment fragment = FragmentGeneralWebView.createInstance(url);
         viewListener.inflateFragment(fragment, "WEB_VIEW");
+    }
+
+    private String getUrl(String data) {
+        Log.d(TAG, "getUrl: " + URLGenerator.generateURLSessionLoginV4(data, context));
+        return URLGenerator.generateURLSessionLoginV4(data, context);
     }
 
     private void openShopInfo(List<String> linkSegment, Uri uriData) {
@@ -250,6 +354,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openDetailProduct(List<String> linkSegment, Uri uriData) {
+        CommonUtils.dumper("wvlogin opened product");
         Fragment fragment = ProductDetailFragment.newInstanceForDeeplink(ProductPass.Builder.aProductPass()
                 .setProductKey(linkSegment.get(1))
                 .setShopDomain(linkSegment.get(0))
@@ -277,8 +382,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
         bundle.putBoolean(RechargeRouter.EXTRA_ALLOW_ERROR, true);
 //        RechargeCategoryFragment fragment = RechargeCategoryFragment.newInstance(bundle);
-
-        viewListener.inflateFragmentV4(RechargeRouter.getRechargeCategoryFragment(context), "RECHARGE");
+//        viewListener.inflateFragmentV4(RechargeRouter.getRechargeCategoryFragment(context), "RECHARGE");
+        viewListener.inflateFragmentV4(((IConsumerModuleRouter)this.context.getApplication()).getRechargeCategoryFragment(),
+                "RECHARGE");
     }
 
 
@@ -365,7 +471,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         List<String> linkSegment = uriData.getPathSegments();
         if (uriData.toString().contains("accounts.tokopedia.com"))
             return ACCOUNTS;
-
         try {
             if (isExcludedHostUrl(uriData))
                 return OTHER;
@@ -442,7 +547,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return (linkSegment.size() == 2
                 && !isBrowse(linkSegment)
                 && !isHot(linkSegment)
-                && !isCatalog(linkSegment));
+                && !isCatalog(linkSegment)
+                && !linkSegment.get(0).equals("pulsa"));
     }
 
     private boolean isCatalog(List<String> linkSegment) {
@@ -463,7 +569,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     @Override
     public void processAFlistener() {
-        /*AppsFlyerLib.getInstance().registerConversionListener(context, new AppsFlyerConversionListener() {
+        AppsFlyerLib.getInstance().registerConversionListener(context, new AppsFlyerConversionListener() {
             @Override
             public void onInstallConversionDataLoaded(Map<String, String> map) {
 
@@ -488,6 +594,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             public void onAttributionFailure(String s) {
 
             }
-        });*/
+        });
     }
 }

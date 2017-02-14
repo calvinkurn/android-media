@@ -13,10 +13,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.shopinfo.ReputationViewShop;
 import com.tokopedia.core.app.V2BaseFragment;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.reputationproduct.adapter.ListViewReputationAdapter;
+import com.tokopedia.core.shopinfo.ReputationViewShop;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.adapter.ShopReputationAdapterR;
 import com.tokopedia.core.shopinfo.facades.ActionReputationLikeRetrofit;
@@ -98,14 +97,18 @@ public class ShopReputationList extends V2BaseFragment {
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        this.isVisibleToUser = isVisibleToUser;
-        if (isVisibleToUser && listReputation.size() == 0 && !adapter.hasNoResult() && page == 1 && !facadeGetRep.isFetching()) {
-            this.isVisibleToUser = isVisibleToUser;
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (listReputation.size() == 0 && !adapter.hasNoResult() && page == 1 && !facadeGetRep.isFetching()) {
             adapter.setLoading();
             facadeGetRep.getShopReputation(Integer.toString(page));
         }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        this.isVisibleToUser = isVisibleToUser;
     }
 
     private void initFacade() {
@@ -314,8 +317,8 @@ public class ShopReputationList extends V2BaseFragment {
         startActivityForResult(intent, 0);
     }
 
-    private ListViewReputationAdapter.Model convertShopReviewModelToReviewModel(ReputationModel model) {
-        ListViewReputationAdapter.Model repModel = new ListViewReputationAdapter.Model();
+    private ReputationViewShop.Model convertShopReviewModelToReviewModel(ReputationModel model) {
+        ReputationViewShop.Model repModel = new ReputationViewShop.Model();
         repModel.avatarUrl = model.avatarUrl;
         repModel.avatarUrlResponder = model.avatarUrlResponder;
         repModel.comment = model.comment;

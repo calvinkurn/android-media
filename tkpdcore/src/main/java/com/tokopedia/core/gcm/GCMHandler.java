@@ -1,43 +1,41 @@
 package com.tokopedia.core.gcm;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
-import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.localytics.android.Localytics;
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.analytics.TrackingUtils;
 
 import java.io.IOException;
 
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+
 public class GCMHandler {
 
-    public static final String EXTRA_MESSAGE = "message";
-    public static final String PROPERTY_REG_ID = "registration_id";
-    // private static final String PROPERTY_APP_VERSION = "appVersion";
-    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    private static final String TAG = GCMHandler.class.getSimpleName();
     private static int STATUS_OK = 1;
     private static int STATUS_ERROR = 2;
     private static int STATUS_WAITING = 0;
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private String SENDER_ID = "673352445777";
-    private GoogleCloudMessaging gcm;
     private Context context;
     private String regid;
+    private String gcmRegid;
     private GCMHandlerListener gcmlistener;
+    private GoogleCloudMessaging gcm;
     private int retryAttempt = 0;
-
-    public interface GCMHandlerListener {
-        void onGCMSuccess(String gcmId);
-    }
 
     public GCMHandler (Context context) {
         this.context = context;
@@ -47,117 +45,155 @@ public class GCMHandler {
         return SENDER_ID;
     }
 
-    public void commitGCMProcess (GCMHandlerListener listener) {
+    public void commitFCMProcess(GCMHandlerListener listener) {
         if(listener!=null)
             gcmlistener = listener;
 
-        Integer resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
-        if (resultCode == ConnectionResult.SUCCESS) {
-            gcm = GoogleCloudMessaging.getInstance(context);
+        if (checkPlayServices()) {
             regid = getRegistrationId(context);
-            CommonUtils.dumper("start gcm get");
+            CommonUtils.dumper(TAG+ "start gcm get");
             if (regid.isEmpty()) {
-                new registerInBackground().execute();
+                registerFCM();
             } else {
-
-                Localytics.setPushRegistrationId(regid);
-
                 if(listener!=null)
                     gcmlistener.onGCMSuccess(regid);
             }
         } else {
-            Log.d("MNORMANSYAH", GCMHandler.class.getSimpleName()+" failed to get gcm id !!!");
-            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(resultCode, (Activity)context, 0);
-            if (dialog != null) {
-                //This dialog will help the user update to the latest GooglePlayServices
-                dialog.show();
-            }
+            Log.d(TAG, " failed to get gcm id !!!");
         }
-
     }
 
-    private boolean checkPlayServices() {
-        int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
-        if (resultCode != ConnectionResult.SUCCESS) {
-            return false;
-        }
-        return true;
-    }
-
-    private class registerInBackground extends AsyncTask<Void, Void, GCMParam> {
-
-        @Override
-        protected GCMParam doInBackground(Void... params) {
-            GCMParam param = new GCMParam();
-            int status = STATUS_WAITING;
-            try {
-                if (gcm == null) {
-                    gcm = GoogleCloudMessaging.getInstance(context);
-                }
-                regid = gcm.register(SENDER_ID);
-                storeRegistrationId(regid);
-                param.statusCode = STATUS_OK;
-                param.statusMessage = "Device registered, registration ID=" + regid;
-                CommonUtils.dumper("Device registered, registration ID=" + regid);
-
-                Localytics.setPushRegistrationId(regid);
-
-                // You should send the registration ID to your server over HTTP,
-                // so it can use GCM/HTTP or CCS to send messages to your app.
-                // The request to your server should be authenticated if your app
-                // is using accounts.
-
-
-                // For this demo: we don't need to send it because the device
-                // will send upstream messages to a server that echo back the
-                // message using the 'from' address in the message.
-
-                // Persist the regID - no need to register again.
-                //storeRegistrationId(context, regid);
-            } catch (IOException ex) {
-                param.statusCode = STATUS_ERROR;
-                param.statusMessage = ex.getMessage();
-                CommonUtils.dumper("Error :" + ex.getMessage());
-                // If there is an error, don't just keep trying to register.
-                // Require the user to click a button again, or perform
-                // exponential back-off.
-            }
-            return param;
-        }
-
-        @Override
-        protected void onPostExecute(GCMParam param) {
-            if (param.statusCode == STATUS_OK) {
-                gcmlistener.onGCMSuccess(regid);
+    public void commitGCMProcess () {
+        if(checkPlayServices()){
+            gcm = GoogleCloudMessaging.getInstance(context);
+            gcmRegid = getRegistrationId(context);
+            CommonUtils.dumper("start gcm get");
+            if (gcmRegid.isEmpty()) {
+                registerGCM();
             } else {
-                if (retryAttempt < 5) {
-                    retryAttempt++;
-                    new registerInBackground().execute();
-                } else {
-                    TrackingUtils.eventError(context.getClass().toString(), param.statusMessage);
-                    storeDummyGCMID();
-                    gcmlistener.onGCMSuccess(regid);
-                }
-            }
-        }
 
+                Localytics.setPushRegistrationId(gcmRegid);
+
+            }
+        } else {
+            Log.d(TAG, " failed to get gcm id !!!");
+        }
     }
 
-    private void storeRegistrationId(String id) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, "GCM_STORAGE");
-        cache.putString("gcm_id", id);
-        cache.applyEditor();
+    /**
+     *  :)
+     */
+    private void registerGCM(){
+        Observable.just(true)
+                .subscribeOn(Schedulers.newThread())
+                .map(new Func1<Boolean, GCMParam>(){
+                    @Override
+                    public GCMParam call(Boolean aBoolean) {
+                        GCMParam param = new GCMParam();
+                        try {
+                            if (gcm == null) {
+                                gcm = GoogleCloudMessaging.getInstance(context);
+                            }
+                            gcmRegid = gcm.register(SENDER_ID);
+                            FCMCacheManager.storeGCMRegId(gcmRegid, context);
+                            param.statusCode = STATUS_OK;
+                            param.statusMessage = "GCM :: Device registered, registration ID=" + gcmRegid;
+                            CommonUtils.dumper("GCM :: Device registered, registration ID=" + gcmRegid);
+
+                            Localytics.setPushRegistrationId(gcmRegid);
+
+                        } catch (IOException ex) {
+                            param.statusCode = STATUS_ERROR;
+                            param.statusMessage = ex.getMessage();
+                            CommonUtils.dumper("Error :" + ex.getMessage());
+                        }
+                        return param;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<GCMParam>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(GCMParam gcmParam) {
+                        if (gcmParam.statusCode == STATUS_OK) {
+
+                        } else {
+                            if (retryAttempt < 5) {
+                                retryAttempt++;
+                                registerGCM();
+                            } else {
+                                TrackingUtils.eventError(context.getClass().toString(), gcmParam.statusMessage);
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void registerFCM(){
+        Observable.just(true)
+                .subscribeOn(Schedulers.newThread())
+                .map(new Func1<Boolean, GCMParam>(){
+                    @Override
+                    public GCMParam call(Boolean aBoolean) {
+                        GCMParam param = new GCMParam();
+                        regid = FirebaseInstanceId.getInstance().getToken();
+                        if (!TextUtils.isEmpty(regid)) {
+                            FCMCacheManager.storeRegId(regid, context);
+                            param.statusCode = STATUS_OK;
+                            param.statusMessage = "FCM :: Device registered, registration ID=" + regid;
+                            CommonUtils.dumper("FCM :: Device registered, registration ID=" + regid);
+                        } else {
+                            param.statusCode = STATUS_ERROR;
+                            param.statusMessage = "FCM :: GCM registration error";
+                            CommonUtils.dumper("FCM :: GCM registration error");
+                        }
+                        return param;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<GCMParam>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(GCMParam gcmParam) {
+                        if (gcmParam.statusCode != STATUS_OK) {
+                            TrackingUtils
+                                    .eventError(context.getClass().toString(), gcmParam.statusMessage);
+                            storeDummyGCMID();
+                        }
+                        Log.d(TAG, "FCM :: RegistrationId: " + regid);
+                        gcmlistener.onGCMSuccess(regid);
+                    }
+                });
     }
 
     public static String getRegistrationId(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, "GCM_STORAGE");
-        return cache.getString("gcm_id", "");
+        return FCMCacheManager.getRegistrationId(context);
     }
 
     public static void clearRegistrationId(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, "GCM_STORAGE");
-        cache.putString("gcm_id", null);
-        cache.applyEditor();
+        FCMCacheManager.clearRegistrationId(context);
+    }
+
+    public void commitGCMProcess(GCMHandlerListener any) {
+
     }
 
     public class GCMParam {
@@ -165,25 +201,26 @@ public class GCMHandler {
         String statusMessage;
     }
 
-    private void showGCMRegisterError(String msg) {
-        DialogNoConnection.create(context,
-                context.getResources().getString(R.string.error_connection_problem) + ".\n"
-                        + context.getResources().getString(R.string.error_no_connection2) + ".\n \n"
-                        + msg,
-                new DialogNoConnection.ActionListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        retryAttempt = 0;
-                        new registerInBackground().execute();
-                    }
-                }).show();
-    }
-
     //for specific case when gcm failed to get the id
     private void storeDummyGCMID() {
         regid = PasswordGenerator.getAppId(context);
-        storeRegistrationId(regid);
+        gcmRegid = PasswordGenerator.getAppId(context);
+        FCMCacheManager.storeRegId(regid, context);
     }
 
 
+    private boolean checkPlayServices() {
+        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
+        int result = googleAPI.isGooglePlayServicesAvailable(context);
+        if(result != ConnectionResult.SUCCESS) {
+            if(googleAPI.isUserResolvableError(result)) {
+                googleAPI.getErrorDialog((Activity) context, result,
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            }
+
+            return false;
+        }
+
+        return true;
+    }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.util.ArrayMap;
 
 import com.google.gson.Gson;
+import com.tkpd.library.kirisame.Kirisame;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -13,7 +14,6 @@ import com.tokopedia.core.shopinfo.models.etalasemodel.EtalaseModel;
 
 import java.util.Map;
 
-import com.tkpd.library.kirisame.Kirisame;
 import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
@@ -222,4 +222,5 @@ public class GetShopInfoRetrofit {
         params.put("show_all", "1");
         return params;
     }
+
 }

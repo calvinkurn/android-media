@@ -40,6 +40,7 @@ import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipping;
@@ -91,7 +92,6 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     private void initView() {
         sellerTickerView = (TextView) findViewById(R.id.seller_ticker);
         sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
-        initSellerTicker();
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setOffscreenPageLimit(4);
         indicator = (TabLayout) findViewById(R.id.indicator);
@@ -107,6 +107,12 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
             showTickerGTM(null);
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initSellerTicker();
     }
 
     protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span)
@@ -156,7 +162,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
 
     private void showTickerGTM(String message) {
         if (message != null) {
-            CharSequence sequence = Html.fromHtml(message);
+            CharSequence sequence = MethodChecker.fromHtml(message);
             SpannableStringBuilder strBuilder = new SpannableStringBuilder(sequence);
             URLSpan[] urls = strBuilder.getSpans(0, sequence.length(), URLSpan.class);
             for(URLSpan span : urls) {

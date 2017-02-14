@@ -1,5 +1,7 @@
 package com.tokopedia.session.session.fragment;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,14 +12,28 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookAuthorizationException;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -27,9 +43,12 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.base.BaseFragment;
+import com.tokopedia.core.session.model.FacebookModel;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
@@ -40,16 +59,26 @@ import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.AppEventTracking;
 import com.tokopedia.core.var.TkpdState;
 
+import org.json.JSONObject;
+
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by stevenfredian on 10/18/16.
  */
-
+@RuntimePermissions
 public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresenter>
                                         implements RegisterInitialView{
 
@@ -59,13 +88,25 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     LoginTextView registerButton;
     @BindView(R2.id.login_button)
     TextView loginButton;
+    @BindView(R2.id.container)
+    ScrollView container;
+    @BindView(R2.id.progress_bar)
+    RelativeLayout progressBar;
 
     List<LoginProviderModel.ProvidersBean> listProvider;
     private Snackbar snackbar;
     LocalCacheHandler cacheGTM;
+    CallbackManager callbackManager;
 
     public static Fragment newInstance(){
         return new RegisterInitialFragment();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
     }
 
     @Nullable
@@ -74,11 +115,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
         View parentView = super.onCreateView(inflater, container, savedInstanceState);
         initView();
         showProgress(false);
-
-        cacheGTM = new LocalCacheHandler(getActivity(), AppEventTracking.GTM_CACHE);
-        cacheGTM.putString(AppEventTracking.GTMCacheKey.SESSION_STATE,
-                AppEventTracking.GTMCacheValue.REGISTER);
-        cacheGTM.applyEditor();
+        UserAuthenticationAnalytics.setActiveRegister();
 
         return parentView;
     }
@@ -89,8 +126,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                storeCacheGTM(AppEventTracking.GTMCacheKey.REGISTER_TYPE,
-                        AppEventTracking.GTMCacheValue.EMAIL);
+                UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.EMAIL);
                 ((SessionView) getActivity()).moveToRegister();
             }
         });
@@ -160,13 +196,16 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     }
 
     @Override
-    public void showProgress(boolean show) {
-
+    public void showProgress(boolean isShow) {
+        progressBar.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        container.setVisibility(isShow ? View.GONE : View.VISIBLE);
+        loginButton.setVisibility(isShow ? View.GONE : View.VISIBLE);
     }
 
     @Override
     public void showError(String string) {
-        SnackbarManager.make(getActivity(),string, Snackbar.LENGTH_LONG).show();
+        snackbar = SnackbarManager.make(getActivity(),string, Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     @Override
@@ -178,6 +217,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
                         ,getString(R.string.error_download_provider), Snackbar.LENGTH_INDEFINITE)
                         .setAction(getString(R.string.title_try_again), retryDiscover());
                 snackbar.show();
+                loginButton.setEnabled(false);
                 break;
             default:
                 showError(s);
@@ -202,8 +242,16 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     }
 
     @Override
+    public void moveToFragmentSecurityQuestion(int security1, int security2, int userId) {
+        if (getActivity() != null) {// && !((AppCompatActivity)mContext).isFinishing()
+            ((SessionView) getActivity()).moveToFragmentSecurityQuestion(security1, security2, userId);
+        }
+    }
+
+    @Override
     public void showProvider(List<LoginProviderModel.ProvidersBean> data) {
         listProvider = data;
+        loginButton.setEnabled(true);
         if (listProvider != null && checkHasNoProvider()) {
             presenter.saveProvider(listProvider);
 
@@ -235,7 +283,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
                     tv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            onGoogleClick();
+                            RegisterInitialFragmentPermissionsDispatcher.onGoogleClickWithCheck(RegisterInitialFragment.this);
                         }
                     });
                 } else {
@@ -262,37 +310,44 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
         newFragment.show(getFragmentManager().beginTransaction(), "dialog");
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        storeCacheGTM(AppEventTracking.GTMCacheKey.REGISTER_TYPE,
-                name);
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium(name);
     }
 
 
     public void startLoginWithGoogle(String type, LoginGoogleModel loginGoogleModel) {
         presenter.startLoginWithGoogle(getActivity(), type, loginGoogleModel);
-        storeCacheGTM(AppEventTracking.GTMCacheKey.REGISTER_TYPE,
-                AppEventTracking.GTMCacheValue.GMAIL
-        );
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium( AppEventTracking.GTMCacheValue.GMAIL);
     }
 
-    private void onGoogleClick() {
+    @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
+    public void onGoogleClick() {
         ((GoogleActivity) getActivity()).onSignInClicked();
-        storeCacheGTM(AppEventTracking.GTMCacheKey.REGISTER_TYPE,
-                AppEventTracking.GTMCacheValue.GMAIL);
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium( AppEventTracking.GTMCacheValue.GMAIL);
     }
 
     private void onFacebookClick() {
-        showProgress(true);
-        presenter.loginFacebook(getActivity());
+        if(AccessToken.getCurrentAccessToken() != null) {
+            LoginManager.getInstance().logOut();
+        }
+        processFacebookLogin();
         CommonUtils.dumper("LocalTag : TYPE : FACEBOOK");
-        storeCacheGTM(AppEventTracking.GTMCacheKey.REGISTER_TYPE,
-                AppEventTracking.GTMCacheValue.FACEBOOK);
+        UserAuthenticationAnalytics.setActiveAuthenticationMedium( AppEventTracking.GTMCacheValue.FACEBOOK);
+    }
+
+    private void processFacebookLogin() {
+        presenter.doFacebookLogin(this, callbackManager);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode,resultCode,data);
         switch (requestCode){
             case 100:
+                if(resultCode == Activity.RESULT_CANCELED){
+                    KeyboardHandler.DropKeyboard(getActivity(),getView());
+                    break;
+                }
                 Bundle bundle = data.getBundleExtra("bundle");
                 if(bundle.getString("path").contains("error")){
                     snackbar = SnackbarManager.make(getActivity(), bundle.getString("message"), Snackbar.LENGTH_LONG);
@@ -336,12 +391,16 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
 
     @Override
     public void onNetworkError(int type, Object... data) {
-
+        onMessageError(type,data);
     }
 
     @Override
     public void onMessageError(int type, Object... data) {
-
+        showProgress(false);
+        if(data!=null) {
+            snackbar = SnackbarManager.make(getActivity(), (String) data[0], Snackbar.LENGTH_LONG);
+            snackbar.show();
+        }
     }
 
     @Override
@@ -349,10 +408,27 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
         super.onDestroyView();
         presenter.unSubscribeFacade();
         KeyboardHandler.DropKeyboard(getActivity(),getView());
+        if(snackbar!=null && snackbar.isShown()) snackbar.dismiss();
     }
 
-    private void storeCacheGTM(String key, String value) {
-        cacheGTM.putString(key, value);
-        cacheGTM.applyEditor();
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        RegisterInitialFragmentPermissionsDispatcher.onRequestPermissionsResult(RegisterInitialFragment.this,requestCode, grantResults);
+    }
+
+    @OnShowRationale(Manifest.permission.GET_ACCOUNTS)
+    void showRationaleForGetAccounts(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.GET_ACCOUNTS);
+    }
+
+    @OnPermissionDenied(Manifest.permission.GET_ACCOUNTS)
+    void showDeniefForGetAccounts() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.GET_ACCOUNTS);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.GET_ACCOUNTS)
+    void showNeverAskForGetAccounts() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.GET_ACCOUNTS);
     }
 }

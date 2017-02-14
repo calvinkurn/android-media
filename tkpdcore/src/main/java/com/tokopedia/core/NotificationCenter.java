@@ -15,20 +15,22 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.GCMListenerService.NotificationListener;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.MultiPaneActivity;
+import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
-import com.tokopedia.core.inboxmessage.fragment.InboxMessageFragment;
 import com.tokopedia.core.inboxreputation.fragment.InboxReputationFragment;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.core.talk.inboxtalk.fragment.InboxTalkFragment;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -76,7 +78,7 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
             Bundle bundle = new Bundle();
             switch (NotificationCode.get(i)) {
                 case 101:
-                    fragment = InboxMessageFragment.createInstance("inbox-message");
+                    fragment = InboxRouter.instanceInboxMessageFromNotification(this);
                     bundle.putBoolean("from_notif", true);
                     bundle.putString("nav", "inbox-message");
                     fragment.setArguments(bundle);
@@ -84,7 +86,7 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
                     CONTENT.add(getString(R.string.title_message));
                     break;
                 case 102:
-                    fragment = new InboxTalkFragment();
+                    fragment = InboxRouter.instanceInboxTalkFromNotification(this);
                     bundle.putBoolean("from_notif", true);
                     bundle.putString("nav", "inbox-talk");
                     fragment.setArguments(bundle);
@@ -318,25 +320,6 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_search)
-            return onSearchOptionSelected();
-        else if (item.getItemId() == R.id.action_search) {
-
-            if (!SessionHandler.isV4Login(getBaseContext())) {
-                Intent intent = SessionRouter.getLoginActivityIntent(this);
-                intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-                startActivity(intent);
-            } else {
-                startActivity(new Intent(getBaseContext(), Cart.class));
-            }
-            return true;
-        } else
-            return super.onOptionsItemSelected(item);
-
-    }
-
-    @Override
     public void onGetNotif() {
         if (MainApplication.getNotificationStatus()) {
             drawer.getNotification();
@@ -392,4 +375,16 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
         createDetailView(page);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot() && GlobalConfig.isSellerApp()) {
+            startActivity(SellerAppRouter.getSellerHomeActivity(this));
+            finish();
+        } else if (isTaskRoot()) {
+            startActivity(HomeRouter.getHomeActivity(this));
+            finish();
+        }
+        super.onBackPressed();
+
+    }
 }

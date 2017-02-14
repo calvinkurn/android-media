@@ -263,6 +263,7 @@ public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragme
         } else {
             fab.setVisibility(View.GONE);
         }
+        adapter.setActionEnabled(isEnabled);
     }
 
     @Override

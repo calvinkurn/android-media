@@ -1,20 +1,25 @@
 package com.tokopedia.core.drawer.interactor;
 
 import android.content.Context;
-import android.text.Html;
 
-import com.tokopedia.core.drawer.DrawerVariable;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.drawer.model.DrawerHeader;
 import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
 import com.tokopedia.core.drawer.model.notification.NotificationData;
 import com.tokopedia.core.drawer.model.profileinfo.ProfileData;
+import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
 import com.tokopedia.core.drawer.var.NotificationItem;
+import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.core.network.apiservices.clover.CloverService;
 import com.tokopedia.core.network.apiservices.transaction.DepositService;
+import com.tokopedia.core.network.apiservices.transaction.TokoCashService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONException;
 
@@ -38,6 +43,7 @@ public class NetworkInteractorImpl implements NetworkInteractor {
     private final CloverService cloverService;
     private final DepositService depositService;
     private final NotificationService notificationService;
+    private final TokoCashService tokoCashService;
     private final CompositeSubscription compositeSubscription;
 
     public NetworkInteractorImpl() {
@@ -45,6 +51,7 @@ public class NetworkInteractorImpl implements NetworkInteractor {
         depositService = new DepositService();
         cloverService = new CloverService();
         notificationService = new NotificationService();
+        tokoCashService = new TokoCashService();
         compositeSubscription = new CompositeSubscription();
     }
 
@@ -179,6 +186,36 @@ public class NetworkInteractorImpl implements NetworkInteractor {
     }
 
     @Override
+    public void getTokoCash(final Context context, final TopCashListener listener) {
+        SessionHandler sessionHandler = new SessionHandler(context);
+        tokoCashService.setToken(sessionHandler.getAccessToken(context));
+        Observable<Response<TopCashItem>> observable = tokoCashService.getApi()
+                .getTokoCash();
+        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Response<TopCashItem>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if(e instanceof SessionExpiredException
+                                && SessionHandler.isV4Login(context)) {
+                            listener.onTokenExpire();
+                        }
+                    }
+
+                    @Override
+                    public void onNext(Response<TopCashItem> topCashItemResponse) {
+                        listener.onSuccess(topCashItemResponse.body());
+                    }
+                }));
+    }
+
+    @Override
     public void resetNotification(Context context, final ResetNotificationListener listener) {
         Observable<Response<TkpdResponse>> observable = notificationService.getApi()
                 .resetNotification(AuthUtil.generateParams(context, new HashMap<String, String>()));
@@ -239,7 +276,7 @@ public class NetworkInteractorImpl implements NetworkInteractor {
         DrawerHeader drawerHeader = new DrawerHeader();
 
         if (data.getShopInfo() != null) {
-            drawerHeader.shopName = Html.fromHtml(data.getShopInfo().getShopName()).toString();
+            drawerHeader.shopName = MethodChecker.fromHtml(data.getShopInfo().getShopName()).toString();
             drawerHeader.shopIcon = data.getShopInfo().getShopAvatar();
             drawerHeader.shopCover = data.getShopInfo().getShopCover();
             drawerHeader.ShopId = data.getShopInfo().getShopId();
@@ -249,7 +286,7 @@ public class NetworkInteractorImpl implements NetworkInteractor {
             drawerHeader.shopCover = null;
             drawerHeader.ShopId = null;
         }
-        drawerHeader.userName = Html.fromHtml(data.getUserInfo().getUserName()).toString();
+        drawerHeader.userName = MethodChecker.fromHtml(data.getUserInfo().getUserName()).toString();
         drawerHeader.userIcon = data.getUserInfo().getUserImage();
         drawerHeader.timestamp = Long.toString(System.currentTimeMillis() / 1000);
         return drawerHeader;

@@ -31,6 +31,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.LazyListView;
 import com.tokopedia.core.customadapter.ListViewEtalaseEditor;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.shop.MyShopEtalaseActService;
 import com.tokopedia.core.network.apiservices.shop.MyShopEtalaseService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -40,6 +41,7 @@ import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.shop.model.etalasemodel.Data;
 import com.tokopedia.core.shop.model.etalasemodel.List;
 import com.tokopedia.core.shopinfo.models.etalase.AddEtalase;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -160,7 +162,7 @@ public class EtalaseShopEditor extends TActivity {
             IsAllowShop = data.getIsAllow().toString();
             for (int i = 0; i < data.getList().size(); i++) {
                 List list = data.getList().get(i);
-                EtalaseName.add(Html.fromHtml(list.getEtalaseName()).toString());
+                EtalaseName.add(MethodChecker.fromHtml(list.getEtalaseName()).toString());
                 EtalaseID.add(list.getEtalaseId().toString());
                 TotalProd.add(list.getEtalaseNumProduct());
             }
@@ -192,6 +194,12 @@ public class EtalaseShopEditor extends TActivity {
                             @Override
                             public void onError(Throwable e) {
                                 Log.e(STUART, ETALASE_SHOP_EDITOR + "on error");
+                                NetworkErrorHelper.showEmptyState(EtalaseShopEditor.this, mainView, new NetworkErrorHelper.RetryClickedListener() {
+                                    @Override
+                                    public void onRetryClicked() {
+                                        GetEtalaseV4();
+                                    }
+                                });
                             }
 
                             @Override

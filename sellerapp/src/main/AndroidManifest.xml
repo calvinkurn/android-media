@@ -53,6 +53,9 @@
         </activity>
 
         <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4" />
+        <meta-data
             android:name="LOCALYTICS_APP_KEY"
             android:value="@string/key_localytics" />
         <meta-data
@@ -65,7 +68,17 @@
             android:name="APPSFLYER_KEY"
             android:value="@string/key_appsflyer" />
 
-        <activity android:name=".onboarding.activity.OnboardingSellerActivity"></activity>
+        <activity android:name=".onboarding.activity.OnboardingSellerActivity"/>
+        <activity android:name=".gmstat.activities.GMStatActivity"
+            android:label="@string/title_activity_gmstat"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3"/>
+
+        <provider
+            android:authorities="com.facebook.app.FacebookContentProvider411083689235522"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
+
     </application>
 
 </manifest>
