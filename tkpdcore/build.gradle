@@ -134,6 +134,7 @@ dependencies {
 
     compile rootProject.ext.analyticsDependencies.appsflyer
     compile rootProject.ext.analyticsDependencies.localytics
+    compile rootProject.ext.analyticsDependencies.moengage
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor

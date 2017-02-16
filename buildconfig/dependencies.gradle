@@ -80,7 +80,8 @@ ext {
 
     analyticsDependencies = [
             localytics : "com.localytics.android:library:4.2.0",
-            appsflyer : "com.appsflyer:af-android-sdk:4.6.1@aar"
+            appsflyer : "com.appsflyer:af-android-sdk:4.6.1@aar",
+            moengage : "com.moengage:moe-android-sdk:7.6.02"
     ]
 
     miscDependencies = [
