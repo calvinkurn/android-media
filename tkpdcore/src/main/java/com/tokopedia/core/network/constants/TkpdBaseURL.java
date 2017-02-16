@@ -627,4 +627,7 @@ public class TkpdBaseURL {
         public static final String GET_WALLET = ACCOUNTS_DOMAIN + "api/v1/wallet/";
         public static final String PATH_WALLET = "balance";
     }
+    public static class Truecaller{
+        public static final String VERIFY_PHONE = "/web-service/v4/truecaller/check";
+    }
 }
