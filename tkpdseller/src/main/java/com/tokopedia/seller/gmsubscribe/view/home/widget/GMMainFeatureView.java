@@ -21,9 +21,11 @@ import butterknife.ButterKnife;
  * View for displaying the gm subscribe main features
  */
 
-public class GMMainFeatureView extends FrameLayout {
+public class GmMainFeatureView extends FrameLayout {
 
-    /** BUTTERKNIFE VIEWS FIELD */
+    /**
+     * BUTTERKNIFE VIEWS FIELD
+     */
     @BindView(R2.id.image_gm_subscribe_main_feature)
     ImageView imageViewFeature;
 
@@ -38,18 +40,20 @@ public class GMMainFeatureView extends FrameLayout {
     private String descFeature;
 
 
-    /** CONSTRUCTOR */
-    public GMMainFeatureView(Context context) {
+    /**
+     * CONSTRUCTOR
+     */
+    public GmMainFeatureView(Context context) {
         super(context);
         initView();
     }
 
-    public GMMainFeatureView(Context context, AttributeSet attrs) {
+    public GmMainFeatureView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView(attrs);
     }
 
-    public GMMainFeatureView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public GmMainFeatureView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView(attrs);
     }

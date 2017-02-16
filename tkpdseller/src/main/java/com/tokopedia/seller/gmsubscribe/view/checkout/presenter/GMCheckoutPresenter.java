@@ -4,7 +4,7 @@ package com.tokopedia.seller.gmsubscribe.view.checkout.presenter;
  * Created by sebastianuskh on 1/26/17.
  */
 
-public interface GMCheckoutPresenter {
+public interface GmCheckoutPresenter {
 
     void getCurrentSelectedProduct(int productId);
 

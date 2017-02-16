@@ -6,13 +6,13 @@ import com.tokopedia.seller.R;
  * Created by sebastianuskh on 1/26/17.
  */
 
-public class GMCurrentProductFragment extends GMProductFragment {
+public class GmCurrentProductFragment extends GmProductFragment {
 
     public static final int EDIT_TAG = 100;
     public static final int INIT_TAG = 200;
 
-    public static GMProductFragment createFragment(String buttonString, int defaultSelected, int returnType) {
-        return createFragment(new GMCurrentProductFragment(), buttonString, defaultSelected, returnType);
+    public static GmProductFragment createFragment(String buttonString, int defaultSelected, int returnType) {
+        return createFragment(new GmCurrentProductFragment(), buttonString, defaultSelected, returnType);
     }
 
     @Override

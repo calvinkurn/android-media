@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GMVoucherViewModel;
+import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GmVoucherViewModel;
 
 /**
  * Created by sebastianuskh on 1/31/17.
@@ -64,7 +64,7 @@ public class CodeVoucherViewHolder {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 setShowVoucherCodeDetail(isChecked);
-                if(isChecked) {
+                if (isChecked) {
                     focusToVoucherEditText();
                 } else {
                     voucherEditText.setText("");
@@ -81,12 +81,12 @@ public class CodeVoucherViewHolder {
     }
 
     private void setShowVoucherCodeDetail(boolean isChecked) {
-        int visibility = isChecked? View.VISIBLE : View.GONE;
+        int visibility = isChecked ? View.VISIBLE : View.GONE;
         detail.setVisibility(visibility);
     }
 
-    public void renderVoucherView(GMVoucherViewModel gmVoucherViewModel) {
-        if(gmVoucherViewModel.isSuccess()){
+    public void renderVoucherView(GmVoucherViewModel gmVoucherViewModel) {
+        if (gmVoucherViewModel.isSuccess()) {
             successMessage.setVisibility(View.VISIBLE);
             successMessage.setText(gmVoucherViewModel.getMessage());
             voucherTextInputLayout.setError(null);
@@ -105,7 +105,7 @@ public class CodeVoucherViewHolder {
     }
 
     public void dismissKeyboard() {
-        InputMethodManager imm = (InputMethodManager)callback.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) callback.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(voucherEditText.getWindowToken(), 0);
     }
 }

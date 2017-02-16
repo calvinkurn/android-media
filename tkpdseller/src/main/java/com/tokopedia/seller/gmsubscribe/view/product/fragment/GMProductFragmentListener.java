@@ -4,7 +4,7 @@ package com.tokopedia.seller.gmsubscribe.view.product.fragment;
  * Created by sebastianuskh on 1/23/17.
  */
 
-public interface GMProductFragmentListener {
+public interface GmProductFragmentListener {
 
     void changeActionBarTitle(String title);
 

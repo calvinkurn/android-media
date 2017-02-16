@@ -6,32 +6,32 @@ import java.util.List;
  * Created by sebastianuskh on 1/26/17.
  */
 
-public class GMProductDomainModelGroup {
-    private List<GMProductDomainModel> currentProduct;
-    private List<GMProductDomainModel> extendProduct;
+public class GmProductDomainModelGroup {
+    private List<GmProductDomainModel> currentProduct;
+    private List<GmProductDomainModel> extendProduct;
     private String paymentMethod;
 
-    public void setCurrentProduct(List<GMProductDomainModel> currentProduct) {
-        this.currentProduct = currentProduct;
-    }
-
-    public void setExtendProduct(List<GMProductDomainModel> extendProduct) {
-        this.extendProduct = extendProduct;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
-    public List<GMProductDomainModel> getCurrentProduct() {
+    public List<GmProductDomainModel> getCurrentProduct() {
         return currentProduct;
     }
 
-    public List<GMProductDomainModel> getExtendProduct() {
+    public void setCurrentProduct(List<GmProductDomainModel> currentProduct) {
+        this.currentProduct = currentProduct;
+    }
+
+    public List<GmProductDomainModel> getExtendProduct() {
         return extendProduct;
+    }
+
+    public void setExtendProduct(List<GmProductDomainModel> extendProduct) {
+        this.extendProduct = extendProduct;
     }
 
     public String getPaymentMethod() {
         return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 }

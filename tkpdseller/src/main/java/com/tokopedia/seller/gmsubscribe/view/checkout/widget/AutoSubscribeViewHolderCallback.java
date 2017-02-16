@@ -6,7 +6,10 @@ package com.tokopedia.seller.gmsubscribe.view.checkout.widget;
 
 public interface AutoSubscribeViewHolderCallback {
     void selectAutoSubscribePackageFirstTime();
+
     void changeAutoSubscribePackage();
+
     boolean isAutoSubscribeUnselected();
+
     void clearAutoSubscribePackage();
 }

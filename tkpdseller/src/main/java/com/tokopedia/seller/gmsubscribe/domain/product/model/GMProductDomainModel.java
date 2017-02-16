@@ -3,7 +3,7 @@ package com.tokopedia.seller.gmsubscribe.domain.product.model;
 /**
  * Created by sebastianuskh on 2/2/17.
  */
-public class GMProductDomainModel {
+public class GmProductDomainModel {
     private Integer productId;
     private String price;
     private boolean bestDeal;
@@ -13,60 +13,60 @@ public class GMProductDomainModel {
     private String name;
     private String notes;
 
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
-    public void setBestDeal(boolean bestDeal) {
-        this.bestDeal = bestDeal;
-    }
-
-    public void setNextInv(String nextInv) {
-        this.nextInv = nextInv;
-    }
-
-    public void setFreeDays(String freeDays) {
-        this.freeDays = freeDays;
-    }
-
-    public void setLastPrice(String lastPrice) {
-        this.lastPrice = lastPrice;
-    }
-
     public Integer getProductId() {
         return productId;
+    }
+
+    public void setProductId(Integer productId) {
+        this.productId = productId;
     }
 
     public String getPrice() {
         return price;
     }
 
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
     public boolean isBestDeal() {
         return bestDeal;
+    }
+
+    public void setBestDeal(boolean bestDeal) {
+        this.bestDeal = bestDeal;
     }
 
     public String getNextInv() {
         return nextInv;
     }
 
+    public void setNextInv(String nextInv) {
+        this.nextInv = nextInv;
+    }
+
     public String getFreeDays() {
         return freeDays;
+    }
+
+    public void setFreeDays(String freeDays) {
+        this.freeDays = freeDays;
     }
 
     public String getLastPrice() {
         return lastPrice;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLastPrice(String lastPrice) {
+        this.lastPrice = lastPrice;
     }
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getNotes() {

@@ -8,10 +8,10 @@ import com.tokopedia.seller.R;
  * Created by sebastianuskh on 1/26/17.
  */
 
-public class GMExtendProductFragment extends GMProductFragment {
+public class GmExtendProductFragment extends GmProductFragment {
 
     public static Fragment createFragment(String buttonString, int defaultSelected, int returnType) {
-        return createFragment(new GMExtendProductFragment(), buttonString, defaultSelected, returnType);
+        return createFragment(new GmExtendProductFragment(), buttonString, defaultSelected, returnType);
     }
 
     @Override

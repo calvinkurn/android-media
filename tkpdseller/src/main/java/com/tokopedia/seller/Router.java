@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.seller.gmsubscribe.view.home.activity.GMSubscribeHomeActivity;
+import com.tokopedia.seller.gmsubscribe.view.home.activity.GmSubscribeHomeActivity;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -25,6 +25,6 @@ public class Router {
         if(context == null)
             return;
 
-        context.startActivity(new Intent(context, GMSubscribeHomeActivity.class));
+        context.startActivity(new Intent(context, GmSubscribeHomeActivity.class));
     }
 }

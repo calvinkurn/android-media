@@ -1,11 +1,11 @@
 package com.tokopedia.seller.gmsubscribe.view.product.viewmodel;
 
-import com.tokopedia.seller.gmsubscribe.domain.product.model.GMProductDomainModel;
+import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainModel;
 
 /**
  * Created by sebastianuskh on 1/26/17.
  */
-public class GMProductViewModel {
+public class GmProductViewModel {
     private String productId;
     private String price;
     private boolean bestDeal;
@@ -15,7 +15,7 @@ public class GMProductViewModel {
     private String name;
     private String notes;
 
-    public GMProductViewModel(GMProductDomainModel domainModel) {
+    public GmProductViewModel(GmProductDomainModel domainModel) {
         setProductId(String.valueOf(domainModel.getProductId()));
         setName(domainModel.getName());
         setNotes(domainModel.getNotes());
@@ -26,20 +26,20 @@ public class GMProductViewModel {
         setLastPrice(domainModel.getLastPrice());
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
     public String getProductId() {
         return productId;
     }
 
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
     public String getPrice() {
         return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
     }
 
     public boolean isBestDeal() {
@@ -74,19 +74,19 @@ public class GMProductViewModel {
         this.lastPrice = lastPrice;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getNotes() {
         return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setName(String name) {
+        this.name = name;
     }
 }

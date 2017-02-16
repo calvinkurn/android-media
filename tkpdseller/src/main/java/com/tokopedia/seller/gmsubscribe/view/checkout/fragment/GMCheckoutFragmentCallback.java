@@ -4,7 +4,7 @@ package com.tokopedia.seller.gmsubscribe.view.checkout.fragment;
  * Created by sebastianuskh on 1/27/17.
  */
 
-public interface GMCheckoutFragmentCallback {
+public interface GmCheckoutFragmentCallback {
 
     void changeCurrentSelected(Integer selectedProduct);
 

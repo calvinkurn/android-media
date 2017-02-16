@@ -4,7 +4,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GMCheckoutCurrentSelectedViewModel;
+import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GmCheckoutCurrentSelectedViewModel;
 
 /**
  * Created by sebastianuskh on 1/27/17.
@@ -34,7 +34,7 @@ public class CurrentSelectedProductViewHolder {
         };
     }
 
-    public void renderView(GMCheckoutCurrentSelectedViewModel viewModel) {
+    public void renderView(GmCheckoutCurrentSelectedViewModel viewModel) {
         titleCurrentProduct.setText(viewModel.getTitle());
         descriptionCurrentProduct.setText(viewModel.getDescription());
         priceCurrentProduct.setText(viewModel.getPrice());

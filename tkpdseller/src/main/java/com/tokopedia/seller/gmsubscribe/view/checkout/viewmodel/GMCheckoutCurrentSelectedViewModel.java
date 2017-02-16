@@ -1,19 +1,19 @@
 package com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel;
 
-import com.tokopedia.seller.gmsubscribe.domain.product.model.GMProductDomainModel;
+import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainModel;
 
 /**
  * Created by sebastianuskh on 1/27/17.
  */
-public class GMCheckoutCurrentSelectedViewModel {
+public class GmCheckoutCurrentSelectedViewModel {
     private String title;
     private String description;
     private String price;
 
-    public GMCheckoutCurrentSelectedViewModel(GMProductDomainModel domainModel) {
+    public GmCheckoutCurrentSelectedViewModel(GmProductDomainModel domainModel) {
         setTitle(domainModel.getName());
         setDescription(domainModel.getNotes());
-        if(domainModel.getLastPrice().isEmpty()) {
+        if (domainModel.getLastPrice().isEmpty()) {
             setPrice(domainModel.getPrice());
         } else {
             setPrice(domainModel.getLastPrice());
@@ -24,20 +24,20 @@ public class GMCheckoutCurrentSelectedViewModel {
         return title;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
     public void setTitle(String title) {
         this.title = title;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getPrice() {
+        return price;
     }
 
     public void setPrice(String price) {

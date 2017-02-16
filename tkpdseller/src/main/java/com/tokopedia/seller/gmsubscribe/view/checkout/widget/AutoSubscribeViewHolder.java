@@ -7,7 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GMAutoSubscribeViewModel;
+import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GmAutoSubscribeViewModel;
 
 /**
  * Created by sebastianuskh on 1/30/17.
@@ -52,8 +52,8 @@ public class AutoSubscribeViewHolder {
         };
     }
 
-    public void setShowAutoSubscribeDetail(boolean isShow){
-        int isVisible = isShow? View.VISIBLE : View.GONE;
+    public void setShowAutoSubscribeDetail(boolean isShow) {
+        int isVisible = isShow ? View.VISIBLE : View.GONE;
         subtitle.setVisibility(isVisible);
         detailLayout.setVisibility(isVisible);
     }
@@ -71,7 +71,7 @@ public class AutoSubscribeViewHolder {
         return new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
+                if (isChecked) {
                     checkCheckBox(false);
                     if (callback.isAutoSubscribeUnselected()) {
                         callback.selectAutoSubscribePackageFirstTime();
@@ -84,7 +84,7 @@ public class AutoSubscribeViewHolder {
         };
     }
 
-    public void renderAutoSubscribeProduct(GMAutoSubscribeViewModel gmAutoSubscribeViewModel) {
+    public void renderAutoSubscribeProduct(GmAutoSubscribeViewModel gmAutoSubscribeViewModel) {
         setShowAutoSubscribeDetail(true);
         checkCheckBox(true);
         renderView(gmAutoSubscribeViewModel);
@@ -96,7 +96,7 @@ public class AutoSubscribeViewHolder {
         checkbox.setOnCheckedChangeListener(getOpenAutoSubscribeView());
     }
 
-    private void renderView(GMAutoSubscribeViewModel gmAutoSubscribeViewModel) {
+    private void renderView(GmAutoSubscribeViewModel gmAutoSubscribeViewModel) {
         autoSubscribePackageTitle.setText(gmAutoSubscribeViewModel.getTitle());
         autoSubscribePackagePrice.setText(gmAutoSubscribeViewModel.getPrice());
         autoSubscribePackageNextSubscribe.setText(gmAutoSubscribeViewModel.getNextAutoSubscribe());

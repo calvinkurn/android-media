@@ -4,17 +4,17 @@ import android.util.Log;
 
 import com.tokopedia.seller.common.domain.RequestParams;
 import com.tokopedia.seller.common.presentation.BasePresenter;
-import com.tokopedia.seller.gmsubscribe.domain.product.interactor.ClearGMSubscribeProductCacheUseCase;
-import com.tokopedia.seller.gmsubscribe.view.home.fragment.GMHomeView;
+import com.tokopedia.seller.gmsubscribe.domain.product.interactor.ClearGmSubscribeProductCacheUseCase;
+import com.tokopedia.seller.gmsubscribe.view.home.fragment.GmHomeView;
 
 /**
  * Created by sebastianuskh on 2/9/17.
  */
-public class GMHomePresenterImpl extends BasePresenter<GMHomeView> implements GMHomePresenter {
+public class GmHomePresenterImpl extends BasePresenter<GmHomeView> implements GmHomePresenter {
     private static final String TAG = "GMHomePresenter";
-    private final ClearGMSubscribeProductCacheUseCase clearGMSubscribeProductCache;
+    private final ClearGmSubscribeProductCacheUseCase clearGMSubscribeProductCache;
 
-    public GMHomePresenterImpl(ClearGMSubscribeProductCacheUseCase clearGMSubscribeProductCache) {
+    public GmHomePresenterImpl(ClearGmSubscribeProductCacheUseCase clearGMSubscribeProductCache) {
         this.clearGMSubscribeProductCache = clearGMSubscribeProductCache;
     }
 

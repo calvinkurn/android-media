@@ -4,17 +4,17 @@ import com.tokopedia.seller.common.domain.RequestParams;
 import com.tokopedia.seller.common.domain.UseCase;
 import com.tokopedia.seller.common.domain.executor.PostExecutionThread;
 import com.tokopedia.seller.common.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.gmsubscribe.domain.product.GMSubscribeProductRepository;
+import com.tokopedia.seller.gmsubscribe.domain.product.GmSubscribeProductRepository;
 
 import rx.Observable;
 
 /**
  * Created by sebastianuskh on 2/9/17.
  */
-public class ClearGMSubscribeProductCacheUseCase extends UseCase<Boolean>{
-    private final GMSubscribeProductRepository gmSubscribeProductReposistory;
+public class ClearGmSubscribeProductCacheUseCase extends UseCase<Boolean> {
+    private final GmSubscribeProductRepository gmSubscribeProductReposistory;
 
-    public ClearGMSubscribeProductCacheUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, GMSubscribeProductRepository gmSubscribeProductReposistory) {
+    public ClearGmSubscribeProductCacheUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, GmSubscribeProductRepository gmSubscribeProductReposistory) {
         super(threadExecutor, postExecutionThread);
         this.gmSubscribeProductReposistory = gmSubscribeProductReposistory;
     }

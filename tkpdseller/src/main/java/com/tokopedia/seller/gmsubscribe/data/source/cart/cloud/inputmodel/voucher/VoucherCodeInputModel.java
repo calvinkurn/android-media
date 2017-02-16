@@ -19,6 +19,19 @@ public class VoucherCodeInputModel {
     @SerializedName("os_type")
     private String osType;
 
+    public static VoucherCodeInputModel buildInputModel(String voucherCode, Integer selectedProduct) {
+        VoucherCodeInputModel inputModel = new VoucherCodeInputModel();
+        List<Item> items = new ArrayList<>();
+        Item item = new Item();
+        item.setProductId(selectedProduct);
+        item.setQty(1);
+        items.add(item);
+        inputModel.setItems(items);
+        inputModel.setPromocode(voucherCode);
+        inputModel.setOsType("1");
+        return inputModel;
+    }
+
     public List<Item> getItems() {
         return items;
     }
@@ -41,18 +54,5 @@ public class VoucherCodeInputModel {
 
     public void setOsType(String osType) {
         this.osType = osType;
-    }
-
-    public static VoucherCodeInputModel buildInputModel(String voucherCode, Integer selectedProduct) {
-        VoucherCodeInputModel inputModel = new VoucherCodeInputModel();
-        List<Item> items = new ArrayList<>();
-        Item item = new Item();
-        item.setProductId(selectedProduct);
-        item.setQty(1);
-        items.add(item);
-        inputModel.setItems(items);
-        inputModel.setPromocode(voucherCode);
-        inputModel.setOsType("1");
-        return inputModel;
     }
 }

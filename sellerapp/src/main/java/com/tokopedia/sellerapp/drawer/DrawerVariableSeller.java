@@ -48,7 +48,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.ToolbarVariable;
-import com.tokopedia.seller.gmsubscribe.view.home.activity.GMSubscribeHomeActivity;
+import com.tokopedia.seller.gmsubscribe.view.home.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.topads.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.sellerapp.R;
@@ -66,9 +66,8 @@ public class DrawerVariableSeller extends DrawerVariable {
     private static final String IS_INBOX_OPENED = "IS_INBOX_OPENED";
     private static final String IS_SHOP_OPENED = "IS_SHOP_OPENED";
     private static final String IS_GM_SUBSCRIBE_OPENED = "IS_GM_SUBSCRIBE_OPENED";
-
-    private NetworkInteractor networkInteractor;
     public AppCompatActivity context;
+    private NetworkInteractor networkInteractor;
     private ViewHolder holder;
     private Model model;
     private DrawerSellerAdapter adapter;
@@ -84,6 +83,24 @@ public class DrawerVariableSeller extends DrawerVariable {
     private ToolbarVariable toolbar;
     private boolean hasUpdated = false;
 
+    public DrawerVariableSeller(AppCompatActivity context) {
+        super(context);
+        this.context = context;
+    }
+
+    public static void goToShopNewOrder(Context context) {
+        Intent intent = SellerRouter.getActivitySellingTransaction(context);
+        Bundle bundle = new Bundle();
+        bundle.putInt("tab", 1);
+        bundle.putString("user_id", SessionHandler.getLoginID(context));
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    public static void startIntent(Context context, Class<?> cls) {
+        context.startActivity(new Intent(context, cls));
+    }
+
     @Override
     public boolean hasUpdated() {
         return hasUpdated;
@@ -92,43 +109,6 @@ public class DrawerVariableSeller extends DrawerVariable {
     @Override
     public void setHasUpdated(boolean hasUpdated) {
         this.hasUpdated = hasUpdated;
-    }
-
-    public class Model {
-        private DrawerHeader header;
-        private DrawerItem sellerHome;
-        private DrawerItemList shopMenu;
-        private DrawerItemList inboxMenu;
-        private DrawerItemList gmSubscribeMenu;
-        private DrawerItem topAdsMenu;
-        private List<RecyclerViewItem> data;
-
-        public Model() {
-            data = new ArrayList<>();
-            header = new DrawerHeader(context);
-            sellerHome = new DrawerItem("Beranda", 0, R.drawable.icon_home, TkpdState.DrawerPosition.SELLER_INDEX_HOME, false);
-            shopMenu = new DrawerItemList("Penjualan", 0, R.drawable.icon_penjualan, TkpdState.DrawerPosition.SHOP, true);
-            inboxMenu = new DrawerItemList("Kotak Masuk", 0, R.drawable.icon_inbox, TkpdState.DrawerPosition.INBOX, true);
-            gmSubscribeMenu = new DrawerItemList("Gold Merchant", 0, R.drawable.ic_goldmerchant_drawer, TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE, true);
-            topAdsMenu = new DrawerItem(context.getString(R.string.title_top_ads), 0, R.drawable.ic_top_ads, TkpdState.DrawerPosition.SELLER_TOP_ADS, false);
-        }
-
-    }
-
-    private class ViewHolder {
-        DrawerLayout drawerLayout;
-        RecyclerView recyclerView;
-        TextView shopName;
-        ImageView shopIcon;
-        FrameLayout shopLayout;
-        TextView footerShadow;
-        TextView shopLabel;
-    }
-
-
-    public DrawerVariableSeller(AppCompatActivity context) {
-        super(context);
-        this.context = context;
     }
 
     @Override
@@ -347,7 +327,7 @@ public class DrawerVariableSeller extends DrawerVariable {
                 context.startActivity(new Intent(context, SellerHomeActivity.class));
                 break;
             case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
-                context.startActivity(new Intent(context, GMSubscribeHomeActivity.class));
+                context.startActivity(new Intent(context, GmSubscribeHomeActivity.class));
                 break;
             case TkpdState.DrawerPosition.LOGIN:
             case TkpdState.DrawerPosition.REGISTER:
@@ -469,28 +449,13 @@ public class DrawerVariableSeller extends DrawerVariable {
         goToShopNewOrder(context);
     }
 
-    public static void goToShopNewOrder(Context context) {
-        Intent intent = SellerRouter.getActivitySellingTransaction(context);
-        Bundle bundle = new Bundle();
-        bundle.putInt("tab", 1);
-        bundle.putString("user_id", SessionHandler.getLoginID(context));
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-    }
-
     private void startIntent(Class<?> cls) {
         context.startActivity(new Intent(context, cls));
     }
 
-    public static void startIntent(Context context, Class<?> cls) {
-        context.startActivity(new Intent(context, cls));
-    }
-
-
     private void setDrawer() {
         holder.recyclerView.setAdapter(adapter);
     }
-
 
     private boolean isLogin() {
         return Session.getLoginID() != null && Session.isV4Login();
@@ -815,7 +780,6 @@ public class DrawerVariableSeller extends DrawerVariable {
         }
     }
 
-
     private ToolbarVariable.OnDrawerToggleClickListener onToggleClickedListener() {
         return new ToolbarVariable.OnDrawerToggleClickListener() {
             @Override
@@ -872,7 +836,6 @@ public class DrawerVariableSeller extends DrawerVariable {
         return holder.drawerLayout.isDrawerOpen(GravityCompat.START);
     }
 
-
     @Override
     public void unsubscribe() {
         networkInteractor.unsubscribe();
@@ -880,5 +843,36 @@ public class DrawerVariableSeller extends DrawerVariable {
 
     private void sendGTMNavigationEvent(String label) {
         UnifyTracking.eventDrawerClick(label);
+    }
+
+    public class Model {
+        private DrawerHeader header;
+        private DrawerItem sellerHome;
+        private DrawerItemList shopMenu;
+        private DrawerItemList inboxMenu;
+        private DrawerItemList gmSubscribeMenu;
+        private DrawerItem topAdsMenu;
+        private List<RecyclerViewItem> data;
+
+        public Model() {
+            data = new ArrayList<>();
+            header = new DrawerHeader(context);
+            sellerHome = new DrawerItem("Beranda", 0, R.drawable.icon_home, TkpdState.DrawerPosition.SELLER_INDEX_HOME, false);
+            shopMenu = new DrawerItemList("Penjualan", 0, R.drawable.icon_penjualan, TkpdState.DrawerPosition.SHOP, true);
+            inboxMenu = new DrawerItemList("Kotak Masuk", 0, R.drawable.icon_inbox, TkpdState.DrawerPosition.INBOX, true);
+            gmSubscribeMenu = new DrawerItemList("Gold Merchant", 0, R.drawable.ic_goldmerchant_drawer, TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE, true);
+            topAdsMenu = new DrawerItem(context.getString(R.string.title_top_ads), 0, R.drawable.ic_top_ads, TkpdState.DrawerPosition.SELLER_TOP_ADS, false);
+        }
+
+    }
+
+    private class ViewHolder {
+        DrawerLayout drawerLayout;
+        RecyclerView recyclerView;
+        TextView shopName;
+        ImageView shopIcon;
+        FrameLayout shopLayout;
+        TextView footerShadow;
+        TextView shopLabel;
     }
 }

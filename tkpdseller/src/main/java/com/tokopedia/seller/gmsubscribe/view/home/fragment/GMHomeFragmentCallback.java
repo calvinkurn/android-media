@@ -4,7 +4,7 @@ package com.tokopedia.seller.gmsubscribe.view.home.fragment;
  * Created by sebastianuskh on 1/19/17.
  */
 
-public interface GMHomeFragmentCallback {
+public interface GmHomeFragmentCallback {
     void goToGMProductFristTime();
 
     void changeActionBarTitle(String title);

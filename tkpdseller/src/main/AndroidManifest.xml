@@ -140,26 +140,27 @@
             android:exported="false" />
 
         <activity
-            android:screenOrientation="portrait"
+            android:name=".topads.view.activity.TopAdsStatisticProductActivity"
             android:label="@string/title_activity_statistic"
-            android:name=".topads.view.activity.TopAdsStatisticProductActivity" />
+            android:screenOrientation="portrait" />
         <activity
-            android:screenOrientation="portrait"
+            android:name=".topads.view.activity.TopAdsStatisticShopActivity"
             android:label="@string/title_activity_statistic"
-            android:name=".topads.view.activity.TopAdsStatisticShopActivity"/>
+            android:screenOrientation="portrait" />
         <activity
-            android:name=".gmsubscribe.view.home.activity.GMSubscribeHomeActivity"
+            android:name=".gmsubscribe.view.home.activity.GmSubscribeHomeActivity"
             android:label="@string/gm_home_title"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".gmsubscribe.view.product.activity.GMProductActivity"
+            android:name=".gmsubscribe.view.product.activity.GmProductActivity"
             android:label="@string/gmsubscribe_current_product_selector"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".gmsubscribe.view.checkout.activity.GMCheckoutActivity"
+            android:name=".gmsubscribe.view.checkout.activity.GmCheckoutActivity"
             android:label="@string/gmsubscribe_checkout_title"
             android:screenOrientation="portrait"/>
-        <activity android:name=".gmsubscribe.view.payment.GMDynamicPaymentActivity"
+        <activity
+            android:name=".gmsubscribe.view.payment.GmDynamicPaymentActivity"
             android:label="Pembayaran"
             android:screenOrientation="portrait"/>
         <service

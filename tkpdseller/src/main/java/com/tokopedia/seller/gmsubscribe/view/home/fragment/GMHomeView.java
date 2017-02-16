@@ -6,7 +6,7 @@ import com.tokopedia.seller.common.presentation.CustomerView;
  * Created by sebastianuskh on 2/9/17.
  */
 
-public interface GMHomeView extends CustomerView {
+public interface GmHomeView extends CustomerView {
     void showProgressDialog();
 
     void dismissProgressDialog();

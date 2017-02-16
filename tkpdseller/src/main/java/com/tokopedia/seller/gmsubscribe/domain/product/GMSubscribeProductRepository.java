@@ -1,8 +1,7 @@
 package com.tokopedia.seller.gmsubscribe.domain.product;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.seller.gmsubscribe.domain.product.model.GMAutoSubscribeDomainModel;
-import com.tokopedia.seller.gmsubscribe.domain.product.model.GMProductDomainModel;
+import com.tokopedia.seller.gmsubscribe.domain.product.model.GmAutoSubscribeDomainModel;
+import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainModel;
 
 import java.util.List;
 
@@ -11,14 +10,14 @@ import rx.Observable;
 /**
  * Created by sebastianuskh on 2/2/17.
  */
-public interface GMSubscribeProductRepository {
-    Observable<List<GMProductDomainModel>> getCurrentProductSelection();
+public interface GmSubscribeProductRepository {
+    Observable<List<GmProductDomainModel>> getCurrentProductSelection();
 
-    Observable<List<GMProductDomainModel>> getExtendProductSelection();
+    Observable<List<GmProductDomainModel>> getExtendProductSelection();
 
-    Observable<GMProductDomainModel> getCurrentProductSelectedData(Integer productId);
+    Observable<GmProductDomainModel> getCurrentProductSelectedData(Integer productId);
 
-    Observable<GMAutoSubscribeDomainModel> getExtendProductSelectedData(Integer autoSubscribeProductId, Integer productId);
+    Observable<GmAutoSubscribeDomainModel> getExtendProductSelectedData(Integer autoSubscribeProductId, Integer productId);
 
     Observable<Boolean> clearGMProductCache();
 }

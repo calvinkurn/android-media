@@ -19,9 +19,11 @@ import butterknife.ButterKnife;
  * Created by sebastianuskh on 1/20/17.
  */
 
-public class GMSubFeatureView extends FrameLayout {
+public class GmSubFeatureView extends FrameLayout {
 
-    /** BUTTERKNIFE FILED */
+    /**
+     * BUTTERKNIFE FILED
+     */
     @BindView(R2.id.image_gm_subscribe_sub_feature)
     ImageView imageViewSubFeature;
 
@@ -31,22 +33,26 @@ public class GMSubFeatureView extends FrameLayout {
     private Drawable imageSubFeature;
     private String descSubFeature;
 
-    /** CONSTRUCTOR */
-    public GMSubFeatureView(Context context) {
+    /**
+     * CONSTRUCTOR
+     */
+    public GmSubFeatureView(Context context) {
         super(context);
         initView();
     }
 
-    public GMSubFeatureView(Context context, AttributeSet attrs) {
+    public GmSubFeatureView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView(attrs);
     }
 
-    public GMSubFeatureView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public GmSubFeatureView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    /** VIEW CODE */
+    /**
+     * VIEW CODE
+     */
     private void initView(AttributeSet attrs) {
         initView();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.GMFeatureHomeView);

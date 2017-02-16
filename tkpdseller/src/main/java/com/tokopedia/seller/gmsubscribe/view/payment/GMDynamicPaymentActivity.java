@@ -23,7 +23,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.seller.R;
@@ -31,20 +30,16 @@ import com.tokopedia.seller.SellerModuleRouter;
 
 import java.io.UnsupportedEncodingException;
 
-import butterknife.BindView;
-
 /**
  * Created by sebastianuskh on 2/3/17.
  */
-public class GMDynamicPaymentActivity extends BasePresenterActivity {
-
-    private static final String TAG = "GMPayment";
+public class GmDynamicPaymentActivity extends BasePresenterActivity {
 
     public static final String PAYMENT_URL = "PAYMENT_URL";
     public static final String PARAMETER_URL = "PARAMETER_URL";
     public static final String PAYMENT_ID = "PAYMENT_ID";
     public static final String CALLBACK_URL = "CALLBACK_URL";
-
+    private static final String TAG = "GMPayment";
     private static final String CONTAINS_ACCOUNT_URL = "accounts.tokopedia.com";
     private static final String CONTAINS_LOGIN_URL = "login.pl";
     private static final long FORCE_TIMEOUT = 60000L;
@@ -63,7 +58,7 @@ public class GMDynamicPaymentActivity extends BasePresenterActivity {
                                              String parameter,
                                              Integer paymentId,
                                              String callbackUrl) {
-        Intent intent = new Intent(context, GMDynamicPaymentActivity.class);
+        Intent intent = new Intent(context, GmDynamicPaymentActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(PAYMENT_URL, paymentUrl);
         bundle.putString(PARAMETER_URL, parameter);
@@ -154,6 +149,20 @@ public class GMDynamicPaymentActivity extends BasePresenterActivity {
         return null;
     }
 
+    private void processRedirectUrlContainsLoginUrl() {
+
+    }
+
+    private void processRedirectUrlContainsAccountUrl(String url) {
+
+    }
+
+    private void processRedirectUrlContainsTopPayCallbackUrl(String url) {
+        if (getApplication() instanceof SellerModuleRouter) {
+            ((SellerModuleRouter) getApplication()).goToHome(this);
+        }
+    }
+
     private class TopPayWebViewClient extends WebViewClient {
         private boolean timeout = true;
 
@@ -238,20 +247,6 @@ public class GMDynamicPaymentActivity extends BasePresenterActivity {
                     break;
             }
             view.stopLoading();
-        }
-    }
-
-    private void processRedirectUrlContainsLoginUrl() {
-
-    }
-
-    private void processRedirectUrlContainsAccountUrl(String url) {
-
-    }
-
-    private void processRedirectUrlContainsTopPayCallbackUrl(String url) {
-        if(getApplication() instanceof SellerModuleRouter){
-            ((SellerModuleRouter)getApplication() ).goToHome(this);
         }
     }
 

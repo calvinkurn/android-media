@@ -1,4 +1,3 @@
-
 package com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.model.voucher;
 
 import com.google.gson.annotations.Expose;
