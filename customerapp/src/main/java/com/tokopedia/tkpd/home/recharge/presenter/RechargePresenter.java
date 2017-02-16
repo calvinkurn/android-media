@@ -20,6 +20,8 @@ public interface RechargePresenter {
 
     void getListOperatorFromCategory( int categoryId);
 
+    void getDefaultProduct(String categoryId, String operatorId, String productId);
+
     boolean isAlreadyHavePhonebookDataOnCache(String key);
 
     boolean isAlreadyHaveLastOrderDataOnCache();

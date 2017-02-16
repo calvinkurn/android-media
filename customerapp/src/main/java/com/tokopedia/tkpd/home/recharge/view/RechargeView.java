@@ -22,6 +22,8 @@ public interface RechargeView {
 
     void setOperatorView(RechargeOperatorModel operator);
 
+    void showProductById(Product product);
+
     void hideProgressFetchData();
 
     void hideFormAndImageOperator();

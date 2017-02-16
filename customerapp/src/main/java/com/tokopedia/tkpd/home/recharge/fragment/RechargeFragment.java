@@ -358,8 +358,13 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         if (SessionHandler.isV4Login(getActivity())) {
             sendGTMClickBeli();
 
-            if (checkStockProduct(selectedProduct))
-                goToCheckout(getUrlCheckout());
+            if (selectedProduct == null) {
+                rechargePresenter.getDefaultProduct(String.valueOf(category.getId()),
+                        selectedOperatorId, String.valueOf(selectedOperator.defaultProductId));
+            } else {
+                if (checkStockProduct(selectedProduct))
+                    goToCheckout(getUrlCheckout());
+            }
         } else {
             gotoLogin();
         }
@@ -423,7 +428,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     rechargeEditText.setText("");
-                    selectedOperatorId = Integer.toString(operatorList.get(i).operatorId);
+                    selectedOperator = operatorList.get(i);
+                    selectedOperatorId = Integer.toString(selectedOperator.operatorId);
                     if (!category.getAttributes().getClientNumber().getIsShown()) {
                         setUpForNotUsingTextEdit();
                     } else {
@@ -466,6 +472,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         if (nominalTextview != null) nominalTextview.setVisibility(View.GONE);
         if (rechargeEditText != null) rechargeEditText.setImgOperatorVisible();
         if (errorNominal != null) errorNominal.setVisibility(View.GONE);
+        if (buyButton != null) buyButton.setEnabled(true);
     }
 
     @Override
@@ -499,6 +506,13 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         } catch (Exception e) {
 
         }
+    }
+
+    @Override
+    public void showProductById(Product product) {
+        selectedProduct = product;
+        if (checkStockProduct(selectedProduct))
+            goToCheckout(getUrlCheckout());
     }
 
     @Override

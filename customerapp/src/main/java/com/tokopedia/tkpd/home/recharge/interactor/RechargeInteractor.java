@@ -24,6 +24,8 @@ public interface RechargeInteractor {
 
     void getCategoryData(OnGetCategory onGetCategory);
 
+    void getProductById(OnGetProductById listener, String categoryId, String operatorId, String productId);
+
     void getStatus(OnGetStatus onGetStatus);
 
     void storeRecentData(RecentData recentData);
@@ -84,6 +86,10 @@ public interface RechargeInteractor {
         void onEmpty();
     }
 
+    interface OnGetProductById {
+        void onSuccessFetchProductById(Product product);
 
+        void onError(Throwable e);
+    }
 
 }
