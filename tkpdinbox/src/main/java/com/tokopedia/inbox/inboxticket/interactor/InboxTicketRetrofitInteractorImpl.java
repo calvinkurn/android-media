@@ -57,6 +57,7 @@ public class InboxTicketRetrofitInteractorImpl implements InboxTicketRetrofitInt
     private static final String DEFAULT_MSG_ERROR = "Terjadi Kesalahan, Mohon ulangi beberapa saat lagi";
     private static final String PARAM_IMAGE_ID = "id";
     private static final String PARAM_WEB_SERVICE = "web_service";
+    private static final String TOO_MANY_REQUEST = "TOO_MANY_REQUEST";
 
     private final CompositeSubscription compositeSubscription;
     private final InboxTicketService inboxTicketService;
@@ -103,8 +104,11 @@ public class InboxTicketRetrofitInteractorImpl implements InboxTicketRetrofitInt
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(InboxTicket.class));
 
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
                     } else {
-                        if (response.body().isNullData()) listener.onNullData(response.body().getErrorMessages().toString().replace("[","").replace("]",""));
+                        if (response.body().isNullData())
+                            listener.onNullData(response.body().getErrorMessages().toString().replace("[", "").replace("]", ""));
                         else listener.onError(response.body().getErrorMessages().toString());
                     }
                 } else {
@@ -183,6 +187,8 @@ public class InboxTicketRetrofitInteractorImpl implements InboxTicketRetrofitInt
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(InboxTicketDetail.class));
 
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
                     } else {
                         if (response.body().isNullData()) listener.onNullData();
                         else listener.onError(response.body().getErrorMessages().toString());
@@ -262,6 +268,8 @@ public class InboxTicketRetrofitInteractorImpl implements InboxTicketRetrofitInt
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(InboxTicketDetail.class).getTicketReply());
 
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
                     } else {
                         if (response.body().isNullData()) listener.onNullData();
                         else listener.onError(response.body().getErrorMessages().toString());
@@ -402,6 +410,8 @@ public class InboxTicketRetrofitInteractorImpl implements InboxTicketRetrofitInt
                         if (!response.body().isError()
                                 && response.body().getJsonData().getString("is_success").equals("1")) {
                             listener.onSuccess(response.body().convertDataObj(ReplyResult.class));
+                        } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                            listener.onError(response.body().getErrorMessageJoined());
                         } else {
                             if (response.body().isNullData()) listener.onNullData();
                             else listener.onError(response.body().getErrorMessages().get(0));
@@ -461,8 +471,12 @@ public class InboxTicketRetrofitInteractorImpl implements InboxTicketRetrofitInt
                 .map(new Func1<GeneratedHost, InboxTicketParam>() {
                     @Override
                     public InboxTicketParam call(GeneratedHost generatedHost) {
-                        param.setGeneratedHost(generatedHost);
-                        return param;
+                        if (generatedHost.getMessageError() == null || generatedHost.getMessageError().isEmpty()) {
+                            param.setGeneratedHost(generatedHost);
+                            return param;
+                        } else {
+                            throw new RuntimeException(generatedHost.getMessageError().get(0));
+                        }
                     }
                 });
     }

@@ -18,8 +18,7 @@
             app:use_gradient="true"
             android:id="@+id/buyer_data_header_ic"
             android:layout_width="24dp"
-            android:layout_height="24dp"
-            app:srcCompat="@drawable/ic_icon_pembeli"/>
+            android:layout_height="24dp"/>
         <com.tokopedia.seller.gmstat.library.LoaderTextView
             app:use_gradient="true"
             android:id="@+id/buyer_data_header_text"
@@ -78,7 +77,6 @@
                 android:layout_height="12dp"
                 android:paddingTop="3dp"
                 android:scaleType="fitXY"
-                app:srcCompat="@mipmap/arrow_up_percentage"
                 android:layout_below="@+id/buyer_count_loading"
                 android:id="@+id/buyer_count_icon_loading" />
         </RelativeLayout>

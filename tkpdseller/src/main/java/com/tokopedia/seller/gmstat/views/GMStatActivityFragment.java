@@ -326,6 +326,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
             shopId= savedInstanceState.getLong(SHOP_ID);
             isGoldMerchant = savedInstanceState.getBoolean(IS_GOLD_MERCHANT);
             gmFragmentPresenter = new GMFragmentPresenterImpl(this, gmstat, shopId);
+            gmFragmentPresenter.restoreState(savedInstanceState);
         }
     }
 
@@ -651,6 +652,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         super.onSaveInstanceState(outState);
         outState.putLong(SHOP_ID, shopId);
         outState.putBoolean(IS_GOLD_MERCHANT, isGoldMerchant);
+        gmFragmentPresenter.saveState(outState);
     }
 
     @Override

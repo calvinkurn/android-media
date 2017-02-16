@@ -63,8 +63,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     private ProgressDialog progressDialog;
     private RecyclerView.OnScrollListener onScrollListener;
 
-    protected abstract void searchAd();
-
     protected abstract TopAdsEmptyAdDataBinder getEmptyViewBinder();
 
     protected abstract void goToFilter();
@@ -153,6 +151,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
         emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_empty_promo_not_found_title_empty_text));
         emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_empty_promo_not_found_content_empty_text));
+        emptyGroupAdsDataBinder.setEmptyContentItemText(null);
         adapter.setEmptyView(emptyGroupAdsDataBinder);
         adapter.notifyDataSetChanged();
     }
@@ -176,6 +175,10 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         searchAd();
     }
 
+    protected void searchAd() {
+        swipeToRefresh.setEnabled(false);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -192,7 +195,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     public void onSearchAdLoaded(@NonNull List adList, int totalItem) {
         recyclerView.removeOnScrollListener(onScrollListener);
         recyclerView.addOnScrollListener(onScrollListener);
-        swipeToRefresh.setEnabled(true);
         this.totalItem = totalItem;
         if (totalItem > 0 && !searchMode) {
             updateEmptyViewNoResult();
@@ -233,6 +235,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         if (swipeToRefresh.isRefreshing()) {
             swipeToRefresh.setRefreshing(false);
         }
+        swipeToRefresh.setEnabled(true);
         progressDialog.dismiss();
         hideSnackBarRetry();
     }

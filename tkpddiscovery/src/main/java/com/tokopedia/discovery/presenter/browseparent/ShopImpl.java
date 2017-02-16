@@ -7,11 +7,11 @@ import android.util.Log;
 
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
 import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
 import com.tokopedia.core.network.entity.discovery.ShopModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.Pair;
 import com.tokopedia.discovery.fragment.browseparent.ShopFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;

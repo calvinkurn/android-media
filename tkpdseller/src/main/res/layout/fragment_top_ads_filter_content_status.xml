@@ -4,7 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/topads_detail_padding_item"
+    android:paddingStart="@dimen/topads_detail_padding_item">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"

@@ -31,7 +31,7 @@
     <ImageView
         android:layout_width="10dp"
         android:layout_height="10dp"
-        app:srcCompat="@drawable/circle_green"
+        android:src="@drawable/circle_green"
         android:id="@+id/dot"
         android:layout_marginTop="10dp"
         android:layout_alignLeft="@+id/text"

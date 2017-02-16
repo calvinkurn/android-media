@@ -8,14 +8,14 @@
 
     <TextView
         android:id="@+id/text_view_empty_title_text"
-        style="@style/TextView.TopAdsTitleEmptyView"
+        style="@style/TextView.TopAds.Body.Small1"
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
         android:text="@string/top_ads_empty_shop_title_text"/>
 
     <TextView
         android:id="@+id/text_view_empty_content_text"
-        style="@style/TextView.TopAdsContentEmptyView"
+        style="@style/TextView.TopAds.Body.Small2"
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
         android:text="@string/top_ads_empty_shop_content_text"/>

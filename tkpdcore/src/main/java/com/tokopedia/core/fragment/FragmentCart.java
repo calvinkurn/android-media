@@ -11,10 +11,8 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -77,13 +75,10 @@ import com.tokopedia.core.cart.model.GatewayList;
 import com.tokopedia.core.customadapter.ListProductCart;
 import com.tokopedia.core.interfaces.CartInterfaces;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.NetworkHandler;
-import com.tokopedia.core.network.NetworkHandler.NetworkHandlerListener;
 import com.tokopedia.core.payment.adapter.PaymentGatewayAdapter;
 import com.tokopedia.core.payment.interactor.PaymentNetInteractor;
 import com.tokopedia.core.payment.interactor.PaymentNetInteractorImpl;
 import com.tokopedia.core.payment.model.ParamParcel;
-import com.tokopedia.core.payment.model.responsecartstep1.CarStep1Data;
 import com.tokopedia.core.payment.model.responsedynamicpayment.DynamicPaymentData;
 import com.tokopedia.core.payment.model.responsevoucher.VoucherCodeData;
 import com.tokopedia.core.payment.receiver.PaymentResultReceiver;
@@ -92,7 +87,6 @@ import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.core.var.TkpdUrl;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -282,12 +276,6 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
                             }
                         });
                 break;
-            case PaymentIntentService.RESULT_STEP_1_PAYMENT_SUCCESS:
-                CarStep1Data cartData = resultData.getParcelable(PaymentIntentService.EXTRA_RESULT_STEP_1_PAYMENT);
-                activitycom.FinishLoading();
-                MainView.setVisibility(View.GONE);
-                activitycom.toSummaryCart(cartData);
-                break;
             case PaymentIntentService.RESULT_STEP_1_PAYMENT_ERROR:
                 activitycom.FinishLoading();
                 NetworkErrorHelper.showSnackbar(getActivity(),
@@ -318,7 +306,6 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
     }
 
     public interface ActivityCartCommunicator {
-        void TriggerToAddFragment(String response);
 
         void TriggerReloadFragment();
 
@@ -328,7 +315,6 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
 
         void toDynamicPayment(DynamicPaymentData data);
 
-        void toSummaryCart(CarStep1Data cartData);
     }
 
 
@@ -1695,70 +1681,6 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
         }
     }
 
-    @SuppressWarnings("unused")
-    public void PostStep1() {
-        activitycom.Loading();
-        NetworkHandler network = new NetworkHandler(context, TkpdUrl.TRANSACTION);
-        network.AddParam("lp_flag", 1);
-        if (DepositAmt.equals("") || PaymentIDVal.equals("0")) {
-            UseDeposit = "0";
-        } else {
-            UseDeposit = "1";
-        }
-
-        CommonUtils.dumper(TAG + " eBRI GATEWAY " + PaymentIDVal);
-
-        if (checkSaldoUsed()) PaymentIDVal = "0";
-
-        if (VoucherCode.length() > 0 && VoucherUse.isChecked())
-            network.AddParam("voucher_code", VoucherCode);
-        network.AddParam("gateway", PaymentIDVal);
-        network.AddParam("step", "1");
-        network.AddParam("token_cart", TokenCart);
-        network.AddParam("chosen", Choosen);
-        network.AddParam("method", "POST");
-        network.AddParam("use_deposit", UseDeposit);
-        network.AddParam("deposit_amt", DepositAmt);
-        boolean addDropshipSrt = false;
-        for (boolean dropship : isDropship) {
-            if (dropship) addDropshipSrt = true;
-        }
-        if (addDropshipSrt) network.AddParam("dropship_str", DropShipStr);
-        if (DSNameKey.size() > 0) {
-            CommonUtils.dumper(DSNameVal);
-            CommonUtils.dumper(DSPhoneVal);
-            for (int i = 0; i < DSNameKey.size(); i++) {
-                if (!DSNameKey.get(i).equals("")) {
-                    network.AddParam(DSNameKey.get(i), DSNameVal.get(i));
-                    network.AddParam(DSPhoneKey.get(i), DSPhoneVal.get(i));
-                }
-            }
-        }
-        network.setRetryPolicy(20000, 0, 0);
-        network.Commit(new NetworkHandlerListener() {
-
-            @Override
-            public void onSuccess(Boolean status) {
-
-            }
-
-            @Override
-            public void getResponse(JSONObject Result) {
-                if (Result.has("gateway_name")) {
-                    MainView.setVisibility(View.GONE);
-                    activitycom.TriggerToAddFragment(Result.toString());
-                } else
-                    MainView.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void getMessageError(ArrayList<String> MessageError) {
-                CommonUtils.ShowError(context, MessageError);
-                if (MessageError.size() > 0) activitycom.FinishLoading();
-            }
-        });
-    }
-
     private void postStep1WSV4Intent() {
         ParamParcel params = new ParamParcel();
         params.put("lp_flag", "1");
@@ -1847,179 +1769,6 @@ public class FragmentCart extends TkpdFragment implements CartInterfaces.Fragmen
                 }
 
         );
-    }
-
-    @SuppressWarnings("unused")
-    public void CancelProduct(final String cartString, String... params) {
-        NetworkHandler network = new NetworkHandler(context, TkpdUrl.CART);
-        network.AddParam("act", "cancel_cart_event");
-        network.AddParam("cart_id", params[0]);
-        network.AddParam("addr_id", params[1]);
-        network.AddParam("shop_id", params[2]);
-        network.AddParam("ship_id", params[3]);
-        network.AddParam("sp_id", params[4]);
-        network.AddParam("lp_flag", 1);
-        network.AddParam("cart_string", cartString);
-        network.AddParam("method", "POST");
-        network.Commit(new NetworkHandlerListener() {
-
-            @Override
-            public void onSuccess(Boolean status) {
-                progressdialog.dismiss();
-
-
-            }
-
-            @Override
-            public void getResponse(JSONObject Result) {
-                removeBasketAnalytics();
-
-                try {
-                    GrandTotal = Result.getString("grandtotal");
-                    int AffectedPos = 0;
-
-                    ArrayList<String> pNameData = new ArrayList<>();
-                    ArrayList<String> pPriceData = new ArrayList<>();
-                    ArrayList<String> pWeightData = new ArrayList<>();
-                    ArrayList<String> NotesData = new ArrayList<>();
-                    ArrayList<String> PriceTotalData = new ArrayList<>();
-                    ArrayList<String> pImageUriData = new ArrayList<>();
-                    ArrayList<String> pErrorMsgData = new ArrayList<>();
-                    ArrayList<String> CartIDData = new ArrayList<>();
-                    ArrayList<String> ProdIDData = new ArrayList<>();
-                    ArrayList<Integer> MinOrderData = new ArrayList<>();
-                    ArrayList<Integer> QtyData = new ArrayList<>();
-                    ArrayList<Integer> FInsurance = new ArrayList<>();
-                    ArrayList<Bitmap> pImageData = new ArrayList<>();
-                    ArrayList<String> productURLData = new ArrayList<>();
-                    ArrayList<Integer> preorderStatusData = new ArrayList<>();
-                    ArrayList<String> preorderPeriodData = new ArrayList<>();
-
-                    JSONObject ListDetail = new JSONObject(Result.getString("affected_cart"));
-                    JSONObject Shop = new JSONObject(ListDetail.getString("shop"));
-                    String affectedShopID = Shop.getString("id");
-                    JSONObject Dest = new JSONObject(ListDetail.getString("dest"));
-                    String affectedAddrID = Dest.getString("id");
-                    JSONObject Shipping = new JSONObject(ListDetail.getString("shipping"));
-                    String affectedSPid = Shipping.getString("sp_id");
-                    editCashbackAmount(Result.optString("cashback_idr", "0"), Result.optInt("cashback", 0));
-                    editLoyaltyAmount(Result.optString("lp_amount_idr", "0"), Result.optInt("lp_amount", 0));
-                    for (int i = 0; i < ShopID.size(); i++) {
-                        if (FragmentCart.this.cartString.get(i).equals(ListDetail.getString("cart_string"))) {
-                            AffectedPos = i;
-                        }
-                    }
-
-                    JSONArray DetailProdList = new JSONArray(ListDetail.getString("details"));
-                    for (int k = 0; k < DetailProdList.length(); k++) {
-                        JSONObject DetailProd = new JSONObject(DetailProdList.getString(k));
-                        FInsurance.add(DetailProd.getInt("finsurance"));
-                        pNameData.add(MethodChecker.fromHtml(DetailProd.getString("prod_name")).toString());
-                        pPriceData.add(DetailProd.getString("price"));
-                        pWeightData.add(DetailProd.getString("weight"));
-                        NotesData.add(DetailProd.getString("notes_p"));
-                        PriceTotalData.add(DetailProd.getString("total_price"));
-                        QtyData.add(DetailProd.getInt("qty"));
-                        preorderStatusData.add(DetailProd.getJSONObject("preorder").getInt("status"));
-                        preorderPeriodData.add(DetailProd.getJSONObject("preorder").optString("process_time", ""));
-                        productURLData.add(DetailProd.getString("prod_url"));
-                        if (!DetailProd.isNull("min_order")) {
-                            MinOrderData.add(DetailProd.getInt("min_order"));
-                        } else if (DetailProd.isNull("min_order")) {
-                            MinOrderData.add(1);
-                        }
-                        ProdIDData.add(DetailProd.getString("prod_id"));
-                        CartIDData.add(DetailProd.getString("cart_id"));
-                        pImageUriData.add(DetailProd.getString("product_pic"));
-                        if (!DetailProd.isNull("error_msg")) {
-                            pErrorMsgData.add(DetailProd.getString("error_msg"));
-                        } else {
-                            pErrorMsgData.add(null);
-                        }
-                        pImageData.add(null);
-                    }
-                    InsurancePos.set(AffectedPos, ItemContent.get(AffectedPos).Insurance.getSelectedItemPosition());
-                    QtyTotal.set(AffectedPos, ListDetail.getString("ttl_product"));
-                    Weight.set(AffectedPos, ListDetail.getString("ttl_weight"));
-                    TotalPrice.set(AffectedPos, ListDetail.getString("ttl_amount_idr"));
-                    TotalWeight.set(AffectedPos, ListDetail.getString("ttl_weight") + " Kg");
-                    SubTotal.set(AffectedPos, ListDetail.getString("ttl_product_price_idr"));
-                    ShippingCost.set(AffectedPos, ListDetail.getString("shipping_rate_idr"));
-                    if (ListDetail.getInt("logistic_fee") <= 0) {
-                        InsurancePrice.set(AffectedPos, ListDetail.getString("insurance_price_idr"));
-                        TitleInsurancePrice.set(AffectedPos, context.getResources().getString(R.string.title_insurance_cost));
-                    } else {
-                        InsurancePrice.set(AffectedPos, ListDetail.getString("total_logistic_fee_idr"));
-                        TitleInsurancePrice.set(AffectedPos, context.getResources().getString(R.string.title_extra_cost));
-                    }
-                    AllowCheckout.set(AffectedPos, ListDetail.getInt("is_allow_checkout"));
-                    ForceInsurance.set(AffectedPos, ListDetail.getInt("force_insurance"));
-                    if (!ListDetail.isNull("cart_error_msg_1") && !ListDetail.isNull("cart_error_msg_2")) {
-                        Error1.set(AffectedPos, ListDetail.getString("cart_error_msg_1"));
-                        Error2.set(AffectedPos, ListDetail.getString("cart_error_msg_2"));
-                    } else {
-                        Error1.set(AffectedPos, null);
-                        Error2.set(AffectedPos, null);
-                    }
-                    MinOrder.set(AffectedPos, MinOrderData);
-                    ProdID.set(AffectedPos, ProdIDData);
-                    CartID.set(AffectedPos, CartIDData);
-                    pName.set(AffectedPos, pNameData);
-                    pPrice.set(AffectedPos, pPriceData);
-                    pWeight.set(AffectedPos, pWeightData);
-                    Notes.set(AffectedPos, NotesData);
-                    PriceTotal.set(AffectedPos, PriceTotalData);
-                    Qty.set(AffectedPos, QtyData);
-                    pImageUri.set(AffectedPos, pImageUriData);
-                    pErrorMsg.set(AffectedPos, pErrorMsgData);
-                    ProdUrl.set(AffectedPos, productURLData);
-                    preorderStatus.set(AffectedPos, preorderStatusData);
-                    preorderPeriod.set(AffectedPos, preorderPeriodData);
-                    TotalPayment.setText(GrandTotal);
-
-                    if (pName.get(AffectedPos).size() == 0) {
-                        lvContainer.removeView(Item.get(AffectedPos));
-                        isDelete.set(AffectedPos, true);
-                        if (lvContainer.getChildCount() == 0) {
-                            MainView.setVisibility(View.GONE);
-                            Log.i("Magic", "Cancel 2 clear");
-                            cache.putInt(TkpdCache.Key.IS_HAS_CART, 0);
-                            cache.applyEditor();
-                            noResult.showMessage(false);
-                            ButtonEditor.setVisibility(View.GONE);
-                        }
-                    } else {
-                        RefreshDeletedProdView(AffectedPos);
-                    }
-
-                    if (!Result.isNull("success")) {
-                        progressdialog.dismiss();
-                        reloadPaymentList();
-
-                        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(context);
-                        myAlertDialog.setMessage(context.getString(R.string.msg_success_delete_prod));
-
-                        myAlertDialog.setPositiveButton(context.getString(R.string.title_ok), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                if (popupMenu != null) {
-                                    popupMenu.dismiss();
-                                }
-                            }
-
-                        });
-                        myAlertDialog.show();
-                    }
-                } catch (JSONException e) {
-
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void getMessageError(ArrayList<String> MessageError) {
-                InvalidCart(MessageError.get(0));
-            }
-        });
     }
 
     public void CancelProductWS4(String productCartId, String addressId, String shipmentId,

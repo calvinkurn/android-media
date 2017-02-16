@@ -18,7 +18,7 @@
             android:layout_gravity="center_vertical"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            app:srcCompat="@drawable/ic_wawasan_pasar_icon"/>
+            android:src="@drawable/ic_wawasan_pasar_icon"/>
         <TextView
             android:layout_gravity="center_vertical"
             android:layout_width="wrap_content"
@@ -98,7 +98,7 @@
                 <ImageView
                     android:layout_width="27dp"
                     android:layout_height="33dp"
-                    app:srcCompat="@drawable/ic_lock_icon_again"
+                    android:src="@drawable/ic_lock_icon_again"
                     android:scaleType="fitXY"/>
 
                 <TextView
@@ -148,7 +148,7 @@
             <ImageView
                 android:layout_width="113dp"
                 android:layout_height="54dp"
-                app:srcCompat="@drawable/icon_g_m_seller_app_pasar_empty_05"/>
+                android:src="@drawable/icon_g_m_seller_app_pasar_empty_05"/>
 
             <TextView
                 android:layout_width="wrap_content"

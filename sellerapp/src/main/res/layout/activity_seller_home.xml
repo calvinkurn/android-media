@@ -27,7 +27,7 @@
                 <LinearLayout
                     android:orientation="vertical"
                     android:id="@+id/announcement_ticker"
-                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_top_ticker"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="gone">

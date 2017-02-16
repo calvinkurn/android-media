@@ -1,6 +1,7 @@
 package com.tokopedia.seller.gmstat.presenters;
 
 import android.content.res.AssetManager;
+import android.os.Bundle;
 import android.support.annotation.IntRange;
 import android.util.Log;
 
@@ -21,11 +22,14 @@ import java.util.List;
 import rx.subscriptions.CompositeSubscription;
 
 /**
- * Created by normansyahputa on 1/2/17.
+ * Created on 1/2/17.
+ * @author normansyahputa
  */
 
 public class GMFragmentPresenterImpl implements GMFragmentPresenter {
 
+    public static final String IS_FETCH_DATA = "IS_FETCH_DATA";
+    public static final String IS_FIRST_TIME = "IS_FIRST_TIME";
     private boolean isFetchData = false, isFirstTime = false;
     @IntRange(from = 0, to = 2)
     private
@@ -139,6 +143,7 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
         this.lastSelectionPeriod = lastSelectionPeriod;
         this.selectionType = selectionType;
         isFetchData = true;
+        isFirstTime = true;
         this.sDate = sDate;
         this.eDate = eDate;
         gmFragmentView.bindHeader(sDate, eDate, lastSelectionPeriod, selectionType);
@@ -166,6 +171,18 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
 
         resetDateSelection();
         gmStat.getGmStatNetworkController().fetchDataEmptyState(gmStatListener, assets);
+    }
+
+    @Override
+    public void saveState(Bundle savedInstanceState) {
+        savedInstanceState.putBoolean(IS_FETCH_DATA, isFetchData);
+        savedInstanceState.putBoolean(IS_FIRST_TIME, isFirstTime);
+    }
+
+    @Override
+    public void restoreState(Bundle savedInstanceState) {
+        isFetchData = savedInstanceState.getBoolean(IS_FETCH_DATA);
+        isFirstTime = savedInstanceState.getBoolean(IS_FIRST_TIME);
     }
 
     /**
