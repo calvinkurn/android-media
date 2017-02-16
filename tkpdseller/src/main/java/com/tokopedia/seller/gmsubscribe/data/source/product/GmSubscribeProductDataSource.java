@@ -1,11 +1,11 @@
 package com.tokopedia.seller.gmsubscribe.data.source.product;
 
 import com.google.gson.Gson;
-import com.tokopedia.seller.gmsubscribe.data.mapper.product.GMSubscribeProductMapper;
-import com.tokopedia.seller.gmsubscribe.data.source.product.cache.GMSubscribeProductCache;
+import com.tokopedia.seller.gmsubscribe.data.mapper.product.GmSubscribeProductMapper;
+import com.tokopedia.seller.gmsubscribe.data.source.product.cache.GmSubscribeProductCache;
 import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.GMSubscribeProductCloud;
 import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.model.GMServiceModel;
-import com.tokopedia.seller.gmsubscribe.domain.product.model.GMProductDomainModelGroup;
+import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainModelGroup;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -14,18 +14,18 @@ import rx.functions.Func1;
 /**
  * Created by sebastianuskh on 2/2/17.
  */
-public class GMSubscribeProductListSource {
+public class GmSubscribeProductDataSource {
 
 
-    private final GMSubscribeProductCache gmSubscribeProductCache;
+    private final GmSubscribeProductCache gmSubscribeProductCache;
     private final GMSubscribeProductCloud gmSubscribeProductCloud;
-    private final GMSubscribeProductMapper gmSubscribeProductMapper;
+    private final GmSubscribeProductMapper gmSubscribeProductMapper;
     private final Gson gson;
 
 
-    public GMSubscribeProductListSource(GMSubscribeProductCache gmSubscribeProductCache,
+    public GmSubscribeProductDataSource(GmSubscribeProductCache gmSubscribeProductCache,
                                         GMSubscribeProductCloud gmSubscribeProductCloud,
-                                        GMSubscribeProductMapper gmSubscribeProductMapper,
+                                        GmSubscribeProductMapper gmSubscribeProductMapper,
                                         Gson gson) {
         this.gmSubscribeProductCache = gmSubscribeProductCache;
         this.gmSubscribeProductCloud = gmSubscribeProductCloud;
@@ -33,7 +33,7 @@ public class GMSubscribeProductListSource {
         this.gson = gson;
     }
 
-    public Observable<GMProductDomainModelGroup> getData() {
+    public Observable<GmProductDomainModelGroup> getData() {
         return gmSubscribeProductCache
                 .getProduct()
                 .flatMap(new CheckCache())
@@ -61,9 +61,9 @@ public class GMSubscribeProductListSource {
         }
     }
 
-    private class ConvertToObject implements Func1<String, Observable<GMProductDomainModelGroup>> {
+    private class ConvertToObject implements Func1<String, Observable<GmProductDomainModelGroup>> {
         @Override
-        public Observable<GMProductDomainModelGroup> call(String string) {
+        public Observable<GmProductDomainModelGroup> call(String string) {
             return Observable.just(gson.fromJson(string, GMServiceModel.class)).map(gmSubscribeProductMapper);
         }
     }
@@ -71,7 +71,7 @@ public class GMSubscribeProductListSource {
     private class CheckCache implements Func1<String, Observable<String>> {
         @Override
         public Observable<String> call(String s) {
-            if(s == null ){
+            if (s == null) {
                 throw new RuntimeException();
             } else {
                 return Observable.just(s);

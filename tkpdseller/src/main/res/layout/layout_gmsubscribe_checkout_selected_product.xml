@@ -11,17 +11,17 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:padding="17dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="17dp">
 
         <ImageView
-            android:scaleType="fitCenter"
-            android:layout_marginRight="12dp"
             android:layout_width="42dp"
             android:layout_height="42dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginRight="12dp"
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_gmsubscribe_gold_badge" />
 
         <LinearLayout
@@ -36,7 +36,6 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
-                android:text="6 Bulan"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -45,7 +44,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:text="Bonus Kredit TopAds Rp 150.000"
                 android:textSize="14sp" />
 
             <TextView
@@ -58,7 +56,6 @@
                 android:id="@+id/textview_gm_checkout_price_package"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Rp 550.000"
                 android:textColor="@color/gmsubscribe_product_price_color"
                 android:textSize="14sp" />
 
@@ -73,7 +70,6 @@
         android:background="@color/gmsubscribe_product_line_color" />
 
     <TextView
-        android:textStyle="bold"
         android:id="@+id/gm_subscribe_checkout_change_selected"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -82,7 +78,8 @@
         android:layout_marginTop="17dp"
         android:text="@string/gmsubscribe_button_change"
         android:textAlignment="center"
-        android:textColor="@color/tkpd_main_green" />
+        android:textColor="@color/tkpd_main_green"
+        android:textStyle="bold" />
 
 
 </LinearLayout>

@@ -5,6 +5,7 @@ import com.tokopedia.seller.common.domain.UseCase;
 import com.tokopedia.seller.common.domain.executor.PostExecutionThread;
 import com.tokopedia.seller.common.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.gmsubscribe.domain.product.GmSubscribeProductRepository;
+import com.tokopedia.seller.gmsubscribe.domain.product.exception.GmProductException;
 import com.tokopedia.seller.gmsubscribe.domain.product.model.GmAutoSubscribeDomainModel;
 
 import rx.Observable;
@@ -33,8 +34,13 @@ public class GetGmAutoSubscribeSelectedProductUseCase extends UseCase<GmAutoSubs
 
     @Override
     public Observable<GmAutoSubscribeDomainModel> createObservable(RequestParams requestParams) {
+        int autoSubscribeProductId = requestParams.getInt(AUTOSUBSCRIBE_PRODUCT_ID, UNDEFINED_SELECTED);
+        int currentProductId = requestParams.getInt(CURRENT_PRODUCT_ID, UNDEFINED_SELECTED);
+        if (currentProductId == UNDEFINED_SELECTED || autoSubscribeProductId == UNDEFINED_SELECTED) {
+            throw new GmProductException("Wrong current Product id or auto Subscribe Product Id");
+        }
         return gmSubscribeProductRepository.getExtendProductSelectedData(
-                requestParams.getInt(AUTOSUBSCRIBE_PRODUCT_ID, UNDEFINED_SELECTED),
-                requestParams.getInt(CURRENT_PRODUCT_ID, UNDEFINED_SELECTED));
+                autoSubscribeProductId,
+                currentProductId);
     }
 }

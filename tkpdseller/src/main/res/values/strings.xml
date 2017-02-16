@@ -241,5 +241,6 @@
 
     <string name="positive_button_dialog">Ya</string>
     <string name="negative_button_dialog">Tidak</string>
+    <string name="best_deal">BEST DEAL!</string>
 
 </resources>

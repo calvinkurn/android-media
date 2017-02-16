@@ -8,5 +8,5 @@ import android.content.Context;
 public interface CodeVoucherViewHolderCallback {
     void checkVoucher(String voucherCode);
 
-    Context getContext();
+    Context getActivity();
 }

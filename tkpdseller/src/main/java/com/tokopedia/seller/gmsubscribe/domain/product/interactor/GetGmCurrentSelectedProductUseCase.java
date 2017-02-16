@@ -5,6 +5,7 @@ import com.tokopedia.seller.common.domain.UseCase;
 import com.tokopedia.seller.common.domain.executor.PostExecutionThread;
 import com.tokopedia.seller.common.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.gmsubscribe.domain.product.GmSubscribeProductRepository;
+import com.tokopedia.seller.gmsubscribe.domain.product.exception.GmProductException;
 import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainModel;
 
 import rx.Observable;
@@ -31,6 +32,10 @@ public class GetGmCurrentSelectedProductUseCase extends UseCase<GmProductDomainM
 
     @Override
     public Observable<GmProductDomainModel> createObservable(RequestParams requestParams) {
-        return gmSubscribeProductRepository.getCurrentProductSelectedData(requestParams.getInt(PRODUCT_SELECTED_ID, UNDEFINED_SELECTED));
+        int currentSelectedProductId = requestParams.getInt(PRODUCT_SELECTED_ID, UNDEFINED_SELECTED);
+        if (currentSelectedProductId == UNDEFINED_SELECTED) {
+            throw new GmProductException("Wrong Selected Product Id");
+        }
+        return gmSubscribeProductRepository.getCurrentProductSelectedData(currentSelectedProductId);
     }
 }
