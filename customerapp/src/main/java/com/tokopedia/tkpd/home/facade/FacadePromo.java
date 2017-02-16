@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.home.facade;
 
 import android.content.Context;
+import android.os.Parcelable;
 
 import com.tokopedia.core.facade.BaseFacade;
 import com.tokopedia.core.network.entity.home.Slide;
@@ -16,13 +17,40 @@ import java.util.List;
 @Deprecated
 public class FacadePromo extends BaseFacade {
 
-    @Parcel
-    public static class PromoItem {
+    public static class PromoItem implements Parcelable {
         public String imgUrl;
         public String promoUrl;
 
         public PromoItem() {
 
+        }
+
+        protected PromoItem(android.os.Parcel in) {
+            imgUrl = in.readString();
+            promoUrl = in.readString();
+        }
+
+        public static final Creator<PromoItem> CREATOR = new Creator<PromoItem>() {
+            @Override
+            public PromoItem createFromParcel(android.os.Parcel in) {
+                return new PromoItem(in);
+            }
+
+            @Override
+            public PromoItem[] newArray(int size) {
+                return new PromoItem[size];
+            }
+        };
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(android.os.Parcel parcel, int i) {
+            parcel.writeString(imgUrl);
+            parcel.writeString(promoUrl);
         }
     }
 

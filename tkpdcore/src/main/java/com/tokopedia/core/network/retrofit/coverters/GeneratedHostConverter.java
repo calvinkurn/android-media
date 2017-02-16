@@ -33,10 +33,15 @@ public class GeneratedHostConverter extends Converter.Factory {
                     String body = value.string();
                     try {
                         JSONObject jsonObject = new JSONObject(body);
-                        return new Gson().fromJson(jsonObject
-                                .getJSONObject("data")
-                                .getJSONObject("generated_host")
-                                .toString(), GeneratedHost.class);
+                        if (jsonObject.isNull("data") ||
+                                jsonObject.getJSONObject("data").isNull("generated_host")) {
+                            return new Gson().fromJson(jsonObject.toString(), GeneratedHost.class);
+                        } else {
+                            return new Gson().fromJson(jsonObject
+                                    .getJSONObject("data")
+                                    .getJSONObject("generated_host")
+                                    .toString(), GeneratedHost.class);
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                         return null;

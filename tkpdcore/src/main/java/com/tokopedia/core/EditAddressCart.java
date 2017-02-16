@@ -3,7 +3,6 @@ package com.tokopedia.core;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +21,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.Logger;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
@@ -33,23 +31,15 @@ import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.NetworkHandler;
-import com.tokopedia.core.network.NetworkHandler.NetworkHandlerListener;
 import com.tokopedia.core.payment.interactor.PaymentNetInteractor;
 import com.tokopedia.core.payment.interactor.PaymentNetInteractorImpl;
 import com.tokopedia.core.payment.model.responsecalculateshipping.CalculateShipping;
 import com.tokopedia.core.payment.model.responsecalculateshipping.Shipment;
 import com.tokopedia.core.payment.model.responsecalculateshipping.ShipmentPackage;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.var.TkpdUrl;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import rx.Observable;
@@ -371,121 +361,6 @@ public class EditAddressCart extends TActivity {
         return true;
     }
 
-    public void RecalculateShippingAddress(String... params) {
-        progressdialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
-        progressdialog.showDialog();
-        NetworkHandler network = new NetworkHandler(EditAddressCart.this, TkpdUrl.CART);
-        network.AddParam("shipping_agency", CurrShippingID);
-        network.AddParam("shipping_product", CurrSPid);
-        network.AddParam("addr_street", NewAddress);
-        network.AddParam("addr_name", AddressType);
-        network.AddParam("receiver_name", ReceiverName);
-        network.AddParam("receiver_phone", ReceiverPhone);
-        network.AddParam("province", Province);
-        network.AddParam("district", SubDistrict);
-        network.AddParam("city", Regency);
-        network.AddParam("postal_code", PostCode);
-        network.AddParam("address", params[1]);
-        network.AddParam("min_order", QuantityVal);
-        network.AddParam("shop_id", ShopID);
-        network.AddParam("weight", Weight);
-        network.AddParam("latitude", latitude);
-        network.AddParam("longitude", longitude);
-        network.AddParam("is_update_geolocation", isUpdateGeoLocation);
-        network.AddParam("do", "calculate_address_shipping");
-        network.AddParam("act", "recalculate_product_cart");
-        network.Commit(new NetworkHandlerListener() {
-
-            @Override
-            public void onSuccess(Boolean status) {
-                progressdialog.dismiss();
-
-            }
-
-            @Override
-            public void getResponse(JSONObject Result) {
-                try {
-                    Logger.i("hangman editaddress", Result.toString());
-                    AgencyPrice.clear();
-                    AgencyService.clear();
-                    AgencyServiceID.clear();
-                    AgencyShow.clear();
-                    PriceTotal.clear();
-                    AgencyID.clear();
-                    AgencyName.clear();
-                    AgencyShowID.clear();
-                    JSONObject Shipping = new JSONObject(Result.getString("shipping"));
-                    JSONArray ShippingAgency = new JSONArray(Shipping.getString("shipping_agency"));
-                    for (int i = 0; i < ShippingAgency.length(); i++) {
-                        JSONObject ShippingData = new JSONObject(ShippingAgency.getString(i));
-                        AgencyName.add(ShippingData.getString("option"));
-                        AgencyID.add(ShippingData.getString("shipping_id"));
-                    }
-
-
-                    JSONObject ShippingProd = new JSONObject(Shipping.getString("shipping_product_android"));
-                    for (int i = 0; i < AgencyID.size(); i++) {
-                        ArrayList<String> data1 = new ArrayList<>();
-                        ArrayList<String> data2 = new ArrayList<>();
-                        ArrayList<String> data3 = new ArrayList<>();
-                        ArrayList<String> data4 = new ArrayList<>();
-                        JSONObject ShippingData = new JSONObject(ShippingProd.getString(AgencyID.get(i)));
-                        @SuppressWarnings("rawtypes")
-                        Iterator keys = ShippingData.keys();
-                        while (keys.hasNext()) {
-                            // loop to get the dynamic key
-                            String currentDynamicKey = (String) keys.next();
-                            JSONObject ShippingDeail = new JSONObject(ShippingData.getString(currentDynamicKey));
-                            if (!ShippingDeail.getString("price").equals("0")) {
-                                data1.add(ShippingDeail.getString("price"));
-                                data2.add(ShippingDeail.getString("option"));
-                                data4.add(ShippingDeail.getString("price_tot"));
-                                data3.add(currentDynamicKey);
-                            }
-                        }
-                        if (data1.size() != 0) {
-                            AgencyShow.add(AgencyName.get(i));
-                            AgencyPrice.add(data1);
-                            AgencyService.add(data2);
-                            AgencyServiceID.add(data3);
-                            PriceTotal.add(data4);
-                        }
-                    }
-                    for (int i = 0; i < AgencyShow.size(); i++) {
-                        for (int k = 0; k < AgencyName.size(); k++) {
-                            if (AgencyShow.get(i).equals(AgencyName.get(k))) {
-                                AgencyShowID.add(AgencyID.get(k));
-                            }
-                        }
-
-                    }
-                    nullAdapterAgency = new ArrayAdapter<>(EditAddressCart.this, android.R.layout.simple_spinner_item, new String[]{NO_COURIER_AVAILABLE});
-                    adapterAgency = new ArrayAdapter<>(EditAddressCart.this, android.R.layout.simple_spinner_item, AgencyShow);
-                    adapterAgency.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    SpinnerAgency.setAdapter(adapterAgency);
-                    if (AgencyShow.size() == 0) {
-                        SpinnerAgency.setAdapter(nullAdapterAgency);
-                    }
-                    System.out.println(AgencyPrice);
-
-                    if (isUsingCourierWithMap()) {
-                        revertSpinner(CurrShippingID);
-                    } else {
-                        revertSpinner(OldShippingID);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void getMessageError(ArrayList<String> MessageError) {
-
-            }
-
-        });
-    }
-
     public void RecalculateShippingAddressWS4() {
         if (!progressdialog.isProgress())
             progressdialog.showDialog();
@@ -603,55 +478,6 @@ public class EditAddressCart extends TActivity {
         } catch (Exception e) {
             SpinnerAgency.setSelection(0);
         }
-    }
-
-    public void EditAddress() {
-        progressdialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
-        progressdialog.showDialog();
-        NetworkHandler network = new NetworkHandler(EditAddressCart.this, TkpdUrl.CART);
-        network.AddParam("shipping_agency", CurrShippingID);
-        network.AddParam("shipping_product", CurrSPid);
-        network.AddParam("address", CurrAddressID);
-        network.AddParam("shop_id", ShopID);
-        network.AddParam("o_addr_id", OldAddressID);
-        network.AddParam("o_ship_id", OldShippingID);
-        network.AddParam("o_sp_id", OldSPid);
-        network.AddParam("method", "POST");
-        network.AddParam("act", "edit_address_shipping");
-        network.AddParam("addr_street", NewAddress);
-        network.AddParam("addr_name", AddressType);
-        network.AddParam("receiver_name", ReceiverName);
-        network.AddParam("receiver_phone", ReceiverPhone);
-        network.AddParam("province", Province);
-        network.AddParam("district", SubDistrict);
-        network.AddParam("city", Regency);
-        network.AddParam("postal_code", PostCode);
-        network.Commit(new NetworkHandlerListener() {
-
-            @Override
-            public void onSuccess(Boolean status) {
-                progressdialog.dismiss();
-
-            }
-
-            @Override
-            public void getResponse(JSONObject Result) {
-                if (!Result.isNull("success")) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("response", Result.toString());
-                    Intent intent = getIntent();
-                    intent.putExtras(bundle);
-                    setResult(RESULT_OK, intent);
-                    finish();
-                }
-
-            }
-
-            @Override
-            public void getMessageError(ArrayList<String> MessageError) {
-
-            }
-        });
     }
 
     public void EditAddressWS4() {

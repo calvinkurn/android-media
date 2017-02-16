@@ -13,6 +13,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.adapter.MessagePagerAdapter;
 import com.tokopedia.inbox.inboxmessage.fragment.InboxMessageFragment;
@@ -42,6 +43,12 @@ public class InboxMessageActivity extends DrawerPresenterActivity
     TabLayout indicator;
 
     InboxMessageResultReceiver mReceiver;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
+    }
 
     @Override
     public String getScreenName() {

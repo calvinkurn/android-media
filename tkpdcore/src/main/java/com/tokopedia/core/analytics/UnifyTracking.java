@@ -1047,6 +1047,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventClickOfficialStore(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.OFFICIAL_STORE,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.CLICK,
+                label
+        ).getEvent());
+    }
+
     public static void eventLoadGMStat() {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.LOAD_GM_STAT,

@@ -13,6 +13,7 @@ import android.view.ActionMode;
 import android.view.View;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.FCMMessagingService;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -115,11 +116,8 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
     }
 
     private void getExtras() {
-        if (getIntent().getBooleanExtra("from_notif", false)) {
-            fromNotif = true;
-            new NotificationModHandler(this).cancelNotif();
-        }
-        forceUnread = getIntent().getBooleanExtra("unread", false);
+        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
+        forceUnread = getIntent().getBooleanExtra(Constants.EXTRA_UNREAD, false);
     }
 
     private void initResultReceiver() {
