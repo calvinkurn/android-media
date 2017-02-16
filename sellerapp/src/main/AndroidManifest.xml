@@ -32,10 +32,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".gmsubscribe.GMSubscribeActivity"
-            android:label="Berlangganan Gold Merchant"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".home.view.SellerHomeActivity"
             android:exported="true"
             android:label="Home"

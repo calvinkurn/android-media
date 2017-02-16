@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer.DrawerVariable;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
@@ -17,7 +16,6 @@ import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
-import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
 /**
@@ -73,14 +71,6 @@ public class SellerRouterApplication extends MainApplication implements TkpdCore
                 SellerHomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
-    }
-
-    @Override
-    public void goToGMSubscribe(Context context) {
-        if(context == null)
-            throw new RuntimeException("unable to process to next view !!");
-
-        context.startActivity(new Intent(context, GMSubscribeActivity.class));
     }
 
     @Override

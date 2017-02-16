@@ -59,6 +59,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
+import com.tokopedia.seller.gmsubscribe.view.home.activity.GMSubscribeHomeActivity;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
@@ -78,7 +79,6 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
-import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
 import com.tokopedia.sellerapp.home.boommenu.BoomMenuButton;
 import com.tokopedia.sellerapp.home.boommenu.SquareMenuButton;
 import com.tokopedia.sellerapp.home.boommenu.Types.BoomType;
@@ -257,7 +257,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
     @OnClick(R.id.gold_merchant_announcement)
     public void goToGoldMerchant(){
 //        Toast.makeText(this, "Please implement !!!", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(this, GMSubscribeActivity.class));
+        startActivity(new Intent(this, GMSubscribeHomeActivity.class));
     }
 
     @Override
