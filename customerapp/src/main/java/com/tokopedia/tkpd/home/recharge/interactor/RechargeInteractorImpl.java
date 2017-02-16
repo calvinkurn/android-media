@@ -33,6 +33,7 @@ import rx.schedulers.Schedulers;
  */
 public class RechargeInteractorImpl implements RechargeInteractor {
 
+    private static final String TAG = "RechargeInteractorImpl";
     private final static String KEY_CATEGORY = "RECHARGE_CATEGORY";
     private final static String KEY_STATUS = "RECHARGE_STATUS";
     private final static String KEY_PRODUCT = "RECHARGE_PRODUCT";
@@ -181,6 +182,45 @@ public class RechargeInteractorImpl implements RechargeInteractor {
                         }
                     }
                 });
+    }
+
+    @Override
+    public void getProductById(final OnGetProductById listener, String categoryId, String operatorId,
+                               final String productId) {
+        getObservableListProduct()
+                .flatMap(new Func1<List<Product>, Observable<Product>>() {
+                    @Override
+                    public Observable<Product> call(List<Product> products) {
+                        return Observable.from(products);
+                    }
+                })
+                .filter(isProductExist(Integer.parseInt(categoryId), Integer.parseInt(operatorId),
+                        Integer.parseInt(productId)))
+                .toList()
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Product>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        listener.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(List<Product> products) {
+                        if (products.size() > 0) {
+                            listener.onSuccessFetchProductById(products.get(0));
+                        } else {
+                            Log.e(TAG, "onNext: " + products.size());
+                        }
+                    }
+                });
+
     }
 
     @Override
@@ -622,6 +662,7 @@ public class RechargeInteractorImpl implements RechargeInteractor {
                 rechargeModel.showProduct = operator.getAttributes().getRule().getShowProduct();
                 rechargeModel.status = operator.getAttributes().getStatus();
                 rechargeModel.weight = operator.getAttributes().getWeight();
+                rechargeModel.defaultProductId = operator.getAttributes().getDefaultProductId();
                 return rechargeModel;
             }
         };
@@ -707,6 +748,28 @@ public class RechargeInteractorImpl implements RechargeInteractor {
                         product
                                 .getAttributes()
                                 .getStatus() != STATE_CATEGORY_NON_ACTIVE;
+            }
+        };
+    }
+
+    private Func1<Product, Boolean> isProductExist(final int categoryId, final int operatorId, final int productId) {
+        return new Func1<Product, Boolean>() {
+            @Override
+            public Boolean call(Product product) {
+                return product
+                        .getRelationships()
+                        .getCategory()
+                        .getData()
+                        .getId() == categoryId
+                        &&
+                        product
+                                .getRelationships()
+                                .getOperator()
+                                .getData()
+                                .getId() == operatorId
+                        &&
+                        product
+                                .getId() == productId;
             }
         };
     }

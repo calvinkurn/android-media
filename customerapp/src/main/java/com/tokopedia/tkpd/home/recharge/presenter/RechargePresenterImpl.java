@@ -23,7 +23,8 @@ import java.util.List;
 public class RechargePresenterImpl implements RechargePresenter,
         RechargeInteractor.OnGetListProduct,
         RechargeInteractor.OnGetOperatorByIdListener, RechargeInteractor.OnGetRecentNumberListener,
-        RechargeInteractor.OnGetListProductForOperator, RechargeInteractor.OnGetListOperatorByIdsListener {
+        RechargeInteractor.OnGetListProductForOperator, RechargeInteractor.OnGetListOperatorByIdsListener,
+        RechargeInteractor.OnGetProductById {
 
     private static final String RECHARGE_PHONEBOOK_CACHE_KEY = "RECHARGE_CACHE";
     private final LocalCacheHandler cacheHandlerPhoneBook;
@@ -73,6 +74,11 @@ public class RechargePresenterImpl implements RechargePresenter,
     @Override
     public void getListOperatorFromCategory(int categoryId) {
         dbInteractor.getListProductForOperator(this,categoryId);
+    }
+
+    @Override
+    public void getDefaultProduct(String categoryId, String operatorId, String productId) {
+        dbInteractor.getProductById(this, categoryId, operatorId, productId);
     }
 
     @Override
@@ -163,5 +169,10 @@ public class RechargePresenterImpl implements RechargePresenter,
     @Override
     public void onErrorFetchProdcuts(Throwable e) {
 
+    }
+
+    @Override
+    public void onSuccessFetchProductById(Product product) {
+        view.showProductById(product);
     }
 }
