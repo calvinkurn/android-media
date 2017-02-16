@@ -224,7 +224,7 @@ dependencies {
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
 
-    compile ("true.caller.sdk:truecaller:0.5") {
+    compile (rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'
     }
 

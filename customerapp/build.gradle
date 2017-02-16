@@ -239,7 +239,7 @@ dependencies {
 
     compile 'com.android.support:multidex:1.0.1'
 
-    compile ("true.caller.sdk:truecaller:0.5") {
+    compile (rootProject.ext.miscDependencies.trueCaller) {
         exclude group: 'com.android.support'
     }
 }

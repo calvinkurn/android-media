@@ -67,9 +67,6 @@
         <meta-data
             android:name="APPSFLYER_KEY"
             android:value="@string/key_appsflyer" />
-        <!--<meta-data-->
-            <!--android:name="com.truecaller.android.sdk.PartnerKey"-->
-            <!--android:value="5NZEN7bfc93cb61794a429bb97263648fa073" />-->
 
         <meta-data
             android:name="com.truecaller.android.sdk.PartnerKey"
