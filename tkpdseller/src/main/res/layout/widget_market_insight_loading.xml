@@ -19,7 +19,6 @@
             android:id="@+id/market_insight_header_ic"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_wawasan_pasar_icon"
             app:use_gradient="true" />
 
         <com.tokopedia.seller.gmstat.library.LoaderTextView
