@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -97,9 +98,13 @@ public class TickerAdapter extends RecyclerView.Adapter<TickerAdapter.ViewHolder
             style.setSpan(new ClickableSpan() {
                 @Override
                 public void onClick(View widget) {
-                    Intent intent = new Intent(context, BannerWebView.class);
-                    intent.putExtra("url", url.getURL());
-                    context.startActivity(intent);
+                    if (url.getURL().contains("play.google.com/store/apps")) {
+                        context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url.getURL())));
+                    } else {
+                        Intent intent = new Intent(context, BannerWebView.class);
+                        intent.putExtra("url", url.getURL());
+                        context.startActivity(intent);
+                    }
                 }
             }, sp.getSpanStart(url), sp.getSpanEnd(url), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
