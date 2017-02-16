@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/gmsubscribe_height_widget_sub_feature"
         android:layout_marginLeft="15dp"
+        android:layout_marginTop="22sp"
         android:layout_marginRight="15dp"
         android:gravity="bottom"
         android:orientation="horizontal"
@@ -51,7 +52,7 @@
         android:layout_height="@dimen/gmsubscribe_height_widget_sub_feature"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="38dp"
         android:gravity="bottom"
         android:orientation="horizontal"
         android:weightSum="3">

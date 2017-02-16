@@ -20,7 +20,7 @@
             >
             <ImageView
                 android:id="@+id/image_gm_subscribe_main_feature"
-                android:layout_width="60dp"
+                android:layout_width="wrap_content"
                 android:layout_height="60dp"
                 android:src="@drawable/ic_gmsubscribe_feature_badge"
                 android:layout_gravity="center"
@@ -47,6 +47,7 @@
                 android:id="@+id/desc_gm_subscribe_main_feature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="12sp"
                 android:text="@string/gmsubscribe_feature_gold_badge_desc"
                 android:lineSpacingExtra="@dimen/gmsubscribe_line_height_textview"/>
 

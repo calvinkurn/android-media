@@ -161,16 +161,14 @@
         <item name="android:maxHeight">3dip</item>
     </style>
 
-    <style name="GMSubscribeContentTextview" parent="TextView">
-        <item name="android:textColor">@color/gmsubscribe_content_textview_color</item>
-    </style>
-
-    <style name="GMSubscribeContentTextviewSmall" parent="GMSubscribeContentTextview">
+    <style name="GMSubscribeContentTextviewSmall" parent="TextView">
         <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/gmsubscribe_autosubscribe_title_content</item>
     </style>
 
-    <style name="GMSubscribeContentTextviewMedium" parent="GMSubscribeContentTextview">
+    <style name="GMSubscribeContentTextviewMedium" parent="TextView">
         <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/gmsubscribe_content_textview_color</item>
     </style>
 
     <style name="WhiteCheck">

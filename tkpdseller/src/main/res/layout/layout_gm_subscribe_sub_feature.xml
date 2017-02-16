@@ -34,6 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/gmsubscribe_subfeature_etalase"
+            android:textSize="12sp"
             android:textAlignment="center" />
     </RelativeLayout>
 
