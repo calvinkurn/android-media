@@ -105,6 +105,7 @@ public class GMCheckoutActivity extends BasePresenterActivity implements GMCheck
     public void goToDynamicPayment(String url, String parameter, String callbackUrl, Integer paymentId) {
         Intent intent = GMDynamicPaymentActivity.startPaymentWebview(this, url, parameter, paymentId, callbackUrl);
         startActivity(intent);
+        finish();
     }
 
     @Override

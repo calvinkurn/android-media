@@ -15,7 +15,7 @@
         android:textColor="@color/white"
         android:layout_margin="5dp"
         style="?android:attr/borderlessButtonStyle"
-        android:background="@color/tkpd_button"
+        android:background="@drawable/bg_button_orange"
         android:layout_alignParentBottom="true"/>
 
 
