@@ -38,6 +38,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
@@ -75,7 +76,7 @@ import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
  * Edited by HAFIZH on 23-01-2017
  */
 
-public class ShopInfoActivity extends TActivity
+public class ShopInfoActivity extends BaseActivity
         implements OfficialShopHomeFragment.OfficialShopInteractionListener {
     public static final int REQUEST_CODE_LOGIN = 561;
     private static final String FORMAT_UTF_8 = "UTF-8";
@@ -634,7 +635,7 @@ public class ShopInfoActivity extends TActivity
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    holder.collapsingToolbarLayout.setTitle(shopModel.info.shopName);
+                    holder.collapsingToolbarLayout.setTitle(shopModel.info.shopName + " ahahaa");
                     isShow = true;
                 } else if (isShow) {
                     holder.collapsingToolbarLayout.setTitle("");
