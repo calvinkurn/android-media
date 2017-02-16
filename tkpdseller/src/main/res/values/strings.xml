@@ -189,4 +189,8 @@
     <string name="label_top_ads_favorit">Favorit</string>
     <string name="save_date">Simpan</string>
     <string name="market_insight_item_non_gm_text">Kata Kunci %s</string>
+
+    <string name="positive_button_dialog">Ya</string>
+    <string name="negative_button_dialog">Tidak</string>
+
 </resources>

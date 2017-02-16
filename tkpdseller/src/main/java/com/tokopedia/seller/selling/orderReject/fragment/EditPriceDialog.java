@@ -6,7 +6,6 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,9 +18,9 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl;
 import com.tokopedia.core.myproduct.utils.VerificationUtils;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.Pair;
 import com.tokopedia.seller.selling.model.orderShipping.OrderProduct;
 import com.tokopedia.seller.selling.orderReject.adapter.ProductListAdapter;
 import com.tokopedia.seller.selling.orderReject.model.ModelEditPrice;
@@ -195,8 +194,8 @@ public class EditPriceDialog extends DialogFragment {
     }
 
     private boolean validateForm() {
-        ImageGalleryImpl.Pair<Boolean, String> validateweight =  VerificationUtils.validateMinimumWeight(getActivity(), weightSpiner.getSelectedItem().toString(), weight.getText().toString());
-        ImageGalleryImpl.Pair<Boolean, String> validatePrice =  VerificationUtils.validatePrice(getActivity(), priceSpiner.getSelectedItem().toString(), price.getText().toString());
+        Pair<Boolean, String> validateweight =  VerificationUtils.validateMinimumWeight(getActivity(), weightSpiner.getSelectedItem().toString(), weight.getText().toString());
+        Pair<Boolean, String> validatePrice =  VerificationUtils.validatePrice(getActivity(), priceSpiner.getSelectedItem().toString(), price.getText().toString());
 
         if(!validatePrice.getModel1() || !validateweight.getModel1()){
             if(!validatePrice.getModel1()){

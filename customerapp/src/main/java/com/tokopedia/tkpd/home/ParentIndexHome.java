@@ -18,6 +18,10 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.GalleryBrowser;
+import com.tokopedia.seller.myproduct.ProductActivity;
+import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.tkpd.R;
+
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -29,10 +33,11 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customadapter.ListViewHotProductParent;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.interfaces.IndexHomeInterafaces;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
-import com.tokopedia.core.myproduct.ProductActivity;
-import com.tokopedia.core.myproduct.fragment.AddProductFragment;
+import com.tokopedia.seller.myproduct.ProductActivity;
+import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -225,6 +230,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
                 }
             });
         }
+
+        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
     }
 
 

@@ -62,4 +62,6 @@ public interface AddToCartPresenter {
     void processGetGTMTicker();
 
     boolean isAllowKeroAccess(AtcFormData data);
+
+    String calculateWeight(String initWeight, String quantity);
 }

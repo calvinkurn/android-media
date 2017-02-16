@@ -1,5 +1,6 @@
 package com.tokopedia.core.product.listener;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
@@ -274,4 +275,6 @@ public interface ProductDetailView extends ViewListener {
     void hideTickerGTM();
 
     void showFullScreenError();
+
+    void moveToEditFragment(boolean isEdit, String productId);
 }
