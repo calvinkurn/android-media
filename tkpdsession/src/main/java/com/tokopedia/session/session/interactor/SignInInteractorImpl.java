@@ -286,7 +286,7 @@ public class SignInInteractorImpl implements SignInInteractor{
 
 
     private void setLoginSession(AccountsModel accountsModel){
-        sessionHandler.SetLoginSession(Boolean.parseBoolean(accountsModel.getIsLogin()),
+        sessionHandler.setLoginSession(Boolean.parseBoolean(accountsModel.getIsLogin()),
                 String.valueOf(accountsModel.getUserId()),
                 accountsModel.getFullName(), String.valueOf(accountsModel.getShopId()),
                 accountsModel.getMsisdnIsVerifiedBoolean());

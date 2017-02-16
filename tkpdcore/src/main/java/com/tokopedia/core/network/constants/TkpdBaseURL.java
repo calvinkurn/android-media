@@ -534,6 +534,7 @@ public class TkpdBaseURL {
         public static final String API_HOME_CATEGORY_MENU = "/api/v1/layout/category";
         public static final String PATH_USER_RECENT_VIEW = "users/";
         public static final String PATH_RECENT_VIEW = "/recentview/products/v1";
+        public static final String API_V1_BRANDS = "/os/api/v1/brands/list";
     }
 
 
@@ -625,5 +626,8 @@ public class TkpdBaseURL {
     public static class TopCash{
         public static final String GET_WALLET = ACCOUNTS_DOMAIN + "api/v1/wallet/";
         public static final String PATH_WALLET = "balance";
+    }
+    public static class Truecaller{
+        public static final String VERIFY_PHONE = "/web-service/v4/truecaller/check";
     }
 }

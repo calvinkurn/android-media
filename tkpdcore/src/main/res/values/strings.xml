@@ -163,6 +163,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_rupiah">Rp</string>
     <string name="error_image_resolution">Ukuran minimal gambar adalah 300x300 pixel</string>
     <string name="dialog_delete_product">Apakah Anda ingin menghapus produk ini?</string>
+    <string name="dialog_cancel_add_product">Perubahan yang anda lakukan tidak akan tersimpan. Lanjutkan?</string>
     <string name="dialog_no_memory_card">No memory card!</string>
     <string name="dialog_upload_option">Bagaimana Anda ingin mengatur gambar Anda ?</string>
     <string name="title_gallery">Gallery</string>
@@ -1228,6 +1229,9 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_error_otp">Kode Verifikasi Salah</string>
     <string name="title_mismatch_otp">Kode Verifikasi tidak benar.</string>
     <string name="phone_number_otp">Nomor Ponsel</string>
+    <string name="success_fetch_truecaller">Sukses mendapat data dari Truecaller.</string>
+    <string name="error_fetch_truecaller">Gagal mendapat data dari Truecaller.</string>
+    <string name="error_user_truecaller">Mohon pastikan nomor di perangkat ini sesuai dengan nomor Tokopedia Anda.</string>
     <!-- String Buy Credit -->
     <string name="title_choose_provider">Pilih Provider</string>
     <string name="title_credit_value">Nominal Pulsa</string>

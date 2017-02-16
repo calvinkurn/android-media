@@ -77,6 +77,7 @@
         <meta-data
             android:name="net.hockeyapp.android.appIdentifier"
             android:value="528b17702bf941a581f15e188677306b " />
+
         <!-- <meta-data -->
         <!-- android:name="com.google.android.gms.version" -->
         <!-- android:value="@integer/google_play_services_version" /> -->
@@ -101,42 +102,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.core.myproduct.ProductActivity"
-            android:label="@string/title_activity_add_product"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="tkpdevel.com"
-                    android:scheme="http" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="image/*" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEND_MULTIPLE" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="image/*" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name="com.tokopedia.core.onboarding.OnboardingActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.MainActivity"
-            android:label="@string/title_activity_main"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -163,12 +130,7 @@
             android:name="com.tokopedia.core.ShopLocation"
             android:label="@string/title_activity_shop_location"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.myproduct.ManageProduct"
-            android:label="@string/title_activity_manage_product"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name="com.tokopedia.core.manage.people.address.activity.AddAddressActivity"
             android:label="@string/title_activity_add_address"
@@ -492,6 +454,9 @@
 
         <activity android:name=".manage.general.ManageWebViewActivity"
                   android:screenOrientation="portrait"/>
+
+        <activity android:name=".newgallery.GalleryActivity"
+            android:screenOrientation="portrait"/>
         <!--=======================================================-->
         <!--RECEIVERS REGISTRY-->
         <!--=======================================================-->
@@ -564,15 +529,7 @@
         <service
             android:name="com.tokopedia.core.talkview.intentservice.TalkViewIntentService"
             android:exported="false" />
-        <service
-            android:name="com.tokopedia.core.myproduct.service.ProductService"
-            android:exported="false" />
 
-        <activity
-            android:name="com.tokopedia.core.myproduct.ProductSocMedActivity"
-            android:label="Add Product Social Media"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
 
         <service
             android:name="com.tokopedia.core.service.HadesService"

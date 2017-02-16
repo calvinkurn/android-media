@@ -1,23 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.tokopedia.tkpd">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.tkpd">
 
-    <uses-sdk tools:overrideLibrary="com.tokopedia.core"
-        />
-
+    <uses-sdk tools:overrideLibrary="com.tokopedia.core" />
 
     <application
-        tools:replace="android:name"
-        android:name="com.tokopedia.tkpd.ConsumerMainApplication"
+        android:name=".ConsumerMainApplication"
         android:allowBackup="true"
-                 android:icon="@drawable/qc_launcher"
-                 android:label="@string/app_name"
-                 android:supportsRtl="true"
-                 android:theme="@style/Theme.Tokopedia3.Launcher"
-        >
+        android:icon="@drawable/qc_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Tokopedia3.Launcher"
+        tools:replace="android:name">
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4" />
+
         <activity
             android:name="com.tokopedia.core.SplashScreen"
             android:label="@string/app_name"
@@ -28,6 +27,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
+
                 <!-- LOCALYTICS TEST MESSAGE KEY -->
                 <data android:scheme="@string/key_localytics_testmessage" />
 
@@ -38,7 +38,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity"
+            android:name=".deeplink.activity.DeepLinkActivity"
             android:hardwareAccelerated="true"
             android:label="@string/title_activity_deep_link"
             android:screenOrientation="portrait">
@@ -98,28 +98,27 @@
         <meta-data
             android:name="LOCALYTICS_APP_KEY"
             android:value="@string/key_localytics" />
-
         <meta-data
             android:name="GTM_RESOURCE"
             android:resource="@raw/gtm_consumer" />
-
         <meta-data
             android:name="GTM_ID"
             android:value="@string/key_gtm" />
-
         <meta-data
             android:name="APPSFLYER_KEY"
             android:value="@string/key_appsflyer" />
+        <meta-data
+            android:name="com.truecaller.android.sdk.PartnerKey"
+            android:value="SjVFHa23dea572b1f4639907d58ccc3bff344" />
 
         <activity
             android:name=".home.ParentIndexHome"
             android:exported="true"
             android:label="Tokopedia"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="com.tokopedia.tkpd.home.SimpleHomeActivity"
+            android:name=".home.SimpleHomeActivity"
             android:label="@string/title_activity_simple_home"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
@@ -132,6 +131,7 @@
             android:authorities="com.facebook.app.FacebookContentProviderOQcSB25ec2f92263c41b5a3d10152ace7888e"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true"/>
+        <activity android:name=".truecaller.TruecallerActivity"/>
     </application>
 
 </manifest>

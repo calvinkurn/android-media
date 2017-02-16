@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.home.presenter;
 
+import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.tkpd.home.facade.FacadePromo;
 
@@ -7,6 +8,7 @@ import java.util.ArrayList;
 
 /**
  * Created by m.normansyah on 2/24/16.
+ * Edited by Hafizh H 30/01/2017 for Official Store
  */
 public interface Category {
     String TAG = "MNORMANSYAH";
@@ -26,4 +28,5 @@ public interface Category {
         void onError();
 
     }
+
 }

@@ -59,7 +59,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
-import com.tokopedia.core.myproduct.ManageProduct;
+import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.apiservices.shop.MyShopOrderService;

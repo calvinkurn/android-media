@@ -24,8 +24,10 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
-import com.tokopedia.core.instoped.InstagramAuth;
-import com.tokopedia.core.myproduct.ProductActivity;
+import com.tokopedia.seller.instoped.InstagramAuth;
+import com.tokopedia.core.newgallery.GalleryActivity;
+import com.tokopedia.seller.instoped.InstopedActivity;
+import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.core.util.SessionHandler;
@@ -330,7 +332,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                         onAddInstagram();
                         break;
                     case R.id.action_gallery:
-                        ProductActivity.moveToImageGalleryCamera(getActivity(), 0, false, 5);
+                        GalleryActivity.moveToImageGalleryCamera(getActivity(), 0, false, 5);
                         break;
                     case R.id.action_camera:
                         onAddGallery();
@@ -342,11 +344,11 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     }
 
     private void onAddGallery() {
-        ProductActivity.moveToImageGalleryCamera(getActivity(), 0, true, -1);
+        GalleryActivity.moveToImageGalleryCamera(getActivity(), 0, true, -1);
     }
 
     private void onAddInstagram() {
-        Intent moveToProductActivity = new Intent(getActivity(), ProductActivity.class);
+        Intent moveToProductActivity = new Intent(getActivity(), InstopedActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, InstagramAuth.TAG);
         moveToProductActivity.putExtras(bundle);
