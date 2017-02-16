@@ -11,9 +11,9 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.myproduct.model.FolderModel;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.newgallery.adapter.ImageAlbumAdapter;
-import com.tokopedia.core.myproduct.model.FolderModel;
 import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
 
 import java.util.ArrayList;

@@ -260,9 +260,9 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
                 if (ProductDB!= null && ProductDB.getNameProd() != null)
                     shareData.setName(ProductDB.getNameProd());
 
-                if (ProductDB!= null && ProductDB.getPictureDBs()!= null
-                        && CommonUtils.checkCollectionNotNull(ProductDB.getPictureDBs()))
-                    shareData.setImgUri(ProductDB.getPictureDBs().get(0).getPath());
+                        if (ProductDB!= null && ProductDB.getPictureDBs()!= null
+                                && CommonUtils.checkCollectionNotNull(ProductDB.getPictureDBs()))
+                            shareData.setImgUri(ProductDB.getPictureDBs().get(0).getPictureImageSourceUrl());
 
                 if (ProductDB!= null && ProductDB.getProductUrl() != null)
                     shareData.setUri(ProductDB.getProductUrl());

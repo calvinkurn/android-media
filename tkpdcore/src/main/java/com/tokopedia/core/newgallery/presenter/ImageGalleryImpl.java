@@ -7,7 +7,6 @@ import android.provider.MediaStore;
 
 import com.tokopedia.core.myproduct.model.FolderModel;
 import com.tokopedia.core.myproduct.presenter.ImageGallery;
-import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
 import com.tokopedia.core.util.Pair;
 
 import java.util.ArrayList;

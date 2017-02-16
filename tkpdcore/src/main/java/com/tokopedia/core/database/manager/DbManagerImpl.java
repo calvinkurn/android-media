@@ -28,8 +28,6 @@ import com.tokopedia.core.database.model.ProductDB;
 import com.tokopedia.core.database.model.ProductDB_Table;
 import com.tokopedia.core.database.model.Province;
 import com.tokopedia.core.database.model.Province_Table;
-import com.tokopedia.core.database.model.StockStatusDB;
-import com.tokopedia.core.database.model.StockStatusDB_Table;
 import com.tokopedia.core.database.model.WholesalePriceDB;
 import com.tokopedia.core.database.model.WholesalePriceDB_Table;
 import com.tokopedia.core.etalase.EtalaseVariable;

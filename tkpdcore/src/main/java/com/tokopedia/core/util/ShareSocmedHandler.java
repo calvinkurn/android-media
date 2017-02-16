@@ -284,10 +284,10 @@ public class ShareSocmedHandler {
      */
 
     public static void ShareSpecificUri(final Activity context, final String packageName, final String targetType, final String shareTxt, final String ProductUri, final String image, final String altUrl) {
-        Observable.just(true)
-                .map(new Func1<Boolean, File>() {
+        Observable.just(image)
+                .map(new Func1<String, File>() {
                     @Override
-                    public File call(Boolean aBoolean) {
+                    public File call(String image) {
                         File photo = null;
                         if (image != null) {
                             FutureTarget<File> future = Glide.with(context)
