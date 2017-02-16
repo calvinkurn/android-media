@@ -23,7 +23,8 @@
             app:contentScrim="@color/tkpd_main_green"
             app:expandedTitleMarginEnd="12dp"
             app:expandedTitleMarginStart="12dp"
-            app:expandedTitleTextAppearance="@android:color/transparent"
+            app:collapsedTitleTextAppearance="@style/TextAppearance.Tokopedia.Title.Collapsed"
+            app:expandedTitleTextAppearance="@style/TextAppearance.Tokopedia.Title.Expanded"
             app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
 
             <ImageView
