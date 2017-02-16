@@ -254,12 +254,12 @@
     </style>
     <style name="TextAppearance.Tokopedia.Title.Collapsed" parent="android:TextAppearance">
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">11sp</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="TextAppearance.Tokopedia.Title.Expanded" parent="android:TextAppearance">
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
 
