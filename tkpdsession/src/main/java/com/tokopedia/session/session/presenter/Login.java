@@ -69,6 +69,7 @@ public interface Login {
     String GENDER_ACCOUNTS = "gender";
     String CODE = "code";
     String REDIRECT_URI = "redirect_uri";
+    String MSISDN = "msisdn";
 
     String GRANT_PASSWORD = "password";
     String GRANT_SDK = "extension";

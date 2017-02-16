@@ -40,4 +40,7 @@ public interface SecurityQuestionView extends BaseView {
 
     void disableOtpButton();
 
+    void showTrueCaller(boolean b);
+
+    void showError(String error);
 }

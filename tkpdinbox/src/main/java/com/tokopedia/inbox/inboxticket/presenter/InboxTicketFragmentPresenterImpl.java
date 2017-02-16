@@ -84,7 +84,7 @@ public class InboxTicketFragmentPresenterImpl implements InboxTicketFragmentPres
             public void onNullData(String error) {
                 viewListener.finishLoading();
                 if (pagingHandler.getPage() == 1 && viewListener.getAdapter().getList().isEmpty()) {
-                    viewListener.getAdapter().showEmpty(true);
+                    viewListener.getAdapter().showEmptyFull(true);
                 } else if (error.equals("")) {
                     showError(viewListener.getString(R.string.default_request_error_null_data));
                 } else
@@ -159,7 +159,7 @@ public class InboxTicketFragmentPresenterImpl implements InboxTicketFragmentPres
         viewListener.getAdapter().setList(result.getList());
 
         if (viewListener.getAdapter().getList().size() == 0) {
-            viewListener.getAdapter().showEmpty(true);
+            viewListener.getAdapter().showEmptyFull(true);
         }
 
         pagingHandler.setHasNext(PagingHandler.CheckHasNext(result.getPaging()));

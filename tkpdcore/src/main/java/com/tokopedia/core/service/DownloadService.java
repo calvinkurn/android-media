@@ -46,7 +46,7 @@ import com.tokopedia.core.session.model.LoginSecurityModel;
 import com.tokopedia.core.session.model.OTPModel;
 import com.tokopedia.core.session.model.QuestionFormModel;
 import com.tokopedia.core.session.model.SecurityQuestionViewModel;
-import com.tokopedia.core.session.presenter.SecurityQuestion;
+import com.tokopedia.core.session.presenter.SecurityQuestionPresenter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -127,22 +127,22 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                 break;
             case ANSWER_SECURITY_QUESTION:
                 SecurityQuestionViewModel answer = Parcels.unwrap(bundle.getParcelable(ANSWER_QUESTION_MODEL));
-                Log.d(TAG, SecurityQuestion.class.getSimpleName() + " try to answer security question : " + answer);
+                Log.d(TAG, SecurityQuestionPresenter.class.getSimpleName() + " try to answer security question : " + answer);
                 intent.putExtra(ANSWER_QUESTION_MODEL, Parcels.wrap(answer));
                 break;
             case REQUEST_OTP:
                 SecurityQuestionViewModel securityQuestionViewModel = Parcels.unwrap(bundle.getParcelable(REQUEST_OTP_MODEL));
-                Log.d(TAG, SecurityQuestion.class.getSimpleName() + " request otp " + securityQuestionViewModel);
+                Log.d(TAG, SecurityQuestionPresenter.class.getSimpleName() + " request otp " + securityQuestionViewModel);
                 intent.putExtra(REQUEST_OTP_MODEL, Parcels.wrap(securityQuestionViewModel));
                 break;
             case REQUEST_OTP_PHONE:
                 SecurityQuestionViewModel securityQuestionViewModelOTP = Parcels.unwrap(bundle.getParcelable(REQUEST_OTP_MODEL));
-                Log.d(TAG, SecurityQuestion.class.getSimpleName() + " request otp phone" + securityQuestionViewModelOTP);
+                Log.d(TAG, SecurityQuestionPresenter.class.getSimpleName() + " request otp phone" + securityQuestionViewModelOTP);
                 intent.putExtra(REQUEST_OTP_MODEL, Parcels.wrap(securityQuestionViewModelOTP));
                 break;
             case SECURITY_QUESTION_GET:
                 securityQuestionViewModel = Parcels.unwrap(bundle.getParcelable(SECURITY_QUESTION_GET_MODEL));
-                Log.d(TAG, SecurityQuestion.class.getSimpleName() + " try to fetch security question form : " + securityQuestionViewModel);
+                Log.d(TAG, SecurityQuestionPresenter.class.getSimpleName() + " try to fetch security question form : " + securityQuestionViewModel);
                 intent.putExtra(SECURITY_QUESTION_GET_MODEL, Parcels.wrap(securityQuestionViewModel));
                 break;
             case HOTLIST:
@@ -210,8 +210,8 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                 receiver.send(STATUS_RUNNING, running);
                 SecurityQuestionViewModel securityQuestionViewModel = Parcels.unwrap(intent.getParcelableExtra(SECURITY_QUESTION_GET_MODEL));
                 params = new HashMap<>();
-                params.put(SecurityQuestion.USER_CHECK_SECURITY_ONE, securityQuestionViewModel.getSecurity1() + "");
-                params.put(SecurityQuestion.USER_CHECK_SECURITY_TWO, securityQuestionViewModel.getSecurity2() + "");
+                params.put(SecurityQuestionPresenter.USER_CHECK_SECURITY_ONE, String.valueOf(securityQuestionViewModel.getSecurity1()));
+                params.put(SecurityQuestionPresenter.USER_CHECK_SECURITY_TWO, String.valueOf(securityQuestionViewModel.getSecurity2()));
                 params.put("user_id", SessionHandler.getTempLoginSession(getApplicationContext()));
                 service = new InterruptService();
                 ((InterruptService) service).getApi().getQuestionForm(AuthUtil.generateParams(getApplicationContext(), params, SessionHandler.getTempLoginSession(getApplicationContext())))
@@ -228,10 +228,10 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                 receiver.send(STATUS_RUNNING, running);
                 securityQuestionViewModel = Parcels.unwrap(intent.getParcelableExtra(ANSWER_QUESTION_MODEL));
                 params = new HashMap<>();
-                params.put(SecurityQuestion.ANSWER, securityQuestionViewModel.getvAnswer());
-                params.put(SecurityQuestion.QUESTION, securityQuestionViewModel.getQuestion());
-                params.put(SecurityQuestion.USER_CHECK_SECURITY_ONE, securityQuestionViewModel.getSecurity1() + "");
-                params.put(SecurityQuestion.USER_CHECK_SECURITY_TWO, securityQuestionViewModel.getSecurity2() + "");
+                params.put(SecurityQuestionPresenter.ANSWER, securityQuestionViewModel.getvAnswer());
+                params.put(SecurityQuestionPresenter.QUESTION, securityQuestionViewModel.getQuestion());
+                params.put(SecurityQuestionPresenter.USER_CHECK_SECURITY_ONE, String.valueOf(securityQuestionViewModel.getSecurity1()));
+                params.put(SecurityQuestionPresenter.USER_CHECK_SECURITY_TWO, String.valueOf(securityQuestionViewModel.getSecurity2()));
                 params.put("user_id", SessionHandler.getTempLoginSession(getApplicationContext()));
                 service = new InterruptActService();
                 ((InterruptActService) service).getApi().answerQuestion(AuthUtil.generateParams(getApplicationContext(), params, SessionHandler.getTempLoginSession(getApplicationContext())))
@@ -248,7 +248,7 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                 receiver.send(STATUS_RUNNING, running);
                 securityQuestionViewModel = Parcels.unwrap(intent.getParcelableExtra(REQUEST_OTP_MODEL));
                 params = new HashMap<>();
-                params.put(SecurityQuestion.USER_CHECK_SECURITY_TWO, securityQuestionViewModel.getSecurity2() + "");
+                params.put(SecurityQuestionPresenter.USER_CHECK_SECURITY_TWO, securityQuestionViewModel.getSecurity2() + "");
                 params.put("user_id", SessionHandler.getTempLoginSession(getApplicationContext()));
                 params = AuthUtil.generateParams(getApplicationContext(), params, SessionHandler.getTempLoginSession(getApplicationContext()));
                 service = new InterruptActService();
@@ -266,7 +266,7 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                 receiver.send(STATUS_RUNNING, running);
                 securityQuestionViewModel = Parcels.unwrap(intent.getParcelableExtra(REQUEST_OTP_MODEL));
                 params = new HashMap<>();
-                params.put(SecurityQuestion.USER_CHECK_SECURITY_TWO, securityQuestionViewModel.getSecurity2() + "");
+                params.put(SecurityQuestionPresenter.USER_CHECK_SECURITY_TWO, securityQuestionViewModel.getSecurity2() + "");
                 params.put("user_id", SessionHandler.getTempLoginSession(getApplicationContext()));
                 params = AuthUtil.generateParams(getApplicationContext(), params, SessionHandler.getTempLoginSession(getApplicationContext()));
                 service = new InterruptActService();
@@ -291,6 +291,8 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber(type));
                 break;
+
+
             default:
                 break;
         }

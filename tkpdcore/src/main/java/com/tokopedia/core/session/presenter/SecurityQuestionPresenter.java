@@ -10,9 +10,9 @@ import org.json.JSONObject;
 /**
  * Created by m.normansyah on 05/11/2015.
  */
-public interface SecurityQuestion {
+public interface SecurityQuestionPresenter {
     String TAG = "MNORMANSYAH";
-    String messageTAG = SecurityQuestion.class.getSimpleName()+" : ";
+    String messageTAG = SecurityQuestionPresenter.class.getSimpleName()+" : ";
     int timeoutTime = 10000;
     int numberOftry = 10;
 
@@ -26,6 +26,8 @@ public interface SecurityQuestion {
     int REQUEST_OTP_TYPE =2;
     int ANSWER_SECURITY_QUESTION_FALSE_TYPE =3;
     int REQUEST_OTP_PHONE_TYPE =4;
+    int VERIFY_PHONE = 5;
+    int MAKE_LOGIN = 6;
 
     int networkHandlerSize = 3;
 
@@ -40,8 +42,6 @@ public interface SecurityQuestion {
     boolean isSecurityQuestion();
 
     boolean isOtp();
-
-    void storeUUID(Context context, String UUID);
 
     void storeNecessaryID();
 
@@ -78,6 +78,14 @@ public interface SecurityQuestion {
     void updateModel(QuestionFormModel model);
 
     void doRequestOtpWithCall();
+
+    void verifyTruecaller(Context activity, String phoneNumber);
+
+    void getPhoneTrueCaller();
+
+    void showTrueCaller(Context context);
+
+    void unSubscribe();
 
     void doSendAnalytics();
 

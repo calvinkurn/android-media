@@ -61,4 +61,10 @@ public interface AccountsApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.GENERATE_HOST)
     Observable<GeneratedHost> generateHost(@FieldMap Map<String, String> params);
+
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Truecaller.VERIFY_PHONE)
+    Observable<Response<TkpdResponse>> verifyPhone(@FieldMap Map<String, String> params);
+
 }

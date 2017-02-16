@@ -228,7 +228,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
         return new BackButtonListener() {
             @Override
             public void onBackPressed() {
-                if (webView.canGoBack()) {
+                if (webView != null && webView.canGoBack()) {
                     webView.goBack();
                 }
 
@@ -236,7 +236,7 @@ public class ContactUsFaqFragment extends BasePresenterFragment {
 
             @Override
             public boolean canGoBack() {
-                return webView.canGoBack();
+                return webView != null && webView.canGoBack();
             }
         };
     }
