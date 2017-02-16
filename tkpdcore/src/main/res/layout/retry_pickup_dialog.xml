@@ -16,5 +16,5 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/padding_med"
         android:paddingStart="@dimen/padding_med"
-        android:text="Lakukan Retry Pickup?" />
+        android:text="@string/retry_pickup_info" />
 </LinearLayout>
