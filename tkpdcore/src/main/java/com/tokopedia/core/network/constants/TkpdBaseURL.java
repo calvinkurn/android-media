@@ -634,4 +634,7 @@ public class TkpdBaseURL {
         public static final String CHECK_VOUCHER = "v1/voucher/verify";
         public static final String CHECKOUT_ORDER = "v1/cart/order";
     }
+    public static class Truecaller{
+        public static final String VERIFY_PHONE = "/web-service/v4/truecaller/check";
+    }
 }

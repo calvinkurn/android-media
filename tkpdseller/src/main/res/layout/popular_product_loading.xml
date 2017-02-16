@@ -11,7 +11,6 @@
         android:layout_marginLeft="@dimen/gmstat_padding_item_left_right"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        app:srcCompat="@mipmap/icon_produk"
         app:use_gradient="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
@@ -47,7 +46,6 @@
         app:use_gradient="true"
         android:layout_width="96dp"
         android:layout_height="96dp"
-        app:srcCompat="@android:drawable/ic_notification_overlay"
         android:layout_below="@+id/separator_1"
         android:id="@+id/image_popular_product_loading"/>
 

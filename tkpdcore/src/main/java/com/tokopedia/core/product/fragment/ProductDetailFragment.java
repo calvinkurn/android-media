@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.text.Html;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Menu;

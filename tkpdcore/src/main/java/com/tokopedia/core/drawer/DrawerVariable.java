@@ -443,6 +443,12 @@ public class DrawerVariable {
                 context.startActivity(wishList);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.WISHLIST);
                 break;
+            case TkpdState.DrawerPosition.GOLD_MERCHANT:
+                if (context.getApplication() instanceof TkpdCoreRouter) {
+                    ((TkpdCoreRouter) context.getApplication())
+                            .goToMerchantRedirect(context);
+                }
+                break;
             case TkpdState.DrawerPosition.SETTINGS:
                 context.startActivity(new Intent(context, ManageGeneral.class));
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.SETTING);
@@ -716,6 +722,8 @@ public class DrawerVariable {
         model.data.add(model.peopleMenu);
         if (!Session.getShopID().equals("0") && !Session.getShopID().equals("")) {
             model.data.add(model.shopMenu);
+            model.data.add(new DrawerItem("Gold Merchant", 0, R.drawable.ic_goldmerchant_drawer,
+                    TkpdState.DrawerPosition.GOLD_MERCHANT,false));
         }
         model.data.add(new DrawerItem("Pengaturan", 0, R.drawable.icon_setting, TkpdState.DrawerPosition.SETTINGS, false));
         if (!TrackingUtils.getBoolean(AppEventTracking.GTM.CONTACT_US)) {

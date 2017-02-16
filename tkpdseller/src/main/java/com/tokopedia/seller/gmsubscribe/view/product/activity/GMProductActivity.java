@@ -128,7 +128,7 @@ public class GMProductActivity extends BasePresenterActivity implements GMProduc
                         getString(R.string.gmsubscribe_product_button_subscribe),
                         GMProductFragment.UNDEFINED_DEFAULT_SELECTED,
                         FIRST_SELECT_PRODUCT),
-                true,
+                false,
                 SELECT_PRODUCT_TAG);
     }
 

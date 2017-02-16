@@ -47,6 +47,6 @@ public abstract class RegisterNew extends BaseImpl<RegisterNewView> {
 
     public abstract void unSubscribeFacade();
 
-    public abstract void sendGTMRegisterError(Context context, String label);
+    public abstract void sendGTMRegisterError(String label);
 
 }

@@ -15,6 +15,7 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -691,12 +692,14 @@ public class SquareMenuButton
             public void onClick(View v) {
                 if (animationPlaying) return;
                 if (cancelable) startHideAnimations();
+                disableClickWhenAnimating();
             }
         } : new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (animationPlaying) return;
                 shoot();
+                disableClickWhenAnimating();
             }
         });
         setRipple(clickEffectType, listener);
@@ -704,6 +707,29 @@ public class SquareMenuButton
                 .setDuration(500)
                 .setStartDelay(200)
                 .translationX(length)
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        animationPlaying = true;
+                        SquareMenuButton.this.setEnabled(false);
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        animationPlaying = false;
+                        SquareMenuButton.this.setEnabled(true);
+                        enableClick(listener);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                })
                 .start();
         float start = isShow ? 360f : 0f;
         float end = isShow ? 0f : 360f;
@@ -936,6 +962,10 @@ public class SquareMenuButton
             ripple.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (animationPlaying){
+                        return;
+                    }
+                    disableClickWhenAnimating();
                     shoot();
                 }
             });
@@ -944,9 +974,37 @@ public class SquareMenuButton
             frameLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (animationPlaying){
+                        return;
+                    }
+                    disableClickWhenAnimating();
                     shoot();
                 }
             });
+        }
+    }
+
+    private void disableClickWhenAnimating(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                && clickEffectType.equals(ClickEffectType.RIPPLE)
+                && ripple != null) {
+            ripple.setOnClickListener(null);
+            ripple.setEnabled(false);
+        } else {
+            frameLayout.setOnClickListener(null);
+            frameLayout.setEnabled(false);
+        }
+    }
+
+    private void enableClick(View.OnClickListener listener){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                && clickEffectType.equals(ClickEffectType.RIPPLE)
+                && ripple != null) {
+            ripple.setOnClickListener(listener);
+            ripple.setEnabled(true);
+        } else {
+            frameLayout.setOnClickListener(listener);
+            frameLayout.setEnabled(true);
         }
     }
 

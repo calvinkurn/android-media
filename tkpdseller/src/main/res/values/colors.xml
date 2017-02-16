@@ -16,4 +16,9 @@
     <color name="gmsubscribe_product_line_color">#e0e0e0</color>
     <color name="gmsubscribe_content_textview_color">#8A000000</color>
     <color name="gmsubscribe_autosubscribe_title_content">#61000000</color>
+
+    <color name="font_top_ads_green">#42b549</color>
+    <color name="font_top_ads_black_54">#8C000000</color>
+    <color name="font_top_ads_black_70">#B3000000</color>
+
 </resources>

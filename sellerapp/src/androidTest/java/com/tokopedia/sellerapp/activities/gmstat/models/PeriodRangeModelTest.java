@@ -7,8 +7,6 @@ package com.tokopedia.sellerapp.activities.gmstat.models;
 import android.os.Parcel;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.tokopedia.seller.gmstat.views.models.PeriodRangeModel;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

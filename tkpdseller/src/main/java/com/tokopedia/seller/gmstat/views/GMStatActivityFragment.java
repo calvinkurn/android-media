@@ -52,10 +52,10 @@ import com.tokopedia.seller.gmstat.views.models.LoadingGMTwoModel;
 import com.tokopedia.seller.gmstat.views.models.ProdSeen;
 import com.tokopedia.seller.gmstat.views.models.ProdSold;
 import com.tokopedia.seller.gmstat.views.models.SuccessfulTransaction;
-import com.tokopedia.seller.gmstat.views.williamchart.chart.renderer.StringFormatRenderer;
-import com.tokopedia.seller.gmstat.views.williamchart.chart.renderer.XRenderer;
-import com.tokopedia.seller.gmstat.views.williamchart.chart.tooltip.Tooltip;
-import com.tokopedia.seller.gmstat.views.williamchart.chart.view.LineChartView;
+import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
+import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
+import com.tokopedia.seller.lib.williamchart.tooltip.Tooltip;
+import com.tokopedia.seller.lib.williamchart.view.LineChartView;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
