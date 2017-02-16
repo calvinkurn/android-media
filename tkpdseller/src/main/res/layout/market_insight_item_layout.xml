@@ -24,7 +24,7 @@
     <ImageView
         android:layout_width="10dp"
         android:layout_height="10dp"
-        app:srcCompat="@drawable/ic_search_icon"
+        android:src="@drawable/ic_search_icon"
         android:layout_toLeftOf="@id/market_insight_number"
         android:layout_alignBottom="@id/market_insight_number"
         android:id="@+id/zoom_icon"
