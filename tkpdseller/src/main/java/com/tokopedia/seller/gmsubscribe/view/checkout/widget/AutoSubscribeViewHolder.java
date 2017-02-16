@@ -25,13 +25,11 @@ public class AutoSubscribeViewHolder {
     private final TextView autoSubscribePackagePrice;
     private final TextView autoSubscribePackageNextSubscribe;
     private final TextView autoSubscribePackagePaymentMethod;
-    private final LinearLayout autoSubscribeChangePackage;
-    private final View viewOpenSubscribe;
 
-    public AutoSubscribeViewHolder(AutoSubscribeViewHolderCallback callback, View view) {
+    public AutoSubscribeViewHolder(AutoSubscribeViewHolderCallback callback, View view, boolean isOpened) {
         this.callback = callback;
         checkbox = (CheckBox) view.findViewById(R.id.check_box_to_open_auto_subscribe);
-        checkbox.setOnCheckedChangeListener(getOpenAutoSubscribeView());
+        checkCheckBox(isOpened);
         title = (TextView) view.findViewById(R.id.open_auto_subscribe_title);
         subtitle = (TextView) view.findViewById(R.id.open_auto_subscribe_subtitle);
         detailLayout = (LinearLayout) view.findViewById(R.id.gm_subscribe_auto_detail);
@@ -39,9 +37,9 @@ public class AutoSubscribeViewHolder {
         autoSubscribePackagePrice = (TextView) view.findViewById(R.id.text_view_current_auto_package_price);
         autoSubscribePackageNextSubscribe = (TextView) view.findViewById(R.id.text_view_current_auto_package_next_subscribe);
         autoSubscribePackagePaymentMethod = (TextView) view.findViewById(R.id.text_view_current_auto_package_payment_method);
-        autoSubscribeChangePackage = (LinearLayout) view.findViewById(R.id.icon_change_gm_subscribe_auto);
+        LinearLayout autoSubscribeChangePackage = (LinearLayout) view.findViewById(R.id.icon_change_gm_subscribe_auto);
         autoSubscribeChangePackage.setOnClickListener(getChangeAutoSubscribePackage());
-        viewOpenSubscribe = view.findViewById(R.id.view_to_open_auto_subscribe);
+        View viewOpenSubscribe = view.findViewById(R.id.view_to_open_auto_subscribe);
         viewOpenSubscribe.setOnClickListener(onClickOpenSubscribe());
     }
 
@@ -77,8 +75,6 @@ public class AutoSubscribeViewHolder {
                     checkCheckBox(false);
                     if (callback.isAutoSubscribeUnselected()) {
                         callback.selectAutoSubscribePackageFirstTime();
-                    } else {
-                        callback.changeAutoSubscribePackage();
                     }
                 } else {
                     setShowAutoSubscribeDetail(false);
@@ -91,7 +87,6 @@ public class AutoSubscribeViewHolder {
     public void renderAutoSubscribeProduct(GMAutoSubscribeViewModel gmAutoSubscribeViewModel) {
         setShowAutoSubscribeDetail(true);
         checkCheckBox(true);
-        checkbox.setOnCheckedChangeListener(getOpenAutoSubscribeView());
         renderView(gmAutoSubscribeViewModel);
     }
 

@@ -42,15 +42,14 @@ public class GMCheckoutFragment
     public static final String TAG = "GMCheckoutFragment";
     private static final String SELECTED_PRODUCT = "SELECTED_PRODUCT";
     private static final Integer UNDEFINED_SELECTED_AUTO_EXTEND = -1;
+    public static final String AUTO_EXTEND_SELECTED = "AUTO_EXTEND_SELECTED";
 
     private Integer selectedProduct;
     private Integer autoExtendSelectedProduct = UNDEFINED_SELECTED_AUTO_EXTEND;
     private CurrentSelectedProductViewHolder currentSelectedProductViewHolder;
     private AutoSubscribeViewHolder autoSubscribeViewHolder;
     private CodeVoucherViewHolder codeVoucherViewHolder;
-    private CompositeSubscription subscription;
     private GMCheckoutFragmentCallback callback;
-    private Button buttonContinueCheckout;
     private TkpdProgressDialog progressDialog;
 
 
@@ -74,12 +73,12 @@ public class GMCheckoutFragment
 
     @Override
     public void onSaveState(Bundle bundle) {
-
+        bundle.putInt(AUTO_EXTEND_SELECTED, autoExtendSelectedProduct);
     }
 
     @Override
     public void onRestoreState(Bundle bundle) {
-
+        autoExtendSelectedProduct = bundle.getInt(AUTO_EXTEND_SELECTED, UNDEFINED_SELECTED_AUTO_EXTEND);
     }
 
     @Override
@@ -89,7 +88,6 @@ public class GMCheckoutFragment
 
     @Override
     protected void initialPresenter() {
-        subscription = new CompositeSubscription();
         presenter = GMCheckoutDependencyInjection.createPresenter();
     }
 
@@ -116,9 +114,10 @@ public class GMCheckoutFragment
     @Override
     protected void initView(View view) {
         currentSelectedProductViewHolder = new CurrentSelectedProductViewHolder(this, view);
-        autoSubscribeViewHolder = new AutoSubscribeViewHolder(this, view);
+        autoSubscribeViewHolder = new AutoSubscribeViewHolder(
+                this, view, !autoExtendSelectedProduct.equals(UNDEFINED_SELECTED_AUTO_EXTEND));
         codeVoucherViewHolder = new CodeVoucherViewHolder(this, view);
-        buttonContinueCheckout = (Button) view.findViewById(R.id.button_checkout_gm_subscribe);
+        Button buttonContinueCheckout = (Button) view.findViewById(R.id.button_checkout_gm_subscribe);
         buttonContinueCheckout.setOnClickListener(getContinueCheckoutListener());
         presenter.attachView(this);
         progressDialog = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
@@ -149,6 +148,9 @@ public class GMCheckoutFragment
     @Override
     public void renderCurrentSelectedProduct(GMCheckoutCurrentSelectedViewModel viewModel) {
         currentSelectedProductViewHolder.renderView(viewModel);
+        if(!isAutoSubscribeUnselected()){
+            presenter.getExtendSelectedProduct(selectedProduct, autoExtendSelectedProduct);
+        }
     }
 
     @Override

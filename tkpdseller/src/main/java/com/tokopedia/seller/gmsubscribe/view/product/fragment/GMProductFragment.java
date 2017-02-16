@@ -10,6 +10,7 @@ import android.widget.Button;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.seller.R;
@@ -40,6 +41,7 @@ public abstract class GMProductFragment
     public static final String DEFAULT_SELECTED_PRODUCT = "DEFAULT_SELECTED_PRODUCT";
     public static final int UNDEFINED_DEFAULT_SELECTED = -1;
     public static final String RETURN_TYPE = "RETURN_TYPE";
+    public static final String SELECTED_PRODUCT = "SELECTED_PRODUCT";
 
     @BindView(R2.id.recyclerview_package_chooser)
     RecyclerView recyclerView;
@@ -60,11 +62,9 @@ public abstract class GMProductFragment
     private CompositeSubscription subscriber;
     private String stringButton;
     private int returnType;
-    private Integer currentSelectedProductId;
-    private RecyclerView.LayoutManager layoutManager;
+    private Integer currentSelectedProductId = UNDEFINED_DEFAULT_SELECTED;
     private GMProductAdapter adapter;
     private GMProductFragmentListener listener;
-    private TkpdProgressDialog progressDialog;
 
     public static GMProductFragment createFragment(GMProductFragment fragment,
                                                    String buttonString,
@@ -97,12 +97,12 @@ public abstract class GMProductFragment
 
     @Override
     public void onSaveState(Bundle bundle) {
-
+        bundle.putInt(SELECTED_PRODUCT, currentSelectedProductId);
     }
 
     @Override
     public void onRestoreState(Bundle bundle) {
-
+        currentSelectedProductId = bundle.getInt(SELECTED_PRODUCT, UNDEFINED_DEFAULT_SELECTED);
     }
 
     @Override
@@ -129,7 +129,9 @@ public abstract class GMProductFragment
     protected void setupArguments(Bundle bundle) {
         stringButton = bundle.getString(STRING_BUTTON_SELECT);
         returnType = bundle.getInt(RETURN_TYPE);
-        currentSelectedProductId = bundle.getInt(DEFAULT_SELECTED_PRODUCT, UNDEFINED_DEFAULT_SELECTED);
+        if(currentSelectedProductId == UNDEFINED_DEFAULT_SELECTED) {
+            currentSelectedProductId = bundle.getInt(DEFAULT_SELECTED_PRODUCT, UNDEFINED_DEFAULT_SELECTED);
+        }
     }
 
     @Override
@@ -143,9 +145,9 @@ public abstract class GMProductFragment
         buttonSelectProduct.setText(stringButton);
         adapter = new GMProductAdapter(this);
         recyclerView.setAdapter(adapter);
-        layoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.MAIN_PROGRESS);
+
     }
 
     @Override
@@ -198,12 +200,13 @@ public abstract class GMProductFragment
 
     @Override
     public void errorGetProductList() {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+        adapter.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
-            public void onRetryClicked() {
+            public void onRetryCliked() {
                 getPackage();
             }
-        }).showRetrySnackbar();
+        });
+        adapter.showRetryFull(true);
     }
 
     @Override
@@ -213,12 +216,12 @@ public abstract class GMProductFragment
 
     @Override
     public void showProgressDialog() {
-        progressDialog.showDialog();
+        adapter.showLoadingFull(true);
     }
 
     @Override
     public void dismissProgressDialog() {
-        progressDialog.dismiss();
+        adapter.showLoadingFull(false);
     }
 
     @Override

@@ -103,21 +103,23 @@ public class GMProductActivity extends BasePresenterActivity implements GMProduc
 
     @Override
     protected void setActionVar() {
-        switch (selectionType) {
-            case FIRST_SELECT_PRODUCT:
-                selectCurrentSelectedFirstTime();
-                break;
-            case CHANGE_SELECT_PRODUCT:
-                changeCurrentSelected(currentSelected);
-                break;
-            case FIRST_SELECT_AUTO_PRODUCT:
-                selectAutoSubscribePackageFirstTime();
-                break;
-            case CHANGE_SELECT_AUTO_PRODUCT:
-                changeAutoSubscribePackage(currentSelected);
-                break;
+        Fragment fragment = fragmentManager.findFragmentByTag(SELECT_PRODUCT_TAG);
+        if(fragment == null) {
+            switch (selectionType) {
+                case FIRST_SELECT_PRODUCT:
+                    selectCurrentSelectedFirstTime();
+                    break;
+                case CHANGE_SELECT_PRODUCT:
+                    changeCurrentSelected(currentSelected);
+                    break;
+                case FIRST_SELECT_AUTO_PRODUCT:
+                    selectAutoSubscribePackageFirstTime();
+                    break;
+                case CHANGE_SELECT_AUTO_PRODUCT:
+                    changeAutoSubscribePackage(currentSelected);
+                    break;
+            }
         }
-
     }
 
     public void selectCurrentSelectedFirstTime() {
