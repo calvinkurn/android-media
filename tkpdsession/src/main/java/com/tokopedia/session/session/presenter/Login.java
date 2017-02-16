@@ -132,13 +132,5 @@ public interface Login {
 
     void unSubscribe();
 
-    void sendGTMScreen(Context context);
-
-    void sendGTMRegisterThrougLogin();
-
-    void sendCTAAction();
-
-    void sendGTMLoginError(String label);
-
     void doFacebookLogin(LoginFragment fragment, CallbackManager callbackManager);
 }

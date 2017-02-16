@@ -145,41 +145,6 @@ public class LoginImpl implements Login {
     }
 
     @Override
-    public void sendGTMScreen(Context context) {
-        Nishikino.init(context).startAnalytics().sendScreen(AppScreen.SCREEN_LOGIN);
-    }
-
-    @Override
-    public void sendGTMRegisterThrougLogin() {
-        Nishikino.init(mContext).startAnalytics()
-                .sendButtonClick(
-                        AppEventTracking.Event.REGISTER_LOGIN,
-                        AppEventTracking.Category.LOGIN,
-                        AppEventTracking.Action.REGISTER,
-                        AppEventTracking.EventLabel.REGISTER);
-    }
-
-    @Override
-    public void sendCTAAction() {
-        Nishikino.init(mContext).startAnalytics()
-                .sendButtonClick(
-                        AppEventTracking.Event.LOGIN_CLICK,
-                        AppEventTracking.Category.LOGIN,
-                        AppEventTracking.Action.CLICK,
-                        AppEventTracking.EventLabel.CTA);
-    }
-
-    @Override
-    public void sendGTMLoginError(String label) {
-        Nishikino.init(mContext).startAnalytics()
-                .sendButtonClick(
-                        AppEventTracking.Event.LOGIN_ERROR,
-                        AppEventTracking.Category.LOGIN,
-                        AppEventTracking.Action.LOGIN_ERROR,
-                        label);
-    }
-
-    @Override
     public void doFacebookLogin(final LoginFragment fragment, final CallbackManager callbackManager) {
         LoginManager.getInstance().logInWithReadPermissions(fragment, FacebookContainer.readPermissions);
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {

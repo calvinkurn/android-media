@@ -188,6 +188,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         if (presenter.isAfterRotate())
             presenter.initDataAfterRotate();
         smsReceiver.registerSmsReceiver(getActivity());
+        presenter.doSendAnalytics();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             showCheckSMSPermission();
@@ -221,7 +222,6 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
             FragmentSecurityQuestionPermissionsDispatcher.checkSmsPermissionWithCheck(FragmentSecurityQuestion.this);
         }
-        presenter.doSendAnalytics();
     }
 
     @Override
