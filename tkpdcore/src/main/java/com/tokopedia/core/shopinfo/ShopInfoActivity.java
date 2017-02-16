@@ -468,6 +468,7 @@ public class ShopInfoActivity extends BaseActivity
         setListener();
         holder.collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
         holder.collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
+
         if (holder.shopAvatar.getDrawable() == null)
             ImageHandler.loadImageCircle2(this, holder.shopAvatar, shopModel.info.shopAvatar);
         ImageHandler.loadImageLucky2(this, holder.luckyShop, shopModel.info.shopLucky);
@@ -635,7 +636,7 @@ public class ShopInfoActivity extends BaseActivity
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    holder.collapsingToolbarLayout.setTitle(shopModel.info.shopName + " ahahaa");
+                    holder.collapsingToolbarLayout.setTitle(shopModel.info.shopName);
                     isShow = true;
                 } else if (isShow) {
                     holder.collapsingToolbarLayout.setTitle("");
