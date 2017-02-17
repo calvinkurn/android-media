@@ -33,7 +33,6 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.model.ProductDB;
 import com.tokopedia.core.database.model.ProductDB_Table;
-import com.tokopedia.core.myproduct.service.ProductService;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.presenter.ProductSharePresenter;
