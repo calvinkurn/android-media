@@ -52,7 +52,7 @@ public class CategoryDatabaseManager implements DBOperation<CategoryDB> {
 
     @Override
     public void delete(String key) {
-
+        //helo
     }
 
     @Override
@@ -127,6 +127,7 @@ public class CategoryDatabaseManager implements DBOperation<CategoryDB> {
                 .where(CategoryDB_Table.parentId.is(0))
                 .queryList();
         return categoryDBs;
+
     }
 
     /**
