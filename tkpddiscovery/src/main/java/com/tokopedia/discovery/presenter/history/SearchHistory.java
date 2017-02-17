@@ -17,4 +17,5 @@ public abstract class SearchHistory extends BaseImpl<SearchHistoryView> {
 
     public abstract RecyclerView.Adapter getAdapter();
     public abstract void unregisterBroadcast(Context context);
+    public abstract void probeAnalytics(String label, int type);
 }

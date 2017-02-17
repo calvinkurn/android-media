@@ -10,7 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.discovery.model.searchSuggestion.SearchDataModel;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -116,6 +118,10 @@ public class SearchHistoryImpl extends SearchHistory {
         return new OnItemClickListener() {
             @Override
             public void onItemClick(SearchHistoryModel.Data selected, String urlHotlist, int type) {
+
+                CommonUtils.dumper("searchautocompl "+selected.getKeyword()+" title "+selected.getTitle()+" TYPE "+type);
+                probeAnalytics(selected.getTitle(), type);
+
                 switch (type) {
                     case SearchHistoryAdapter.HISTORY:
                     case SearchHistoryAdapter.POPULAR:
@@ -135,6 +141,24 @@ public class SearchHistoryImpl extends SearchHistory {
                 }
             }
         };
+    }
+
+    @Override
+    public void probeAnalytics(String label, int type) {
+        switch (type) {
+            case SearchHistoryAdapter.HISTORY:
+                UnifyTracking.eventClickRecentSearch(label);
+                break;
+            case SearchHistoryAdapter.POPULAR:
+                UnifyTracking.eventClickPopularSearch(label);
+                break;
+            case SearchHistoryAdapter.SUGGESTION:
+                UnifyTracking.eventClickAutoCompleteSearch(label);
+                break;
+            case SearchHistoryAdapter.HOTLIST:
+                UnifyTracking.eventClickHotListSearch(label);
+                break;
+        }
     }
 
     private View.OnClickListener getClearHistoryListener(final Context context) {
