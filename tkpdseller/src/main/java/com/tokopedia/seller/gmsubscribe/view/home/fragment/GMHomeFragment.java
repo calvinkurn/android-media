@@ -9,8 +9,8 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
-import com.tokopedia.seller.gmsubscribe.di.GMHomeDependencyInjection;
-import com.tokopedia.seller.gmsubscribe.view.home.presenter.GMHomePresenterImpl;
+import com.tokopedia.seller.gmsubscribe.di.GmHomeDependencyInjection;
+import com.tokopedia.seller.gmsubscribe.view.home.presenter.GmHomePresenterImpl;
 
 import butterknife.OnClick;
 
@@ -18,21 +18,25 @@ import butterknife.OnClick;
  * Created by sebastianuskh on 12/2/16.
  */
 
-public class GMHomeFragment extends BasePresenterFragment<GMHomePresenterImpl> implements GMHomeView{
+public class GmHomeFragment extends BasePresenterFragment<GmHomePresenterImpl> implements GmHomeView {
 
     public static final String TAG = "GMHomeFragment";
-    private GMHomeFragmentCallback listener;
+    private GmHomeFragmentCallback listener;
     private TkpdProgressDialog progressDialog;
 
-    /** BUTTERKNIFE BINDING */
-    @OnClick(R2.id.button_home_to_select_product)
-    public void goToProductSelection(){
-        listener.goToGMProductFristTime();
+    /**
+     * CONSTRUCTOR AREA
+     */
+    public static Fragment createFragment() {
+        return new GmHomeFragment();
     }
 
-    /** CONSTRUCTOR AREA */
-    public static Fragment createFragment() {
-        return new GMHomeFragment();
+    /**
+     * BUTTERKNIFE BINDING
+     */
+    @OnClick(R2.id.button_home_to_select_product)
+    public void goToProductSelection() {
+        listener.goToGMProductFristTime();
     }
 
     @Override
@@ -69,13 +73,13 @@ public class GMHomeFragment extends BasePresenterFragment<GMHomePresenterImpl> i
 
     @Override
     protected void initialPresenter() {
-        presenter = GMHomeDependencyInjection.getPresenter();
+        presenter = GmHomeDependencyInjection.getPresenter();
     }
 
     @Override
     protected void initialListener(Activity activity) {
-        if(activity instanceof GMHomeFragmentCallback){
-            listener = (GMHomeFragmentCallback) activity;
+        if (activity instanceof GmHomeFragmentCallback) {
+            listener = (GmHomeFragmentCallback) activity;
         } else {
             throw new RuntimeException("Please implement GMHomeFragmentListener in the Activity");
         }
@@ -98,8 +102,8 @@ public class GMHomeFragment extends BasePresenterFragment<GMHomePresenterImpl> i
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         presenter.detachView();
+        super.onDestroyView();
     }
 
     @Override

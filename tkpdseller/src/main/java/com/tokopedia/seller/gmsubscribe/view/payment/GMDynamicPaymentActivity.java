@@ -23,6 +23,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.seller.R;
@@ -146,7 +147,7 @@ public class GmDynamicPaymentActivity extends BasePresenterActivity {
 
     @Override
     public String getScreenName() {
-        return null;
+        return AppScreen.SCREEN_GM_SUBSCRIBE_PAYMENT;
     }
 
     private void processRedirectUrlContainsLoginUrl() {

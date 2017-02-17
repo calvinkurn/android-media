@@ -9,14 +9,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmsubscribe.view.product.fragment.GMCurrentProductFragment;
-import com.tokopedia.seller.gmsubscribe.view.product.fragment.GMExtendProductFragment;
-import com.tokopedia.seller.gmsubscribe.view.product.fragment.GMProductFragment;
-import com.tokopedia.seller.gmsubscribe.view.product.fragment.GMProductFragmentListener;
+import com.tokopedia.seller.gmsubscribe.view.product.fragment.GmCurrentProductFragment;
+import com.tokopedia.seller.gmsubscribe.view.product.fragment.GmExtendProductFragment;
+import com.tokopedia.seller.gmsubscribe.view.product.fragment.GmProductFragment;
+import com.tokopedia.seller.gmsubscribe.view.product.fragment.GmProductFragmentListener;
 
-public class GMProductActivity extends BasePresenterActivity implements GMProductFragmentListener {
+public class GmProductActivity extends BasePresenterActivity implements GmProductFragmentListener {
 
     public static final String PRODUCT_SELECTION_TYPE = "PRODUCT_SELECTION_TYPE";
     public static final int FIRST_SELECT_PRODUCT = 10;
@@ -32,7 +33,7 @@ public class GMProductActivity extends BasePresenterActivity implements GMProduc
     private int currentSelected;
 
     public static Intent selectProductFirstTime(Context context) {
-        Intent intent = new Intent(context, GMProductActivity.class);
+        Intent intent = new Intent(context, GmProductActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(PRODUCT_SELECTION_TYPE, FIRST_SELECT_PRODUCT);
         intent.putExtras(bundle);
@@ -40,7 +41,7 @@ public class GMProductActivity extends BasePresenterActivity implements GMProduc
     }
 
     public static Intent changeProductSelected(Context context, Integer selectedProduct) {
-        Intent intent = new Intent(context, GMProductActivity.class);
+        Intent intent = new Intent(context, GmProductActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(PRODUCT_SELECTION_TYPE, CHANGE_SELECT_PRODUCT);
         bundle.putInt(SELECTED_PRODUCT, selectedProduct);
@@ -49,7 +50,7 @@ public class GMProductActivity extends BasePresenterActivity implements GMProduc
     }
 
     public static Intent selectAutoProductFirstTime(Context context) {
-        Intent intent = new Intent(context, GMProductActivity.class);
+        Intent intent = new Intent(context, GmProductActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(PRODUCT_SELECTION_TYPE, FIRST_SELECT_AUTO_PRODUCT);
         intent.putExtras(bundle);
@@ -57,7 +58,7 @@ public class GMProductActivity extends BasePresenterActivity implements GMProduc
     }
 
     public static Intent changeAutoProductSelected(Context context, Integer selectedAutoProduct) {
-        Intent intent = new Intent(context, GMProductActivity.class);
+        Intent intent = new Intent(context, GmProductActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(PRODUCT_SELECTION_TYPE, CHANGE_SELECT_AUTO_PRODUCT);
         bundle.putInt(SELECTED_PRODUCT, selectedAutoProduct);
@@ -104,7 +105,7 @@ public class GMProductActivity extends BasePresenterActivity implements GMProduc
     @Override
     protected void setActionVar() {
         Fragment fragment = fragmentManager.findFragmentByTag(SELECT_PRODUCT_TAG);
-        if(fragment == null) {
+        if (fragment == null) {
             switch (selectionType) {
                 case FIRST_SELECT_PRODUCT:
                     selectCurrentSelectedFirstTime();
@@ -124,9 +125,9 @@ public class GMProductActivity extends BasePresenterActivity implements GMProduc
 
     public void selectCurrentSelectedFirstTime() {
         inflateFragment(
-                GMCurrentProductFragment.createFragment(
+                GmCurrentProductFragment.createFragment(
                         getString(R.string.gmsubscribe_product_button_subscribe),
-                        GMProductFragment.UNDEFINED_DEFAULT_SELECTED,
+                        GmProductFragment.UNDEFINED_DEFAULT_SELECTED,
                         FIRST_SELECT_PRODUCT),
                 false,
                 SELECT_PRODUCT_TAG);
@@ -134,7 +135,7 @@ public class GMProductActivity extends BasePresenterActivity implements GMProduc
 
     public void changeCurrentSelected(Integer selectedProduct) {
         inflateFragment(
-                GMCurrentProductFragment.createFragment(
+                GmCurrentProductFragment.createFragment(
                         getString(R.string.gmsubscribe_product_button_change),
                         selectedProduct,
                         CHANGE_SELECT_PRODUCT),
@@ -144,9 +145,9 @@ public class GMProductActivity extends BasePresenterActivity implements GMProduc
 
     public void selectAutoSubscribePackageFirstTime() {
         inflateFragment(
-                GMExtendProductFragment.createFragment(
+                GmExtendProductFragment.createFragment(
                         getString(R.string.gmsubscribe_product_button_activate),
-                        GMProductFragment.UNDEFINED_DEFAULT_SELECTED,
+                        GmProductFragment.UNDEFINED_DEFAULT_SELECTED,
                         FIRST_SELECT_AUTO_PRODUCT),
                 false,
                 SELECT_PRODUCT_TAG);
@@ -154,7 +155,7 @@ public class GMProductActivity extends BasePresenterActivity implements GMProduc
 
     public void changeAutoSubscribePackage(Integer autoExtendSelectedProduct) {
         inflateFragment(
-                GMExtendProductFragment.createFragment(
+                GmExtendProductFragment.createFragment(
                         getString(R.string.gmsubscribe_product_button_change),
                         autoExtendSelectedProduct,
                         CHANGE_SELECT_AUTO_PRODUCT),
@@ -173,7 +174,7 @@ public class GMProductActivity extends BasePresenterActivity implements GMProduc
 
     @Override
     public String getScreenName() {
-        return null;
+        return AppScreen.SCREEN_GM_SUBSCRIBE_PRODUCT;
     }
 
     @Override

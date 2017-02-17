@@ -1,9 +1,8 @@
 package com.tokopedia.seller.gmsubscribe.data.source.cart.cloud;
 
-import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.api.GMSubscribeCartApi;
-import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.inputmodel.checkout.GMCheckoutInputModel;
+import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.api.GmSubscribeCartApi;
+import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.inputmodel.checkout.GmCheckoutInputModel;
 import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.inputmodel.voucher.VoucherCodeInputModel;
-import com.tokopedia.seller.gmsubscribe.domain.cart.model.GMCheckoutDomainModel;
 
 import retrofit2.Retrofit;
 import rx.Observable;
@@ -11,10 +10,10 @@ import rx.Observable;
 /**
  * Created by sebastianuskh on 2/3/17.
  */
-public class GMSubscribeCartCloud {
+public class GmSubscribeCartCloud {
     private final Retrofit retrofit;
 
-    public GMSubscribeCartCloud(Retrofit retrofit) {
+    public GmSubscribeCartCloud(Retrofit retrofit) {
         this.retrofit = retrofit;
     }
 
@@ -22,11 +21,11 @@ public class GMSubscribeCartCloud {
         return getApi().checkVoucher(VoucherCodeInputModel.buildInputModel(voucherCode, selectedProduct));
     }
 
-    public GMSubscribeCartApi getApi() {
-        return retrofit.create(GMSubscribeCartApi.class);
+    public GmSubscribeCartApi getApi() {
+        return retrofit.create(GmSubscribeCartApi.class);
     }
 
     public Observable<String> checkoutGMSubscribe(Integer selectedProduct, Integer autoExtendSelectedProduct, String voucherCode) {
-        return getApi().checkoutGMSubscribe(GMCheckoutInputModel.getBodyModel(selectedProduct,autoExtendSelectedProduct, voucherCode));
+        return getApi().checkoutGMSubscribe(GmCheckoutInputModel.getBodyModel(selectedProduct, autoExtendSelectedProduct, voucherCode));
     }
 }

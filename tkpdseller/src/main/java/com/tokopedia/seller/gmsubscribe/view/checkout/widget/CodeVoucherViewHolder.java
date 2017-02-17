@@ -76,7 +76,7 @@ public class CodeVoucherViewHolder {
 
     private void focusToVoucherEditText() {
         voucherEditText.requestFocus();
-        InputMethodManager imm = (InputMethodManager) callback.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) callback.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(voucherEditText, InputMethodManager.SHOW_IMPLICIT);
     }
 
@@ -105,7 +105,7 @@ public class CodeVoucherViewHolder {
     }
 
     public void dismissKeyboard() {
-        InputMethodManager imm = (InputMethodManager) callback.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) callback.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(voucherEditText.getWindowToken(), 0);
     }
 }

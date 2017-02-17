@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
-import com.tokopedia.seller.gmsubscribe.view.product.viewmodel.GMProductViewModel;
+import com.tokopedia.seller.gmsubscribe.view.product.viewmodel.GmProductViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
  * Created by sebastianuskh on 11/23/16.
  */
 
-public class GMProductViewHolder extends RecyclerView.ViewHolder {
+public class GmProductViewHolder extends RecyclerView.ViewHolder {
 
     private final Context mContext;
 
@@ -48,13 +48,13 @@ public class GMProductViewHolder extends RecyclerView.ViewHolder {
     @BindView(R2.id.layout_view)
     RelativeLayout layoutView;
 
-    public GMProductViewHolder(View itemView) {
+    public GmProductViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         mContext = itemView.getContext();
     }
 
-    public void renderData(GMProductViewModel gmProductViewModel, boolean isSelected) {
+    public void renderData(GmProductViewModel gmProductViewModel, boolean isSelected) {
         titlePackage.setText(gmProductViewModel.getName());
         descriptionPackage.setText(gmProductViewModel.getNotes());
         promoPackage.setVisibility(

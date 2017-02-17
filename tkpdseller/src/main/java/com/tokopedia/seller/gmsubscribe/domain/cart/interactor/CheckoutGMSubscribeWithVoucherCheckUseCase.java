@@ -4,6 +4,7 @@ import com.tokopedia.seller.common.domain.RequestParams;
 import com.tokopedia.seller.common.domain.executor.PostExecutionThread;
 import com.tokopedia.seller.common.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.gmsubscribe.domain.cart.GmSubscribeCartRepository;
+import com.tokopedia.seller.gmsubscribe.domain.cart.exception.GmCheckoutCheckException;
 import com.tokopedia.seller.gmsubscribe.domain.cart.model.GmCheckoutDomainModel;
 import com.tokopedia.seller.gmsubscribe.domain.cart.model.GmVoucherCheckDomainModel;
 
@@ -36,10 +37,16 @@ public class CheckoutGmSubscribeWithVoucherCheckUseCase extends CheckoutGmSubscr
 
         @Override
         public Observable<GmCheckoutDomainModel> call(GmVoucherCheckDomainModel gmVoucherCheckDomainModel) {
+            int selectedProduct = requestParams.getInt(SELECTED_PRODUCT, UNDEFINED_SELECTED);
+            int autoExtendSelectedProduct = requestParams.getInt(SELECTED_AUTOSUBSCRIBE_PRODUCT, UNDEFINED_SELECTED);
+            String voucherCode = requestParams.getString(VOUCHER_CODE, EMPTY_VOUCHER);
+            if (selectedProduct == UNDEFINED_SELECTED || voucherCode.equals(EMPTY_VOUCHER)) {
+                throw new GmCheckoutCheckException("Undefined selected selected product or voucher code");
+            }
             return gmSubscribeCartRepository.checkoutGMSubscribe(
-                    requestParams.getInt(SELECTED_PRODUCT, UNDEFINED_SELECTED),
-                    requestParams.getInt(SELECTED_AUTOSUBSCRIBE_PRODUCT, UNDEFINED_SELECTED),
-                    requestParams.getString(VOUCHER_CODE, EMPTY_VOUCHER)
+                    selectedProduct,
+                    autoExtendSelectedProduct,
+                    voucherCode
             );
         }
     }

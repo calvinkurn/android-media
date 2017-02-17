@@ -1,10 +1,9 @@
-
 package com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.model.voucher;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class GMVoucherServiceModel {
+public class GmVoucherServiceModel {
 
     @SerializedName("data")
     @Expose

@@ -8,23 +8,23 @@ import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.seller.common.data.executor.JobExecutor;
 import com.tokopedia.seller.common.presentation.UIThread;
-import com.tokopedia.seller.gmsubscribe.data.factory.GMSubscribeCartFactory;
-import com.tokopedia.seller.gmsubscribe.data.factory.GMSubscribeProductFactory;
-import com.tokopedia.seller.gmsubscribe.data.mapper.GMSubscribeCheckoutMapper;
-import com.tokopedia.seller.gmsubscribe.data.mapper.cart.GMSubscribeVoucherMapper;
-import com.tokopedia.seller.gmsubscribe.data.mapper.product.GMSubscribeProductMapper;
-import com.tokopedia.seller.gmsubscribe.data.repository.GMSubscribeCartRepositoryImpl;
-import com.tokopedia.seller.gmsubscribe.data.repository.GMSubscribeProductRepositoryImpl;
-import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.GMSubscribeCartCloud;
-import com.tokopedia.seller.gmsubscribe.data.source.product.GMSubscribeProductListSource;
-import com.tokopedia.seller.gmsubscribe.data.source.product.cache.GMSubscribeProductCache;
+import com.tokopedia.seller.gmsubscribe.data.factory.GmSubscribeCartFactory;
+import com.tokopedia.seller.gmsubscribe.data.factory.GmSubscribeProductFactory;
+import com.tokopedia.seller.gmsubscribe.data.mapper.GmSubscribeCheckoutMapper;
+import com.tokopedia.seller.gmsubscribe.data.mapper.cart.GmSubscribeVoucherMapper;
+import com.tokopedia.seller.gmsubscribe.data.mapper.product.GmSubscribeProductMapper;
+import com.tokopedia.seller.gmsubscribe.data.repository.GmSubscribeCartRepositoryImpl;
+import com.tokopedia.seller.gmsubscribe.data.repository.GmSubscribeProductRepositoryImpl;
+import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.GmSubscribeCartCloud;
+import com.tokopedia.seller.gmsubscribe.data.source.product.GmSubscribeProductDataSource;
+import com.tokopedia.seller.gmsubscribe.data.source.product.cache.GmSubscribeProductCache;
 import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.GMSubscribeProductCloud;
-import com.tokopedia.seller.gmsubscribe.domain.cart.interactor.CheckGMSubscribeVoucherUseCase;
-import com.tokopedia.seller.gmsubscribe.domain.cart.interactor.CheckoutGMSubscribeUseCase;
-import com.tokopedia.seller.gmsubscribe.domain.cart.interactor.CheckoutGMSubscribeWithVoucherCheckUseCase;
-import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetAutoSubscribeSelectedProductUseCase;
-import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetCurrentSelectedProductUseCase;
-import com.tokopedia.seller.gmsubscribe.view.checkout.presenter.GMCheckoutPresenterImpl;
+import com.tokopedia.seller.gmsubscribe.domain.cart.interactor.CheckGmSubscribeVoucherUseCase;
+import com.tokopedia.seller.gmsubscribe.domain.cart.interactor.CheckoutGmSubscribeUseCase;
+import com.tokopedia.seller.gmsubscribe.domain.cart.interactor.CheckoutGmSubscribeWithVoucherCheckUseCase;
+import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetGmAutoSubscribeSelectedProductUseCase;
+import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetGmCurrentSelectedProductUseCase;
+import com.tokopedia.seller.gmsubscribe.view.checkout.presenter.GmCheckoutPresenterImpl;
 import com.tokopedia.seller.network.interceptor.GMSubscribeInterceptor;
 
 import java.util.concurrent.TimeUnit;
@@ -38,8 +38,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by sebastianuskh on 2/3/17.
  */
-public class GMCheckoutDependencyInjection {
-    public static GMCheckoutPresenterImpl createPresenter() {
+public class GmCheckoutDependencyInjection {
+    public static GmCheckoutPresenterImpl createPresenter() {
         Gson gson = new Gson();
 
         JobExecutor threadExecutor = new JobExecutor();
@@ -47,7 +47,7 @@ public class GMCheckoutDependencyInjection {
 
 
         GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-        GMSubscribeProductCache gmSubscribeProductCache = new GMSubscribeProductCache(globalCacheManager);
+        GmSubscribeProductCache gmSubscribeProductCache = new GmSubscribeProductCache(globalCacheManager);
 
         GeneratedHostConverter hostConverter = new GeneratedHostConverter();
         TkpdResponseConverter tkpdResponseConverter = new TkpdResponseConverter();
@@ -64,7 +64,7 @@ public class GMCheckoutDependencyInjection {
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         clientBuilder.interceptors().add(logInterceptor);
-        OkHttpClient client =  clientBuilder.build();
+        OkHttpClient client = clientBuilder.build();
 
         Retrofit productRetrofit = createRetrofit(TkpdBaseURL.GOLD_MERCHANT_DOMAIN,
                 client,
@@ -82,25 +82,25 @@ public class GMCheckoutDependencyInjection {
                 rxJavaCallAdapterFactory);
 
         GMSubscribeProductCloud gmSubscribeProductCloud = new GMSubscribeProductCloud(productRetrofit);
-        GMSubscribeCartCloud cartCloud = new GMSubscribeCartCloud(cartRetrofit);
+        GmSubscribeCartCloud cartCloud = new GmSubscribeCartCloud(cartRetrofit);
 
-        GMSubscribeProductMapper gmSubscribeProductMapper = new GMSubscribeProductMapper();
-        GMSubscribeVoucherMapper voucherMapper = new GMSubscribeVoucherMapper();
-        GMSubscribeCheckoutMapper checkoutMapper = new GMSubscribeCheckoutMapper();
+        GmSubscribeProductMapper gmSubscribeProductMapper = new GmSubscribeProductMapper();
+        GmSubscribeVoucherMapper voucherMapper = new GmSubscribeVoucherMapper();
+        GmSubscribeCheckoutMapper checkoutMapper = new GmSubscribeCheckoutMapper();
 
-        GMSubscribeProductListSource gmSubscribeProductListSource = new GMSubscribeProductListSource(gmSubscribeProductCache, gmSubscribeProductCloud, gmSubscribeProductMapper, gson);
-        GMSubscribeProductFactory gmSubscribeProductFactory = new GMSubscribeProductFactory(gmSubscribeProductListSource);
-        GMSubscribeCartFactory gmSubscribeCartFactory = new GMSubscribeCartFactory(cartCloud, gson, voucherMapper, checkoutMapper);
-        GMSubscribeCartRepositoryImpl gmSubscribeCartRepository = new GMSubscribeCartRepositoryImpl(gmSubscribeCartFactory);
-        GMSubscribeProductRepositoryImpl gmSubscribeProductRepository = new GMSubscribeProductRepositoryImpl(gmSubscribeProductFactory);
+        GmSubscribeProductDataSource gmSubscribeProductDataSource = new GmSubscribeProductDataSource(gmSubscribeProductCache, gmSubscribeProductCloud, gmSubscribeProductMapper, gson);
+        GmSubscribeProductFactory gmSubscribeProductFactory = new GmSubscribeProductFactory(gmSubscribeProductDataSource);
+        GmSubscribeCartFactory gmSubscribeCartFactory = new GmSubscribeCartFactory(cartCloud, gson, voucherMapper, checkoutMapper);
+        GmSubscribeCartRepositoryImpl gmSubscribeCartRepository = new GmSubscribeCartRepositoryImpl(gmSubscribeCartFactory);
+        GmSubscribeProductRepositoryImpl gmSubscribeProductRepository = new GmSubscribeProductRepositoryImpl(gmSubscribeProductFactory);
 
-        GetCurrentSelectedProductUseCase getCurrentSelectedProduct = new GetCurrentSelectedProductUseCase(threadExecutor, postExecutionThread, gmSubscribeProductRepository);
-        GetAutoSubscribeSelectedProductUseCase getAutoSubscribeSelectedProductUseCase = new GetAutoSubscribeSelectedProductUseCase(threadExecutor, postExecutionThread, gmSubscribeProductRepository);
-        CheckGMSubscribeVoucherUseCase checkGMSubscribeVoucherUseCase = new CheckGMSubscribeVoucherUseCase(threadExecutor, postExecutionThread, gmSubscribeCartRepository);
-        CheckoutGMSubscribeUseCase checkoutGMSubscribeUseCase = new CheckoutGMSubscribeUseCase(threadExecutor, postExecutionThread, gmSubscribeCartRepository);
-        CheckoutGMSubscribeWithVoucherCheckUseCase checkoutGMSubscribeWithVoucherCheckUseCase = new CheckoutGMSubscribeWithVoucherCheckUseCase(threadExecutor, postExecutionThread, gmSubscribeCartRepository);
+        GetGmCurrentSelectedProductUseCase getCurrentSelectedProduct = new GetGmCurrentSelectedProductUseCase(threadExecutor, postExecutionThread, gmSubscribeProductRepository);
+        GetGmAutoSubscribeSelectedProductUseCase getGmAutoSubscribeSelectedProductUseCase = new GetGmAutoSubscribeSelectedProductUseCase(threadExecutor, postExecutionThread, gmSubscribeProductRepository);
+        CheckGmSubscribeVoucherUseCase checkGmSubscribeVoucherUseCase = new CheckGmSubscribeVoucherUseCase(threadExecutor, postExecutionThread, gmSubscribeCartRepository);
+        CheckoutGmSubscribeUseCase checkoutGmSubscribeUseCase = new CheckoutGmSubscribeUseCase(threadExecutor, postExecutionThread, gmSubscribeCartRepository);
+        CheckoutGmSubscribeWithVoucherCheckUseCase checkoutGMSubscribeWithVoucherCheckUseCase = new CheckoutGmSubscribeWithVoucherCheckUseCase(threadExecutor, postExecutionThread, gmSubscribeCartRepository);
 
-        return new GMCheckoutPresenterImpl(getCurrentSelectedProduct, getAutoSubscribeSelectedProductUseCase, checkGMSubscribeVoucherUseCase, checkoutGMSubscribeUseCase, checkoutGMSubscribeWithVoucherCheckUseCase);
+        return new GmCheckoutPresenterImpl(getCurrentSelectedProduct, getGmAutoSubscribeSelectedProductUseCase, checkGmSubscribeVoucherUseCase, checkoutGmSubscribeUseCase, checkoutGMSubscribeWithVoucherCheckUseCase);
     }
 
     private static Retrofit createRetrofit(String baseUrl,

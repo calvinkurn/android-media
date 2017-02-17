@@ -1,20 +1,20 @@
 package com.tokopedia.seller.gmsubscribe.data.factory;
 
-import com.tokopedia.seller.gmsubscribe.data.source.product.GMSubscribeProductListSource;
-import com.tokopedia.seller.gmsubscribe.data.source.product.GMSubscribeProductSource;
+import com.tokopedia.seller.gmsubscribe.data.source.product.GmSubscribeProductDataSource;
+import com.tokopedia.seller.gmsubscribe.data.source.product.GmSubscribeProductSelectorDataSource;
 
 /**
  * Created by sebastianuskh on 2/2/17.
  */
-public class GMSubscribeProductFactory {
+public class GmSubscribeProductFactory {
 
-    private final GMSubscribeProductListSource gmSubscribeProductListSource;
+    private final GmSubscribeProductDataSource gmSubscribeProductDataSource;
 
-    public GMSubscribeProductFactory(GMSubscribeProductListSource gmSubscribeProductListSource) {
-        this.gmSubscribeProductListSource = gmSubscribeProductListSource;
+    public GmSubscribeProductFactory(GmSubscribeProductDataSource gmSubscribeProductDataSource) {
+        this.gmSubscribeProductDataSource = gmSubscribeProductDataSource;
     }
 
-    public GMSubscribeProductSource createGMSubscribeProductSource() {
-        return new GMSubscribeProductSource(gmSubscribeProductListSource);
+    public GmSubscribeProductSelectorDataSource createGMSubscribeProductSource() {
+        return new GmSubscribeProductSelectorDataSource(gmSubscribeProductDataSource);
     }
 }

@@ -8,19 +8,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
-import com.tokopedia.seller.gmsubscribe.di.GMProductDependencyInjection;
-import com.tokopedia.seller.gmsubscribe.view.product.presenter.GMProductPresenterImpl;
-import com.tokopedia.seller.gmsubscribe.view.product.presenter.GMProductView;
-import com.tokopedia.seller.gmsubscribe.view.product.recyclerview.GMProductAdapter;
-import com.tokopedia.seller.gmsubscribe.view.product.recyclerview.GMProductAdapterCallback;
-import com.tokopedia.seller.gmsubscribe.view.product.viewmodel.GMProductViewModel;
+import com.tokopedia.seller.gmsubscribe.di.GmProductDependencyInjection;
+import com.tokopedia.seller.gmsubscribe.view.product.presenter.GmProductPresenterImpl;
+import com.tokopedia.seller.gmsubscribe.view.product.presenter.GmProductView;
+import com.tokopedia.seller.gmsubscribe.view.product.recyclerview.GmProductAdapter;
+import com.tokopedia.seller.gmsubscribe.view.product.recyclerview.GmProductAdapterCallback;
+import com.tokopedia.seller.gmsubscribe.view.product.viewmodel.GmProductViewModel;
 
 import java.util.List;
 
@@ -32,50 +31,48 @@ import rx.subscriptions.CompositeSubscription;
  * Created by sebastianuskh on 11/23/16.
  */
 
-public abstract class GMProductFragment
-        extends BasePresenterFragment<GMProductPresenterImpl>
-        implements GMProductView, GMProductAdapterCallback {
+public abstract class GmProductFragment
+        extends BasePresenterFragment<GmProductPresenterImpl>
+        implements GmProductView, GmProductAdapterCallback {
 
     public static final String TAG = "GMProductFragment";
-    private static final String STRING_BUTTON_SELECT = "STRING_BUTTON_SELECT";
     public static final String DEFAULT_SELECTED_PRODUCT = "DEFAULT_SELECTED_PRODUCT";
     public static final int UNDEFINED_DEFAULT_SELECTED = -1;
     public static final String RETURN_TYPE = "RETURN_TYPE";
     public static final String SELECTED_PRODUCT = "SELECTED_PRODUCT";
-
+    private static final String STRING_BUTTON_SELECT = "STRING_BUTTON_SELECT";
     @BindView(R2.id.recyclerview_package_chooser)
     RecyclerView recyclerView;
 
     @BindView(R2.id.button_select_product)
     Button buttonSelectProduct;
-
-    @OnClick(R2.id.button_select_product)
-    void confirmSelection() {
-        Log.d(TAG, "Selected data now is : " + currentSelectedProductId);
-        if(currentSelectedProductId != UNDEFINED_DEFAULT_SELECTED) {
-            listener.finishProductSelection(currentSelectedProductId, returnType);
-        } else {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.gm_subscribe_no_product_selected));
-        }
-    }
-
     private CompositeSubscription subscriber;
     private String stringButton;
     private int returnType;
     private Integer currentSelectedProductId = UNDEFINED_DEFAULT_SELECTED;
-    private GMProductAdapter adapter;
-    private GMProductFragmentListener listener;
+    private GmProductAdapter adapter;
+    private GmProductFragmentListener listener;
 
-    public static GMProductFragment createFragment(GMProductFragment fragment,
+    public static GmProductFragment createFragment(GmProductFragment fragment,
                                                    String buttonString,
                                                    int defaultSelected,
-                                                   int returnType){
+                                                   int returnType) {
         Bundle args = new Bundle();
         args.putString(STRING_BUTTON_SELECT, buttonString);
         args.putInt(RETURN_TYPE, returnType);
         args.putInt(DEFAULT_SELECTED_PRODUCT, defaultSelected);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @OnClick(R2.id.button_select_product)
+    void confirmSelection() {
+        Log.d(TAG, "Selected data now is : " + currentSelectedProductId);
+        if (currentSelectedProductId != UNDEFINED_DEFAULT_SELECTED) {
+            listener.finishProductSelection(currentSelectedProductId, returnType);
+        } else {
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.gm_subscribe_no_product_selected));
+        }
     }
 
     @Override
@@ -113,13 +110,13 @@ public abstract class GMProductFragment
     @Override
     protected void initialPresenter() {
         subscriber = RxUtils.getNewCompositeSubIfUnsubscribed(subscriber);
-        presenter = GMProductDependencyInjection.getPresenter();
+        presenter = GmProductDependencyInjection.getPresenter();
     }
 
     @Override
     protected void initialListener(Activity activity) {
-        if (activity instanceof GMProductFragmentListener) {
-            listener = (GMProductFragmentListener) activity;
+        if (activity instanceof GmProductFragmentListener) {
+            listener = (GmProductFragmentListener) activity;
         } else {
             throw new RuntimeException("Please implement GMProductFragmentListener in the Activity");
         }
@@ -129,7 +126,7 @@ public abstract class GMProductFragment
     protected void setupArguments(Bundle bundle) {
         stringButton = bundle.getString(STRING_BUTTON_SELECT);
         returnType = bundle.getInt(RETURN_TYPE);
-        if(currentSelectedProductId == UNDEFINED_DEFAULT_SELECTED) {
+        if (currentSelectedProductId == UNDEFINED_DEFAULT_SELECTED) {
             currentSelectedProductId = bundle.getInt(DEFAULT_SELECTED_PRODUCT, UNDEFINED_DEFAULT_SELECTED);
         }
     }
@@ -143,7 +140,7 @@ public abstract class GMProductFragment
     protected void initView(View view) {
         presenter.attachView(this);
         buttonSelectProduct.setText(stringButton);
-        adapter = new GMProductAdapter(this);
+        adapter = new GmProductAdapter(this);
         recyclerView.setAdapter(adapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -152,8 +149,8 @@ public abstract class GMProductFragment
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         presenter.detachView();
+        super.onDestroyView();
     }
 
     @Override
@@ -178,19 +175,19 @@ public abstract class GMProductFragment
     }
 
     @Override
-    public void renderProductList(List<GMProductViewModel> gmProductDomainModels) {
+    public void renderProductList(List<GmProductViewModel> gmProductDomainModels) {
         Log.d(TAG, "data rendered");
-        if(getSelectedProductId().equals(UNDEFINED_DEFAULT_SELECTED)) {
+        if (getSelectedProductId().equals(UNDEFINED_DEFAULT_SELECTED)) {
             int selected = findBestDeal(gmProductDomainModels);
             selectedProductId(selected);
         }
         adapter.addItem(gmProductDomainModels);
     }
 
-    private int findBestDeal(List<GMProductViewModel> gmProductDomainModels) {
+    private int findBestDeal(List<GmProductViewModel> gmProductDomainModels) {
         int selected = 0;
-        for (int i = 0; i < gmProductDomainModels.size(); i ++){
-            if(gmProductDomainModels.get(i).isBestDeal()) {
+        for (int i = 0; i < gmProductDomainModels.size(); i++) {
+            if (gmProductDomainModels.get(i).isBestDeal()) {
                 selected = Integer.parseInt(gmProductDomainModels.get(i).getProductId());
                 break;
             }
@@ -210,7 +207,7 @@ public abstract class GMProductFragment
     }
 
     @Override
-    public void selectedProductId(Integer selectedProductId){
+    public void selectedProductId(Integer selectedProductId) {
         currentSelectedProductId = selectedProductId;
     }
 
@@ -225,7 +222,7 @@ public abstract class GMProductFragment
     }
 
     @Override
-    public Integer getSelectedProductId(){
+    public Integer getSelectedProductId() {
         return currentSelectedProductId;
     }
 

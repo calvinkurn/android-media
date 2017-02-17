@@ -5,6 +5,7 @@ import com.tokopedia.seller.common.domain.UseCase;
 import com.tokopedia.seller.common.domain.executor.PostExecutionThread;
 import com.tokopedia.seller.common.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.gmsubscribe.domain.cart.GmSubscribeCartRepository;
+import com.tokopedia.seller.gmsubscribe.domain.cart.exception.GmVoucherCheckException;
 import com.tokopedia.seller.gmsubscribe.domain.cart.model.GmVoucherCheckDomainModel;
 
 import rx.Observable;
@@ -33,9 +34,14 @@ public class CheckGmSubscribeVoucherUseCase extends UseCase<GmVoucherCheckDomain
 
     @Override
     public Observable<GmVoucherCheckDomainModel> createObservable(RequestParams requestParams) {
+        int selectedProduct = requestParams.getInt(SELECTED_PRODUCT, UNDEFINED_SELECTED);
+        String voucherCode = requestParams.getString(VOUCHER_CODE, EMPTY_VOUCHER);
+        if (selectedProduct == UNDEFINED_SELECTED || voucherCode.equals(EMPTY_VOUCHER)) {
+            throw new GmVoucherCheckException("Invalid Voucher Input");
+        }
         return gmSubscribeCartRepository.checkVoucher(
-                requestParams.getInt(SELECTED_PRODUCT, UNDEFINED_SELECTED),
-                requestParams.getString(VOUCHER_CODE, EMPTY_VOUCHER)
+                selectedProduct,
+                voucherCode
         );
     }
 }

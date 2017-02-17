@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmsubscribe.view.product.viewmodel.GMProductViewModel;
+import com.tokopedia.seller.gmsubscribe.view.product.viewmodel.GmProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +16,13 @@ import java.util.List;
  * Created by sebastianuskh on 11/23/16.
  */
 
-public class GMProductAdapter extends BaseLinearRecyclerViewAdapter {
+public class GmProductAdapter extends BaseLinearRecyclerViewAdapter {
 
     private static final int GM_PRODUCT = 100;
-    private final List<GMProductViewModel> data;
-    private final GMProductAdapterCallback listener;
+    private final List<GmProductViewModel> data;
+    private final GmProductAdapterCallback listener;
 
-    public GMProductAdapter(GMProductAdapterCallback listener) {
+    public GmProductAdapter(GmProductAdapterCallback listener) {
         data = new ArrayList<>();
         this.listener = listener;
     }
@@ -32,12 +32,11 @@ public class GMProductAdapter extends BaseLinearRecyclerViewAdapter {
         switch (viewType) {
             case GM_PRODUCT:
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_gmsubscribe_product, parent, false);
-                return new GMProductViewHolder(view);
+                return new GmProductViewHolder(view);
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
     }
-
 
 
     @Override
@@ -53,14 +52,14 @@ public class GMProductAdapter extends BaseLinearRecyclerViewAdapter {
         return position == data.size();
     }
 
-    public void bindData(final GMProductViewHolder holder, final int position) {
+    public void bindData(final GmProductViewHolder holder, final int position) {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 listener.selectedProductId(
                         Integer.valueOf(data.get(position).getProductId())
                 );
-                GMProductAdapter.this.notifyDataSetChanged();
+                GmProductAdapter.this.notifyDataSetChanged();
             }
         });
         holder.renderData(data.get(position),
@@ -73,7 +72,7 @@ public class GMProductAdapter extends BaseLinearRecyclerViewAdapter {
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         switch (getItemViewType(position)) {
             case GM_PRODUCT:
-                bindData((GMProductViewHolder) viewHolder, position);
+                bindData((GmProductViewHolder) viewHolder, position);
                 break;
             default:
                 super.onBindViewHolder(viewHolder, position);
@@ -86,7 +85,7 @@ public class GMProductAdapter extends BaseLinearRecyclerViewAdapter {
         return data.size() + super.getItemCount();
     }
 
-    public void addItem(List<GMProductViewModel> lists){
+    public void addItem(List<GmProductViewModel> lists) {
         data.addAll(lists);
         notifyDataSetChanged();
     }

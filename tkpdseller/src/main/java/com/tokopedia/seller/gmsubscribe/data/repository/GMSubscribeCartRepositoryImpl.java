@@ -1,11 +1,11 @@
 package com.tokopedia.seller.gmsubscribe.data.repository;
 
-import com.tokopedia.seller.gmsubscribe.data.factory.GMSubscribeCartFactory;
-import com.tokopedia.seller.gmsubscribe.data.source.cart.GMSubscribeCheckoutSource;
-import com.tokopedia.seller.gmsubscribe.data.source.cart.GMSubscribeVoucherSource;
-import com.tokopedia.seller.gmsubscribe.domain.cart.GMSubscribeCartRepository;
-import com.tokopedia.seller.gmsubscribe.domain.cart.model.GMCheckoutDomainModel;
-import com.tokopedia.seller.gmsubscribe.domain.cart.model.GMVoucherCheckDomainModel;
+import com.tokopedia.seller.gmsubscribe.data.factory.GmSubscribeCartFactory;
+import com.tokopedia.seller.gmsubscribe.data.source.cart.GmSubscribeCheckoutSource;
+import com.tokopedia.seller.gmsubscribe.data.source.cart.GmSubscribeVoucherSource;
+import com.tokopedia.seller.gmsubscribe.domain.cart.GmSubscribeCartRepository;
+import com.tokopedia.seller.gmsubscribe.domain.cart.model.GmCheckoutDomainModel;
+import com.tokopedia.seller.gmsubscribe.domain.cart.model.GmVoucherCheckDomainModel;
 
 import rx.Observable;
 
@@ -13,22 +13,22 @@ import rx.Observable;
  * Created by sebastianuskh on 2/3/17.
  */
 
-public class GMSubscribeCartRepositoryImpl implements GMSubscribeCartRepository {
-    private final GMSubscribeCartFactory gmSubscribeCartFactory;
+public class GmSubscribeCartRepositoryImpl implements GmSubscribeCartRepository {
+    private final GmSubscribeCartFactory gmSubscribeCartFactory;
 
-    public GMSubscribeCartRepositoryImpl(GMSubscribeCartFactory gmSubscribeCartFactory) {
+    public GmSubscribeCartRepositoryImpl(GmSubscribeCartFactory gmSubscribeCartFactory) {
         this.gmSubscribeCartFactory = gmSubscribeCartFactory;
     }
 
     @Override
-    public Observable<GMVoucherCheckDomainModel> checkVoucher(Integer selectedProduct, String voucherCode) {
-        GMSubscribeVoucherSource voucherSource = gmSubscribeCartFactory.createVoucherSource();
+    public Observable<GmVoucherCheckDomainModel> checkVoucher(Integer selectedProduct, String voucherCode) {
+        GmSubscribeVoucherSource voucherSource = gmSubscribeCartFactory.createVoucherSource();
         return voucherSource.checkVoucher(selectedProduct, voucherCode);
     }
 
     @Override
-    public Observable<GMCheckoutDomainModel> checkoutGMSubscribe(Integer selectedProduct, Integer autoExtendSelectedProduct, String voucherCode) {
-        GMSubscribeCheckoutSource checkoutSource = gmSubscribeCartFactory.createCheckoutSource();
+    public Observable<GmCheckoutDomainModel> checkoutGMSubscribe(Integer selectedProduct, Integer autoExtendSelectedProduct, String voucherCode) {
+        GmSubscribeCheckoutSource checkoutSource = gmSubscribeCartFactory.createCheckoutSource();
         return checkoutSource.checkoutGMSubscribe(selectedProduct, autoExtendSelectedProduct, voucherCode);
     }
 }

@@ -2,27 +2,27 @@ package com.tokopedia.seller.gmsubscribe.view.checkout.fragment;
 
 
 import com.tokopedia.seller.common.presentation.CustomerView;
-import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GMAutoSubscribeViewModel;
-import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GMCheckoutCurrentSelectedViewModel;
-import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GMCheckoutViewModel;
-import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GMVoucherViewModel;
+import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GmAutoSubscribeViewModel;
+import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GmCheckoutCurrentSelectedViewModel;
+import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GmCheckoutViewModel;
+import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GmVoucherViewModel;
 
 /**
  * Created by sebastianuskh on 1/27/17.
  */
 
-public interface GMCheckoutView extends CustomerView {
-    void renderCurrentSelectedProduct(GMCheckoutCurrentSelectedViewModel gmCheckoutCurrentSelectedViewModel);
+public interface GmCheckoutView extends CustomerView {
+    void renderCurrentSelectedProduct(GmCheckoutCurrentSelectedViewModel gmCheckoutCurrentSelectedViewModel);
 
     void updateSelectedProduct(int selectedProduct);
 
     void updateSelectedAutoProduct(int autoExtendSelectedProduct);
 
-    void renderAutoSubscribeProduct(GMAutoSubscribeViewModel gmAutoSubscribeViewModel);
+    void renderAutoSubscribeProduct(GmAutoSubscribeViewModel gmAutoSubscribeViewModel);
 
-    void renderVoucherView(GMVoucherViewModel gmVoucherViewModel);
+    void renderVoucherView(GmVoucherViewModel gmVoucherViewModel);
 
-    void goToDynamicPayment(GMCheckoutViewModel gmCheckoutDomainModel);
+    void goToDynamicPayment(GmCheckoutViewModel gmCheckoutDomainModel);
 
     void failedGetCurrentProduct();
 

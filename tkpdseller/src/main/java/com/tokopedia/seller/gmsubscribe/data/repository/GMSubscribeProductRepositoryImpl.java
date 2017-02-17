@@ -1,10 +1,10 @@
 package com.tokopedia.seller.gmsubscribe.data.repository;
 
-import com.tokopedia.seller.gmsubscribe.data.factory.GMSubscribeProductFactory;
-import com.tokopedia.seller.gmsubscribe.data.source.product.GMSubscribeProductSource;
-import com.tokopedia.seller.gmsubscribe.domain.product.GMSubscribeProductRepository;
-import com.tokopedia.seller.gmsubscribe.domain.product.model.GMAutoSubscribeDomainModel;
-import com.tokopedia.seller.gmsubscribe.domain.product.model.GMProductDomainModel;
+import com.tokopedia.seller.gmsubscribe.data.factory.GmSubscribeProductFactory;
+import com.tokopedia.seller.gmsubscribe.data.source.product.GmSubscribeProductSelectorDataSource;
+import com.tokopedia.seller.gmsubscribe.domain.product.GmSubscribeProductRepository;
+import com.tokopedia.seller.gmsubscribe.domain.product.model.GmAutoSubscribeDomainModel;
+import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainModel;
 
 import java.util.List;
 
@@ -14,41 +14,41 @@ import rx.Observable;
  * Created by sebastianuskh on 2/2/17.
  */
 
-public class GMSubscribeProductRepositoryImpl implements GMSubscribeProductRepository {
-    private final GMSubscribeProductFactory gmSubscribeProductFactory;
+public class GmSubscribeProductRepositoryImpl implements GmSubscribeProductRepository {
+    private final GmSubscribeProductFactory gmSubscribeProductFactory;
 
-    public GMSubscribeProductRepositoryImpl(GMSubscribeProductFactory gmSubscribeProductFactory) {
+    public GmSubscribeProductRepositoryImpl(GmSubscribeProductFactory gmSubscribeProductFactory) {
         this.gmSubscribeProductFactory = gmSubscribeProductFactory;
     }
 
     @Override
-    public Observable<List<GMProductDomainModel>> getCurrentProductSelection() {
-        GMSubscribeProductSource gmSubscribeProductSource = gmSubscribeProductFactory.createGMSubscribeProductSource();
-        return gmSubscribeProductSource.getCurrentProductSelection();
+    public Observable<List<GmProductDomainModel>> getCurrentProductSelection() {
+        GmSubscribeProductSelectorDataSource gmSubscribeProductSelectorDataSource = gmSubscribeProductFactory.createGMSubscribeProductSource();
+        return gmSubscribeProductSelectorDataSource.getCurrentProductSelection();
     }
 
     @Override
-    public Observable<List<GMProductDomainModel>> getExtendProductSelection() {
-        GMSubscribeProductSource gmSubscribeProductSource = gmSubscribeProductFactory.createGMSubscribeProductSource();
-        return gmSubscribeProductSource.getExtendProductSelection();
+    public Observable<List<GmProductDomainModel>> getExtendProductSelection() {
+        GmSubscribeProductSelectorDataSource gmSubscribeProductSelectorDataSource = gmSubscribeProductFactory.createGMSubscribeProductSource();
+        return gmSubscribeProductSelectorDataSource.getExtendProductSelection();
     }
 
     @Override
-    public Observable<GMProductDomainModel> getCurrentProductSelectedData(Integer productId) {
-        GMSubscribeProductSource gmSubscribeProductSource = gmSubscribeProductFactory.createGMSubscribeProductSource();
-        return gmSubscribeProductSource.getCurrentProductSelectedData(productId);
+    public Observable<GmProductDomainModel> getCurrentProductSelectedData(Integer productId) {
+        GmSubscribeProductSelectorDataSource gmSubscribeProductSelectorDataSource = gmSubscribeProductFactory.createGMSubscribeProductSource();
+        return gmSubscribeProductSelectorDataSource.getCurrentProductSelectedData(productId);
     }
 
     @Override
-    public Observable<GMAutoSubscribeDomainModel> getExtendProductSelectedData(Integer autoSubscribeProductId, Integer productId) {
-        GMSubscribeProductSource gmSubscribeProductSource = gmSubscribeProductFactory.createGMSubscribeProductSource();
-        return gmSubscribeProductSource.getExtendProductSelectedData(autoSubscribeProductId, productId);
+    public Observable<GmAutoSubscribeDomainModel> getExtendProductSelectedData(Integer autoSubscribeProductId, Integer productId) {
+        GmSubscribeProductSelectorDataSource gmSubscribeProductSelectorDataSource = gmSubscribeProductFactory.createGMSubscribeProductSource();
+        return gmSubscribeProductSelectorDataSource.getExtendProductSelectedData(autoSubscribeProductId, productId);
     }
 
     @Override
     public Observable<Boolean> clearGMProductCache() {
-        GMSubscribeProductSource gmSubscribeProductSource = gmSubscribeProductFactory.createGMSubscribeProductSource();
-        return gmSubscribeProductSource.clearGMSubscribeProductCache();
+        GmSubscribeProductSelectorDataSource gmSubscribeProductSelectorDataSource = gmSubscribeProductFactory.createGMSubscribeProductSource();
+        return gmSubscribeProductSelectorDataSource.clearGMSubscribeProductCache();
     }
 
 }

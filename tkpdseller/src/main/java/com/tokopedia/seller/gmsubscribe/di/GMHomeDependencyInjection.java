@@ -8,14 +8,14 @@ import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.seller.common.data.executor.JobExecutor;
 import com.tokopedia.seller.common.presentation.UIThread;
-import com.tokopedia.seller.gmsubscribe.data.factory.GMSubscribeProductFactory;
-import com.tokopedia.seller.gmsubscribe.data.mapper.product.GMSubscribeProductMapper;
-import com.tokopedia.seller.gmsubscribe.data.repository.GMSubscribeProductRepositoryImpl;
-import com.tokopedia.seller.gmsubscribe.data.source.product.GMSubscribeProductListSource;
-import com.tokopedia.seller.gmsubscribe.data.source.product.cache.GMSubscribeProductCache;
+import com.tokopedia.seller.gmsubscribe.data.factory.GmSubscribeProductFactory;
+import com.tokopedia.seller.gmsubscribe.data.mapper.product.GmSubscribeProductMapper;
+import com.tokopedia.seller.gmsubscribe.data.repository.GmSubscribeProductRepositoryImpl;
+import com.tokopedia.seller.gmsubscribe.data.source.product.GmSubscribeProductDataSource;
+import com.tokopedia.seller.gmsubscribe.data.source.product.cache.GmSubscribeProductCache;
 import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.GMSubscribeProductCloud;
-import com.tokopedia.seller.gmsubscribe.domain.product.interactor.ClearGMSubscribeProductCacheUseCase;
-import com.tokopedia.seller.gmsubscribe.view.home.presenter.GMHomePresenterImpl;
+import com.tokopedia.seller.gmsubscribe.domain.product.interactor.ClearGmSubscribeProductCacheUseCase;
+import com.tokopedia.seller.gmsubscribe.view.home.presenter.GmHomePresenterImpl;
 import com.tokopedia.seller.network.interceptor.GMSubscribeInterceptor;
 
 import java.util.concurrent.TimeUnit;
@@ -29,8 +29,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by sebastianuskh on 2/9/17.
  */
-public class GMHomeDependencyInjection {
-    public static GMHomePresenterImpl getPresenter() {
+public class GmHomeDependencyInjection {
+    public static GmHomePresenterImpl getPresenter() {
         JobExecutor threadExecutor = new JobExecutor();
         UIThread postExecutionThread = new UIThread();
         Gson gson = new Gson();
@@ -50,7 +50,7 @@ public class GMHomeDependencyInjection {
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         clientBuilder.interceptors().add(logInterceptor);
-        OkHttpClient client =  clientBuilder.build();
+        OkHttpClient client = clientBuilder.build();
 
         Retrofit retrofit = createRetrofit(TkpdBaseURL.GOLD_MERCHANT_DOMAIN,
                 client,
@@ -62,16 +62,16 @@ public class GMHomeDependencyInjection {
         GMSubscribeProductCloud gmSubscribeProductCloud = new GMSubscribeProductCloud(retrofit);
 
         GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-        GMSubscribeProductCache gmSubscribeProductCache = new GMSubscribeProductCache(globalCacheManager);
+        GmSubscribeProductCache gmSubscribeProductCache = new GmSubscribeProductCache(globalCacheManager);
 
-        GMSubscribeProductMapper gmSubscribeProductMapper = new GMSubscribeProductMapper();
-        GMSubscribeProductListSource gmSubscribeProductListSource = new GMSubscribeProductListSource(gmSubscribeProductCache, gmSubscribeProductCloud, gmSubscribeProductMapper, gson);
-        GMSubscribeProductFactory gmSubscribeProductFactory = new GMSubscribeProductFactory(gmSubscribeProductListSource);
-        GMSubscribeProductRepositoryImpl gmSubscribeProductReposistory = new GMSubscribeProductRepositoryImpl(gmSubscribeProductFactory);
+        GmSubscribeProductMapper gmSubscribeProductMapper = new GmSubscribeProductMapper();
+        GmSubscribeProductDataSource gmSubscribeProductDataSource = new GmSubscribeProductDataSource(gmSubscribeProductCache, gmSubscribeProductCloud, gmSubscribeProductMapper, gson);
+        GmSubscribeProductFactory gmSubscribeProductFactory = new GmSubscribeProductFactory(gmSubscribeProductDataSource);
+        GmSubscribeProductRepositoryImpl gmSubscribeProductReposistory = new GmSubscribeProductRepositoryImpl(gmSubscribeProductFactory);
 
-        ClearGMSubscribeProductCacheUseCase clearGMSubscribeProductCache = new ClearGMSubscribeProductCacheUseCase(threadExecutor, postExecutionThread, gmSubscribeProductReposistory);
+        ClearGmSubscribeProductCacheUseCase clearGMSubscribeProductCache = new ClearGmSubscribeProductCacheUseCase(threadExecutor, postExecutionThread, gmSubscribeProductReposistory);
 
-        return new GMHomePresenterImpl(clearGMSubscribeProductCache);
+        return new GmHomePresenterImpl(clearGMSubscribeProductCache);
     }
 
     private static Retrofit createRetrofit(String baseUrl,

@@ -9,18 +9,19 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmsubscribe.view.checkout.fragment.GMCheckoutFragment;
-import com.tokopedia.seller.gmsubscribe.view.checkout.fragment.GMCheckoutFragmentCallback;
-import com.tokopedia.seller.gmsubscribe.view.payment.GMDynamicPaymentActivity;
-import com.tokopedia.seller.gmsubscribe.view.product.activity.GMProductActivity;
+import com.tokopedia.seller.gmsubscribe.view.checkout.fragment.GmCheckoutFragment;
+import com.tokopedia.seller.gmsubscribe.view.checkout.fragment.GmCheckoutFragmentCallback;
+import com.tokopedia.seller.gmsubscribe.view.payment.GmDynamicPaymentActivity;
+import com.tokopedia.seller.gmsubscribe.view.product.activity.GmProductActivity;
 
 /**
  * Created by sebastianuskh on 1/31/17.
  */
 
-public class GMCheckoutActivity extends BasePresenterActivity implements GMCheckoutFragmentCallback {
+public class GmCheckoutActivity extends BasePresenterActivity implements GmCheckoutFragmentCallback {
 
     public static final String CURRENT_SELECTED_PRODUCT = "CURRENT_SELECTED_PRODUCT";
     private static final int CHANGE_SELECTED_PRODUCT = 100;
@@ -30,7 +31,7 @@ public class GMCheckoutActivity extends BasePresenterActivity implements GMCheck
     private FragmentManager fragmentManager;
 
     public static Intent processSelectedProduct(Context context, int selected) {
-        Intent intent = new Intent(context, GMCheckoutActivity.class);
+        Intent intent = new Intent(context, GmCheckoutActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(CURRENT_SELECTED_PRODUCT, selected);
         intent.putExtras(bundle);
@@ -80,30 +81,31 @@ public class GMCheckoutActivity extends BasePresenterActivity implements GMCheck
 
     @Override
     public String getScreenName() {
-        return null;
+        return AppScreen.SCREEN_GM_SUBSCRIBE_CHECKOUT;
     }
 
     @Override
     public void changeCurrentSelected(Integer selectedProduct) {
-        Intent intent = GMProductActivity.changeProductSelected(this, selectedProduct);;
+        Intent intent = GmProductActivity.changeProductSelected(this, selectedProduct);
+        ;
         startActivityForResult(intent, CHANGE_SELECTED_PRODUCT);
     }
 
     @Override
     public void selectAutoSubscribePackageFirstTime() {
-        Intent intent = GMProductActivity.selectAutoProductFirstTime(this);
+        Intent intent = GmProductActivity.selectAutoProductFirstTime(this);
         startActivityForResult(intent, SELECT_AUTO_SUBSCRIBE_PRODUCT);
     }
 
     @Override
     public void changeAutoSubscribePackage(Integer autoExtendSelectedProduct) {
-        Intent intent = GMProductActivity.changeAutoProductSelected(this, autoExtendSelectedProduct);
+        Intent intent = GmProductActivity.changeAutoProductSelected(this, autoExtendSelectedProduct);
         startActivityForResult(intent, CHANGE_AUTO_SUBSCRIBE_PRODUCT);
     }
 
     @Override
     public void goToDynamicPayment(String url, String parameter, String callbackUrl, Integer paymentId) {
-        Intent intent = GMDynamicPaymentActivity.startPaymentWebview(this, url, parameter, paymentId, callbackUrl);
+        Intent intent = GmDynamicPaymentActivity.startPaymentWebview(this, url, parameter, paymentId, callbackUrl);
         startActivity(intent);
         finish();
     }
@@ -118,6 +120,9 @@ public class GMCheckoutActivity extends BasePresenterActivity implements GMCheck
                 case SELECT_AUTO_SUBSCRIBE_PRODUCT:
                 case CHANGE_AUTO_SUBSCRIBE_PRODUCT:
                     updateAutoSubscribeSelectedProduct(data);
+                    break;
+                default:
+                    updateSelectedProduct(data);
             }
         }
 
@@ -125,36 +130,36 @@ public class GMCheckoutActivity extends BasePresenterActivity implements GMCheck
 
     private void updateAutoSubscribeSelectedProduct(Intent data) {
         Bundle bundle = data.getExtras();
-        int selected = bundle.getInt(GMProductActivity.SELECTED_PRODUCT);
+        int selected = bundle.getInt(GmProductActivity.SELECTED_PRODUCT);
         updateAutoSubscribeSelectedProductOnFragment(selected);
     }
 
     private void updateSelectedProduct(Intent data) {
         Bundle bundle = data.getExtras();
-        int selected = bundle.getInt(GMProductActivity.SELECTED_PRODUCT);
+        int selected = bundle.getInt(GmProductActivity.SELECTED_PRODUCT);
         updateSelectedProductOnFragment(selected);
     }
 
     private void updateSelectedProductOnFragment(int selected) {
-        Fragment fragment = fragmentManager.findFragmentByTag(GMCheckoutFragment.TAG);
-        if(fragment != null && fragment instanceof GMCheckoutFragment) {
-            ((GMCheckoutFragment)fragment).updateSelectedProduct(selected);
+        Fragment fragment = fragmentManager.findFragmentByTag(GmCheckoutFragment.TAG);
+        if (fragment != null && fragment instanceof GmCheckoutFragment) {
+            ((GmCheckoutFragment) fragment).updateSelectedProduct(selected);
         }
     }
 
     private void updateAutoSubscribeSelectedProductOnFragment(int selected) {
-        Fragment fragment = fragmentManager.findFragmentByTag(GMCheckoutFragment.TAG);
-        if(fragment != null && fragment instanceof GMCheckoutFragment) {
-            ((GMCheckoutFragment)fragment).updateSelectedAutoProduct(selected);
+        Fragment fragment = fragmentManager.findFragmentByTag(GmCheckoutFragment.TAG);
+        if (fragment != null && fragment instanceof GmCheckoutFragment) {
+            ((GmCheckoutFragment) fragment).updateSelectedAutoProduct(selected);
         }
     }
 
     private void initCheckoutFragment() {
-        if(fragmentManager.findFragmentByTag(GMCheckoutFragment.TAG) == null) {
+        if (fragmentManager.findFragmentByTag(GmCheckoutFragment.TAG) == null) {
             inflateFragment(
-                    GMCheckoutFragment.createFragment(currentSelected),
+                    GmCheckoutFragment.createFragment(currentSelected),
                     false,
-                    GMCheckoutFragment.TAG);
+                    GmCheckoutFragment.TAG);
         }
     }
 
@@ -162,7 +167,7 @@ public class GMCheckoutActivity extends BasePresenterActivity implements GMCheck
     private void inflateFragment(Fragment fragment, boolean isAddToBackStack, String tag) {
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.replace(R.id.parent_view, fragment, tag);
-        if(isAddToBackStack) {
+        if (isAddToBackStack) {
             ft.addToBackStack(null);
         }
         ft.commit();

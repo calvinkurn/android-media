@@ -5,6 +5,7 @@ import com.tokopedia.seller.common.domain.UseCase;
 import com.tokopedia.seller.common.domain.executor.PostExecutionThread;
 import com.tokopedia.seller.common.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.gmsubscribe.domain.cart.GmSubscribeCartRepository;
+import com.tokopedia.seller.gmsubscribe.domain.cart.exception.GmCheckoutCheckException;
 import com.tokopedia.seller.gmsubscribe.domain.cart.model.GmCheckoutDomainModel;
 
 import rx.Observable;
@@ -35,10 +36,16 @@ public class CheckoutGmSubscribeUseCase extends UseCase<GmCheckoutDomainModel> {
 
     @Override
     public Observable<GmCheckoutDomainModel> createObservable(RequestParams requestParams) {
+        int selectedProduct = requestParams.getInt(SELECTED_PRODUCT, UNDEFINED_SELECTED);
+        int autoExtendSelectedProduct = requestParams.getInt(SELECTED_AUTOSUBSCRIBE_PRODUCT, UNDEFINED_SELECTED);
+        String voucherCode = requestParams.getString(VOUCHER_CODE, EMPTY_VOUCHER);
+        if (selectedProduct == UNDEFINED_SELECTED) {
+            throw new GmCheckoutCheckException("Invalid Selected Product");
+        }
         return gmSubscribeCartRepository.checkoutGMSubscribe(
-                requestParams.getInt(SELECTED_PRODUCT, UNDEFINED_SELECTED),
-                requestParams.getInt(SELECTED_AUTOSUBSCRIBE_PRODUCT, UNDEFINED_SELECTED),
-                requestParams.getString(VOUCHER_CODE, EMPTY_VOUCHER)
+                selectedProduct,
+                autoExtendSelectedProduct,
+                voucherCode
         );
     }
 }

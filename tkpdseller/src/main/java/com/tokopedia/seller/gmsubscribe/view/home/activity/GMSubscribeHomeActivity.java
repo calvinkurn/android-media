@@ -12,18 +12,18 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmsubscribe.view.checkout.activity.GMCheckoutActivity;
-import com.tokopedia.seller.gmsubscribe.view.home.fragment.GMHomeFragment;
-import com.tokopedia.seller.gmsubscribe.view.home.fragment.GMHomeFragmentCallback;
-import com.tokopedia.seller.gmsubscribe.view.product.activity.GMProductActivity;
+import com.tokopedia.seller.gmsubscribe.view.checkout.activity.GmCheckoutActivity;
+import com.tokopedia.seller.gmsubscribe.view.home.fragment.GmHomeFragment;
+import com.tokopedia.seller.gmsubscribe.view.home.fragment.GmHomeFragmentCallback;
+import com.tokopedia.seller.gmsubscribe.view.product.activity.GmProductActivity;
 
 /**
  * Created by sebastianuskh on 11/23/16.
  */
 
-public class GMSubscribeHomeActivity
+public class GmSubscribeHomeActivity
         extends DrawerPresenterActivity
-        implements GMHomeFragmentCallback {
+        implements GmHomeFragmentCallback {
 
 
     public static final int REQUEST_PRODUCT = 1;
@@ -65,18 +65,18 @@ public class GMSubscribeHomeActivity
     }
 
     public void goToGMHome() {
-        if(fragmentManager.findFragmentByTag(GMHomeFragment.TAG) == null) {
+        if (fragmentManager.findFragmentByTag(GmHomeFragment.TAG) == null) {
             inflateFragment(
-                    GMHomeFragment.createFragment(),
+                    GmHomeFragment.createFragment(),
                     false,
-                    GMHomeFragment.TAG);
+                    GmHomeFragment.TAG);
         }
     }
 
     private void inflateFragment(Fragment fragment, boolean isAddToBackStack, String tag) {
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.replace(R.id.parent_view, fragment, tag);
-        if(isAddToBackStack) {
+        if (isAddToBackStack) {
             ft.addToBackStack(null);
         }
         ft.commit();
@@ -84,13 +84,13 @@ public class GMSubscribeHomeActivity
 
     @Override
     public void goToGMProductFristTime() {
-        Intent intent = GMProductActivity.selectProductFirstTime(this);
+        Intent intent = GmProductActivity.selectProductFirstTime(this);
         startActivityForResult(intent, REQUEST_PRODUCT);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQUEST_PRODUCT) {
+        if (requestCode == REQUEST_PRODUCT) {
             if (resultCode == Activity.RESULT_OK) {
                 processIntent(data);
             }
@@ -99,8 +99,8 @@ public class GMSubscribeHomeActivity
 
     private void processIntent(Intent data) {
         Bundle bundle = data.getExtras();
-        int selected = bundle.getInt(GMProductActivity.SELECTED_PRODUCT);
-        Intent intent = GMCheckoutActivity.processSelectedProduct(this, selected);
+        int selected = bundle.getInt(GmProductActivity.SELECTED_PRODUCT);
+        Intent intent = GmCheckoutActivity.processSelectedProduct(this, selected);
         startActivity(intent);
     }
 
@@ -113,7 +113,6 @@ public class GMSubscribeHomeActivity
     public void setDrawer(boolean isShown) {
         drawer.setEnabled(isShown);
     }
-
 
 
     @Override

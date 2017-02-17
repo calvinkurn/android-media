@@ -2,59 +2,53 @@ package com.tokopedia.seller.gmsubscribe.view.checkout.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmsubscribe.di.GMCheckoutDependencyInjection;
-import com.tokopedia.seller.gmsubscribe.view.checkout.presenter.GMCheckoutPresenter;
-import com.tokopedia.seller.gmsubscribe.view.checkout.presenter.GMCheckoutPresenterImpl;
-import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GMAutoSubscribeViewModel;
-import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GMCheckoutCurrentSelectedViewModel;
-import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GMCheckoutViewModel;
-import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GMVoucherViewModel;
+import com.tokopedia.seller.gmsubscribe.di.GmCheckoutDependencyInjection;
+import com.tokopedia.seller.gmsubscribe.view.checkout.presenter.GmCheckoutPresenterImpl;
+import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GmAutoSubscribeViewModel;
+import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GmCheckoutCurrentSelectedViewModel;
+import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GmCheckoutViewModel;
+import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GmVoucherViewModel;
 import com.tokopedia.seller.gmsubscribe.view.checkout.widget.AutoSubscribeViewHolder;
 import com.tokopedia.seller.gmsubscribe.view.checkout.widget.AutoSubscribeViewHolderCallback;
-import com.tokopedia.seller.gmsubscribe.view.checkout.widget.CodeVoucherViewHolderCallback;
 import com.tokopedia.seller.gmsubscribe.view.checkout.widget.CodeVoucherViewHolder;
+import com.tokopedia.seller.gmsubscribe.view.checkout.widget.CodeVoucherViewHolderCallback;
 import com.tokopedia.seller.gmsubscribe.view.checkout.widget.CurrentSelectedProductViewHolder;
 import com.tokopedia.seller.gmsubscribe.view.checkout.widget.CurrentSelectedProductViewHolderCallback;
-
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by sebastianuskh on 2/3/17.
  */
-public class GMCheckoutFragment
-        extends BasePresenterFragment<GMCheckoutPresenterImpl>
-        implements GMCheckoutView,
+public class GmCheckoutFragment
+        extends BasePresenterFragment<GmCheckoutPresenterImpl>
+        implements GmCheckoutView,
         CurrentSelectedProductViewHolderCallback,
         AutoSubscribeViewHolderCallback,
         CodeVoucherViewHolderCallback {
 
     public static final String TAG = "GMCheckoutFragment";
+    public static final String AUTO_EXTEND_SELECTED = "AUTO_EXTEND_SELECTED";
     private static final String SELECTED_PRODUCT = "SELECTED_PRODUCT";
     private static final Integer UNDEFINED_SELECTED_AUTO_EXTEND = -1;
-    public static final String AUTO_EXTEND_SELECTED = "AUTO_EXTEND_SELECTED";
-
     private Integer selectedProduct;
     private Integer autoExtendSelectedProduct = UNDEFINED_SELECTED_AUTO_EXTEND;
     private CurrentSelectedProductViewHolder currentSelectedProductViewHolder;
     private AutoSubscribeViewHolder autoSubscribeViewHolder;
     private CodeVoucherViewHolder codeVoucherViewHolder;
-    private GMCheckoutFragmentCallback callback;
+    private GmCheckoutFragmentCallback callback;
     private TkpdProgressDialog progressDialog;
 
 
-    public static Fragment createFragment(int selectedFragment){
-        Fragment fragment  = new GMCheckoutFragment();
+    public static Fragment createFragment(int selectedFragment) {
+        Fragment fragment = new GmCheckoutFragment();
         Bundle args = new Bundle();
         args.putInt(SELECTED_PRODUCT, selectedFragment);
         fragment.setArguments(args);
@@ -88,13 +82,13 @@ public class GMCheckoutFragment
 
     @Override
     protected void initialPresenter() {
-        presenter = GMCheckoutDependencyInjection.createPresenter();
+        presenter = GmCheckoutDependencyInjection.createPresenter();
     }
 
     @Override
     protected void initialListener(Activity activity) {
-        if(activity instanceof GMCheckoutFragmentCallback){
-            callback = (GMCheckoutFragmentCallback) activity;
+        if (activity instanceof GmCheckoutFragmentCallback) {
+            callback = (GmCheckoutFragmentCallback) activity;
         } else {
             throw new RuntimeException("Please implement GMCheckoutFragmentListener in the activity");
         }
@@ -125,8 +119,8 @@ public class GMCheckoutFragment
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         presenter.detachView();
+        super.onDestroyView();
     }
 
     @Override
@@ -146,9 +140,9 @@ public class GMCheckoutFragment
     }
 
     @Override
-    public void renderCurrentSelectedProduct(GMCheckoutCurrentSelectedViewModel viewModel) {
+    public void renderCurrentSelectedProduct(GmCheckoutCurrentSelectedViewModel viewModel) {
         currentSelectedProductViewHolder.renderView(viewModel);
-        if(!isAutoSubscribeUnselected()){
+        if (!isAutoSubscribeUnselected()) {
             presenter.getExtendSelectedProduct(selectedProduct, autoExtendSelectedProduct);
         }
     }
@@ -162,7 +156,7 @@ public class GMCheckoutFragment
     public void updateSelectedProduct(int selectedProduct) {
         this.selectedProduct = selectedProduct;
         presenter.getCurrentSelectedProduct(selectedProduct);
-        if(!isAutoSubscribeUnselected()){
+        if (!isAutoSubscribeUnselected()) {
             presenter.getExtendSelectedProduct(selectedProduct, autoExtendSelectedProduct);
         }
     }
@@ -174,17 +168,17 @@ public class GMCheckoutFragment
     }
 
     @Override
-    public void renderAutoSubscribeProduct(GMAutoSubscribeViewModel gmAutoSubscribeViewModel) {
+    public void renderAutoSubscribeProduct(GmAutoSubscribeViewModel gmAutoSubscribeViewModel) {
         autoSubscribeViewHolder.renderAutoSubscribeProduct(gmAutoSubscribeViewModel);
     }
 
     @Override
-    public void renderVoucherView(GMVoucherViewModel gmVoucherViewModel) {
+    public void renderVoucherView(GmVoucherViewModel gmVoucherViewModel) {
         codeVoucherViewHolder.renderVoucherView(gmVoucherViewModel);
     }
 
     @Override
-    public void goToDynamicPayment(GMCheckoutViewModel gmCheckoutDomainModel) {
+    public void goToDynamicPayment(GmCheckoutViewModel gmCheckoutDomainModel) {
         callback.goToDynamicPayment(
                 gmCheckoutDomainModel.getPaymentUrl(),
                 gmCheckoutDomainModel.getParameter(),
@@ -257,7 +251,7 @@ public class GMCheckoutFragment
     }
 
     private void goToCheckout() {
-        if(codeVoucherViewHolder.isVoucherOpen()){
+        if (codeVoucherViewHolder.isVoucherOpen()) {
             presenter.checkoutWithVoucherCheckGMSubscribe(selectedProduct, autoExtendSelectedProduct, codeVoucherViewHolder.getVoucherCode());
         } else {
             presenter.checkoutGMSubscribe(selectedProduct, autoExtendSelectedProduct, codeVoucherViewHolder.getVoucherCode());
@@ -265,12 +259,12 @@ public class GMCheckoutFragment
     }
 
     @Override
-    public void showProgressDialog(){
+    public void showProgressDialog() {
         progressDialog.showDialog();
     }
 
     @Override
-    public void dismissProgressDialog(){
+    public void dismissProgressDialog() {
         progressDialog.dismiss();
     }
 
@@ -282,11 +276,6 @@ public class GMCheckoutFragment
     @Override
     public void dismissKeyboardFromVoucherEditText() {
         codeVoucherViewHolder.dismissKeyboard();
-    }
-
-    @Override
-    public Context getContext(){
-        return getActivity();
     }
 
 }
