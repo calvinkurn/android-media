@@ -78,7 +78,7 @@ public class FragmentBanner extends Fragment implements View.OnTouchListener {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ImageHandler.loadImageFit2(getContext(), image, promoItem.imgUrl);
+        ImageHandler.LoadImage(image, promoItem.imgUrl);
         int margin = (int) getResources().getDimension(R.dimen.slider_margin);
         setMargin(margin, margin);
         image.setOnTouchListener(this);
