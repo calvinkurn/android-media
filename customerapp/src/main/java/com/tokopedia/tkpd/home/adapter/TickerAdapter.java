@@ -39,6 +39,7 @@ public class TickerAdapter extends RecyclerView.Adapter<TickerAdapter.ViewHolder
     Context context;
 
     public static final String PLAYSTORE_STRING = "play.google.com/store/apps";
+    public static final String URL = "url";
 
     public static TickerAdapter createInstance(Context context, TickerAdapter.OnTickerClosed onTickerClosed) {
         return new TickerAdapter(context, onTickerClosed);
@@ -104,7 +105,7 @@ public class TickerAdapter extends RecyclerView.Adapter<TickerAdapter.ViewHolder
                         context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url.getURL())));
                     } else {
                         Intent intent = new Intent(context, BannerWebView.class);
-                        intent.putExtra("url", url.getURL());
+                        intent.putExtra(URL, url.getURL());
                         context.startActivity(intent);
                     }
                 }
