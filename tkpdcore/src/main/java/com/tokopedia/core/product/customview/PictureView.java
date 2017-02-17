@@ -70,6 +70,8 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
 
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
+        imagePagerAdapter = new ImagePagerAdapter(getContext(), new ArrayList<ProductImage>());
+        vpImage.setAdapter(imagePagerAdapter);
         List<ProductImage> productImageList = data.getProductImages();
         if (productImageList.isEmpty()) {
             int resId = R.drawable.product_no_photo_default;
