@@ -118,8 +118,7 @@ public class SearchHistoryImpl extends SearchHistory {
         return new OnItemClickListener() {
             @Override
             public void onItemClick(SearchHistoryModel.Data selected, String urlHotlist, int type) {
-
-                CommonUtils.dumper("searchautocompl "+selected.getKeyword()+" title "+selected.getTitle()+" TYPE "+type);
+                
                 probeAnalytics(selected.getTitle(), type);
 
                 switch (type) {
