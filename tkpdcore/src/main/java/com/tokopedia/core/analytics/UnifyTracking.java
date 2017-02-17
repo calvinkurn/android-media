@@ -1175,4 +1175,13 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.EventLabel.COPY_PRODUCT
         ).getEvent());
     }
+
+    public static void eventClickPopularSearch(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_POPULAR,
+                label
+        ).getEvent());
+    }
 }
