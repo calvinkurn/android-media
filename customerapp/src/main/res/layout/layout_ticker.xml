@@ -29,7 +29,8 @@
         <TextView
             android:id="@+id/ticker_message"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
             android:lines="3"
             android:maxLength="105"
             android:layout_marginBottom="@dimen/margin_vs"
