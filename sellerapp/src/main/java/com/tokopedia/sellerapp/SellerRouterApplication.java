@@ -63,7 +63,14 @@ public class SellerRouterApplication extends MainApplication implements TkpdCore
 
     @Override
     public void goToWallet(Context context, Bundle bundle) {
+        //no route to wallet on seller, go to default
+        goToDefaultRoute(context);
+    }
 
+    @Override
+    public void goToMerchantRedirect(Context context) {
+        //no route to merchant redirect on seller, go to default
+        goToDefaultRoute(context);
     }
 
     @Override
@@ -85,5 +92,12 @@ public class SellerRouterApplication extends MainApplication implements TkpdCore
     @Override
     public void goToProductDetail(Context context, String productUrl) {
         DeepLinkChecker.openProduct(productUrl, context);
+    }
+
+    private void goToDefaultRoute(Context context) {
+        Intent intent = new Intent(context,
+                SellerHomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
     }
 }
