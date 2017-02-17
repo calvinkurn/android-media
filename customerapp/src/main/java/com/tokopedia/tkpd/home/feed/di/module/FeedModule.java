@@ -8,7 +8,7 @@ import com.tokopedia.core.base.di.qualifier.AceQualifier;
 import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.tkpd.home.feed.data.factory.FeedDataSourceFactory;
 import com.tokopedia.tkpd.home.feed.data.mapper.FeedMapper;
-import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.FeedDbManager;
+import com.tokopedia.core.base.common.dbManager.FeedDbManager;
 import com.tokopedia.tkpd.home.feed.di.scope.DataFeedScope;
 
 import dagger.Module;
