@@ -189,7 +189,8 @@ public interface AppEventTracking {
         String SUCCESS = "Success";
         String LOAD = "Load";
         String SCROLL = "Scroll";
-        String SEARCH_POPULAR = "Load";
+        String SEARCH_POPULAR = "Popular Search";
+        String SEARCH_RECENT = "Recent Search";
     }
 
     interface EventLabel {

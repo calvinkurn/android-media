@@ -1184,4 +1184,15 @@ public class UnifyTracking extends TrackingUtils {
                 label
         ).getEvent());
     }
+
+    public static void eventClickRecentSearch(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_RECENT,
+                label
+        ).getEvent());
+    }
+
+    
 }
