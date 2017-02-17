@@ -34,11 +34,6 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
     }
 
     @Override
-    public void goToGMSubscribe(Context context) {
-        throw new RuntimeException("consumer dont have gm subscribe !!!");
-    }
-
-    @Override
     public void goToProductDetail(Context context, String productUrl) {
         throw new RuntimeException("right now, it implement at Seller Application !!");
     }
