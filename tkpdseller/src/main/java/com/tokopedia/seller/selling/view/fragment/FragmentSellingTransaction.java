@@ -1,6 +1,7 @@
 package com.tokopedia.seller.selling.view.fragment;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -540,8 +542,8 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
         }
     }
 
-    private void createOverflowMenu(View v, SellingStatusTxModel model) {
-        PopupMenu menu = new PopupMenu(getActivity(), v);
+    private void createOverflowMenu(View v, final SellingStatusTxModel model) {
+        final PopupMenu menu = new PopupMenu(getActivity(), v);
         if (model.ShippingID.equals(TkpdState.SHIPPING_ID.GOJEK)) {
             menu.getMenuInflater().inflate(R.menu.shipping_status_menu_track_only, menu.getMenu());
         } else {
@@ -559,6 +561,11 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
                 bundle.putString(ORDER_ID, model.OrderId);
                 getActivity().startActivity(TrackingActivity.createInstance(getActivity(),bundle));
             }
+
+            @Override
+            public void onCourierRetry() {
+                createRetryPickupDialog(model.OrderId, menu.getMenu().findItem(R.id.action_retry));
+            }
         }));
         menu.show();
     }
@@ -572,6 +579,10 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
                     return true;
                 } else if (item.getItemId() == R.id.action_track) {
                     listener.onTrack(model);
+                    return true;
+                }
+                else if (item.getItemId() == R.id.action_retry) {
+                    listener.onCourierRetry();
                     return true;
                 } else {
                     return false;
@@ -591,7 +602,44 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
         void onEditRef(SellingStatusTxModel model);
 
         void onTrack(SellingStatusTxModel model);
+
+        void onCourierRetry();
     }
 
+    private void createRetryPickupDialog(final String orderId, MenuItem retryMenu) {
+        AlertDialog.Builder retryPickupDialog = new AlertDialog.Builder(getActivity());
+        retryPickupDialog.setView(R.layout.retry_pickup_dialog);
+        retryPickupDialog.setPositiveButton(getString(R.string.title_yes),
+                onConfirmRetryPickup(orderId, retryMenu));
+        retryPickupDialog.setNegativeButton(getString(R.string.title_cancel), null);
+        retryPickupDialog.show();
+    }
+
+    private DialogInterface.OnClickListener onConfirmRetryPickup(final String orderId,
+                                                                 final MenuItem retryMenu) {
+        return new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                progressDialog.showDialog();
+                FacadeActionShopTransaction facadeAction = FacadeActionShopTransaction
+                        .createInstance(getActivity(), orderId);
+                facadeAction.retryCourierPickup(new FacadeActionShopTransaction
+                        .OnRetryPickupListener() {
+                    @Override
+                    public void onSuccess(String successMessage) {
+                        progressDialog.dismiss();
+                        Snackbar.make(rootView, successMessage, Snackbar.LENGTH_LONG).show();
+                        retryMenu.setVisible(false);
+                    }
+
+                    @Override
+                    public void onFailed(String errorMessage) {
+                        progressDialog.dismiss();
+                        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+                    }
+                });
+            }
+        };
+    }
 
 }
