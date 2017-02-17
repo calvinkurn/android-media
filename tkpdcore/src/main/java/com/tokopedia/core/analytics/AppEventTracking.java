@@ -193,6 +193,7 @@ public interface AppEventTracking {
         String SEARCH_RECENT = "Recent Search";
         String SEARCH_HOTLIST = "Search HotList";
         String SEARCH_AUTOCOMPLETE = "Search Autocomplete";
+        String SEARCH_AUTOCOMPLETE_SHOP = "Search Autocomplete Shop";
 
     }
 

@@ -1212,5 +1212,13 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventClickAutoCompleteShopSearch(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_AUTOCOMPLETE_SHOP,
+                label
+        ).getEvent());
+    }
 
 }
