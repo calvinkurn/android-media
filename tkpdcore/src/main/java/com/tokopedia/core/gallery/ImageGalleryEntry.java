@@ -6,11 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.newgallery.GalleryActivity;
-import com.tokopedia.core.newgallery.presenter.ImageGalleryImpl;
-import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
 import com.tokopedia.core.myproduct.utils.MetadataUtil;
 import com.tokopedia.core.myproduct.utils.VerificationUtils;
+import com.tokopedia.core.newgallery.GalleryActivity;
+import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
 import com.tokopedia.core.util.Pair;
 
 import java.util.ArrayList;

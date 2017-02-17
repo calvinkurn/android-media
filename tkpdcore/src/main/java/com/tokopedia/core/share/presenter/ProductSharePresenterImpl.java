@@ -1,17 +1,9 @@
 package com.tokopedia.core.share.presenter;
 
 import android.app.Activity;
-import android.net.Uri;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
-import com.facebook.share.Sharer;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.ShareDialog;
 import com.tkpd.library.utils.ConnectionDetector;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -23,8 +15,6 @@ import com.tokopedia.core.share.fragment.ProductShareFragment;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdState;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Angga.Prasetiyo on 11/12/2015.
@@ -109,14 +99,9 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
                 AppEventTracking.SOCIAL_MEDIA.LINE
         );
         data.setSource(AppEventTracking.SOCIAL_MEDIA.LINE);
-        if (data.getImgUri() != null){
-            ShareSocmedHandler.ShareSpecificUri(activity, TkpdState.PackageName.Line,
-                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(),
-                    data.getImgUri(), null);
-        } else {
-            ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Line,
-                    TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(), null, null);
-        }
+        ShareSocmedHandler.ShareSpecific(activity, TkpdState.PackageName.Line,
+                TkpdState.PackageName.TYPE_TEXT, data.getTextContent(), data.renderShareUri(), null, null);
+
     }
 
     @Override

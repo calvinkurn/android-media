@@ -3,8 +3,6 @@ package com.tokopedia.core.instoped.model;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 
-import org.parceler.Parcel;
-
 /**
  * Created by Tkpd_Eka on 4/6/2016.
  * modified by m.normansyah on 4/18/2016

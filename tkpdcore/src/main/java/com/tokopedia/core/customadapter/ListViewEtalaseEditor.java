@@ -27,7 +27,6 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.R;
 import com.tokopedia.core.Router;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.manager.DbManager;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.EtalaseDB;

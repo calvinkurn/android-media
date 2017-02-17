@@ -63,4 +63,6 @@ public interface SessionView {
     void moveToRegisterInitial();
 
     void moveToLogin();
+
+    void verifyTruecaller();
 }

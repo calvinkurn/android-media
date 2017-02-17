@@ -1,14 +1,18 @@
 package com.tokopedia.core.session.presenter;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.session.VerifyPhoneInteractor;
+import com.tokopedia.core.session.VerifyPhoneInteractorImpl;
 import com.tokopedia.core.session.model.LoginInterruptModel;
 import com.tokopedia.core.session.model.OTPModel;
 import com.tokopedia.core.session.model.QuestionFormModel;
@@ -20,11 +24,15 @@ import org.parceler.Parcels;
 
 import static com.tokopedia.core.service.constant.DownloadServiceConstant.REQUEST_OTP_MODEL;
 
+import static com.tokopedia.core.session.presenter.Login.DEFAULT_UUID_VALUE;
+import static com.tokopedia.core.session.presenter.Login.LOGIN_UUID_KEY;
+import static com.tokopedia.core.session.presenter.Login.UUID_KEY;
+
 /**
  * Created by m.normansyah on 05/11/2015.
  * modified by m.normansyah on 21/11/2015 - move download or upload to DownloadService
  */
-public class SecurityQuestionImpl implements SecurityQuestion {
+public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter {
     public static final int SWITCH_REQUEST_OTP = 2;
     private static final String EXTRA_BUNDLE = "EXTRA_BUNDLE";
     private int ACTION_REQUEST_OTP = 101;
@@ -37,7 +45,9 @@ public class SecurityQuestionImpl implements SecurityQuestion {
     QuestionFormModel questionFormModel;
     int errorCount;
 
-    public SecurityQuestionImpl(SecurityQuestionView view) {
+    VerifyPhoneInteractor interactor;
+
+    public SecurityQuestionPresenterImpl(SecurityQuestionView view) {
         this.view = view;
     }
 
@@ -49,6 +59,7 @@ public class SecurityQuestionImpl implements SecurityQuestion {
         {
             viewModel = new SecurityQuestionViewModel();
         }
+        interactor = VerifyPhoneInteractorImpl.createInstance();
     }
 
     @Override
@@ -124,6 +135,14 @@ public class SecurityQuestionImpl implements SecurityQuestion {
                 bundle.putBoolean(DownloadService.IS_NEED_LOGIN, isNeedLogin);
                 ((SessionView) mContext).sendDataFromInternet(DownloadService.REQUEST_OTP, bundle);
                 break;
+
+            case MAKE_LOGIN:
+                bundle = new Bundle();
+                LocalCacheHandler loginUuid = new LocalCacheHandler(mContext, LOGIN_UUID_KEY);
+                String uuid = loginUuid.getString(UUID_KEY, DEFAULT_UUID_VALUE);
+                bundle.putString(UUID_KEY, uuid);
+                ((SessionView)mContext).sendDataFromInternet(DownloadService.MAKE_LOGIN, bundle);
+                break;
         }
     }
 
@@ -156,11 +175,6 @@ public class SecurityQuestionImpl implements SecurityQuestion {
 
     @Override
     public boolean isLogin(JSONObject response) {
-        throw new RuntimeException("don't use this method !!!");
-    }
-
-    @Override
-    public void storeUUID(Context context, String UUID) {
         throw new RuntimeException("don't use this method !!!");
     }
 
@@ -346,6 +360,79 @@ public class SecurityQuestionImpl implements SecurityQuestion {
     @Override
     public void updateModel(QuestionFormModel model) {
         questionFormModel = model;
+    }
+
+    @Override
+    public void verifyTruecaller(final Context context, String phoneNumber) {
+        VerifyPhoneInteractor.VerifyPhoneListener listener = new VerifyPhoneInteractor.VerifyPhoneListener() {
+            @Override
+            public void onError(String error) {
+                view.showError(error);
+            }
+            @Override
+            public void onThrowable(Throwable e) {
+                view.showError(context.getString(R.string.default_request_error_unknown));
+            }
+
+            @Override
+            public void onTimeout() {
+                view.showError(context.getString(R.string.default_request_error_timeout));
+            }
+
+            @Override
+            public void onSuccess(int result, String uuid) {
+                if(result == 0){
+                    view.showError(context.getString(R.string.error_user_truecaller));
+                }else {
+                    storeUUID(context, uuid);
+                    fetchDataFromInternet(SecurityQuestionPresenter.MAKE_LOGIN,null);
+                }
+            }
+        };
+        interactor.verifyPhone(context, phoneNumber, SessionHandler.getTempLoginSession(context),
+                                listener);
+    }
+
+    private void storeUUID(Context context, String UUID) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, "LOGIN_UUID");
+        String prevUUID = cache.getString("uuid", "");
+        String currUUID;
+        if (prevUUID.equals("")) {
+            currUUID = UUID;
+
+        } else {
+            currUUID = prevUUID + "*~*" + UUID;
+        }
+        cache.putString("uuid", currUUID);
+        cache.applyEditor();
+    }
+
+    @Override
+    public void getPhoneTrueCaller() {
+        ((SessionView)mContext).verifyTruecaller();
+    }
+
+    @Override
+    public void showTrueCaller(Context context) {
+        view.showTrueCaller(appInstalledOrNot(context, "com.truecaller"));
+    }
+
+    @Override
+    public void unSubscribe() {
+        interactor.unSubscribe();
+    }
+
+    private boolean appInstalledOrNot(Context context, String uri) {
+        PackageManager pm = context.getPackageManager();
+        boolean app_installed;
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            app_installed = true;
+        }
+        catch (PackageManager.NameNotFoundException e) {
+            app_installed = false;
+        }
+        return app_installed;
     }
 
     @Override

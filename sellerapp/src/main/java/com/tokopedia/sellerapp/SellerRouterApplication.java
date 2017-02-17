@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer.DrawerVariable;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;

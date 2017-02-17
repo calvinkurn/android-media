@@ -10,12 +10,9 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.myproduct.model.FolderModel;
 import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
-import com.tokopedia.core.util.MethodChecker;
 
-import java.io.File;
 import java.util.List;
 
 /**
