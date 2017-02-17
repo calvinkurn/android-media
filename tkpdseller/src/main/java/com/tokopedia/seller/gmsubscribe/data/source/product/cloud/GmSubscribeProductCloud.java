@@ -8,11 +8,11 @@ import rx.Observable;
 /**
  * Created by sebastianuskh on 2/2/17.
  */
-public class GMSubscribeProductCloud {
+public class GmSubscribeProductCloud {
 
     private final Retrofit retrofit;
 
-    public GMSubscribeProductCloud(Retrofit retrofit) {
+    public GmSubscribeProductCloud(Retrofit retrofit) {
         this.retrofit = retrofit;
     }
 

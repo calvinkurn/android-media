@@ -14,10 +14,10 @@ import rx.Observable;
 /**
  * Created by sebastianuskh on 2/2/17.
  */
-public class GetGMSubscribeCurrentProductUseCase extends UseCase<List<GmProductDomainModel>> {
+public class GetGmSubscribeCurrentProductUseCase extends UseCase<List<GmProductDomainModel>> {
     private final GmSubscribeProductRepository GmSubscribeProductRepository;
 
-    public GetGMSubscribeCurrentProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, GmSubscribeProductRepository GmSubscribeProductRepository) {
+    public GetGmSubscribeCurrentProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, GmSubscribeProductRepository GmSubscribeProductRepository) {
         super(threadExecutor, postExecutionThread);
         this.GmSubscribeProductRepository = GmSubscribeProductRepository;
     }

@@ -15,9 +15,9 @@ import com.tokopedia.seller.gmsubscribe.data.mapper.product.GmSubscribeProductMa
 import com.tokopedia.seller.gmsubscribe.data.repository.GmSubscribeProductRepositoryImpl;
 import com.tokopedia.seller.gmsubscribe.data.source.product.GmSubscribeProductDataSource;
 import com.tokopedia.seller.gmsubscribe.data.source.product.cache.GmSubscribeProductCache;
-import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.GMSubscribeProductCloud;
-import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetGMSubscribeCurrentProductUseCase;
-import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetGMSubscribeExtendProductUseCase;
+import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.GmSubscribeProductCloud;
+import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetGmSubscribeCurrentProductUseCase;
+import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetGmSubscribeExtendProductUseCase;
 import com.tokopedia.seller.gmsubscribe.view.product.presenter.GmProductPresenterImpl;
 import com.tokopedia.seller.network.interceptor.GMSubscribeInterceptor;
 
@@ -58,15 +58,15 @@ public class GmProductDependencyInjection {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
         ;
-        GMSubscribeProductCloud gmSubscribeProductCloud = new GMSubscribeProductCloud(retrofit);
+        GmSubscribeProductCloud gmSubscribeProductCloud = new GmSubscribeProductCloud(retrofit);
         GmSubscribeProductMapper gmSubscribeProductMapper = new GmSubscribeProductMapper();
         GmSubscribeProductDataSource gmSubscribeProductDataSource = new GmSubscribeProductDataSource(gmSubscribeProductCache, gmSubscribeProductCloud, gmSubscribeProductMapper, gson);
         GmSubscribeProductFactory gmSubscribeProductFactory = new GmSubscribeProductFactory(gmSubscribeProductDataSource);
         GmSubscribeProductRepositoryImpl gmSubscribeProductRepository = new GmSubscribeProductRepositoryImpl(gmSubscribeProductFactory);
         ThreadExecutor threadExecutor = new JobExecutor();
         PostExecutionThread postExecutionThread = new UIThread();
-        GetGMSubscribeCurrentProductUseCase getGMSubscribeCurrentProductUseCase = new GetGMSubscribeCurrentProductUseCase(threadExecutor, postExecutionThread, gmSubscribeProductRepository);
-        GetGMSubscribeExtendProductUseCase getGMSubscribeExtendProductUseCase = new GetGMSubscribeExtendProductUseCase(threadExecutor, postExecutionThread, gmSubscribeProductRepository);
-        return new GmProductPresenterImpl(getGMSubscribeCurrentProductUseCase, getGMSubscribeExtendProductUseCase);
+        GetGmSubscribeCurrentProductUseCase getGmSubscribeCurrentProductUseCase = new GetGmSubscribeCurrentProductUseCase(threadExecutor, postExecutionThread, gmSubscribeProductRepository);
+        GetGmSubscribeExtendProductUseCase getGmSubscribeExtendProductUseCase = new GetGmSubscribeExtendProductUseCase(threadExecutor, postExecutionThread, gmSubscribeProductRepository);
+        return new GmProductPresenterImpl(getGmSubscribeCurrentProductUseCase, getGmSubscribeExtendProductUseCase);
     }
 }

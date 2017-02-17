@@ -5,8 +5,8 @@ import android.util.Log;
 
 import com.tokopedia.seller.common.domain.RequestParams;
 import com.tokopedia.seller.common.presentation.BasePresenter;
-import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetGMSubscribeCurrentProductUseCase;
-import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetGMSubscribeExtendProductUseCase;
+import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetGmSubscribeCurrentProductUseCase;
+import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetGmSubscribeExtendProductUseCase;
 import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainModel;
 import com.tokopedia.seller.gmsubscribe.view.product.viewmodel.GmProductViewModel;
 
@@ -20,12 +20,12 @@ import rx.Subscriber;
  */
 
 public class GmProductPresenterImpl extends BasePresenter<GmProductView> implements GmProductPresenter {
-    private final GetGMSubscribeCurrentProductUseCase getGMSubscribeCurrentProductUseCase;
-    private final GetGMSubscribeExtendProductUseCase getGMSubscribeExtendProductUseCase;
+    private final GetGmSubscribeCurrentProductUseCase getGmSubscribeCurrentProductUseCase;
+    private final GetGmSubscribeExtendProductUseCase getGmSubscribeExtendProductUseCase;
 
-    public GmProductPresenterImpl(GetGMSubscribeCurrentProductUseCase getGMSubscribeCurrentProductUseCase, GetGMSubscribeExtendProductUseCase getGMSubscribeExtendProductUseCase) {
-        this.getGMSubscribeCurrentProductUseCase = getGMSubscribeCurrentProductUseCase;
-        this.getGMSubscribeExtendProductUseCase = getGMSubscribeExtendProductUseCase;
+    public GmProductPresenterImpl(GetGmSubscribeCurrentProductUseCase getGmSubscribeCurrentProductUseCase, GetGmSubscribeExtendProductUseCase getGmSubscribeExtendProductUseCase) {
+        this.getGmSubscribeCurrentProductUseCase = getGmSubscribeCurrentProductUseCase;
+        this.getGmSubscribeExtendProductUseCase = getGmSubscribeExtendProductUseCase;
     }
 
     @Override
@@ -33,21 +33,21 @@ public class GmProductPresenterImpl extends BasePresenter<GmProductView> impleme
         checkViewAttached();
         getView().clearPackage();
         getView().showProgressDialog();
-        getGMSubscribeCurrentProductUseCase.execute(RequestParams.EMPTY, new ProductListSubscriber());
+        getGmSubscribeCurrentProductUseCase.execute(RequestParams.EMPTY, new ProductListSubscriber());
     }
 
     @Override
     public void getExtendPackageSelection() {
         checkViewAttached();
         getView().showProgressDialog();
-        getGMSubscribeExtendProductUseCase.execute(RequestParams.EMPTY, new ProductListSubscriber());
+        getGmSubscribeExtendProductUseCase.execute(RequestParams.EMPTY, new ProductListSubscriber());
     }
 
     @Override
     public void detachView() {
         super.detachView();
-        getGMSubscribeCurrentProductUseCase.unsubscribe();
-        getGMSubscribeExtendProductUseCase.unsubscribe();
+        getGmSubscribeCurrentProductUseCase.unsubscribe();
+        getGmSubscribeExtendProductUseCase.unsubscribe();
     }
 
     private class ProductListSubscriber extends Subscriber<List<GmProductDomainModel>> {

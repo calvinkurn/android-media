@@ -9,27 +9,27 @@ public class Data {
 
     @SerializedName("Product")
     @Expose
-    private List<GMProductServiceModel> product = null;
+    private List<GmProductServiceModel> product = null;
     @SerializedName("Extend")
     @Expose
-    private List<GMProductServiceModel> extend = null;
+    private List<GmProductServiceModel> extend = null;
     @SerializedName("PayMethod")
     @Expose
     private String payMethod;
 
-    public List<GMProductServiceModel> getProduct() {
+    public List<GmProductServiceModel> getProduct() {
         return product;
     }
 
-    public void setProduct(List<GMProductServiceModel> product) {
+    public void setProduct(List<GmProductServiceModel> product) {
         this.product = product;
     }
 
-    public List<GMProductServiceModel> getExtend() {
+    public List<GmProductServiceModel> getExtend() {
         return extend;
     }
 
-    public void setExtend(List<GMProductServiceModel> extend) {
+    public void setExtend(List<GmProductServiceModel> extend) {
         this.extend = extend;
     }
 

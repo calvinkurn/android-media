@@ -3,8 +3,8 @@ package com.tokopedia.seller.gmsubscribe.data.source.product;
 import com.google.gson.Gson;
 import com.tokopedia.seller.gmsubscribe.data.mapper.product.GmSubscribeProductMapper;
 import com.tokopedia.seller.gmsubscribe.data.source.product.cache.GmSubscribeProductCache;
-import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.GMSubscribeProductCloud;
-import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.model.GMServiceModel;
+import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.GmSubscribeProductCloud;
+import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.model.GmServiceModel;
 import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainModelGroup;
 
 import rx.Observable;
@@ -18,13 +18,13 @@ public class GmSubscribeProductDataSource {
 
 
     private final GmSubscribeProductCache gmSubscribeProductCache;
-    private final GMSubscribeProductCloud gmSubscribeProductCloud;
+    private final GmSubscribeProductCloud gmSubscribeProductCloud;
     private final GmSubscribeProductMapper gmSubscribeProductMapper;
     private final Gson gson;
 
 
     public GmSubscribeProductDataSource(GmSubscribeProductCache gmSubscribeProductCache,
-                                        GMSubscribeProductCloud gmSubscribeProductCloud,
+                                        GmSubscribeProductCloud gmSubscribeProductCloud,
                                         GmSubscribeProductMapper gmSubscribeProductMapper,
                                         Gson gson) {
         this.gmSubscribeProductCache = gmSubscribeProductCache;
@@ -64,7 +64,7 @@ public class GmSubscribeProductDataSource {
     private class ConvertToObject implements Func1<String, Observable<GmProductDomainModelGroup>> {
         @Override
         public Observable<GmProductDomainModelGroup> call(String string) {
-            return Observable.just(gson.fromJson(string, GMServiceModel.class)).map(gmSubscribeProductMapper);
+            return Observable.just(gson.fromJson(string, GmServiceModel.class)).map(gmSubscribeProductMapper);
         }
     }
 

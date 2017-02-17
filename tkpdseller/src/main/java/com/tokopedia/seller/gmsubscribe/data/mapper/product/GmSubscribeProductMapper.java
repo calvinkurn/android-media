@@ -1,7 +1,7 @@
 package com.tokopedia.seller.gmsubscribe.data.mapper.product;
 
-import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.model.GMProductServiceModel;
-import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.model.GMServiceModel;
+import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.model.GmProductServiceModel;
+import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.model.GmServiceModel;
 import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainModel;
 import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainModelGroup;
 
@@ -13,13 +13,13 @@ import rx.functions.Func1;
 /**
  * Created by sebastianuskh on 2/2/17.
  */
-public class GmSubscribeProductMapper implements Func1<GMServiceModel, GmProductDomainModelGroup> {
+public class GmSubscribeProductMapper implements Func1<GmServiceModel, GmProductDomainModelGroup> {
     @Override
-    public GmProductDomainModelGroup call(GMServiceModel gmServiceModel) {
+    public GmProductDomainModelGroup call(GmServiceModel gmServiceModel) {
         return mapServiceToDomain(gmServiceModel);
     }
 
-    private GmProductDomainModelGroup mapServiceToDomain(GMServiceModel gmProductServiceModel) {
+    private GmProductDomainModelGroup mapServiceToDomain(GmServiceModel gmProductServiceModel) {
         GmProductDomainModelGroup group = new GmProductDomainModelGroup();
         group.setCurrentProduct(mapListServiceToDomain(gmProductServiceModel.getData().getProduct()));
         group.setExtendProduct(mapListServiceToDomain(gmProductServiceModel.getData().getExtend()));
@@ -27,15 +27,15 @@ public class GmSubscribeProductMapper implements Func1<GMServiceModel, GmProduct
         return group;
     }
 
-    private List<GmProductDomainModel> mapListServiceToDomain(List<GMProductServiceModel> serviceModels) {
+    private List<GmProductDomainModel> mapListServiceToDomain(List<GmProductServiceModel> serviceModels) {
         List<GmProductDomainModel> domainModels = new ArrayList<>();
-        for (GMProductServiceModel serviceModel : serviceModels) {
+        for (GmProductServiceModel serviceModel : serviceModels) {
             domainModels.add(mapModelServiceToDomain(serviceModel));
         }
         return domainModels;
     }
 
-    private GmProductDomainModel mapModelServiceToDomain(GMProductServiceModel serviceModel) {
+    private GmProductDomainModel mapModelServiceToDomain(GmProductServiceModel serviceModel) {
         GmProductDomainModel domain = new GmProductDomainModel();
         domain.setProductId(serviceModel.getProductId());
         domain.setName(serviceModel.getProductName());

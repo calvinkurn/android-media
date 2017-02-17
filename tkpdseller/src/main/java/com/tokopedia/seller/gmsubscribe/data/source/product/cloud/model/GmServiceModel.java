@@ -3,7 +3,7 @@ package com.tokopedia.seller.gmsubscribe.data.source.product.cloud.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class GMServiceModel {
+public class GmServiceModel {
 
     @SerializedName("links")
     @Expose
