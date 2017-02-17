@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
@@ -53,6 +55,8 @@ public class ShopImpl extends Shop implements DiscoveryListener {
             shop.start = 0;
             shop.extraFilter = discoveryActivityPresenter.getProductParam().extraFilter;
             discoveryInteractor.getShops(NetworkParam.generateShopQuery(shop));
+            CommonUtils.dumper("GAv4 search shop query "+shop.q);
+            UnifyTracking.eventClickAutoCompleteShopSearch(shop.q);
             view.setLoading(true);
         }
     }
