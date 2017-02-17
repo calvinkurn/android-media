@@ -192,6 +192,8 @@ public interface AppEventTracking {
         String SEARCH_POPULAR = "Popular Search";
         String SEARCH_RECENT = "Recent Search";
         String SEARCH_HOTLIST = "Search HotList";
+        String SEARCH_AUTOCOMPLETE = "Search Autocomplete";
+
     }
 
     interface EventLabel {
