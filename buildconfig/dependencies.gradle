@@ -96,7 +96,7 @@ ext {
             javaxAnnotation : "javax.annotation:jsr250-api:1.0",
             dagger : "com.google.dagger:dagger:2.5",
             daggerCompiler : "com.google.dagger:dagger-compiler:2.5",
-            smoothAppBarLayout : "me.henrytao:smooth-app-bar-layout:24.1.1.0"
+            smoothAppBarLayout : "me.henrytao:smooth-app-bar-layout:24.1.1.0",
     ]
 
     testDependencies = [
@@ -114,7 +114,13 @@ ext {
             dexMaker : 'com.google.dexmaker:dexmaker:1.2',
             dexMakerMockito : 'com.google.dexmaker:dexmaker-mockito:1.2',
             assertJ: "org.assertj:assertj-core:1.7.1"
+    ]
 
+    debugToolsDependencies = [
+            stetho: "com.facebook.stetho:stetho:1.4.2",
+            stethoOkHttp: "com.facebook.stetho:stetho-okhttp3:1.4.2",
+            chuck: "com.readystatesoftware.chuck:library:1.0.3",
+            chcukNoOp: "com.readystatesoftware.chuck:library-no-op:1.0.3"
     ]
 
     tkpdDependencies = [
