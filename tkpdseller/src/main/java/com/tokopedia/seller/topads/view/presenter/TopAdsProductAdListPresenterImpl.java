@@ -7,9 +7,9 @@ import com.tokopedia.seller.topads.data.source.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.domain.interactor.ListenerInteractor;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractor;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractorImpl;
-import com.tokopedia.seller.topads.model.data.ProductAd;
-import com.tokopedia.seller.topads.model.request.SearchAdRequest;
-import com.tokopedia.seller.topads.model.response.PageDataResponse;
+import com.tokopedia.seller.topads.domain.model.data.ProductAd;
+import com.tokopedia.seller.topads.domain.model.request.SearchAdRequest;
+import com.tokopedia.seller.topads.domain.model.response.PageDataResponse;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
 

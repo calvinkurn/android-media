@@ -5,12 +5,12 @@ import android.content.Context;
 import com.tokopedia.seller.topads.data.source.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.data.source.TopAdsDbDataSource;
 import com.tokopedia.seller.topads.data.source.TopAdsDbDataSourceImpl;
-import com.tokopedia.seller.topads.model.data.GroupAd;
-import com.tokopedia.seller.topads.model.data.GroupAdBulkAction;
-import com.tokopedia.seller.topads.model.request.DataRequest;
-import com.tokopedia.seller.topads.model.request.SearchAdRequest;
-import com.tokopedia.seller.topads.model.response.DataResponse;
-import com.tokopedia.seller.topads.model.response.PageDataResponse;
+import com.tokopedia.seller.topads.domain.model.data.GroupAd;
+import com.tokopedia.seller.topads.domain.model.data.GroupAdBulkAction;
+import com.tokopedia.seller.topads.domain.model.request.DataRequest;
+import com.tokopedia.seller.topads.domain.model.request.SearchAdRequest;
+import com.tokopedia.seller.topads.domain.model.response.DataResponse;
+import com.tokopedia.seller.topads.domain.model.response.PageDataResponse;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 
 import java.util.List;

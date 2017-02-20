@@ -1,19 +1,19 @@
 package com.tokopedia.seller.topads.network.apiservice.api;
 
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
-import com.tokopedia.seller.topads.model.data.GroupAdBulkAction;
-import com.tokopedia.seller.topads.model.data.ProductAdBulkAction;
-import com.tokopedia.seller.topads.model.data.DataCredit;
-import com.tokopedia.seller.topads.model.data.DataDeposit;
-import com.tokopedia.seller.topads.model.data.DataStatistic;
-import com.tokopedia.seller.topads.model.data.GroupAd;
-import com.tokopedia.seller.topads.model.data.Product;
-import com.tokopedia.seller.topads.model.data.ProductAd;
-import com.tokopedia.seller.topads.model.data.ShopAd;
-import com.tokopedia.seller.topads.model.data.TotalAd;
-import com.tokopedia.seller.topads.model.request.DataRequest;
-import com.tokopedia.seller.topads.model.response.DataResponse;
-import com.tokopedia.seller.topads.model.response.PageDataResponse;
+import com.tokopedia.seller.topads.domain.model.data.GroupAdBulkAction;
+import com.tokopedia.seller.topads.domain.model.data.ProductAdBulkAction;
+import com.tokopedia.seller.topads.domain.model.data.DataCredit;
+import com.tokopedia.seller.topads.domain.model.data.DataDeposit;
+import com.tokopedia.seller.topads.domain.model.data.DataStatistic;
+import com.tokopedia.seller.topads.domain.model.data.GroupAd;
+import com.tokopedia.seller.topads.domain.model.data.Product;
+import com.tokopedia.seller.topads.domain.model.data.ProductAd;
+import com.tokopedia.seller.topads.domain.model.data.ShopAd;
+import com.tokopedia.seller.topads.domain.model.data.TotalAd;
+import com.tokopedia.seller.topads.domain.model.request.DataRequest;
+import com.tokopedia.seller.topads.domain.model.response.DataResponse;
+import com.tokopedia.seller.topads.domain.model.response.PageDataResponse;
 
 import java.util.List;
 import java.util.Map;

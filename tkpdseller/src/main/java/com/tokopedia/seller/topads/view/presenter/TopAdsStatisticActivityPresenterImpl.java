@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.tokopedia.seller.topads.domain.interactor.ListenerInteractor;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractor;
-import com.tokopedia.seller.topads.model.data.Cell;
-import com.tokopedia.seller.topads.model.request.StatisticRequest;
+import com.tokopedia.seller.topads.domain.model.data.Cell;
+import com.tokopedia.seller.topads.domain.model.request.StatisticRequest;
 import com.tokopedia.seller.topads.view.listener.TopAdsStatisticActivityViewListener;
 
 import java.util.Date;

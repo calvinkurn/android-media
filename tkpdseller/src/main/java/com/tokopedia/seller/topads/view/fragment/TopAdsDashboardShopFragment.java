@@ -10,7 +10,7 @@ import android.widget.Button;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.model.data.ShopAd;
+import com.tokopedia.seller.topads.domain.model.data.ShopAd;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDashboardShopPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailShopActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsStatisticShopActivity;

@@ -1,7 +1,7 @@
 package com.tokopedia.seller.topads.domain.interactor;
 
-import com.tokopedia.seller.topads.model.data.ShopAd;
-import com.tokopedia.seller.topads.model.request.SearchAdRequest;
+import com.tokopedia.seller.topads.domain.model.data.ShopAd;
+import com.tokopedia.seller.topads.domain.model.request.SearchAdRequest;
 
 /**
  * Created by Nathaniel on 12/28/2016.

@@ -1,10 +1,10 @@
 package com.tokopedia.seller.topads.domain.interactor;
 
-import com.tokopedia.seller.topads.model.data.GroupAdBulkAction;
-import com.tokopedia.seller.topads.model.data.GroupAd;
-import com.tokopedia.seller.topads.model.request.DataRequest;
-import com.tokopedia.seller.topads.model.request.SearchAdRequest;
-import com.tokopedia.seller.topads.model.response.PageDataResponse;
+import com.tokopedia.seller.topads.domain.model.data.GroupAdBulkAction;
+import com.tokopedia.seller.topads.domain.model.data.GroupAd;
+import com.tokopedia.seller.topads.domain.model.request.DataRequest;
+import com.tokopedia.seller.topads.domain.model.request.SearchAdRequest;
+import com.tokopedia.seller.topads.domain.model.response.PageDataResponse;
 
 import java.util.List;
 

@@ -7,7 +7,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.model.other.RadioButtonItem;
+import com.tokopedia.seller.topads.domain.model.other.RadioButtonItem;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,10 +1,10 @@
 package com.tokopedia.seller.topads.data.source;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.tokopedia.seller.topads.model.data.Cell;
-import com.tokopedia.seller.topads.model.data.Summary;
-import com.tokopedia.seller.topads.model.data.Summary_Table;
-import com.tokopedia.seller.topads.model.request.StatisticRequest;
+import com.tokopedia.seller.topads.domain.model.data.Cell;
+import com.tokopedia.seller.topads.domain.model.data.Summary;
+import com.tokopedia.seller.topads.domain.model.data.Summary_Table;
+import com.tokopedia.seller.topads.domain.model.request.StatisticRequest;
 
 import java.util.List;
 

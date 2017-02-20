@@ -13,7 +13,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.model.data.DataCredit;
+import com.tokopedia.seller.topads.domain.model.data.DataCredit;
 import com.tokopedia.seller.topads.view.presenter.TopAdsAddCreditPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsAddCreditPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsPaymentCreditActivity;

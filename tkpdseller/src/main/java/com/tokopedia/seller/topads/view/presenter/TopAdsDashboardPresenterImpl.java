@@ -7,10 +7,10 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.domain.interactor.DashboardTopadsInteractor;
 import com.tokopedia.seller.topads.domain.interactor.DashboardTopadsInteractorImpl;
 import com.tokopedia.seller.topads.domain.interactor.ListenerInteractor;
-import com.tokopedia.seller.topads.model.data.DataDeposit;
-import com.tokopedia.seller.topads.model.data.Summary;
-import com.tokopedia.seller.topads.model.request.ShopRequest;
-import com.tokopedia.seller.topads.model.request.StatisticRequest;
+import com.tokopedia.seller.topads.domain.model.data.DataDeposit;
+import com.tokopedia.seller.topads.domain.model.data.Summary;
+import com.tokopedia.seller.topads.domain.model.request.ShopRequest;
+import com.tokopedia.seller.topads.domain.model.request.StatisticRequest;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 
 import java.util.Date;

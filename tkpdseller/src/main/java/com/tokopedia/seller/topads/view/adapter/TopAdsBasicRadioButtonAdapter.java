@@ -8,8 +8,7 @@ import android.widget.RadioButton;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.model.other.RadioButtonItem;
-import com.tokopedia.seller.topads.view.fragment.TopAdsFilterListFragment;
+import com.tokopedia.seller.topads.domain.model.other.RadioButtonItem;
 
 import java.util.ArrayList;
 import java.util.List;

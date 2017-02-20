@@ -14,7 +14,7 @@ import android.widget.RadioGroup;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.model.data.DataCredit;
+import com.tokopedia.seller.topads.domain.model.data.DataCredit;
 import com.tokopedia.seller.topads.view.presenter.TopAdsNewPromoPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsNewPromoPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsEditPromoActivity;

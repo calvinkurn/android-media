@@ -5,9 +5,9 @@ import android.content.Context;
 import com.tokopedia.seller.topads.data.source.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.data.source.TopAdsDbDataSource;
 import com.tokopedia.seller.topads.data.source.TopAdsDbDataSourceImpl;
-import com.tokopedia.seller.topads.model.data.ShopAd;
-import com.tokopedia.seller.topads.model.request.SearchAdRequest;
-import com.tokopedia.seller.topads.model.response.DataResponse;
+import com.tokopedia.seller.topads.domain.model.data.ShopAd;
+import com.tokopedia.seller.topads.domain.model.request.SearchAdRequest;
+import com.tokopedia.seller.topads.domain.model.response.DataResponse;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 
 import retrofit2.Response;

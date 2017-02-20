@@ -18,7 +18,7 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.model.data.DataCredit;
+import com.tokopedia.seller.topads.domain.model.data.DataCredit;
 import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddProductActivity;
