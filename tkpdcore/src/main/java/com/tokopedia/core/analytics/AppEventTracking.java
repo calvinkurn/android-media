@@ -161,6 +161,7 @@ public interface AppEventTracking {
 
     interface Action {
         String CLICK = "Click";
+        String CLICK_CHANNEL = "Click Channel";
         String SEARCH = "Search";
         String VIEW = "View";
         String VIEW_RECENT = "View Recent";

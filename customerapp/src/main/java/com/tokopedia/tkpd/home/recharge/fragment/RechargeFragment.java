@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.InputFilter;
@@ -30,24 +31,24 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.database.model.RechargeOperatorModel;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.router.SessionRouter;
-import com.tokopedia.tkpd.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customView.RechargeEditText;
+import com.tokopedia.core.database.model.RechargeOperatorModel;
 import com.tokopedia.core.database.model.category.Category;
 import com.tokopedia.core.database.model.category.CategoryAttributes;
 import com.tokopedia.core.database.model.category.ClientNumber;
 import com.tokopedia.core.database.recharge.product.Product;
 import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
 import com.tokopedia.tkpd.home.recharge.activity.RechargePaymentWebView;
 import com.tokopedia.tkpd.home.recharge.adapter.NominalAdapter;
@@ -86,6 +87,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private static final String TAG = "RechargeFragment";
     private static final int CONTACT_PICKER_RESULT = 1001;
     private static final String ARG_PARAM_CATEGORY = "ARG_PARAM_CATEGORY";
+
     public static final String ARG_UTM_SOURCE = "ARG_UTM_SOURCE";
     public static final String ARG_UTM_MEDIUM = "ARG_UTM_MEDIUM";
     public static final String ARG_UTM_CAMPAIGN = "ARG_UTM_CAMPAIGN";
@@ -279,7 +281,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         }
         phoneNumber = s.toString();
         if (!category.getAttributes().getValidatePrefix()) {
-            if (s.length()>=minLengthDefaultOperator) {
+            if (s.length() >= minLengthDefaultOperator) {
                 this.rechargePresenter.validateWithOperator(
                         category.getId(),
                         category.getAttributes().getDefaultOperatorId());
@@ -358,8 +360,9 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @Override
     public void renderDataProducts(List<Product> productList) {
         Collections.sort(productList, new ProductComparator());
-        if (rechargeEditText.getText().length() > 0 || !category.getAttributes().getClientNumber().getIsShown()) {
-            if (productList != null && productList.size() > 0) {
+        if (rechargeEditText.getText().length() > 0
+                || !category.getAttributes().getClientNumber().getIsShown()) {
+            if (productList.size() > 0) {
                 this.productList = productList;
                 isAlreadyHavePhonePrefixInView = true;
                 NominalAdapter adapter = new NominalAdapter(
@@ -388,14 +391,14 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @Override
     public void renderDataOperators(List<RechargeOperatorModel> operators) {
         Collections.sort(operators, new OperatorComparator());
-        operatorList=operators;
+        operatorList = operators;
         spnOperator.setVisibility(View.VISIBLE);
         OperatorAdapter adapterOperator = new OperatorAdapter(
                 getActivity(),
                 android.R.layout.simple_spinner_item,
                 operators
         );
-        Log.d("alifa", " "+adapterOperator);
+        Log.d("alifa", " " + adapterOperator);
         spnOperator.setAdapter(adapterOperator);
         spnOperator.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -417,8 +420,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     private void setSpnNominalSelectionBasedLastOrder(List<Product> productList) {
-        if (lastOrder != null  && lastOrder.getData() != null
-                && lastOrder.getData().getAttributes() != null ) {
+        if (lastOrder != null && lastOrder.getData() != null
+                && lastOrder.getData().getAttributes() != null) {
             int lastProductId = lastOrder.getData().getAttributes().getProduct_id();
             for (int i = 0; i < productList.size(); i++) {
                 if (productList.get(i).getId().equals(lastProductId)) {
@@ -453,7 +456,9 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     public void setOperatorView(RechargeOperatorModel operator) {
         try {
             this.minLengthDefaultOperator = operator.minimumLength;
-            this.rechargeEditText.getAutoCompleteTextView().setFilters(new InputFilter[]{new InputFilter.LengthFilter(operator.maximumLength)});
+            this.rechargeEditText.getAutoCompleteTextView().setFilters(
+                    new InputFilter[]{new InputFilter.LengthFilter(operator.maximumLength)}
+            );
             if (operator.nominalText != null && operator.nominalText.length() > 0)
                 this.nominalTextview.setText(operator.nominalText);
             if (!operator.showProduct) {
@@ -710,7 +715,9 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             if (cursorPhone.getCount() > 0) {
                 if (cursorPhone.moveToNext()) {
                     if (Integer.parseInt(cursorPhone.getString(
-                            cursorPhone.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                            cursorPhone.getColumnIndex(
+                                    ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0
+                            ) {
                         String givenName = cursorPhone.getString(
                                 cursorPhone.getColumnIndex(
                                         ContactsContract.Contacts.DISPLAY_NAME
@@ -761,12 +768,14 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     private String getUrlCheckout() {
+        String clientNumber = rechargeEditText.getText();
         String url = TkpdBaseURL.PULSA_WEB_DOMAIN + "?" +
                 "action=init_data" +
-                "&client_number=" + rechargeEditText.getText() +
+                "&client_number=" + clientNumber +
                 "&product_id=" + selectedProduct.getId().toString() +
                 "&operator_id=" + selectedProduct.getRelationships().getOperator().getData().getId().toString() +
                 "&is_promo=" + (selectedProduct.getAttributes().getPromo() != null ? "1" : "0") +
+                "&atoken=" + generateATokenRechargeCheckout() +
                 "&instant_checkout=" + (buyWithCreditCheckbox.isChecked() ? "1" : "0") +
                 "&utm_source=" + bundle.getString(ARG_UTM_SOURCE, "android") +
                 "&utm_medium=" + bundle.getString(ARG_UTM_MEDIUM, "widget") +
@@ -776,6 +785,11 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         Log.i("RECHARGE", "PULSA URL: " + Uri.encode(url) + "\n RAW : " + url);
 
         return URLGenerator.generateURLSessionLogin(Uri.encode(url), getActivity());
+    }
+
+
+    private String generateATokenRechargeCheckout() {
+        return SessionHandler.getLoginID(getActivity()) + "_" + System.currentTimeMillis();
     }
 
     @Override
@@ -838,8 +852,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     //endregion
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         RechargeFragmentPermissionsDispatcher.onRequestPermissionsResult(
                 RechargeFragment.this, requestCode, grantResults);

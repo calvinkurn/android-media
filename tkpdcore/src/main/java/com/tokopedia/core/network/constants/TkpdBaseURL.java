@@ -328,6 +328,8 @@ public class TkpdBaseURL {
         public static final String PATH_GET_SHOP_NOTES = "get_shop_notes.pl";
         public static final String PATH_GET_SHOP_PRODUCT = "get_shop_product.pl";
         public static final String PATH_GET_SHOP_REVIEW = "get_shop_review.pl";
+
+        public static final String PATH_RETRY_PICKUP = "retry_pickup.pl";
     }
 
     public static final class Etc {
@@ -626,5 +628,8 @@ public class TkpdBaseURL {
     public static class TopCash{
         public static final String GET_WALLET = ACCOUNTS_DOMAIN + "api/v1/wallet/";
         public static final String PATH_WALLET = "balance";
+    }
+    public static class Truecaller{
+        public static final String VERIFY_PHONE = "/web-service/v4/truecaller/check";
     }
 }

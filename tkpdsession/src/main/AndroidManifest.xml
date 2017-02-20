@@ -40,6 +40,7 @@
         <service
             android:name="com.tokopedia.session.session.intentservice.OTPService"
             android:exported="false"/>
+
     </application>
 
 </manifest>

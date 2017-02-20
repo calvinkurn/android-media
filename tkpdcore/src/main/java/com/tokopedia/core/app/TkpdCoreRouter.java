@@ -21,4 +21,6 @@ public interface TkpdCoreRouter {
     Intent goToEditProduct(Context context, boolean isEdit, String productId);
     void resetAddProductCache(Context context);
     void goToWallet(Context context, Bundle bundle);
+
+    void goToMerchantRedirect(Context context);
 }
