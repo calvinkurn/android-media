@@ -24,7 +24,7 @@ public class RechargePresenterImpl implements RechargePresenter,
         RechargeInteractor.OnGetListProduct,
         RechargeInteractor.OnGetOperatorByIdListener, RechargeInteractor.OnGetRecentNumberListener,
         RechargeInteractor.OnGetListProductForOperator, RechargeInteractor.OnGetListOperatorByIdsListener,
-        RechargeInteractor.OnGetProductById {
+        RechargeInteractor.OnGetProductById, RechargeInteractor.OnGetDetailProduct {
 
     private static final String RECHARGE_PHONEBOOK_CACHE_KEY = "RECHARGE_CACHE";
     private final LocalCacheHandler cacheHandlerPhoneBook;
@@ -77,6 +77,11 @@ public class RechargePresenterImpl implements RechargePresenter,
     }
 
     @Override
+    public void validateOperatorWithoutProduct(int categoryId, String operatorId) {
+        dbInteractor.getDetailProductFromOperator(this, categoryId, operatorId);
+    }
+
+    @Override
     public void getDefaultProduct(String categoryId, String operatorId, String productId) {
         dbInteractor.getProductById(this, categoryId, operatorId, productId);
     }
@@ -121,12 +126,16 @@ public class RechargePresenterImpl implements RechargePresenter,
     @Override
     public void onSuccess(List<Product> listProduct) {
         if (!listProduct.isEmpty()) {
-            String operatorId = String.valueOf(
-                    listProduct.get(0).getRelationships().getOperator().getData().getId()
-            );
-            dbInteractor.getOperatorById(operatorId, this);
+            processOperatorById(listProduct);
             view.renderDataProducts(listProduct);
         }
+    }
+
+    private void processOperatorById(List<Product> products) {
+        String operatorId = String.valueOf(
+                products.get(0).getRelationships().getOperator().getData().getId()
+        );
+        dbInteractor.getOperatorById(operatorId, this);
     }
 
     @Override
@@ -137,6 +146,13 @@ public class RechargePresenterImpl implements RechargePresenter,
     @Override
     public void onSuccessFetchOperators(List<RechargeOperatorModel> operators) {
         view.renderDataOperators(operators);
+    }
+
+    @Override
+    public void onSuccessDetailProduct(List<Product> products) {
+        if (!products.isEmpty()) {
+            processOperatorById(products);
+        }
     }
 
     @Override
