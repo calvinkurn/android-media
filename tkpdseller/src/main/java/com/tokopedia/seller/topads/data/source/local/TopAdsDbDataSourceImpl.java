@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.data.source;
+package com.tokopedia.seller.topads.data.source.local;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tokopedia.seller.topads.domain.model.data.Cell;

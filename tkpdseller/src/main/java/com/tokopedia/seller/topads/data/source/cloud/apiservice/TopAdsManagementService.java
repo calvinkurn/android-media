@@ -1,9 +1,9 @@
-package com.tokopedia.seller.topads.network.apiservice;
+package com.tokopedia.seller.topads.data.source.cloud.apiservice;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.AuthService;
-import com.tokopedia.seller.topads.network.apiservice.api.TopAdsManagementApi;
-import com.tokopedia.seller.topads.network.interceptor.TopAdsAuthInterceptor;
+import com.tokopedia.seller.topads.data.source.cloud.apiservice.api.TopAdsManagementApi;
+import com.tokopedia.seller.topads.data.source.cloud.interceptor.TopAdsAuthInterceptor;
 
 import okhttp3.Interceptor;
 import retrofit2.Retrofit;

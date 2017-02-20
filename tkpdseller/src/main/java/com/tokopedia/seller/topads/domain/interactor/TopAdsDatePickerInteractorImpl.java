@@ -2,7 +2,7 @@ package com.tokopedia.seller.topads.domain.interactor;
 
 import android.content.Context;
 
-import com.tokopedia.seller.topads.data.source.TopAdsCacheDataSourceImpl;
+import com.tokopedia.seller.topads.data.source.local.TopAdsCacheDataSourceImpl;
 
 import java.util.Date;
 

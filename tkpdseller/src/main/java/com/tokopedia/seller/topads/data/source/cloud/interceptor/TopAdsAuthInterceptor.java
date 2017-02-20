@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.network.interceptor;
+package com.tokopedia.seller.topads.data.source.cloud.interceptor;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;

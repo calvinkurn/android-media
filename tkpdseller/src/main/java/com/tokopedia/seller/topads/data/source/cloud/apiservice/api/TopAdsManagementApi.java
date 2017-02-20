@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.network.apiservice.api;
+package com.tokopedia.seller.topads.data.source.cloud.apiservice.api;
 
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.domain.model.data.GroupAdBulkAction;
