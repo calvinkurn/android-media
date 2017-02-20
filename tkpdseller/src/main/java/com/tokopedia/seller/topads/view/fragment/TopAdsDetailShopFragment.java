@@ -3,6 +3,9 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -24,6 +27,7 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsDetailShopPresenterImpl;
 
 public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailProductPresenter> {
 
+    private MenuItem deleteMenuItem;
     private ShopAd ad;
 
     public static Fragment createInstance(ShopAd shopAd) {
@@ -96,5 +100,12 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
 
     void onNameClicked() {
         DeepLinkChecker.openShop(ad.getShopUri(), getActivity());
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        deleteMenuItem = menu.findItem(R.id.menu_delete);
+        deleteMenuItem.setVisible(false);
     }
 }
