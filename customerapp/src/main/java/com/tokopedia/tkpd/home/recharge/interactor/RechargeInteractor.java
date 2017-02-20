@@ -2,10 +2,7 @@ package com.tokopedia.tkpd.home.recharge.interactor;
 
 import com.tokopedia.core.database.model.RechargeOperatorModel;
 import com.tokopedia.core.database.model.category.CategoryData;
-import com.tokopedia.core.database.recharge.operator.OperatorData;
-import com.tokopedia.core.database.recharge.product.Category;
 import com.tokopedia.core.database.recharge.product.Product;
-import com.tokopedia.core.database.recharge.product.ProductData;
 import com.tokopedia.core.database.recharge.recentNumber.RecentData;
 import com.tokopedia.core.database.recharge.status.Status;
 
