@@ -138,7 +138,6 @@
     <dimen name="text_size_xxxlarge">30sp</dimen>
 
     <dimen name="keyline_1">16dp</dimen>
-    <dimen name="promo_image_height">185dp</dimen>
 
     <dimen name="setting_button">24dp</dimen>
 
