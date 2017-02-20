@@ -43,13 +43,14 @@ public class TkpdCache {
     public static String LAST_MANDIRI = "LAST_MANDIRI";
     public static String LAST_BRI = "LAST_BRI";
     public static String LIST_REPORT_TYPE = "LIST_REPORT_TYPE";
+    public static final String CACHE_RECHARGE_WIDGET_TAB_SELECTION = "CACHE_RECHARGE_WIDGET_TAB_SELECTION";
 
 
     public static void clearAllCache(Context context) {
         LocalCacheHandler.clearCache(context, TkpdCache.USER_INFO);
-        LocalCacheHandler.clearCache(context,  TkpdCache.NOTIFICATION_DATA);
-        LocalCacheHandler.clearCache(context,  TkpdCache.ETALASE_ADD_PROD);
-        LocalCacheHandler.clearCache(context,  TkpdCache.REGISTERED);
+        LocalCacheHandler.clearCache(context, TkpdCache.NOTIFICATION_DATA);
+        LocalCacheHandler.clearCache(context, TkpdCache.ETALASE_ADD_PROD);
+        LocalCacheHandler.clearCache(context, TkpdCache.REGISTERED);
         LocalCacheHandler.clearCache(context, TkpdCache.VERIFICATION_NUMBER);
         LocalCacheHandler.clearCache(context, TkpdCache.CACHE_MAIN);
         LocalCacheHandler.clearCache(context, TkpdCache.CACHE_PROMO);
@@ -108,9 +109,9 @@ public class TkpdCache {
         public static final String STATUS2 = "STATUS";
         public static final String NEED_PASSWORD = "need_password";
 
-        public static final String SHIPPING_NAME="shipping_name";
-        public static final String ALL_SHIPPING_NAME= "all_shipping_name";
-        public static final String ALL_SHIPPING_ID ="all_shipping_id";
+        public static final String SHIPPING_NAME = "shipping_name";
+        public static final String ALL_SHIPPING_NAME = "all_shipping_name";
+        public static final String ALL_SHIPPING_ID = "all_shipping_id";
         public static final String SHIPPING_ID = "shipping_id";
 
         public static final String SERVICE_NAME = "service_name";
@@ -171,6 +172,8 @@ public class TkpdCache {
         public static final String SHOP_INFO = "SHOP_INFO";
         public static final String SHOP_NOTE_LIST = "SHOP_NOTE_LIST";
         public static final String KEBIJAKAN_PENGEMBALIAN_PRODUK = "KEBIJAKAN_PENGEMBALIAN_PRODUK";
+
+        public static final String WIDGET_RECHARGE_TAB_LAST_SELECTED = "WIDGET_RECHARGE_TAB_LAST_SELECTED";
     }
 
 }
