@@ -330,7 +330,8 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         OrderShop shop = order.getOrderShop();
         orderId = orderDetail.getDetailOrderId().toString();
         holder.Invoice.setText(orderDetail.getDetailInvoice());
-        if (orderDetail.getDetailDropshipName() != null && !orderDetail.getDetailDropshipName().equals("") && !orderDetail.getDetailDropshipName().equals("0")) {
+        if (orderDetail.getDetailDropshipName() != null && !orderDetail.getDetailDropshipName().equals("")
+                && !orderDetail.getDetailDropshipName().equals("0")) {
             holder.SenderName.setText(orderDetail.getDetailDropshipName());
             holder.SenderPhone.setText(orderDetail.getDetailDropshipTelp());
             holder.SenderForm.setVisibility(View.VISIBLE);
@@ -343,7 +344,9 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
 //            if(Build.VERSION.SDK_INT >= 24) {
 //                holder.buyerRequestCancel.setText("\"" + Html.fromHtml(orderDetail.getDetailCancelRequest().getReason(), Html.) + "\"");
 //            }else{
-            holder.buyerRequestCancel.setText("\"" + MethodChecker.fromHtml(orderDetail.getDetailCancelRequest().getReason()) + "\"");
+            holder.buyerRequestCancel.setText(String.format("\"%s\"",
+                    MethodChecker.fromHtml(orderDetail.getDetailCancelRequest().getReason()))
+            );
 //            }
             holder.dateRequestCancel.setText(orderDetail.getDetailCancelRequest().getReasonTime());
         }
@@ -378,7 +381,8 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         String vDest = MethodChecker.fromHtml(
                 destination.getReceiverName()
                         + "<br/>" + destination.getAddressStreet()
-                        + "<br/>" + destination.getAddressDistrict() + " " + destination.getAddressCity() + ", " + destination.getAddressPostal()
+                        + "<br/>" + destination.getAddressDistrict() + " " + destination.getAddressCity()
+                        + ", " + destination.getAddressPostal()
                         + "<br/>" + destination.getAddressProvince() + "<br/>" + phoneTokopedia
 
         ).toString();
@@ -600,7 +604,8 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
                         }
                         break;
                     case 4:
-                        ConstrainRejectedDialog dialog = ConstrainRejectedDialog.newInstance(reason, ProductListAdapter.Type.courrier);
+                        ConstrainRejectedDialog dialog = ConstrainRejectedDialog.newInstance(reason,
+                                ProductListAdapter.Type.courrier);
                         dialog.setOnConfirmReject(onConfirmReject);
                         dialog.show(getFragmentManager(), reason);
                         break;
