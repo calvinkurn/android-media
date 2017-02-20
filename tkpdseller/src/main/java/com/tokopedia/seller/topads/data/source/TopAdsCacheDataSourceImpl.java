@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.source;
+package com.tokopedia.seller.topads.data.source;
 
 import android.content.Context;
 

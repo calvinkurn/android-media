@@ -2,8 +2,8 @@ package com.tokopedia.seller.topads.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.seller.topads.source.TopAdsCacheDataSourceImpl;
-import com.tokopedia.seller.topads.source.TopAdsDbDataSourceImpl;
+import com.tokopedia.seller.topads.data.source.TopAdsCacheDataSourceImpl;
+import com.tokopedia.seller.topads.data.source.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.domain.interactor.ListenerInteractor;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractor;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractorImpl;

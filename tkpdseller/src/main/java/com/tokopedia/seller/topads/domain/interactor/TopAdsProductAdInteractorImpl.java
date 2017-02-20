@@ -1,7 +1,7 @@
 package com.tokopedia.seller.topads.domain.interactor;
 
-import com.tokopedia.seller.topads.source.TopAdsCacheDataSourceImpl;
-import com.tokopedia.seller.topads.source.TopAdsDbDataSource;
+import com.tokopedia.seller.topads.data.source.TopAdsCacheDataSourceImpl;
+import com.tokopedia.seller.topads.data.source.TopAdsDbDataSource;
 import com.tokopedia.seller.topads.model.data.Cell;
 import com.tokopedia.seller.topads.model.data.DataStatistic;
 import com.tokopedia.seller.topads.model.data.ProductAd;
