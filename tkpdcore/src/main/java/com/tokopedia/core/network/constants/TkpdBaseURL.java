@@ -537,6 +537,8 @@ public class TkpdBaseURL {
         public static final String PATH_USER_RECENT_VIEW = "users/";
         public static final String PATH_RECENT_VIEW = "/recentview/products/v1";
         public static final String API_V1_BRANDS = "/os/api/v1/brands/list";
+        public static final String PATH_USER_WISHLIST = "/users";
+        public static final String PATH_SEARCH_WISHLIST = "/wishlist/search/v2";
     }
 
 

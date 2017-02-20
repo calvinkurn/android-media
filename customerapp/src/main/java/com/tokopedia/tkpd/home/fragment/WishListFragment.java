@@ -11,16 +11,20 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
@@ -43,7 +47,7 @@ import butterknife.Unbinder;
 /**
  * Created by m.normansyah on 01/12/2015.
  */
-public class WishListFragment extends TkpdBaseV4Fragment implements WishListView {
+public class WishListFragment extends TkpdBaseV4Fragment implements WishListView, TextView.OnEditorActionListener {
 
     public static final String FRAGMENT_TAG = "WishListFragment";
     private Unbinder unbinder;
@@ -62,6 +66,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     ProgressBar progressBar;
     @BindView(R.id.main_content)
     LinearLayout mainContent;
+    @BindView(R.id.wishlist_search_edittext)
+    EditText searchEditText;
 
     GridLayoutManager layoutManager;
     GridLayoutProductAdapter adapter;
@@ -91,7 +97,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View parentView = inflater.inflate(R.layout.activity_recyclerview, container, false);
+        View parentView = inflater.inflate(R.layout.fragment_wishlist, container, false);
         unbinder = ButterKnife.bind(this, parentView);
         wishList.subscribe();
         wishList.initAnalyticsHandler(getActivity());
@@ -148,6 +154,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public void prepareView() {
         recyclerView.setLayoutManager(layoutManager);
+        searchEditText.setOnEditorActionListener(this);
         setAdapter();
     }
 
@@ -359,6 +366,15 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+            Toast.makeText(getActivity(), "test", Toast.LENGTH_SHORT).show();
+            searchEditText.setFocusable(false);
+            return true;
+        }
+        return false;
+    }
     public boolean isDestroying(){
         return isRemoving();
     }
@@ -376,5 +392,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
             }
         };
     }
+
 
 }
