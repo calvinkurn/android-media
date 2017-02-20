@@ -67,7 +67,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * Created by Tkpd_Eka on 2/12/2015.
  */
 public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrderDetailView, SellingView {
@@ -339,12 +338,12 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
             holder.SenderForm.setVisibility(View.GONE);
         }
 
-        if(orderDetail.getDetailCancelRequest() != null && orderDetail.getDetailCancelRequest().getCancelRequest() == 1){
+        if (orderDetail.getDetailCancelRequest() != null && orderDetail.getDetailCancelRequest().getCancelRequest() == 1) {
             holder.wrapperBuyerRequestCancel.setVisibility(View.VISIBLE);
 //            if(Build.VERSION.SDK_INT >= 24) {
 //                holder.buyerRequestCancel.setText("\"" + Html.fromHtml(orderDetail.getDetailCancelRequest().getReason(), Html.) + "\"");
 //            }else{
-                holder.buyerRequestCancel.setText("\"" + MethodChecker.fromHtml(orderDetail.getDetailCancelRequest().getReason()) + "\"");
+            holder.buyerRequestCancel.setText("\"" + MethodChecker.fromHtml(orderDetail.getDetailCancelRequest().getReason()) + "\"");
 //            }
             holder.dateRequestCancel.setText(orderDetail.getDetailCancelRequest().getReasonTime());
         }
@@ -448,6 +447,14 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
                 Bundle bundle = new Bundle();
                 bundle.putString(InboxRouter.PARAM_USER_ID, order.getOrderCustomer().getCustomerId());
                 bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, order.getOrderCustomer().getCustomerName());
+                bundle.putString(InboxRouter.PARAM_CUSTOM_SUBJECT,
+                        order.getOrderDetail().getDetailInvoice());
+                bundle.putString(InboxRouter.PARAM_CUSTOM_MESSAGE,
+                        MethodChecker.fromHtml(
+                                getString(R.string.custom_content_message_ask_seller)
+                                        .replace("XXX",
+                                                order.getOrderDetail().getDetailPdfUri())).toString()
+                );
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -676,7 +683,7 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         TextView msg = (TextView) promptsView.findViewById(R.id.msg);
         Spanned textError;
         //if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-          //  textError = MethodChecker.fromHtml(error, Html.FROM_HTML_MODE_LEGACY);
+        //  textError = MethodChecker.fromHtml(error, Html.FROM_HTML_MODE_LEGACY);
         //} else {
         textError = MethodChecker.fromHtml(error);
         //}

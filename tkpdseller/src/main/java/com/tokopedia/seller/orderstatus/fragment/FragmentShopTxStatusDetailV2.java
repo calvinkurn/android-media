@@ -309,6 +309,14 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
                         .getOrderCustomer().getCustomerId());
                 bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, presenter.getOrderData()
                         .getOrderCustomer().getCustomerName());
+                bundle.putString(InboxRouter.PARAM_CUSTOM_SUBJECT,
+                        presenter.getOrderData().getOrderDetail().getDetailInvoice());
+                bundle.putString(InboxRouter.PARAM_CUSTOM_MESSAGE,
+                        MethodChecker.fromHtml(
+                                getString(R.string.custom_content_message_ask_seller)
+                                        .replace("XXX",
+                                                presenter.getOrderData().getOrderDetail().getDetailPdfUri())).toString()
+                );
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
