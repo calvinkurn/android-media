@@ -1,7 +1,5 @@
 package com.tokopedia.seller.topads.constant;
 
-import com.tokopedia.seller.topads.model.request.StatisticRequest;
-
 /**
  * Created by Nathaniel on 11/15/2016.
  */

@@ -6,11 +6,11 @@ import android.os.Bundle;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.model.data.Ad;
-import com.tokopedia.seller.topads.model.data.GroupAd;
-import com.tokopedia.seller.topads.model.data.ProductAd;
-import com.tokopedia.seller.topads.presenter.TopAdsProductAdListPresenter;
-import com.tokopedia.seller.topads.presenter.TopAdsProductAdListPresenterImpl;
+import com.tokopedia.seller.topads.domain.model.data.Ad;
+import com.tokopedia.seller.topads.domain.model.data.GroupAd;
+import com.tokopedia.seller.topads.domain.model.data.ProductAd;
+import com.tokopedia.seller.topads.view.presenter.TopAdsProductAdListPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsProductAdListPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailProductActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsFilterProductActivity;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;

@@ -1,6 +1,6 @@
 package com.tokopedia.seller.topads.view.listener;
 
-import com.tokopedia.seller.topads.model.data.Ad;
+import com.tokopedia.seller.topads.domain.model.data.Ad;
 
 /**
  * Created by zulfikarrahman on 12/30/16.

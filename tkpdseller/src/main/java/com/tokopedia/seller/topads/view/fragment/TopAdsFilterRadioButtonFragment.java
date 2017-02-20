@@ -1,16 +1,14 @@
 package com.tokopedia.seller.topads.view.fragment;
 
-import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.model.other.RadioButtonItem;
+import com.tokopedia.seller.topads.domain.model.other.RadioButtonItem;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBasicRadioButtonAdapter;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

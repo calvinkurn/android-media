@@ -2,8 +2,7 @@ package com.tokopedia.seller.topads.view.listener;
 
 import android.support.annotation.NonNull;
 
-import com.tokopedia.seller.topads.model.data.DataCredit;
-import com.tokopedia.seller.topads.model.data.Product;
+import com.tokopedia.seller.topads.domain.model.data.Product;
 
 import java.util.List;
 

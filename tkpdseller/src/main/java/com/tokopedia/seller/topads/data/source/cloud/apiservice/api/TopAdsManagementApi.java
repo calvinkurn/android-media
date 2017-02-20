@@ -1,0 +1,66 @@
+package com.tokopedia.seller.topads.data.source.cloud.apiservice.api;
+
+import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.domain.model.data.GroupAdBulkAction;
+import com.tokopedia.seller.topads.domain.model.data.ProductAdBulkAction;
+import com.tokopedia.seller.topads.domain.model.data.DataCredit;
+import com.tokopedia.seller.topads.domain.model.data.DataDeposit;
+import com.tokopedia.seller.topads.domain.model.data.DataStatistic;
+import com.tokopedia.seller.topads.domain.model.data.GroupAd;
+import com.tokopedia.seller.topads.domain.model.data.Product;
+import com.tokopedia.seller.topads.domain.model.data.ProductAd;
+import com.tokopedia.seller.topads.domain.model.data.ShopAd;
+import com.tokopedia.seller.topads.domain.model.data.TotalAd;
+import com.tokopedia.seller.topads.domain.model.request.DataRequest;
+import com.tokopedia.seller.topads.domain.model.response.DataResponse;
+import com.tokopedia.seller.topads.domain.model.response.PageDataResponse;
+
+import java.util.List;
+import java.util.Map;
+
+import retrofit2.Response;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.PATCH;
+import retrofit2.http.QueryMap;
+import rx.Observable;
+
+/**
+ * Created by zulfikarrahman on 11/4/16.
+ */
+public interface TopAdsManagementApi {
+
+    @GET(TopAdsNetworkConstant.PATH_DASHBOARD_STATISTIC)
+    Observable<Response<DataResponse<DataStatistic>>> getDashboardStatistic(@QueryMap Map<String, String> params);
+
+    @GET(TopAdsNetworkConstant.PATH_DASHBOARD_DEPOSIT)
+    Observable<Response<DataResponse<DataDeposit>>> getDashboardDeposit(@QueryMap Map<String, String> params);
+
+    @GET(TopAdsNetworkConstant.PATH_DASHBOARD_TOTAL_AD)
+    Observable<Response<DataResponse<TotalAd>>> getDashboardTotalAd(@QueryMap Map<String, String> params);
+
+    @GET(TopAdsNetworkConstant.PATH_DASHBOARD_SHOP)
+    Observable<Response<DataResponse<ShopAd>>> getShopAd(@QueryMap Map<String, String> params);
+
+    @GET(TopAdsNetworkConstant.PATH_DASHBOARD_CREDIT)
+    Observable<Response<DataResponse<List<DataCredit>>>> getDashboardCredit();
+
+    @GET(TopAdsNetworkConstant.PATH_DASHBOARD_PRODUCT)
+    Observable<Response<PageDataResponse<List<ProductAd>>>> searchProductAd(@QueryMap Map<String, String> params);
+
+    @GET(TopAdsNetworkConstant.PATH_DASHBOARD_GROUP)
+    Observable<Response<PageDataResponse<List<GroupAd>>>> searchGroupAd(@QueryMap Map<String, String> params);
+
+    @GET(TopAdsNetworkConstant.PATH_SEARCH_PRODUCT)
+    Observable<Response<DataResponse<List<Product>>>> searchProduct(@QueryMap Map<String, String> params);
+
+    @GET(TopAdsNetworkConstant.PATH_DETAIL_PRODUCT_AD)
+    Observable<Response<PageDataResponse<List<ProductAd>>>> getDetailProductAd();
+
+    @PATCH(TopAdsNetworkConstant.PATH_BULK_ACTION_PRODUCT_AD)
+    Observable<Response<DataResponse<ProductAdBulkAction>>> bulkActionProductAd(@Body DataRequest<ProductAdBulkAction> body);
+
+    @PATCH(TopAdsNetworkConstant.PATH_BULK_ACTION_GROUP_AD)
+    Observable<Response<DataResponse<GroupAdBulkAction>>> bulkActionGroupAd(@Body DataRequest<GroupAdBulkAction> body);
+
+}

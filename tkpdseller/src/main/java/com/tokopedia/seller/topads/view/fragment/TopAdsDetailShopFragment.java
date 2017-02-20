@@ -9,15 +9,15 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
-import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
-import com.tokopedia.seller.topads.interactor.TopAdsProductAdInteractorImpl;
-import com.tokopedia.seller.topads.interactor.TopAdsShopAdInteractorImpl;
-import com.tokopedia.seller.topads.model.data.Ad;
-import com.tokopedia.seller.topads.model.data.ShopAd;
-import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
-import com.tokopedia.seller.topads.presenter.TopAdsDetailProductPresenter;
-import com.tokopedia.seller.topads.presenter.TopAdsDetailShopPresenterImpl;
+import com.tokopedia.seller.topads.data.source.local.TopAdsCacheDataSourceImpl;
+import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSourceImpl;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractorImpl;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsShopAdInteractorImpl;
+import com.tokopedia.seller.topads.domain.model.data.Ad;
+import com.tokopedia.seller.topads.domain.model.data.ShopAd;
+import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDetailShopPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
