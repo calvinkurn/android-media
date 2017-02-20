@@ -157,6 +157,38 @@ public class RechargeInteractorImpl implements RechargeInteractor {
     }
 
     @Override
+    public void getDetailProductFromOperator(final OnGetDetailProduct listener, int categoryId, String operatorId) {
+        getObservableListProduct()
+                .flatMap(new Func1<List<Product>, Observable<Product>>() {
+                    @Override
+                    public Observable<Product> call(List<Product> products) {
+                        return Observable.from(products);
+                    }
+                })
+                .filter(isOperatorExist(categoryId, Integer.parseInt(operatorId)))
+                .toList()
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Product>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        listener.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(List<Product> products) {
+                        listener.onSuccessDetailProduct(products);
+                    }
+                });
+    }
+
+    @Override
     public void getCategoryData(final OnGetCategory onGetCategory) {
         Observable.concat(getObservableDbCategory(), getObservableNetworkCategory())
                 .first(isCategoryExist())
@@ -308,7 +340,7 @@ public class RechargeInteractorImpl implements RechargeInteractor {
                 .filter(new Func1<Operator, Boolean>() {
                     @Override
                     public Boolean call(Operator operator) {
-                        return operator.getId() == Integer.valueOf(operatorId);
+                        return String.valueOf(operator.getId()).equals(operatorId);
                     }
                 })
                 .map(convertToRechargeOperatorModel())
@@ -774,4 +806,22 @@ public class RechargeInteractorImpl implements RechargeInteractor {
         };
     }
 
+    private Func1<Product, Boolean> isOperatorExist(final int categoryId, final int operatorId) {
+        return new Func1<Product, Boolean>() {
+            @Override
+            public Boolean call(Product product) {
+                return product
+                        .getRelationships()
+                        .getCategory()
+                        .getData()
+                        .getId() == categoryId
+                        &&
+                        product
+                                .getRelationships()
+                                .getOperator()
+                                .getData()
+                                .getId() == operatorId;
+            }
+        };
+    }
 }

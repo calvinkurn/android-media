@@ -22,6 +22,8 @@ public interface RechargeInteractor {
 
     void getListProductDefaultOperator(OnGetListProduct onGetListProduct, int categoryId, String operatorId);
 
+    void getDetailProductFromOperator(OnGetDetailProduct listener, int categoryId, String operatorId);
+
     void getCategoryData(OnGetCategory onGetCategory);
 
     void getProductById(OnGetProductById listener, String categoryId, String operatorId, String productId);
@@ -35,6 +37,12 @@ public interface RechargeInteractor {
     void getOperatorById(String operatorId,OnGetOperatorByIdListener listener);
 
     void getOperatorListByIds(List<Integer> operatorId,OnGetListOperatorByIdsListener listener);
+
+    interface OnGetDetailProduct {
+        void onSuccessDetailProduct(List<Product> products);
+
+        void onError(Throwable e);
+    }
 
     interface OnGetListProduct {
         void onSuccess(List<Product> listProduct);

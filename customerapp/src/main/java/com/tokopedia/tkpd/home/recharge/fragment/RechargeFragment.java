@@ -292,6 +292,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                     this.rechargePresenter.validateWithOperator(
                             category.getId(), selectedOperatorId);
                 } else {
+                    this.rechargePresenter.validateOperatorWithoutProduct(category.getId(),
+                            selectedOperatorId);
                     hideFormAndShowImageOperator();
                 }
             } else {
@@ -382,7 +384,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @Override
     public void renderDataProducts(List<Product> productList) {
         Collections.sort(productList, new ProductComparator());
-        if (rechargeEditText.getText().length() >= minLengthDefaultOperator ||
+        if (rechargeEditText.getText().length() >= 0 ||
                 !category.getAttributes().getClientNumber().getIsShown()) {
             if (productList != null && productList.size() > 0) {
                 this.productList = productList;
@@ -562,7 +564,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     private void renderDefaultView(CategoryAttributes categoryAttributes) {
-
         ClientNumber clientNumber = categoryAttributes.getClientNumber();
         tlpLabelTextView.setText(clientNumber.getText());
         rechargeEditText.setHint(clientNumber.getPlaceholder());
@@ -574,8 +575,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         setPhoneBookVisibility();
 
         if (!category.getAttributes().getValidatePrefix()) {
+            selectedOperatorId = category.getAttributes().getDefaultOperatorId();
             if (!category.getAttributes().getClientNumber().getIsShown()) {
-                selectedOperatorId = category.getAttributes().getDefaultOperatorId();
                 this.rechargePresenter.updateMinLenghAndOperator(selectedOperatorId);
                 setUpForNotUsingTextEdit();
             }
@@ -617,10 +618,11 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         radGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                hideFormAndImageOperator();
+                rechargeEditText.setText("");
                 selectedOperator = operators.get(i);
                 selectedOperatorId = Integer.toString(operators.get(i).operatorId);
-                rechargePresenter.validateWithOperator(category.getId(), selectedOperatorId);
-                rechargePresenter.updateMinLenghAndOperator(selectedOperatorId);
+                minLengthDefaultOperator = selectedOperator.minimumLength;
             }
         });
     }

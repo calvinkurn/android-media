@@ -18,6 +18,8 @@ public interface RechargePresenter {
 
     void validateWithOperator(int categoryId, String operatorId);
 
+    void validateOperatorWithoutProduct(int categoryId, String operatorId);
+
     void getListOperatorFromCategory( int categoryId);
 
     void getDefaultProduct(String categoryId, String operatorId, String productId);
