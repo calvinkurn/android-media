@@ -11,18 +11,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractorImpl;
 import com.tokopedia.seller.topads.domain.model.data.Ad;
 import com.tokopedia.seller.topads.domain.model.data.ProductAd;
-import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
+import com.tokopedia.seller.topads.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenterImpl;
-import com.tokopedia.seller.topads.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
 /**
@@ -92,18 +91,29 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     @Override
     protected void turnOnAd() {
         super.turnOnAd();
-        presenter.turnOnAds(productAd, SessionHandler.getShopID(getActivity()));
+        presenter.turnOnAds(productAd.getId());
     }
 
     @Override
     protected void turnOffAd() {
         super.turnOffAd();
-        presenter.turnOffAds(productAd, SessionHandler.getShopID(getActivity()));
+        presenter.turnOffAds(productAd.getId());
     }
 
     @Override
     protected void refreshAd() {
         presenter.refreshAd(startDate, endDate, productAd.getId());
+    }
+
+    @Override
+    protected void editAd() {
+
+    }
+
+    @Override
+    protected void deleteAd() {
+        super.deleteAd();
+        presenter.deleteAd(productAd.getId());
     }
 
     @Override
@@ -162,7 +172,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
 
     private void updateManageGroupMenu() {
         if (manageGroupMenuItem != null) {
-            manageGroupMenuItem.setVisible(isHasGroupAd());
+            manageGroupMenuItem.setVisible(!isHasGroupAd());
         }
     }
 }

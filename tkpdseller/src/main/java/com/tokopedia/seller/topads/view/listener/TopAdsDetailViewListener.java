@@ -18,4 +18,8 @@ public interface TopAdsDetailViewListener {
     void onTurnOffAdSuccess();
 
     void onTurnOffAdError();
+
+    void onDeleteAdSuccess();
+
+    void onDeleteAdError();
 }
