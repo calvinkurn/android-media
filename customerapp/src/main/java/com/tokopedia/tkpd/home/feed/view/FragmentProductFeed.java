@@ -237,13 +237,16 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     public void showRefreshFailed() {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(),
-                new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                feedPresenter.refreshDataFeed();
-            }
-        }).showRetrySnackbar();
+        if (adapter.getData().size() > 0) {
+            NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                    new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            feedPresenter.refreshDataFeed();
+                        }
+                    }).showRetrySnackbar();
+        }
+
     }
 
 

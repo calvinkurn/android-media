@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.home.feed.data.source.local.dbManager;
+package com.tokopedia.core.base.common.dbManager;
 
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
