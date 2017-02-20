@@ -3,19 +3,21 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.core.util.DeepLinkChecker;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractorImpl;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsShopAdInteractorImpl;
 import com.tokopedia.seller.topads.domain.model.data.Ad;
 import com.tokopedia.seller.topads.domain.model.data.ShopAd;
-import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailShopPresenterImpl;
 
@@ -25,6 +27,7 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsDetailShopPresenterImpl;
 
 public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailProductPresenter> {
 
+    private MenuItem deleteMenuItem;
     private ShopAd ad;
 
     public static Fragment createInstance(ShopAd shopAd) {
@@ -65,18 +68,28 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
     @Override
     protected void turnOnAd() {
         super.turnOnAd();
-        presenter.turnOnAds(ad, SessionHandler.getShopID(getActivity()));
+        presenter.turnOnAds(ad.getId());
     }
 
     @Override
     protected void turnOffAd() {
         super.turnOffAd();
-        presenter.turnOffAds(ad, SessionHandler.getShopID(getActivity()));
+        presenter.turnOffAds(ad.getId());
     }
 
     @Override
     protected void refreshAd() {
         presenter.refreshAd(startDate, endDate, ad.getId());
+    }
+
+    @Override
+    protected void editAd() {
+
+    }
+
+    @Override
+    protected void deleteAd() {
+        super.deleteAd();
     }
 
     @Override
@@ -87,5 +100,12 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
 
     void onNameClicked() {
         DeepLinkChecker.openShop(ad.getShopUri(), getActivity());
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        deleteMenuItem = menu.findItem(R.id.menu_delete);
+        deleteMenuItem.setVisible(false);
     }
 }

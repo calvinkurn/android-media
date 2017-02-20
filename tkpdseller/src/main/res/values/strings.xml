@@ -92,6 +92,9 @@
     <string name="title_action_on">On</string>
     <string name="title_action_off">Off</string>
     <string name="action_filter_date">Filter Tanggal</string>
+    <string name="label_manage_group">Atur Grup</string>
+    <string name="label_edit">Ubah</string>
+    <string name="label_delete">Hapus</string>
     <string name="title_group_list">Grup</string>
     <string name="title_product_ad_detail">Detil Promo Produk</string>
     <string name="title_shop_ad_detail">Detil Promo Toko</string>
