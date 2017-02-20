@@ -616,8 +616,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             RadioButton radioButton = new RadioButton(getActivity());
             radioButton.setId(i);
             radioButton.setText(operators.get(i).name);
-            radioButton.setTextSize(getResources().getDimension(R.dimen.text_size_medium)/
-                getResources().getDisplayMetrics().density);
+            radioButton.setTextSize(getResources().getDimension(R.dimen.text_size_medium) /
+                    getResources().getDisplayMetrics().density);
             radioButton.setTextColor(ContextCompat.getColor(getActivity(), R.color.grey_600));
             radGroup.addView(radioButton);
         }
