@@ -33,6 +33,24 @@ import butterknife.BindView;
 public class DetailView extends BaseView<Detail, DetailResCenterView> {
 
     public static final String TAG = DetailView.class.getSimpleName();
+    private static final int UNHANDLED_ACTION = -1;
+    private static final int ACTION_OPEN_ATTACHMENT = 1;
+    private static final int ACTION_OPEN_SHOP_INFO = 2;
+    private static final int ACTION_OPEN_PEOPLE_INFO = 3;
+    private static final int ACTION_OPEN_INVOICE = 4;
+    private static final int ACTION_CANCEL_RESOLUTION = 5;
+    private static final int ACTION_REPORT_RESOLUTION = 6;
+    private static final int ACTION_ACCEPT_RESOLUTION = 7;
+    private static final int ACTION_FINISH_RETUR = 8;
+    private static final int ACTION_ACCEPT_ADMIN = 9;
+    private static final int ACTION_INPUT_SHIP_REF = 10;
+    private static final int ACTION_TRACK_SHIP_REF = 11;
+    private static final int ACTION_EDIT_SHIP_REF = 12;
+    private static final int ACTION_APPEAL = 13;
+    private static final int ACTION_EDIT_SOLUTION = 14;
+    private static final int ACTION_UPSERT_RETUR_ADDRESS = 15;
+    private static final int ACTION_DETAIL = 16;
+    private static final int ACTION_INBOX = 17;
 
     @BindView(R2.id.webview)
     TkpdWebView webView;
@@ -154,108 +172,168 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.d(TAG, "shouldOverrideUrlLoading: " + url);
 
-            if (Uri.parse(url).getLastPathSegment().contains("attachment.pl")) {
-                listener.openAttachment(url);
-                return true;
-            } else if (Uri.parse(url).getLastPathSegment().contains("shop.pl")) {
-                listener.openShop();
-                return true;
-            } else if (Uri.parse(url).getLastPathSegment().contains("people.pl")) {
-                listener.openPeople(url);
-                return true;
-            } else if (Uri.parse(url).getLastPathSegment().contains("invoice.pl")) {
-                listener.openInvoice();
-                return true;
-            } else {
-                return Uri.parse(url).getLastPathSegment().contains("resolution-center.pl") && generateActionFromUrl(url);
+            final String parserUrl = url;
+            switch (getUrlToHandle(parserUrl)) {
+                case ACTION_OPEN_ATTACHMENT:
+                    listener.openAttachment(parserUrl);
+                    return true;
+                case ACTION_OPEN_SHOP_INFO:
+                    listener.openShop();
+                    return true;
+                case ACTION_OPEN_PEOPLE_INFO:
+                    listener.openPeople(parserUrl);
+                    return true;
+                case ACTION_OPEN_INVOICE:
+                    listener.openInvoice();
+                    return true;
+                case ACTION_CANCEL_RESOLUTION:
+                    listener.showConfirmationDialog(R.string.msg_rescen_cancel, new ConfirmationDialog.Listener() {
+                        @Override
+                        public void onSubmitButtonClick() {
+                            listener.actionCancelResolution(getResolutionIDFromQueryParameter(parserUrl));
+                        }
+                    });
+                    return true;
+                case ACTION_REPORT_RESOLUTION:
+                    listener.showConfirmationDialog(R.string.msg_rescen_help, new ConfirmationDialog.Listener() {
+                        @Override
+                        public void onSubmitButtonClick() {
+                            listener.actionReportResolution(getResolutionIDFromQueryParameter(parserUrl));
+                        }
+                    });
+                    return true;
+                case ACTION_ACCEPT_RESOLUTION:
+                    listener.showConfirmationDialog(R.string.msg_accept_sol, new ConfirmationDialog.Listener() {
+                        @Override
+                        public void onSubmitButtonClick() {
+                            if (resolutionDetailModel.getResolutionLast().getLastShowAcceptReturButton() == 1) {
+                                listener.openInputAddress();
+                            } else {
+                                listener.actionAcceptResolution(getResolutionIDFromQueryParameter(parserUrl));
+                            }
+                        }
+                    });
+                    return true;
+                case ACTION_FINISH_RETUR:
+                    listener.showConfirmationDialog(R.string.msg_rescen_finish, new ConfirmationDialog.Listener() {
+                        @Override
+                        public void onSubmitButtonClick() {
+                            listener.actionFinishRetur(getResolutionIDFromQueryParameter(parserUrl));
+                        }
+                    });
+                    return true;
+                case ACTION_ACCEPT_ADMIN:
+                    listener.showConfirmationDialog(R.string.msg_accept_admin, new ConfirmationDialog.Listener() {
+                        @Override
+                        public void onSubmitButtonClick() {
+                            if (resolutionDetailModel.getResolutionLast().getLastShowAcceptAdminReturButton() == 1) {
+                                listener.openInputAddressForAcceptAdmin();
+                            } else {
+                                listener.actionAcceptAdmin(getResolutionIDFromQueryParameter(parserUrl));
+                            }
+                        }
+                    });
+                    return true;
+                case ACTION_INPUT_SHIP_REF:
+                    listener.openInputShippingRef();
+                    return true;
+                case ACTION_TRACK_SHIP_REF:
+                    listener.openTrackShippingRef(parserUrl);
+                    return true;
+                case ACTION_EDIT_SHIP_REF:
+                    listener.openEditShippingRef(parserUrl);
+                    return true;
+                case ACTION_APPEAL:
+                    listener.openAppealSolution(getResolutionIDFromQueryParameter(parserUrl));
+                    return true;
+                case ACTION_EDIT_SOLUTION:
+                    listener.openEditSolution(getResolutionIDFromQueryParameter(parserUrl));
+                    return true;
+                case ACTION_UPSERT_RETUR_ADDRESS:
+                    if (Uri.parse(parserUrl).getQueryParameter("act").equals(String.valueOf(2))) {
+                        listener.openEditAddress(parserUrl);
+                    } else {
+                        listener.openInputAddressMigrateVersion();
+                    }
+                    return true;
+                case ACTION_DETAIL:
+                    return false;
+                case ACTION_INBOX:
+                    listener.setFailSaveRespond();
+                    listener.setErrorWvLogin();
+                    return true;
+                case UNHANDLED_ACTION:
+                    listener.setFailSaveRespond();
+                    listener.setErrorWvLogin();
+                    return true;
+                default:
+                    return true;
             }
         }
     }
 
-    private boolean generateActionFromUrl(String url) {
-        Log.d(TAG, "generateActionFromUrl: " + url);
-        String paramAction = Uri.parse(url).getQueryParameter("action");
-        final String paramID = Uri.parse(url).getQueryParameter("id");
-        switch (paramAction) {
-            case "cancel_resolution":
-                listener.showConfirmationDialog(R.string.msg_rescen_cancel, new ConfirmationDialog.Listener() {
-                    @Override
-                    public void onSubmitButtonClick() {
-                        listener.actionCancelResolution(paramID);
-                    }
-                });
-                return true;
-            case "report_resolution":
-                listener.showConfirmationDialog(R.string.msg_rescen_help, new ConfirmationDialog.Listener() {
-                    @Override
-                    public void onSubmitButtonClick() {
-                        listener.actionReportResolution(paramID);
-                    }
-                });
-                return true;
-            case "accept_resolution":
-                listener.showConfirmationDialog(R.string.msg_accept_sol, new ConfirmationDialog.Listener() {
-                    @Override
-                    public void onSubmitButtonClick() {
-                        if (resolutionDetailModel.getResolutionLast().getLastShowAcceptReturButton() == 1) {
-                            listener.openInputAddress();
-                        } else {
-                            listener.actionAcceptResolution(paramID);
-                        }
-                    }
-                });
-                return true;
-            case "finish_retur":
-                listener.showConfirmationDialog(R.string.msg_rescen_finish, new ConfirmationDialog.Listener() {
-                    @Override
-                    public void onSubmitButtonClick() {
-                        listener.actionFinishRetur(paramID);
-                    }
-                });
-                return true;
-            case "accept_admin":
-                listener.showConfirmationDialog(R.string.msg_accept_admin, new ConfirmationDialog.Listener() {
-                    @Override
-                    public void onSubmitButtonClick() {
-                        if (resolutionDetailModel.getResolutionLast().getLastShowAcceptAdminReturButton() == 1) {
-                            listener.openInputAddressForAcceptAdmin();
-                        } else {
-                            listener.actionAcceptAdmin(paramID);
-                        }
-                    }
-                });
-                return true;
-            case "input_ship_ref":
-                listener.openInputShippingRef();
-                return true;
-            case "track_ship_ref":
-                listener.openTrackShippingRef(url);
-                return true;
-            case "edit_ship_ref":
-                listener.openEditShippingRef(url);
-                return true;
-            case "appeal":
-                listener.openAppealSolution(paramID);
-                return true;
-            case "edit_solution":
-                listener.openEditSolution(paramID);
-                return true;
-            case "upsert_retur_address":
-                if (Uri.parse(url).getQueryParameter("act").equals(String.valueOf(2))) {
-                    listener.openEditAddress(url);
-                } else {
-                    listener.openInputAddressMigrateVersion();
-                }
-                return true;
-            case "detail":
-                return false;
-            case "inbox":
-                listener.setFailSaveRespond();
-                listener.setErrorWvLogin();
-                return true;
-            default:
-                return true;
+    private int getUrlToHandle(String url) {
+        try {
+            if (Uri.parse(url).getLastPathSegment().contains("attachment.pl")) {
+                return ACTION_OPEN_ATTACHMENT;
+            } else if (Uri.parse(url).getLastPathSegment().contains("shop.pl")) {
+                return ACTION_OPEN_SHOP_INFO;
+            } else if (Uri.parse(url).getLastPathSegment().contains("people.pl")) {
+                return ACTION_OPEN_PEOPLE_INFO;
+            } else if (Uri.parse(url).getLastPathSegment().contains("invoice.pl")) {
+                return ACTION_OPEN_INVOICE;
+            } else if (isResolutionCenter(Uri.parse(url))
+                    && Uri.parse(url).getQueryParameter("action").contains("cancel_resolution")) {
+                return ACTION_CANCEL_RESOLUTION;
+            } else if (isResolutionCenter(Uri.parse(url))
+                    && Uri.parse(url).getQueryParameter("action").contains("report_resolution")) {
+                return ACTION_REPORT_RESOLUTION;
+            } else if (isResolutionCenter(Uri.parse(url))
+                    && Uri.parse(url).getQueryParameter("action").contains("accept_resolution")) {
+                return ACTION_ACCEPT_RESOLUTION;
+            } else if (isResolutionCenter(Uri.parse(url))
+                    && Uri.parse(url).getQueryParameter("action").contains("finish_retur")) {
+                return ACTION_FINISH_RETUR;
+            } else if (isResolutionCenter(Uri.parse(url))
+                    && Uri.parse(url).getQueryParameter("action").contains("accept_admin")) {
+                return ACTION_ACCEPT_ADMIN;
+            } else if (isResolutionCenter(Uri.parse(url))
+                    && Uri.parse(url).getQueryParameter("action").contains("input_ship_ref")) {
+                return ACTION_INPUT_SHIP_REF;
+            } else if (isResolutionCenter(Uri.parse(url))
+                    && Uri.parse(url).getQueryParameter("action").contains("track_ship_ref")) {
+                return ACTION_TRACK_SHIP_REF;
+            } else if (isResolutionCenter(Uri.parse(url))
+                    && Uri.parse(url).getQueryParameter("action").contains("edit_ship_ref")) {
+                return ACTION_EDIT_SHIP_REF;
+            } else if (isResolutionCenter(Uri.parse(url))
+                    && Uri.parse(url).getQueryParameter("action").contains("appeal")) {
+                return ACTION_APPEAL;
+            } else if (isResolutionCenter(Uri.parse(url))
+                    && Uri.parse(url).getQueryParameter("action").contains("edit_solution")) {
+                return ACTION_EDIT_SOLUTION;
+            } else if (isResolutionCenter(Uri.parse(url))
+                    && Uri.parse(url).getQueryParameter("action").contains("upsert_retur_address")) {
+                return ACTION_UPSERT_RETUR_ADDRESS;
+            } else if (isResolutionCenter(Uri.parse(url))
+                    && Uri.parse(url).getQueryParameter("action").contains("detail")) {
+                return ACTION_DETAIL;
+            } else if (isResolutionCenter(Uri.parse(url))
+                    && Uri.parse(url).getQueryParameter("action").contains("inbox")) {
+                return ACTION_INBOX;
+            }  else {
+                return 0;
+            }
+        } catch (NullPointerException e) {
+            return UNHANDLED_ACTION;
         }
     }
 
+    private boolean isResolutionCenter(Uri uri) {
+        return uri.getLastPathSegment().contains("resolution-center.pl");
+    }
+
+    private String getResolutionIDFromQueryParameter(String parserUrl) {
+        return Uri.parse(parserUrl).getQueryParameter("id");
+    }
 }
