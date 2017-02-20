@@ -2,15 +2,15 @@ package com.tokopedia.seller.gmsubscribe.view.home.presenter;
 
 import android.util.Log;
 
-import com.tokopedia.seller.common.domain.RequestParams;
-import com.tokopedia.seller.common.presentation.BasePresenter;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.seller.gmsubscribe.domain.product.interactor.ClearGmSubscribeProductCacheUseCase;
 import com.tokopedia.seller.gmsubscribe.view.home.fragment.GmHomeView;
 
 /**
  * Created by sebastianuskh on 2/9/17.
  */
-public class GmHomePresenterImpl extends BasePresenter<GmHomeView> implements GmHomePresenter {
+public class GmHomePresenterImpl extends BaseDaggerPresenter<GmHomeView> implements GmHomePresenter {
     private static final String TAG = "GMHomePresenter";
     private final ClearGmSubscribeProductCacheUseCase clearGMSubscribeProductCache;
 

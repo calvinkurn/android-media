@@ -1,7 +1,7 @@
 package com.tokopedia.seller.gmsubscribe.view.checkout.fragment;
 
 
-import com.tokopedia.seller.common.presentation.CustomerView;
+import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GmAutoSubscribeViewModel;
 import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GmCheckoutCurrentSelectedViewModel;
 import com.tokopedia.seller.gmsubscribe.view.checkout.viewmodel.GmCheckoutViewModel;

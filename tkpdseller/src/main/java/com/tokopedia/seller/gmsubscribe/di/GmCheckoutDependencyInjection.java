@@ -1,13 +1,13 @@
 package com.tokopedia.seller.gmsubscribe.di;
 
 import com.google.gson.Gson;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
-import com.tokopedia.seller.common.data.executor.JobExecutor;
-import com.tokopedia.seller.common.presentation.UIThread;
 import com.tokopedia.seller.gmsubscribe.data.factory.GmSubscribeCartFactory;
 import com.tokopedia.seller.gmsubscribe.data.factory.GmSubscribeProductFactory;
 import com.tokopedia.seller.gmsubscribe.data.mapper.GmSubscribeCheckoutMapper;

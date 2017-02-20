@@ -1,6 +1,7 @@
 package com.tokopedia.seller.gmsubscribe.view.home.fragment;
 
-import com.tokopedia.seller.common.presentation.CustomerView;
+
+import com.tokopedia.core.base.presentation.CustomerView;
 
 /**
  * Created by sebastianuskh on 2/9/17.

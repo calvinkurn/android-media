@@ -2,7 +2,7 @@ package com.tokopedia.seller.gmsubscribe.view.checkout.presenter;
 
 import android.util.Log;
 
-import com.tokopedia.seller.common.presentation.BasePresenter;
+import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.seller.gmsubscribe.domain.cart.exception.GmVoucherCheckException;
 import com.tokopedia.seller.gmsubscribe.domain.cart.interactor.CheckGmSubscribeVoucherUseCase;
 import com.tokopedia.seller.gmsubscribe.domain.cart.interactor.CheckoutGmSubscribeUseCase;
@@ -25,7 +25,7 @@ import rx.Subscriber;
  * Created by sebastianuskh on 2/3/17.
  */
 
-public class GmCheckoutPresenterImpl extends BasePresenter<GmCheckoutView> implements GmCheckoutPresenter {
+public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView> implements GmCheckoutPresenter {
 
     private static final String TAG = "Checkout Presenter";
     private final GetGmCurrentSelectedProductUseCase getCurrentSelectedProduct;

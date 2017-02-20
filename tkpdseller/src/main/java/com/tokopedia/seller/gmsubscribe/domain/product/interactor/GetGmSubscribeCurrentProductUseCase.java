@@ -1,9 +1,9 @@
 package com.tokopedia.seller.gmsubscribe.domain.product.interactor;
 
-import com.tokopedia.seller.common.domain.RequestParams;
-import com.tokopedia.seller.common.domain.UseCase;
-import com.tokopedia.seller.common.domain.executor.PostExecutionThread;
-import com.tokopedia.seller.common.domain.executor.ThreadExecutor;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.domain.UseCase;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.gmsubscribe.domain.product.GmSubscribeProductRepository;
 import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainModel;
 

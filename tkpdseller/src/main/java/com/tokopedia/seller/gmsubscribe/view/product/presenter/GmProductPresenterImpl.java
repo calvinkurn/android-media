@@ -3,8 +3,8 @@ package com.tokopedia.seller.gmsubscribe.view.product.presenter;
 
 import android.util.Log;
 
-import com.tokopedia.seller.common.domain.RequestParams;
-import com.tokopedia.seller.common.presentation.BasePresenter;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetGmSubscribeCurrentProductUseCase;
 import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetGmSubscribeExtendProductUseCase;
 import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainModel;
@@ -19,7 +19,7 @@ import rx.Subscriber;
  * Created by sebastianuskh on 11/23/16.
  */
 
-public class GmProductPresenterImpl extends BasePresenter<GmProductView> implements GmProductPresenter {
+public class GmProductPresenterImpl extends BaseDaggerPresenter<GmProductView> implements GmProductPresenter {
     private final GetGmSubscribeCurrentProductUseCase getGmSubscribeCurrentProductUseCase;
     private final GetGmSubscribeExtendProductUseCase getGmSubscribeExtendProductUseCase;
 
