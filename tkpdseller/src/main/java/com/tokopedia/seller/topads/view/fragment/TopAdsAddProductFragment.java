@@ -13,8 +13,8 @@ import android.view.View;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.model.data.Product;
-import com.tokopedia.seller.topads.presenter.TopAdsAddProductPresenter;
-import com.tokopedia.seller.topads.presenter.TopAdsAddProductPresenterImpl;
+import com.tokopedia.seller.topads.view.presenter.TopAdsAddProductPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsAddProductPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsProductAdapter;
 import com.tokopedia.seller.topads.view.listener.TopAdsAddProductFragmentListener;
 

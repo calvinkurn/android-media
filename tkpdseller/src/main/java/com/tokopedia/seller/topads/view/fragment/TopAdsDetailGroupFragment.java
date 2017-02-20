@@ -12,8 +12,8 @@ import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.interactor.TopAdsGroupAdInteractorImpl;
 import com.tokopedia.seller.topads.model.data.Ad;
 import com.tokopedia.seller.topads.model.data.GroupAd;
-import com.tokopedia.seller.topads.presenter.TopAdsDetailGroupPresenter;
-import com.tokopedia.seller.topads.presenter.TopAdsDetailGroupPresenterImpl;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDetailGroupPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDetailGroupPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 

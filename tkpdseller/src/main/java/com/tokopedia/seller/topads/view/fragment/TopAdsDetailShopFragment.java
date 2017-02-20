@@ -16,8 +16,8 @@ import com.tokopedia.seller.topads.interactor.TopAdsShopAdInteractorImpl;
 import com.tokopedia.seller.topads.model.data.Ad;
 import com.tokopedia.seller.topads.model.data.ShopAd;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
-import com.tokopedia.seller.topads.presenter.TopAdsDetailProductPresenter;
-import com.tokopedia.seller.topads.presenter.TopAdsDetailShopPresenterImpl;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDetailShopPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
