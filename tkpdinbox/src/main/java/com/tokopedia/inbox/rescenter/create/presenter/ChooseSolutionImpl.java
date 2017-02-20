@@ -84,7 +84,7 @@ public class ChooseSolutionImpl implements ChooseSolutionPresenter {
         if (isValid(context)) {
             listener.showLoading(true);
             listener.showMainView(false);
-            // createResolutionCenter(context, listener.collectInputData());
+            createResolutionCenter(context, listener.collectInputData());
         }
     }
 
