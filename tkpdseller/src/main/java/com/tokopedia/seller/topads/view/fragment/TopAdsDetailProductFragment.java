@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.core.util.SessionHandler;
@@ -32,10 +35,11 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         void goToProductActivity(String productUrl);
     }
 
-    TopAdsLabelView promoGroupLabelView;
+    private TopAdsLabelView promoGroupLabelView;
 
     private ProductAd productAd;
     private TopAdsDetailProductFragmentListener listener;
+    private MenuItem manageGroupMenuItem;
 
     public static Fragment createInstance(ProductAd productAd) {
         Fragment fragment = new TopAdsDetailProductFragment();
@@ -116,7 +120,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
             promoGroupLabelView.setContent(getString(R.string.label_top_ads_empty_group));
             promoGroupLabelView.setContentColorValue(ContextCompat.getColor(getActivity(), android.R.color.tab_indicator_text));
         }
-
+        updateManageGroupMenu();
     }
 
     /**
@@ -129,6 +133,9 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     }
 
     private boolean isHasGroupAd() {
+        if (productAd == null) {
+            return false;
+        }
         return !TextUtils.isEmpty(productAd.getGroupName()) && productAd.getGroupId() > 0;
     }
 
@@ -143,6 +150,19 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID_GROUP, productAd.getGroupId());
             startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        manageGroupMenuItem = menu.findItem(R.id.menu_manage_group);
+        updateManageGroupMenu();
+    }
+
+    private void updateManageGroupMenu() {
+        if (manageGroupMenuItem != null) {
+            manageGroupMenuItem.setVisible(isHasGroupAd());
         }
     }
 }
