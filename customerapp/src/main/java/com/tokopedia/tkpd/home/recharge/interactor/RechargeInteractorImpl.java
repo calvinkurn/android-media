@@ -247,8 +247,6 @@ public class RechargeInteractorImpl implements RechargeInteractor {
                     public void onNext(List<Product> products) {
                         if (products.size() > 0) {
                             listener.onSuccessFetchProductById(products.get(0));
-                        } else {
-                            Log.e(TAG, "onNext: " + products.size());
                         }
                     }
                 });
