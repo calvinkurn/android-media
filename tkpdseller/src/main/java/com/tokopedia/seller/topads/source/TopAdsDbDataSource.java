@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.datasource;
+package com.tokopedia.seller.topads.source;
 
 import com.tokopedia.seller.topads.model.data.Cell;
 import com.tokopedia.seller.topads.model.data.Summary;

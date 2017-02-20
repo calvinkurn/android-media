@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.datasource;
+package com.tokopedia.seller.topads.source;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tokopedia.seller.topads.model.data.Cell;

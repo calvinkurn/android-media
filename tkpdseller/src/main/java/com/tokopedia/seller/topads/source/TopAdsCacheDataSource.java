@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.datasource;
+package com.tokopedia.seller.topads.source;
 
 import java.util.Date;
 
