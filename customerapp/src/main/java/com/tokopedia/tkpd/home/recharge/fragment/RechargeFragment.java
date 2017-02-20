@@ -437,8 +437,10 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             spnOperator.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    rechargeEditText.setEmptyString();
                     selectedOperator = operatorList.get(i);
+                    if (selectedOperator.showProduct) {
+                        rechargeEditText.setEmptyString();
+                    }
                     selectedOperatorId = Integer.toString(selectedOperator.operatorId);
                     if (!category.getAttributes().getClientNumber().getIsShown()) {
                         setUpForNotUsingTextEdit();
@@ -615,7 +617,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             RadioButton radioButton = new RadioButton(getActivity());
             radioButton.setId(i);
             radioButton.setText(operators.get(i).name);
-            radioButton.setTextSize(getResources().getDimension(R.dimen.text_size_xsmall)/
+            radioButton.setTextSize(getResources().getDimension(R.dimen.text_size_medium)/
                 getResources().getDisplayMetrics().density);
             radioButton.setTextColor(ContextCompat.getColor(getActivity(), R.color.grey_600));
             radGroup.addView(radioButton);
