@@ -56,10 +56,10 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.banner.holder.BannerHolderView;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.OnGetBrandsListener;
 import com.tokopedia.tkpd.home.TopPicksView;
@@ -70,6 +70,7 @@ import com.tokopedia.tkpd.home.adapter.TickerAdapter;
 import com.tokopedia.tkpd.home.adapter.TopPicksAdapter;
 import com.tokopedia.tkpd.home.adapter.TopPicksItemAdapter;
 import com.tokopedia.tkpd.home.banner.ConvenientBanner;
+import com.tokopedia.tkpd.home.banner.holder.BannerHolderView;
 import com.tokopedia.tkpd.home.banner.holder.BannerViewHolderCreator;
 import com.tokopedia.tkpd.home.facade.FacadePromo;
 import com.tokopedia.tkpd.home.presenter.BrandsPresenter;
@@ -103,7 +104,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         SectionListCategoryAdapter.OnCategoryClickedListener,
         SectionListCategoryAdapter.OnGimmicClickedListener, HomeCatMenuView, TopPicksView,
         TopPicksItemAdapter.OnTitleClickedListener, TopPicksItemAdapter.OnItemClickedListener,
-        TopPicksAdapter.OnClickViewAll, TickerAdapter.OnTickerClosed{
+        TopPicksAdapter.OnClickViewAll, TickerAdapter.OnTickerClosed {
 
     private static final long SLIDE_DELAY = 5000;
     private static final long TICKER_DELAY = 5000;
@@ -131,7 +132,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private BroadcastReceiver stopBannerReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if(holder.bannerPager!=null){
+            if (holder.bannerPager != null) {
                 holder.bannerPager.stopTurning();
             }
         }
@@ -268,9 +269,9 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
             holder.bannerPager.getViewPager().setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
-                    if(motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+                    if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
                         holder.bannerPager.stopTurning();
-                      }
+                    }
                     return false;
                 }
             });
@@ -300,10 +301,10 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void initVar() {
-        category = new CategoryImpl(getActivity(),this);
+        category = new CategoryImpl(getActivity(), this);
         holder = new ViewHolder();
         model = new Model();
-        tickerAdapter = TickerAdapter.createInstance(getActivity(),this);
+        tickerAdapter = TickerAdapter.createInstance(getActivity(), this);
         rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(getActivity(), this);
         homeCatMenuPresenter = new HomeCatMenuPresenterImpl(this);
         topPicksPresenter = new TopPicksPresenterImpl(this);
@@ -348,11 +349,11 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private void incrementTicker() {
         currentTicker++;
         if (currentTicker >= tickers.size())
-            currentTicker=0;
+            currentTicker = 0;
     }
 
     private boolean isTickerRotating() {
-        return (tickers != null && tickers.size()>1 && tickerHandler!=null && tickerIncrementPage!=null);
+        return (tickers != null && tickers.size() > 1 && tickerHandler != null && tickerIncrementPage != null);
     }
 
     @Override
@@ -480,14 +481,14 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
      * Brands a.k.a. Official Store
      * Created by Hafizh Herdi 20173001
      */
-    private void initBrands(){
+    private void initBrands() {
         holder.brandsRecyclerView = (RecyclerView) holder.MainView.findViewById(R.id.rv_brands_list);
         holder.brandsRecyclerView.setHasFixedSize(true);
         holder.brandsRecyclerView.setNestedScrollingEnabled(false);
         brandsRecyclerViewAdapter = new BrandsRecyclerViewAdapter(new BrandsRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClicked(String name, Brand brand, int position) {
-                UnifyTracking.eventClickOfficialStore(AppEventTracking.EventLabel.OFFICIAL_STORE+name);
+                UnifyTracking.eventClickOfficialStore(AppEventTracking.EventLabel.OFFICIAL_STORE + name);
                 Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
                 intent.putExtras(ShopInfoActivity.createBundle(String.valueOf(brand.getShopId()), ""));
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -682,14 +683,21 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         );
         holder.viewpagerRecharge.setAdapter(rechargeViewPagerAdapter);
         holder.viewpagerRecharge.getAdapter().notifyDataSetChanged();
-        LocalCacheHandler handler = new LocalCacheHandler(getActivity(), "tabSelection");
-        if (handler.getInt("rechargeSelectedPosition") != null && handler.getInt("rechargeSelectedPosition") < rechargeCategory.getData().size()) {
-            holder.viewpagerRecharge.setCurrentItem(handler.getInt("rechargeSelectedPosition"));
-            LocalCacheHandler.clearCache(getActivity(), "tabSelection");
+        LocalCacheHandler handler = new LocalCacheHandler(
+                getActivity(), TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION
+        );
+        addTablayoutListener(rechargeViewPagerAdapter);
+        final int positionTab = handler.getInt(TkpdCache.Key.WIDGET_RECHARGE_TAB_LAST_SELECTED);
+        if (positionTab != -1 && positionTab < rechargeCategory.getData().size()) {
+            holder.viewpagerRecharge.setCurrentItem(positionTab);
+            holder.tabLayoutRecharge.getTabAt(positionTab).select();
+            LocalCacheHandler.clearCache(
+                    getActivity(), TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION
+            );
         } else {
             holder.viewpagerRecharge.setCurrentItem(0);
         }
-        addTablayoutListener(rechargeViewPagerAdapter);
+
 
     }
 
@@ -793,8 +801,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
-        int widthOfHomeMenuView = (int) (width / 2);
-        return widthOfHomeMenuView;
+        return width / 2;
     }
 
     @Override

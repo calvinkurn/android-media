@@ -50,6 +50,7 @@ import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
@@ -90,6 +91,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private static final String TAG = "RechargeFragment";
     private static final int CONTACT_PICKER_RESULT = 1001;
     private static final String ARG_PARAM_CATEGORY = "ARG_PARAM_CATEGORY";
+    private static final String ARG_TAB_INDEX_POSITION = "ARG_TAB_INDEX_POSITION";
 
     public static final String ARG_UTM_SOURCE = "ARG_UTM_SOURCE";
     public static final String ARG_UTM_MEDIUM = "ARG_UTM_MEDIUM";
@@ -99,7 +101,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private static final String LAST_INPUT_KEY = "lastInputKey";
     private static final int LOGIN_REQUEST_CODE = 198;
     private static final String KEY_PHONEBOOK = "phoneBook";
-    private String phoneNumber = "";
 
     //endregion
 
@@ -151,8 +152,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         RechargeFragment rechargeFragment = new RechargeFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_PARAM_CATEGORY, category);
+        bundle.putInt(ARG_TAB_INDEX_POSITION, position);
         rechargeFragment.setArguments(bundle);
-        rechargeFragment.currentPosition = position;
         return rechargeFragment;
     }
 
@@ -173,6 +174,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                         Uri contactURI = intent.getData();
                         contact = fetchAndBuildContact(getActivity(), contactURI);
                         getPhoneNumberAndDisplayIt(contact);
+                        storeLastStateTabSelected();
+                        //setTabPosition(currentPosition);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -195,6 +198,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         if (this.getArguments() != null) {
             Bundle bundle = this.getArguments();
             category = bundle.getParcelable(ARG_PARAM_CATEGORY);
+            currentPosition = bundle.getInt(ARG_TAB_INDEX_POSITION);
             rechargePresenter = new RechargePresenterImpl(getContext(), this);
             setupArguments(getArguments());
         }
@@ -231,8 +235,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @Override
     public void onResume() {
         super.onResume();
-        if (!getUserVisibleHint()) return;
-
     }
 
     private void setRechargeEditTextCallback() {
@@ -285,7 +287,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 hideFormAndImageOperator();
             }
         }
-        phoneNumber = s.toString();
         if (!isValidatePrefix()) {
             if (s.length() >= minLengthDefaultOperator) {
                 if (isOperatorShowProduct()) {
@@ -337,18 +338,14 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (isChecked) {
-            buyButton.setText(getResources().getString(R.string.title_button_pay));
-        } else {
-            buyButton.setText(getResources().getString(R.string.title_buy));
-        }
+        buyButton.setText(
+                isChecked ? getResources().getString(R.string.title_button_pay)
+                        : getResources().getString(R.string.title_buy)
+        );
     }
 
     @Override
     public void onButtonContactClicked() {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(getActivity(), "tabSelection");
-        localCacheHandler.putInt("rechargeSelectedPosition", currentPosition);
-        localCacheHandler.applyEditor();
         RechargeFragmentPermissionsDispatcher.doLaunchContactPickerWithCheck(RechargeFragment.this);
     }
 
@@ -384,7 +381,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         Collections.sort(productList, new ProductComparator());
         if (rechargeEditText.getText().length() >= minLengthDefaultOperator ||
                 !category.getAttributes().getClientNumber().getIsShown()) {
-            if (productList != null && productList.size() > 0) {
+            if (productList.size() > 0) {
                 this.productList = productList;
                 isAlreadyHavePhonePrefixInView = true;
                 NominalAdapter adapter = new NominalAdapter(
@@ -504,7 +501,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             }
 
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -744,9 +741,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     @NeedsPermission(Manifest.permission.READ_CONTACTS)
     public void doLaunchContactPicker() {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(getActivity(), "tabSelection");
-        localCacheHandler.putInt("rechargeSelectedPosition", currentPosition);
-        localCacheHandler.applyEditor();
+        storeLastStateTabSelected();
         Intent contactPickerIntent = new Intent(
                 Intent.ACTION_PICK,
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI
@@ -905,7 +900,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private void sendGTMClickBeli() {
         CommonUtils.dumper("GAv4 category clicked " + category.getId());
         CommonUtils.dumper("GAv4 clicked beli Pulsa");
-        String labelBeli = "";
+        String labelBeli;
         switch (category.getId()) {
             case 1:
                 labelBeli = AppEventTracking.EventLabel.PULSA_WIDGET;
@@ -922,12 +917,21 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         UnifyTracking.eventRechargeBuy(labelBeli);
     }
 
+    private void storeLastStateTabSelected() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(
+                getActivity(), TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION
+        );
+        localCacheHandler.putInt(TkpdCache.Key.WIDGET_RECHARGE_TAB_LAST_SELECTED, currentPosition);
+        localCacheHandler.applyEditor();
+    }
+
     //endregion
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        storeLastStateTabSelected();
         RechargeFragmentPermissionsDispatcher.onRequestPermissionsResult(
                 RechargeFragment.this, requestCode, grantResults);
     }
