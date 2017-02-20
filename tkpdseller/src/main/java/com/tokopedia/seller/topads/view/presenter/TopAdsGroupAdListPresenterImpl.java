@@ -2,9 +2,9 @@ package com.tokopedia.seller.topads.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.seller.topads.interactor.ListenerInteractor;
-import com.tokopedia.seller.topads.interactor.TopAdsGroupAdInteractor;
-import com.tokopedia.seller.topads.interactor.TopAdsGroupAdInteractorImpl;
+import com.tokopedia.seller.topads.domain.interactor.ListenerInteractor;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsGroupAdInteractor;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsGroupAdInteractorImpl;
 import com.tokopedia.seller.topads.model.data.GroupAd;
 import com.tokopedia.seller.topads.model.request.SearchAdRequest;
 import com.tokopedia.seller.topads.model.response.PageDataResponse;

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.interactor;
+package com.tokopedia.seller.topads.domain.interactor;
 
 import android.content.Context;
 

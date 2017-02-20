@@ -1,8 +1,7 @@
-package com.tokopedia.seller.topads.interactor;
+package com.tokopedia.seller.topads.domain.interactor;
 
 import android.content.Context;
 
-import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSource;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
@@ -15,7 +14,6 @@ import com.tokopedia.seller.topads.model.response.PageDataResponse;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
 import rx.Observable;

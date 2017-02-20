@@ -13,7 +13,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
-import com.tokopedia.seller.topads.interactor.TopAdsProductAdInteractorImpl;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractorImpl;
 import com.tokopedia.seller.topads.model.data.Ad;
 import com.tokopedia.seller.topads.model.data.ProductAd;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;

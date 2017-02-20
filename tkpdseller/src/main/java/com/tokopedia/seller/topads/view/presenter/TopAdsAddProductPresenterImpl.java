@@ -3,9 +3,9 @@ package com.tokopedia.seller.topads.view.presenter;
 import android.content.Context;
 
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.topads.interactor.DashboardTopadsInteractor;
-import com.tokopedia.seller.topads.interactor.DashboardTopadsInteractorImpl;
-import com.tokopedia.seller.topads.interactor.ListenerInteractor;
+import com.tokopedia.seller.topads.domain.interactor.DashboardTopadsInteractor;
+import com.tokopedia.seller.topads.domain.interactor.DashboardTopadsInteractorImpl;
+import com.tokopedia.seller.topads.domain.interactor.ListenerInteractor;
 import com.tokopedia.seller.topads.model.data.Product;
 import com.tokopedia.seller.topads.model.request.SearchProductRequest;
 import com.tokopedia.seller.topads.view.listener.TopAdsAddProductFragmentListener;

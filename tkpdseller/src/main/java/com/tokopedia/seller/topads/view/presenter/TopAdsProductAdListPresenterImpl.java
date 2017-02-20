@@ -4,9 +4,9 @@ import android.content.Context;
 
 import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
-import com.tokopedia.seller.topads.interactor.ListenerInteractor;
-import com.tokopedia.seller.topads.interactor.TopAdsProductAdInteractor;
-import com.tokopedia.seller.topads.interactor.TopAdsProductAdInteractorImpl;
+import com.tokopedia.seller.topads.domain.interactor.ListenerInteractor;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractor;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractorImpl;
 import com.tokopedia.seller.topads.model.data.ProductAd;
 import com.tokopedia.seller.topads.model.request.SearchAdRequest;
 import com.tokopedia.seller.topads.model.response.PageDataResponse;

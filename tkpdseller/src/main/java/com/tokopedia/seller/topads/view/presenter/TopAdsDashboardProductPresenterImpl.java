@@ -2,7 +2,7 @@ package com.tokopedia.seller.topads.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.seller.topads.interactor.ListenerInteractor;
+import com.tokopedia.seller.topads.domain.interactor.ListenerInteractor;
 import com.tokopedia.seller.topads.model.data.TotalAd;
 import com.tokopedia.seller.topads.model.request.ShopRequest;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;

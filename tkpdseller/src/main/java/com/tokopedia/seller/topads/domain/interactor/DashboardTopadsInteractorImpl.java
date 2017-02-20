@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.interactor;
+package com.tokopedia.seller.topads.domain.interactor;
 
 import android.content.Context;
 
@@ -29,7 +29,6 @@ import com.tokopedia.seller.topads.model.response.DataResponse;
 import com.tokopedia.seller.topads.model.response.PageDataResponse;
 import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 

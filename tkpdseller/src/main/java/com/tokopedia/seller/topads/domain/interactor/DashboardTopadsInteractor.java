@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.interactor;
+package com.tokopedia.seller.topads.domain.interactor;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.topads.model.data.GroupAdBulkAction;
@@ -18,7 +18,6 @@ import com.tokopedia.seller.topads.model.request.StatisticRequest;
 import com.tokopedia.seller.topads.model.response.DataResponse;
 import com.tokopedia.seller.topads.model.response.PageDataResponse;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
