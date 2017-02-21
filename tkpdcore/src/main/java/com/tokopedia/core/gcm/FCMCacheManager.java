@@ -6,17 +6,25 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.gcm.interactor.entity.NotificationEntity;
 import com.tokopedia.core.prototype.ManageProductCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author by Herdi_WORK on 13.12.16.
@@ -28,7 +36,7 @@ public class FCMCacheManager {
     private LocalCacheHandler cache;
     private Context context;
 
-    FCMCacheManager(Context ctx) {
+    public FCMCacheManager(Context ctx) {
         this(ctx, TkpdCache.G_CODE);
         context = ctx;
     }
@@ -46,7 +54,15 @@ public class FCMCacheManager {
         cache.applyEditor();
     }
 
-    void resetCache(Bundle data) {
+    public void setCache() {
+        if (cache == null)
+            cache = new LocalCacheHandler(context, TkpdCache.G_CODE);
+
+        cache.setExpire(1);
+        cache.applyEditor();
+    }
+
+    public void resetCache(Bundle data) {
         if (Integer.parseInt(data.getString(NOTIFICATION_CODE)) > 600
                 && Integer.parseInt(data.getString(NOTIFICATION_CODE)) < 802) {
             doResetCache(Integer.parseInt(data.getString(NOTIFICATION_CODE)));
@@ -91,7 +107,7 @@ public class FCMCacheManager {
         }
     }
 
-    boolean isAllowToHandleNotif(Bundle data) {
+    public boolean isAllowToHandleNotif(Bundle data) {
         try {
             return (!cache.isExpired() || cache.getString(TkpdCache.Key.PREV_CODE) == null ||
                     !data.isEmpty() || data.getString("g_id", "").equals(cache.getString(TkpdCache.Key.PREV_CODE)));
@@ -129,7 +145,7 @@ public class FCMCacheManager {
         }
     }
 
-    boolean checkLocalNotificationAppSettings(int code) {
+    public boolean checkLocalNotificationAppSettings(int code) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         switch (code) {
             case TkpdState.GCMServiceState.GCM_MESSAGE:
@@ -262,5 +278,57 @@ public class FCMCacheManager {
         LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         cache.putString("gcm_id_loca", null);
         cache.applyEditor();
+    }
+
+
+    public void saveIncomingNotification(NotificationEntity notificationEntity) {
+        boolean isExist = false;
+        List<NotificationEntity> notificationEntities = getHistoryPushNotification();
+        for (int i = 0; i < notificationEntities.size(); i++) {
+            if (notificationEntities.get(i).getCode().equalsIgnoreCase(notificationEntity.getCode())) {
+                isExist = true;
+                notificationEntities.remove(i);
+                notificationEntities.add(notificationEntity);
+                break;
+            }
+        }
+        if (!isExist) {
+            notificationEntities.add(notificationEntity);
+        }
+        Type baseType = new TypeToken<List<NotificationEntity>>() {
+        }.getType();
+        Gson gson = new Gson();
+        String newList = gson.toJson(notificationEntities, baseType);
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.GCM_NOTIFICATION);
+        localCacheHandler.putString(TkpdCache.Key.NOTIFICATION_PASS_DATA, newList);
+        localCacheHandler.applyEditor();
+    }
+
+    public List<NotificationEntity> getHistoryPushNotification() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.GCM_NOTIFICATION);
+        List<NotificationEntity> mNotificationEntity =
+                convertDataList(
+                        NotificationEntity[].class,
+                        localCacheHandler.getString(TkpdCache.Key.NOTIFICATION_PASS_DATA, "")
+                );
+        if (mNotificationEntity != null)
+            return new ArrayList<>(mNotificationEntity);
+        else
+            return new ArrayList<>();
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> List<T> convertDataList(Class<T[]> clazz, String data) {
+        if (TextUtils.isEmpty(data))
+            return null;
+        Object objData;
+        try {
+            Gson gson = new Gson();
+            objData = Arrays.asList((T[]) gson.fromJson(data, clazz));
+            return (List<T>) objData;
+        } catch (ClassCastException | JsonSyntaxException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

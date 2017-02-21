@@ -88,6 +88,7 @@ public class TkpdCache {
         public static final String SERVER = "server";
         public static final String IMG_DESC = "img_desc";
 
+        public static final String NOTIFICATION_PASS_DATA = "notification_pass_data";
         public static final String NOTIFICATION_CONTENT = "notification_content";
         public static final String NOTIFICATION_DESC = "notification_desc";
         public static final String NOTIFICATION_CODE = "notification_code";

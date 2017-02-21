@@ -63,4 +63,14 @@ public class SellerRouter {
     public static Intent getAcitivitySplashScreenActivity(Context context) {
         return RouterUtils.getActivityIntent(context, ACTIVITY_SPLASH_SCREEN);
     }
+
+    public static Class<?> getSellingActivityClass() {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = RouterUtils.getActivityClass(ACTIVITY_SELLING_TRANSACTION);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
 }

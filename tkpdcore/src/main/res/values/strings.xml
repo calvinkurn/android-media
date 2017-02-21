@@ -24,6 +24,10 @@
     <string name="title_new_rescenter">Notifikasi Pusat Resolusi</string>
     <string name="title_new_order">Pesanan baru</string>
     <string name="title_new_notif_general">Notifikasi baru dari Tokopedia</string>
+    <string name="title_transaction_cancel">Transaksi Dibatalkan</string>
+    <string name="title_transaction_update_resi">Perbarui Resi</string>
+    <string name="title_transaction_order_delivered">Produk Terkirim</string>
+    <string name="title_transaction_order_finished">Transaksi Selesai</string>
     <string name="msg_new_order">Toko Anda mendapat pesanan baru, mohon diproses</string>
     <string name="reorder">Transaksi dibatalkan</string>
     <string name="title_sales">Penjualan</string>

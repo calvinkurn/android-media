@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Tokopedia</string>
     <string name="lihat_smua_promo">Lihat Semua Promo</string>
+    
+    <!-- Push Notif -->
+    <string name="purchase_finish">Pesanan Selesai</string>
+    <string name="purchase_confirm">Konfirmasi Pesanan</string>
+    <string name="purchase_confirm_receiving">Konfirmasikan Penerimaan</string>
+    <string name="purchase_shipped">Konfirmasi Pengiriman</string>
+    <string name="purchase_canceled">Pesanan Dibatalkan</string>
 </resources>

@@ -146,14 +146,6 @@ android {
         }
     }
 
-    splits {
-        density {
-            enable allowSplit()
-            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
-            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
-        }
-    }
-
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
@@ -222,10 +214,7 @@ dependencies {
     }
     compile (rootProject.ext.tkpdDependencies.core)*/
     compile project(':tkpddiscovery')
-    compile project(':tkpdtransaction')
-    compile project(':tkpdseller')
     compile project(':tkpdsession')
-    compile project(':tkpdinbox')
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -241,6 +230,8 @@ dependencies {
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    compile rootProject.ext.playServicesDependencies.firebase
 
     compile 'com.android.support:multidex:1.0.1'
 
