@@ -166,9 +166,6 @@ dependencies {
         exclude group: 'com.android.support'
     }
     compile rootProject.ext.debugToolsDependencies.stetho
-    compile (rootProject.ext.debugToolsDependencies.stethoOkHttp) {
-        exclude group: 'com.squareup.okhttp3'
-    }
 
 }
 
