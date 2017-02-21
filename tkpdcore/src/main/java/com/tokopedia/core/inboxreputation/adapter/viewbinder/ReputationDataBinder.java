@@ -109,6 +109,9 @@ public class ReputationDataBinder extends DataBinder<ReputationDataBinder.ViewHo
         @BindView(R2.id.image_holder)
         RecyclerView imageHolder;
 
+        @BindView(R2.id.share_but)
+        TextView shareButton;
+
         LabelUtils label;
         ImageUploadAdapter adapter;
 
@@ -373,6 +376,16 @@ public class ReputationDataBinder extends DataBinder<ReputationDataBinder.ViewHo
         holder.productAvatar.setOnClickListener(onGoToProduct(position));
         holder.sellerAvatar.setOnClickListener(onGoToShop(position));
         holder.sellerName.setOnClickListener(onGoToShop(position));
+        holder.shareButton.setOnClickListener(showShareProvider(position));
+    }
+
+    private View.OnClickListener showShareProvider(final int position) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.showShareProvider(inboxReputationDetail.getInboxReputationDetailItemList().get(position));
+            }
+        };
     }
 
     private View.OnClickListener onGoToShop(final int position) {

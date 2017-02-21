@@ -6,19 +6,32 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareHashtag;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
@@ -65,6 +78,8 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
     public static final String PARAM_INBOX_REPUTATION = "inbox_reputation";
     public static final String PARAM_INBOX_REPUTATION_DETAIL = "inbox_reputation_detail";
     private static final String DEFAULT_MSG_ERROR = "Mohon maaf, mohon coba kembali";
+    private CallbackManager callbackManager;
+    private ShareDialog shareDialog;
 
     public interface DoActionReputationListener {
         void postReview(Bundle param);
@@ -105,6 +120,8 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
     @BindView(R2.id.quality_error_message)
     TextView qualityError;
 
+    @BindView(R2.id.checkbox)
+    CheckBox checkBox;
 
     private InboxReputationFormFragmentPresenter presenter;
     private InboxReputationDetailItem inboxReputationDetail;
@@ -122,6 +139,8 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
     }
 
     @Override
@@ -164,7 +183,26 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
 
         productAvatar.setOnClickListener(onGoToProduct(inboxReputationDetail));
         productName.setOnClickListener(onGoToProduct(inboxReputationDetail));
+        checkBox.setOnClickListener(onTickedCheckbox());
+    }
 
+    private View.OnClickListener onTickedCheckbox() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (((CheckBox)view).isChecked() ) {
+                    processFacebookLogin();
+                }else{
+                    if (AccessToken.getCurrentAccessToken() != null) {
+                        LoginManager.getInstance().logOut();
+                    }
+                }
+            }
+        };
+    }
+
+    private void processFacebookLogin() {
+        presenter.doFacebookLogin(this, callbackManager);
     }
 
     private View.OnClickListener onGoToProduct(final InboxReputationDetailItem inboxReputationDetail) {
@@ -324,8 +362,11 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
                 InboxReputationDetailFragmentPresenterImpl.ACTION_UPDATE_PRODUCT);
         intent.putExtras(bundle);
         getActivity().setResult(Activity.RESULT_OK, intent);
-        getActivity().finish();
-
+        if(checkBox.isChecked()){
+            showDialogShareFb();
+        }else {
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -339,7 +380,11 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
                 InboxReputationDetailFragmentPresenterImpl.ACTION_UPDATE_PRODUCT);
         intent.putExtras(bundle);
         getActivity().setResult(Activity.RESULT_OK, intent);
-        getActivity().finish();
+        if(checkBox.isChecked()){
+            showDialogShareFb();
+        }else {
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -414,6 +459,7 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
         presenter.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -457,6 +503,45 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
         }
         dismissProgressDialog();
         setActionsEnabled(true);
+    }
+
+    @Override
+    public void showDialogShareFb() {
+        shareDialog = new ShareDialog(this);
+        callbackManager = CallbackManager.Factory.create();
+        shareDialog.registerCallback(callbackManager, new
+                FacebookCallback<Sharer.Result>() {
+                    @Override
+                    public void onSuccess(Sharer.Result result) {
+                        SnackbarManager.make(getActivity(),getString(R.string.success_share_product)
+                                , Snackbar.LENGTH_SHORT).show();
+                        getActivity().finish();
+                    }
+                    @Override
+                    public void onCancel() {
+                        Log.i("facebook", "onCancel");
+                        getActivity().finish();
+                    }
+                    @Override
+                    public void onError(FacebookException error) {
+                        Log.i("facebook", "onError: "+error);
+                        SnackbarManager.make(getActivity(),getString(R.string.error_share_product)
+                                , Snackbar.LENGTH_SHORT).show();
+                        getActivity().finish();
+                    }
+                });
+
+        if (ShareDialog.canShow(ShareLinkContent.class)) {
+            ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                    .setContentTitle(inboxReputationDetail.getProductName())
+                    .setImageUrl(Uri.parse(inboxReputationDetail.getProductImageUrl()))
+                    .setContentUrl(Uri.parse(getString(R.string.domain)+inboxReputationDetail.getProductUri()))
+                    .setQuote(inboxReputationDetail.getReviewMessage().toString())
+                    .setShareHashtag(new ShareHashtag.Builder().setHashtag("#DimulaiDariTokopedia").build())
+                    .build();
+
+            shareDialog.show(linkContent);
+        }
     }
 
     @Override

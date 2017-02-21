@@ -323,6 +323,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="tx_title">Transaksi</string>
     <string name="title_product_video">Video Produk</string>
     <string name="success_share_product">Sukses membagikan produk</string>
+    <string name="error_share_product">Gagal membagikan produk</string>
     <!-- Strings related product info -->
 
 

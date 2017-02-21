@@ -55,4 +55,6 @@ public interface InboxReputationFormView {
     void onFailedPostReview(Bundle resultData);
 
     void onFailedEditReview(Bundle resultData);
+
+    void showDialogShareFb();
 }

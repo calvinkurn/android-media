@@ -2,6 +2,8 @@ package com.tokopedia.core.inboxreputation.presenter;
 
 import android.content.Intent;
 
+import com.facebook.CallbackManager;
+import com.tokopedia.core.inboxreputation.fragment.InboxReputationFormFragment;
 import com.tokopedia.core.inboxreputation.model.ImageUpload;
 import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
 
@@ -31,4 +33,6 @@ public interface InboxReputationFormFragmentPresenter {
     void openImageGallery();
 
     void openCamera();
+
+    void doFacebookLogin(InboxReputationFormFragment inboxReputationFormFragment, CallbackManager callbackManager);
 }

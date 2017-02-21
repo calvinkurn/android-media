@@ -221,6 +221,17 @@
 
         </RelativeLayout>
 
+        <TextView
+            android:id="@+id/share_but"
+            android:background="@drawable/border_green_reputation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="@dimen/padding_small"
+            android:layout_margin="@dimen/margin_small"
+            android:text="Bagikan"
+            android:textColor="@color/tkpd_dark_green"/>
 
     </LinearLayout>
 

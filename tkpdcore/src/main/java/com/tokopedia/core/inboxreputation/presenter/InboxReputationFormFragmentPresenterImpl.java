@@ -3,7 +3,15 @@ package com.tokopedia.core.inboxreputation.presenter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookAuthorizationException;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.share.ShareApi;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
@@ -20,6 +28,9 @@ import com.tokopedia.core.inboxreputation.listener.InboxReputationFormView;
 import com.tokopedia.core.inboxreputation.model.ImageUpload;
 import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
 import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.core.var.FacebookContainer;
+
+import java.util.Set;
 
 /**
  * Created by Nisie on 2/9/16.
@@ -183,6 +194,29 @@ public class InboxReputationFormFragmentPresenterImpl
     public void openCamera() {
         imageUploadHandler.actionCamera();
     }
+
+    @Override
+    public void doFacebookLogin(InboxReputationFormFragment fragment, CallbackManager callbackManager) {
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(final LoginResult loginResult) {
+            }
+
+            @Override
+            public void onCancel() {
+                LoginManager.getInstance().logOut();
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+                if(e instanceof FacebookAuthorizationException){
+                    LoginManager.getInstance().logOut();
+                }
+            }
+        });
+    }
+
+
 
     private boolean isValidForm() {
         boolean isValid = true;
