@@ -375,7 +375,6 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public void onResume() {
         LocalCacheHandler.clearCache(getActivity(), "RechargeCache");
         holder.wrapperScrollview.smoothScrollTo(0, 0);
-        // ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
         rechargeCategoryPresenter.fetchStatusDigitalProductData();
         if (SessionHandler.isV4Login(getActivity())) {
             rechargeCategoryPresenter.fetchLastOrder();
