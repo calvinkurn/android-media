@@ -6,25 +6,25 @@
     android:orientation="vertical">
 
     <include
-        layout="@layout/include_top_ads_edit_promo_max_price"
+        layout="@layout/partial_top_ads_edit_promo_max_price"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/top_ads_margin_layout"/>
 
     <include
-        layout="@layout/include_top_ads_edit_promo_budget"
+        layout="@layout/partial_top_ads_edit_promo_budget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/top_ads_margin_layout"/>
 
     <include
-        layout="@layout/include_top_ads_edit_promo_show_time"
+        layout="@layout/partial_top_ads_edit_promo_show_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/top_ads_margin_layout"/>
 
     <include
-        layout="@layout/include_top_ads_edit_promo_icon"
+        layout="@layout/partial_top_ads_edit_promo_icon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </LinearLayout>
