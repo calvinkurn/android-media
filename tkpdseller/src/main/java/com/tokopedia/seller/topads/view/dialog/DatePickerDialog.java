@@ -2,7 +2,8 @@ package com.tokopedia.seller.topads.view.dialog;
 
 import android.content.Context;
 import android.widget.DatePicker;
-import android.widget.EditText;
+
+import com.tokopedia.seller.lib.datepicker.widget.DatePickerLabelView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -21,12 +22,12 @@ public class DatePickerDialog extends android.app.DatePickerDialog {
 
     public static class OnDateSetListener implements android.app.DatePickerDialog.OnDateSetListener {
 
-        private EditText editText;
+        private DatePickerLabelView datePicker;
         private String dateFormat;
         private Date date;
 
-        public OnDateSetListener(EditText editText, Date date, String dateFormat) {
-            this.editText = editText;
+        public OnDateSetListener(DatePickerLabelView datePicker, Date date, String dateFormat) {
+            this.datePicker = datePicker;
             this.date = date;
             this.dateFormat = dateFormat;
         }
@@ -36,7 +37,7 @@ public class DatePickerDialog extends android.app.DatePickerDialog {
             Calendar calendar = Calendar.getInstance();
             calendar.set(year, monthOfYear, dayOfMonth);
             date = calendar.getTime();
-            editText.setText(new SimpleDateFormat(dateFormat, Locale.ENGLISH).format(date));
+            this.datePicker.setContent(new SimpleDateFormat(dateFormat, Locale.ENGLISH).format(date));
             onDateUpdated(date);
         }
 

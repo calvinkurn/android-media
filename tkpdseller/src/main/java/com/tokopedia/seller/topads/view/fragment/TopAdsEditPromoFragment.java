@@ -14,6 +14,7 @@ import android.widget.RadioGroup;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.datepicker.widget.DatePickerLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.domain.model.data.DataCredit;
@@ -31,22 +32,22 @@ import java.util.Locale;
 
 public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopAdsEditPromoPresenter> implements TopAdsEditPromoFragmentListener {
 
-    TextInputLayout maxPriceInputLayout;
-    EditText maxPriceEditText;
-    RadioGroup budgetRadioGroup;
-    RadioButton budgetLifeTimeRadioButton;
-    RadioButton budgetPerDayRadioButton;
-    TextInputLayout budgetPerDayInputLayout;
-    EditText budgetPerDayEditText;
-    RadioGroup showTimeRadioGroup;
-    RadioButton showTimeAutomaticRadioButton;
-    RadioButton showTimeConfiguredRadioButton;
-    View showTimeConfiguredView;
-    EditText showTimeStartDateEditText;
-    EditText showTimeStartTimeEditText;
-    EditText showTimeEndDateEditText;
-    EditText showTimeEndTimeEditText;
-    RadioGroup iconRadioGroup;
+    private TextInputLayout maxPriceInputLayout;
+    private EditText maxPriceEditText;
+    private RadioGroup budgetRadioGroup;
+    private RadioButton budgetLifeTimeRadioButton;
+    private RadioButton budgetPerDayRadioButton;
+    private TextInputLayout budgetPerDayInputLayout;
+    private EditText budgetPerDayEditText;
+    private RadioGroup showTimeRadioGroup;
+    private RadioButton showTimeAutomaticRadioButton;
+    private RadioButton showTimeConfiguredRadioButton;
+    private View showTimeConfiguredView;
+    private DatePickerLabelView showTimeStartDateDatePicker;
+    private DatePickerLabelView showTimeStartTimeDatePicker;
+    private DatePickerLabelView showTimeEndDateDatePicker;
+    private DatePickerLabelView showTimeEndTimeDatePicker;
+    private RadioGroup iconRadioGroup;
 
     private Date startDate;
     private Date endDate;
@@ -106,10 +107,10 @@ public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopA
         showTimeAutomaticRadioButton = (RadioButton) view.findViewById(R.id.radio_button_show_time_automatic);
         showTimeConfiguredRadioButton = (RadioButton) view.findViewById(R.id.radio_button_show_time_configured);
         showTimeConfiguredView = view.findViewById(R.id.layout_show_time_configured);
-        showTimeStartDateEditText = (EditText) view.findViewById(R.id.edit_text_show_time_start_date);
-        showTimeStartTimeEditText = (EditText) view.findViewById(R.id.edit_text_show_time_start_time);
-        showTimeEndDateEditText = (EditText) view.findViewById(R.id.edit_text_show_time_end_date);
-        showTimeEndTimeEditText = (EditText) view.findViewById(R.id.edit_text_show_time_end_time);
+        showTimeStartDateDatePicker = (DatePickerLabelView) view.findViewById(R.id.date_picker_show_time_start_date);
+        showTimeStartTimeDatePicker = (DatePickerLabelView) view.findViewById(R.id.date_picker_show_time_start_time);
+        showTimeEndDateDatePicker = (DatePickerLabelView) view.findViewById(R.id.date_picker_show_time_end_date);
+        showTimeEndTimeDatePicker = (DatePickerLabelView) view.findViewById(R.id.date_picker_show_time_end_time);
         iconRadioGroup = (RadioGroup) view.findViewById(R.id.radio_group_icon);
         maxPriceEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -163,12 +164,12 @@ public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopA
                 }
             }
         });
-        showTimeStartDateEditText.setOnClickListener(new View.OnClickListener() {
+        showTimeStartDateDatePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(startDate.getTime());
-                new DatePickerDialog(getActivity(), calendar, new DatePickerDialog.OnDateSetListener(showTimeStartDateEditText, startDate, TopAdsConstant.EDIT_PROMO_DISPLAY_DATE) {
+                new DatePickerDialog(getActivity(), calendar, new DatePickerDialog.OnDateSetListener(showTimeStartDateDatePicker, startDate, TopAdsConstant.EDIT_PROMO_DISPLAY_DATE) {
                     @Override
                     public void onDateUpdated(Date date) {
                         super.onDateUpdated(date);
@@ -177,12 +178,12 @@ public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopA
                 }).show();
             }
         });
-        showTimeStartTimeEditText.setOnClickListener(new View.OnClickListener() {
+        showTimeStartTimeDatePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(startDate.getTime());
-                new TimePickerdialog(getActivity(), calendar, false, new TimePickerdialog.OnTimeSetListener(showTimeStartTimeEditText, startDate, TopAdsConstant.EDIT_PROMO_DISPLAY_TIME) {
+                new TimePickerdialog(getActivity(), calendar, false, new TimePickerdialog.OnTimeSetListener(showTimeStartTimeDatePicker, startDate, TopAdsConstant.EDIT_PROMO_DISPLAY_TIME) {
                     @Override
                     public void onDateUpdated(Date date) {
                         super.onDateUpdated(date);
@@ -191,12 +192,12 @@ public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopA
                 }).show();
             }
         });
-        showTimeEndDateEditText.setOnClickListener(new View.OnClickListener() {
+        showTimeEndDateDatePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(endDate.getTime());
-                new DatePickerDialog(getActivity(), calendar, new DatePickerDialog.OnDateSetListener(showTimeEndDateEditText, endDate, TopAdsConstant.EDIT_PROMO_DISPLAY_DATE) {
+                new DatePickerDialog(getActivity(), calendar, new DatePickerDialog.OnDateSetListener(showTimeEndDateDatePicker, endDate, TopAdsConstant.EDIT_PROMO_DISPLAY_DATE) {
                     @Override
                     public void onDateUpdated(Date date) {
                         super.onDateUpdated(date);
@@ -205,12 +206,12 @@ public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopA
                 }).show();
             }
         });
-        showTimeEndTimeEditText.setOnClickListener(new View.OnClickListener() {
+        showTimeEndTimeDatePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(endDate.getTime());
-                new TimePickerdialog(getActivity(), calendar, false, new TimePickerdialog.OnTimeSetListener(showTimeEndTimeEditText, endDate, TopAdsConstant.EDIT_PROMO_DISPLAY_TIME) {
+                new TimePickerdialog(getActivity(), calendar, false, new TimePickerdialog.OnTimeSetListener(showTimeEndTimeDatePicker, endDate, TopAdsConstant.EDIT_PROMO_DISPLAY_TIME) {
                     @Override
                     public void onDateUpdated(Date date) {
                         super.onDateUpdated(date);
@@ -260,10 +261,10 @@ public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopA
     }
 
     private void updateDisplayDateView() {
-        showTimeStartDateEditText.setText(getDateText(startDate, TopAdsConstant.EDIT_PROMO_DISPLAY_DATE));
-        showTimeStartTimeEditText.setText(getDateText(startDate, TopAdsConstant.EDIT_PROMO_DISPLAY_TIME));
-        showTimeEndDateEditText.setText(getDateText(endDate, TopAdsConstant.EDIT_PROMO_DISPLAY_DATE));
-        showTimeEndTimeEditText.setText(getDateText(endDate, TopAdsConstant.EDIT_PROMO_DISPLAY_TIME));
+        showTimeStartDateDatePicker.setContent(getDateText(startDate, TopAdsConstant.EDIT_PROMO_DISPLAY_DATE));
+        showTimeStartTimeDatePicker.setContent(getDateText(startDate, TopAdsConstant.EDIT_PROMO_DISPLAY_TIME));
+        showTimeEndDateDatePicker.setContent(getDateText(endDate, TopAdsConstant.EDIT_PROMO_DISPLAY_DATE));
+        showTimeEndTimeDatePicker.setContent(getDateText(endDate, TopAdsConstant.EDIT_PROMO_DISPLAY_TIME));
     }
 
     private String getDateText(Date date, String formatDate) {
