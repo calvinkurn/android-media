@@ -557,6 +557,22 @@ public class ListViewManageProdAdapter extends BaseAdapter
                     holder.CancelBut.setVisibility(View.VISIBLE);
                     EditMode.add(ProductID);
                     return true;
+                } else if (item.getItemId() == R.id.action_update_categories) {
+                    Checked.add(position);
+                    activity.ShowCategoriesChange();
+                    return true;
+                } else if (item.getItemId() == R.id.action_update_etalase){
+                    Checked.add(position);
+                    activity.ShowEtalaseChange();
+                    return true;
+                } else if (item.getItemId() == R.id.action_update_insurance){
+                    Checked.add(position);
+                    activity.ShowInsuranceChange();
+                    return true;
+                } else if (item.getItemId() == R.id.action_delete){
+                    Checked.add(position);
+                    activity.ShowDeleteChange();
+                    return true;
                 } else {
                     return false;
                 }
