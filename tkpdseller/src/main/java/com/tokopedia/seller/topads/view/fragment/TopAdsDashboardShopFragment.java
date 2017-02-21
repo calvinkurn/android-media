@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -83,7 +84,16 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
         populateShop();
     }
 
+    @Override
+    public void onRestoreState(Bundle savedState) {
+        super.onRestoreState(savedState);
+    }
+
     private void populateShop() {
+        if(startDate == null && endDate == null) {
+            startDate = datePickerPresenter.getStartDate();
+            endDate = datePickerPresenter.getEndDate();
+        }
         presenter.populateShopAd(startDate, endDate);
     }
 

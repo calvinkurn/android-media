@@ -34,6 +34,7 @@ public class Authenticated extends BaseGTMModel {
     private static final String KEY_IS_QC_ACC =          "isQcAccount";
     private static final String KEY_SHOP_ID =            "shopID";
     private static final String KEY_GENDER =             "gender";
+    private static final String KEY_AF_UNIQUE_ID =       "afUniqueId";
 
 
     private Map<String, Object> contactInfo = new HashMap<>();
@@ -102,6 +103,10 @@ public class Authenticated extends BaseGTMModel {
 
     public void setGender(Object gender){
         contactInfo.put(KEY_GENDER, gender);
+    }
+
+    public void setAfUniqueId(Object gender){
+        contactInfo.put(KEY_AF_UNIQUE_ID, gender);
     }
 
     public void setUDSCountry(Object country){

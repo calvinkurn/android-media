@@ -13,6 +13,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.inboxreputation.adapter.SectionsPagerAdapter;
 import com.tokopedia.core.inboxreputation.fragment.InboxReputationFragment;
@@ -42,6 +43,12 @@ public class InboxReputationActivity extends DrawerPresenterActivity
     ViewPager viewPager;
     @BindView(R2.id.indicator)
     TabLayout indicator;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
+    }
 
     @Override
     public String getScreenName() {

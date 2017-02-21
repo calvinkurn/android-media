@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/LabelLayout"
+    style="@style/LabelLayoutWithBorder"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
@@ -11,11 +11,11 @@
     android:paddingBottom="0dp"
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
-    android:paddingTop="0dp">
+    android:paddingTop="0.5dp">
 
     <RelativeLayout
         android:id="@+id/layout_date"
-        style="@style/LabelLayout">
+        style="@style/LabelLayoutWithoutBorder">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
 
         <TextView
             android:id="@+id/text_view_range_date"
-            style="@style/TextView.TopAdsDate"
+            style="@style/TextView.TopAds.Title.Two"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/topads_arrow_left_margin"
             android:layout_marginRight="@dimen/topads_arrow_left_margin"

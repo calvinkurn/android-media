@@ -16,10 +16,10 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.model.data.Cell;
 import com.tokopedia.seller.topads.presenter.TopAdsStatisticPresenter;
 import com.tokopedia.seller.topads.presenter.TopAdsStatisticPresenterImpl;
-import com.tokopedia.seller.topads.view.library.util.GrossGraphChartConfig;
-import com.tokopedia.seller.topads.view.library.williamchart.renderer.XRenderer;
-import com.tokopedia.seller.topads.view.library.williamchart.tooltip.Tooltip;
-import com.tokopedia.seller.topads.view.library.williamchart.view.LineChartView;
+import com.tokopedia.seller.lib.williamchart.util.GrossGraphChartConfig;
+import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
+import com.tokopedia.seller.lib.williamchart.tooltip.Tooltip;
+import com.tokopedia.seller.lib.williamchart.view.LineChartView;
 import com.tokopedia.seller.topads.view.listener.TopAdsStatisticActivityViewListener;
 import com.tokopedia.seller.topads.view.listener.TopAdsStatisticViewListener;
 

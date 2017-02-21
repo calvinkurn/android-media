@@ -12,5 +12,7 @@ public interface Constants {
     String ARG_NOTIFICATION_ICON = "url_icon";
     String ARG_NOTIFICATION_URL = "url";
     String ARG_NOTIFICATION_UPDATE_APPS_TITLE = "title_update";
-    String EXTRA_PLAYSTORE_URL = "market://details?shopId=com.tokopedia.tkpd";
+    String EXTRA_PLAYSTORE_URL = "market://details?id=com.tokopedia.tkpd";
+    String EXTRA_FROM_PUSH = "from_notif";
+    String EXTRA_UNREAD = "unread";
 }

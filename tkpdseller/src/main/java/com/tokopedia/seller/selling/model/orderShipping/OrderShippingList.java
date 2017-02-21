@@ -18,6 +18,9 @@ public class OrderShippingList {
     @SerializedName("order_is_pickup")
     @Expose
     int isPickUp;
+    @SerializedName("order_shipping_retry")
+    @Expose
+    int isAllowedRetry;
     @SerializedName("order_customer")
     @Expose
     OrderCustomer orderCustomer;
@@ -304,4 +307,11 @@ public class OrderShippingList {
         return isPickUp;
     }
 
+    public int getIsAllowedRetry() {
+        return isAllowedRetry;
+    }
+
+    public void setIsAllowedRetry(int isAllowedRetry) {
+        this.isAllowedRetry = isAllowedRetry;
+    }
 }

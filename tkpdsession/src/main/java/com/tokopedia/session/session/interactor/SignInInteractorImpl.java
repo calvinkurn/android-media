@@ -20,8 +20,6 @@ import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.session.model.TokenModel;
 import com.tokopedia.core.util.SessionHandler;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.net.SocketTimeoutException;

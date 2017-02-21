@@ -18,7 +18,7 @@ import com.tokopedia.seller.Router;
 import com.tokopedia.seller.gmstat.models.GetTransactionGraph;
 import com.tokopedia.seller.gmstat.utils.DataTransactionChartConfig;
 import com.tokopedia.seller.gmstat.utils.KMNumbers;
-import com.tokopedia.seller.gmstat.views.williamchart.chart.view.LineChartView;
+import com.tokopedia.seller.lib.williamchart.view.LineChartView;
 
 import java.util.ArrayList;
 import java.util.List;

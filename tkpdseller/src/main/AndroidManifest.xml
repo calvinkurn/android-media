@@ -43,6 +43,14 @@
             android:label="@string/title_top_ads_promo_group"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".topads.view.activity.TopAdsFilterGroupActivity"
+            android:label="@string/title_top_ads_filter"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsFilterProductActivity"
+            android:label="@string/title_top_ads_filter"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".topads.view.activity.TopAdsAddCreditActivity"
             android:label="@string/title_top_ads_add_credit"
             android:screenOrientation="portrait" />
@@ -75,7 +83,7 @@
             android:label="@string/title_group_ad_detail"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.lib.datepicker.SetDateActivity"
+            android:name=".lib.datepicker.DatePickerActivity"
             android:label="@string/title_top_ads_dashboard"
             android:screenOrientation="portrait" />
         <activity
@@ -146,12 +154,6 @@
 
         <service android:name=".shop.ShopEditService"
             android:exported="false"/>
-        <activity android:name=".gmstat.views.SetDateActivity"
-            android:label="@string/set_date"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3"
-            />
-
     </application>
 
 </manifest>

@@ -1235,6 +1235,9 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_error_otp">Kode Verifikasi Salah</string>
     <string name="title_mismatch_otp">Kode Verifikasi tidak benar.</string>
     <string name="phone_number_otp">Nomor Ponsel</string>
+    <string name="success_fetch_truecaller">Sukses mendapat data dari Truecaller.</string>
+    <string name="error_fetch_truecaller">Gagal mendapat data dari Truecaller.</string>
+    <string name="error_user_truecaller">Mohon pastikan nomor di perangkat ini sesuai dengan nomor Tokopedia Anda.</string>
     <!-- String Buy Credit -->
     <string name="title_choose_provider">Pilih Provider</string>
     <string name="title_credit_value">Nominal Pulsa</string>
@@ -1466,6 +1469,8 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="choose_this_location">Pilih lokasi ini</string>
     <string name="title_pickup_location">Lokasi Pickup</string>
     <string name="title_pickup_button">Pickup</string>
+    <string name="retry_pickup_button">Retry Pickup</string>
+    <string name="retry_pickup_info">Lakukan Retry Pickup?</string>
     <string name="hint_gojek_pick_address">Cari Lokasi</string>
 
     <string name="desc_summary_day_reso">
