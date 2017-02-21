@@ -528,7 +528,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private boolean isShop(List<String> linkSegment) {
-        return (linkSegment.size() == 0
+        return (linkSegment.size() == 1
                 && !linkSegment.get(0).equals("pulsa")
                 && !linkSegment.get(0).equals("iklan")
                 && !linkSegment.get(0).equals("newemail.pl")
