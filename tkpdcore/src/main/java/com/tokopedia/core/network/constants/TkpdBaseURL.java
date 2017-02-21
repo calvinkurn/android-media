@@ -34,7 +34,7 @@ public class TkpdBaseURL {
     public static String GOLD_MERCHANT_STAGING_DOMAIN = "http://goldmerchant-staging.tokopedia.com";
     public static String WEB_DOMAIN = "https://www.tokopedia.com/";
     public static String MOBILE_DOMAIN = "https://m.tokopedia.com/";
-    public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us/";
+    public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
 
     public static class Product {
@@ -328,6 +328,8 @@ public class TkpdBaseURL {
         public static final String PATH_GET_SHOP_NOTES = "get_shop_notes.pl";
         public static final String PATH_GET_SHOP_PRODUCT = "get_shop_product.pl";
         public static final String PATH_GET_SHOP_REVIEW = "get_shop_review.pl";
+
+        public static final String PATH_RETRY_PICKUP = "retry_pickup.pl";
     }
 
     public static final class Etc {
@@ -534,6 +536,7 @@ public class TkpdBaseURL {
         public static final String API_HOME_CATEGORY_MENU = "/api/v1/layout/category";
         public static final String PATH_USER_RECENT_VIEW = "users/";
         public static final String PATH_RECENT_VIEW = "/recentview/products/v1";
+        public static final String API_V1_BRANDS = "/os/api/v1/brands/list";
     }
 
 
@@ -625,5 +628,8 @@ public class TkpdBaseURL {
     public static class TopCash{
         public static final String GET_WALLET = ACCOUNTS_DOMAIN + "api/v1/wallet/";
         public static final String PATH_WALLET = "balance";
+    }
+    public static class Truecaller{
+        public static final String VERIFY_PHONE = "/web-service/v4/truecaller/check";
     }
 }

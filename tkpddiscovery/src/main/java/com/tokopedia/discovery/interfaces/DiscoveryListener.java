@@ -1,8 +1,8 @@
 package com.tokopedia.discovery.interfaces;
 
 import com.tokopedia.core.discovery.model.ObjContainer;
+import com.tokopedia.core.util.Pair;
 
-import static com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
 
 /**
  * Created by noiz354 on 3/23/16.

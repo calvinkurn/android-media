@@ -8,7 +8,7 @@ import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.di.qualifier.MojitoQualifier;
 import com.tokopedia.tkpd.home.feed.data.factory.RecentProductSourceFactory;
 import com.tokopedia.tkpd.home.feed.data.mapper.RecentProductMapper;
-import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.RecentProductDbManager;
+import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
 import com.tokopedia.tkpd.home.feed.di.scope.DataFeedScope;
 
 import dagger.Module;

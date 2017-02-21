@@ -29,10 +29,9 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customadapter.ListViewHotProductParent;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.interfaces.IndexHomeInterafaces;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
-import com.tokopedia.core.myproduct.ProductActivity;
-import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -45,6 +44,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.WrappedTabPageIndicator;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.myproduct.ProductActivity;
+import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.FragmentIndexFavoriteV2;
 import com.tokopedia.tkpd.home.feed.view.FragmentProductFeed;
@@ -225,6 +226,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
                 }
             });
         }
+
+        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
     }
 
 

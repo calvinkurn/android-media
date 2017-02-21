@@ -6,8 +6,10 @@ import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
@@ -20,10 +22,13 @@ public class TopAdsLabelView extends FrameLayout {
 
     TextView titleTextView;
     TextView contentTextView;
+    ImageView arrow;
     private String titleText;
     private String valueText;
     private int colorValue;
     private int contentTextStyleValue;
+    private int titleTextStyleValue;
+    private boolean contentSmall;
 
     public TopAdsLabelView(Context context) {
         super(context);
@@ -48,6 +53,8 @@ public class TopAdsLabelView extends FrameLayout {
             valueText = styledAttributes.getString(R.styleable.TopAdsLabelView_content);
             colorValue = styledAttributes.getColor(R.styleable.TopAdsLabelView_content_color, ContextCompat.getColor(getContext(), R.color.grey));
             contentTextStyleValue = styledAttributes.getInt(R.styleable.TopAdsLabelView_content_textStyle, Typeface.NORMAL);
+            titleTextStyleValue = styledAttributes.getInt(R.styleable.TopAdsLabelView_title_textStyle, Typeface.NORMAL);
+            contentSmall = styledAttributes.getBoolean(R.styleable.TopAdsLabelView_content_small, false);
         } finally {
             styledAttributes.recycle();
         }
@@ -60,14 +67,24 @@ public class TopAdsLabelView extends FrameLayout {
         contentTextView.setText(valueText);
         contentTextView.setTextColor(colorValue);
         contentTextView.setTypeface(null, contentTextStyleValue);
+        titleTextView.setTypeface(null, titleTextStyleValue);
+        if(contentSmall){
+            setContentSmall();
+        }
         invalidate();
         requestLayout();
+    }
+
+    public void setContentSmall() {
+        titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+        contentTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
     }
 
     private void init() {
         View view = inflate(getContext(), R.layout.item_detail_topads_layout, this);
         titleTextView = (TextView) view.findViewById(R.id.title_text_view);
         contentTextView = (TextView) view.findViewById(R.id.content_text_view);
+        arrow = (ImageView) view.findViewById(R.id.arrow_left);
     }
 
     public void setTitle(String textTitle) {
@@ -82,6 +99,12 @@ public class TopAdsLabelView extends FrameLayout {
         requestLayout();
     }
 
+    public void setTitleContentTypeFace(int typeFace){
+        titleTextView.setTypeface(null, typeFace);
+        invalidate();
+        requestLayout();
+    }
+
     public void setContentTypeface(int typefaceType) {
         contentTextView.setTypeface(null, typefaceType);
         invalidate();
@@ -92,6 +115,14 @@ public class TopAdsLabelView extends FrameLayout {
         contentTextView.setTextColor(colorValue);
         invalidate();
         requestLayout();
+    }
+
+    public void setVisibleArrow(boolean isVisible){
+        if(isVisible){
+            arrow.setVisibility(VISIBLE);
+        }else{
+            arrow.setVisibility(GONE);
+        }
     }
 
     public String getTitle() {

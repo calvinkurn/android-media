@@ -43,7 +43,6 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.tkpd.library.utils.network.BaseNetworkController.onResponseError;
-import static com.tokopedia.seller.gmstat.views.models.StartOrEndPeriodModel.YESTERDAY;
 
 /**
  * Created by normansyahputa on 11/2/16.
@@ -120,7 +119,7 @@ public class GMStatNetworkController extends BaseNetworkController {
         dayOne.add(Calendar.DATE, -30);
 
         Calendar yesterday = Calendar.getInstance();
-        yesterday.add(Calendar.DATE, YESTERDAY);
+        yesterday.add(Calendar.DATE, -1);
 
         return gmstatApi.getPopulatProduct(getGMStatParam(shopId, dayOne.getTimeInMillis(), yesterday.getTimeInMillis()));
     }

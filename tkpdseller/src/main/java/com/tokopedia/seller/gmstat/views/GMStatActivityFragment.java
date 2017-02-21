@@ -52,10 +52,10 @@ import com.tokopedia.seller.gmstat.views.models.LoadingGMTwoModel;
 import com.tokopedia.seller.gmstat.views.models.ProdSeen;
 import com.tokopedia.seller.gmstat.views.models.ProdSold;
 import com.tokopedia.seller.gmstat.views.models.SuccessfulTransaction;
-import com.tokopedia.seller.gmstat.views.williamchart.chart.renderer.StringFormatRenderer;
-import com.tokopedia.seller.gmstat.views.williamchart.chart.renderer.XRenderer;
-import com.tokopedia.seller.gmstat.views.williamchart.chart.tooltip.Tooltip;
-import com.tokopedia.seller.gmstat.views.williamchart.chart.view.LineChartView;
+import com.tokopedia.seller.lib.williamchart.renderer.StringFormatRenderer;
+import com.tokopedia.seller.lib.williamchart.renderer.XRenderer;
+import com.tokopedia.seller.lib.williamchart.tooltip.Tooltip;
+import com.tokopedia.seller.lib.williamchart.view.LineChartView;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -326,6 +326,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
             shopId= savedInstanceState.getLong(SHOP_ID);
             isGoldMerchant = savedInstanceState.getBoolean(IS_GOLD_MERCHANT);
             gmFragmentPresenter = new GMFragmentPresenterImpl(this, gmstat, shopId);
+            gmFragmentPresenter.restoreState(savedInstanceState);
         }
     }
 
@@ -651,6 +652,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         super.onSaveInstanceState(outState);
         outState.putLong(SHOP_ID, shopId);
         outState.putBoolean(IS_GOLD_MERCHANT, isGoldMerchant);
+        gmFragmentPresenter.saveState(outState);
     }
 
     @Override

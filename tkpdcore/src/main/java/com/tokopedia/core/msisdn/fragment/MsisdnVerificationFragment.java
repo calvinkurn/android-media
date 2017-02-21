@@ -3,6 +3,7 @@ package com.tokopedia.core.msisdn.fragment;
 import android.Manifest;
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,8 @@ import com.tokopedia.core.util.PhoneVerificationUtil;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 
+import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -40,12 +43,17 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.tokopedia.core.util.SessionHandler.PHONE_NUMBER;
+
 /**
  * Created by Nisie on 7/13/16.
  */
 @RuntimePermissions
 public class MsisdnVerificationFragment extends DialogFragment
         implements MsisdnVerificationFragmentView, IncomingSmsReceiver.ReceiveSMSListener, MSISDNConstant {
+
+    private static final String FORMAT = "%02d:%02d";
+    private static final java.lang.String PHONE_NUMBER_VERIFICATION = "PHONE_NUMBER_VERIFICATION";
 
     @BindView(R2.id.view_verification)
     View verificationView;
@@ -86,6 +94,7 @@ public class MsisdnVerificationFragment extends DialogFragment
     LocalCacheHandler cacheHandler;
     private Unbinder unbinder;
     IncomingSmsReceiver smsReceiver;
+    CountDownTimer countDownTimer;
 
     public static MsisdnVerificationFragment createInstance() {
         MsisdnVerificationFragment fragment = new MsisdnVerificationFragment();
@@ -133,9 +142,9 @@ public class MsisdnVerificationFragment extends DialogFragment
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         unbinder = ButterKnife.bind(this, view);
+        initialVar();
         initView(view);
         setViewListener();
-        initialVar();
         setActionVar();
 
         setCache();
@@ -181,7 +190,7 @@ public class MsisdnVerificationFragment extends DialogFragment
 
     private void initView(View view) {
         ImageHandler.loadImageWithId(logo, R.drawable.ic_verifikasi);
-        phoneNumberEditText.setText(SessionHandler.getPhoneNumber());
+        phoneNumberEditText.setText(cacheHandler.getString(PHONE_NUMBER_VERIFICATION, SessionHandler.getPhoneNumber()));
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         username.setText(getActivity().getString(R.string.hello) + ", " + SessionHandler.getLoginName(getActivity()));
 
@@ -207,7 +216,7 @@ public class MsisdnVerificationFragment extends DialogFragment
             @Override
             public void onClick(View v) {
                 UnifyTracking.eventOTPVerif();
-                KeyboardHandler.DropKeyboard(getActivity(),verifyOtp);
+                KeyboardHandler.DropKeyboard(getActivity(), verifyOtp);
                 presenter.verifyOTP(otpEditText.getText().toString().trim());
             }
         });
@@ -223,6 +232,7 @@ public class MsisdnVerificationFragment extends DialogFragment
     public void onRequestOTP() {
         UnifyTracking.eventOTPSend();
         KeyboardHandler.DropKeyboard(getActivity(), sendOtp);
+        cacheHandler.putString(PHONE_NUMBER_VERIFICATION, phoneNumberEditText.getText().toString());
         presenter.requestOTP(phoneNumberEditText.getText().toString().trim());
     }
 
@@ -296,6 +306,38 @@ public class MsisdnVerificationFragment extends DialogFragment
         finishLoading();
         setFinishRequestOTP();
         setSuccessRequestOTPCache();
+        startTimer();
+    }
+
+    public void startTimer() {
+
+        countDownTimer = new CountDownTimer(90000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                try {
+                    sendOtp.setEnabled(false);
+
+                    sendOtp.setText("" + String.format(FORMAT,
+                            TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
+                                    TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
+                            TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+                                    TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+
+                } catch (Exception e) {
+                    cancel();
+                }
+            }
+
+            public void onFinish() {
+                try {
+                    sendOtp.setText(R.string.title_resend_otp);
+                    sendOtp.setEnabled(true);
+                } catch (Exception e) {
+
+                }
+            }
+
+        }.start();
+        otpEditText.requestFocus();
     }
 
     private void setFinishRequestOTP() {
@@ -327,12 +369,21 @@ public class MsisdnVerificationFragment extends DialogFragment
         super.onDestroyView();
         unbinder.unbind();
         presenter.onDestroyView();
+        destroyTimer();
+        cacheHandler = null;
+    }
+
+    private void destroyTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
     }
 
     @Override
     public void onReceiveOTP(String otpCode) {
         MsisdnVerificationFragmentPermissionsDispatcher.processOTPWithCheck(MsisdnVerificationFragment.this
-        ,otpCode);
+                , otpCode);
     }
 
     @NeedsPermission(Manifest.permission.READ_SMS)

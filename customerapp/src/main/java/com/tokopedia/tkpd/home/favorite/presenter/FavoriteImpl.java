@@ -14,12 +14,10 @@ import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.model.HorizontalProductList;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.NetworkHandler;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.entity.home.FavoriteSendData;
 import com.tokopedia.core.network.entity.home.TopAdsData;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -418,24 +416,19 @@ public class FavoriteImpl implements Favorite {
             @Override
             public void onError(Throwable e) {
                 if (e != null) {
-                    if (e.getMessage() != null && RetrofitUtils.isSessionInvalid(e.getMessage())) {
-                        NetworkHandler.forceLogout(mContext);
+                    Log.e(TAG, messageTAG + "onError : " + e.getLocalizedMessage());
+                    view.displayProgressBar(false);
+                    if (data.size() == 0) {
+                        view.displayMainContent(false);
+                        view.displayRetryFull();// display full retry
                     } else {
-                        e.printStackTrace();
-                        Log.e(TAG, messageTAG + "onError : " + e.getLocalizedMessage());
-                        view.displayProgressBar(false);
-                        if (data.size() == 0) {
-                            view.displayMainContent(false);
-                            view.displayRetryFull();// display full retry
-                        } else {
-                            view.displayMainContent(true);
-                            view.displayLoadMore(false);// disable load more
-                            view.displayRetry(true);// enable retry
-                        }
-                        view.displayPull(false);
-                        view.loadDataChange();
-                        //[END] display retry
+                        view.displayMainContent(true);
+                        view.displayLoadMore(false);// disable load more
+                        view.displayRetry(true);// enable retry
                     }
+                    view.displayPull(false);
+                    view.loadDataChange();
+                    //[END] display retry
                 }
             }
 

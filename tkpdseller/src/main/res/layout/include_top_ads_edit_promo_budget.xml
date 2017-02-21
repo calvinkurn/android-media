@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <TextView
-        style="@style/TextView"
+        style="@style/TextView.TopAds.Title"
         android:text="@string/label_top_ads_budget"/>
 
     <RadioGroup

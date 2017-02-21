@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.home.feed.data.source.local;
 
 import com.tokopedia.tkpd.home.feed.data.mapper.FeedMapper;
-import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.FeedDbManager;
+import com.tokopedia.core.base.common.dbManager.FeedDbManager;
 import com.tokopedia.tkpd.home.feed.domain.model.Feed;
 
 import rx.Observable;

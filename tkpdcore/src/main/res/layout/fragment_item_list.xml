@@ -10,5 +10,5 @@
     android:layout_marginRight="16dp"
     android:scrollbars="vertical"
     app:layoutManager="LinearLayoutManager"
-    tools:context="com.tokopedia.core.myproduct.fragment.ChooserFragment"
+    tools:context="com.tokopedia.core.com.tokopedia.seller.myproduct.fragment.ChooserFragment"
     tools:listitem="@layout/fragment_item" />

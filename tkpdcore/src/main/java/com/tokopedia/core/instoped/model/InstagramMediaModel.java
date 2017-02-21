@@ -3,11 +3,10 @@ package com.tokopedia.core.instoped.model;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 
-import org.parceler.Parcel;
-
 /**
  * Created by Tkpd_Eka on 4/6/2016.
  * modified by m.normansyah on 4/18/2016
+ * TODO : MOVE IT TO THE SELLER MODULE AFTER MYPRODUCT MOVED TO SELLER MODULE
  */
 public class InstagramMediaModel extends RecyclerViewItem {
     public InstagramMediaModel(){

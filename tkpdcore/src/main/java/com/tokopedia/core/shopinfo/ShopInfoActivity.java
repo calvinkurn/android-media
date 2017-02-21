@@ -38,6 +38,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
@@ -75,7 +76,7 @@ import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
  * Edited by HAFIZH on 23-01-2017
  */
 
-public class ShopInfoActivity extends TActivity
+public class ShopInfoActivity extends BaseActivity
         implements OfficialShopHomeFragment.OfficialShopInteractionListener {
     public static final int REQUEST_CODE_LOGIN = 561;
     private static final String FORMAT_UTF_8 = "UTF-8";
@@ -462,11 +463,12 @@ public class ShopInfoActivity extends TActivity
         holder.indicator.setupWithViewPager(holder.pager);
         holder.pager.addOnPageChangeListener(new
                 TabLayout.TabLayoutOnPageChangeListener(holder.indicator));
-        holder.indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(holder.pager));
+        holder.indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(this,holder.pager));
         shopModel.info.shopName = MethodChecker.fromHtml(shopModel.info.shopName).toString();
         setListener();
         holder.collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
         holder.collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
+
         if (holder.shopAvatar.getDrawable() == null)
             ImageHandler.loadImageCircle2(this, holder.shopAvatar, shopModel.info.shopAvatar);
         ImageHandler.loadImageLucky2(this, holder.luckyShop, shopModel.info.shopLucky);

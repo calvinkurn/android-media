@@ -93,8 +93,12 @@ public class SearchAdRequest {
     public HashMap<String, String> getParams() {
         HashMap<String, String> params = new HashMap<>();
         params.put(TopAdsNetworkConstant.PARAM_SHOP_ID, shopId);
-        params.put(TopAdsNetworkConstant.PARAM_START_DATE, new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate));
-        params.put(TopAdsNetworkConstant.PARAM_END_DATE, new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate));
+        if (startDate != null) {
+            params.put(TopAdsNetworkConstant.PARAM_START_DATE, new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate));
+        }
+        if (endDate != null) {
+            params.put(TopAdsNetworkConstant.PARAM_END_DATE, new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate));
+        }
         if (!TextUtils.isEmpty(groupId)) {
             params.put(TopAdsNetworkConstant.PARAM_GROUP_ID, groupId);
             return params;

@@ -33,6 +33,7 @@ public class FeedRepositoryImpl implements FeedRepository {
                               HomeDataSourceFactory homeDataSourceFactory,
                               TopAdsDataSourceFactory topAdsDataSourceFactory,
                               RecentProductSourceFactory recentProducFactory) {
+
         this.feedDataSourceFactory = feedDataSourceFactory;
         this.homeDataSourceFactory = homeDataSourceFactory;
         this.topAdsDataSourceFactory = topAdsDataSourceFactory;

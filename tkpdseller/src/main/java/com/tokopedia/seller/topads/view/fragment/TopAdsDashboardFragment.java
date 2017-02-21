@@ -31,6 +31,8 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         void onLoadDataError();
 
         void onLoadDataSuccess();
+
+        void onCreditAdded();
     }
 
     SwipeToRefresh swipeToRefresh;
@@ -273,8 +275,14 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (resultCode == getActivity().RESULT_OK && requestCode == REQUEST_CODE_ADD_KREDIT) {
-            presenter.populateDeposit();
+            if (callback != null) {
+                callback.onCreditAdded();
+            }
         }
+    }
+
+    public void populateDeposit() {
+        presenter.populateDeposit();
     }
 
     protected abstract Class<?> getClassIntentStatistic();
