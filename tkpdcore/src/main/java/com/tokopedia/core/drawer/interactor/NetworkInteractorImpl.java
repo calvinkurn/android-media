@@ -198,8 +198,7 @@ public class NetworkInteractorImpl implements NetworkInteractor {
         Observable<TopCashItem> observable = Observable
                 .concat(getObservableFetchCacheTokoCashData(),
                         getObservableFetchNetworkTokoCashData())
-                .first(isTokoCashDataAvailable())
-                .doOnNext(storeTokoCashItemToDatabase());
+                .first(isTokoCashDataAvailable());
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -349,7 +348,7 @@ public class NetworkInteractorImpl implements NetworkInteractor {
                     public Observable<TopCashItem> call(Response<TopCashItem> topCashItemResponse) {
                         return Observable.just(topCashItemResponse.body());
                     }
-                });
+                }).doOnNext(storeTokoCashItemToDatabase());
     }
 
     private Observable<TopCashItem> getObservableFetchCacheTokoCashData() {
