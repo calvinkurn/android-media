@@ -6,7 +6,7 @@ import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.tkpd.home.feed.data.mapper.RecentProductMapper;
 import com.tokopedia.tkpd.home.feed.data.source.cloud.CloudRecentProductDataSource;
 import com.tokopedia.tkpd.home.feed.data.source.local.LocalRecentProductDataSource;
-import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.RecentProductDbManager;
+import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
 
 /**
  * @author Kulomady on 12/9/16.

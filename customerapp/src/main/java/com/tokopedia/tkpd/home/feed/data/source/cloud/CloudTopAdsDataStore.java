@@ -5,7 +5,7 @@ import com.tokopedia.core.database.model.DbTopAds;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.tkpd.home.feed.data.mapper.TopAdsMapper;
 import com.tokopedia.tkpd.home.feed.data.source.TopAdsDataSource;
-import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.TopAdsDbManager;
+import com.tokopedia.core.base.common.dbManager.TopAdsDbManager;
 import com.tokopedia.tkpd.home.feed.domain.model.TopAds;
 
 import java.util.List;

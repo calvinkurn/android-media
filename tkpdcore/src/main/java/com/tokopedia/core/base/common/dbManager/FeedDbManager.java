@@ -1,9 +1,9 @@
-package com.tokopedia.tkpd.home.feed.data.source.local.dbManager;
+package com.tokopedia.core.base.common.dbManager;
 
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.tokopedia.core.base.data.DbManagerOperation;
-import com.tokopedia.core.database.model.DbRecentProduct;
+import com.tokopedia.core.database.model.DbFeed;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -12,17 +12,17 @@ import rx.Observable;
  * @author Kulomady on 1/3/17.
  */
 
-public class RecentProductDbManager
-        implements DbManagerOperation<DbRecentProduct, Observable<Response<String>>> {
+public class FeedDbManager implements DbManagerOperation<DbFeed, Observable<Response<String>>> {
+
 
     @Override
-    public void store(DbRecentProduct data) {
-        data.save();
+    public void store(DbFeed dbFeed) {
+        dbFeed.save();
     }
 
     @Override
     public void delete() {
-        Delete.table(DbRecentProduct.class);
+        Delete.tables(DbFeed.class);
     }
 
     @Override
@@ -36,13 +36,15 @@ public class RecentProductDbManager
     }
 
     @Override
-    public DbRecentProduct getTable() {
-        return SQLite.select().from(DbRecentProduct.class).querySingle();
+    public DbFeed getTable() {
+        return SQLite.select()
+                .from(DbFeed.class)
+                .querySingle();
     }
 
     @Override
     public Observable<Response<String>> getData() {
-        String contentRecentProduct = getTable().getContentRecentProduct();
+        String contentRecentProduct = getTable().getContentFeed();
         if (contentRecentProduct != null) {
             return Observable.just(Response.success(contentRecentProduct));
         } else {
@@ -54,7 +56,6 @@ public class RecentProductDbManager
     public boolean isQueryDataEmpty() {
         return getTable() == null;
     }
-
 
     private boolean isMoreThanFifteenMinute(long currentTime, long oldTime) {
         long fifteenMinutes = 1000 * 60 * 15;
