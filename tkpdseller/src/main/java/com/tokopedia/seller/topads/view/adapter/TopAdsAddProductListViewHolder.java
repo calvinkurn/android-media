@@ -1,0 +1,103 @@
+package com.tokopedia.seller.topads.view.adapter;
+
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.listener.AdapterSelectionListener;
+import com.tokopedia.seller.topads.listener.BindViewHolder;
+import com.tokopedia.seller.topads.view.models.TopAdsAddProductModel;
+
+
+/**
+ * Created by normansyahputa on 2/13/17.
+ */
+
+public class TopAdsAddProductListViewHolder extends RecyclerView.ViewHolder
+        implements BindViewHolder<TopAdsAddProductModel> {
+
+    private final View emptySpace;
+    private final TextView topAdsAddproductListDescription;
+    private final ImageView topAdsAddProductListImageView;
+    private final TextView topAdsAddProductListSnippet;
+    private final int topAdsSelectionColor;
+    private final int transparantColor;
+    AdapterSelectionListener adapterSelectionListener;
+    int adapterPosition;
+    private ImageHandler imageHandler;
+    private TopAdsAddProductModel model;
+
+    public TopAdsAddProductListViewHolder(View itemView, ImageHandler imageHandler
+            , AdapterSelectionListener adapterSelectionListener) {
+        super(itemView);
+
+        topAdsAddProductListImageView = (ImageView)
+                itemView.findViewById(R.id.top_ads_add_product_list_imageview);
+        topAdsAddproductListDescription = (TextView)
+                itemView.findViewById(R.id.top_ads_add_product_list_description);
+        topAdsAddProductListSnippet = (TextView)
+                itemView.findViewById(R.id.top_ads_add_product_list_snippet);
+        emptySpace =
+                itemView.findViewById(R.id.empty_space);
+
+        topAdsSelectionColor = ContextCompat.getColor(itemView.getContext(), R.color.selection_color_top_ads);
+        transparantColor = ContextCompat.getColor(itemView.getContext(), android.R.color.transparent);
+
+        this.imageHandler = imageHandler;
+        this.adapterSelectionListener = adapterSelectionListener;
+
+        itemView.setOnClickListener(onClickListener());
+    }
+
+    @Override
+    public void bind(TopAdsAddProductModel model) {
+        this.model = model;
+        adapterPosition = getAdapterPosition();
+
+        if (!model.isSelected()) {
+            imageHandler.loadImage(topAdsAddProductListImageView, model.imageUrl, false);
+            itemView.setBackgroundColor(transparantColor);
+        } else {
+            imageHandler.loadImage(topAdsAddProductListImageView,
+                    R.drawable.abc_btn_switch_to_on_mtrl_00001);
+            itemView.setBackgroundColor(topAdsSelectionColor);
+        }
+
+        topAdsAddproductListDescription.setText(model.description);
+        if (model.snippet != null && !model.snippet.isEmpty()) {
+            topAdsAddProductListSnippet.setVisibility(View.VISIBLE);
+            topAdsAddProductListSnippet.setText(model.snippet);
+            emptySpace.setVisibility(View.GONE);
+        } else {
+            topAdsAddProductListSnippet.setVisibility(View.GONE);
+            emptySpace.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private View.OnClickListener onClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // reverse selection
+                boolean reverseSelection = !model.isSelected();
+
+                if (adapterSelectionListener != null) {
+                    if (reverseSelection) {
+                        adapterSelectionListener.onChecked(adapterPosition);
+                    } else {
+                        adapterSelectionListener.onUnChecked(adapterPosition);
+                    }
+                }
+
+                // reverse selection
+                model.setSelected(reverseSelection);
+            }
+        };
+    }
+
+
+}

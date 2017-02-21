@@ -131,6 +131,7 @@ dependencies {
     compile rootProject.ext.networkDependencies.okHttp
     compile rootProject.ext.networkDependencies.loggingInterceptor
     compile rootProject.ext.networkDependencies.glide
+    compile rootProject.ext.miscDependencies.chips
 
     compile rootProject.ext.analyticsDependencies.appsflyer
     compile rootProject.ext.analyticsDependencies.localytics

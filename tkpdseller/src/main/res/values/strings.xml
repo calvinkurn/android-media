@@ -193,4 +193,14 @@
     <string name="positive_button_dialog">Ya</string>
     <string name="negative_button_dialog">Tidak</string>
 
+    <string name="title_activity_top_ads_list">Tambah Produk</string>
+
+    <string name="delete">Delete</string>
+    <string name="insert">Insert</string>
+    <string name="move_to">Move to:</string>
+    <string name="move">Move</string>
+    <string name="scroll">Scroll</string>
+    <string name="search_product">Cari Produk</string>
+    <string name="filter_top_ads">Filter Top Ads</string>
+
 </resources>
