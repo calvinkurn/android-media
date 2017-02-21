@@ -55,6 +55,6 @@
 
     <Button
         android:id="@+id/button_submit"
-        style="@style/ButtonGreen"
+        style="@style/Button.TopAds.Submit.Green"
         android:text="@string/label_top_ads_save"/>
 </LinearLayout>

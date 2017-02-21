@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.Menu;
@@ -18,6 +19,7 @@ import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractorIm
 import com.tokopedia.seller.topads.domain.interactor.TopAdsShopAdInteractorImpl;
 import com.tokopedia.seller.topads.domain.model.data.Ad;
 import com.tokopedia.seller.topads.domain.model.data.ShopAd;
+import com.tokopedia.seller.topads.view.activity.TopAdsEditPromoShopActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailShopPresenterImpl;
 
@@ -84,7 +86,9 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
 
     @Override
     protected void editAd() {
-
+        Intent intent = new Intent(getActivity(), TopAdsEditPromoShopActivity.class);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD, ad);
+        startActivity(intent);
     }
 
     @Override
