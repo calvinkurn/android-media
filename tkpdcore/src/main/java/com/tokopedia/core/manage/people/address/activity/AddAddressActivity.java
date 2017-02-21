@@ -48,9 +48,9 @@ public class AddAddressActivity extends BasePresenterActivity implements ManageA
     @Override
     protected void initView() {
         Bundle bundle = new Bundle();
-        if (getIntent().getExtras() == null) {
-            bundle = new Bundle();
-        } else if (getSupportActionBar() != null && getIntent().getExtras().getBoolean(IS_EDIT)) {
+        if (getSupportActionBar() != null
+                && getIntent().getExtras() != null
+                && getIntent().getExtras().getBoolean(IS_EDIT)) {
             bundle = getIntent().getExtras();
             getSupportActionBar().setTitle(getString(R.string.title_update_address));
         }
