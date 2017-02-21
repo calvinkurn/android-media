@@ -394,13 +394,15 @@ public class RegisterStep2Fragment extends BasePresenterFragment<RegisterStep2Pr
     public void onSuccessRegister(RegisterResult registerResult) {
         finishLoadingProgress();
 
-        if (registerResult.getIsActive() == RegisterResult.USER_INACTIVE) {
+        if (registerResult.getIsActive() == RegisterResult.USER_INACTIVE
+                || registerResult.getIsActive() == RegisterResult.USER_PENDING ) {
             sendLocalyticsRegisterEvent(registerResult.getUserId());
             sendGTMRegisterEvent();
             goToRegisterActivation();
         } else {
             onErrorRegister(getString(R.string.alert_email_address_is_already_registered));
         }
+
 
     }
 
