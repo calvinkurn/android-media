@@ -97,6 +97,16 @@ public class InboxRouter {
         return parentIndexHomeClass;
     }
 
+    public static Class<?> getInboxMessageActivityClass() {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = RouterUtils.getActivityClass(INBOX_MESSAGE_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
+
     /////////// COMPONENT NAME
 
     public static ComponentName getInboxticketActivityComponentName(Context context) {

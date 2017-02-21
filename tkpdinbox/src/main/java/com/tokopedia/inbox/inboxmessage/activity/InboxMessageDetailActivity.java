@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.support.v4.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.MainActivity;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;

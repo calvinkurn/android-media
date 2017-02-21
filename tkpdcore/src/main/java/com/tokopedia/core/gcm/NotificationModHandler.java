@@ -10,23 +10,24 @@ import com.tokopedia.core.var.TkpdCache;
 public class NotificationModHandler {
 
     private Context mContext;
+    NotificationManager mNotificationManager;
     
     
     public NotificationModHandler(Context context, int code) {
-    	NotificationCode = code;
     	mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-    	this.context = context;
+    	this.mContext = context;
     }
 
     public NotificationModHandler(Context context) {
         mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        this.context = context;
+        this.mContext = context;
     }
 
     public static void clearCacheIfFromNotification(Context context, Intent intent) {
         if (intent != null && intent.hasExtra(Constants.EXTRA_FROM_PUSH)){
             if (intent.getBooleanExtra(Constants.EXTRA_FROM_PUSH, false)){
-                NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                NotificationManager notificationManager =
+                        (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.cancel(100);
                 LocalCacheHandler.clearCache(context, TkpdCache.GCM_NOTIFICATION);
             }

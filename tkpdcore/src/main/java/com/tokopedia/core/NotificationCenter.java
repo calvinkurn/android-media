@@ -19,7 +19,6 @@ import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.MultiPaneActivity;
-import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.inboxreputation.fragment.InboxReputationFragment;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
