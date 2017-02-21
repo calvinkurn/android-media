@@ -102,6 +102,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     private List<Shipment> mShipments;
     private List<Attribute> mShipmentRateAttrs;
     private Observable<Long> incrementObservable = Observable.interval(200, TimeUnit.MILLISECONDS);
+    private SnackbarRetry snackbarRetry;
 
     @BindView(R2.id.tv_ticker_gtm)
     TextView tvTickerGTM;
@@ -492,7 +493,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     public void showUpdateAddressShippingError(String messageError) {
         finishCalculateCartLoading();
-        SnackbarRetry snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(this, messageError,
+
+        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(this, messageError,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
@@ -566,6 +568,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 }
             }
             tvErrorShipping.setVisibility(View.GONE);
+            clearSnackbar();
         } else if (parent.getAdapter().getItem(position) instanceof Product) {
             orderData.setShipmentPackage(((Product) parent.getAdapter()
                     .getItem(position)).getShipperProductId());
@@ -943,4 +946,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             }
         };
     }
+
+    private void clearSnackbar() {
+        if(snackbarRetry != null && snackbarRetry.isShown()) snackbarRetry.hideRetrySnackbar();
+    }
+
 }
