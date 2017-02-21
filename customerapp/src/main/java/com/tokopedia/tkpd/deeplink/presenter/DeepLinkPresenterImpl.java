@@ -186,11 +186,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         interactor.handleAccounts(parseUriData(uriData), new SignInInteractor.SignInListener() {
             @Override
             public void onSuccess(AccountsModel result) {
+                Log.d(TAG, "onSuccess: ");
                 finishLogin();
             }
 
             @Override
             public void onError(String error) {
+                Log.d(TAG, "onError: "+error);
                 finishLogin();
             }
 
