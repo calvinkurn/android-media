@@ -24,7 +24,7 @@ import com.tokopedia.seller.gmsubscribe.domain.cart.interactor.CheckoutGmSubscri
 import com.tokopedia.seller.gmsubscribe.domain.cart.interactor.CheckoutGmSubscribeWithVoucherCheckUseCase;
 import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetGmAutoSubscribeSelectedProductUseCase;
 import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetGmCurrentSelectedProductUseCase;
-import com.tokopedia.seller.gmsubscribe.view.checkout.presenter.GmCheckoutPresenterImpl;
+import com.tokopedia.seller.gmsubscribe.view.presenter.GmCheckoutPresenterImpl;
 import com.tokopedia.seller.network.interceptor.GMSubscribeInterceptor;
 
 import java.util.concurrent.TimeUnit;

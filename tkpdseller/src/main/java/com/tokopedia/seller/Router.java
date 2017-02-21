@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.seller.gmsubscribe.view.home.activity.GmSubscribeHomeActivity;
+import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 
 /**
  * Created by normansyahputa on 12/15/16.

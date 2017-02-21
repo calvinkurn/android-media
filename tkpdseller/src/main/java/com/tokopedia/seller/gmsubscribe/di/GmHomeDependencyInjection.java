@@ -15,7 +15,7 @@ import com.tokopedia.seller.gmsubscribe.data.source.product.GmSubscribeProductDa
 import com.tokopedia.seller.gmsubscribe.data.source.product.cache.GmSubscribeProductCache;
 import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.GmSubscribeProductCloud;
 import com.tokopedia.seller.gmsubscribe.domain.product.interactor.ClearGmSubscribeProductCacheUseCase;
-import com.tokopedia.seller.gmsubscribe.view.home.presenter.GmHomePresenterImpl;
+import com.tokopedia.seller.gmsubscribe.view.presenter.GmHomePresenterImpl;
 import com.tokopedia.seller.network.interceptor.GMSubscribeInterceptor;
 
 import java.util.concurrent.TimeUnit;

@@ -148,19 +148,19 @@
             android:label="@string/title_activity_statistic"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".gmsubscribe.view.home.activity.GmSubscribeHomeActivity"
+            android:name=".gmsubscribe.view.activity.GmSubscribeHomeActivity"
             android:label="@string/gm_home_title"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".gmsubscribe.view.product.activity.GmProductActivity"
+            android:name=".gmsubscribe.view.activity.GmProductActivity"
             android:label="@string/gmsubscribe_current_product_selector"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".gmsubscribe.view.checkout.activity.GmCheckoutActivity"
+            android:name=".gmsubscribe.view.activity.GmCheckoutActivity"
             android:label="@string/gmsubscribe_checkout_title"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".gmsubscribe.view.payment.GmDynamicPaymentActivity"
+            android:name=".gmsubscribe.view.activity.GmDynamicPaymentActivity"
             android:label="Pembayaran"
             android:screenOrientation="portrait"/>
         <service
