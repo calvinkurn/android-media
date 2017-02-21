@@ -1418,16 +1418,12 @@ public class ManageProduct extends TkpdActivity implements
     }
 
     public void CheckCache() {
-        if (checkNotNull(manageProductPresenter.getCache())) {// if there is cache then show
-            Refresh.setPullEnabled(true);
-            setToUI(manageProductPresenter.getCache());
-        } else {// if no cache then get product
-            Refresh.setPullEnabled(false);
-            clearData();
-            lvListProd.removeNoResult();
-            lvListProd.addLoadingFooter();
-            GetProductList(mPaging.getPage(), null);
-        }
+        Refresh.setPullEnabled(false);
+        clearData();
+        lvListProd.removeNoResult();
+        lvListProd.addLoadingFooter();
+        GetProductList(mPaging.getPage(), null);
+
     }
 
     private void GetProductList(final int page, String sort) {
@@ -1672,12 +1668,6 @@ public class ManageProduct extends TkpdActivity implements
             manageProduct.productModels = new ArrayList<>(manageProductModels);
         }
         manageProduct.pagingHandlerModel = pagingHandlerModel;
-
-        try {
-            manageProductPresenter.saveCache(manageProduct);// save cache
-        } catch (MalformedURLException | UnsupportedEncodingException e) {
-            Snackbar.make(parentView, e.getMessage(), Snackbar.LENGTH_LONG).show();
-        }
     }
 
 
