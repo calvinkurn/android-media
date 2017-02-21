@@ -112,7 +112,6 @@ android {
             minifyEnabled false
             zipAlignEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            buildConfigField "boolean", "IS_DEBUG", "true"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
         release {
@@ -120,7 +119,6 @@ android {
             zipAlignEnabled true
             shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
-            buildConfigField "boolean", "IS_DEBUG", "false"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
@@ -201,7 +199,7 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
 
-    compile (rootProject.ext.tkpdDependencies.inbox) {
+    /*compile (rootProject.ext.tkpdDependencies.inbox) {
         exclude group: 'com.tokopedia.core'
     }
     compile (rootProject.ext.tkpdDependencies.discovery) {
@@ -216,13 +214,12 @@ dependencies {
     compile (rootProject.ext.tkpdDependencies.session) {
         exclude group: 'com.tokopedia.core'
     }
-    /*compile (rootProject.ext.tkpdDependencies.core)
+    compile (rootProject.ext.tkpdDependencies.core)*/
     compile project(':tkpddiscovery')
     compile project(':tkpdtransaction')
     compile project(':tkpdseller')
     compile project(':tkpdsession')
-    compile project(':tkpdinbox')*/
-    compile project(':tkpdcore')
+    compile project(':tkpdinbox')
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

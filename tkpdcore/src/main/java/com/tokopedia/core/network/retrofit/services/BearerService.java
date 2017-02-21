@@ -9,8 +9,6 @@ import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdStethoInterceptor;
 import com.tokopedia.core.util.GlobalConfig;
 
 import java.io.IOException;
@@ -74,7 +72,7 @@ public abstract class BearerService<T> {
                         .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
 
         setInterceptorDebug(httpClientBuilder);
-        Retrofit retrofit = retrofitBuilder.client(httpClientBuilder.addNetworkInterceptor(new TkpdStethoInterceptor()).build()).build();
+        Retrofit retrofit = retrofitBuilder.client(httpClientBuilder.build()).build();
         initApiService(retrofit);
     }
 
