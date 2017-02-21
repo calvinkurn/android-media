@@ -10,7 +10,9 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.container.AppsflyerContainer;
 import com.tokopedia.core.analytics.container.IAppsflyerContainer;
 import com.tokopedia.core.analytics.container.ILocalyticsContainer;
+import com.tokopedia.core.analytics.container.IMoengageContainer;
 import com.tokopedia.core.analytics.container.LocalyticsContainer;
+import com.tokopedia.core.analytics.container.MoEngageContainer;
 
 /**
  * Created by Hafizh Herdi on 2/11/2016.
@@ -57,6 +59,10 @@ public class Jordan {
 
     public IAppsflyerContainer getAFContainer(){
         return AppsflyerContainer.newInstance(context);
+    }
+
+    public IMoengageContainer getMoEngageContainer() {
+        return MoEngageContainer.getMoEngageContainer(context);
     }
 
     public static final String AF_SCREEN_HOME_HOTLIST = "home_hotlist";

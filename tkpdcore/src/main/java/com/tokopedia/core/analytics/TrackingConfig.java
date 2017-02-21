@@ -25,7 +25,8 @@ public abstract class TrackingConfig {
     public enum AnalyticsKind {
         GTM,
         APPSFLYER,
-        LOCALYTICS
+        LOCALYTICS,
+        MOENGAGE
     }
 
     /**
@@ -109,6 +110,9 @@ public abstract class TrackingConfig {
                         return builder;
                     }
                 });
+                break;
+            case MOENGAGE:
+                Jordan.init(MainApplication.getAppContext()).getMoEngageContainer().initialize();
                 break;
         }
     }

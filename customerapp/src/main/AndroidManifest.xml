@@ -16,6 +16,9 @@
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4" />
+        <meta-data
+            android:name="APP_ID"
+            android:value="@string/key_moengage" />
 
         <activity
             android:name="com.tokopedia.core.SplashScreen"

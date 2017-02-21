@@ -30,8 +30,9 @@ import java.util.Map;
 public class TrackingUtils extends TrackingConfig {
 
     public static void eventCampaign(Campaign campaign){
+        Campaign temp = new Campaign(campaign);
         getGTMEngine()
-                .sendCampaign(campaign)
+                .sendCampaign(temp)
                 .clearCampaign(campaign);
     }
 
