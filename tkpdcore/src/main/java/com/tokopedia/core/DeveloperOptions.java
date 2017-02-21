@@ -8,12 +8,14 @@ import android.os.Bundle;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.readystatesoftware.chuck.Chuck;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.OneOnClick;
@@ -67,6 +69,8 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
     private View saveSetting;
     private EditText etWs4;
     private TextView saveWs4;
+    private TextView vGoTochuck;
+    private CheckBox toggleChuck;
 
     private RadioGroup rgWs4;
     private RadioButton rbWs4Live;
@@ -123,7 +127,11 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         rbWs4Staging = (RadioButton) findViewById(R.id.rb_dev_ws4_staging);
         rbWs4Live = (RadioButton) findViewById(R.id.rb_dev_ws4_live);
 
+        vGoTochuck = (TextView) findViewById(R.id.goto_chuck);
+        toggleChuck = (CheckBox) findViewById(R.id.toggle_chuck);
+
         initListener();
+        initView();
 
         TrackingUtils.eventLocaInAppMessaging("in-app : Clicked Developer Options");
         TrackingUtils.eventLocaInApp("event : Clicked Developer Options");
@@ -240,6 +248,28 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
                 startActivityForResult(InboxRouter.getFreeReturnOnBoardingActivityIntent(getBaseContext(), "1234"),789);
             }
         });
+
+        toggleChuck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean state) {
+                LocalCacheHandler cache = new LocalCacheHandler(getApplicationContext(), "CHUCK_ENABLED");
+                cache.putBoolean("is_enable", state);
+                cache.applyEditor();
+            }
+        });
+
+        vGoTochuck.setOnClickListener(new OneOnClick() {
+            @Override
+            public void oneOnClick(View view) {
+                startActivity(Chuck.getLaunchIntent(getApplicationContext()));
+            }
+        });
+
+    }
+
+    public void initView() {
+        LocalCacheHandler cache = new LocalCacheHandler(getApplicationContext(), "CHUCK_ENABLED");
+        toggleChuck.setChecked(cache.getBoolean("is_enable", false));
     }
 
     public static final String getWsV4Domain(Context context) {
