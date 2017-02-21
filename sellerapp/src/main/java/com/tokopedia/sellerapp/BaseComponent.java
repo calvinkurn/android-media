@@ -1,6 +1,7 @@
 package com.tokopedia.sellerapp;
 
-import com.tokopedia.sellerapp.gmstat.views.GMStatActivity;
+
+import com.tokopedia.sellerapp.gmstat.activities.GMStatActivity;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
 /**

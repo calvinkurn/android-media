@@ -9,8 +9,8 @@
         android:icon="@drawable/qc_launcher2"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        tools:replace="android:icon"
-        android:theme="@style/Theme.Tokopedia3.Launcher">
+        android:theme="@style/Theme.Tokopedia3.Launcher"
+        tools:replace="android:icon">
         <activity
             android:name=".SplashScreenActivity"
             android:label="@string/app_name"
@@ -68,18 +68,17 @@
             android:name="APPSFLYER_KEY"
             android:value="@string/key_appsflyer" />
 
-        <activity android:name=".onboarding.activity.OnboardingSellerActivity"></activity>
+        <meta-data
+            android:name="com.truecaller.android.sdk.PartnerKey"
+            android:value="OQcSB25ec2f92263c41b5a3d10152ace7888e" />
+
+        <activity android:name=".onboarding.activity.OnboardingSellerActivity" />
         <activity
-            android:name=".gmstat.views.GMStatActivity"
+            android:name=".gmstat.activities.GMStatActivity"
             android:label="@string/title_activity_gmstat"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3">
-        </activity>
-        <activity android:name=".gmstat.views.SetDateActivity"
-            android:label="@string/set_date"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3"
-            />
+            android:theme="@style/Theme.Tokopedia3"></activity>
+        <activity android:name=".truecaller.TruecallerActivity"/>
 
         <provider
             android:authorities="com.facebook.app.FacebookContentProvider411083689235522"

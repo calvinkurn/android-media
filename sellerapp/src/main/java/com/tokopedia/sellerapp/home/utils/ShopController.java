@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.tkpd.library.utils.network.CommonListener;
+import com.tkpd.library.utils.network.ManyRequestErrorException;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -27,7 +29,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.tokopedia.sellerapp.home.utils.ShopNetworkController.onResponseError;
+import static com.tkpd.library.utils.network.BaseNetworkController.onResponseError;
 
 /**
  * Created by normansyahputa on 8/30/16.
@@ -209,7 +211,7 @@ public class ShopController extends BaseController{
      * @param response
      */
     private void parseResponse(@IntRange(from=0,to=3)int index,
-                              @NonNull ShopNetworkController.CommonListener commonListener,
+                              @NonNull CommonListener commonListener,
                               @NonNull Response<TkpdResponse> response){
         switch (index){
             case 0:
@@ -218,7 +220,7 @@ public class ShopController extends BaseController{
                 if (response.isSuccessful()) {
                     if(response.body().isError()){
                         if(response.body().getStatus()!= null && response.body().getStatus().equalsIgnoreCase("TOO_MANY_REQUEST")){
-                            throw new ShopNetworkController.ManyRequestErrorException(response.body().getErrorMessages().get(0));
+                            throw new ManyRequestErrorException(response.body().getErrorMessages().get(0));
                         }else {
                             throw new ShopNetworkController.MessageErrorException(response.body().getErrorMessages().get(0));
                         }

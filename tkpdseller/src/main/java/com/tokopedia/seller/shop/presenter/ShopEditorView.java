@@ -11,7 +11,6 @@ public interface ShopEditorView extends BaseView {
 
     void initView();
     void initViewInstance();
-    void initUploadImage();
     void setData(int type, Object... data);
     void setOpenShop();
     void setCloseShop(String closeEnd);

@@ -321,25 +321,6 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_search)
-            return onSearchOptionSelected();
-        else if (item.getItemId() == R.id.action_search) {
-
-            if (!SessionHandler.isV4Login(getBaseContext())) {
-                Intent intent = SessionRouter.getLoginActivityIntent(this);
-                intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-                startActivity(intent);
-            } else {
-                startActivity(TransactionCartRouter.createInstanceCartActivity(this));
-            }
-            return true;
-        } else
-            return super.onOptionsItemSelected(item);
-
-    }
-
-    @Override
     public void onGetNotif() {
         if (MainApplication.getNotificationStatus()) {
             drawer.getNotification();

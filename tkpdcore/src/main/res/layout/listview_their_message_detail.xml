@@ -16,7 +16,10 @@
         android:textSize="@dimen/fontvs"
         android:padding="@dimen/padding_vs"
         android:layout_margin="@dimen/margin_vs"
-        android:background="@drawable/bg_yellow_border_yelow" />
+        android:background="@color/grey_100"
+        android:textColor="@color/grey_500"
+        tools:text="13:16 wib"
+        />
 
     <ImageView
         android:id="@+id/user_ava"
@@ -29,11 +32,12 @@
 
     <RelativeLayout
         android:id="@+id/view_user_box"
-        android:layout_width="@dimen/message_width"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_vs"
         android:layout_toRightOf="@id/user_ava"
         android:background="@drawable/left_bubble"
+        android:maxWidth="@dimen/message_width"
         android:layout_below="@id/date"
         android:gravity="left"
         android:orientation="vertical"
@@ -44,7 +48,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:layout_marginLeft="@dimen/margin_med"
             android:textIsSelectable="true"
             tools:text ="Gukguk meong meongaksjdkajshdkajhsdkajhsdkajhsdaksdjhaksjhkahsdk"
             android:textSize="@dimen/fonts" />
@@ -57,13 +60,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/view_user_box"
         android:layout_gravity="left"
-        android:layout_marginLeft="@dimen/margin_small"
         android:layout_marginTop="@dimen/margin_vs"
         android:gravity="left"
-        android:singleLine="true"
         android:textColor="@color/time_color"
-        android:textSize="@dimen/fontvs"
-        android:text="testtest"
-        android:layout_alignRight="@id/view_user_box"/>
+        android:textSize="@dimen/fontvvs"
+        android:layout_toRightOf="@id/user_ava"
+        tools:text="testtest"
+        />
 
 </RelativeLayout>

@@ -1,22 +1,16 @@
 package com.tokopedia.core.analytics;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.util.Log;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.router.SessionRouter;
-import com.tokopedia.core.router.home.HomeFragmentRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -24,9 +18,9 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
-import static com.tokopedia.core.analytics.AppScreen.SCREEN_HOME_PRODUCT_CATEGORY;
+
+import java.util.Map;
 
 /**
  * @author  by alvarisi on 9/27/16.
@@ -84,12 +78,12 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void eventOnline(){
         getGTMEngine()
-                .eventOnline(SessionHandler.getLoginID(MainApplication.getAppContext()));
+                .eventOnline(SessionHandler.getGTMLoginID(MainApplication.getAppContext()));
     }
 
     public static void eventPushUserID(){
         getGTMEngine()
-                .pushUserId(SessionHandler.getLoginID(MainApplication.getAppContext()));
+                .pushUserId(SessionHandler.getGTMLoginID(MainApplication.getAppContext()));
     }
 
     public static void eventNetworkError(String error){
@@ -188,6 +182,9 @@ public class TrackingUtils extends TrackingConfig {
         return getGTMEngine().getDouble(key);
     }
 
+    public static String getAfUniqueId(){
+        return getAFEngine().getUniqueId();
+    }
 
 }
 

@@ -48,7 +48,6 @@ import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
@@ -58,6 +57,7 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
@@ -792,18 +792,18 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         Log.d(TAG, "Source " + source);
         discoveryInteractor.setDiscoveryListener(new DiscoveryListener() {
             @Override
-            public void onComplete(int type, ImageGalleryImpl.Pair<String, ? extends ObjContainer> data) {
+            public void onComplete(int type, Pair<String, ? extends ObjContainer> data) {
                 Log.d(TAG, "onComplete type " + type);
             }
 
             @Override
-            public void onFailed(int type, ImageGalleryImpl.Pair<String, ? extends ObjContainer> data) {
+            public void onFailed(int type, Pair<String, ? extends ObjContainer> data) {
                 Log.e(TAG, "onFailed type " + type);
                 Toast.makeText(BrowseProductActivity.this, getString(R.string.try_again), Toast.LENGTH_LONG).show();
             }
 
             @Override
-            public void onSuccess(int type, ImageGalleryImpl.Pair<String, ? extends ObjContainer> data) {
+            public void onSuccess(int type, Pair<String, ? extends ObjContainer> data) {
                 Log.d(TAG, "onSuccess type " + type);
                 switch (type) {
                     case DYNAMIC_ATTRIBUTE:
@@ -979,12 +979,12 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         showLoading(true);
         discoveryInteractor.setDiscoveryListener(new DiscoveryListener() {
             @Override
-            public void onComplete(int type, ImageGalleryImpl.Pair<String, ? extends ObjContainer> data) {
+            public void onComplete(int type, Pair<String, ? extends ObjContainer> data) {
                 showLoading(false);
             }
 
             @Override
-            public void onFailed(int type, ImageGalleryImpl.Pair<String, ? extends ObjContainer> data) {
+            public void onFailed(int type, Pair<String, ? extends ObjContainer> data) {
                 showEmptyState(new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
@@ -994,7 +994,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
             }
 
             @Override
-            public void onSuccess(int type, ImageGalleryImpl.Pair<String, ? extends ObjContainer> data) {
+            public void onSuccess(int type, Pair<String, ? extends ObjContainer> data) {
                 switch (type) {
                     case DiscoveryListener.HOTLIST_BANNER:
                         Log.d(TAG, "fetch " + data.getModel1());

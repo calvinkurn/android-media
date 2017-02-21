@@ -14,7 +14,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 import com.tokopedia.sellerapp.onboarding.fragment.OnBoardingSellerFragment;
-import com.tokopedia.session.session.activity.Login;
 
 public class OnboardingSellerActivity extends OnboardingActivity{
     private SessionHandler sessionHandler;
@@ -73,7 +72,7 @@ public class OnboardingSellerActivity extends OnboardingActivity{
     @Override
     public void onDonePressed() {
         if (isUserHasShop()) {
-            startActivity(new Intent(this, SellerHomeActivity.class));
+            startActivity(new Intent(this, SellerHomeActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
         } else if (SessionHandler.isMsisdnVerified()){
             Intent intent = SellerRouter.getAcitivityShopCreateEdit(this);
             intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,

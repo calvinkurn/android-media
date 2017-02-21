@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.SparseArray;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -14,30 +13,20 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tkpd.library.kirisame.network.util.VolleyNetworkRequestQueue;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.OneOnClick;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.instoped.InstagramAuth;
-import com.tokopedia.core.instoped.fragment.InstagramMediaFragment;
-import com.tokopedia.core.instoped.model.InstagramMediaModel;
-import com.tokopedia.core.network.BasicNetworkHandler;
 import com.tokopedia.core.network.TkpdNetworkURLHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
-import com.tokopedia.core.onboarding.FreeReturnOnboardingActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.var.TkpdCache;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.tkpd.library.kirisame.network.util.VolleyNetworkRequestQueue;
 
 
 public class DeveloperOptions extends TActivity implements SessionHandler.onLogoutListener {
@@ -144,7 +133,6 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         vCheckBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checkForUpdate();
             }
         });
         vDownloadBut.setOnClickListener(new View.OnClickListener() {
@@ -156,7 +144,6 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         vCheckButStable.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checkForStableUpdate();
             }
         });
         vDownloadButStable.setOnClickListener(new View.OnClickListener() {
@@ -177,7 +164,6 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
                 onSaveSetting();
             }
         });
-        vCustomIntent.setOnClickListener(onCustomClick());
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences(DOMAIN_WS_41,
                 MODE_PRIVATE);
@@ -277,23 +263,6 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         }
     }
 
-    InstagramAuth auth = new InstagramAuth();
-
-    private View.OnClickListener onCustomClick() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                auth.setGetMediaListener(new InstagramMediaFragment.OnGetInstagramMediaListener() {
-                    @Override
-                    public void onSuccess(SparseArray<InstagramMediaModel> selectedModel) {
-                        selectedModel.size();
-                    }
-                });
-                auth.getMedias(getSupportFragmentManager());
-            }
-        };
-    }
-
     private Boolean isValidForm() {
         vHost.setError(null);
         Boolean isValid = true;
@@ -336,71 +305,9 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         restartApp();
     }
 
-    public void checkForUpdate() {
-        BasicNetworkHandler network = new BasicNetworkHandler(this, URLDeveloper.UPDATE_URL);
-        network.commit(new BasicNetworkHandler.BasicNetworkResponse() {
-            @Override
-            public void onSuccess(Boolean status) {
-
-            }
-
-            @Override
-            public void onResponse(String Result) {
-                try {
-                    JSONObject ResultJSON = new JSONObject(Result);
-                    long time = Long.parseLong(ResultJSON.getString("timestamp"));
-                    vLastBuildTime.setText("Last Build Time: " + CommonUtils.getDate(time));
-                    vBuildNum.setText("Build Number: " + ResultJSON.getString("number"));
-                    JSONObject ChangeSet = new JSONObject(ResultJSON.getString("changeSet"));
-                    JSONArray Items = new JSONArray(ChangeSet.getString("items"));
-                    JSONObject DetailChanged = new JSONObject(Items.getString(Items.length() - 1));
-                    vMessageBuild.setText("Message: " + DetailChanged.get("msg"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(String Msg) {
-
-            }
-        });
-    }
-
     private void downloadLastUpdate() {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(URLDeveloper.APK_URL));
         startActivity(intent);
-    }
-
-    public void checkForStableUpdate() {
-        BasicNetworkHandler network = new BasicNetworkHandler(this, URLDeveloper.UPDATE_STABLE_URL);
-        network.commit(new BasicNetworkHandler.BasicNetworkResponse() {
-            @Override
-            public void onSuccess(Boolean status) {
-
-            }
-
-            @Override
-            public void onResponse(String Result) {
-                try {
-                    JSONObject ResultJSON = new JSONObject(Result);
-                    long time = Long.parseLong(ResultJSON.getString("timestamp"));
-                    vLastBuildTimeStable.setText("Last Build Time: " + CommonUtils.getDate(time));
-                    vBuildNumStable.setText("Build Number: " + ResultJSON.getString("number"));
-                    JSONObject ChangeSet = new JSONObject(ResultJSON.getString("changeSet"));
-                    JSONArray Items = new JSONArray(ChangeSet.getString("items"));
-                    JSONObject DetailChanged = new JSONObject(Items.getString(Items.length() - 1));
-                    vMessageBuildStable.setText("Message: " + DetailChanged.get("msg"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onError(String Msg) {
-
-            }
-        });
     }
 
     private void downloadLastStableUpdate() {

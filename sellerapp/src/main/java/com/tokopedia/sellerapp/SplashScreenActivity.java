@@ -11,7 +11,6 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
-import com.tokopedia.session.session.activity.Login;
 
 /**
  * Created by normansyahputa on 11/29/16.

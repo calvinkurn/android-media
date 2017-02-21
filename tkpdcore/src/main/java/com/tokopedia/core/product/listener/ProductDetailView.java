@@ -274,4 +274,6 @@ public interface ProductDetailView extends ViewListener {
     void hideTickerGTM();
 
     void showFullScreenError();
+
+    void moveToEditFragment(boolean isEdit, String productId);
 }

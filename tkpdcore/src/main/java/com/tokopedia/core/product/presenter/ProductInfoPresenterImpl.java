@@ -13,7 +13,6 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.CategoryDB_Table;
-import com.tokopedia.core.myproduct.service.ProductService;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.product.listener.ProductInfoView;
@@ -40,15 +39,13 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
 
     @Override
     public void initialFragment(@NonNull Context context, Uri uri, Bundle bundle) {
-        // [variable for add product before share]
-        int type = bundle.getInt(ProductService.TYPE, -1);
-        long productId = bundle.getLong(ProductService.PRODUCT_DATABASE_ID, -1);
-        String stockStatus = bundle.getString(ProductService.STOCK_STATUS,"");
-        // [variable for add product before share]
+
+        boolean isAddingProduct = bundle.getBoolean(ProductInfoActivity.IS_ADDING_PRODUCT);
+
         ShareData shareDa = bundle.getParcelable(ProductInfoActivity.SHARE_DATA);
         // [variable for add product before share]
-        if(type != -1 && productId != -1 && !stockStatus.equals("")){
-            viewListener.inflateFragment(ProductShareFragment.newInstance(type, productId, stockStatus), ProductShareFragment.TAG);
+        if(isAddingProduct){
+            viewListener.inflateFragment(ProductShareFragment.newInstance(isAddingProduct), ProductShareFragment.TAG);
         // [variable for add product before share]
         }else if(shareDa !=null){
             viewListener.inflateFragment(ProductShareFragment.newInstance(shareDa), ProductShareFragment.TAG);

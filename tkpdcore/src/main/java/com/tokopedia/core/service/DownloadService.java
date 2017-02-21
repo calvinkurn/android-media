@@ -24,7 +24,6 @@ import com.tokopedia.core.database.model.Province;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.home.presenter.HotList;
 import com.tokopedia.core.home.presenter.HotListImpl;
-import com.tokopedia.core.network.NetworkHandler;
 import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.apiservices.user.InterruptActService;
 import com.tokopedia.core.network.apiservices.user.InterruptService;
@@ -37,7 +36,6 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
-import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.LoginBypassModel;
 import com.tokopedia.core.session.model.LoginBypassSuccessModel;
 import com.tokopedia.core.session.model.LoginFacebookViewModel;
@@ -48,10 +46,8 @@ import com.tokopedia.core.session.model.LoginSecurityModel;
 import com.tokopedia.core.session.model.OTPModel;
 import com.tokopedia.core.session.model.QuestionFormModel;
 import com.tokopedia.core.session.model.SecurityQuestionViewModel;
-import com.tokopedia.core.session.model.TokenModel;
-import com.tokopedia.core.session.presenter.SecurityQuestion;
+import com.tokopedia.core.session.presenter.SecurityQuestionPresenter;
 import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 
@@ -131,22 +127,22 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                 break;
             case ANSWER_SECURITY_QUESTION:
                 SecurityQuestionViewModel answer = Parcels.unwrap(bundle.getParcelable(ANSWER_QUESTION_MODEL));
-                Log.d(TAG, SecurityQuestion.class.getSimpleName() + " try to answer security question : " + answer);
+                Log.d(TAG, SecurityQuestionPresenter.class.getSimpleName() + " try to answer security question : " + answer);
                 intent.putExtra(ANSWER_QUESTION_MODEL, Parcels.wrap(answer));
                 break;
             case REQUEST_OTP:
                 SecurityQuestionViewModel securityQuestionViewModel = Parcels.unwrap(bundle.getParcelable(REQUEST_OTP_MODEL));
-                Log.d(TAG, SecurityQuestion.class.getSimpleName() + " request otp " + securityQuestionViewModel);
+                Log.d(TAG, SecurityQuestionPresenter.class.getSimpleName() + " request otp " + securityQuestionViewModel);
                 intent.putExtra(REQUEST_OTP_MODEL, Parcels.wrap(securityQuestionViewModel));
                 break;
             case REQUEST_OTP_PHONE:
                 SecurityQuestionViewModel securityQuestionViewModelOTP = Parcels.unwrap(bundle.getParcelable(REQUEST_OTP_MODEL));
-                Log.d(TAG, SecurityQuestion.class.getSimpleName() + " request otp phone" + securityQuestionViewModelOTP);
+                Log.d(TAG, SecurityQuestionPresenter.class.getSimpleName() + " request otp phone" + securityQuestionViewModelOTP);
                 intent.putExtra(REQUEST_OTP_MODEL, Parcels.wrap(securityQuestionViewModelOTP));
                 break;
             case SECURITY_QUESTION_GET:
                 securityQuestionViewModel = Parcels.unwrap(bundle.getParcelable(SECURITY_QUESTION_GET_MODEL));
-                Log.d(TAG, SecurityQuestion.class.getSimpleName() + " try to fetch security question form : " + securityQuestionViewModel);
+                Log.d(TAG, SecurityQuestionPresenter.class.getSimpleName() + " try to fetch security question form : " + securityQuestionViewModel);
                 intent.putExtra(SECURITY_QUESTION_GET_MODEL, Parcels.wrap(securityQuestionViewModel));
                 break;
             case HOTLIST:
@@ -214,8 +210,8 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                 receiver.send(STATUS_RUNNING, running);
                 SecurityQuestionViewModel securityQuestionViewModel = Parcels.unwrap(intent.getParcelableExtra(SECURITY_QUESTION_GET_MODEL));
                 params = new HashMap<>();
-                params.put(SecurityQuestion.USER_CHECK_SECURITY_ONE, securityQuestionViewModel.getSecurity1() + "");
-                params.put(SecurityQuestion.USER_CHECK_SECURITY_TWO, securityQuestionViewModel.getSecurity2() + "");
+                params.put(SecurityQuestionPresenter.USER_CHECK_SECURITY_ONE, String.valueOf(securityQuestionViewModel.getSecurity1()));
+                params.put(SecurityQuestionPresenter.USER_CHECK_SECURITY_TWO, String.valueOf(securityQuestionViewModel.getSecurity2()));
                 params.put("user_id", SessionHandler.getTempLoginSession(getApplicationContext()));
                 service = new InterruptService();
                 ((InterruptService) service).getApi().getQuestionForm(AuthUtil.generateParams(getApplicationContext(), params, SessionHandler.getTempLoginSession(getApplicationContext())))
@@ -232,10 +228,10 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                 receiver.send(STATUS_RUNNING, running);
                 securityQuestionViewModel = Parcels.unwrap(intent.getParcelableExtra(ANSWER_QUESTION_MODEL));
                 params = new HashMap<>();
-                params.put(SecurityQuestion.ANSWER, securityQuestionViewModel.getvAnswer());
-                params.put(SecurityQuestion.QUESTION, securityQuestionViewModel.getQuestion());
-                params.put(SecurityQuestion.USER_CHECK_SECURITY_ONE, securityQuestionViewModel.getSecurity1() + "");
-                params.put(SecurityQuestion.USER_CHECK_SECURITY_TWO, securityQuestionViewModel.getSecurity2() + "");
+                params.put(SecurityQuestionPresenter.ANSWER, securityQuestionViewModel.getvAnswer());
+                params.put(SecurityQuestionPresenter.QUESTION, securityQuestionViewModel.getQuestion());
+                params.put(SecurityQuestionPresenter.USER_CHECK_SECURITY_ONE, String.valueOf(securityQuestionViewModel.getSecurity1()));
+                params.put(SecurityQuestionPresenter.USER_CHECK_SECURITY_TWO, String.valueOf(securityQuestionViewModel.getSecurity2()));
                 params.put("user_id", SessionHandler.getTempLoginSession(getApplicationContext()));
                 service = new InterruptActService();
                 ((InterruptActService) service).getApi().answerQuestion(AuthUtil.generateParams(getApplicationContext(), params, SessionHandler.getTempLoginSession(getApplicationContext())))
@@ -252,7 +248,7 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                 receiver.send(STATUS_RUNNING, running);
                 securityQuestionViewModel = Parcels.unwrap(intent.getParcelableExtra(REQUEST_OTP_MODEL));
                 params = new HashMap<>();
-                params.put(SecurityQuestion.USER_CHECK_SECURITY_TWO, securityQuestionViewModel.getSecurity2() + "");
+                params.put(SecurityQuestionPresenter.USER_CHECK_SECURITY_TWO, securityQuestionViewModel.getSecurity2() + "");
                 params.put("user_id", SessionHandler.getTempLoginSession(getApplicationContext()));
                 params = AuthUtil.generateParams(getApplicationContext(), params, SessionHandler.getTempLoginSession(getApplicationContext()));
                 service = new InterruptActService();
@@ -270,7 +266,7 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                 receiver.send(STATUS_RUNNING, running);
                 securityQuestionViewModel = Parcels.unwrap(intent.getParcelableExtra(REQUEST_OTP_MODEL));
                 params = new HashMap<>();
-                params.put(SecurityQuestion.USER_CHECK_SECURITY_TWO, securityQuestionViewModel.getSecurity2() + "");
+                params.put(SecurityQuestionPresenter.USER_CHECK_SECURITY_TWO, securityQuestionViewModel.getSecurity2() + "");
                 params.put("user_id", SessionHandler.getTempLoginSession(getApplicationContext()));
                 params = AuthUtil.generateParams(getApplicationContext(), params, SessionHandler.getTempLoginSession(getApplicationContext()));
                 service = new InterruptActService();
@@ -295,6 +291,8 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Subscriber(type));
                 break;
+
+
             default:
                 break;
         }
@@ -463,30 +461,12 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                             result.putInt(TYPE, ANSWER_SECURITY_QUESTION);
                             if (jsonObject.optBoolean("is_login", false) == true) {
                                 final LoginInterruptModel loginInterruptModel = (LoginInterruptModel) parseJSON(ANSWER_SECURITY_QUESTION, jsonObject);
-                                sessionHandler.SetLoginSession(loginInterruptModel.isLogin(),
+                                sessionHandler.setLoginSession(loginInterruptModel.isLogin(),
                                         loginInterruptModel.getUserId(), loginInterruptModel.getFullName(), loginInterruptModel.getShopId() + "",
                                         loginInterruptModel.getMsisdnIsVerified());
                                 sessionHandler.setGoldMerchant(getApplicationContext(), loginInterruptModel.getShopIsGold());
                                 storeUUID(getApplicationContext(), loginInterruptModel.getUuid());
 
-                                switch (loginType) {
-                                    case LOGIN_EMAIL:
-                                        PasswordGenerator.clearTokenStorage(getApplicationContext());
-                                        PasswordGenerator generator = new PasswordGenerator(getApplicationContext());
-                                        generator.generateAPPID(new PasswordGenerator.PGListener() {
-                                            @Override
-                                            public void onSuccess(int status) {
-                                                loginV2(loginInterruptModel.getUuid());
-                                            }
-                                        });
-                                        break;
-                                    case LOGIN_GOOGLE:
-                                        loginThirdAppV2(loginGoogleModel);
-                                        break;
-                                    case LOGIN_FACEBOOK:
-                                        loginThirdAppV2(loginFacebookViewModel);
-                                        break;
-                                }
                                 result.putParcelable(ANSWER_QUESTION_MODEL, Parcels.wrap(loginInterruptModel));
                             } else {
                                 LoginInterruptErrorModel loginErrorModel = (LoginInterruptErrorModel) parseJSON(ANSWER_SECURITY_QUESTION_FALSE, jsonObject);
@@ -505,7 +485,7 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                             LoginBypassSuccessModel loginBypassSuccessModel = (LoginBypassSuccessModel) parseJSON(LOGIN_BYPASS, jsonObject);
                             if (loginBypassSuccessModel.getIsRegisterDevice() == 1) {
                                 SessionHandler session = new SessionHandler(getApplicationContext());
-                                session.SetLoginSession(true, session.getLoginID(), session.getLoginName(), session.getShopID(), SessionHandler.isMsisdnVerified());
+                                session.setLoginSession(true, session.getLoginID(), session.getLoginName(), session.getShopID(), SessionHandler.isMsisdnVerified());
                             }
                             result = new Bundle();
                             result.putInt(TYPE, type);
@@ -692,108 +672,6 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                     break;
             }
         }
-    }
-
-
-    private void loginV2(String uuid){
-        com.tokopedia.core.network.NetworkHandler network
-                = new com.tokopedia.core.network.NetworkHandler(getApplicationContext(), "http://www.tokopedia.com/ws-new/login.pl");
-        network.AddParam("user_email", emailV2);
-        network.AddParam("user_pass", passwordV2);
-        network.AddParam("uuid", uuid);
-        network.AddParam("app_id", PasswordGenerator.getAppId(getApplicationContext()));
-        network.Commit(new com.tokopedia.core.network.NetworkHandler.NetworkHandlerListener() {
-            @Override
-            public void onSuccess(Boolean status) {
-                Log.d("onSuccess", String.valueOf(status));
-            }
-
-            @Override
-            public void getResponse(JSONObject Result) {
-                Log.d("onResponse",Result.toString());
-            }
-
-            @Override
-            public void getMessageError(ArrayList<String> MessageError) {
-                Log.d("onError",MessageError.toString());
-            }
-        });
-    }
-
-    public void loginThirdAppV2(LoginGoogleModel loginGoogleModel){
-        NetworkHandler network = new NetworkHandler(getApplicationContext(), "http://www.tokopedia.com/ws-new/third-app-login.pl");
-        network.AddParam("act", "do_login");
-        network.AddParam("name", loginGoogleModel.getFullName());
-        network.AddParam("app_type", GooglePlusType);
-        network.AddParam("birthday", loginGoogleModel.getBirthday());
-        network.AddParam("gender", loginGoogleModel.getGender());
-        network.AddParam("email", loginGoogleModel.getEmail());
-        network.AddParam("id", loginGoogleModel.getGoogleId());
-        network.AddParam("app_id", PasswordGenerator.getAppId(getApplicationContext()));
-        network.Commit(new com.tokopedia.core.network.NetworkHandler.NetworkHandlerListener() {
-            @Override
-            public void onSuccess(Boolean status) {
-            }
-
-            @Override
-            public void getResponse(JSONObject Result) {
-            }
-
-            @Override
-            public void getMessageError(ArrayList<String> MessageError) {
-            }
-        });
-    }
-
-    private void loginThirdAppV2(LoginFacebookViewModel loginFacebookViewModel) {
-        NetworkHandler network = new NetworkHandler(getApplicationContext(), "http://www.tokopedia.com/ws-new/third-app-login.pl");
-        network.AddParam("act", "do_login");
-        network.AddParam("name", loginFacebookViewModel.getFullName());
-        network.AddParam("app_type", FacebookType);
-        network.AddParam("birthday", loginFacebookViewModel.getBirthday());
-        network.AddParam("gender", loginFacebookViewModel.getGender());
-        network.AddParam("fb_token", loginFacebookViewModel.getFbToken());
-        network.AddParam("app_id", PasswordGenerator.getAppId(getApplicationContext()));
-        network.Commit(new com.tokopedia.core.network.NetworkHandler.NetworkHandlerListener() {
-            @Override
-            public void onSuccess(Boolean status) {
-            }
-
-            @Override
-            public void getResponse(JSONObject Result) {
-            }
-
-            @Override
-            public void getMessageError(ArrayList<String> MessageError) {
-            }
-        });
-    }
-
-    private void loginThirdAppV2(AccountsParameter accountsParameter) {
-        NetworkHandler network = new NetworkHandler(getApplicationContext(), "http://www.tokopedia.com/ws-new/third-app-login.pl");
-        TokenModel tokenModel = accountsParameter.getTokenModel();
-        String authKey = tokenModel.getTokenType() + " "+ tokenModel.getAccessToken();
-        network.AddHeader("authorization",authKey);
-        network.AddParam("act", "do_login_yahoo");
-        network.AddParam("app_type", WebViewType);
-        network.AddParam("birthday", accountsParameter.getInfoModel().getBday());
-        network.AddParam("app_id", PasswordGenerator.getAppId(getApplicationContext()));
-        network.Commit(new com.tokopedia.core.network.NetworkHandler.NetworkHandlerListener() {
-            @Override
-            public void onSuccess(Boolean status) {
-                Log.d("onSuccess", String.valueOf(status));
-            }
-
-            @Override
-            public void getResponse(JSONObject Result) {
-                Log.d("onResponse",Result.toString());
-            }
-
-            @Override
-            public void getMessageError(ArrayList<String> MessageError) {
-                Log.d("onError",MessageError.toString());
-            }
-        });
     }
 
 }

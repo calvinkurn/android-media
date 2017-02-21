@@ -14,7 +14,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -44,6 +43,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tkpd.library.utils.image.ImageHandler;
+import com.tkpd.library.utils.network.ManyRequestErrorException;
+import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AppScreen;
@@ -56,7 +58,6 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
-import com.tokopedia.core.myproduct.ManageProduct;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.apiservices.shop.MyShopOrderService;
@@ -73,6 +74,7 @@ import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
+import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
 import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
@@ -92,7 +94,6 @@ import com.tokopedia.sellerapp.home.model.rescenter.ResCenterInboxData;
 import com.tokopedia.sellerapp.home.model.shopmodel.ShopModel;
 import com.tokopedia.sellerapp.home.utils.CollapsingToolbarLayoutCust;
 import com.tokopedia.sellerapp.home.utils.DepositNetworkController;
-import com.tokopedia.sellerapp.home.utils.ImageHandler;
 import com.tokopedia.sellerapp.home.utils.InboxResCenterNetworkController;
 import com.tokopedia.sellerapp.home.utils.NotifNetworkController;
 import com.tokopedia.sellerapp.home.utils.ShopController;
@@ -111,7 +112,6 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-import static com.tokopedia.core.drawer.DrawerVariable.startIntent;
 import static com.tokopedia.sellerapp.drawer.DrawerVariableSeller.goToShopNewOrder;
 
 public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerListener,
@@ -198,7 +198,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
 
     @OnClick({R.id.message_see_more, R.id.message__card_view_container})
     public void messageSeeMore() {
-        startActivity(InboxRouter.getInboxMessageActivityIntent(this));
+        this.startActivity(InboxRouter.getInboxMessageActivityIntent(this));
     }
 
     @OnClick({R.id.complain_see_more, R.id.complain_container})
@@ -318,7 +318,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
         shopId = SessionHandler.getShopID(this);
         imageHandler = new ImageHandler(this);
 
-        drawer.setDrawerPosition(TkpdState.DrawerPosition.INDEX_HOME);
+        drawer.setDrawerPosition(TkpdState.DrawerPosition.SELLER_INDEX_HOME);
 
         GCMHandler gcmHandler = new GCMHandler(this);
         Gson gson = new GsonBuilder().create();
@@ -456,8 +456,12 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof ShopNetworkController.MessageErrorException) {
+                if (e instanceof MessageErrorException) {
                     Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                }else{
+                    if (snackbarRetryUndefinite != null) {
+                        snackbarRetryUndefinite.showRetrySnackbar();
+                    }
                 }
             }
 
@@ -482,8 +486,12 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof ShopNetworkController.MessageErrorException) {
+                if (e instanceof MessageErrorException) {
                     Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                }else{
+                    if (snackbarRetryUndefinite != null) {
+                        snackbarRetryUndefinite.showRetrySnackbar();
+                    }
                 }
             }
 
@@ -550,8 +558,12 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof ShopNetworkController.MessageErrorException) {
+                if (e instanceof MessageErrorException) {
                     Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
+                }else{
+                    if (snackbarRetryUndefinite != null) {
+                        snackbarRetryUndefinite.showRetrySnackbar();
+                    }
                 }
             }
 
@@ -652,12 +664,12 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof ShopNetworkController.MessageErrorException) {
+                if (e instanceof MessageErrorException) {
                     if (snackbarRetryUndefinite != null) {
                         snackbarRetryUndefinite.showRetrySnackbar();
                     }
 //                    Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                } else if (e instanceof ShopNetworkController.ManyRequestErrorException) {
+                } else if (e instanceof ManyRequestErrorException) {
                     if (snackbarRetryUndefinite != null) {
                         snackbarRetryUndefinite.showRetrySnackbar();
                     }
@@ -1034,7 +1046,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
 
         Authenticated authEvent = new Authenticated();
         authEvent.setUserFullName(SessionHandler.getLoginName(this));
-        authEvent.setUserID(SessionHandler.getLoginID(this));
+        authEvent.setUserID(SessionHandler.getGTMLoginID(this));
         authEvent.setShopID(SessionHandler.getShopID(this));
         authEvent.setUserSeller(SessionHandler.getShopID(this).equals("0") ? 0 : 1);
 

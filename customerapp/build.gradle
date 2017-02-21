@@ -146,6 +146,14 @@ android {
         }
     }
 
+    splits {
+        density {
+            enable allowSplit()
+            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
+            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
+        }
+    }
+
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
@@ -214,12 +222,15 @@ dependencies {
     }
     compile (rootProject.ext.tkpdDependencies.core)*/
     compile project(':tkpddiscovery')
+    compile project(':tkpdtransaction')
+    compile project(':tkpdseller')
     compile project(':tkpdsession')
+    compile project(':tkpdinbox')
 
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile "org.mockito:mockito-core:2.0.57-beta"
+    testCompile rootProject.ext.testDependencies.mockitorCore
     testCompile 'junit:junit:4.12'
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
@@ -233,6 +244,13 @@ dependencies {
 
     compile rootProject.ext.playServicesDependencies.firebase
 
+    provided rootProject.ext.miscDependencies.javaxAnnotation
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
     compile 'com.android.support:multidex:1.0.1'
 
+    compile (rootProject.ext.miscDependencies.trueCaller) {
+        exclude group: 'com.android.support'
+    }
 }
