@@ -24,6 +24,7 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.service.FavoritePart1Service;
+import com.tokopedia.tkpd.home.wishlist.WishlistViewModelMapper;
 import com.tokopedia.tkpd.home.wishlist.domain.SearchWishlistUsecase;
 import com.tokopedia.tkpd.home.wishlist.domain.model.DataWishlist;
 
@@ -377,6 +378,11 @@ public class WishListImpl implements WishList {
         @Override
         public void onNext(DataWishlist dataWishlist) {
             Log.d(TAG, "onNext() called with: dataWishlist = [" + new Gson().toJson(dataWishlist) + "]");
+            setData(convertToDataWishlistViewModel(dataWishlist));
+        }
+
+        private WishlistData convertToDataWishlistViewModel(DataWishlist dataWishlist) {
+            return new WishlistViewModelMapper(dataWishlist).getWishlistData();
         }
     }
 }
