@@ -354,7 +354,6 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         String address = vAddress.getText().toString();
         if (address.isEmpty())
             address = null;
-        VolleyNetworkRequestQueue.getInstance(this).setProxy(address, port);
         TkpdNetworkURLHandler.setProxyAddress(this, address);
         TkpdNetworkURLHandler.setProxyPort(this, port);
         Toast.makeText(this, "Proxy set to " + address + ":" + port, Toast.LENGTH_SHORT).show();
