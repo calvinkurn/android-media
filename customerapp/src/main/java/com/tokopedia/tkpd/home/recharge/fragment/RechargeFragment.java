@@ -175,8 +175,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                         Uri contactURI = intent.getData();
                         contact = fetchAndBuildContact(getActivity(), contactURI);
                         getPhoneNumberAndDisplayIt(contact);
-                        storeLastStateTabSelected();
-                        //setTabPosition(currentPosition);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -946,7 +944,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        storeLastStateTabSelected();
         RechargeFragmentPermissionsDispatcher.onRequestPermissionsResult(
                 RechargeFragment.this, requestCode, grantResults);
     }

@@ -179,6 +179,12 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        LocalCacheHandler.clearCache(getActivity(), TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION);
+    }
+
+    @Override
     protected String getScreenName() {
         return AppScreen.SCREEN_HOME_PRODUCT_CATEGORY;
     }
@@ -321,6 +327,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 holder.rlBrands.setVisibility(View.GONE);
             }
         });
+        rechargeCategoryPresenter.fecthDataRechargeCategory();
     }
 
     private void startSlideTicker() {
@@ -368,8 +375,8 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public void onResume() {
         LocalCacheHandler.clearCache(getActivity(), "RechargeCache");
         holder.wrapperScrollview.smoothScrollTo(0, 0);
-        ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
-        rechargeCategoryPresenter.fecthDataRechargeCategory();
+        // ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
+        rechargeCategoryPresenter.fetchStatusDigitalProductData();
         if (SessionHandler.isV4Login(getActivity())) {
             rechargeCategoryPresenter.fetchLastOrder();
         }
@@ -687,13 +694,16 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 getActivity(), TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION
         );
         addTablayoutListener(rechargeViewPagerAdapter);
+        holder.viewpagerRecharge.setOffscreenPageLimit(rechargeCategory.getData().size() + 2);
         final int positionTab = handler.getInt(TkpdCache.Key.WIDGET_RECHARGE_TAB_LAST_SELECTED);
         if (positionTab != -1 && positionTab < rechargeCategory.getData().size()) {
-            holder.viewpagerRecharge.setCurrentItem(positionTab);
+            holder.viewpagerRecharge.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    holder.viewpagerRecharge.setCurrentItem(positionTab);
+                }
+            }, 300);
             holder.tabLayoutRecharge.getTabAt(positionTab).select();
-            LocalCacheHandler.clearCache(
-                    getActivity(), TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION
-            );
         } else {
             holder.viewpagerRecharge.setCurrentItem(0);
         }
@@ -710,6 +720,11 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void renderErrorNetwork() {
 
+    }
+
+    @Override
+    public void hideRechargeWidget() {
+        ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
     }
 
     private void addChildTablayout(CategoryData rechargeCategory, List<Integer> newRechargePositions) {
