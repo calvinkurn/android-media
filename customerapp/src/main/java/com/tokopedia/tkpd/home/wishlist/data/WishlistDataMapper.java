@@ -49,6 +49,8 @@ public class WishlistDataMapper implements Func1<Response<WishlistData>, DataWis
         for (Wishlist wishlistResponse : response.getWishlist()) {
             wishlistDomains.add(mappingWishlistResponse(wishlistResponse));
         }
+        wishlist.setWishlists(wishlistDomains);
+        if (response.getPaging() != null) wishlist.setNextUrl(response.getPaging().getNextUrl());
         return wishlist;
     }
 
@@ -77,6 +79,7 @@ public class WishlistDataMapper implements Func1<Response<WishlistData>, DataWis
         return wishlistDomain;
     }
 
+
     private ShopWishlistDomain mappingShop(Shop shop) {
         ShopWishlistDomain shopWishlistDomain = new ShopWishlistDomain();
         shopWishlistDomain.setName(shop.getName());
@@ -102,21 +105,25 @@ public class WishlistDataMapper implements Func1<Response<WishlistData>, DataWis
 
     private List<LabelWishlistDomain> mappingWishlistLabels(List<Label> labelsResponse) {
         ArrayList<LabelWishlistDomain> labelWishlistDomains = new ArrayList<>();
-        for (Label labelResponse : labelsResponse) {
-            LabelWishlistDomain labelWishlistDomain = new LabelWishlistDomain();
-            labelWishlistDomain.setTitle(labelResponse.getTitle());
-            labelWishlistDomain.setColor(labelResponse.getColor());
+        if (labelsResponse != null) {
+            for (Label labelResponse : labelsResponse) {
+                LabelWishlistDomain labelWishlistDomain = new LabelWishlistDomain();
+                labelWishlistDomain.setTitle(labelResponse.getTitle());
+                labelWishlistDomain.setColor(labelResponse.getColor());
+            }
         }
         return labelWishlistDomains;
     }
 
     private List<BadgeWishlistDomain> mappingWishlistBadges(List<Badge> badgesResponse) {
         ArrayList<BadgeWishlistDomain> badgeWishlistDomains = new ArrayList<>();
-        for (Badge badgeResponse : badgesResponse) {
-            BadgeWishlistDomain badgeWishlistDomain = new BadgeWishlistDomain();
-            badgeWishlistDomain.setImageUrl(badgeResponse.getImageUrl());
-            badgeWishlistDomain.setImgUrl(badgeResponse.getImgUrl());
-            badgeWishlistDomain.setTitle(badgeResponse.getTitle());
+        if (badgesResponse != null) {
+            for (Badge badgeResponse : badgesResponse) {
+                BadgeWishlistDomain badgeWishlistDomain = new BadgeWishlistDomain();
+                badgeWishlistDomain.setImageUrl(badgeResponse.getImageUrl());
+                badgeWishlistDomain.setImgUrl(badgeResponse.getImgUrl());
+                badgeWishlistDomain.setTitle(badgeResponse.getTitle());
+            }
         }
         return badgeWishlistDomains;
     }

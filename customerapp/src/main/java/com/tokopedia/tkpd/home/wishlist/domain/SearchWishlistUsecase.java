@@ -13,8 +13,8 @@ import rx.Observable;
  */
 
 public class SearchWishlistUsecase extends UseCase<DataWishlist>{
-    private static final String KEY_QUERY = "query";
-    private static final String KEY_USER_ID = "userId";
+    public static final String KEY_QUERY = "query";
+    public static final String KEY_USER_ID = "userId";
 
     private final WishlistRepository wishlistRepository;
 

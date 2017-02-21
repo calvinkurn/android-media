@@ -84,4 +84,6 @@ public interface WishList {
     void addToCart(Context context, String productId);
 
     boolean isLoadedFirstPage();
+
+    void searchWishlist();
 }

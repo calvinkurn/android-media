@@ -25,7 +25,7 @@ public interface MojitoService {
     Observable<Response<String>> getWishlist(@Path("userId") String UserId,
                                              @QueryMap HashMap<String, String> params);
 
-    @GET(TkpdBaseURL.Mojito.PATH_USER_WISHLIST + "{userId}/" + TkpdBaseURL.Mojito.PATH_SEARCH_WISHLIST)
+    @GET(TkpdBaseURL.Mojito.PATH_USER_WISHLIST + "/{userId}" + TkpdBaseURL.Mojito.PATH_SEARCH_WISHLIST)
     Observable<Response<WishlistData>> searchWishlist(
             @Path("userId") String userId, @Query("q") String query);
 }

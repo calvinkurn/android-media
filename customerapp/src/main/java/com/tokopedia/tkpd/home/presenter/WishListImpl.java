@@ -3,8 +3,11 @@ package com.tokopedia.tkpd.home.presenter;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
+import com.google.gson.Gson;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheDuration;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
@@ -22,6 +25,7 @@ import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.service.FavoritePart1Service;
 import com.tokopedia.tkpd.home.wishlist.domain.SearchWishlistUsecase;
+import com.tokopedia.tkpd.home.wishlist.domain.model.DataWishlist;
 
 import org.parceler.Parcels;
 
@@ -278,6 +282,16 @@ public class WishListImpl implements WishList {
     }
 
     @Override
+    public void searchWishlist() {
+        String userId = wishListView.getUserId();
+        String queryValue = wishListView.getQueryValue();
+        RequestParams params = RequestParams.create();
+        params.putString(SearchWishlistUsecase.KEY_USER_ID, userId);
+        params.putString(SearchWishlistUsecase.KEY_QUERY, queryValue);
+        searchWishlistUsecase.execute(params, new SearchWishlistSubscriber());
+    }
+
+    @Override
     public void subscribe() {
         RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
     }
@@ -347,5 +361,22 @@ public class WishListImpl implements WishList {
                 wishListView.onSuccessDeleteWishlist();
             }
         }, CacheDuration.onSecond(5));
+    }
+
+    private class SearchWishlistSubscriber extends Subscriber<DataWishlist> {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Log.e(TAG, "onError: ", e);
+        }
+
+        @Override
+        public void onNext(DataWishlist dataWishlist) {
+            Log.d(TAG, "onNext() called with: dataWishlist = [" + new Gson().toJson(dataWishlist) + "]");
+        }
     }
 }
