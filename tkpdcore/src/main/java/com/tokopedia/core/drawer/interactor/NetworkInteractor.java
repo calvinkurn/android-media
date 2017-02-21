@@ -23,6 +23,8 @@ public interface NetworkInteractor {
 
     void getTokoCash(Context context, TopCashListener listener);
 
+    void updateTokoCash(Context context, TopCashListener listener);
+
     void resetNotification(Context context, ResetNotificationListener listener);
 
     interface ProfileInfoListener {
