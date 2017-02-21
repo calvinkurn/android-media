@@ -17,7 +17,7 @@ import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.domain.model.data.DataCredit;
 import com.tokopedia.seller.topads.view.presenter.TopAdsNewPromoPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsNewPromoPresenterImpl;
-import com.tokopedia.seller.topads.view.activity.TopAdsEditPromoActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsEditPromoGroupActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsNewPromoFragmentListener;
 
 import java.util.List;
@@ -181,7 +181,7 @@ public class TopAdsNewPromoFragment extends BasePresenterFragment<TopAdsNewPromo
     }
 
     void chooseCredit() {
-        Intent intent = new Intent(getActivity(), TopAdsEditPromoActivity.class);
+        Intent intent = new Intent(getActivity(), TopAdsEditPromoGroupActivity.class);
         startActivity(intent);
     }
 }

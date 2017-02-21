@@ -7,6 +7,7 @@ package com.tokopedia.seller.topads.constant;
 public class TopAdsExtraConstant {
 
     public static final String EXTRA_AD = "EXTRA_AD";
+    public static final String EXTRA_AD_ID = "EXTRA_AD_ID";
     public static final String EXTRA_NEW_PROMO_CHOICE = "EXTRA_NEW_PROMO_CHOICE";
     public static final String EXTRA_GROUP = "EXTRA_GROUP";
     public static final String EXTRA_TOTAL_PRODUCT_ADS = "EXTRA_TOTAL_PRODUCT_ADS";

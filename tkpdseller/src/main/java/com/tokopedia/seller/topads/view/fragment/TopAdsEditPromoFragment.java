@@ -1,15 +1,12 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -18,13 +15,13 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.domain.model.data.DataCredit;
-import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoPresenterImpl;
-import com.tokopedia.seller.topads.view.activity.TopAdsAddProductActivity;
 import com.tokopedia.seller.topads.view.dialog.DatePickerDialog;
 import com.tokopedia.seller.topads.view.dialog.TimePickerdialog;
 import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoFragmentListener;
+import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoPresenterImpl;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -32,9 +29,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class TopAdsEditPromoFragment extends BasePresenterFragment<TopAdsEditPromoPresenter> implements TopAdsEditPromoFragmentListener {
+public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopAdsEditPromoPresenter> implements TopAdsEditPromoFragmentListener {
 
-    RecyclerView productListRecylerView;
     TextInputLayout maxPriceInputLayout;
     EditText maxPriceEditText;
     RadioGroup budgetRadioGroup;
@@ -51,15 +47,11 @@ public class TopAdsEditPromoFragment extends BasePresenterFragment<TopAdsEditPro
     EditText showTimeEndDateEditText;
     EditText showTimeEndTimeEditText;
     RadioGroup iconRadioGroup;
-    Button addProductButton;
 
     private Date startDate;
     private Date endDate;
 
-    public static TopAdsEditPromoFragment createInstance() {
-        TopAdsEditPromoFragment fragment = new TopAdsEditPromoFragment();
-        return fragment;
-    }
+    protected String shopAdId;
 
     @Override
     protected boolean isRetainInstance() {
@@ -97,18 +89,12 @@ public class TopAdsEditPromoFragment extends BasePresenterFragment<TopAdsEditPro
     }
 
     @Override
-    protected void setupArguments(Bundle arguments) {
-
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_top_ads_edit_promo;
+    protected void setupArguments(Bundle bundle) {
+        shopAdId = bundle.getString(TopAdsExtraConstant.EXTRA_AD);
     }
 
     @Override
     protected void initView(View view) {
-        productListRecylerView = (RecyclerView) view.findViewById(R.id.recyler_view_product_list);
         maxPriceInputLayout = (TextInputLayout) view.findViewById(R.id.input_layout_max_price);
         maxPriceEditText = (EditText) view.findViewById(R.id.edit_text_max_price);
         budgetRadioGroup = (RadioGroup) view.findViewById(R.id.radio_group_budget);
@@ -125,13 +111,6 @@ public class TopAdsEditPromoFragment extends BasePresenterFragment<TopAdsEditPro
         showTimeEndDateEditText = (EditText) view.findViewById(R.id.edit_text_show_time_end_date);
         showTimeEndTimeEditText = (EditText) view.findViewById(R.id.edit_text_show_time_end_time);
         iconRadioGroup = (RadioGroup) view.findViewById(R.id.radio_group_icon);
-        addProductButton = (Button) view.findViewById(R.id.button_add_product);
-        addProductButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addProduct();
-            }
-        });
         maxPriceEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -289,10 +268,5 @@ public class TopAdsEditPromoFragment extends BasePresenterFragment<TopAdsEditPro
 
     private String getDateText(Date date, String formatDate) {
         return new SimpleDateFormat(formatDate, Locale.ENGLISH).format(date);
-    }
-
-    void addProduct() {
-        Intent intent = new Intent(getActivity(), TopAdsAddProductActivity.class);
-        startActivity(intent);
     }
 }

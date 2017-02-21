@@ -19,7 +19,8 @@
     </android.support.design.widget.TextInputLayout>
 
     <TextView
-        style="@style/TextView.TopAds.Title"
+        style="@style/TextView.TopAds.Body.Small2"
+        android:maxLines="3"
         android:text="@string/label_top_ads_max_price_description"/>
 
 </LinearLayout>
