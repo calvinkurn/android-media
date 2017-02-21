@@ -257,7 +257,7 @@ public class RechargeInteractorImpl implements RechargeInteractor {
     public void getStatus(final OnGetStatus onGetStatus) {
         Observable.concat(getObservableDbStatus(), getObservableNetworkStatus())
                 .first(isStatusExist())
-                .doOnNext(validateStatus())
+                .doOnNext(validateStatus(true))
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -269,6 +269,37 @@ public class RechargeInteractorImpl implements RechargeInteractor {
 
                     @Override
                     public void onError(Throwable e) {
+                        onGetStatus.onEmpty();
+                    }
+
+                    @Override
+                    public void onNext(Status status) {
+                        if (status != null) {
+                            onGetStatus.onSuccess(status);
+                        } else {
+                            onGetStatus.onEmpty();
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void getStatusOnResume(final OnGetStatus onGetStatus) {
+        Observable.concat(getObservableDbStatus(), getObservableNetworkStatus())
+                .first(isStatusExist())
+                .doOnNext(validateStatus(false))
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Status>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
                         onGetStatus.onEmpty();
                     }
 
@@ -698,7 +729,7 @@ public class RechargeInteractorImpl implements RechargeInteractor {
         };
     }
 
-    private Action1<Status> validateStatus() {
+    private Action1<Status> validateStatus(final boolean isInitialGetStatus) {
         return new Action1<Status>() {
             @Override
             public void call(Status status) {
@@ -716,6 +747,9 @@ public class RechargeInteractorImpl implements RechargeInteractor {
                     managerStatus.setKey(KEY_STATUS_CURRENT);
                     managerStatus.setValue(statusString);
                     managerStatus.store();
+                } else if (currentStatusString != null && currentStatusString.equals(statusString)
+                        && !isInitialGetStatus) {
+                    throw new RuntimeException("Is no need to reload widget");
                 } else if (currentStatusString == null) {
                     GlobalCacheManager managerStatus = new GlobalCacheManager();
                     managerStatus.setKey(KEY_STATUS_CURRENT);

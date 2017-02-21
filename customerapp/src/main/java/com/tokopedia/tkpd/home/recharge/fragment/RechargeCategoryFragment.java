@@ -64,6 +64,7 @@ public class RechargeCategoryFragment extends
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LocalCacheHandler.clearCache(getActivity(), TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION);
         if (getArguments() != null) {
             setupArguments(getArguments());
         }
@@ -129,11 +130,13 @@ public class RechargeCategoryFragment extends
         addTablayoutListener(rechargeViewPagerAdapter);
         final int positionTab = handler.getInt(TkpdCache.Key.WIDGET_RECHARGE_TAB_LAST_SELECTED);
         if (positionTab != -1 && positionTab < rechargeCategory.getData().size()) {
-            viewpagerRecharge.setCurrentItem(positionTab);
+            viewpagerRecharge.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    viewpagerRecharge.setCurrentItem(positionTab);
+                }
+            }, 300);
             tabLayoutRecharge.getTabAt(positionTab).select();
-            LocalCacheHandler.clearCache(
-                    getActivity(), TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION
-            );
         } else {
             viewpagerRecharge.setCurrentItem(0);
         }
@@ -151,6 +154,11 @@ public class RechargeCategoryFragment extends
     @Override
     public void renderErrorNetwork() {
 
+    }
+
+    @Override
+    public void hideRechargeWidget() {
+        ((LinearLayout) tabLayoutRecharge.getParent()).setVisibility(View.GONE);
     }
 
     @NonNull
