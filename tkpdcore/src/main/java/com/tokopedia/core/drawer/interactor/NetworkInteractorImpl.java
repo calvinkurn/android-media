@@ -20,7 +20,6 @@ import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -202,61 +201,15 @@ public class NetworkInteractorImpl implements NetworkInteractor {
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<TopCashItem>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if(e instanceof SessionExpiredException
-                                && SessionHandler.isV4Login(context)) {
-                            listener.onTokenExpire();
-                        }
-                    }
-
-                    @Override
-                    public void onNext(TopCashItem topCashItem) {
-                        listener.onSuccess(topCashItem);
-                    }
-                }));
+                .subscribe(fetchTokoCashSubscriber(context, listener)));
     }
 
     @Override
     public void updateTokoCash(final Context context, final TopCashListener listener) {
         SessionHandler sessionHandler = new SessionHandler(context);
         tokoCashService.setToken(sessionHandler.getAccessToken(context));
-        Observable<TopCashItem> observable = tokoCashService.getApi()
-                .getTokoCash().flatMap(new Func1<Response<TopCashItem>, Observable<TopCashItem>>() {
-                    @Override
-                    public Observable<TopCashItem> call(Response<TopCashItem> topCashItemResponse) {
-                        return Observable.just(topCashItemResponse.body());
-                    }
-                })
-                .doOnNext(storeTokoCashItemToDatabase());
-        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<TopCashItem>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if(e instanceof SessionExpiredException
-                                && SessionHandler.isV4Login(context)) {
-                            listener.onTokenExpire();
-                        }
-                    }
-
-                    @Override
-                    public void onNext(TopCashItem topCashItemResponse) {
-                        listener.onSuccess(topCashItemResponse);
-                    }
-                }));
+        compositeSubscription.add(getObservableFetchNetworkTokoCashData()
+                .subscribe(fetchTokoCashSubscriber(context, listener)));
     }
 
     @Override
@@ -337,7 +290,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
     }
 
     private Observable<TopCashItem> getObservableFetchNetworkTokoCashData() {
-        CommonUtils.dumper("PORING FETCH FROM NETWORK");
         return tokoCashService.getApi()
                 .getTokoCash()
                 .subscribeOn(Schedulers.newThread())
@@ -352,17 +304,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
     }
 
     private Observable<TopCashItem> getObservableFetchCacheTokoCashData() {
-        CommonUtils.dumper("PORING FETCH FROM CACHE");
-        /*GlobalCacheManager cacheManager = new GlobalCacheManager();
-        TopCashItem topCashItem = CacheUtil.convertStringToModel(cacheManager
-                        .getValueString(KEY_TOKOCASH_DATA),
-                new TypeToken<TopCashItem>(){}.getType());
-        return Observable.just(topCashItem).onErrorReturn(new Func1<Throwable, TopCashItem>() {
-            @Override
-            public TopCashItem call(Throwable throwable) {
-                return null;
-            }
-        });*/
         return Observable.just(true)
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -371,7 +312,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
             @Override
             public TopCashItem call(Boolean aBoolean) {
                 GlobalCacheManager cacheManager = new GlobalCacheManager();
-                CommonUtils.dumper("PORING CACHED DATA: " + cacheManager.getValueString(KEY_TOKOCASH_DATA));
                 return CacheUtil.convertStringToModel(cacheManager
                         .getValueString(KEY_TOKOCASH_DATA),
                         new TypeToken<TopCashItem>(){}.getType());
@@ -396,7 +336,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
                             }.getType()));
                     cacheManager.setCacheDuration(60);
                     cacheManager.store();
-                    CommonUtils.dumper("PORING STORED");
                 }
             }
         };
@@ -407,8 +346,30 @@ public class NetworkInteractorImpl implements NetworkInteractor {
             @Override
             public Boolean call(TopCashItem topCashItem) {
                 boolean dataIsNotNull = topCashItem != null && topCashItem.getData()!= null;
-                CommonUtils.dumper("PORING VALIDATE " + dataIsNotNull);
                 return topCashItem != null && topCashItem.getData()!= null;
+            }
+        };
+    }
+
+    private Subscriber<TopCashItem> fetchTokoCashSubscriber(final Context context,
+                                                            final TopCashListener listener) {
+        return new Subscriber<TopCashItem>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if(e instanceof SessionExpiredException
+                        && SessionHandler.isV4Login(context)) {
+                    listener.onTokenExpire();
+                }
+            }
+
+            @Override
+            public void onNext(TopCashItem topCashItemResponse) {
+                listener.onSuccess(topCashItemResponse);
             }
         };
     }
