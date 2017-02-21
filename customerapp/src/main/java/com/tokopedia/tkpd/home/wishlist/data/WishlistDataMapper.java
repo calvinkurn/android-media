@@ -16,6 +16,8 @@ import com.tokopedia.tkpd.home.wishlist.domain.model.WishlistDomain;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -23,7 +25,11 @@ import rx.functions.Func1;
  * @author Kulomady on 2/20/17.
  */
 
-class WishlistDataMapper implements Func1<Response<WishlistData>, DataWishlist> {
+public class WishlistDataMapper implements Func1<Response<WishlistData>, DataWishlist> {
+
+    @Inject
+    public WishlistDataMapper() {
+    }
 
     @Override
     public DataWishlist call(Response<WishlistData> response) {

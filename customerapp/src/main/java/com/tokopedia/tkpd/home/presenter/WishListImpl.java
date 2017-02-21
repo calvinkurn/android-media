@@ -21,6 +21,7 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.service.FavoritePart1Service;
+import com.tokopedia.tkpd.home.wishlist.domain.SearchWishlistUsecase;
 
 import org.parceler.Parcels;
 
@@ -57,16 +58,24 @@ public class WishListImpl implements WishList {
 
     MojitoAuthService mojitoAuthService;
 
+    SearchWishlistUsecase searchWishlistUsecase;
+
     List<Wishlist> dataWishlist = new ArrayList<>();
 
-    public WishListImpl(WishListView wishListView) {
+    public WishListImpl(WishListView wishListView, SearchWishlistUsecase searchWishlistUsecase) {
         this.wishListView = wishListView;
+        this.searchWishlistUsecase = searchWishlistUsecase;
         mPaging = new WishlistPaging();
         wishlist = new FavoritePart1Service();
         cache = new CacheHomeInteractorImpl();
         mojitoService = new MojitoService();
         compositeSubscription = new CompositeSubscription();
         mojitoAuthService = new MojitoAuthService();
+
+    }
+
+    private com.tokopedia.core.base.common.service.MojitoService initNewMojitoService() {
+        return null;
     }
 
 

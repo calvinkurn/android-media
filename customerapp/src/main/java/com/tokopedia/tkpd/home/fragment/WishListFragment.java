@@ -28,6 +28,11 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
+import com.tokopedia.core.base.common.service.MojitoService;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -37,12 +42,17 @@ import com.tokopedia.tkpd.home.adapter.GridLayoutProductAdapter;
 import com.tokopedia.tkpd.home.presenter.WishList;
 import com.tokopedia.tkpd.home.presenter.WishListImpl;
 import com.tokopedia.tkpd.home.presenter.WishListView;
+import com.tokopedia.tkpd.home.wishlist.data.WishlistDataMapper;
+import com.tokopedia.tkpd.home.wishlist.data.WishlistDataRepository;
+import com.tokopedia.tkpd.home.wishlist.domain.SearchWishlistUsecase;
+import com.tokopedia.tkpd.home.wishlist.domain.WishlistRepository;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import retrofit2.Retrofit;
 
 /**
  * Created by m.normansyah on 01/12/2015.
@@ -81,7 +91,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        wishList = new WishListImpl(this);
+        wishList = new WishListImpl(this, initSearchWishlistUsecase());
         progressDialog = new TkpdProgressDialog(getContext(), TkpdProgressDialog.NORMAL_PROGRESS);
         progressDialog.setCancelable(false);
         wishList.fetchSavedsInstance(savedInstanceState);
@@ -391,6 +401,25 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                 }
             }
         };
+    }
+
+    private SearchWishlistUsecase initSearchWishlistUsecase() {
+        ThreadExecutor threadExecutor = new JobExecutor();
+        PostExecutionThread postExecutionThread = new UIThread();
+        WishlistDataMapper wishlistDataMapper = new WishlistDataMapper();
+        WishlistRepository wishlistRepository
+                = new WishlistDataRepository(initMojitoService(), wishlistDataMapper);
+
+        return new SearchWishlistUsecase(threadExecutor, postExecutionThread, wishlistRepository);
+    }
+
+    private MojitoService initMojitoService() {
+        Retrofit retrofit = initMojitoRetrofit();
+        return retrofit.create(MojitoService.class);
+    }
+
+    private Retrofit initMojitoRetrofit() {
+        return null;
     }
 
 
