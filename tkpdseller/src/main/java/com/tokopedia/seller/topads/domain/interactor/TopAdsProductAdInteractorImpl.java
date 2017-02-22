@@ -47,7 +47,7 @@ public class TopAdsProductAdInteractorImpl implements TopAdsProductAdInteractor 
 
     @Override
     public void searchAd(SearchAdRequest searchAdRequest, final ListenerInteractor<PageDataResponse<List<ProductAd>>> listener) {
-        Observable<Response<PageDataResponse<List<ProductAd>>>> observable = topAdsManagementService.getApi().searchProductAd(searchAdRequest.getParams());
+        Observable<Response<PageDataResponse<List<ProductAd>>>> observable = topAdsManagementService.getApi().getProductAd(searchAdRequest.getParams());
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

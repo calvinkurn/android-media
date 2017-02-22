@@ -184,7 +184,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         // check if the request code is the same
         if (requestCode == REQUEST_CODE_AD_STATUS && intent != null) {
             boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, false);
-            if (adStatusChanged) {
+            boolean adDeleted = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_DELETED, false);
+            if (adStatusChanged || adDeleted) {
                 searchAd(START_PAGE);
             }
         }
