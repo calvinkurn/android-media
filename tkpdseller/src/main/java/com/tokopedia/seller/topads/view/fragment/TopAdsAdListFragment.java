@@ -207,9 +207,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         hideLoading();
         if (adapter.getDataSize() < 1) {
             adapter.showEmptyFull(true);
-        } else {
-            fabFilter.setVisibility(View.VISIBLE);
         }
+        fabFilter.setVisibility(View.VISIBLE);
     }
 
     @Override
