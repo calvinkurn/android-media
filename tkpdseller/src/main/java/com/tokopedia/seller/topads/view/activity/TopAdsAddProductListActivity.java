@@ -75,7 +75,6 @@ public class TopAdsAddProductListActivity extends BaseActivity
                     nextButton.animate().translationY((nextButtonRealHeight * v)).setDuration(0).start();
                 }
             };
-//    private BaseComponent component;
 
     private void removePaddingBottom() {
         findViewById(R.id.bottom_sheet_container).setPadding(0, 0, 0, 0);
@@ -205,11 +204,6 @@ public class TopAdsAddProductListActivity extends BaseActivity
     public ImageHandler imageHandler() {
         return imageHandler = new ImageHandler(this);
     }
-
-//    @Override
-//    public BaseComponent baseComponent() {
-//        return component;
-//    }
 
     @Override
     public void onChecked(int position, ProductDomain data) {
