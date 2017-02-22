@@ -87,9 +87,9 @@ public class TopAdsAddProductListViewHolder extends RecyclerView.ViewHolder
 
                 if (adapterSelectionListener != null) {
                     if (reverseSelection) {
-                        adapterSelectionListener.onChecked(adapterPosition);
+                        adapterSelectionListener.onChecked(adapterPosition, model.productDomain);
                     } else {
-                        adapterSelectionListener.onUnChecked(adapterPosition);
+                        adapterSelectionListener.onUnChecked(adapterPosition, model.productDomain);
                     }
                 }
 

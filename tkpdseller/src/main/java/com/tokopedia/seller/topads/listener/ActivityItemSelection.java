@@ -5,6 +5,4 @@ package com.tokopedia.seller.topads.listener;
  */
 
 public interface ActivityItemSelection extends FragmentItemSelection {
-
-    void bottomSheetAction(int totalItem, int position, boolean isSelected);
 }

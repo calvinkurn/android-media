@@ -21,7 +21,6 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:scaleType="centerCrop"
-            android:visibility="gone"
             tools:src="@drawable/shape_oval"
             tools:visibility="visible" />
 

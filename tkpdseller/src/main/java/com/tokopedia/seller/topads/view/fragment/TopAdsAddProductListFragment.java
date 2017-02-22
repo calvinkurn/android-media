@@ -28,6 +28,7 @@ import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagement
 import com.tokopedia.seller.topads.data.source.cloud.service.TopAdsSearchProductService;
 import com.tokopedia.seller.topads.domain.TopAdsSearchProductRepository;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsDefaultParamUseCase;
+import com.tokopedia.seller.topads.domain.model.ProductDomain;
 import com.tokopedia.seller.topads.exception.AddProductListException;
 import com.tokopedia.seller.topads.listener.AddProductListInterface;
 import com.tokopedia.seller.topads.listener.FragmentItemSelection;
@@ -261,14 +262,14 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     @Override
-    public void onChecked(int position) {
-        addProductListInterface.onChecked(position);
+    public void onChecked(int position, ProductDomain data) {
+        addProductListInterface.onChecked(position, data);
         topAdsProductListAdapter.notifyItemChanged(position);
     }
 
     @Override
-    public void onUnChecked(int position) {
-        addProductListInterface.onUnChecked(position);
+    public void onUnChecked(int position, ProductDomain data) {
+        addProductListInterface.onUnChecked(position, data);
         topAdsProductListAdapter.notifyItemChanged(position);
     }
 

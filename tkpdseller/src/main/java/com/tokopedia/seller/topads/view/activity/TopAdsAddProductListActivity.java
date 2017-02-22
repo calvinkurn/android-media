@@ -18,7 +18,9 @@ import android.widget.RelativeLayout;
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.domain.model.ProductDomain;
 import com.tokopedia.seller.topads.listener.AddProductListInterface;
+import com.tokopedia.seller.topads.utils.ViewUtils;
 import com.tokopedia.seller.topads.view.fragment.ChipsTopAdsSelectionFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsAddProductListFragment;
 import com.tokopedia.seller.topads.view.helper.BottomSheetHelper;
@@ -26,7 +28,6 @@ import com.tokopedia.seller.topads.view.helper.NumberOfChooseFooterHelper;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.seller.topads.utils.ViewUtils.setTranslucentStatusBar;
 
 
 public class TopAdsAddProductListActivity extends BaseActivity
@@ -88,7 +89,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTranslucentStatusBar(getWindow());
+        ViewUtils.setTranslucentStatusBar(getWindow());
         inject();
         setContentView(R.layout.activity_top_ads_add_product_list_container);
 
@@ -216,12 +217,21 @@ public class TopAdsAddProductListActivity extends BaseActivity
 //    }
 
     @Override
-    public void onChecked(int position) {
+    public void onChecked(int position, ProductDomain data) {
+        ChipsTopAdsSelectionFragment chipsTopAdsSelectionFragment
+                = getChipsTopAdsSelectionFragment();
+        if(chipsTopAdsSelectionFragment != null)
+            chipsTopAdsSelectionFragment.onChecked(position, data);
+
         bottomSheetHelper.showBottomSheet();
     }
 
     @Override
-    public void onUnChecked(int position) {
+    public void onUnChecked(int position, ProductDomain data) {
+        ChipsTopAdsSelectionFragment chipsTopAdsSelectionFragment
+                = getChipsTopAdsSelectionFragment();
+        if(chipsTopAdsSelectionFragment != null)
+            chipsTopAdsSelectionFragment.onUnChecked(position, data);
         bottomSheetHelper.dismissBottomSheet();
     }
 
@@ -248,14 +258,20 @@ public class TopAdsAddProductListActivity extends BaseActivity
         return actionBarHeight;
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    private ChipsTopAdsSelectionFragment getChipsTopAdsSelectionFragment(){
+        Fragment fragmentByTag
+                = getFragmentManager().findFragmentByTag(ChipsTopAdsSelectionFragment.TAG);
+        if(fragmentByTag != null
+                && fragmentByTag instanceof ChipsTopAdsSelectionFragment){
+            return (ChipsTopAdsSelectionFragment)fragmentByTag;
+        }
 
+        return null;
     }
 
     @Override
-    public void bottomSheetAction(int totalItem, int position, boolean isSelected) {
+    public void onBackPressed() {
+        super.onBackPressed();
 
     }
 }

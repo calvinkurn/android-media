@@ -14,10 +14,13 @@ import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.view.adapter.IItemsFactory;
+import com.tokopedia.seller.topads.domain.model.ProductDomain;
+import com.tokopedia.seller.topads.listener.ChipsTopAdsSelectionListener;
 import com.tokopedia.seller.topads.view.adapter.OnRemoveListener;
-import com.tokopedia.seller.topads.view.adapter.ShortChipsFactory;
+import com.tokopedia.seller.topads.view.adapter.ChipsAdapter;
+import com.tokopedia.seller.topads.view.models.ChipsEntity;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,101 +28,88 @@ import java.util.List;
  * @author normansyahputa on 2/16/17.
  */
 
-public class ChipsTopAdsSelectionFragment extends BasePresenterFragment {
+public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
+    implements ChipsTopAdsSelectionListener
+{
     public static final String TAG = "ChipsTopAdsSelectionFragment";
-    private static final String EXTRA = "data";
-    RecyclerView rvTest;
-    Spinner spinnerPosition;
-    Spinner spinnerMoveTo;
+    private static final String EXTRA_DATAS = "SAVED_DATAS";
+
+    private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
-    private List<String> positions;
-    private List items;
     private OnRemoveListener onRemoveListener = new OnRemoveListener() {
         @Override
         public void onItemRemoved(int position) {
-            items.remove(position);
+            datas.remove(position);
             Log.i("activity", "delete at " + position);
             adapter.notifyItemRemoved(position);
-            updateSpinners();
         }
     };
 
-    /**
-     * replace here different data sets
-     */
-    private IItemsFactory itemsFactory = new ShortChipsFactory();
+    private ArrayList<ChipsEntity<ProductDomain>> datas;
 
     public static Fragment newInstance() {
         return new ChipsTopAdsSelectionFragment();
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        createAdapter(savedInstanceState);
+    }
+
     private void setupView(View contentView, @Nullable Bundle savedInstanceState) {
-        rvTest = (RecyclerView) contentView.findViewById(R.id.rvTest);
-        spinnerPosition = (Spinner) contentView.findViewById(R.id.spinnerPosition);
-        spinnerMoveTo = (Spinner) contentView.findViewById(R.id.spinnerMoveTo);
-        adapter = createAdapter(savedInstanceState);
+        recyclerView = (RecyclerView) contentView.findViewById(R.id.recyclerview_chips_top_ads_selection);
 
         ChipsLayoutManager spanLayoutManager = ChipsLayoutManager.newBuilder(getActivity())
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_CENTER)
                 .build();
 
-        rvTest.addItemDecoration(new SpacingItemDecoration(getResources().getDimensionPixelOffset(R.dimen.item_space),
+        recyclerView.addItemDecoration(new SpacingItemDecoration(getResources().getDimensionPixelOffset(R.dimen.item_space),
                 getResources().getDimensionPixelOffset(R.dimen.item_space)));
 
-        positions = new LinkedList<>();
-        for (int i = 0; i < items.size(); i++) {
-            positions.add(String.valueOf(i));
-        }
-
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, android.R.id.text1, positions);
-        ArrayAdapter<String> spinnerAdapterMoveTo = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, android.R.id.text1, positions);
-        spinnerPosition.setAdapter(spinnerAdapter);
-        spinnerMoveTo.setAdapter(spinnerAdapterMoveTo);
-
-        rvTest.setLayoutManager(spanLayoutManager);
-        rvTest.getRecycledViewPool().setMaxRecycledViews(0, 10);
-        rvTest.getRecycledViewPool().setMaxRecycledViews(1, 10);
-        rvTest.setAdapter(adapter);
+        recyclerView.setLayoutManager(spanLayoutManager);
+        recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 50);
+        recyclerView.getRecycledViewPool().setMaxRecycledViews(1, 50);
+        recyclerView.setAdapter(adapter);
     }
 
 
     @SuppressWarnings("unchecked")
     private RecyclerView.Adapter createAdapter(Bundle savedInstanceState) {
-
-        List<String> items;
-        if (savedInstanceState == null) {
-//            items = itemsFactory.getFewItems();
-//            items = itemsFactory.getALotOfItems();
-            items = itemsFactory.getItems();
-        } else {
-            items = savedInstanceState.getStringArrayList(EXTRA);
+        if(savedInstanceState == null){
+            datas = new ArrayList<>();
+        }else{
+            datas = savedInstanceState.getParcelableArrayList(EXTRA_DATAS);
         }
-
-        adapter = itemsFactory.createAdapter(items, onRemoveListener);
-        this.items = items;
-
+        adapter = new ChipsAdapter(datas, onRemoveListener);
         return adapter;
+    }
+
+    @Override
+    public void onChecked(int position, ProductDomain data) {
+        ChipsEntity.Builder<ProductDomain> builder = convertToRecyclerViewModel(data);
+        datas.add(builder.build());
+        adapter.notifyItemInserted(datas.size()-1);
+    }
+
+    public ChipsEntity.Builder<ProductDomain> convertToRecyclerViewModel(ProductDomain data) {
+        return (ChipsEntity.Builder<ProductDomain>) ChipsEntity.newBuilder()
+                .name(data.getName())
+                .description(data.getGroupName())
+                .rawData(data);
+    }
+
+    @Override
+    public void onUnChecked(int position, ProductDomain data) {
 
     }
 
-    private void updateSpinners() {
-        positions = new LinkedList<>();
-        for (int i = 0; i < items.size(); i++) {
-            positions.add(String.valueOf(i));
-        }
-
-        int selectedPosition = Math.min(spinnerPosition.getSelectedItemPosition(), positions.size() - 1);
-        int selectedMoveToPosition = Math.min(spinnerMoveTo.getSelectedItemPosition(), positions.size() - 1);
-
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, android.R.id.text1, positions);
-        spinnerPosition.setAdapter(spinnerAdapter);
-        selectedPosition = Math.min(spinnerAdapter.getCount() - 1, selectedPosition);
-        spinnerPosition.setSelection(selectedPosition);
-
-        ArrayAdapter<String> spinnerAdapterMoveTo = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, android.R.id.text1, positions);
-        spinnerMoveTo.setAdapter(spinnerAdapterMoveTo);
-        spinnerMoveTo.setSelection(selectedMoveToPosition);
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(EXTRA_DATAS, new ArrayList<>(datas));
     }
 
     @Override
@@ -133,41 +123,6 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment {
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
-    }
-
-    @Override
     protected int getFragmentLayout() {
         return R.layout.chips_top_ads_selection_fragment;
     }
@@ -177,18 +132,31 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment {
         setupView(view, null);
     }
 
+    //unused methods
     @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initialVar() {
-
-    }
+    protected void onFirstTimeLaunched() {}
 
     @Override
-    protected void setActionVar() {
+    public void onSaveState(Bundle state) {}
 
-    }
+    @Override
+    public void onRestoreState(Bundle savedState) {}
+
+    @Override
+    protected boolean getOptionsMenuEnable() { return false; }
+
+    @Override protected void initialPresenter() {}
+
+    @Override protected void initialListener(Activity activity) {}
+
+    @Override protected void setupArguments(Bundle arguments) {}
+
+    @Override protected void setViewListener() {}
+
+    @Override protected void initialVar() {}
+
+    @Override protected void setActionVar() {}
+    //unused methods
+
+
 }

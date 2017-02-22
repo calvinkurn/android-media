@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.domain.model.ProductDomain;
 import com.tokopedia.seller.topads.listener.AdapterSelectionListener;
 import com.tokopedia.seller.topads.listener.FragmentItemSelection;
 import com.tokopedia.seller.topads.view.models.TopAdsAddProductModel;
@@ -26,7 +27,7 @@ import java.util.List;
  *         <p>
  */
 public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
-        implements AdapterSelectionListener {
+        implements AdapterSelectionListener<ProductDomain> {
     List<TypeBasedModel> datas;
     SparseArrayCompat<Boolean> selections;
     FragmentItemSelection fragmentItemSelection;
@@ -99,20 +100,31 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
     }
 
     @Override
-    public void onChecked(int position) {
+    public void onChecked(int position, ProductDomain data) {
         selections.put(position, true);
 
-        fragmentItemSelection.onChecked(position);
+        fragmentItemSelection.onChecked(position, data);
     }
 
     @Override
-    public void onUnChecked(int position) {
+    public void onUnChecked(int position, ProductDomain data) {
         selections.put(position, true);
 
-        fragmentItemSelection.onUnChecked(position);
+        fragmentItemSelection.onUnChecked(position, data);
     }
 
     public int getDataSize() {
         return datas.size();
+    }
+
+    public ProductDomain getItem(int position){
+        if(position >= 0 && position < datas.size()) {
+            TypeBasedModel typeBasedModel = datas.get(position);
+            if(typeBasedModel instanceof TopAdsAddProductModel) {
+                return ((TopAdsAddProductModel)typeBasedModel).productDomain;
+            }
+        }
+
+        return null;
     }
 }
