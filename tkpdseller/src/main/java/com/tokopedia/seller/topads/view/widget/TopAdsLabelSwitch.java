@@ -101,7 +101,9 @@ public class TopAdsLabelSwitch extends FrameLayout {
     }
 
     public void setSwitchEnabled(boolean enabled) {
-        switchStatus.setEnabled(enabled);
+        if (switchStatus.isEnabled() != enabled) {
+            switchStatus.setEnabled(enabled);
+        }
     }
 
     public void setListenerValue(CompoundButton.OnCheckedChangeListener listener) {
