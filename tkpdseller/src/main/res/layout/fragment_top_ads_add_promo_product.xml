@@ -4,6 +4,7 @@
     android:layout_height="match_parent">
 
     <RadioGroup
+        android:id="@+id/radio_group"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

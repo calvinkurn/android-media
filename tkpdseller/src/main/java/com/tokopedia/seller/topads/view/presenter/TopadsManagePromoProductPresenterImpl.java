@@ -65,12 +65,16 @@ public class TopAdsManagePromoProductPresenterImpl extends BaseDaggerPresenter<T
 
             @Override
             public void onError(Throwable e) {
-
+                getView().onCheckGroupExistError(e.getMessage());
             }
 
             @Override
             public void onNext(Boolean isExist) {
-
+                if(isExist) {
+                    getView().onGroupExist();
+                }else{
+                    getView().onGroupNotExist();
+                }
             }
         };
     }
