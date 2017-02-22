@@ -421,21 +421,33 @@ public class ManageProduct extends TkpdActivity implements
                     ActionTaken = true;
                     ShowEtalaseChange();
                     mode.finish();
+
+                    // analytic below : https://phab.tokopedia.com/T19758
+                    UnifyTracking.eventChangeEtalaseProductTopMenu();
                     return true;
                 } else if (item.getItemId() == R.id.action_update_categories) {
                     ActionTaken = true;
                     ShowCategoriesChange();
                     mode.finish();
+
+                    // analytic below : https://phab.tokopedia.com/T19758
+                    UnifyTracking.eventChangeCategoryProductTopMenu();
                     return true;
                 } else if (item.getItemId() == R.id.action_update_insurance) {
                     ActionTaken = true;
                     ShowInsuranceChange();
                     mode.finish();
+
+                    // analytic below : https://phab.tokopedia.com/T19758
+                    UnifyTracking.eventChangeInsuranceProductTopMenu();
                     return true;
                 } else if (item.getItemId() == R.id.action_delete) {
                     ActionTaken = true;
                     ShowDeleteChange();
                     mode.finish();
+
+                    // analytic below : https://phab.tokopedia.com/T19758
+                    UnifyTracking.eventDeleteProductTopMenu();
                     return true;
                 }
                 mode.finish();

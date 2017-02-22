@@ -501,9 +501,6 @@ public class ListViewManageProdAdapter extends BaseAdapter
             public void onClick(View v) {
                 if (!multiselect) {
                     showPopup(v, position, holder);
-
-                    // analytic below : https://phab.tokopedia.com/T18496
-                    UnifyTracking.eventChangeCurrencyDropDown();
                 }
             }
         });
@@ -558,22 +555,37 @@ public class ListViewManageProdAdapter extends BaseAdapter
                     holder.SaveBut.setVisibility(View.VISIBLE);
                     holder.CancelBut.setVisibility(View.VISIBLE);
                     EditMode.add(ProductID);
+
+                    // analytic below : https://phab.tokopedia.com/T18496
+                    UnifyTracking.eventChangeCurrencyDropDown();
                     return true;
                 } else if (item.getItemId() == R.id.action_update_categories) {
                     Checked.add(position);
                     activity.ShowCategoriesChange();
+
+                    // analytic below : https://phab.tokopedia.com/T19758
+                    UnifyTracking.eventChangeCategoryProductGear();
                     return true;
                 } else if (item.getItemId() == R.id.action_update_etalase){
                     Checked.add(position);
                     activity.ShowEtalaseChange();
+
+                    // analytic below : https://phab.tokopedia.com/T19758
+                    UnifyTracking.eventChangeEtalaseProductGear();
                     return true;
                 } else if (item.getItemId() == R.id.action_update_insurance){
                     Checked.add(position);
                     activity.ShowInsuranceChange();
+
+                    // analytic below : https://phab.tokopedia.com/T19758
+                    UnifyTracking.eventChangeInsuranceProductGear();
                     return true;
                 } else if (item.getItemId() == R.id.action_delete){
                     Checked.add(position);
                     activity.ShowDeleteChange();
+
+                    // analytic below : https://phab.tokopedia.com/T19758
+                    UnifyTracking.eventDeleteProductGear();
                     return true;
                 } else {
                     return false;
