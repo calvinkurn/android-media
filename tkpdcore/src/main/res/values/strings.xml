@@ -406,9 +406,9 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="title_edit_price">Ganti Harga</string>
     <string name="title_sort_but">Urutkan</string>
     <string name="title_filter_but">Filter</string>
-    <string name="title_update_etalase">Ubah Etalase</string>
-    <string name="title_update_categories">Ubah Kategori</string>
-    <string name="title_update_insurance">Ubah Asuransi</string>
+    <string name="title_update_etalase">Ganti Etalase</string>
+    <string name="title_update_categories">Ganti Kategori</string>
+    <string name="title_update_insurance">Ganti Asuransi</string>
     <string name="title_delete">Hapus</string>
     <string name="action_edit">Ubah</string>
     <string name="title_confirm">Konfirmasi</string>
