@@ -51,6 +51,11 @@
             android:label="@string/title_top_ads_filter"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".topads.view.activity.TopAdsFilterProductPromoActivity"
+            android:label="@string/title_top_ads_filter"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".topads.view.activity.TopAdsAddCreditActivity"
             android:label="@string/title_top_ads_add_credit"
             android:screenOrientation="portrait" />
