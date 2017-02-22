@@ -22,6 +22,7 @@ public class TopAdsLabelSwitch extends FrameLayout {
 
     private CompoundButton.OnCheckedChangeListener listener;
     private String titleText;
+    private boolean switchEnable;
 
     public TopAdsLabelSwitch(Context context) {
         super(context);
@@ -43,6 +44,7 @@ public class TopAdsLabelSwitch extends FrameLayout {
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.TopAdsLabelView);
         try {
             titleText = styledAttributes.getString(R.styleable.TopAdsLabelView_title);
+            switchEnable = styledAttributes.getBoolean(R.styleable.TopAdsLabelView_switch_enable, false);
         } finally {
             styledAttributes.recycle();
         }
@@ -52,6 +54,7 @@ public class TopAdsLabelSwitch extends FrameLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         titleTextView.setText(titleText);
+        switchStatus.setEnabled(switchEnable);
         switchStatus.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -95,6 +98,10 @@ public class TopAdsLabelSwitch extends FrameLayout {
         switchStatus.setChecked(isChecked);
         invalidate();
         requestLayout();
+    }
+
+    public void setSwitchEnabled(boolean enabled) {
+        switchStatus.setEnabled(enabled);
     }
 
     public void setListenerValue(CompoundButton.OnCheckedChangeListener listener) {
