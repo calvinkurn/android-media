@@ -840,7 +840,7 @@ public class DrawerVariable {
     }
 
 
-    public void setNotificationPeople(NotificationItem notificationItem) {
+    private void setNotificationPeople(NotificationItem notificationItem) {
         model.peopleMenu.notif = notificationItem.getNotifPurchase();
         for (DrawerItem item : model.peopleMenu.list) {
             switch (item.id) {
@@ -971,7 +971,7 @@ public class DrawerVariable {
         context.startActivity(new Intent(context, cls));
     }
 
-    protected void getTokoCash() {
+    private void getTokoCash() {
         networkInteractor.getTokoCash(context.getApplicationContext(),
                 new NetworkInteractor.TopCashListener() {
             @Override

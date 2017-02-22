@@ -554,11 +554,6 @@ public class DrawerVariableSeller extends DrawerVariable {
         holder.recyclerView.smoothScrollToPosition(0);
     }
 
-    @Override
-    protected void getTokoCash() {
-
-    }
-
     private void createDataGuest() {
         clearData();
         CommonUtils.dumper("DrawerTag : CreateDataGuest");
