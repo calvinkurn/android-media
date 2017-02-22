@@ -26,16 +26,11 @@ import com.tokopedia.seller.topads.view.fragment.TopAdsAddProductListFragment;
 import com.tokopedia.seller.topads.view.helper.BottomSheetHelper;
 import com.tokopedia.seller.topads.view.helper.NumberOfChooseFooterHelper;
 
-import javax.inject.Inject;
-
-
-
 public class TopAdsAddProductListActivity extends BaseActivity
         implements AddProductListInterface {
 
     public static final String TAG = "TopAdsAddPListAct";
 
-    @Inject
     ImageHandler imageHandler;
 
     private RelativeLayout fragmentContainer;
@@ -208,7 +203,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
 
     @Override
     public ImageHandler imageHandler() {
-        return imageHandler;
+        return imageHandler = new ImageHandler(this);
     }
 
 //    @Override

@@ -42,8 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import javax.inject.Inject;
-
 /**
  * @author normansyahputa on 2/13/17.
  */
@@ -59,11 +57,11 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     private final String snippetPromoted
             = "Promoted";
     protected int totalItem;
-    @Inject
+
     TopAdsManagementService topAdsSearchProductService;
-    @Inject
+
     SessionHandler sessionHandler;
-    @Inject
+
     TopAdsDefaultParamUseCase topAdsDefaultParamUseCase;
     private AddProductListInterface addProductListInterface;
     private ImageHandler imageHandler;
