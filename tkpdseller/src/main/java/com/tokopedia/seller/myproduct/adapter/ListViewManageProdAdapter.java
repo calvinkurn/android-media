@@ -448,6 +448,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
                 holder.PriceView.setVisibility(View.VISIBLE);
                 holder.SaveBut.setVisibility(View.GONE);
                 holder.CancelBut.setVisibility(View.GONE);
+                EditMode.remove(ProductID);
                 KeyboardHandler.DropKeyboard(activity, holder.MainView);
                 }
         });
@@ -551,6 +552,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
                     return true;
                 } else if (item.getItemId() == R.id.action_edit_price) {
                     holder.Prices.setVisibility(View.VISIBLE);
+                    holder.Prices.setText(manageProductModel.getPrice());
                     holder.PriceView.setVisibility(View.GONE);
                     holder.Currency.setVisibility(View.VISIBLE);
                     holder.SaveBut.setVisibility(View.VISIBLE);
