@@ -625,6 +625,7 @@ public class DrawerVariable {
 
     public void updateBalance() {
         getLoyalty();
+        updateTokoCash();
     }
 
     private void setCache() {
@@ -973,7 +974,16 @@ public class DrawerVariable {
 
     private void getTokoCash() {
         networkInteractor.getTokoCash(context.getApplicationContext(),
-                new NetworkInteractor.TopCashListener() {
+                onTokoCashRenderedListener());
+    }
+
+    private void updateTokoCash() {
+        networkInteractor.updateTokoCash(context.getApplicationContext(),
+                onTokoCashRenderedListener());
+    }
+
+    private NetworkInteractor.TopCashListener onTokoCashRenderedListener() {
+        return new NetworkInteractor.TopCashListener() {
             @Override
             public void onSuccess(TopCashItem topCashItem) {
                 populateTokoCashData(topCashItem);
@@ -992,7 +1002,7 @@ public class DrawerVariable {
                 intent.setAction("com.tokopedia.tkpd.FORCE_LOGOUT");
                 MainApplication.getAppContext().sendBroadcast(intent);
             }
-        });
+        };
     }
 
     private void populateTokoCashData(TopCashItem topCashItem) {
