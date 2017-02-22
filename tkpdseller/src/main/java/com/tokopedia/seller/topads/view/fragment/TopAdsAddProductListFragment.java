@@ -114,7 +114,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     public void onPause() {
         super.onPause();
         gmNetworkErrorHelper.onPause();
-        topAdsAddProductListPresenter.detachView();
         topAdsAddProductList.removeOnScrollListener(onScrollListener);
     }
 
@@ -330,6 +329,12 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
             topAdsProductListAdapter.addAllWithoutNotify(datas);
             topAdsProductListAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        topAdsAddProductListPresenter.detachView();
     }
 
 }
