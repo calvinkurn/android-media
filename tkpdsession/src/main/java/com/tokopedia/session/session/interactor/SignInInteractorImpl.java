@@ -20,8 +20,6 @@ import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.session.model.TokenModel;
 import com.tokopedia.core.util.SessionHandler;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.net.SocketTimeoutException;
@@ -265,7 +263,7 @@ public class SignInInteractorImpl implements SignInInteractor{
                             accountsParameter.setMoveSecurity(true);
                             accountsParameter.setActivationResent(false);
                         } else {
-                            AccountsModel accountsModel = response.convertDataObj(AccountsModel.class);
+                            AccountsModel accountsModel = response.convertToObj(AccountsModel.class);
                             accountsParameter.setMoveSecurity(false);
                             accountsParameter.setActivationResent(false);
                             accountsParameter.setAccountsModel(accountsModel);

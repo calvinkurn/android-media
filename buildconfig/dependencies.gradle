@@ -116,7 +116,13 @@ ext {
             dexMaker : 'com.google.dexmaker:dexmaker:1.2',
             dexMakerMockito : 'com.google.dexmaker:dexmaker-mockito:1.2',
             assertJ: "org.assertj:assertj-core:1.7.1"
+    ]
 
+    debugToolsDependencies = [
+            stetho: "com.facebook.stetho:stetho:1.4.2",
+            stethoOkHttp: "com.facebook.stetho:stetho-okhttp3:1.4.2",
+            chuck: "com.readystatesoftware.chuck:library:1.0.3",
+            chcukNoOp: "com.readystatesoftware.chuck:library-no-op:1.0.3"
     ]
 
     tkpdDependencies = [

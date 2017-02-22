@@ -15,13 +15,9 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.presenters.GMStat;
 import com.tokopedia.seller.gmstat.utils.DaggerInjectorListener;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
+import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
 
 import static com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper.MOVE_TO_SET_DATE;
-import static com.tokopedia.seller.gmstat.views.SetDateConstant.PERIOD_TYPE;
-import static com.tokopedia.seller.gmstat.views.SetDateConstant.SELECTION_PERIOD;
-import static com.tokopedia.seller.gmstat.views.SetDateConstant.SELECTION_TYPE;
-import static com.tokopedia.seller.gmstat.views.SetDateFragment.END_DATE;
-import static com.tokopedia.seller.gmstat.views.SetDateFragment.START_DATE;
 
 /**
  * Created by normansyahputa on 1/18/17.
@@ -131,10 +127,10 @@ public abstract class BaseGMStatActivity extends DrawerPresenterActivity
         // check if the request code is the same
         if (requestCode == MOVE_TO_SET_DATE) {
             if (data != null) {
-                long sDate = data.getLongExtra(START_DATE, -1);
-                long eDate = data.getLongExtra(END_DATE, -1);
-                int lastSelection = data.getIntExtra(SELECTION_PERIOD, 1);
-                int selectionType = data.getIntExtra(SELECTION_TYPE, PERIOD_TYPE);
+                long sDate = data.getLongExtra(DatePickerConstant.EXTRA_START_DATE, -1);
+                long eDate = data.getLongExtra(DatePickerConstant.EXTRA_END_DATE, -1);
+                int lastSelection = data.getIntExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, 1);
+                int selectionType = data.getIntExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_PERIOD_DATE);
                 if (sDate != -1 && eDate != -1) {
                     Fragment fragment = getFragmentManager().findFragmentById(R.id.content_gmstat_fragment_container);
                     if (fragment != null && fragment instanceof GMStatActivityFragment) {

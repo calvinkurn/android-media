@@ -25,7 +25,7 @@
 
             <FrameLayout
                 android:id="@+id/layout_shop_ad"
-                style="@style/LabelLayout"
+                style="@style/LabelLayoutWithBorder"
                 android:layout_marginBottom="@dimen/top_ads_dashboard_margin_bottom_space"
                 android:visibility="gone">
 
@@ -37,7 +37,7 @@
 
             <FrameLayout
                 android:id="@+id/layout_empty_shop_ad"
-                style="@style/LabelLayout"
+                style="@style/LabelLayoutWithBorder"
                 android:layout_marginBottom="@dimen/top_ads_dashboard_margin_bottom_space"
                 android:visibility="gone">
 

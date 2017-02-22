@@ -3,6 +3,7 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.tokopedia.core.util.SessionHandler;
@@ -41,6 +42,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
         super.initView(view);
         items = (TopAdsLabelView) view.findViewById(R.id.items);
         name.setTitle(getString(R.string.label_top_ads_groups));
+        name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
         items.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,11 +95,15 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
         super.onAdLoaded(ad);
         groupAd = (GroupAd) ad;
         items.setContent(String.valueOf(groupAd.getTotalItem()));
+        if(groupAd.getTotalItem() > 0){
+            items.setVisibleArrow(true);
+            items.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
+        }
     }
 
     void onProductItemClicked() {
         Intent intent = new Intent(getActivity(), TopAdsProductAdListActivity.class);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_GROUP, groupAd.getId());
+        intent.putExtra(TopAdsExtraConstant.EXTRA_GROUP, groupAd);
         startActivity(intent);
     }
 }

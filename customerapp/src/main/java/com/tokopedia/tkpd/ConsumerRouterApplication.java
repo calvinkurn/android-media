@@ -9,13 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer.DrawerVariable;
-import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
+import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
 import com.tokopedia.transaction.webview.WalletWebView;
@@ -90,6 +90,12 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
     public void goToWallet(Context context, Bundle bundle) {
         Intent intent = new Intent(context, WalletWebView.class);
         intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void goToMerchantRedirect(Context context) {
+        Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
         context.startActivity(intent);
     }
 }

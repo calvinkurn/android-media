@@ -23,7 +23,6 @@
             android:layout_alignParentLeft="true"
             android:layout_width="19.5dp"
             android:layout_height="19.5dp"
-            app:srcCompat="@mipmap/ic_icon_calendar_02"
             android:layout_centerVertical="true"
             android:id="@+id/calendar_icon"
             app:use_gradient="true"/>
@@ -54,7 +53,6 @@
                 android:id="@+id/calendar_arrow_icon"
                 android:layout_width="8dp"
                 android:layout_height="16dp"
-                app:srcCompat="@mipmap/page_1"
                 android:layout_gravity="center_vertical"
                 app:use_gradient="true"/>
         </LinearLayout>

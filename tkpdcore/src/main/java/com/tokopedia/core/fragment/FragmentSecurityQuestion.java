@@ -122,7 +122,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     }
 
     public void onSuccessProfileShared(String phoneNumber) {
-        SnackbarManager.make(getActivity(),getString(R.string.success_fetch_truecaller), Snackbar.LENGTH_LONG).show();
+        SnackbarManager.make(getActivity(), getString(R.string.success_fetch_truecaller), Snackbar.LENGTH_LONG).show();
         presenter.verifyTruecaller(getActivity(), phoneNumber);
     }
 
@@ -188,6 +188,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         if (presenter.isAfterRotate())
             presenter.initDataAfterRotate();
         smsReceiver.registerSmsReceiver(getActivity());
+        presenter.doSendAnalytics();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             showCheckSMSPermission();
@@ -221,7 +222,6 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
             FragmentSecurityQuestionPermissionsDispatcher.checkSmsPermissionWithCheck(FragmentSecurityQuestion.this);
         }
-        presenter.doSendAnalytics();
     }
 
     @Override
@@ -308,7 +308,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     @Override
     public void showTrueCaller(boolean b) {
-        verifyTrueCaller.setVisibility(b ? View.VISIBLE: View.GONE);
+        verifyTrueCaller.setVisibility(b ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -356,7 +356,6 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
             }
         });
     }
-
 
 
     private boolean otpIsValid() {
@@ -509,10 +508,10 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     @Override
     public void setData(int type, Bundle data) {
-        switch(type){
+        switch (type) {
             case DownloadService.MAKE_LOGIN:
-                if(getActivity()!=null && getActivity() instanceof SessionView) {
-                    ((SessionView)getActivity()).destroy();
+                if (getActivity() != null && getActivity() instanceof SessionView) {
+                    ((SessionView) getActivity()).destroy();
                 }
                 break;
 
@@ -553,6 +552,8 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     public void processOtp(String otpCode) {
         if (vInputOtp != null)
             vInputOtp.setText(otpCode);
+        presenter.saveOTPAnswer(otpCode);
+        presenter.doAnswerQuestion(otpCode);
     }
 
     @Override

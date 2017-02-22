@@ -17,13 +17,10 @@ import com.bignerdranch.android.multiselector.MultiSelector;
 import com.bignerdranch.android.multiselector.SwappingHolder;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.myproduct.fragment.ImageGalleryFragment;
 import com.tokopedia.core.myproduct.model.ImageModel;
 import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
-import com.tokopedia.core.util.MethodChecker;
 
-import java.io.File;
 import java.util.List;
 
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;

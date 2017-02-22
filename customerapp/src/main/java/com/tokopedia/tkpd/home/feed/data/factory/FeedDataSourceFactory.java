@@ -6,7 +6,7 @@ import com.tokopedia.core.base.common.service.AceService;
 import com.tokopedia.tkpd.home.feed.data.mapper.FeedMapper;
 import com.tokopedia.tkpd.home.feed.data.source.cloud.CloudFeedDataStore;
 import com.tokopedia.tkpd.home.feed.data.source.local.LocalFeedDataSource;
-import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.FeedDbManager;
+import com.tokopedia.core.base.common.dbManager.FeedDbManager;
 
 /**
  * @author Kulomady on 12/9/16.

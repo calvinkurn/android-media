@@ -9,16 +9,13 @@
 
     <TextView
         android:id="@+id/title_product"
-        style="@style/TextView.TopAdsListTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_vs"
+        style="@style/TextView.TopAds.Title.One"
         tools:text="@string/app_name"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_vs"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -30,7 +27,7 @@
 
         <TextView
             android:id="@+id/status_active"
-            style="@style/TextView.TopAdsListContent"
+            style="@style/TextView.TopAds.Body.Small2"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
             tools:text="@string/app_name"/>
@@ -38,36 +35,40 @@
 
     <TextView
         android:id="@+id/price_promo_per_click"
-        style="@style/TextView.TopAdsListContent"
-        android:layout_marginBottom="@dimen/margin_vs"
+        style="@style/TextView.TopAds.Body.Small2"
+        android:layout_marginTop="@dimen/margin_vs"
         tools:text="@string/app_name"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/padding_small">
+        android:layout_marginTop="@dimen/top_ads_dashboard_padding_cards_small"
+        android:orientation="horizontal">
 
         <TextView
-            style="@style/TextView.TopAdsListTitle"
-            android:text="@string/label_top_ads_sent"
-            android:textStyle="normal"/>
+            style="@style/TextView.TopAds.Title.One"
+            android:text="@string/label_top_ads_sent"/>
 
         <TextView
             android:id="@+id/promo_price_used"
-            style="@style/TextView.TopAdsListTitle"
+            style="@style/TextView.TopAds.Title.One"
             android:layout_marginLeft="3dp"
             android:layout_marginStart="3dp"
-            android:textSize="16sp"
             tools:text="@string/app_name"/>
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/group_name"
+        style="@style/TextView.TopAds.Body.Small2"
+        android:layout_marginTop="@dimen/margin_vs"
+        tools:text="@string/app_name"/>
 
     <LinearLayout
         android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/top_ads_dashboard_padding_cards_small"
+        android:layout_marginTop="@dimen/top_ads_dashboard_padding_cards_small"
         android:orientation="vertical">
 
         <ProgressBar
@@ -83,28 +84,25 @@
             android:orientation="horizontal">
 
             <TextView
-                style="@style/TextView.TopAdsListContent"
+                style="@style/TextView.TopAds.Body.Small2"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:text="@string/label_top_ads_daily_spend"/>
 
             <TextView
                 android:id="@+id/text_view_daily_spent"
-                style="@style/TextView.TopAdsListTitle"
-                android:textSize="@dimen/font_small"
+                style="@style/TextView.TopAds.Body.Small3"
                 tools:text="@string/app_name"/>
 
             <TextView
-                style="@style/TextView.TopAdsListContent"
-                android:layout_width="wrap_content"
+                style="@style/TextView.TopAds.Body.Small1"
                 android:layout_marginLeft="@dimen/padding_vs"
                 android:layout_marginRight="@dimen/padding_vs"
                 android:text="@string/top_ads_spent_separator"/>
 
             <TextView
                 android:id="@+id/text_view_daily_total"
-                style="@style/TextView.TopAdsListContent"
-                android:ellipsize="end"
+                style="@style/TextView.TopAds.Body.Small2"
                 tools:text="@string/app_name"/>
         </LinearLayout>
     </LinearLayout>

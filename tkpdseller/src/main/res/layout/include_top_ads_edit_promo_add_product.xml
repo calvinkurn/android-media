@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <TextView
-        style="@style/TextView"
+        style="@style/TextView.TopAds.Title"
         android:text="@string/title_top_ads_product"/>
 
     <android.support.v7.widget.RecyclerView

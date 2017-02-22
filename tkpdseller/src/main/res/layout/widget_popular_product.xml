@@ -10,7 +10,7 @@
         android:layout_marginLeft="@dimen/gmstat_padding_item_left_right"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        app:srcCompat="@mipmap/icon_produk"
+        android:src="@mipmap/icon_produk"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -43,7 +43,7 @@
         android:layout_marginLeft="@dimen/gmstat_padding_item_left_right"
         android:layout_width="96dp"
         android:layout_height="96dp"
-        app:srcCompat="@android:drawable/ic_notification_overlay"
+        android:src="@android:drawable/ic_notification_overlay"
         android:layout_below="@+id/separator_1"
         android:id="@+id/image_popular_product" />
 
@@ -128,7 +128,7 @@
         <ImageView
             android:layout_width="113dp"
             android:layout_height="54dp"
-            app:srcCompat="@drawable/icon_g_m_seller_app_produk_empty_03_04"/>
+            android:src="@drawable/icon_g_m_seller_app_produk_empty_03_04"/>
 
         <TextView
             android:layout_width="wrap_content"

@@ -54,7 +54,7 @@
                 android:layout_width="10dp"
                 android:layout_height="5dp"
                 android:layout_marginRight="2dp"
-                app:srcCompat="@drawable/ic_rectangle_up"
+                android:src="@drawable/ic_rectangle_up"
                 android:id="@+id/arrow_icon"
                 android:scaleType="fitXY"
                 android:layout_gravity="center_vertical"/>

@@ -24,15 +24,15 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
-import com.tokopedia.seller.instoped.InstagramAuth;
-import com.tokopedia.core.newgallery.GalleryActivity;
-import com.tokopedia.seller.instoped.InstopedActivity;
-import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.instoped.InstagramAuth;
+import com.tokopedia.seller.instoped.InstopedActivity;
+import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.adapter.DataFeedAdapter;
 import com.tokopedia.tkpd.home.feed.di.component.DaggerDataFeedComponent;
@@ -237,13 +237,16 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     public void showRefreshFailed() {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(),
-                new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                feedPresenter.refreshDataFeed();
-            }
-        }).showRetrySnackbar();
+        if (adapter.getData().size() > 0) {
+            NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                    new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            feedPresenter.refreshDataFeed();
+                        }
+                    }).showRetrySnackbar();
+        }
+
     }
 
 

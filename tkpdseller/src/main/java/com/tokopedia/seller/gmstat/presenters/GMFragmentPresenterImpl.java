@@ -14,8 +14,9 @@ import com.tokopedia.seller.gmstat.models.GetProductGraph;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
 import com.tokopedia.seller.gmstat.models.GetTransactionGraph;
 import com.tokopedia.seller.gmstat.utils.GMStatNetworkController;
-import com.tokopedia.seller.gmstat.views.models.PeriodRangeModel;
+import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
 
+import java.util.Calendar;
 import java.util.List;
 
 import rx.subscriptions.CompositeSubscription;
@@ -188,11 +189,21 @@ public class GMFragmentPresenterImpl implements GMFragmentPresenter {
      * reset sDate-eDate to 7 days
      */
     private void resetDateSelection(){
-        PeriodRangeModel periodRangeModel = new PeriodRangeModel(true, 7);
-        String description = periodRangeModel.getDescription();
-        Log.d("GMFragmentPresenterImpl", "["+description+"]");
-        sDate = periodRangeModel.startDate;
-        eDate = periodRangeModel.endDate;
+        Calendar endCalendar = Calendar.getInstance();
+        endCalendar.add(Calendar.DATE, -1);
+        endCalendar.set(Calendar.HOUR_OF_DAY, 23);
+        endCalendar.set(Calendar.MINUTE, 59);
+        endCalendar.set(Calendar.SECOND, 59);
+
+        Calendar startCalendar = Calendar.getInstance();
+        startCalendar.add(Calendar.DATE, -DatePickerConstant.DIFF_ONE_WEEK);
+        startCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        startCalendar.set(Calendar.MINUTE, 0);
+        startCalendar.set(Calendar.SECOND, 0);
+        startCalendar.set(Calendar.MILLISECOND, 0);
+
+        sDate = startCalendar.getTimeInMillis();
+        eDate = endCalendar.getTimeInMillis();
         isFirstTime = false;
     }
 
