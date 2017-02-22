@@ -44,7 +44,7 @@ public class TopAdsGroupAdInteractorImpl implements TopAdsGroupAdInteractor {
 
     @Override
     public void searchAd(SearchAdRequest searchAdRequest, final ListenerInteractor<PageDataResponse<List<GroupAd>>> listener) {
-        Observable<Response<PageDataResponse<List<GroupAd>>>> observable = topAdsManagementService.getApi().searchGroupAd(searchAdRequest.getParams());
+        Observable<Response<PageDataResponse<List<GroupAd>>>> observable = topAdsManagementService.getApi().getGroupAd(searchAdRequest.getParams());
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

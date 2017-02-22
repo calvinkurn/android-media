@@ -143,7 +143,7 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
 
     @Override
     public void searchProduct(SearchProductRequest searchProductRequest, ListenerInteractor<List<Product>> listener) {
-        Observable<Response<DataResponse<List<Product>>>> depositObservable = topAdsManagementService.getApi().searchProduct(searchProductRequest.getParams());
+        Observable<Response<DataResponse<List<Product>>>> depositObservable = topAdsManagementService.getApi().searchProductAd(searchProductRequest.getParams());
         compositeSubscription.add(depositObservable
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -160,7 +160,7 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
     @Override
     public void getListProductAds(HashMap<String, String> params, final ListenerInteractor<PageDataResponse<List<ProductAd>>> listener) {
         Observable<Response<PageDataResponse<List<ProductAd>>>> observable = topAdsManagementService.getApi()
-                .searchProductAd(params);
+                .getProductAd(params);
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -188,7 +188,7 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
 
     @Override
     public void getListGroupAds(SearchAdRequest searchAdRequest, final ListenerInteractor<List<GroupAd>> listener) {
-        Observable<Response<PageDataResponse<List<GroupAd>>>> observable = topAdsManagementService.getApi().searchGroupAd(searchAdRequest.getParams());
+        Observable<Response<PageDataResponse<List<GroupAd>>>> observable = topAdsManagementService.getApi().getGroupAd(searchAdRequest.getParams());
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())

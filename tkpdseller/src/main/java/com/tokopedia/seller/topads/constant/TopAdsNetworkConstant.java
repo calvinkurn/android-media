@@ -10,6 +10,7 @@ public class TopAdsNetworkConstant {
     public static final String PATH_DASHBOARD_DEPOSIT = "/v1.1/dashboard/deposit";
     public static final String PATH_DASHBOARD_TOTAL_AD = "/v1.1/dashboard/total_ad";
     public static final String PATH_SEARCH_PRODUCT = "/v1.1/dashboard/search_products";
+    public static final String PATH_SEARCH_GROUP = "/v1.1/dashboard/search_groups";
 
     public static final String PATH_DASHBOARD_PRODUCT = "v1.1/dashboard/group_products";
     public static final String PATH_DASHBOARD_GROUP = "v1.1/dashboard/groups";
