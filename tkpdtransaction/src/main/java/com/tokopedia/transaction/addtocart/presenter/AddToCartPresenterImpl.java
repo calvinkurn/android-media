@@ -316,18 +316,22 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
     @Override
     public void updateAddressShipping(@NonNull final Context context,
-                                      @NonNull final OrderData orderData) {
+                                      @NonNull final OrderData orderData,
+                                      @NonNull final LocationPass locationPass) {
         Map<String, String> maps = new HashMap<>();
         maps.put("act", "edit_address");
         maps.put("is_from_cart", "1");
         maps.put("address_id", orderData.getAddress().getAddressId());
-        maps.put("latitude", orderData.getAddress().getLatitude());
-        maps.put("longitude", orderData.getAddress().getLongitude());
+        maps.put("latitude", locationPass.getLatitude());
+        maps.put("longitude", locationPass.getLongitude());
 
         addToCartNetInteractor.updateAddress(context, maps,
                 new AddToCartNetInteractor.OnUpdateAddressListener() {
                     @Override
                     public void onSuccess() {
+                        orderData.getAddress().setLatitude(locationPass.getLatitude());
+                        orderData.getAddress().setLongitude(locationPass.getLongitude());
+                        viewListener.renderFormAddress(orderData.getAddress());
                         calculateAllPrices(context, orderData);
                     }
 

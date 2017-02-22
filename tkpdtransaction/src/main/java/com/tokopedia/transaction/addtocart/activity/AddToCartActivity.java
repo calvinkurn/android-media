@@ -568,7 +568,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 }
             }
             tvErrorShipping.setVisibility(View.GONE);
-            clearSnackbar();
         } else if (parent.getAdapter().getItem(position) instanceof Product) {
             orderData.setShipmentPackage(((Product) parent.getAdapter()
                     .getItem(position)).getShipperProductId());
@@ -586,6 +585,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 }
             } else {
                 viewFieldLocation.setVisibility(View.GONE);
+                clearRetryInstantCourierSnackbar();
             }
         } else if (parent.getAdapter().getItem(position) instanceof Insurance) {
             orderData.setInsurance(((Insurance) parent.getAdapter().getItem(position)).isInsurance()
@@ -637,11 +637,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                             GeolocationActivity.EXTRA_EXISTING_LOCATION
                     );
                     if (locationPass != null) {
-                        this.orderData.getAddress().setLatitude(locationPass.getLatitude());
-                        this.orderData.getAddress().setLongitude(locationPass.getLongitude());
-                        renderFormAddress(orderData.getAddress());
                         startCalculateCartLoading();
-                        presenter.updateAddressShipping(this, orderData);
+                        presenter.updateAddressShipping(this, orderData, locationPass);
                         this.mLocationPass = locationPass;
                     }
                     break;
@@ -947,8 +944,11 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         };
     }
 
-    private void clearSnackbar() {
-        if(snackbarRetry != null && snackbarRetry.isShown()) snackbarRetry.hideRetrySnackbar();
+    private void clearRetryInstantCourierSnackbar() {
+        if(snackbarRetry != null && snackbarRetry.isShown()) {
+            snackbarRetry.hideRetrySnackbar();
+            btnBuy.setEnabled(true);
+        }
     }
 
 }
