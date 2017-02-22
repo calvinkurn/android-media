@@ -61,12 +61,14 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     LinearLayout mainContentLinearLayout;
 
     @Inject
-    FeedDaggerPresenter feedPresenter;
+    FeedPresenter feedPresenter;
 
     private GridLayoutManager gridLayoutManager;
     private DataFeedAdapter adapter;
     private Unbinder unbinder;
     private RetryHandler retryHandler;
+
+    private int currentTopAdsPage;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -109,6 +111,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         super.onSaveInstanceState(outState);
         adapter.onSaveInstanceState(outState);
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -222,6 +225,9 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
             adapter.updateHistoryAdapter(dataFeedList.get(historyDataPosition));
             adapter.addAll(true, false, dataFeedList);
             adapter.notifyItemInserted(0);
+
+            int topAdsInitialPage = 3;
+            currentTopAdsPage = topAdsInitialPage;
         }
     }
 
@@ -239,11 +245,21 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     public void showRefreshFailed() {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(),
                 new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                feedPresenter.refreshDataFeed();
-            }
-        }).showRetrySnackbar();
+                    @Override
+                    public void onRetryClicked() {
+                        feedPresenter.refreshDataFeed();
+                    }
+                }).showRetrySnackbar();
+    }
+
+    @Override
+    public String getTopAdsPage() {
+        return String.valueOf(currentTopAdsPage);
+    }
+
+    @Override
+    public void increaseTopAdsPage() {
+        currentTopAdsPage +=2;
     }
 
 

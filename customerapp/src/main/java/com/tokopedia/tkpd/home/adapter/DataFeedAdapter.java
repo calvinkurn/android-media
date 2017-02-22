@@ -119,10 +119,12 @@ public class DataFeedAdapter extends ProductAdapter {
 
     private void setBadges(ProductFeedAdapter.ViewHolderProductFeed holder, ProductItem data) {
         holder.badgesContainer.removeAllViews();
+        holder.badgesContainer.setVisibility(View.GONE);
         if (data.getBadges() != null)
             for (Badge badges : data.getBadges()) {
                 LuckyShopImage.loadImage(context, badges.getImageUrl(), holder.badgesContainer);
             }
+        holder.badgesContainer.setVisibility(View.VISIBLE);
     }
 
     private void setLabels(ProductFeedAdapter.ViewHolderProductFeed holder, ProductItem data) {

@@ -39,6 +39,10 @@ interface FeedContract {
         void showContentView();
 
         void showRefreshFailed();
+
+        String getTopAdsPage();
+
+        void increaseTopAdsPage();
     }
 
     interface Presenter extends CustomerPresenter<View> {

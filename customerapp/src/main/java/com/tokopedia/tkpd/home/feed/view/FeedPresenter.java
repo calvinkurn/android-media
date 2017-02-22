@@ -19,7 +19,7 @@ import javax.inject.Inject;
  * @author Kulomady on 12/15/16.
  */
 
-public class FeedDaggerPresenter extends BaseDaggerPresenter<FeedContract.View>
+public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
         implements FeedContract.Presenter {
 
     private GetAllFeedDataPageUseCase feedDataPageUseCase;
@@ -27,10 +27,11 @@ public class FeedDaggerPresenter extends BaseDaggerPresenter<FeedContract.View>
     private LoadMoreFeedUseCase loadMoreFeedUseCase;
     private PagingHandler pagingHandler;
 
+
     @Inject
-    public FeedDaggerPresenter(GetAllFeedDataPageUseCase feedDataPageUseCase,
-                               GetDataFeedCacheUseCase feedDataCachePageUseCase,
-                               LoadMoreFeedUseCase loadMoreFeedUseCase) {
+    public FeedPresenter(GetAllFeedDataPageUseCase feedDataPageUseCase,
+                         GetDataFeedCacheUseCase feedDataCachePageUseCase,
+                         LoadMoreFeedUseCase loadMoreFeedUseCase) {
 
         this.feedDataPageUseCase = feedDataPageUseCase;
         this.feedDataCachePageUseCase = feedDataCachePageUseCase;
@@ -66,9 +67,8 @@ public class FeedDaggerPresenter extends BaseDaggerPresenter<FeedContract.View>
         if (pagingHandler.CheckNextPage()) {
             checkViewAttached();
             pagingHandler.nextPage();
-            loadMoreFeedUseCase.execute(
-                    getFeedRequestParams(),
-                    new LoadMoreFeedSubcriber());
+            loadMoreFeedUseCase.execute(getFeedRequestParams(), new LoadMoreFeedSubcriber(isPageOdd()));
+
         }
 
     }
@@ -80,7 +80,12 @@ public class FeedDaggerPresenter extends BaseDaggerPresenter<FeedContract.View>
         requestParams.putString(GetFeedUseCase.KEY_START, String.valueOf(getPagingIndex()));
         requestParams.putString((GetFeedUseCase.KEY_DEVICE), GetFeedUseCase.DEVICE_VALUE_DEFAULT);
         requestParams.putString(GetFeedUseCase.KEY_OB, GetFeedUseCase.OB_VALUE_DEFAULT);
-        requestParams.putBoolean(LoadMoreFeedUseCase.KEY_IS_INCLUDE_TOPADS, isPageOdd());
+        if (isPageOdd()) {
+            requestParams.putBoolean(LoadMoreFeedUseCase.KEY_IS_INCLUDE_TOPADS, true);
+            requestParams.putString(LoadMoreFeedUseCase.KEY_TOPADS_PAGE,getView().getTopAdsPage());
+        } else {
+            requestParams.putBoolean(LoadMoreFeedUseCase.KEY_IS_INCLUDE_TOPADS, false);
+        }
         requestParams.putBoolean(GetFeedUseCase.KEY_IS_FIRST_PAGE, false);
         return requestParams;
     }
@@ -143,6 +148,14 @@ public class FeedDaggerPresenter extends BaseDaggerPresenter<FeedContract.View>
     }
 
     private class LoadMoreFeedSubcriber extends DefaultSubscriber<DataFeed> {
+
+        private boolean isIncludeTopAds;
+
+        public LoadMoreFeedSubcriber(boolean isIncludeTopAds) {
+
+            this.isIncludeTopAds = isIncludeTopAds;
+        }
+
         @Override
         public void onCompleted() {
 
@@ -160,6 +173,7 @@ public class FeedDaggerPresenter extends BaseDaggerPresenter<FeedContract.View>
             if (isViewAttached()) {
                 ProductFeedViewModel productFeedViewModel = new ProductFeedViewModel(dataFeed);
                 setPagging(productFeedViewModel.getPagingHandlerModel());
+                if(isIncludeTopAds) getView().increaseTopAdsPage();
                 getView().showLoadMoreFeed(productFeedViewModel.getData());
                 doCheckLoadMore();
             }
