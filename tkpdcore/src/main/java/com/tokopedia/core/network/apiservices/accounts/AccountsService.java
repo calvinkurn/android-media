@@ -6,6 +6,8 @@ import android.os.Bundle;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.apiservices.accounts.apis.AccountsApi;
@@ -15,6 +17,7 @@ import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.AccountsInterceptor;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.util.GlobalConfig;
 
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
@@ -52,6 +55,7 @@ public class AccountsService {
         String status = TrackingUtils.eventHTTP();
 
         OkHttpClient.Builder client = new OkHttpClient.Builder();
+        setInterceptorDebug(client);
         client.connectTimeout(45, TimeUnit.SECONDS);
         client.readTimeout(45, TimeUnit.SECONDS);
         client.writeTimeout(45, TimeUnit.SECONDS);
@@ -99,6 +103,15 @@ public class AccountsService {
         retrofit.addCallAdapterFactory(RxJavaCallAdapterFactory.create());
         retrofit.client(client.build());
         initApiService(retrofit.build());
+    }
+
+    private void setInterceptorDebug(OkHttpClient.Builder client) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), "CHUCK_ENABLED");
+            Boolean allowLogOnNotification = cache.getBoolean("is_enable", false);
+            client.addInterceptor(new ChuckInterceptor(MainApplication.getAppContext())
+                    .showNotification(allowLogOnNotification));
+        }
     }
 
     protected void initApiService(Retrofit retrofit) {

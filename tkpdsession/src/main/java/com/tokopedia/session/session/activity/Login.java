@@ -91,11 +91,11 @@ import permissions.dispatcher.RuntimePermissions;
  */
 @RuntimePermissions
 public class Login extends GoogleActivity implements SessionView, GoogleActivity.GoogleListener
-            , DownloadResultReceiver.Receiver
-            , LoginResultReceiver.Receiver
-            , RegisterResultReceiver.Receiver
-            , ResetPasswordResultReceiver.Receiver
-            , OTPResultReceiver.Receiver {
+        , DownloadResultReceiver.Receiver
+        , LoginResultReceiver.Receiver
+        , RegisterResultReceiver.Receiver
+        , ResetPasswordResultReceiver.Receiver
+        , OTPResultReceiver.Receiver {
 
     private static final String INTENT_EXTRA_PARAM_EMAIL = "INTENT_EXTRA_PARAM_EMAIL";
     private static final String INTENT_EXTRA_PARAM_PASSWORD = "INTENT_EXTRA_PARAM_PASSWORD";
@@ -344,10 +344,10 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     @Override
     public void verifyTruecaller() {
-        if(GlobalConfig.isSellerApp()){
-            startActivityForResult(SellerAppRouter.getTruecallerIntent(this),100);
-        }else {
-            startActivityForResult(CustomerRouter.getTruecallerIntent(this),100);
+        if (GlobalConfig.isSellerApp()) {
+            startActivityForResult(SellerAppRouter.getTruecallerIntent(this), 100);
+        } else {
+            startActivityForResult(CustomerRouter.getTruecallerIntent(this), 100);
         }
     }
 
@@ -853,12 +853,12 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==100){
-            if(resultCode == RESULT_OK){
+        if (requestCode == 100) {
+            if (resultCode == RESULT_OK) {
                 FragmentSecurityQuestion fragment = (FragmentSecurityQuestion) supportFragmentManager.findFragmentByTag(SECURITY_QUESTION_TAG);
-                if(data!=null && data.getStringExtra("phone")!=null){
+                if (data != null && data.getStringExtra("phone") != null) {
                     fragment.onSuccessProfileShared(data.getStringExtra("phone"));
-                }else if(data!=null && data.getStringExtra("error")!=null){
+                } else if (data != null && data.getStringExtra("error") != null) {
                     fragment.onFailedProfileShared(data.getStringExtra("error"));
                 }
             }
@@ -871,14 +871,20 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         callingIntent.putExtra(INTENT_EXTRA_PARAM_PASSWORD, password);
         callingIntent.putExtra(INTENT_AUTOMATIC_LOGIN, true);
         callingIntent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-        callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
+        if (GlobalConfig.isSellerApp())
+            callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
+        else
+            callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
         return callingIntent;
     }
 
     public static Intent getCallingIntent(Context context) {
         Intent callingIntent = new Intent(context, Login.class);
         callingIntent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-        callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
+        if (GlobalConfig.isSellerApp())
+            callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
+        else
+            callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
         return callingIntent;
     }
 }

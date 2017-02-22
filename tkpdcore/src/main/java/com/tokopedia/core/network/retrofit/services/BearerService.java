@@ -2,11 +2,13 @@ package com.tokopedia.core.network.retrofit.services;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 import com.tokopedia.core.util.GlobalConfig;
 
 import java.io.IOException;
@@ -69,8 +71,18 @@ public abstract class BearerService<T> {
                         .addConverterFactory(GsonConverterFactory.create(gson))
                         .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
 
+        setInterceptorDebug(httpClientBuilder);
         Retrofit retrofit = retrofitBuilder.client(httpClientBuilder.build()).build();
         initApiService(retrofit);
+    }
+
+    private void setInterceptorDebug(OkHttpClient.Builder client) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), "CHUCK_ENABLED");
+            Boolean allowLogOnNotification = cache.getBoolean("is_enable", false);
+            client.addInterceptor(new ChuckInterceptor(MainApplication.getAppContext())
+                    .showNotification(allowLogOnNotification));
+        }
     }
 
     protected abstract String getBaseUrl();

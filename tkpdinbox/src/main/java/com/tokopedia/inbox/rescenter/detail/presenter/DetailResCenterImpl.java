@@ -213,12 +213,13 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
 
                     @Override
                     public void onTimeOut(String message, NetworkErrorHelper.RetryClickedListener listener) {
+                        view.showLoadingDialog(false);
                         view.showTimeOutMessage();
                     }
 
                     @Override
                     public void onFailAuth() {
-
+                        view.showLoadingDialog(false);
                     }
 
                     @Override
@@ -235,7 +236,8 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
 
                     @Override
                     public void onNullData() {
-
+                        view.showLoadingDialog(false);
+                        view.showTimeOutMessage();
                     }
                 });
 

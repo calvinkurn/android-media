@@ -64,8 +64,7 @@ public class TalkProductActivity extends TActivity implements InboxTalkResultRec
         if (savedInstanceState == null) {
             Fragment fragment = TalkProductFragment.createInstance(getIntent().getExtras());
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.container, fragment, TalkProductActivity.class.getSimpleName());
-            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.add(R.id.container, fragment, TalkProductActivity.class.getSimpleName());
             fragmentTransaction.commit();
         }
     }

@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -13,6 +15,8 @@ import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
+import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.HockeyAppHelper;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -48,6 +52,7 @@ public abstract class BaseService<T> {
 
     private void generateBaseService(String processedBaseUrl) {
         OkHttpClient.Builder client = getOkHttpClientBuilder();
+        setInterceptorDebug(client);
         Interceptor authInterceptor = getAuthInterceptor();
         client.interceptors().add(authInterceptor);
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
@@ -99,5 +104,14 @@ public abstract class BaseService<T> {
             }
         }
         return baseUrl;
+    }
+
+    private void setInterceptorDebug(OkHttpClient.Builder client) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), "CHUCK_ENABLED");
+            Boolean allowLogOnNotification = cache.getBoolean("is_enable", false);
+            client.addInterceptor(new ChuckInterceptor(MainApplication.getAppContext())
+                    .showNotification(allowLogOnNotification));
+        }
     }
 }

@@ -10,8 +10,11 @@ import org.parceler.Parcel;
 
 @Parcel
 public class RegisterResult {
+    public static final int USER_DELETED = -2;
+    public static final int USER_PENDING = -1;
     public static final int USER_INACTIVE = 0;
     public static final int USER_ACTIVE = 1;
+    public static final int USER_BANNED = 2;
 
     @SerializedName("is_active")
     int isActive;
