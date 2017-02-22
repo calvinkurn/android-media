@@ -117,7 +117,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean state) {
                 LocalCacheHandler cache = new LocalCacheHandler(getApplicationContext(), CHUCK_ENABLED);
-                cache.putBoolean("is_enable", state);
+                cache.putBoolean(IS_CHUCK_ENABLED, state);
                 cache.applyEditor();
             }
         });
