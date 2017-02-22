@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -14,6 +16,7 @@ import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.KeroInterceptor;
+import com.tokopedia.core.util.GlobalConfig;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -31,6 +34,7 @@ public abstract class KeroService<T> {
 
     public KeroService() {
         OkHttpClient.Builder client = new OkHttpClient.Builder();
+        setInterceptorDebug(client);
         addInterceptors(client);
         Gson gson = buildGSON();
         Retrofit.Builder retrofit = new Retrofit.Builder();
@@ -77,6 +81,15 @@ public abstract class KeroService<T> {
         retrofit.addConverterFactory(new StringResponseConverter());
         retrofit.addConverterFactory(GsonConverterFactory.create(gson));
         retrofit.addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+    }
+
+    private void setInterceptorDebug(OkHttpClient.Builder client) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), "CHUCK_ENABLED");
+            Boolean allowLogOnNotification = cache.getBoolean("is_enable", false);
+            client.addInterceptor(new ChuckInterceptor(MainApplication.getAppContext())
+                    .showNotification(allowLogOnNotification));
+        }
     }
 
     protected abstract void initApiService(Retrofit retrofit);
