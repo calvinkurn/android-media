@@ -532,6 +532,7 @@ public class DrawerVariableSeller extends DrawerVariable {
             }
 
             getDeposit();
+            getNotification();
 
             if (interval > 9000 || model.header.Loyalty.equals("")) {
                 getLoyalty();
@@ -549,9 +550,13 @@ public class DrawerVariableSeller extends DrawerVariable {
             holder.footerShadow.setVisibility(View.GONE);
         }
 
-        getNotification();
         adapter.notifyDataSetChanged();
         holder.recyclerView.smoothScrollToPosition(0);
+    }
+
+    @Override
+    protected void getTokoCash() {
+
     }
 
     private void createDataGuest() {
