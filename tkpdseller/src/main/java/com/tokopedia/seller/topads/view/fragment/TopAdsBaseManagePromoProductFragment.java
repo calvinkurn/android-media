@@ -48,6 +48,7 @@ public abstract class TopAdsBaseManagePromoProductFragment extends BasePresenter
     @Override
     protected void initialPresenter() {
         presenter = TopAdsAddPromoPoductDI.createPresenter(getActivity());
+        presenter.attachView(this);
     }
 
     @Override

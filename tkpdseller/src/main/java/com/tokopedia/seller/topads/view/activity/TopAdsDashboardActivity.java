@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.view.activity;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +17,7 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
+import com.tokopedia.seller.topads.view.fragment.TopAdsAddPromoProductFragment;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsDashboardPagerAdapter;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardFragment;
@@ -109,7 +111,9 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
         fabSpeedDial.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showCreateAdsAlert(TopAdsDashboardActivity.this);
+                Intent intent = new Intent(TopAdsDashboardActivity.this, TopAdsAddPromoProductActivity.class);
+                startActivity(intent);
+//                showCreateAdsAlert(TopAdsDashboardActivity.this);
             }
         });
     }

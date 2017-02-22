@@ -15,7 +15,6 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.domain.model.data.DataDeposit;
 import com.tokopedia.seller.topads.domain.model.data.Summary;
-import com.tokopedia.seller.topads.view.activity.TopAdsAddProductActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDashboardPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
@@ -268,7 +267,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     }
 
     void goToAddCredit() {
-        Intent intent = new Intent(getActivity(), TopAdsAddProductActivity.class);
+        Intent intent = new Intent(getActivity(), TopAdsAddCreditActivity.class);
         startActivityForResult(intent, REQUEST_CODE_ADD_KREDIT);
     }
 
