@@ -31,7 +31,7 @@ public class TopAdsFilterStatusPromoFragment extends TopAdsFilterRadioButtonFrag
     @Override
     protected void setupArguments(Bundle bundle) {
         super.setupArguments(bundle);
-        selectedStatusPromo = bundle.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, selectedStatusPromo);
+        selectedStatusPromo = bundle.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS_PROMO, selectedStatusPromo);
     }
 
     @Override
@@ -51,13 +51,13 @@ public class TopAdsFilterStatusPromoFragment extends TopAdsFilterRadioButtonFrag
     }
 
     private void updateSelectedPosition(List<RadioButtonItem> radioButtonItemList) {
-        if (selectedRadioButtonItem != null) {
-            return;
+        if (selectedAdapterPosition > 0) {
+            return; // adapter position has been updated
         }
         for (int i = 0; i < radioButtonItemList.size(); i++) {
             RadioButtonItem radioButtonItem = radioButtonItemList.get(i);
             if (Integer.valueOf(radioButtonItem.getValue()) == selectedStatusPromo) {
-                selectedRadioButtonItem = radioButtonItem;
+                selectedAdapterPosition = i;
                 break;
             }
         }
@@ -70,8 +70,8 @@ public class TopAdsFilterStatusPromoFragment extends TopAdsFilterRadioButtonFrag
 
     @Override
     public Intent addResult(Intent intent) {
-        if (selectedRadioButtonItem != null) {
-            intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, Integer.parseInt(selectedRadioButtonItem.getValue()));
+        if (selectedAdapterPosition > -1) {
+            intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS_PROMO, Integer.parseInt(getSelectedRadioValue()));
         }
         return intent;
     }

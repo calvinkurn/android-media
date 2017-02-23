@@ -3,15 +3,24 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
+import com.tokopedia.core.customadapter.RetryDataBinder;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.product.model.etalase.Etalase;
+import com.tokopedia.core.shopinfo.models.etalasemodel.EtalaseModel;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.domain.model.other.RadioButtonItem;
+import com.tokopedia.seller.topads.view.listener.TopAdsEtalaseListView;
+import com.tokopedia.seller.topads.view.presenter.RetrofitPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsEtalaseListPresenterImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment {
+public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment<TopAdsEtalaseListPresenterImpl>
+    implements TopAdsEtalaseListView{
 
     private int selectedEtalaseId;
 
@@ -35,49 +44,35 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
     }
 
     @Override
+    protected void initialVar() {
+        super.initialVar();
+        adapter.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
+            @Override
+            public void onRetryCliked() {
+                presenter.populateEtalaseList();
+            }
+        });
+    }
+
+    @Override
+    protected void initialPresenter() {
+        presenter = new TopAdsEtalaseListPresenterImpl(getActivity(), this);
+    }
+
+    @Override
     protected List<RadioButtonItem> getRadioButtonList() {
-        List<RadioButtonItem> radioButtonItemList = new ArrayList<>();
-        //TODO will update from API etalase
-        // dummy
-        String[] statusValueList = getResources().getStringArray(R.array.filter_status_promo_list_values);
-        String[] statusNameList = getResources().getStringArray(R.array.filter_status_promo_list_names);
-        for (int i = 0; i < statusNameList.length; i++) {
-            RadioButtonItem radioButtonItem = new RadioButtonItem();
-            radioButtonItem.setName(statusNameList[i]);
-            radioButtonItem.setValue(statusValueList[i] + 1);
-            radioButtonItem.setPosition(i);
-            radioButtonItemList.add(radioButtonItem);
-        }
-        // all etalase filter option
-        RadioButtonItem radioButtonItem = new RadioButtonItem();
-        radioButtonItem.setName(getString(R.string.title_all_etalase));
-        radioButtonItem.setValue("0");
-        radioButtonItem.setPosition(0);
-        radioButtonItemList.add(0, radioButtonItem);
-
-        updateSelectedPosition(radioButtonItemList);
-
-//        String[] statusValueList = getResources().getStringArray(R.array.filter_status_list_values);
-//        String[] statusNameList = getResources().getStringArray(R.array.filter_status_list_names);
-//        for (int i = 0; i < statusNameList.length; i++) {
-//            RadioButtonItem radioButtonItem = new RadioButtonItem();
-//            radioButtonItem.setName(statusNameList[i]);
-//            radioButtonItem.setValue(statusValueList[i]);
-//            radioButtonItem.setPosition(i);
-//            radioButtonItemList.add(radioButtonItem);
-//        }
-//        updateSelectedPosition(radioButtonItemList);
-        return radioButtonItemList;
+        // will populate radio item from API
+        return null;
     }
 
     private void updateSelectedPosition(List<RadioButtonItem> radioButtonItemList) {
-        if (selectedRadioButtonItem != null) {
+        if (selectedAdapterPosition > -1) {
             return;
         }
         for (int i = 0; i < radioButtonItemList.size(); i++) {
             RadioButtonItem radioButtonItem = radioButtonItemList.get(i);
             if (Integer.valueOf(radioButtonItem.getValue()) == selectedEtalaseId) {
-                selectedRadioButtonItem = radioButtonItem;
+                selectedAdapterPosition = i;
                 break;
             }
         }
@@ -90,10 +85,67 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
 
     @Override
     public Intent addResult(Intent intent) {
-        if (selectedRadioButtonItem != null) {
-            intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_ETALASE,
-                    Integer.parseInt(selectedRadioButtonItem.getValue()));
-        }
+        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_ETALASE,
+                Integer.parseInt(getSelectedRadioValue()));
         return intent;
+    }
+
+    @Override
+    public void onLoadSuccess(@NonNull List<com.tokopedia.core.shopinfo.models.etalasemodel.List> etalaseModelList) {
+        List<RadioButtonItem> radioButtonItemList = new ArrayList<>();
+        radioButtonItemList.add(getDefaultRadioButton());
+
+        for (int i = 0; i < etalaseModelList.size(); i++) {
+            RadioButtonItem radioButtonItem = new RadioButtonItem();
+            radioButtonItem.setName(etalaseModelList.get(i).etalaseName);
+            radioButtonItem.setValue(etalaseModelList.get(i).etalaseId);
+            radioButtonItem.setPosition(i);
+            radioButtonItemList.add(radioButtonItem);
+        }
+
+        updateSelectedPosition(radioButtonItemList);
+
+        setAdapterData(radioButtonItemList);
+    }
+
+    @Override
+    public void onLoadSuccessEtalaseEmpty() {
+        List<RadioButtonItem> radioButtonItemList = new ArrayList<>();
+        radioButtonItemList.add(getDefaultRadioButton());
+
+        selectedAdapterPosition = 0;
+
+        setAdapterData(radioButtonItemList);
+    }
+
+    private RadioButtonItem getDefaultRadioButton (){
+        RadioButtonItem defaultRadioButton = new RadioButtonItem();
+        defaultRadioButton.setName(getString(R.string.title_all_etalase));
+        defaultRadioButton.setValue("0");
+        defaultRadioButton.setPosition(0);
+        return defaultRadioButton;
+    }
+
+    @Override
+    public void onLoadConnectionError() {
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.error_connection_problem));
+        adapter.showRetry(true);
+    }
+
+    @Override
+    public void onLoadError(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
+        adapter.showRetry(true);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.populateEtalaseList();
+    }
+
+    @Override
+    public void showLoad(boolean isShow) {
+        adapter.showLoadingFull(isShow);
     }
 }

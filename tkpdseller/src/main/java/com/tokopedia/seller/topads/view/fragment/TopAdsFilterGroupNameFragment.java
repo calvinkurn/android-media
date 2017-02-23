@@ -70,13 +70,13 @@ public class TopAdsFilterGroupNameFragment extends TopAdsFilterRadioButtonFragme
     }
 
     private void updateSelectedPosition(List<RadioButtonItem> radioButtonItemList) {
-        if (selectedRadioButtonItem != null) {
+        if (selectedAdapterPosition > -1) {
             return;
         }
         for (int i = 0; i < radioButtonItemList.size(); i++) {
             RadioButtonItem radioButtonItem = radioButtonItemList.get(i);
             if (Integer.valueOf(radioButtonItem.getValue()) == selectedGroupId) {
-                selectedRadioButtonItem = radioButtonItem;
+                selectedAdapterPosition = i;
                 break;
             }
         }
@@ -89,8 +89,8 @@ public class TopAdsFilterGroupNameFragment extends TopAdsFilterRadioButtonFragme
 
     @Override
     public Intent addResult(Intent intent) {
-        if (selectedRadioButtonItem != null) {
-            intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, Integer.parseInt(selectedRadioButtonItem.getValue()));
+        if (selectedAdapterPosition >= 0) {
+            intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, Integer.parseInt(getSelectedRadioValue()));
         }
         return intent;
     }

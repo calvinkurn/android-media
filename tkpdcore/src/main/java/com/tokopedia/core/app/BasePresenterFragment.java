@@ -42,6 +42,7 @@ public abstract class BasePresenterFragment<P> extends TkpdFragment {
         if (getArguments() != null) {
             setupArguments(getArguments());
         }
+        initialVar();
         initialPresenter();
     }
 
@@ -59,7 +60,6 @@ public abstract class BasePresenterFragment<P> extends TkpdFragment {
         super.onViewCreated(view, savedInstanceState);
         injectView(view);
         initView(view);
-        initialVar();
         setViewListener();
         setActionVar();
     }

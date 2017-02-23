@@ -1,20 +1,20 @@
 package com.tokopedia.seller.topads.view.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterContentFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterEtalaseFragment;
-import com.tokopedia.seller.topads.view.fragment.TopAdsFilterGroupNameFragment;
-import com.tokopedia.seller.topads.view.fragment.TopAdsFilterStatusFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterStatusPromoFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ * Digunakan untuk memfilter Product y
+ */
 public class TopAdsFilterProductPromoActivity extends TopAdsFilterActivity {
 
     private int selectedStatusPromo;
@@ -53,9 +53,11 @@ public class TopAdsFilterProductPromoActivity extends TopAdsFilterActivity {
         TopAdsFilterEtalaseFragment topAdsFilterStatusFragment = TopAdsFilterEtalaseFragment.createInstance(selectedEtalaseId);
         topAdsFilterStatusFragment.setActive(true);
         filterContentFragmentList.add(topAdsFilterStatusFragment);
+
         TopAdsFilterStatusPromoFragment topAdsFilterStatusPromoFragment = TopAdsFilterStatusPromoFragment.createInstance(selectedStatusPromo);
         topAdsFilterStatusPromoFragment.setActive(true);
         filterContentFragmentList.add(topAdsFilterStatusPromoFragment);
+
         return filterContentFragmentList;
     }
 

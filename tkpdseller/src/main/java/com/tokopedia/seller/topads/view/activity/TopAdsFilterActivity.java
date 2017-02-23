@@ -29,6 +29,7 @@ public abstract class TopAdsFilterActivity extends BasePresenterActivity impleme
     private TopAdsFilterListFragment topAdsFilterListFragment;
     private List<TopAdsFilterContentFragment> filterContentFragmentList;
     private Button submitButton;
+    TopAdsFilterContentFragment currentContentFragment;
 
     protected abstract List<TopAdsFilterContentFragment> getFilterContentList();
 
@@ -72,9 +73,9 @@ public abstract class TopAdsFilterActivity extends BasePresenterActivity impleme
         filterContentFragmentList = getFilterContentList();
         topAdsFilterListFragment = TopAdsFilterListFragment.createInstance(getFilterTitleItemList(), selectedPosition);
         topAdsFilterListFragment.setCallback(this);
-        TopAdsFilterContentFragment contentFragment = filterContentFragmentList.get(selectedPosition);
+        currentContentFragment = filterContentFragmentList.get(selectedPosition);
         getFragmentManager().beginTransaction().add(R.id.container_filter_list, topAdsFilterListFragment, TopAdsFilterListFragment.class.getSimpleName()).commit();
-        getFragmentManager().beginTransaction().add(R.id.container_filter_content, contentFragment, TopAdsFilterListFragment.class.getSimpleName()).commit();
+        getFragmentManager().beginTransaction().add(R.id.container_filter_content, currentContentFragment, TopAdsFilterListFragment.class.getSimpleName()).commit();
     }
 
     @Override
@@ -94,7 +95,15 @@ public abstract class TopAdsFilterActivity extends BasePresenterActivity impleme
 
     private void changeContent(TopAdsFilterContentFragment filterContentFragment) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container_filter_content, filterContentFragment);
+        // fragmentTransaction.replace(R.id.container_filter_content, filterContentFragment);
+        fragmentTransaction.hide(currentContentFragment);
+        if (! filterContentFragment.isAdded() ) {
+            fragmentTransaction.add(R.id.container_filter_content, filterContentFragment);
+        }
+        else {
+            fragmentTransaction.show(filterContentFragment);
+        }
+        currentContentFragment = filterContentFragment;
         fragmentTransaction.commit();
         filterContentFragment.setCallback(this);
     }

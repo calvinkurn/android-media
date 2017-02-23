@@ -51,6 +51,9 @@ public class TopAdsBasicRadioButtonAdapter extends BaseLinearRecyclerViewAdapter
 
     @Override
     public int getItemCount() {
+        if (data == null) { // data might come empty, because loading from net
+            return super.getItemCount();
+        }
         return data.size() + super.getItemCount();
     }
 
@@ -78,7 +81,7 @@ public class TopAdsBasicRadioButtonAdapter extends BaseLinearRecyclerViewAdapter
 
     @Override
     public int getItemViewType(int position) {
-        if (data.isEmpty() || isLoading() || isRetry()) {
+        if (null== data|| data.isEmpty() || isLoading() || isRetry()) {
             return super.getItemViewType(position);
         } else {
             return VIEW_DATA;
