@@ -5,12 +5,14 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 
 import com.tokopedia.core.msisdn.MSISDNConstant;
 import com.tokopedia.core.msisdn.fragment.MsisdnVerificationFragment;
 import com.tokopedia.core.msisdn.interactor.MsisdnVerificationRetrofitInteractor;
 import com.tokopedia.core.msisdn.interactor.MsisdnVerificationRetrofitInteractorImpl;
 import com.tokopedia.core.msisdn.model.VerificationForm;
+import com.tokopedia.core.router.SessionRouter;
 
 import java.util.HashMap;
 
@@ -110,22 +112,25 @@ public class PhoneVerificationUtil implements MSISDNConstant {
                     });
 
         }
+
     }
 
     public void showVerificationDialog() {
         hasShown = true;
 
-        FragmentTransaction ft = ((Activity) context).getFragmentManager().beginTransaction();
-        Fragment prev = ((Activity) context).getFragmentManager().findFragmentByTag(TAG_DIALOG);
-        if (prev != null) {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
+//        FragmentTransaction ft = ((Activity) context).getFragmentManager().beginTransaction();
+//        Fragment prev = ((Activity) context).getFragmentManager().findFragmentByTag(TAG_DIALOG);
+//        if (prev != null) {
+//            ft.remove(prev);
+//        }
+//        ft.addToBackStack(null);
+//
+//        dialogFragment = MsisdnVerificationFragment.createInstance();
+//        if (msisdnListener != null)
+//            ((MsisdnVerificationFragment) dialogFragment).setListener(msisdnListener);
+//        dialogFragment.show(ft, TAG_DIALOG);
 
-        dialogFragment = MsisdnVerificationFragment.createInstance();
-        if (msisdnListener != null)
-            ((MsisdnVerificationFragment) dialogFragment).setListener(msisdnListener);
-        dialogFragment.show(ft, TAG_DIALOG);
+        context.startActivity(SessionRouter.getPhoneVerificationActivationActivityIntent(context));
 
     }
 

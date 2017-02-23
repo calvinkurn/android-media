@@ -1889,4 +1889,11 @@ di Tokopedia Sekarang!</string>
 
     <string name="title_ask_buyer_selling">Tanya Pembeli</string>
 
+    <string name="title_success_activate_account">Aktivasi telah berhasil</string>
+    <string name="welcome_to_tokopedia">Selamat bergabung di Tokopedia</string>
+    <string name="protect_your_account_with_phone_verification">Jaga akun Anda tetap aman dengan melakukan verifikasi nomor ponsel</string>
+    <string name="title_activity_phone_verification">Verifikasi nomor handphone</string>
+    <string name="button_change">Ubah</string>
+    <string name="send_otp_sms">Kirim SMS Verifikasi</string>
+    <string name="skip">Lewati</string>
 </resources>

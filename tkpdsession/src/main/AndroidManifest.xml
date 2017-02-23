@@ -28,6 +28,23 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" />
 
+        <activity
+            android:name="com.tokopedia.otp.phoneverification.activity.PhoneVerificationActivationActivity"
+            android:label="@string/title_activity_phone_verification"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.tokopedia.otp.phoneverification.activity.ChangePhoneNumberActivity"
+            android:label="@string/title_activity_change_phone_number"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <service
             android:name="com.tokopedia.session.session.intentservice.LoginService"
             android:exported="false" />

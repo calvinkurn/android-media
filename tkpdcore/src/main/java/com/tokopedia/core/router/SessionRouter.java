@@ -16,12 +16,20 @@ public class SessionRouter {
 
     private static final String LOGIN_ACTIVITY = "com.tokopedia.session.session.activity.Login";
 
+    private static final String PHONE_VERIFICATION_ACTIVATION_ACTIVITY = "com.tokopedia.otp.phoneverification.activity.PhoneVerificationActivationActivity";
+
+
     public static final String IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT = "RegisterNewNextFragment";
     public static final String IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT = "RegisterPassPhoneFragment";
 
     /////////// INTENT
     public static Intent getLoginActivityIntent(Context context) {
         Intent intent = RouterUtils.getActivityIntent(context, LOGIN_ACTIVITY);
+        return intent;
+    }
+
+    public static Intent getPhoneVerificationActivationActivityIntent(Context context) {
+        Intent intent = RouterUtils.getActivityIntent(context, PHONE_VERIFICATION_ACTIVATION_ACTIVITY);
         return intent;
     }
 }
