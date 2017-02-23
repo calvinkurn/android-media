@@ -132,6 +132,12 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         browseProductActivityModel.alias = selected;
     }
 
+    public void sendCategory(String departementId) {
+        fetchCategoriesHeader(departementId);
+        browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
+        browseProductActivityModel.setDepartmentId(departementId);
+    }
+
 
     public enum FDest {
         SORT, FILTER;
@@ -1020,6 +1026,88 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         });
         ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
         discoveryInteractor.getHotListBanner(query);
+    }
+
+    private void fetchCategoriesHeader(final String departementId) {
+        showLoading(true);
+        discoveryInteractor.setDiscoveryListener(new DiscoveryListener() {
+            @Override
+            public void onComplete(int type, Pair<String, ? extends ObjContainer> data) {
+                showLoading(false);
+            }
+
+            @Override
+            public void onFailed(int type, Pair<String, ? extends ObjContainer> data) {
+                showEmptyState(new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        fetchCategoriesHeader(departementId);
+                    }
+                });
+            }
+
+            @Override
+            public void onSuccess(int type, Pair<String, ? extends ObjContainer> data) {
+                switch (type) {
+                    case DiscoveryListener.CATEGY_HEADER:
+                      /*  Log.d(TAG, "fetch " + data.getModel1());
+                        ObjContainer model2 = data.getModel2();
+                        HotListBannerModel.HotListBannerContainer hotListBannerContainer = (HotListBannerModel.HotListBannerContainer) model2;
+                        HotListBannerModel body = hotListBannerContainer.body();
+                        if (browseProductActivityModel.getOb() != null) {
+                            body.query.ob = browseProductActivityModel.getOb();
+                        }
+                        Map<String, String> filters;
+
+                        if ( browseProductActivityModel != null ) {
+                            filters = browseProductActivityModel.getFilterOptions();
+                            for (Map.Entry<String, String> set : filters.entrySet()) {
+                                if (set.getKey().equals("ob")) {
+                                    body.query.ob = set.getValue();
+                                }
+                            }
+                        } else {
+                            filters = new HashMap<String, String>();
+                            filters.put("sc", body.query.sc);
+                            ArrayMap<String, Boolean> selectedPositions = new ArrayMap<>();
+                            List<String> scList = new ArrayList<String>();
+                            if (body.query.sc.contains(",")) {
+                                for (String s : body.query.sc.split(",")) {
+                                    scList.add(s);
+                                }
+                            } else {
+                                scList.add(body.query.sc);
+                            }
+                            for (String s : scList) {
+                                selectedPositions.put(s, true);
+                            }
+                            SharedPreferences.Editor editor = preferences.edit();
+                            editor.putString(DynamicFilterActivity.FILTER_SELECTED_POS_PREF, new Gson().toJson(selectedPositions));
+                            editor.apply();
+                            editor.putString(DynamicFilterActivity.FILTER_SELECTED_PREF, new Gson().toJson(filters));
+                            editor.apply();
+                        }
+                        Log.d(TAG, "Hotlist query " + body.query.toString());
+
+                        FilterMapAtribut.FilterMapValue filterMapValue
+                                = new FilterMapAtribut.FilterMapValue();
+                        filterMapValue.setValue((HashMap<String, String>) filters);
+                        mFilterMapAtribut.getFiltersMap()
+                                .put(browseProductActivityModel.getActiveTab(), filterMapValue);
+
+
+                        browseProductActivityModel.setFilterOptions(filters);
+                        browseProductActivityModel.setOb(body.query.ob);
+                        browseProductActivityModel.setHotListBannerModel(body);
+                        Fragment fragment = BrowseParentFragment.newInstance(browseProductActivityModel);
+
+                        setFragment(fragment, BrowseParentFragment.FRAGMENT_TAG);*/
+                        break;
+                }
+            }
+        });
+        ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
+        discoveryInteractor.getCategoryHeader(departementId);
     }
 
 

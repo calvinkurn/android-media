@@ -171,6 +171,11 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
     }
 
     @Override
+    public void getCategoryHeader(String categoryId) {
+
+    }
+
+    @Override
     public String getMessageTAG() {
         return FragmentDiscoveryPresenterImpl.class.getSimpleName();
     }

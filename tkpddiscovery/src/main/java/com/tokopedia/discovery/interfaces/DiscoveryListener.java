@@ -19,6 +19,7 @@ public interface DiscoveryListener {
 
     int SHOW_SEARCH = -113;
     int SHOW_CATEGORY = -114;
+    int CATEGY_HEADER = -115;
     int SHOW_DFAULT = SHOW_SEARCH;
 
     String ERRORCONTAINER = "ERROR_CONTAINER";
