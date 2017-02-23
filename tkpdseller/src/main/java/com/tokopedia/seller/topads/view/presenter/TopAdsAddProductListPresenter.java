@@ -32,8 +32,12 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
 
     public TopAdsAddProductListPresenter() {
         page = 0;
-        params = new TKPDMapParam<>();
+        initializeParams();
         fillParam(sessionHandler);
+    }
+
+    public void initializeParams() {
+        params = new TKPDMapParam<>();
     }
 
     public void incrementPage() {
@@ -84,6 +88,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
     }
 
     public void searchProduct() {
+        initializeParams();
         fillParam(sessionHandler);
         topAdsDefaultParamUseCase.execute(params, new Subscriber<List<ProductDomain>>() {
             @Override
@@ -126,7 +131,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
 
     private TopAdsProductViewModel convertModelFromDomainToView(
             ProductDomain productDomain
-    ){
+    ) {
         TopAdsProductViewModel pd
                 = new TopAdsProductViewModel();
         pd.setAdId(productDomain.getAdId());
