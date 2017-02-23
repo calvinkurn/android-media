@@ -20,6 +20,8 @@ import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractorIm
 import com.tokopedia.seller.topads.domain.model.data.Ad;
 import com.tokopedia.seller.topads.domain.model.data.ProductAd;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailGroupActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsEditPromoProductActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsEditPromoShopActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenterImpl;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
@@ -107,7 +109,11 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
 
     @Override
     protected void editAd() {
-
+        if (productAd != null) {
+            Intent intent = new Intent(getActivity(), TopAdsEditPromoProductActivity.class);
+            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, productAd.getId());
+            startActivity(intent);
+        }
     }
 
     @Override

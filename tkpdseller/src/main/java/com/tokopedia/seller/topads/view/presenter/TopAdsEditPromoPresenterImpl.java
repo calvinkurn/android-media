@@ -26,17 +26,7 @@ public class TopAdsEditPromoPresenterImpl implements TopAdsEditPromoPresenter {
     }
 
     @Override
-    public void populateGroupNameList() {
-        dashboardTopadsInteractor.getCreditList(new ListenerInteractor<List<DataCredit>>() {
-            @Override
-            public void onSuccess(List<DataCredit> creditList) {
-                listener.onGroupNameListLoaded(creditList);
-            }
+    public void viewDetailAd() {
 
-            @Override
-            public void onError(Throwable throwable) {
-                listener.onLoadGroupNameListError();
-            }
-        });
     }
 }
