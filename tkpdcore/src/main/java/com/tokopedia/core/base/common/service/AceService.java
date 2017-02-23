@@ -1,5 +1,7 @@
 package com.tokopedia.core.base.common.service;
 
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+
 import java.util.Map;
 
 import retrofit2.Response;
@@ -18,4 +20,6 @@ public interface AceService {
     @GET(SEARCH_V2_4_PRODUCT)
     Observable<Response<String>> getProductFeed(@QueryMap Map<String, Object> params);
 
+    @GET(TkpdBaseURL.Ace.PATH_UNIVERSE_SEARCH)
+    Observable<Response<String>> getUniverseSearch(@QueryMap Map<String, String> params);
 }
