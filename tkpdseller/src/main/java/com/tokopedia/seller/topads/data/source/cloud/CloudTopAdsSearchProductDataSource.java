@@ -5,7 +5,6 @@ import android.content.Context;
 import com.tokopedia.seller.topads.data.mapper.SearchProductMapper;
 import com.tokopedia.seller.topads.data.source.TopAdsSearchProductDataSource;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.seller.topads.data.source.cloud.service.TopAdsSearchProductService;
 import com.tokopedia.seller.topads.domain.model.ProductDomain;
 
 import java.util.List;
@@ -35,7 +34,7 @@ public class CloudTopAdsSearchProductDataSource implements TopAdsSearchProductDa
     public Observable<List<ProductDomain>> searchProduct(Map<String, String> param) {
         return topAdsSearchProductService
                 .getApi()
-                .searchProduct(param)
+                .searchProductAd(param)
                 .map(searchProductMapper);
     }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.view.adapter;
 
 import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +10,7 @@ import android.view.ViewGroup;
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.domain.model.ProductDomain;
+import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.listener.AdapterSelectionListener;
 import com.tokopedia.seller.topads.listener.FragmentItemSelection;
 import com.tokopedia.seller.topads.view.models.TopAdsAddProductModel;
@@ -27,7 +28,7 @@ import java.util.List;
  *         <p>
  */
 public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
-        implements AdapterSelectionListener<ProductDomain> {
+        implements AdapterSelectionListener<TopAdsProductViewModel> {
     List<TypeBasedModel> datas;
     SparseArrayCompat<Boolean> selections;
     FragmentItemSelection fragmentItemSelection;
@@ -100,28 +101,49 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
     }
 
     @Override
-    public void onChecked(int position, ProductDomain data) {
+    public void onChecked(int position, TopAdsProductViewModel data) {
         selections.put(position, true);
 
         fragmentItemSelection.onChecked(position, data);
     }
 
     @Override
-    public void onUnChecked(int position, ProductDomain data) {
-        selections.put(position, true);
+    public void onUnChecked(int position, TopAdsProductViewModel data) {
+        selections.put(position, false);
 
         fragmentItemSelection.onUnChecked(position, data);
+    }
+
+    public void notifyUnCheck(int position){
+        Log.d("MNORMANSYAH", "#3 before reset selections : "+selections.get(position)
+                +" position "+ position);
+        selections.put(position, false);
+        Log.d("MNORMANSYAH", "#3 before after selections : "+selections.get(position)
+                +" position "+ position);
+
+        TypeBasedModel typeBasedModel = datas.get(position);
+        if(typeBasedModel != null && typeBasedModel instanceof TopAdsAddProductModel){
+            TopAdsAddProductModel topAdsAddProductModel = (TopAdsAddProductModel) typeBasedModel;
+            Log.d("MNORMANSYAH", "#4 before after selections : "+topAdsAddProductModel.isSelected()
+                    +" position "+ position);
+            topAdsAddProductModel.setSelected(false);
+
+            datas.set(position, topAdsAddProductModel);
+
+
+            notifyItemChanged(position);
+        }
     }
 
     public int getDataSize() {
         return datas.size();
     }
 
-    public ProductDomain getItem(int position){
-        if(position >= 0 && position < datas.size()) {
+    public TopAdsProductViewModel getItem(int position) {
+        if (position >= 0 && position < datas.size()) {
             TypeBasedModel typeBasedModel = datas.get(position);
-            if(typeBasedModel instanceof TopAdsAddProductModel) {
-                return ((TopAdsAddProductModel)typeBasedModel).productDomain;
+            if (typeBasedModel instanceof TopAdsAddProductModel) {
+                return ((TopAdsAddProductModel) typeBasedModel).productDomain;
             }
         }
 

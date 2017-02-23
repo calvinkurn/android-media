@@ -1,19 +1,17 @@
 package com.tokopedia.seller.topads.domain.model;
 
-import android.os.Parcel;
-
 /**
- * @author normansyahputa on 2/20/17.
+ * @author normansyahputa on 2/23/17.
  */
 
-public class ProductDomain extends GenericClass {
+public class ProductDomain {
+
     private int id;
     private String name;
     private String imageUrl;
     private boolean isPromoted;
     private int adId;
     private String groupName;
-
 
     public int getId() {
         return id;
@@ -64,47 +62,4 @@ public class ProductDomain extends GenericClass {
     }
 
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeInt(this.id);
-        dest.writeString(this.name);
-        dest.writeString(this.imageUrl);
-        dest.writeByte(this.isPromoted ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.adId);
-        dest.writeString(this.groupName);
-        dest.writeString(super.getClassName());
-    }
-
-    public ProductDomain() {
-        super(ProductDomain.class.getName());
-    }
-
-    protected ProductDomain(Parcel in) {
-        super(in);
-        this.id = in.readInt();
-        this.name = in.readString();
-        this.imageUrl = in.readString();
-        this.isPromoted = in.readByte() != 0;
-        this.adId = in.readInt();
-        this.groupName = in.readString();
-        setClassName(in.readString());
-    }
-
-    public static final Creator<ProductDomain> CREATOR = new Creator<ProductDomain>() {
-        @Override
-        public ProductDomain createFromParcel(Parcel source) {
-            return new ProductDomain(source);
-        }
-
-        @Override
-        public ProductDomain[] newArray(int size) {
-            return new ProductDomain[size];
-        }
-    };
 }

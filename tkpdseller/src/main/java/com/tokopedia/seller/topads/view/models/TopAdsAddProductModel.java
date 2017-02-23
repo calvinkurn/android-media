@@ -1,9 +1,7 @@
 package com.tokopedia.seller.topads.view.models;
 
-import com.tokopedia.seller.topads.domain.model.ProductDomain;
-
 /**
- * Created by normansyahputa on 2/13/17.
+ * @author normansyahputa on 2/13/17.
  */
 
 public class TopAdsAddProductModel extends StateTypeBasedModel {
@@ -12,7 +10,7 @@ public class TopAdsAddProductModel extends StateTypeBasedModel {
     public String imageUrl;
     public String description;
     public String snippet;
-    public ProductDomain productDomain;
+    public TopAdsProductViewModel productDomain;
 
     private TopAdsAddProductModel() {
         super(TYPE);
@@ -26,7 +24,7 @@ public class TopAdsAddProductModel extends StateTypeBasedModel {
     }
 
     public TopAdsAddProductModel(String imageUrl, String description, String snippet,
-                                 ProductDomain productDomain) {
+                                 TopAdsProductViewModel productDomain) {
         this(imageUrl, description, snippet);
         this.productDomain = productDomain;
     }

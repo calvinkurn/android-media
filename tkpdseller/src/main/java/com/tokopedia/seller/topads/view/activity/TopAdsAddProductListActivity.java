@@ -18,7 +18,7 @@ import android.widget.RelativeLayout;
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.domain.model.ProductDomain;
+import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.listener.AddProductListInterface;
 import com.tokopedia.seller.topads.utils.ViewUtils;
 import com.tokopedia.seller.topads.view.fragment.ChipsTopAdsSelectionFragment;
@@ -206,22 +206,37 @@ public class TopAdsAddProductListActivity extends BaseActivity
     }
 
     @Override
-    public void onChecked(int position, ProductDomain data) {
+    public void hideBottomBecauseEmpty() {
+        bottomSheetHelper.dismissBottomSheet();
+        bottomSheetHelper.collapse();
+    }
+
+    @Override
+    public void notifyUnchecked(int position) {
+        TopAdsAddProductListFragment topAdsAddProductListFragment
+                = getTopAdsAddProductListFragment();
+
+        if(topAdsAddProductListFragment != null){
+            topAdsAddProductListFragment.notifyUnchecked(position);
+        }
+    }
+
+    @Override
+    public void onChecked(int position, TopAdsProductViewModel data) {
         ChipsTopAdsSelectionFragment chipsTopAdsSelectionFragment
                 = getChipsTopAdsSelectionFragment();
-        if(chipsTopAdsSelectionFragment != null)
+        if (chipsTopAdsSelectionFragment != null)
             chipsTopAdsSelectionFragment.onChecked(position, data);
 
         bottomSheetHelper.showBottomSheet();
     }
 
     @Override
-    public void onUnChecked(int position, ProductDomain data) {
+    public void onUnChecked(int position, TopAdsProductViewModel data) {
         ChipsTopAdsSelectionFragment chipsTopAdsSelectionFragment
                 = getChipsTopAdsSelectionFragment();
-        if(chipsTopAdsSelectionFragment != null)
+        if (chipsTopAdsSelectionFragment != null)
             chipsTopAdsSelectionFragment.onUnChecked(position, data);
-        bottomSheetHelper.dismissBottomSheet();
     }
 
     private void getBottomSheetBehaviourFromParent() {
@@ -247,12 +262,23 @@ public class TopAdsAddProductListActivity extends BaseActivity
         return actionBarHeight;
     }
 
-    private ChipsTopAdsSelectionFragment getChipsTopAdsSelectionFragment(){
+    private TopAdsAddProductListFragment getTopAdsAddProductListFragment(){
+        Fragment fragmentByTag
+                = getFragmentManager().findFragmentByTag(TopAdsAddProductListFragment.TAG);
+        if (fragmentByTag != null
+                && fragmentByTag instanceof TopAdsAddProductListFragment) {
+            return (TopAdsAddProductListFragment) fragmentByTag;
+        }
+
+        return null;
+    }
+
+    private ChipsTopAdsSelectionFragment getChipsTopAdsSelectionFragment() {
         Fragment fragmentByTag
                 = getFragmentManager().findFragmentByTag(ChipsTopAdsSelectionFragment.TAG);
-        if(fragmentByTag != null
-                && fragmentByTag instanceof ChipsTopAdsSelectionFragment){
-            return (ChipsTopAdsSelectionFragment)fragmentByTag;
+        if (fragmentByTag != null
+                && fragmentByTag instanceof ChipsTopAdsSelectionFragment) {
+            return (ChipsTopAdsSelectionFragment) fragmentByTag;
         }
 
         return null;

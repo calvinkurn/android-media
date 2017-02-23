@@ -7,6 +7,7 @@ import com.tokopedia.seller.topads.domain.interactor.TopAdsDefaultParamUseCase;
 import com.tokopedia.seller.topads.domain.model.ProductDomain;
 import com.tokopedia.seller.topads.view.TopAdsSearchProductView;
 import com.tokopedia.seller.topads.view.models.TopAdsAddProductModel;
+import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.view.models.TypeBasedModel;
 
 import java.util.ArrayList;
@@ -113,7 +114,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
                             productDomain.getImageUrl(),
                             productDomain.getName(),
                             productDomain.getGroupName(),
-                            productDomain
+                            convertModelFromDomainToView(productDomain)
                     );
 
             typeBasedModels.add(topAdsAddProductModel);
@@ -121,6 +122,21 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
 
 
         return typeBasedModels;
+    }
+
+    private TopAdsProductViewModel convertModelFromDomainToView(
+            ProductDomain productDomain
+    ){
+        TopAdsProductViewModel pd
+                = new TopAdsProductViewModel();
+        pd.setAdId(productDomain.getAdId());
+        pd.setGroupName(productDomain.getGroupName());
+        pd.setId(productDomain.getId());
+        pd.setImageUrl(productDomain.getImageUrl());
+        pd.setName(productDomain.getName());
+        pd.setPromoted(productDomain.isPromoted());
+
+        return pd;
     }
 
 

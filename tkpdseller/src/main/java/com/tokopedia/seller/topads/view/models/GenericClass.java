@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.domain.model;
+package com.tokopedia.seller.topads.view.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

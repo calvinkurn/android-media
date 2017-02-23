@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -25,10 +26,9 @@ import com.tokopedia.seller.topads.data.mapper.SearchProductMapper;
 import com.tokopedia.seller.topads.data.repository.TopAdsSearchProductRepositoryImpl;
 import com.tokopedia.seller.topads.data.source.cloud.CloudTopAdsSearchProductDataSource;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.seller.topads.data.source.cloud.service.TopAdsSearchProductService;
 import com.tokopedia.seller.topads.domain.TopAdsSearchProductRepository;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsDefaultParamUseCase;
-import com.tokopedia.seller.topads.domain.model.ProductDomain;
+import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.exception.AddProductListException;
 import com.tokopedia.seller.topads.listener.AddProductListInterface;
 import com.tokopedia.seller.topads.listener.FragmentItemSelection;
@@ -259,13 +259,13 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     @Override
-    public void onChecked(int position, ProductDomain data) {
+    public void onChecked(int position, TopAdsProductViewModel data) {
         addProductListInterface.onChecked(position, data);
         topAdsProductListAdapter.notifyItemChanged(position);
     }
 
     @Override
-    public void onUnChecked(int position, ProductDomain data) {
+    public void onUnChecked(int position, TopAdsProductViewModel data) {
         addProductListInterface.onUnChecked(position, data);
         topAdsProductListAdapter.notifyItemChanged(position);
     }
@@ -292,6 +292,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     public void fetchDataWithQuery(String newText) {
+        Log.d(TAG, "fetchDataWithQuery " + newText);
         if (newText != null && newText.isEmpty()) {
             topAdsAddProductListPresenter.setQuery(null);
         } else {
@@ -320,10 +321,10 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     @Override
     public void loadMore(List<TypeBasedModel> datas) {
-        if(datas != null && datas.isEmpty()){
+        if (datas != null && datas.isEmpty()) {
 //            topAdsProductListAdapter.showLoadingFull(false);
             topAdsProductListAdapter.showEmptyFull(true);
-        }else{
+        } else {
             topAdsProductListAdapter.addAllWithoutNotify(datas);
             topAdsProductListAdapter.notifyDataSetChanged();
         }
@@ -335,4 +336,8 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         topAdsAddProductListPresenter.detachView();
     }
 
+    @Override
+    public void notifyUnchecked(int position) {
+        topAdsProductListAdapter.notifyUnCheck(position);
+    }
 }

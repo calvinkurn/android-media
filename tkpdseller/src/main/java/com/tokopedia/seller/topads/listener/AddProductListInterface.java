@@ -11,5 +11,5 @@ public interface AddProductListInterface extends ActivityItemSelection {
 
     ImageHandler imageHandler();
 
-//    BaseComponent baseComponent();
+    void hideBottomBecauseEmpty();
 }

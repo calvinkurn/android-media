@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.domain.model.ProductDomain;
+import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.view.helper.CircleTransform;
 import com.tokopedia.seller.topads.view.models.ChipsEntity;
 
@@ -19,16 +19,16 @@ import java.util.List;
 
 public class ChipsAdapter extends RecyclerView.Adapter<ChipsAdapter.ViewHolder> {
 
-    private List<ChipsEntity<ProductDomain>> chipsEntities;
+    private List<ChipsEntity<TopAdsProductViewModel>> chipsEntities;
     private OnRemoveListener onRemoveListener;
     private boolean isShowingPosition;
 
-    public ChipsAdapter(List<ChipsEntity<ProductDomain>> chipsEntities, OnRemoveListener onRemoveListener) {
+    public ChipsAdapter(List<ChipsEntity<TopAdsProductViewModel>> chipsEntities, OnRemoveListener onRemoveListener) {
         this.chipsEntities = chipsEntities;
         this.onRemoveListener = onRemoveListener;
     }
 
-    public ChipsAdapter(List<ChipsEntity<ProductDomain>> chipsEntities, OnRemoveListener onRemoveListener, boolean isShowingPosition) {
+    public ChipsAdapter(List<ChipsEntity<TopAdsProductViewModel>> chipsEntities, OnRemoveListener onRemoveListener, boolean isShowingPosition) {
         this.chipsEntities = chipsEntities;
         this.onRemoveListener = onRemoveListener;
         this.isShowingPosition = isShowingPosition;
@@ -57,7 +57,7 @@ public class ChipsAdapter extends RecyclerView.Adapter<ChipsAdapter.ViewHolder> 
         private TextView tvName;
         private ImageButton ibClose;
         private TextView tvPosition;
-        private ProductDomain productDomain;
+        private TopAdsProductViewModel productDomain;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -68,7 +68,7 @@ public class ChipsAdapter extends RecyclerView.Adapter<ChipsAdapter.ViewHolder> 
             tvPosition = (TextView) itemView.findViewById(R.id.tvPosition);
         }
 
-        void bindItem(ChipsEntity entity) {
+        void bindItem(final ChipsEntity entity) {
             itemView.setTag(entity.getName());
             if (TextUtils.isEmpty(entity.getDescription())) {
                 tvDescription.setVisibility(View.GONE);
@@ -82,9 +82,9 @@ public class ChipsAdapter extends RecyclerView.Adapter<ChipsAdapter.ViewHolder> 
                         .transform(new CircleTransform(ivPhoto.getContext())).into(ivPhoto);
             }
 
-            if(entity.getRawData() != null
-                    && entity.getRawData() instanceof ProductDomain){
-                productDomain = ((ProductDomain)entity.getRawData());
+            if (entity.getRawData() != null
+                    && entity.getRawData() instanceof TopAdsProductViewModel) {
+                productDomain = ((TopAdsProductViewModel) entity.getRawData());
                 Glide.with(ivPhoto.getContext()).load(productDomain.getImageUrl())
                         .transform(new CircleTransform(ivPhoto.getContext())).into(ivPhoto);
             }
@@ -99,11 +99,18 @@ public class ChipsAdapter extends RecyclerView.Adapter<ChipsAdapter.ViewHolder> 
                 @Override
                 public void onClick(View v) {
                     if (onRemoveListener != null && getAdapterPosition() != -1) {
-                        onRemoveListener.onItemRemoved(getAdapterPosition());
+                        onRemoveListener.onItemRemoved(entity.getPosition(), getAdapterPosition());
                     }
                 }
             });
         }
     }
+
+    public void remove(int position){
+        chipsEntities.remove(position);
+        notifyItemRemoved(position);
+    }
+
+
 
 }

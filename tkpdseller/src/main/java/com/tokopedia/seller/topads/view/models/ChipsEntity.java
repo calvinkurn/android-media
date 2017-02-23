@@ -6,8 +6,6 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.tokopedia.seller.topads.domain.model.GenericClass;
-
 public class ChipsEntity<E extends GenericClass> implements Parcelable {
 
     @DrawableRes
@@ -18,15 +16,16 @@ public class ChipsEntity<E extends GenericClass> implements Parcelable {
     private String name;
     @Nullable
     private E rawData;
-
     private String className;
+    private int position;
 
     private ChipsEntity(Builder<E> builder) {
         drawableResId = builder.drawableResId;
         description = builder.description;
         name = builder.name;
         rawData = builder.rawData;
-        this.className = builder.className;
+        className = builder.className;
+        position = builder.position;
     }
 
     public static Builder newBuilder() {
@@ -60,12 +59,21 @@ public class ChipsEntity<E extends GenericClass> implements Parcelable {
         this.rawData = rawData;
     }
 
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
     public static final class Builder<T extends GenericClass> {
         private int drawableResId;
         private String description;
         private String name;
         private T rawData;
         private String className;
+        private int position;
 
         private Builder() {
         }
@@ -87,9 +95,14 @@ public class ChipsEntity<E extends GenericClass> implements Parcelable {
             return this;
         }
 
-        public Builder rawData(@Nullable T rawData){
+        public Builder rawData(@Nullable T rawData) {
             this.rawData = rawData;
             this.className = rawData.getClassName();
+            return this;
+        }
+
+        public Builder position(int position){
+            this.position = position;
             return this;
         }
 
@@ -109,8 +122,9 @@ public class ChipsEntity<E extends GenericClass> implements Parcelable {
         dest.writeValue(this.drawableResId);
         dest.writeString(this.description);
         dest.writeString(this.name);
-        dest.writeString(className);
+        dest.writeString(this.className);
         dest.writeParcelable(this.rawData, flags);
+        dest.writeInt(this.position);
     }
 
     protected ChipsEntity(Parcel in) {
@@ -119,12 +133,13 @@ public class ChipsEntity<E extends GenericClass> implements Parcelable {
         this.name = in.readString();
         this.className = in.readString();
         ClassLoader classLoader = null;
-        try{
+        try {
             classLoader = Class.forName(this.className).getClassLoader();
-        }catch(ClassNotFoundException cfe){
+        } catch (ClassNotFoundException cfe) {
             cfe.printStackTrace();
         }
         this.rawData = in.readParcelable(classLoader);
+        this.position = in.readInt();
     }
 
     public static final Parcelable.Creator<ChipsEntity> CREATOR = new Parcelable.Creator<ChipsEntity>() {
