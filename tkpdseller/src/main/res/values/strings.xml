@@ -125,6 +125,7 @@
 
     <!-- Top Ads Edit Promo -->
     <string name="label_top_ads_add_product">Tambah Produk</string>
+    <string name="label_top_ads_total_selected_product">%1$s / 50 Terpilih</string>
     <string name="label_top_ads_max_price_hint">Biaya Maks (Rp)</string>
     <string name="label_top_ads_max_price_description">Sesuaikan biaya anggaran promo anda. Rekomendasi biaya: Rp 50 sampai Rp 200 per klik</string>
     <string name="label_top_ads_icon">Icon TopAds</string>
@@ -197,6 +198,16 @@
 
     <string name="positive_button_dialog">Ya</string>
     <string name="negative_button_dialog">Tidak</string>
+
+    <string name="title_activity_top_ads_list">Tambah Produk</string>
+
+    <string name="delete">Delete</string>
+    <string name="insert">Insert</string>
+    <string name="move_to">Move to:</string>
+    <string name="move">Move</string>
+    <string name="scroll">Scroll</string>
+    <string name="search_product">Cari Produk</string>
+    <string name="filter_top_ads">Filter Top Ads</string>
 
     <!-- Top Ads add promo -->
     <string name="top_ads_title_grup_exist">Nama grup sudah ada</string>

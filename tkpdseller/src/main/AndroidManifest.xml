@@ -68,10 +68,6 @@
             android:label="@string/title_top_ads_new_promo"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsEditPromoActivity"
-            android:label="@string/title_top_ads_new_promo"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".topads.view.activity.TopAdsAddProductActivity"
             android:label="@string/title_top_ads_product"
             android:screenOrientation="portrait" />
@@ -86,6 +82,18 @@
         <activity
             android:name=".topads.view.activity.TopAdsDetailGroupActivity"
             android:label="@string/title_group_ad_detail"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsEditPromoShopActivity"
+            android:label="@string/title_group_ad_detail"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsEditPromoProductActivity"
+            android:label="@string/title_top_ads_new_promo"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsEditPromoGroupActivity"
+            android:label="@string/title_top_ads_new_promo"
             android:screenOrientation="portrait" />
         <activity
             android:name=".lib.datepicker.DatePickerActivity"
@@ -152,6 +160,11 @@
             android:screenOrientation="portrait"
             android:label="@string/title_activity_statistic"
             android:name=".topads.view.activity.TopAdsStatisticShopActivity"/>
+
+        <activity
+            android:name=".topads.view.activity.TopAdsAddProductListActivity"
+            android:label="@string/title_activity_top_ads_list"
+            android:theme="@style/Theme.Tokopedia3"/>
 
         <service
             android:name="com.tokopedia.seller.selling.SellingService"
