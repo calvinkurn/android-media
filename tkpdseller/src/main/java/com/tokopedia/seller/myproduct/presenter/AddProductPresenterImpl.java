@@ -214,7 +214,7 @@ public class AddProductPresenterImpl implements AddProductPresenter
         produk.setWholesalePriceDBs(produk.getWholeSales());
 
         // tampilkan image models 1
-        if (produk.getPictureDBs() != null && !produk.getPictureDBs().isEmpty()) {// && object instanceof List<?>
+        if (produk.getPictureDBs() != null && !produk.getPictureDBs().isEmpty()) {
             List<ImageModel> imageModelList = new ArrayList<>();
             int positionPrimaryImage = 0;
             for (int i = 0; i < produk.getPictureDBs().size(); i++) {
@@ -304,21 +304,6 @@ public class AddProductPresenterImpl implements AddProductPresenter
 
         // set currency  7
         addProductView.setProductPrice(productPrice);
-
-
-        // set currency unit 6
-        // just for rupiah
-//            String productPrice = productDetailData.getInfo().getProductPrice().replace(".","");
-//            String[] hargaDanUnitHarga = productPrice.split(" ");
-//            List<MataUang> mataUangs = new Select().from(MataUang.class)
-//                    .execute();
-//            for(MataUang mataUang : mataUangs){
-//                if(hargaDanUnitHarga[0].contains(mataUang.getAbrvCurr())){
-//                    addProductView.setProductCurrencyUnit(mataUang.getAbrvCurr());
-//                }
-//            }
-//            // set currency  7
-//            addProductView.setProductPrice(hargaDanUnitHarga[1]);
 
         // set weight unit 8
         String productWeightUnit = String.valueOf(produk.getWeightUnitDB().getWsInput());
