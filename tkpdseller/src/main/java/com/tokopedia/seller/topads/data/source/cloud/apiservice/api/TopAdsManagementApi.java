@@ -46,13 +46,16 @@ public interface TopAdsManagementApi {
     Observable<Response<DataResponse<List<DataCredit>>>> getDashboardCredit();
 
     @GET(TopAdsNetworkConstant.PATH_DASHBOARD_PRODUCT)
-    Observable<Response<PageDataResponse<List<ProductAd>>>> searchProductAd(@QueryMap Map<String, String> params);
+    Observable<Response<PageDataResponse<List<ProductAd>>>> getProductAd(@QueryMap Map<String, String> params);
 
     @GET(TopAdsNetworkConstant.PATH_DASHBOARD_GROUP)
-    Observable<Response<PageDataResponse<List<GroupAd>>>> searchGroupAd(@QueryMap Map<String, String> params);
+    Observable<Response<PageDataResponse<List<GroupAd>>>> getGroupAd(@QueryMap Map<String, String> params);
 
     @GET(TopAdsNetworkConstant.PATH_SEARCH_PRODUCT)
-    Observable<Response<DataResponse<List<Product>>>> searchProduct(@QueryMap Map<String, String> params);
+    Observable<Response<DataResponse<List<Product>>>> searchProductAd(@QueryMap Map<String, String> params);
+
+    @GET(TopAdsNetworkConstant.PATH_SEARCH_GROUP)
+    Observable<Response<DataResponse<List<GroupAd>>>> searchGroupAd(@QueryMap Map<String, String> params);
 
     @GET(TopAdsNetworkConstant.PATH_DETAIL_PRODUCT_AD)
     Observable<Response<PageDataResponse<List<ProductAd>>>> getDetailProductAd();
