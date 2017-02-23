@@ -384,7 +384,7 @@ public class AddProductPresenterImpl implements AddProductPresenter
 
         // set catalog 15 in here
         long catalog = produk.getCatalogid();
-        if (catalog != 0) {
+        if (catalog != -1) {
             ArrayList<CatalogDataModel.Catalog> catalogItemDB = dbManager.getCatalogList(String.valueOf(produk.getCategoryDB().getDepartmentId()), produk.getNameProd());
             onSuccessFetchCatalog(catalogItemDB);
             int selection = 0;
