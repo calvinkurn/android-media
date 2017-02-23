@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".topads.view.activities.TopAdsAddProductListActivity">
+    tools:context=".topads.view.activity.TopAdsAddProductListActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -16,9 +16,9 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:elevation="4dp"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:theme="@style/Toolbar"
+            app:popupTheme="@style/Toolbar_Popup"
+            app:elevation="4dp" />
 
     </android.support.design.widget.AppBarLayout>
 
