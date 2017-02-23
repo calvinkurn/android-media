@@ -214,7 +214,7 @@ public class AddProductPresenterImpl implements AddProductPresenter
         produk.setWholesalePriceDBs(produk.getWholeSales());
 
         // tampilkan image models 1
-        if (produk.getPictureDBs() != null) {// && object instanceof List<?>
+        if (produk.getPictureDBs() != null && !produk.getPictureDBs().isEmpty()) {// && object instanceof List<?>
             List<ImageModel> imageModelList = new ArrayList<>();
             int positionPrimaryImage = 0;
             for (int i = 0; i < produk.getPictureDBs().size(); i++) {
