@@ -11,9 +11,12 @@ import android.widget.LinearLayout;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddProductActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsAddProductListActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoFragmentListener;
 
 public class TopAdsEditPromoProductFragment extends TopAdsEditPromoFragment implements TopAdsEditPromoFragmentListener {
+
+    private static final int ADD_PRODUCT_REQUEST_CODE = 0;
 
     private View addProductLayout;
 
@@ -43,8 +46,7 @@ public class TopAdsEditPromoProductFragment extends TopAdsEditPromoFragment impl
     }
 
     void addProduct() {
-        Intent intent = new Intent(getActivity(), TopAdsAddProductActivity.class);
-        startActivity(intent);
+        Intent intent = new Intent(getActivity(), TopAdsAddProductListActivity.class);
+        startActivityForResult(intent, ADD_PRODUCT_REQUEST_CODE);
     }
-
 }
