@@ -1,16 +1,10 @@
 package com.tokopedia.core.manage.people.address.presenter;
 
-import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.tkpd.library.utils.data.DataManagerImpl;
-import com.tkpd.library.utils.data.DataReceiver;
 import com.tokopedia.core.R;
-import com.tokopedia.core.database.model.Bank;
-import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.City;
-import com.tokopedia.core.database.model.District;
 import com.tokopedia.core.database.model.Province;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.fragment.adapter.ProvinceAdapter;
@@ -20,11 +14,11 @@ import com.tokopedia.core.manage.people.address.interactor.AddAddressRetrofitInt
 import com.tokopedia.core.manage.people.address.interactor.AddAddressRetrofitInteractorImpl;
 import com.tokopedia.core.manage.people.address.listener.AddAddressFragmentView;
 import com.tokopedia.core.manage.people.address.model.Destination;
+import com.tokopedia.core.manage.people.address.model.FormAddressDomainModel;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
-
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by nisie on 9/6/16.
@@ -34,13 +28,11 @@ public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddre
 
     private final AddAddressFragmentView viewListener;
     private final AddAddressRetrofitInteractor networkInteractor;
-    private final CompositeSubscription compositeSubscription;
     private Destination address;
 
     public AddAddressPresenterImpl(AddAddressFragmentView viewListener) {
         this.viewListener = viewListener;
         this.networkInteractor = new AddAddressRetrofitInteractorImpl();
-        this.compositeSubscription = new CompositeSubscription();
         this.address = new Destination();
 
     }
@@ -153,7 +145,35 @@ public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddre
     public void getListProvince() {
         viewListener.setActionsEnabled(false);
         viewListener.showLoading();
-        DataManagerImpl.getDataManager().getListProvince(viewListener.getActivity(), getDataReceiver(GET_LIST_PROVINCE));
+        networkInteractor.getListProvince(viewListener.getActivity(),
+                new HashMap<String, String>(),
+                new AddAddressRetrofitInteractor.GetListProvinceListener() {
+                    @Override
+                    public void onSuccess(ArrayList<Province> provinces) {
+                        viewListener.setActionsEnabled(true);
+                        viewListener.setProvince(provinces);
+                    }
+
+                    @Override
+                    public void onTimeout() {
+                        viewListener.finishLoading();
+                        viewListener.showErrorSnackbar("");
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        viewListener.finishLoading();
+                        viewListener.setActionsEnabled(true);
+                        viewListener.showErrorSnackbar(error);
+                    }
+
+                    @Override
+                    public void onNullData() {
+                        viewListener.finishLoading();
+                        viewListener.showErrorSnackbar("");
+                    }
+
+                });
     }
 
     @Override
@@ -186,10 +206,35 @@ public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddre
     }
 
     @Override
-    public void getListDistrict(City city) {
+    public void getListDistrict(final City city) {
         viewListener.showLoadingDistrict();
         viewListener.setActionsEnabled(false);
-        DataManagerImpl.getDataManager().getListDistrict(viewListener.getActivity(), getDataReceiver(GET_LIST_DISTRICT), city.getCityId());
+        networkInteractor.getListDistrict(viewListener.getActivity(), city.getCityId(), new AddAddressRetrofitInteractor.GetListDistrictListener() {
+            @Override
+            public void onSuccess(FormAddressDomainModel model) {
+                viewListener.setActionsEnabled(true);
+                viewListener.setDistrict(model.getDistricts());
+            }
+
+            @Override
+            public void onTimeout() {
+                viewListener.finishLoading();
+                viewListener.showErrorSnackbar("");
+            }
+
+            @Override
+            public void onError(String error) {
+                viewListener.finishLoading();
+                viewListener.setActionsEnabled(true);
+                viewListener.showErrorSnackbar(error);
+            }
+
+            @Override
+            public void onNullData() {
+                viewListener.finishLoading();
+                viewListener.showErrorSnackbar("");
+            }
+        });
     }
 
     @Override
@@ -199,10 +244,39 @@ public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddre
 
 
     @Override
-    public void getListCity(Province province) {
+    public void getListCity(final Province province) {
         viewListener.showLoadingRegency();
         viewListener.setActionsEnabled(false);
-        DataManagerImpl.getDataManager().getListCity(viewListener.getActivity(), getDataReceiver(GET_LIST_CITY), province.getProvinceId());
+        networkInteractor.getListCity(viewListener.getActivity(),
+                province.getProvinceId(),
+                new AddAddressRetrofitInteractor.GetListCityListener() {
+
+                    @Override
+                    public void onSuccess(FormAddressDomainModel model) {
+                        viewListener.setActionsEnabled(true);
+                        viewListener.setCity(model.getCities());
+                    }
+
+                    @Override
+                    public void onTimeout() {
+                        viewListener.finishLoading();
+                        viewListener.showErrorSnackbar("");
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        viewListener.finishLoading();
+                        viewListener.setActionsEnabled(true);
+                        viewListener.showErrorSnackbar(error);
+                    }
+
+                    @Override
+                    public void onNullData() {
+                        viewListener.finishLoading();
+                        viewListener.showErrorSnackbar("");
+                    }
+
+                });
     }
 
     private boolean isValidAddress() {
@@ -285,119 +359,5 @@ public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddre
         return isValid;
     }
 
-    private DataReceiver getDataReceiver(final int action) {
-        return new DataReceiver() {
-
-            @Override
-            public CompositeSubscription getSubscription() {
-                return compositeSubscription;
-            }
-
-            @Override
-            public void setDistricts(List<District> districts) {
-                viewListener.setActionsEnabled(true);
-                viewListener.setDistrict(districts);
-            }
-
-            @Override
-            public void setCities(List<City> cities) {
-                viewListener.setActionsEnabled(true);
-                viewListener.setCity(cities);
-            }
-
-            @Override
-            public void setProvinces(List<Province> provinces) {
-                viewListener.setActionsEnabled(true);
-                viewListener.setProvince(provinces);
-
-            }
-
-            @Override
-            public void setBank(List<Bank> banks) {
-
-            }
-
-            @Override
-            public void setDepartments(List<CategoryDB> departments) {
-
-            }
-
-
-            @Override
-            public void setShippingCity(List<District> districts) {
-
-            }
-
-            @Override
-            public void onNetworkError(String message) {
-                viewListener.finishLoading();
-                viewListener.showErrorSnackbar(message, onRetryDataManager(action));
-            }
-
-            @Override
-            public void onMessageError(String message) {
-                viewListener.finishLoading();
-                viewListener.setActionsEnabled(true);
-                viewListener.showErrorSnackbar(message, onRetryDataManager(action));
-            }
-
-            @Override
-            public void onUnknownError(String message) {
-                viewListener.finishLoading();
-                viewListener.showErrorSnackbar(message, onRetryDataManager(action));
-            }
-
-            @Override
-            public void onTimeout() {
-                viewListener.finishLoading();
-                viewListener.setActionsEnabled(true);
-                viewListener.showErrorSnackbar("");
-            }
-
-            @Override
-            public void onFailAuth() {
-                viewListener.finishLoading();
-                viewListener.setActionsEnabled(true);
-                viewListener.showErrorSnackbar("");
-            }
-
-            private View.OnClickListener onRetryDataManager(final int action) {
-                return new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        switch (action) {
-                            case GET_LIST_PROVINCE:
-                                getListProvince();
-                                break;
-                            case GET_LIST_DISTRICT:
-                                try {
-                                    getListDistrict(
-                                            ((RegencyAdapter) viewListener.getSpinnerRegency().getAdapter())
-                                                    .getList().get(viewListener.getSpinnerRegency()
-                                                    .getSelectedItemPosition() - 1));
-                                } catch (Exception e) {
-                                    Log.d(AddAddressPresenterImpl.this.getClass().getSimpleName(), e.toString());
-                                }
-                                break;
-                            case GET_LIST_CITY:
-                                try {
-                                    getListCity(
-                                            ((ProvinceAdapter) viewListener.getSpinnerProvince().getAdapter())
-                                                    .getList().get(viewListener.getSpinnerProvince()
-                                                    .getSelectedItemPosition() - 1));
-                                } catch (Exception e) {
-                                    Log.d(AddAddressPresenterImpl.this.getClass().getSimpleName(), e.toString());
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-
-                };
-            }
-
-        };
-    }
 }
 
