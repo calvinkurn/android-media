@@ -25,6 +25,18 @@ public class OrderDeadline {
     @SerializedName("deadline_shipping_day_left")
     @Expose
     String deadlineShippingDayLeft;
+    @SerializedName("deadline_shipping_hour_left")
+    @Expose
+    String deadlineShippingHourLeft;
+    @SerializedName("deadline_shipping")
+    @Expose
+    String deadlineShipping;
+    @SerializedName("deadline_finish_hour_left")
+    @Expose
+    String deadlineFinishHourLeft;
+    @SerializedName("deadline_color")
+    @Expose
+    String deadlineColor;
 
     /**
      * 
