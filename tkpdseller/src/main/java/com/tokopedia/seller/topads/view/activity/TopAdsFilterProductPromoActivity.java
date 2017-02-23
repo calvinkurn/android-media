@@ -33,14 +33,6 @@ public class TopAdsFilterProductPromoActivity extends TopAdsFilterActivity {
     }
 
     @Override
-    protected void setupVar() {
-        super.setupVar();
-        // TODO Hendry remove, this is just for testing
-        selectedStatusPromo = 0;
-        selectedEtalaseId = 0;
-    }
-
-    @Override
     protected void setupBundlePass(Bundle extras) {
         super.setupBundlePass(extras);
         selectedStatusPromo = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS_PROMO);
