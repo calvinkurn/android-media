@@ -158,7 +158,8 @@
 
         <activity
             android:name=".topads.view.activity.TopAdsAddProductListActivity"
-            android:label="@string/title_activity_top_ads_list"/>
+            android:label="@string/title_activity_top_ads_list"
+            android:theme="@style/Theme.Tokopedia3"/>
 
         <service
             android:name="com.tokopedia.seller.selling.SellingService"
