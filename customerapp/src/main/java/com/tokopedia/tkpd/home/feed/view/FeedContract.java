@@ -43,6 +43,14 @@ interface FeedContract {
         String getTopAdsPage();
 
         void increaseTopAdsPage();
+
+        void showEmptyHistoryProduct();
+
+        void hideEmptyHistoryProduct();
+
+        void showEmptyFeed();
+
+        void hideEmptyFeed();
     }
 
     interface Presenter extends CustomerPresenter<View> {

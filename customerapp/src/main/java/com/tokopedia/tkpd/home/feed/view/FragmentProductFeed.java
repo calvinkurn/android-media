@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.floatbutton.ListenerFabClick;
@@ -59,6 +60,10 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     FabSpeedDial fabAddProduct;
     @BindView(R.id.main_content)
     LinearLayout mainContentLinearLayout;
+    @BindView(R.id.empty_wishlist)
+    RelativeLayout emptyFeedView;
+    @BindView(R.id.empty_history)
+    RelativeLayout emptyHistoryView;
 
     @Inject
     FeedPresenter feedPresenter;
@@ -81,7 +86,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View parentView = inflater.inflate(R.layout.fragment_index_main_v2, container, false);
+        View parentView = inflater.inflate(R.layout.fragment_feed, container, false);
         unbinder = ButterKnife.bind(this, parentView);
         prepareView(parentView);
         feedPresenter.attachView(this);
@@ -226,8 +231,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
             adapter.addAll(true, false, dataFeedList);
             adapter.notifyItemInserted(0);
 
-            int topAdsInitialPage = 3;
-            currentTopAdsPage = topAdsInitialPage;
+            currentTopAdsPage = 3;
         }
     }
 
@@ -243,13 +247,16 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     public void showRefreshFailed() {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(),
-                new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        feedPresenter.refreshDataFeed();
-                    }
-                }).showRetrySnackbar();
+        if (adapter.getData().size() > 0) {
+            NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                    new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            feedPresenter.refreshDataFeed();
+                        }
+                    }).showRetrySnackbar();
+
+        }
     }
 
     @Override
@@ -259,7 +266,27 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     public void increaseTopAdsPage() {
-        currentTopAdsPage +=2;
+        currentTopAdsPage += 2;
+    }
+
+    @Override
+    public void showEmptyHistoryProduct() {
+        emptyHistoryView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideEmptyHistoryProduct() {
+        emptyHistoryView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showEmptyFeed() {
+//        emptyFeedView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideEmptyFeed() {
+        emptyFeedView.setVisibility(View.GONE);
     }
 
 

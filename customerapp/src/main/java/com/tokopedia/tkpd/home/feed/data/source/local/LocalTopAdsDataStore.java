@@ -31,9 +31,6 @@ public class LocalTopAdsDataStore implements TopAdsDataSource {
 
     @Override
     public Observable<List<TopAds>> getTopAdsCache() {
-        if (topAdsDbManager.isExpired(System.currentTimeMillis())) {
-            return Observable.empty();
-        }
         return topAdsDbManager.getData().map(topAdsMapper);
     }
 }

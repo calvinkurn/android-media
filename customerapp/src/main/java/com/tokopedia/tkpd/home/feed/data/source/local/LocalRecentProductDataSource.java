@@ -24,9 +24,6 @@ public class LocalRecentProductDataSource {
     }
 
     public Observable<List<ProductFeed>> getRecentProductFromCache() {
-        if (recentProductDbManager.isExpired(System.currentTimeMillis())) {
-            return Observable.empty();
-        }
         return recentProductDbManager.getData().map(recentProductMapper);
     }
 }
