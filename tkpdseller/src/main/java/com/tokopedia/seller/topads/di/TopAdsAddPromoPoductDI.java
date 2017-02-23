@@ -12,7 +12,7 @@ import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagement
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.api.TopAdsManagementApi;
 import com.tokopedia.seller.topads.domain.TopAdsGroupAdsRepository;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsCheckExistGroupUseCase;
-import com.tokopedia.seller.topads.domain.interactor.TopadsSearchGroupAdsNameUseCase;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
 import com.tokopedia.seller.topads.view.presenter.TopAdsManagePromoProductPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsManagePromoProductPresenterImpl;
 
@@ -36,8 +36,8 @@ public class TopAdsAddPromoPoductDI {
 
         TopAdsGroupAdsRepository topAdsGroupAdsRepository = new TopAdsGroupAdsRepositoryImpl(topAdsGroupAdFactory);
 
-        TopadsSearchGroupAdsNameUseCase topadsSearchGroupAdsNameUseCase = new TopadsSearchGroupAdsNameUseCase(threadExecutor, postExecutionThread, topAdsGroupAdsRepository);
+        TopAdsSearchGroupAdsNameUseCase topAdsSearchGroupAdsNameUseCase = new TopAdsSearchGroupAdsNameUseCase(threadExecutor, postExecutionThread, topAdsGroupAdsRepository);
         TopAdsCheckExistGroupUseCase topAdsCheckExistGroupUseCase = new TopAdsCheckExistGroupUseCase(threadExecutor, postExecutionThread, topAdsGroupAdsRepository);
-        return new TopAdsManagePromoProductPresenterImpl(topadsSearchGroupAdsNameUseCase, topAdsCheckExistGroupUseCase);
+        return new TopAdsManagePromoProductPresenterImpl(topAdsSearchGroupAdsNameUseCase, topAdsCheckExistGroupUseCase);
     }
 }

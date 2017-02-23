@@ -14,12 +14,12 @@ import rx.Observable;
 /**
  * Created by zulfikarrahman on 2/20/17.
  */
-public class TopadsSearchGroupAdsNameUseCase extends UseCase<List<GroupAd>> {
+public class TopAdsSearchGroupAdsNameUseCase extends UseCase<List<GroupAd>> {
 
     public static final String KEYWORD_NAME = "KEYWORD_NAME";
     private final TopAdsGroupAdsRepository topAdsGroupAdsRepository;
 
-    public TopadsSearchGroupAdsNameUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, TopAdsGroupAdsRepository topAdsGroupAdsRepository) {
+    public TopAdsSearchGroupAdsNameUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, TopAdsGroupAdsRepository topAdsGroupAdsRepository) {
         super(threadExecutor, postExecutionThread);
         this.topAdsGroupAdsRepository = topAdsGroupAdsRepository;
     }

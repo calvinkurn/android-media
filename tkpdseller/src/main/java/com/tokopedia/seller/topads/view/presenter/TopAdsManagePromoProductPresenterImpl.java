@@ -2,7 +2,7 @@ package com.tokopedia.seller.topads.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsCheckExistGroupUseCase;
-import com.tokopedia.seller.topads.domain.interactor.TopadsSearchGroupAdsNameUseCase;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
 import com.tokopedia.seller.topads.domain.model.data.GroupAd;
 import com.tokopedia.seller.topads.view.listener.TopAdsManagePromoProductView;
 
@@ -15,25 +15,25 @@ import rx.Subscriber;
  */
 public class TopAdsManagePromoProductPresenterImpl extends BaseDaggerPresenter<TopAdsManagePromoProductView> implements TopAdsManagePromoProductPresenter {
 
-    private final TopadsSearchGroupAdsNameUseCase topadsSearchGroupAdsNameUseCase;
+    private final TopAdsSearchGroupAdsNameUseCase topAdsSearchGroupAdsNameUseCase;
     private final TopAdsCheckExistGroupUseCase topAdsCheckExistGroupUseCase;
 
-    public TopAdsManagePromoProductPresenterImpl(TopadsSearchGroupAdsNameUseCase topadsSearchGroupAdsNameUseCase,
+    public TopAdsManagePromoProductPresenterImpl(TopAdsSearchGroupAdsNameUseCase topAdsSearchGroupAdsNameUseCase,
                                                  TopAdsCheckExistGroupUseCase topAdsCheckExistGroupUseCase) {
-        this.topadsSearchGroupAdsNameUseCase = topadsSearchGroupAdsNameUseCase;
+        this.topAdsSearchGroupAdsNameUseCase = topAdsSearchGroupAdsNameUseCase;
         this.topAdsCheckExistGroupUseCase = topAdsCheckExistGroupUseCase;
     }
 
 
     @Override
     public void checkIsGroupExist(String keyword) {
-        topAdsCheckExistGroupUseCase.execute(TopadsSearchGroupAdsNameUseCase.createRequestParams(keyword)
+        topAdsCheckExistGroupUseCase.execute(TopAdsSearchGroupAdsNameUseCase.createRequestParams(keyword)
                 , getSubscriberCheckGroupExist());
     }
 
     @Override
     public void searchGroupName(String keyword) {
-        topadsSearchGroupAdsNameUseCase.execute(TopadsSearchGroupAdsNameUseCase.createRequestParams(keyword)
+        topAdsSearchGroupAdsNameUseCase.execute(TopAdsSearchGroupAdsNameUseCase.createRequestParams(keyword)
                 , getSubscriberSearchGroupName());
     }
 
