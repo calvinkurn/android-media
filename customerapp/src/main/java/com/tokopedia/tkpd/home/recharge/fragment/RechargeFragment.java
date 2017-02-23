@@ -43,6 +43,7 @@ import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -341,8 +342,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         if (SessionHandler.isV4Login(getActivity())) {
             sendGTMClickBeli();
 
-            if (checkStockProduct(selectedProduct))
-                goToCheckout(getUrlCheckout());
+            if (checkStockProduct(selectedProduct)) goToNativeCheckout();
+            //goToCheckout(getUrlCheckout());
         } else {
             gotoLogin();
         }
@@ -751,6 +752,14 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         rechargePresenter.clearRechargePhonebookCache();
         LocalCacheHandler.clearCache(getActivity(), KEY_PHONEBOOK);
         startActivity(intent);
+    }
+
+    private void goToNativeCheckout() {
+        //  startActivity(CartDigitalActivity.newInstance(getActivity(), null));
+        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+            startActivity(((IDigitalModuleRouter) getActivity().getApplication())
+                    .instanceIntentCartDigitalProduct(null));
+        }
     }
     //endregion
 
