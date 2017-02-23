@@ -86,9 +86,11 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
 
     @Override
     protected void editAd() {
-        Intent intent = new Intent(getActivity(), TopAdsEditPromoShopActivity.class);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_AD, ad);
-        startActivity(intent);
+        if (ad != null) {
+            Intent intent = new Intent(getActivity(), TopAdsEditPromoShopActivity.class);
+            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, ad.getId());
+            startActivity(intent);
+        }
     }
 
     @Override

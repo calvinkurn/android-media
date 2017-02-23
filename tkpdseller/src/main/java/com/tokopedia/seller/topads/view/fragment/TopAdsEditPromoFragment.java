@@ -17,17 +17,16 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.datepicker.widget.DatePickerLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.domain.model.data.DataCredit;
 import com.tokopedia.seller.topads.view.dialog.DatePickerDialog;
 import com.tokopedia.seller.topads.view.dialog.TimePickerdialog;
 import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoFragmentListener;
+import com.tokopedia.seller.topads.view.model.AdDetailViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoPresenterImpl;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopAdsEditPromoPresenter> implements TopAdsEditPromoFragmentListener {
@@ -243,12 +242,12 @@ public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopA
     }
 
     @Override
-    public void onGroupNameListLoaded(@NonNull List<DataCredit> creditList) {
+    public void onAdDetailLoaded(@NonNull AdDetailViewModel adDetailViewModel) {
 
     }
 
     @Override
-    public void onLoadGroupNameListError() {
+    public void onLoadAdDetailError() {
 
     }
 

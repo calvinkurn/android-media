@@ -5,5 +5,5 @@ package com.tokopedia.seller.topads.view.presenter;
  */
 public interface TopAdsEditPromoPresenter {
 
-    void populateGroupNameList();
+    void viewDetailAd();
 }
