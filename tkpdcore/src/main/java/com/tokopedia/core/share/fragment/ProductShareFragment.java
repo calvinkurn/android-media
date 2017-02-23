@@ -425,13 +425,15 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
 
         if (ShareDialog.canShow(ShareLinkContent.class)) {
             if (shareData != null && shareData.getImgUri() != null && shareData.getUri() != null) {
-                ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                        .setImageUrl(Uri.parse(shareData.getImgUri()))
+                ShareLinkContent.Builder linkBuilder = new ShareLinkContent.Builder()
                         .setContentTitle(shareData.getName())
                         .setContentDescription(shareData.getUri())
                         .setContentUrl(Uri.parse(shareData.getUri()))
-                        .setQuote(shareData.getDescription())
-                        .build();
+                        .setQuote(shareData.getDescription());
+                if (shareData.getImgUri() != null) {
+                    linkBuilder.setImageUrl(Uri.parse(shareData.getImgUri()));
+                }
+                ShareLinkContent linkContent = linkBuilder.build();
                 shareDialog.show(linkContent);
                 return;
             }
