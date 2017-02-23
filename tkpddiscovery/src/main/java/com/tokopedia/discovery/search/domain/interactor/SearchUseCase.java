@@ -1,6 +1,5 @@
 package com.tokopedia.discovery.search.domain.interactor;
 
-import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.UseCaseWithParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -27,6 +26,6 @@ public class SearchUseCase extends UseCaseWithParams<SearchParam, List<SearchDat
 
     @Override
     protected Observable<List<SearchData>> createObservable(SearchParam requestParams) {
-        return null;
+        return dataFactory.getSearchData(requestParams.getParam());
     }
 }

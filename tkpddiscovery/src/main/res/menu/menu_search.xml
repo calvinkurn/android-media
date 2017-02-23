@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appcompat="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools">
+
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_menu_search"
+        android:title="Search"
+        appcompat:actionViewClass="com.tokopedia.discovery.universearch.view.widget.SearchViewStyle"
+        appcompat:showAsAction="always|collapseActionView" />
+
+</menu>

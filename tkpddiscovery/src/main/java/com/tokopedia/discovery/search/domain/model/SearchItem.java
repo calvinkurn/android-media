@@ -8,6 +8,7 @@ public class SearchItem {
     private String keyword;
     private String url;
     private String recom;
+    private String applink;
     private int sc;
     private String imageURI;
     private boolean isOfficial;
@@ -58,6 +59,14 @@ public class SearchItem {
 
     public void setSc(int sc) {
         this.sc = sc;
+    }
+
+    public String getApplink() {
+        return applink;
+    }
+
+    public void setApplink(String applink) {
+        this.applink = applink;
     }
 }
 

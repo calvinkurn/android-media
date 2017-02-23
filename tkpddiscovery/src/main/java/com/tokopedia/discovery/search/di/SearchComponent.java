@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.search.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.discovery.search.view.SearchFragment;
+import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 
 import dagger.Component;
 
@@ -12,5 +12,5 @@ import dagger.Component;
 @SearchScope
 @Component(modules = SearchModule.class, dependencies = AppComponent.class)
 public interface SearchComponent {
-    void inject(SearchFragment fragment);
+    void inject(SearchMainFragment fragment);
 }

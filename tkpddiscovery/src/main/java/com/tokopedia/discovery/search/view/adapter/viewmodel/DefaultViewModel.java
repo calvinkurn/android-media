@@ -15,6 +15,7 @@ import java.util.List;
 public class DefaultViewModel implements Visitable<SearchTypeFactory> {
 
     private SearchData.ItemsIds id;
+    private String searchTerm;
     private List<SearchItem> searchItems;
 
     @Override
@@ -28,6 +29,14 @@ public class DefaultViewModel implements Visitable<SearchTypeFactory> {
 
     public void setId(SearchData.ItemsIds id) {
         this.id = id;
+    }
+
+    public void setSearchTerm(String searchTerm) {
+        this.searchTerm = searchTerm;
+    }
+
+    public String getSearchTerm() {
+        return searchTerm;
     }
 
     public List<SearchItem> getSearchItems() {

@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.search.view.adapter;
 
+import com.tokopedia.discovery.search.domain.model.SearchData;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
 
 /**

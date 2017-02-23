@@ -7,7 +7,6 @@ import com.tokopedia.core.base.common.service.AceService;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.discovery.search.domain.SearchParam;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 
 import java.util.List;

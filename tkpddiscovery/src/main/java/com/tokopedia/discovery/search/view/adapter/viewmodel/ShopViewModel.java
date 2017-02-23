@@ -12,11 +12,20 @@ import java.util.List;
 
 public class ShopViewModel implements Visitable<SearchTypeFactory> {
 
+    private String searchTerm;
     private List<SearchItem> searchItems;
 
     @Override
     public int type(SearchTypeFactory typeFactory) {
         return typeFactory.type(this);
+    }
+
+    public String getSearchTerm() {
+        return searchTerm;
+    }
+
+    public void setSearchTerm(String searchTerm) {
+        this.searchTerm = searchTerm;
     }
 
     public List<SearchItem> getSearchItems() {

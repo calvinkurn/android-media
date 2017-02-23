@@ -3,6 +3,7 @@ package com.tokopedia.discovery.search.view.adapter.viewholder;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -45,26 +46,27 @@ public class DefaultSearchViewHolder extends AbstractViewHolder<DefaultViewModel
                 = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
-        resultAdapter = new DefaultSearchResultAdapter(clickListener);
+        resultAdapter = new DefaultSearchResultAdapter(context, clickListener);
         recyclerView.setAdapter(resultAdapter);
+        delete.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
-            case R2.id.delete:
-                break;
-        }
+        Log.d(TAG, "Delete");
     }
 
     @Override
     public void bind(DefaultViewModel element) {
+        resultAdapter.setSearchTerm(element.getSearchTerm());
+        title.setVisibility(View.VISIBLE);
         delete.setVisibility(View.GONE);
-        delete.setOnClickListener(null);
         switch (element.getId()){
+            case autocomplete:
+                title.setVisibility(View.GONE);
+                break;
             case recent_search:
                 delete.setVisibility(View.VISIBLE);
-                delete.setOnClickListener(this);
                 title.setText(context.getString(R.string.title_search_recent));
                 break;
             case hotlist:

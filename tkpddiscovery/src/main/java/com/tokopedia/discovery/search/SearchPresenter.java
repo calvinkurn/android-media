@@ -8,6 +8,8 @@ import com.tokopedia.discovery.search.domain.SearchParam;
 import com.tokopedia.discovery.search.domain.interactor.SearchUseCase;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 import com.tokopedia.discovery.search.view.SearchContract;
+import com.tokopedia.discovery.search.view.adapter.viewmodel.DefaultViewModel;
+import com.tokopedia.discovery.search.view.adapter.viewmodel.ShopViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,18 +27,18 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
 
     private static final String TAG = SearchPresenter.class.getSimpleName();
     private final Context context;
-
+    private String querySearch = "";
     private final SearchUseCase searchUseCase;
-    private final Context context;
 
     @Inject
-    public UniversearchPresenter(Context context, SearchUseCase searchUseCase) {
+    public SearchPresenter(Context context, SearchUseCase searchUseCase) {
         this.context = context;
         this.searchUseCase = searchUseCase;
     }
 
     @Override
     public void search(String query) {
+        this.querySearch = query;
         SearchParam searchParam = new SearchParam(context);
         searchParam.getParam().put(SearchParam.KEY_QUERY, query);
         searchUseCase.execute(searchParam, new SearchSubscriber());
@@ -56,12 +58,14 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
         DefaultViewModel viewModel = new DefaultViewModel();
         viewModel.setId(data.getId());
         viewModel.setSearchItems(data.getItems());
+        viewModel.setSearchTerm(querySearch);
         return viewModel;
     }
 
     private ShopViewModel prepareShopViewModel(SearchData data) {
         ShopViewModel viewModel = new ShopViewModel();
         viewModel.setSearchItems(data.getItems());
+        viewModel.setSearchTerm(querySearch);
         return viewModel;
     }
 
@@ -85,6 +89,7 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
                         case autocomplete:
                         case popular_search:
                         case hotlist:
+                        case in_category:
                         case recent_search:
                             list.add(prepareDefaultViewModel(searchData));
                             continue;

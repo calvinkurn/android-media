@@ -1,7 +1,16 @@
 package com.tokopedia.discovery.search.di;
 
+import android.content.Context;
+
+import com.google.gson.Gson;
 import com.tokopedia.core.base.common.service.AceService;
 import com.tokopedia.core.base.di.qualifier.AceQualifier;
+import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.discovery.search.SearchPresenter;
+import com.tokopedia.discovery.search.domain.interactor.SearchDataFactory;
+import com.tokopedia.discovery.search.domain.interactor.SearchUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -18,5 +27,27 @@ public class SearchModule {
     @Provides
     AceService provideAceService(@AceQualifier Retrofit retrofit){
         return retrofit.create(AceService.class);
+    }
+
+    @SearchScope
+    @Provides
+    SearchDataFactory provideSearchFactory(@ActivityContext Context context, Gson gson,
+                                           AceService aceService){
+        return new SearchDataFactory(context, gson, aceService);
+    }
+
+    @SearchScope
+    @Provides
+    SearchPresenter provideSearchPresenter(@ActivityContext Context context, SearchUseCase searchUseCase){
+        return new SearchPresenter(context, searchUseCase);
+    }
+
+    @SearchScope
+    @Provides
+    SearchUseCase provideSearchUseCase(ThreadExecutor threadExecutor,
+                                       PostExecutionThread postExecutionThread,
+                                       SearchDataFactory searchFactory){
+        return new SearchUseCase(threadExecutor,
+                postExecutionThread, searchFactory);
     }
 }

@@ -1,8 +1,9 @@
 package com.tokopedia.discovery.search.view.adapter.factory;
 
+import android.view.View;
+
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.discovery.search.view.SearchContract;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.search.view.adapter.viewholder.DefaultSearchViewHolder;
 import com.tokopedia.discovery.search.view.adapter.viewholder.ShopSearchViewHolder;
@@ -32,7 +33,7 @@ public class SearchAdapterTypeFactory extends BaseAdapterTypeFactory implements 
     }
 
     @Override
-    public AbstractViewHolder createViewHolder(SearchContract.View parent, int type) {
+    public AbstractViewHolder createViewHolder(View parent, int type) {
         AbstractViewHolder viewHolder;
         if(type == DefaultSearchViewHolder.LAYOUT){
             viewHolder = new DefaultSearchViewHolder(parent, clickListener);

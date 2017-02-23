@@ -9,6 +9,8 @@ import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
+import com.tokopedia.discovery.search.view.adapter.ShopSearchResultAdapter;
 import com.tokopedia.discovery.search.view.adapter.viewmodel.ShopViewModel;
 
 import butterknife.BindView;
@@ -41,6 +43,7 @@ public class ShopSearchViewHolder extends AbstractViewHolder<ShopViewModel> {
     @Override
     public void bind(ShopViewModel element) {
         if(element.getSearchItems().size()>0){
+            adapter.setSearchTerm(element.getSearchTerm());
             adapter.setItems(element.getSearchItems());
         }
     }

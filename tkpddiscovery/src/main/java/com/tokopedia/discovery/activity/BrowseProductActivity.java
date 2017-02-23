@@ -39,6 +39,8 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
@@ -60,7 +62,7 @@ import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 import com.tokopedia.discovery.fragment.browseparent.BrowseParentFragment;
 import com.tokopedia.discovery.fragment.browseparent.ShopFragment;
-import com.tokopedia.discovery.fragment.history.SearchHistoryFragment;
+//import com.tokopedia.discovery.fragment.history.SearchHistoryFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.interactor.SearchInteractor;
@@ -68,6 +70,7 @@ import com.tokopedia.discovery.interactor.SearchInteractorImpl;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
+import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -100,7 +103,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_INV
  * Created by Erry on 6/30/2016.
  */
 public class BrowseProductActivity extends TActivity implements SearchView.OnQueryTextListener,
-        DiscoveryActivityPresenter, MenuItemCompat.OnActionExpandListener {
+        DiscoveryActivityPresenter, MenuItemCompat.OnActionExpandListener, HasComponent {
 
     private static final String TAG = BrowseProductActivity.class.getSimpleName();
     private static final String KEY_GTM = "GTMFilterData";
@@ -117,8 +120,6 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     private SharedPreferences preferences;
     private List<Breadcrumb> breadcrumbs;
     private boolean afterRestoreSavedInstance;
-    private Subscription querySubscription;
-    private QueryListener queryListener;
 
     @Override
     public String getScreenName() {
@@ -147,7 +148,6 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     public static String browseType;
     private int gridIcon = R.drawable.ic_grid_default;
     private BrowseProductRouter.GridType gridType = BrowseProductRouter.GridType.GRID_2;
-    private Fragment mLastFragment;
     private int keepActivitySettings;
     private boolean firstTime = true;
     @BindView(R2.id.root)
@@ -229,43 +229,6 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     @Override
     protected void onResume() {
         super.onResume();
-        compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
-
-        compositeSubscription.add(querySubscription = Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(final Subscriber<? super String> subscriber) {
-                queryListener = new QueryListener() {
-                    @Override
-                    public void onQueryChanged(String query) {
-                        subscriber.onNext(query);
-                    }
-                };
-            }
-        })
-                .debounce(150, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(TAG, e.getLocalizedMessage());
-                    }
-
-                    @Override
-                    public void onNext(String s) {
-                        if (s != null) {
-                            Log.d(TAG, "Sending the text " + s);
-                            sendBroadCast(s);
-                        }
-                    }
-                }));
-
         if (browseProductActivityModel.alias != null && browseProductActivityModel.getHotListBannerModel() == null)
             fetchHotListHeader(browseProductActivityModel.alias);
 
@@ -279,8 +242,8 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                     }
                     break;
                 case BrowseProductRouter.VALUES_HISTORY_FRAGMENT_ID:
-                    if (!isFragmentCreated(SearchHistoryFragment.FRAGMENT_TAG)) {
-                        setFragment(SearchHistoryFragment.newInstance(), SearchHistoryFragment.FRAGMENT_TAG);
+                    if (!isFragmentCreated(SearchMainFragment.FRAGMENT_TAG)) {
+                        setFragment(SearchMainFragment.newInstance(), SearchMainFragment.FRAGMENT_TAG);
                     }
                     break;
             }
@@ -390,7 +353,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     @Override
     public boolean onMenuItemActionExpand(MenuItem item) {
         if (fragmentManager.findFragmentById(R.id.container) instanceof BrowseParentFragment && !browseProductActivityModel.isSearchDeeplink() && !afterRestoreSavedInstance) {
-            setFragment(SearchHistoryFragment.newInstance(), SearchHistoryFragment.FRAGMENT_TAG);
+            setFragment(SearchMainFragment.newInstance(), SearchMainFragment.FRAGMENT_TAG);
         }
         return true;
     }
@@ -451,25 +414,24 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     @Override
     public boolean onQueryTextChange(String newText) {
         this.searchQuery = newText;
-        if (!newText.isEmpty() && fragmentManager.findFragmentById(R.id.container)
+        Fragment fragment = fragmentManager.findFragmentById(R.id.container);
+        if (!newText.isEmpty() && fragment
                 instanceof BrowseParentFragment && !browseProductActivityModel.isSearchDeeplink()) {
-
-            setFragment(SearchHistoryFragment.newInstance(newText), SearchHistoryFragment.FRAGMENT_TAG);
-        } else {
-            queryListener.onQueryChanged(newText);
+            setFragment(SearchMainFragment.newInstance(newText), SearchMainFragment.FRAGMENT_TAG);
+        } else if(!newText.isEmpty() && fragment instanceof SearchMainFragment) {
+            SearchMainFragment searchMainFragment = (SearchMainFragment) fragmentManager.findFragmentById(R.id.container);
+            searchMainFragment.search(newText);
         }
         return false;
     }
 
     public void setFilterAttribute(DataValue filterAttribute, int activeTab) {
         if (checkHasFilterAttrIsNull(activeTab))
-//            filterAttributMap.put(activeTab, filterAttribute);
             mBrowseProductAtribut.getFilterAttributMap().put(activeTab, filterAttribute);
     }
 
     @Override
     public boolean checkHasFilterAttrIsNull(int activeTab) {
-//        return filterAttributMap.get(activeTab) == null;
         return mBrowseProductAtribut.getFilterAttributMap().get(activeTab) == null;
     }
 
@@ -565,8 +527,10 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                 // set the value get from intent
                 if (adSrc != null)
                     browseProductActivityModel.setAdSrc(adSrc);
-                browseProductActivityModel.setDepartmentId(departmentId);
-                browseProductActivityModel.setParentDepartement(departmentId);
+                if(departmentId!=null) {
+                    browseProductActivityModel.setDepartmentId(departmentId);
+                    browseProductActivityModel.setParentDepartement(departmentId);
+                }
                 browseProductActivityModel.setFragmentId(fragmentId);
             }
             browseProductActivityModel.setSearchDeeplink(intent.getBooleanExtra(IS_DEEP_LINK_SEARCH, false));
@@ -1104,9 +1068,8 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         return gridType;
     }
 
-    private interface QueryListener {
-        void onQueryChanged(String query);
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
-
-
 }
