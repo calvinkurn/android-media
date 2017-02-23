@@ -5,6 +5,9 @@ import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.shopinfo.facades.authservices.ShopService;
@@ -13,7 +16,9 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.domain.interactor.DashboardTopadsInteractor;
 import com.tokopedia.seller.topads.domain.interactor.DashboardTopadsInteractorImpl;
 import com.tokopedia.seller.topads.domain.interactor.ListenerInteractor;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsEtalaseListUseCase;
 import com.tokopedia.seller.topads.domain.model.data.DataCredit;
+import com.tokopedia.seller.topads.domain.model.data.Etalase;
 import com.tokopedia.seller.topads.view.listener.TopAdsAddCreditFragmentListener;
 import com.tokopedia.seller.topads.view.listener.TopAdsEtalaseListView;
 import com.tokopedia.seller.topads.view.listener.TopAdsManagePromoProductView;
@@ -34,87 +39,85 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class TopAdsEtalaseListPresenterImpl implements TopAdsEtalaseListPresenter {
-
-    private TopAdsEtalaseListView view;
+public class TopAdsEtalaseListPresenterImpl extends BaseDaggerPresenter<TopAdsEtalaseListView>
+        implements TopAdsEtalaseListPresenter {
 
     // TODO using interactor and clean code architecture
     // TODO refactor shop service
 
-    CompositeSubscription compositeSubscription;
-    ShopService shopService = new ShopService();
-    private Context context;
+//    CompositeSubscription compositeSubscription;
+//    ShopService shopService = new ShopService();
 
-    public TopAdsEtalaseListPresenterImpl(Context context, TopAdsEtalaseListView view) {
-        this.context = context;
-        this.view = view;
-        shopService = new ShopService();
-        compositeSubscription = new CompositeSubscription();
+    private TopAdsEtalaseListUseCase topAdsEtalaseListUseCase;
+    public TopAdsEtalaseListPresenterImpl(TopAdsEtalaseListUseCase topAdsEtalaseListUseCase) {
+        this.topAdsEtalaseListUseCase = topAdsEtalaseListUseCase;
+
+//        shopService = new ShopService();
+//        compositeSubscription = new CompositeSubscription();
     }
 
+//    @Override
+//    public void unSubscribe() {
+//        if (compositeSubscription != null) {
+//            compositeSubscription.clear();
+//            compositeSubscription = null;
+//        }
+//
+//    }
 
     @Override
-    public void unSubscribe() {
-        if (compositeSubscription != null) {
-            compositeSubscription.clear();
-            compositeSubscription = null;
-        }
-
-    }
-
-    @Override
-    public void populateEtalaseList() {
-        String shopId = new SessionHandler(context).getShopID();
+    public void populateEtalaseList(String shopId) {
         if (TextUtils.isEmpty(shopId))
             return;
-        view.showLoad(true);
-        Map<String, String> params = new ArrayMap<>();
-        params.put("shop_id", shopId);
+        getView().showLoad(true);
 
-        Observable<Response<TkpdResponse>> observable = shopService.getApi().getShopEtalase(
-                AuthUtil.generateParams(
-                        context, params));
-        Subscription subscription = observable
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getShopEtalaseSubscriber());
-        compositeSubscription.add(subscription);
+        topAdsEtalaseListUseCase.execute(
+                TopAdsEtalaseListUseCase.createRequestParams(shopId),
+                getShopEtalaseSubscriber()
+        );
+//        Map<String, String> params = new ArrayMap<>();
+//        params.put("shop_id", shopId);
+//
+//        Observable<Response<TkpdResponse>> observable = shopService.getApi().getShopEtalase(
+//                AuthUtil.generateParams(
+//                        MainApplication.getAppContext(), params));
+//        Subscription subscription = observable
+//                .subscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(getShopEtalaseSubscriber());
+//        compositeSubscription.add(subscription);
     }
 
-    private Subscriber<Response<TkpdResponse>> getShopEtalaseSubscriber() {
-        return new Subscriber<Response<TkpdResponse>>() {
+    private Subscriber<List<Etalase>> getShopEtalaseSubscriber() {
+        return new Subscriber<List<Etalase>>() {
             @Override
             public void onCompleted() {
-                view.showLoad(false);
+                getView().showLoad(false);
             }
 
             @Override
             public void onError(Throwable e) {
+                getView().showLoad(false);
                 if (e instanceof UnknownHostException||
                         e instanceof ConnectException) {
-                    view.onLoadConnectionError();
+                    getView().onLoadConnectionError();
                 } else if (e instanceof SocketTimeoutException) {
-                    view.onLoadConnectionError();
+                    getView().onLoadConnectionError();
                 } else {
-                    view.onLoadError("Terjadi Kesalahan, " +
+                    getView().onLoadError("Terjadi Kesalahan, " +
                             "Mohon ulangi beberapa saat lagi");
                 }
             }
 
             @Override
-            public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
-                if (tkpdResponseResponse.isSuccessful()) {
-                    EtalaseModel etalaseModel =  new Gson().fromJson(
-                            tkpdResponseResponse.body().getStringData(), EtalaseModel.class);
-                    view.onLoadSuccess(etalaseModel.list);
+            public void onNext(List<Etalase> etalaseList) {
+                if (etalaseList != null && etalaseList.size() > 0) {
+                    getView().onLoadSuccess(etalaseList);
 
                 }
-//                    view.onLoadSuccess(
-//                            new Gson().fromJson(tkpdResponseResponse.body().getJsonData(), EtalaseModel.class));
                 else {
-                    view.onLoadSuccessEtalaseEmpty();
+                    getView().onLoadSuccessEtalaseEmpty();
                 }
-//                    onEtalaseResponseError(tkpdResponseResponse.code());
             }
         };
     }

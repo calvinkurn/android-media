@@ -7,22 +7,23 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.product.model.etalase.Etalase;
-import com.tokopedia.core.shopinfo.models.etalasemodel.EtalaseModel;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.di.TopAdsGetEtalaseListDI;
+import com.tokopedia.seller.topads.domain.model.data.Etalase;
 import com.tokopedia.seller.topads.domain.model.other.RadioButtonItem;
 import com.tokopedia.seller.topads.view.listener.TopAdsEtalaseListView;
-import com.tokopedia.seller.topads.view.presenter.RetrofitPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsEtalaseListPresenterImpl;
+import com.tokopedia.seller.topads.view.presenter.TopAdsEtalaseListPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment<TopAdsEtalaseListPresenterImpl>
+public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment<TopAdsEtalaseListPresenter>
     implements TopAdsEtalaseListView{
 
     private int selectedEtalaseId;
+    private String shopId;
 
     public static TopAdsFilterEtalaseFragment createInstance(int etalaseID) {
         TopAdsFilterEtalaseFragment fragment = new TopAdsFilterEtalaseFragment();
@@ -46,17 +47,19 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
     @Override
     protected void initialVar() {
         super.initialVar();
+        shopId = new SessionHandler(context).getShopID();
         adapter.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
             public void onRetryCliked() {
-                presenter.populateEtalaseList();
+                presenter.populateEtalaseList(shopId);
             }
         });
     }
 
     @Override
     protected void initialPresenter() {
-        presenter = new TopAdsEtalaseListPresenterImpl(getActivity(), this);
+        presenter = TopAdsGetEtalaseListDI.createPresenter(getActivity());
+        presenter.attachView(this);
     }
 
     @Override
@@ -91,14 +94,14 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
     }
 
     @Override
-    public void onLoadSuccess(@NonNull List<com.tokopedia.core.shopinfo.models.etalasemodel.List> etalaseModelList) {
+    public void onLoadSuccess(@NonNull List<Etalase> etalaseList) {
         List<RadioButtonItem> radioButtonItemList = new ArrayList<>();
         radioButtonItemList.add(getDefaultRadioButton());
 
-        for (int i = 0; i < etalaseModelList.size(); i++) {
+        for (int i = 0; i < etalaseList.size(); i++) {
             RadioButtonItem radioButtonItem = new RadioButtonItem();
-            radioButtonItem.setName(etalaseModelList.get(i).etalaseName);
-            radioButtonItem.setValue(etalaseModelList.get(i).etalaseId);
+            radioButtonItem.setName(etalaseList.get(i).getEtalaseName());
+            radioButtonItem.setValue(etalaseList.get(i).getEtalaseId());
             radioButtonItem.setPosition(i);
             radioButtonItemList.add(radioButtonItem);
         }
@@ -117,6 +120,7 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
 
         setAdapterData(radioButtonItemList);
     }
+
 
     private RadioButtonItem getDefaultRadioButton (){
         RadioButtonItem defaultRadioButton = new RadioButtonItem();
@@ -139,13 +143,19 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        presenter.populateEtalaseList();
+    public void showLoad(boolean isShow) {
+        adapter.showLoadingFull(isShow);
     }
 
     @Override
-    public void showLoad(boolean isShow) {
-        adapter.showLoadingFull(isShow);
+    public void onResume() {
+        super.onResume();
+        presenter.populateEtalaseList(shopId);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }

@@ -3,8 +3,7 @@ package com.tokopedia.seller.topads.view.listener;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.core.product.model.etalase.Etalase;
-import com.tokopedia.core.shopinfo.models.etalasemodel.EtalaseModel;
+import com.tokopedia.seller.topads.domain.model.data.Etalase;
 
 import java.util.List;
 
@@ -13,7 +12,7 @@ import java.util.List;
  */
 public interface TopAdsEtalaseListView extends CustomerView {
 
-    void onLoadSuccess(@NonNull List<com.tokopedia.core.shopinfo.models.etalasemodel.List> etalaseList);
+    void onLoadSuccess(@NonNull List<Etalase> etalaseList);
 
     void onLoadSuccessEtalaseEmpty();
 
