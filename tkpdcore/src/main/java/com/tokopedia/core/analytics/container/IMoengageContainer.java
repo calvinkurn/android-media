@@ -7,4 +7,6 @@ package com.tokopedia.core.analytics.container;
 public interface IMoengageContainer
 {
     void initialize();
+
+    void isExistingUser(boolean bol);
 }

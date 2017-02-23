@@ -31,6 +31,24 @@ public class MoEngageContainer implements IMoengageContainer {
     }
 
     @Override
+    public void isExistingUser(boolean bol) {
+        Single<Boolean> isExistingUser = Single.just(bol);
+
+        executor(isExistingUser, new SingleSubscriber<Boolean>() {
+            @Override
+            public void onSuccess(Boolean value) {
+                CommonUtils.dumper("MoEngage check is existing user");
+                MoEHelper.getInstance(context).setExistingUser(value);
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                error.printStackTrace();
+            }
+        });
+    }
+
+    @Override
     public void initialize() {
         Single<Void> initTask = Single.create(new Single.OnSubscribe<Void>() {
             @Override

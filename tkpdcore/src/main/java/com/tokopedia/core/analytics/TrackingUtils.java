@@ -45,6 +45,9 @@ public class TrackingUtils extends TrackingConfig {
         getAFEngine().sendTrackEvent(AppScreen.convertAFActivityEvent(tag), afValue);
     }
 
+    public static void setMoEngageExistingUser(){
+        getMoEngine().isExistingUser(SessionHandler.isV4Login(MainApplication.getAppContext()));
+    }
 
     public static void fragmentBasedAFEvent(String tag){
         Map<String, Object> afValue = new HashMap<>();
