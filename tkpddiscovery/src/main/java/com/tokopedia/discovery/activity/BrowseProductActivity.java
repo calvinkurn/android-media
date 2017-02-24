@@ -1048,8 +1048,10 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
             @Override
             public void onSuccess(int type, Pair<String, ? extends ObjContainer> data) {
+                Log.d(TAG, "onSuccess: ");
                 switch (type) {
                     case DiscoveryListener.CATEGY_HEADER:
+                        Log.d(TAG, "onSuccess: ");
                       /*  Log.d(TAG, "fetch " + data.getModel1());
                         ObjContainer model2 = data.getModel2();
                         HotListBannerModel.HotListBannerContainer hotListBannerContainer = (HotListBannerModel.HotListBannerContainer) model2;

@@ -64,6 +64,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
         discoveryService = new DiscoveryService();
         hotListService = new HotListService();
         topAdsService = new TopAdsService();
+        hadesService = new HadesService();
         searchSuggestionService = new SearchSuggestionService();
     }
 
@@ -130,6 +131,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
 
                             @Override
                             public void onError(Throwable e) {
+                                Log.d(TAG, "onError: ");
                                /* Log.e(DiscoveryService.TAG, DiscoveryService.TAG + " -> " + e.getMessage());
                                 Pair<String, ErrorContainer> pair = new Pair<>(
                                         DiscoveryListener.ERRORCONTAINER,
@@ -140,7 +142,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
 
                             @Override
                             public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
-
+                                Log.d(TAG, "onNext: ");
                                 /*HotListBannerModel hotListBannerModel = new GsonBuilder().create().fromJson(tkpdResponseResponse.body().getStringData(), HotListBannerModel.class);
                                 Pair<String, HotListBannerModel.HotListBannerContainer> pair =
                                         new Pair<>(

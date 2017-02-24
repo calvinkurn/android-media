@@ -244,9 +244,10 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                         view.initSectionAdapter(visibleTab);
                         view.setupWithViewPager();
                     } else if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
-                        visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, view.VISIBLE_ON);
+                        /*visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, view.VISIBLE_ON);
                         view.initSectionAdapter(visibleTab);
-                        view.setupWithTabViewPager();
+                        view.setupWithTabViewPager();*/
+                        view.setupCategory(browseProductModel);
                     } else {
                         visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, view.VISIBLE_ON);
                         visibleTab.put(BrowserSectionsPagerAdapter.TOKO, view.VISIBLE_ON);

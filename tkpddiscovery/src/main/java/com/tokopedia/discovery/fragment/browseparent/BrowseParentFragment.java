@@ -277,6 +277,11 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     }
 
     @Override
+    public void setupCategory(BrowseProductModel browseProductModel) {
+        ((BrowseProductActivity) getActivity()).sendCategory(browseProductModel.result.departmentId);
+    }
+
+    @Override
     public void setupWithTabViewPager() {
         ((BrowseProductActivity) getActivity()).removeEmptyState();
         setupWithViewPager();
