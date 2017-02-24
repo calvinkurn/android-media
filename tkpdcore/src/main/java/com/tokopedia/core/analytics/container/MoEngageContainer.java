@@ -31,13 +31,13 @@ public class MoEngageContainer implements IMoengageContainer {
     }
 
     @Override
-    public void isExistingUser(boolean bol) {
+    public void isExistingUser(final boolean bol) {
         Single<Boolean> isExistingUser = Single.just(bol);
 
         executor(isExistingUser, new SingleSubscriber<Boolean>() {
             @Override
             public void onSuccess(Boolean value) {
-                CommonUtils.dumper("MoEngage check is existing user");
+                CommonUtils.dumper("MoEngage check is existing user "+bol);
                 MoEHelper.getInstance(context).setExistingUser(value);
             }
 

@@ -18,6 +18,8 @@ import android.text.TextUtils;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.moengage.push.PushManager;
+import com.moengage.pushbase.push.MoEngageNotificationUtils;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
@@ -45,6 +47,7 @@ import com.tokopedia.core.var.TkpdState;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
@@ -73,16 +76,26 @@ public class FCMMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage message) {
-        mNotificationAnalyticsReceiver = new NotificationAnalyticsReceiver();
-        Bundle data = GCMUtils.convertMap(message.getData());
 
-        CommonUtils.dumper("FCM messaging "+data.toString());
-        cacheManager = new FCMCacheManager(this);
-        if (cacheManager.isAllowToHandleNotif(data)) {
-            cacheManager.setCache(this);
-            tunnelData(data);
+        if (message != null){
+            Map<String, String> pushPayload = message.getData();
+            if (MoEngageNotificationUtils.isFromMoEngagePlatform(pushPayload)){
+                CommonUtils.dumper("FCM messaging moengage "+message.getData().toString());
+                PushManager.getInstance().getPushHandler().handlePushPayload(getApplicationContext(), pushPayload);
+            }else {
+                mNotificationAnalyticsReceiver = new NotificationAnalyticsReceiver();
+                Bundle data = GCMUtils.convertMap(message.getData());
+
+                CommonUtils.dumper("FCM messaging "+data.toString());
+                cacheManager = new FCMCacheManager(this);
+                if (cacheManager.isAllowToHandleNotif(data)) {
+                    cacheManager.setCache(this);
+                    tunnelData(data);
+                }
+                mNotificationAnalyticsReceiver.onNotificationReceived(data);
+            }
         }
-        mNotificationAnalyticsReceiver.onNotificationReceived(data);
+
     }
 
     private void tunnelData(Bundle data) {

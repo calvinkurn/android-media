@@ -134,7 +134,10 @@ dependencies {
 
     compile rootProject.ext.analyticsDependencies.appsflyer
     compile rootProject.ext.analyticsDependencies.localytics
-    compile rootProject.ext.analyticsDependencies.moengage
+    compile (rootProject.ext.analyticsDependencies.moengage){
+        exclude group: 'com.moengage', module: 'moe-push-gcm'
+    }
+    compile rootProject.ext.analyticsDependencies.moengageFCM
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
