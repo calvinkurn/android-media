@@ -1,8 +1,10 @@
 package com.tokopedia.seller.shopscore.data.repository;
 
 import com.tokopedia.seller.shopscore.data.factory.ShopScoreFactory;
-import com.tokopedia.seller.shopscore.data.source.ShopScoreDataSource;
+import com.tokopedia.seller.shopscore.data.source.ShopScoreDetailDataSource;
+import com.tokopedia.seller.shopscore.data.source.ShopScoreSummaryDataSource;
 import com.tokopedia.seller.shopscore.domain.ShopScoreRepository;
+import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailDomainModel;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
 
 import rx.Observable;
@@ -19,8 +21,14 @@ public class ShopScoreRepositoryImpl implements ShopScoreRepository {
     }
 
     @Override
-    public Observable<ShopScoreMainDomainModel> getShopScoreMainData() {
-        ShopScoreDataSource shopScoreDataSource = shopScoreFactory.createShopScoreSource();
-        return shopScoreDataSource.getShopScoreMainData();
+    public Observable<ShopScoreMainDomainModel> getShopScoreSummary() {
+        ShopScoreSummaryDataSource shopScoreSummaryDataSource = shopScoreFactory.createShopScoreSummarySource();
+        return shopScoreSummaryDataSource.getShopScoreSummary();
+    }
+
+    @Override
+    public Observable<ShopScoreDetailDomainModel> getShopScoreDetail() {
+        ShopScoreDetailDataSource shopScoreDetailDataSource = shopScoreFactory.createShopScoreDetailSource();
+        return shopScoreDetailDataSource.getShopScoreDetail();
     }
 }

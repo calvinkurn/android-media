@@ -14,4 +14,6 @@ public interface ShopScoreApi {
     @GET(TkpdBaseURL.GoldMerchant.GET_SHOP_SCORE_SUMMARY + "{shopId}")
     Observable<String> getShopScoreSummary(@Path("shopId") String shopId);
 
+    @GET(TkpdBaseURL.GoldMerchant.GET_SHOP_SCORE_SUMMARY + "{shopId}")
+    Observable<String> getShopScoreDetail(@Path("shopId") String shopID);
 }

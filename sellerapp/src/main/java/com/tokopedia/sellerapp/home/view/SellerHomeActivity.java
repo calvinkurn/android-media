@@ -75,6 +75,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.seller.myproduct.ManageProduct;
+import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
 import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
@@ -103,6 +104,7 @@ import com.tokopedia.sellerapp.home.utils.ShopTransactionController;
 import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
 import com.tokopedia.sellerapp.home.view.presenter.SellerHomePresenterImpl;
 import com.tokopedia.sellerapp.home.view.widget.ShopScoreWidget;
+import com.tokopedia.sellerapp.home.view.widget.ShopScoreWidgetCallback;
 
 import org.json.JSONObject;
 
@@ -122,7 +124,7 @@ public class SellerHomeActivity
         extends AppCompatActivity
         implements GCMHandlerListener,
         SessionHandler.onLogoutListener,
-        SellerHomeView {
+        SellerHomeView, ShopScoreWidgetCallback {
     public static final String messageTAG = SellerHomeActivity.class.getSimpleName();
     public static final String STUART = "STUART";
     private static final String ARG_TRUECALLER_PACKAGE = "com.truecaller";
@@ -262,6 +264,7 @@ public class SellerHomeActivity
         }
         setContentView(R.layout.activity_seller_home);
         ButterKnife.bind(this);
+        shopScoreWidget.setCallback(this);
 
         ViewTreeObserver vto = smoothAppBarLayout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -995,6 +998,12 @@ public class SellerHomeActivity
             app_installed = false;
         }
         return app_installed;
+    }
+
+    @Override
+    public void goToShopScoreDetail() {
+        Intent intent = new Intent(this, ShopScoreDetailActivity.class);
+        startActivity(intent);
     }
 
     public static class SellerHomeNewOrderView {

@@ -18,6 +18,7 @@ import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModelData;
 public class ShopScoreWidget extends FrameLayout {
     private ShopScoreMainDetailView shopScoreMainDetailView;
     private TextView shopScoreTitleWidget;
+    private ShopScoreWidgetCallback callback;
 
     public ShopScoreWidget(Context context) {
         super(context);
@@ -58,7 +59,7 @@ public class ShopScoreWidget extends FrameLayout {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                callback.goToShopScoreDetail();
             }
         };
     }
@@ -83,4 +84,7 @@ public class ShopScoreWidget extends FrameLayout {
     }
 
 
+    public void setCallback(ShopScoreWidgetCallback callback) {
+        this.callback = callback;
+    }
 }

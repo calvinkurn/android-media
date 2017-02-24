@@ -1,7 +1,8 @@
 package com.tokopedia.seller.shopscore.data.factory;
 
 import com.google.gson.Gson;
-import com.tokopedia.seller.shopscore.data.source.ShopScoreDataSource;
+import com.tokopedia.seller.shopscore.data.source.ShopScoreDetailDataSource;
+import com.tokopedia.seller.shopscore.data.source.ShopScoreSummaryDataSource;
 import com.tokopedia.seller.shopscore.data.source.cloud.ShopScoreCloud;
 
 /**
@@ -18,7 +19,11 @@ public class ShopScoreFactory {
         this.gson = gson;
     }
 
-    public ShopScoreDataSource createShopScoreSource() {
-        return new ShopScoreDataSource(shopScoreCloud, gson);
+    public ShopScoreSummaryDataSource createShopScoreSummarySource() {
+        return new ShopScoreSummaryDataSource(shopScoreCloud, gson);
+    }
+
+    public ShopScoreDetailDataSource createShopScoreDetailSource() {
+        return new ShopScoreDetailDataSource(shopScoreCloud);
     }
 }

@@ -11,7 +11,7 @@ import rx.functions.Func1;
 /**
  * Created by sebastianuskh on 2/24/17.
  */
-public class ShopScoreMainMapper implements Func1<ShopScoreMainDataServiceModel, ShopScoreMainDomainModel> {
+public class ShopScoreSummaryMapper implements Func1<ShopScoreMainDataServiceModel, ShopScoreMainDomainModel> {
     @Override
     public ShopScoreMainDomainModel call(ShopScoreMainDataServiceModel serviceModel) {
         Data serviceModelData = serviceModel.getData();

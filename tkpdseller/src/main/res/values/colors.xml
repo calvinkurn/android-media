@@ -16,4 +16,6 @@
     <color name="font_top_ads_black_54">#8C000000</color>
     <color name="font_top_ads_black_70">#B3000000</color>
 
+    <color name="tkpd_divider">#E0E0E0</color>
+
 </resources>

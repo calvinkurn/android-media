@@ -17,7 +17,11 @@ public class ShopScoreCloud {
         this.sessionHandler = sessionHandler;
     }
 
-    public Observable<String> getShopScoreMainData() {
+    public Observable<String> getShopScoreSummaryData() {
         return api.getShopScoreSummary(sessionHandler.getShopID());
+    }
+
+    public Observable<String> getShopScoreDetailData() {
+        return api.getShopScoreDetail(sessionHandler.getShopID());
     }
 }
