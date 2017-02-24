@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -408,8 +409,10 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
                 FacebookCallback<Sharer.Result>() {
                     @Override
                     public void onSuccess(Sharer.Result result) {
-                        SnackbarManager.make(getActivity(), getString(R.string.success_share_product)
-                                , Snackbar.LENGTH_SHORT).show();
+                        SnackbarManager.make(
+                                getActivity(),
+                                getString(R.string.success_share_product),
+                                Snackbar.LENGTH_SHORT).show();
                         presenter.setFacebookCache();
                     }
 
@@ -424,13 +427,19 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
                 });
 
         if (ShareDialog.canShow(ShareLinkContent.class)) {
-            if (shareData != null && shareData.getUri() != null) {
+            if (shareData != null && !TextUtils.isEmpty(shareData.getUri())) {
                 ShareLinkContent.Builder linkBuilder = new ShareLinkContent.Builder()
-                        .setContentTitle(shareData.getName())
-                        .setContentDescription(shareData.getUri())
-                        .setContentUrl(Uri.parse(shareData.getUri()))
-                        .setQuote(shareData.getDescription());
-                if (shareData.getImgUri() != null) {
+                        .setContentUrl(Uri.parse(shareData.getUri()));
+                if (!TextUtils.isEmpty(shareData.getName())) {
+                    linkBuilder.setContentTitle(shareData.getName());
+                }
+                if (!TextUtils.isEmpty(shareData.getTextContent())) {
+                    linkBuilder.setContentDescription(shareData.getTextContent());
+                }
+                if (!TextUtils.isEmpty(shareData.getDescription())) {
+                    linkBuilder.setQuote(shareData.getDescription());
+                }
+                if (!TextUtils.isEmpty(shareData.getImgUri())) {
                     linkBuilder.setImageUrl(Uri.parse(shareData.getImgUri()));
                 }
                 ShareLinkContent linkContent = linkBuilder.build();
