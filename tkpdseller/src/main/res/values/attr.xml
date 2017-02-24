@@ -135,4 +135,11 @@
         <attr name="chart_setSpacing" format="dimension"/>
     </declare-styleable>
 
+    <!-- Top ads widget radio expand view-->
+    <declare-styleable name="TopAdsRadioExpand" >
+        <attr name="title_radio" format="reference|string" />
+        <attr name="checked" format="boolean"/>
+        <attr name="radio_id" format="reference|integer" />
+    </declare-styleable>
+
 </resources>

@@ -1,5 +1,7 @@
 package com.tokopedia.seller.topads.view.presenter;
 
+import android.support.annotation.NonNull;
+
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsCheckExistGroupUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
@@ -7,34 +9,80 @@ import com.tokopedia.seller.topads.domain.model.data.GroupAd;
 import com.tokopedia.seller.topads.view.listener.TopAdsManagePromoProductView;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by zulfikarrahman on 2/16/17.
  */
 public class TopAdsManagePromoProductPresenterImpl extends BaseDaggerPresenter<TopAdsManagePromoProductView> implements TopAdsManagePromoProductPresenter {
 
+    public static final int TIME_DELAY = 300;
     private final TopAdsSearchGroupAdsNameUseCase topAdsSearchGroupAdsNameUseCase;
     private final TopAdsCheckExistGroupUseCase topAdsCheckExistGroupUseCase;
+    private final Subscription subscriptionCheckGroupExist;
+    private final Subscription subscriptionSearchGroupName;
+    private QueryListener listenerCheckGroupExist;
+    private QueryListener listenerSearchGroupName;
 
     public TopAdsManagePromoProductPresenterImpl(TopAdsSearchGroupAdsNameUseCase topAdsSearchGroupAdsNameUseCase,
                                                  TopAdsCheckExistGroupUseCase topAdsCheckExistGroupUseCase) {
         this.topAdsSearchGroupAdsNameUseCase = topAdsSearchGroupAdsNameUseCase;
         this.topAdsCheckExistGroupUseCase = topAdsCheckExistGroupUseCase;
-    }
 
+        subscriptionCheckGroupExist = Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(final Subscriber<? super String> subscriber) {
+                listenerCheckGroupExist = new QueryListener() {
+                    @Override
+                    public void getQueryString(String string) {
+                        subscriber.onNext(string);
+                    }
+                };
+            }
+        }).debounce(TIME_DELAY, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getSubscriberDebounceCheckGroupExist());
+
+        subscriptionSearchGroupName =Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(final Subscriber<? super String> subscriber) {
+                listenerSearchGroupName = new QueryListener() {
+                    @Override
+                    public void getQueryString(String string) {
+                        subscriber.onNext(string);
+                    }
+                };
+            }
+        }).debounce(300, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getSubscriberDebounceSearchGroupName());
+
+    }
 
     @Override
     public void checkIsGroupExist(String keyword) {
-        topAdsCheckExistGroupUseCase.execute(TopAdsSearchGroupAdsNameUseCase.createRequestParams(keyword)
-                , getSubscriberCheckGroupExist());
+        if (listenerCheckGroupExist != null) {
+            listenerCheckGroupExist.getQueryString(keyword);
+        }
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        subscriptionCheckGroupExist.unsubscribe();
+        subscriptionSearchGroupName.unsubscribe();
     }
 
     @Override
     public void searchGroupName(String keyword) {
-        topAdsSearchGroupAdsNameUseCase.execute(TopAdsSearchGroupAdsNameUseCase.createRequestParams(keyword)
-                , getSubscriberSearchGroupName());
+        if(listenerSearchGroupName != null){
+            listenerSearchGroupName.getQueryString(keyword);
+        }
     }
 
     private Subscriber<List<GroupAd>> getSubscriberSearchGroupName() {
@@ -46,12 +94,12 @@ public class TopAdsManagePromoProductPresenterImpl extends BaseDaggerPresenter<T
 
             @Override
             public void onError(Throwable e) {
-
+                getView().onGetGroupAdListError(e.getMessage());
             }
 
             @Override
             public void onNext(List<GroupAd> groupAds) {
-
+                getView().onGetGroupAdList(groupAds);
             }
         };
     }
@@ -70,12 +118,60 @@ public class TopAdsManagePromoProductPresenterImpl extends BaseDaggerPresenter<T
 
             @Override
             public void onNext(Boolean isExist) {
-                if(isExist) {
+                if (isExist) {
                     getView().onGroupExist();
-                }else{
+                } else {
                     getView().onGroupNotExist();
                 }
             }
         };
+    }
+
+    @NonNull
+    private Subscriber<String> getSubscriberDebounceCheckGroupExist() {
+        return new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(String string) {
+                if (!string.equals("")) {
+                    topAdsCheckExistGroupUseCase.execute(TopAdsSearchGroupAdsNameUseCase.createRequestParams(string)
+                            , getSubscriberCheckGroupExist());
+                }
+            }
+        };
+    }
+
+    @NonNull
+    private Subscriber<String> getSubscriberDebounceSearchGroupName() {
+        return new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(String string) {
+                if (!string.equals("")) {
+                    topAdsSearchGroupAdsNameUseCase.execute(TopAdsSearchGroupAdsNameUseCase.createRequestParams(string)
+                            , getSubscriberSearchGroupName());
+                }
+            }
+        };
+    }
+
+    private abstract class QueryListener {
+        public abstract void getQueryString(String string);
     }
 }

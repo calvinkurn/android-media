@@ -85,16 +85,22 @@ public abstract class TopAdsBaseManagePromoProductFragment extends BasePresenter
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(validateForm()) {
-                    String valueOption = getValueOption();
-                }else{
-
-                }
+                onValidateForm();
             }
         };
     }
 
-    protected abstract boolean validateForm();
+    protected void onErrorSubmit() {
 
-    protected abstract String getValueOption();
+    }
+
+    protected void showLoading() {
+
+    }
+
+    protected void onSubmitForm(int choiceGroup, int choosenId, String groupName) {
+
+    }
+
+    protected abstract void onValidateForm();
 }

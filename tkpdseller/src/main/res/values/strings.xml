@@ -113,13 +113,6 @@
     <string name="top_ads_empty_group_promo_content_not_empty_text">Produk yang telah anda promosikan ada di dalam items</string>
     <string name="top_ads_empty_group_promo_content_item_no_text">Lihat %1$s Promo Produk</string>
 
-    <!-- Top Ads New Promo -->
-    <string name="label_top_ads_group_name">Nama Grup</string>
-    <string name="label_top_ads_choose_group">Pilih Grup</string>
-    <string name="label_top_ads_create_promo_new_group">Buat promo grup baru</string>
-    <string name="label_top_ads_create_promo_from_exist_group">Promo grup yang ada</string>
-    <string name="label_top_ads_create_promo_not_in_group">Tidak masuk ke promo grup</string>
-
     <!-- Top Ads Edit Promo -->
     <string name="label_top_ads_add_product">Tambah Produk</string>
     <string name="label_top_ads_max_price_hint">Biaya Maks (Rp)</string>
@@ -193,7 +186,13 @@
     <string name="positive_button_dialog">Ya</string>
     <string name="negative_button_dialog">Tidak</string>
 
-    <!-- Top Ads add promo -->
+    <!-- Top Ads New Promo -->
+    <string name="label_top_ads_group_name">Nama Grup</string>
+    <string name="label_top_ads_choose_group">Pilih Grup</string>
+    <string name="label_top_ads_create_promo_new_group">Buat promo grup baru</string>
+    <string name="label_top_ads_create_promo_from_exist_group">Promo grup yang ada</string>
+    <string name="label_top_ads_create_promo_not_in_group">Tidak masuk ke promo grup</string>
     <string name="top_ads_title_grup_exist">Nama grup sudah ada</string>
+    <string name="label_top_ads_error_choose_one_group">Pilih salah satu grup</string>
 
 </resources>
