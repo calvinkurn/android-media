@@ -67,7 +67,6 @@ import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.EtalaseDB;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
-import com.tokopedia.seller.myproduct.ManageProductPermissionsDispatcher;
 import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.myproduct.model.ActResponseModelData;
 import com.tokopedia.core.myproduct.model.GetEtalaseModel;

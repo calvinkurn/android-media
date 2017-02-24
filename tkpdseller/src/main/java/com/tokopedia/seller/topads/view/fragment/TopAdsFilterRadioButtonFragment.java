@@ -31,9 +31,10 @@ public abstract class TopAdsFilterRadioButtonFragment<P> extends TopAdsFilterCon
         return R.layout.fragment_top_ads_filter_content_group_name;
     }
 
+
     @Override
-    protected void initialVar() {
-        super.initialVar();
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         adapter = new TopAdsBasicRadioButtonAdapter();
     }
 

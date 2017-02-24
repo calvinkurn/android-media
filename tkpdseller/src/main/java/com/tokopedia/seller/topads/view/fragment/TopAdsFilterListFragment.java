@@ -77,7 +77,8 @@ public class TopAdsFilterListFragment extends BasePresenterFragment implements T
     }
 
     @Override
-    protected void initialVar() {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         adapter = new TopAdsFilterAdapter();
     }
 
@@ -115,6 +116,10 @@ public class TopAdsFilterListFragment extends BasePresenterFragment implements T
 
     }
 
+    @Override
+    protected void initialVar() {
+
+    }
 
 
     @Override

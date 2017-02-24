@@ -1,7 +1,7 @@
 package com.tokopedia.seller.topads.data.repository;
 
 import com.tokopedia.seller.topads.data.factory.TopAdsEtalaseFactory;
-import com.tokopedia.seller.topads.data.source.cloud.TopAdsShopDataSource;
+import com.tokopedia.seller.topads.data.source.TopAdsEtalaseDataSource;
 import com.tokopedia.seller.topads.domain.TopAdsEtalaseListRepository;
 import com.tokopedia.seller.topads.domain.model.data.Etalase;
 
@@ -23,9 +23,9 @@ public class TopAdsEtalaseListRepositoryImpl implements TopAdsEtalaseListReposit
 
     @Override
     public Observable<List<Etalase>> getEtalaseList(String shopId) {
-        TopAdsShopDataSource topAdsShopDataSource =
+        TopAdsEtalaseDataSource topAdsEtalaseDataSource =
                 topAdsEtalaseFactory.createEtalaseDataSource();
-        return topAdsShopDataSource.getEtalaseList(shopId);
+        return topAdsEtalaseDataSource.getEtalaseList(shopId);
     }
 
 }

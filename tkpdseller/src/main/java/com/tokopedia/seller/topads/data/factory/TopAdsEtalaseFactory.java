@@ -1,29 +1,33 @@
 package com.tokopedia.seller.topads.data.factory;
 
-import android.content.Context;
-
 import com.tokopedia.seller.topads.data.mapper.TopAdsEtalaseListMapper;
-import com.tokopedia.seller.topads.data.mapper.TopAdsSearchGroupMapper;
-import com.tokopedia.seller.topads.data.source.cloud.TopAdsGroupAdsDataSource;
-import com.tokopedia.seller.topads.data.source.cloud.TopAdsShopDataSource;
-import com.tokopedia.seller.topads.data.source.cloud.apiservice.api.TopAdsManagementApi;
+import com.tokopedia.seller.topads.data.source.TopAdsEtalaseDataSource;
+import com.tokopedia.seller.topads.data.source.cloud.TopAdsEtalaseCloudDataSource;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.api.TopAdsShopApi;
+import com.tokopedia.seller.topads.data.source.local.TopAdsEtalaseCacheDataSource;
 
 /**
- * Created by zulfikarrahman on 2/20/17.
+ * Created by Hendry on 2/24/17.
  */
 public class TopAdsEtalaseFactory {
 
     private final TopAdsShopApi topAdsShopApi;
     private final TopAdsEtalaseListMapper topAdsEtalaseListMapper;
+    private final TopAdsEtalaseCacheDataSource topAdsShopCacheDataSource;
 
-    public TopAdsEtalaseFactory( TopAdsShopApi topAdsShopApi,
-                                TopAdsEtalaseListMapper topAdsEtalaseListMapper) {
+    public TopAdsEtalaseFactory(TopAdsShopApi topAdsShopApi,
+                                TopAdsEtalaseListMapper topAdsEtalaseListMapper,
+                                TopAdsEtalaseCacheDataSource topAdsShopCacheDataSource) {
         this.topAdsShopApi = topAdsShopApi;
         this.topAdsEtalaseListMapper = topAdsEtalaseListMapper;
+        this.topAdsShopCacheDataSource= topAdsShopCacheDataSource;
     }
 
-    public TopAdsShopDataSource createEtalaseDataSource() {
-        return new TopAdsShopDataSource(topAdsShopApi, topAdsEtalaseListMapper);
+    public TopAdsEtalaseDataSource createEtalaseDataSource() {
+        if (TopAdsEtalaseCacheDataSource.isCacheExpired()) {
+            return new TopAdsEtalaseCloudDataSource(topAdsShopApi,
+                    topAdsEtalaseListMapper);
+        }
+        return topAdsShopCacheDataSource;
     }
 }

@@ -42,28 +42,10 @@ import rx.subscriptions.CompositeSubscription;
 public class TopAdsEtalaseListPresenterImpl extends BaseDaggerPresenter<TopAdsEtalaseListView>
         implements TopAdsEtalaseListPresenter {
 
-    // TODO using interactor and clean code architecture
-    // TODO refactor shop service
-
-//    CompositeSubscription compositeSubscription;
-//    ShopService shopService = new ShopService();
-
     private TopAdsEtalaseListUseCase topAdsEtalaseListUseCase;
     public TopAdsEtalaseListPresenterImpl(TopAdsEtalaseListUseCase topAdsEtalaseListUseCase) {
         this.topAdsEtalaseListUseCase = topAdsEtalaseListUseCase;
-
-//        shopService = new ShopService();
-//        compositeSubscription = new CompositeSubscription();
     }
-
-//    @Override
-//    public void unSubscribe() {
-//        if (compositeSubscription != null) {
-//            compositeSubscription.clear();
-//            compositeSubscription = null;
-//        }
-//
-//    }
 
     @Override
     public void populateEtalaseList(String shopId) {
@@ -75,17 +57,6 @@ public class TopAdsEtalaseListPresenterImpl extends BaseDaggerPresenter<TopAdsEt
                 TopAdsEtalaseListUseCase.createRequestParams(shopId),
                 getShopEtalaseSubscriber()
         );
-//        Map<String, String> params = new ArrayMap<>();
-//        params.put("shop_id", shopId);
-//
-//        Observable<Response<TkpdResponse>> observable = shopService.getApi().getShopEtalase(
-//                AuthUtil.generateParams(
-//                        MainApplication.getAppContext(), params));
-//        Subscription subscription = observable
-//                .subscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(getShopEtalaseSubscriber());
-//        compositeSubscription.add(subscription);
     }
 
     private Subscriber<List<Etalase>> getShopEtalaseSubscriber() {

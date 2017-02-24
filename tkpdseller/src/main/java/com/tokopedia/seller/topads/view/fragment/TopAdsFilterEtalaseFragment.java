@@ -45,8 +45,8 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
     }
 
     @Override
-    protected void initialVar() {
-        super.initialVar();
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         shopId = new SessionHandler(context).getShopID();
         adapter.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
@@ -58,7 +58,7 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
 
     @Override
     protected void initialPresenter() {
-        presenter = TopAdsGetEtalaseListDI.createPresenter(getActivity());
+        presenter = TopAdsGetEtalaseListDI.createPresenter();
         presenter.attachView(this);
     }
 
@@ -101,7 +101,7 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
         for (int i = 0; i < etalaseList.size(); i++) {
             RadioButtonItem radioButtonItem = new RadioButtonItem();
             radioButtonItem.setName(etalaseList.get(i).getEtalaseName());
-            radioButtonItem.setValue(etalaseList.get(i).getEtalaseId());
+            radioButtonItem.setValue(String.valueOf(etalaseList.get(i).getEtalaseId()));
             radioButtonItem.setPosition(i);
             radioButtonItemList.add(radioButtonItem);
         }

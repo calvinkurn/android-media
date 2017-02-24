@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +10,7 @@ import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -22,12 +24,14 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.GMNetworkErrorHelper;
 import com.tokopedia.seller.gmstat.views.OnActionClickListener;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.mapper.SearchProductMapper;
 import com.tokopedia.seller.topads.data.repository.TopAdsSearchProductRepositoryImpl;
 import com.tokopedia.seller.topads.data.source.cloud.CloudTopAdsSearchProductDataSource;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.domain.TopAdsSearchProductRepository;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsDefaultParamUseCase;
+import com.tokopedia.seller.topads.view.activity.TopAdsFilterProductPromoActivity;
 import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.exception.AddProductListException;
 import com.tokopedia.seller.topads.listener.AddProductListInterface;
@@ -57,6 +61,10 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     private final String snippetPromoted
             = "Promoted";
     protected int totalItem;
+
+    public static final int FILTER_REQ_CODE = 100;
+    private int selectedFilterEtalaseId;
+    private int selectedFilterStatus;
 
     TopAdsManagementService topAdsSearchProductService;
 
@@ -105,6 +113,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     private void fetchData() {
+        // TODO fetch data by filter of selectedFilterStatus and selectedFilterEtalaseId
         topAdsAddProductListPresenter.searchProduct();
     }
 
@@ -127,12 +136,14 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     @Override
     public void onSaveState(Bundle state) {
-
+        state.putInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS_PROMO, selectedFilterStatus);
+        state.putInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_ETALASE, selectedFilterEtalaseId);
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-
+        selectedFilterStatus =  savedState.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS_PROMO, 0);
+        selectedFilterEtalaseId =  savedState.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_ETALASE, 0);
     }
 
     @Override
@@ -280,6 +291,36 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.menu_filter){
+            TopAdsFilterProductPromoActivity.start(
+                    this,
+                    getActivity(),
+                    FILTER_REQ_CODE,
+                    selectedFilterStatus,
+                    selectedFilterEtalaseId);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == FILTER_REQ_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                selectedFilterStatus = data.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS_PROMO, 0);
+                selectedFilterEtalaseId = data.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_ETALASE, 0);
+
+            }
+            else {
+                selectedFilterStatus = 0;
+                selectedFilterEtalaseId = 0;
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     public boolean onQueryTextSubmit(String query) {
         fetchDataWithQuery(query);
         return true;
@@ -292,7 +333,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     public void fetchDataWithQuery(String newText) {
-        Log.d(TAG, "fetchDataWithQuery " + newText);
+        // Log.d(TAG, "fetchDataWithQuery " + newText);
         if (newText != null && newText.isEmpty()) {
             topAdsAddProductListPresenter.setQuery(null);
         } else {

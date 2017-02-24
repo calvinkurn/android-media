@@ -20,7 +20,14 @@ public class Etalase {
     private Integer etalaseNumProduct;
     @SerializedName("etalase_id")
     @Expose
-    private String etalaseId;
+    private Integer etalaseId;
+
+    public Etalase (Integer etalaseId, String etalaseName, int etalaseNumProduct, int etalaseTotalProduct){
+        this.etalaseId = etalaseId;
+        this.etalaseName = etalaseName;
+        this.etalaseNumProduct = etalaseNumProduct;
+        this.etalaseTotalProduct = etalaseTotalProduct;
+    }
 
     public Integer getEtalaseTotalProduct() {
         return etalaseTotalProduct;
@@ -46,11 +53,11 @@ public class Etalase {
         this.etalaseNumProduct = etalaseNumProduct;
     }
 
-    public String getEtalaseId() {
+    public Integer getEtalaseId() {
         return etalaseId;
     }
 
-    public void setEtalaseId(String etalaseId) {
+    public void setEtalaseId(Integer etalaseId) {
         this.etalaseId = etalaseId;
     }
 

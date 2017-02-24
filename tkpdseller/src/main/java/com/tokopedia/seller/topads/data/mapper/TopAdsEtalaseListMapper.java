@@ -29,4 +29,5 @@ public class TopAdsEtalaseListMapper implements Func1< Response<DataResponse<Dat
         }
         return Collections.emptyList();
     }
+
 }

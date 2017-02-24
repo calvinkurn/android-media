@@ -352,6 +352,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
         drawer = new DrawerVariableSeller(this);
         toolbar = new SellerToolbarVariable(this, sellerHomeToolbar);
         toolbar.createToolbarWithDrawer();
+        toolbar.setTitle("");
         drawer.setToolbar(toolbar);
         drawer.createDrawer();
         drawer.setEnabled(true);
