@@ -51,6 +51,7 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
     private static final int ACTION_UPSERT_RETUR_ADDRESS = 15;
     private static final int ACTION_DETAIL = 16;
     private static final int ACTION_INBOX = 17;
+    private static final int ACTION_OPEN_VIDEO = 18;
 
     @BindView(R2.id.webview)
     TkpdWebView webView;
@@ -266,6 +267,9 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
                     listener.setFailSaveRespond();
                     listener.setErrorWvLogin();
                     return true;
+                case ACTION_OPEN_VIDEO:
+                    listener.openVideoPlayer(parserUrl);
+                    return true;
                 default:
                     return true;
             }
@@ -321,7 +325,10 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
             } else if (isResolutionCenter(Uri.parse(url))
                     && Uri.parse(url).getQueryParameter("action").contains("inbox")) {
                 return ACTION_INBOX;
-            }  else {
+            } else if (isResolutionCenter(Uri.parse(url))
+                    && Uri.parse(url).getQueryParameter("action").contains("popup_video")) {
+                return ACTION_OPEN_VIDEO;
+            } else {
                 return 0;
             }
         } catch (NullPointerException e) {
