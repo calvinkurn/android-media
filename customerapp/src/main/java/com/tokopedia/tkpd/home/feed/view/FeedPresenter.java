@@ -67,6 +67,7 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
     public void loadMoreDataFeed() {
         if (pagingHandler.CheckNextPage()) {
             checkViewAttached();
+            getView().hideRefreshLoading();
             pagingHandler.nextPage();
             loadMoreFeedUseCase.execute(getFeedRequestParams(), new LoadMoreFeedSubcriber(isPageOdd()));
 
@@ -265,6 +266,8 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
                 }
             }
         }
+
+
 
     }
 }

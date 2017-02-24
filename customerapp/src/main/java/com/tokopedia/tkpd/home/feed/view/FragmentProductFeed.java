@@ -276,7 +276,11 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     public void showEmptyHistoryProduct() {
+        if(!(adapter!=null && adapter.getHistoryAdapter()!=null
+                && adapter.getHistoryAdapter().getData() !=null
+                && adapter.getHistoryAdapter().getData().size() > 0)){
         emptyHistoryView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
