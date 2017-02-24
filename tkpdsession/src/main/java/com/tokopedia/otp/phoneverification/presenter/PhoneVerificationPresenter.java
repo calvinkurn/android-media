@@ -10,4 +10,6 @@ public interface PhoneVerificationPresenter {
     void requestOtp();
 
     void requestOtpWithCall();
+
+    void onDestroyView();
 }

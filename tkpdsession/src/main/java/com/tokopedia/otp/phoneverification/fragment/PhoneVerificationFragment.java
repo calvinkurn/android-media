@@ -4,26 +4,39 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.design.widget.Snackbar;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextPaint;
 import android.text.TextWatcher;
+import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.R2;
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.phoneverification.activity.ChangePhoneNumberActivity;
+import com.tokopedia.otp.phoneverification.interactor.PhoneVerificationNetworkInteractorImpl;
 import com.tokopedia.otp.phoneverification.listener.PhoneVerificationFragmentView;
 import com.tokopedia.otp.phoneverification.presenter.PhoneVerificationPresenter;
 import com.tokopedia.otp.phoneverification.presenter.PhoneVerificationPresenterImpl;
 import com.tokopedia.session.R;
+import com.tokopedia.session.R2;
 
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by nisie on 2/22/17.
@@ -33,7 +46,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         implements PhoneVerificationFragmentView {
 
     private static final String CAN_REQUEST_OTP_IMMEDIATELY = "auto_request_otp";
-    private static final String FORMAT = "%02d:%02d";
+    private static final String FORMAT = "%02d";
 
     @BindView(R2.id.verify_button)
     TextView verifyButton;
@@ -61,6 +74,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     CountDownTimer countDownTimer;
     IncomingSmsReceiver smsReceiver;
+    TkpdProgressDialog progressDialog;
 
 
     public static PhoneVerificationFragment createInstance() {
@@ -94,7 +108,16 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     @Override
     protected void initialPresenter() {
-        presenter = new PhoneVerificationPresenterImpl(this);
+
+        Bundle bundle = new Bundle();
+        SessionHandler sessionHandler = new SessionHandler(getActivity());
+        bundle.putString(AccountsService.AUTH_KEY,
+                "Bearer " + sessionHandler.getAccessToken(getActivity()));
+
+
+        presenter = new PhoneVerificationPresenterImpl(this,
+                new CompositeSubscription(),
+                new PhoneVerificationNetworkInteractorImpl(new AccountsService(bundle)));
     }
 
     @Override
@@ -115,6 +138,28 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     @Override
     protected void initView(View view) {
         KeyboardHandler.DropKeyboard(getActivity(), getView());
+
+        phoneNumberEditText.setText(SessionHandler.getPhoneNumber());
+
+        Spannable spannable = new SpannableString(getString(com.tokopedia.core.R.string.action_send_otp_with_call));
+
+        spannable.setSpan(new ClickableSpan() {
+                              @Override
+                              public void onClick(View view) {
+
+                              }
+
+                              @Override
+                              public void updateDrawState(TextPaint ds) {
+                                  ds.setUnderlineText(true);
+                                  ds.setColor(getResources().getColor(com.tokopedia.core.R.color.tkpd_main_green));
+                              }
+                          }
+                , getString(com.tokopedia.core.R.string.action_send_otp_with_call).indexOf("kirim")
+                , getString(com.tokopedia.core.R.string.action_send_otp_with_call).length()
+                , 0);
+
+        requestOtpCallButton.setText(spannable, TextView.BufferType.SPANNABLE);
     }
 
     @Override
@@ -167,7 +212,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
                             MethodChecker.getDrawable(getActivity(), R.drawable.green_button));
                     verifyButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
 
-                }else{
+                } else {
                     verifyButton.setEnabled(false);
                     MethodChecker.setBackground(verifyButton,
                             MethodChecker.getDrawable(getActivity(), R.drawable.cards_grey));
@@ -189,10 +234,40 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     }
 
     @Override
-    public void onSuccessRequestOtp() {
+    public void onSuccessRequestOtp(String status) {
+        finishProgressDialog();
+        SnackbarManager.make(getActivity(), status, Snackbar.LENGTH_LONG).show();
         requestOtpCallButton.setVisibility(View.VISIBLE);
         inputOtpView.setVisibility(View.VISIBLE);
         startTimer();
+    }
+
+    @Override
+    public String getPhoneNumber() {
+        return phoneNumberEditText.getText().toString();
+    }
+
+    @Override
+    public void onErrorRequestOTP(String errorMessage) {
+        finishProgressDialog();
+        if (errorMessage.equals(""))
+            NetworkErrorHelper.showSnackbar(getActivity());
+        else
+            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    private void finishProgressDialog() {
+        if (progressDialog != null)
+            progressDialog.dismiss();
+    }
+
+    @Override
+    public void showProgressDialog() {
+        if (progressDialog == null)
+            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+
+        if (getActivity() != null)
+            progressDialog.showDialog();
     }
 
     private void startTimer() {
@@ -202,11 +277,8 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
                 MethodChecker.setBackground(requestOtpButton, getResources().getDrawable(com.tokopedia.core.R.drawable.btn_transparent_disable));
                 requestOtpButton.setEnabled(false);
                 requestOtpButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
-                requestOtpButton.setText("" + String.format(FORMAT,
-                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
-                                TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
-                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
-                                TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+                requestOtpButton.setText(getString(R.string.title_resend_otp_sms) +" ( " + String.format(FORMAT,
+                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished)) + " )");
             }
 
             public void onFinish() {
@@ -242,5 +314,6 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
             countDownTimer.cancel();
             countDownTimer = null;
         }
+        presenter.onDestroyView();
     }
 }

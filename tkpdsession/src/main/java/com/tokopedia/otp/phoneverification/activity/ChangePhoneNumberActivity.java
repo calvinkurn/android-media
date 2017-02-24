@@ -74,6 +74,7 @@ public class ChangePhoneNumberActivity extends BasePresenterActivity {
                 Intent intent = getIntent();
                 intent.putExtra(EXTRA_PHONE_NUMBER, phoneNumberEditText.getText().toString());
                 setResult(RESULT_OK, intent);
+                finish();
             }
         });
     }

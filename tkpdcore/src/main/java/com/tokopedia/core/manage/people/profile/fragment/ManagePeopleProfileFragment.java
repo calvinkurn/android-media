@@ -35,6 +35,7 @@ import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileFra
 import com.tokopedia.core.msisdn.fragment.PhoneManualVerificationDialog;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.NetworkErrorHelper.RetryClickedListener;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
@@ -299,7 +300,7 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     @Override
     public void showPhoneVerificationDialog(String userPhone) {
         SessionHandler.setPhoneNumber(userPhone);
-        ((BaseActivity) getActivity()).getPhoneVerificationUtil().showVerificationDialog();
+        startActivity(SessionRouter.getPhoneVerificationProfileActivityIntent(getActivity()));
     }
 
     @Override
