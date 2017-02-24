@@ -27,10 +27,12 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PhoneVerificationUtil;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shop.ShopEditorActivity;
 import com.tokopedia.seller.shop.presenter.ShopCreatePresenter;
 import com.tokopedia.seller.shop.presenter.ShopCreatePresenterImpl;
@@ -97,7 +99,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
 
     @OnClick(R2.id.verify_button)
     public void showVerificationDialog(){
-        ((BaseActivity)getActivity()).getPhoneVerificationUtil().showVerificationDialog();
+        startActivity(SessionRouter.getPhoneVerificationActivationActivityIntent(getActivity()));
     }
 
     @Override
@@ -374,50 +376,8 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
 
     @Override
     public void showPhoneVerification(boolean needVerify) {
-        if(needVerify){
-            if(((BaseActivity)getActivity()).getPhoneVerificationUtil() != null)
-                ((BaseActivity)getActivity()).getPhoneVerificationUtil().setMSISDNListener(new PhoneVerificationUtil.MSISDNListener() {
-                    @Override
-                    public void onMSISDNVerified() {
-                        showPhoneVerification(false);
-                    }
-
-                    @Override
-                    public void onMSISDNNotVerified() {
-
-                    }
-
-                    @Override
-                    public void onNoConnection() {
-
-                    }
-
-                    @Override
-                    public void onTimeout() {
-
-                    }
-
-                    @Override
-                    public void onFailAuth() {
-
-                    }
-
-                    @Override
-                    public void onNullData() {
-
-                    }
-
-                    @Override
-                    public void onThrowable(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onError(String error) {
-
-                    }
-                });
-        }
+        if(needVerify)
+            startActivity(SessionRouter.getPhoneVerificationActivationActivityIntent(getActivity()));
         submitButton.setVisibility((needVerify)? View.GONE : View.VISIBLE);
         verifyButton.setVisibility((needVerify)? View.VISIBLE : View.GONE);
         verifyInstruction.setVisibility((needVerify)? View.VISIBLE : View.GONE);

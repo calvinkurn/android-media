@@ -44,12 +44,10 @@ public class PhoneVerificationActivationActivity extends BasePresenterActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getPhoneVerificationUtil().setHasShown(true);
     }
 
     @Override
     protected void onResume() {
-        getPhoneVerificationUtil().setHasShown(true);
         super.onResume();
     }
 

@@ -71,7 +71,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     private GCMHandler gcmHandler;
     private GlobalCacheManager globalCacheManager;
     private LocalCacheHandler cache;
-    private PhoneVerificationUtil phoneVerificationUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +83,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         categoryDatabaseManager = new CategoryDatabaseManager();
         gcmHandler = new GCMHandler(this);
         hadesBroadcastReceiver = new HadesBroadcastReceiver();
-        phoneVerificationUtil = new PhoneVerificationUtil(this);
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         globalCacheManager = new GlobalCacheManager();
         Localytics.registerPush(gcmHandler.getSenderID());
@@ -116,14 +114,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         super.onPause();
         MainApplication.setActivityState(0);
         MainApplication.setActivityname(null);
-
-        if (!GlobalConfig.isSellerApp()) {
-            if (phoneVerificationUtil != null) {
-                phoneVerificationUtil.setHasShown(false);
-                phoneVerificationUtil.dismissDialog();
-
-            }
-        }
         HockeyAppHelper.unregisterManager();
     }
 
@@ -143,13 +133,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         initGTM();
         sendScreenAnalytics();
         verifyFetchDepartment();
-        if (!GlobalConfig.isSellerApp()) {
-            if (phoneVerificationUtil != null) {
-                if (!phoneVerificationUtil.hasShown())
-                    phoneVerificationUtil.checkIsMSISDNVerified();
 
-            }
-        }
 
         registerForceLogoutReceiver();
         checkIfForceLogoutMustShow();
@@ -188,15 +172,11 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     protected void onDestroy() {
         super.onDestroy();
         unregisterHadesReceiver();
-        if (!GlobalConfig.isSellerApp()
-                && phoneVerificationUtil != null) {
-            phoneVerificationUtil.unSubscribe();
-        }
+
         unregisterForceLogoutReceiver();
         HockeyAppHelper.unregisterManager();
 
         sessionHandler = null;
-        phoneVerificationUtil = null;
         categoryDatabaseManager = null;
         gcmHandler = null;
         globalCacheManager = null;
@@ -368,10 +348,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     @Override
     public String getScreenName() {
         return null;
-    }
-
-    public PhoneVerificationUtil getPhoneVerificationUtil() {
-        return phoneVerificationUtil;
     }
 
     protected AppComponent getApplicationComponent() {

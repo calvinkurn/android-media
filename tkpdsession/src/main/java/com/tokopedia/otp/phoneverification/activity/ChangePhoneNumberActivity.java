@@ -9,9 +9,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.session.R;
+import com.tokopedia.session.R2;
 
 import butterknife.BindView;
 
@@ -33,12 +33,10 @@ public class ChangePhoneNumberActivity extends BasePresenterActivity {
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
-        getPhoneVerificationUtil().setHasShown(true);
     }
 
     @Override
     protected void onResume() {
-        getPhoneVerificationUtil().setHasShown(true);
         super.onResume();
     }
 

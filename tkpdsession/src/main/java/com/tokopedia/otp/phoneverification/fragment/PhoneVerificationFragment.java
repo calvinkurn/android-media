@@ -30,6 +30,8 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -153,10 +155,10 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     @Override
     protected void onFirstTimeLaunched() {
-        phoneNumberEditText.setText(SessionHandler.getPhoneNumber());
+        phoneNumberEditText.setText(CustomPhoneNumberUtil.transform(SessionHandler.getPhoneNumber()));
 
-        if (TrackingUtils.getGtmString(CAN_REQUEST_OTP_IMMEDIATELY).equals("true"))
-            presenter.requestOtp();
+//        if (TrackingUtils.getGtmString(CAN_REQUEST_OTP_IMMEDIATELY).equals("true"))
+//            presenter.requestOtp();
     }
 
     @Override
@@ -287,6 +289,13 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
             }
         });
 
+        skipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().finish();
+            }
+        });
+
     }
 
     @Override
@@ -310,7 +319,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     @Override
     public String getPhoneNumber() {
-        return phoneNumberEditText.getText().toString();
+        return phoneNumberEditText.getText().toString().replace("-", "");
     }
 
     @Override
