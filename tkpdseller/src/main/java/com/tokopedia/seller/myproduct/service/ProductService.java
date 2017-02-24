@@ -1225,7 +1225,8 @@ public class ProductService extends IntentService implements ProductServiceConst
                 .map(new Func1<AddProductWithoutImageModel, AddProductWithoutImageModel>() {
                     @Override
                     public AddProductWithoutImageModel call(AddProductWithoutImageModel addProductWithoutImageModel) {
-                        if (addProductWithoutImageModel.getMessage_error().length != 0) {
+                        if (addProductWithoutImageModel.getMessage_error() != null &&
+                                addProductWithoutImageModel.getMessage_error().length != 0) {
                             throw new RuntimeException(addProductWithoutImageModel.getMessage_error()[0]);
                         }
                         ProductDB produk = inputAddProductModel.getProduk();
