@@ -117,6 +117,7 @@
     <string name="top_ads_empty_group_promo_content_item_no_text">Lihat %1$s Promo Produk</string>
 
     <!-- Top Ads New Promo -->
+    <string name="label_top_ads_shop_name">Nama Toko</string>
     <string name="label_top_ads_group_name">Nama Grup</string>
     <string name="label_top_ads_choose_group">Pilih Grup</string>
     <string name="label_top_ads_create_promo_new_group">Buat promo grup baru</string>
