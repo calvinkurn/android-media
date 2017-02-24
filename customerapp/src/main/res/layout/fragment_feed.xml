@@ -10,11 +10,6 @@
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <android.support.v4.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
             <LinearLayout
                 android:id="@+id/main_content"
                 android:layout_width="match_parent"
@@ -47,7 +42,6 @@
                     android:visibility="gone"/>
 
             </LinearLayout>
-        </android.support.v4.widget.NestedScrollView>
 
     </com.tokopedia.core.customwidget.SwipeToRefresh>
 

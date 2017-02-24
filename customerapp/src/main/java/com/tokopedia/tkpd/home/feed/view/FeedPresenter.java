@@ -60,7 +60,7 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
         checkViewAttached();
         getView().showRefreshLoading();
         getView().disableLoadmore();
-//        feedDataPageUseCase.execute(RequestParams.EMPTY, new RefreshFeedSubcriber());
+        feedDataPageUseCase.execute(RequestParams.EMPTY, new RefreshFeedSubcriber());
     }
 
     @Override
