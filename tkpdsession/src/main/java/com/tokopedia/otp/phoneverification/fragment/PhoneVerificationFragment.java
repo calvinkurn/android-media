@@ -262,7 +262,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
             @Override
             public void onClick(View v) {
                 startActivityForResult(ChangePhoneNumberActivity.getChangePhoneNumberIntent(getActivity()),
-                        ChangePhoneNumberActivity.ACTION_CHANGE_PHONE_NUMBER);
+                        ChangePhoneNumberFragment.ACTION_CHANGE_PHONE_NUMBER);
             }
         });
 
@@ -384,9 +384,9 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ChangePhoneNumberActivity.ACTION_CHANGE_PHONE_NUMBER &&
+        if (requestCode == ChangePhoneNumberFragment.ACTION_CHANGE_PHONE_NUMBER &&
                 resultCode == Activity.RESULT_OK) {
-            phoneNumberEditText.setText(data.getStringExtra(ChangePhoneNumberActivity.EXTRA_PHONE_NUMBER));
+            phoneNumberEditText.setText(data.getStringExtra(ChangePhoneNumberFragment.EXTRA_PHONE_NUMBER));
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
