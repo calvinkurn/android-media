@@ -6,7 +6,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.tokopedia.seller.shopscore.view.widget.ShopScoreMainProgressBarGroup;
 import com.tokopedia.sellerapp.R;
 
 /**
@@ -14,7 +13,7 @@ import com.tokopedia.sellerapp.R;
  */
 
 public class ShopScoreWidget extends FrameLayout {
-    private ShopScoreMainProgressBarGroup progressBarGroup;
+    private ShopScoreMainDetailView shopScoreMainDetailView;
 
     public ShopScoreWidget(Context context) {
         super(context);
@@ -43,16 +42,16 @@ public class ShopScoreWidget extends FrameLayout {
 
     private void initView(Context context) {
         View view = inflate(context, R.layout.view_shop_score_home, this);
-        progressBarGroup =
-                (ShopScoreMainProgressBarGroup) view.findViewById(R.id.shop_score_progress_bar_group);
+        shopScoreMainDetailView =
+                (ShopScoreMainDetailView) view.findViewById(R.id.shop_score_progress_bar_group);
     }
 
     public void setProgress(float progress) {
-        progressBarGroup.setProgress(progress);
+        shopScoreMainDetailView.setProgress(progress);
     }
 
     public void setLimit(float limit) {
-        progressBarGroup.setLimit(limit);
+        shopScoreMainDetailView.setLimit(limit);
     }
 
 }

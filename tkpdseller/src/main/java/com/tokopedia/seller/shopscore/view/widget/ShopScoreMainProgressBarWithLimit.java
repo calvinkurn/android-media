@@ -13,28 +13,28 @@ import com.tokopedia.seller.R;
  * Created by sebastianuskh on 2/23/17.
  */
 
-public class ShopScoreMainProgressBarGroup extends RelativeLayout implements ShopScoreMainProgressBarListener {
+public class ShopScoreMainProgressBarWithLimit extends RelativeLayout implements ShopScoreMainProgressBarListener {
     private ImageView icShopScoreLimit;
     private ShopScoreMainProgressBar shopScoreMainProgressBar;
     private View shopScoreViewLimit;
 
-    public ShopScoreMainProgressBarGroup(Context context) {
+    public ShopScoreMainProgressBarWithLimit(Context context) {
         super(context);
         initView(context);
     }
 
-    public ShopScoreMainProgressBarGroup(Context context, AttributeSet attrs) {
+    public ShopScoreMainProgressBarWithLimit(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView(context, attrs);
     }
 
-    public ShopScoreMainProgressBarGroup(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ShopScoreMainProgressBarWithLimit(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView(context, attrs);
     }
 
     @SuppressLint("NewApi")
-    public ShopScoreMainProgressBarGroup(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public ShopScoreMainProgressBarWithLimit(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
