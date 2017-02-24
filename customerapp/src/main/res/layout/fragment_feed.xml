@@ -6,42 +6,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:id="@+id/empty_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <include
+            layout="@layout/empty_history"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
     <com.tokopedia.core.customwidget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-            <LinearLayout
-                android:id="@+id/main_content"
+
+        <LinearLayout
+            android:id="@+id/main_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/index_main_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:visibility="visible">
+                android:clipToPadding="false"
+                android:scrollbars="vertical"/>
 
-                <RelativeLayout
-                    android:id="@+id/empty_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white">
+            <include
+                layout="@layout/empty_product_feed"
+                android:visibility="gone"/>
 
-                    <include
-                        layout="@layout/empty_history"
-                        android:visibility="gone"/>
-
-                </RelativeLayout>
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/index_main_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipToPadding="false"
-                    android:scrollbars="vertical"/>
-
-                <include
-                    layout="@layout/empty_product_feed"
-                    android:visibility="gone"/>
-
-            </LinearLayout>
+        </LinearLayout>
 
     </com.tokopedia.core.customwidget.SwipeToRefresh>
 

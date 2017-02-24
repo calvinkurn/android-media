@@ -199,7 +199,7 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
 
         private boolean isIncludeTopAds;
 
-        public LoadMoreFeedSubcriber(boolean isIncludeTopAds) {
+        LoadMoreFeedSubcriber(boolean isIncludeTopAds) {
 
             this.isIncludeTopAds = isIncludeTopAds;
         }
@@ -252,13 +252,7 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
                 ProductFeedViewModel productFeedViewModel = new ProductFeedViewModel(dataFeed);
                 if (productFeedViewModel.getData().size() > 0) {
                     setPagging(productFeedViewModel.getPagingHandlerModel());
-                    if (isHasHistoryProduct(dataFeed)) {
-                        getView().hideEmptyHistoryProduct();
-                        getView().refreshFeedData(productFeedViewModel.getData());
-                        getView().showContentView();
-                    } else {
-                        getView().showEmptyHistoryProduct();
-                    }
+                    validateDataFeed(dataFeed, productFeedViewModel);
                     doCheckLoadMore();
 
                 } else {
@@ -267,7 +261,32 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
             }
         }
 
+        private void validateDataFeed(DataFeed dataFeed,
+                                      ProductFeedViewModel productFeedViewModel) {
 
+            if (!isHasHistoryProduct(dataFeed) && !isHasFeedProduct(dataFeed)) {
+                getView().showEmptyHistoryProduct();
+                getView().showEmptyFeed();
+            } else if (!isHasHistoryProduct(dataFeed) && isHasFeedProduct(dataFeed)) {
+                getView().showContentView();
+                getView().showEmptyHistoryProduct();
+                displayRefreshData(productFeedViewModel);
+            } else if (isHasHistoryProduct(dataFeed) && !isHasFeedProduct(dataFeed)) {
+                getView().hideEmptyHistoryProduct();
+                getView().showContentView();
+                displayRefreshData(productFeedViewModel);
+            } else {
+                getView().showContentView();
+                getView().hideEmptyHistoryProduct();
+                getView().hideEmptyFeed();
+                displayRefreshData(productFeedViewModel);
+            }
+
+        }
+
+        private void displayRefreshData(ProductFeedViewModel productFeedViewModel) {
+            getView().refreshFeedData(productFeedViewModel.getData());
+        }
 
     }
 }
