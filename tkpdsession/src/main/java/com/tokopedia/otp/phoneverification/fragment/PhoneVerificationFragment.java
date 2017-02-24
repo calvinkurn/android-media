@@ -43,6 +43,8 @@ import com.tokopedia.otp.phoneverification.presenter.PhoneVerificationPresenterI
 import com.tokopedia.session.R;
 import com.tokopedia.session.R2;
 
+import org.w3c.dom.Text;
+
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -65,28 +67,13 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     private static final String CAN_REQUEST_OTP_IMMEDIATELY = "auto_request_otp";
     private static final String FORMAT = "%02d";
 
-    @BindView(R2.id.verify_button)
     TextView verifyButton;
-
-    @BindView(R2.id.skip_button)
     TextView skipButton;
-
-    @BindView(R2.id.phone_number)
     TextView phoneNumberEditText;
-
-    @BindView(R2.id.change_phone_number_button)
     TextView changePhoneNumberButton;
-
-    @BindView(R2.id.send_otp)
     TextView requestOtpButton;
-
-    @BindView(R2.id.send_otp_call)
     TextView requestOtpCallButton;
-
-    @BindView(R2.id.input_otp_view)
     View inputOtpView;
-
-    @BindView(R2.id.input_otp)
     EditText otpEditText;
 
     CountDownTimer countDownTimer;
@@ -101,6 +88,19 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     public PhoneVerificationFragment() {
         this.smsReceiver = new IncomingSmsReceiver();
         this.smsReceiver.setListener(this);
+    }
+
+
+    private void findView(View view) {
+        verifyButton = (TextView) view.findViewById(R.id.verify_button);
+        skipButton = (TextView) view.findViewById(R.id.skip_button);
+        phoneNumberEditText = (TextView) view.findViewById(R.id.phone_number);
+        changePhoneNumberButton = (TextView) view.findViewById(R.id.change_phone_number_button);
+        requestOtpButton = (TextView) view.findViewById(R.id.send_otp);
+        requestOtpCallButton = (TextView) view.findViewById(R.id.send_otp_call);
+        inputOtpView = view.findViewById(R.id.input_otp_view);
+        otpEditText = (EditText) view.findViewById(R.id.input_otp);
+
     }
 
     @Override
@@ -185,6 +185,8 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
                 "Bearer " + sessionHandler.getAccessToken(getActivity()));
 
 
+
+
         presenter = new PhoneVerificationPresenterImpl(this,
                 new CompositeSubscription(),
                 new PhoneVerificationNetworkInteractorImpl(new AccountsService(bundle)));
@@ -207,6 +209,8 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     @Override
     protected void initView(View view) {
+        findView(view);
+
         KeyboardHandler.DropKeyboard(getActivity(), getView());
 
         Spannable spannable = new SpannableString(getString(com.tokopedia.core.R.string.action_send_otp_with_call));
@@ -229,6 +233,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
         requestOtpCallButton.setText(spannable, TextView.BufferType.SPANNABLE);
     }
+
 
     @Override
     protected void setViewListener() {
