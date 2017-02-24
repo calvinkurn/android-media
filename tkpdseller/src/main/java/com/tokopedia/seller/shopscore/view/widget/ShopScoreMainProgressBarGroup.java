@@ -5,7 +5,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.tokopedia.seller.R;
 
@@ -13,7 +13,7 @@ import com.tokopedia.seller.R;
  * Created by sebastianuskh on 2/23/17.
  */
 
-public class ShopScoreMainProgressBarGroup extends LinearLayout {
+public class ShopScoreMainProgressBarGroup extends RelativeLayout implements ShopScoreMainProgressBarListener {
     private ImageView icShopScoreLimit;
     private ShopScoreMainProgressBar shopScoreMainProgressBar;
     private View shopScoreViewLimit;
@@ -44,37 +44,36 @@ public class ShopScoreMainProgressBarGroup extends LinearLayout {
 
     private void initView(Context context) {
         View view = inflate(context, R.layout.view_main_shop_score_progressbar, this);
-        addView(view);
         icShopScoreLimit = (ImageView) view.findViewById(R.id.ic_shop_score_limit);
         shopScoreMainProgressBar = (ShopScoreMainProgressBar) view.findViewById(R.id.shop_score_progress_bar);
         shopScoreViewLimit = view.findViewById(R.id.shop_score_view_limit);
     }
 
+    public void setProgress(float progress) {
+        shopScoreMainProgressBar.setProgress(progress);
+    }
+
     public void setLimit(float limit) {
-        shopScoreMainProgressBar.setProgress(limit);
-        int progressWidth = shopScoreMainProgressBar.getProgressWidth();
-        setShopScoreViewLimitLocation(progressWidth);
-        setIcShopScoreLimitLocation(progressWidth);
+        shopScoreMainProgressBar.setLimit(limit);
     }
 
     private void setIcShopScoreLimitLocation(int progressWidth) {
         int halfWidth = icShopScoreLimit.getWidth() / 2;
-        icShopScoreLimit.setPadding(
-                progressWidth - halfWidth,
-                icShopScoreLimit.getPaddingTop(),
-                icShopScoreLimit.getPaddingRight(),
-                icShopScoreLimit.getPaddingBottom()
-        );
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) icShopScoreLimit.getLayoutParams();
+        params.setMargins(progressWidth - halfWidth, 0, 0, 0);
+        icShopScoreLimit.setLayoutParams(params);
+    }
+
+    @Override
+    public void updateLimitViewOutside(int progress) {
+        setIcShopScoreLimitLocation(progress);
+        setShopScoreViewLimitLocation(progress);
     }
 
     private void setShopScoreViewLimitLocation(int progressWidth) {
-        shopScoreViewLimit.setPadding(
-                progressWidth,
-                shopScoreViewLimit.getPaddingTop(),
-                shopScoreViewLimit.getRight(),
-                shopScoreViewLimit.getBottom()
-        );
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) shopScoreViewLimit.getLayoutParams();
+        params.setMargins(progressWidth, 0, 0, 0);
+        shopScoreViewLimit.setLayoutParams(params);
     }
-
 
 }
