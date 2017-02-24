@@ -424,7 +424,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
                 });
 
         if (ShareDialog.canShow(ShareLinkContent.class)) {
-            if (shareData != null && shareData.getImgUri() != null && shareData.getUri() != null) {
+            if (shareData != null && shareData.getUri() != null) {
                 ShareLinkContent.Builder linkBuilder = new ShareLinkContent.Builder()
                         .setContentTitle(shareData.getName())
                         .setContentDescription(shareData.getUri())
