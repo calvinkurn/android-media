@@ -44,6 +44,18 @@ public class ShopScoreWidget extends FrameLayout {
         View view = inflate(context, R.layout.view_shop_score_home, this);
         shopScoreMainDetailView =
                 (ShopScoreMainDetailView) view.findViewById(R.id.shop_score_progress_bar_group);
+        view
+                .findViewById(R.id.text_view_go_to_detail)
+                .setOnClickListener(goToDetailListener());
+    }
+
+    private OnClickListener goToDetailListener() {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        };
     }
 
     public void setProgress(float progress) {

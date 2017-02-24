@@ -37,13 +37,36 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginBottom="20dp"
             android:background="@color/tkpd_divider" />
 
         <com.tokopedia.sellerapp.home.view.widget.ShopScoreMainDetailView
             android:id="@+id/shop_score_progress_bar_group"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/tkpd_divider" />
+
+        <TextView
+            android:id="@+id/text_view_go_to_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/action_shop_score_go_to_detail"
+            android:textColor="@color/tkpd_main_green"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
