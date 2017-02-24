@@ -52,10 +52,16 @@ public class ProductFeedViewModel {
 
             if (dataFeed.getTopAds() != null
                     && !dataFeed.getTopAds().isEmpty() && dataFeed.getTopAds().size() > 0) {
+                if (dataFeed.getTopAds().size() <= 2) {
+                    result.add(convertTopAdsDomainToViewModel(prepareTopAdsTop(dataFeed.getTopAds())));
+                    result.addAll(getProductFeedItemsListFromFeed(dataFeed.getFeed().getProducts()));
 
-                result.add(convertTopAdsDomainToViewModel(prepareTopAdsTop(dataFeed.getTopAds())));
-                result.addAll(getProductFeedItemsListFromFeed(dataFeed.getFeed().getProducts()));
-                result.add(convertTopAdsDomainToViewModel(prepareTopAdsBottom(dataFeed.getTopAds())));
+                } else {
+                    result.add(convertTopAdsDomainToViewModel(prepareTopAdsTop(dataFeed.getTopAds())));
+                    result.addAll(getProductFeedItemsListFromFeed(dataFeed.getFeed().getProducts()));
+                    result.add(convertTopAdsDomainToViewModel(prepareTopAdsBottom(dataFeed.getTopAds())));
+                }
+
             } else {
                 result.addAll(getProductFeedItemsListFromFeed(dataFeed.getFeed().getProducts()));
             }

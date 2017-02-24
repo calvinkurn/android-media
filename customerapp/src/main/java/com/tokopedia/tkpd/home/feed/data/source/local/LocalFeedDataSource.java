@@ -20,9 +20,6 @@ public class LocalFeedDataSource {
     }
 
     public Observable<Feed> getFeedCache() {
-        if (feedDbManager.isExpired(System.currentTimeMillis())) {
-            return Observable.empty();
-        }
         return feedDbManager.getData().map(feedMapper);
     }
 }

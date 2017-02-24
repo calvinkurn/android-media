@@ -15,7 +15,7 @@ import com.tokopedia.tkpd.home.feed.domain.interactor.GetListShopIdUseCase;
 import com.tokopedia.tkpd.home.feed.domain.interactor.GetRecentProductUsecase;
 import com.tokopedia.tkpd.home.feed.domain.interactor.GetTopAdsUseCase;
 import com.tokopedia.tkpd.home.feed.domain.interactor.LoadMoreFeedUseCase;
-import com.tokopedia.tkpd.home.feed.view.FeedDaggerPresenter;
+import com.tokopedia.tkpd.home.feed.view.FeedPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -118,11 +118,11 @@ public class DataFeedModule {
 
     @DataFeedScope
     @Provides
-    FeedDaggerPresenter provideFeedPresenter(GetAllFeedDataPageUseCase getAllFeedDataPageUseCase,
-                                             GetDataFeedCacheUseCase getAllFeedDataCacheUseCase,
-                                             LoadMoreFeedUseCase loadMoreFeedUseCase) {
+    FeedPresenter provideFeedPresenter(GetAllFeedDataPageUseCase getAllFeedDataPageUseCase,
+                                       GetDataFeedCacheUseCase getAllFeedDataCacheUseCase,
+                                       LoadMoreFeedUseCase loadMoreFeedUseCase) {
 
-        return new FeedDaggerPresenter(
+        return new FeedPresenter(
                 getAllFeedDataPageUseCase, getAllFeedDataCacheUseCase, loadMoreFeedUseCase);
     }
 
