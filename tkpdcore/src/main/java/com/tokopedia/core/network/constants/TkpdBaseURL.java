@@ -611,6 +611,7 @@ public class TkpdBaseURL {
 
     public static class GoldMerchant{
         public static final String GET_PRODUCT_VIDEO = "/v1/product/video/";
+        public static final String GET_SHOP_SCORE_SUMMARY = "/v1/shopstats/shopscore/sum/";
     }
 
     public static class FCM{

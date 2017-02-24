@@ -27,6 +27,7 @@
                 android:src="@drawable/icon_performa_toko" />
 
             <TextView
+                android:id="@+id/title_shop_score_widget"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/title_shop_score_widget_home"

@@ -84,6 +84,7 @@ import com.tokopedia.sellerapp.home.boommenu.Types.BoomType;
 import com.tokopedia.sellerapp.home.boommenu.Types.ButtonType;
 import com.tokopedia.sellerapp.home.boommenu.Types.PlaceType;
 import com.tokopedia.sellerapp.home.boommenu.Util;
+import com.tokopedia.sellerapp.home.di.SellerHomeDependencyInjection;
 import com.tokopedia.sellerapp.home.fragment.CloseAppsDialogFragment;
 import com.tokopedia.sellerapp.home.model.Ticker;
 import com.tokopedia.sellerapp.home.model.deposit.DepositModel;
@@ -99,6 +100,9 @@ import com.tokopedia.sellerapp.home.utils.NotifNetworkController;
 import com.tokopedia.sellerapp.home.utils.ShopController;
 import com.tokopedia.sellerapp.home.utils.ShopNetworkController;
 import com.tokopedia.sellerapp.home.utils.ShopTransactionController;
+import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
+import com.tokopedia.sellerapp.home.view.presenter.SellerHomePresenterImpl;
+import com.tokopedia.sellerapp.home.view.widget.ShopScoreWidget;
 
 import org.json.JSONObject;
 
@@ -114,11 +118,14 @@ import rx.functions.Action1;
 
 import static com.tokopedia.sellerapp.drawer.DrawerVariableSeller.goToShopNewOrder;
 
-public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerListener,
-        SessionHandler.onLogoutListener {
-    private static final String ARG_TRUECALLER_PACKAGE = "com.truecaller";
+public class SellerHomeActivity
+        extends AppCompatActivity
+        implements GCMHandlerListener,
+        SessionHandler.onLogoutListener,
+        SellerHomeView {
     public static final String messageTAG = SellerHomeActivity.class.getSimpleName();
     public static final String STUART = "STUART";
+    private static final String ARG_TRUECALLER_PACKAGE = "com.truecaller";
     ImageHandler imageHandler;
     ShopController shopController;
 
@@ -174,22 +181,36 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
 
     @BindView(R.id.nested_scroll_view)
     NestedScrollView nestedScrollView;
-
-    private boolean isInit = false;
-
     @BindView(R.id.seller_home_boom)
     SquareMenuButton sellerHomeBoom;
-
     @BindView(R.id.hide_layout)
     View hideLayout;
-
     @BindView(R.id.card_new_order_container)
     RelativeLayout cardNewOrderContainer;
-
     boolean isBoomMenuShown = false;
-
     @BindView(R.id.seller_home_blank_space)
     LinearLayout sellerHomeBlankSpace;
+    @BindView(R.id.gold_merchant_announcement_image)
+    ImageView goldMerchantAnnouncementImage;
+    @BindView(R.id.gold_merchant_announcement_text)
+    TextView goldMerchantAnnouncementText;
+    @Nullable
+    ShopModel shopModel;
+    @BindView(R.id.drawer_layout_nav)
+    DrawerLayout drawerLayoutNav;
+    @BindView(R.id.seller_home_linlay_container)
+    LinearLayout sellerHomeLinLayContainer;
+    String userId;
+    String shopId;
+    DrawerVariableSeller drawer;
+    ActionBarDrawerToggle mDrawerToggle;
+    SellerToolbarVariable toolbar;
+    SnackbarRetry snackbarRetry;
+    SnackbarRetry snackbarRetryUndefinite;
+    @BindView(R.id.widget_shop_score)
+    ShopScoreWidget shopScoreWidget;
+    private boolean isInit = false;
+    private SellerHomePresenterImpl presenter;
 
     @OnClick({R.id.discussion_see_more, R.id.discussion_container})
     public void discussionSeeMore() {
@@ -224,32 +245,6 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
         intent.putExtras(bundle);
         startActivity(intent);
     }
-
-    @BindView(R.id.seller_home_linlay_container)
-    LinearLayout sellerHomeLinLayContainer;
-
-    String userId;
-    String shopId;
-
-    DrawerVariableSeller drawer;
-    ActionBarDrawerToggle mDrawerToggle;
-
-    @Nullable
-    ShopModel shopModel;
-
-    @BindView(R.id.drawer_layout_nav)
-    DrawerLayout drawerLayoutNav;
-
-    SellerToolbarVariable toolbar;
-
-    SnackbarRetry snackbarRetry;
-    SnackbarRetry snackbarRetryUndefinite;
-
-    @BindView(R.id.gold_merchant_announcement_image)
-    ImageView goldMerchantAnnouncementImage;
-
-    @BindView(R.id.gold_merchant_announcement_text)
-    TextView goldMerchantAnnouncementText;
 
     @OnClick(R.id.gold_merchant_announcement)
     public void goToGoldMerchant(){
@@ -339,6 +334,10 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
                 inboxResCenterNetworkController, depositNetworkController, shopTransactionController
                 , gson);
         shopController.subscribe();
+
+
+        presenter = SellerHomeDependencyInjection.getPresenter(this);
+        presenter.attachView(this);
     }
 
     public int pxToDp(int px) {
@@ -764,95 +763,9 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
         startActivity(intent);
     }
 
-    public static class SellerHomeNewOrderView {
-        @BindView(R.id.new_order_name)
-        TextView newOrderName;
-
-        @BindView(R.id.new_order_date)
-        TextView newOrderDate;
-
-        @BindView(R.id.new_order_remaining_days)
-        TextView newOrderRemainingDays;
-        private OrderShippingList orderShippingList;
-        private View itemView;
-
-        public SellerHomeNewOrderView(View itemView) {
-            this.itemView = itemView;
-            ButterKnife.bind(this, itemView);
-        }
-
-        public void initData(OrderShippingList orderShippingList) {
-            this.orderShippingList = orderShippingList;
-
-            newOrderName.setText(orderShippingList.getOrderCustomer().getCustomerName());
-            newOrderDate.setText(orderShippingList.getOrderDetail().getDetailOrderDate());
-            String daysLeft;
-            switch (orderShippingList.getOrderPayment().getPaymentProcessDayLeft()) {
-                case 0:
-                    daysLeft = "Hari ini";
-                    newOrderRemainingDays.setBackgroundColor(newOrderRemainingDays.getResources().getColor(R.color.tkpd_status_red));
-                    break;
-                case 1:
-                    daysLeft = "Besok";
-                    newOrderRemainingDays.setBackgroundColor(newOrderRemainingDays.getResources().getColor(R.color.tkpd_status_orange));
-                    break;
-                default:
-                    daysLeft = orderShippingList.getOrderPayment().getPaymentProcessDayLeft() + " Hari Lagi";
-                    newOrderRemainingDays.setBackgroundColor(newOrderRemainingDays.getResources().getColor(R.color.tkpd_status_blue));
-            }
-            newOrderRemainingDays.setText(daysLeft);
-        }
-    }
-
-    public static class SellerHomeNewOrderViewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R.id.new_order_name)
-        TextView newOrderName;
-
-        @BindView(R.id.new_order_date)
-        TextView newOrderDate;
-
-        @BindView(R.id.new_order_remaining_days)
-        TextView newOrderRemainingDays;
-        private OrderShippingList orderShippingList;
-
-        public SellerHomeNewOrderViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-
-        public void initData(OrderShippingList orderShippingList) {
-            this.orderShippingList = orderShippingList;
-
-            newOrderName.setText(orderShippingList.getOrderCustomer().getCustomerName());
-            newOrderDate.setText(orderShippingList.getOrderDetail().getDetailOrderDate());
-            newOrderRemainingDays.setText(orderShippingList.getOrderPayment().getPaymentProcessDayLeft() + " Hari Lagi");
-        }
-    }
-
-    public static class SellerHomeNewOrderAdapter extends RecyclerView.Adapter<SellerHomeNewOrderViewHolder> {
-
-        private List<OrderShippingList> dataList;
-
-        public SellerHomeNewOrderAdapter(List<OrderShippingList> dataList) {
-            this.dataList = dataList;
-        }
-
-        @Override
-        public SellerHomeNewOrderViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.seller_home_new_order, parent, false);
-            return new SellerHomeNewOrderViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(SellerHomeNewOrderViewHolder holder, int position) {
-            holder.initData(dataList.get(position));
-        }
-
-        @Override
-        public int getItemCount() {
-            return dataList.size();
-        }
+    @Override
+    public void renderShopScore(ShopScoreViewModel shopScoreViewModel) {
+        shopScoreWidget.renderView(shopScoreViewModel);
     }
 
     @Override
@@ -1034,6 +947,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
         smoothAppBarLayout.setExpanded(true);
         sendToGTM();
         sendToLocalytics();
+        presenter.getShopScoreMainData();
     }
 
     @Override
@@ -1069,6 +983,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
             UnifyTracking.eventTrueCaller(SessionHandler.getLoginID(this));
         }
     }
+
     private boolean appInstalledOrNot(String uri) {
         PackageManager pm = getPackageManager();
         boolean app_installed;
@@ -1080,5 +995,96 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
             app_installed = false;
         }
         return app_installed;
+    }
+
+    public static class SellerHomeNewOrderView {
+        @BindView(R.id.new_order_name)
+        TextView newOrderName;
+
+        @BindView(R.id.new_order_date)
+        TextView newOrderDate;
+
+        @BindView(R.id.new_order_remaining_days)
+        TextView newOrderRemainingDays;
+        private OrderShippingList orderShippingList;
+        private View itemView;
+
+        public SellerHomeNewOrderView(View itemView) {
+            this.itemView = itemView;
+            ButterKnife.bind(this, itemView);
+        }
+
+        public void initData(OrderShippingList orderShippingList) {
+            this.orderShippingList = orderShippingList;
+
+            newOrderName.setText(orderShippingList.getOrderCustomer().getCustomerName());
+            newOrderDate.setText(orderShippingList.getOrderDetail().getDetailOrderDate());
+            String daysLeft;
+            switch (orderShippingList.getOrderPayment().getPaymentProcessDayLeft()) {
+                case 0:
+                    daysLeft = "Hari ini";
+                    newOrderRemainingDays.setBackgroundColor(newOrderRemainingDays.getResources().getColor(R.color.tkpd_status_red));
+                    break;
+                case 1:
+                    daysLeft = "Besok";
+                    newOrderRemainingDays.setBackgroundColor(newOrderRemainingDays.getResources().getColor(R.color.tkpd_status_orange));
+                    break;
+                default:
+                    daysLeft = orderShippingList.getOrderPayment().getPaymentProcessDayLeft() + " Hari Lagi";
+                    newOrderRemainingDays.setBackgroundColor(newOrderRemainingDays.getResources().getColor(R.color.tkpd_status_blue));
+            }
+            newOrderRemainingDays.setText(daysLeft);
+        }
+    }
+
+    public static class SellerHomeNewOrderViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.new_order_name)
+        TextView newOrderName;
+
+        @BindView(R.id.new_order_date)
+        TextView newOrderDate;
+
+        @BindView(R.id.new_order_remaining_days)
+        TextView newOrderRemainingDays;
+        private OrderShippingList orderShippingList;
+
+        public SellerHomeNewOrderViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+
+        public void initData(OrderShippingList orderShippingList) {
+            this.orderShippingList = orderShippingList;
+
+            newOrderName.setText(orderShippingList.getOrderCustomer().getCustomerName());
+            newOrderDate.setText(orderShippingList.getOrderDetail().getDetailOrderDate());
+            newOrderRemainingDays.setText(orderShippingList.getOrderPayment().getPaymentProcessDayLeft() + " Hari Lagi");
+        }
+    }
+
+    public static class SellerHomeNewOrderAdapter extends RecyclerView.Adapter<SellerHomeNewOrderViewHolder> {
+
+        private List<OrderShippingList> dataList;
+
+        public SellerHomeNewOrderAdapter(List<OrderShippingList> dataList) {
+            this.dataList = dataList;
+        }
+
+        @Override
+        public SellerHomeNewOrderViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.seller_home_new_order, parent, false);
+            return new SellerHomeNewOrderViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(SellerHomeNewOrderViewHolder holder, int position) {
+            holder.initData(dataList.get(position));
+        }
+
+        @Override
+        public int getItemCount() {
+            return dataList.size();
+        }
     }
 }
