@@ -35,6 +35,7 @@ import com.tokopedia.seller.instoped.InstagramAuth;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.adapter.DataFeedAdapter;
 import com.tokopedia.tkpd.home.feed.di.component.DaggerDataFeedComponent;
 import com.tokopedia.tkpd.home.util.DefaultRetryListener;
@@ -46,7 +47,11 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
+
+import static com.tokopedia.core.home.adapter.ProductFeedAdapter.FAVORITE_TAB;
+import static com.tokopedia.core.home.adapter.ProductFeedAdapter.HOTLIST_TAB;
 
 
 public class FragmentProductFeed extends BaseDaggerFragment implements FeedContract.View,
@@ -295,6 +300,22 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         feedPresenter.refreshDataFeed();
     }
 
+
+    @OnClick(R.id.find_now)
+    void onFindNowClicked() {
+        ParentIndexHome.ChangeTabListener listener
+                = ((ParentIndexHome) getContext()).GetHotListListener();
+
+        listener.onChangeTab(HOTLIST_TAB);
+    }
+
+    @OnClick(R.id.find_favorite_shop)
+    void onFindFavoriteClicked() {
+        ParentIndexHome.ChangeTabListener listener
+                = ((ParentIndexHome) getContext()).GetFavoriteListener();
+
+        listener.onChangeTab(FAVORITE_TAB);
+    }
 
     private void initVar() {
         final int columnSize

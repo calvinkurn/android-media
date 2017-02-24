@@ -42,10 +42,14 @@ public class RecentProductDbManager
 
     @Override
     public Observable<Response<String>> getData() {
-        String contentRecentProduct = getTable().getContentRecentProduct();
-        if (contentRecentProduct != null) {
-            return Observable.just(Response.success(contentRecentProduct));
-        } else {
+        if(getTable() !=null) {
+            String contentRecentProduct = getTable().getContentRecentProduct();
+            if (contentRecentProduct != null) {
+                return Observable.just(Response.success(contentRecentProduct));
+            }else{
+                return Observable.empty();
+            }
+        }else {
             return Observable.empty();
         }
     }
