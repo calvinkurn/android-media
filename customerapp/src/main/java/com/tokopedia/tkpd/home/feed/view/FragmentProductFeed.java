@@ -286,7 +286,12 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     public void showEmptyFeed() {
-//        emptyFeedView.setVisibility(View.VISIBLE);
+        emptyFeedView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showInvalidFeed() {
+        emptyFeedView.setVisibility(View.VISIBLE);
     }
 
     @Override

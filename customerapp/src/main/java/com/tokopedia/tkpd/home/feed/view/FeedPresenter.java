@@ -60,7 +60,7 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
         checkViewAttached();
         getView().showRefreshLoading();
         getView().disableLoadmore();
-        feedDataPageUseCase.execute(RequestParams.EMPTY, new RefreshFeedSubcriber());
+//        feedDataPageUseCase.execute(RequestParams.EMPTY, new RefreshFeedSubcriber());
     }
 
     @Override
@@ -129,7 +129,7 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
     private void renderInvalidDataFeed() {
         getView().hideContentView();
         getView().showEmptyHistoryProduct();
-        getView().showEmptyFeed();
+        getView().showInvalidFeed();
     }
 
 
@@ -168,18 +168,16 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
         private void validateDataFeed(DataFeed dataFeed,
                                       ProductFeedViewModel productFeedViewModel) {
 
-            if(!isHasHistoryProduct(dataFeed) && !isHasFeedProduct(dataFeed)){
+            if (!isHasHistoryProduct(dataFeed) && !isHasFeedProduct(dataFeed)) {
                 getView().showEmptyHistoryProduct();
                 getView().showEmptyFeed();
-            }else if(!isHasHistoryProduct(dataFeed) && isHasFeedProduct(dataFeed)){
+            } else if (!isHasHistoryProduct(dataFeed) && isHasFeedProduct(dataFeed)) {
                 getView().showContentView();
                 getView().showEmptyHistoryProduct();
-//                getView().hideEmptyFeed();
                 displayFeed(productFeedViewModel);
             } else if (isHasHistoryProduct(dataFeed) && !isHasFeedProduct(dataFeed)) {
                 getView().hideEmptyHistoryProduct();
-                getView().showEmptyFeed();
-                getView().hideContentView();
+                getView().showContentView();
                 displayFeed(productFeedViewModel);
             } else {
                 getView().showContentView();
@@ -249,13 +247,14 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
         public void onNext(DataFeed dataFeed) {
             if (isViewAttached()) {
                 getView().hideRefreshLoading();
-                getView().showContentView();
+
                 ProductFeedViewModel productFeedViewModel = new ProductFeedViewModel(dataFeed);
                 if (productFeedViewModel.getData().size() > 0) {
                     setPagging(productFeedViewModel.getPagingHandlerModel());
                     if (isHasHistoryProduct(dataFeed)) {
                         getView().hideEmptyHistoryProduct();
                         getView().refreshFeedData(productFeedViewModel.getData());
+                        getView().showContentView();
                     } else {
                         getView().showEmptyHistoryProduct();
                     }

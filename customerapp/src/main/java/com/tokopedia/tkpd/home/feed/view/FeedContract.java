@@ -50,6 +50,8 @@ interface FeedContract {
 
         void showEmptyFeed();
 
+        void showInvalidFeed();
+
         void hideEmptyFeed();
     }
 
