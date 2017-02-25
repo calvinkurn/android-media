@@ -64,7 +64,7 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
         checkViewAttached();
         getView().showRefreshLoading();
         getView().disableLoadmore();
-//        feedDataPageUseCase.execute(RequestParams.EMPTY, new RefreshFeedSubcriber());
+        feedDataPageUseCase.execute(RequestParams.EMPTY, new RefreshFeedSubcriber());
     }
 
     @Override
@@ -278,8 +278,12 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
                 getView().showEmptyFeed();
             } else if (!isHasHistoryProduct(dataFeed) && isHasFeedProduct(dataFeed)) {
                 getView().showContentView();
-                getView().showEmptyHistoryProduct();
+                final int recentViewPosition = 0;
+                HistoryProductListItem fakeHistory
+                        = new HistoryProductListItem(Collections.<ProductItem>emptyList());
+                productFeedViewModel.getData().add(recentViewPosition, fakeHistory);
                 displayRefreshData(productFeedViewModel);
+                getView().hideEmptyFeed();
             } else if (isHasHistoryProduct(dataFeed) && !isHasFeedProduct(dataFeed)) {
                 getView().hideEmptyHistoryProduct();
                 getView().showContentView();

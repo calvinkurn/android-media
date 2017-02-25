@@ -235,8 +235,8 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
             adapter.updateHistoryAdapter(dataFeedList.get(historyDataPosition));
             adapter.addAll(true, false, dataFeedList);
             adapter.notifyItemInserted(0);
-
             currentTopAdsPage = 3;
+            adapter.setIsLoading(false);
         }
     }
 
