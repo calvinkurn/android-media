@@ -6,30 +6,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/empty_layout"
+    <LinearLayout
+        android:id="@+id/main_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="visible">
 
+        <RelativeLayout
+            android:id="@+id/empty_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white">
+
+            <include
+                layout="@layout/empty_history"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
         <include
-            layout="@layout/empty_history"
+            layout="@layout/empty_product_feed"
             android:visibility="gone"/>
 
-    </RelativeLayout>
-
-    <com.tokopedia.core.customwidget.SwipeToRefresh
-        android:id="@+id/swipe_refresh_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:id="@+id/main_content"
+        <com.tokopedia.core.customwidget.SwipeToRefresh
+            android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            android:visibility="visible">
+            android:layout_height="wrap_content">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/index_main_recycler_view"
@@ -37,33 +40,40 @@
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
                 android:scrollbars="vertical"/>
+        </com.tokopedia.core.customwidget.SwipeToRefresh>
 
-            <include
-                layout="@layout/empty_product_feed"
-                android:visibility="gone"/>
+    </LinearLayout>
 
-        </LinearLayout>
-
-    </com.tokopedia.core.customwidget.SwipeToRefresh>
-
-    <FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent">
 
         <com.tkpd.library.ui.floatbutton.FabSpeedDial
             android:id="@+id/fab_speed_dial"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            app:fabBackgroundTint="@color/green_500"
+            app:touchGuardDrawable="@drawable/background_blur"
             app:fabGravity="bottom_end"
             app:fabMenu="@menu/menu_add_product_instoped"
+            app:fabBackgroundTint="@color/green_500"
             app:miniFabBackgroundTint="@color/mini_fab_title_background_tint"
             app:miniFabDrawableTint="@android:color/white"
-            app:miniFabTitleTextColor="@android:color/white"
-            app:touchGuardDrawable="@drawable/background_blur"/>
+            app:miniFabTitleTextColor="@android:color/white"/>
+
+        <!--<io.github.yavski.fabspeeddial.FabSpeedDial-->
+        <!--android:id="@+id/fab_speed_dial"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="bottom|end"-->
+        <!--app:touchGuardDrawable="@drawable/background_blur"-->
+        <!--app:fabGravity="bottom_end"-->
+        <!--app:fabMenu="@menu/menu_add_product_instoped"-->
+        <!--app:fabBackgroundTint="@color/green_500"-->
+        <!--app:miniFabBackgroundTint="@color/mini_fab_title_background_tint"-->
+        <!--app:miniFabDrawableTint="@android:color/white"-->
+        <!--app:miniFabTitleTextColor="@android:color/white"  />-->
 
     </FrameLayout>
 

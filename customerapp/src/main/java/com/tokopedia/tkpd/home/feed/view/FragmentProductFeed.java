@@ -184,7 +184,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         final int historyDataPosition = 0;
         adapter.updateHistoryAdapter(dataFeedList.get(historyDataPosition));
         adapter.addAll(true, false, dataFeedList);
-        adapter.notifyItemInserted(0);
+        adapter.notifyItemInserted(historyDataPosition);
 
     }
 

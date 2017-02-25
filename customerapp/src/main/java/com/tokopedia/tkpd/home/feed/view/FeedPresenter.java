@@ -5,7 +5,9 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.home.model.HistoryProductListItem;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.tkpd.home.feed.domain.interactor.GetAllFeedDataPageUseCase;
 import com.tokopedia.tkpd.home.feed.domain.interactor.GetDataFeedCacheUseCase;
 import com.tokopedia.tkpd.home.feed.domain.interactor.GetFeedUseCase;
@@ -13,6 +15,8 @@ import com.tokopedia.tkpd.home.feed.domain.interactor.LoadMoreFeedUseCase;
 import com.tokopedia.tkpd.home.feed.domain.model.DataFeed;
 import com.tokopedia.tkpd.home.feed.domain.model.Feed;
 import com.tokopedia.tkpd.home.feed.view.viewModel.ProductFeedViewModel;
+
+import java.util.Collections;
 
 import javax.inject.Inject;
 
@@ -60,7 +64,7 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
         checkViewAttached();
         getView().showRefreshLoading();
         getView().disableLoadmore();
-        feedDataPageUseCase.execute(RequestParams.EMPTY, new RefreshFeedSubcriber());
+//        feedDataPageUseCase.execute(RequestParams.EMPTY, new RefreshFeedSubcriber());
     }
 
     @Override
@@ -174,11 +178,16 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
                 getView().showEmptyFeed();
             } else if (!isHasHistoryProduct(dataFeed) && isHasFeedProduct(dataFeed)) {
                 getView().showContentView();
-                getView().showEmptyHistoryProduct();
+                final int recentViewPosition = 0;
+                HistoryProductListItem fakeHistory
+                        = new HistoryProductListItem(Collections.<ProductItem>emptyList());
+                productFeedViewModel.getData().add(recentViewPosition, fakeHistory);
                 displayFeed(productFeedViewModel);
+                getView().hideEmptyFeed();
             } else if (isHasHistoryProduct(dataFeed) && !isHasFeedProduct(dataFeed)) {
                 getView().hideEmptyHistoryProduct();
                 getView().showContentView();
+                getView().hideEmptyFeed();
                 displayFeed(productFeedViewModel);
             } else {
                 getView().showContentView();
