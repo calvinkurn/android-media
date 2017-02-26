@@ -233,10 +233,10 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         if (dataFeedList != null && dataFeedList.size() > 0) {
             final int historyDataPosition = 0;
             adapter.updateHistoryAdapter(dataFeedList.get(historyDataPosition));
-            adapter.addAll(true, false, dataFeedList);
-            adapter.notifyItemInserted(0);
+            adapter.addAll(true, true, dataFeedList);
             currentTopAdsPage = 3;
-            adapter.setIsLoading(false);
+            adapter.setIsRetry(true);
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -301,6 +301,17 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     @Override
     public void hideEmptyFeed() {
         emptyFeedView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showMessageRefreshFailed() {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        feedPresenter.refreshDataFeed();
+                    }
+                }).showRetrySnackbar();
     }
 
 

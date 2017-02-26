@@ -287,6 +287,8 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
             } else if (isHasHistoryProduct(dataFeed) && !isHasFeedProduct(dataFeed)) {
                 getView().hideEmptyHistoryProduct();
                 getView().showContentView();
+                getView().showMessageRefreshFailed();
+                getView().showEmptyFeed();
                 displayRefreshData(productFeedViewModel);
             } else {
                 getView().showContentView();

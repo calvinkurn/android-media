@@ -53,6 +53,10 @@ interface FeedContract {
         void showInvalidFeed();
 
         void hideEmptyFeed();
+
+        void showMessageRefreshFailed();
+
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
