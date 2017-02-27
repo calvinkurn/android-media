@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.data.source.cloud.apiservice.api;
 
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.data.model.TopAdsProductDetailDataSourceModel;
 import com.tokopedia.seller.topads.domain.model.data.GroupAdBulkAction;
 import com.tokopedia.seller.topads.domain.model.data.ProductAdBulkAction;
 import com.tokopedia.seller.topads.domain.model.data.DataCredit;
@@ -58,7 +59,7 @@ public interface TopAdsManagementApi {
     Observable<Response<DataResponse<List<GroupAd>>>> searchGroupAd(@QueryMap Map<String, String> params);
 
     @GET(TopAdsNetworkConstant.PATH_DETAIL_PRODUCT_AD)
-    Observable<Response<PageDataResponse<List<ProductAd>>>> getDetailProductAd();
+    Observable<Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>>> getDetailProduct(@QueryMap Map<String, String> params);
 
     @PATCH(TopAdsNetworkConstant.PATH_BULK_ACTION_PRODUCT_AD)
     Observable<Response<DataResponse<ProductAdBulkAction>>> bulkActionProductAd(@Body DataRequest<ProductAdBulkAction> body);

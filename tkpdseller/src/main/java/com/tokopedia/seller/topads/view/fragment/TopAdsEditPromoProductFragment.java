@@ -14,7 +14,7 @@ import com.tokopedia.seller.topads.view.activity.TopAdsAddProductActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddProductListActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoFragmentListener;
 
-public class TopAdsEditPromoProductFragment extends TopAdsEditPromoFragment implements TopAdsEditPromoFragmentListener {
+public class TopAdsEditPromoProductFragment extends TopAdsEditPromoFragment {
 
     private static final int ADD_PRODUCT_REQUEST_CODE = 0;
 

@@ -9,8 +9,9 @@ import android.widget.EditText;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoFragmentListener;
+import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
 
-public class TopAdsEditPromoShopFragment extends TopAdsEditPromoFragment implements TopAdsEditPromoFragmentListener {
+public class TopAdsEditPromoShopFragment extends TopAdsEditPromoFragment {
 
     private EditText shopNameEditText;
     private String shopName;
@@ -42,4 +43,9 @@ public class TopAdsEditPromoShopFragment extends TopAdsEditPromoFragment impleme
         shopNameEditText.setText(shopName);
     }
 
+    @Override
+    protected void loadAd(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
+        super.loadAd(topAdsDetailAdViewModel);
+        shopNameEditText.setText(topAdsDetailAdViewModel.getTitle());
+    }
 }

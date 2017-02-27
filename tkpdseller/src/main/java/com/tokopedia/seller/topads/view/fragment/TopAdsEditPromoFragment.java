@@ -2,7 +2,6 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,19 +16,19 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.datepicker.widget.DatePickerLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.di.TopAdsEditPromoShopDI;
 import com.tokopedia.seller.topads.view.dialog.DatePickerDialog;
 import com.tokopedia.seller.topads.view.dialog.TimePickerdialog;
-import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoFragmentListener;
-import com.tokopedia.seller.topads.view.model.AdDetailViewModel;
+import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoView;
+import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoPresenterImpl;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopAdsEditPromoPresenter> implements TopAdsEditPromoFragmentListener {
+public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopAdsEditPromoPresenter> implements TopAdsEditPromoView {
 
     private TextInputLayout maxPriceInputLayout;
     private EditText maxPriceEditText;
@@ -51,7 +50,7 @@ public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopA
     private Date startDate;
     private Date endDate;
 
-    protected String shopAdId;
+    protected String adId;
 
     @Override
     protected boolean isRetainInstance() {
@@ -80,7 +79,8 @@ public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopA
 
     @Override
     protected void initialPresenter() {
-        presenter = new TopAdsEditPromoPresenterImpl(getActivity(), this);
+        presenter = TopAdsEditPromoShopDI.createPresenter(getActivity());
+        presenter.attachView(this);
     }
 
     @Override
@@ -90,7 +90,7 @@ public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopA
 
     @Override
     protected void setupArguments(Bundle bundle) {
-        shopAdId = bundle.getString(TopAdsExtraConstant.EXTRA_AD);
+        adId = bundle.getString(TopAdsExtraConstant.EXTRA_AD_ID);
     }
 
     @Override
@@ -238,17 +238,22 @@ public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopA
 
     @Override
     protected void setActionVar() {
-
+        presenter.getDetailAd(adId);
     }
 
     @Override
-    public void onAdDetailLoaded(@NonNull AdDetailViewModel adDetailViewModel) {
-
+    public void onDetailAdLoaded(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
+        loadAd(topAdsDetailAdViewModel);
     }
 
     @Override
-    public void onLoadAdDetailError() {
+    public void onLoadDetailAdError() {
 
+    }
+
+    protected void loadAd(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
+        maxPriceEditText.setText(String.valueOf(topAdsDetailAdViewModel.getPriceBid()));
+        budgetPerDayEditText.setText(String.valueOf(topAdsDetailAdViewModel.getPriceDaily()));
     }
 
     private void showBudgetPerDay(boolean show) {

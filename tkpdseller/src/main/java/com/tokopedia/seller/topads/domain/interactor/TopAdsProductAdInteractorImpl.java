@@ -77,19 +77,7 @@ public class TopAdsProductAdInteractorImpl implements TopAdsProductAdInteractor 
 
     @Override
     public void getDetailProductAd(ListenerInteractor<List<ProductAd>> listenerInteractor) {
-        Observable<Response<PageDataResponse<List<ProductAd>>>> detailAdObservable = topAdsManagementService.getApi().getDetailProductAd();
-        compositeSubscription.add(detailAdObservable
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .flatMap(new Func1<Response<PageDataResponse<List<ProductAd>>>, Observable<List<ProductAd>>>() {
-                    @Override
-                    public Observable<List<ProductAd>> call(Response<PageDataResponse<List<ProductAd>>> pageDataResponseResponse) {
-                        return Observable.just(pageDataResponseResponse.body().getData());
-                    }
 
-                })
-                .subscribe(new SubscribeOnNext<List<ProductAd>>(listenerInteractor), new SubscribeOnError(listenerInteractor)));
     }
 
     @Override
