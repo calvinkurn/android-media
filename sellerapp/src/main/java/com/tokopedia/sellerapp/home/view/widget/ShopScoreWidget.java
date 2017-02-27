@@ -69,6 +69,7 @@ public class ShopScoreWidget extends FrameLayout {
         ShopScoreViewModelData data = shopScoreViewModel.getData();
         setProgress(data.getValue());
         shopScoreTitleWidget.setText(data.getTitle());
+        setDescription(data.getDescription());
     }
 
     public void setProgress(float progress) {

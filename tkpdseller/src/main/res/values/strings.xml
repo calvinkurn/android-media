@@ -193,6 +193,6 @@
     <string name="positive_button_dialog">Ya</string>
     <string name="negative_button_dialog">Tidak</string>
     <string name="title_shop_score">Performa Toko</string>
-    <string name="description_shop_score_percent">/ 100</string>
+    <string name="description_shop_score_percent"> / 100</string>
 
 </resources>

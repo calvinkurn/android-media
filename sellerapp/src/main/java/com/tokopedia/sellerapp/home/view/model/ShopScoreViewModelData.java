@@ -8,10 +8,6 @@ public class ShopScoreViewModelData {
     private int value;
     private String description;
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public int getValue() {
         return value;
     }
@@ -26,5 +22,13 @@ public class ShopScoreViewModelData {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
