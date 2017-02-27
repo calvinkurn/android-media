@@ -26,12 +26,10 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -42,13 +40,9 @@ import com.tokopedia.otp.phoneverification.listener.PhoneVerificationFragmentVie
 import com.tokopedia.otp.phoneverification.presenter.PhoneVerificationPresenter;
 import com.tokopedia.otp.phoneverification.presenter.PhoneVerificationPresenterImpl;
 import com.tokopedia.session.R;
-import com.tokopedia.session.R2;
-
-import org.w3c.dom.Text;
 
 import java.util.concurrent.TimeUnit;
 
-import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -241,7 +235,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         verifyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.verifyOtp();
+                presenter.verifyPhoneNumber();
             }
         });
         requestOtpButton.setOnClickListener(new View.OnClickListener() {
@@ -358,7 +352,27 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
 
-        CommonUtils.dumper("TEST SUCCESS");
+        CommonUtils.UniversalToast(getActivity(), getString(R.string.success_verify_phone_number));
+    }
+
+    @Override
+    public void showErrorPhoneNumber(String errorMessage) {
+        phoneNumberEditText.setError(errorMessage);
+
+    }
+
+    @Override
+    public String getOTPCode() {
+        return otpEditText.getText().toString();
+    }
+
+    @Override
+    public void onErrorVerifyOTP(String errorMessage) {
+        finishProgressDialog();
+        if (errorMessage.equals(""))
+            NetworkErrorHelper.showSnackbar(getActivity());
+        else
+            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     private void startTimer() {
@@ -420,7 +434,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     public void processOTPSMS(String otpCode) {
         if (otpEditText != null)
             otpEditText.setText(otpCode);
-        presenter.verifyOtp();
+        presenter.verifyPhoneNumber();
     }
 
     @Override

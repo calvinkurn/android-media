@@ -1,17 +1,16 @@
 package com.tokopedia.otp.phoneverification.presenter;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.otp.phoneverification.fragment.PhoneVerificationFragment;
 import com.tokopedia.otp.phoneverification.interactor.PhoneVerificationNetworkInteractorImpl;
 import com.tokopedia.otp.phoneverification.listener.PhoneVerificationFragmentView;
 import com.tokopedia.session.R;
-import com.tokopedia.session.register.model.gson.RegisterResult;
+
+import org.json.JSONException;
 
 import java.net.UnknownHostException;
 
@@ -20,8 +19,6 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-
-import static android.R.attr.action;
 
 /**
  * Created by nisie on 2/22/17.
@@ -44,8 +41,118 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
     }
 
     @Override
-    public void verifyOtp() {
-        viewListener.onSuccessVerifyOTP();
+    public void verifyPhoneNumber() {
+        if (isValid())
+            compositeSubscription.add(networkInteractor.verifyPhoneNumber(getVerifyOTPParam())
+                    .subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<Response<TkpdResponse>>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            if (e instanceof UnknownHostException) {
+                                viewListener.onErrorRequestOTP(
+                                        viewListener.getString(R.string.msg_no_connection));
+                            } else if (e instanceof RuntimeException &&
+                                    e.getLocalizedMessage() != null &&
+                                    e.getLocalizedMessage().length() <= 3) {
+                                new ErrorHandler(new ErrorListener() {
+                                    @Override
+                                    public void onUnknown() {
+                                        viewListener.onErrorVerifyOTP(
+                                                viewListener.getString(R.string.default_request_error_unknown));
+                                    }
+
+                                    @Override
+                                    public void onTimeout() {
+                                        viewListener.onErrorVerifyOTP(
+                                                viewListener.getString(R.string.default_request_error_timeout));
+                                    }
+
+                                    @Override
+                                    public void onServerError() {
+                                        viewListener.onErrorVerifyOTP(
+                                                viewListener.getString(R.string.default_request_error_internal_server));
+                                    }
+
+                                    @Override
+                                    public void onBadRequest() {
+                                        viewListener.onErrorVerifyOTP(
+                                                viewListener.getString(R.string.default_request_error_bad_request));
+                                    }
+
+                                    @Override
+                                    public void onForbidden() {
+                                        viewListener.onErrorVerifyOTP(
+                                                viewListener.getString(R.string.default_request_error_forbidden_auth));
+                                    }
+                                }, Integer.parseInt(e.getLocalizedMessage()));
+                            } else if (e instanceof RuntimeException && e.getLocalizedMessage() != null) {
+                                viewListener.onErrorVerifyOTP(e.getLocalizedMessage());
+                            } else {
+                                viewListener.onErrorVerifyOTP(
+                                        viewListener.getString(R.string.default_request_error_unknown));
+                            }
+                        }
+
+                        @Override
+                        public void onNext(Response<TkpdResponse> responseData) {
+                            if (responseData.isSuccessful()) {
+                                try {
+                                    if (responseData.body().getJsonData().getString("is_verified").equals("")
+                                            && !responseData.body().getStatusMessageJoined().equals("")) {
+                                        viewListener.onSuccessVerifyOTP();
+                                    } else {
+                                        viewListener.onErrorVerifyOTP(responseData.body().getErrorMessageJoined());
+                                    }
+                                } catch (JSONException e) {
+                                    viewListener.onErrorVerifyOTP(responseData.body().getErrorMessageJoined());
+                                }
+                            } else {
+                                new ErrorHandler(new ErrorListener() {
+                                    @Override
+                                    public void onUnknown() {
+                                        viewListener.onErrorVerifyOTP(viewListener.getString(R.string.default_request_error_unknown));
+                                    }
+
+                                    @Override
+                                    public void onTimeout() {
+                                        viewListener.onErrorVerifyOTP(viewListener.getString(R.string.default_request_error_timeout));
+                                    }
+
+                                    @Override
+                                    public void onServerError() {
+                                        viewListener.onErrorVerifyOTP(viewListener.getString(R.string.default_request_error_internal_server));
+                                    }
+
+                                    @Override
+                                    public void onBadRequest() {
+                                        viewListener.onErrorVerifyOTP(viewListener.getString(R.string.default_request_error_bad_request));
+                                    }
+
+                                    @Override
+                                    public void onForbidden() {
+                                        viewListener.onErrorVerifyOTP(viewListener.getString(R.string.default_request_error_forbidden_auth));
+                                    }
+                                }, responseData.code());
+                            }
+
+                        }
+                    }));
+    }
+
+    private boolean isValid() {
+        boolean isValid = true;
+        if (viewListener.getPhoneNumber().length() == 0) {
+            viewListener.showErrorPhoneNumber(viewListener.getString(R.string.error_field_required));
+            isValid = false;
+        }
+        return isValid;
     }
 
     @Override
@@ -272,6 +379,13 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
         param.put("mode", "call");
         param.put("otp_type", OTP_TYPE_PHONE_NUMBER_VERIFICATION);
         param.put("msisdn", viewListener.getPhoneNumber());
+        return param;
+    }
+
+    public TKPDMapParam<String, String> getVerifyOTPParam() {
+        TKPDMapParam param = new TKPDMapParam();
+        param.put("otp", viewListener.getOTPCode());
+        param.put("phone", viewListener.getPhoneNumber());
         return param;
     }
 }

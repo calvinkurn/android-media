@@ -28,5 +28,6 @@
     <string name="button_change">Ubah</string>
     <string name="send_otp_sms">Kirim SMS Verifikasi</string>
     <string name="skip">Lewati</string>
+    <string name="success_verify_phone_number">Verifikasi nomor handphone sudah berhasil.</string>
 
 </resources>

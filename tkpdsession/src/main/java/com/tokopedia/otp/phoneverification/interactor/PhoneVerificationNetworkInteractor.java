@@ -14,7 +14,7 @@ public interface PhoneVerificationNetworkInteractor {
 
     Observable<Response<TkpdResponse>> requestOTP(String userId, TKPDMapParam<String, String> param);
 
-    Observable<Response<TkpdResponse>> verifyOTP(TKPDMapParam<String, String> param);
+    Observable<Response<TkpdResponse>> verifyPhoneNumber(TKPDMapParam<String, String> param);
 
 
 }

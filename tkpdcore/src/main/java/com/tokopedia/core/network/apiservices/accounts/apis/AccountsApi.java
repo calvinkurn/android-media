@@ -77,6 +77,6 @@ public interface AccountsApi {
                                                           @FieldMap Map<String, String> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.Accounts.OTP.VALIDATE_OTP)
-    Observable<Response<TkpdResponse>> validateOtp(TKPDMapParam<String, String> param);
+    @POST(TkpdBaseURL.Accounts.VERIFY_PHONE_NUMBER)
+    Observable<Response<TkpdResponse>> verifyPhoneNumber(@FieldMap TKPDMapParam<String, String> param);
 }

@@ -25,7 +25,7 @@ public class PhoneVerificationNetworkInteractorImpl implements PhoneVerification
     }
 
     @Override
-    public Observable<Response<TkpdResponse>> verifyOTP(TKPDMapParam<String, String> param) {
-        return accountsService.getApi().validateOtp(param);
+    public Observable<Response<TkpdResponse>> verifyPhoneNumber(TKPDMapParam<String, String> param) {
+        return accountsService.getApi().verifyPhoneNumber(param);
     }
 }

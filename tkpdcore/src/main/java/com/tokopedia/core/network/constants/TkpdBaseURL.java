@@ -602,6 +602,8 @@ public class TkpdBaseURL {
         public static final String VALIDATE_EMAIL = "/api/register/validate-email";
         public static final String RESENT_ACTIVATION = "/api/resend";
         public static final String GENERATE_HOST = "/api/upload-host";
+        public static final String VERIFY_PHONE_NUMBER = "/api/msisdn/verify-msisdn";
+
 
         public class OTP {
             private static final String BASE_OTP = "/otp";

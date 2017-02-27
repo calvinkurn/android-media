@@ -20,4 +20,10 @@ public interface PhoneVerificationFragmentView {
     void showProgressDialog();
 
     void onSuccessVerifyOTP();
+
+    void showErrorPhoneNumber(String errorMessage);
+
+    String getOTPCode();
+
+    void onErrorVerifyOTP(String errorMessage);
 }

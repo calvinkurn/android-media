@@ -5,7 +5,7 @@ package com.tokopedia.otp.phoneverification.presenter;
  */
 
 public interface PhoneVerificationPresenter {
-    void verifyOtp();
+    void verifyPhoneNumber();
 
     void requestOtp();
 
