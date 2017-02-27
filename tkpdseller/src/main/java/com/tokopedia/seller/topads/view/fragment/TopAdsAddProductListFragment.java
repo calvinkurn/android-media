@@ -310,7 +310,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
             if (resultCode == Activity.RESULT_OK) {
                 selectedFilterStatus = data.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS_PROMO, 0);
                 selectedFilterEtalaseId = data.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_ETALASE, 0);
-
             }
             else {
                 selectedFilterStatus = 0;

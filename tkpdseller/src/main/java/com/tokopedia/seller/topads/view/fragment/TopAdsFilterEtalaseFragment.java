@@ -69,7 +69,11 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
     }
 
     private void updateSelectedPosition(List<RadioButtonItem> radioButtonItemList) {
-        if (selectedAdapterPosition > -1) {
+        if (selectedEtalaseId == 0) { // default to all etalase
+            selectedAdapterPosition = 0;
+            return;
+        }
+        if (selectedAdapterPosition > 0) { // has been updated for first time only
             return;
         }
         for (int i = 0; i < radioButtonItemList.size(); i++) {
