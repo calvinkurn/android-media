@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
@@ -115,6 +116,8 @@ public class TopAdsAddProductListActivity extends BaseActivity
         inject();
         setContentView(R.layout.activity_top_ads_add_product_list_container);
 
+        setAsActionBar();
+
         greyButton = ContextCompat.getDrawable(this, R.drawable.bg_button_grey);
         greenButton = ContextCompat.getDrawable(this, R.drawable.bg_button_green);
 
@@ -171,6 +174,14 @@ public class TopAdsAddProductListActivity extends BaseActivity
             fetchIntent(getIntent().getExtras());
         } else {
             fetchSaveInstanceState(savedInstanceState);
+        }
+    }
+
+    protected void setAsActionBar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
 
@@ -441,5 +452,12 @@ public class TopAdsAddProductListActivity extends BaseActivity
         return result;
     }
 
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
