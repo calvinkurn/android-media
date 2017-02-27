@@ -67,7 +67,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     LinearLayout mainContentLinearLayout;
     @BindView(R.id.empty_wishlist)
     RelativeLayout emptyFeedView;
-    @BindView(R.id.empty_history)
+    @BindView(R.id.empty_layout_history)
     RelativeLayout emptyHistoryView;
 
     @Inject
@@ -233,10 +233,9 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         if (dataFeedList != null && dataFeedList.size() > 0) {
             final int historyDataPosition = 0;
             adapter.updateHistoryAdapter(dataFeedList.get(historyDataPosition));
-            adapter.addAll(true, true, dataFeedList);
+            adapter.addAll(true, false, dataFeedList);
+            adapter.notifyItemInserted(0);
             currentTopAdsPage = 3;
-            adapter.setIsRetry(true);
-            adapter.notifyDataSetChanged();
         }
     }
 
@@ -252,6 +251,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     public void showRefreshFailed() {
+        feedPresenter.initializeDataFeed();
         if (adapter.getData().size() > 0) {
             NetworkErrorHelper.createSnackbarWithAction(getActivity(),
                     new NetworkErrorHelper.RetryClickedListener() {
@@ -312,6 +312,16 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                         feedPresenter.refreshDataFeed();
                     }
                 }).showRetrySnackbar();
+    }
+
+    @Override
+    public boolean isViewNotEmpty() {
+        return !adapter.getData().isEmpty();
+    }
+
+    @Override
+    public void forceShowEmptyHistory() {
+         emptyHistoryView.setVisibility(View.VISIBLE);
     }
 
 

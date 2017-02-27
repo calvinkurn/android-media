@@ -56,6 +56,10 @@ interface FeedContract {
 
         void showMessageRefreshFailed();
 
+        boolean isViewNotEmpty();
+
+        void forceShowEmptyHistory();
+
 
     }
 
