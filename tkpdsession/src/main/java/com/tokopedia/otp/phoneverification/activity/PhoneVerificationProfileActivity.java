@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.otp.phoneverification.fragment.PhoneVerificationFragment;
+import com.tokopedia.otp.phoneverification.fragment.PhoneVerificationProfileFragment;
 import com.tokopedia.session.R;
 
 /**
@@ -45,12 +46,21 @@ public class PhoneVerificationProfileActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-        PhoneVerificationFragment fragment = PhoneVerificationFragment.createInstance();
+
+
+        PhoneVerificationProfileFragment fragmentHeader = PhoneVerificationProfileFragment.createInstance();
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        if (getFragmentManager().findFragmentById(R.id.container) == null) {
-            fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
+        if (getFragmentManager().findFragmentById(R.id.container_header) == null) {
+            fragmentTransaction.add(R.id.container_header, fragmentHeader, fragmentHeader.getClass().getSimpleName());
         }
         fragmentTransaction.commit();
+
+        PhoneVerificationFragment fragment = PhoneVerificationFragment.createInstance();
+        FragmentTransaction fragmentTransaction2 = getFragmentManager().beginTransaction();
+        if (getFragmentManager().findFragmentById(R.id.container) == null) {
+            fragmentTransaction2.add(R.id.container, fragment, fragment.getClass().getSimpleName());
+        }
+        fragmentTransaction2.commit();
     }
 
     @Override

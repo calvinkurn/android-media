@@ -6,17 +6,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.otp.phoneverification.fragment.ChangePhoneNumberFragment;
-import com.tokopedia.otp.phoneverification.fragment.PhoneVerificationFragment;
 import com.tokopedia.session.R;
-import com.tokopedia.session.R2;
-
-import butterknife.BindView;
 
 /**
  * Created by nisie on 2/23/17.

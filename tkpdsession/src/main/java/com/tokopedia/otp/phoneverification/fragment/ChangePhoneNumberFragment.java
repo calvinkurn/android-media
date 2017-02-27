@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
+import com.tokopedia.otp.phoneverification.listener.ChangePhoneNumberView;
+import com.tokopedia.otp.phoneverification.presenter.ChangePhoneNumberPresenter;
+import com.tokopedia.otp.phoneverification.presenter.ChangePhoneNumberPresenterImpl;
 import com.tokopedia.session.R;
 
 import static android.app.Activity.RESULT_OK;
@@ -19,7 +22,8 @@ import static android.app.Activity.RESULT_OK;
  * Created by nisie on 2/24/17.
  */
 
-public class ChangePhoneNumberFragment extends BasePresenterFragment {
+public class ChangePhoneNumberFragment extends BasePresenterFragment<ChangePhoneNumberPresenter>
+        implements ChangePhoneNumberView {
 
     public static final int ACTION_CHANGE_PHONE_NUMBER = 111;
     public static final String EXTRA_PHONE_NUMBER = "EXTRA_PHONE_NUMBER";
@@ -58,7 +62,7 @@ public class ChangePhoneNumberFragment extends BasePresenterFragment {
 
     @Override
     protected void initialPresenter() {
-
+        presenter = new ChangePhoneNumberPresenterImpl(this);
     }
 
     @Override
@@ -115,11 +119,7 @@ public class ChangePhoneNumberFragment extends BasePresenterFragment {
         changePhoneNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = getActivity().getIntent();
-                intent.putExtra(EXTRA_PHONE_NUMBER,
-                        phoneNumberEditText.getText().toString());
-                getActivity().setResult(RESULT_OK, intent);
-                getActivity().finish();
+                presenter.changePhoneNumber(phoneNumberEditText.getText().toString().replace("-", ""));
             }
         });
     }
@@ -134,4 +134,17 @@ public class ChangePhoneNumberFragment extends BasePresenterFragment {
 
     }
 
+    @Override
+    public void onSuccessChangePhoneNumber() {
+        Intent intent = getActivity().getIntent();
+        intent.putExtra(EXTRA_PHONE_NUMBER,
+                phoneNumberEditText.getText().toString());
+        getActivity().setResult(RESULT_OK, intent);
+        getActivity().finish();
+    }
+
+    @Override
+    public EditText getPhoneNumberEditText() {
+        return phoneNumberEditText;
+    }
 }

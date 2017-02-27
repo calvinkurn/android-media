@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -297,6 +298,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         skipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getActivity().setResult(Activity.RESULT_CANCELED);
                 getActivity().finish();
             }
         });
@@ -349,6 +351,14 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
         if (getActivity() != null)
             progressDialog.showDialog();
+    }
+
+    @Override
+    public void onSuccessVerifyOTP() {
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
+
+        CommonUtils.dumper("TEST SUCCESS");
     }
 
     private void startTimer() {

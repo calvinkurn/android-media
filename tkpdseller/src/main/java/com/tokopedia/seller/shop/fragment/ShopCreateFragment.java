@@ -55,6 +55,7 @@ import static com.tokopedia.seller.shop.presenter.ShopCreatePresenter.TAG_ERROR;
 public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implements ShopCreateView {
 
     public static final int REQUEST_CAMERA = 111;
+    private static final int REQUEST_VERIFY_PHONE_NUMBER = 900;
     private TkpdProgressDialog progressDialog;
 
     // SUBMIT BUTTON
@@ -99,7 +100,8 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
 
     @OnClick(R2.id.verify_button)
     public void showVerificationDialog(){
-        startActivity(SessionRouter.getPhoneVerificationActivationActivityIntent(getActivity()));
+        startActivityForResult(SessionRouter.getPhoneVerificationActivationActivityIntent(getActivity()),
+                REQUEST_VERIFY_PHONE_NUMBER);
     }
 
     @Override
@@ -347,6 +349,8 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
                 default:
                     break;
             }
+        }else if(requestCode == REQUEST_VERIFY_PHONE_NUMBER && resultCode == Activity.RESULT_OK){
+            showPhoneVerification(false);
         }
         if (imageLocation != null) {
             ImageHandler.LoadImage(shopAvatar, imageLocation);
@@ -376,8 +380,6 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
 
     @Override
     public void showPhoneVerification(boolean needVerify) {
-        if(needVerify)
-            startActivity(SessionRouter.getPhoneVerificationActivationActivityIntent(getActivity()));
         submitButton.setVisibility((needVerify)? View.GONE : View.VISIBLE);
         verifyButton.setVisibility((needVerify)? View.VISIBLE : View.GONE);
         verifyInstruction.setVisibility((needVerify)? View.VISIBLE : View.GONE);

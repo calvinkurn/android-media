@@ -45,7 +45,7 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
 
     @Override
     public void verifyOtp() {
-        CommonUtils.dumper("NISNIS verifyOTP");
+        viewListener.onSuccessVerifyOTP();
     }
 
     @Override

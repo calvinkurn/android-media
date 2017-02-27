@@ -18,4 +18,6 @@ public interface PhoneVerificationFragmentView {
     void onErrorRequestOTP(String errorMessage);
 
     void showProgressDialog();
+
+    void onSuccessVerifyOTP();
 }
