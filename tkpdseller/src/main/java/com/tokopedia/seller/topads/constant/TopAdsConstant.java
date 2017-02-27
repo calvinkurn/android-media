@@ -16,7 +16,7 @@ public class TopAdsConstant {
     public static final String EXTRA_CREDIT = "EXTRA_CREDIT";
 
     public static final String EDIT_PROMO_DISPLAY_DATE = "dd/MM/yyyy";
-    public static final String EDIT_PROMO_DISPLAY_TIME = "HH:mm a";
+    public static final String EDIT_PROMO_DISPLAY_TIME = "hh:mm a";
 
     public static final int STATUS_AD_ALL_ACTIVE = 0;
     public static final int STATUS_AD_ACTIVE = 1;

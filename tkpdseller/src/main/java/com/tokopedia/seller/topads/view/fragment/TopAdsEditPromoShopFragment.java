@@ -44,8 +44,8 @@ public class TopAdsEditPromoShopFragment extends TopAdsEditPromoFragment {
     }
 
     @Override
-    protected void loadAd(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
-        super.loadAd(topAdsDetailAdViewModel);
-        shopNameEditText.setText(topAdsDetailAdViewModel.getTitle());
+    protected void loadAd(TopAdsDetailAdViewModel detailAd) {
+        super.loadAd(detailAd);
+        shopNameEditText.setText(detailAd.getTitle());
     }
 }
