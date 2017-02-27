@@ -171,6 +171,9 @@ public class TkpdCache {
         public static final String SHOP_INFO = "SHOP_INFO";
         public static final String SHOP_NOTE_LIST = "SHOP_NOTE_LIST";
         public static final String KEBIJAKAN_PENGEMBALIAN_PRODUK = "KEBIJAKAN_PENGEMBALIAN_PRODUK";
+
+        public static final String SHOP_SCORE_SUMMARY = "SHOP_SCORE_SUMMARY";
+        public static final String SHOP_SCORE_DETAIL = "SHOP_SCORE_DETAIL";
     }
 
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
@@ -15,6 +16,7 @@ import com.tokopedia.seller.shopscore.data.factory.ShopScoreFactory;
 import com.tokopedia.seller.shopscore.data.repository.ShopScoreRepositoryImpl;
 import com.tokopedia.seller.shopscore.data.source.cloud.ShopScoreCloud;
 import com.tokopedia.seller.shopscore.data.source.cloud.api.ShopScoreApi;
+import com.tokopedia.seller.shopscore.data.source.disk.ShopScoreCache;
 import com.tokopedia.seller.shopscore.domain.interactor.GetShopScoreMainDataUseCase;
 import com.tokopedia.sellerapp.home.view.presenter.SellerHomePresenterImpl;
 
@@ -63,7 +65,9 @@ public class SellerHomeDependencyInjection {
         SessionHandler sessionHandler = new SessionHandler(context);
 
         ShopScoreCloud shopScoreCloud = new ShopScoreCloud(api, sessionHandler);
-        ShopScoreFactory shopScoreFactory = new ShopScoreFactory(shopScoreCloud, gson);
+        GlobalCacheManager cacheManager = new GlobalCacheManager();
+        ShopScoreCache shopScoreCache = new ShopScoreCache(cacheManager);
+        ShopScoreFactory shopScoreFactory = new ShopScoreFactory(shopScoreCloud, shopScoreCache);
         ShopScoreRepositoryImpl shopScoreRepository = new ShopScoreRepositoryImpl(shopScoreFactory);
 
         GetShopScoreMainDataUseCase getShopScoreMainData =
