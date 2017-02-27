@@ -12,7 +12,7 @@
 
     <item
         android:id="@+id/action_camera"
-        android:icon="@drawable/ic_icon_calendar"
+        android:icon="@drawable/ic_filter"
         android:orderInCategory="102"
         android:title="@string/filter_top_ads"
         app:showAsAction="always" />

@@ -50,6 +50,11 @@ public class ChipsAdapter extends RecyclerView.Adapter<ChipsAdapter.ViewHolder> 
         return chipsEntities.size();
     }
 
+    public void remove(int position) {
+        chipsEntities.remove(position);
+        notifyItemRemoved(position);
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView tvDescription;
@@ -99,18 +104,12 @@ public class ChipsAdapter extends RecyclerView.Adapter<ChipsAdapter.ViewHolder> 
                 @Override
                 public void onClick(View v) {
                     if (onRemoveListener != null && getAdapterPosition() != -1) {
-                        onRemoveListener.onItemRemoved(entity.getPosition(), getAdapterPosition());
+                        onRemoveListener.onItemRemoved(getAdapterPosition());
                     }
                 }
             });
         }
     }
-
-    public void remove(int position){
-        chipsEntities.remove(position);
-        notifyItemRemoved(position);
-    }
-
 
 
 }

@@ -12,6 +12,7 @@ public class BottomSheetHelper {
     private int actionBarSize;
     private BottomSheetBehavior mBottomSheetBehavior;
     private BottomSheetBehavior.BottomSheetCallback bottomSheetCallback;
+    private int height;
 
     public BottomSheetHelper(BottomSheetBehavior mBottomSheetBehavior,
                              View viewById, int actionBarSize) {
@@ -23,13 +24,17 @@ public class BottomSheetHelper {
     }
 
     public void showBottomSheet() {
-        mBottomSheetBehavior.setPeekHeight(peakView.getHeight() + actionBarSize);
+        mBottomSheetBehavior.setPeekHeight((int) (height + (0.50 * peakView.getHeight()) + actionBarSize));
         peakView.requestLayout();
     }
 
     public void dismissBottomSheet() {
         mBottomSheetBehavior.setPeekHeight(0);
         peakView.requestLayout();
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     public void setBottomSheetCallback(BottomSheetBehavior.BottomSheetCallback bottomSheetCallback) {

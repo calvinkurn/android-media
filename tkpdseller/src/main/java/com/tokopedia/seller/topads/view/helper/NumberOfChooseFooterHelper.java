@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.view.helper;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
@@ -17,6 +18,7 @@ public class NumberOfChooseFooterHelper {
     private View view;
     private TextView btSelectionNumber;
     private TextView btSelectionDescription;
+    private ImageView imageBtSelection;
 
     public NumberOfChooseFooterHelper(View view) {
         this.view = view;
@@ -31,6 +33,7 @@ public class NumberOfChooseFooterHelper {
     private void initViews() {
         btSelectionNumber = (TextView) view.findViewById(R.id.bt_selection_number);
         btSelectionDescription = (TextView) view.findViewById(R.id.bt_selection_description);
+        imageBtSelection = (ImageView) view.findViewById(R.id.image_bt_selection);
     }
 
     public void bindData(int numberOfChoosen, View.OnClickListener onExpandClickListener) {
@@ -40,5 +43,15 @@ public class NumberOfChooseFooterHelper {
 
         if (onExpandClickListener != null)
             view.setOnClickListener(onExpandClickListener);
+    }
+
+    public void setSelectionNumber(int numberOfChoosen) {
+        btSelectionNumber.setText(
+                getNumberOfChoose(numberOfChoosen)
+        );
+    }
+
+    public void rotate(float degree) {
+        imageBtSelection.setRotation(degree);
     }
 }

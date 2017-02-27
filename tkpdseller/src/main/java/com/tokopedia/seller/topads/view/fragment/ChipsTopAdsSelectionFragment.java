@@ -21,6 +21,7 @@ import com.tokopedia.seller.topads.view.adapter.ChipsAdapter;
 import com.tokopedia.seller.topads.view.models.ChipsEntity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author normansyahputa on 2/16/17.
@@ -33,30 +34,28 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
 
     private RecyclerView recyclerView;
     private ChipsAdapter adapter;
-    private SparseArrayCompat<Integer> map;
     private ArrayList<ChipsEntity<TopAdsProductViewModel>> datas;
+    private AddProductListInterface addProductListInterface;
     private OnRemoveListener onRemoveListener = new OnRemoveListener() {
         @Override
-        public void onItemRemoved(int dataPosition, int adapterPosition) {
-            Log.d("MNORMANSYAH", "#2 localLocation "+dataPosition);
-            int positionAtOtherList = map.keyAt(map.indexOfValue(dataPosition));
-            Log.d("MNORMANSYAH", "#2 position "+ positionAtOtherList);
-            map.removeAt(map.indexOfValue(dataPosition));
-            datas.remove(adapterPosition);
-            Log.i("activity", "delete at " + adapterPosition);
-            adapter.notifyItemRemoved(adapterPosition);
+        public void onItemRemoved(int position) {
+            ChipsEntity<TopAdsProductViewModel> removedModel = datas.remove(position);
+            Log.i("activity", "delete at " + position);
+            adapter.notifyItemRemoved(position);
 
-            if(!isActivityInterfaceEmpty()){
-                addProductListInterface.notifyUnchecked(positionAtOtherList);
+            if (!isActivityInterfaceEmpty()) {
+                TopAdsProductViewModel rawData = removedModel.getRawData();
+                addProductListInterface.removeSelection(rawData);
+                addProductListInterface.notifyUnchecked(rawData);
             }
 
-            if(!isActivityInterfaceEmpty() && isMapEmpty()){
+            boolean mapEmpty = isMapEmpty();
+            Log.d("MNORMANSYAH", "map empty " + mapEmpty);
+            if (!isActivityInterfaceEmpty() && mapEmpty) {
                 addProductListInterface.hideBottomBecauseEmpty();
             }
         }
     };
-
-    private AddProductListInterface addProductListInterface;
 
     public static Fragment newInstance() {
         return new ChipsTopAdsSelectionFragment();
@@ -64,17 +63,17 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
 
     @Override
     protected void initialListener(Activity activity) {
-        if(activity != null && activity instanceof AddProductListInterface){
-            addProductListInterface = (AddProductListInterface)activity;
+        if (activity != null && activity instanceof AddProductListInterface) {
+            addProductListInterface = (AddProductListInterface) activity;
         }
     }
 
-    private boolean isActivityInterfaceEmpty(){
+    private boolean isActivityInterfaceEmpty() {
         return addProductListInterface == null;
     }
 
-    private boolean isMapEmpty(){
-        return map.size() == 0;
+    private boolean isMapEmpty() {
+        return !isActivityInterfaceEmpty() && addProductListInterface.sizeSelection() == 0;
     }
 
     @Override
@@ -82,7 +81,6 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
         super.onCreate(savedInstanceState);
 
         createAdapter(savedInstanceState);
-        map = new SparseArrayCompat<>();
     }
 
     private void setupView(View contentView, @Nullable Bundle savedInstanceState) {
@@ -96,6 +94,7 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
         recyclerView.addItemDecoration(new SpacingItemDecoration(getResources().getDimensionPixelOffset(R.dimen.item_space),
                 getResources().getDimensionPixelOffset(R.dimen.item_space)));
 
+        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(spanLayoutManager);
         recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 50);
         recyclerView.getRecycledViewPool().setMaxRecycledViews(1, 50);
@@ -107,6 +106,10 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
     private RecyclerView.Adapter createAdapter(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
             datas = new ArrayList<>();
+
+            for (TopAdsProductViewModel topAdsProductViewModel : addProductListInterface.selections()) {
+                datas.add(convertToRecyclerViewModel(topAdsProductViewModel).build());
+            }
         } else {
             datas = savedInstanceState.getParcelableArrayList(EXTRA_DATAS);
         }
@@ -119,8 +122,7 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
         ChipsEntity.Builder<TopAdsProductViewModel> builder = convertToRecyclerViewModel(datas.size(), data);
         datas.add(builder.build());
         int localLocation = datas.size() - 1;
-        map.put(position, localLocation);
-        Log.d("MNORMANSYAH", "position "+position+" localLocation "+localLocation);
+        Log.d("MNORMANSYAH", "position " + position + " localLocation " + localLocation);
         adapter.notifyItemInserted(localLocation);
     }
 
@@ -132,17 +134,34 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
                 .position(position);
     }
 
+    public ChipsEntity.Builder<TopAdsProductViewModel> convertToRecyclerViewModel(TopAdsProductViewModel data) {
+        return convertToRecyclerViewModel(0, data);
+    }
+
+    private List<TopAdsProductViewModel> convertTo() {
+        List<TopAdsProductViewModel> chipsEntities =
+                new ArrayList<>();
+        for (ChipsEntity<TopAdsProductViewModel> data : datas) {
+            ChipsEntity<TopAdsProductViewModel> data1 = (ChipsEntity<TopAdsProductViewModel>) data;
+            chipsEntities.add(data1.getRawData());
+        }
+        return chipsEntities;
+    }
+
     @Override
     public void onUnChecked(int position, TopAdsProductViewModel data) {
-        Integer localLocation = map.get(position);
-        Log.d("MNORMANSYAH", "position "+position+" localLocation "+localLocation);
-        map.remove(position);
-        datas.remove(localLocation);
+        List<TopAdsProductViewModel> chipsEntities = convertTo();
+        int localLocation = chipsEntities.indexOf(data);
         adapter.remove(localLocation);
 
-        if(!isActivityInterfaceEmpty() && isMapEmpty()){
+        if (!isActivityInterfaceEmpty() && isMapEmpty()) {
             addProductListInterface.hideBottomBecauseEmpty();
         }
+    }
+
+    @Override
+    public boolean isSelected(TopAdsProductViewModel data) {
+        return addProductListInterface.isSelected(data);
     }
 
     @Override
@@ -210,8 +229,18 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
     }
 
     @Override
-    public void notifyUnchecked(int position) {
+    public void notifyUnchecked(TopAdsProductViewModel position) {
         throw new RuntimeException("this is not for this class");
+    }
+
+    @Override
+    public void hideRecyclerView() {
+        recyclerView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showRecyclerView() {
+        recyclerView.setVisibility(View.VISIBLE);
     }
     //unused methods
 
