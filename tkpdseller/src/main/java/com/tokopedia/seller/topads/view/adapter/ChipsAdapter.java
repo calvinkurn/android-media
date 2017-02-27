@@ -75,12 +75,7 @@ public class ChipsAdapter extends RecyclerView.Adapter<ChipsAdapter.ViewHolder> 
 
         void bindItem(final ChipsEntity entity) {
             itemView.setTag(entity.getName());
-            if (TextUtils.isEmpty(entity.getDescription())) {
-                tvDescription.setVisibility(View.GONE);
-            } else {
-                tvDescription.setVisibility(View.VISIBLE);
-                tvDescription.setText(entity.getDescription());
-            }
+            tvDescription.setVisibility(View.GONE);
 
             if (entity.getDrawableResId() != 0) {
                 Glide.with(ivPhoto.getContext()).load(entity.getDrawableResId())

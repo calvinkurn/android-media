@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface AddProductListInterface extends ActivityItemSelection {
 
+    int RESULT_CODE = 9912;
+
     String EXTRA_SELECTIONS = "EXTRA_SELECTIONS";
 
     ImageHandler imageHandler();
@@ -23,4 +25,8 @@ public interface AddProductListInterface extends ActivityItemSelection {
     int sizeSelection();
 
     List<TopAdsProductViewModel> selections();
+
+    void disableNextButton();
+
+    void enableNextButton();
 }

@@ -2,12 +2,15 @@ package com.tokopedia.seller.topads.view.activity;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
@@ -17,6 +20,7 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
@@ -87,6 +91,9 @@ public class TopAdsAddProductListActivity extends BaseActivity
                 }
             };
     private boolean isFirstTime;
+    private Drawable greyButton;
+    private View nextBgButton;
+    private Drawable greenButton;
 
     private void addPaddingBottom() {
         bottomSheetContainer.setPadding(
@@ -108,6 +115,9 @@ public class TopAdsAddProductListActivity extends BaseActivity
         inject();
         setContentView(R.layout.activity_top_ads_add_product_list_container);
 
+        greyButton = ContextCompat.getDrawable(this, R.drawable.bg_button_grey);
+        greenButton = ContextCompat.getDrawable(this, R.drawable.bg_button_green);
+
         bottomSheetContainer = findViewById(R.id.bottom_sheet_container);
 
         statusBarSeparation = findViewById(R.id.status_bar_separation);
@@ -119,7 +129,9 @@ public class TopAdsAddProductListActivity extends BaseActivity
         numberOfChooseFooterHelper.bindData(10, expandedOnClick);
 
         nextButton = findViewById(R.id.top_ads_next);
+        nextBgButton = findViewById(R.id.bg_top_ads_next);
         nextButtonHeight = getCoords(nextButton);
+        disableNextButton();
 
         ViewTreeObserver vto = nextButton.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -279,8 +291,11 @@ public class TopAdsAddProductListActivity extends BaseActivity
     @Override
     public void addSelection(TopAdsProductViewModel data) {
         selections.add(data);
-
         numberOfChooseFooterHelper.setSelectionNumber(selections.size());
+
+        if(selections.size() > 0){
+            enableNextButton();
+        }
     }
 
     @Override
@@ -291,6 +306,40 @@ public class TopAdsAddProductListActivity extends BaseActivity
     @Override
     public List<TopAdsProductViewModel> selections() {
         return new ArrayList<>(selections);
+    }
+
+    @Override
+    public void disableNextButton() {
+        nextButton.setOnClickListener(null);
+        nextButton.setClickable(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            nextBgButton.setBackground(greyButton);
+        }else{
+            nextBgButton.setBackgroundResource(R.drawable.bg_button_grey);
+        }
+    }
+
+    @Override
+    public void enableNextButton() {
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                returnSelections();
+            }
+        });
+        nextButton.setClickable(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            nextBgButton.setBackground(greenButton);
+        }else{
+            nextBgButton.setBackgroundResource(R.drawable.bg_button_green);
+        }
+    }
+
+    private void returnSelections(){
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_SELECTIONS, new ArrayList<>(selections));
+        setResult(RESULT_CODE, intent);
+        finish();
     }
 
     @Override
@@ -371,8 +420,11 @@ public class TopAdsAddProductListActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-
+        if(bottomSheetHelper.getState() == BottomSheetBehavior.STATE_EXPANDED){
+            bottomSheetHelper.collapse();
+        }else{
+            super.onBackPressed();
+        }
     }
 
     public int getStatusBarHeight() {

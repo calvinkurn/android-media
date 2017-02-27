@@ -52,6 +52,7 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
             boolean mapEmpty = isMapEmpty();
             Log.d("MNORMANSYAH", "map empty " + mapEmpty);
             if (!isActivityInterfaceEmpty() && mapEmpty) {
+                addProductListInterface.disableNextButton();
                 addProductListInterface.hideBottomBecauseEmpty();
             }
         }
@@ -155,6 +156,7 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
         adapter.remove(localLocation);
 
         if (!isActivityInterfaceEmpty() && isMapEmpty()) {
+            addProductListInterface.disableNextButton();
             addProductListInterface.hideBottomBecauseEmpty();
         }
     }

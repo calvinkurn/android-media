@@ -65,7 +65,7 @@ public class TopAdsAddProductListViewHolder extends RecyclerView.ViewHolder
             imageHandler.loadImage(topAdsAddProductListImageView, model.imageUrl, true);
             itemView.setBackgroundColor(transparantColor);
         } else {
-            imageHandler.loadImage(topAdsAddProductListImageView, R.drawable.abc_btn_switch_to_on_mtrl_00001);
+            imageHandler.loadImage(topAdsAddProductListImageView, R.drawable.ic_top_ads_selected);
             itemView.setBackgroundColor(topAdsSelectionColor);
         }
 

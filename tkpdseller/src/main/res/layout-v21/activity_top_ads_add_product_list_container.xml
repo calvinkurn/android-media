@@ -51,6 +51,7 @@
         android:background="@android:color/white">
 
         <View
+            android:id="@+id/bg_top_ads_next"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="6dp"
