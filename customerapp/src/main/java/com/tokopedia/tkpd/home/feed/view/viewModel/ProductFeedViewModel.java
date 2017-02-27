@@ -25,6 +25,7 @@ import java.util.List;
 public class ProductFeedViewModel {
     private List<RecyclerViewItem> result;
     private PagingHandler.PagingHandlerModel pagingHandlerModel;
+    private List<RecyclerViewItem> data;
 
     public ProductFeedViewModel(DataFeed productFeed) {
         result = new ArrayList<>();
@@ -233,4 +234,7 @@ public class ProductFeedViewModel {
         return pager;
     }
 
+    public void setData(List<RecyclerViewItem> data) {
+        this.data = data;
+    }
 }

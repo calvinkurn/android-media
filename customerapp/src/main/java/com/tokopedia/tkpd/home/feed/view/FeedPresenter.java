@@ -8,15 +8,18 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.home.model.HistoryProductListItem;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.tkpd.home.feed.domain.interactor.GetAllFeedDataPageUseCase;
 import com.tokopedia.tkpd.home.feed.domain.interactor.GetDataFeedCacheUseCase;
 import com.tokopedia.tkpd.home.feed.domain.interactor.GetFeedUseCase;
 import com.tokopedia.tkpd.home.feed.domain.interactor.LoadMoreFeedUseCase;
 import com.tokopedia.tkpd.home.feed.domain.model.DataFeed;
 import com.tokopedia.tkpd.home.feed.domain.model.Feed;
+import com.tokopedia.tkpd.home.feed.view.viewModel.EmptyFeedModel;
 import com.tokopedia.tkpd.home.feed.view.viewModel.ProductFeedViewModel;
 
 import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -131,12 +134,6 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
         return (feed.isValid() && feed.getProducts() != null && feed.getProducts().size() > 0);
     }
 
-    private void renderInvalidDataFeed() {
-        getView().hideContentView();
-        getView().showEmptyHistoryProduct();
-        getView().showInvalidFeed();
-    }
-
 
     private class FeedCacheSubscriber extends DefaultSubscriber<DataFeed> {
         @Override
@@ -164,7 +161,7 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
                 if (productFeedViewModel.getData().size() > 0) {
                     validateDataFeed(dataFeed, productFeedViewModel);
                 } else {
-                    renderInvalidDataFeed();
+                    renderInvalidDataFeed(productFeedViewModel);
                 }
                 doCheckLoadMore();
             }
@@ -174,8 +171,7 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
                                       ProductFeedViewModel productFeedViewModel) {
 
             if (!isHasHistoryProduct(dataFeed) && !isHasFeedProduct(dataFeed)) {
-                getView().showEmptyHistoryProduct();
-                getView().showEmptyFeed();
+                renderInvalidDataFeed(productFeedViewModel);
             } else if (!isHasHistoryProduct(dataFeed) && isHasFeedProduct(dataFeed)) {
                 getView().showContentView();
                 final int recentViewPosition = 0;
@@ -194,8 +190,21 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
                 getView().hideEmptyHistoryProduct();
                 getView().hideEmptyFeed();
                 displayFeed(productFeedViewModel);
+
             }
 
+        }
+
+        private void renderInvalidDataFeed(ProductFeedViewModel productFeedViewModel) {
+            getView().showContentView();
+            getView().hideEmptyHistoryProduct();
+            getView().hideEmptyFeed();
+
+            productFeedViewModel.getData().add(
+                    new HistoryProductListItem(Collections.<ProductItem>emptyList()));
+
+            productFeedViewModel.getData().add(new EmptyFeedModel());
+            displayFeed(productFeedViewModel);
         }
 
         private void displayFeed(ProductFeedViewModel productFeedViewModel) {
@@ -262,12 +271,9 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
                     setPagging(productFeedViewModel.getPagingHandlerModel());
                     validateDataFeed(dataFeed, productFeedViewModel);
                     doCheckLoadMore();
-
                 } else {
-                    if (getView().isViewNotEmpty()) {
-                        getView().showRefreshFailed();
-                    } else {
-                        showEmptyView();
+                    if (!getView().isViewNotEmpty()) {
+                        showEmptyView(productFeedViewModel);
                     }
                 }
             }
@@ -279,25 +285,36 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
 
 
             if (!isHasHistoryProduct(dataFeed) && !isHasFeedProduct(dataFeed)) {
-                showEmptyView();
+                showEmptyView(productFeedViewModel);
             } else if (!isHasHistoryProduct(dataFeed) && isHasFeedProduct(dataFeed)) {
                 getView().showContentView();
-                final int recentViewPosition = 0;
-                if (getView().isViewNotEmpty()) {
-                    getView().showRefreshFailed();
-                } else {
+                RecyclerViewItem viewmodelHistory = getView().getViewmodelHistory();
+                if (viewmodelHistory == null) {
+                    final int recentViewPosition = 0;
                     HistoryProductListItem fakeHistory
                             = new HistoryProductListItem(Collections.<ProductItem>emptyList());
                     productFeedViewModel.getData().add(recentViewPosition, fakeHistory);
-                    displayRefreshData(productFeedViewModel);
-                    getView().hideEmptyFeed();
+                } else {
+                    productFeedViewModel.getData().add(0, viewmodelHistory);
                 }
+                displayRefreshData(productFeedViewModel);
+                getView().hideEmptyFeed();
             } else if (isHasHistoryProduct(dataFeed) && !isHasFeedProduct(dataFeed)) {
+                List<RecyclerViewItem> viewmodelFeed = getView().getViewmodelFeed();
+
+                if (viewmodelFeed == null) {
+                    productFeedViewModel.getData().add(new EmptyFeedModel());
+                } else {
+                    viewmodelFeed.set(0, productFeedViewModel.getData().get(0));
+                    productFeedViewModel.setData(viewmodelFeed);
+                }
+
                 getView().hideEmptyHistoryProduct();
                 getView().showContentView();
                 getView().hideEmptyFeed();
                 getView().showMessageRefreshFailed();
                 displayRefreshData(productFeedViewModel);
+
             } else {
                 getView().showContentView();
                 getView().hideEmptyHistoryProduct();
@@ -308,10 +325,14 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
 
         }
 
-        private void showEmptyView() {
+        private void showEmptyView(ProductFeedViewModel productFeedViewModel) {
             if (!(getView().isViewNotEmpty())) {
-                getView().forceShowEmptyHistory();
-                getView().showEmptyFeed();
+                getView().showContentView();
+                productFeedViewModel.getData().add(
+                        new HistoryProductListItem(Collections.<ProductItem>emptyList()));
+
+                productFeedViewModel.getData().add(new EmptyFeedModel());
+                displayRefreshData(productFeedViewModel);
             }
         }
 

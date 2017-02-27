@@ -324,6 +324,24 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
          emptyHistoryView.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public RecyclerViewItem getViewmodelHistory() {
+        if (adapter != null && adapter.getData() != null && !adapter.getData().isEmpty()) {
+            return adapter.getData().get(0);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public List<RecyclerViewItem> getViewmodelFeed() {
+        if (adapter != null && adapter.getData() != null && !adapter.getData().isEmpty()) {
+            return adapter.getData();
+        } else {
+            return null;
+        }
+    }
+
 
     @Override
     public void onRefresh() {
@@ -407,6 +425,8 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                     return ProductFeedHelper.PORTRAIT_COLUMN_HEADER;
                 } else if (isPositionOnTopAds(position)) {
                     return ProductFeedHelper.PORTRAIT_COLUMN_HEADER;
+                } else if (isPositionOnEmptyFeed(position)) {
+                    return ProductFeedHelper.PORTRAIT_COLUMN_HEADER;
                 } else {
                     return ProductFeedHelper.PORTRAIT_COLUMN;
                 }
@@ -455,6 +475,10 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     private boolean isPositionOnHistory(int position) {
         return adapter.isHistory(position);
+    }
+
+    private boolean isPositionOnEmptyFeed(int position) {
+        return adapter.isEmptyFeed(position);
     }
 
     private boolean isPositionInFooter(int position) {

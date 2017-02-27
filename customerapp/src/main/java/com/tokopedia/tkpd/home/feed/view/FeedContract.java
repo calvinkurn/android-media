@@ -61,6 +61,9 @@ interface FeedContract {
         void forceShowEmptyHistory();
 
 
+        RecyclerViewItem getViewmodelHistory();
+
+        List<RecyclerViewItem> getViewmodelFeed();
     }
 
     interface Presenter extends CustomerPresenter<View> {
