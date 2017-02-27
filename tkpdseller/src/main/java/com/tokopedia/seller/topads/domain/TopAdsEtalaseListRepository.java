@@ -9,7 +9,7 @@ import java.util.List;
 import rx.Observable;
 
 /**
- * Created by zulfikarrahman on 2/20/17.
+ * Created by Hendry on 2/20/17.
  */
 public interface TopAdsEtalaseListRepository {
     Observable<List<Etalase>> getEtalaseList(String shopId);
