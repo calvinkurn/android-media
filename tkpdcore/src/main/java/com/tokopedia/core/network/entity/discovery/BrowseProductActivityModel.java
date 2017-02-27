@@ -6,9 +6,12 @@ import android.os.Parcelable;
 import com.google.gson.Gson;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.entity.categoriesHades.Category;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BrowseProductActivityModel implements Parcelable {
@@ -26,6 +29,7 @@ public class BrowseProductActivityModel implements Parcelable {
     public int activeTab;
     public String unique_id;
     public Map<String, String> filterOptions;
+    public List<Category> categories;
 
     public HotListBannerModel getHotListBannerModel() {
         return hotListBannerModel;
@@ -139,6 +143,14 @@ public class BrowseProductActivityModel implements Parcelable {
         this.filterOptions = filterOptions;
     }
 
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
+    }
+
     @Override
     public String toString() {
         return new Gson().toJson(this);
@@ -172,6 +184,13 @@ public class BrowseProductActivityModel implements Parcelable {
                 dest.writeString(entry.getValue());
             }
         }
+        if (categories == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(categories);
+        }
+
     }
 
     public BrowseProductActivityModel() {
@@ -197,6 +216,12 @@ public class BrowseProductActivityModel implements Parcelable {
             String key = in.readString();
             String value = in.readString();
             this.filterOptions.put(key, value);
+        }
+        if (in.readByte() == 0x01) {
+            categories = new ArrayList<Category>();
+            in.readList(categories, Category.class.getClassLoader());
+        } else {
+            categories = null;
         }
     }
 

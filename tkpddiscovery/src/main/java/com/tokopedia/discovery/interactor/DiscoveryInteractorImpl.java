@@ -16,6 +16,7 @@ import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.apiservices.search.SearchSuggestionService;
 import com.tokopedia.core.network.apiservices.topads.TopAdsService;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.entity.categoriesHades.CategoriesHadesModel;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
@@ -123,7 +124,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(
-                        new Subscriber<Response<TkpdResponse>>() {
+                        new Subscriber<Response<CategoriesHadesModel>>() {
                             @Override
                             public void onCompleted() {
 
@@ -132,26 +133,25 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
                             @Override
                             public void onError(Throwable e) {
                                 Log.d(TAG, "onError: ");
-                               /* Log.e(DiscoveryService.TAG, DiscoveryService.TAG + " -> " + e.getMessage());
+                                Log.e(DiscoveryService.TAG, DiscoveryService.TAG + " -> " + e.getMessage());
                                 Pair<String, ErrorContainer> pair = new Pair<>(
                                         DiscoveryListener.ERRORCONTAINER,
                                         new ErrorContainer(e)
                                 );
-                                discoveryListener.onFailed(DiscoveryListener.HOTLIST_BANNER, pair);*/
+                                discoveryListener.onFailed(DiscoveryListener.CATEGORY_HEADER, pair);
                             }
 
                             @Override
-                            public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
+                            public void onNext(Response<CategoriesHadesModel> categoriesHadesModel) {
                                 Log.d(TAG, "onNext: ");
-                                /*HotListBannerModel hotListBannerModel = new GsonBuilder().create().fromJson(tkpdResponseResponse.body().getStringData(), HotListBannerModel.class);
-                                Pair<String, HotListBannerModel.HotListBannerContainer> pair =
+                                Pair<String, CategoriesHadesModel.CategoriesHadesContainer> pair =
                                         new Pair<>(
-                                                DiscoveryListener.HOTLISTBANNER,
-                                                new HotListBannerModel.HotListBannerContainer(
-                                                        hotListBannerModel
+                                                DiscoveryListener.CATEGORYHEADER,
+                                                new CategoriesHadesModel.CategoriesHadesContainer(
+                                                        categoriesHadesModel.body()
                                                 )
                                         );
-                                discoveryListener.onSuccess(DiscoveryListener.HOTLIST_BANNER, pair);*/
+                                discoveryListener.onSuccess(DiscoveryListener.CATEGORY_HEADER, pair);
                             }
                         }
                 ));

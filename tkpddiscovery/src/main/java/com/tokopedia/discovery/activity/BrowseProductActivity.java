@@ -1050,8 +1050,14 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
             public void onSuccess(int type, Pair<String, ? extends ObjContainer> data) {
                 Log.d(TAG, "onSuccess: ");
                 switch (type) {
-                    case DiscoveryListener.CATEGY_HEADER:
+                    case DiscoveryListener.CATEGORY_HEADER:
                         Log.d(TAG, "onSuccess: ");
+                        BrowseParentFragment parentFragment = (BrowseParentFragment)
+                                fragmentManager.findFragmentById(R.id.container);
+                        if (parentFragment!=null) {
+
+                        }
+                       // BrowseParentFragment browseParentFragment = (getac)
                       /*  Log.d(TAG, "fetch " + data.getModel1());
                         ObjContainer model2 = data.getModel2();
                         HotListBannerModel.HotListBannerContainer hotListBannerContainer = (HotListBannerModel.HotListBannerContainer) model2;

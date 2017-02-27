@@ -1,11 +1,15 @@
 
 package com.tokopedia.core.network.entity.categoriesHades;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Category {
+public class Category implements Parcelable {
 
     @SerializedName("id")
     @Expose
@@ -19,6 +23,9 @@ public class Category {
     @SerializedName("title_tag")
     @Expose
     private String titleTag;
+    @SerializedName("is_revamp")
+    @Expose
+    private Boolean isRevamp;
     @SerializedName("meta_description")
     @Expose
     private String metaDescription;
@@ -75,6 +82,14 @@ public class Category {
         this.metaDescription = metaDescription;
     }
 
+    public Boolean getRevamp() {
+        return isRevamp;
+    }
+
+    public void setRevamp(Boolean revamp) {
+        isRevamp = revamp;
+    }
+
     public String getHeaderImage() {
         return headerImage;
     }
@@ -107,4 +122,74 @@ public class Category {
         this.child = child;
     }
 
+
+    protected Category(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        description = in.readString();
+        titleTag = in.readString();
+        byte isRevampVal = in.readByte();
+        isRevamp = isRevampVal == 0x02 ? null : isRevampVal != 0x00;
+        metaDescription = in.readString();
+        headerImage = in.readString();
+        hidden = in.readByte() == 0x00 ? null : in.readInt();
+        view = in.readByte() == 0x00 ? null : in.readInt();
+        if (in.readByte() == 0x01) {
+            child = new ArrayList<Child>();
+            in.readList(child, Child.class.getClassLoader());
+        } else {
+            child = null;
+        }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(description);
+        dest.writeString(titleTag);
+        if (isRevamp == null) {
+            dest.writeByte((byte) (0x02));
+        } else {
+            dest.writeByte((byte) (isRevamp ? 0x01 : 0x00));
+        }
+        dest.writeString(metaDescription);
+        dest.writeString(headerImage);
+        if (hidden == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(hidden);
+        }
+        if (view == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(view);
+        }
+        if (child == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(child);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Category> CREATOR = new Parcelable.Creator<Category>() {
+        @Override
+        public Category createFromParcel(Parcel in) {
+            return new Category(in);
+        }
+
+        @Override
+        public Category[] newArray(int size) {
+            return new Category[size];
+        }
+    };
 }

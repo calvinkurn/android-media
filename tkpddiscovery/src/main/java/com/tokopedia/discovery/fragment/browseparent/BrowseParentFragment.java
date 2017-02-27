@@ -261,12 +261,11 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
             ((BrowseProductActivity) getActivity()).sendHotlist(uri, "");
         }
         if (uri.contains("/p/")) {
-           /* BrowseProductActivity browseProductActivity = (BrowseProductActivity) getActivity();
+            BrowseProductActivity browseProductActivity = (BrowseProductActivity) getActivity();
             BrowseProductActivityModel model = browseProductActivity.getBrowseProductActivityModel();
             model.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
-            model.setDepartmentId(productModel.result.departmentId);*/
-            //((BrowseProductActivity) getActivity()).setFragment(BrowseParentFragment.newInstance(model), BrowseParentFragment.FRAGMENT_TAG);
-            ((BrowseProductActivity) getActivity()).sendCategory(productModel.result.departmentId);
+            model.setDepartmentId(productModel.result.departmentId);
+            ((BrowseProductActivity) getActivity()).setFragment(BrowseParentFragment.newInstance(model), BrowseParentFragment.FRAGMENT_TAG);
         }
         if (uri.contains("/catalog/")) {
             URLParser urlParser = new URLParser(uri);
