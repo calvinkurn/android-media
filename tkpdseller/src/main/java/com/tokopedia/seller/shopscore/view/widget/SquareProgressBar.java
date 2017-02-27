@@ -25,7 +25,8 @@ public class SquareProgressBar extends RoundCornerProgressBar {
     protected void drawProgress(LinearLayout layoutProgress, float max, float progress, float totalWidth, int radius, int padding, int colorProgress, boolean isReverse) {
         GradientDrawable backgroundDrawable = createGradientDrawable(colorProgress);
         int newRadius = radius - (padding / 2);
-        backgroundDrawable.setCornerRadii(new float[]{newRadius, newRadius, 0, 0, 0, 0, newRadius, newRadius});
+        float rightRadius = ((progress / max) < 0.98) ? 0 : newRadius;
+        backgroundDrawable.setCornerRadii(new float[]{newRadius, newRadius, rightRadius, rightRadius, rightRadius, rightRadius, newRadius, newRadius});
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             layoutProgress.setBackground(backgroundDrawable);
         } else {
