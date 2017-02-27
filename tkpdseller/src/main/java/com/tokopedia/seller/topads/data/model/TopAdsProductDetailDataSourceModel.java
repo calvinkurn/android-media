@@ -29,13 +29,13 @@ public class TopAdsProductDetailDataSourceModel {
     private String status;
     @SerializedName("price_bid")
     @Expose
-    private int priceBid;
+    private float priceBid;
     @SerializedName("ad_budget")
     @Expose
     private String adBudget;
     @SerializedName("price_daily")
     @Expose
-    private int priceDaily;
+    private float priceDaily;
     @SerializedName("sticker_id")
     @Expose
     private String stickerId;
@@ -109,11 +109,11 @@ public class TopAdsProductDetailDataSourceModel {
         this.status = status;
     }
 
-    public int getPriceBid() {
+    public float getPriceBid() {
         return priceBid;
     }
 
-    public void setPriceBid(int priceBid) {
+    public void setPriceBid(float priceBid) {
         this.priceBid = priceBid;
     }
 
@@ -125,11 +125,11 @@ public class TopAdsProductDetailDataSourceModel {
         this.adBudget = adBudget;
     }
 
-    public int getPriceDaily() {
+    public float getPriceDaily() {
         return priceDaily;
     }
 
-    public void setPriceDaily(int priceDaily) {
+    public void setPriceDaily(float priceDaily) {
         this.priceDaily = priceDaily;
     }
 

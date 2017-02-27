@@ -9,4 +9,6 @@ import rx.Observable;
  */
 public interface TopAdsShopAdsRepository {
     Observable<TopAdsDetailShopDomainModel> getDetail(String adId);
+
+    Observable<TopAdsDetailShopDomainModel> saveDetail(TopAdsDetailShopDomainModel topAdsDetailShopDomainModel);
 }

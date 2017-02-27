@@ -67,4 +67,7 @@ public interface TopAdsManagementApi {
     @PATCH(TopAdsNetworkConstant.PATH_BULK_ACTION_GROUP_AD)
     Observable<Response<DataResponse<GroupAdBulkAction>>> bulkActionGroupAd(@Body DataRequest<GroupAdBulkAction> body);
 
+    @PATCH(TopAdsNetworkConstant.PATH_DETAIL_PRODUCT_AD)
+    Observable<Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>>> saveProductAd(@Body DataRequest<List<TopAdsProductDetailDataSourceModel>> body);
+
 }

@@ -7,6 +7,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -30,7 +31,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopAdsEditPromoPresenter> implements TopAdsEditPromoView {
+public abstract class TopAdsEditPromoFragment<T extends TopAdsEditPromoPresenter> extends BasePresenterFragment<T> implements TopAdsEditPromoView {
 
     private static final int STICKER_SPEAKER = 3;
     private static final int STICKER_THUMBS_UP = 2;
@@ -56,11 +57,13 @@ public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopA
     private RadioButton iconSpeakerRadioButton;
     private RadioButton iconThumbsUpRadioButton;
     private RadioButton iconFireRadioButton;
+    private Button submitButton;
 
     private Date startDate;
     private Date endDate;
 
     protected String adId;
+    protected TopAdsDetailAdViewModel detailAd;
 
     @Override
     protected boolean isRetainInstance() {
@@ -85,12 +88,6 @@ public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopA
     @Override
     protected boolean getOptionsMenuEnable() {
         return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-        presenter = TopAdsEditPromoShopDI.createPresenter(getActivity());
-        presenter.attachView(this);
     }
 
     @Override
@@ -125,6 +122,7 @@ public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopA
         iconSpeakerRadioButton = (RadioButton) view.findViewById(R.id.radio_button_icon_speaker);
         iconThumbsUpRadioButton = (RadioButton) view.findViewById(R.id.radio_button_icon_thumbs_up);
         iconFireRadioButton = (RadioButton) view.findViewById(R.id.radio_button_icon_fire);
+        submitButton = (Button) view.findViewById(R.id.button_submit);
         maxPriceEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -245,6 +243,12 @@ public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopA
                 }
             }
         });
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitAd();
+            }
+        });
     }
 
     @Override
@@ -267,6 +271,10 @@ public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopA
         presenter.getDetailAd(adId);
     }
 
+    protected void submitAd() {
+        populateDataFromfields();
+    }
+
     @Override
     public void onDetailAdLoaded(TopAdsDetailAdViewModel detailAd) {
         loadAd(detailAd);
@@ -277,7 +285,18 @@ public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopA
 
     }
 
+    @Override
+    public void onSaveAdSuccess(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
+
+    }
+
+    @Override
+    public void onSaveAdError() {
+
+    }
+
     protected void loadAd(TopAdsDetailAdViewModel detailAd) {
+        this.detailAd = detailAd;
         maxPriceEditText.setText(String.valueOf(detailAd.getPriceBid()));
         if (detailAd.getPriceDaily() > 0) {
             showBudgetPerDay(true);
@@ -370,6 +389,36 @@ public abstract class TopAdsEditPromoFragment extends BasePresenterFragment<TopA
 
     private Date getDate(String dateText, String dateFormat) throws ParseException {
         return new SimpleDateFormat(dateFormat, Locale.ENGLISH).parse(dateText);
+    }
+
+    protected void populateDataFromfields() {
+        String priceBid = maxPriceEditText.getText().toString();
+        if (TextUtils.isEmpty(priceBid)) {
+            detailAd.setPriceBid(0);
+        } else {
+            detailAd.setPriceBid(Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(priceBid)));
+        }
+        if (budgetLifeTimeRadioButton.isChecked()) {
+            detailAd.setBudget(false);
+            detailAd.setPriceDaily(0);
+        } else {
+            String priceDaily = budgetPerDayEditText.getText().toString();
+            if (TextUtils.isEmpty(priceDaily)) {
+                detailAd.setPriceDaily(0);
+            } else {
+                detailAd.setPriceDaily(Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(priceDaily)));
+            }
+            detailAd.setBudget(true);
+        }
+        if (showTimeAutomaticRadioButton.isChecked()) {
+            detailAd.setScheduled(false);
+        } else {
+            detailAd.setScheduled(true);
+        }
+        detailAd.setStartDate(showTimeStartDateDatePicker.getValue());
+        detailAd.setStartTime(showTimeStartTimeDatePicker.getValue());
+        detailAd.setEndDate(showTimeEndDateDatePicker.getValue());
+        detailAd.setEndTime(showTimeEndTimeDatePicker.getValue());
     }
 
 }

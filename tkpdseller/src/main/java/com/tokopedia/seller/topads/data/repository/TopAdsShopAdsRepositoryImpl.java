@@ -24,4 +24,10 @@ public class TopAdsShopAdsRepositoryImpl implements TopAdsShopAdsRepository {
         TopAdsShopAdsDataSource topAdsShopAdsDataSource = topAdsShopAdFactory.createShopAdsDataSource();
         return topAdsShopAdsDataSource.getDetailProduct(adId);
     }
+
+    @Override
+    public Observable<TopAdsDetailShopDomainModel> saveDetail(TopAdsDetailShopDomainModel topAdsDetailShopDomainModel) {
+        TopAdsShopAdsDataSource topAdsShopAdsDataSource = topAdsShopAdFactory.createShopAdsDataSource();
+        return topAdsShopAdsDataSource.saveDetailProduct(topAdsDetailShopDomainModel);
+    }
 }

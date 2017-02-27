@@ -2,16 +2,17 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.EditText;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoFragmentListener;
+import com.tokopedia.seller.topads.di.TopAdsEditPromoShopDI;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
+import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
+import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoShopPresenter;
 
-public class TopAdsEditPromoShopFragment extends TopAdsEditPromoFragment {
+public class TopAdsEditPromoShopFragment extends TopAdsEditPromoFragment<TopAdsEditPromoShopPresenter> {
 
     private EditText shopNameEditText;
     private String shopName;
@@ -37,6 +38,12 @@ public class TopAdsEditPromoShopFragment extends TopAdsEditPromoFragment {
     }
 
     @Override
+    protected void initialPresenter() {
+        presenter = TopAdsEditPromoShopDI.createPresenter(getActivity());
+        presenter.attachView(this);
+    }
+
+    @Override
     protected void initView(View view) {
         super.initView(view);
         shopNameEditText = (EditText) view.findViewById(R.id.edit_text_shop_name);
@@ -47,5 +54,11 @@ public class TopAdsEditPromoShopFragment extends TopAdsEditPromoFragment {
     protected void loadAd(TopAdsDetailAdViewModel detailAd) {
         super.loadAd(detailAd);
         shopNameEditText.setText(detailAd.getTitle());
+    }
+
+    @Override
+    protected void submitAd() {
+        super.submitAd();
+        presenter.saveAd((TopAdsDetailShopViewModel) detailAd);
     }
 }

@@ -11,4 +11,8 @@ public interface TopAdsEditPromoView extends CustomerView {
     void onDetailAdLoaded(TopAdsDetailAdViewModel topAdsDetailAdViewModel);
 
     void onLoadDetailAdError();
+
+    void onSaveAdSuccess(TopAdsDetailAdViewModel topAdsDetailAdViewModel);
+
+    void onSaveAdError();
 }
