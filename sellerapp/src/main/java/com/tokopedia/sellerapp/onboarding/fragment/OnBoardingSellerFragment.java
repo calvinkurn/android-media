@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.tokopedia.core.msisdn.activity.MsisdnActivity;
 import com.tokopedia.core.onboarding.fragment.OnBoardingFragment;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.sellerapp.R;
 
@@ -32,6 +33,7 @@ public class OnBoardingSellerFragment extends OnBoardingFragment {
     public static final int VIEW_DEFAULT = 100;
     public static final int VIEW_ENDING = 101;
     public static final int VIEW_FREE_RETURN = 102;
+    private static final int REQUEST_ACTIVATE_PHONE_SELLER = 900;
 
 
     public static OnBoardingSellerFragment newInstance(CharSequence title, CharSequence subTitle, CharSequence description,
@@ -140,15 +142,15 @@ public class OnBoardingSellerFragment extends OnBoardingFragment {
                     intent = SellerRouter.getAcitivityShopCreateEdit(getActivity());
                     intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
                             SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-                    intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK, SellerRouter.ShopSettingConstant.LOG_OUT);
+                    intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK,
+                            SellerRouter.ShopSettingConstant.LOG_OUT);
                     startActivity(intent);
                     getActivity().finish();
                 } else {
-                    intent = new Intent(getActivity(), MsisdnActivity.class);
+                    intent = SessionRouter.getPhoneVerificationActivationActivityIntent(getActivity());
                     intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
                             SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-                    startActivity(intent);
-                    getActivity().finish();
+                    startActivityForResult(intent, REQUEST_ACTIVATE_PHONE_SELLER);
                 }
             }
         });
@@ -178,4 +180,17 @@ public class OnBoardingSellerFragment extends OnBoardingFragment {
         return v;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_ACTIVATE_PHONE_SELLER) {
+            Intent intent = SellerRouter.getAcitivityShopCreateEdit(getActivity());
+            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+            intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK,
+                    SellerRouter.ShopSettingConstant.LOG_OUT);
+            startActivity(intent);
+            getActivity().finish();
+        }
+    }
 }

@@ -74,7 +74,7 @@ public class OnboardingSellerActivity extends OnboardingActivity {
 
     @Override
     public void onDonePressed() {
-        if (isUserHasShop()) {
+        if (isUserHasShop() && SessionHandler.isMsisdnVerified()) {
             startActivity(new Intent(this, SellerHomeActivity.class)
                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
             finish();
