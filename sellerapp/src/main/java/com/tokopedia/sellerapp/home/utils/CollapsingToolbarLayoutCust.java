@@ -23,6 +23,7 @@ public class CollapsingToolbarLayoutCust extends CollapsingToolbarLayout {
         super(context, attrs, defStyleAttr);
     }
 
+    
     public void setScrimsShown(boolean shown) {
         isScrimsShown = shown;
         super.setScrimsShown(shown);
