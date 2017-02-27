@@ -1,6 +1,8 @@
 package com.tokopedia.seller.selling.view.viewHolder;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -8,6 +10,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R2;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 
 import butterknife.BindView;
@@ -35,6 +38,8 @@ public class OrderViewHolder extends BaseSellingViewHolder<OrderShippingList> {
     TextView vOrderDate;
     @BindView(R2.id.buyer_request_cancel)
     TextView buyerRequestCancel;
+    @BindView(R2.id.colored_border)
+    View deadlineColoredBorder;
 
     public OrderViewHolder(View itemView) {
         super(itemView);
@@ -44,7 +49,7 @@ public class OrderViewHolder extends BaseSellingViewHolder<OrderShippingList> {
     @Override
     public void bindDataModel(Context context, OrderShippingList model) {
         UserName.setText(model.getOrderCustomer().getCustomerName());
-        CommonUtils.getProcessDay(context, model.getOrderPayment().getPaymentProcessDayLeft()+"", Deadline, DeadlineView);
+        setDeadLine(model);
         Invoice.setText(model.getOrderDetail().getDetailInvoice());
         vOrderDate.setText(model.getOrderDetail().getDetailOrderDate());
         TotalTransaksi.setText(model.getOrderPayment().getPaymentKomisi());
@@ -54,6 +59,16 @@ public class OrderViewHolder extends BaseSellingViewHolder<OrderShippingList> {
         }else{
             buyerRequestCancel.setVisibility(View.GONE);
         }
+    }
+
+    private void setDeadLine(OrderShippingList model) {
+        Deadline.setText(model.getOrderDeadline().getDeadLineProcess());
+        deadlineColoredBorder.getBackground()
+                .setColorFilter(Color
+                        .parseColor(model.getOrderDeadline().getDeadlineColor()),
+                        PorterDuff.Mode.MULTIPLY);
+
+        CommonUtils.dumper("PORING COLOR: " + model.getOrderDeadline().getDeadlineColor());
     }
 
     @Override

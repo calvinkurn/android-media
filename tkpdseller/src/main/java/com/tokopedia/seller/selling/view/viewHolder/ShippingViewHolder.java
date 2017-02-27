@@ -1,6 +1,8 @@
 package com.tokopedia.seller.selling.view.viewHolder;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.text.Html;
 import android.view.View;
@@ -14,6 +16,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.seller.selling.presenter.ShippingImpl;
 
 import butterknife.BindView;
@@ -74,6 +77,8 @@ public class ShippingViewHolder extends BaseSellingViewHolder<ShippingImpl.Model
     public ImageView CameraBut;
     @BindView(R2.id.main_view)
     public View MainView;
+    @BindView(R2.id.colored_border)
+    View deadlineColoredBorder;
 //
 //    public ShippingViewHolder(View itemView) {
 //        super(itemView);
@@ -179,7 +184,8 @@ public class ShippingViewHolder extends BaseSellingViewHolder<ShippingImpl.Model
         setSenderDetail(model);
         setViewData(model, context);
         checkError(model, context);
-        CommonUtils.getProcessDay(context, model.Deadline, Deadline, DeadlineView);
+        setDeadLine(model.orderShippingList);
+        //CommonUtils.getProcessDay(context, model.Deadline, Deadline, DeadlineView);
     }
 
     @Override
@@ -197,6 +203,16 @@ public class ShippingViewHolder extends BaseSellingViewHolder<ShippingImpl.Model
                 return true;
             }
         });
+    }
+
+    private void setDeadLine(OrderShippingList model) {
+        Deadline.setText(model.getOrderDeadline().getDeadlineShipping());
+        deadlineColoredBorder.getBackground()
+                .setColorFilter(Color
+                                .parseColor(model.getOrderDeadline().getDeadlineColor()),
+                        PorterDuff.Mode.MULTIPLY);
+
+        CommonUtils.dumper("PORING COLOR: " + model.getOrderDeadline().getDeadlineColor());
     }
 
 }

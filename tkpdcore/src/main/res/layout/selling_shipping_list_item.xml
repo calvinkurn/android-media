@@ -373,39 +373,54 @@
 
                 </LinearLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/deadline_view"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|right"
+                    android:layout_height="match_parent"
                     android:layout_marginBottom="2dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="2dp"
                     android:layout_weight="1"
-                    android:background="@drawable/border_left_2dp"
                     android:gravity="center_vertical"
-                    android:orientation="vertical"
-                    android:paddingLeft="8dp">
+                    android:orientation="vertical">
 
-                    <TextView
-                        style="@style/text_bold"
-                        android:layout_width="match_parent"
+                    <View
+                        android:id="@+id/colored_border"
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/orange_900"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:paddingLeft="@dimen/padding_small"
-                        android:maxLines="1"
-                        android:text="Batas Kirim" />
+                        android:gravity="center|start"
+                        android:layout_toRightOf="@id/colored_border"
+                        android:layout_toEndOf="@id/colored_border"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:paddingLeft="@dimen/padding_small"
-                        android:id="@+id/deadline"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-                        android:text="Hari Ini" />
+                        <TextView
+                            style="@style/text_bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:paddingLeft="@dimen/padding_small"
+                            android:maxLines="1"
+                            android:text="Batas Kirim" />
 
-                </LinearLayout>
+                        <TextView
+                            android:paddingLeft="@dimen/padding_small"
+                            android:id="@+id/deadline"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="Hari Ini" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
 
             </LinearLayout>
 
