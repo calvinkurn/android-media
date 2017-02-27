@@ -22,7 +22,7 @@ public class SearchProductMapper implements Func1<Response<DataResponse<List<Pro
         for (Product product : response.body().getData()) {
             ProductDomain productDomain = new ProductDomain();
             productDomain.setAdId(product.getAdId());
-            productDomain.setId(product.getAdId());
+            productDomain.setId(product.getId());
             productDomain.setImageUrl(product.getImageUrl());
             productDomain.setName(product.getName());
             productDomain.setPromoted(product.isPromoted());

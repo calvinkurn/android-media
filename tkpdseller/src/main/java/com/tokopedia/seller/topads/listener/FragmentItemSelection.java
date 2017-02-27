@@ -7,5 +7,5 @@ import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
  */
 
 public interface FragmentItemSelection extends AdapterSelectionListener<TopAdsProductViewModel> {
-    void notifyUnchecked(int position);
+    void notifyUnchecked(TopAdsProductViewModel topAdsProductViewModel);
 }

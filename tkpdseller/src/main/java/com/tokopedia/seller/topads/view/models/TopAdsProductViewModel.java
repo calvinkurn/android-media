@@ -6,7 +6,18 @@ import android.os.Parcel;
  * @author normansyahputa on 2/20/17.
  */
 
-public class TopAdsProductViewModel extends GenericClass {
+public class TopAdsProductViewModel extends GenericClass implements Comparable<TopAdsProductViewModel> {
+    public static final Creator<TopAdsProductViewModel> CREATOR = new Creator<TopAdsProductViewModel>() {
+        @Override
+        public TopAdsProductViewModel createFromParcel(Parcel source) {
+            return new TopAdsProductViewModel(source);
+        }
+
+        @Override
+        public TopAdsProductViewModel[] newArray(int size) {
+            return new TopAdsProductViewModel[size];
+        }
+    };
     private int id;
     private String name;
     private String imageUrl;
@@ -14,6 +25,20 @@ public class TopAdsProductViewModel extends GenericClass {
     private int adId;
     private String groupName;
 
+    public TopAdsProductViewModel() {
+        super(TopAdsProductViewModel.class.getName());
+    }
+
+    protected TopAdsProductViewModel(Parcel in) {
+        super(in);
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.imageUrl = in.readString();
+        this.isPromoted = in.readByte() != 0;
+        this.adId = in.readInt();
+        this.groupName = in.readString();
+        setClassName(in.readString());
+    }
 
     public int getId() {
         return id;
@@ -63,7 +88,6 @@ public class TopAdsProductViewModel extends GenericClass {
         this.groupName = groupName;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -81,30 +105,35 @@ public class TopAdsProductViewModel extends GenericClass {
         dest.writeString(super.getClassName());
     }
 
-    public TopAdsProductViewModel() {
-        super(TopAdsProductViewModel.class.getName());
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TopAdsProductViewModel that = (TopAdsProductViewModel) o;
+
+        if (id != that.id) return false;
+        return adId == that.adId;
+
     }
 
-    protected TopAdsProductViewModel(Parcel in) {
-        super(in);
-        this.id = in.readInt();
-        this.name = in.readString();
-        this.imageUrl = in.readString();
-        this.isPromoted = in.readByte() != 0;
-        this.adId = in.readInt();
-        this.groupName = in.readString();
-        setClassName(in.readString());
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + adId;
+        return result;
     }
 
-    public static final Creator<TopAdsProductViewModel> CREATOR = new Creator<TopAdsProductViewModel>() {
-        @Override
-        public TopAdsProductViewModel createFromParcel(Parcel source) {
-            return new TopAdsProductViewModel(source);
-        }
+    @Override
+    public String toString() {
+        return "TopAdsProductViewModel{" +
+                "adId=" + adId +
+                ", id=" + id +
+                '}';
+    }
 
-        @Override
-        public TopAdsProductViewModel[] newArray(int size) {
-            return new TopAdsProductViewModel[size];
-        }
-    };
+    @Override
+    public int compareTo(TopAdsProductViewModel o) {
+        return getId() - o.getId();
+    }
 }

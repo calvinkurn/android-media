@@ -2,11 +2,15 @@ package com.tokopedia.seller.topads.view.activity;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
@@ -16,6 +20,7 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
@@ -25,6 +30,11 @@ import com.tokopedia.seller.topads.view.fragment.ChipsTopAdsSelectionFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsAddProductListFragment;
 import com.tokopedia.seller.topads.view.helper.BottomSheetHelper;
 import com.tokopedia.seller.topads.view.helper.NumberOfChooseFooterHelper;
+import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 public class TopAdsAddProductListActivity extends BaseActivity
         implements AddProductListInterface {
@@ -54,6 +64,9 @@ public class TopAdsAddProductListActivity extends BaseActivity
     private View nextButton;
     private int[] nextButtonHeight;
     private int nextButtonRealHeight;
+    private HashSet<TopAdsProductViewModel> selections;
+    private View statusBarSeparation;
+    private View bottomSheetContainer;
     private BottomSheetBehavior.BottomSheetCallback bottomSheetCallback =
             new BottomSheetBehavior.BottomSheetCallback() {
                 @Override
@@ -73,11 +86,26 @@ public class TopAdsAddProductListActivity extends BaseActivity
                     Log.d(TAG, "nextButtonRealHeight " + nextButtonRealHeight + " "
                             + (nextButtonRealHeight * v + " slideOffset " + slideOffset));
                     nextButton.animate().translationY((nextButtonRealHeight * v)).setDuration(0).start();
+
+                    numberOfChooseFooterHelper.rotate(v * 180);
                 }
             };
+    private boolean isFirstTime;
+    private Drawable greyButton;
+    private View nextBgButton;
+    private Drawable greenButton;
+
+    private void addPaddingBottom() {
+        bottomSheetContainer.setPadding(
+                bottomSheetContainer.getPaddingLeft(),
+                bottomSheetContainer.getPaddingTop(),
+                bottomSheetContainer.getPaddingRight(),
+                getActionBarSize()
+        );
+    }
 
     private void removePaddingBottom() {
-        findViewById(R.id.bottom_sheet_container).setPadding(0, 0, 0, 0);
+        bottomSheetContainer.setPadding(0, 0, 0, 0);
     }
 
     @Override
@@ -87,12 +115,23 @@ public class TopAdsAddProductListActivity extends BaseActivity
         inject();
         setContentView(R.layout.activity_top_ads_add_product_list_container);
 
+        greyButton = ContextCompat.getDrawable(this, R.drawable.bg_button_grey);
+        greenButton = ContextCompat.getDrawable(this, R.drawable.bg_button_green);
+
+        bottomSheetContainer = findViewById(R.id.bottom_sheet_container);
+
+        statusBarSeparation = findViewById(R.id.status_bar_separation);
+        statusBarSeparation.getLayoutParams().height = getStatusBarHeight();
+        statusBarSeparation.requestLayout();
+
         bottomSheetSelection = findViewById(R.id.bottom_sheet_selection);
         numberOfChooseFooterHelper = new NumberOfChooseFooterHelper(bottomSheetSelection);
         numberOfChooseFooterHelper.bindData(10, expandedOnClick);
 
         nextButton = findViewById(R.id.top_ads_next);
+        nextBgButton = findViewById(R.id.bg_top_ads_next);
         nextButtonHeight = getCoords(nextButton);
+        disableNextButton();
 
         ViewTreeObserver vto = nextButton.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -101,6 +140,14 @@ public class TopAdsAddProductListActivity extends BaseActivity
             public void onGlobalLayout() {
                 nextButtonRealHeight = nextButton.getMeasuredHeight();
                 ViewTreeObserver obs = nextButton.getViewTreeObserver();
+
+                getBottomSheetBehaviourFromParent();
+                if (bottomSheetHelper != null) {
+                    bottomSheetHelper.setHeight(nextButtonRealHeight);
+                }
+                if (isFirstTime && selections.size() > 0) {
+                    bottomSheetHelper.showBottomSheet();
+                }
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     obs.removeOnGlobalLayoutListener(this);
@@ -116,10 +163,15 @@ public class TopAdsAddProductListActivity extends BaseActivity
         setSupportActionBar(toolbar);
         fragmentContainer = (RelativeLayout)
                 findViewById(R.id.activity_top_ads_add_product_list);
-        getBottomSheetBehaviourFromParent();
 
-        fetchIntent(getIntent().getExtras());
-        fetchSaveInstanceState(savedInstanceState);
+        selections = new HashSet<>();
+
+        isFirstTime = savedInstanceState == null;
+        if (isFirstTime) {
+            fetchIntent(getIntent().getExtras());
+        } else {
+            fetchSaveInstanceState(savedInstanceState);
+        }
     }
 
     @Override
@@ -174,7 +226,17 @@ public class TopAdsAddProductListActivity extends BaseActivity
 
     private void fetchIntent(Bundle extras) {
         if (extras != null) {
+            ArrayList<TopAdsProductViewModel> selectionParcel = extras.getParcelableArrayList(EXTRA_SELECTIONS);
 
+            if(selectionParcel != null){
+                for (TopAdsProductViewModel topAdsProductViewModel : selectionParcel) {
+                    selections.add(topAdsProductViewModel);
+                }
+            }
+
+            Log.d("MNORMANSYAH", "selection after fetching " + selections.toString());
+
+            numberOfChooseFooterHelper.setSelectionNumber(selections.size());
         }
     }
 
@@ -212,17 +274,87 @@ public class TopAdsAddProductListActivity extends BaseActivity
     }
 
     @Override
-    public void notifyUnchecked(int position) {
+    public boolean isSelected(TopAdsProductViewModel data) {
+        if (selections == null)
+            return false;
+
+        return selections.contains(data);
+    }
+
+    @Override
+    public void removeSelection(TopAdsProductViewModel data) {
+        selections.remove(data);
+
+        numberOfChooseFooterHelper.setSelectionNumber(selections.size());
+    }
+
+    @Override
+    public void addSelection(TopAdsProductViewModel data) {
+        selections.add(data);
+        numberOfChooseFooterHelper.setSelectionNumber(selections.size());
+
+        if(selections.size() > 0){
+            enableNextButton();
+        }
+    }
+
+    @Override
+    public int sizeSelection() {
+        return selections.size();
+    }
+
+    @Override
+    public List<TopAdsProductViewModel> selections() {
+        return new ArrayList<>(selections);
+    }
+
+    @Override
+    public void disableNextButton() {
+        nextButton.setOnClickListener(null);
+        nextButton.setClickable(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            nextBgButton.setBackground(greyButton);
+        }else{
+            nextBgButton.setBackgroundResource(R.drawable.bg_button_grey);
+        }
+    }
+
+    @Override
+    public void enableNextButton() {
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                returnSelections();
+            }
+        });
+        nextButton.setClickable(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            nextBgButton.setBackground(greenButton);
+        }else{
+            nextBgButton.setBackgroundResource(R.drawable.bg_button_green);
+        }
+    }
+
+    private void returnSelections(){
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_SELECTIONS, new ArrayList<>(selections));
+        setResult(RESULT_CODE, intent);
+        finish();
+    }
+
+    @Override
+    public void notifyUnchecked(TopAdsProductViewModel data) {
         TopAdsAddProductListFragment topAdsAddProductListFragment
                 = getTopAdsAddProductListFragment();
 
-        if(topAdsAddProductListFragment != null){
-            topAdsAddProductListFragment.notifyUnchecked(position);
+        if (topAdsAddProductListFragment != null) {
+            topAdsAddProductListFragment.notifyUnchecked(data);
         }
     }
 
     @Override
     public void onChecked(int position, TopAdsProductViewModel data) {
+
         ChipsTopAdsSelectionFragment chipsTopAdsSelectionFragment
                 = getChipsTopAdsSelectionFragment();
         if (chipsTopAdsSelectionFragment != null)
@@ -233,6 +365,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
 
     @Override
     public void onUnChecked(int position, TopAdsProductViewModel data) {
+
         ChipsTopAdsSelectionFragment chipsTopAdsSelectionFragment
                 = getChipsTopAdsSelectionFragment();
         if (chipsTopAdsSelectionFragment != null)
@@ -250,6 +383,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
                 getActionBarSize()
         );
         bottomSheetHelper.setBottomSheetCallback(bottomSheetCallback);
+
     }
 
     private int getActionBarSize() {
@@ -262,7 +396,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
         return actionBarHeight;
     }
 
-    private TopAdsAddProductListFragment getTopAdsAddProductListFragment(){
+    private TopAdsAddProductListFragment getTopAdsAddProductListFragment() {
         Fragment fragmentByTag
                 = getFragmentManager().findFragmentByTag(TopAdsAddProductListFragment.TAG);
         if (fragmentByTag != null
@@ -286,7 +420,26 @@ public class TopAdsAddProductListActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-
+        if(bottomSheetHelper.getState() == BottomSheetBehavior.STATE_EXPANDED){
+            bottomSheetHelper.collapse();
+        }else{
+            super.onBackPressed();
+        }
     }
+
+    public int getStatusBarHeight() {
+        int sdkInt = Build.VERSION.SDK_INT;
+        if (sdkInt <= Build.VERSION_CODES.KITKAT) {
+            return 0;
+        }
+
+        int result = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+
 }

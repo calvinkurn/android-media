@@ -30,7 +30,6 @@ import java.util.List;
 public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
         implements AdapterSelectionListener<TopAdsProductViewModel> {
     List<TypeBasedModel> datas;
-    SparseArrayCompat<Boolean> selections;
     FragmentItemSelection fragmentItemSelection;
     private ImageHandler imageHandler;
 
@@ -39,7 +38,6 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
         this.imageHandler = imageHandler;
         this.fragmentItemSelection = fragmentItemSelection;
         datas = new ArrayList<>();
-        selections = new SparseArrayCompat<>();
     }
 
     @Override
@@ -83,6 +81,12 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
     }
 
     public void clear() {
+        showEmptyFull(false);
+        showEmpty(false);
+        showLoadingFull(false);
+        showLoading(false);
+        showRetry(false);
+        showRetryFull(false);
         datas.clear();
     }
 
@@ -102,30 +106,47 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
 
     @Override
     public void onChecked(int position, TopAdsProductViewModel data) {
-        selections.put(position, true);
-
         fragmentItemSelection.onChecked(position, data);
     }
 
     @Override
     public void onUnChecked(int position, TopAdsProductViewModel data) {
-        selections.put(position, false);
-
         fragmentItemSelection.onUnChecked(position, data);
     }
 
-    public void notifyUnCheck(int position){
-        Log.d("MNORMANSYAH", "#3 before reset selections : "+selections.get(position)
-                +" position "+ position);
-        selections.put(position, false);
-        Log.d("MNORMANSYAH", "#3 before after selections : "+selections.get(position)
-                +" position "+ position);
+    @Override
+    public boolean isSelected(TopAdsProductViewModel data) {
+        return fragmentItemSelection.isSelected(data);
+    }
 
+    public void notifyUnCheck(TopAdsProductViewModel topAdsProductViewModel) {
+        // search for position;
+        List<TopAdsProductViewModel> topAdsProductViewModels = convertTo();
+
+        int position = topAdsProductViewModels.indexOf(topAdsProductViewModel);
+        Log.d("MNORMANSYAH", " search this " + topAdsProductViewModel + " position " + position);
+
+        if (position > 0) {
+            removedItem(position);
+        }
+    }
+
+    private List<TopAdsProductViewModel> convertTo() {
+        List<TopAdsProductViewModel> topAdsProductViewModels =
+                new ArrayList<>();
+        for (TypeBasedModel data : datas) {
+            TopAdsAddProductModel data1 = (TopAdsAddProductModel) data;
+            topAdsProductViewModels.add(data1.productDomain);
+        }
+        return topAdsProductViewModels;
+    }
+
+    public void removedItem(int position) {
         TypeBasedModel typeBasedModel = datas.get(position);
-        if(typeBasedModel != null && typeBasedModel instanceof TopAdsAddProductModel){
+        if (typeBasedModel != null && typeBasedModel instanceof TopAdsAddProductModel) {
             TopAdsAddProductModel topAdsAddProductModel = (TopAdsAddProductModel) typeBasedModel;
-            Log.d("MNORMANSYAH", "#4 before after selections : "+topAdsAddProductModel.isSelected()
-                    +" position "+ position);
+            Log.d("MNORMANSYAH", "#4 before after selections : " + topAdsAddProductModel.isSelected()
+                    + " position " + position);
             topAdsAddProductModel.setSelected(false);
 
             datas.set(position, topAdsAddProductModel);
