@@ -157,8 +157,10 @@
     <string name="label_top_ads_all_product">Semua Produk</string>
     <string name="label_top_ads_inside_group">Di Dalam Grup</string>
     <string name="label_top_ads_outside_group">Di Luar Grup</string>
+    <string name="label_top_ads_not_promoted_yet">Belum di Promo</string>
     <string name="label_top_ads_name">Name</string>
     <string name="label_top_ads_status">Status</string>
+    <string name="label_top_ads_etalase">Etalase</string>
     <string name="label_top_ads_max_bid">Biaya Maks</string>
     <string name="label_top_ads_avg_cost">Rata-rata</string>
     <string name="label_top_ads_start">Mulai</string>

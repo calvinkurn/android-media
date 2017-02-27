@@ -11,38 +11,34 @@ import com.tokopedia.seller.topads.domain.model.other.RadioButtonItem;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Nathaniel on 1/31/2017.
- */
+public class TopAdsFilterStatusPromoFragment extends TopAdsFilterRadioButtonFragment {
 
-public class TopAdsFilterStatusFragment extends TopAdsFilterRadioButtonFragment {
+    private int selectedStatusPromo;
 
-    private int selectedStatus;
-
-    public static TopAdsFilterStatusFragment createInstance(int status) {
-        TopAdsFilterStatusFragment fragment = new TopAdsFilterStatusFragment();
+    public static TopAdsFilterStatusPromoFragment createInstance(int status) {
+        TopAdsFilterStatusPromoFragment fragment = new TopAdsFilterStatusPromoFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
+        bundle.putInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS_PROMO, status);
         fragment.setArguments(bundle);
         return fragment;
     }
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_top_ads_filter_content_status;
+        return R.layout.fragment_top_ads_filter_content_status_promo;
     }
 
     @Override
     protected void setupArguments(Bundle bundle) {
         super.setupArguments(bundle);
-        selectedStatus = bundle.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, selectedStatus);
+        selectedStatusPromo = bundle.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS_PROMO, selectedStatusPromo);
     }
 
     @Override
     protected List<RadioButtonItem> getRadioButtonList() {
         List<RadioButtonItem> radioButtonItemList = new ArrayList<>();
-        String[] statusValueList = getResources().getStringArray(R.array.filter_status_list_values);
-        String[] statusNameList = getResources().getStringArray(R.array.filter_status_list_names);
+        String[] statusValueList = getResources().getStringArray(R.array.filter_status_promo_list_values);
+        String[] statusNameList = getResources().getStringArray(R.array.filter_status_promo_list_names);
         for (int i = 0; i < statusNameList.length; i++) {
             RadioButtonItem radioButtonItem = new RadioButtonItem();
             radioButtonItem.setName(statusNameList[i]);
@@ -55,12 +51,12 @@ public class TopAdsFilterStatusFragment extends TopAdsFilterRadioButtonFragment 
     }
 
     private void updateSelectedPosition(List<RadioButtonItem> radioButtonItemList) {
-        if (selectedAdapterPosition > -1) {
-            return;
+        if (selectedAdapterPosition > 0) {
+            return; // adapter position has been updated
         }
         for (int i = 0; i < radioButtonItemList.size(); i++) {
             RadioButtonItem radioButtonItem = radioButtonItemList.get(i);
-            if (Integer.valueOf(radioButtonItem.getValue()) == selectedStatus) {
+            if (Integer.valueOf(radioButtonItem.getValue()) == selectedStatusPromo) {
                 selectedAdapterPosition = i;
                 break;
             }
@@ -75,7 +71,7 @@ public class TopAdsFilterStatusFragment extends TopAdsFilterRadioButtonFragment 
     @Override
     public Intent addResult(Intent intent) {
         if (selectedAdapterPosition > -1) {
-            intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, Integer.parseInt(getSelectedRadioValue()));
+            intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS_PROMO, Integer.parseInt(getSelectedRadioValue()));
         }
         return intent;
     }
