@@ -84,7 +84,6 @@ public class TopAdsEtalaseListPresenterImpl extends BaseDaggerPresenter<TopAdsEt
             public void onNext(List<Etalase> etalaseList) {
                 if (etalaseList != null && etalaseList.size() > 0) {
                     getView().onLoadSuccess(etalaseList);
-
                 }
                 else {
                     getView().onLoadSuccessEtalaseEmpty();

@@ -57,6 +57,10 @@ public class TopAdsBasicRadioButtonAdapter extends BaseLinearRecyclerViewAdapter
         return data.size() + super.getItemCount();
     }
 
+    public boolean isEmpty(){
+        return (data == null || data.size() == 0);
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         switch (viewType) {

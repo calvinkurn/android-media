@@ -13,6 +13,8 @@ import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.di.TopAdsGetEtalaseListDI;
 import com.tokopedia.seller.topads.domain.model.data.Etalase;
 import com.tokopedia.seller.topads.domain.model.other.RadioButtonItem;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsWhiteRetryDataBinder;
 import com.tokopedia.seller.topads.view.listener.TopAdsEtalaseListView;
 import com.tokopedia.seller.topads.view.presenter.TopAdsEtalaseListPresenter;
 
@@ -48,12 +50,20 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         shopId = new SessionHandler(context).getShopID();
-        adapter.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
+//        adapter.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
+//            @Override
+//            public void onRetryCliked() {
+//                presenter.populateEtalaseList(shopId);
+//            }
+//        });
+        TopAdsWhiteRetryDataBinder topAdsRetryDataBinder = new TopAdsWhiteRetryDataBinder(adapter);
+        topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
             public void onRetryCliked() {
                 presenter.populateEtalaseList(shopId);
             }
         });
+        adapter.setRetryView(topAdsRetryDataBinder);
     }
 
     @Override
@@ -112,6 +122,7 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
 
         updateSelectedPosition(radioButtonItemList);
 
+        adapter.showRetryFull(false);
         setAdapterData(radioButtonItemList);
     }
 
@@ -122,6 +133,7 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
 
         selectedAdapterPosition = 0;
 
+        adapter.showRetryFull(false);
         setAdapterData(radioButtonItemList);
     }
 
@@ -136,14 +148,14 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
 
     @Override
     public void onLoadConnectionError() {
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.error_connection_problem));
-        adapter.showRetry(true);
+        // NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.error_connection_problem));
+        adapter.showRetryFull(true);
     }
 
     @Override
     public void onLoadError(String message) {
         NetworkErrorHelper.showSnackbar(getActivity(), message);
-        adapter.showRetry(true);
+        adapter.showRetryFull(true);
     }
 
     @Override
