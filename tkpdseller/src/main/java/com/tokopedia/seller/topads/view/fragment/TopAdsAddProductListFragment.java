@@ -311,10 +311,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                 selectedFilterStatus = data.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS_PROMO, 0);
                 selectedFilterEtalaseId = data.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_ETALASE, 0);
             }
-            else {
-                selectedFilterStatus = 0;
-                selectedFilterEtalaseId = 0;
-            }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
