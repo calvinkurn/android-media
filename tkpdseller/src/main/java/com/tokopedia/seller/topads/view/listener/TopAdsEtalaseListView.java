@@ -8,7 +8,7 @@ import com.tokopedia.seller.topads.domain.model.data.Etalase;
 import java.util.List;
 
 /**
- * Created by zulfikarrahman on 2/17/17.
+ * Created by hendry on 2/17/17.
  */
 public interface TopAdsEtalaseListView extends CustomerView {
 

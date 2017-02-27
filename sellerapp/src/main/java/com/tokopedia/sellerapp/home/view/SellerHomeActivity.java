@@ -352,7 +352,6 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
         drawer = new DrawerVariableSeller(this);
         toolbar = new SellerToolbarVariable(this, sellerHomeToolbar);
         toolbar.createToolbarWithDrawer();
-        toolbar.setTitle("");
         drawer.setToolbar(toolbar);
         drawer.createDrawer();
         drawer.setEnabled(true);
@@ -734,17 +733,20 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
 //        getSupportActionBar().setHomeButtonEnabled(true);
         collapsingToolbar.setTitleEnabled(true);
 
-        collapsingToolbar.setOnScrimChangeListener(new CollapsingToolbarLayoutCust.OnScrimChangeListener() {
+        smoothAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
             @Override
-            public void onScrimChange(boolean isScrimShown) {
-                if (isScrimShown) {
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+
+                if (collapsingToolbar.isScrimsShown) {
                     if (shopModel == null || shopModel.info == null || shopModel.info.shopName == null)
                         toolbar.setTitleText("Home");
                     else
                         toolbar.setTitleText(shopModel.info.shopName);
-                }
-                else {
-                    toolbar.setTitle("");
+                } else {
+                    toolbar.setTitleText(" ");
                 }
             }
         });

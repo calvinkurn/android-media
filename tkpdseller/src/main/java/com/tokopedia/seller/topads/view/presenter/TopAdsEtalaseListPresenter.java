@@ -6,7 +6,7 @@ import com.tokopedia.seller.topads.view.listener.TopAdsEtalaseListView;
 import com.tokopedia.seller.topads.view.listener.TopAdsManagePromoProductView;
 
 /**
- * Created by Nathan on 5/9/16.
+ * Created by hendry on 2/27/17.
  */
 public interface TopAdsEtalaseListPresenter extends CustomerPresenter<TopAdsEtalaseListView> {
 
