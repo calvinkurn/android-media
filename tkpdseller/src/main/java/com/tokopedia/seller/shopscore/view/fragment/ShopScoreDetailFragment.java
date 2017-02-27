@@ -12,13 +12,16 @@ import android.view.ViewGroup;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopscore.di.ShopScoreDetailDependencyInjector;
+import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailViewModel;
 import com.tokopedia.seller.shopscore.view.presenter.ShopScoreDetailPresenterImpl;
 import com.tokopedia.seller.shopscore.view.recyclerview.ShopScoreDetailAdapter;
+
+import java.util.List;
 
 /**
  * Created by sebastianuskh on 2/24/17.
  */
-public class ShopScoreDetailFragment extends BaseDaggerFragment {
+public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopScoreDetailView {
     public static final String TAG = "ShopScoreDetail";
     private RecyclerView recyclerView;
     private ShopScoreDetailAdapter adapter;
@@ -30,7 +33,7 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment {
 
     @Override
     protected void initInjector() {
-        presenter = ShopScoreDetailDependencyInjector.getPresenter();
+        presenter = ShopScoreDetailDependencyInjector.getPresenter(getActivity());
     }
 
     @Nullable
@@ -38,6 +41,7 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_shop_score_detail, container, false);
         setupRecyclerView(parentView);
+        presenter.attachView(this);
         presenter.getShopScoreDetail();
         return parentView;
     }
@@ -57,4 +61,8 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment {
     }
 
 
+    @Override
+    public void renderShopScoreDetail(List<ShopScoreDetailViewModel> viewModel) {
+        adapter.updateData(viewModel);
+    }
 }

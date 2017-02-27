@@ -1,8 +1,8 @@
 package com.tokopedia.seller.shopscore.data.mapper;
 
-import com.tokopedia.seller.shopscore.data.source.cloud.model.Data;
-import com.tokopedia.seller.shopscore.data.source.cloud.model.DetailData;
-import com.tokopedia.seller.shopscore.data.source.cloud.model.ShopScoreMainDataServiceModel;
+import com.tokopedia.seller.shopscore.data.source.cloud.model.summary.Data;
+import com.tokopedia.seller.shopscore.data.source.cloud.model.summary.DetailData;
+import com.tokopedia.seller.shopscore.data.source.cloud.model.summary.ShopScoreSummaryServiceModel;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreSummaryDomainModelData;
 
@@ -11,9 +11,9 @@ import rx.functions.Func1;
 /**
  * Created by sebastianuskh on 2/24/17.
  */
-public class ShopScoreSummaryMapper implements Func1<ShopScoreMainDataServiceModel, ShopScoreMainDomainModel> {
+public class ShopScoreSummaryMapper implements Func1<ShopScoreSummaryServiceModel, ShopScoreMainDomainModel> {
     @Override
-    public ShopScoreMainDomainModel call(ShopScoreMainDataServiceModel serviceModel) {
+    public ShopScoreMainDomainModel call(ShopScoreSummaryServiceModel serviceModel) {
         Data serviceModelData = serviceModel.getData();
 
         ShopScoreMainDomainModel domainModel = new ShopScoreMainDomainModel();

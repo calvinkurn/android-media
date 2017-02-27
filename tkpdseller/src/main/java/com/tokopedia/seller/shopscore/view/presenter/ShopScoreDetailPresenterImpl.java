@@ -5,6 +5,12 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.seller.shopscore.domain.interactor.GetShopScoreDetailUseCase;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailDomainModel;
 import com.tokopedia.seller.shopscore.view.fragment.ShopScoreDetailView;
+import com.tokopedia.seller.shopscore.view.mapper.ShopScoreViewModelMapper;
+import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailViewModel;
+
+import java.util.List;
+
+import rx.Subscriber;
 
 /**
  * Created by sebastianuskh on 2/24/17.
@@ -24,7 +30,7 @@ public class ShopScoreDetailPresenterImpl extends BaseDaggerPresenter<ShopScoreD
         );
     }
 
-    private class GetShopScoreDetailSubscriber extends rx.Subscriber<com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailDomainModel> {
+    private class GetShopScoreDetailSubscriber extends Subscriber<List<ShopScoreDetailDomainModel>> {
         @Override
         public void onCompleted() {
 
@@ -36,8 +42,9 @@ public class ShopScoreDetailPresenterImpl extends BaseDaggerPresenter<ShopScoreD
         }
 
         @Override
-        public void onNext(ShopScoreDetailDomainModel shopScoreDetailDomainModel) {
-
+        public void onNext(List<ShopScoreDetailDomainModel> domainModels) {
+            List<ShopScoreDetailViewModel> viewModel = ShopScoreViewModelMapper.map(domainModels);
+            getView().renderShopScoreDetail(viewModel);
         }
     }
 }

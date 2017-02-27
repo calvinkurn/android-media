@@ -1,11 +1,19 @@
-package com.tokopedia.seller.shopscore.domain.model;
 
-/**
- * Created by sebastianuskh on 2/24/17.
- */
-public class ShopScoreDetailDomainModel {
+package com.tokopedia.seller.shopscore.data.source.cloud.model.summary;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+public class DetailData {
+
+    @SerializedName("Title")
+    @Expose
     private String title;
+    @SerializedName("Value")
+    @Expose
     private Integer value;
+    @SerializedName("Description")
+    @Expose
     private String description;
 
     public String getTitle() {
@@ -31,4 +39,5 @@ public class ShopScoreDetailDomainModel {
     public void setDescription(String description) {
         this.description = description;
     }
+
 }

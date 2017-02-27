@@ -1,19 +1,11 @@
+package com.tokopedia.seller.shopscore.view.model;
 
-package com.tokopedia.seller.shopscore.data.source.cloud.model;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-public class DetailData {
-
-    @SerializedName("Title")
-    @Expose
+/**
+ * Created by sebastianuskh on 2/27/17.
+ */
+public class ShopScoreDetailViewModel {
     private String title;
-    @SerializedName("Value")
-    @Expose
     private Integer value;
-    @SerializedName("Description")
-    @Expose
     private String description;
 
     public String getTitle() {
@@ -39,5 +31,4 @@ public class DetailData {
     public void setDescription(String description) {
         this.description = description;
     }
-
 }

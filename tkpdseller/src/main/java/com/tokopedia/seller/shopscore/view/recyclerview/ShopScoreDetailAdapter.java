@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,7 +18,7 @@ import java.util.List;
 public class ShopScoreDetailAdapter extends BaseLinearRecyclerViewAdapter {
 
     private static final int SHOP_SCORE_DETAIL = 500;
-    private List<String> data;
+    private List<ShopScoreDetailViewModel> data = new ArrayList<>();
 
     @Override
     public int getItemCount() {
@@ -56,7 +58,14 @@ public class ShopScoreDetailAdapter extends BaseLinearRecyclerViewAdapter {
         }
     }
 
-    private void bindView(ShopScoreDetailViewHolder viewHolder, String data) {
+    private void bindView(ShopScoreDetailViewHolder viewHolder, ShopScoreDetailViewModel data) {
+        viewHolder.setTitle(data.getTitle());
+        viewHolder.setShopScoreValue(data.getValue());
+        viewHolder.setShopScoreDescription(data.getDescription());
+    }
 
+    public void updateData(List<ShopScoreDetailViewModel> viewModel) {
+        data = viewModel;
+        notifyDataSetChanged();
     }
 }
