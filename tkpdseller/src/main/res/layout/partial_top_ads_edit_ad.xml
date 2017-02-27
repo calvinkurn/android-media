@@ -8,23 +8,25 @@
     <include
         layout="@layout/partial_top_ads_edit_promo_max_price"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/top_ads_margin_layout"/>
+        android:layout_height="wrap_content"/>
 
     <include
         layout="@layout/partial_top_ads_edit_promo_budget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/top_ads_margin_layout"/>
+        android:layout_marginTop="@dimen/top_ads_margin_layout"/>
 
     <include
         layout="@layout/partial_top_ads_edit_promo_show_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/top_ads_margin_layout"/>
+        android:layout_marginTop="@dimen/top_ads_margin_layout"/>
 
     <include
+        android:id="@+id/layout_top_ads_edit_promo_icon"
         layout="@layout/partial_top_ads_edit_promo_icon"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/top_ads_margin_layout"
+        android:visibility="gone"/>
 </LinearLayout>

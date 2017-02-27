@@ -5,7 +5,6 @@ import android.os.Bundle;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.domain.model.data.ShopAd;
 import com.tokopedia.seller.topads.view.fragment.TopAdsEditPromoShopFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsNewPromoFragment;
 
@@ -19,12 +18,14 @@ public class TopAdsEditPromoShopActivity extends TActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_top_ads_edit_promo);
+        String shopName = null;
         String adId = null;
         if (getIntent() != null && getIntent().getExtras() != null) {
-            adId = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD_ID);
+            shopName = getIntent().getExtras().getString(TopAdsExtraConstant.EXTRA_SHOP_NAME);
+            adId = getIntent().getExtras().getString(TopAdsExtraConstant.EXTRA_AD_ID);
         }
         getFragmentManager().beginTransaction().disallowAddToBackStack()
-                .add(R.id.container, TopAdsEditPromoShopFragment.createInstance(adId), TopAdsNewPromoFragment.class.getSimpleName())
+                .add(R.id.container, TopAdsEditPromoShopFragment.createInstance(shopName, adId), TopAdsNewPromoFragment.class.getSimpleName())
                 .commit();
     }
 

@@ -1,32 +1,8 @@
 package com.tokopedia.seller.topads.view.presenter;
 
-import android.content.Context;
+import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoView;
 
-import com.tokopedia.seller.topads.domain.interactor.DashboardTopadsInteractor;
-import com.tokopedia.seller.topads.domain.interactor.DashboardTopadsInteractorImpl;
-import com.tokopedia.seller.topads.domain.interactor.ListenerInteractor;
-import com.tokopedia.seller.topads.domain.model.data.DataCredit;
-import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoFragmentListener;
+public abstract class TopAdsEditPromoPresenterImpl extends BaseDaggerPresenter<TopAdsEditPromoView> implements TopAdsEditPromoPresenter {
 
-import java.util.List;
-
-/**
- * Created by Nisie on 5/9/16.
- */
-public class TopAdsEditPromoPresenterImpl implements TopAdsEditPromoPresenter {
-
-    private DashboardTopadsInteractor dashboardTopadsInteractor;
-    private TopAdsEditPromoFragmentListener listener;
-    private Context context;
-
-    public TopAdsEditPromoPresenterImpl(Context context, TopAdsEditPromoFragmentListener listener) {
-        this.context = context;
-        this.listener = listener;
-        dashboardTopadsInteractor = new DashboardTopadsInteractorImpl(context);
-    }
-
-    @Override
-    public void viewDetailAd() {
-
-    }
 }

@@ -16,7 +16,7 @@ import java.util.Locale;
 
 public class DatePickerDialog extends android.app.DatePickerDialog {
 
-    public DatePickerDialog(Context context, Calendar calendar, OnDateSetListener callBack) {
+    public  DatePickerDialog(Context context, Calendar calendar, OnDateSetListener callBack) {
         super(context, callBack, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
     }
 

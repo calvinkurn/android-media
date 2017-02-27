@@ -4,7 +4,7 @@ package com.tokopedia.seller.topads.view.model;
  * Created by Nathaniel on 2/23/2017.
  */
 
-public class ProductDetailAdView implements AdDetailViewModel {
+public class TopAdsDetailProductViewModel implements TopAdsDetailAdViewModel {
 
     private long id;
     private int type;
@@ -13,10 +13,10 @@ public class ProductDetailAdView implements AdDetailViewModel {
     private long itemId;
     private int status;
     private float priceBid;
-    private float budget;
+    private boolean budget;
     private float priceDaily;
     private int stickerId;
-    private String schedule;
+    private boolean scheduled;
     private String startDate;
     private String startTime;
     private String endDate;
@@ -29,6 +29,7 @@ public class ProductDetailAdView implements AdDetailViewModel {
         return stickerId;
     }
 
+    @Override
     public void setStickerId(int stickerId) {
         this.stickerId = stickerId;
     }
@@ -89,15 +90,18 @@ public class ProductDetailAdView implements AdDetailViewModel {
         return priceBid;
     }
 
+    @Override
     public void setPriceBid(float priceBid) {
         this.priceBid = priceBid;
     }
 
-    public float getBudget() {
+    @Override
+    public boolean isBudget() {
         return budget;
     }
 
-    public void setBudget(float budget) {
+    @Override
+    public void setBudget(boolean budget) {
         this.budget = budget;
     }
 
@@ -106,16 +110,19 @@ public class ProductDetailAdView implements AdDetailViewModel {
         return priceDaily;
     }
 
+    @Override
     public void setPriceDaily(float priceDaily) {
         this.priceDaily = priceDaily;
     }
 
-    public String getSchedule() {
-        return schedule;
+    @Override
+    public boolean isScheduled() {
+        return scheduled;
     }
 
-    public void setSchedule(String schedule) {
-        this.schedule = schedule;
+    @Override
+    public void setScheduled(boolean scheduled) {
+        this.scheduled = scheduled;
     }
 
     @Override
@@ -123,6 +130,7 @@ public class ProductDetailAdView implements AdDetailViewModel {
         return startDate;
     }
 
+    @Override
     public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
@@ -132,6 +140,7 @@ public class ProductDetailAdView implements AdDetailViewModel {
         return startTime;
     }
 
+    @Override
     public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
@@ -141,6 +150,7 @@ public class ProductDetailAdView implements AdDetailViewModel {
         return endDate;
     }
 
+    @Override
     public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
@@ -150,6 +160,7 @@ public class ProductDetailAdView implements AdDetailViewModel {
         return endTime;
     }
 
+    @Override
     public void setEndTime(String endTime) {
         this.endTime = endTime;
     }
@@ -162,6 +173,7 @@ public class ProductDetailAdView implements AdDetailViewModel {
         this.image = image;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }

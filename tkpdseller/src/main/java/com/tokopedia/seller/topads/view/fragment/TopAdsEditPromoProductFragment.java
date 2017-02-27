@@ -10,11 +10,13 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.di.TopAdsEditPromoShopDI;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddProductActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddProductListActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoFragmentListener;
+import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoShopPresenter;
 
-public class TopAdsEditPromoProductFragment extends TopAdsEditPromoFragment implements TopAdsEditPromoFragmentListener {
+public class TopAdsEditPromoProductFragment extends TopAdsEditPromoFragment<TopAdsEditPromoShopPresenter> {
 
     private static final int ADD_PRODUCT_REQUEST_CODE = 0;
 
@@ -26,6 +28,12 @@ public class TopAdsEditPromoProductFragment extends TopAdsEditPromoFragment impl
         bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, shopAdId);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    protected void initialPresenter() {
+        presenter = TopAdsEditPromoShopDI.createPresenter(getActivity());
+        presenter.attachView(this);
     }
 
     @Override

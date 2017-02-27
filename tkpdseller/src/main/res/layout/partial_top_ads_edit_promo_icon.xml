@@ -18,19 +18,19 @@
             android:id="@+id/radio_button_icon_speaker"
             style="@style/RadioButton"
             android:checked="true"
-            android:drawableEnd="@drawable/icon_bca"
-            android:drawableRight="@drawable/icon_bca"/>
+            android:drawableEnd="@drawable/ic_top_ads_sticker_speaker"
+            android:drawableRight="@drawable/ic_top_ads_sticker_speaker"/>
 
         <RadioButton
             android:id="@+id/radio_button_icon_thumbs_up"
             style="@style/RadioButton"
-            android:drawableEnd="@drawable/icon_bca"
-            android:drawableRight="@drawable/icon_bca"/>
+            android:drawableEnd="@drawable/ic_top_ads_sticker_thumbs_up"
+            android:drawableRight="@drawable/ic_top_ads_sticker_thumbs_up"/>
 
         <RadioButton
             android:id="@+id/radio_button_icon_fire"
             style="@style/RadioButton"
-            android:drawableEnd="@drawable/icon_bca"
-            android:drawableRight="@drawable/icon_bca"/>
+            android:drawableEnd="@drawable/ic_top_ads_sticker_fire"
+            android:drawableRight="@drawable/ic_top_ads_sticker_fire"/>
     </RadioGroup>
 </LinearLayout>
