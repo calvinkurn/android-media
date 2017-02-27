@@ -357,7 +357,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     @OnClick(R.id.btn_buy)
     void buttonBuyClicked() {
-        buyButton.setEnabled(false);
         if (SessionHandler.isV4Login(getActivity())) {
             sendGTMClickBeli();
 
@@ -479,7 +478,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         if (nominalTextview != null) nominalTextview.setVisibility(View.GONE);
         if (rechargeEditText != null) rechargeEditText.setImgOperatorVisible();
         if (errorNominal != null) errorNominal.setVisibility(View.GONE);
-        if (buyButton != null) buyButton.setEnabled(true);
     }
 
     @Override
@@ -540,7 +538,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     @Override
     public void showFormAndImageOperator() {
-        if (buyButton != null) buyButton.setEnabled(true);
         if (rechargeEditText != null) rechargeEditText.setImgOperatorVisible();
         if (spnNominal != null) spnNominal.setVisibility(View.VISIBLE);
         if (wrapperLinearLayout != null) wrapperLinearLayout.setVisibility(View.VISIBLE);
