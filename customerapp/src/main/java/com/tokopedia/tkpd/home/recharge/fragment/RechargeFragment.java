@@ -47,6 +47,7 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.digitalmodule.passdata.ExampPassData;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -367,7 +368,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                         selectedOperatorId, String.valueOf(selectedOperator.defaultProductId));
             } else {
                 if (checkStockProduct(selectedProduct))
-                    goToCheckout(getUrlCheckout());
+                    goToNativeCheckout();
             }
         } else {
             gotoLogin();
@@ -837,9 +838,11 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     private void goToNativeCheckout() {
         //  startActivity(CartDigitalActivity.newInstance(getActivity(), null));
+        ExampPassData passData = new ExampPassData();
+        passData.setCategoryId(category.getId() + "");
         if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
             startActivity(((IDigitalModuleRouter) getActivity().getApplication())
-                    .instanceIntentCartDigitalProduct(null));
+                    .instanceIntentCartDigitalProduct(passData));
         }
     }
     //endregion

@@ -3,6 +3,7 @@ package com.tokopedia.core.network.retrofit.utils;
 import android.content.Context;
 import android.support.v4.util.ArrayMap;
 import android.util.Base64;
+
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
@@ -57,6 +58,7 @@ public class AuthUtil {
         public static String KEY_WSV4 = "web_service_v4";
         public static String KEY_MOJITO = "mojito_api_v1";
         public static String KEY_KEROPPI = "Keroppi";
+        public final String KEY_HMAC_DIGITAL = "KEY_HMAC_DIGITAL";
     }
 
     public static Map<String, String> generateHeaders(String path, String strParam, String method, String authKey) {

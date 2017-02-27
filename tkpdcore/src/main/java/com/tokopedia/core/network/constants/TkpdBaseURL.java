@@ -36,6 +36,7 @@ public class TkpdBaseURL {
     public static String MOBILE_DOMAIN = "https://m.tokopedia.com/";
     public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
+    public static String DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
 
     public static class Product {
         public static final String URL_PRODUCT = BASE_DOMAIN + "v4/product/";
@@ -609,11 +610,11 @@ public class TkpdBaseURL {
         public static final String PATH_API_V1_ANNOUNCEMENT_TICKER = "/api/v1/tickers";
     }
 
-    public static class GoldMerchant{
+    public static class GoldMerchant {
         public static final String GET_PRODUCT_VIDEO = "/v1/product/video/";
     }
 
-    public static class FCM{
+    public static class FCM {
         public static final String UPDATE_FCM = "/api/gcm/update";
     }
 
@@ -625,11 +626,26 @@ public class TkpdBaseURL {
         public static final String URL_CHANGE_NUMBER = "https://www.tokopedia.com/contact-us?solution_id=54";
     }
 
-    public static class TopCash{
+    public static class TopCash {
         public static final String GET_WALLET = ACCOUNTS_DOMAIN + "api/v1/wallet/";
         public static final String PATH_WALLET = "balance";
     }
-    public static class Truecaller{
+
+    public static class Truecaller {
         public static final String VERIFY_PHONE = "/web-service/v4/truecaller/check";
+    }
+
+    public static class DigitalApi {
+        public static final String VERSION = "v1.2/";
+        public static final String HMAC_KEY = "web_service_v4";
+
+        public static final String PATH_STATUS = "/status";
+        public static final String PATH_CATEGORY = "/category/list";
+        public static final String PATH_OPERATOR = "/operator/list";
+        public static final String PATH_PRODUCT = "/product/list";
+        public static final String PATH_RECENT_NUMBER = "/recent-number";
+        public static final String PATH_LAST_ORDER = "/last-order";
+        public static final String PATH_SALDO = "/saldo/";
+        public static final String PATH_GET_CART = "cart";
     }
 }

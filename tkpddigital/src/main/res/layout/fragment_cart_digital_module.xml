@@ -1,8 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="@dimen/padding_small">
+                android:layout_height="match_parent">
 
     <ProgressBar
         android:id="@+id/pb_main_loading"
@@ -14,22 +13,23 @@
         android:visibility="gone"
         tools:visibility="gone"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.tokopedia.digital.cart.compoundview.CheckoutHolderView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/nsv_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:visibility="gone"
         tools:ignore="ObsoleteLayoutParam"
         tools:visibility="visible">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
 
-            <com.tokopedia.core.digital.cart.compoundview.CheckoutHolderView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-        </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </RelativeLayout>
