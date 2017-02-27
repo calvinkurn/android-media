@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.view.adapter;
 
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,7 +12,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.listener.AdapterSelectionListener;
 import com.tokopedia.seller.topads.listener.BindViewHolder;
 import com.tokopedia.seller.topads.view.models.TopAdsAddProductModel;
-
+import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
 
 /**
  * Created by normansyahputa on 2/13/17.
@@ -26,8 +27,8 @@ public class TopAdsAddProductListViewHolder extends RecyclerView.ViewHolder
     private final TextView topAdsAddProductListSnippet;
     private final int topAdsSelectionColor;
     private final int transparantColor;
-    AdapterSelectionListener adapterSelectionListener;
     int adapterPosition;
+    private AdapterSelectionListener<TopAdsProductViewModel> adapterSelectionListener;
     private ImageHandler imageHandler;
     private TopAdsAddProductModel model;
 
@@ -58,12 +59,13 @@ public class TopAdsAddProductListViewHolder extends RecyclerView.ViewHolder
         this.model = model;
         adapterPosition = getAdapterPosition();
 
-        if (!model.isSelected()) {
-            imageHandler.loadImage(topAdsAddProductListImageView, model.imageUrl, false);
+        boolean b = !adapterSelectionListener.isSelected(model.productDomain);// not selected
+        Log.d("MNORMANSYAH", "bind " + b + " data " + model.productDomain + " position " + getAdapterPosition());
+        if (b) {
+            imageHandler.loadImage(topAdsAddProductListImageView, model.imageUrl, true);
             itemView.setBackgroundColor(transparantColor);
         } else {
-            imageHandler.loadImage(topAdsAddProductListImageView,
-                    R.drawable.abc_btn_switch_to_on_mtrl_00001);
+            imageHandler.loadImage(topAdsAddProductListImageView, R.drawable.ic_top_ads_selected);
             itemView.setBackgroundColor(topAdsSelectionColor);
         }
 
@@ -73,7 +75,7 @@ public class TopAdsAddProductListViewHolder extends RecyclerView.ViewHolder
             topAdsAddProductListSnippet.setText(model.snippet);
             emptySpace.setVisibility(View.GONE);
         } else {
-            topAdsAddProductListSnippet.setVisibility(View.GONE);
+            topAdsAddProductListSnippet.setVisibility(View.INVISIBLE);
             emptySpace.setVisibility(View.VISIBLE);
         }
     }
@@ -83,7 +85,7 @@ public class TopAdsAddProductListViewHolder extends RecyclerView.ViewHolder
             @Override
             public void onClick(View v) {
                 // reverse selection
-                boolean reverseSelection = !model.isSelected();
+                boolean reverseSelection = !adapterSelectionListener.isSelected(model.productDomain);
 
                 if (adapterSelectionListener != null) {
                     if (reverseSelection) {

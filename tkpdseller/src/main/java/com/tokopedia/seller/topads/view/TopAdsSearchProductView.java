@@ -13,4 +13,6 @@ public interface TopAdsSearchProductView extends CustomerView {
     void loadData(List<TypeBasedModel> datas);
 
     void loadMore(List<TypeBasedModel> datas);
+
+    void dismissSnackbar();
 }

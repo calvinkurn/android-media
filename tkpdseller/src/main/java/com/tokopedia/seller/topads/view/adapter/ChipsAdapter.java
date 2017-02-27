@@ -50,6 +50,11 @@ public class ChipsAdapter extends RecyclerView.Adapter<ChipsAdapter.ViewHolder> 
         return chipsEntities.size();
     }
 
+    public void remove(int position) {
+        chipsEntities.remove(position);
+        notifyItemRemoved(position);
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView tvDescription;
@@ -70,12 +75,7 @@ public class ChipsAdapter extends RecyclerView.Adapter<ChipsAdapter.ViewHolder> 
 
         void bindItem(final ChipsEntity entity) {
             itemView.setTag(entity.getName());
-            if (TextUtils.isEmpty(entity.getDescription())) {
-                tvDescription.setVisibility(View.GONE);
-            } else {
-                tvDescription.setVisibility(View.VISIBLE);
-                tvDescription.setText(entity.getDescription());
-            }
+            tvDescription.setVisibility(View.GONE);
 
             if (entity.getDrawableResId() != 0) {
                 Glide.with(ivPhoto.getContext()).load(entity.getDrawableResId())
@@ -99,18 +99,12 @@ public class ChipsAdapter extends RecyclerView.Adapter<ChipsAdapter.ViewHolder> 
                 @Override
                 public void onClick(View v) {
                     if (onRemoveListener != null && getAdapterPosition() != -1) {
-                        onRemoveListener.onItemRemoved(entity.getPosition(), getAdapterPosition());
+                        onRemoveListener.onItemRemoved(getAdapterPosition());
                     }
                 }
             });
         }
     }
-
-    public void remove(int position){
-        chipsEntities.remove(position);
-        notifyItemRemoved(position);
-    }
-
 
 
 }
