@@ -328,7 +328,8 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        return false;
+        fetchDataWithQuery(newText);
+        return true;
     }
 
     public void fetchDataWithQuery(String newText) {

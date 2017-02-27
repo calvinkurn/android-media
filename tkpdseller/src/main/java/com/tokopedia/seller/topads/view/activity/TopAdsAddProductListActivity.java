@@ -376,6 +376,11 @@ public class TopAdsAddProductListActivity extends BaseActivity
     }
 
     public int getStatusBarHeight() {
+        int sdkInt = Build.VERSION.SDK_INT;
+        if (sdkInt <= Build.VERSION_CODES.KITKAT) {
+            return 0;
+        }
+
         int result = 0;
         int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {

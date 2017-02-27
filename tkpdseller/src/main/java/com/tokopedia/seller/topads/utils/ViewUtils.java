@@ -8,7 +8,7 @@ import android.view.WindowManager;
 import com.tokopedia.seller.R;
 
 /**
- * Created by normansyahputa on 2/16/17.
+ * @author normansyahputa on 2/16/17.
  */
 
 public class ViewUtils {
@@ -17,8 +17,6 @@ public class ViewUtils {
         int sdkInt = Build.VERSION.SDK_INT;
         if (sdkInt >= Build.VERSION_CODES.LOLLIPOP) {
             setTranslucentStatusBarLollipop(window);
-        } else if (sdkInt >= Build.VERSION_CODES.KITKAT) {
-            setTranslucentStatusBarKiKat(window);
         }
     }
 
@@ -28,11 +26,6 @@ public class ViewUtils {
                 window.getContext()
                         .getResources()
                         .getColor(R.color.green_600));
-    }
-
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    private static void setTranslucentStatusBarKiKat(Window window) {
-        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
     }
 
 }
