@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.data.source.cloud.interceptor;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.tokopedia.seller.topads.data.source.cloud.response.Error;
 import com.tokopedia.seller.topads.data.source.cloud.response.TkpdResponseError;
 import com.tokopedia.seller.topads.exception.ResponseErrorException;
@@ -24,27 +25,23 @@ public class TkpdErrorResponseInterceptor implements Interceptor {
 
         ResponseBody responseBody = null;
         String responseBodyString = "";
-        if (null!= response && response.isSuccessful()) {
+        if (null != response && response.isSuccessful()) {
             responseBody = response.peekBody(BYTE_COUNT);
             responseBodyString = responseBody.string();
             Gson gson = new Gson();
             TkpdResponseError tkpdResponseError;
             try {
-                tkpdResponseError = gson.fromJson(
-                        responseBodyString, TkpdResponseError.class);
-            }
-            catch (Exception e) { // the json might not be TkpdResponseError instance, so just return it
+                tkpdResponseError = gson.fromJson(responseBodyString, TkpdResponseError.class);
+            } catch (JsonSyntaxException e) { // the json might not be TkpdResponseError instance, so just return it
                 return response;
             }
-            if (null== tkpdResponseError) { // no error object
+            if (tkpdResponseError == null) { // no error object
                 return response;
-            }
-            else {
+            } else {
                 List<Error> errorList = tkpdResponseError.getErrors();
-                if (null == errorList) { // no error List
+                if (errorList == null) { // no error List
                     return response;
-                }
-                else { // has error list
+                } else { // has error list
                     throw new ResponseErrorException(errorList);
                 }
             }
