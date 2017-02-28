@@ -28,8 +28,14 @@ public class TkpdErrorResponseInterceptor implements Interceptor {
             responseBody = response.peekBody(BYTE_COUNT);
             responseBodyString = responseBody.string();
             Gson gson = new Gson();
-            TkpdResponseError tkpdResponseError = gson.fromJson(
-                    responseBodyString, TkpdResponseError.class);
+            TkpdResponseError tkpdResponseError;
+            try {
+                tkpdResponseError = gson.fromJson(
+                        responseBodyString, TkpdResponseError.class);
+            }
+            catch (Exception e) { // the json might not be TkpdResponseError instance, so just return it
+                return response;
+            }
             if (null== tkpdResponseError) { // no error object
                 return response;
             }
