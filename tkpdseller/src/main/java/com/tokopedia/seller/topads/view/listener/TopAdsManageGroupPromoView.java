@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by zulfikarrahman on 2/17/17.
  */
-public interface TopAdsManagePromoProductView extends CustomerView {
+public interface TopAdsManageGroupPromoView extends CustomerView {
     void onCheckGroupExistError(String message);
 
     void onGroupExist();

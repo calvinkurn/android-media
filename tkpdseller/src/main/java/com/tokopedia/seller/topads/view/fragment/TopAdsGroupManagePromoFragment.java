@@ -1,12 +1,10 @@
 package com.tokopedia.seller.topads.view.fragment;
 
-import android.app.Fragment;
-
 /**
  * Created by zulfikarrahman on 2/27/17.
  */
 
-public class TopAdsManageGroupPromoProductFragment extends TopAdsBaseManagePromoProductFragment {
+public class TopAdsGroupManagePromoFragment extends TopAdsBaseManageGroupPromoFragment {
     @Override
     protected String getTextInfoChooseGroupOption() {
         return "";
@@ -57,8 +55,8 @@ public class TopAdsManageGroupPromoProductFragment extends TopAdsBaseManagePromo
 
     }
 
-    public static TopAdsManageGroupPromoProductFragment createInstance() {
-        TopAdsManageGroupPromoProductFragment topAdsManageGroupPromoProductFragment = new TopAdsManageGroupPromoProductFragment();
-        return topAdsManageGroupPromoProductFragment;
+    public static TopAdsGroupManagePromoFragment createInstance() {
+        TopAdsGroupManagePromoFragment topAdsGroupManagePromoFragment = new TopAdsGroupManagePromoFragment();
+        return topAdsGroupManagePromoFragment;
     }
 }

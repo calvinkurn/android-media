@@ -17,11 +17,10 @@ import android.widget.TextView;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.topads.di.TopAdsAddPromoPoductDI;
 import com.tokopedia.seller.topads.domain.model.data.GroupAd;
-import com.tokopedia.seller.topads.view.presenter.TopAdsManagePromoProductPresenter;
-import com.tokopedia.seller.topads.view.listener.TopAdsManagePromoProductView;
+import com.tokopedia.seller.topads.view.presenter.TopAdsManageGroupPromoPresenter;
+import com.tokopedia.seller.topads.view.listener.TopAdsManageGroupPromoView;
 import com.tokopedia.seller.topads.view.widget.TopAdsCustomAutoCompleteTextView;
 import com.tokopedia.seller.topads.view.widget.TopAdsCustomRadioGroup;
 import com.tokopedia.seller.topads.view.widget.TopAdsRadioExpandView;
@@ -33,8 +32,8 @@ import java.util.List;
  * Created by zulfikarrahman on 2/16/17.
  */
 
-public abstract class TopAdsBaseManagePromoProductFragment extends BasePresenterFragment<TopAdsManagePromoProductPresenter>
-        implements TopAdsManagePromoProductView {
+public abstract class TopAdsBaseManageGroupPromoFragment extends BasePresenterFragment<TopAdsManageGroupPromoPresenter>
+        implements TopAdsManageGroupPromoView {
 
     private TopAdsCustomRadioGroup radioGroup;
 

@@ -6,7 +6,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsCheckExistGroupUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
 import com.tokopedia.seller.topads.domain.model.data.GroupAd;
-import com.tokopedia.seller.topads.view.listener.TopAdsManagePromoProductView;
+import com.tokopedia.seller.topads.view.listener.TopAdsManageGroupPromoView;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +19,7 @@ import rx.android.schedulers.AndroidSchedulers;
 /**
  * Created by zulfikarrahman on 2/16/17.
  */
-public class TopAdsManagePromoProductPresenterImpl extends BaseDaggerPresenter<TopAdsManagePromoProductView> implements TopAdsManagePromoProductPresenter {
+public class TopAdsManageGroupPromoPresenterImpl extends BaseDaggerPresenter<TopAdsManageGroupPromoView> implements TopAdsManageGroupPromoPresenter {
 
     public static final int TIME_DELAY = 300;
     private final TopAdsSearchGroupAdsNameUseCase topAdsSearchGroupAdsNameUseCase;
@@ -29,8 +29,8 @@ public class TopAdsManagePromoProductPresenterImpl extends BaseDaggerPresenter<T
     private QueryListener listenerCheckGroupExist;
     private QueryListener listenerSearchGroupName;
 
-    public TopAdsManagePromoProductPresenterImpl(TopAdsSearchGroupAdsNameUseCase topAdsSearchGroupAdsNameUseCase,
-                                                 TopAdsCheckExistGroupUseCase topAdsCheckExistGroupUseCase) {
+    public TopAdsManageGroupPromoPresenterImpl(TopAdsSearchGroupAdsNameUseCase topAdsSearchGroupAdsNameUseCase,
+                                               TopAdsCheckExistGroupUseCase topAdsCheckExistGroupUseCase) {
         this.topAdsSearchGroupAdsNameUseCase = topAdsSearchGroupAdsNameUseCase;
         this.topAdsCheckExistGroupUseCase = topAdsCheckExistGroupUseCase;
 

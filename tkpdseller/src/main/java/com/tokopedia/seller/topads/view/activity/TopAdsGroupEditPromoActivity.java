@@ -4,22 +4,20 @@ import android.os.Bundle;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.view.fragment.TopAdsAddCreditFragment;
-import com.tokopedia.seller.topads.view.fragment.TopAdsAddPromoProductFragment;
-import com.tokopedia.seller.topads.view.fragment.TopAdsNewPromoFragment;
+import com.tokopedia.seller.topads.view.fragment.TopAdsGroupEditPromoFragment;
 
 /**
- * Created by Nathaniel on 11/22/2016.
+ * Created by zulfikarrahman on 2/27/17.
  */
 
-public class TopAdsAddPromoProductActivity extends TActivity {
+public class TopAdsGroupEditPromoActivity extends TActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_top_ads_new_promo);
         getFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.container, TopAdsAddPromoProductFragment.createInstance(), TopAdsAddPromoProductFragment.class.getSimpleName())
+                .replace(R.id.container, TopAdsGroupEditPromoFragment.createInstance(), TopAdsGroupEditPromoFragment.class.getSimpleName())
                 .commit();
     }
 
