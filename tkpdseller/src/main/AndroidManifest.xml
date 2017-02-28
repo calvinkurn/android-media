@@ -63,8 +63,16 @@
             android:label="@string/title_top_ads_add_credit"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsAddPromoProductActivity"
+            android:name=".topads.view.activity.TopAdsGroupNewPromoActivity"
             android:label="@string/title_top_ads_new_promo"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsGroupEditPromoActivity"
+            android:label="@string/title_top_ads_edit_promo_product"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsGroupManagePromoActivity"
+            android:label="@string/title_top_ads_manage_promo_product"
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsAddProductActivity"
