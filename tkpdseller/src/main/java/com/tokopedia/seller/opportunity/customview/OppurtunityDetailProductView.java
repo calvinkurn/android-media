@@ -1,4 +1,4 @@
-package com.tokopedia.seller.opportunity;
+package com.tokopedia.seller.opportunity.customview;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -6,18 +6,19 @@ import android.util.AttributeSet;
 
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.opportunity.listener.OppurtunityView;
 
 /**
  * Created by hangnadi on 2/27/17.
  */
 
-public class OppurtunityDetailStatusView extends BaseView<Object, OppurtunityView> {
+public class OppurtunityDetailProductView extends BaseView<Object, OppurtunityView> {
 
-    public OppurtunityDetailStatusView(Context context) {
+    public OppurtunityDetailProductView(Context context) {
         super(context);
     }
 
-    public OppurtunityDetailStatusView(Context context, AttributeSet attrs) {
+    public OppurtunityDetailProductView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -28,7 +29,7 @@ public class OppurtunityDetailStatusView extends BaseView<Object, OppurtunityVie
 
     @Override
     protected int getLayoutView() {
-        return R.layout.layout_oppurtunity_status_view;
+        return R.layout.layout_oppurtunity_product_list_view;
     }
 
     @Override

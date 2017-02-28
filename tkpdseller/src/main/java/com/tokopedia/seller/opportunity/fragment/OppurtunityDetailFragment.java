@@ -1,4 +1,4 @@
-package com.tokopedia.seller.opportunity;
+package com.tokopedia.seller.opportunity.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -7,6 +7,9 @@ import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.opportunity.listener.OppurtunityView;
+import com.tokopedia.seller.opportunity.presenter.OppurtunityImpl;
+import com.tokopedia.seller.opportunity.presenter.OppurtunityPresenter;
 
 /**
  * Created by hangnadi on 2/27/17.

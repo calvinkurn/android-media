@@ -1,4 +1,4 @@
-package com.tokopedia.seller.opportunity;
+package com.tokopedia.seller.opportunity.customview;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.opportunity.listener.OppurtunityView;
 
 /**
  * Created by hangnadi on 2/27/17.

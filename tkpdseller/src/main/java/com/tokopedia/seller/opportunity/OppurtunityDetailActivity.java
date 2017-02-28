@@ -5,6 +5,10 @@ import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.opportunity.fragment.OppurtunityDetailFragment;
+import com.tokopedia.seller.opportunity.listener.OppurtunityDetailView;
+import com.tokopedia.seller.opportunity.presenter.OppurtunityDetailImpl;
+import com.tokopedia.seller.opportunity.presenter.OppurtunityDetailPresenter;
 
 /**
  * Created by hangnadi on 2/27/17.
