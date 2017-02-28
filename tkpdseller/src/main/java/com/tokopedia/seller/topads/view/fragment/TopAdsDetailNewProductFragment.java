@@ -10,7 +10,7 @@ import com.tokopedia.seller.topads.di.TopAdsEditPromoProductDI;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddProductListActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoProductPresenter;
 
-public class TopAdsDetailNewProductFragment extends TopAdsDetailEditFragment<TopAdsEditPromoProductPresenter> {
+public class TopAdsDetailNewProductFragment extends TopAdsDetailNewFragment<TopAdsEditPromoProductPresenter> {
 
     private static final int ADD_PRODUCT_REQUEST_CODE = 0;
 

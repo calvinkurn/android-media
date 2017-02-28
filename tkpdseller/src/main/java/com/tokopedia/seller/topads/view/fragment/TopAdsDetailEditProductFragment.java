@@ -9,7 +9,7 @@ import com.tokopedia.seller.topads.di.TopAdsEditPromoProductDI;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailProductViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoProductPresenter;
 
-public class TopAdsDetailEditProductFragment extends TopAdsDetailEditFragment<TopAdsEditPromoProductPresenter> {
+public class TopAdsDetailEditProductFragment extends TopAdsDetailNewFragment<TopAdsEditPromoProductPresenter> {
 
     public static Fragment createInstance(String shopAdId) {
         Fragment fragment = new TopAdsDetailEditProductFragment();
