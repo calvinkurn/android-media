@@ -26,13 +26,13 @@ import com.tokopedia.core.myproduct.model.GenerateHostModel;
 import com.tokopedia.core.myproduct.model.ImageModel;
 import com.tokopedia.core.myproduct.model.TextDeleteModel;
 import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
-import com.tokopedia.seller.myproduct.model.editProductForm.EditProductForm;
-import com.tokopedia.seller.myproduct.model.editproduct.EditProductModel;
-import com.tokopedia.seller.myproduct.utils.ProductEditHelper;
 import com.tokopedia.core.network.apiservices.upload.apis.GeneratedHostActApi;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.util.Pair;
+import com.tokopedia.seller.myproduct.model.editProductForm.EditProductForm;
+import com.tokopedia.seller.myproduct.model.editproduct.EditProductModel;
 import com.tokopedia.seller.myproduct.service.ProductService;
+import com.tokopedia.seller.myproduct.utils.ProductEditHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +48,7 @@ import static com.tkpd.library.utils.CommonUtils.checkNotNull;
  */
 public class InputAddProductModel {
     public static final String TAG = "STUART";
+    static final int product_upload_to = 1;
     List<ImageModel> imageModels;
     String productName;
     List<TextDeleteModel> categories;
@@ -69,229 +70,26 @@ public class InputAddProductModel {
     String stockStatus;
     ArrayList<ProductEditHelper.ProductEditImage> productEditImages;
     String shopId;
-
     String productChangeCatalog;
     String productChangePhoto;
     String productChangeWholeSale;
 
-    
-    static final int product_upload_to = 1;
-
     //[START] setter and getter
-
-    public String getProductChangeWholeSale() {
-        return productChangeWholeSale;
-    }
-
-    public void setProductChangeWholeSale(String productChangeWholeSale) {
-        this.productChangeWholeSale = productChangeWholeSale;
-    }
-
-    public String getProductChangeCatalog() {
-        return productChangeCatalog;
-    }
-
-    public void setProductChangeCatalog(String productChangeCatalog) {
-        this.productChangeCatalog = productChangeCatalog;
-    }
-
-    public String getProductChangePhoto() {
-        return productChangePhoto;
-    }
-
-    public void setProductChangePhoto(String productChangePhoto) {
-        this.productChangePhoto = productChangePhoto;
-    }
-
-    public String getShopId() {
-        return shopId;
-    }
-
-    public void setShopId(String shopId) {
-        this.shopId = shopId;
-    }
-
-    public ArrayList<ProductEditHelper.ProductEditImage> getProductEditImages() {
-        return productEditImages;
-    }
-
-    public void setProductEditImages(ArrayList<ProductEditHelper.ProductEditImage> productEditImages) {
-        this.productEditImages = productEditImages;
-    }
-
-    public String getStockStatus() {
-        return stockStatus;
-    }
-
-    public void setStockStatus(String stockStatus) {
-        this.stockStatus = stockStatus;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
-    public long getCatalog() {
-        return catalog;
-    }
-
-    public void setCatalog(long catalog) {
-        this.catalog = catalog;
-    }
-
-    public int getCondition() {
-        return condition;
-    }
-
-    public void setCondition(int condition) {
-        this.condition = condition;
-    }
-
-    public List<ImageModel> getImageModels() {
-        return imageModels;
-    }
-
-    public void setImageModels(List<ImageModel> imageModels) {
-        this.imageModels = imageModels;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public List<TextDeleteModel> getCategories() {
-        return categories;
-    }
-
-    public void setCategories(List<TextDeleteModel> categories) {
-        this.categories = categories;
-    }
-
-    public String getCurrencyUnit() {
-        return currencyUnit;
-    }
-
-    public void setCurrencyUnit(String currencyUnit) {
-        this.currencyUnit = currencyUnit;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
-    public String getWeight() {
-        return weight;
-    }
-
-    public void setWeight(String weight) {
-        this.weight = weight;
-    }
-
-    public String getWeightUnit() {
-        return weightUnit;
-    }
-
-    public void setWeightUnit(String weightUnit) {
-        this.weightUnit = weightUnit;
-    }
-
-    public int getMinimumOrder() {
-        return minimumOrder;
-    }
-
-    public void setMinimumOrder(int minimumOrder) {
-        this.minimumOrder = minimumOrder;
-    }
-
-    public List<WholeSaleAdapterModel> getWholeSales() {
-        return wholeSales;
-    }
-
-    public void setWholeSales(List<WholeSaleAdapterModel> wholeSales) {
-        this.wholeSales = wholeSales;
-    }
-
-    public List<Pair<PictureDB, UploadProductImageData>> getUploadProductImageData() {
-        return uploadProductImageData;
-    }
-
-    public void setUploadProductImageData(List<Pair<PictureDB, UploadProductImageData>> uploadProductImageData) {
-        this.uploadProductImageData = uploadProductImageData;
-    }
-
-    public long getEtalaseId() {
-        return etalaseId;
-    }
-
-    public void setEtalaseId(long etalaseId) {
-        this.etalaseId = etalaseId;
-    }
-
-    public String getEtalaseName() {
-        return etalaseName;
-    }
-
-    public void setEtalaseName(String etalaseName) {
-        this.etalaseName = etalaseName;
-    }
-
-    public int getMustAsurance() {
-        return mustAsurance;
-    }
-
-    public void setMustAsurance(int mustAsurance) {
-        this.mustAsurance = mustAsurance;
-    }
-
-    public int getReturnable() {
-        return returnable;
-    }
-
-    public void setReturnable(int returnable) {
-        this.returnable = returnable;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    ProductDB produk;
+    NetworkCalculator networkCalculator;
+    GenerateHostModel generateHostModel;
+    List<Pair<PictureDB, UploadProductImageData>> uploadProductImageData;
+    GeneratedHostActApi generatedHostActApi;
+    ProductValidationModel productValidationModel;
+    AddProductPictureModel addProductPictureModel;
+    ProductSubmitModel productSubmitModel;
+    Bitmap bitmap;
+    EditProductModel.Data editProductData;
+    List<Pair<Integer, Pair<EditProductPictureModel, ProductService.EditProductInputModel>>> newPairs;
 
     public static int getProduct_upload_to() {
         return product_upload_to;
     }
-
-    public GenerateHostModel getGenerateHostModel() {
-        return generateHostModel;
-    }
-
-    public void setGenerateHostModel(GenerateHostModel generateHostModel) {
-        this.generateHostModel = generateHostModel;
-    }
-
-    public int getPreOrder() {
-        return preOrder;
-    }
-
-    public void setPreOrder(int preOrder) {
-        this.preOrder = preOrder;
-    }
-
-    //[END] setter and getter
 
     /**
      * compile input from view to match db data
@@ -429,6 +227,9 @@ public class InputAddProductModel {
         produk.setProductId(Integer.parseInt(editProductForm.getProduct().getProductId()));// product id
         produk.setProductUrl(editProductForm.getProduct().getProductUrl());// product url
         produk.setStockStatusDB(stockStatusDB);
+        for (WholesalePriceDB wholesalePriceDB : produk.getWholeSales()) {
+            wholesalePriceDB.delete();
+        }
         if (isnew) {
             produk.save();
         } else {
@@ -578,21 +379,218 @@ public class InputAddProductModel {
         return compileAll(inputAddProductModel, produk, false);
     }
 
+    public String getProductChangeWholeSale() {
+        return productChangeWholeSale;
+    }
+
+    public void setProductChangeWholeSale(String productChangeWholeSale) {
+        this.productChangeWholeSale = productChangeWholeSale;
+    }
+
+    public String getProductChangeCatalog() {
+        return productChangeCatalog;
+    }
+
+    public void setProductChangeCatalog(String productChangeCatalog) {
+        this.productChangeCatalog = productChangeCatalog;
+    }
+
+    public String getProductChangePhoto() {
+        return productChangePhoto;
+    }
+
+    public void setProductChangePhoto(String productChangePhoto) {
+        this.productChangePhoto = productChangePhoto;
+    }
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
+
+    public ArrayList<ProductEditHelper.ProductEditImage> getProductEditImages() {
+        return productEditImages;
+    }
+
+    public void setProductEditImages(ArrayList<ProductEditHelper.ProductEditImage> productEditImages) {
+        this.productEditImages = productEditImages;
+    }
+
+    public String getStockStatus() {
+        return stockStatus;
+    }
+
+    public void setStockStatus(String stockStatus) {
+        this.stockStatus = stockStatus;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public long getCatalog() {
+        return catalog;
+    }
+
+    public void setCatalog(long catalog) {
+        this.catalog = catalog;
+    }
+
+    public int getCondition() {
+        return condition;
+    }
+
+    public void setCondition(int condition) {
+        this.condition = condition;
+    }
+
+    public List<ImageModel> getImageModels() {
+        return imageModels;
+    }
+
+    public void setImageModels(List<ImageModel> imageModels) {
+        this.imageModels = imageModels;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public List<TextDeleteModel> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<TextDeleteModel> categories) {
+        this.categories = categories;
+    }
+
+    public String getCurrencyUnit() {
+        return currencyUnit;
+    }
+
+    public void setCurrencyUnit(String currencyUnit) {
+        this.currencyUnit = currencyUnit;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public String getWeight() {
+        return weight;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+
+    public String getWeightUnit() {
+        return weightUnit;
+    }
+
+    public void setWeightUnit(String weightUnit) {
+        this.weightUnit = weightUnit;
+    }
+
+    public int getMinimumOrder() {
+        return minimumOrder;
+    }
+
+    public void setMinimumOrder(int minimumOrder) {
+        this.minimumOrder = minimumOrder;
+    }
+
+    public List<WholeSaleAdapterModel> getWholeSales() {
+        return wholeSales;
+    }
+
+    public void setWholeSales(List<WholeSaleAdapterModel> wholeSales) {
+        this.wholeSales = wholeSales;
+    }
+
+    //[END] setter and getter
+
+    public List<Pair<PictureDB, UploadProductImageData>> getUploadProductImageData() {
+        return uploadProductImageData;
+    }
+
+    public void setUploadProductImageData(List<Pair<PictureDB, UploadProductImageData>> uploadProductImageData) {
+        this.uploadProductImageData = uploadProductImageData;
+    }
+
+    public long getEtalaseId() {
+        return etalaseId;
+    }
+
+    public void setEtalaseId(long etalaseId) {
+        this.etalaseId = etalaseId;
+    }
+
+    public String getEtalaseName() {
+        return etalaseName;
+    }
+
 
     // use below for processing
-    
-    ProductDB produk;
-    
-    NetworkCalculator networkCalculator;
-    GenerateHostModel generateHostModel;
-    List<Pair<PictureDB, UploadProductImageData>> uploadProductImageData;
-    GeneratedHostActApi generatedHostActApi;
-    ProductValidationModel productValidationModel;
-    AddProductPictureModel addProductPictureModel;
-    ProductSubmitModel productSubmitModel;
-    Bitmap bitmap;
-    EditProductModel.Data editProductData;
-    List<Pair<Integer, Pair<EditProductPictureModel, ProductService.EditProductInputModel>>> newPairs;
+
+    public void setEtalaseName(String etalaseName) {
+        this.etalaseName = etalaseName;
+    }
+
+    public int getMustAsurance() {
+        return mustAsurance;
+    }
+
+    public void setMustAsurance(int mustAsurance) {
+        this.mustAsurance = mustAsurance;
+    }
+
+    public int getReturnable() {
+        return returnable;
+    }
+
+    public void setReturnable(int returnable) {
+        this.returnable = returnable;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public GenerateHostModel getGenerateHostModel() {
+        return generateHostModel;
+    }
+
+    public void setGenerateHostModel(GenerateHostModel generateHostModel) {
+        this.generateHostModel = generateHostModel;
+    }
+
+    public int getPreOrder() {
+        return preOrder;
+    }
+
+    public void setPreOrder(int preOrder) {
+        this.preOrder = preOrder;
+    }
 
     public List<Pair<Integer, Pair<EditProductPictureModel, ProductService.EditProductInputModel>>> getNewPairs() {
         return newPairs;
