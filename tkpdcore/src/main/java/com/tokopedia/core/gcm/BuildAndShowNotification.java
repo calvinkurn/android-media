@@ -17,7 +17,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.NotificationCenter;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.gcm.interactor.entity.NotificationEntity;
+import com.tokopedia.core.gcm.data.entity.NotificationEntity;
+import com.tokopedia.core.gcm.model.ApplinkNotificationPass;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.util.GlobalConfig;
@@ -51,6 +52,50 @@ public class BuildAndShowNotification {
         void onFileReady(File file);
     }
 
+    public void buildAndShowNotification(ApplinkNotificationPass applinkNotificationPass){
+        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+
+        inboxStyle.setBigContentTitle(applinkNotificationPass.getTitle());
+        if (applinkNotificationPass.getContents() != null) {
+            for (String content : applinkNotificationPass.getContents()) {
+                inboxStyle.addLine(content);
+            }
+            inboxStyle.addLine(applinkNotificationPass.getDescription());
+        }
+
+        NotificationManager mNotificationManager =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
+                .setSmallIcon(getDrawableIcon())
+                .setAutoCancel(true);
+
+        mBuilder.setContentTitle(applinkNotificationPass.getTitle());
+        mBuilder.setContentText(applinkNotificationPass.getDescription());
+        mBuilder.setStyle(inboxStyle);
+        mBuilder.setTicker(applinkNotificationPass.getDescription() + " Ticker");
+        mBuilder.setContentInfo("info");
+        mBuilder.setCategory(Notification.CATEGORY_MESSAGE);
+
+
+        mBuilder = configureIconNotification(applinkNotificationPass.getImageUrl(), mBuilder);
+
+        if (isAllowBell()) {
+            mBuilder.setSound(getSoundUri());
+            if (isAllowedVibrate()) {
+                mBuilder.setVibrate(getVibratePattern());
+            }
+        }
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
+        stackBuilder.addNextIntent(applinkNotificationPass.getIntent());
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
+        mBuilder.setContentIntent(resultPendingIntent);
+        Notification notif = mBuilder.build();
+        if (isAllowedVibrate() && isAllowBell()) {
+            notif.defaults |= Notification.DEFAULT_VIBRATE;
+        }
+        mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
+    }
+
     public void buildAndShowNotification(NotificationPass notificationPass, Bundle data, Intent intent) {
         NotificationManager mNotificationManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -69,7 +114,6 @@ public class BuildAndShowNotification {
             mBuilder.setStyle(bigStyle);
             mBuilder.setTicker(notificationPass.ticker);
         } else {
-            notificationPass.componentNameParentStack = RouterUtils.getActivityComponentName(mContext, NotificationCenter.class);
             inboxStyle.setBigContentTitle(mContext.getString(R.string.title_new_notif_general));
             if (notificationPass.savedNotificationContents != null) {
                 for (String content : notificationPass.savedNotificationContents) {
@@ -93,10 +137,10 @@ public class BuildAndShowNotification {
             }
         }
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
-        if (notificationPass.componentNameParentStack != null) {
-            stackBuilder.addParentStack(notificationPass.componentNameParentStack);
-        } else if (notificationPass.classParentStack != null) {
+        if (notificationPass.classParentStack != null) {
             stackBuilder.addParentStack(notificationPass.classParentStack);
+        }else{
+            stackBuilder.addParentStack(NotificationCenter.class);
         }
 
         stackBuilder.addNextIntent(intent);
@@ -185,6 +229,27 @@ public class BuildAndShowNotification {
         return cacheManager.getHistoryPushNotification();
     }
 
+    private NotificationCompat.Builder configureIconNotification(String iconUrl, final NotificationCompat.Builder mBuilder) {
+        ImageHandler.loadImageBitmapNotification(
+                mBuilder.mContext,
+                iconUrl,
+                new OnGetFileListener() {
+                    @Override
+                    public void onFileReady(File file) {
+                        mBuilder.setLargeIcon(
+                                Bitmap.createScaledBitmap(
+                                        BitmapFactory.decodeFile(file.getAbsolutePath()),
+                                        mContext.getResources().getDimensionPixelSize(R.dimen.icon_size),
+                                        mContext.getResources().getDimensionPixelSize(R.dimen.icon_size),
+                                        true
+                                )
+                        );
+                    }
+                }
+        );
+        return mBuilder;
+    }
+
     private NotificationCompat.Builder configureIconNotification(Bundle data, final NotificationCompat.Builder mBuilder) {
         if (!TextUtils.isEmpty(data.getString(ARG_NOTIFICATION_ICON))) {
             ImageHandler.loadImageBitmapNotification(
@@ -238,6 +303,7 @@ public class BuildAndShowNotification {
         }
         return mBuilder;
     }
+
 
     private int getDrawableLargeIcon() {
         if (GlobalConfig.isSellerApp())

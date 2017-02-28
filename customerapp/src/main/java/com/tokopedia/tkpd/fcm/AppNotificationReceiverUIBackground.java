@@ -1,16 +1,26 @@
 package com.tokopedia.tkpd.fcm;
 
 import android.app.Application;
+import android.net.Uri;
 import android.os.Bundle;
 
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.base.BaseAppNotificationReceiverUIBackground;
+import com.tokopedia.core.gcm.notification.applink.ApplinkTypeFactory;
+import com.tokopedia.core.gcm.notification.applink.ApplinkTypeFactoryList;
+import com.tokopedia.core.gcm.notification.applink.ApplinkVisitor;
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerEditNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerNotification;
 import com.tokopedia.core.gcm.notification.promotions.DeeplinkNotification;
 import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
+import com.tokopedia.seller.deeplink.SellerDeeplinkModuleLoader;
+import com.tokopedia.tkpd.deeplink.ConsumerDeeplinkModuleLoader;
+import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.fcm.notification.NewReviewNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAcceptedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAutoCancel2DNotification;
@@ -29,10 +39,13 @@ import com.tokopedia.tkpd.fcm.notification.ResCenterSellerAgreeNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterSellerReplyNotification;
 import com.tokopedia.tkpd.fcm.notification.ReviewEditedNotification;
 import com.tokopedia.tkpd.fcm.notification.ReviewReplyNotification;
+import com.tokopedia.transaction.deeplink.TransactionDeeplinkModuleLoader;
 
+import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Actions;
@@ -51,13 +64,52 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         super(application);
     }
 
-    public void notifyReceiverBackgroundMessage(Bundle data) {
-        if (isDedicatedNotification(data)) {
-            handleDedicatedNotification(data);
-        } else {
-            prepareAndExecutePromoNotification(data);
-        }
+    @Override
+    public void notifyReceiverBackgroundMessage(Observable<Bundle> data) {
+        data.map(new Func1<Bundle, Boolean>() {
+            @Override
+            public Boolean call(Bundle bundle) {
+                //TODO this function for divide the new and old flow(that still supported)
+                // next if complete new plz to delete
+                if (isSupportedApplinkNotification(bundle)) {
+                    handleApplinkNotification(bundle);
+                } else {
+                    if (isDedicatedNotification(bundle)) {
+                        handleDedicatedNotification(bundle);
+                    } else {
+                        prepareAndExecutePromoNotification(bundle);
+                    }
+                }
+                return true;
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(Actions.empty(), new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
     }
+
+    private void handleApplinkNotification(Bundle bundle) {
+        String applinks = bundle.getString("applinks");
+        String category = Uri.parse(applinks).getHost();
+        String customIndex = "";
+        switch (category) {
+            case "message":
+                customIndex = bundle.getString("full_name");
+                break;
+        }
+        saveApplinkPushNotification(
+                category,
+                convertBundleToJsonString(bundle)
+                , customIndex,
+                new SavePushNotificationCallback()
+        );
+    }
+
+
 
     public void handleDedicatedNotification(Bundle data) {
         if (SessionHandler.isV4Login(mContext)
@@ -91,26 +143,16 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     }
 
-    @Override
-    public void notifyReceiverBackgroundMessage(Observable<Bundle> data) {
-        data.map(new Func1<Bundle, Boolean>() {
-            @Override
-            public Boolean call(Bundle bundle) {
-                if (isDedicatedNotification(bundle)) {
-                    handleDedicatedNotification(bundle);
-                } else {
-                    prepareAndExecutePromoNotification(bundle);
-                }
-                return true;
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(Actions.empty(), new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
+    private boolean isSupportedApplinkNotification(Bundle bundle) {
+        String applink = bundle.getString("applinks");
+        DeepLinkDelegate deepLinkDelegate = new DeepLinkDelegate(
+                new ConsumerDeeplinkModuleLoader(),
+                new CoreDeeplinkModuleLoader(),
+                new TransactionDeeplinkModuleLoader(),
+                new InboxDeeplinkModuleLoader(),
+                new SellerDeeplinkModuleLoader()
+        );
+        return deepLinkDelegate.supportsUri(applink);
     }
 
     private void prepareAndExecutePromoNotification(Bundle data) {
@@ -149,6 +191,42 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         Class<?> clazz = dedicatedNotification.get(GCMUtils.getCode(data));
         if (clazz != null) {
             executeNotification(data, clazz);
+        }
+    }
+
+
+
+    private void displayApplinkPushNotification(){
+        getSavedPushNotificationUseCase.execute(RequestParams.EMPTY, new Subscriber<List<ApplinkVisitor>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(List<ApplinkVisitor> applinkVisitors) {
+                ApplinkTypeFactory applinkTypeFactory = new ApplinkTypeFactoryList();
+                for (ApplinkVisitor applinkVisitor : applinkVisitors){
+                    applinkVisitor.type(applinkTypeFactory).process(mContext);
+                }
+            }
+        });
+    }
+
+    private class SavePushNotificationCallback implements OnSavePushNotificationCallback {
+        @Override
+        public void onSuccessSavePushNotification() {
+            AppNotificationReceiverUIBackground.this.displayApplinkPushNotification();
+        }
+
+        @Override
+        public void onFailedSavePushNotification() {
+
         }
     }
 }

@@ -5,8 +5,17 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.Visitable;
+import com.tokopedia.core.gcm.data.PushNotificationDataRepository;
+import com.tokopedia.core.gcm.domain.PushNotificationRepository;
+import com.tokopedia.core.gcm.domain.usecase.GetSavedDiscussionPushNotificationUseCase;
+import com.tokopedia.core.gcm.domain.usecase.GetSavedMessagePushNotificationUseCase;
+import com.tokopedia.core.gcm.domain.usecase.GetSavedPushNotificationUseCase;
+import com.tokopedia.core.gcm.domain.usecase.SavePushNotificationUseCase;
 import com.tokopedia.core.gcm.notification.dedicated.NewDiscussionNotification;
 import com.tokopedia.core.gcm.notification.dedicated.NewMessageNotification;
 import com.tokopedia.core.gcm.notification.dedicated.NewOrderNotification;
@@ -29,14 +38,20 @@ import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.VerificationNotification;
 import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
+import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.var.TkpdState;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import rx.Observable;
+import rx.Subscriber;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 
@@ -48,15 +63,51 @@ public abstract class BaseAppNotificationReceiverUIBackground {
     protected FCMCacheManager mFCMCacheManager;
     protected Context mContext;
     protected ActivitiesLifecycleCallbacks mActivitiesLifecycleCallbacks;
+    protected SavePushNotificationUseCase mSavePushNotificationUseCase;
+    protected GetSavedPushNotificationUseCase getSavedPushNotificationUseCase;
+
+    public interface OnSavePushNotificationCallback {
+        void onSuccessSavePushNotification();
+
+        void onFailedSavePushNotification();
+    }
 
     public BaseAppNotificationReceiverUIBackground(Application application) {
         mFCMCacheManager = new FCMCacheManager(application.getBaseContext());
-        mContext = application.getBaseContext();
+        mContext = application.getApplicationContext();
         mActivitiesLifecycleCallbacks = new ActivitiesLifecycleCallbacks(application);
+
+        PushNotificationRepository pushNotificationRepository = new PushNotificationDataRepository();
+        mSavePushNotificationUseCase = new SavePushNotificationUseCase(
+                new JobExecutor(),
+                new UIThread(),
+                pushNotificationRepository
+        );
+
+        GetSavedMessagePushNotificationUseCase getSavedMessagePushNotificationUseCase =
+                new GetSavedMessagePushNotificationUseCase(
+                        new JobExecutor(),
+                        new UIThread(),
+                        pushNotificationRepository
+                );
+
+        GetSavedDiscussionPushNotificationUseCase getSavedDiscussionPushNotificationUseCase =
+                new GetSavedDiscussionPushNotificationUseCase(
+                        new JobExecutor(),
+                        new UIThread(),
+                        pushNotificationRepository
+                );
+
+        getSavedPushNotificationUseCase = new GetSavedPushNotificationUseCase(
+                new JobExecutor(),
+                new UIThread(),
+                getSavedMessagePushNotificationUseCase,
+                getSavedDiscussionPushNotificationUseCase
+        );
     }
 
     protected boolean isDedicatedNotification(Bundle data) {
-        return Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)) < 500;
+        return GCMUtils.getCode(data) < 1000 && GCMUtils.getCode(data) >= 1100;
     }
 
     protected void resetNotificationStatus(Bundle data) {
@@ -136,4 +187,46 @@ public abstract class BaseAppNotificationReceiverUIBackground {
             ((Visitable) object).proccessReceivedNotification(data);
         }
     }
+
+    protected void saveApplinkPushNotification(String category, String response, String customIndex,
+                                               final OnSavePushNotificationCallback callback) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(SavePushNotificationUseCase.KEY_CATEGORY, category);
+        requestParams.putString(SavePushNotificationUseCase.KEY_RESPONSE, response);
+        requestParams.putString(SavePushNotificationUseCase.KEY_CUSTOM_INDEX, customIndex);
+        mSavePushNotificationUseCase.execute(requestParams, new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                callback.onFailedSavePushNotification();
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                if (aBoolean) {
+                    callback.onSuccessSavePushNotification();
+                } else {
+                    callback.onFailedSavePushNotification();
+                }
+            }
+        });
+    }
+
+    protected String convertBundleToJsonString(Bundle bundle){
+        JSONObject json = new JSONObject();
+        Set<String> keys = bundle.keySet();
+        for (String key : keys) {
+            try {
+                json.put(key, bundle.getString(key));
+            } catch(JSONException e) {
+                return null;
+            }
+        }
+        return json.toString();
+    }
+
 }
