@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    android:id="@+id/custom_layout_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/custom_layout_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/text_view_title"
@@ -36,9 +35,7 @@
             android:textSize="16sp"
             tools:text="@string/app_name"/>
 
-
         <ImageView
-            android:id="@+id/custom_drop_down"
             android:layout_width="9dp"
             android:layout_height="6dp"
             android:scaleType="fitXY"
@@ -46,7 +43,6 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/custom_break_point"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#1F000000"/>

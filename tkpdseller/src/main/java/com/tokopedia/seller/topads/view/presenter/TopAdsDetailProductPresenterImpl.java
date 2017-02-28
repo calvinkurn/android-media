@@ -52,8 +52,8 @@ public class TopAdsDetailProductPresenterImpl extends TopAdsDetailPresenterImpl 
     }
 
     @Override
-    public void turnOnAds(Ad ad, String shopId) {
-        DataRequest<ProductAdBulkAction> dataRequest = generateActionRequest(ad, TopAdsNetworkConstant.ACTION_BULK_ON_AD, shopId);
+    public void turnOnAds(int id) {
+        DataRequest<ProductAdBulkAction> dataRequest = generateActionRequest(id, TopAdsNetworkConstant.ACTION_BULK_ON_AD);
         productAdInteractor.bulkAction(dataRequest, new ListenerInteractor<ProductAdBulkAction>() {
             @Override
             public void onSuccess(ProductAdBulkAction dataResponseActionAds) {
@@ -68,8 +68,8 @@ public class TopAdsDetailProductPresenterImpl extends TopAdsDetailPresenterImpl 
     }
 
     @Override
-    public void turnOffAds(Ad ad, String shopId) {
-        DataRequest<ProductAdBulkAction> dataRequest = generateActionRequest(ad, TopAdsNetworkConstant.ACTION_BULK_OFF_AD, shopId);
+    public void turnOffAds(int id) {
+        DataRequest<ProductAdBulkAction> dataRequest = generateActionRequest(id, TopAdsNetworkConstant.ACTION_BULK_OFF_AD);
         productAdInteractor.bulkAction(dataRequest, new ListenerInteractor<ProductAdBulkAction>() {
             @Override
             public void onSuccess(ProductAdBulkAction dataResponseActionAds) {
@@ -83,15 +83,31 @@ public class TopAdsDetailProductPresenterImpl extends TopAdsDetailPresenterImpl 
         });
     }
 
+    @Override
+    public void deleteAd(int id) {
+        DataRequest<ProductAdBulkAction> dataRequest = generateActionRequest(id, TopAdsNetworkConstant.ACTION_BULK_DELETE_AD);
+        productAdInteractor.bulkAction(dataRequest, new ListenerInteractor<ProductAdBulkAction>() {
+            @Override
+            public void onSuccess(ProductAdBulkAction dataResponseActionAds) {
+                topAdsDetailViewListener.onDeleteAdSuccess();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                topAdsDetailViewListener.onDeleteAdError();
+            }
+        });
+    }
+
     @NonNull
-    private DataRequest<ProductAdBulkAction> generateActionRequest(Ad ad, String action, String shopId) {
+    private DataRequest<ProductAdBulkAction> generateActionRequest(int id, String action) {
         DataRequest<ProductAdBulkAction> dataRequest = new DataRequest<>();
         ProductAdBulkAction dataRequestSingleAd = new ProductAdBulkAction();
         dataRequestSingleAd.setAction(action);
-        dataRequestSingleAd.setShopId(shopId);
+        dataRequestSingleAd.setShopId(getShopId());
         List<ProductAdAction> dataRequestSingleAdses = new ArrayList<>();
         ProductAdAction data = new ProductAdAction();
-        data.setId(String.valueOf(ad.getId()));
+        data.setId(String.valueOf(id));
         dataRequestSingleAdses.add(data);
         dataRequestSingleAd.setAds(dataRequestSingleAdses);
         dataRequest.setData(dataRequestSingleAd);

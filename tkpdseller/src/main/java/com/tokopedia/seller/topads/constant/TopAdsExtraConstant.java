@@ -7,10 +7,13 @@ package com.tokopedia.seller.topads.constant;
 public class TopAdsExtraConstant {
 
     public static final String EXTRA_AD = "EXTRA_AD";
+    public static final String EXTRA_AD_ID = "EXTRA_AD_ID";
     public static final String EXTRA_NEW_PROMO_CHOICE = "EXTRA_NEW_PROMO_CHOICE";
     public static final String EXTRA_GROUP = "EXTRA_GROUP";
+    public static final String EXTRA_SHOP_NAME = "EXTRA_SHOP_NAME";
     public static final String EXTRA_TOTAL_PRODUCT_ADS = "EXTRA_TOTAL_PRODUCT_ADS";
     public static final String EXTRA_AD_STATUS_CHANGED = "EXTRA_AD_STATUS_CHANGED";
+    public static final String EXTRA_AD_DELETED = "EXTRA_AD_DELETED";
     public static final String EXTRA_AD_ID_GROUP = "EXTRA_AD_ID_GROUP";
 
     public static final String EXTRA_TITLE_ITEM_LIST = "EXTRA_TITLE_ITEM_LIST";
@@ -18,6 +21,8 @@ public class TopAdsExtraConstant {
 
     public static final String EXTRA_FILTER_SELECTED_POSITION_LIST = "EXTRA_FILTER_SELECTED_POSITION_LIST";
     public static final String EXTRA_FILTER_SELECTED_STATUS = "EXTRA_FILTER_SELECTED_STATUS";
+    public static final String EXTRA_FILTER_SELECTED_ETALASE = "EXTRA_FILTER_SELECTED_ETALASE";
+    public static final String EXTRA_FILTER_SELECTED_STATUS_PROMO = "EXTRA_FILTER_SELECTED_STATUS_PROMO";
     public static final String EXTRA_FILTER_SELECTED_GROUP_ID = "EXTRA_FILTER_SELECTED_GROUP_ID";
     public static final String EXTRA_FILTER_CURRENT_GROUP_ID = "EXTRA_FILTER_CURRENT_GROUP_ID";
     public static final String EXTRA_FILTER_CURRENT_GROUP_NAME = "EXTRA_FILTER_CURRENT_GROUP_NAME";

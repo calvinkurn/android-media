@@ -6,15 +6,14 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGroupAdInteractorImpl;
 import com.tokopedia.seller.topads.domain.model.data.Ad;
 import com.tokopedia.seller.topads.domain.model.data.GroupAd;
+import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailGroupPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailGroupPresenterImpl;
-import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
 /**
@@ -72,13 +71,13 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
     @Override
     protected void turnOnAd() {
         super.turnOnAd();
-        presenter.turnOnAds(groupAd, SessionHandler.getShopID(getActivity()));
+        presenter.turnOnAds(groupAd.getId());
     }
 
     @Override
     protected void turnOffAd() {
         super.turnOffAd();
-        presenter.turnOffAds(groupAd, SessionHandler.getShopID(getActivity()));
+        presenter.turnOffAds(groupAd.getId());
     }
 
     @Override
@@ -88,6 +87,17 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
         } else {
             presenter.refreshAd(startDate, endDate, groupId);
         }
+    }
+
+    @Override
+    protected void editAd() {
+
+    }
+
+    @Override
+    protected void deleteAd() {
+        super.deleteAd();
+        presenter.deleteAd(groupAd.getId());
     }
 
     @Override

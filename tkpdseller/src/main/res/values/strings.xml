@@ -94,6 +94,9 @@
     <string name="title_action_on">On</string>
     <string name="title_action_off">Off</string>
     <string name="action_filter_date">Filter Tanggal</string>
+    <string name="label_manage_group">Atur Grup</string>
+    <string name="label_edit">Ubah</string>
+    <string name="label_delete">Hapus</string>
     <string name="title_group_list">Grup</string>
     <string name="title_product_ad_detail">Detil Promo Produk</string>
     <string name="title_shop_ad_detail">Detil Promo Toko</string>
@@ -117,6 +120,7 @@
 
     <!-- Top Ads Edit Promo -->
     <string name="label_top_ads_add_product">Tambah Produk</string>
+    <string name="label_top_ads_total_selected_product">%1$s / 50 Terpilih</string>
     <string name="label_top_ads_max_price_hint">Biaya Maks (Rp)</string>
     <string name="label_top_ads_max_price_description">Sesuaikan biaya anggaran promo anda. Rekomendasi biaya: Rp 50 sampai Rp 200 per klik</string>
     <string name="label_top_ads_icon">Icon TopAds</string>
@@ -148,8 +152,10 @@
     <string name="label_top_ads_all_product">Semua Produk</string>
     <string name="label_top_ads_inside_group">Di Dalam Grup</string>
     <string name="label_top_ads_outside_group">Di Luar Grup</string>
+    <string name="label_top_ads_not_promoted_yet">Belum di Promo</string>
     <string name="label_top_ads_name">Name</string>
     <string name="label_top_ads_status">Status</string>
+    <string name="label_top_ads_etalase">Etalase</string>
     <string name="label_top_ads_max_bid">Biaya Maks</string>
     <string name="label_top_ads_avg_cost">Rata-rata</string>
     <string name="label_top_ads_start">Mulai</string>
@@ -189,15 +195,28 @@
     <string name="negative_button_dialog">Tidak</string>
 
     <!-- Top Ads New Promo -->
+    <string name="label_top_ads_shop_name">Nama Toko</string>
     <string name="label_top_ads_group_name">Nama Grup</string>
     <string name="label_top_ads_choose_group">Pilih Grup</string>
     <string name="label_top_ads_create_promo_new_group">Buat promo grup baru</string>
     <string name="label_top_ads_create_promo_from_exist_group">Promo grup yang ada</string>
     <string name="label_top_ads_create_promo_not_in_group">Tidak masuk ke promo grup</string>
-    <string name="top_ads_title_grup_exist">Nama grup sudah ada</string>
     <string name="label_top_ads_error_choose_one_group">Pilih salah satu grup</string>
     <string name="label_top_ads_error_choose_one_option">Silahkan pilih salah satu opsi</string>
     <string name="label_top_ads_error_empty_group_name">Silahkan isi nama grup</string>
     <string name="label_top_ads_info_group_option">Pengaturan biaya dan jadwal akan mengikuti dari grup promo.</string>
+
+    <string name="title_activity_top_ads_list">Tambah Produk</string>
+
+    <string name="delete">Delete</string>
+    <string name="insert">Insert</string>
+    <string name="move_to">Move to:</string>
+    <string name="move">Move</string>
+    <string name="scroll">Scroll</string>
+    <string name="search_product">Cari Produk</string>
+    <string name="filter_top_ads">Filter Top Ads</string>
+
+    <!-- Top Ads add promo -->
+    <string name="top_ads_title_grup_exist">Nama grup sudah ada</string>
 
 </resources>

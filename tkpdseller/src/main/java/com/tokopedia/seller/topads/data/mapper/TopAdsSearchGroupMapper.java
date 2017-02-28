@@ -1,6 +1,5 @@
 package com.tokopedia.seller.topads.data.mapper;
 
-import com.tokopedia.core.base.common.response.GetListFaveShopIdResponse;
 import com.tokopedia.seller.topads.domain.model.data.GroupAd;
 import com.tokopedia.seller.topads.domain.model.response.DataResponse;
 
