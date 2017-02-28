@@ -67,6 +67,8 @@
     <string name="title_top_ads_new_promo">Pilih Atau Buat Promo</string>
     <string name="title_top_ads_filter">Filter</string>
     <string name="title_date_picker">Atur Tanggal</string>
+    <string name="title_top_ads_manage_promo_product">Atur Grup</string>
+    <string name="title_top_ads_edit_promo_product">Ubah Promo Produk</string>
 
     <string name="label_top_ads_impression">Tampil</string>
     <string name="label_top_ads_click">Klik</string>
@@ -115,14 +117,6 @@
     <string name="top_ads_empty_product_promo_content_empty_text">Anda belum memiliki produk yang dipromosikan</string>
     <string name="top_ads_empty_group_promo_content_not_empty_text">Produk yang telah anda promosikan ada di dalam items</string>
     <string name="top_ads_empty_group_promo_content_item_no_text">Lihat %1$s Promo Produk</string>
-
-    <!-- Top Ads New Promo -->
-    <string name="label_top_ads_shop_name">Nama Toko</string>
-    <string name="label_top_ads_group_name">Nama Grup</string>
-    <string name="label_top_ads_choose_group">Pilih Grup</string>
-    <string name="label_top_ads_create_promo_new_group">Buat promo grup baru</string>
-    <string name="label_top_ads_create_promo_from_exist_group">Promo grup yang ada</string>
-    <string name="label_top_ads_create_promo_not_in_group">Tidak masuk ke promo grup</string>
 
     <!-- Top Ads Edit Promo -->
     <string name="label_top_ads_add_product">Tambah Produk</string>
@@ -199,6 +193,18 @@
 
     <string name="positive_button_dialog">Ya</string>
     <string name="negative_button_dialog">Tidak</string>
+
+    <!-- Top Ads New Promo -->
+    <string name="label_top_ads_shop_name">Nama Toko</string>
+    <string name="label_top_ads_group_name">Nama Grup</string>
+    <string name="label_top_ads_choose_group">Pilih Grup</string>
+    <string name="label_top_ads_create_promo_new_group">Buat promo grup baru</string>
+    <string name="label_top_ads_create_promo_from_exist_group">Promo grup yang ada</string>
+    <string name="label_top_ads_create_promo_not_in_group">Tidak masuk ke promo grup</string>
+    <string name="label_top_ads_error_choose_one_group">Pilih salah satu grup</string>
+    <string name="label_top_ads_error_choose_one_option">Silahkan pilih salah satu opsi</string>
+    <string name="label_top_ads_error_empty_group_name">Silahkan isi nama grup</string>
+    <string name="label_top_ads_info_group_option">Pengaturan biaya dan jadwal akan mengikuti dari grup promo.</string>
 
     <string name="title_activity_top_ads_list">Tambah Produk</string>
 
