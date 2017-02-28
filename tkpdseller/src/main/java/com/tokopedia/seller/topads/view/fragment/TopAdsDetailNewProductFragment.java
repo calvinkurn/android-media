@@ -9,14 +9,14 @@ import com.tokopedia.seller.topads.di.TopAdsEditPromoProductDI;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddProductListActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoProductPresenter;
 
-public class TopAdsEditPromoNewProductFragment extends TopAdsEditPromoFragment<TopAdsEditPromoProductPresenter> {
+public class TopAdsDetailNewProductFragment extends TopAdsDetailEditFragment<TopAdsEditPromoProductPresenter> {
 
     private static final int ADD_PRODUCT_REQUEST_CODE = 0;
 
     private View addProductLayout;
 
     public static Fragment createInstance() {
-        Fragment fragment = new TopAdsEditPromoNewProductFragment();
+        Fragment fragment = new TopAdsDetailNewProductFragment();
         return fragment;
     }
 

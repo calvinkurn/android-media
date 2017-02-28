@@ -9,10 +9,10 @@ import com.tokopedia.seller.topads.di.TopAdsEditPromoProductDI;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailProductViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoProductPresenter;
 
-public class TopAdsEditPromoProductFragment extends TopAdsEditPromoFragment<TopAdsEditPromoProductPresenter> {
+public class TopAdsDetailEditProductFragment extends TopAdsDetailEditFragment<TopAdsEditPromoProductPresenter> {
 
     public static Fragment createInstance(String shopAdId) {
-        Fragment fragment = new TopAdsEditPromoProductFragment();
+        Fragment fragment = new TopAdsDetailEditProductFragment();
         Bundle bundle = new Bundle();
         bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, shopAdId);
         fragment.setArguments(bundle);

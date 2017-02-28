@@ -12,13 +12,13 @@ import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoShopPresenter;
 
-public class TopAdsEditPromoShopFragment extends TopAdsEditPromoFragment<TopAdsEditPromoShopPresenter> {
+public class TopAdsDetailEditShopFragment extends TopAdsDetailEditFragment<TopAdsEditPromoShopPresenter> {
 
     private EditText shopNameEditText;
     private String shopName;
 
     public static Fragment createInstance(String shopName, String shopAdId) {
-        Fragment fragment = new TopAdsEditPromoShopFragment();
+        Fragment fragment = new TopAdsDetailEditShopFragment();
         Bundle bundle = new Bundle();
         bundle.putString(TopAdsExtraConstant.EXTRA_SHOP_NAME, shopName);
         bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, shopAdId);

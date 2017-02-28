@@ -34,7 +34,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public abstract class TopAdsEditPromoFragment<T extends TopAdsEditPromoPresenter> extends BasePresenterFragment<T> implements TopAdsEditPromoView {
+public abstract class TopAdsDetailEditFragment<T extends TopAdsEditPromoPresenter> extends BasePresenterFragment<T> implements TopAdsEditPromoView {
 
     private static final int STICKER_SPEAKER = 3;
     private static final int STICKER_THUMBS_UP = 2;
