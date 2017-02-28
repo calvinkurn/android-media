@@ -14,7 +14,6 @@ public class NotificationPass {
     public String title;
     public String description;
     public String ticker;
-    public ComponentName componentNameParentStack;
     public Class<?> classParentStack;
     public ArrayList<String> savedNotificationContents;
     public ArrayList<Integer> savedNotificationCodes;
@@ -47,14 +46,6 @@ public class NotificationPass {
 
     public void setTicker(String ticker) {
         this.ticker = ticker;
-    }
-
-    public ComponentName getComponentNameParentStack() {
-        return componentNameParentStack;
-    }
-
-    public void setComponentNameParentStack(ComponentName componentNameParentStack) {
-        this.componentNameParentStack = componentNameParentStack;
     }
 
     public Class<?> getClassParentStack() {
