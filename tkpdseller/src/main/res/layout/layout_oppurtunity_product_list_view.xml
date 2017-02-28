@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/padding_small"
+    android:background="@color/greyish_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_small"
+        android:background="@color/white">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/product_image"
+                android:layout_height="@dimen/img_thumb_m"
+                android:layout_width="@dimen/img_thumb_m"
+                android:src="@drawable/remove"
+                android:layout_marginRight="@dimen/margin_small"
+                />
+
+            <TextView
+                android:maxLines="2"
+                android:id="@+id/product_name"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Product Name"
+                android:textColor="@color/href_link"
+                android:textSize="@dimen/font_small"
+                android:layout_toRightOf="@id/product_image"
+                android:layout_marginBottom="@dimen/margin_vs"
+                />
+
+            <TextView
+                android:id="@+id/product_price"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Jumlah : 2 barang"
+                android:textSize="@dimen/font_small"
+                android:layout_toRightOf="@id/product_image"
+                android:layout_below="@id/product_name"
+                android:layout_marginBottom="@dimen/margin_vs"
+                />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/greyish_bg"
+            />
+
+        <TextView
+            android:id="@+id/product_description"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Pesen yang warna merah, gak perlu pake memory card"
+            android:textSize="@dimen/font_small"
+            android:layout_marginBottom="@dimen/margin_vs"
+            />
+
+        <View
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/greyish_bg"
+            />
+
+        <TextView
+            android:id="@+id/action_see_product"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_gravity="right"
+            android:text="Lihat Produk"
+            android:textColor="@color/href_link"
+            android:textSize="@dimen/font_small"
+            android:drawableRight="@drawable/ic_chevron_right"
+            android:layout_marginBottom="@dimen/margin_vs"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>

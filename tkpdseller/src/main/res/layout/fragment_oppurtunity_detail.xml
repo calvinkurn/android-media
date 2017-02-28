@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/greyish_bg"
+    tools:context=".opportunity.OppurtunityDetailActivity">
 
     <com.tokopedia.seller.opportunity.OppurtunityDetailButtonView
         android:layout_width="match_parent"
@@ -26,6 +29,17 @@
                 android:id="@+id/customview_oppurtunity_detail_status_view"
                 />
 
+            <com.tokopedia.seller.opportunity.OppurtunityDetailProductView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/customview_oppurtunity_detail_product_view"
+                />
+
+            <com.tokopedia.seller.opportunity.OppurtunityDetailSummaryView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/customview_oppurtunity_detail_summary_view"
+                />
 
         </LinearLayout>
     </ScrollView>
