@@ -1895,12 +1895,14 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                     addProductCurrency.setText(selectedCurrencyDesc);
                     return;
                 }
-                if (selectedCurrencyDesc != null && !item.getLabel().equals(selectedCurrencyDesc)) {
-                    wholesaleLayout.removeAllWholesale();
-                }
                 selectedCurrency = selectedIndex;
+                String selectedCurrencyDescOld = selectedCurrencyDesc;
                 selectedCurrencyDesc = item.getLabel();
                 reformatPrice();
+                if (selectedCurrencyDescOld != null && !item.getLabel().equals(selectedCurrencyDescOld)) {
+                    wholesaleLayout.removeAllWholesale();
+                    initWholeSaleAdapter();
+                }
             }
         });
         addProductCurrency.setLongClickable(false);

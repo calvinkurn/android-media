@@ -18,16 +18,11 @@ import com.tokopedia.seller.myproduct.utils.PriceUtils;
 public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements WholesaleViewHolder {
 
     private static final String TAG = "Wholesale View Holder";
-    private int position;
-    private WholesaleAdapter listener;
-    private final int currency;
-
     EditText qtyOne;
     EditText qtyTwo;
     EditText qtyPrice;
-
-    private boolean onPriceEdit = false;
-
+    private int position;
+    private WholesaleAdapter listener;
     TextWatcher qtyOneTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -44,7 +39,6 @@ public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements 
             listener.onUpdateData(WholesaleAdapterImpl.QTY_ONE, position, String.valueOf(s), true);
         }
     };
-
     TextWatcher qtyTwoTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -61,7 +55,8 @@ public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements 
             listener.onUpdateData(WholesaleAdapterImpl.QTY_TWO, position, String.valueOf(s), true);
         }
     };
-
+    private int currency;
+    private boolean onPriceEdit = false;
     TextWatcher qtyPriceTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -84,11 +79,7 @@ public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements 
         }
     };
 
-    void deleteWholesale(){
-        listener.removeWholesaleItem(position);
-    }
-
-    public WholesaleViewHolderImpl(View itemView, int currency) {
+    public WholesaleViewHolderImpl(View itemView) {
         super(itemView);
         qtyOne = (EditText) itemView.findViewById(R.id.wholesale_item_qty_one);
         qtyTwo = (EditText) itemView.findViewById(R.id.wholesale_item_qty_two);
@@ -99,13 +90,17 @@ public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements 
                 deleteWholesale();
             }
         });
-        this.currency = currency;
+    }
+
+    void deleteWholesale() {
+        listener.removeWholesaleItem(position);
     }
 
     @Override
-    public void bindView(WholesaleAdapter listener, int position, WholesaleModel wholesaleModel) {
+    public void bindView(WholesaleAdapter listener, int position, WholesaleModel wholesaleModel, int currency) {
         this.listener = listener;
         this.position = position;
+        this.currency = currency;
         if(wholesaleModel != null) {
             this.qtyOne.setText(String.format("%d", wholesaleModel.getQtyOne()));
             this.qtyTwo.setText(String.format("%d", wholesaleModel.getQtyTwo()));
