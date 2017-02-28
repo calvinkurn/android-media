@@ -9,4 +9,6 @@ import com.tokopedia.seller.topads.view.listener.TopAdsManagePromoProductView;
 public interface TopAdsManagePromoProductPresenter extends CustomerPresenter<TopAdsManagePromoProductView>{
     void checkIsGroupExist(String keyword);
     void searchGroupName(String keyword);
+
+    void checkIsGroupExistOnSubmitNewGroup(String keyword);
 }

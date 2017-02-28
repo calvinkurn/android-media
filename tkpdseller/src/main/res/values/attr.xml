@@ -139,7 +139,7 @@
     <declare-styleable name="TopAdsRadioExpand" >
         <attr name="title_radio" format="reference|string" />
         <attr name="checked" format="boolean"/>
-        <attr name="radio_id" format="reference|integer" />
+        <attr name="radio_id" format="reference" />
     </declare-styleable>
 
 </resources>

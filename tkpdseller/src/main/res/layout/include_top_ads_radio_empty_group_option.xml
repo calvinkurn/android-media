@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <com.tokopedia.seller.topads.view.widget.TopAdsRadioExpandView
+        android:id="@+id/view_radio_not_in_group"
         app:radio_id="@+id/radio_promo_not_in_group"
         app:title_radio="@string/label_top_ads_create_promo_not_in_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        style="@style/TopAdsRadioExpandView"/>
 </merge>

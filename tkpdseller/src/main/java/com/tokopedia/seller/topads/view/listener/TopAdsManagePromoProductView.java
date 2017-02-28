@@ -18,4 +18,12 @@ public interface TopAdsManagePromoProductView extends CustomerView {
     void onGetGroupAdList(List<GroupAd> groupAds);
 
     void onGetGroupAdListError(String message);
+
+    void showLoading();
+
+    void showErrorShouldFillGroupName();
+
+    void dismissLoading();
+
+    void onGroupNotExistOnSubmitNewGroup();
 }

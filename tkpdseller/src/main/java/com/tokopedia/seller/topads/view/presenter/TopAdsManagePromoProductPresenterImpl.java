@@ -85,6 +85,17 @@ public class TopAdsManagePromoProductPresenterImpl extends BaseDaggerPresenter<T
         }
     }
 
+    @Override
+    public void checkIsGroupExistOnSubmitNewGroup(String keyword) {
+        if(keyword.isEmpty()){
+            getView().showErrorShouldFillGroupName();
+        }else{
+            getView().showLoading();
+            topAdsCheckExistGroupUseCase.execute(TopAdsSearchGroupAdsNameUseCase.createRequestParams(keyword)
+                    , getSubscriberCheckGroupExistOnSubmitNewGroup());
+        }
+    }
+
     private Subscriber<List<GroupAd>> getSubscriberSearchGroupName() {
         return new Subscriber<List<GroupAd>>() {
             @Override
@@ -113,11 +124,13 @@ public class TopAdsManagePromoProductPresenterImpl extends BaseDaggerPresenter<T
 
             @Override
             public void onError(Throwable e) {
+                getView().dismissLoading();
                 getView().onCheckGroupExistError(e.getMessage());
             }
 
             @Override
             public void onNext(Boolean isExist) {
+                getView().dismissLoading();
                 if (isExist) {
                     getView().onGroupExist();
                 } else {
@@ -166,6 +179,31 @@ public class TopAdsManagePromoProductPresenterImpl extends BaseDaggerPresenter<T
                 if (!string.equals("")) {
                     topAdsSearchGroupAdsNameUseCase.execute(TopAdsSearchGroupAdsNameUseCase.createRequestParams(string)
                             , getSubscriberSearchGroupName());
+                }
+            }
+        };
+    }
+
+    public Subscriber<Boolean> getSubscriberCheckGroupExistOnSubmitNewGroup() {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().dismissLoading();
+                getView().onCheckGroupExistError(e.getMessage());
+            }
+
+            @Override
+            public void onNext(Boolean isExist) {
+                getView().dismissLoading();
+                if (isExist) {
+                    getView().onGroupExist();
+                } else {
+                    getView().onGroupNotExistOnSubmitNewGroup();
                 }
             }
         };

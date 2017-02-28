@@ -5,22 +5,25 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.seller.topads.view.widget.TopAdsRadioExpandView
+        android:id="@+id/view_radio_new_group"
         app:radio_id="@+id/radio_promo_new_group"
         app:title_radio="@string/label_top_ads_create_promo_new_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        style="@style/TopAdsRadioExpandView">
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/input_layout_new_group_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            style="@style/TextInputLayout">
 
             <EditText
                 android:id="@+id/input_new_group"
                 android:hint="@string/label_top_ads_group_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                style="@style/EditText.MatchParent"/>
         </android.support.design.widget.TextInputLayout>
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/view_info_radio_new_group"
+            style="@style/TextView.infoInputType" />
     </com.tokopedia.seller.topads.view.widget.TopAdsRadioExpandView>
 
 </merge>

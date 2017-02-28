@@ -65,6 +65,13 @@
         <item name="android:textColor">@color/blue_link</item>
     </style>
 
+    <style name="TextView.infoInputType">
+        <item name="android:textColor">@color/black_fifty_four_percent</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
     <style name="EditText" parent="Widget.AppCompat.EditText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -77,6 +84,8 @@
         <item name="android:inputType">none</item>
         <item name="android:textColor">@color/green_200</item>
     </style>
+
+
 
     <style name="EditText.Currency">
         <item name="android:inputType">number</item>
@@ -180,4 +189,47 @@
         <item name="tabIndicatorColor">@color/white</item>
         <item name="tabSelectedTextColor">@color/white</item>
     </style>
+
+    <style name="EditText.MatchParent">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="TopAdsRadioExpandView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">16dp</item>
+    </style>
+
+    <style name="TextInputLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColorHint">@color/font_top_ads_green</item>
+    </style>
+
+    <style name="TopAdsCustomAutoCompleteTextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:drawableRight">@drawable/ic_close_green_14x14</item>
+    </style>
+
+    <style name="TopAdsCustomRadioGroup">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="Button.TopAds.WithoutBorder">
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_margin">5dp</item>
+        <item name="android:background">@drawable/bg_button_green</item>
+        <item name="android:buttonStyle">?android:attr/borderlessButtonStyle</item>
+    </style>
+
+
 </resources>

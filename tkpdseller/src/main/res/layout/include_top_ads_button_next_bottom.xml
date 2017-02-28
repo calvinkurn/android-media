@@ -3,16 +3,8 @@
     android:layout_width="match_parent" android:layout_height="wrap_content">
 
     <Button
-        android:layout_alignParentBottom="true"
-        android:padding="16dp"
         android:id="@+id/button_next"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAllCaps="false"
         android:text="@string/title_save"
-        android:textColor="@color/white"
-        android:layout_margin="5dp"
-        style="?android:attr/borderlessButtonStyle"
-        android:background="@drawable/bg_button_green"/>
+        style="@style/Button.TopAds.WithoutBorder" />
 
 </merge>

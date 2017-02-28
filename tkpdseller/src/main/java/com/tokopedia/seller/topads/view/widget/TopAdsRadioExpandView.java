@@ -3,9 +3,13 @@ package com.tokopedia.seller.topads.view.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 
@@ -85,7 +89,7 @@ public class TopAdsRadioExpandView extends LinearLayout {
         try {
             titleText = styledAttributes.getString(R.styleable.TopAdsRadioExpand_title_radio);
             radioChecked = styledAttributes.getBoolean(R.styleable.TopAdsRadioExpand_checked, false);
-            radioId = styledAttributes.getInteger(R.styleable.TopAdsRadioExpand_radio_id, NO_ID);
+            radioId = styledAttributes.getResourceId(R.styleable.TopAdsRadioExpand_radio_id, NO_ID);
         } finally {
             styledAttributes.recycle();
         }
@@ -98,9 +102,9 @@ public class TopAdsRadioExpandView extends LinearLayout {
     }
 
     private void init() {
-        radioButton = new TopAdsCustomRadioButton(getContext());
+        View view = inflate(getContext(), R.layout.item_radio_expand_view, this);
+        radioButton = (TopAdsCustomRadioButton) view.findViewById(R.id.radio_button);
         radioButton.setId(radioId);
-        addView(radioButton);
         setOrientation(VERTICAL);
     }
 }
