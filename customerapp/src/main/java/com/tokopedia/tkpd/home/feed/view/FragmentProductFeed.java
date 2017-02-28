@@ -25,6 +25,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
+import com.tokopedia.core.home.model.HistoryProductListItem;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RetryHandler;
@@ -233,7 +234,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         if (dataFeedList != null && dataFeedList.size() > 0) {
             final int historyDataPosition = 0;
             adapter.updateHistoryAdapter(dataFeedList.get(historyDataPosition));
-            adapter.addAll(true, false, dataFeedList);
+            adapter.addAll(true, true, dataFeedList);
             adapter.notifyItemInserted(0);
             currentTopAdsPage = 3;
         }
@@ -325,9 +326,9 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     }
 
     @Override
-    public RecyclerViewItem getViewmodelHistory() {
+    public HistoryProductListItem getViewmodelHistory() {
         if (adapter != null && adapter.getData() != null && !adapter.getData().isEmpty()) {
-            return adapter.getData().get(0);
+            return (HistoryProductListItem) adapter.getData().get(0);
         } else {
             return null;
         }

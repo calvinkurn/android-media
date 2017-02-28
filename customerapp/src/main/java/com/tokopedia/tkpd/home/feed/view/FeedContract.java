@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.home.feed.view;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.core.home.model.HistoryProductListItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 
 import java.util.List;
@@ -61,7 +62,7 @@ interface FeedContract {
         void forceShowEmptyHistory();
 
 
-        RecyclerViewItem getViewmodelHistory();
+        HistoryProductListItem getViewmodelHistory();
 
         List<RecyclerViewItem> getViewmodelFeed();
     }

@@ -287,8 +287,7 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
             if (!isHasHistoryProduct(dataFeed) && !isHasFeedProduct(dataFeed)) {
                 showEmptyView(productFeedViewModel);
             } else if (!isHasHistoryProduct(dataFeed) && isHasFeedProduct(dataFeed)) {
-                getView().showContentView();
-                RecyclerViewItem viewmodelHistory = getView().getViewmodelHistory();
+                HistoryProductListItem viewmodelHistory = getView().getViewmodelHistory();
                 if (viewmodelHistory == null) {
                     final int recentViewPosition = 0;
                     HistoryProductListItem fakeHistory
@@ -297,8 +296,10 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
                 } else {
                     productFeedViewModel.getData().add(0, viewmodelHistory);
                 }
-                displayRefreshData(productFeedViewModel);
+                getView().hideEmptyHistoryProduct();
+                getView().showContentView();
                 getView().hideEmptyFeed();
+                displayRefreshData(productFeedViewModel);
             } else if (isHasHistoryProduct(dataFeed) && !isHasFeedProduct(dataFeed)) {
                 List<RecyclerViewItem> viewmodelFeed = getView().getViewmodelFeed();
 
@@ -312,7 +313,6 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
                 getView().hideEmptyHistoryProduct();
                 getView().showContentView();
                 getView().hideEmptyFeed();
-                getView().showMessageRefreshFailed();
                 displayRefreshData(productFeedViewModel);
 
             } else {
