@@ -66,7 +66,7 @@ public class CacheHomeInteractorImpl implements CacheHomeInteractor {
                         ProductFeedTransformData productFeedTransformData
                                 = new ProductFeedTransformData();
                         List<ProductItem> listFeed = CacheUtil.convertStringToListModel(cacheFeed.getValueString(TkpdCache.Key.PRODUCT_FEED), type);
-                        List<RecentView> listHistory = CacheUtil.convertStringToListModel(cacheHistory.getValueString(TkpdCache.Key.RECENT_PRODUCT), typeHistory);
+                        List<ProductItem> listHistory = CacheUtil.convertStringToListModel(cacheHistory.getValueString(TkpdCache.Key.RECENT_PRODUCT), typeHistory);
 
                         HorizontalRecentViewList recentViewList = new HorizontalRecentViewList();
                         recentViewList.setRecentViewList(listHistory);

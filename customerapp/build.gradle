@@ -233,6 +233,13 @@ dependencies {
     compile rootProject.ext.butterKnifeDependencies.butterKnife
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
+    provided rootProject.ext.miscDependencies.javaxAnnotation
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
     compile 'com.android.support:multidex:1.0.1'
 
+    compile (rootProject.ext.miscDependencies.trueCaller) {
+        exclude group: 'com.android.support'
+    }
 }

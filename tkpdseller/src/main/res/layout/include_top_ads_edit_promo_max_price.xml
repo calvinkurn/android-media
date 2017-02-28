@@ -19,7 +19,7 @@
     </android.support.design.widget.TextInputLayout>
 
     <TextView
-        style="@style/TextView"
+        style="@style/TextView.TopAds.Title"
         android:text="@string/label_top_ads_max_price_description"/>
 
 </LinearLayout>

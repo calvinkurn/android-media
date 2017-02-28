@@ -11,6 +11,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.service.DownloadService;
@@ -226,12 +227,8 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
 
 
     @Override
-    public void sendGTMRegisterError(Context context, String label) {
-        Nishikino.init(context).startAnalytics().sendButtonClick(
-                AppEventTracking.Event.REGISTER_ERROR,
-                AppEventTracking.Category.REGISTER,
-                AppEventTracking.Action.REGISTER_ERROR,
-                label);
+    public void sendGTMRegisterError(String label) {
+        UnifyTracking.eventRegisterError(label);
     }
 
     @Override
@@ -309,6 +306,5 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
 
     private void sendGTMClick(){
         UnifyTracking.eventRegister(AppEventTracking.EventLabel.REGISTER_STEP_1);
-
     }
 }

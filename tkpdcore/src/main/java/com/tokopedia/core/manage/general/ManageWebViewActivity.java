@@ -59,16 +59,9 @@ public class ManageWebViewActivity extends BasePresenterActivity
 
     @Override
     protected void setViewListener() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-        if (toolbar != null) {
-            toolbar.removeAllViews();
-            setSupportActionBar(toolbar);
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setTitle(mPageTitle);
-                getSupportActionBar().setHomeButtonEnabled(true);
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
-        }
     }
 
     @Override

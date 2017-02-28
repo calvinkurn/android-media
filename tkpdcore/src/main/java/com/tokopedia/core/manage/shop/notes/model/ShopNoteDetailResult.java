@@ -2,7 +2,6 @@ package com.tokopedia.core.manage.shop.notes.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.myproduct.model.NoteDetailModel;
 
 /**
  * Created by nisie on 11/2/16.

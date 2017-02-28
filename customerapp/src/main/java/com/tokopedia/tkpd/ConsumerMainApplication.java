@@ -20,6 +20,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication {
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
         GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
+        GlobalConfig.DEBUG = BuildConfig.DEBUG;
+        GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         generateConsumerAppBaseUrl();
         super.onCreate();
     }
@@ -41,7 +43,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication {
         TkpdBaseURL.GOLD_MERCHANT_DOMAIN = ConsumerAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
         TkpdBaseURL.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         TkpdBaseURL.MOBILE_DOMAIN = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
-        TkpdBaseURL.BASE_CONTACT_US = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + "contact-us/";
+        TkpdBaseURL.BASE_CONTACT_US = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + "contact-us";
     }
 
 }

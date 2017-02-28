@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -36,6 +37,9 @@ public class TickerAdapter extends RecyclerView.Adapter<TickerAdapter.ViewHolder
     private ArrayList<Ticker.Tickers> tickers;
     private TickerAdapter.OnTickerClosed onTickerClosed;
     Context context;
+
+    public static final String PLAYSTORE_STRING = "play.google.com/store/apps";
+    public static final String URL = "url";
 
     public static TickerAdapter createInstance(Context context, TickerAdapter.OnTickerClosed onTickerClosed) {
         return new TickerAdapter(context, onTickerClosed);
@@ -97,18 +101,24 @@ public class TickerAdapter extends RecyclerView.Adapter<TickerAdapter.ViewHolder
             style.setSpan(new ClickableSpan() {
                 @Override
                 public void onClick(View widget) {
-                    Intent intent = new Intent(context, BannerWebView.class);
-                    intent.putExtra("url", url.getURL());
-                    context.startActivity(intent);
+                    if (url.getURL().contains(PLAYSTORE_STRING)) {
+                        context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url.getURL())));
+                    } else {
+                        Intent intent = new Intent(context, BannerWebView.class);
+                        intent.putExtra(URL, url.getURL());
+                        context.startActivity(intent);
+                    }
                 }
             }, sp.getSpanStart(url), sp.getSpanEnd(url), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         holder.message.setText(style);
 
         Drawable background = holder.announcementContainer.getBackground();
-        if (background instanceof GradientDrawable && tickers.get(position).getColor() != null) {
+        try {
             GradientDrawable gradientDrawable = (GradientDrawable) background;
-            gradientDrawable.setColor(Color.parseColor(tickers.get(position).getColor()));
+            gradientDrawable.setColor(Color.parseColor(tickers.get(position).getColor().replaceAll("\\s","")));
+        } catch (Exception e) {
+
         }
 
         holder.btnClose.setOnClickListener(new View.OnClickListener() {

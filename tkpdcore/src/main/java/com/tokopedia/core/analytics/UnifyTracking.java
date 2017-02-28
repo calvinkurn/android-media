@@ -615,6 +615,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventRegisterChannel(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.REGISTER,
+                AppEventTracking.Category.REGISTER,
+                AppEventTracking.Action.CLICK_CHANNEL,
+                label
+        ).getEvent());
+    }
+
     public static void eventRegisterError(String label){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.REGISTER_ERROR,
@@ -895,11 +904,15 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventCTAAction(){
+        eventCTAAction(AppEventTracking.EventLabel.CTA);
+    }
+
+    public static void eventCTAAction(String channel){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.LOGIN_CLICK,
                 AppEventTracking.Category.LOGIN,
                 AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.CTA
+                channel
         ).getEvent());
     }
 
@@ -1042,6 +1055,15 @@ public class UnifyTracking extends TrackingUtils {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATALOG,
                 AppEventTracking.Category.CATALOG,
+                AppEventTracking.Action.CLICK,
+                label
+        ).getEvent());
+    }
+
+    public static void eventClickOfficialStore(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.OFFICIAL_STORE,
+                AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.CLICK,
                 label
         ).getEvent());

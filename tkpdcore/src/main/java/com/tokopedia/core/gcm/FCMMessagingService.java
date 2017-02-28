@@ -509,8 +509,8 @@ public class FCMMessagingService extends FirebaseMessagingService {
         }
 
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("from_notif", true);
-        intent.putExtra("unread", false);
+        intent.putExtra(Constants.EXTRA_FROM_PUSH, true);
+        intent.putExtra(Constants.EXTRA_UNREAD, false);
         if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)) == TkpdState.GCMServiceState.GCM_PROMO
                 || Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)) == TkpdState.GCMServiceState.GCM_GENERAL) {
             Bundle dataLocalytics = this.mNotificationAnalyticsReceiver.buildAnalyticNotificationData(data);

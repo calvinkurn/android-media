@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.text.Html;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Menu;
@@ -24,6 +23,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.customview.ButtonBuyView;
 import com.tokopedia.core.product.customview.ButtonShareView;
@@ -749,6 +749,14 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         NetworkErrorHelper.showEmptyState(getActivity(),
                 getActivity().findViewById(R.id.root_view),
                 initializationErrorListener());
+    }
+
+    @Override
+    public void moveToEditFragment(boolean isEdit, String productId) {
+        if(getActivity().getApplication() instanceof TkpdCoreRouter){
+            Intent intent = ((TkpdCoreRouter)getActivity().getApplication()).goToEditProduct(context, isEdit, productId);
+            navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT);
+        }
     }
 
 }

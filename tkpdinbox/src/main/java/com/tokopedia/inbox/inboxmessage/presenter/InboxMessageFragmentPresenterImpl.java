@@ -138,7 +138,7 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
             public void onNullData() {
                 viewListener.enableActions();
                 viewListener.finishLoading();
-                viewListener.getAdapter().showEmpty(true);
+                viewListener.getAdapter().showEmptyFull(true);
             }
 
             @Override
@@ -423,9 +423,9 @@ public class InboxMessageFragmentPresenterImpl implements InboxMessageFragmentPr
     private void setResult(InboxMessage result) {
         viewListener.getAdapter().setList(result.getList());
         if (viewListener.getAdapter().getList().size() == 0) {
-            viewListener.getAdapter().showEmpty(true);
+            viewListener.getAdapter().showEmptyFull(true);
         } else {
-            viewListener.getAdapter().showEmpty(false);
+            viewListener.getAdapter().showEmptyFull(false);
         }
 
         pagingHandler.setHasNext(PagingHandler.CheckHasNext(result.getPaging()));

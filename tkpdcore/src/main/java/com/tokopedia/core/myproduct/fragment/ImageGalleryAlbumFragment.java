@@ -11,10 +11,10 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.myproduct.ProductActivity;
-import com.tokopedia.core.myproduct.adapter.ImageAlbumAdapter;
 import com.tokopedia.core.myproduct.model.FolderModel;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryView;
+import com.tokopedia.core.newgallery.GalleryActivity;
+import com.tokopedia.core.newgallery.adapter.ImageAlbumAdapter;
+import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class ImageGalleryAlbumFragment extends Fragment {
 
     public static Fragment newInstance(int maxSelection){
         Bundle bundle = new Bundle();
-        bundle.putInt(ProductActivity.MAX_IMAGE_SELECTION, maxSelection);
+        bundle.putInt(GalleryActivity.MAX_IMAGE_SELECTION, maxSelection);
         ImageGalleryAlbumFragment imageGalleryAlbumFragment = new ImageGalleryAlbumFragment();
         imageGalleryAlbumFragment.setArguments(bundle);
         return imageGalleryAlbumFragment;
@@ -60,7 +60,7 @@ public class ImageGalleryAlbumFragment extends Fragment {
 
         Bundle bundle = getArguments();
         if(checkNotNull(bundle)){
-            maxSelection = bundle.getInt(ProductActivity.MAX_IMAGE_SELECTION, -1);
+            maxSelection = bundle.getInt(GalleryActivity.MAX_IMAGE_SELECTION, -1);
         }
     }
 

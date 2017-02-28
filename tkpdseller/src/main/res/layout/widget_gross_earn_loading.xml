@@ -35,7 +35,6 @@
     <com.tokopedia.seller.gmstat.library.LoaderImageView
         android:layout_width="15dp"
         android:layout_height="15dp"
-        app:srcCompat="@drawable/circle_green"
         android:id="@+id/dot"
         app:use_gradient="true"
         android:layout_marginTop="10dp"

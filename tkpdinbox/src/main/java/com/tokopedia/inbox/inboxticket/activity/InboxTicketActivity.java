@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
@@ -20,6 +21,12 @@ import com.tokopedia.core.var.TkpdState;
  * Created by Nisie on 4/21/16.
  */
 public class InboxTicketActivity extends DrawerPresenterActivity<InboxTicketPresenter> {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
+    }
 
     @Override
     public String getScreenName() {

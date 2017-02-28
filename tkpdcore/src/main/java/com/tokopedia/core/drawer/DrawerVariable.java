@@ -30,6 +30,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer.interactor.NetworkInteractor;
 import com.tokopedia.core.drawer.interactor.NetworkInteractorImpl;
 import com.tokopedia.core.drawer.model.DrawerHeader;
@@ -42,7 +43,6 @@ import com.tokopedia.core.drawer.var.NotificationItem;
 import com.tokopedia.core.drawer.var.UserType;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.myproduct.ManageProduct;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
@@ -51,6 +51,7 @@ import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
@@ -397,7 +398,7 @@ public class DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.SALES_LIST);
                 break;
             case TkpdState.DrawerPosition.MANAGE_PRODUCT:
-                startIntent(ManageProduct.class);
+                goToManageProduct();
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_LIST);
                 break;
             case TkpdState.DrawerPosition.MANAGE_ETALASE:
@@ -442,6 +443,12 @@ public class DrawerVariable {
 
                 context.startActivity(wishList);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.WISHLIST);
+                break;
+            case TkpdState.DrawerPosition.GOLD_MERCHANT:
+                if (context.getApplication() instanceof TkpdCoreRouter) {
+                    ((TkpdCoreRouter) context.getApplication())
+                            .goToMerchantRedirect(context);
+                }
                 break;
             case TkpdState.DrawerPosition.SETTINGS:
                 context.startActivity(new Intent(context, ManageGeneral.class));
@@ -518,7 +525,9 @@ public class DrawerVariable {
     }
 
     private void goToManageProduct() {
-
+        if(context.getApplication() instanceof TkpdCoreRouter){
+            ((TkpdCoreRouter)context.getApplication()).goToManageProduct(context);
+        }
     }
 
     private void startIntent(Class<?> cls) {
@@ -547,7 +556,7 @@ public class DrawerVariable {
         model.data.add(new DrawerSeparator());
         model.data.add(new DrawerItem("Daftar", 0, 0, TkpdState.DrawerPosition.REGISTER, true));
         model.data.add(new DrawerSeparator());
-        if (BuildConfig.DEBUG) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
             model.data.add(new DrawerItem("Developer Options", 0, 0, TkpdState.DrawerPosition.DEVELOPER_OPTIONS, true));
         }
         //      model.data.add(new DrawerItem("Developer Options", 0, 0, TkpdState.DrawerPosition.DEVELOPER_OPTIONS, true));
@@ -617,6 +626,7 @@ public class DrawerVariable {
 
     public void updateBalance() {
         getLoyalty();
+        updateTokoCash();
     }
 
     private void setCache() {
@@ -714,6 +724,8 @@ public class DrawerVariable {
         model.data.add(model.peopleMenu);
         if (!Session.getShopID().equals("0") && !Session.getShopID().equals("")) {
             model.data.add(model.shopMenu);
+            model.data.add(new DrawerItem("Gold Merchant", 0, R.drawable.ic_goldmerchant_drawer,
+                    TkpdState.DrawerPosition.GOLD_MERCHANT,false));
         }
         model.data.add(new DrawerItem("Pengaturan", 0, R.drawable.icon_setting, TkpdState.DrawerPosition.SETTINGS, false));
         if (!TrackingUtils.getBoolean(AppEventTracking.GTM.CONTACT_US)) {
@@ -963,7 +975,16 @@ public class DrawerVariable {
 
     private void getTokoCash() {
         networkInteractor.getTokoCash(context.getApplicationContext(),
-                new NetworkInteractor.TopCashListener() {
+                onTokoCashRenderedListener());
+    }
+
+    private void updateTokoCash() {
+        networkInteractor.updateTokoCash(context.getApplicationContext(),
+                onTokoCashRenderedListener());
+    }
+
+    private NetworkInteractor.TopCashListener onTokoCashRenderedListener() {
+        return new NetworkInteractor.TopCashListener() {
             @Override
             public void onSuccess(TopCashItem topCashItem) {
                 populateTokoCashData(topCashItem);
@@ -982,7 +1003,7 @@ public class DrawerVariable {
                 intent.setAction("com.tokopedia.tkpd.FORCE_LOGOUT");
                 MainApplication.getAppContext().sendBroadcast(intent);
             }
-        });
+        };
     }
 
     private void populateTokoCashData(TopCashItem topCashItem) {

@@ -10,17 +10,21 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
+import com.tokopedia.seller.instoped.InstopedActivity;
+import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
+import com.tokopedia.seller.myproduct.ManageProduct;
+import com.tokopedia.seller.myproduct.ProductActivity;
+import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
+import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
+import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
 import com.tokopedia.transaction.webview.WalletWebView;
 
 /**
  * Created by normansyahputa on 12/15/16.
  */
 
-public class ConsumerRouterApplication extends MainApplication implements TkpdCoreRouter,
-        SellerModuleRouter,
-        IConsumerModuleRouter {
+public class ConsumerRouterApplication extends MainApplication implements TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter {
     @Override
     public void goToHome(Context context) {
         Intent intent = new Intent(context,
@@ -51,9 +55,47 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
     }
 
     @Override
+    public void startInstopedActivity(Context context) {
+        InstopedActivity.startInstopedActivity(context);
+    }
+
+    @Override
+    public void removeInstopedToken() {
+        InstagramMediaPresenterImpl.removeToken();
+    }
+
+    @Override
+    public void goToManageProduct(Context context) {
+        Intent intent = new Intent(context, ManageProduct.class);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void clearEtalaseCache() {
+        AddProductPresenterImpl.clearEtalaseCache(getApplicationContext());
+    }
+
+    @Override
+    public Intent goToEditProduct(Context context, boolean isEdit, String productId) {
+        return ProductActivity.moveToEditFragment(context, isEdit, productId);
+    }
+
+    @Override
+    public void resetAddProductCache(Context context) {
+        AddProductPresenterImpl.clearEtalaseCache(context);
+        AddProductPresenterImpl.clearDepartementCache(context);
+    }
+
+    @Override
     public void goToWallet(Context context, Bundle bundle) {
         Intent intent = new Intent(context, WalletWebView.class);
         intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void goToMerchantRedirect(Context context) {
+        Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
         context.startActivity(intent);
     }
 }

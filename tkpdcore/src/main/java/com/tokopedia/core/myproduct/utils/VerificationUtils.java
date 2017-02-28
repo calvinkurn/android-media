@@ -4,20 +4,18 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-import static com.tkpd.library.utils.CommonUtils.checkNotNull;
-import static com.tokopedia.core.myproduct.model.constant.ImageModelType.SELECTED;
-import static com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
-
-import com.drew.lang.StringUtil;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.myproduct.adapter.WholesaleAdapter;
 import com.tokopedia.core.myproduct.model.ImageModel;
 import com.tokopedia.core.myproduct.model.TextDeleteModel;
 import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
+import com.tokopedia.core.util.Pair;
 
 import java.util.List;
+
+import static com.tkpd.library.utils.CommonUtils.checkNotNull;
+import static com.tokopedia.core.myproduct.model.constant.ImageModelType.SELECTED;
 
 /**
  * Created by m.normansyah on 15/12/2015.

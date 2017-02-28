@@ -5,17 +5,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.MenuItem;
 import android.view.View;
 
-import com.tkpd.library.ui.floatbutton.FabSpeedDial;
-import com.tkpd.library.ui.floatbutton.ListenerFabClick;
-import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
-import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.DrawerPresenterActivity;
-import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.var.TkpdState;
@@ -39,9 +34,9 @@ import static com.tokopedia.seller.topads.view.fragment.TopAdsDashboardShopFragm
 
 public class TopAdsDashboardActivity extends DrawerPresenterActivity implements TopAdsDashboardFragment.Callback {
 
-    ViewPager viewPager;
-    TabLayout tabLayout;
-    FloatingActionButton fabSpeedDial;
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
+    private FloatingActionButton fabSpeedDial;
 
     private SnackbarRetry snackbarRetry;
     private TopAdsDashboardShopFragment dashboardShopFragment;
@@ -89,7 +84,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
         topadsDashList.setTopAdsDashboardList(new TopAdsDashboardTabListener.TopAdsDashboardList() {
             @Override
             public void onSelected(int positon) {
-                switch (positon){
+                switch (positon) {
                     case 0:
                         fabSpeedDial.setVisibility(View.VISIBLE);
                         break;
@@ -110,6 +105,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
                 dashboardProductFragment.loadData();
             }
         });
+        snackbarRetry.setColorActionRetry(ContextCompat.getColor(this, R.color.green_400));
         fabSpeedDial.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,5 +153,11 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
     @Override
     public void onLoadDataSuccess() {
         snackbarRetry.hideRetrySnackbar();
+    }
+
+    @Override
+    public void onCreditAdded() {
+        dashboardShopFragment.populateDeposit();
+        dashboardProductFragment.populateDeposit();
     }
 }

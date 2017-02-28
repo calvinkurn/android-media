@@ -7,12 +7,10 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
-import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -20,8 +18,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.myproduct.fragment.AddProductFragment;
-import com.tokopedia.core.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -288,10 +284,10 @@ public class ShareSocmedHandler {
      */
 
     public static void ShareSpecificUri(final Activity context, final String packageName, final String targetType, final String shareTxt, final String ProductUri, final String image, final String altUrl) {
-        Observable.just(true)
-                .map(new Func1<Boolean, File>() {
+        Observable.just(image)
+                .map(new Func1<String, File>() {
                     @Override
-                    public File call(Boolean aBoolean) {
+                    public File call(String image) {
                         File photo = null;
                         if (image != null) {
                             FutureTarget<File> future = Glide.with(context)

@@ -69,7 +69,7 @@
             android:background="@drawable/button_buy_from_cart"
             android:gravity="center"
             android:padding="@dimen/padding_vs"
-            android:text="@string/hint_search_message"
+            android:text="@string/prompt_search"
             android:textColor="@color/white"
             android:textStyle="bold" />
     </LinearLayout>

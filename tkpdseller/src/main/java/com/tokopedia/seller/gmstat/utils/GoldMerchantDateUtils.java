@@ -115,7 +115,7 @@ public class GoldMerchantDateUtils {
         int diffDays = daysBetween(eCDate, sCDate);
         result.add(Integer.parseInt(getDateFormatForInput(sCDate.getTimeInMillis())));
         for(int i=1;i<=diffDays;i++){
-            sCDate.add(Calendar.DAY_OF_MONTH, i);
+            sCDate.add(Calendar.DATE, 1);
             result.add(Integer.parseInt(getDateFormatForInput(sCDate.getTimeInMillis())));
         }
         Log.d(TAG, "generateDateRanges ["+result+"]");

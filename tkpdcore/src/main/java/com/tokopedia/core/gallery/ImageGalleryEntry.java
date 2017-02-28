@@ -6,20 +6,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.myproduct.ProductActivity;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryView;
 import com.tokopedia.core.myproduct.utils.MetadataUtil;
 import com.tokopedia.core.myproduct.utils.VerificationUtils;
+import com.tokopedia.core.newgallery.GalleryActivity;
+import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
+import com.tokopedia.core.util.Pair;
 
 import java.util.ArrayList;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
-import static com.tokopedia.core.myproduct.ProductActivity.ADD_PRODUCT_IMAGE_LOCATION;
-import static com.tokopedia.core.myproduct.ProductActivity.ADD_PRODUCT_IMAGE_LOCATION_DEFAULT;
-import static com.tokopedia.core.myproduct.presenter.ImageGalleryView.messageTAG;
-import static com.tokopedia.core.myproduct.presenter.ProductView.IMAGE_URL;
+import static com.tokopedia.core.newgallery.presenter.ImageGalleryView.messageTAG;
 
 /**
  * Helper class to get images.
@@ -33,7 +30,7 @@ public class ImageGalleryEntry{
      */
     public static void moveToImageGallery(AppCompatActivity appCompatActivity, int position){
         if(checkNotNull(appCompatActivity))
-            ProductActivity.moveToImageGallery(appCompatActivity, position);
+            GalleryActivity.moveToImageGallery(appCompatActivity, position);
     }
 
     /**
@@ -43,7 +40,7 @@ public class ImageGalleryEntry{
      */
     public static void moveToImageGallery(AppCompatActivity appCompatActivity, int position, int maxSelection){
         if(checkNotNull(appCompatActivity))
-            ProductActivity.moveToImageGallery(appCompatActivity, position, maxSelection);
+            GalleryActivity.moveToImageGallery(appCompatActivity, position, maxSelection);
     }
 
     /**
@@ -52,7 +49,7 @@ public class ImageGalleryEntry{
      */
     public static void moveToImageGalleryCamera(AppCompatActivity appCompatActivity){
         if(checkNotNull(appCompatActivity))
-            ProductActivity.moveToImageGalleryCamera(appCompatActivity, 0, true, -1);
+            GalleryActivity.moveToImageGalleryCamera(appCompatActivity, 0, true, -1);
     }
 
     /**
@@ -66,13 +63,13 @@ public class ImageGalleryEntry{
      */
     public static void onActivityForResult(GalleryListener galleryListener, int requestCode, int resultCode, Intent data){
         if (requestCode == com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY && data != null) {
-            int position = data.getIntExtra(ADD_PRODUCT_IMAGE_LOCATION, ADD_PRODUCT_IMAGE_LOCATION_DEFAULT);
-            String imageUrl = data.getStringExtra(IMAGE_URL);
+            int position = data.getIntExtra(GalleryActivity.ADD_PRODUCT_IMAGE_LOCATION, GalleryActivity.ADD_PRODUCT_IMAGE_LOCATION_DEFAULT);
+            String imageUrl = data.getStringExtra(GalleryActivity.IMAGE_URL);
             if (checkNotNull(imageUrl)) {
                 Log.d(ImageGalleryView.TAG, messageTAG + imageUrl + " & " + position);
 
                 try {
-                    ImageGalleryImpl.Pair<Boolean, String> checkImageResolution = VerificationUtils.checkImageResolution(galleryListener.getContext(), imageUrl);
+                    Pair<Boolean, String> checkImageResolution = VerificationUtils.checkImageResolution(galleryListener.getContext(), imageUrl);
                     if (imageUrl != null && checkImageResolution.getModel1()) {
                         galleryListener.onSuccess(imageUrl, position);
                     } else {
