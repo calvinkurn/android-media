@@ -601,7 +601,8 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             imageModel.setPath(null);
             imageModel.setResId(R.drawable.addproduct);
             imageModel.setDbId(0);
-            photos.set(i, imageModel);
+            photos.remove(i);
+            photos.add(imageModel);
 
             setSelectedImageAsPrimary(0);
         } else {
