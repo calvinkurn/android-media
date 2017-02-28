@@ -60,7 +60,7 @@ public class GmProductDependencyInjection {
         ;
         GmSubscribeProductCloud gmSubscribeProductCloud = new GmSubscribeProductCloud(retrofit);
         GmSubscribeProductMapper gmSubscribeProductMapper = new GmSubscribeProductMapper();
-        GmSubscribeProductDataSource gmSubscribeProductDataSource = new GmSubscribeProductDataSource(gmSubscribeProductCache, gmSubscribeProductCloud, gmSubscribeProductMapper, gson);
+        GmSubscribeProductDataSource gmSubscribeProductDataSource = new GmSubscribeProductDataSource(gmSubscribeProductCache, gmSubscribeProductCloud, gmSubscribeProductMapper);
         GmSubscribeProductFactory gmSubscribeProductFactory = new GmSubscribeProductFactory(gmSubscribeProductDataSource);
         GmSubscribeProductRepositoryImpl gmSubscribeProductRepository = new GmSubscribeProductRepositoryImpl(gmSubscribeProductFactory);
         ThreadExecutor threadExecutor = new JobExecutor();

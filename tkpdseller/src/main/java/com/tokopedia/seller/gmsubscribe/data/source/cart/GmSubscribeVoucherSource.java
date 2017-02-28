@@ -1,6 +1,5 @@
 package com.tokopedia.seller.gmsubscribe.data.source.cart;
 
-import com.google.gson.Gson;
 import com.tokopedia.seller.gmsubscribe.data.mapper.cart.GmSubscribeVoucherMapper;
 import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.GmSubscribeCartCloud;
 import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.model.voucher.GmVoucherServiceModel;
@@ -14,12 +13,10 @@ import rx.functions.Func1;
  */
 public class GmSubscribeVoucherSource {
     private final GmSubscribeCartCloud cartCloud;
-    private final Gson gson;
     private final GmSubscribeVoucherMapper voucherMapper;
 
-    public GmSubscribeVoucherSource(GmSubscribeCartCloud cartCloud, Gson gson, GmSubscribeVoucherMapper voucherMapper) {
+    public GmSubscribeVoucherSource(GmSubscribeCartCloud cartCloud, GmSubscribeVoucherMapper voucherMapper) {
         this.cartCloud = cartCloud;
-        this.gson = gson;
         this.voucherMapper = voucherMapper;
     }
 
@@ -28,11 +25,11 @@ public class GmSubscribeVoucherSource {
                 .flatMap(new ConvertToObject());
     }
 
-    private class ConvertToObject implements Func1<String, Observable<GmVoucherCheckDomainModel>> {
+    private class ConvertToObject implements Func1<GmVoucherServiceModel, Observable<GmVoucherCheckDomainModel>> {
 
         @Override
-        public Observable<GmVoucherCheckDomainModel> call(String s) {
-            return Observable.just(gson.fromJson(s, GmVoucherServiceModel.class)).map(voucherMapper);
+        public Observable<GmVoucherCheckDomainModel> call(GmVoucherServiceModel response) {
+            return Observable.just(response).map(voucherMapper);
         }
     }
 }

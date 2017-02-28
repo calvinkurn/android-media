@@ -1,6 +1,5 @@
 package com.tokopedia.seller.gmsubscribe.data.factory;
 
-import com.google.gson.Gson;
 import com.tokopedia.seller.gmsubscribe.data.mapper.GmSubscribeCheckoutMapper;
 import com.tokopedia.seller.gmsubscribe.data.mapper.cart.GmSubscribeVoucherMapper;
 import com.tokopedia.seller.gmsubscribe.data.source.cart.GmSubscribeCheckoutSource;
@@ -12,22 +11,20 @@ import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.GmSubscribeCartCl
  */
 public class GmSubscribeCartFactory {
     private final GmSubscribeCartCloud cartCloud;
-    private final Gson gson;
     private final GmSubscribeVoucherMapper voucherMapper;
     private final GmSubscribeCheckoutMapper checkoutMapper;
 
-    public GmSubscribeCartFactory(GmSubscribeCartCloud cartCloud, Gson gson, GmSubscribeVoucherMapper voucherMapper, GmSubscribeCheckoutMapper checkoutMapper) {
+    public GmSubscribeCartFactory(GmSubscribeCartCloud cartCloud, GmSubscribeVoucherMapper voucherMapper, GmSubscribeCheckoutMapper checkoutMapper) {
         this.cartCloud = cartCloud;
-        this.gson = gson;
         this.voucherMapper = voucherMapper;
         this.checkoutMapper = checkoutMapper;
     }
 
     public GmSubscribeVoucherSource createVoucherSource() {
-        return new GmSubscribeVoucherSource(cartCloud, gson, voucherMapper);
+        return new GmSubscribeVoucherSource(cartCloud, voucherMapper);
     }
 
     public GmSubscribeCheckoutSource createCheckoutSource() {
-        return new GmSubscribeCheckoutSource(cartCloud, gson, checkoutMapper);
+        return new GmSubscribeCheckoutSource(cartCloud, checkoutMapper);
     }
 }

@@ -3,7 +3,10 @@ package com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.api;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.inputmodel.checkout.GmCheckoutInputModel;
 import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.inputmodel.voucher.VoucherCodeInputModel;
+import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.model.checkout.GmCheckoutServiceModel;
+import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.model.voucher.GmVoucherServiceModel;
 
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 import rx.Observable;
@@ -13,8 +16,8 @@ import rx.Observable;
  */
 public interface GmSubscribeCartApi {
     @POST(TkpdBaseURL.TkpdCart.CHECK_VOUCHER)
-    Observable<String> checkVoucher(@Body VoucherCodeInputModel inputModel);
+    Observable<Response<GmVoucherServiceModel>> checkVoucher(@Body VoucherCodeInputModel inputModel);
 
     @POST(TkpdBaseURL.TkpdCart.CHECKOUT_ORDER)
-    Observable<String> checkoutGMSubscribe(@Body GmCheckoutInputModel bodyModel);
+    Observable<Response<GmCheckoutServiceModel>> checkoutGMSubscribe(@Body GmCheckoutInputModel bodyModel);
 }

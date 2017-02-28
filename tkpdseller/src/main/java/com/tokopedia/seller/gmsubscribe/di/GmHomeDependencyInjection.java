@@ -65,7 +65,7 @@ public class GmHomeDependencyInjection {
         GmSubscribeProductCache gmSubscribeProductCache = new GmSubscribeProductCache(globalCacheManager);
 
         GmSubscribeProductMapper gmSubscribeProductMapper = new GmSubscribeProductMapper();
-        GmSubscribeProductDataSource gmSubscribeProductDataSource = new GmSubscribeProductDataSource(gmSubscribeProductCache, gmSubscribeProductCloud, gmSubscribeProductMapper, gson);
+        GmSubscribeProductDataSource gmSubscribeProductDataSource = new GmSubscribeProductDataSource(gmSubscribeProductCache, gmSubscribeProductCloud, gmSubscribeProductMapper);
         GmSubscribeProductFactory gmSubscribeProductFactory = new GmSubscribeProductFactory(gmSubscribeProductDataSource);
         GmSubscribeProductRepositoryImpl gmSubscribeProductReposistory = new GmSubscribeProductRepositoryImpl(gmSubscribeProductFactory);
 

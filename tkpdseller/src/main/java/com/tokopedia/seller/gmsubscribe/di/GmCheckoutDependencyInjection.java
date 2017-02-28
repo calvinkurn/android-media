@@ -88,9 +88,9 @@ public class GmCheckoutDependencyInjection {
         GmSubscribeVoucherMapper voucherMapper = new GmSubscribeVoucherMapper();
         GmSubscribeCheckoutMapper checkoutMapper = new GmSubscribeCheckoutMapper();
 
-        GmSubscribeProductDataSource gmSubscribeProductDataSource = new GmSubscribeProductDataSource(gmSubscribeProductCache, gmSubscribeProductCloud, gmSubscribeProductMapper, gson);
+        GmSubscribeProductDataSource gmSubscribeProductDataSource = new GmSubscribeProductDataSource(gmSubscribeProductCache, gmSubscribeProductCloud, gmSubscribeProductMapper);
         GmSubscribeProductFactory gmSubscribeProductFactory = new GmSubscribeProductFactory(gmSubscribeProductDataSource);
-        GmSubscribeCartFactory gmSubscribeCartFactory = new GmSubscribeCartFactory(cartCloud, gson, voucherMapper, checkoutMapper);
+        GmSubscribeCartFactory gmSubscribeCartFactory = new GmSubscribeCartFactory(cartCloud, voucherMapper, checkoutMapper);
         GmSubscribeCartRepositoryImpl gmSubscribeCartRepository = new GmSubscribeCartRepositoryImpl(gmSubscribeCartFactory);
         GmSubscribeProductRepositoryImpl gmSubscribeProductRepository = new GmSubscribeProductRepositoryImpl(gmSubscribeProductFactory);
 

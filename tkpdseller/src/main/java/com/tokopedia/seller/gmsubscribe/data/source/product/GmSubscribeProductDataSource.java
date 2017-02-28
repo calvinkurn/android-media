@@ -1,6 +1,7 @@
 package com.tokopedia.seller.gmsubscribe.data.source.product;
 
-import com.google.gson.Gson;
+import android.support.annotation.NonNull;
+
 import com.tokopedia.seller.gmsubscribe.data.mapper.product.GmSubscribeProductMapper;
 import com.tokopedia.seller.gmsubscribe.data.source.product.cache.GmSubscribeProductCache;
 import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.GmSubscribeProductCloud;
@@ -20,62 +21,45 @@ public class GmSubscribeProductDataSource {
     private final GmSubscribeProductCache gmSubscribeProductCache;
     private final GmSubscribeProductCloud gmSubscribeProductCloud;
     private final GmSubscribeProductMapper gmSubscribeProductMapper;
-    private final Gson gson;
 
 
     public GmSubscribeProductDataSource(GmSubscribeProductCache gmSubscribeProductCache,
                                         GmSubscribeProductCloud gmSubscribeProductCloud,
-                                        GmSubscribeProductMapper gmSubscribeProductMapper,
-                                        Gson gson) {
+                                        GmSubscribeProductMapper gmSubscribeProductMapper) {
         this.gmSubscribeProductCache = gmSubscribeProductCache;
         this.gmSubscribeProductCloud = gmSubscribeProductCloud;
         this.gmSubscribeProductMapper = gmSubscribeProductMapper;
-        this.gson = gson;
     }
 
     public Observable<GmProductDomainModelGroup> getData() {
         return gmSubscribeProductCache
                 .getProduct()
-                .flatMap(new CheckCache())
-                .onErrorResumeNext(new GetDataFromCloud())
+                .onErrorResumeNext(getGmServiceModelObservable())
                 .flatMap(new ConvertToObject());
+    }
+
+    @NonNull
+    private Observable<GmServiceModel> getGmServiceModelObservable() {
+        return gmSubscribeProductCloud
+                .getProduct()
+                .doOnNext(new SaveToCache());
     }
 
     public Observable<Boolean> clearData() {
         return gmSubscribeProductCache.clearCache();
     }
 
-    private class GetDataFromCloud implements Func1<Throwable, Observable<String>> {
+    private class SaveToCache implements Action1<GmServiceModel> {
         @Override
-        public Observable<String> call(Throwable throwable) {
-            return gmSubscribeProductCloud
-                    .getProduct()
-                    .doOnNext(new SaveToCache());
+        public void call(GmServiceModel response) {
+            gmSubscribeProductCache.storeProduct(response);
         }
     }
 
-    private class SaveToCache implements Action1<String> {
+    private class ConvertToObject implements Func1<GmServiceModel, Observable<GmProductDomainModelGroup>> {
         @Override
-        public void call(String s) {
-            gmSubscribeProductCache.storeProduct(s);
-        }
-    }
-
-    private class ConvertToObject implements Func1<String, Observable<GmProductDomainModelGroup>> {
-        @Override
-        public Observable<GmProductDomainModelGroup> call(String string) {
-            return Observable.just(gson.fromJson(string, GmServiceModel.class)).map(gmSubscribeProductMapper);
-        }
-    }
-
-    private class CheckCache implements Func1<String, Observable<String>> {
-        @Override
-        public Observable<String> call(String s) {
-            if (s == null) {
-                throw new RuntimeException();
-            } else {
-                return Observable.just(s);
-            }
+        public Observable<GmProductDomainModelGroup> call(GmServiceModel response) {
+            return Observable.just(response).map(gmSubscribeProductMapper);
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.tokopedia.seller.gmsubscribe.data.source.cart;
 
-import com.google.gson.Gson;
 import com.tokopedia.seller.gmsubscribe.data.mapper.GmSubscribeCheckoutMapper;
 import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.GmSubscribeCartCloud;
 import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.model.checkout.GmCheckoutServiceModel;
@@ -14,12 +13,10 @@ import rx.functions.Func1;
  */
 public class GmSubscribeCheckoutSource {
     private final GmSubscribeCartCloud cartCloud;
-    private final Gson gson;
     private final GmSubscribeCheckoutMapper mapper;
 
-    public GmSubscribeCheckoutSource(GmSubscribeCartCloud cartCloud, Gson gson, GmSubscribeCheckoutMapper mapper) {
+    public GmSubscribeCheckoutSource(GmSubscribeCartCloud cartCloud, GmSubscribeCheckoutMapper mapper) {
         this.cartCloud = cartCloud;
-        this.gson = gson;
         this.mapper = mapper;
     }
 
@@ -28,10 +25,10 @@ public class GmSubscribeCheckoutSource {
                 .flatMap(new ConvertToObject());
     }
 
-    private class ConvertToObject implements Func1<String, Observable<GmCheckoutDomainModel>> {
+    private class ConvertToObject implements Func1<GmCheckoutServiceModel, Observable<GmCheckoutDomainModel>> {
         @Override
-        public Observable<GmCheckoutDomainModel> call(String s) {
-            return Observable.just(gson.fromJson(s, GmCheckoutServiceModel.class)).map(mapper);
+        public Observable<GmCheckoutDomainModel> call(GmCheckoutServiceModel response) {
+            return Observable.just(response).map(mapper);
         }
     }
 }

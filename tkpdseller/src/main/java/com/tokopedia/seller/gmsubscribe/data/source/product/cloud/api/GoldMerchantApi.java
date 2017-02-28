@@ -1,7 +1,9 @@
 package com.tokopedia.seller.gmsubscribe.data.source.product.cloud.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.model.GmServiceModel;
 
+import retrofit2.Response;
 import retrofit2.http.GET;
 import rx.Observable;
 
@@ -11,5 +13,5 @@ import rx.Observable;
 public interface GoldMerchantApi {
 
     @GET(TkpdBaseURL.GoldMerchant.GET_GM_SUBSCRIBE_PRODUCT)
-    Observable<String> getGoldMerchantProductList();
+    Observable<Response<GmServiceModel>> getGoldMerchantProductList();
 }
