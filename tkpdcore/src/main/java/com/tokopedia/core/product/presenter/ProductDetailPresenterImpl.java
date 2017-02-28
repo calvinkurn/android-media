@@ -64,6 +64,8 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -83,16 +85,20 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     public static final String TAG = ProductDetailPresenterImpl.class.getSimpleName();
     public static final String CACHE_PROMOTION_PRODUCT = "CACHE_PROMOTION_PRODUCT";
+    private static final String PRODUCT_NAME = "CACHE_PRODUCT_NAME";
+    private static final String DATE_EXPIRE = "CACHE_EXPIRED_DATE";
     private ProductDetailView viewListener;
     private RetrofitInteractor retrofitInteractor;
     private CacheInteractor cacheInteractor;
     private int counter = 0;
     LocalCacheHandler cacheHandler;
+    DateFormat df;
 
     public ProductDetailPresenterImpl(ProductDetailView viewListener) {
         this.viewListener = viewListener;
         this.retrofitInteractor = new RetrofitInteractorImpl();
         this.cacheInteractor = new CacheInteractorImpl();
+        this.df = new SimpleDateFormat("dd/MM/yyyy hh:mm");
     }
 
     @Override
@@ -398,7 +404,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.hideProgressLoading();
                             String productName = data.getProductName();
                             if (productName == null) productName = "WS BELUM SIAP";
-                            cacheHandler.setExpire(3600);
+                            cacheHandler.putString(PRODUCT_NAME, productName);
                             if (data.getIsDink() == 1) {
                                 String msg = context.getResources()
                                         .getString(R.string.toast_success_promo1)
@@ -415,7 +421,22 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                         + MethodChecker.fromHtml(productName)
                                         + "\n"
                                         + data.getExpiry();
+
                                 viewListener.showToastMessage(msg);
+                            }
+
+                            String expireDate = data.getExpiry();
+                            cacheHandler.putString(DATE_EXPIRE, data.getExpiry());
+                            Date expireD;
+
+                            try {
+                                expireD = df.parse(expireDate);
+                                Long curr_time = System.currentTimeMillis() / 1000;
+                                Long expireTime = expireD.getTime() / 1000;
+                                cacheHandler.setExpire(Integer.parseInt(String.valueOf(expireTime - curr_time)));
+
+                            } catch (ParseException e) {
+                                e.printStackTrace();
                             }
                         }
 
@@ -426,16 +447,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         }
                     });
         } else {
-            int interval = cacheHandler.getInt("expired_time");
-            Long time = cacheHandler.getLong("timestamp");
-            Long curr_time = System.currentTimeMillis() / 1000;
-            Long cd = (interval - (curr_time - time));
-
             String msg = context.getResources()
-                    .getString(R.string.toast_promo_error_cache)
+                    .getString(R.string.toast_promo_error)
                     + " "
-                    + cd / 60
-                    + context.getString(R.string.minute);
+                    + MethodChecker.fromHtml(cacheHandler.getString(PRODUCT_NAME,""))
+                    + "\n"
+                    + cacheHandler.getString(DATE_EXPIRE,"");
             viewListener.showToastMessage(msg);
         }
     }
@@ -482,6 +499,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public void onDestroyView(@NonNull Context context) {
         retrofitInteractor.unSubscribeObservable();
         cacheHandler = null;
+        df = null;
     }
 
     @Override
