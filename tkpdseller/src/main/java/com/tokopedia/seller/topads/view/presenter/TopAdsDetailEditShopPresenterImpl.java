@@ -16,14 +16,14 @@ import rx.Subscriber;
 /**
  * Created by Nisie on 5/9/16.
  */
-public class TopAdsEditPromoShopPresenterImpl extends TopAdsEditPromoPresenterImpl implements TopAdsEditPromoShopPresenter {
+public class TopAdsDetailEditShopPresenterImpl extends TopAdsDetailEditPresenterImpl implements TopAdsDetailEditShopPresenter {
 
     private TopAdsGetDetailShopUseCase topAdsGetDetailShopUseCase;
     private TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase;
     private TopAdsEditPromoFragmentListener listener;
     private Context context;
 
-    public TopAdsEditPromoShopPresenterImpl(TopAdsGetDetailShopUseCase topAdsGetDetailShopUseCase, TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase) {
+    public TopAdsDetailEditShopPresenterImpl(TopAdsGetDetailShopUseCase topAdsGetDetailShopUseCase, TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase) {
         this.topAdsGetDetailShopUseCase = topAdsGetDetailShopUseCase;
         this.topAdsSaveDetailShopUseCase = topAdsSaveDetailShopUseCase;
     }

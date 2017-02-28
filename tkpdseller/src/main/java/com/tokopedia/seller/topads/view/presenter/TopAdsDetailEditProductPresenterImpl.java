@@ -4,11 +4,9 @@ import android.content.Context;
 
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailProductUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailProductUseCase;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailShopUseCase;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
 import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoFragmentListener;
 import com.tokopedia.seller.topads.view.mapper.TopAdDetailProductMapper;
-import com.tokopedia.seller.topads.view.model.TopAdsDetailProductViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailProductViewModel;
 
 import rx.Subscriber;
@@ -16,14 +14,14 @@ import rx.Subscriber;
 /**
  * Created by Nisie on 5/9/16.
  */
-public class TopAdsEditPromoProductPresenterImpl extends TopAdsEditPromoPresenterImpl implements TopAdsEditPromoProductPresenter {
+public class TopAdsDetailEditProductPresenterImpl extends TopAdsDetailEditPresenterImpl implements TopAdsDetailEditProductPresenter {
 
     private TopAdsGetDetailProductUseCase topAdsGetDetailProductUseCase;
     private TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase;
     private TopAdsEditPromoFragmentListener listener;
     private Context context;
 
-    public TopAdsEditPromoProductPresenterImpl(TopAdsGetDetailProductUseCase topAdsGetDetailProductUseCase, TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase) {
+    public TopAdsDetailEditProductPresenterImpl(TopAdsGetDetailProductUseCase topAdsGetDetailProductUseCase, TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase) {
         this.topAdsGetDetailProductUseCase = topAdsGetDetailProductUseCase;
         this.topAdsSaveDetailProductUseCase = topAdsSaveDetailProductUseCase;
     }

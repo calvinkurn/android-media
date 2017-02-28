@@ -10,9 +10,9 @@ import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.di.TopAdsEditPromoShopDI;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
-import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoShopPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditShopPresenter;
 
-public class TopAdsDetailEditShopFragment extends TopAdsDetailNewFragment<TopAdsEditPromoShopPresenter> {
+public class TopAdsDetailEditShopFragment extends TopAdsDetailEditFragment<TopAdsDetailEditShopPresenter> {
 
     private EditText shopNameEditText;
     private String shopName;
@@ -48,12 +48,6 @@ public class TopAdsDetailEditShopFragment extends TopAdsDetailNewFragment<TopAds
         super.initView(view);
         shopNameEditText = (EditText) view.findViewById(R.id.edit_text_shop_name);
         shopNameEditText.setText(shopName);
-    }
-
-    @Override
-    protected void loadAdDetail() {
-        super.loadAdDetail();
-        presenter.getDetailAd(adId);
     }
 
     @Override

@@ -6,7 +6,6 @@ import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoView;
 /**
  * Created by Nathan on 5/9/16.
  */
-public interface TopAdsEditPromoPresenter extends CustomerPresenter<TopAdsEditPromoView> {
+public interface TopAdsDetailNewPresenter extends CustomerPresenter<TopAdsEditPromoView> {
 
-    void getDetailAd(String adId);
 }

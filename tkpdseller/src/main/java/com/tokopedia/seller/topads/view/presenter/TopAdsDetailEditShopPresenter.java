@@ -5,7 +5,7 @@ import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
 /**
  * Created by Nathan on 5/9/16.
  */
-public interface TopAdsEditPromoShopPresenter extends TopAdsEditPromoPresenter {
+public interface TopAdsDetailEditShopPresenter extends TopAdsDetailEditPresenter {
 
     void saveAd(TopAdsDetailShopViewModel topAdsDetailShopViewModel);
 }

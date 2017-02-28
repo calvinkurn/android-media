@@ -21,12 +21,11 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.datepicker.widget.DatePickerLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.view.dialog.DatePickerDialog;
 import com.tokopedia.seller.topads.view.dialog.TimePickerdialog;
 import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoView;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
-import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewPresenter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,7 +33,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public abstract class TopAdsDetailNewFragment<T extends TopAdsEditPromoPresenter> extends BasePresenterFragment<T> implements TopAdsEditPromoView {
+public abstract class TopAdsDetailNewFragment<T extends TopAdsDetailNewPresenter> extends BasePresenterFragment<T> implements TopAdsEditPromoView {
 
     private static final int STICKER_SPEAKER = 3;
     private static final int STICKER_THUMBS_UP = 2;
@@ -68,7 +67,6 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsEditPromoPresenter
     private Date startDate;
     private Date endDate;
 
-    protected String adId;
     protected TopAdsDetailAdViewModel detailAd;
 
     @Override
@@ -103,7 +101,7 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsEditPromoPresenter
 
     @Override
     protected void setupArguments(Bundle bundle) {
-        adId = bundle.getString(TopAdsExtraConstant.EXTRA_AD_ID);
+
     }
 
     @Override
@@ -276,34 +274,12 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsEditPromoPresenter
 
     @Override
     protected void setActionVar() {
-        loadAdDetail();
+
     }
 
     protected void saveAd() {
         showLoading();
         populateDataFromfields();
-    }
-
-    protected void loadAdDetail() {
-        showLoading();
-    }
-
-    @Override
-    public void onDetailAdLoaded(TopAdsDetailAdViewModel detailAd) {
-        hideLoading();
-        loadAd(detailAd);
-    }
-
-    @Override
-    public void onLoadDetailAdError() {
-        hideLoading();
-        showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                loadAdDetail();
-                showLoading();
-            }
-        });
     }
 
     @Override
@@ -450,16 +426,16 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsEditPromoPresenter
         detailAd.setEndTime(showTimeEndTimeDatePicker.getValue());
     }
 
-    private void showLoading() {
+    protected void showLoading() {
         progressDialog.show();
     }
 
-    private void hideLoading() {
+    protected void hideLoading() {
         progressDialog.dismiss();
         hideSnackBarRetry();
     }
 
-    private void showSnackBarRetry(NetworkErrorHelper.RetryClickedListener listener) {
+    protected void showSnackBarRetry(NetworkErrorHelper.RetryClickedListener listener) {
         if (snackBarRetry == null) {
             snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), listener);
             snackBarRetry.showRetrySnackbar();
@@ -467,7 +443,7 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsEditPromoPresenter
         }
     }
 
-    private void hideSnackBarRetry() {
+    protected void hideSnackBarRetry() {
         if (snackBarRetry != null) {
             snackBarRetry.hideRetrySnackbar();
             snackBarRetry = null;

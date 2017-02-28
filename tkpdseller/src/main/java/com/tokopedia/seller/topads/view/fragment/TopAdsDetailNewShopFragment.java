@@ -10,9 +10,9 @@ import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.di.TopAdsEditPromoShopDI;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
-import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoShopPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditShopPresenter;
 
-public class TopAdsDetailNewShopFragment extends TopAdsDetailNewFragment<TopAdsEditPromoShopPresenter> {
+public class TopAdsDetailNewShopFragment extends TopAdsDetailNewFragment<TopAdsDetailEditShopPresenter> {
 
     private EditText shopNameEditText;
     private String shopName;
