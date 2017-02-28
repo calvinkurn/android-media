@@ -1,0 +1,37 @@
+package com.tokopedia.core.gcm.data.source.entity;
+
+import com.google.gson.annotations.SerializedName;
+
+/**
+ * Created by alvarisi on 2/28/17.
+ */
+
+public class DiscussionPushNotificationResponse {
+    @SerializedName("thumbnail")
+    private String thumbnail;
+    @SerializedName("full_name")
+    private String fullname;
+    @SerializedName("applinks")
+    private String applink;
+    @SerializedName("desc")
+    private String description;
+
+    public DiscussionPushNotificationResponse() {
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public String getFullname() {
+        return fullname;
+    }
+
+    public String getApplink() {
+        return applink;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+}
