@@ -15,7 +15,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.gcm.interactor.entity.NotificationEntity;
+import com.tokopedia.core.gcm.data.entity.NotificationEntity;
 import com.tokopedia.core.prototype.ManageProductCache;
 import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.var.TkpdCache;

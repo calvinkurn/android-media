@@ -11,7 +11,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.localytics.android.Localytics;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.gcm.interactor.RegisterDeviceInteractor;
+import com.tokopedia.core.gcm.data.RegisterDeviceInteractor;
 import com.tokopedia.core.gcm.model.DeviceRegistrationDataResponse;
 
 import java.io.IOException;
