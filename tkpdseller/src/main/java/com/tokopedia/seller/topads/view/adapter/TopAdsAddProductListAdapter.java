@@ -40,6 +40,18 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
         datas = new ArrayList<>();
     }
 
+    public TopAdsAddProductListAdapter() {
+        datas = new ArrayList<>();
+    }
+
+    public void setImageHandler(ImageHandler imageHandler) {
+        this.imageHandler = imageHandler;
+    }
+
+    public void setFragmentItemSelection(FragmentItemSelection fragmentItemSelection) {
+        this.fragmentItemSelection = fragmentItemSelection;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {

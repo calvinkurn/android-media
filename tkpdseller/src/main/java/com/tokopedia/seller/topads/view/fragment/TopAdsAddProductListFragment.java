@@ -92,6 +92,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     private SearchProductMapper searchProductMapper;
     private CloudTopAdsSearchProductDataSource cloudTopAdsSeachProductDataSource;
     private TopAdsSearchProductRepository topAdsSeachProductRepository;
+    private boolean isFirstTime = true;
 
     public static Fragment newInstance() {
         return new TopAdsAddProductListFragment();
@@ -115,7 +116,10 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         topAdsAddProductListPresenter.setNetworkStatus(
                 TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
         // TODO fetch data by filter of selectedFilterStatus and selectedFilterEtalaseId
-        topAdsAddProductListPresenter.searchProduct();
+        if(topAdsAddProductListPresenter.isFirstTime()) {
+            topAdsProductListAdapter.showLoadingFull(true);
+            topAdsAddProductListPresenter.searchProduct();
+        }
     }
 
     @Override
@@ -213,6 +217,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     @Override
     protected void initialVar() {
         totalItem = Integer.MAX_VALUE;
+        topAdsProductListAdapter = new TopAdsAddProductListAdapter();
     }
 
     private void setupRecyclerView() {
@@ -238,14 +243,19 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
             }
         };
         imageHandler = addProductListInterface.imageHandler();
-        topAdsProductListAdapter = new TopAdsAddProductListAdapter(imageHandler, this);
+        topAdsProductListAdapter.setImageHandler(imageHandler);
+        topAdsProductListAdapter.setFragmentItemSelection(this);
+//        topAdsProductListAdapter = new TopAdsAddProductListAdapter(imageHandler, this);
 //        this.topAdsProductListAdapter.setOnItemClickListener(onItemClickListener);
-        layoutManager = new LinearLayoutManager(getActivity());
-        this.topAdsAddProductList.setLayoutManager(layoutManager);
+        if(isFirstTime) {
+            layoutManager = new LinearLayoutManager(getActivity());
+            this.topAdsAddProductList.setLayoutManager(layoutManager);
+            this.topAdsAddProductList.setAdapter(topAdsProductListAdapter);
+        }
+        isFirstTime = false;
         this.topAdsAddProductList.addOnScrollListener(onScrollListener);
-        this.topAdsAddProductList.setAdapter(topAdsProductListAdapter);
-        topAdsProductListAdapter.addAllWithoutNotify(dummyData());
-        topAdsProductListAdapter.showLoading(true);
+//        topAdsProductListAdapter.addAllWithoutNotify(dummyData());
+//        topAdsProductListAdapter.showLoading(true);
     }
 
     @Override

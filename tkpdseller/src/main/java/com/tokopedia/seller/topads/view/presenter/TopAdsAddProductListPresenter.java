@@ -38,6 +38,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
     private String query;
     private DefaultErrorSubscriber.ErrorNetworkListener errorNetworkListener;
     private NetworkStatus networkStatus;
+    private int networkCallCount = 0;
     public TopAdsAddProductListPresenter() {
         page = 0;
         params = new TKPDMapParam<>();
@@ -70,6 +71,10 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
 
     private void resetHitNetwork() {
         setNetworkStatus(NetworkStatus.NONETWORKCALL);
+    }
+
+    public boolean isFirstTime(){
+        return (isHitNetwork() && networkCallCount <= 0);
     }
 
     private void fillParam(SessionHandler sessionHandler) {
@@ -113,6 +118,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
                             if (isViewAttached()) {
                                 getView().dismissSnackbar();
                                 getView().loadMore(convertTo(productDomains));
+                                networkCallCount++;
                             }
                         }
                     });
@@ -139,6 +145,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
                             if (isViewAttached()) {
                                 getView().dismissSnackbar();
                                 getView().loadData(convertTo(productDomains));
+                                networkCallCount++;
                             }
                         }
                     });
