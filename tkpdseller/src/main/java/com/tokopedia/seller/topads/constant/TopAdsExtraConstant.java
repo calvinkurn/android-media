@@ -38,4 +38,8 @@ public class TopAdsExtraConstant {
     public static final int EXTRA_STATISTIC_POSITION_CONVERTION = 3;
     public static final int EXTRA_STATISTIC_POSITION_AVG = 4;
     public static final int EXTRA_STATISTIC_POSITION_SPENT = 5;
+
+    public static final String EXTRA_SELECTIONS = "EXTRA_SELECTIONS";
+    public static final String EXTRA_HIDE_EXISTING_GROUP = "EXTRA_HIDE_EXISTING_GROUP";
+    public static final String EXTRA_HIDE_ETALASE = "EXTRA_HIDE_ETALASE";
 }

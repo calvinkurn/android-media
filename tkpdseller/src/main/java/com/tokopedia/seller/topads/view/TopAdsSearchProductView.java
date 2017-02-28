@@ -15,4 +15,6 @@ public interface TopAdsSearchProductView extends CustomerView {
     void loadMore(List<TypeBasedModel> datas);
 
     void dismissSnackbar();
+
+    boolean isExistingGroup();
 }

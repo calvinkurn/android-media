@@ -36,6 +36,8 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
     private TopAdsSearchProductView view;
     private int page;
     private String query;
+    private int selectedFilterEtalaseId = -1;
+    private int selectedFilterStatus = -1;
     private DefaultErrorSubscriber.ErrorNetworkListener errorNetworkListener;
     private NetworkStatus networkStatus;
     private int networkCallCount = 0;
@@ -46,7 +48,6 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
 
         // set this flag to hit network
         setNetworkStatus(NetworkStatus.PULLTOREFRESH);
-//        hitNetwork();
     }
 
     public void incrementPage() {
@@ -88,6 +89,17 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
 
         params.put("rows", Integer.toString(PAGE_ROW));
         params.put("start", Integer.toString(PAGE_ROW * page));
+        if(selectedFilterEtalaseId < 0) {
+            params.put("etalase", Integer.toString(selectedFilterEtalaseId));
+        }else{
+            params.remove("etalase");
+        }
+
+        if(selectedFilterStatus < 0) {
+            params.put("is_promoted", Integer.toString(selectedFilterStatus));
+        }else{
+            params.remove("is_promoted");
+        }
     }
 
     public NetworkStatus getNetworkStatus() {
@@ -168,7 +180,12 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
     private List<TypeBasedModel> convertTo(List<ProductDomain> productDomains) {
         List<TypeBasedModel> typeBasedModels = new ArrayList<>();
 
+        boolean skipWithAdId = getView().isExistingGroup();
+
         for (ProductDomain productDomain : productDomains) {
+
+            if(skipWithAdId && productDomain.isPromoted()) continue;
+
             TopAdsAddProductModel topAdsAddProductModel =
                     new TopAdsAddProductModel(
                             productDomain.getImageUrl(),
@@ -208,6 +225,22 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
     public void detachView() {
         super.detachView();
         topAdsDefaultParamUseCase.unsubscribe();
+    }
+
+    public void putSelectedEtalaseId(int etalaseId){
+        this.selectedFilterEtalaseId = etalaseId;
+    }
+
+    public void putSelectedFilterStatus(int filterStatus){
+        this.selectedFilterStatus = filterStatus;
+    }
+
+    public int getSelectedFilterEtalaseId() {
+        return selectedFilterEtalaseId;
+    }
+
+    public int getSelectedFilterStatus() {
+        return selectedFilterStatus;
     }
 
     public void setQuery(String query) {

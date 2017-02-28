@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.View;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.di.TopAdsEditPromoProductDI;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddProductListActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoProductPresenter;
@@ -50,6 +51,8 @@ public class TopAdsDetailNewProductFragment extends TopAdsDetailEditFragment<Top
 
     void addProduct() {
         Intent intent = new Intent(getActivity(), TopAdsAddProductListActivity.class);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, false);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_ETALASE, false);
         startActivityForResult(intent, ADD_PRODUCT_REQUEST_CODE);
     }
 }
