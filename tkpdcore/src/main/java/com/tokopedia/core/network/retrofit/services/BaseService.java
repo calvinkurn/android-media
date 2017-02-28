@@ -53,6 +53,10 @@ public abstract class BaseService<T> {
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         client.interceptors().add(logInterceptor);
+        Interceptor errInterceptor = getErrorInterceptor();
+        if (null!= errInterceptor) {
+            client.interceptors().add(errInterceptor);
+        }
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
                 .setPrettyPrinting()
@@ -75,6 +79,10 @@ public abstract class BaseService<T> {
 
     public Interceptor getAuthInterceptor() {
         return new TkpdBaseInterceptor();
+    }
+
+    public Interceptor getErrorInterceptor(){
+        return null;
     }
 
     public String getProcessedBaseUrl() {
