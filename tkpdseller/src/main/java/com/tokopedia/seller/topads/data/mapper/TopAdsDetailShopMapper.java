@@ -13,16 +13,16 @@ import rx.functions.Func1;
 /**
  * Created by zulfikarrahman on 2/20/17.
  */
-public class TopAdsDetailProductMapper implements Func1<Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>>, TopAdsDetailProductDomainModel> {
+public class TopAdsDetailShopMapper implements Func1<Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>>, TopAdsDetailShopDomainModel> {
 
     @Override
-    public TopAdsDetailProductDomainModel call(Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>> dataResponseResponse) {
+    public TopAdsDetailShopDomainModel call(Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>> dataResponseResponse) {
         return mappingResponse(dataResponseResponse);
     }
 
-    private TopAdsDetailProductDomainModel mappingResponse(Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>> response) {
+    private TopAdsDetailShopDomainModel mappingResponse(Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>> response) {
         TopAdsProductDetailDataSourceModel dataModel = response.body().getData().get(0);
-        TopAdsDetailProductDomainModel domainModel = new TopAdsDetailProductDomainModel();
+        TopAdsDetailShopDomainModel domainModel = new TopAdsDetailShopDomainModel();
         domainModel.setAdId(dataModel.getAdId());
         domainModel.setAdType(dataModel.getAdType());
         domainModel.setGroupId(dataModel.getGroupId());

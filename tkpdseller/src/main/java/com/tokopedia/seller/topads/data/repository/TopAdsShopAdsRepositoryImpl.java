@@ -3,6 +3,7 @@ package com.tokopedia.seller.topads.data.repository;
 import com.tokopedia.seller.topads.data.factory.TopAdsShopAdFactory;
 import com.tokopedia.seller.topads.data.source.cloud.TopAdsShopAdsDataSource;
 import com.tokopedia.seller.topads.domain.TopAdsShopAdsRepository;
+import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailShopDomainModel;
 
 import rx.Observable;

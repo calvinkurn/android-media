@@ -12,13 +12,13 @@ import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoShopPresenter;
 
-public class TopAdsEditPromoShopFragment extends TopAdsEditPromoFragment<TopAdsEditPromoShopPresenter> {
+public class TopAdsDetailEditShopFragment extends TopAdsDetailEditFragment<TopAdsEditPromoShopPresenter> {
 
     private EditText shopNameEditText;
     private String shopName;
 
     public static Fragment createInstance(String shopName, String shopAdId) {
-        Fragment fragment = new TopAdsEditPromoShopFragment();
+        Fragment fragment = new TopAdsDetailEditShopFragment();
         Bundle bundle = new Bundle();
         bundle.putString(TopAdsExtraConstant.EXTRA_SHOP_NAME, shopName);
         bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, shopAdId);
@@ -51,14 +51,20 @@ public class TopAdsEditPromoShopFragment extends TopAdsEditPromoFragment<TopAdsE
     }
 
     @Override
+    protected void loadAdDetail() {
+        super.loadAdDetail();
+        presenter.getDetailAd(adId);
+    }
+
+    @Override
     protected void loadAd(TopAdsDetailAdViewModel detailAd) {
         super.loadAd(detailAd);
         shopNameEditText.setText(detailAd.getTitle());
     }
 
     @Override
-    protected void submitAd() {
-        super.submitAd();
+    protected void saveAd() {
+        super.saveAd();
         presenter.saveAd((TopAdsDetailShopViewModel) detailAd);
     }
 }
