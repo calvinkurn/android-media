@@ -67,8 +67,6 @@ public class OrderViewHolder extends BaseSellingViewHolder<OrderShippingList> {
                 .setColorFilter(Color
                         .parseColor(model.getOrderDeadline().getDeadlineColor()),
                         PorterDuff.Mode.MULTIPLY);
-
-        CommonUtils.dumper("PORING COLOR: " + model.getOrderDeadline().getDeadlineColor());
     }
 
     @Override
