@@ -1,5 +1,11 @@
 package com.tokopedia.seller.topads.view.fragment;
 
+import android.content.Intent;
+
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.view.activity.TopAdsEditPromoNewProductActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsEditPromoShopActivity;
+
 /**
  * Created by zulfikarrahman on 2/22/17.
  */
@@ -53,7 +59,8 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
 
     @Override
     protected void onSubmitFormNotInGroup() {
-
+        Intent intent = new Intent(getActivity(), TopAdsEditPromoNewProductActivity.class);
+        startActivity(intent);
     }
 
     @Override

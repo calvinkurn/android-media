@@ -2,11 +2,9 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Fragment;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.di.TopAdsEditPromoProductDI;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddProductListActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsEditPromoProductPresenter;
@@ -17,11 +15,8 @@ public class TopAdsEditPromoNewProductFragment extends TopAdsEditPromoFragment<T
 
     private View addProductLayout;
 
-    public static Fragment createInstance(String shopAdId) {
+    public static Fragment createInstance() {
         Fragment fragment = new TopAdsEditPromoNewProductFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, shopAdId);
-        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -49,9 +44,8 @@ public class TopAdsEditPromoNewProductFragment extends TopAdsEditPromoFragment<T
     }
 
     @Override
-    protected void setActionVar() {
-        super.setActionVar();
-        presenter.getDetailAd(adId);
+    protected void loadAdDetail() {
+
     }
 
     void addProduct() {
