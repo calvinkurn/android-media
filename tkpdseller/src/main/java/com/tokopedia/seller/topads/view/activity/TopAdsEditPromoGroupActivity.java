@@ -21,7 +21,7 @@ public class TopAdsEditPromoGroupActivity extends TActivity {
         inflateView(R.layout.activity_top_ads_edit_promo);
         String adId = null;
         if (getIntent() != null && getIntent().getExtras() != null) {
-            adId = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD_ID);
+            adId = getIntent().getExtras().getString(TopAdsExtraConstant.EXTRA_AD_ID);
         }
         getFragmentManager().beginTransaction().disallowAddToBackStack()
                 .add(R.id.container, TopAdsEditPromoProductFragment.createInstance(adId), TopAdsNewPromoFragment.class.getSimpleName())

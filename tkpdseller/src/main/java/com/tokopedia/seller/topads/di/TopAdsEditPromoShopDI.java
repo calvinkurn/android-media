@@ -7,6 +7,7 @@ import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.seller.topads.data.factory.TopAdsShopAdFactory;
 import com.tokopedia.seller.topads.data.mapper.TopAdsDetailProductMapper;
+import com.tokopedia.seller.topads.data.mapper.TopAdsDetailShopMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsSearchGroupMapper;
 import com.tokopedia.seller.topads.data.repository.TopAdsShopAdsRepositoryImpl;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
@@ -33,9 +34,9 @@ public class TopAdsEditPromoShopDI {
         TopAdsManagementService topAdsManagementService = new TopAdsManagementService();
         TopAdsManagementApi topAdsManagementApi = topAdsManagementService.getApi();
 
-        TopAdsDetailProductMapper topAdsDetailProductMapper = new TopAdsDetailProductMapper();
+        TopAdsDetailShopMapper mapper = new TopAdsDetailShopMapper();
 
-        TopAdsShopAdFactory topAdsShopAdFactory = new TopAdsShopAdFactory(context, topAdsManagementApi, topAdsDetailProductMapper);
+        TopAdsShopAdFactory topAdsShopAdFactory = new TopAdsShopAdFactory(context, topAdsManagementApi, mapper);
 
         TopAdsShopAdsRepository topAdsGroupAdsRepository = new TopAdsShopAdsRepositoryImpl(topAdsShopAdFactory);
 

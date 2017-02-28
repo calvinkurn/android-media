@@ -2,7 +2,9 @@ package com.tokopedia.seller.topads.view.mapper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailShopDomainModel;
+import com.tokopedia.seller.topads.view.model.TopAdsDetailProductViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
 
 /**
@@ -14,7 +16,7 @@ public class TopAdDetailProductMapper {
     private static final String VALUE_TRUE = "1";
     private static final String VALUE_FALSE = "0";
 
-    public static TopAdsDetailShopViewModel convertDomainToView(TopAdsDetailShopDomainModel domainModel) {
+    public static TopAdsDetailShopViewModel convertDomainToView(TopAdsDetailProductDomainModel domainModel) {
         TopAdsDetailShopViewModel viewModel = new TopAdsDetailShopViewModel();
         viewModel.setId(Long.parseLong(domainModel.getAdId()));
         viewModel.setType(Integer.parseInt(domainModel.getAdType()));
@@ -40,7 +42,7 @@ public class TopAdDetailProductMapper {
         return viewModel;
     }
 
-    public static TopAdsDetailShopDomainModel convertViewToDomain(TopAdsDetailShopViewModel viewModel) {
+    public static TopAdsDetailShopDomainModel convertViewToDomain(TopAdsDetailProductViewModel viewModel) {
         TopAdsDetailShopDomainModel domainModel = new TopAdsDetailShopDomainModel();
         domainModel.setAdId(String.valueOf(viewModel.getId()));
         domainModel.setAdType(String.valueOf(viewModel.getType()));

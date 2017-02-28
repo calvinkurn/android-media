@@ -4,9 +4,10 @@ import android.content.Context;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
-import com.tokopedia.seller.topads.data.mapper.TopAdsDetailShopMapper;
+import com.tokopedia.seller.topads.data.mapper.TopAdsDetailProductMapper;
 import com.tokopedia.seller.topads.data.model.TopAdsProductDetailDataSourceModel;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.api.TopAdsManagementApi;
+import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailShopDomainModel;
 import com.tokopedia.seller.topads.domain.model.request.DataRequest;
 
@@ -18,29 +19,29 @@ import rx.Observable;
 /**
  * Created by zulfikarrahman on 2/20/17.
  */
-public class TopAdsShopAdsDataSource {
+public class TopAdsProductAdsDataSource {
 
-    private final TopAdsDetailShopMapper topAdsDetailShopMapper;
+    private final TopAdsDetailProductMapper topAdsDetailProductMapper;
     private final TopAdsManagementApi topAdsManagementApi;
     private final Context context;
 
-    public TopAdsShopAdsDataSource(Context context, TopAdsManagementApi topAdsManagementApi, TopAdsDetailShopMapper topAdsDetailShopMapper) {
+    public TopAdsProductAdsDataSource(Context context, TopAdsManagementApi topAdsManagementApi, TopAdsDetailProductMapper topAdsDetailProductMapper) {
         this.context = context;
         this.topAdsManagementApi = topAdsManagementApi;
-        this.topAdsDetailShopMapper = topAdsDetailShopMapper;
+        this.topAdsDetailProductMapper = topAdsDetailProductMapper;
     }
 
-    public Observable<TopAdsDetailShopDomainModel> getDetailProduct(String adId) {
+    public Observable<TopAdsDetailProductDomainModel> getDetailProduct(String adId) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put(TopAdsNetworkConstant.PARAM_AD_ID, adId);
-        return topAdsManagementApi.getDetailProduct(param).map(topAdsDetailShopMapper);
+        return topAdsManagementApi.getDetailProduct(param).map(topAdsDetailProductMapper);
     }
 
-    public Observable<TopAdsDetailShopDomainModel> saveDetailProduct(TopAdsDetailShopDomainModel topAdsDetailShopDomainModel) {
-        return topAdsManagementApi.saveProductAd(getSaveProductDetailRequest(topAdsDetailShopDomainModel)).map(topAdsDetailShopMapper);
+    public Observable<TopAdsDetailProductDomainModel> saveDetailProduct(TopAdsDetailProductDomainModel topAdsDetailProductDomainModel) {
+        return topAdsManagementApi.saveProductAd(getSaveProductDetailRequest(topAdsDetailProductDomainModel)).map(topAdsDetailProductMapper);
     }
 
-    private DataRequest<List<TopAdsProductDetailDataSourceModel>> getSaveProductDetailRequest(TopAdsDetailShopDomainModel topAdsDetailShopDomainModel) {
+    private DataRequest<List<TopAdsProductDetailDataSourceModel>> getSaveProductDetailRequest(TopAdsDetailProductDomainModel topAdsDetailShopDomainModel) {
         DataRequest<List<TopAdsProductDetailDataSourceModel>> dataRequest = new DataRequest<>();
         List<TopAdsProductDetailDataSourceModel> dataRequestList = new ArrayList<>();
         dataRequestList.add(convert(topAdsDetailShopDomainModel));
@@ -48,7 +49,7 @@ public class TopAdsShopAdsDataSource {
         return dataRequest;
     }
 
-    private TopAdsProductDetailDataSourceModel convert(TopAdsDetailShopDomainModel domainModel) {
+    private TopAdsProductDetailDataSourceModel convert(TopAdsDetailProductDomainModel domainModel) {
         TopAdsProductDetailDataSourceModel dataModel = new TopAdsProductDetailDataSourceModel();
         dataModel.setAdId(domainModel.getAdId());
         dataModel.setAdType(domainModel.getAdType());

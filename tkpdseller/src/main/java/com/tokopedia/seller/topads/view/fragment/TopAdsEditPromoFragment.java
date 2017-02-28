@@ -1,8 +1,10 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -14,11 +16,12 @@ import android.widget.RadioGroup;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.datepicker.widget.DatePickerLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.di.TopAdsEditPromoShopDI;
 import com.tokopedia.seller.topads.view.dialog.DatePickerDialog;
 import com.tokopedia.seller.topads.view.dialog.TimePickerdialog;
 import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoView;
@@ -58,6 +61,9 @@ public abstract class TopAdsEditPromoFragment<T extends TopAdsEditPromoPresenter
     private RadioButton iconThumbsUpRadioButton;
     private RadioButton iconFireRadioButton;
     private Button submitButton;
+
+    private SnackbarRetry snackBarRetry;
+    private ProgressDialog progressDialog;
 
     private Date startDate;
     private Date endDate;
@@ -246,9 +252,11 @@ public abstract class TopAdsEditPromoFragment<T extends TopAdsEditPromoPresenter
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                submitAd();
+                saveAd();
             }
         });
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.title_loading));
     }
 
     @Override
@@ -268,31 +276,52 @@ public abstract class TopAdsEditPromoFragment<T extends TopAdsEditPromoPresenter
 
     @Override
     protected void setActionVar() {
-        presenter.getDetailAd(adId);
+        loadAdDetail();
     }
 
-    protected void submitAd() {
+    protected void saveAd() {
+        showLoading();
         populateDataFromfields();
+    }
+
+    protected void loadAdDetail() {
+        showLoading();
     }
 
     @Override
     public void onDetailAdLoaded(TopAdsDetailAdViewModel detailAd) {
+        hideLoading();
         loadAd(detailAd);
     }
 
     @Override
     public void onLoadDetailAdError() {
-
+        hideLoading();
+        showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                loadAdDetail();
+                showLoading();
+            }
+        });
     }
 
     @Override
     public void onSaveAdSuccess(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
-
+        hideLoading();
     }
 
     @Override
     public void onSaveAdError() {
+        hideLoading();
+        showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                saveAd();
+                showLoading();
 
+            }
+        });
     }
 
     protected void loadAd(TopAdsDetailAdViewModel detailAd) {
@@ -421,4 +450,27 @@ public abstract class TopAdsEditPromoFragment<T extends TopAdsEditPromoPresenter
         detailAd.setEndTime(showTimeEndTimeDatePicker.getValue());
     }
 
+    private void showLoading() {
+        progressDialog.show();
+    }
+
+    private void hideLoading() {
+        progressDialog.dismiss();
+        hideSnackBarRetry();
+    }
+
+    private void showSnackBarRetry(NetworkErrorHelper.RetryClickedListener listener) {
+        if (snackBarRetry == null) {
+            snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), listener);
+            snackBarRetry.showRetrySnackbar();
+            snackBarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
+        }
+    }
+
+    private void hideSnackBarRetry() {
+        if (snackBarRetry != null) {
+            snackBarRetry.hideRetrySnackbar();
+            snackBarRetry = null;
+        }
+    }
 }

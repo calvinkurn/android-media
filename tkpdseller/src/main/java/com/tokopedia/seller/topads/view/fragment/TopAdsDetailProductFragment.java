@@ -111,7 +111,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     protected void editAd() {
         if (productAd != null) {
             Intent intent = new Intent(getActivity(), TopAdsEditPromoProductActivity.class);
-            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, productAd.getId());
+            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, String.valueOf(productAd.getId()));
             startActivity(intent);
         }
     }

@@ -42,8 +42,8 @@ public class TopAdsEditPromoShopPresenterImpl extends TopAdsEditPromoPresenterIm
             }
 
             @Override
-            public void onNext(TopAdsDetailShopDomainModel topAdsShopDetailDomainModel) {
-                getView().onDetailAdLoaded(TopAdDetailProductMapper.convertDomainToView(topAdsShopDetailDomainModel));
+            public void onNext(TopAdsDetailShopDomainModel domainModel) {
+                getView().onDetailAdLoaded(TopAdDetailProductMapper.convertDomainToView(domainModel));
             }
         });
     }
@@ -60,11 +60,12 @@ public class TopAdsEditPromoShopPresenterImpl extends TopAdsEditPromoPresenterIm
                 if (e instanceof ResponseErrorException) {
                     Log.e("Test", ((ResponseErrorException) e).getErrorList().get(0).getDetail());
                 }
+                getView().onSaveAdError();
             }
 
             @Override
-            public void onNext(TopAdsDetailShopDomainModel topAdsDetailShopDomainModel) {
-
+            public void onNext(TopAdsDetailShopDomainModel domainModel) {
+                getView().onSaveAdSuccess(TopAdDetailProductMapper.convertDomainToView(domainModel));
             }
         });
     }
