@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.floatbutton.ListenerFabClick;
@@ -24,6 +25,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
+import com.tokopedia.core.home.model.HistoryProductListItem;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RetryHandler;
@@ -34,6 +36,7 @@ import com.tokopedia.seller.instoped.InstagramAuth;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.adapter.DataFeedAdapter;
 import com.tokopedia.tkpd.home.feed.di.component.DaggerDataFeedComponent;
 import com.tokopedia.tkpd.home.util.DefaultRetryListener;
@@ -45,7 +48,11 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
+
+import static com.tokopedia.core.home.adapter.ProductFeedAdapter.FAVORITE_TAB;
+import static com.tokopedia.core.home.adapter.ProductFeedAdapter.HOTLIST_TAB;
 
 
 public class FragmentProductFeed extends BaseDaggerFragment implements FeedContract.View,
@@ -59,14 +66,20 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     FabSpeedDial fabAddProduct;
     @BindView(R.id.main_content)
     LinearLayout mainContentLinearLayout;
+    @BindView(R.id.empty_wishlist)
+    RelativeLayout emptyFeedView;
+    @BindView(R.id.empty_layout_history)
+    RelativeLayout emptyHistoryView;
 
     @Inject
-    FeedDaggerPresenter feedPresenter;
+    FeedPresenter feedPresenter;
 
     private GridLayoutManager gridLayoutManager;
     private DataFeedAdapter adapter;
     private Unbinder unbinder;
     private RetryHandler retryHandler;
+
+    private int currentTopAdsPage;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,7 +92,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View parentView = inflater.inflate(R.layout.fragment_index_main_v2, container, false);
+        View parentView = inflater.inflate(R.layout.fragment_feed, container, false);
         unbinder = ButterKnife.bind(this, parentView);
         prepareView(parentView);
         feedPresenter.attachView(this);
@@ -109,6 +122,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         super.onSaveInstanceState(outState);
         adapter.onSaveInstanceState(outState);
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -171,7 +185,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         final int historyDataPosition = 0;
         adapter.updateHistoryAdapter(dataFeedList.get(historyDataPosition));
         adapter.addAll(true, false, dataFeedList);
-        adapter.notifyItemInserted(0);
+        adapter.notifyItemInserted(historyDataPosition);
 
     }
 
@@ -220,8 +234,9 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         if (dataFeedList != null && dataFeedList.size() > 0) {
             final int historyDataPosition = 0;
             adapter.updateHistoryAdapter(dataFeedList.get(historyDataPosition));
-            adapter.addAll(true, false, dataFeedList);
+            adapter.addAll(true, true, dataFeedList);
             adapter.notifyItemInserted(0);
+            currentTopAdsPage = 3;
         }
     }
 
@@ -237,6 +252,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     public void showRefreshFailed() {
+        feedPresenter.initializeDataFeed();
         if (adapter.getData().size() > 0) {
             NetworkErrorHelper.createSnackbarWithAction(getActivity(),
                     new NetworkErrorHelper.RetryClickedListener() {
@@ -245,8 +261,86 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                             feedPresenter.refreshDataFeed();
                         }
                     }).showRetrySnackbar();
-        }
 
+        }
+    }
+
+    @Override
+    public String getTopAdsPage() {
+        return String.valueOf(currentTopAdsPage);
+    }
+
+    @Override
+    public void increaseTopAdsPage() {
+        currentTopAdsPage += 2;
+    }
+
+    @Override
+    public void showEmptyHistoryProduct() {
+        if(!(adapter!=null && adapter.getHistoryAdapter()!=null
+                && adapter.getHistoryAdapter().getData() !=null
+                && adapter.getHistoryAdapter().getData().size() > 0)){
+        emptyHistoryView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void hideEmptyHistoryProduct() {
+        emptyHistoryView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showEmptyFeed() {
+        emptyFeedView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showInvalidFeed() {
+        emptyFeedView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideEmptyFeed() {
+        emptyFeedView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showMessageRefreshFailed() {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        feedPresenter.refreshDataFeed();
+                    }
+                }).showRetrySnackbar();
+    }
+
+    @Override
+    public boolean isViewNotEmpty() {
+        return !adapter.getData().isEmpty();
+    }
+
+    @Override
+    public void forceShowEmptyHistory() {
+         emptyHistoryView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public HistoryProductListItem getViewmodelHistory() {
+        if (adapter != null && adapter.getData() != null && !adapter.getData().isEmpty()) {
+            return (HistoryProductListItem) adapter.getData().get(0);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public List<RecyclerViewItem> getViewmodelFeed() {
+        if (adapter != null && adapter.getData() != null && !adapter.getData().isEmpty()) {
+            return adapter.getData();
+        } else {
+            return null;
+        }
     }
 
 
@@ -255,6 +349,22 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         feedPresenter.refreshDataFeed();
     }
 
+
+    @OnClick(R.id.find_now)
+    void onFindNowClicked() {
+        ParentIndexHome.ChangeTabListener listener
+                = ((ParentIndexHome) getContext()).GetHotListListener();
+
+        listener.onChangeTab(HOTLIST_TAB);
+    }
+
+    @OnClick(R.id.find_favorite_shop)
+    void onFindFavoriteClicked() {
+        ParentIndexHome.ChangeTabListener listener
+                = ((ParentIndexHome) getContext()).GetFavoriteListener();
+
+        listener.onChangeTab(FAVORITE_TAB);
+    }
 
     private void initVar() {
         final int columnSize
@@ -316,6 +426,8 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                     return ProductFeedHelper.PORTRAIT_COLUMN_HEADER;
                 } else if (isPositionOnTopAds(position)) {
                     return ProductFeedHelper.PORTRAIT_COLUMN_HEADER;
+                } else if (isPositionOnEmptyFeed(position)) {
+                    return ProductFeedHelper.PORTRAIT_COLUMN_HEADER;
                 } else {
                     return ProductFeedHelper.PORTRAIT_COLUMN;
                 }
@@ -364,6 +476,10 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     private boolean isPositionOnHistory(int position) {
         return adapter.isHistory(position);
+    }
+
+    private boolean isPositionOnEmptyFeed(int position) {
+        return adapter.isEmptyFeed(position);
     }
 
     private boolean isPositionInFooter(int position) {
