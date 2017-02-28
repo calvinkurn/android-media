@@ -1,10 +1,12 @@
 package com.tokopedia.seller.topads.view.presenter;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailShopUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailShopUseCase;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailShopDomainModel;
+import com.tokopedia.seller.topads.exception.ResponseErrorException;
 import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoFragmentListener;
 import com.tokopedia.seller.topads.view.mapper.TopAdDetailProductMapper;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
@@ -55,7 +57,9 @@ public class TopAdsEditPromoShopPresenterImpl extends TopAdsEditPromoPresenterIm
 
             @Override
             public void onError(Throwable e) {
-
+                if (e instanceof ResponseErrorException) {
+                    Log.e("Test", ((ResponseErrorException) e).getErrorList().get(0).getDetail());
+                }
             }
 
             @Override

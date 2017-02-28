@@ -3,6 +3,7 @@ package com.tokopedia.seller.topads.data.source.cloud.apiservice;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.api.TopAdsManagementApi;
+import com.tokopedia.seller.topads.data.source.cloud.interceptor.TkpdErrorResponseInterceptor;
 import com.tokopedia.seller.topads.data.source.cloud.interceptor.TopAdsAuthInterceptor;
 
 import okhttp3.Interceptor;
@@ -31,5 +32,10 @@ public class TopAdsManagementService extends AuthService<TopAdsManagementApi> {
     @Override
     public Interceptor getAuthInterceptor() {
         return new TopAdsAuthInterceptor();
+    }
+
+    @Override
+    public Interceptor getErrorInterceptor() {
+        return new TkpdErrorResponseInterceptor();
     }
 }
