@@ -55,6 +55,8 @@ public class TopAdsEditPromoProductFragment extends TopAdsEditPromoFragment<TopA
 
     void addProduct() {
         Intent intent = new Intent(getActivity(), TopAdsAddProductListActivity.class);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, true);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_ETALASE, true);
         startActivityForResult(intent, ADD_PRODUCT_REQUEST_CODE);
     }
 }

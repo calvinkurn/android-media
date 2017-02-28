@@ -8,4 +8,6 @@ import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
 
 public interface FragmentItemSelection extends AdapterSelectionListener<TopAdsProductViewModel> {
     void notifyUnchecked(TopAdsProductViewModel topAdsProductViewModel);
+
+    boolean isExistingGroup();
 }

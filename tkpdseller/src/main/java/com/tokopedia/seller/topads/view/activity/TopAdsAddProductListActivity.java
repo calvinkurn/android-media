@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -21,9 +20,9 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.tkpd.library.utils.image.ImageHandler;
-import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.listener.AddProductListInterface;
 import com.tokopedia.seller.topads.utils.ViewUtils;
@@ -31,7 +30,6 @@ import com.tokopedia.seller.topads.view.fragment.ChipsTopAdsSelectionFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsAddProductListFragment;
 import com.tokopedia.seller.topads.view.helper.BottomSheetHelper;
 import com.tokopedia.seller.topads.view.helper.NumberOfChooseFooterHelper;
-import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -95,6 +93,8 @@ public class TopAdsAddProductListActivity extends BaseActivity
     private Drawable greyButton;
     private View nextBgButton;
     private Drawable greenButton;
+    private boolean isExistingGroup;
+    private boolean isHideEtalase;
 
     private void addPaddingBottom() {
         bottomSheetContainer.setPadding(
@@ -237,7 +237,8 @@ public class TopAdsAddProductListActivity extends BaseActivity
 
     private void fetchIntent(Bundle extras) {
         if (extras != null) {
-            ArrayList<TopAdsProductViewModel> selectionParcel = extras.getParcelableArrayList(EXTRA_SELECTIONS);
+            ArrayList<TopAdsProductViewModel> selectionParcel = extras.getParcelableArrayList(
+                    TopAdsExtraConstant.EXTRA_SELECTIONS);
 
             if(selectionParcel != null){
                 for (TopAdsProductViewModel topAdsProductViewModel : selectionParcel) {
@@ -248,6 +249,9 @@ public class TopAdsAddProductListActivity extends BaseActivity
             Log.d("MNORMANSYAH", "selection after fetching " + selections.toString());
 
             numberOfChooseFooterHelper.setSelectionNumber(selections.size());
+
+            isExistingGroup = extras.getBoolean(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, false);
+            isHideEtalase = extras.getBoolean(TopAdsExtraConstant.EXTRA_HIDE_ETALASE, false);
         }
     }
 
@@ -346,9 +350,19 @@ public class TopAdsAddProductListActivity extends BaseActivity
         }
     }
 
+    @Override
+    public boolean isHideEtalase() {
+        return isHideEtalase;
+    }
+
+    @Override
+    public boolean isExistingGroup() {
+        return isExistingGroup;
+    }
+
     private void returnSelections(){
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_SELECTIONS, new ArrayList<>(selections));
+        intent.putExtra(TopAdsExtraConstant.EXTRA_SELECTIONS, new ArrayList<>(selections));
         setResult(RESULT_CODE, intent);
         finish();
     }
@@ -439,17 +453,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
     }
 
     public int getStatusBarHeight() {
-        int sdkInt = Build.VERSION.SDK_INT;
-        if (sdkInt <= Build.VERSION_CODES.KITKAT) {
-            return 0;
-        }
-
-        int result = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
+       return 0;
     }
 
     @Override

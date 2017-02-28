@@ -25,12 +25,7 @@ public class BottomSheetHelper {
     }
 
     public void showBottomSheet() {
-        int sdkInt = Build.VERSION.SDK_INT;
-        if (sdkInt <= Build.VERSION_CODES.KITKAT) {
-            mBottomSheetBehavior.setPeekHeight((int) (peakView.getHeight() + actionBarSize));
-        }else{
-            mBottomSheetBehavior.setPeekHeight((int) (height + (0.50 * peakView.getHeight()) + actionBarSize));
-        }
+        mBottomSheetBehavior.setPeekHeight((int) (peakView.getHeight() + actionBarSize));
         peakView.requestLayout();
     }
 

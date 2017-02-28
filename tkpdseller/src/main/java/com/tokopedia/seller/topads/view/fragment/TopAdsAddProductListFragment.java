@@ -25,8 +25,6 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.utils.GMNetworkErrorHelper;
-import com.tokopedia.seller.gmstat.views.OnActionClickListener;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.mapper.SearchProductMapper;
 import com.tokopedia.seller.topads.data.repository.TopAdsSearchProductRepositoryImpl;
@@ -43,13 +41,10 @@ import com.tokopedia.seller.topads.listener.AddProductListInterface;
 import com.tokopedia.seller.topads.listener.FragmentItemSelection;
 import com.tokopedia.seller.topads.view.TopAdsSearchProductView;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAddProductListAdapter;
-import com.tokopedia.seller.topads.view.models.TopAdsAddProductModel;
 import com.tokopedia.seller.topads.view.models.TypeBasedModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsAddProductListPresenter;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * @author normansyahputa on 2/13/17.
@@ -58,19 +53,9 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         implements FragmentItemSelection, SearchView.OnQueryTextListener, TopAdsSearchProductView,
         DefaultErrorSubscriber.ErrorNetworkListener {
     public static final String TAG = "TAAddPrductListFragment";
-    private final String dummyUrl
-            = "https://static.pexels.com/photos/68672/beach-beverage-caribbean-cocktail-68672.jpeg";
-    private final String twoLineDummyString
-            = "Sandisk MicroSD Ultra 80MB/S \n64GB Class 10 UHS-1 - SDSQUNC-064G";
-    private final String oneLineDummyString
-            = "Seagate Expansion 500GB USB 3.0";
-    private final String snippetPromoted
-            = "Promoted";
     protected int totalItem;
 
     public static final int FILTER_REQ_CODE = 100;
-    private int selectedFilterEtalaseId;
-    private int selectedFilterStatus;
 
     TopAdsManagementService topAdsSearchProductService;
 
@@ -107,7 +92,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         topAdsAddProductListPresenter.setErrorNetworkListener(this);
         gmNetworkErrorHelper = new TopAdsNetworkErrorHelper(null, rootView);
         setupRecyclerView();
-//        networkDemo();
         fetchData();
     }
 
@@ -115,7 +99,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     private void fetchData() {
         topAdsAddProductListPresenter.setNetworkStatus(
                 TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
-        // TODO fetch data by filter of selectedFilterStatus and selectedFilterEtalaseId
         if(topAdsAddProductListPresenter.isFirstTime()) {
             topAdsProductListAdapter.showLoadingFull(true);
             topAdsAddProductListPresenter.searchProduct();
@@ -141,14 +124,10 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     @Override
     public void onSaveState(Bundle state) {
-        state.putInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS_PROMO, selectedFilterStatus);
-        state.putInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_ETALASE, selectedFilterEtalaseId);
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-        selectedFilterStatus =  savedState.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS_PROMO, 0);
-        selectedFilterEtalaseId =  savedState.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_ETALASE, 0);
     }
 
     @Override
@@ -280,39 +259,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         //[END] This is for dependent component
     }
 
-    private List<TypeBasedModel> dummyData() {
-        List<TypeBasedModel> dummyData = new ArrayList<>();
-        TopAdsProductViewModel topAdsProductViewModel
-                = new TopAdsProductViewModel();
-        topAdsProductViewModel.setId(1);
-        topAdsProductViewModel.setAdId(1);
-        topAdsProductViewModel.setPromoted(true);
-        topAdsProductViewModel.setName("normansyah");
-        topAdsProductViewModel.setImageUrl("wkwkwwk");
-        topAdsProductViewModel.setGroupName("lucu");
-
-        TopAdsAddProductModel dummy
-                = new TopAdsAddProductModel(dummyUrl, twoLineDummyString, snippetPromoted);
-
-        TopAdsAddProductModel emptySnippet
-                = new TopAdsAddProductModel(dummyUrl, oneLineDummyString, null);
-
-        Random random = new Random();
-        for (int i = 0; i < 100; i++) {
-            topAdsProductViewModel.setId(i);
-            topAdsProductViewModel.setAdId(i);
-
-            if (random.nextBoolean()) {
-                dummy.productDomain = topAdsProductViewModel;
-                dummyData.add(dummy);
-            } else {
-                emptySnippet.productDomain = topAdsProductViewModel;
-                dummyData.add(emptySnippet);
-            }
-        }
-        return dummyData;
-    }
-
     @Override
     public void onChecked(int position, TopAdsProductViewModel data) {
         addProductListInterface.addSelection(data);
@@ -338,6 +284,13 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setIconifiedByDefault(true);
         searchView.setOnQueryTextListener(this);
+
+        View filter = menu.findItem(R.id.menu_filter).getActionView();
+        if(addProductListInterface != null){
+            filter.setVisibility(
+                    addProductListInterface.isExistingGroup() ? View.GONE : View.VISIBLE
+            );
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -345,12 +298,14 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.menu_filter){
-            TopAdsFilterProductPromoActivity.start(
-                    this,
-                    getActivity(),
-                    FILTER_REQ_CODE,
-                    selectedFilterStatus,
-                    selectedFilterEtalaseId);
+            if(topAdsAddProductListPresenter != null) {
+                TopAdsFilterProductPromoActivity.start(
+                        this,
+                        getActivity(),
+                        FILTER_REQ_CODE,
+                        topAdsAddProductListPresenter.getSelectedFilterStatus(),
+                        topAdsAddProductListPresenter.getSelectedFilterEtalaseId());
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -359,8 +314,13 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == FILTER_REQ_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                selectedFilterStatus = data.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS_PROMO, 0);
-                selectedFilterEtalaseId = data.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_ETALASE, 0);
+
+                if(topAdsAddProductListPresenter != null){
+                    topAdsAddProductListPresenter.putSelectedFilterStatus(
+                            data.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS_PROMO, 0));
+                    topAdsAddProductListPresenter.putSelectedEtalaseId(
+                            data.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_ETALASE, 0));
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -509,5 +469,13 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     @Override
     public void notifyUnchecked(TopAdsProductViewModel topAdsProductViewModel) {
         topAdsProductListAdapter.notifyUnCheck(topAdsProductViewModel);
+    }
+
+    @Override
+    public boolean isExistingGroup() {
+        if(addProductListInterface != null){
+            return addProductListInterface.isExistingGroup();
+        }
+        return false;
     }
 }

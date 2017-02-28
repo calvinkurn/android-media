@@ -12,8 +12,6 @@ public interface AddProductListInterface extends ActivityItemSelection {
 
     int RESULT_CODE = 9912;
 
-    String EXTRA_SELECTIONS = "EXTRA_SELECTIONS";
-
     ImageHandler imageHandler();
 
     void hideBottomBecauseEmpty();
@@ -29,4 +27,8 @@ public interface AddProductListInterface extends ActivityItemSelection {
     void disableNextButton();
 
     void enableNextButton();
+
+    boolean isHideEtalase();
+
+    boolean isExistingGroup();
 }
