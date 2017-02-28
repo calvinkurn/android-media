@@ -7,9 +7,16 @@ import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.R2;
+import com.tokopedia.seller.opportunity.customview.OppurtunityDetailButtonView;
+import com.tokopedia.seller.opportunity.customview.OppurtunityDetailProductView;
+import com.tokopedia.seller.opportunity.customview.OppurtunityDetailStatusView;
+import com.tokopedia.seller.opportunity.customview.OppurtunityDetailSummaryView;
 import com.tokopedia.seller.opportunity.listener.OppurtunityView;
 import com.tokopedia.seller.opportunity.presenter.OppurtunityImpl;
 import com.tokopedia.seller.opportunity.presenter.OppurtunityPresenter;
+
+import butterknife.BindView;
 
 /**
  * Created by hangnadi on 2/27/17.
@@ -18,7 +25,26 @@ import com.tokopedia.seller.opportunity.presenter.OppurtunityPresenter;
 public class OppurtunityDetailFragment extends BasePresenterFragment<OppurtunityPresenter>
         implements OppurtunityView {
 
+    @BindView(R2.id.customview_oppurtunity_detail_button_view)
+    OppurtunityDetailButtonView buttonView;
+    @BindView(R2.id.customview_oppurtunity_detail_status_view)
+    OppurtunityDetailStatusView statusView;
+    @BindView(R2.id.customview_oppurtunity_detail_product_view)
+    OppurtunityDetailProductView productView;
+    @BindView(R2.id.customview_oppurtunity_detail_summary_view)
+    OppurtunityDetailSummaryView summaryView;
+
     public OppurtunityDetailFragment() {
+    }
+
+    @Override
+    public void onActionDeleteClicked() {
+
+    }
+
+    @Override
+    public void onActionSubmitClicked() {
+
     }
 
     public static Fragment createInstance() {
@@ -80,7 +106,10 @@ public class OppurtunityDetailFragment extends BasePresenterFragment<Oppurtunity
 
     @Override
     protected void setViewListener() {
-
+        buttonView.setListener(this);
+        statusView.setListener(this);
+        productView.setListener(this);
+        summaryView.setListener(this);
     }
 
     @Override
