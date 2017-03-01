@@ -51,6 +51,12 @@ public class TopAdsDetailEditShopFragment extends TopAdsDetailEditFragment<TopAd
     }
 
     @Override
+    protected void loadAdDetail() {
+        super.loadAdDetail();
+        presenter.getDetailAd(adId);
+    }
+
+    @Override
     protected void loadAd(TopAdsDetailAdViewModel detailAd) {
         super.loadAd(detailAd);
         shopNameEditText.setText(detailAd.getTitle());

@@ -31,6 +31,12 @@ public class TopAdsDetailEditProductFragment extends TopAdsDetailEditFragment<To
     }
 
     @Override
+    protected void loadAdDetail() {
+        super.loadAdDetail();
+        presenter.getDetailAd(adId);
+    }
+
+    @Override
     protected void saveAd() {
         super.saveAd();
         presenter.saveAd((TopAdsDetailProductViewModel) detailAd);

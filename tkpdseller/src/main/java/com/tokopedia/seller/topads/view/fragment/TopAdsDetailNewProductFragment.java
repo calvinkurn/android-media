@@ -9,8 +9,9 @@ import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.di.TopAdsEditPromoProductDI;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddProductListActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditProductPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewProductPresenter;
 
-public class TopAdsDetailNewProductFragment extends TopAdsDetailNewFragment<TopAdsDetailEditProductPresenter> {
+public class TopAdsDetailNewProductFragment extends TopAdsDetailNewFragment<TopAdsDetailNewProductPresenter> {
 
     private static final int ADD_PRODUCT_REQUEST_CODE = 0;
 
@@ -42,11 +43,6 @@ public class TopAdsDetailNewProductFragment extends TopAdsDetailNewFragment<TopA
                 addProduct();
             }
         });
-    }
-
-    @Override
-    protected void loadAdDetail() {
-
     }
 
     void addProduct() {

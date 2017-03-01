@@ -23,7 +23,7 @@ import com.tokopedia.seller.lib.datepicker.widget.DatePickerLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.view.dialog.DatePickerDialog;
 import com.tokopedia.seller.topads.view.dialog.TimePickerdialog;
-import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoView;
+import com.tokopedia.seller.topads.view.listener.TopAdsDetailNewView;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewPresenter;
 
@@ -33,7 +33,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public abstract class TopAdsDetailNewFragment<T extends TopAdsDetailNewPresenter> extends BasePresenterFragment<T> implements TopAdsEditPromoView {
+public abstract class TopAdsDetailNewFragment<T extends TopAdsDetailNewPresenter> extends BasePresenterFragment<T> implements TopAdsDetailNewView {
 
     private static final int STICKER_SPEAKER = 3;
     private static final int STICKER_THUMBS_UP = 2;

@@ -5,16 +5,16 @@ import android.content.Context;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailProductUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailProductUseCase;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
+import com.tokopedia.seller.topads.view.listener.TopAdsDetailEditView;
 import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoFragmentListener;
 import com.tokopedia.seller.topads.view.mapper.TopAdDetailProductMapper;
-import com.tokopedia.seller.topads.view.model.TopAdsDetailProductViewModel;
 
 import rx.Subscriber;
 
 /**
  * Created by Nisie on 5/9/16.
  */
-public class TopAdsDetailEditProductPresenterImpl extends TopAdsDetailEditPresenterImpl implements TopAdsDetailEditProductPresenter {
+public class TopAdsDetailEditProductPresenterImpl extends TopAdsDetailNewProductPresenterImpl<TopAdsDetailEditView> implements TopAdsDetailEditProductPresenter {
 
     private TopAdsGetDetailProductUseCase topAdsGetDetailProductUseCase;
     private TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase;
@@ -22,6 +22,7 @@ public class TopAdsDetailEditProductPresenterImpl extends TopAdsDetailEditPresen
     private Context context;
 
     public TopAdsDetailEditProductPresenterImpl(TopAdsGetDetailProductUseCase topAdsGetDetailProductUseCase, TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase) {
+        super(topAdsGetDetailProductUseCase, topAdsSaveDetailProductUseCase);
         this.topAdsGetDetailProductUseCase = topAdsGetDetailProductUseCase;
         this.topAdsSaveDetailProductUseCase = topAdsSaveDetailProductUseCase;
     }
@@ -42,26 +43,6 @@ public class TopAdsDetailEditProductPresenterImpl extends TopAdsDetailEditPresen
             @Override
             public void onNext(TopAdsDetailProductDomainModel domainModel) {
                 getView().onDetailAdLoaded(TopAdDetailProductMapper.convertDomainToView(domainModel));
-            }
-        });
-    }
-
-    @Override
-    public void saveAd(TopAdsDetailProductViewModel adViewModel) {
-        topAdsSaveDetailProductUseCase.execute(TopAdsSaveDetailProductUseCase.createRequestParams(TopAdDetailProductMapper.convertViewToDomain(adViewModel)), new Subscriber<TopAdsDetailProductDomainModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                getView().onSaveAdError();
-            }
-
-            @Override
-            public void onNext(TopAdsDetailProductDomainModel domainModel) {
-                getView().onSaveAdSuccess(TopAdDetailProductMapper.convertDomainToView(domainModel));
             }
         });
     }

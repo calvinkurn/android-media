@@ -3,11 +3,11 @@ package com.tokopedia.seller.topads.view.presenter;
 import android.content.Context;
 import android.util.Log;
 
+import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailShopUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailShopUseCase;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailShopDomainModel;
 import com.tokopedia.seller.topads.exception.ResponseErrorException;
-import com.tokopedia.seller.topads.view.listener.TopAdsDetailEditView;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailNewView;
 import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoFragmentListener;
 import com.tokopedia.seller.topads.view.mapper.TopAdDetailProductMapper;
@@ -18,22 +18,20 @@ import rx.Subscriber;
 /**
  * Created by Nisie on 5/9/16.
  */
-public class TopAdsDetailEditShopPresenterImpl extends TopAdsDetailNewShopPresenterImpl<TopAdsDetailEditView> implements TopAdsDetailEditShopPresenter {
+public class TopAdsDetailNewShopPresenterImpl<T extends TopAdsDetailNewView> extends BaseDaggerPresenter<T> implements TopAdsDetailNewShopPresenter<T> {
 
     private TopAdsGetDetailShopUseCase topAdsGetDetailShopUseCase;
     private TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase;
     private TopAdsEditPromoFragmentListener listener;
     private Context context;
 
-    public TopAdsDetailEditShopPresenterImpl(TopAdsGetDetailShopUseCase topAdsGetDetailShopUseCase, TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase) {
-        super(topAdsGetDetailShopUseCase, topAdsSaveDetailShopUseCase);
+    public TopAdsDetailNewShopPresenterImpl(TopAdsGetDetailShopUseCase topAdsGetDetailShopUseCase, TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase) {
         this.topAdsGetDetailShopUseCase = topAdsGetDetailShopUseCase;
         this.topAdsSaveDetailShopUseCase = topAdsSaveDetailShopUseCase;
     }
 
-    @Override
-    public void getDetailAd(String adId) {
-        topAdsGetDetailShopUseCase.execute(TopAdsGetDetailShopUseCase.createRequestParams(adId), new Subscriber<TopAdsDetailShopDomainModel>() {
+    public void saveAd(TopAdsDetailShopViewModel viewModel) {
+        topAdsSaveDetailShopUseCase.execute(TopAdsSaveDetailShopUseCase.createRequestParams(TopAdDetailProductMapper.convertViewToDomain(viewModel)), new Subscriber<TopAdsDetailShopDomainModel>() {
             @Override
             public void onCompleted() {
 
@@ -41,12 +39,15 @@ public class TopAdsDetailEditShopPresenterImpl extends TopAdsDetailNewShopPresen
 
             @Override
             public void onError(Throwable e) {
-                getView().onLoadDetailAdError();
+                if (e instanceof ResponseErrorException) {
+                    Log.e("Test", ((ResponseErrorException) e).getErrorList().get(0).getDetail());
+                }
+                getView().onSaveAdError();
             }
 
             @Override
             public void onNext(TopAdsDetailShopDomainModel domainModel) {
-                getView().onDetailAdLoaded(TopAdDetailProductMapper.convertDomainToView(domainModel));
+                getView().onSaveAdSuccess(TopAdDetailProductMapper.convertDomainToView(domainModel));
             }
         });
     }

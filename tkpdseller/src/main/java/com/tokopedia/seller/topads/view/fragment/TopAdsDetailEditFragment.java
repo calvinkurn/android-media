@@ -4,10 +4,11 @@ import android.os.Bundle;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.view.listener.TopAdsDetailEditView;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewPresenter;
 
-public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresenter> extends TopAdsDetailNewFragment<T> {
+public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailNewPresenter> extends TopAdsDetailNewFragment<T> implements TopAdsDetailEditView {
 
     protected String adId;
 
@@ -25,7 +26,6 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
 
     protected void loadAdDetail() {
         showLoading();
-        presenter.getDetailAd(adId);
     }
 
     @Override

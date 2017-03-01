@@ -11,8 +11,10 @@ import com.tokopedia.seller.topads.di.TopAdsEditPromoShopDI;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditShopPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewShopPresenter;
 
-public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAdsDetailEditShopPresenter> {
+public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAdsDetailNewShopPresenter> {
 
     private EditText shopNameEditText;
     private String shopName;
@@ -48,11 +50,6 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
         super.initView(view);
         shopNameEditText = (EditText) view.findViewById(R.id.edit_text_shop_name);
         shopNameEditText.setText(shopName);
-    }
-
-    @Override
-    protected void loadAdDetail() {
-
     }
 
     @Override
