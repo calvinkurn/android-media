@@ -5,11 +5,10 @@ import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.inputmodel.checko
 import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.inputmodel.voucher.VoucherCodeInputModel;
 import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.model.checkout.GmCheckoutServiceModel;
 import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.model.voucher.GmVoucherServiceModel;
+import com.tokopedia.seller.gmsubscribe.data.tools.GetResponse;
 
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by sebastianuskh on 2/3/17.
@@ -54,10 +53,5 @@ public class GmSubscribeCartCloud {
                 .map(new GetResponse<GmCheckoutServiceModel>());
     }
 
-    private class GetResponse<T> implements Func1<Response<T>, T> {
-        @Override
-        public T call(Response<T> response) {
-            return response.body();
-        }
-    }
+
 }

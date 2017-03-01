@@ -2,11 +2,10 @@ package com.tokopedia.seller.gmsubscribe.data.source.product.cloud;
 
 import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.api.GoldMerchantApi;
 import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.model.GmServiceModel;
+import com.tokopedia.seller.gmsubscribe.data.tools.GetResponse;
 
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by sebastianuskh on 2/2/17.
@@ -29,10 +28,4 @@ public class GmSubscribeProductCloud {
         return retrofit.create(GoldMerchantApi.class);
     }
 
-    private class GetResponse<T> implements Func1<Response<T>, T> {
-        @Override
-        public T call(Response<T> response) {
-            return response.body();
-        }
-    }
 }
