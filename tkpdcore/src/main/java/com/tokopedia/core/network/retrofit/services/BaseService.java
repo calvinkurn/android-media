@@ -54,7 +54,7 @@ public abstract class BaseService<T> {
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         client.interceptors().add(logInterceptor);
         Interceptor errInterceptor = getErrorInterceptor();
-        if (null!= errInterceptor) {
+        if (errInterceptor!= null) {
             client.interceptors().add(errInterceptor);
         }
         Gson gson = new GsonBuilder()
@@ -81,7 +81,7 @@ public abstract class BaseService<T> {
         return new TkpdBaseInterceptor();
     }
 
-    public Interceptor getErrorInterceptor(){
+    public Interceptor getErrorInterceptor(){ // might be ovverriden in subclasses
         return null;
     }
 

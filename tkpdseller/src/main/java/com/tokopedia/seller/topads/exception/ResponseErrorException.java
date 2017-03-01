@@ -9,9 +9,8 @@ import java.util.List;
  */
 
 public class ResponseErrorException extends RuntimeException {
-    List<Error> errorList;
+    private List<Error> errorList;
     public ResponseErrorException(List<Error> errorList) {
-        super("Terjadi kesalahan");
         this.errorList = errorList;
     }
 
