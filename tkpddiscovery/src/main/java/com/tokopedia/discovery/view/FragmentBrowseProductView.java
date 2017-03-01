@@ -2,6 +2,7 @@ package com.tokopedia.discovery.view;
 
 import android.os.Bundle;
 
+import com.tokopedia.core.network.entity.categoriesHades.Category;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.util.PagingHandler;
@@ -34,6 +35,7 @@ public interface FragmentBrowseProductView extends BaseView {
 
     void addTopAds(List<ProductItem> passProduct, int page, String tag);
     void addHotListHeader(ProductAdapter.HotListBannerModel hotListBannerModel);
+    void addCategoriesHeader(Category categotyHeader);
     BrowseProductModel getDataModel();
 
     //    int VALUES_PRODUCT_FRAGMENT_ID = 812_192;

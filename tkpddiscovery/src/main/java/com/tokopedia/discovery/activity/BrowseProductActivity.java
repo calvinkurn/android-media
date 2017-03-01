@@ -47,6 +47,7 @@ import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.entity.categoriesHades.CategoriesHadesModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -1055,61 +1056,15 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                         BrowseParentFragment parentFragment = (BrowseParentFragment)
                                 fragmentManager.findFragmentById(R.id.container);
                         if (parentFragment!=null) {
+                            ObjContainer objContainer = data.getModel2();
+                            CategoriesHadesModel.CategoriesHadesContainer categoriesHadesContainer = (CategoriesHadesModel.CategoriesHadesContainer) objContainer;
+                            CategoriesHadesModel body = categoriesHadesContainer.body();
 
-                        }
-                       // BrowseParentFragment browseParentFragment = (getac)
-                      /*  Log.d(TAG, "fetch " + data.getModel1());
-                        ObjContainer model2 = data.getModel2();
-                        HotListBannerModel.HotListBannerContainer hotListBannerContainer = (HotListBannerModel.HotListBannerContainer) model2;
-                        HotListBannerModel body = hotListBannerContainer.body();
-                        if (browseProductActivityModel.getOb() != null) {
-                            body.query.ob = browseProductActivityModel.getOb();
-                        }
-                        Map<String, String> filters;
-
-                        if ( browseProductActivityModel != null ) {
-                            filters = browseProductActivityModel.getFilterOptions();
-                            for (Map.Entry<String, String> set : filters.entrySet()) {
-                                if (set.getKey().equals("ob")) {
-                                    body.query.ob = set.getValue();
-                                }
+                            if (browseProductActivityModel !=null && body.getData().getCategories().size()>0) {
+                                browseProductActivityModel.categotyHeader = body.getData().getCategories().get(0);
+                                parentFragment.renderCategories(browseProductActivityModel.categotyHeader);
                             }
-                        } else {
-                            filters = new HashMap<String, String>();
-                            filters.put("sc", body.query.sc);
-                            ArrayMap<String, Boolean> selectedPositions = new ArrayMap<>();
-                            List<String> scList = new ArrayList<String>();
-                            if (body.query.sc.contains(",")) {
-                                for (String s : body.query.sc.split(",")) {
-                                    scList.add(s);
-                                }
-                            } else {
-                                scList.add(body.query.sc);
-                            }
-                            for (String s : scList) {
-                                selectedPositions.put(s, true);
-                            }
-                            SharedPreferences.Editor editor = preferences.edit();
-                            editor.putString(DynamicFilterActivity.FILTER_SELECTED_POS_PREF, new Gson().toJson(selectedPositions));
-                            editor.apply();
-                            editor.putString(DynamicFilterActivity.FILTER_SELECTED_PREF, new Gson().toJson(filters));
-                            editor.apply();
                         }
-                        Log.d(TAG, "Hotlist query " + body.query.toString());
-
-                        FilterMapAtribut.FilterMapValue filterMapValue
-                                = new FilterMapAtribut.FilterMapValue();
-                        filterMapValue.setValue((HashMap<String, String>) filters);
-                        mFilterMapAtribut.getFiltersMap()
-                                .put(browseProductActivityModel.getActiveTab(), filterMapValue);
-
-
-                        browseProductActivityModel.setFilterOptions(filters);
-                        browseProductActivityModel.setOb(body.query.ob);
-                        browseProductActivityModel.setHotListBannerModel(body);
-                        Fragment fragment = BrowseParentFragment.newInstance(browseProductActivityModel);
-
-                        setFragment(fragment, BrowseParentFragment.FRAGMENT_TAG);*/
                         break;
                 }
             }

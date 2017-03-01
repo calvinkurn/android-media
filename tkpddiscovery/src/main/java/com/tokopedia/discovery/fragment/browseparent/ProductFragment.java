@@ -6,13 +6,16 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -22,15 +25,22 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
+import com.tokopedia.core.network.entity.categoriesHades.Category;
+import com.tokopedia.core.network.entity.categoriesHades.Child;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
+import com.tokopedia.core.network.entity.topPicks.Toppick;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.session.base.BaseFragment;
+import com.tokopedia.core.util.NonScrollGridLayoutManager;
+import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
+import com.tokopedia.discovery.adapter.DefaultCategoryAdapter;
 import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.interfaces.FetchNetwork;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenter;
@@ -48,7 +58,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_PRO
  * Created by noiz354 on 3/24/16.
  */
 public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
-        implements FetchNetwork, FragmentBrowseProductView {
+        implements FetchNetwork, FragmentBrowseProductView, DefaultCategoryAdapter.CategoryListener {
 
     public static final String TAG = "BrowseProductFragment";
     public static final String INDEX = "FRAGMENT_INDEX";
@@ -67,6 +77,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     private static String ARG_2 = "";
 
     private ProductAdapter productAdapter;
+    private DefaultCategoryAdapter categoryAdapter;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
     private BrowseProductRouter.GridType gridType;
@@ -414,6 +425,21 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         productAdapter.addHotListHeader(hotListBannerModel);
     }
 
+    @Override
+    public void addCategoriesHeader(Category categotyHeader) {
+        if (categotyHeader.getChild()!=null) {
+            RecyclerView defaultCategoriesRecyclerView = (RecyclerView) this.parentView.findViewById(R.id.recycler_view_default_categories);
+            defaultCategoriesRecyclerView.setVisibility(View.VISIBLE);
+            defaultCategoriesRecyclerView.setHasFixedSize(true);
+            defaultCategoriesRecyclerView.setLayoutManager(
+                    new NonScrollGridLayoutManager(getActivity(), 2,
+                            GridLayoutManager.VERTICAL, false));
+            defaultCategoriesRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
+            categoryAdapter = new DefaultCategoryAdapter(getCategoryWidth(),categotyHeader,this);
+            defaultCategoriesRecyclerView.setAdapter(categoryAdapter);
+        }
+    }
+
     private int calcColumnSize(int orientation) {
         int defaultColumnNumber = 1;
         switch (orientation) {
@@ -426,4 +452,19 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         }
         return defaultColumnNumber;
     }
+
+    private int getCategoryWidth() {
+        WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        return (int) (width / 2);
+    }
+
+    @Override
+    public void onCategoryClick(Child child) {
+        Log.d(TAG, "onCategoryClick: ");
+    }
+
 }

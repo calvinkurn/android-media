@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.ViewPager;
-import android.text.Html;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,10 +30,10 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.entity.categoriesHades.Category;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
-import com.tokopedia.core.network.entity.discovery.CatalogModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.session.base.BaseFragment;
@@ -79,6 +78,8 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     private String source;
     private String formatKey = "%d_%s";
 
+    private BrowserSectionsPagerAdapter browserSectionsPagerAdapter;
+
     @Override
     public String getScreenName() {
         return null;
@@ -107,7 +108,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         @Override
         public List<Breadcrumb> getProductBreadCrumb() {
             try {
-                Fragment fragment = mSectionsPagerAdapter.getItem(viewPager.getCurrentItem());
+                Fragment fragment = browserSectionsPagerAdapter.getItem(viewPager.getCurrentItem());
                 switch (viewPager.getCurrentItem()) {
                     case 0:
                         if (fragment instanceof ProductFragment) {
@@ -132,7 +133,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
             return ((BrowseProductActivity) getActivity()).checkHasFilterAttrIsNull(activeTab);
         }
     };
-    private BrowserSectionsPagerAdapter mSectionsPagerAdapter;
+
 
     public static BrowseParentFragment newInstance(BrowseProductActivityModel browseProductActivityModel) {
         return newInstance(browseProductActivityModel, 0);
@@ -185,8 +186,8 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     }
 
     public Fragment getActiveFragment() {
-        if (mSectionsPagerAdapter != null) {
-            return mSectionsPagerAdapter.getItem(viewPager.getCurrentItem());
+        if (browserSectionsPagerAdapter != null) {
+            return browserSectionsPagerAdapter.getItem(viewPager.getCurrentItem());
         } else {
             return null;
         }
@@ -194,17 +195,17 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
 
     @Override
     public void initSectionAdapter(ArrayMap<String, String> visibleTab) {
-        mSectionsPagerAdapter = new BrowserSectionsPagerAdapter(getChildFragmentManager());
+        browserSectionsPagerAdapter = new BrowserSectionsPagerAdapter(getChildFragmentManager());
         viewPager.setOffscreenPageLimit(2);
-        viewPager.setAdapter(mSectionsPagerAdapter);
-        mSectionsPagerAdapter.setSectionViewPager(visibleTab);
+        viewPager.setAdapter(browserSectionsPagerAdapter);
+        browserSectionsPagerAdapter.setSectionViewPager(visibleTab);
     }
 
     @Override
     public String getProductShareUrl() {
         String shareUrl = "";
         try {
-            Fragment fragment = mSectionsPagerAdapter.getItem(viewPager.getCurrentItem());
+            Fragment fragment = browserSectionsPagerAdapter.getItem(viewPager.getCurrentItem());
             switch (viewPager.getCurrentItem()) {
                 case 0:
                     //TODO Return Product Model for Catalog
@@ -232,7 +233,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
 
     @Override
     public void setNetworkStateError() {
-        if (mSectionsPagerAdapter == null) {
+        if (browserSectionsPagerAdapter == null) {
             ((BrowseProductActivity) getActivity()).showEmptyState(new NetworkErrorHelper.RetryClickedListener() {
                 @Override
                 public void onRetryClicked() {
@@ -278,6 +279,16 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     @Override
     public void setupCategory(BrowseProductModel browseProductModel) {
         ((BrowseProductActivity) getActivity()).sendCategory(browseProductModel.result.departmentId);
+    }
+
+    @Override
+    public void renderCategories(Category category) {
+        for (int i=0; i< browserSectionsPagerAdapter.getCount(); i++) {
+            if (browserSectionsPagerAdapter.getItem(i) instanceof ProductFragment) {
+                ProductFragment productFragment = (ProductFragment) browserSectionsPagerAdapter.getItem(i);
+                productFragment.addCategoriesHeader(category);
+            }
+        }
     }
 
     @Override
@@ -334,7 +345,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     }
 
     private void fetchData(int position) {
-        Fragment fragment = (Fragment) mSectionsPagerAdapter.instantiateItem(viewPager, position);
+        Fragment fragment = (Fragment) browserSectionsPagerAdapter.instantiateItem(viewPager, position);
         /**
          * hit fragment browse shop tab at page selected for the first time
          */
