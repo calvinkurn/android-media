@@ -329,6 +329,8 @@ public class TkpdBaseURL {
         public static final String PATH_GET_SHOP_NOTES = "get_shop_notes.pl";
         public static final String PATH_GET_SHOP_PRODUCT = "get_shop_product.pl";
         public static final String PATH_GET_SHOP_REVIEW = "get_shop_review.pl";
+
+        public static final String PATH_RETRY_PICKUP = "retry_pickup.pl";
     }
 
     public static final class Etc {

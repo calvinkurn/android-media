@@ -20,6 +20,7 @@
             <flag name="italic" value="2" />
         </attr>
         <attr name="content_small" format="boolean"/>
+        <attr name="switch_enable" format="boolean"/>
     </declare-styleable>
     <declare-styleable name="loader_view">
         <attr name="width_weight" format="float" />

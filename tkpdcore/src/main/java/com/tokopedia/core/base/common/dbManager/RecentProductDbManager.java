@@ -1,9 +1,9 @@
-package com.tokopedia.tkpd.home.feed.data.source.local.dbManager;
+package com.tokopedia.core.base.common.dbManager;
 
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.tokopedia.core.base.data.DbManagerOperation;
-import com.tokopedia.core.database.model.DbTopAds;
+import com.tokopedia.core.database.model.DbRecentProduct;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -12,17 +12,17 @@ import rx.Observable;
  * @author Kulomady on 1/3/17.
  */
 
-public class TopAdsDbManager
-        implements DbManagerOperation<DbTopAds, Observable<Response<String>>> {
+public class RecentProductDbManager
+        implements DbManagerOperation<DbRecentProduct, Observable<Response<String>>> {
 
     @Override
-    public void store(DbTopAds data) {
+    public void store(DbRecentProduct data) {
         data.save();
     }
 
     @Override
     public void delete() {
-        Delete.tables(DbTopAds.class);
+        Delete.table(DbRecentProduct.class);
     }
 
     @Override
@@ -36,27 +36,29 @@ public class TopAdsDbManager
     }
 
     @Override
-    public DbTopAds getTable() {
-        return SQLite.select()
-                .from(DbTopAds.class)
-                .querySingle();
+    public DbRecentProduct getTable() {
+        return SQLite.select().from(DbRecentProduct.class).querySingle();
     }
 
     @Override
     public Observable<Response<String>> getData() {
-        String contentTopAds = getTable().getContentTopAds();
-        if (contentTopAds != null) {
-            return Observable.just(Response.success(contentTopAds));
-        } else {
+        if(getTable() !=null) {
+            String contentRecentProduct = getTable().getContentRecentProduct();
+            if (contentRecentProduct != null) {
+                return Observable.just(Response.success(contentRecentProduct));
+            }else{
+                return Observable.empty();
+            }
+        }else {
             return Observable.empty();
         }
-
     }
 
     @Override
     public boolean isQueryDataEmpty() {
         return getTable() == null;
     }
+
 
     private boolean isMoreThanFifteenMinute(long currentTime, long oldTime) {
         long fifteenMinutes = 1000 * 60 * 15;

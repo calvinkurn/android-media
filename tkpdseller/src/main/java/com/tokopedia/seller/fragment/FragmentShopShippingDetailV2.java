@@ -364,6 +364,14 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
                 Bundle bundle = new Bundle();
                 bundle.putString(InboxRouter.PARAM_USER_ID, orderShippingList.getOrderCustomer().getCustomerId());
                 bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, orderShippingList.getOrderCustomer().getCustomerName());
+                bundle.putString(InboxRouter.PARAM_CUSTOM_SUBJECT,
+                        orderShippingList.getOrderDetail().getDetailInvoice());
+                bundle.putString(InboxRouter.PARAM_CUSTOM_MESSAGE,
+                        MethodChecker.fromHtml(
+                                getString(R.string.custom_content_message_ask_seller)
+                                        .replace("XXX",
+                                                orderShippingList.getOrderDetail().getDetailPdfUri())).toString()
+                );
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

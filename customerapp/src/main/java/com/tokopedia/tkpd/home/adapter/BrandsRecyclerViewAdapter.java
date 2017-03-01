@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.network.entity.home.Brand;
@@ -20,10 +21,12 @@ public class BrandsRecyclerViewAdapter extends RecyclerView.Adapter<BrandsRecycl
 
     private Brands brands;
     private OnItemClickListener clickListener;
+    private final int homeMenuWidth;
 
-    public BrandsRecyclerViewAdapter(OnItemClickListener itemListener){
+    public BrandsRecyclerViewAdapter(OnItemClickListener itemListener, int homeWidth){
         clickListener = itemListener;
         brands = new Brands();
+        homeMenuWidth = homeWidth;
     }
 
     public void setDataList(Brands dataList) {
@@ -36,11 +39,14 @@ public class BrandsRecyclerViewAdapter extends RecyclerView.Adapter<BrandsRecycl
         @SuppressLint("InflateParams") View v = LayoutInflater.from(
                 parent.getContext()).inflate(R.layout.item_brands_category, null
         );
+        v.setMinimumWidth(homeMenuWidth);
         return new BrandsRecyclerViewAdapter.ItemRowHolder(v);
     }
 
     @Override
     public void onBindViewHolder(final ItemRowHolder holder, int position) {
+        holder.llWrapper.getLayoutParams().width = homeMenuWidth;
+        holder.llWrapper.getLayoutParams().height = homeMenuWidth;
         if(position<brands.getData().size()){
             final Brand singleBrand = brands.getData().get(position);
             ImageHandler.LoadImage(holder.ivBrands,singleBrand.getLogoUrl());
@@ -64,10 +70,12 @@ public class BrandsRecyclerViewAdapter extends RecyclerView.Adapter<BrandsRecycl
 
     class ItemRowHolder extends RecyclerView.ViewHolder {
         ImageView ivBrands;
+        LinearLayout llWrapper;
 
         ItemRowHolder(View view) {
             super(view);
             this.ivBrands = (ImageView) view.findViewById(R.id.iv_brands);
+            this.llWrapper = (LinearLayout) view.findViewById(R.id.ll_wrapper);
         }
 
     }

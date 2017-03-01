@@ -19,6 +19,9 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.base.common.dbManager.FeedDbManager;
+import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
+import com.tokopedia.core.base.common.dbManager.TopAdsDbManager;
 import com.tokopedia.core.database.manager.ProductDetailCacheManager;
 import com.tokopedia.core.database.manager.ProductOtherCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -26,6 +29,7 @@ import com.tokopedia.core.inboxreputation.interactor.CacheInboxReputationInterac
 import com.tokopedia.core.inboxreputation.interactor.InboxReputationCacheManager;
 import com.tokopedia.core.message.interactor.CacheInteractorImpl;
 import com.tokopedia.core.msisdn.fragment.MsisdnVerificationFragment;
+import com.tokopedia.core.product.presenter.ProductDetailPresenterImpl;
 import com.tokopedia.core.prototype.InboxCache;
 import com.tokopedia.core.prototype.ManageProductCache;
 import com.tokopedia.core.prototype.PembelianCache;
@@ -176,6 +180,7 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, "REGISTERED");
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_MAIN);
         LocalCacheHandler.clearCache(context, MsisdnVerificationFragment.PHONE_VERIFICATION);
+        LocalCacheHandler.clearCache(context, ProductDetailPresenterImpl.CACHE_PROMOTION_PRODUCT);
         CacheInboxReputationInteractorImpl reputationCache = new CacheInboxReputationInteractorImpl();
         reputationCache.deleteCache();
         InboxReputationCacheManager reputationDetailCache = new InboxReputationCacheManager();
@@ -183,8 +188,11 @@ public class SessionHandler {
         logoutInstagram(context);
         MethodChecker.removeAllCookies(context);
 
+        clearFeedCache();
 
     }
+
+
 
     private static void logoutInstagram(Context context) {
         if (isV4Login(context) && context instanceof AppCompatActivity) {
@@ -568,5 +576,11 @@ public class SessionHandler {
     public static String getUUID(Context context) {
         return new LocalCacheHandler(context, LOGIN_UUID_KEY)
                 .getString(UUID_KEY, DEFAULT_UUID_VALUE);
+    }
+
+    private static void clearFeedCache() {
+        new FeedDbManager().delete();
+        new RecentProductDbManager().delete();
+        new TopAdsDbManager().delete();
     }
 }

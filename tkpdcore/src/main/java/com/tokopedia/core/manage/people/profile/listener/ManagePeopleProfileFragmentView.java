@@ -59,6 +59,8 @@ public interface ManagePeopleProfileFragmentView {
 
     String getBirthDay();
 
+    void setBirthDayError(String errorMessage);
+
     int getGender();
 
     void prepareToUploadAvatar(String data);

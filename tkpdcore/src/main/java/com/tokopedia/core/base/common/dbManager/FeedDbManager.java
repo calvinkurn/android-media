@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.home.feed.data.source.local.dbManager;
+package com.tokopedia.core.base.common.dbManager;
 
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
@@ -44,9 +44,13 @@ public class FeedDbManager implements DbManagerOperation<DbFeed, Observable<Resp
 
     @Override
     public Observable<Response<String>> getData() {
-        String contentRecentProduct = getTable().getContentFeed();
-        if (contentRecentProduct != null) {
-            return Observable.just(Response.success(contentRecentProduct));
+        if (getTable() != null) {
+            String contentRecentProduct = getTable().getContentFeed();
+            if (contentRecentProduct != null) {
+                return Observable.just(Response.success(contentRecentProduct));
+            } else {
+                return Observable.empty();
+            }
         } else {
             return Observable.empty();
         }

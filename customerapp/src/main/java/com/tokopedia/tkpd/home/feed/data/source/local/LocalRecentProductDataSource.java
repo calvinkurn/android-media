@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.home.feed.data.source.local;
 
 import com.tokopedia.tkpd.home.feed.data.mapper.RecentProductMapper;
-import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.RecentProductDbManager;
+import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
 import com.tokopedia.tkpd.home.feed.domain.model.ProductFeed;
 
 import java.util.List;
@@ -24,9 +24,6 @@ public class LocalRecentProductDataSource {
     }
 
     public Observable<List<ProductFeed>> getRecentProductFromCache() {
-        if (recentProductDbManager.isExpired(System.currentTimeMillis())) {
-            return Observable.empty();
-        }
         return recentProductDbManager.getData().map(recentProductMapper);
     }
 }
