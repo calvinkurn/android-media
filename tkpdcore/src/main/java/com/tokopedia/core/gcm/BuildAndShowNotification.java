@@ -11,8 +11,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.NotificationCenter;
 import com.tokopedia.core.R;
@@ -27,6 +32,10 @@ import com.tokopedia.core.var.TkpdState;
 
 import java.io.File;
 import java.util.List;
+
+import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_ICON;
@@ -63,8 +72,6 @@ public class BuildAndShowNotification {
             inboxStyle.addLine(applinkNotificationPass.getDescription());
         }
 
-        NotificationManager mNotificationManager =
-                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
                 .setSmallIcon(getDrawableIcon())
                 .setAutoCancel(true);
@@ -75,9 +82,7 @@ public class BuildAndShowNotification {
         mBuilder.setTicker(applinkNotificationPass.getDescription() + " Ticker");
         mBuilder.setContentInfo("info");
         mBuilder.setCategory(Notification.CATEGORY_MESSAGE);
-
-
-        mBuilder = configureIconNotification(applinkNotificationPass.getImageUrl(), mBuilder);
+        mBuilder.setGroup("group_key_guest");
 
         if (isAllowBell()) {
             mBuilder.setSound(getSoundUri());
@@ -89,11 +94,40 @@ public class BuildAndShowNotification {
         stackBuilder.addNextIntent(applinkNotificationPass.getIntent());
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
-        Notification notif = mBuilder.build();
-        if (isAllowedVibrate() && isAllowBell()) {
-            notif.defaults |= Notification.DEFAULT_VIBRATE;
-        }
-        mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
+
+        downloadImageAndShowNotification(applinkNotificationPass, mBuilder);
+    }
+
+    private void downloadImageAndShowNotification(final ApplinkNotificationPass applinkNotificationPass,
+                                                  final NotificationCompat.Builder mBuilder) {
+       /* Observable.just(true)
+                .doOnNext(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+
+                    }
+                });*/
+        Glide
+                .with(mBuilder.mContext)
+                .load(applinkNotificationPass.getImageUrl())
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>(48,48) {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                        mBuilder.setLargeIcon(
+                                ImageHandler.getRoundedCornerBitmap(resource, 48)
+                        );
+
+                        NotificationManager mNotificationManager =
+                                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                        Notification notif = mBuilder.build();
+                        if (isAllowedVibrate() && isAllowBell()) {
+                            notif.defaults |= Notification.DEFAULT_VIBRATE;
+                        }
+                        mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
+                    }
+                });
+
     }
 
     public void buildAndShowNotification(NotificationPass notificationPass, Bundle data, Intent intent) {
@@ -230,6 +264,23 @@ public class BuildAndShowNotification {
     }
 
     private NotificationCompat.Builder configureIconNotification(String iconUrl, final NotificationCompat.Builder mBuilder) {
+        Glide
+                .with(mBuilder.mContext)
+                .load(iconUrl)
+                .asBitmap()
+                .into(new SimpleTarget<Bitmap>(48,48) {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                        mBuilder.setLargeIcon(
+                                Bitmap.createScaledBitmap(
+                                        resource,
+                                        mContext.getResources().getDimensionPixelSize(R.dimen.icon_size),
+                                        mContext.getResources().getDimensionPixelSize(R.dimen.icon_size),
+                                        true
+                                )
+                        );
+                    }
+                });/*
         ImageHandler.loadImageBitmapNotification(
                 mBuilder.mContext,
                 iconUrl,
@@ -246,7 +297,7 @@ public class BuildAndShowNotification {
                         );
                     }
                 }
-        );
+        );*/
         return mBuilder;
     }
 

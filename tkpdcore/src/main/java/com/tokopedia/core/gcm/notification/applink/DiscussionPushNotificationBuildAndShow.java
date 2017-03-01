@@ -1,10 +1,10 @@
 package com.tokopedia.core.gcm.notification.applink;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.tokopedia.core.gcm.BuildAndShowNotification;
 import com.tokopedia.core.gcm.domain.model.DiscussionPushNotification;
-import com.tokopedia.core.gcm.domain.model.MessagePushNotification;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ public class DiscussionPushNotificationBuildAndShow extends AbstractApplinkBuild
     }
 
     @Override
-    public void process(Context context) {
+    public void process(Context context, Intent handlerIntent) {
         buildAndShowNotification = new BuildAndShowNotification(context);
     }
 }

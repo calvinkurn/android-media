@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.fcm;
 
 import android.app.Application;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -21,6 +22,7 @@ import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.seller.deeplink.SellerDeeplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.ConsumerDeeplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.notification.NewReviewNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAcceptedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAutoCancel2DNotification;
@@ -82,7 +84,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 }
                 return true;
             }
-        }).subscribeOn(Schedulers.io())
+        }).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(Actions.empty(), new Action1<Throwable>() {
                     @Override
@@ -210,9 +212,10 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
             @Override
             public void onNext(List<ApplinkVisitor> applinkVisitors) {
+                Intent intent = new Intent(mContext, DeeplinkHandlerActivity.class);
                 ApplinkTypeFactory applinkTypeFactory = new ApplinkTypeFactoryList();
                 for (ApplinkVisitor applinkVisitor : applinkVisitors){
-                    applinkVisitor.type(applinkTypeFactory).process(mContext);
+                    applinkVisitor.type(applinkTypeFactory).process(mContext, intent);
                 }
             }
         });

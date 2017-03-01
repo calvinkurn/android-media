@@ -26,7 +26,7 @@ public class MessagePushNotificationBuildAndShow extends AbstractApplinkBuildAnd
     }
 
     @Override
-    public void process(Context context) {
+    public void process(Context context, Intent handlerIntent) {
         buildAndShowNotification = new BuildAndShowNotification(context);
         if (discussionPushNotifications.size() > 0) {
             boolean isSingle = true;
@@ -76,7 +76,7 @@ public class MessagePushNotificationBuildAndShow extends AbstractApplinkBuildAnd
                     .image(image)
                     .id(1001)
                     .title("Tokopedia - Pesan Baru")
-                    .intent(new Intent())
+                    .intent(handlerIntent)
                     .applink(uri)
                     .build();
             buildAndShowNotification.buildAndShowNotification(applinkNotificationPass);
