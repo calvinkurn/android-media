@@ -7,25 +7,45 @@ import android.os.Parcelable;
  * @author anggaprasetiyo on 2/2/17.
  */
 
-public class PaymentPassData<T extends Parcelable> implements Parcelable {
+public class PaymentPassData implements Parcelable {
 
     private String paymentId;
     private String queryString;
     private String redirectUrl;
     private String callbackUrl;
-    private Parcelable detailData;
 
-    @SuppressWarnings("unchecked")
-    public T getDetailData() {
-        return (T) detailData;
+    public String getPaymentId() {
+        return paymentId;
     }
 
-    public void setDetailData(T detailData) {
-        this.detailData = detailData;
+    public void setPaymentId(String paymentId) {
+        this.paymentId = paymentId;
     }
 
-    public PaymentPassData() {
+    public String getQueryString() {
+        return queryString;
     }
+
+    public void setQueryString(String queryString) {
+        this.queryString = queryString;
+    }
+
+    public String getRedirectUrl() {
+        return redirectUrl;
+    }
+
+    public void setRedirectUrl(String redirectUrl) {
+        this.redirectUrl = redirectUrl;
+    }
+
+    public String getCallbackUrl() {
+        return callbackUrl;
+    }
+
+    public void setCallbackUrl(String callbackUrl) {
+        this.callbackUrl = callbackUrl;
+    }
+
 
     @Override
     public int describeContents() {
@@ -38,7 +58,9 @@ public class PaymentPassData<T extends Parcelable> implements Parcelable {
         dest.writeString(this.queryString);
         dest.writeString(this.redirectUrl);
         dest.writeString(this.callbackUrl);
-        dest.writeParcelable(this.detailData, flags);
+    }
+
+    public PaymentPassData() {
     }
 
     protected PaymentPassData(Parcel in) {
@@ -46,18 +68,18 @@ public class PaymentPassData<T extends Parcelable> implements Parcelable {
         this.queryString = in.readString();
         this.redirectUrl = in.readString();
         this.callbackUrl = in.readString();
-        this.detailData = in.readParcelable(Parcelable.class.getClassLoader());
     }
 
-    public static final Creator<PaymentPassData> CREATOR = new Creator<PaymentPassData>() {
-        @Override
-        public PaymentPassData createFromParcel(Parcel source) {
-            return new PaymentPassData(source);
-        }
+    public static final Parcelable.Creator<PaymentPassData> CREATOR =
+            new Parcelable.Creator<PaymentPassData>() {
+                @Override
+                public PaymentPassData createFromParcel(Parcel source) {
+                    return new PaymentPassData(source);
+                }
 
-        @Override
-        public PaymentPassData[] newArray(int size) {
-            return new PaymentPassData[size];
-        }
-    };
+                @Override
+                public PaymentPassData[] newArray(int size) {
+                    return new PaymentPassData[size];
+                }
+            };
 }
