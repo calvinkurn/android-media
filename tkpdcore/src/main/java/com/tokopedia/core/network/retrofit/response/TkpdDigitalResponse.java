@@ -1,74 +1,149 @@
 package com.tokopedia.core.network.retrofit.response;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.tokopedia.core.network.exception.ResponseDataNullException;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author anggaprasetiyo on 2/27/17.
  */
 
 public class TkpdDigitalResponse {
+    private static final String TAG = TkpdDigitalResponse.class.getSimpleName();
 
-    private JsonObject jsonObject;
-    private String fullResponse;
-    private String dataResponse;
-    private Object dataObject;
+    private static final String KEY_DATA = "data";
+    private static final String KEY_ERROR = "errors";
+    private static final String KEY_TITLE = "title";
+    private static final String DEFAULT_ERROR_MESSAGE_DATA_NULL = "Tidak ada data";
+
+
+    private JsonElement jsonElementData;
+    private Object objData;
     private String message;
-    private boolean isError;
+    private String strResponse;
+    private String strData;
+    private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    public static TkpdDigitalResponse factory(String strResponse) {
-        Gson gson = new Gson();
+    public static TkpdDigitalResponse factory(String strResponse) throws IOException {
+        Log.d(TAG, strResponse);
+
         TkpdDigitalResponse tkpdDigitalResponse = new TkpdDigitalResponse();
-        // gson.fr
-        //     if(new JsonObject)
+        JsonElement jsonElement = new JsonParser().parse(strResponse);
+        JsonObject jsonResponse = jsonElement.getAsJsonObject();
+        String strData;
+        if (jsonResponse.get(KEY_DATA).isJsonNull()) {
+            String errorDefault = DEFAULT_ERROR_MESSAGE_DATA_NULL;
+            if (jsonResponse.has(KEY_ERROR)) {
+                StringBuilder stringBuilder = new StringBuilder();
+                JsonArray jsonArrayError = jsonResponse.get(KEY_ERROR).getAsJsonArray();
+                for (JsonElement jsonElementError : jsonArrayError) {
+                    String messageError = jsonElementError.getAsJsonObject()
+                            .get(KEY_TITLE).getAsString();
+                    stringBuilder.append(messageError).append(", ");
+                }
+                errorDefault = stringBuilder.toString();
+            }
+            throw new ResponseDataNullException(errorDefault);
+        } else if (jsonResponse.has(KEY_DATA) && jsonResponse.get(KEY_DATA).isJsonObject()) {
+            strData = jsonResponse.get(KEY_DATA).getAsJsonObject().toString();
+        } else if (jsonResponse.has(KEY_DATA) && jsonResponse.get(KEY_DATA).isJsonArray()) {
+            strData = jsonResponse.get(KEY_DATA).getAsJsonArray().toString();
+            throw new ResponseDataNullException(strData);
+        } else {
+            throw new ResponseDataNullException(DEFAULT_ERROR_MESSAGE_DATA_NULL);
+        }
+//        JSONObject jsonResponse = null;
+//        try {
+//            jsonResponse = new JSONObject(strResponse);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        String strData = null;
+//
+//        if (jsonResponse != null && jsonResponse.has(KEY_DATA) && !jsonResponse.isNull(KEY_DATA)) {
+//
+//        } else {
+//            throw new ResponseDataNullException(DEFAULT_ERROR_MESSAGE_DATA_NULL);
+//        }
+
+
+        tkpdDigitalResponse.setJsonElementData(jsonResponse.get(KEY_DATA));
+        tkpdDigitalResponse.setMessage("");
+        tkpdDigitalResponse.setStrData(strData);
+        tkpdDigitalResponse.setStrResponse(strResponse);
         return tkpdDigitalResponse;
     }
 
-    public JsonObject getJsonObject() {
-        return jsonObject;
-    }
-
-    public void setJsonObject(JsonObject jsonObject) {
-        this.jsonObject = jsonObject;
-    }
-
-    public String getFullResponse() {
-        return fullResponse;
-    }
-
-    public void setFullResponse(String fullResponse) {
-        this.fullResponse = fullResponse;
-    }
-
-    public String getDataResponse() {
-        return dataResponse;
-    }
-
-    public void setDataResponse(String dataResponse) {
-        this.dataResponse = dataResponse;
-    }
-
-    public Object getDataObject() {
-        return dataObject;
-    }
-
-    public void setDataObject(Object dataObject) {
-        this.dataObject = dataObject;
+    public JsonElement getJsonElementData() {
+        return jsonElementData;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
+    public String getStrResponse() {
+        return strResponse;
+    }
+
+    public String getStrData() {
+        return strData;
+    }
+
+    void setJsonElementData(JsonElement jsonElementData) {
+        this.jsonElementData = jsonElementData;
+    }
+
+    void setMessage(String message) {
         this.message = message;
     }
 
-    public boolean isError() {
-        return isError;
+    void setStrResponse(String strResponse) {
+        this.strResponse = strResponse;
     }
 
-    public void setError(boolean error) {
-        isError = error;
+    void setStrData(String strData) {
+        this.strData = strData;
     }
+
+    @SuppressWarnings("unchecked")
+    public <T> T convertDataObj(Class<T> clazz) {
+        if (objData == null) {
+            try {
+                this.objData = gson.fromJson(strData, clazz);
+                return (T) objData;
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+                return null;
+            }
+        } else {
+            return (T) objData;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> List<T> convertDataList(Class<T[]> clazz) {
+        if (objData == null) {
+            try {
+                this.objData = Arrays.asList((T[]) (this.objData = gson.fromJson(strData, clazz)));
+                return (List<T>) objData;
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+                return null;
+            }
+        } else {
+            return (List<T>) objData;
+        }
+    }
+
 }

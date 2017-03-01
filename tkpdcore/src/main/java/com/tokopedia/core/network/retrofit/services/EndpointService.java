@@ -2,7 +2,8 @@ package com.tokopedia.core.network.retrofit.services;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
+import com.tokopedia.core.network.retrofit.HttpClient;
+import com.tokopedia.core.network.retrofit.coverters.DigitalResponseConverter;
 
 import java.util.concurrent.TimeUnit;
 
@@ -21,30 +22,33 @@ public abstract class EndpointService<T> {
     protected T api;
 
     public EndpointService() {
-        OkHttpClient.Builder client = new OkHttpClient.Builder();
+        OkHttpClient.Builder okHttpClientBuilder = HttpClient.getInstanceOkHttpClient().newBuilder();
 
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        client.interceptors().add(logInterceptor);
-        setupAdditionalInterceptor(client);
-        setupTimeout(client);
+        okHttpClientBuilder.interceptors().add(logInterceptor);
+        setupAdditionalInterceptor(okHttpClientBuilder);
+        setupTimeout(okHttpClientBuilder);
 
-        Retrofit.Builder retrofit = new Retrofit.Builder();
-        retrofit.baseUrl(getEndpointUrl() + getEndpointVersion());
+
 
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
                 .setPrettyPrinting()
                 .serializeNulls()
                 .create();
-        retrofit.addConverterFactory(new StringResponseConverter());
-        retrofit.addConverterFactory(GsonConverterFactory.create(gson));
 
-        setupAdditionalConverterFactory(retrofit);
-        setupAdditionalCallAdapterFactory(retrofit);
+        Retrofit.Builder retrofit = new Retrofit.Builder();
+        retrofit.baseUrl(getEndpointUrl() + getEndpointVersion());
+
+        // setupAdditionalConverterFactory(retrofit);
+        retrofit.addConverterFactory(DigitalResponseConverter.create());
+//        retrofit.addConverterFactory(new StringResponseConverter());
+        retrofit.addConverterFactory(GsonConverterFactory.create(gson));
+        //  setupAdditionalCallAdapterFactory(retrofit);
 
         retrofit.addCallAdapterFactory(RxJavaCallAdapterFactory.create());
-        retrofit.client(client.build());
+        retrofit.client(okHttpClientBuilder.build());
         api = initApiService(retrofit.build());
     }
 

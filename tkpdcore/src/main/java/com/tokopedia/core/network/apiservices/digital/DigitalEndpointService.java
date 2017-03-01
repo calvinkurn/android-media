@@ -1,8 +1,7 @@
 package com.tokopedia.core.network.apiservices.digital;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
-import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
+import com.tokopedia.core.network.retrofit.coverters.DigitalResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.services.EndpointService;
 
@@ -14,6 +13,10 @@ import retrofit2.Retrofit;
  */
 
 public class DigitalEndpointService extends EndpointService<DigitalApi> {
+    public DigitalEndpointService() {
+        super();
+    }
+
     @Override
     protected void setupAdditionalCallAdapterFactory(Retrofit.Builder retrofit) {
 
@@ -21,8 +24,7 @@ public class DigitalEndpointService extends EndpointService<DigitalApi> {
 
     @Override
     protected void setupAdditionalConverterFactory(Retrofit.Builder retrofit) {
-        retrofit.addConverterFactory(new GeneratedHostConverter());
-        retrofit.addConverterFactory(new TkpdResponseConverter());
+        retrofit.addConverterFactory(DigitalResponseConverter.create());
     }
 
     @Override

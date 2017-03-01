@@ -14,9 +14,12 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.passdata.ExampPassData;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.R2;
 import com.tokopedia.digital.cart.listener.IDigitalCartView;
 import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
+
+import butterknife.OnClick;
 
 /**
  * @author anggaprasetiyo on 2/21/17.
@@ -155,5 +158,10 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void closeView() {
 
+    }
+
+    @OnClick(R2.id.btn_next)
+    void actionNext() {
+        presenter.processGetCartData(passData.getCategoryId());
     }
 }

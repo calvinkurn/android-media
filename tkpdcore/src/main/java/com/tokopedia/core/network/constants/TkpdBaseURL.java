@@ -639,13 +639,17 @@ public class TkpdBaseURL {
         public static final String VERSION = "v1.2/";
         public static final String HMAC_KEY = "web_service_v4";
 
-        public static final String PATH_STATUS = "/status";
-        public static final String PATH_CATEGORY = "/category/list";
-        public static final String PATH_OPERATOR = "/operator/list";
-        public static final String PATH_PRODUCT = "/product/list";
-        public static final String PATH_RECENT_NUMBER = "/recent-number";
-        public static final String PATH_LAST_ORDER = "/last-order";
-        public static final String PATH_SALDO = "/saldo/";
+        public static final String PATH_STATUS = "status";
+        public static final String PATH_CATEGORY = "category/list";
+        public static final String PATH_OPERATOR = "operator/list";
+        public static final String PATH_PRODUCT = "product/list";
+        public static final String PATH_RECENT_NUMBER = "recent-number";
+        public static final String PATH_LAST_ORDER = "last-order";
+        public static final String PATH_SALDO = "saldo";
         public static final String PATH_GET_CART = "cart";
+        public static final String PATH_BANNER = "banner";
+        public static final String PATH_ORDER = "order";
+        public static final String PATH_ADD_TO_CART = "cart";
+        public static final String PATH_CHECKOUT = "checkout";
     }
 }
