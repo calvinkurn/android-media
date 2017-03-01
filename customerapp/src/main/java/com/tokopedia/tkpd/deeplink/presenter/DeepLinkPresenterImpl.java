@@ -292,7 +292,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private boolean isValidCampaignUrl(Uri uri) {
         Map<String, String> maps = splitQuery(uri);
-        return maps.containsKey("utm_source") && maps.containsKey("utm_medium") &&
+        return maps.containsKey("utm_source") &&
+                maps.containsKey("utm_medium") &&
                 maps.containsKey("utm_campaign");
     }
 

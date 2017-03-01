@@ -199,6 +199,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         homeCatMenuPresenter.fetchHomeCategoryMenu(false);
         topPicksPresenter.fetchTopPicks();
         brandsPresenter.fetchBrands();
+        CommonUtils.dumper("GAv4 client IDS "+TrackingUtils.getClientID());
 
     }
 

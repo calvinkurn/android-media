@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.tagmanager.Container;
@@ -61,6 +62,19 @@ public class GTMContainer implements IGTMContainer {
         return TagManager.getInstance(context);
     }
 
+    @Override
+    public String getClientIDString(){
+        try{
+            Bundle bundle = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).metaData;
+            String clientID = GoogleAnalytics.getInstance(context).newTracker(bundle.getString(AppEventTracking.GTM.GA_ID)).get("&cid");
+
+            return clientID;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private Boolean isAllowRefreshDefault() {
         long lastRefresh = ContainerHolderSingleton.getContainerHolder().getContainer().getLastRefreshTime();
         Log.i("GTM TKPD", "Last refresh " + CommonUtils.getDate(lastRefresh));
@@ -86,8 +100,8 @@ public class GTMContainer implements IGTMContainer {
 
     private void validateGTM() {
         if (ContainerHolderSingleton.getContainerHolder().getStatus().isSuccess()) {
-            Log.i("GTMContainer", "container has been loaded");
-            Log.i("GTMContainer", "GTM is exception enabled " + TrackingUtils.getGtmString(GTMContainer.IS_EXCEPTION_ENABLED));
+            Log.i("GAv4", "container has been loaded");
+            Log.i("GAv4", "GTM is exception enabled " + TrackingUtils.getGtmString(GTMContainer.IS_EXCEPTION_ENABLED));
         } else {
             Log.e("GTMContainer", "failure loading container");
         }
@@ -124,6 +138,8 @@ public class GTMContainer implements IGTMContainer {
                         ContainerHolderSingleton.getContainerHolder().refresh();
                         //setExpiryRefresh();
                     }
+
+                    CommonUtils.dumper("GAv4 container loaded");
                     validateGTM();
                 }
             }, 2, TimeUnit.SECONDS);
