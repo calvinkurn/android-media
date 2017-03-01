@@ -213,7 +213,8 @@ public class GmCheckoutFragment
             public void onRetryClicked() {
                 goToCheckout();
             }
-        });
+        })
+                .showRetrySnackbar();
     }
 
     @Override
