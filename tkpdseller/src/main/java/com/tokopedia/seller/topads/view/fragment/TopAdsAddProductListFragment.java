@@ -285,10 +285,10 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         searchView.setIconifiedByDefault(true);
         searchView.setOnQueryTextListener(this);
 
-        View filter = menu.findItem(R.id.menu_filter).getActionView();
+        MenuItem filter = menu.findItem(R.id.menu_filter);
         if(addProductListInterface != null){
-            filter.setVisibility(
-                    addProductListInterface.isExistingGroup() ? View.GONE : View.VISIBLE
+            filter.setVisible(
+                    addProductListInterface.isExistingGroup()
             );
         }
         super.onCreateOptionsMenu(menu, inflater);
