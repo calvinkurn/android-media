@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.network.retrofit.response.BaseResponseError;
 import com.tokopedia.seller.topads.exception.ResponseErrorException;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -38,7 +39,7 @@ public class TkpdResponseError extends BaseResponseError {
     }
 
     @Override
-    public RuntimeException createException() {
+    public IOException createException() {
         return new ResponseErrorException(errors);
     }
 }
