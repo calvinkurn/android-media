@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -24,10 +23,13 @@ import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
+import com.facebook.FacebookAuthorizationException;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.share.ShareApi;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.ShareLinkContent;
@@ -55,6 +57,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core.var.FacebookContainer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -509,8 +512,19 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
     public void showDialogShareFb() {
         shareDialog = new ShareDialog(this);
         callbackManager = CallbackManager.Factory.create();
-        shareDialog.registerCallback(callbackManager, new
-                FacebookCallback<Sharer.Result>() {
+        final ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                    .setContentTitle(inboxReputationDetail.getProductName())
+                    .setImageUrl(Uri.parse(inboxReputationDetail.getProductImageUrl()))
+                    .setContentUrl(Uri.parse(getString(R.string.domain)+inboxReputationDetail.getProductUri()))
+                    .setContentDescription(editTextReview.getText().toString())
+                    .setShareHashtag(new ShareHashtag.Builder().setHashtag("#DimulaiDariTokopedia").build())
+                    .build();
+        LoginManager.getInstance().logInWithPublishPermissions(this, FacebookContainer.writePermissions);
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(final LoginResult loginResult) {
+
+                ShareApi.share(linkContent, new FacebookCallback<Sharer.Result>() {
                     @Override
                     public void onSuccess(Sharer.Result result) {
                         SnackbarManager.make(getActivity(),getString(R.string.success_share_product)
@@ -530,18 +544,24 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
                         getActivity().finish();
                     }
                 });
+            }
 
-        if (ShareDialog.canShow(ShareLinkContent.class)) {
-            ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                    .setContentTitle(inboxReputationDetail.getProductName())
-                    .setImageUrl(Uri.parse(inboxReputationDetail.getProductImageUrl()))
-                    .setContentUrl(Uri.parse(getString(R.string.domain)+inboxReputationDetail.getProductUri()))
-                    .setQuote(inboxReputationDetail.getReviewMessage().toString())
-                    .setShareHashtag(new ShareHashtag.Builder().setHashtag("#DimulaiDariTokopedia").build())
-                    .build();
+            @Override
+            public void onCancel() {
+                LoginManager.getInstance().logOut();
+                getActivity().finish();
+            }
 
-            shareDialog.show(linkContent);
-        }
+            @Override
+            public void onError(FacebookException e) {
+                if(e instanceof FacebookAuthorizationException){
+                    LoginManager.getInstance().logOut();
+                }
+                SnackbarManager.make(getActivity(),getString(R.string.error_share_product)
+                        , Snackbar.LENGTH_SHORT).show();
+                getActivity().finish();
+            }
+        });
     }
 
     @Override

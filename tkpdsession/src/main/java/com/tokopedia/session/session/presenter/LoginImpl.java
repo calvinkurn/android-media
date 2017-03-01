@@ -150,7 +150,12 @@ public class LoginImpl implements Login {
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(final LoginResult loginResult) {
-
+                Set<String> declinedPermissions = loginResult.getAccessToken().getDeclinedPermissions();
+                if(hasDeclinedPermission(declinedPermissions)){
+                    doFacebookLogin(fragment,callbackManager);
+                }else {
+                    requestProfileFacebook(loginResult);
+                }
             }
 
             @Override

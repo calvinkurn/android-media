@@ -121,6 +121,7 @@ public class ShareReviewDialog {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dismissDialog();
                 ClipboardHandler.CopyToClipboard((Activity) context, context.getString(R.string.domain)+item.getProductUri());
                 Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show();
             }
@@ -131,6 +132,7 @@ public class ShareReviewDialog {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                dismissDialog();
                 shareDialog = new ShareDialog(fragment);
                 callbackManager = fragment.getCallbackManager();
                 shareDialog.registerCallback(callbackManager, new
