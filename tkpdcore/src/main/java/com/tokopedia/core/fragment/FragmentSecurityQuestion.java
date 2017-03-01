@@ -308,7 +308,8 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     @Override
     public void showTrueCaller(boolean b) {
-        verifyTrueCaller.setVisibility(b ? View.VISIBLE : View.GONE);
+//        verifyTrueCaller.setVisibility(b ? View.VISIBLE : View.GONE);
+        verifyTrueCaller.setVisibility(View.GONE);
     }
 
     @Override

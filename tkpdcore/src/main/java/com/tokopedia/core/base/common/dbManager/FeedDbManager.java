@@ -44,9 +44,13 @@ public class FeedDbManager implements DbManagerOperation<DbFeed, Observable<Resp
 
     @Override
     public Observable<Response<String>> getData() {
-        String contentRecentProduct = getTable().getContentFeed();
-        if (contentRecentProduct != null) {
-            return Observable.just(Response.success(contentRecentProduct));
+        if (getTable() != null) {
+            String contentRecentProduct = getTable().getContentFeed();
+            if (contentRecentProduct != null) {
+                return Observable.just(Response.success(contentRecentProduct));
+            } else {
+                return Observable.empty();
+            }
         } else {
             return Observable.empty();
         }

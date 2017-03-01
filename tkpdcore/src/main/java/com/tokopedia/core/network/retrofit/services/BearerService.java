@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
@@ -78,8 +79,8 @@ public abstract class BearerService<T> {
 
     private void setInterceptorDebug(OkHttpClient.Builder client) {
         if (GlobalConfig.isAllowDebuggingTools()) {
-            LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), "CHUCK_ENABLED");
-            Boolean allowLogOnNotification = cache.getBoolean("is_enable", false);
+            LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), DeveloperOptions.CHUCK_ENABLED);
+            Boolean allowLogOnNotification = cache.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false);
             client.addInterceptor(new ChuckInterceptor(MainApplication.getAppContext())
                     .showNotification(allowLogOnNotification));
         }

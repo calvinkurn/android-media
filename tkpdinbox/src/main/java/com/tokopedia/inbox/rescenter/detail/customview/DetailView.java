@@ -267,7 +267,7 @@ public class DetailView extends BaseView<Detail, DetailResCenterView> {
                     listener.setErrorWvLogin();
                     return true;
                 default:
-                    return true;
+                    return false;
             }
         }
     }
