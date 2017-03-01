@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.content.Intent;
 
+import com.tokopedia.seller.topads.view.activity.TopAdsDetailNewGroupActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailNewProductActivity;
 
 /**
@@ -9,6 +10,8 @@ import com.tokopedia.seller.topads.view.activity.TopAdsDetailNewProductActivity;
  */
 
 public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragment {
+
+    protected static final int REQUEST_CODE_AD_STATUS = 2;
 
     public static TopAdsGroupNewPromoFragment createInstance() {
         TopAdsGroupNewPromoFragment fragment = new TopAdsGroupNewPromoFragment();
@@ -52,18 +55,20 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
 
     @Override
     protected void onSubmitFormNewGroup(String GroupName) {
-
+        Intent intent = new Intent(getActivity(), TopAdsDetailNewGroupActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
     @Override
     protected void onSubmitFormNotInGroup() {
         Intent intent = new Intent(getActivity(), TopAdsDetailNewProductActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
     @Override
     protected void onSubmitFormChooseGroup(int choosenId) {
-
+        Intent intent = new Intent(getActivity(), TopAdsDetailNewGroupActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
 }

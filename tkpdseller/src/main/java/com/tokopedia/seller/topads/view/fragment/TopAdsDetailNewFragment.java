@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
@@ -21,6 +22,7 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.datepicker.widget.DatePickerLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.view.dialog.DatePickerDialog;
 import com.tokopedia.seller.topads.view.dialog.TimePickerdialog;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailNewView;
@@ -285,6 +287,8 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsDetailNewPresenter
     @Override
     public void onSaveAdSuccess(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
         hideLoading();
+        setResultAdSaved();
+        getActivity().finish();
     }
 
     @Override
@@ -448,5 +452,11 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsDetailNewPresenter
             snackBarRetry.hideRetrySnackbar();
             snackBarRetry = null;
         }
+    }
+
+    private void setResultAdSaved() {
+        Intent intent = new Intent();
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, true);
+        getActivity().setResult(Activity.RESULT_OK, intent);
     }
 }
