@@ -19,7 +19,8 @@ import rx.android.schedulers.AndroidSchedulers;
 /**
  * Created by zulfikarrahman on 2/16/17.
  */
-public class TopAdsManageGroupPromoPresenterImpl extends BaseDaggerPresenter<TopAdsManageGroupPromoView> implements TopAdsManageGroupPromoPresenter {
+public class TopAdsManageGroupPromoPresenterImpl<T extends TopAdsManageGroupPromoView> extends BaseDaggerPresenter<T>
+        implements TopAdsManageGroupPromoPresenter<T> {
 
     public static final int TIME_DELAY = 300;
     private final TopAdsSearchGroupAdsNameUseCase topAdsSearchGroupAdsNameUseCase;

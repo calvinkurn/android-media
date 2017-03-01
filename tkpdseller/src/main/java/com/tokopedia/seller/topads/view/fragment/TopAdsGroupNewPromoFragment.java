@@ -2,7 +2,12 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.content.Intent;
 
+import com.tokopedia.seller.topads.di.TopAdsAddPromoPoductDI;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailNewProductActivity;
+
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.view.listener.TopAdsManageGroupPromoView;
+import com.tokopedia.seller.topads.view.presenter.TopAdsManageGroupPromoPresenter;
 
 /**
  * Created by zulfikarrahman on 2/22/17.
@@ -31,7 +36,7 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
     }
 
     @Override
-    protected boolean getVIsibleInfoNewGroupOption() {
+    protected boolean getVisibleInfoNewGroupOption() {
         return false;
     }
 
@@ -51,7 +56,7 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
     }
 
     @Override
-    protected void onSubmitFormNewGroup(String GroupName) {
+    protected void onSubmitFormNewGroup(String groupName) {
 
     }
 
@@ -65,5 +70,11 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
     protected void onSubmitFormChooseGroup(int choosenId) {
 
     }
+
+    @Override
+    protected String getTitleButtonNext() {
+        return getString(R.string.title_next);
+    }
+
 
 }

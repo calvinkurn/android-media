@@ -1,9 +1,12 @@
 package com.tokopedia.seller.topads.view.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.view.fragment.TopAdsGroupEditPromoFragment;
 
 /**
@@ -17,12 +20,26 @@ public class TopAdsGroupEditPromoActivity extends TActivity {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_top_ads_new_promo);
         getFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.container, TopAdsGroupEditPromoFragment.createInstance(), TopAdsGroupEditPromoFragment.class.getSimpleName())
+                .replace(R.id.container, TopAdsGroupEditPromoFragment.createInstance(
+                        getIntent().getStringExtra(TopAdsExtraConstant.AD_ID),
+                        getIntent().getIntExtra(TopAdsExtraConstant.CHOOSEN_OPTION, 0),
+                        getIntent().getStringExtra(TopAdsExtraConstant.GROUP_ID),
+                        getIntent().getStringExtra(TopAdsExtraConstant.GROUP_NAME)), TopAdsGroupEditPromoFragment.class.getSimpleName())
                 .commit();
     }
 
     @Override
     public String getScreenName() {
         return null;
+    }
+
+    public static Intent createIntent(Context context, String adId, int choosenOption,
+                                      String groupName, String groupId){
+        Intent intent = new Intent(context, TopAdsGroupManagePromoActivity.class);
+        intent.putExtra(TopAdsExtraConstant.AD_ID, adId);
+        intent.putExtra(TopAdsExtraConstant.CHOOSEN_OPTION, choosenOption);
+        intent.putExtra(TopAdsExtraConstant.GROUP_NAME, groupName);
+        intent.putExtra(TopAdsExtraConstant.GROUP_ID, groupId);
+        return intent;
     }
 }

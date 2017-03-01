@@ -2,6 +2,8 @@ package com.tokopedia.seller.topads.data.source.cloud.apiservice.api;
 
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.data.model.TopAdsProductDetailDataSourceModel;
+import com.tokopedia.seller.topads.data.model.request.CreateGroupRequest;
+import com.tokopedia.seller.topads.data.model.response.DataResponseCreateGroup;
 import com.tokopedia.seller.topads.domain.model.data.GroupAdBulkAction;
 import com.tokopedia.seller.topads.domain.model.data.ProductAdBulkAction;
 import com.tokopedia.seller.topads.domain.model.data.DataCredit;
@@ -23,6 +25,7 @@ import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.PATCH;
+import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
@@ -69,5 +72,8 @@ public interface TopAdsManagementApi {
 
     @PATCH(TopAdsNetworkConstant.PATH_DETAIL_PRODUCT_AD)
     Observable<Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>>> saveProductAd(@Body DataRequest<List<TopAdsProductDetailDataSourceModel>> body);
+
+    @POST(TopAdsNetworkConstant.PATH_CREATE_GROUP_AD)
+    Observable<Response<DataResponse<DataResponseCreateGroup>>> createGroupAd(@Body DataRequest<CreateGroupRequest> body);
 
 }

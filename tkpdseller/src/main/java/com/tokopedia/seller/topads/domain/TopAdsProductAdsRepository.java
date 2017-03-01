@@ -2,6 +2,8 @@ package com.tokopedia.seller.topads.domain;
 
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailShopDomainModel;
+import com.tokopedia.seller.topads.domain.model.data.ProductAdBulkAction;
+import com.tokopedia.seller.topads.domain.model.response.DataResponse;
 
 import rx.Observable;
 
@@ -12,4 +14,6 @@ public interface TopAdsProductAdsRepository {
     Observable<TopAdsDetailProductDomainModel> getDetail(String adId);
 
     Observable<TopAdsDetailProductDomainModel> saveDetail(TopAdsDetailProductDomainModel topAdsDetailProductDomainModel);
+
+    Observable<ProductAdBulkAction> moveProductGroup(String adId, String groupId, String shopId);
 }

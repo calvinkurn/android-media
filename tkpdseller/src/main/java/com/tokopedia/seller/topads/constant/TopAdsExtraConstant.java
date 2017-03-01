@@ -42,4 +42,10 @@ public class TopAdsExtraConstant {
     public static final String EXTRA_SELECTIONS = "EXTRA_SELECTIONS";
     public static final String EXTRA_HIDE_EXISTING_GROUP = "EXTRA_HIDE_EXISTING_GROUP";
     public static final String EXTRA_HIDE_ETALASE = "EXTRA_HIDE_ETALASE";
+
+    //EDIT PROMO PRODUCT GROUP
+    public static final String AD_ID = "AD_ID";
+    public static final String CHOOSEN_OPTION = "CHOOSEN_OPTION";
+    public static final String GROUP_ID = "GROUP_ID";
+    public static final String GROUP_NAME = "GROUP_NAME";
 }

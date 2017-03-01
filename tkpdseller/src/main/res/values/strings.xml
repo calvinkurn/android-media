@@ -218,5 +218,8 @@
 
     <!-- Top Ads add promo -->
     <string name="top_ads_title_grup_exist">Nama grup sudah ada</string>
+    <string name="label_top_ads_error_fail_move_out_product">Gagal mengeluarkan product dari grup</string>
+    <string name="label_top_ads_error_fail_move_new_group">Gagal memindahkan product ke grup baru</string>
+    <string name="label_top_ads_error_fail_move_exist_group">Gagal memindahkan product ke grup lain</string>
 
 </resources>

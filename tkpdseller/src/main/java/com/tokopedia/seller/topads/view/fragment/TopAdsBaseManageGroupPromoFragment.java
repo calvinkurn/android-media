@@ -3,7 +3,6 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -32,23 +31,23 @@ import java.util.List;
  * Created by zulfikarrahman on 2/16/17.
  */
 
-public abstract class TopAdsBaseManageGroupPromoFragment extends BasePresenterFragment<TopAdsManageGroupPromoPresenter>
+public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageGroupPromoPresenter> extends BasePresenterFragment<T>
         implements TopAdsManageGroupPromoView {
 
     private TopAdsCustomRadioGroup radioGroup;
 
-    private EditText inputNewGroup;
+    protected EditText inputNewGroup;
     private TextInputLayout textInputLayoutNewGroup;
     private TextView viewInfoNewGroup;
-    private TopAdsRadioExpandView viewRadioNewGroup;
+    protected TopAdsRadioExpandView viewRadioNewGroup;
 
-    private TopAdsCustomAutoCompleteTextView inputChooseGroup;
+    protected TopAdsCustomAutoCompleteTextView inputChooseGroup;
     private TextView viewInfoChooseGroup;
     private TextInputLayout textInputLayoutChooseGroup;
-    private TopAdsRadioExpandView viewRadioChooseGroup;
+    protected TopAdsRadioExpandView viewRadioChooseGroup;
 
-    TopAdsRadioExpandView viewRadioNotInGroup;
-    protected Button buttonNext;
+    protected TopAdsRadioExpandView viewRadioNotInGroup;
+    private Button buttonNext;
 
     private ArrayAdapter<String> adapterChooseGroup;
     private List<GroupAd> groupAds = new ArrayList<>();
@@ -66,6 +65,12 @@ public abstract class TopAdsBaseManageGroupPromoFragment extends BasePresenterFr
     }
 
     @Override
+    protected void initialPresenter() {
+        presenter = (T) TopAdsAddPromoPoductDI.createPresenter(getActivity());
+        presenter.attachView(this);
+    }
+
+    @Override
     public void onSaveState(Bundle state) {
 
     }
@@ -78,12 +83,6 @@ public abstract class TopAdsBaseManageGroupPromoFragment extends BasePresenterFr
     @Override
     protected boolean getOptionsMenuEnable() {
         return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-        presenter = TopAdsAddPromoPoductDI.createPresenter(getActivity());
-        presenter.attachView(this);
     }
 
     @Override
@@ -116,13 +115,13 @@ public abstract class TopAdsBaseManageGroupPromoFragment extends BasePresenterFr
         viewInfoChooseGroup = (TextView) view.findViewById(R.id.view_info_radio_choose_group);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+        buttonNext.setText(getTitleButtonNext());
         setVisibilityOption();
         setVisibilityInfoOption();
     }
 
     @Override
     protected void setViewListener() {
-        radioGroup.setOnCheckedChangeListener(onRadioCheckedChange());
         buttonNext.setOnClickListener(onClickNext());
         inputNewGroup.addTextChangedListener(new TextWatcher() {
             @Override
@@ -166,19 +165,6 @@ public abstract class TopAdsBaseManageGroupPromoFragment extends BasePresenterFr
                 }
             }
         });
-    }
-
-    private TopAdsCustomRadioGroup.OnCheckedChangeListener onRadioCheckedChange() {
-        return new TopAdsCustomRadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(TopAdsCustomRadioGroup group, @IdRes int checkedId) {
-                if(checkedId == R.id.radio_promo_not_in_group){
-                    buttonNext.setText(R.string.title_next);
-                }else{
-                    buttonNext.setText(R.string.title_save);
-                }
-            }
-        };
     }
 
     @Override
@@ -307,7 +293,7 @@ public abstract class TopAdsBaseManageGroupPromoFragment extends BasePresenterFr
     }
 
     private void setVisibilityInfoOption() {
-        if(getVIsibleInfoNewGroupOption()){
+        if(getVisibleInfoNewGroupOption()){
             viewInfoNewGroup.setVisibility(View.VISIBLE);
             viewInfoNewGroup.setText(getTextInfoNewGroupOption());
         }else{
@@ -328,7 +314,7 @@ public abstract class TopAdsBaseManageGroupPromoFragment extends BasePresenterFr
 
     protected abstract boolean getVisibleInfoChooseGroupOption();
 
-    protected abstract boolean getVIsibleInfoNewGroupOption();
+    protected abstract boolean getVisibleInfoNewGroupOption();
 
     protected abstract boolean getVisibleNotInGroupOption();
 
@@ -336,9 +322,11 @@ public abstract class TopAdsBaseManageGroupPromoFragment extends BasePresenterFr
 
     protected abstract boolean getVisibleNewGroupOption();
 
-    protected abstract void onSubmitFormNewGroup(String GroupName);
+    protected abstract void onSubmitFormNewGroup(String groupName);
 
     protected abstract void onSubmitFormNotInGroup();
 
     protected abstract void onSubmitFormChooseGroup(int choosenId);
+
+    protected abstract String getTitleButtonNext();
 }
