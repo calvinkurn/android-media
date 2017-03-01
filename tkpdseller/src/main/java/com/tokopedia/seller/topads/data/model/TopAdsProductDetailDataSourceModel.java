@@ -60,6 +60,12 @@ public class TopAdsProductDetailDataSourceModel {
     @SerializedName("ad_title")
     @Expose
     private String adTitle;
+    @SerializedName("source")
+    @Expose
+    private String source;
+    @SerializedName("toggle")
+    @Expose
+    private String toggle;
 
     public String getAdId() {
         return adId;
@@ -195,5 +201,21 @@ public class TopAdsProductDetailDataSourceModel {
 
     public void setAdTitle(String adTitle) {
         this.adTitle = adTitle;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public String getToggle() {
+        return toggle;
+    }
+
+    public void setToggle(String toggle) {
+        this.toggle = toggle;
     }
 }
