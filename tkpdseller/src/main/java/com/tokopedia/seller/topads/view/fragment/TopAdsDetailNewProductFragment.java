@@ -15,8 +15,6 @@ public class TopAdsDetailNewProductFragment extends TopAdsDetailNewFragment<TopA
 
     private static final int ADD_PRODUCT_REQUEST_CODE = 0;
 
-    private View addProductLayout;
-
     public static Fragment createInstance() {
         Fragment fragment = new TopAdsDetailNewProductFragment();
         return fragment;
@@ -36,16 +34,11 @@ public class TopAdsDetailNewProductFragment extends TopAdsDetailNewFragment<TopA
     @Override
     protected void initView(View view) {
         super.initView(view);
-        addProductLayout = view.findViewById(R.id.layout_add_product);
-        addProductLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addProduct();
-            }
-        });
+        promoIconView.setVisibility(View.VISIBLE);
     }
 
-    void addProduct() {
+    @Override
+    protected void addProduct() {
         Intent intent = new Intent(getActivity(), TopAdsAddProductListActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, false);
         intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_ETALASE, false);

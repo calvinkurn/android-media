@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -41,6 +42,8 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsDetailNewPresenter
     private static final int STICKER_THUMBS_UP = 2;
     private static final int STICKER_FIRE = 1;
 
+    private View addProductLayout;
+    private TextView selectedProductTextView;
     private TextInputLayout maxPriceInputLayout;
     private EditText maxPriceEditText;
     private RadioGroup budgetRadioGroup;
@@ -56,7 +59,7 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsDetailNewPresenter
     private DatePickerLabelView showTimeStartTimeDatePicker;
     private DatePickerLabelView showTimeEndDateDatePicker;
     private DatePickerLabelView showTimeEndTimeDatePicker;
-    private View promoIconView;
+    protected View promoIconView;
     private RadioGroup iconRadioGroup;
     private RadioButton iconSpeakerRadioButton;
     private RadioButton iconThumbsUpRadioButton;
@@ -257,6 +260,22 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsDetailNewPresenter
         });
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+        initNewViewOnly(view);
+    }
+
+    private void initNewViewOnly(View view) {
+        addProductLayout = view.findViewById(R.id.layout_add_product);
+        if (addProductLayout == null) {
+            return;
+        }
+        addProductLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addProduct();
+            }
+        });
+        selectedProductTextView = (TextView) view.findViewById(R.id.text_view_selected_product);
+        updateSelectedProductCount();
     }
 
     @Override
@@ -308,6 +327,10 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsDetailNewPresenter
 
             }
         });
+    }
+
+    protected void addProduct() {
+
     }
 
     protected void loadAd(TopAdsDetailAdViewModel detailAd) {
@@ -434,6 +457,10 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsDetailNewPresenter
         detailAd.setStartTime(showTimeStartTimeDatePicker.getValue());
         detailAd.setEndDate(showTimeEndDateDatePicker.getValue());
         detailAd.setEndTime(showTimeEndTimeDatePicker.getValue());
+    }
+
+    private void updateSelectedProductCount() {
+        selectedProductTextView.setText(getString(R.string.label_top_ads_total_selected_product, 0));
     }
 
     protected void showLoading() {
