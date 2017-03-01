@@ -1,13 +1,12 @@
 package com.tokopedia.seller.topads.data.source.cloud.interceptor;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.tokopedia.seller.topads.data.source.cloud.response.Error;
-import com.tokopedia.seller.topads.data.source.cloud.response.TkpdResponseError;
-import com.tokopedia.seller.topads.exception.ResponseErrorException;
+import com.tokopedia.core.network.retrofit.response.BaseResponseError;
 
 import java.io.IOException;
-import java.util.List;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
@@ -19,6 +18,13 @@ import okhttp3.ResponseBody;
 public class TkpdErrorResponseInterceptor implements Interceptor {
     private static final int BYTE_COUNT = 2048;
 
+    Class<? extends BaseResponseError> responseErrorClass;
+    BaseResponseError responseError;
+
+    public TkpdErrorResponseInterceptor (@NonNull Class<? extends BaseResponseError> responseErrorClass) {
+        this.responseErrorClass = responseErrorClass;
+    }
+
     @Override
     public Response intercept(Chain chain) throws IOException {
         Response response = chain.proceed(chain.request());
@@ -28,21 +34,22 @@ public class TkpdErrorResponseInterceptor implements Interceptor {
         if (null != response && response.isSuccessful()) {
             responseBody = response.peekBody(BYTE_COUNT);
             responseBodyString = responseBody.string();
+
             Gson gson = new Gson();
-            TkpdResponseError tkpdResponseError;
+            responseError = null;
             try {
-                tkpdResponseError = gson.fromJson(responseBodyString, TkpdResponseError.class);
+                responseError = gson.fromJson(responseBodyString, responseErrorClass);
             } catch (JsonSyntaxException e) { // the json might not be TkpdResponseError instance, so just return it
                 return response;
             }
-            if (tkpdResponseError == null) { // no error object
+            if (responseError == null) { // no error object
                 return response;
             } else {
-                List<Error> errorList = tkpdResponseError.getErrors();
-                if (errorList == null) { // no error List
+                if (responseError.hasBody() ) {
+                    throw responseError.createException();
+                }
+                else {
                     return response;
-                } else { // has error list
-                    throw new ResponseErrorException(errorList);
                 }
             }
         }
