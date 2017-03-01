@@ -6,6 +6,7 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDetailEditShopFragment;
+import com.tokopedia.seller.topads.view.fragment.TopAdsDetailNewShopFragment;
 
 /**
  * Created by Nathaniel on 11/22/2016.
@@ -24,7 +25,7 @@ public class TopAdsDetailEditShopActivity extends TActivity {
             adId = getIntent().getExtras().getString(TopAdsExtraConstant.EXTRA_AD_ID);
         }
         getFragmentManager().beginTransaction().disallowAddToBackStack()
-                .add(R.id.container, TopAdsDetailEditShopFragment.createInstance(shopName, adId), TopAdsDetailEditShopFragment.class.getSimpleName())
+                .add(R.id.container, TopAdsDetailEditShopFragment.createInstance(shopName, adId), TopAdsDetailNewShopFragment.class.getSimpleName())
                 .commit();
     }
 

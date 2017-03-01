@@ -14,8 +14,6 @@ import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailShopUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailShopUseCase;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditShopPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditShopPresenterImpl;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewShopPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewShopPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 2/21/17.
@@ -23,7 +21,7 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewShopPresenterIm
 
 public class TopAdsDetailNewShopDI {
 
-    public static TopAdsDetailNewShopPresenter createPresenter(Context context) {
+    public static TopAdsDetailEditShopPresenter createPresenter(Context context) {
         JobExecutor threadExecutor = new JobExecutor();
         UIThread postExecutionThread = new UIThread();
 
@@ -38,6 +36,6 @@ public class TopAdsDetailNewShopDI {
 
         TopAdsGetDetailShopUseCase topAdsSearchGroupAdsNameUseCase = new TopAdsGetDetailShopUseCase(threadExecutor, postExecutionThread, topAdsGroupAdsRepository);
         TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase = new TopAdsSaveDetailShopUseCase(threadExecutor, postExecutionThread, topAdsGroupAdsRepository);
-        return new TopAdsDetailNewShopPresenterImpl(topAdsSearchGroupAdsNameUseCase, topAdsSaveDetailShopUseCase);
+        return new TopAdsDetailEditShopPresenterImpl(topAdsSearchGroupAdsNameUseCase, topAdsSaveDetailShopUseCase);
     }
 }
