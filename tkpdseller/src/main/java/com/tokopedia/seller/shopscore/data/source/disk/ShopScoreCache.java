@@ -24,29 +24,29 @@ public class ShopScoreCache {
 
     public Observable<ShopScoreSummaryServiceModel> getShopScoreSummary() {
         return getShopScoreSummaryCache()
-                .map(new ShopSummaryErrorCheck());
+                .map(new ErrorCheck<ShopScoreSummaryServiceModel>());
     }
 
     public void storeShopScoreSummary(ShopScoreSummaryServiceModel serviceModel) {
-        cacheManager.setKey(TkpdCache.Key.SHOP_SCORE_SUMMARY);
         String stringData = CacheUtil.convertModelToString(
                 serviceModel,
                 new TypeToken<ShopScoreSummaryServiceModel>() {
                 }.getType()
         );
-        cacheManager.setValue(stringData);
-        cacheManager.setCacheDuration(3600);
-        cacheManager.store();
+        saveToCache(TkpdCache.Key.SHOP_SCORE_SUMMARY, stringData);
     }
 
-
     public void storeShopScoreDetail(ShopScoreDetailServiceModel serviceModel) {
-        cacheManager.setKey(TkpdCache.Key.SHOP_SCORE_DETAIL);
         String stringData = CacheUtil.convertModelToString(
                 serviceModel,
                 new TypeToken<ShopScoreDetailServiceModel>() {
                 }.getType()
         );
+        saveToCache(TkpdCache.Key.SHOP_SCORE_DETAIL, stringData);
+    }
+
+    private void saveToCache(String key, String stringData) {
+        cacheManager.setKey(key);
         cacheManager.setValue(stringData);
         cacheManager.setCacheDuration(3600);
         cacheManager.store();
@@ -54,7 +54,7 @@ public class ShopScoreCache {
 
     public Observable<ShopScoreDetailServiceModel> getShopScoreDetail() {
         return getShopScoreDetailCache()
-                .map(new ShopDetailErrorCheck());
+                .map(new ErrorCheck<ShopScoreDetailServiceModel>());
     }
 
     @NonNull
@@ -77,20 +77,9 @@ public class ShopScoreCache {
         );
     }
 
-    private class ShopSummaryErrorCheck implements Func1<ShopScoreSummaryServiceModel, ShopScoreSummaryServiceModel> {
+    private class ErrorCheck<T> implements Func1<T, T> {
         @Override
-        public ShopScoreSummaryServiceModel call(ShopScoreSummaryServiceModel serviceModel) {
-            if (serviceModel == null) {
-                throw new RuntimeException("Cache is empty");
-            } else {
-                return serviceModel;
-            }
-        }
-    }
-
-    private class ShopDetailErrorCheck implements Func1<ShopScoreDetailServiceModel, ShopScoreDetailServiceModel> {
-        @Override
-        public ShopScoreDetailServiceModel call(ShopScoreDetailServiceModel serviceModel) {
+        public T call(T serviceModel) {
             if (serviceModel == null) {
                 throw new RuntimeException("Cache is empty");
             } else {

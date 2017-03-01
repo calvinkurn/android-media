@@ -1,6 +1,7 @@
 package com.tokopedia.seller.shopscore.data.source.cloud;
 
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.shopscore.data.common.GetData;
 import com.tokopedia.seller.shopscore.data.source.cloud.api.ShopScoreApi;
 import com.tokopedia.seller.shopscore.data.source.cloud.model.detail.ShopScoreDetailServiceModel;
 import com.tokopedia.seller.shopscore.data.source.cloud.model.summary.ShopScoreSummaryServiceModel;
@@ -20,10 +21,14 @@ public class ShopScoreCloud {
     }
 
     public Observable<ShopScoreSummaryServiceModel> getShopScoreSummaryData() {
-        return api.getShopScoreSummary(sessionHandler.getShopID());
+        return api
+                .getShopScoreSummary(sessionHandler.getShopID())
+                .map(new GetData<ShopScoreSummaryServiceModel>());
     }
 
     public Observable<ShopScoreDetailServiceModel> getShopScoreDetailData() {
-        return api.getShopScoreDetail(sessionHandler.getShopID());
+        return api
+                .getShopScoreDetail(sessionHandler.getShopID())
+                .map(new GetData<ShopScoreDetailServiceModel>());
     }
 }
