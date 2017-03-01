@@ -385,6 +385,11 @@ public class DrawerVariable {
                 goToShopNewOrder();
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.NEW_ORDER);
                 break;
+            case TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST:
+                goToOpportunityList();
+                sendGTMNavigationEvent(AppEventTracking.EventLabel.OPPORTUNIT_LIST
+                );
+                break;
             case TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING:
                 goToShopConfirmShipping();
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.DELIVERY_CONFIRMATION);
@@ -475,6 +480,12 @@ public class DrawerVariable {
         }
 //        updateData();
         closeDrawer();
+    }
+
+    private void goToOpportunityList() {
+        Intent intent = SellerRouter.getActivitySellingTransaction(context);
+        intent.putExtra("tab", 5);
+        context.startActivity(intent);
     }
 
     private void goToShopTransactionList() {
@@ -703,6 +714,7 @@ public class DrawerVariable {
         model.shopMenu.list.add(new DrawerItem("Konfirmasi Pengiriman", 0, 0, TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING, false));
         model.shopMenu.list.add(new DrawerItem("Status Pengiriman", 0, 0, TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS, false));
         model.shopMenu.list.add(new DrawerItem("Daftar Penjualan", 0, 0, TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST, false));
+        model.shopMenu.list.add(new DrawerItem("Peluang", 0, 0, TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST, false));
         model.shopMenu.list.add(new DrawerSeparator());
         model.shopMenu.list.add(new DrawerItem("Daftar Produk", 0, 0, TkpdState.DrawerPosition.MANAGE_PRODUCT, true));
         model.shopMenu.list.add(new DrawerItem("Etalase Toko", 0, 0, TkpdState.DrawerPosition.MANAGE_ETALASE, true));
