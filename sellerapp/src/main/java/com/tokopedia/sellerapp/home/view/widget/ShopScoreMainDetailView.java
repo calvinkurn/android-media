@@ -63,6 +63,8 @@ public class ShopScoreMainDetailView extends RelativeLayout {
     }
 
     public void setDescription(String description) {
-        descriptionTextView.setText(Html.fromHtml(description));
+        String concatenated = Html.fromHtml(description)
+                + getContext().getString(R.string.decription_shop_score_summary_30days_info);
+        descriptionTextView.setText(concatenated);
     }
 }

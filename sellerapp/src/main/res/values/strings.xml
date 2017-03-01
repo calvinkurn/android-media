@@ -12,5 +12,6 @@
     <string name="title_shop_score_widget_home">Performa Toko</string>
     <string name="view_shop_score_per_cent">/100</string>
     <string name="action_shop_score_go_to_detail"><![CDATA[Lihat Detail >]]></string>
+    <string name="decription_shop_score_summary_30days_info">Skor dihitung berdasarkan performa toko dalam 30 hari terakhir.</string>
 
 </resources>
