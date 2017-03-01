@@ -1,12 +1,14 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.di.TopAdsEditPromoProductDI;
-import com.tokopedia.seller.topads.view.model.TopAdsDetailProductViewModel;
+import com.tokopedia.seller.topads.view.activity.TopAdsAddProductListActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditProductPresenter;
 
 public class TopAdsDetailEditProductFragment extends TopAdsDetailEditFragment<TopAdsDetailEditProductPresenter> {
@@ -31,14 +33,14 @@ public class TopAdsDetailEditProductFragment extends TopAdsDetailEditFragment<To
     }
 
     @Override
-    protected void loadAdDetail() {
-        super.loadAdDetail();
-        presenter.getDetailAd(adId);
+    protected void initView(View view) {
+        super.initView(view);
+        promoIconView.setVisibility(View.VISIBLE);
     }
 
     @Override
-    protected void saveAd() {
-        super.saveAd();
-        presenter.saveAd((TopAdsDetailProductViewModel) detailAd);
+    protected void loadAdDetail() {
+        super.loadAdDetail();
+        presenter.getDetailAd(adId);
     }
 }

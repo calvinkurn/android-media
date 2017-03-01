@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.view.fragment.TopAdsDetailEditProductFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDetailNewProductFragment;
 
 /**
@@ -17,7 +18,7 @@ public class TopAdsDetailNewProductActivity extends TActivity {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_top_ads_edit_promo);
         getFragmentManager().beginTransaction().disallowAddToBackStack()
-                .add(R.id.container, TopAdsDetailNewProductFragment.createInstance(), TopAdsDetailNewProductFragment.class.getSimpleName())
+                .add(R.id.container, TopAdsDetailNewProductFragment.createInstance(), TopAdsDetailEditProductFragment.class.getSimpleName())
                 .commit();
     }
 

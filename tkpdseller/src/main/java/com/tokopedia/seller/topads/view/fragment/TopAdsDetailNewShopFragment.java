@@ -7,11 +7,9 @@ import android.widget.EditText;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.di.TopAdsDetailNewShopDI;
 import com.tokopedia.seller.topads.di.TopAdsEditPromoShopDI;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditShopPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewShopPresenter;
 
 public class TopAdsDetailNewShopFragment extends TopAdsDetailNewFragment<TopAdsDetailNewShopPresenter> {
@@ -40,13 +38,14 @@ public class TopAdsDetailNewShopFragment extends TopAdsDetailNewFragment<TopAdsD
 
     @Override
     protected void initialPresenter() {
-        presenter = TopAdsDetailNewShopDI.createPresenter(getActivity());
+        presenter = TopAdsEditPromoShopDI.createPresenter(getActivity());
         presenter.attachView(this);
     }
 
     @Override
     protected void initView(View view) {
         super.initView(view);
+        promoIconView.setVisibility(View.GONE);
         shopNameEditText = (EditText) view.findViewById(R.id.edit_text_shop_name);
         shopNameEditText.setText(shopName);
     }
@@ -61,5 +60,10 @@ public class TopAdsDetailNewShopFragment extends TopAdsDetailNewFragment<TopAdsD
     protected void saveAd() {
         super.saveAd();
         presenter.saveAd((TopAdsDetailShopViewModel) detailAd);
+    }
+
+    @Override
+    protected void addProduct() {
+
     }
 }
