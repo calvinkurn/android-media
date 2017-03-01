@@ -140,7 +140,7 @@ public class ShareReviewDialog {
                             @Override
                             public void onSuccess(Sharer.Result result) {
                                 SnackbarManager.make(fragment.getActivity(), context.getString(R.string.success_share_product)
-                                        , Snackbar.LENGTH_SHORT).show();
+                                        , Snackbar.LENGTH_LONG).show();
                                 dismissDialog();
                             }
                             @Override
@@ -150,6 +150,9 @@ public class ShareReviewDialog {
                             @Override
                             public void onError(FacebookException error) {
                                 Log.i("facebook", "onError: "+error);
+                                SnackbarManager.make(fragment.getActivity(), context.getString(R.string.error_share_product)
+                                        , Snackbar.LENGTH_LONG).show();
+                                dismissDialog();
                             }
                         });
 

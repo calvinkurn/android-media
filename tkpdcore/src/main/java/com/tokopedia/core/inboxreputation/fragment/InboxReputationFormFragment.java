@@ -528,7 +528,7 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
                     @Override
                     public void onSuccess(Sharer.Result result) {
                         SnackbarManager.make(getActivity(),getString(R.string.success_share_product)
-                                , Snackbar.LENGTH_SHORT).show();
+                                , Snackbar.LENGTH_LONG).show();
                         getActivity().finish();
                     }
                     @Override
@@ -540,7 +540,7 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
                     public void onError(FacebookException error) {
                         Log.i("facebook", "onError: "+error);
                         SnackbarManager.make(getActivity(),getString(R.string.error_share_product)
-                                , Snackbar.LENGTH_SHORT).show();
+                                , Snackbar.LENGTH_LONG).show();
                         getActivity().finish();
                     }
                 });
@@ -558,7 +558,7 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
                     LoginManager.getInstance().logOut();
                 }
                 SnackbarManager.make(getActivity(),getString(R.string.error_share_product)
-                        , Snackbar.LENGTH_SHORT).show();
+                        , Snackbar.LENGTH_LONG).show();
                 getActivity().finish();
             }
         });
