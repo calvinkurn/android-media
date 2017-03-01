@@ -8,6 +8,7 @@ import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailShopUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailShopUseCase;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailShopDomainModel;
 import com.tokopedia.seller.topads.exception.ResponseErrorException;
+import com.tokopedia.seller.topads.utils.ViewUtils;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailNewView;
 import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoFragmentListener;
 import com.tokopedia.seller.topads.view.mapper.TopAdDetailProductMapper;
@@ -39,10 +40,7 @@ public class TopAdsDetailNewShopPresenterImpl<T extends TopAdsDetailNewView> ext
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof ResponseErrorException) {
-                    Log.e("Test", ((ResponseErrorException) e).getErrorList().get(0).getDetail());
-                }
-                getView().onSaveAdError();
+                getView().onSaveAdError(ViewUtils.getErrorMessage(e));
             }
 
             @Override
@@ -50,5 +48,11 @@ public class TopAdsDetailNewShopPresenterImpl<T extends TopAdsDetailNewView> ext
                 getView().onSaveAdSuccess(TopAdDetailProductMapper.convertDomainToView(domainModel));
             }
         });
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        topAdsSaveDetailShopUseCase.unsubscribe();
     }
 }

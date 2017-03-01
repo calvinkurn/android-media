@@ -10,5 +10,5 @@ public interface TopAdsDetailNewView extends CustomerView {
 
     void onSaveAdSuccess(TopAdsDetailAdViewModel topAdsDetailAdViewModel);
 
-    void onSaveAdError();
+    void onSaveAdError(String errorMessage);
 }

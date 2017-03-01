@@ -9,5 +9,5 @@ public interface TopAdsDetailEditView extends TopAdsDetailNewView {
 
     void onDetailAdLoaded(TopAdsDetailAdViewModel topAdsDetailAdViewModel);
 
-    void onLoadDetailAdError();
+    void onLoadDetailAdError(String errorMessage);
 }

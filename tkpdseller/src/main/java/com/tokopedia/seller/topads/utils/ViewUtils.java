@@ -6,6 +6,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.exception.ResponseErrorException;
 
 /**
  * @author normansyahputa on 2/16/17.
@@ -26,6 +27,14 @@ public class ViewUtils {
                 window.getContext()
                         .getResources()
                         .getColor(R.color.green_600));
+    }
+
+    public static String getErrorMessage(Throwable t) {
+        String errorMessage = null;
+        if (t instanceof ResponseErrorException) {
+            errorMessage = ((ResponseErrorException) t).getErrorList().get(0).getDetail();
+        }
+        return errorMessage;
     }
 
 }

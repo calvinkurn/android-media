@@ -35,9 +35,9 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailNewPresente
     }
 
     @Override
-    public void onLoadDetailAdError() {
+    public void onLoadDetailAdError(String errorMessage) {
         hideLoading();
-        showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
+        showSnackBarRetry(errorMessage, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 loadAdDetail();

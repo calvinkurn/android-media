@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailProductUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailProductUseCase;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
+import com.tokopedia.seller.topads.utils.ViewUtils;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailEditView;
 import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoFragmentListener;
 import com.tokopedia.seller.topads.view.mapper.TopAdDetailProductMapper;
@@ -37,7 +38,7 @@ public class TopAdsDetailEditProductPresenterImpl extends TopAdsDetailNewProduct
 
             @Override
             public void onError(Throwable e) {
-                getView().onLoadDetailAdError();
+                getView().onLoadDetailAdError(ViewUtils.getErrorMessage(e));
             }
 
             @Override
@@ -45,5 +46,11 @@ public class TopAdsDetailEditProductPresenterImpl extends TopAdsDetailNewProduct
                 getView().onDetailAdLoaded(TopAdDetailProductMapper.convertDomainToView(domainModel));
             }
         });
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        topAdsGetDetailProductUseCase.unsubscribe();
     }
 }

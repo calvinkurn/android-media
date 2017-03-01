@@ -279,9 +279,15 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsDetailNewPresenter
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
+
     protected void saveAd() {
         showLoading();
-        populateDataFromfields();
+        populateDataFromFields();
     }
 
     @Override
@@ -292,9 +298,9 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsDetailNewPresenter
     }
 
     @Override
-    public void onSaveAdError() {
+    public void onSaveAdError(String errorMessage) {
         hideLoading();
-        showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
+        showSnackBarRetry(errorMessage, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 saveAd();
@@ -400,7 +406,7 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsDetailNewPresenter
         return new SimpleDateFormat(dateFormat, Locale.ENGLISH).parse(dateText);
     }
 
-    protected void populateDataFromfields() {
+    protected void populateDataFromFields() {
         String priceBid = maxPriceEditText.getText().toString();
         if (TextUtils.isEmpty(priceBid)) {
             detailAd.setPriceBid(0);
@@ -439,12 +445,15 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsDetailNewPresenter
         hideSnackBarRetry();
     }
 
-    protected void showSnackBarRetry(NetworkErrorHelper.RetryClickedListener listener) {
-        if (snackBarRetry == null) {
+    protected void showSnackBarRetry(String errorMessage, NetworkErrorHelper.RetryClickedListener listener) {
+        hideSnackBarRetry();
+        if (!TextUtils.isEmpty(errorMessage)) {
+            snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, listener);
+        } else {
             snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), listener);
-            snackBarRetry.showRetrySnackbar();
-            snackBarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
         }
+        snackBarRetry.showRetrySnackbar();
+        snackBarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
     }
 
     protected void hideSnackBarRetry() {
