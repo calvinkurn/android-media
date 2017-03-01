@@ -98,7 +98,9 @@ public class ShopProductListHeaderDelegate {
         public boolean onTouch(View v, MotionEvent motionEvent) {
             userSelect = true;
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                listener.onSpinnerEtalaseClick();
+                if (listener != null) {
+                    listener.onSpinnerEtalaseClick();
+                }
             }
             return false;
         }
