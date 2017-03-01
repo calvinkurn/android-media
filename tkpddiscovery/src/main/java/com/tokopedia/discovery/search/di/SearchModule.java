@@ -9,6 +9,7 @@ import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.discovery.search.SearchPresenter;
+import com.tokopedia.discovery.search.domain.interactor.DeleteSearchUseCase;
 import com.tokopedia.discovery.search.domain.interactor.SearchDataFactory;
 import com.tokopedia.discovery.search.domain.interactor.SearchUseCase;
 
@@ -38,8 +39,10 @@ public class SearchModule {
 
     @SearchScope
     @Provides
-    SearchPresenter provideSearchPresenter(@ActivityContext Context context, SearchUseCase searchUseCase){
-        return new SearchPresenter(context, searchUseCase);
+    SearchPresenter provideSearchPresenter(@ActivityContext Context context,
+                                           SearchUseCase searchUseCase,
+                                           DeleteSearchUseCase deleteSearchUseCase){
+        return new SearchPresenter(context, searchUseCase, deleteSearchUseCase);
     }
 
     @SearchScope
@@ -49,5 +52,13 @@ public class SearchModule {
                                        SearchDataFactory searchFactory){
         return new SearchUseCase(threadExecutor,
                 postExecutionThread, searchFactory);
+    }
+
+    @SearchScope
+    @Provides
+    DeleteSearchUseCase provideDeleteSearchUseCase(ThreadExecutor threadExecutor,
+                                                   PostExecutionThread postExecutionThread,
+                                                   SearchDataFactory searchDataFactory){
+        return new DeleteSearchUseCase(threadExecutor, postExecutionThread, searchDataFactory);
     }
 }

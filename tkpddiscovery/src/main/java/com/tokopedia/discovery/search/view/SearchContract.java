@@ -18,6 +18,10 @@ public interface SearchContract {
     interface Presenter extends CustomerPresenter<View> {
         void search(String query);
 
+        void deleteRecentSearchItem(String keyword);
+
+        void deleteAllRecentSearch();
+
         void initializeDataSearch();
     }
 }

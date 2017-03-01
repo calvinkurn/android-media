@@ -27,7 +27,7 @@ public class RestServiceTestHelper {
         final InputStream stream = context.getResources().getAssets().open(filePath);
 
         String ret = convertStreamToString(stream);
-        //Make sure you close all streams.
+        //Make sure you ic_close all streams.
         stream.close();
         return ret;
     }

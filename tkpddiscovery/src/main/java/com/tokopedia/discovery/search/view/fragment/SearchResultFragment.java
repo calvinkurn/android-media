@@ -1,8 +1,12 @@
 package com.tokopedia.discovery.search.view.fragment;
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +34,7 @@ import butterknife.Unbinder;
 public class SearchResultFragment extends TkpdBaseV4Fragment
         implements ItemClickListener {
 
+    private static final String TAG = SearchResultFragment.class.getSimpleName();
     private Unbinder unbinder;
     private SearchAdapter adapter;
     private LinearLayoutManager layoutManager;
@@ -49,6 +54,9 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        ((AppCompatActivity) getActivity()).getSupportActionBar()
+//                .setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(getContext(),
+//                        R.color.tkpd_green_header)));
     }
 
     @Nullable
@@ -91,5 +99,20 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
     @Override
     public void onItemClicked(SearchItem item) {
         ((BrowseProductActivity) getActivity()).sendQuery(item.getKeyword());
+    }
+
+    @Override
+    public void copyTextToSearchView(String text) {
+        ((BrowseProductActivity) getActivity()).setSearchQuery(text);
+    }
+
+    @Override
+    public void onDeleteRecentSearchItem(SearchItem item) {
+        ((BrowseProductActivity) getActivity()).deleteRecentSearch(item.getKeyword());
+    }
+
+    @Override
+    public void onDeleteAllRecentSearch() {
+        ((BrowseProductActivity) getActivity()).deleteAllRecentSearch();
     }
 }

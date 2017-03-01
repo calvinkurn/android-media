@@ -125,4 +125,12 @@ public class SearchMainFragment extends BaseDaggerFragment implements SearchCont
     public void search(String query){
         presenter.search(query);
     }
+
+    public void deleteAllRecentSearch(){
+        presenter.deleteAllRecentSearch();
+    }
+
+    public void deleteRecentSearch(String keyword){
+        presenter.deleteRecentSearchItem(keyword);
+    }
 }

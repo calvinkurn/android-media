@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -30,6 +32,7 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * @author erry on 23/02/17.
@@ -41,13 +44,11 @@ public class ShopSearchResultAdapter extends RecyclerView.Adapter<ShopSearchResu
     private Context context;
     private String searchTerm;
     private final ItemClickListener clickListener;
-    private TextAppearanceSpan highlightTextSpan;
 
     public ShopSearchResultAdapter(Context context, ItemClickListener clickListener) {
         items = new ArrayList<>();
         this.context = context;
         this.clickListener = clickListener;
-        highlightTextSpan = new TextAppearanceSpan(context, com.tokopedia.core.R.style.searchTextHiglight);
     }
 
     public void setItems(List<SearchItem> items) {
@@ -70,10 +71,13 @@ public class ShopSearchResultAdapter extends RecyclerView.Adapter<ShopSearchResu
             holder.resultTxt.setText(searchItem.getKeyword().toLowerCase());
         } else {
             SpannableString highlightedTitle = new SpannableString(searchItem.getKeyword());
-            highlightedTitle.setSpan(highlightTextSpan, startIndex, startIndex + searchTerm.length(), 0);
+            highlightedTitle.setSpan(new TextAppearanceSpan(context, R.style.searchTextHiglight),
+                    0, startIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            highlightedTitle.setSpan(new TextAppearanceSpan(context, R.style.searchTextHiglight),
+                    startIndex + searchTerm.length(),
+                    searchItem.getKeyword().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             holder.resultTxt.setText(highlightedTitle);
         }
-        holder.resultTxt.setText(searchItem.getKeyword());
         holder.icon.setImageResource(R.drawable.ic_diagonal_arrow);
         Glide.with(context).load(searchItem.getImageURI()).into(holder.shopAvatar);
         if(searchItem.isOfficial()){
@@ -99,7 +103,7 @@ public class ShopSearchResultAdapter extends RecyclerView.Adapter<ShopSearchResu
         return -1;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.title)
         TextView resultTxt;
@@ -113,11 +117,16 @@ public class ShopSearchResultAdapter extends RecyclerView.Adapter<ShopSearchResu
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(this);
         }
 
-        @Override
-        public void onClick(View view) {
+        @OnClick(R2.id.icon)
+        void onCopyToSearch(){
+            SearchItem searchItem = items.get(getAdapterPosition());
+            clickListener.copyTextToSearchView(searchItem.getKeyword());
+        }
+
+        @OnClick(R2.id.title)
+        void onItemClicked(){
             SearchItem searchItem = items.get(getAdapterPosition());
             if(searchItem.getApplink()!=null) {
                 List<String> segments = Uri.parse(searchItem.getApplink()).getPathSegments();
@@ -127,5 +136,6 @@ public class ShopSearchResultAdapter extends RecyclerView.Adapter<ShopSearchResu
                 context.startActivity(intent);
             }
         }
+
     }
 }

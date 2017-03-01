@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * @author erry on 23/02/17.
@@ -36,6 +37,10 @@ public class SearchDataFactory {
                 .doOnNext(saveToCache())
                 .debounce(150, TimeUnit.MICROSECONDS)
                 .map(new SearchMapper(context, gson));
+    }
+
+    public Observable<Response<Void>> deleteRecentSearch(TKPDMapParam<String, String> params) {
+        return aceService.deleteRecentSearch(params);
     }
 
     private Action1<Response<String>> saveToCache() {

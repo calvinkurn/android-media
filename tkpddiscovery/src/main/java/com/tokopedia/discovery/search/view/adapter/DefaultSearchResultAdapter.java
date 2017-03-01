@@ -2,26 +2,29 @@ package com.tokopedia.discovery.search.view.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.tokopedia.core.R2;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
-import com.tokopedia.discovery.search.view.SearchContract;
 import com.tokopedia.discovery.search.view.adapter.viewmodel.DefaultViewModel;
-import com.tokopedia.discovery.view.history.DetailSearchHistoryViewHolder;
 
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * @author erry on 20/02/17.
@@ -29,15 +32,16 @@ import butterknife.ButterKnife;
 
 public class DefaultSearchResultAdapter extends RecyclerView.Adapter<DefaultSearchResultAdapter.ViewHolder> {
 
+    private static final String TAG = DefaultSearchResultAdapter.class.getSimpleName();
     private DefaultViewModel model;
     private final ItemClickListener clickListener;
     private String searchTerm = "";
-    private TextAppearanceSpan highlightTextSpan;
+    private final Context context;
 
     public DefaultSearchResultAdapter(Context context, ItemClickListener clickListener) {
         model = new DefaultViewModel();
+        this.context = context;
         this.clickListener = clickListener;
-        highlightTextSpan = new TextAppearanceSpan(context, com.tokopedia.core.R.style.searchTextHiglight);
     }
 
     public void setModel(DefaultViewModel model) {
@@ -67,7 +71,7 @@ public class DefaultSearchResultAdapter extends RecyclerView.Adapter<DefaultSear
         return model.getSearchItems().size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.title)
         TextView resultTxt;
@@ -75,48 +79,61 @@ public class DefaultSearchResultAdapter extends RecyclerView.Adapter<DefaultSear
         TextView label;
         @BindView(R2.id.icon)
         ImageView icon;
+        @BindView(R2.id.container)
+        LinearLayout containerTxt;
 
         private Context context;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(this);
-            icon.setOnClickListener(this);
             context = itemView.getContext();
         }
 
-        @Override
-        public void onClick(View view) {
-            switch (view.getId()){
-                case R2.id.icon:
+        @OnClick(R2.id.icon)
+        void onIconClicked() {
+            SearchItem item = model.getSearchItems().get(getAdapterPosition());
+            switch (model.getId()) {
+                case recent_search:
+                    clickListener.onDeleteRecentSearchItem(item);
                     break;
                 default:
-                    clickListener.onItemClicked(model.getSearchItems().get(getAdapterPosition()));
+                    clickListener.copyTextToSearchView(item.getKeyword());
             }
         }
 
-        private void bindView(SearchItem searchItem){
+
+        @OnClick(R2.id.container)
+        void onTextClicked() {
+            SearchItem item = model.getSearchItems().get(getAdapterPosition());
+            clickListener.onItemClicked(item);
+        }
+
+        private void bindView(SearchItem searchItem) {
             int startIndex = indexOfSearchQuery(searchItem.getKeyword());
-            if(startIndex == -1){
+            if (startIndex == -1) {
                 resultTxt.setText(searchItem.getKeyword().toLowerCase());
             } else {
                 SpannableString highlightedTitle = new SpannableString(searchItem.getKeyword());
-                highlightedTitle.setSpan(highlightTextSpan, startIndex, startIndex + searchTerm.length(), 0);
+                highlightedTitle.setSpan(new TextAppearanceSpan(context, R.style.searchTextHiglight),
+                        0, startIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                highlightedTitle.setSpan(new TextAppearanceSpan(context, R.style.searchTextHiglight),
+                        startIndex + searchTerm.length(),
+                        searchItem.getKeyword().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 resultTxt.setText(highlightedTitle);
             }
-            resultTxt.setText(searchItem.getKeyword());
-            switch (model.getId()){
+            switch (model.getId()) {
                 case in_category:
+                    icon.setImageResource(R.drawable.ic_diagonal_arrow);
                     label.setVisibility(View.VISIBLE);
                     label.setText(String.format(context.getString(R.string.formated_in_category), searchItem.getRecom()));
                     break;
                 case recent_search:
-                    icon.setImageResource(R.drawable.ic_clear_black);
+                    label.setVisibility(View.GONE);
+                    icon.setImageResource(R.drawable.ic_close);
                     break;
                 default:
                     label.setVisibility(View.GONE);
-                    icon.setImageResource(R.drawable.ic_diagonal_arrow);
             }
         }
     }

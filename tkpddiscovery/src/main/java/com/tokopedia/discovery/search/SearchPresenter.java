@@ -4,7 +4,9 @@ import android.content.Context;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.discovery.search.domain.DeleteParam;
 import com.tokopedia.discovery.search.domain.SearchParam;
+import com.tokopedia.discovery.search.domain.interactor.DeleteSearchUseCase;
 import com.tokopedia.discovery.search.domain.interactor.SearchUseCase;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 import com.tokopedia.discovery.search.view.SearchContract;
@@ -16,6 +18,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import retrofit2.Response;
 import rx.Subscriber;
 
 /**
@@ -29,19 +32,35 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
     private final Context context;
     private String querySearch = "";
     private final SearchUseCase searchUseCase;
+    private final DeleteSearchUseCase deleteSearchUseCase;
 
     @Inject
-    public SearchPresenter(Context context, SearchUseCase searchUseCase) {
+    public SearchPresenter(Context context, SearchUseCase searchUseCase, DeleteSearchUseCase deleteSearchUseCase) {
         this.context = context;
         this.searchUseCase = searchUseCase;
+        this.deleteSearchUseCase = deleteSearchUseCase;
     }
 
     @Override
     public void search(String query) {
         this.querySearch = query;
         SearchParam searchParam = new SearchParam(context);
-        searchParam.getParam().put(SearchParam.KEY_QUERY, query);
+        searchParam.getParam().put(SearchParam.KEY_QUERY, (query.isEmpty() ? "" : query));
         searchUseCase.execute(searchParam, new SearchSubscriber());
+    }
+
+    @Override
+    public void deleteRecentSearchItem(String keyword) {
+        DeleteParam param = new DeleteParam(context);
+        param.getParam().put(DeleteParam.KEY_Q, keyword);
+        deleteSearchUseCase.execute(param, new DeleteSubscriber());
+    }
+
+    @Override
+    public void deleteAllRecentSearch() {
+        DeleteParam param = new DeleteParam(context);
+        param.getParam().put(DeleteParam.KEY_DELETE_ALL, "true");
+        deleteSearchUseCase.execute(param, new DeleteSubscriber());
     }
 
     @Override
@@ -100,6 +119,23 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
                 }
             }
             getView().showSearchResult(list);
+        }
+    }
+
+    private class DeleteSubscriber extends Subscriber<Response<Void>> {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            e.printStackTrace();
+        }
+
+        @Override
+        public void onNext(Response<Void> voidResponse) {
+            search("");
         }
     }
 }

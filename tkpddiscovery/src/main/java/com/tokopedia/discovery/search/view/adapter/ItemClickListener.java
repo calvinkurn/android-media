@@ -9,4 +9,10 @@ import com.tokopedia.discovery.search.domain.model.SearchItem;
 
 public interface ItemClickListener {
     void onItemClicked(SearchItem item);
+
+    void copyTextToSearchView(String text);
+
+    void onDeleteRecentSearchItem(SearchItem item);
+
+    void onDeleteAllRecentSearch();
 }

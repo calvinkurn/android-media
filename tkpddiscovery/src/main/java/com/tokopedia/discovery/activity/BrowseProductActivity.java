@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -32,7 +33,6 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -58,11 +58,11 @@ import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 import com.tokopedia.discovery.fragment.browseparent.BrowseParentFragment;
 import com.tokopedia.discovery.fragment.browseparent.ShopFragment;
-//import com.tokopedia.discovery.fragment.history.SearchHistoryFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.interactor.SearchInteractor;
@@ -110,7 +110,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     private static final String EXTRA_BROWSE_ATRIBUT = "EXTRA_BROWSE_ATRIBUT";
     @BindView(R2.id.progressBar)
     ProgressBar progressBar;
-    private SearchView searchView;
+    SearchView searchView;
     private String searchQuery;
     private FragmentManager fragmentManager;
     private SearchInteractor searchInteractor;
@@ -154,7 +154,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     CoordinatorLayout coordinatorLayout;
     @BindView(R2.id.toolbar)
     Toolbar toolbar;
-    @BindView(R2.id.bottom_navigation)
+    @BindView(R2.id.bottom_navigation_container)
     AHBottomNavigation bottomNavigation;
     @BindView(R2.id.container)
     FrameLayout container;
@@ -207,7 +207,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT:
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG:
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP:
-                toolbar.setTitle(getString(R.string.search_product));
+                toolbar.setTitle("");
                 break;
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY:
                 toolbar.setTitle(getString(R.string.title_activity_browse_category));
@@ -321,11 +321,16 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         MenuItem searchItem = menu.findItem(R.id.action_search);
         searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(this);
-        searchView.setQueryHint(getString(R.string.action_search));
-        SearchView.SearchAutoComplete mSearchSrcTextView =
-                (SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
-        mSearchSrcTextView.setTextColor(getResources().getColor(R.color.white));
-        mSearchSrcTextView.setHintTextColor(getResources().getColor(R.color.white));
+        searchView.setIconifiedByDefault(false);
+        searchView.setQueryHint(getString(R.string.search_hint));
+        searchView.setBackgroundColor(ContextCompat.getColor(this, R.color.transparent));
+        searchView.findViewById(R.id.search_src_text)
+                .setBackgroundColor(ContextCompat.getColor(this, R.color.transparent));
+
+//        SearchView.SearchAutoComplete mSearchSrcTextView =
+//                (SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
+//        mSearchSrcTextView.setTextColor(getResources().getColor(R.color.white));
+//        mSearchSrcTextView.setHintTextColor(getResources().getColor(R.color.white));
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         MenuItemCompat.setOnActionExpandListener(searchItem, this);
         MenuItemCompat.setActionView(searchItem, searchView);
@@ -348,6 +353,11 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
             searchView.clearFocus();
         }
         return true;
+    }
+
+    public void setSearchQuery(String query){
+        searchView.setQuery(query, false);
+        CommonUtils.hideKeyboard(this, getCurrentFocus());
     }
 
     @Override
@@ -415,10 +425,10 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     public boolean onQueryTextChange(String newText) {
         this.searchQuery = newText;
         Fragment fragment = fragmentManager.findFragmentById(R.id.container);
-        if (!newText.isEmpty() && fragment
-                instanceof BrowseParentFragment && !browseProductActivityModel.isSearchDeeplink()) {
+        if (fragment instanceof BrowseParentFragment &&
+                !browseProductActivityModel.isSearchDeeplink()) {
             setFragment(SearchMainFragment.newInstance(newText), SearchMainFragment.FRAGMENT_TAG);
-        } else if(!newText.isEmpty() && fragment instanceof SearchMainFragment) {
+        } else if(fragment instanceof SearchMainFragment) {
             SearchMainFragment searchMainFragment = (SearchMainFragment) fragmentManager.findFragmentById(R.id.container);
             searchMainFragment.search(newText);
         }
@@ -1063,6 +1073,21 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         bottomNavigation.restoreBottomNavigation(true);
     }
 
+    public void deleteRecentSearch(String keyword) {
+        Fragment fragment = fragmentManager.findFragmentById(R.id.container);
+        if(fragment instanceof SearchMainFragment) {
+            SearchMainFragment searchMainFragment = (SearchMainFragment) fragment;
+            searchMainFragment.deleteRecentSearch(keyword);
+        }
+    }
+
+    public void deleteAllRecentSearch() {
+        Fragment fragment = fragmentManager.findFragmentById(R.id.container);
+        if(fragment instanceof SearchMainFragment) {
+            SearchMainFragment searchMainFragment = (SearchMainFragment) fragment;
+            searchMainFragment.deleteAllRecentSearch();
+        }
+    }
 
     public BrowseProductRouter.GridType getGridType() {
         return gridType;

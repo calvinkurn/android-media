@@ -2,9 +2,11 @@ package com.tokopedia.discovery.search.view.adapter.viewholder;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,17 +19,20 @@ import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.search.view.adapter.viewmodel.DefaultViewModel;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * @author erry on 14/02/17.
  */
 
-public class DefaultSearchViewHolder extends AbstractViewHolder<DefaultViewModel> implements View.OnClickListener {
+public class DefaultSearchViewHolder extends AbstractViewHolder<DefaultViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.default_search_parent_list_item;
     private static final String TAG = DefaultSearchViewHolder.class.getSimpleName();
 
+    @BindView(R2.id.card_view)
+    CardView cardView;
     @BindView(R2.id.list)
     RecyclerView recyclerView;
     @BindView(R2.id.container_search)
@@ -38,6 +43,7 @@ public class DefaultSearchViewHolder extends AbstractViewHolder<DefaultViewModel
     TextView delete;
     private Context context;
     private final DefaultSearchResultAdapter resultAdapter;
+    private ItemClickListener itemClickListener;
 
     public DefaultSearchViewHolder(View itemView, ItemClickListener clickListener) {
         super(itemView);
@@ -46,42 +52,47 @@ public class DefaultSearchViewHolder extends AbstractViewHolder<DefaultViewModel
                 = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
-        resultAdapter = new DefaultSearchResultAdapter(context, clickListener);
+        itemClickListener = clickListener;
+        resultAdapter = new DefaultSearchResultAdapter(context, itemClickListener);
         recyclerView.setAdapter(resultAdapter);
-        delete.setOnClickListener(this);
     }
 
-    @Override
-    public void onClick(View view) {
-        Log.d(TAG, "Delete");
+    @OnClick(R2.id.delete)
+    void onDeleteAllClicked() {
+        itemClickListener.onDeleteAllRecentSearch();
     }
 
     @Override
     public void bind(DefaultViewModel element) {
         resultAdapter.setSearchTerm(element.getSearchTerm());
-        title.setVisibility(View.VISIBLE);
+        title.setVisibility(View.GONE);
         delete.setVisibility(View.GONE);
-        switch (element.getId()){
+        CardView.LayoutParams layoutParams = new CardView.LayoutParams(
+                CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT);
+        cardView.setCardElevation(0);
+        switch (element.getId()) {
             case autocomplete:
-                title.setVisibility(View.GONE);
+                layoutParams.setMargins(0, 0, 0, context.getResources().
+                        getDimensionPixelSize(R.dimen.search_parent_item_card_margin));
+                cardView.setCardElevation(5);
                 break;
             case recent_search:
+                title.setVisibility(View.VISIBLE);
                 delete.setVisibility(View.VISIBLE);
                 title.setText(context.getString(R.string.title_search_recent));
-                break;
-            case hotlist:
-                title.setText(context.getString(R.string.title_search_hotlist));
+                layoutParams.setMargins(0, 0, 0, context.getResources().
+                        getDimensionPixelSize(R.dimen.search_parent_item_card_margin));
+                cardView.setCardElevation(5);
                 break;
             case popular_search:
+                title.setVisibility(View.VISIBLE);
                 title.setText(context.getString(R.string.title_search_popular));
-                break;
-            case shop:
-                title.setText(context.getString(R.string.title_search_shop));
-                break;
-            case in_category:
-                title.setText(context.getString(R.string.title_search_category));
+                layoutParams.setMargins(0, 0, 0, context.getResources().
+                        getDimensionPixelSize(R.dimen.search_parent_item_card_margin));
+                cardView.setCardElevation(5);
                 break;
         }
+        cardView.setLayoutParams(layoutParams);
         resultAdapter.setModel(element);
     }
 }
