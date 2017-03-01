@@ -39,6 +39,10 @@ public class TopAdsNetworkConstant {
     public static final String PARAM_GROUP = "group";
     public static final String PARAM_PAGE = "page";
 
+    public static final String VALUE_SOURCE_ANDROID = "android";
+    public static final String VALUE_TOGGLE_ON = "on";
+    public static final String VALUE_TOGGLE_OFF = "off";
+
     public static final String ACTION_BULK_DELETE_AD = "delete";
     public static final String ACTION_BULK_OFF_AD = "toggle_off";
     public static final String ACTION_BULK_ON_AD = "toggle_on";

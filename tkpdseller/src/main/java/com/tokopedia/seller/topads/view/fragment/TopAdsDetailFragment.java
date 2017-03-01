@@ -37,21 +37,23 @@ import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAc
  */
 public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> extends TopAdsDatePickerFragment<T> implements TopAdsDetailViewListener, CompoundButton.OnCheckedChangeListener {
 
-    TopAdsLabelView priceAndSchedule;
-    TopAdsLabelView name;
-    TopAdsLabelSwitch status;
-    TopAdsLabelView maxBid;
-    TopAdsLabelView avgCost;
-    TopAdsLabelView start;
-    TopAdsLabelView end;
-    TopAdsLabelView dailyBudget;
-    TopAdsLabelView sent;
-    TopAdsLabelView impr;
-    TopAdsLabelView click;
-    TopAdsLabelView ctr;
-    TopAdsLabelView favorite;
+    protected static final int REQUEST_CODE_AD_STATUS = 2;
 
-    SwipeToRefresh swipeToRefresh;
+    protected TopAdsLabelView priceAndSchedule;
+    protected TopAdsLabelView name;
+    private TopAdsLabelSwitch status;
+    private TopAdsLabelView maxBid;
+    private TopAdsLabelView avgCost;
+    protected TopAdsLabelView start;
+    protected TopAdsLabelView end;
+    protected TopAdsLabelView dailyBudget;
+    private TopAdsLabelView sent;
+    private TopAdsLabelView impr;
+    private TopAdsLabelView click;
+    private TopAdsLabelView ctr;
+    protected TopAdsLabelView favorite;
+
+    private SwipeToRefresh swipeToRefresh;
     protected Ad adFromIntent;
     protected ProgressDialog progressDialog;
     private SnackbarRetry snackbarRetry;
@@ -104,24 +106,6 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     @Override
-    protected void loadData() {
-        showLoading();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(datePickerPresenter.getRangeDateFormat(startDate, endDate));
-        if (adFromIntent != null) {
-            onAdLoaded(adFromIntent);
-            adFromIntent = null;
-        } else {
-            refreshAd();
-        }
-    }
-
-    private void showLoading() {
-        if (!swipeToRefresh.isRefreshing()) {
-            progressDialog.show();
-        }
-    }
-
-    @Override
     protected void initialVar() {
         super.initialVar();
         new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
@@ -138,6 +122,37 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
             turnOnAd();
         } else {
             turnOffAd();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        // check if the request code is the same
+        if (requestCode == REQUEST_CODE_AD_STATUS && intent != null) {
+            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, false);
+            boolean adDeleted = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_DELETED, false);
+            if (adStatusChanged || adDeleted) {
+                refreshAd();
+            }
+        }
+    }
+
+    @Override
+    protected void loadData() {
+        showLoading();
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(datePickerPresenter.getRangeDateFormat(startDate, endDate));
+        if (adFromIntent != null) {
+            onAdLoaded(adFromIntent);
+            adFromIntent = null;
+        } else {
+            refreshAd();
+        }
+    }
+
+    private void showLoading() {
+        if (!swipeToRefresh.isRefreshing()) {
+            progressDialog.show();
         }
     }
 

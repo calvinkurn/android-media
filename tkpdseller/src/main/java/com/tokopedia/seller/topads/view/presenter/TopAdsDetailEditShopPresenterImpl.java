@@ -7,6 +7,8 @@ import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailShopUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailShopUseCase;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailShopDomainModel;
 import com.tokopedia.seller.topads.exception.ResponseErrorException;
+import com.tokopedia.seller.topads.view.listener.TopAdsDetailEditView;
+import com.tokopedia.seller.topads.view.listener.TopAdsDetailNewView;
 import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoFragmentListener;
 import com.tokopedia.seller.topads.view.mapper.TopAdDetailProductMapper;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
@@ -16,14 +18,15 @@ import rx.Subscriber;
 /**
  * Created by Nisie on 5/9/16.
  */
-public class TopAdsEditPromoShopPresenterImpl extends TopAdsEditPromoPresenterImpl implements TopAdsEditPromoShopPresenter {
+public class TopAdsDetailEditShopPresenterImpl extends TopAdsDetailNewShopPresenterImpl<TopAdsDetailEditView> implements TopAdsDetailEditShopPresenter {
 
     private TopAdsGetDetailShopUseCase topAdsGetDetailShopUseCase;
     private TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase;
     private TopAdsEditPromoFragmentListener listener;
     private Context context;
 
-    public TopAdsEditPromoShopPresenterImpl(TopAdsGetDetailShopUseCase topAdsGetDetailShopUseCase, TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase) {
+    public TopAdsDetailEditShopPresenterImpl(TopAdsGetDetailShopUseCase topAdsGetDetailShopUseCase, TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase) {
+        super(topAdsGetDetailShopUseCase, topAdsSaveDetailShopUseCase);
         this.topAdsGetDetailShopUseCase = topAdsGetDetailShopUseCase;
         this.topAdsSaveDetailShopUseCase = topAdsSaveDetailShopUseCase;
     }
@@ -44,28 +47,6 @@ public class TopAdsEditPromoShopPresenterImpl extends TopAdsEditPromoPresenterIm
             @Override
             public void onNext(TopAdsDetailShopDomainModel domainModel) {
                 getView().onDetailAdLoaded(TopAdDetailProductMapper.convertDomainToView(domainModel));
-            }
-        });
-    }
-
-    public void saveAd(TopAdsDetailShopViewModel adViewModel) {
-        topAdsSaveDetailShopUseCase.execute(TopAdsSaveDetailShopUseCase.createRequestParams(TopAdDetailProductMapper.convertViewToDomain(adViewModel)), new Subscriber<TopAdsDetailShopDomainModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (e instanceof ResponseErrorException) {
-                    Log.e("Test", ((ResponseErrorException) e).getErrorList().get(0).getDetail());
-                }
-                getView().onSaveAdError();
-            }
-
-            @Override
-            public void onNext(TopAdsDetailShopDomainModel domainModel) {
-                getView().onSaveAdSuccess(TopAdDetailProductMapper.convertDomainToView(domainModel));
             }
         });
     }
