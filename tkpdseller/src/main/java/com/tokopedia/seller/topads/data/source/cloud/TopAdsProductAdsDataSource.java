@@ -5,16 +5,21 @@ import android.content.Context;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.data.mapper.TopAdsBulkActionMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsDetailProductMapper;
 import com.tokopedia.seller.topads.data.model.TopAdsProductDetailDataSourceModel;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.api.TopAdsManagementApi;
-import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
+import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;import com.tokopedia.seller.topads.domain.model.data.ProductAdAction;
+import com.tokopedia.seller.topads.domain.model.data.ProductAdBulkAction;
 import com.tokopedia.seller.topads.domain.model.request.DataRequest;
+import com.tokopedia.seller.topads.domain.model.response.DataResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Response;
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by zulfikarrahman on 2/20/17.
@@ -24,11 +29,15 @@ public class TopAdsProductAdsDataSource {
     private final TopAdsDetailProductMapper topAdsDetailProductMapper;
     private final TopAdsManagementApi topAdsManagementApi;
     private final Context context;
+    private final TopAdsBulkActionMapper topAdsBulkActionMapper;
 
-    public TopAdsProductAdsDataSource(Context context, TopAdsManagementApi topAdsManagementApi, TopAdsDetailProductMapper topAdsDetailProductMapper) {
+    public TopAdsProductAdsDataSource(Context context, TopAdsManagementApi topAdsManagementApi,
+                                      TopAdsDetailProductMapper topAdsDetailProductMapper,
+                                      TopAdsBulkActionMapper topAdsBulkActionMapper) {
         this.context = context;
         this.topAdsManagementApi = topAdsManagementApi;
         this.topAdsDetailProductMapper = topAdsDetailProductMapper;
+        this.topAdsBulkActionMapper = topAdsBulkActionMapper;
     }
 
     public Observable<TopAdsDetailProductDomainModel> getDetailProduct(String adId) {
@@ -79,5 +88,25 @@ public class TopAdsProductAdsDataSource {
                 break;
         }
         return dataModel;
+    }
+
+    public Observable<ProductAdBulkAction> moveProductGroup(String adId, String groupId, String shopId) {
+        DataRequest<ProductAdBulkAction> productAdBulkActionDataRequest = convertToProductBulkAction(adId, groupId, shopId);
+        return topAdsManagementApi.bulkActionProductAd(productAdBulkActionDataRequest).map(topAdsBulkActionMapper);
+    }
+
+    private DataRequest<ProductAdBulkAction> convertToProductBulkAction(String adId, String groupId, String shopId) {
+        DataRequest<ProductAdBulkAction> productAdBulkActionDataRequest = new DataRequest<>();
+        ProductAdBulkAction productAdBulkAction = new ProductAdBulkAction();
+        productAdBulkAction.setAction(TopAdsNetworkConstant.ACTION_BULK_MOVE_AD);
+        productAdBulkAction.setShopId(shopId);
+        ProductAdAction productAdAction = new ProductAdAction();
+        productAdAction.setId(adId);
+        productAdAction.setGroupId(groupId);
+        List<ProductAdAction> adActions = new ArrayList<>();
+        adActions.add(productAdAction);
+        productAdBulkAction.setAds(adActions);
+        productAdBulkActionDataRequest.setData(productAdBulkAction);
+        return productAdBulkActionDataRequest;
     }
 }

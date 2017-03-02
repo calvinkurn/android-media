@@ -107,4 +107,8 @@ public class TopAdsRadioExpandView extends LinearLayout {
         radioButton.setId(radioId);
         setOrientation(VERTICAL);
     }
+
+    public void setChecked(boolean b) {
+        radioButton.setChecked(b);
+    }
 }

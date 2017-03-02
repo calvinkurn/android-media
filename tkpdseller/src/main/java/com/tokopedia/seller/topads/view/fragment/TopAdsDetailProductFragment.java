@@ -21,6 +21,8 @@ import com.tokopedia.seller.topads.domain.model.data.Ad;
 import com.tokopedia.seller.topads.domain.model.data.ProductAd;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailEditProductActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsGroupEditPromoActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsGroupManagePromoActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenterImpl;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
@@ -108,7 +110,12 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
 
     @Override
     protected void editAd() {
-        if (productAd != null) {
+        if (isHasGroupAd()) {
+            Intent intent = TopAdsGroupEditPromoActivity.createIntent(getActivity(),
+                    String.valueOf(productAd.getId()), TopAdsGroupEditPromoFragment.EXIST_GROUP, productAd.getGroupName(),
+                    String.valueOf(productAd.getGroupId()));
+            startActivity(intent);
+        }else if(productAd != null){
             Intent intent = new Intent(getActivity(), TopAdsDetailEditProductActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, String.valueOf(productAd.getId()));
             startActivity(intent);
@@ -173,6 +180,21 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         super.onCreateOptionsMenu(menu, inflater);
         manageGroupMenuItem = menu.findItem(R.id.menu_manage_group);
         updateManageGroupMenu();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.menu_manage_group) {
+            manageGroup();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void manageGroup() {
+        Intent intent = TopAdsGroupManagePromoActivity.createIntent(getActivity(), String.valueOf(productAd.getId()),
+                TopAdsGroupManagePromoFragment.NEW_GROUP, productAd.getGroupName(), String.valueOf(productAd.getGroupId()));
+        startActivity(intent);
     }
 
     private void updateManageGroupMenu() {

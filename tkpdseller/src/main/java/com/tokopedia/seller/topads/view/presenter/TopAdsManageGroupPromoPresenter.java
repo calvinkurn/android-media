@@ -6,7 +6,7 @@ import com.tokopedia.seller.topads.view.listener.TopAdsManageGroupPromoView;
 /**
  * Created by zulfikarrahman on 2/16/17.
  */
-public interface TopAdsManageGroupPromoPresenter extends CustomerPresenter<TopAdsManageGroupPromoView>{
+public interface TopAdsManageGroupPromoPresenter<T extends TopAdsManageGroupPromoView> extends CustomerPresenter<T>{
     void checkIsGroupExist(String keyword);
     void searchGroupName(String keyword);
 
