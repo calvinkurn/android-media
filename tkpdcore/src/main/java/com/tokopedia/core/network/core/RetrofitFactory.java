@@ -16,20 +16,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitFactory {
 
-    private String baseUrl;
 
-    public RetrofitFactory (String baseUrl) {
-        this.baseUrl = baseUrl;
-    }
-
-    public Retrofit.Builder createRetrofitDefaultConfig() {
+    public static Retrofit.Builder createRetrofitDefaultConfig(String baseUrl) {
 
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
                 .setPrettyPrinting()
                 .serializeNulls()
                 .create();
-
         return new Retrofit.Builder()
                         .baseUrl(baseUrl)
                         .addConverterFactory(new GeneratedHostConverter())
