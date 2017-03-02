@@ -5,7 +5,8 @@ import android.os.Bundle;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.di.TopAdsEditPromoProductDI;
+import com.tokopedia.seller.topads.di.TopAdsDetailEditProductDI;
+import com.tokopedia.seller.topads.di.TopAdsDetailNewProductDI;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailProductViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewProductPresenter;
 
@@ -22,7 +23,7 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
 
     @Override
     protected void initialPresenter() {
-        presenter = TopAdsEditPromoProductDI.createPresenter(getActivity());
+        presenter = TopAdsDetailNewProductDI.createPresenter(getActivity());
         presenter.attachView(this);
     }
 
