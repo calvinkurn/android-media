@@ -101,7 +101,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_INV
  * Created by Erry on 6/30/2016.
  */
 public class BrowseProductActivity extends TActivity implements SearchView.OnQueryTextListener,
-        DiscoveryActivityPresenter, MenuItemCompat.OnActionExpandListener {
+        DiscoveryActivityPresenter, MenuItemCompat.OnActionExpandListener{
 
     private static final String TAG = BrowseProductActivity.class.getSimpleName();
     private static final String KEY_GTM = "GTMFilterData";
@@ -1058,9 +1058,12 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                             CategoriesHadesModel.CategoriesHadesContainer categoriesHadesContainer = (CategoriesHadesModel.CategoriesHadesContainer) objContainer;
                             CategoriesHadesModel body = categoriesHadesContainer.body();
 
-                            if (browseProductActivityModel !=null && body.getData().getCategories().size()>0) {
+                            if (browseProductActivityModel !=null && body.getData().getCategories()  !=null
+                                    && body.getData().getCategories().size()>0) {
                                 browseProductActivityModel.categotyHeader = body.getData().getCategories().get(0);
-                                parentFragment.renderCategories(browseProductActivityModel.categotyHeader);
+                                if (browseProductActivityModel.categotyHeader.getRevamp() !=null
+                                        && browseProductActivityModel.categotyHeader.getRevamp() )
+                                    parentFragment.renderCategories(browseProductActivityModel.categotyHeader);
                             }
                         }
                         break;

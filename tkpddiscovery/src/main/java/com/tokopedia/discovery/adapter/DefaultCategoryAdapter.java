@@ -27,9 +27,9 @@ public class DefaultCategoryAdapter extends
     private List<Child> categories;
     private DefaultCategoryAdapter.CategoryListener categoryListener;
 
-    public DefaultCategoryAdapter(int categoryWidth, Category categotyHeader, CategoryListener categoryListener) {
+    public DefaultCategoryAdapter(int categoryWidth, List<Child> categories, CategoryListener categoryListener) {
         this.categoryWidth = categoryWidth;
-        this.categories = categotyHeader.getChild();
+        this.categories = categories;
         this.categoryListener = categoryListener;
     }
 
@@ -76,5 +76,10 @@ public class DefaultCategoryAdapter extends
 
     public interface CategoryListener {
         void onCategoryClick(Child child);
+    }
+
+    public void addDataChild(List<Child> childs) {
+        categories.addAll(childs);
+        notifyDataSetChanged();
     }
 }

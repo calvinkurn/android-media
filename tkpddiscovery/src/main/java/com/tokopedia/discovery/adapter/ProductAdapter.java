@@ -47,6 +47,7 @@ import com.tokopedia.core.home.model.ViewHolderProductTopAds;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.categoriesHades.Category;
+import com.tokopedia.core.network.entity.categoriesHades.Child;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -67,6 +68,7 @@ import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -399,9 +401,11 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     public static class DefaultCategoryHeaderViewHolder extends RecyclerView.ViewHolder {
 
-
         @BindView(R2.id.recycler_view_default_categories)
         RecyclerView defaultCategoriesRecyclerView;
+
+        @BindView(R2.id.expand_layout)
+        LinearLayout expandLayout;
 
         private DefaultCategoryAdapter categoryAdapter;
 
@@ -410,15 +414,31 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(CategoryHeaderModel categoryHeaderModel) {
+        public void bind(final CategoryHeaderModel categoryHeaderModel) {
             defaultCategoriesRecyclerView.setVisibility(View.VISIBLE);
             defaultCategoriesRecyclerView.setHasFixedSize(true);
             defaultCategoriesRecyclerView.setLayoutManager(
                     new NonScrollGridLayoutManager(categoryHeaderModel.context, 2,
                             GridLayoutManager.VERTICAL, false));
             defaultCategoriesRecyclerView.addItemDecoration(new DividerItemDecoration(categoryHeaderModel.context));
-            categoryAdapter = new DefaultCategoryAdapter(categoryHeaderModel.categoryWidth,categoryHeaderModel.category,categoryHeaderModel.listener);
+            categoryAdapter = new DefaultCategoryAdapter(categoryHeaderModel.categoryWidth,categoryHeaderModel.activeChilds,categoryHeaderModel.listener);
             defaultCategoriesRecyclerView.setAdapter(categoryAdapter);
+            if (categoryHeaderModel.isUsedUnactiveChilds) {
+                expandLayout.setVisibility(View.VISIBLE);
+                expandLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        categoryAdapter.addDataChild(categoryHeaderModel.category.getChild()
+                                .subList(6,categoryHeaderModel.category.getChild().size()));
+                        expandLayout.setVisibility(View.GONE);
+                        categoryHeaderModel.isUsedUnactiveChilds = false;
+                    }
+                });
+            }
+        }
+
+        public interface CategoryHeaderListener {
+            void onExpandClick();
         }
 
 
@@ -639,6 +659,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     public static class CategoryHeaderModel extends RecyclerViewItem {
 
         private Category category;
+        private List<Child> activeChilds = new ArrayList<>();
+        private boolean isUsedUnactiveChilds = false;
         private Context context;
         private int categoryWidth;
         DefaultCategoryAdapter.CategoryListener listener;
@@ -653,6 +675,13 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             this.context = context;
             this.categoryWidth = categoryWidth;
             this.listener = listener;
+            if (category.getChild().size()>6) {
+                activeChilds.addAll(category.getChild()
+                        .subList(0,6));
+                isUsedUnactiveChilds = true;
+            } else {
+                activeChilds.addAll(category.getChild());
+            }
         }
     }
 

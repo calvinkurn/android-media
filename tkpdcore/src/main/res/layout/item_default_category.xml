@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:background="?android:selectableItemBackground"
         android:orientation="horizontal"
-        android:padding="5dp">
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/categoryTitle"
@@ -19,16 +19,18 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:gravity="center_vertical"
-            android:lines="2"
+            android:lines="1"
             android:text="Title"
             android:padding="5dp"
             android:textColor="@color/tkpd_dark_gray"
-            android:textSize="12sp" />
+            android:textSize="13sp" />
 
         <ImageView
             android:id="@+id/separator"
             android:layout_width="wrap_content"
-            android:layout_height="15dp"
+            android:layout_height="20dp"
+            android:gravity="center_vertical"
+            android:layout_marginRight="@dimen/margin_small"
             android:visibility="visible"
             android:src="@drawable/ic_navigate_next_black_24dp"/>
 
