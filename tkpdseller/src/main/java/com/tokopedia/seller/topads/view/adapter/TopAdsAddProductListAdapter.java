@@ -1,6 +1,5 @@
 package com.tokopedia.seller.topads.view.adapter;
 
-import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,10 +9,10 @@ import android.view.ViewGroup;
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.listener.AdapterSelectionListener;
 import com.tokopedia.seller.topads.listener.FragmentItemSelection;
 import com.tokopedia.seller.topads.view.models.TopAdsAddProductModel;
+import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.view.models.TypeBasedModel;
 
 import java.util.ArrayList;
@@ -138,7 +137,7 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
         int position = topAdsProductViewModels.indexOf(topAdsProductViewModel);
         Log.d("MNORMANSYAH", " search this " + topAdsProductViewModel + " position " + position);
 
-        if (position > 0) {
+        if (position >= 0) {
             removedItem(position);
         }
     }
