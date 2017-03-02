@@ -13,6 +13,11 @@ public interface Constants {
     String ARG_NOTIFICATION_ICON = "url_icon";
     String ARG_NOTIFICATION_URL = "url";
     String ARG_NOTIFICATION_UPDATE_APPS_TITLE = "title_update";
+    String ARG_NOTIFICATION_TARGET_USER_ID = "to_user_id";
+    String ARG_NOTIFICATION_CART_EXISTS = "is_cart_exists";
+    String ARG_NOTIFICATION_APPLINK = "applinks";
+    String ARG_NOTIFICATION_APPLINK_MESSAGE = "message";
+    String ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX = "full_name";
     int REGISTRATION_STATUS_OK = 1;
     int REGISTRATION_STATUS_ERROR = 2;
     String REGISTRATION_MESSAGE_OK = "FCM Sucessfully";
@@ -20,4 +25,5 @@ public interface Constants {
     String EXTRA_PLAYSTORE_URL = "market://details?id=com.tokopedia.tkpd";
     String EXTRA_FROM_PUSH = "from_notif";
     String EXTRA_UNREAD = "unread";
+    String EXTRA_APPLINK_CATEGORY = "applink_category";
 }
