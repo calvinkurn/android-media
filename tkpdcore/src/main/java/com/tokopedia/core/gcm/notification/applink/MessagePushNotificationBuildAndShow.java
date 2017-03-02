@@ -1,13 +1,19 @@
 package com.tokopedia.core.gcm.notification.applink;
 
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
 
 import com.tokopedia.core.gcm.BuildAndShowNotification;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.domain.model.MessagePushNotification;
 import com.tokopedia.core.gcm.model.ApplinkNotificationPass;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +23,9 @@ import java.util.List;
  */
 
 public class MessagePushNotificationBuildAndShow extends AbstractApplinkBuildAndShowNotification<List<MessagePushNotification>> {
+    private static final String NOTIFICATION_TITLE = "Tokopedia - Pesan Baru";
+    private static final String NOTIFICATION_GROUP = "personalized_group";
+    private static final String NOTIFICATION_CATEGORY = "msg";
 
     private List<MessagePushNotification> discussionPushNotifications;
     BuildAndShowNotification buildAndShowNotification;
@@ -42,12 +51,8 @@ public class MessagePushNotificationBuildAndShow extends AbstractApplinkBuildAnd
                     image = messagePushNotification.getThumbnail();
                 } else if (!messagePushNotification.getApplink().equalsIgnoreCase(uri)) {
                     if (isSingle) {
-                        try {
-                            URL url = new URL(uri);
-                            uri = url.getProtocol() + "://" + url.getHost();
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        }
+                        Uri url = Uri.parse(uri);
+                        uri = url.getScheme() + "://" + url.getHost();
                     }
                     isSingle = false;
                 }
@@ -61,21 +66,27 @@ public class MessagePushNotificationBuildAndShow extends AbstractApplinkBuildAnd
             if (!isSingle){
                 image = "https://ecs7.tokopedia.net/img/microsite-brand-resource/mascot-toped-new.png";
             }
-            String description = null;
+            String description;
             if (discussionPushNotifications.size() >1){
                 description = String.format("%d pesan dari %d pengirim", discussionPushNotifications.size(), senderCount);
             }else {
                 description = String.format("%d pesan", discussionPushNotifications.size());
             }
+            Uri url = Uri.parse(uri);
+            handlerIntent.setData(url);
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.EXTRA_APPLINK_CATEGORY, Constants.ARG_NOTIFICATION_APPLINK_MESSAGE);
+            handlerIntent.putExtras(bundle);
 
             ApplinkNotificationPass.ApplinkNotificationPassBuilder builder =
                     ApplinkNotificationPass.ApplinkNotificationPassBuilder.builder();
             ApplinkNotificationPass applinkNotificationPass = builder.contents(contents)
                     .description(description)
-                    .icon("https://ecs7.tokopedia.net/img/microsite-brand-resource/mascot-toped-new.png")
                     .image(image)
                     .id(1001)
-                    .title("Tokopedia - Pesan Baru")
+                    .title(NOTIFICATION_TITLE)
+                    .group(NOTIFICATION_GROUP)
+                    .category(NOTIFICATION_CATEGORY)
                     .intent(handlerIntent)
                     .applink(uri)
                     .build();

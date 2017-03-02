@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.base.BaseAppNotificationReceiverUIBackground;
 import com.tokopedia.core.gcm.notification.applink.ApplinkTypeFactory;
@@ -16,6 +17,7 @@ import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerEdit
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerNotification;
 import com.tokopedia.core.gcm.notification.promotions.DeeplinkNotification;
 import com.tokopedia.core.gcm.utils.GCMUtils;
+import com.tokopedia.core.review.var.Const;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
@@ -94,28 +96,57 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 });
     }
 
-    private void handleApplinkNotification(Bundle bundle) {
-        String applinks = bundle.getString("applinks");
+    private void handleApplinkNotification(Bundle data) {
+        if (SessionHandler.isV4Login(mContext)
+                && SessionHandler.getLoginID(mContext).equals(
+                    data.getString(Constants.ARG_NOTIFICATION_TARGET_USER_ID))
+                ) {
+
+            resetNotificationStatus(data);
+
+            if (mActivitiesLifecycleCallbacks.isAppOnBackground()) {
+                prepareAndExecuteApplinkNotification(data);
+            } else {
+                NotificationReceivedListener listener =
+                        (NotificationReceivedListener) mActivitiesLifecycleCallbacks.getLiveActivityOrNull();
+                if (listener != null) {
+                    listener.onGetNotif();
+                    if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE))
+                            == TkpdState.GCMServiceState.GCM_CART_UPDATE) {
+                        listener.onRefreshCart(data.getInt(Constants.ARG_NOTIFICATION_CART_EXISTS, 0));
+                    } else {
+                        prepareAndExecuteApplinkNotification(data);
+                    }
+                } else {
+                    prepareAndExecuteApplinkNotification(data);
+                }
+            }
+            mFCMCacheManager.resetCache(data);
+        }
+    }
+
+    private void prepareAndExecuteApplinkNotification(Bundle data) {
+        String applinks = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
         String category = Uri.parse(applinks).getHost();
         String customIndex = "";
         switch (category) {
-            case "message":
-                customIndex = bundle.getString("full_name");
+            case Constants.ARG_NOTIFICATION_APPLINK_MESSAGE:
+                customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX);
                 break;
         }
+
         saveApplinkPushNotification(
                 category,
-                convertBundleToJsonString(bundle)
+                convertBundleToJsonString(data)
                 , customIndex,
                 new SavePushNotificationCallback()
         );
     }
 
 
-
     public void handleDedicatedNotification(Bundle data) {
         if (SessionHandler.isV4Login(mContext)
-                && SessionHandler.getLoginID(mContext).equals(data.getString("to_user_id"))) {
+                && SessionHandler.getLoginID(mContext).equals(data.getString(Constants.ARG_NOTIFICATION_TARGET_USER_ID))) {
 
             resetNotificationStatus(data);
 
@@ -128,7 +159,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                     listener.onGetNotif();
                     if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE))
                             == TkpdState.GCMServiceState.GCM_CART_UPDATE) {
-                        listener.onRefreshCart(data.getInt("is_cart_exists", 0));
+                        listener.onRefreshCart(data.getInt(Constants.ARG_NOTIFICATION_CART_EXISTS, 0));
                     } else {
                         prepareAndExecuteDedicatedNotification(data);
                     }
@@ -146,7 +177,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private boolean isSupportedApplinkNotification(Bundle bundle) {
-        String applink = bundle.getString("applinks");
+        String applink = bundle.getString(Constants.ARG_NOTIFICATION_APPLINK, "");
         DeepLinkDelegate deepLinkDelegate = new DeepLinkDelegate(
                 new ConsumerDeeplinkModuleLoader(),
                 new CoreDeeplinkModuleLoader(),
@@ -213,6 +244,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
             @Override
             public void onNext(List<ApplinkVisitor> applinkVisitors) {
                 Intent intent = new Intent(mContext, DeeplinkHandlerActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 ApplinkTypeFactory applinkTypeFactory = new ApplinkTypeFactoryList();
                 for (ApplinkVisitor applinkVisitor : applinkVisitors){
                     applinkVisitor.type(applinkTypeFactory).process(mContext, intent);

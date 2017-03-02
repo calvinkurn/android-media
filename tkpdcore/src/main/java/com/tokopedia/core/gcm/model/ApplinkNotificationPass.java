@@ -14,33 +14,40 @@ public class ApplinkNotificationPass {
     private String description;
     private String ticker;
     private String applink;
-    private String iconUrl;
     private String imageUrl;
     private Intent intent;
     private int notificationId;
     private List<String> contents;
+    private String info;
+    private String category;
+    private String group;
 
     public ApplinkNotificationPass() {
     }
 
+
     private ApplinkNotificationPass(String title,
-                                    String description,
-                                    String ticker,
-                                    String applink,
-                                    Intent intent,
-                                    String iconUrl,
-                                    String imageUrl,
-                                    int notificationId,
-                                    List<String> contents) {
+                                   String description,
+                                   String ticker,
+                                   String applink,
+                                   String imageUrl,
+                                   Intent intent,
+                                   int notificationId,
+                                   List<String> contents,
+                                   String info,
+                                   String category,
+                                   String group) {
         this.title = title;
         this.description = description;
         this.ticker = ticker;
         this.applink = applink;
-        this.intent = intent;
-        this.contents = contents;
-        this.iconUrl = iconUrl;
-        this.notificationId = notificationId;
         this.imageUrl = imageUrl;
+        this.intent = intent;
+        this.notificationId = notificationId;
+        this.contents = contents;
+        this.info = info;
+        this.category = category;
+        this.group = group;
     }
 
 
@@ -92,14 +99,6 @@ public class ApplinkNotificationPass {
         this.contents = contents;
     }
 
-    public String getIconUrl() {
-        return iconUrl;
-    }
-
-    public void setIconUrl(String iconUrl) {
-        this.iconUrl = iconUrl;
-    }
-
     public String getImageUrl() {
         return imageUrl;
     }
@@ -116,16 +115,42 @@ public class ApplinkNotificationPass {
         this.notificationId = notificationId;
     }
 
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
     public static class ApplinkNotificationPassBuilder {
         private String nestedTitle;
         private String nestedDescription;
         private String nestedTicker;
         private String nestedApplink;
-        private String nestedIconUrl;
         private String nestedImageUrl;
         private Intent nestedIntent;
         private List<String> nestedContents;
         private int nestedNotificationId;
+        private String nestedInfo;
+        private String nestedCategory;
+        private String nestedGroup;
 
         private ApplinkNotificationPassBuilder() {
         }
@@ -159,11 +184,6 @@ public class ApplinkNotificationPass {
             return this;
         }
 
-        public ApplinkNotificationPassBuilder icon(final String icon) {
-            this.nestedIconUrl = icon;
-            return this;
-        }
-
         public ApplinkNotificationPassBuilder intent(final Intent intent) {
             this.nestedIntent = intent;
             return this;
@@ -179,17 +199,33 @@ public class ApplinkNotificationPass {
             return this;
         }
 
+        public ApplinkNotificationPassBuilder info(final String info) {
+            this.nestedInfo = info;
+            return this;
+        }
+
+        public ApplinkNotificationPassBuilder group(final String group) {
+            this.nestedGroup = group;
+            return this;
+        }
+
+        public ApplinkNotificationPassBuilder category(final String category) {
+            this.nestedCategory = category;
+            return this;
+        }
         public ApplinkNotificationPass build() {
             return new ApplinkNotificationPass(
                     nestedTitle,
                     nestedDescription,
                     nestedTicker,
                     nestedApplink,
-                    nestedIntent,
-                    nestedIconUrl,
                     nestedImageUrl,
+                    nestedIntent,
                     nestedNotificationId,
-                    nestedContents
+                    nestedContents,
+                    nestedInfo,
+                    nestedCategory,
+                    nestedGroup
             );
         }
     }

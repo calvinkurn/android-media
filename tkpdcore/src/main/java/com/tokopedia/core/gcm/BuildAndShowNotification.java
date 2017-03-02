@@ -8,11 +8,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
@@ -27,15 +26,10 @@ import com.tokopedia.core.gcm.model.ApplinkNotificationPass;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.core.var.TkpdState;
 
 import java.io.File;
 import java.util.List;
-
-import rx.Observable;
-import rx.functions.Action1;
-import rx.functions.Func1;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_ICON;
@@ -61,13 +55,16 @@ public class BuildAndShowNotification {
         void onFileReady(File file);
     }
 
-    public void buildAndShowNotification(ApplinkNotificationPass applinkNotificationPass){
+    public void buildAndShowNotification(ApplinkNotificationPass applinkNotificationPass) {
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-
         inboxStyle.setBigContentTitle(applinkNotificationPass.getTitle());
         if (applinkNotificationPass.getContents() != null) {
+            int index = 0;
             for (String content : applinkNotificationPass.getContents()) {
                 inboxStyle.addLine(content);
+                if (++index > 5) {
+                    break;
+                }
             }
             inboxStyle.addLine(applinkNotificationPass.getDescription());
         }
@@ -79,10 +76,16 @@ public class BuildAndShowNotification {
         mBuilder.setContentTitle(applinkNotificationPass.getTitle());
         mBuilder.setContentText(applinkNotificationPass.getDescription());
         mBuilder.setStyle(inboxStyle);
-        mBuilder.setTicker(applinkNotificationPass.getDescription() + " Ticker");
-        mBuilder.setContentInfo("info");
-        mBuilder.setCategory(Notification.CATEGORY_MESSAGE);
-        mBuilder.setGroup("group_key_guest");
+        mBuilder.setTicker(applinkNotificationPass.getDescription());
+        mBuilder.setContentInfo(applinkNotificationPass.getInfo());
+        mBuilder.setCategory(applinkNotificationPass.getCategory());
+        mBuilder.setGroup(applinkNotificationPass.getGroup());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mBuilder.setColor(mContext.getColor(R.color.tkpd_dark_green));
+        } else {
+            mBuilder.setColor(mContext.getResources().getColor(R.color.tkpd_dark_green));
+        }
 
         if (isAllowBell()) {
             mBuilder.setSound(getSoundUri());
@@ -100,22 +103,15 @@ public class BuildAndShowNotification {
 
     private void downloadImageAndShowNotification(final ApplinkNotificationPass applinkNotificationPass,
                                                   final NotificationCompat.Builder mBuilder) {
-       /* Observable.just(true)
-                .doOnNext(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-
-                    }
-                });*/
         Glide
                 .with(mBuilder.mContext)
                 .load(applinkNotificationPass.getImageUrl())
                 .asBitmap()
-                .into(new SimpleTarget<Bitmap>(48,48) {
+                .into(new SimpleTarget<Bitmap>(100, 100) {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
                         mBuilder.setLargeIcon(
-                                ImageHandler.getRoundedCornerBitmap(resource, 48)
+                                ImageHandler.getRoundedCornerBitmap(resource, 100)
                         );
 
                         NotificationManager mNotificationManager =
@@ -173,7 +169,7 @@ public class BuildAndShowNotification {
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
         if (notificationPass.classParentStack != null) {
             stackBuilder.addParentStack(notificationPass.classParentStack);
-        }else{
+        } else {
             stackBuilder.addParentStack(NotificationCenter.class);
         }
 
@@ -268,7 +264,7 @@ public class BuildAndShowNotification {
                 .with(mBuilder.mContext)
                 .load(iconUrl)
                 .asBitmap()
-                .into(new SimpleTarget<Bitmap>(48,48) {
+                .into(new SimpleTarget<Bitmap>(48, 48) {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
                         mBuilder.setLargeIcon(
