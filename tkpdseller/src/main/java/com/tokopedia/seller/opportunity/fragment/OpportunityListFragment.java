@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
@@ -41,16 +42,11 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         implements OpportunityListView {
 
     private static final int REQUEST_OPEN_DETAIL = 123;
-    @BindView(R2.id.opportunity_list)
+    private static final String CACHE_SEEN_OPPORTUNITY = "CACHE_SEEN_OPPORTUNITY";
+    private static final java.lang.String HAS_SEEN_OPPORTUNITY = "HAS_SEEN_OPPORTUNITY";
     RecyclerView opportunityList;
-
-    @BindView(R2.id.header_info)
     TextView headerInfo;
-
-    @BindView(R2.id.search)
     SearchView searchView;
-
-    @BindView(R2.id.fab)
     FloatingActionButton fab;
 
     OpportunityListAdapter adapter;
@@ -64,6 +60,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     Spinner categorySpinner;
     Button resetButton;
     Button filterButton;
+
+    LocalCacheHandler cacheHandler;
 
     public static Fragment newInstance() {
         return new OpportunityListFragment();
@@ -120,13 +118,29 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     protected void initView(View view) {
+        opportunityList = (RecyclerView) view.findViewById(R.id.opportunity_list);
+        headerInfo = (TextView) view.findViewById(R.id.header_info);
+        searchView = (SearchView) view.findViewById(R.id.search);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+
         adapter = OpportunityListAdapter.createInstance(onGoToDetail());
         layoutManager = new LinearLayoutManager(getActivity());
         opportunityList.setLayoutManager(layoutManager);
         opportunityList.setAdapter(adapter);
 
         refreshHandler = new RefreshHandler(getActivity(), view, onRefresh());
+        initHeaderText();
         initBottomSheetDialog(view);
+    }
+
+    private void initHeaderText() {
+        cacheHandler = new LocalCacheHandler(getActivity(), CACHE_SEEN_OPPORTUNITY);
+        if (cacheHandler.getBoolean(HAS_SEEN_OPPORTUNITY, false)) {
+            headerInfo.setVisibility(View.GONE);
+        } else {
+            headerInfo.setVisibility(View.VISIBLE);
+            cacheHandler.putBoolean(HAS_SEEN_OPPORTUNITY, true);
+        }
     }
 
     private RefreshHandler.OnRefreshHandlerListener onRefresh() {
@@ -188,7 +202,27 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             @Override
             public void onClick(View v) {
                 bottomSheetDialog.hide();
+                presenter.setParamSort(getSortParam());
+                presenter.setParamCategory(getCategoryParam());
+                presenter.getParamShippingType(getShippingParam());
                 presenter.getOpportunity();
+            }
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                presenter.setParamQuery(query);
+                presenter.getOpportunity();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText.length() == 0) {
+                    presenter.setParamQuery("");
+                    presenter.getOpportunity();
+                }
+                return false;
             }
         });
 
@@ -278,5 +312,12 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.onDestroyView();
+        cacheHandler = null;
     }
 }

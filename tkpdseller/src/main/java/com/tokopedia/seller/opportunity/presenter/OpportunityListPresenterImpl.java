@@ -4,9 +4,11 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.interactor.OpportunityNetworkInteractor;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
+import com.tokopedia.seller.opportunity.viewmodel.OpportunityParam;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -28,6 +30,7 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
     private PagingHandler pagingHandler;
     private OpportunityNetworkInteractor networkInteractor;
     private CompositeSubscription compositeSubscription;
+    private OpportunityParam opportunityParam;
 
     public OpportunityListPresenterImpl(OpportunityListView viewListener,
                                         OpportunityNetworkInteractor networkInteractor,
@@ -36,12 +39,13 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
         this.pagingHandler = new PagingHandler();
         this.networkInteractor = networkInteractor;
         this.compositeSubscription = compositeSubscription;
-
+        this.opportunityParam = new OpportunityParam();
     }
 
     @Override
     public void getOpportunity() {
         viewListener.showLoadingList();
+        CommonUtils.dumper("NISNIS " + getOpportunityParam().toString());
 //        compositeSubscription.add(networkInteractor.getOpportunity(getOpportunityParam())
 //                .subscribeOn(S
 // chedulers.newThread())
@@ -80,9 +84,14 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
     private TKPDMapParam<String, String> getOpportunityParam() {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("page", String.valueOf(pagingHandler.getPage()));
-        param.put("sort", viewListener.getSortParam());
-        param.put("shipping", viewListener.getShippingParam());
-        param.put("category", viewListener.getCategoryParam());
+        if (opportunityParam.getSort() != null)
+            param.put("sort", opportunityParam.getSort());
+        if (opportunityParam.getShippingType() != null)
+            param.put("shipping", opportunityParam.getShippingType());
+        if (opportunityParam.getCategory() != null)
+            param.put("category", opportunityParam.getCategory());
+        if (opportunityParam.getQuery() != null)
+            param.put("query", opportunityParam.getQuery());
         return param;
     }
 
@@ -99,6 +108,31 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
         pagingHandler.resetPage();
         viewListener.getAdapter().getList().clear();
         getOpportunity();
+    }
+
+    @Override
+    public void onDestroyView() {
+        RxUtils.unsubscribeIfNotNull(compositeSubscription);
+    }
+
+    @Override
+    public void setParamQuery(String query) {
+        opportunityParam.setQuery(query);
+    }
+
+    @Override
+    public void setParamSort(String sortParam) {
+        opportunityParam.setSort(sortParam);
+    }
+
+    @Override
+    public void setParamCategory(String categoryParam) {
+        opportunityParam.setCategory(categoryParam);
+    }
+
+    @Override
+    public void getParamShippingType(String shippingParam) {
+        opportunityParam.setShippingType(shippingParam);
     }
 
     private boolean hasNextPage() {
