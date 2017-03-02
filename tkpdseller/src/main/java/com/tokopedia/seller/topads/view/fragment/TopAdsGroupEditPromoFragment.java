@@ -1,16 +1,10 @@
 package com.tokopedia.seller.topads.view.fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
 
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.di.TopAdsAddPromoPoductDI;
-import com.tokopedia.seller.topads.di.TopAdsGroupeditPromoDI;
-import com.tokopedia.seller.topads.view.listener.TopAdsGroupEditPromoView;
-import com.tokopedia.seller.topads.view.presenter.TopAdsGroupEditPromoPresenter;
 
 /**
  * Created by zulfikarrahman on 2/27/17.
@@ -22,10 +16,10 @@ public class TopAdsGroupEditPromoFragment extends TopAdsBaseGroupEditPromoFragme
                                                               String groupId, String groupName) {
         TopAdsGroupEditPromoFragment fragment = new TopAdsGroupEditPromoFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(TopAdsExtraConstant.AD_ID, adId);
-        bundle.putInt(TopAdsExtraConstant.CHOOSEN_OPTION, choosenOption);
-        bundle.putString(TopAdsExtraConstant.GROUP_ID, groupId);
-        bundle.putString(TopAdsExtraConstant.GROUP_NAME, groupName);
+        bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, adId);
+        bundle.putInt(TopAdsExtraConstant.EXTRA_CHOOSEN_OPTION_GROUP, choosenOption);
+        bundle.putString(TopAdsExtraConstant.EXTRA_GROUP_ID, groupId);
+        bundle.putString(TopAdsExtraConstant.EXTRA_GROUP_NAME, groupName);
         fragment.setupArguments(bundle);
         return fragment;
     }
@@ -37,7 +31,7 @@ public class TopAdsGroupEditPromoFragment extends TopAdsBaseGroupEditPromoFragme
 
     @Override
     protected String getTextInfoNewGroupOption() {
-        return "";
+        return getString(R.string.label_top_ads_info_group_option);
     }
 
     @Override
@@ -47,7 +41,7 @@ public class TopAdsGroupEditPromoFragment extends TopAdsBaseGroupEditPromoFragme
 
     @Override
     protected boolean getVisibleInfoNewGroupOption() {
-        return false;
+        return true;
     }
 
     @Override

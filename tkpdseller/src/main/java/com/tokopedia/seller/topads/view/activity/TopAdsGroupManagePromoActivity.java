@@ -21,10 +21,10 @@ public class TopAdsGroupManagePromoActivity extends TActivity {
         inflateView(R.layout.activity_top_ads_new_promo);
         getFragmentManager().beginTransaction().disallowAddToBackStack()
                 .replace(R.id.container, TopAdsGroupManagePromoFragment.createInstance(
-                        getIntent().getStringExtra(TopAdsExtraConstant.AD_ID),
-                        getIntent().getIntExtra(TopAdsExtraConstant.CHOOSEN_OPTION, 0),
-                        getIntent().getStringExtra(TopAdsExtraConstant.GROUP_NAME),
-                        getIntent().getStringExtra(TopAdsExtraConstant.GROUP_ID)),
+                        getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID),
+                        getIntent().getIntExtra(TopAdsExtraConstant.EXTRA_CHOOSEN_OPTION_GROUP, 0),
+                        getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_GROUP_ID),
+                        getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_GROUP_NAME)),
                         TopAdsGroupManagePromoFragment.class.getSimpleName())
                 .commit();
     }
@@ -37,10 +37,10 @@ public class TopAdsGroupManagePromoActivity extends TActivity {
     public static Intent createIntent(Context context, String adId, int choosenOption,
                                       String groupName, String groupId){
         Intent intent = new Intent(context, TopAdsGroupManagePromoActivity.class);
-        intent.putExtra(TopAdsExtraConstant.AD_ID, adId);
-        intent.putExtra(TopAdsExtraConstant.CHOOSEN_OPTION, choosenOption);
-        intent.putExtra(TopAdsExtraConstant.GROUP_NAME, groupName);
-        intent.putExtra(TopAdsExtraConstant.GROUP_ID, groupId);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, adId);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_CHOOSEN_OPTION_GROUP, choosenOption);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_GROUP_NAME, groupName);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_GROUP_ID, groupId);
         return intent;
     }
 }

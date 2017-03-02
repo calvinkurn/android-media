@@ -194,9 +194,10 @@
         <item name="tabSelectedTextColor">@color/white</item>
     </style>
 
-    <style name="EditText.MatchParent">
+    <style name="EditText.GreenHighlight">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColorHighlight">@color/font_top_ads_green</item>
     </style>
 
     <style name="TopAdsRadioExpandView">
@@ -208,13 +209,13 @@
     <style name="TextInputLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColorHint">@color/font_top_ads_green</item>
     </style>
 
     <style name="TopAdsCustomAutoCompleteTextView">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:drawableRight">@drawable/ic_close_green_14x14</item>
+        <item name="android:textColorHighlight">@color/font_top_ads_green</item>
     </style>
 
     <style name="TopAdsCustomRadioGroup">

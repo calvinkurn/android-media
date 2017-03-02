@@ -293,7 +293,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         status.setListenerValue(this);
     }
 
-    private void setResultAdStatusChanged() {
+    protected void setResultAdStatusChanged() {
         Intent intent = new Intent();
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, true);
         getActivity().setResult(Activity.RESULT_OK, intent);
