@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/padding_small"
+    android:paddingLeft="@dimen/padding_small"
+    android:paddingRight="@dimen/padding_small">
+
+    <android.support.v7.widget.CardView
+        style="@style/CardViewDigital"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/padding_small"
+            android:paddingLeft="@dimen/padding_small"
+            android:paddingRight="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_vs">
+
+            <CheckBox
+                android:id="@+id/checkbox_voucher"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/btn_height"
+                android:textColor="@color/digital_voucher"
+                android:textSize="@dimen/fontvs"
+                android:textStyle="bold"
+                android:buttonTint="@color/tkpd_main_green"/>
+
+            <RelativeLayout
+                android:id="@+id/holder_input_voucher"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/checkbox_voucher"
+                android:layout_marginTop="@dimen/margin_small"
+                android:layout_alignLeft="@+id/text_checkedbox"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/button_voucher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_small"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/digital_green_button_rounded"
+                    android:gravity="center"
+                    android:padding="@dimen/padding_small"
+                    android:text="@string/use_voucher"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/font_small"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/edittext_voucher"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/button_voucher"
+                    android:hint="@string/kode_voucher" />
+
+                <TextView
+                    android:id="@+id/error_voucher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/edittext_voucher"
+                    android:textSize="@dimen/fontvvs"
+                    android:textColor="@color/red_600"
+                    android:text="@string/error_voucher"
+                    android:visibility="gone"
+                    tools:visibility="visible"/>
+
+                <TextView
+                    android:id="@+id/textdesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/error_voucher"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:textColor="@color/digital_voucher_notes"
+                    android:textSize="@dimen/fontvs"
+                    android:text="@string/notes_voucher"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/holder_voucher"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/holder_input_voucher"
+                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/digital_separator"/>
+
+                <TextView
+                    android:id="@+id/button_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginLeft="@dimen/margin_small"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/digital_grey_button_rounded"
+                    android:gravity="center"
+                    android:padding="@dimen/padding_small"
+                    android:text="@string/cancel_voucher"
+                    android:textColor="@color/digital_voucher_notes"
+                    android:textSize="@dimen/font_small" />
+
+                <TextView
+                    android:id="@+id/textview_title_voucher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/button_cancel"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:textColor="@color/digital_voucher"
+                    android:text="@string/title_detail_voucher" />
+
+                <TextView
+                    android:id="@+id/textview_voucher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginTop="@dimen/margin_vs"
+                    android:layout_below="@+id/textview_title_voucher"
+                    android:layout_toLeftOf="@+id/button_cancel"
+                    android:textColor="@color/tkpd_main_green"
+                    tools:text="Anda HEMAT" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/text_checkedbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/digital_voucher"
+                android:text="@string/title_use_promo_code"
+                android:gravity="center"
+                android:layout_alignTop="@+id/checkbox_voucher"
+                android:layout_alignBottom="@id/checkbox_voucher"
+                android:layout_toRightOf="@+id/checkbox_voucher" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>

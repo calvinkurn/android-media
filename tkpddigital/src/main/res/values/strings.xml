@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">tkpddigital</string>
+    <string name="notes_voucher">* Hanya berlaku untuk satu kali pembayaran.\n** Sisa nilai voucher
+        tidak dapat dikembalikan (hangus) apabila
+        melewati masa kadaluarsa."</string>
+    <string name="kode_voucher">Kode Voucher</string>
+    <string name="error_voucher">Kode voucher tidak ditemukan</string>
+    <string name="cancel_voucher">Batalkan</string>
+    <string name="use_voucher">Gunakan</string>
+    <string name="title_detail_voucher">Anda mendapatkan voucher:</string>
+    <string name="link_lihat_detail">Lihat Detail</string>
+    <string name="link_tutup">Tutup</string>
 </resources>

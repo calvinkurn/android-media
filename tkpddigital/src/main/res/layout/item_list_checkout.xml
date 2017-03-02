@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/margin_vs"
+    android:layout_marginBottom="@dimen/margin_vs">
+
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="@dimen/youtube_place_holder_horizontal_width"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:textSize="@dimen/fontvvs"
+        android:textColor="@color/digital_voucher_notes"
+        android:layout_alignTop="@+id/value"
+        android:layout_alignBottom="@+id/value"
+        android:gravity="center|left"
+        tools:text="Nomor Pelanggan"/>
+
+    <TextView
+        android:id="@+id/value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/label"
+        android:textSize="@dimen/fontvs"
+        android:textColor="@color/digital_voucher"
+        tools:text="123456789101123" />
+
+</RelativeLayout>
