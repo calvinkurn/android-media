@@ -457,6 +457,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void onCategoryClick(Child child) {
+        ((BrowseProductActivity) getActivity()).renderNewCategoryLevel(child.getId());
         Log.d(TAG, "onCategoryClick: ");
     }
 

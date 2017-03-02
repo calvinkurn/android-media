@@ -1058,7 +1058,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                             CategoriesHadesModel.CategoriesHadesContainer categoriesHadesContainer = (CategoriesHadesModel.CategoriesHadesContainer) objContainer;
                             CategoriesHadesModel body = categoriesHadesContainer.body();
 
-                            if (browseProductActivityModel !=null && body.getData().getCategories()  !=null
+                            if (browseProductActivityModel !=null && body !=null && body.getData() !=null && body.getData().getCategories()  !=null
                                     && body.getData().getCategories().size()>0) {
                                 browseProductActivityModel.categotyHeader = body.getData().getCategories().get(0);
                                 if (browseProductActivityModel.categotyHeader.getRevamp() !=null
@@ -1158,6 +1158,12 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
     private interface QueryListener {
         void onQueryChanged(String query);
+    }
+
+    public void renderNewCategoryLevel(String departementId) {
+        browseProductActivityModel.setDepartmentId(departementId);
+        setFragment(BrowseParentFragment.newInstance(browseProductActivityModel), BrowseParentFragment.FRAGMENT_TAG);
+        sendCategory(departementId);
     }
 
 
