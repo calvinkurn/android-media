@@ -60,8 +60,9 @@ public class ShopScoreDetailAdapter extends BaseLinearRecyclerViewAdapter {
 
     private void bindView(ShopScoreDetailViewHolder viewHolder, ShopScoreDetailViewModel data) {
         viewHolder.setTitle(data.getTitle());
-        viewHolder.setShopScoreValue(data.getValue());
         viewHolder.setShopScoreDescription(data.getDescription());
+        viewHolder.setProgressBarColor(data.getProgressBarColor());
+        viewHolder.setShopScoreValue(data.getValue());
     }
 
     public void updateData(List<ShopScoreDetailViewModel> viewModel) {

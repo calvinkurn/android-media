@@ -67,10 +67,12 @@ public class ShopScoreWidget extends FrameLayout {
     public void renderView(ShopScoreViewModel shopScoreViewModel) {
         setLimit(shopScoreViewModel.getBadgeScore());
         ShopScoreViewModelData data = shopScoreViewModel.getData();
-        setProgress(data.getValue());
+
         setDescription(data.getDescription());
-        setProgressBarColor(data.getProgressBarColor());
         shopScoreTitleWidget.setText(data.getTitle());
+        setProgressBarColor(data.getProgressBarColor());
+        setProgress(data.getValue());
+
 
     }
 

@@ -103,4 +103,8 @@ public class ShopScoreDetailViewHolder extends RecyclerView.ViewHolder {
             e.printStackTrace();
         }
     }
+
+    public void setProgressBarColor(Integer progressBarColor) {
+        shopScoreProgressBar.setProgressColor(progressBarColor);
+    }
 }

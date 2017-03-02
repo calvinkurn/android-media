@@ -17,6 +17,7 @@ public class ShopScoreViewModelMapper {
             viewModel.setTitle(domainModel.getTitle());
             viewModel.setValue(domainModel.getValue());
             viewModel.setDescription(domainModel.getDescription());
+            viewModel.setProgressBarColor(domainModel.getProgressBarColor());
             viewModels.add(viewModel);
         }
         return viewModels;

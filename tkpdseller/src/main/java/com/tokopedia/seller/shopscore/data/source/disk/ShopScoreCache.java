@@ -43,7 +43,7 @@ public class ShopScoreCache {
     private void saveToCache(String key, String stringData) {
         cacheManager.setKey(key);
         cacheManager.setValue(stringData);
-        cacheManager.setCacheDuration(5);
+        cacheManager.setCacheDuration(3600);
         cacheManager.store();
     }
 
