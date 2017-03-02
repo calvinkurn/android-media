@@ -36,6 +36,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.LocationPass;
+import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.AddAddressActivity;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
@@ -638,6 +639,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     );
                     if (locationPass != null) {
                         startCalculateCartLoading();
+                        etValueLocation.setText(GeoLocationUtils.reverseGeoCode(this,
+                                locationPass.getLatitude(),
+                                locationPass.getLongitude()));
                         presenter.updateAddressShipping(this, orderData, locationPass);
                         this.mLocationPass = locationPass;
                     }
