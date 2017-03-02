@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/opportunity_view"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/cards_ui"
+    android:padding="@dimen/padding_vs">
+
+    <ImageView
+        android:id="@+id/product_avatar"
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size"
+        tools:src="@drawable/remove"
+        android:layout_margin="@dimen/margin_vs"
+        />
+
+    <TextView
+        android:id="@+id/deadline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/label_deadline"
+        tools:text="24 jam lagi"
+        android:paddingLeft="@dimen/padding_vs"
+        android:paddingRight="@dimen/padding_vs"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:layout_marginBottom="2dp"
+        android:textSize="@dimen/fontvvs"
+        android:textColor="@color/white"
+        android:layout_alignTop="@id/product_avatar"
+        android:layout_toRightOf="@+id/product_avatar"
+        android:layout_toEndOf="@+id/product_avatar" />
+
+    <TextView
+        android:id="@+id/product_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/deadline"
+        android:layout_toRightOf="@id/product_avatar"
+        android:layout_toEndOf="@id/product_avatar"
+        tools:text="iPhone Samsung Galaxy 7+"
+        android:textStyle="bold"
+        />
+    <TextView
+        android:id="@+id/product_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/product_name"
+        android:layout_toRightOf="@id/product_avatar"
+        android:layout_toEndOf="@id/product_avatar"
+        tools:text="Rp 10.000.000"
+        android:textColor="@color/orange"
+
+        />
+
+</RelativeLayout>

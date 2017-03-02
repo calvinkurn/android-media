@@ -320,6 +320,7 @@ public interface AppEventTracking {
         String CHANGE_PRICE_PRODUCT_LIST = "Ubah Harga - Product List";
         String CHANGE_PRICE_DROP_DOWN = "Ubah Harga - Dropdown";
         String COPY_PRODUCT = "Copy";
+        String OPPORTUNIT_LIST = "Peluang";
     }
 
     interface SOCIAL_MEDIA {

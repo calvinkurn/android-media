@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -33,37 +34,31 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
-import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
+import com.tokopedia.core.session.baseFragment.BaseFragment;
+import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.presenter.Shipping;
 import com.tokopedia.seller.selling.presenter.ShippingImpl;
 import com.tokopedia.seller.selling.presenter.ShippingView;
+import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
+import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
 import com.tokopedia.seller.selling.view.viewHolder.ShippingViewHolder;
-import com.tokopedia.core.session.baseFragment.BaseFragment;
-import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.RefreshHandler;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by Toped10 on 7/28/2016.
  */
 public class FragmentSellingShipping extends BaseFragment<Shipping> implements ShippingView {
 
-    @BindView(R2.id.order_list)
     RecyclerView recyclerView;
-    @BindView(R2.id.fab)
+    SwipeToRefresh swipeToRefresh;
     FloatingActionButton fab;
-    @BindView(R2.id.root)
     View rootView;
     private View filterView;
     SearchView search;
@@ -440,19 +435,24 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        recyclerView = (RecyclerView) view.findViewById(R.id.order_list);
+        swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        rootView = (CoordinatorLayout) view.findViewById(R.id.root);
         initRefreshView();
         initView();
+
         super.onViewCreated(view, savedInstanceState);
     }
 
     public void initView() {
         filterView = getActivity().getLayoutInflater().inflate(R.layout.filter_layout_selling_shipping, null);
-        search = ButterKnife.findById(filterView, R.id.search);
+        search = (SearchView) filterView.findViewById(R.id.search);
         int searchPlateId = search.getContext().getResources().getIdentifier("android:id/search_plate", null, null);
         View searchPlate = search.findViewById(searchPlateId);
         searchPlate.setBackgroundColor(Color.TRANSPARENT);
-        dueDate = ButterKnife.findById(filterView, R.id.due_date);
-        shippingService = ButterKnife.findById(filterView, R.id.shipping);
+        dueDate = (Spinner) filterView.findViewById(R.id.due_date);
+        shippingService = (Spinner) filterView.findViewById(R.id.shipping);
         bottomSheetDialog = new BottomSheetDialog(getActivity());
         bottomSheetDialog.setContentView(filterView);
     }
@@ -511,6 +511,12 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
             }
         });
         search.setOnQueryTextListener(onSearchListener());
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.show();
+            }
+        });
     }
 
     public void initRefreshView() {
@@ -536,12 +542,6 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     @Override
     public void hideFilter() {
         bottomSheetDialog.hide();
-    }
-
-
-    @OnClick(R2.id.fab)
-    public void onClick() {
-        bottomSheetDialog.show();
     }
 
     private RefreshHandler.OnRefreshHandlerListener onRefreshListener() {

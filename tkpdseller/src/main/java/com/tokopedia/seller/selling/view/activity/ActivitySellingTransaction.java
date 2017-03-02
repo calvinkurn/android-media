@@ -41,6 +41,7 @@ import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.seller.opportunity.fragment.OpportunityListFragment;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
 import com.tokopedia.seller.selling.view.fragment.FragmentSellingShipping;
@@ -100,7 +101,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     private void initSellerTicker() {
         GTMContainer gtmContainer = GTMContainer.newInstance(this);
 
-        if(gtmContainer.getString("is_show_ticker_sales").equalsIgnoreCase("true")){
+        if (gtmContainer.getString("is_show_ticker_sales").equalsIgnoreCase("true")) {
             String message = gtmContainer.getString("ticker_text_sales_rich");
             showTickerGTM(message);
         } else {
@@ -115,15 +116,14 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         initSellerTicker();
     }
 
-    protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span)
-    {
+    protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span) {
         int start = strBuilder.getSpanStart(span);
         int end = strBuilder.getSpanEnd(span);
         int flags = strBuilder.getSpanFlags(span);
         ClickableSpan clickable = new ClickableSpan() {
             public void onClick(View view) {
                 Log.d("Seller Page", "URL Clicked" + span);
-                if(span.getURL().equals("com.tokopedia.sellerapp")){
+                if (span.getURL().equals("com.tokopedia.sellerapp")) {
                     startNewActivity(span.getURL());
                 } else {
                     openLink(span.getURL());
@@ -140,7 +140,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
             startActivity(myIntent);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(this, "No application can handle this request."
-                    + " Please install a webbrowser",  Toast.LENGTH_LONG).show();
+                    + " Please install a webbrowser", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
     }
@@ -165,7 +165,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
             CharSequence sequence = MethodChecker.fromHtml(message);
             SpannableStringBuilder strBuilder = new SpannableStringBuilder(sequence);
             URLSpan[] urls = strBuilder.getSpans(0, sequence.length(), URLSpan.class);
-            for(URLSpan span : urls) {
+            for (URLSpan span : urls) {
                 makeLinkClickable(strBuilder, span);
             }
             sellerTickerView.setText(strBuilder);
@@ -182,7 +182,8 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
                 getString(R.string.title_tab_new_order),
                 getString(R.string.title_shipping_confirmation),
                 getString(R.string.title_shipping_status),
-                getString(R.string.title_transaction_list)};
+                getString(R.string.title_transaction_list),
+                getString(R.string.title_opportunity_list)};
         for (String aCONTENT : CONTENT) indicator.addTab(indicator.newTab().setText(aCONTENT));
         mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
         fragmentList = new ArrayList<>();
@@ -193,6 +194,8 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         fragmentList.add(FragmentSellingShipping.createInstance());
         fragmentList.add(FragmentSellingStatus.newInstance());
         fragmentList.add(FragmentSellingTransaction.newInstance());
+        fragmentList.add(OpportunityListFragment.newInstance());
+
 //        fragmentList.add(FragmentShopTxStatusV2.createInstanceStatus(R.layout.fragment_shipping_status, FragmentShopTxStatusV2.INSTANCE_STATUS));
 //        fragmentList.add(FragmentShopTxStatusV2.createInstanceTransaction(R.layout.fragment_shop_transaction_list, FragmentShopTxStatusV2.INSTANCE_TX));
     }
@@ -246,6 +249,9 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
                 break;
             case 4:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST);
+                break;
+            case 5:
+                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST);
                 break;
             default:
                 break;
@@ -357,7 +363,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
                 menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart);
             }
             return true;
-        }else {
+        } else {
             return super.onCreateOptionsMenu(menu);
         }
     }

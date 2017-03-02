@@ -192,5 +192,13 @@
 
     <string name="positive_button_dialog">Ya</string>
     <string name="negative_button_dialog">Tidak</string>
+    <string name="header_opportunity">Di halaman ini anda dapat mengambil pesanan yang ditolak oleh seller lain</string>
 
+    <string name="same_day">Same Day</string>
+    <string name="next_day">Next Day</string>
+    <string name="reguler">Reguler</string>
+    <string name="supported_courier">Dukungan Pengiriman</string>
+    <string name="deadline">Jatuh Tempo</string>
+    <string name="highest_transaction_price">Nilai Transaksi Tertinggi</string>
+    <string name="lowest_transaction_price">Nilai Transaksi Terendah</string>
 </resources>

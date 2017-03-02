@@ -25,4 +25,25 @@
         <item>@string/label_top_ads_inside_group</item>
         <item>@string/label_top_ads_outside_group</item>
     </string-array>
+
+    <string-array name="filter_supported_courier_opportunity">
+        <item>@string/supported_courier</item>
+        <item>@string/same_day</item>
+        <item>@string/next_day</item>
+        <item>@string/reguler</item>
+    </string-array>
+
+    <string-array name="filter_sort_opportunity">
+        <item>@string/title_sort_by</item>
+        <item>@string/deadline</item>
+        <item>@string/highest_transaction_price</item>
+        <item>@string/lowest_transaction_price</item>
+    </string-array>
+
+    <string-array name="filter_category_opportunity">
+        <item>@string/title_sort_by</item>
+        <item>@string/deadline</item>
+        <item>@string/highest_transaction_price</item>
+        <item>@string/lowest_transaction_price</item>
+    </string-array>
 </resources>
