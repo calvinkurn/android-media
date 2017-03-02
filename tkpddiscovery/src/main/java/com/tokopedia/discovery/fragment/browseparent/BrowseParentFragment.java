@@ -286,7 +286,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         for (int i=0; i< browserSectionsPagerAdapter.getCount(); i++) {
             if (browserSectionsPagerAdapter.getItem(i) instanceof ProductFragment) {
                 ProductFragment productFragment = (ProductFragment) browserSectionsPagerAdapter.getItem(i);
-                productFragment.addCategoriesHeader(category);
+                productFragment.addCategoryHeader(category);
             }
         }
     }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -17,9 +18,11 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -43,17 +46,20 @@ import com.tokopedia.core.home.model.HorizontalProductList;
 import com.tokopedia.core.home.model.ViewHolderProductTopAds;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.entity.categoriesHades.Category;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.custom.TopAdsListRecyclerViewAdapter;
 import com.tokopedia.discovery.adapter.custom.TopAdsRecyclerViewAdapter;
@@ -122,6 +128,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 return onCreateTopAds4ViewHolder(parent);
             case TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST:
                 return onCreateBannerHotList(parent);
+            case TkpdState.RecyclerView.VIEW_CATEGORY_HEADER:
+                return onCreateDefaultCategoryHeader(parent);
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
                 return createEmptySearch(parent);
             default:
@@ -153,6 +161,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 break;
             case TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST:
                 ((BannerHotListViewHolder) holder).bind((HotListBannerModel) data.get(position));
+                break;
+            case TkpdState.RecyclerView.VIEW_CATEGORY_HEADER:
+                ((DefaultCategoryHeaderViewHolder) holder).bind((CategoryHeaderModel) data.get(position));
                 break;
             default:
                 super.onBindViewHolder(holder, position);
@@ -381,6 +392,39 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         }
     }
 
+    private DefaultCategoryHeaderViewHolder onCreateDefaultCategoryHeader(ViewGroup parent) {
+        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.default_category_header, parent, false);
+        return new DefaultCategoryHeaderViewHolder(inflate);
+    }
+
+    public static class DefaultCategoryHeaderViewHolder extends RecyclerView.ViewHolder {
+
+
+        @BindView(R2.id.recycler_view_default_categories)
+        RecyclerView defaultCategoriesRecyclerView;
+
+        private DefaultCategoryAdapter categoryAdapter;
+
+        public DefaultCategoryHeaderViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+
+        public void bind(CategoryHeaderModel categoryHeaderModel) {
+            defaultCategoriesRecyclerView.setVisibility(View.VISIBLE);
+            defaultCategoriesRecyclerView.setHasFixedSize(true);
+            defaultCategoriesRecyclerView.setLayoutManager(
+                    new NonScrollGridLayoutManager(categoryHeaderModel.context, 2,
+                            GridLayoutManager.VERTICAL, false));
+            defaultCategoriesRecyclerView.addItemDecoration(new DividerItemDecoration(categoryHeaderModel.context));
+            categoryAdapter = new DefaultCategoryAdapter(categoryHeaderModel.categoryWidth,categoryHeaderModel.category,categoryHeaderModel.listener);
+            defaultCategoriesRecyclerView.setAdapter(categoryAdapter);
+        }
+
+
+
+    }
+
     /**
      * Much better if we check
      * is data zize is less than index position
@@ -416,6 +460,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             case TkpdState.RecyclerView.VIEW_TOP_ADS:
             case TkpdState.RecyclerView.VIEW_TOP_ADS_4:
             case TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST:
+            case TkpdState.RecyclerView.VIEW_CATEGORY_HEADER:
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
             case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
                 return recyclerViewItem.getType();
@@ -437,6 +482,11 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     public boolean isHotListBanner(int position) {
         return data.get(position).getType() == TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST;
     }
+
+    public boolean isCategoryHeader(int position) {
+        return data.get(position).getType() == TkpdState.RecyclerView.VIEW_CATEGORY_HEADER;
+    }
+
 
     public boolean isEmptySearch(int position) {
         return data.get(position).getType() == TkpdState.RecyclerView.VIEW_EMPTY_SEARCH;
@@ -506,10 +556,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             notifyDataSetChanged();
             productIsEmpty = true;
         }
-        boolean isHotListBanner = checkIfOffset();
+        boolean isHeader = checkIfOffset();
         if (listProduct != null && listProduct.size() > 0) {
             int i = page - 1;
-            int posTop = (i * 12) + topAddsCounter + (isHotListBanner ? 1 : 0);
+            int posTop = (i * 12) + topAddsCounter + (isHeader ? 1 : 0);
             topAddsCounter++;
             Log.d(TAG, "ukuran data : " + data.size() + " : posTop " + posTop);
             HorizontalProductList horizontalProductListTop = new HorizontalProductList(listProduct);
@@ -546,7 +596,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     protected boolean checkIfOffset() {
-        return data != null && data.size() > 1 && data.get(0).getType() == TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST;
+        return data != null && data.size() > 1 && (data.get(0).getType() == (TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST)
+        || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_CATEGORY_HEADER));
     }
 
     public void setSearchNotFound() {
@@ -556,6 +607,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     public void addHotListHeader(HotListBannerModel hotListBannerModel) {
         data.add(0, hotListBannerModel);
+    }
+
+    public void addCategoryHeader(CategoryHeaderModel categoryHeaderModel) {
+        data.add(0, categoryHeaderModel);
     }
 
     public static class EmptySearchItem extends RecyclerViewItem {
@@ -577,6 +632,27 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             this();
             this.hotList = hotList;
             this.hashtags = hashtags;
+        }
+    }
+
+
+    public static class CategoryHeaderModel extends RecyclerViewItem {
+
+        private Category category;
+        private Context context;
+        private int categoryWidth;
+        DefaultCategoryAdapter.CategoryListener listener;
+
+        private CategoryHeaderModel() {
+            setType(TkpdState.RecyclerView.VIEW_CATEGORY_HEADER);
+        }
+
+        public CategoryHeaderModel(Category category, Context context, int categoryWidth, DefaultCategoryAdapter.CategoryListener listener) {
+            this();
+            this.category = category;
+            this.context = context;
+            this.categoryWidth = categoryWidth;
+            this.listener = listener;
         }
     }
 

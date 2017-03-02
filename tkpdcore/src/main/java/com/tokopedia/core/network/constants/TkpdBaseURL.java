@@ -599,7 +599,7 @@ public class TkpdBaseURL {
         public static final String PATH_GET_PROFILE = "profile/json/{id}";
         public static final String PATH_DISCOVER_LOGIN = "api/discover";
         public static final String DO_REGISTER = "api/register";
-        public static final String CREATE_PASSWORD = "api/create-3password";
+        public static final String CREATE_PASSWORD = "api/create-password";
         public static final String RESET_PASSWORD = "api/reset";
         public static final String VALIDATE_EMAIL = "/api/register/validate-email";
         public static final String RESENT_ACTIVATION = "/api/resend";

@@ -35,7 +35,7 @@ public interface FragmentBrowseProductView extends BaseView {
 
     void addTopAds(List<ProductItem> passProduct, int page, String tag);
     void addHotListHeader(ProductAdapter.HotListBannerModel hotListBannerModel);
-    void addCategoriesHeader(Category categotyHeader);
+    void addCategoryHeader(Category category);
     BrowseProductModel getDataModel();
 
     //    int VALUES_PRODUCT_FRAGMENT_ID = 812_192;

@@ -135,8 +135,6 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
     public void sendCategory(String departementId) {
         fetchCategoriesHeader(departementId);
-        browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
-        browseProductActivityModel.setDepartmentId(departementId);
     }
 
 

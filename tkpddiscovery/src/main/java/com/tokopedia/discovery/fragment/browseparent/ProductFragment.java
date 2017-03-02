@@ -77,7 +77,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     private static String ARG_2 = "";
 
     private ProductAdapter productAdapter;
-    private DefaultCategoryAdapter categoryAdapter;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
     private BrowseProductRouter.GridType gridType;
@@ -257,14 +256,17 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                 // set the value of footer, regular and header
                 if (position == productAdapter.getData().size()) {
                     return spanCount;
-                } else if (position == 0 && !productAdapter.isTopAds(position) && !productAdapter.isHotListBanner(position)) {
+                } else if (position == 0 && !productAdapter.isTopAds(position) && !productAdapter.isHotListBanner(position)
+                        && !productAdapter.isCategoryHeader(position)) {
                     return regularColumnSize;
                 } else if (productAdapter.isTopAds(position)) {
                     // top ads span column
                     return spanCount;
                 } else if (productAdapter.isHotListBanner(position)){
                     return spanCount;
-                } else if (productAdapter.isEmptySearch(position)) {
+                } else if (productAdapter.isCategoryHeader(position)){
+                    return spanCount;
+                }else if (productAdapter.isEmptySearch(position)) {
                     return spanCount;
                 } else {
                     // regular one column
@@ -426,18 +428,9 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public void addCategoriesHeader(Category categotyHeader) {
-        if (categotyHeader.getChild()!=null) {
-            RecyclerView defaultCategoriesRecyclerView = (RecyclerView) this.parentView.findViewById(R.id.recycler_view_default_categories);
-            defaultCategoriesRecyclerView.setVisibility(View.VISIBLE);
-            defaultCategoriesRecyclerView.setHasFixedSize(true);
-            defaultCategoriesRecyclerView.setLayoutManager(
-                    new NonScrollGridLayoutManager(getActivity(), 2,
-                            GridLayoutManager.VERTICAL, false));
-            defaultCategoriesRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
-            categoryAdapter = new DefaultCategoryAdapter(getCategoryWidth(),categotyHeader,this);
-            defaultCategoriesRecyclerView.setAdapter(categoryAdapter);
-        }
+    public void addCategoryHeader(Category category) {
+        productAdapter.addCategoryHeader(new ProductAdapter.CategoryHeaderModel(category,getActivity(),getCategoryWidth(),this));
+        productAdapter.notifyDataSetChanged();
     }
 
     private int calcColumnSize(int orientation) {
