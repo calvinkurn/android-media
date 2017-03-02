@@ -104,4 +104,10 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
                     }
                 });
     }
+
+    @Override
+    public Observable<Boolean> clearPushNotificationStorage(String category) {
+        return mPushNotificationDataStoreFactory.createDiskPushNotificationDataStore()
+                .deleteSavedPushNotificationByCategory(category);
+    }
 }

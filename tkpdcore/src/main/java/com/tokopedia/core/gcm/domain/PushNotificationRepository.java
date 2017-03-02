@@ -28,4 +28,8 @@ public interface PushNotificationRepository {
     Observable<Boolean> storePushNotification(String category, String response);
 
     Observable<List<DiscussionPushNotification>> getSavedDiscussionPushNotification();
+
+    Observable<Boolean> clearPushNotificationStorage(String category);
+
+
 }
