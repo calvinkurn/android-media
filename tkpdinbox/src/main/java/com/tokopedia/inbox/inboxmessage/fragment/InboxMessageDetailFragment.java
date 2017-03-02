@@ -271,15 +271,9 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.app_bar);
 
         if (toolbar != null && inboxMessageDetail.getConversationBetween() != null) {
-            toolbar.removeAllViews();
-            View toolbarLayout = getActivity().getLayoutInflater().inflate(R.layout.custom_action_bar_subtitle, null);
-            TextView title = (TextView) toolbarLayout.findViewById(R.id.actionbar_title);
-            title.setText(inboxMessageDetail.getOpponent().getUserName());
-            TextView subTitle = (TextView) toolbarLayout.findViewById(R.id.actionbar_subtitle);
-            subTitle.setText(inboxMessageDetail.getOpponent().getUserLabel());
-            toolbar.addView(toolbarLayout);
+            toolbar.setTitle(inboxMessageDetail.getOpponent().getUserName());
+            toolbar.setSubtitle(inboxMessageDetail.getOpponent().getUserLabel());
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
         if (inboxMessageDetail.getTextareaReply() != 1) {

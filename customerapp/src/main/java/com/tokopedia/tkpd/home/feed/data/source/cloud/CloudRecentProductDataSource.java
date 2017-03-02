@@ -2,11 +2,11 @@ package com.tokopedia.tkpd.home.feed.data.source.cloud;
 
 import android.content.Context;
 
+import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
 import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.database.model.DbRecentProduct;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.home.feed.data.mapper.RecentProductMapper;
-import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.RecentProductDbManager;
 import com.tokopedia.tkpd.home.feed.domain.model.ProductFeed;
 
 import java.util.List;

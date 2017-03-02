@@ -4,6 +4,7 @@ package com.tokopedia.core.shopinfo.fragment;
  * Created by nakama on 02/12/16.
  */
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -278,6 +279,16 @@ public class OfficialShopHomeFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof OfficialShopInteractionListener) {
             mOfficialShopInteractionListener = (OfficialShopInteractionListener) context;
+        } else {
+            throw new RuntimeException("must implement OfficialShopInteractionListener");
+        }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof OfficialShopInteractionListener) {
+            mOfficialShopInteractionListener = (OfficialShopInteractionListener) activity;
         } else {
             throw new RuntimeException("must implement OfficialShopInteractionListener");
         }

@@ -287,6 +287,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     protected void setStatusSwitch(boolean checked) {
+        status.setSwitchEnabled(true);
         status.setListenerValue(null);
         status.setChecked(checked);
         status.setListenerValue(this);

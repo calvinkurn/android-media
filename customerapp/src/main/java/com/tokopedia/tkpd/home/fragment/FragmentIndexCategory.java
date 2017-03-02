@@ -493,9 +493,9 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getActivity().startActivity(intent);
             }
-        });
+        }, getBrandsMenuWidth());
         holder.brandsRecyclerView.setLayoutManager(
-                new LinearLayoutManager(getActivity(),
+                new NonScrollLinearLayoutManager(getActivity(),
                         LinearLayoutManager.HORIZONTAL,
                         false)
         );
@@ -794,6 +794,16 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         display.getSize(size);
         int width = size.x;
         int widthOfHomeMenuView = (int) (width / 2);
+        return widthOfHomeMenuView;
+    }
+
+    private int getBrandsMenuWidth() {
+        WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int widthOfHomeMenuView = (width / 5);
         return widthOfHomeMenuView;
     }
 
