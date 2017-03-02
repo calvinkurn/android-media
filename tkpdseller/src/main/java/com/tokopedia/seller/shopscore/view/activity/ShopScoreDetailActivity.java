@@ -1,5 +1,6 @@
 package com.tokopedia.seller.shopscore.view.activity;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,12 +9,15 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.shopscore.view.fragment.ShopScoreDetailFragment;
+import com.tokopedia.seller.shopscore.view.fragment.ShopScoreDetailFragmentCallback;
 
 /**
  * Created by sebastianuskh on 2/24/17.
  */
-public class ShopScoreDetailActivity extends BasePresenterActivity {
+public class ShopScoreDetailActivity extends BasePresenterActivity implements ShopScoreDetailFragmentCallback {
+    private static final String SELLER_CENTER_LINK = "https://seller.tokopedia.com/";
     private FragmentManager fragmentManager;
 
     @Override
@@ -68,4 +72,16 @@ public class ShopScoreDetailActivity extends BasePresenterActivity {
         ft.commit();
     }
 
+    @Override
+    public void goToGmSubscribe() {
+        if (getApplication() instanceof SellerModuleRouter) {
+            ((SellerModuleRouter) getApplication()).goToGMSubscribe(this);
+        }
+    }
+
+    @Override
+    public void goToSellerCenter() {
+        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(SELLER_CENTER_LINK));
+        startActivity(myIntent);
+    }
 }

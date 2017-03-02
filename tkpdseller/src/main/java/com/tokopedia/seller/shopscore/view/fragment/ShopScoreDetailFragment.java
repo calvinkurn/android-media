@@ -1,5 +1,6 @@
 package com.tokopedia.seller.shopscore.view.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -28,12 +29,27 @@ import java.util.List;
  */
 public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopScoreDetailView {
     public static final String TAG = "ShopScoreDetail";
-    private RecyclerView recyclerView;
+    private ShopScoreDetailFragmentCallback callback;
     private ShopScoreDetailAdapter adapter;
     private ShopScoreDetailPresenterImpl presenter;
     private TextView summaryDetailTitle;
     private TextView descriptionGoldBadge;
+    private TextView buttonGoToGmSubscribe;
     private ImageView imageViewGoldBadge;
+    private View.OnClickListener goToGmSubscribe = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            callback.goToGmSubscribe();
+        }
+    };
+    private View.OnClickListener goToSellerCenter = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            callback.goToSellerCenter();
+        }
+    };
+
+
 
     public static Fragment createFragment() {
         return new ShopScoreDetailFragment();
@@ -48,21 +64,38 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_shop_score_detail, container, false);
+
         setupRecyclerView(parentView);
+
         summaryDetailTitle = (TextView) parentView.findViewById(R.id.text_view_shop_score_summary_detail_tittle);
         descriptionGoldBadge = (TextView) parentView.findViewById(R.id.description_shop_score_detail_gold_badge_info);
         imageViewGoldBadge = (ImageView) parentView.findViewById(R.id.image_view_gold_badge);
+
+        buttonGoToGmSubscribe = (TextView) parentView.findViewById(R.id.button_go_to_gm_subscribe);
+        buttonGoToGmSubscribe.setOnClickListener(goToGmSubscribe);
+        parentView.findViewById(R.id.button_go_to_seller_center).setOnClickListener(goToSellerCenter);
+
         presenter.attachView(this);
         presenter.getShopScoreDetail();
         return parentView;
     }
 
     private void setupRecyclerView(View parentView) {
-        recyclerView = (RecyclerView) parentView.findViewById(R.id.recycler_view_shop_score_detail);
+        RecyclerView recyclerView = (RecyclerView) parentView.findViewById(R.id.recycler_view_shop_score_detail);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         adapter = new ShopScoreDetailAdapter();
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof ShopScoreDetailFragmentCallback) {
+            this.callback = (ShopScoreDetailFragmentCallback) context;
+        } else {
+            throw new RuntimeException("Please implement ShopScoreDetailFragmentCallback in the Activity");
+        }
     }
 
 
@@ -99,10 +132,12 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
             case NOT_GOLD_MERCHANT_QUALIFIED_BADGE:
                 description = getString(R.string.desc_shop_score_not_gold_merchant_qualified_badge);
                 icon = R.drawable.ic_gm_badge_qualified;
+                buttonGoToGmSubscribe.setVisibility(View.VISIBLE);
                 break;
             case NOT_GOLD_MERCHANT_NOT_QUALIFIED_BADGE:
                 description = getString(R.string.desc_shop_score_not_gold_merchant_not_qualified_badge);
                 icon = R.drawable.ic_gm_badge_not_qualified;
+                buttonGoToGmSubscribe.setVisibility(View.VISIBLE);
                 break;
             default:
                 description = getString(R.string.desc_shop_score_gold_merchant_qualified_badge);
