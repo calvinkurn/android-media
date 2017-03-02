@@ -688,6 +688,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private void setVisibilityImageAndProductView(boolean isVisibleToUser) {
         if (isVisibleToUser) {
             if (isAlreadyHavePhonePrefixInView) {
+                setTextToEditTextOrSetVisibilityForm();
                 showFormAndImageOperator();
             } else {
                 hideFormAndImageOperator();
