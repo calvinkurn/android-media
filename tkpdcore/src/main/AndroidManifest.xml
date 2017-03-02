@@ -458,6 +458,9 @@
 
         <activity android:name=".newgallery.GalleryActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".snapshot.SnapShotProduct"
+            android:label="@string/title_activity_snapshot"
+            android:screenOrientation="portrait"/>
         <!--=======================================================-->
         <!--RECEIVERS REGISTRY-->
         <!--=======================================================-->
