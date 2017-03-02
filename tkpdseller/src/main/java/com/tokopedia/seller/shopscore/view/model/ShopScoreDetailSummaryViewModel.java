@@ -5,7 +5,6 @@ package com.tokopedia.seller.shopscore.view.model;
  */
 public class ShopScoreDetailSummaryViewModel {
     private Integer badgeScore;
-    private String html;
     private Integer color;
     private Integer value;
     private String text;
@@ -16,14 +15,6 @@ public class ShopScoreDetailSummaryViewModel {
 
     public void setBadgeScore(Integer badgeScore) {
         this.badgeScore = badgeScore;
-    }
-
-    public String getHtml() {
-        return html;
-    }
-
-    public void setHtml(String html) {
-        this.html = html;
     }
 
     public Integer getColor() {

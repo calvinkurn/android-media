@@ -36,7 +36,6 @@ public class ShopScoreDetailMapper implements Func1<ShopScoreDetailServiceModel,
         summaryDomainModel.setValue(serviceModel.getData().getSumData().getValue());
         String color = serviceModel.getData().getSumData().getColor();
         summaryDomainModel.setColor(ColorUtil.formatColor(color));
-        summaryDomainModel.setHtml(serviceModel.getData().getSumData().getHtml());
         summaryDomainModel.setText(serviceModel.getData().getSumData().getText());
         return summaryDomainModel;
     }

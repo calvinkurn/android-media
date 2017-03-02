@@ -15,9 +15,6 @@ public class SumData {
     @SerializedName("Value")
     @Expose
     private Integer value;
-    @SerializedName("Html")
-    @Expose
-    private String html;
 
     public String getColor() {
         return color;
@@ -42,13 +39,4 @@ public class SumData {
     public void setValue(Integer value) {
         this.value = value;
     }
-
-    public String getHtml() {
-        return html;
-    }
-
-    public void setHtml(String html) {
-        this.html = html;
-    }
-
 }

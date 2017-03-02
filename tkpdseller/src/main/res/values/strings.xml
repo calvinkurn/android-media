@@ -194,5 +194,7 @@
     <string name="negative_button_dialog">Tidak</string>
     <string name="title_shop_score">Performa Toko</string>
     <string name="description_shop_score_percent"> / 100</string>
+    <string name="subtitle_first_shop_score_detail_summary">Perfoma Toko Anda</string>
+    <string name="subtitle_second_shop_score_detail_summary">dengan nilai rata-rata</string>
 
 </resources>

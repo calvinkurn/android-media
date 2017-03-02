@@ -3,6 +3,7 @@ package com.tokopedia.sellerapp.home.view.widget;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.Html;
+import android.text.Spanned;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -63,8 +64,11 @@ public class ShopScoreMainDetailView extends RelativeLayout {
     }
 
     public void setDescription(String description) {
-        String concatenated = Html.fromHtml(description)
-                + getContext().getString(R.string.decription_shop_score_summary_30days_info);
+        Spanned concatenated = Html.fromHtml(
+                description +
+                        " " +
+                        getContext().getString(R.string.decription_shop_score_summary_30days_info)
+        );
         descriptionTextView.setText(concatenated);
     }
 

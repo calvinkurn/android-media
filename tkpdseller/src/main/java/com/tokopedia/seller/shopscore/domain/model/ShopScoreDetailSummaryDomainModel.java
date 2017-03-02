@@ -7,7 +7,6 @@ public class ShopScoreDetailSummaryDomainModel {
     private Integer badgeScore;
     private Integer value;
     private Integer color;
-    private String html;
     private String text;
 
     public Integer getBadgeScore() {
@@ -32,14 +31,6 @@ public class ShopScoreDetailSummaryDomainModel {
 
     public void setColor(Integer color) {
         this.color = color;
-    }
-
-    public String getHtml() {
-        return html;
-    }
-
-    public void setHtml(String html) {
-        this.html = html;
     }
 
     public String getText() {
