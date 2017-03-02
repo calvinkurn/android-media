@@ -20,12 +20,6 @@ public class ShopScoreWidget extends FrameLayout {
     private TextView shopScoreTitleWidget;
     private ShopScoreWidgetCallback callback;
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        callback.getShopScoreData();
-    }
-
     public ShopScoreWidget(Context context) {
         super(context);
         initView(context);
@@ -41,16 +35,16 @@ public class ShopScoreWidget extends FrameLayout {
         initView(context, attrs);
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        callback.getShopScoreData();
-    }
-
     @SuppressLint("NewApi")
     public ShopScoreWidget(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initView(context, attrs);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        callback.getShopScoreData();
     }
 
     private void initView(Context context, AttributeSet attrs) {
