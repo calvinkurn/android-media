@@ -36,4 +36,8 @@ public class HockeyAppHelper {
     public static void setEnableDistribution(Boolean enableDistribution) {
         ENABLE_DISTRIBUTION = enableDistribution;
     }
+
+    public static Boolean getEnableDistribution() {
+        return ENABLE_DISTRIBUTION;
+    }
 }

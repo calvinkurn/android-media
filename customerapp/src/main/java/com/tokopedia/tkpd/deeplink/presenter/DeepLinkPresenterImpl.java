@@ -186,11 +186,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         interactor.handleAccounts(parseUriData(uriData), new SignInInteractor.SignInListener() {
             @Override
             public void onSuccess(AccountsModel result) {
+                Log.d(TAG, "onSuccess: ");
                 finishLogin();
             }
 
             @Override
             public void onError(String error) {
+                Log.d(TAG, "onError: "+error);
                 finishLogin();
             }
 
@@ -516,15 +518,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private boolean isSearch(List<String> linkSegment) {
-        return linkSegment.get(0).equals("search");
+        return linkSegment.size() > 0 && linkSegment.get(0).equals("search");
     }
 
     private boolean isPulsa(List<String> linkSegment) {
-        return linkSegment.get(0).equals("pulsa") && linkSegment.size() == 1;
+        return linkSegment.size() == 1 && linkSegment.get(0).equals("pulsa") ;
     }
 
     private boolean isInvoice(List<String> linkSegment) {
-        return linkSegment.get(0).startsWith("invoice.pl") && linkSegment.size() == 1;
+        return linkSegment.size() == 1 && linkSegment.get(0).startsWith("invoice.pl") ;
     }
 
     private boolean isShop(List<String> linkSegment) {
@@ -552,17 +554,18 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private boolean isCatalog(List<String> linkSegment) {
-        return (linkSegment.get(0).equals("catalog"));
+        return linkSegment.size() > 0  && linkSegment.get(0).equals("catalog");
     }
 
     private boolean isHot(List<String> linkSegment) {
-        return (linkSegment.get(0).equals("hot"));
+        return linkSegment.size() > 0 &&  linkSegment.get(0).equals("hot");
     }
 
     private boolean isBrowse(List<String> linkSegment) {
-        return linkSegment.get(0).equals("search") || linkSegment.get(0).equals("p");
+        return linkSegment.size() > 0 && (
+                linkSegment.get(0).equals("search") || linkSegment.get(0).equals("p")
+        );
     }
-
     private boolean isHomepage(List<String> linkSegment) {
         return linkSegment.size() == 0;
     }

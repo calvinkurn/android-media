@@ -5,7 +5,8 @@ import android.content.Intent;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.di.TopAdsEditPromoProductDI;
+import com.tokopedia.seller.topads.di.TopAdsDetailEditProductDI;
+import com.tokopedia.seller.topads.di.TopAdsDetailNewProductDI;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddProductListActivity;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailProductViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewProductPresenter;
@@ -19,7 +20,7 @@ public class TopAdsDetailNewProductFragment extends TopAdsDetailNewFragment<TopA
 
     @Override
     protected void initialPresenter() {
-        presenter = TopAdsEditPromoProductDI.createPresenter(getActivity());
+        presenter = TopAdsDetailNewProductDI.createPresenter(getActivity());
         presenter.attachView(this);
     }
 
@@ -39,6 +40,7 @@ public class TopAdsDetailNewProductFragment extends TopAdsDetailNewFragment<TopA
         Intent intent = new Intent(getActivity(), TopAdsAddProductListActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, false);
         intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_ETALASE, false);
+        intent.putParcelableArrayListExtra(TopAdsExtraConstant.EXTRA_SELECTIONS, topAdsProductList);
         startActivityForResult(intent, ADD_PRODUCT_REQUEST_CODE);
     }
 }

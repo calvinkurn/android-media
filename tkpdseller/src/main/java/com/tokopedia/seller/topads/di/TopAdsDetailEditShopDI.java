@@ -12,6 +12,8 @@ import com.tokopedia.seller.topads.data.source.cloud.apiservice.api.TopAdsManage
 import com.tokopedia.seller.topads.domain.TopAdsShopAdsRepository;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailShopUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailShopUseCase;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditShopPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditShopPresenterImpl;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewShopPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewShopPresenterImpl;
 
@@ -19,23 +21,18 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewShopPresenterIm
  * Created by zulfikarrahman on 2/21/17.
  */
 
-public class TopAdsEditPromoShopDI {
+public class TopAdsDetailEditShopDI {
 
-    public static TopAdsDetailNewShopPresenter createPresenter(Context context) {
+    public static TopAdsDetailEditShopPresenter createPresenter(Context context) {
         JobExecutor threadExecutor = new JobExecutor();
         UIThread postExecutionThread = new UIThread();
-
         TopAdsManagementService topAdsManagementService = new TopAdsManagementService();
         TopAdsManagementApi topAdsManagementApi = topAdsManagementService.getApi();
-
         TopAdsDetailShopMapper mapper = new TopAdsDetailShopMapper();
-
         TopAdsShopAdFactory topAdsShopAdFactory = new TopAdsShopAdFactory(context, topAdsManagementApi, mapper);
-
         TopAdsShopAdsRepository topAdsGroupAdsRepository = new TopAdsShopAdsRepositoryImpl(topAdsShopAdFactory);
-
         TopAdsGetDetailShopUseCase topAdsSearchGroupAdsNameUseCase = new TopAdsGetDetailShopUseCase(threadExecutor, postExecutionThread, topAdsGroupAdsRepository);
         TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase = new TopAdsSaveDetailShopUseCase(threadExecutor, postExecutionThread, topAdsGroupAdsRepository);
-        return new TopAdsDetailNewShopPresenterImpl(topAdsSearchGroupAdsNameUseCase, topAdsSaveDetailShopUseCase);
+        return new TopAdsDetailEditShopPresenterImpl(topAdsSearchGroupAdsNameUseCase, topAdsSaveDetailShopUseCase);
     }
 }

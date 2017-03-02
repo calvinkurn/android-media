@@ -364,6 +364,12 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     }
 
     @Override
+    public void setBirthDayError(String errorMessage) {
+        detailSection.birthDate.setError(errorMessage);
+        detailSection.birthDate.requestFocus();
+    }
+
+    @Override
     public String getVerifiedPhone() {
         return String.valueOf(contactSection.verification.getText());
     }

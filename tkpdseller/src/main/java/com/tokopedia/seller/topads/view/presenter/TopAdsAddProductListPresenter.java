@@ -89,15 +89,15 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
 
         params.put("rows", Integer.toString(PAGE_ROW));
         params.put("start", Integer.toString(PAGE_ROW * page));
-        if(selectedFilterEtalaseId < 0) {
+        if (selectedFilterEtalaseId > 0) {
             params.put("etalase", Integer.toString(selectedFilterEtalaseId));
-        }else{
+        } else {
             params.remove("etalase");
         }
 
-        if(selectedFilterStatus < 0) {
+        if (selectedFilterStatus > 0) {
             params.put("is_promoted", Integer.toString(selectedFilterStatus));
-        }else{
+        } else {
             params.remove("is_promoted");
         }
     }
