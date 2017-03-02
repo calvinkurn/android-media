@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:padding="@dimen/padding_small">
+
+    <ImageView
+        android:id="@+id/icon_category"
+        android:layout_width="@dimen/youtube_place_holder_horizontal_width"
+        android:layout_height="@dimen/youtube_place_holder_horizontal_width"
+        android:src="@drawable/loading_page" />
+
+    <LinearLayout
+        android:id="@+id/holder_main_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toRightOf="@+id/icon_category"
+        android:layout_marginLeft="@dimen/margin_med"
+        android:layout_marginBottom="@dimen/margin_small">
+
+        <TextView
+            android:id="@+id/category_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_large"
+            android:textColor="@color/digital_item_title"
+            android:textStyle="bold"
+            tools:text="Pulsa" />
+
+        <TextView
+            android:id="@+id/operator_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/category_name"
+            android:textColor="@color/digital_voucher"
+            android:textSize="@dimen/font_large"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginBottom="@dimen/margin_vs"
+            tools:text="Telkomsel - Simpati" />
+
+        <LinearLayout
+            android:id="@+id/layout_main_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+        <LinearLayout
+            android:id="@+id/layout_additional_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:orientation="vertical"/>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/holder_main_info"
+        android:background="@color/digital_separator"/>
+
+    <TextView
+        android:id="@+id/button_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/separator"
+        android:layout_alignLeft="@+id/holder_main_info"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:drawableRight="@drawable/page_2"
+        android:drawablePadding="@dimen/margin_small"
+        android:textColor="@color/tkpd_main_green"
+        android:text="Lihat Detail"/>
+
+</RelativeLayout>
