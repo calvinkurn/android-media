@@ -3,10 +3,13 @@ package com.tokopedia.core.analytics.container;
 import android.content.Context;
 
 import com.moe.pushlibrary.MoEHelper;
+import com.moe.pushlibrary.PayloadBuilder;
 import com.moengage.core.Logger;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.app.MainApplication;
+
+import org.json.JSONObject;
 
 import rx.Single;
 import rx.SingleSubscriber;
@@ -76,7 +79,6 @@ public class MoEngageContainer implements IMoengageContainer {
 
     @Override
     public void setUserProfile(CustomerWrapper customerWrapper) {
-        CommonUtils.dumper("MoEngage check is existing user "+customerWrapper.getFullName());
         Single<CustomerWrapper> isExistingUser = Single.just(customerWrapper);
 
         executor(isExistingUser, new SingleSubscriber<CustomerWrapper>() {
@@ -87,6 +89,24 @@ public class MoEngageContainer implements IMoengageContainer {
                 helper.setFullName(value.getFullName());
                 helper.setUniqueId(value.getCustomerId());
                 helper.setEmail(value.getEmailAddress());
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                error.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    public void sendEvent(JSONObject data, final String eventName) {
+        Single<JSONObject> isExistingUser = Single.just(data);
+
+        executor(isExistingUser, new SingleSubscriber<JSONObject>() {
+            @Override
+            public void onSuccess(JSONObject value) {
+                CommonUtils.dumper("MoEngage send event "+value.toString());
+                MoEHelper.getInstance(context).trackEvent(eventName, value);
             }
 
             @Override

@@ -195,8 +195,8 @@ public class SessionImpl implements Session {
                 sendMoEngageLoginEvent(bundle, AppEventTracking.GTMCacheValue.WEBVIEW);
                 break;
             case DownloadService.LOGIN_ACCOUNTS_TOKEN:
-                sendLocalyticsLoginEvent(bundle, AppEventTracking.GTMCacheValue.LOGIN);
-                sendMoEngageLoginEvent(bundle, AppEventTracking.GTMCacheValue.LOGIN);
+                sendLocalyticsLoginEvent(bundle, AppEventTracking.GTMCacheValue.EMAIL);
+                sendMoEngageLoginEvent(bundle, AppEventTracking.GTMCacheValue.EMAIL);
                 break;
         }
     }
@@ -214,7 +214,7 @@ public class SessionImpl implements Session {
 
     private void sendMoEngageLoginEvent(Bundle bundle, String label){
         CommonUtils.dumper("MoEngage called login events");
-        TrackingUtils.setMoEngageLoginEvent(new CustomerWrapper.Builder()
+        CustomerWrapper wrapper = new CustomerWrapper.Builder()
                 .setCustomerId(
                         bundle.getString(com.tokopedia.core.analytics.AppEventTracking.USER_ID_KEY,
                                 com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
@@ -228,8 +228,10 @@ public class SessionImpl implements Session {
                                 com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
                 )
                 .setMethod(label)
-                .build());
+                .build();
 
+        TrackingUtils.sendMoEngageLoginEvent(wrapper);
+        TrackingUtils.setMoEngageUser(wrapper);
     }
 
     private void sendLocalyticsLoginEvent(Bundle bundle, String label){
@@ -273,7 +275,7 @@ public class SessionImpl implements Session {
                 attributesLogin
         );
 
-        TrackingUtils.setMoEngageLoginEvent(new CustomerWrapper.Builder()
+        TrackingUtils.setMoEngageUser(new CustomerWrapper.Builder()
                 .setCustomerId(
                         bundle.getString(com.tokopedia.core.analytics.AppEventTracking.USER_ID_KEY,
                                 com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)

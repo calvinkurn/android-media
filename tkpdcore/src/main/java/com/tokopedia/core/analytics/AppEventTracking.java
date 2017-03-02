@@ -362,6 +362,26 @@ public interface AppEventTracking {
         String TICKER_ATC_TEXT = "ticker_text_atc";
     }
 
+    interface MOENGAGE {
+        String CURRENCY = "currency";
+        String QUANTITY = "quantity";
+        String PRODUCT = "product";
+        String PURCHASE_DATE = "purchaseDate";
+        String PRICE = "price";
+        String MOBILE_NUM = "Mobile Number";
+        String USER_ID = "User_ID";
+        String MEDIUM = "Medium";
+        String EMAIL = "Email";
+
+        String EVENT_LOGIN = "Login";
+        String REG_START = "Registration_Start";
+        String REG_COMPL = "Registration_Completed";
+        String ADDR_ADD = "Address_Added";
+
+
+    }
+
+
     interface LOCA {
         String NOTIFICATION_BUNDLE = "ll";
     }

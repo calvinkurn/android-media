@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
+import com.moe.pushlibrary.PayloadBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
@@ -50,8 +51,16 @@ public class TrackingUtils extends TrackingConfig {
         getMoEngine().isExistingUser(SessionHandler.isV4Login(MainApplication.getAppContext()));
     }
 
-    public static void setMoEngageLoginEvent(CustomerWrapper customerWrapper){
+    public static void setMoEngageUser(CustomerWrapper customerWrapper){
         getMoEngine().setUserProfile(customerWrapper);
+    }
+
+    public static void sendMoEngageLoginEvent(CustomerWrapper customerWrapper){
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrString(AppEventTracking.MOENGAGE.USER_ID, customerWrapper.getCustomerId());
+        builder.putAttrString(AppEventTracking.MOENGAGE.MEDIUM, customerWrapper.getMethod());
+        builder.putAttrString(AppEventTracking.MOENGAGE.EMAIL, customerWrapper.getEmailAddress());
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_LOGIN);
     }
 
     public static void fragmentBasedAFEvent(String tag){
