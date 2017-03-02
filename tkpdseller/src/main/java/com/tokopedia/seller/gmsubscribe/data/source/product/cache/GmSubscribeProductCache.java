@@ -21,12 +21,17 @@ public class GmSubscribeProductCache {
     }
 
     public Observable<GmServiceModel> getProduct() {
-        return Observable.just(
-                globalCacheManager.getConvertObjData(
-                        GM_SUBSCRIBE_PRODUCT,
-                        GmServiceModel.class
+        return Observable.just(true)
+                .map(new Func1<Boolean, GmServiceModel>() {
+                         @Override
+                         public GmServiceModel call(Boolean aBoolean) {
+                             return globalCacheManager.getConvertObjData(
+                                     GM_SUBSCRIBE_PRODUCT,
+                                     GmServiceModel.class
+                             );
+                         }
+                     }
                 )
-        )
                 .map(new CheckNull());
     }
 
