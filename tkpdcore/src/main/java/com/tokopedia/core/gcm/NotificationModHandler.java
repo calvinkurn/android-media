@@ -12,6 +12,7 @@ import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.gcm.data.PushNotificationDataRepository;
 import com.tokopedia.core.gcm.domain.PushNotificationRepository;
 import com.tokopedia.core.gcm.domain.usecase.DeleteSavedPushNotificationByCategoryUseCase;
+import com.tokopedia.core.gcm.domain.usecase.DeleteSavedPushNotificationUseCase;
 import com.tokopedia.core.var.TkpdCache;
 
 import rx.Subscriber;
@@ -40,6 +41,35 @@ public class NotificationModHandler {
                 LocalCacheHandler.clearCache(context, TkpdCache.GCM_NOTIFICATION);
             }
         }
+    }
+
+    public static void clearCacheAllNotification(){
+        PushNotificationRepository pushNotificationRepository = new PushNotificationDataRepository();
+        DeleteSavedPushNotificationUseCase deleteUseCase =
+                new DeleteSavedPushNotificationUseCase(
+                        new JobExecutor(),
+                        new UIThread(),
+                        pushNotificationRepository
+                );
+        deleteUseCase.execute(RequestParams.EMPTY, new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                if (aBoolean)
+                    CommonUtils.dumper("Success Clear Storage Notification");
+                else
+                    CommonUtils.dumper("Failed Clear Storage Notification");
+            }
+        });
     }
 
     public static void clearCacheIfFromNotification(String category){

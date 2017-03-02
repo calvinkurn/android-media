@@ -31,5 +31,5 @@ public interface PushNotificationRepository {
 
     Observable<Boolean> clearPushNotificationStorage(String category);
 
-
+    Observable<Boolean> clearPushNotificationStorage();
 }
