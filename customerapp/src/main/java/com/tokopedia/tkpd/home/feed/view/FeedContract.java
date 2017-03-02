@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.home.feed.view;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.core.home.model.HistoryProductListItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 
 import java.util.List;
@@ -39,6 +40,31 @@ interface FeedContract {
         void showContentView();
 
         void showRefreshFailed();
+
+        String getTopAdsPage();
+
+        void increaseTopAdsPage();
+
+        void showEmptyHistoryProduct();
+
+        void hideEmptyHistoryProduct();
+
+        void showEmptyFeed();
+
+        void showInvalidFeed();
+
+        void hideEmptyFeed();
+
+        void showMessageRefreshFailed();
+
+        boolean isViewNotEmpty();
+
+        void forceShowEmptyHistory();
+
+
+        HistoryProductListItem getViewmodelHistory();
+
+        List<RecyclerViewItem> getViewmodelFeed();
     }
 
     interface Presenter extends CustomerPresenter<View> {

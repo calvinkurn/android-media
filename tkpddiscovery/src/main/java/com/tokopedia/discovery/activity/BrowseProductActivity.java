@@ -600,8 +600,10 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                 // set the value get from intent
                 if (adSrc != null)
                     browseProductActivityModel.setAdSrc(adSrc);
-                browseProductActivityModel.setDepartmentId(departmentId);
-                browseProductActivityModel.setParentDepartement(departmentId);
+                if(departmentId!=null) {
+                    browseProductActivityModel.setDepartmentId(departmentId);
+                    browseProductActivityModel.setParentDepartement(departmentId);
+                }
                 browseProductActivityModel.setFragmentId(fragmentId);
             }
             browseProductActivityModel.setSearchDeeplink(intent.getBooleanExtra(IS_DEEP_LINK_SEARCH, false));

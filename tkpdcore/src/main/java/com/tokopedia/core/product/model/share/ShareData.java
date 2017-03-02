@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Html;
+import android.text.TextUtils;
 
 import com.tokopedia.core.util.MethodChecker;
 
@@ -18,6 +19,7 @@ public class ShareData implements Parcelable {
     public static final String DISCOVERY_TYPE = "Discovery";
     public static final String HOTLIST_TYPE = "Hotlist";
     private static final String ARG_UTM_MEDIUM = "Android%20Share%20Button";
+    private static final String DEFAULT_EMPTY_FIELD = "";
 
     private String type;
     private String name;
@@ -96,7 +98,11 @@ public class ShareData implements Parcelable {
     }
 
     public String getDescription() {
-        return String.valueOf(MethodChecker.fromHtml(description));
+        if (TextUtils.isEmpty(description)) {
+            return DEFAULT_EMPTY_FIELD;
+        } else {
+            return String.valueOf(MethodChecker.fromHtml(description));
+        }
     }
 
     public void setDescription(String description) {

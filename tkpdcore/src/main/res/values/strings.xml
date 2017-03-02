@@ -16,7 +16,7 @@
     <string name="error_connection">Masalah Koneksi</string>
     <string name="title_retry">Coba Lagi</string>
     <string name="navigate_back">Kembali</string>
-    <string name="navigate_browser">Lanjut ke Aplikasi Seller</string>
+    <string name="navigate_browser">Lanjut ke Aplikasi TopSeller</string>
     <!-- Strings related notification -->
     <string name="title_new_message">Pesan baru</string>
     <string name="title_share">Bagikan</string>
@@ -320,6 +320,10 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="toast_promo_error">        Anda belum dapat menggunakan fitur Promo pada saat ini.\n
 		Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\n
 		Promo masih aktif untuk produk:\n</string>
+    <string name="toast_promo_error_cache">        Anda belum dapat menggunakan fitur Promo pada saat ini.\n
+		Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\n
+        Silahkan coba kembali dalam
+		</string>
     <string name="toast_success_promo1">Promo pada produk</string>
     <string name="toast_success_promo2">telah berhasil.
 Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
@@ -1892,5 +1896,6 @@ di Tokopedia Sekarang!</string>
     <string name="see_all">Lihat Semua</string>
 
     <string name="title_ask_buyer_selling">Tanya Pembeli</string>
+    <string name="minute">" menit"</string>
 
 </resources>

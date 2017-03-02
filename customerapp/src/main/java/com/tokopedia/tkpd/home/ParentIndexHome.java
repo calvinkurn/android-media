@@ -125,7 +125,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         super.onNewIntent(intent);
         initStateFragment = intent.getIntExtra(EXTRA_INIT_FRAGMENT, -1);
         if (mViewPager != null) {
-            mViewPager.setCurrentItem(initStateFragment);
+            if (initStateFragment != -1) {
+                mViewPager.setCurrentItem(initStateFragment);
+            }
         }
 
         sendNotifLocalyticsCallback();
@@ -179,7 +181,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         content.clear();
 //        adapter.notifyDataSetChanged();
         if (SessionHandler.isV4Login(getBaseContext())) {
-            String[] CONTENT = new String[]{
+            String[] CONTENT = new String[] {
                     getString(R.string.title_categories),
                     getString(R.string.title_index_prod_shop),
                     getString(R.string.title_index_favorite),
@@ -191,7 +193,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 content.add(content_);
             }
         } else {
-            String[] CONTENT = new String[]{getString(R.string.title_categories), getString(R.string.title_index_hot_list)};
+            String[] CONTENT = new String[] {getString(R.string.title_categories), getString(R.string.title_index_hot_list)};
             content = new ArrayList<>();
             for (String content_ : CONTENT) {
                 indicator.addTab(indicator.newTab().setText(content_));
@@ -460,7 +462,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         if (SessionHandler.isV4Login(this) && indicator.getTabCount() < 4) {
             indicator.removeAllTabs();
             content.clear();
-            String[] CONTENT = new String[]{
+            String[] CONTENT = new String[] {
                     getString(R.string.title_categories),
                     getString(R.string.title_index_prod_shop),
                     getString(R.string.title_index_favorite),
