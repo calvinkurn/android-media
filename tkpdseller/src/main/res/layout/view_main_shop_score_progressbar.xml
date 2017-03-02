@@ -16,8 +16,6 @@
         android:layout_below="@id/ic_shop_score_limit"
         app:rcBackgroundColor="@color/grey_300"
         app:rcMax="100"
-        app:rcProgress="90"
-        app:rcProgressColor="#f6b323"
         app:rcRadius="20dp" />
 
     <View

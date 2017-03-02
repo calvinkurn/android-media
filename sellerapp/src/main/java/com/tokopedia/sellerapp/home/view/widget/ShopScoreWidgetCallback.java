@@ -5,4 +5,6 @@ package com.tokopedia.sellerapp.home.view.widget;
  */
 public interface ShopScoreWidgetCallback {
     void goToShopScoreDetail();
+
+    void getShopScoreData();
 }

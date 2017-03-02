@@ -263,6 +263,7 @@ public class SellerHomeActivity
             getWindow().setStatusBarColor(getResources().getColor(R.color.green_600));
         }
         setContentView(R.layout.activity_seller_home);
+
         ButterKnife.bind(this);
         shopScoreWidget.setCallback(this);
 
@@ -950,7 +951,7 @@ public class SellerHomeActivity
         smoothAppBarLayout.setExpanded(true);
         sendToGTM();
         sendToLocalytics();
-        presenter.getShopScoreMainData();
+
     }
 
     @Override
@@ -1004,6 +1005,11 @@ public class SellerHomeActivity
     public void goToShopScoreDetail() {
         Intent intent = new Intent(this, ShopScoreDetailActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void getShopScoreData() {
+        presenter.getShopScoreMainData();
     }
 
     public static class SellerHomeNewOrderView {
