@@ -11,9 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopscore.di.ShopScoreDetailDependencyInjector;
 import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailItemViewModel;
@@ -32,10 +35,12 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
     private ShopScoreDetailFragmentCallback callback;
     private ShopScoreDetailAdapter adapter;
     private ShopScoreDetailPresenterImpl presenter;
+    private LinearLayout containerView;
     private TextView summaryDetailTitle;
     private TextView descriptionGoldBadge;
     private TextView buttonGoToGmSubscribe;
     private ImageView imageViewGoldBadge;
+    private TkpdProgressDialog progressDialog;
     private View.OnClickListener goToGmSubscribe = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -48,7 +53,12 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
             callback.goToSellerCenter();
         }
     };
-
+    private NetworkErrorHelper.RetryClickedListener retryLoadShopScore = new NetworkErrorHelper.RetryClickedListener() {
+        @Override
+        public void onRetryClicked() {
+            presenter.getShopScoreDetail();
+        }
+    };
 
 
     public static Fragment createFragment() {
@@ -66,6 +76,10 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
         View parentView = inflater.inflate(R.layout.fragment_shop_score_detail, container, false);
 
         setupRecyclerView(parentView);
+
+        progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.MAIN_PROGRESS);
+
+        containerView = (LinearLayout) parentView.findViewById(R.id.container_view);
 
         summaryDetailTitle = (TextView) parentView.findViewById(R.id.text_view_shop_score_summary_detail_tittle);
         descriptionGoldBadge = (TextView) parentView.findViewById(R.id.description_shop_score_detail_gold_badge_info);
@@ -145,6 +159,32 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
                 break;
         }
         setShopScoreGoldBadgeState(description, icon);
+    }
+
+    @Override
+    public void showProgressDialog() {
+        progressDialog.showDialog();
+        containerView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        progressDialog.dismiss();
+        containerView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void emptyState() {
+        NetworkErrorHelper
+                .showEmptyState(
+                        getActivity(),
+                        containerView,
+                        getString(R.string.error_title_shop_score_failed),
+                        getString(R.string.error_subtitle_shop_score_failed),
+                        getString(R.string.retry_shop_score),
+                        R.drawable.ic_error_network,
+                        retryLoadShopScore
+                );
     }
 
     private void setShopScoreGoldBadgeState(String description, int icon) {

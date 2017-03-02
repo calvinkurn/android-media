@@ -203,5 +203,8 @@
     <string name="desc_shop_score_not_gold_merchant_not_qualified_badge">Upgrade toko Anda ke Gold Merchant untuk membantu meningkatkan nilai performa toko Anda. Mulai tanggal 27 Maret 2017, Gold Badge hanya akan diberikan untuk toko Gold Merchant dengan skor minimal 75.</string>
     <string name="button_go_to_seller_tokopedia_web"><![CDATA[Tips & Trick meningkatkan Performa Toko]]></string>
     <string name="button_go_to_gm_subscribe">Berlangganan Gold Merchant</string>
+    <string name="error_title_shop_score_failed">Data Gagal Ditampilkan</string>
+    <string name="error_subtitle_shop_score_failed">Periksa koneksi internet Anda dan coba lagi</string>
+    <string name="retry_shop_score">Coba Lagi</string>
 
 </resources>
