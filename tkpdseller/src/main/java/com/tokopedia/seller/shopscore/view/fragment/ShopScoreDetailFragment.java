@@ -81,7 +81,7 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
         return getString(R.string.subtitle_first_shop_score_detail_summary)
                 + " "
                 + "<font color=#"
-                + viewModel.getColor()
+                + Integer.toHexString(viewModel.getColor())
                 + "><strong>"
                 + viewModel.getText()
                 + "</strong></font>"

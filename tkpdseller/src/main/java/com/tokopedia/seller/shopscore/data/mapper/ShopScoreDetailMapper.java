@@ -55,7 +55,7 @@ public class ShopScoreDetailMapper implements Func1<ShopScoreDetailServiceModel,
         domainModel.setTitle(data.getTitle());
         domainModel.setValue(data.getValue());
         domainModel.setDescription(data.getDescription());
-        domainModel.setProgressBarColor(ColorUtil.formatColor(data.getColor()));
+        domainModel.setProgressBarColor(ColorUtil.formatColorWithAlpha(data.getColor()));
         return domainModel;
     }
 }

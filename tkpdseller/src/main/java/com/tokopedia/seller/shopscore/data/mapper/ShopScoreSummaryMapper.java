@@ -23,7 +23,7 @@ public class ShopScoreSummaryMapper implements Func1<ShopScoreSummaryServiceMode
         DetailData detailData = serviceModelData.getData();
         data.setTitle(detailData.getTitle());
         data.setValue(detailData.getValue());
-        data.setProgressBarColor(ColorUtil.formatColor(detailData.getColor()));
+        data.setProgressBarColor(ColorUtil.formatColorWithAlpha(detailData.getColor()));
         data.setDescription(detailData.getDescription());
 
         domainModel.setData(data);
