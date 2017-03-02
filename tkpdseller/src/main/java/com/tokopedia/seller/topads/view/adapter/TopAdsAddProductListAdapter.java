@@ -9,11 +9,12 @@ import android.view.ViewGroup;
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.listener.AdapterSelectionListener;
-import com.tokopedia.seller.topads.listener.FragmentItemSelection;
-import com.tokopedia.seller.topads.view.models.TopAdsAddProductModel;
-import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
-import com.tokopedia.seller.topads.view.models.TypeBasedModel;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsAddProductListViewHolder;
+import com.tokopedia.seller.topads.view.listener.AdapterSelectionListener;
+import com.tokopedia.seller.topads.view.listener.FragmentItemSelection;
+import com.tokopedia.seller.topads.view.model.TopAdsAddProductModel;
+import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
+import com.tokopedia.seller.topads.view.model.TypeBasedModel;
 
 import java.util.ArrayList;
 import java.util.List;

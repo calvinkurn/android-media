@@ -8,9 +8,9 @@ import com.tokopedia.seller.topads.domain.interactor.TopAdsDefaultParamUseCase;
 import com.tokopedia.seller.topads.domain.model.ProductDomain;
 import com.tokopedia.seller.topads.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.topads.view.TopAdsSearchProductView;
-import com.tokopedia.seller.topads.view.models.TopAdsAddProductModel;
-import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
-import com.tokopedia.seller.topads.view.models.TypeBasedModel;
+import com.tokopedia.seller.topads.view.model.TopAdsAddProductModel;
+import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
+import com.tokopedia.seller.topads.view.model.TypeBasedModel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -12,12 +12,12 @@ import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.listener.AddProductListInterface;
-import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
-import com.tokopedia.seller.topads.listener.ChipsTopAdsSelectionListener;
-import com.tokopedia.seller.topads.view.adapter.OnRemoveListener;
 import com.tokopedia.seller.topads.view.adapter.ChipsAdapter;
-import com.tokopedia.seller.topads.view.models.ChipsEntity;
+import com.tokopedia.seller.topads.view.adapter.OnRemoveListener;
+import com.tokopedia.seller.topads.view.listener.AddProductListInterface;
+import com.tokopedia.seller.topads.view.listener.ChipsTopAdsSelectionListener;
+import com.tokopedia.seller.topads.view.model.ChipsEntity;
+import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

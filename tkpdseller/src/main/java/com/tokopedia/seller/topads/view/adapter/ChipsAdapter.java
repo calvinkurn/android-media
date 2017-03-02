@@ -1,7 +1,6 @@
 package com.tokopedia.seller.topads.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +10,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.view.helper.CircleTransform;
-import com.tokopedia.seller.topads.view.models.ChipsEntity;
+import com.tokopedia.seller.topads.view.model.ChipsEntity;
+import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
 
 import java.util.List;
 

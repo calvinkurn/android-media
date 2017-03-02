@@ -1,13 +1,12 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
+import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditPresenter;
 
 import java.util.ArrayList;
@@ -15,10 +14,9 @@ import java.util.ArrayList;
 public abstract class TopAdsDetailNewFragment<T extends TopAdsDetailEditPresenter> extends TopAdsDetailEditFragment<T> {
 
     protected static final int ADD_PRODUCT_REQUEST_CODE = 0;
-
+    protected ArrayList<TopAdsProductViewModel> topAdsProductList;
     private View addProductLayout;
     private TextView selectedProductTextView;
-    protected ArrayList<TopAdsProductViewModel> topAdsProductList;
 
     protected abstract void addProduct();
 

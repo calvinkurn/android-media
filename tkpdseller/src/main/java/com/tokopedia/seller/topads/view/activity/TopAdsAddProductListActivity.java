@@ -23,13 +23,13 @@ import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.listener.AddProductListInterface;
 import com.tokopedia.seller.topads.utils.ViewUtils;
 import com.tokopedia.seller.topads.view.fragment.ChipsTopAdsSelectionFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsAddProductListFragment;
 import com.tokopedia.seller.topads.view.helper.BottomSheetHelper;
 import com.tokopedia.seller.topads.view.helper.NumberOfChooseFooterHelper;
-import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
+import com.tokopedia.seller.topads.view.listener.AddProductListInterface;
+import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
 
 import java.util.ArrayList;
 import java.util.HashSet;

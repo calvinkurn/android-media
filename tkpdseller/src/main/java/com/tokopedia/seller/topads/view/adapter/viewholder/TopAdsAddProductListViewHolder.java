@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.view.adapter;
+package com.tokopedia.seller.topads.view.adapter.viewholder;
 
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -9,10 +9,10 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.listener.AdapterSelectionListener;
-import com.tokopedia.seller.topads.listener.BindViewHolder;
-import com.tokopedia.seller.topads.view.models.TopAdsAddProductModel;
-import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
+import com.tokopedia.seller.topads.view.listener.AdapterSelectionListener;
+import com.tokopedia.seller.topads.view.listener.BindViewHolder;
+import com.tokopedia.seller.topads.view.model.TopAdsAddProductModel;
+import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
 
 /**
  * Created by normansyahputa on 2/13/17.
