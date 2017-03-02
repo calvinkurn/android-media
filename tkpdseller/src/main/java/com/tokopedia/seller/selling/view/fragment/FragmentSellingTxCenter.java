@@ -2,36 +2,34 @@ package com.tokopedia.seller.selling.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customadapter.ListViewPeopleTransactionSummary;
-import com.tokopedia.seller.selling.presenter.PeopleTxCenter;
-import com.tokopedia.seller.selling.presenter.PeopleTxCenterImpl;
-import com.tokopedia.seller.selling.presenter.PeopleTxCenterView;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.var.NotificationVariable;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.seller.selling.presenter.PeopleTxCenter;
+import com.tokopedia.seller.selling.presenter.PeopleTxCenterImpl;
+import com.tokopedia.seller.selling.presenter.PeopleTxCenterView;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
 
 /**
  * Created by Toped10 on 7/28/2016.
  */
 public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implements PeopleTxCenterView {
     public static final String TYPE = "type";
-    @BindView(R2.id.menu_list)
     ListView TitleMenuListView;
 
     private RefreshHandler Refresh;
@@ -85,6 +83,15 @@ public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implem
     public void initHandlerAndAdapter() {
         ListViewPeopleTransactionSummaryAdapter = new ListViewPeopleTransactionSummary(getActivity(), MenuName, MenuCount, MenuDesc);
         cache = new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View parentView = inflater.inflate(getLayoutId(), container, false);
+        TitleMenuListView = (ListView) parentView.findViewById(R.id.menu_list);
+        return parentView;
+
     }
 
     @Override

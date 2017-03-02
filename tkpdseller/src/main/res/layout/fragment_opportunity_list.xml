@@ -1,39 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
+    android:focusableInTouchMode="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/header_info"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@drawable/bg_yellow_border_yelow"
-        android:gravity="center"
-        android:padding="@dimen/padding_small"
-        tools:text="Di halaman ini anda dapat mengambil pesanan yang ditolak oleh seller lain" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <android.support.v7.widget.SearchView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/searchAutoComplete"
-        android:hint="@string/search_product" />
+        <TextView
+            android:id="@+id/header_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_yellow_border_yelow"
+            android:gravity="center"
+            android:padding="@dimen/padding_small"
+            android:text="@string/header_opportunity"
+            android:layout_marginBottom="@dimen/margin_vs"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/opportunity_list"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:scrollbars="vertical" />
+        <android.support.v7.widget.SearchView
+            android:id="@+id/search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/cards_ui"
+            android:hint="@string/search_product"
+            android:iconifiedByDefault="false"
+            app:iconifiedByDefault="false"
+            android:layout_marginBottom="@dimen/margin_vs"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        <com.tokopedia.core.customwidget.SwipeToRefresh
+            android:id="@+id/swipe_refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/filter_layout">
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/opportunity_list"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:scrollbars="vertical" />
+        </com.tokopedia.core.customwidget.SwipeToRefresh>
 
     </LinearLayout>
 
-</LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="@dimen/fab_button_diameter"
+        android:layout_height="@dimen/fab_button_diameter"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:background="@color/tkpd_dark_green"
+        android:src="@drawable/ic_action_filter_white_24dp"
+        app:backgroundTint="@color/green_500" />
+</android.support.design.widget.CoordinatorLayout>

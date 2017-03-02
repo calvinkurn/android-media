@@ -28,26 +28,23 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.session.baseFragment.BaseFragment;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
-import com.tokopedia.core.network.NetworkErrorHelper;
-
-import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
-import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
-import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
 import com.tokopedia.seller.selling.presenter.SellingStatusTransaction;
 import com.tokopedia.seller.selling.presenter.SellingStatusTransactionImpl;
 import com.tokopedia.seller.selling.presenter.SellingStatusTransactionView;
-import com.tokopedia.core.session.baseFragment.BaseFragment;
-import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
+import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
+import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
 import com.tokopedia.seller.selling.view.viewHolder.StatusViewHolder;
 
 import org.parceler.Parcels;
@@ -55,9 +52,6 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -72,15 +66,11 @@ import rx.subscriptions.CompositeSubscription;
 @RuntimePermissions
 public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction> implements SellingStatusTransactionView, SearchView.OnQueryTextListener {
 
-    @BindView(R2.id.order_list)
-    RecyclerView recyclerView;
-    @BindView(R2.id.swipe_refresh_layout)
-    SwipeToRefresh swipeToRefresh;
-    @BindView(R2.id.root)
-    CoordinatorLayout rootView;
     SearchView searchTxt;
-    @BindView(R2.id.fab)
+    RecyclerView recyclerView;
+    SwipeToRefresh swipeToRefresh;
     FloatingActionButton fab;
+    CoordinatorLayout rootView;
 
     private PagingHandler mPaging;
 
@@ -125,7 +115,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
 
     @Override
     protected void initPresenter() {
-        if(presenter==null) {
+        if (presenter == null) {
             presenter = new SellingStatusTransactionImpl(this, SellingStatusTransactionImpl.Type.STATUS);
         }
     }
@@ -183,10 +173,10 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
     @Override
     public void onNetworkError(int type, Object... data) {
         swipeToRefresh.setRefreshing(false);
-        if(adapter.getListData().size() == 0) {
+        if (adapter.getListData().size() == 0) {
             adapter.setIsLoading(false);
             adapter.setIsRetry(true);
-        }else{
+        } else {
             NetworkErrorHelper.showSnackbar(getActivity());
         }
     }
@@ -201,14 +191,14 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
         setRetainInstance(true);
         mPaging = new PagingHandler();
         linearLayoutManager = new LinearLayoutManager(getActivity());
-        adapter = new BaseSellingAdapter<SellingStatusTxModel, StatusViewHolder>(SellingStatusTxModel.class, getActivity(),  R.layout.selling_transaction_list_item, StatusViewHolder.class) {
+        adapter = new BaseSellingAdapter<SellingStatusTxModel, StatusViewHolder>(SellingStatusTxModel.class, getActivity(), R.layout.selling_transaction_list_item, StatusViewHolder.class) {
             @Override
             protected void populateViewHolder(StatusViewHolder viewHolder, final SellingStatusTxModel model, int position) {
                 viewHolder.bindDataModel(getActivity(), model);
                 viewHolder.setOnItemClickListener(new BaseSellingViewHolder.OnItemClickListener() {
                     @Override
                     public void onItemClicked(int position) {
-                        if(adapter.isLoading()) {
+                        if (adapter.isLoading()) {
                             getPaging().setPage(getPaging().getPage() - 1);
                             presenter.finishConnection();
                         }
@@ -248,6 +238,12 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        recyclerView = (RecyclerView) view.findViewById(R.id.order_list);
+        swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        rootView = (CoordinatorLayout) view.findViewById(R.id.root);
+
         initView();
         return view;
     }
@@ -258,7 +254,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
         filterView = getActivity().getLayoutInflater().inflate(R.layout.filter_layout_selling_status, null);
-        searchTxt = ButterKnife.findById(filterView, R.id.search);
+        searchTxt = (SearchView) filterView.findViewById(R.id.search);
         int searchPlateId = searchTxt.getContext().getResources().getIdentifier("android:id/search_plate", null, null);
         View searchPlate = searchTxt.findViewById(searchPlateId);
         searchPlate.setBackgroundColor(Color.TRANSPARENT);
@@ -338,6 +334,12 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
                 presenter.onScrollList(linearLayoutManager.findLastVisibleItemPosition() == linearLayoutManager.getItemCount() - 1);
             }
         });
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.show();
+            }
+        });
     }
 
     @Override
@@ -386,8 +388,8 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            if(requestCode == REQUEST_CODE_BARCODE) {
-                if(editRefDialog != null && editRefDialog.isShowing()) {
+            if (requestCode == REQUEST_CODE_BARCODE) {
+                if (editRefDialog != null && editRefDialog.isShowing()) {
                     ref.setText(CommonUtils.getBarcode(data));
                 }
             }
@@ -485,7 +487,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
             public void onTrack(SellingStatusTxModel model) {
                 Bundle bundle = new Bundle();
                 bundle.putString(ORDER_ID, model.OrderId);
-                getActivity().startActivity(TrackingActivity.createInstance(getActivity(),bundle));
+                getActivity().startActivity(TrackingActivity.createInstance(getActivity(), bundle));
             }
 
             @Override
@@ -517,11 +519,6 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
     }
 
 
-    @OnClick(R2.id.fab)
-    public void onClick() {
-        bottomSheetDialog.show();
-    }
-
     public interface LVShopStatusInterface {
         void onEditRef(SellingStatusTxModel model);
 
@@ -552,31 +549,31 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onPermissionDenied(getActivity(),listPermission);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
     }
 
     @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -585,7 +582,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 
     private void createRetryPickupDialog(final String orderId, MenuItem retryMenu) {
