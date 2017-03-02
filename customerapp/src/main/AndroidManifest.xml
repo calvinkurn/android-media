@@ -19,6 +19,12 @@
         <meta-data
             android:name="APP_ID"
             android:value="@string/key_moengage" />
+        <meta-data
+            android:name="SENDER_ID"
+            android:value="@string/key_sender_id" />
+        <meta-data
+            android:name="SKIP_GCM_REGISTRATION"
+            android:value="true" />
 
         <activity
             android:name="com.tokopedia.core.SplashScreen"
