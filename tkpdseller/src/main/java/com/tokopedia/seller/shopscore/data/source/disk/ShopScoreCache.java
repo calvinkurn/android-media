@@ -22,11 +22,6 @@ public class ShopScoreCache {
         this.cacheManager = cacheManager;
     }
 
-    public Observable<ShopScoreSummaryServiceModel> getShopScoreSummary() {
-        return getShopScoreSummaryCache()
-                .map(new ErrorCheck<ShopScoreSummaryServiceModel>());
-    }
-
     public void storeShopScoreSummary(ShopScoreSummaryServiceModel serviceModel) {
         String stringData = CacheUtil.convertModelToString(
                 serviceModel,
@@ -48,7 +43,7 @@ public class ShopScoreCache {
     private void saveToCache(String key, String stringData) {
         cacheManager.setKey(key);
         cacheManager.setValue(stringData);
-        cacheManager.setCacheDuration(3600);
+        cacheManager.setCacheDuration(5);
         cacheManager.store();
     }
 
@@ -57,24 +52,39 @@ public class ShopScoreCache {
                 .map(new ErrorCheck<ShopScoreDetailServiceModel>());
     }
 
+    public Observable<ShopScoreSummaryServiceModel> getShopScoreSummary() {
+        return getShopScoreSummaryCache()
+                .map(new ErrorCheck<ShopScoreSummaryServiceModel>());
+    }
+
     @NonNull
     private Observable<ShopScoreSummaryServiceModel> getShopScoreSummaryCache() {
-        return Observable.just(
-                cacheManager.getConvertObjData(
-                        TkpdCache.Key.SHOP_SCORE_SUMMARY,
-                        ShopScoreSummaryServiceModel.class
-                )
-        );
+        return Observable.just(true)
+                .map(new Func1<Boolean, ShopScoreSummaryServiceModel>() {
+                         @Override
+                         public ShopScoreSummaryServiceModel call(Boolean aBoolean) {
+                             return cacheManager.getConvertObjData(
+                                     TkpdCache.Key.SHOP_SCORE_SUMMARY,
+                                     ShopScoreSummaryServiceModel.class
+                             );
+                         }
+                     }
+                );
     }
 
     @NonNull
     private Observable<ShopScoreDetailServiceModel> getShopScoreDetailCache() {
-        return Observable.just(
-                cacheManager.getConvertObjData(
-                        TkpdCache.Key.SHOP_SCORE_DETAIL,
-                        ShopScoreDetailServiceModel.class
-                )
-        );
+        return Observable.just(true)
+                .map(new Func1<Boolean, ShopScoreDetailServiceModel>() {
+                         @Override
+                         public ShopScoreDetailServiceModel call(Boolean aBoolean) {
+                             return cacheManager.getConvertObjData(
+                                     TkpdCache.Key.SHOP_SCORE_DETAIL,
+                                     ShopScoreDetailServiceModel.class
+                             );
+                         }
+                     }
+                );
     }
 
     private class ErrorCheck<T> implements Func1<T, T> {

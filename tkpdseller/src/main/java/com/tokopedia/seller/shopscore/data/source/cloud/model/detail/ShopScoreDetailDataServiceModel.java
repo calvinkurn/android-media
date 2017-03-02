@@ -4,40 +4,42 @@ package com.tokopedia.seller.shopscore.data.source.cloud.model.detail;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class ShopScoreDetailDataServiceModel {
 
-    @SerializedName("Title")
+    @SerializedName("Data")
     @Expose
-    private String title;
-    @SerializedName("Value")
+    private List<ShopScoreDetailItemServiceModel> data = null;
+    @SerializedName("BadgeScore")
     @Expose
-    private Integer value;
-    @SerializedName("Description")
+    private Integer badgeScore;
+    @SerializedName("SumData")
     @Expose
-    private String description;
+    private SumData sumData;
 
-    public String getTitle() {
-        return title;
+    public List<ShopScoreDetailItemServiceModel> getData() {
+        return data;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setData(List<ShopScoreDetailItemServiceModel> data) {
+        this.data = data;
     }
 
-    public Integer getValue() {
-        return value;
+    public Integer getBadgeScore() {
+        return badgeScore;
     }
 
-    public void setValue(Integer value) {
-        this.value = value;
+    public void setBadgeScore(Integer badgeScore) {
+        this.badgeScore = badgeScore;
     }
 
-    public String getDescription() {
-        return description;
+    public SumData getSumData() {
+        return sumData;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setSumData(SumData sumData) {
+        this.sumData = sumData;
     }
 
 }

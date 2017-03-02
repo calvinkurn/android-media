@@ -76,4 +76,7 @@ public class ShopScoreMainProgressBarWithLimit extends RelativeLayout implements
         shopScoreViewLimit.setLayoutParams(params);
     }
 
+    public void setColor(int progressBarColor) {
+        shopScoreMainProgressBar.setProgressColor(progressBarColor);
+    }
 }

@@ -4,8 +4,6 @@ package com.tokopedia.seller.shopscore.data.source.cloud.model.detail;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 public class ShopScoreDetailServiceModel {
 
     @SerializedName("links")
@@ -13,7 +11,7 @@ public class ShopScoreDetailServiceModel {
     private Links links;
     @SerializedName("data")
     @Expose
-    private List<ShopScoreDetailDataServiceModel> data = null;
+    private ShopScoreDetailDataServiceModel data;
 
     public Links getLinks() {
         return links;
@@ -23,11 +21,11 @@ public class ShopScoreDetailServiceModel {
         this.links = links;
     }
 
-    public List<ShopScoreDetailDataServiceModel> getData() {
+    public ShopScoreDetailDataServiceModel getData() {
         return data;
     }
 
-    public void setData(List<ShopScoreDetailDataServiceModel> data) {
+    public void setData(ShopScoreDetailDataServiceModel data) {
         this.data = data;
     }
 

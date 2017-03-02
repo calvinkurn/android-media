@@ -7,6 +7,7 @@ public class ShopScoreSummaryDomainModelData {
     private String title;
     private Integer value;
     private String description;
+    private Integer progressBarColor;
 
     public String getTitle() {
         return title;
@@ -30,5 +31,13 @@ public class ShopScoreSummaryDomainModelData {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getProgressBarColor() {
+        return progressBarColor;
+    }
+
+    public void setProgressBarColor(Integer progressBarColor) {
+        this.progressBarColor = progressBarColor;
     }
 }

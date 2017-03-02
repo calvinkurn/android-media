@@ -19,6 +19,7 @@ public class ShopScoreMapper {
         data.setTitle(domainModelData.getTitle());
         data.setValue(domainModelData.getValue());
         data.setDescription(domainModelData.getDescription());
+        data.setProgressBarColor(domainModelData.getProgressBarColor());
         viewModel.setData(data);
 
         return viewModel;

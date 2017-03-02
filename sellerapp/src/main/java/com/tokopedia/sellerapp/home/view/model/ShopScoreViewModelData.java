@@ -7,6 +7,7 @@ public class ShopScoreViewModelData {
     private String title;
     private int value;
     private String description;
+    private int progressBarColor;
 
     public int getValue() {
         return value;
@@ -30,5 +31,13 @@ public class ShopScoreViewModelData {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getProgressBarColor() {
+        return progressBarColor;
+    }
+
+    public void setProgressBarColor(int progressBarColor) {
+        this.progressBarColor = progressBarColor;
     }
 }

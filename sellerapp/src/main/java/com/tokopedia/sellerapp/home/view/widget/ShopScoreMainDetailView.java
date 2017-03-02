@@ -67,4 +67,8 @@ public class ShopScoreMainDetailView extends RelativeLayout {
                 + getContext().getString(R.string.decription_shop_score_summary_30days_info);
         descriptionTextView.setText(concatenated);
     }
+
+    public void setProgressBarColor(int progressBarColor) {
+        progressBar.setColor(progressBarColor);
+    }
 }

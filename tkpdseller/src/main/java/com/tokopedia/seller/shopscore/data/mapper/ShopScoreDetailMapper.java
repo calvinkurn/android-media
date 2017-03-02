@@ -1,6 +1,6 @@
 package com.tokopedia.seller.shopscore.data.mapper;
 
-import com.tokopedia.seller.shopscore.data.source.cloud.model.detail.ShopScoreDetailDataServiceModel;
+import com.tokopedia.seller.shopscore.data.source.cloud.model.detail.ShopScoreDetailItemServiceModel;
 import com.tokopedia.seller.shopscore.data.source.cloud.model.detail.ShopScoreDetailServiceModel;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailDomainModel;
 
@@ -16,14 +16,14 @@ public class ShopScoreDetailMapper implements Func1<ShopScoreDetailServiceModel,
     @Override
     public List<ShopScoreDetailDomainModel> call(ShopScoreDetailServiceModel serviceModel) {
         List<ShopScoreDetailDomainModel> dataDomainModels = new ArrayList<>();
-        for (ShopScoreDetailDataServiceModel data : serviceModel.getData()) {
+        for (ShopScoreDetailItemServiceModel data : serviceModel.getData().getData()) {
             ShopScoreDetailDomainModel dataServiceModel = dataDomainModelMap(data);
             dataDomainModels.add(dataServiceModel);
         }
         return dataDomainModels;
     }
 
-    private ShopScoreDetailDomainModel dataDomainModelMap(ShopScoreDetailDataServiceModel data) {
+    private ShopScoreDetailDomainModel dataDomainModelMap(ShopScoreDetailItemServiceModel data) {
         ShopScoreDetailDomainModel domainModel = new ShopScoreDetailDomainModel();
         domainModel.setTitle(data.getTitle());
         domainModel.setValue(data.getValue());

@@ -1,0 +1,54 @@
+
+package com.tokopedia.seller.shopscore.data.source.cloud.model.detail;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+public class SumData {
+
+    @SerializedName("Color")
+    @Expose
+    private String color;
+    @SerializedName("Text")
+    @Expose
+    private String text;
+    @SerializedName("Value")
+    @Expose
+    private Integer value;
+    @SerializedName("Html")
+    @Expose
+    private String html;
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public Integer getValue() {
+        return value;
+    }
+
+    public void setValue(Integer value) {
+        this.value = value;
+    }
+
+    public String getHtml() {
+        return html;
+    }
+
+    public void setHtml(String html) {
+        this.html = html;
+    }
+
+}

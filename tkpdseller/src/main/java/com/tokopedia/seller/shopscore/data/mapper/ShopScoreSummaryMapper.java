@@ -23,7 +23,9 @@ public class ShopScoreSummaryMapper implements Func1<ShopScoreSummaryServiceMode
         DetailData detailData = serviceModelData.getData();
         data.setTitle(detailData.getTitle());
         data.setValue(detailData.getValue());
-
+        String hexadecimal = detailData.getColor().replaceAll("[^\\d.]", "");
+        int colorValue = Integer.parseInt(hexadecimal, 16);
+        data.setProgressBarColor(colorValue);
         data.setDescription(detailData.getDescription());
 
         domainModel.setData(data);
