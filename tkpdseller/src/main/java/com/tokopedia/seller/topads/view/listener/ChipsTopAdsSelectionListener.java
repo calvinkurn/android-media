@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.listener;
+package com.tokopedia.seller.topads.view.listener;
 
 /**
  * @author normansyahputa on 2/22/17.
