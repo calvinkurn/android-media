@@ -97,11 +97,6 @@ public class ShopProductListHeaderDelegate {
         @Override
         public boolean onTouch(View v, MotionEvent motionEvent) {
             userSelect = true;
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                if (listener != null) {
-                    listener.onSpinnerEtalaseClick();
-                }
-            }
             return false;
         }
 
@@ -110,7 +105,9 @@ public class ShopProductListHeaderDelegate {
             if (userSelect) {
                 if(i != spinnerLastPos) {
                     spinnerLastPos = pos;
-                    listener.onEtalaseClick(pos);
+                    if (listener != null) {
+                        listener.onEtalaseClick(pos);
+                    }
                 }
                 userSelect = false;
             }
