@@ -205,6 +205,9 @@
     <string name="label_top_ads_error_choose_one_option">Silahkan pilih salah satu opsi</string>
     <string name="label_top_ads_error_empty_group_name">Silahkan isi nama grup</string>
     <string name="label_top_ads_info_group_option">Pengaturan biaya dan jadwal akan mengikuti dari grup promo.</string>
+    <string name="label_top_ads_error_fail_move_out_product">Gagal mengeluarkan product dari grup</string>
+    <string name="label_top_ads_error_fail_move_new_group">Gagal memindahkan product ke grup baru</string>
+    <string name="label_top_ads_error_fail_move_exist_group">Gagal memindahkan product ke grup lain</string>
 
     <string name="title_activity_top_ads_list">Tambah Produk</string>
 
@@ -218,8 +221,5 @@
 
     <!-- Top Ads add promo -->
     <string name="top_ads_title_grup_exist">Nama grup sudah ada</string>
-    <string name="label_top_ads_error_fail_move_out_product">Gagal mengeluarkan product dari grup</string>
-    <string name="label_top_ads_error_fail_move_new_group">Gagal memindahkan product ke grup baru</string>
-    <string name="label_top_ads_error_fail_move_exist_group">Gagal memindahkan product ke grup lain</string>
 
 </resources>

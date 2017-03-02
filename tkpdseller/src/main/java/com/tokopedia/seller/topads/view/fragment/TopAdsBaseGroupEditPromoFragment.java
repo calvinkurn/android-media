@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -10,7 +11,6 @@ import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.di.TopAdsGroupeditPromoDI;
 import com.tokopedia.seller.topads.view.listener.TopAdsGroupEditPromoView;
 import com.tokopedia.seller.topads.view.presenter.TopAdsGroupEditPromoPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsManageGroupPromoPresenter;
 
 /**
  * Created by zulfikarrahman on 3/1/17.
@@ -31,10 +31,10 @@ public abstract class TopAdsBaseGroupEditPromoFragment extends TopAdsBaseManageG
     @Override
     protected void setupArguments(Bundle arguments) {
         super.setupArguments(arguments);
-        adId = arguments.getString(TopAdsExtraConstant.AD_ID);
-        choosenOption = arguments.getInt(TopAdsExtraConstant.CHOOSEN_OPTION);
-        groupId = arguments.getString(TopAdsExtraConstant.GROUP_ID);
-        groupName = arguments.getString(TopAdsExtraConstant.GROUP_NAME);
+        adId = arguments.getString(TopAdsExtraConstant.EXTRA_AD_ID);
+        choosenOption = arguments.getInt(TopAdsExtraConstant.EXTRA_CHOOSEN_OPTION_GROUP);
+        groupId = arguments.getString(TopAdsExtraConstant.EXTRA_GROUP_ID);
+        groupName = arguments.getString(TopAdsExtraConstant.EXTRA_GROUP_NAME);
     }
 
     @Override
@@ -43,7 +43,6 @@ public abstract class TopAdsBaseGroupEditPromoFragment extends TopAdsBaseManageG
         switch(choosenOption){
             case NEW_GROUP:
                 viewRadioNewGroup.setChecked(true);
-                inputNewGroup.setText(groupName);
                 break;
             case EXIST_GROUP:
                 viewRadioChooseGroup.setChecked(true);
@@ -70,14 +69,12 @@ public abstract class TopAdsBaseGroupEditPromoFragment extends TopAdsBaseManageG
 
     @Override
     public void onSuccessMoveOutProductGroup() {
-        getActivity().setResult(Activity.RESULT_OK);
-        getActivity().finish();
+        finishAndSetResult();
     }
 
     @Override
     public void onSuccessMoveToNewProductGroup() {
-        getActivity().setResult(Activity.RESULT_OK);
-        getActivity().finish();
+        finishAndSetResult();
     }
 
     @Override
@@ -87,8 +84,7 @@ public abstract class TopAdsBaseGroupEditPromoFragment extends TopAdsBaseManageG
 
     @Override
     public void onSuccessMoveToExistProductGroup() {
-        getActivity().setResult(Activity.RESULT_OK);
-        getActivity().finish();
+        finishAndSetResult();
     }
 
     @Override
@@ -100,5 +96,12 @@ public abstract class TopAdsBaseGroupEditPromoFragment extends TopAdsBaseManageG
     protected void initialPresenter() {
         presenter = TopAdsGroupeditPromoDI.createPresenter(getActivity());
         presenter.attachView(this);
+    }
+
+    void finishAndSetResult() {
+        Intent intent = new Intent();
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, true);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
     }
 }

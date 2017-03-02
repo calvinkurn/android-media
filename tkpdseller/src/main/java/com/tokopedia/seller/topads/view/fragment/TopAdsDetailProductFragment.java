@@ -33,6 +33,8 @@ import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
 public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDetailProductPresenter> {
 
+    public static final int EDIT_PRODUCT_GROUP_REQUEST_CODE = 1;
+
     public interface TopAdsDetailProductFragmentListener {
         void goToProductActivity(String productUrl);
     }
@@ -114,7 +116,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
             Intent intent = TopAdsGroupEditPromoActivity.createIntent(getActivity(),
                     String.valueOf(productAd.getId()), TopAdsGroupEditPromoFragment.EXIST_GROUP, productAd.getGroupName(),
                     String.valueOf(productAd.getGroupId()));
-            startActivity(intent);
+            startActivityForResult(intent, EDIT_PRODUCT_GROUP_REQUEST_CODE);
         }else if(productAd != null){
             Intent intent = new Intent(getActivity(), TopAdsDetailEditProductActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, String.valueOf(productAd.getId()));
@@ -194,7 +196,19 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     private void manageGroup() {
         Intent intent = TopAdsGroupManagePromoActivity.createIntent(getActivity(), String.valueOf(productAd.getId()),
                 TopAdsGroupManagePromoFragment.NEW_GROUP, productAd.getGroupName(), String.valueOf(productAd.getGroupId()));
-        startActivity(intent);
+        startActivityForResult(intent, EDIT_PRODUCT_GROUP_REQUEST_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == EDIT_PRODUCT_GROUP_REQUEST_CODE && intent != null) {
+            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, false);
+            if (adStatusChanged) {
+                refreshAd();
+                setResultAdStatusChanged();
+            }
+        }
     }
 
     private void updateManageGroupMenu() {
