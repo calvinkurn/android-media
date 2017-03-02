@@ -102,6 +102,7 @@ public class ShopInfoView extends BaseView<ProductDetailData, SnapShotFragmentVi
         llRating.setOnClickListener(new ShopInfoView.ClickShopRating(data));
         ivShopMessage.setVisibility(GONE);
         ivBtnFav.setVisibility(GONE);
+        layoutOther.setVisibility(GONE);
         setVisibility(VISIBLE);
     }
 
