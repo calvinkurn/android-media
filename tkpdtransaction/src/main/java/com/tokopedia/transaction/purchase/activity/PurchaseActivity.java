@@ -6,16 +6,17 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.inputmethod.InputMethodManager;
 
-import com.tokopedia.core.GCMListenerService;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.gcm.FCMMessagingService;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.adapter.PurchaseTabAdapter;
 import com.tokopedia.transaction.purchase.fragment.TxListFragment;
 import com.tokopedia.transaction.purchase.fragment.TxSummaryFragment;
@@ -23,25 +24,31 @@ import com.tokopedia.transaction.purchase.fragment.TxSummaryFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 
 /**
  * @author by anggaprasetiyo on 8/26/16.
  */
 public class PurchaseActivity extends DrawerPresenterActivity implements
-        TxSummaryFragment.OnCenterMenuClickListener, GCMListenerService.NotificationListener,
+        TxSummaryFragment.OnCenterMenuClickListener, FCMMessagingService.NotificationListener,
         PurchaseTabAdapter.Listener, TxListFragment.StateFilterListener {
 
-    @Bind(R2.id.pager)
+    @BindView(R2.id.pager)
     ViewPager viewPager;
-    @Bind(R2.id.indicator)
+    @BindView(R2.id.indicator)
     TabLayout indicator;
 
     public List<String> tabContents;
 
     private int drawerPosition;
     private String stateTxFilterID;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
+    }
 
     @Override
     protected int setDrawerPosition() {
@@ -61,7 +68,7 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
     @Override
     protected void setupBundlePass(Bundle extras) {
         drawerPosition = extras.getInt(TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION,
-                PurchaseTabAdapter.TAB_POSITION_PURCHASE_SUMMARY);
+                TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY);
         stateTxFilterID = extras.getString(TransactionPurchaseRouter.EXTRA_STATE_TX_FILTER,
                 TransactionPurchaseRouter.ALL_STATUS_FILTER_ID);
     }
@@ -73,7 +80,7 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_purchase;
+        return R.layout.activity_purchase_tx_module;
     }
 
     @Override
@@ -93,16 +100,16 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
     @Override
     protected void initVar() {
         tabContents = new ArrayList<>();
-        tabContents.add(PurchaseTabAdapter.TAB_POSITION_PURCHASE_SUMMARY,
-                getString(R.string.title_dashboard_purchase));
-        tabContents.add(PurchaseTabAdapter.TAB_POSITION_PURCHASE_VERIFICATION,
-                getString(R.string.title_payment_verification));
-        tabContents.add(PurchaseTabAdapter.TAB_POSITION_PURCHASE_STATUS_ORDER,
-                getString(R.string.title_order_status));
-        tabContents.add(PurchaseTabAdapter.TAB_POSITION_PURCHASE_DELIVER_ORDER,
-                getString(R.string.title_receive_confirmation));
-        tabContents.add(PurchaseTabAdapter.TAB_POSITION_PURCHASE_ALL_ORDER,
-                getString(R.string.title_transaction_list));
+        tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY,
+                getString(R.string.title_tab_purchase_summary));
+        tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION,
+                getString(R.string.title_tab_purchase_status_payment));
+        tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER,
+                getString(R.string.title_tab_purchase_status_order));
+        tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER,
+                getString(R.string.title_tab_purchase_confirm_deliver));
+        tabContents.add(TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER,
+                getString(R.string.title_tab_purchase_transactions));
     }
 
     @Override
@@ -131,40 +138,6 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
         ScreenTracking.screenLoca(screenName);
     }
 
-    private void setDrawerSidePosition(int position) {
-        switch (position) {
-            case PurchaseTabAdapter.TAB_POSITION_PURCHASE_SUMMARY:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION);
-                break;
-            case PurchaseTabAdapter.TAB_POSITION_PURCHASE_VERIFICATION:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_CONFIRM_PAYMENT);
-                break;
-            case PurchaseTabAdapter.TAB_POSITION_PURCHASE_STATUS_ORDER:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS);
-                break;
-            case PurchaseTabAdapter.TAB_POSITION_PURCHASE_DELIVER_ORDER:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING);
-                break;
-            case PurchaseTabAdapter.TAB_POSITION_PURCHASE_ALL_ORDER:
-                switch (stateTxFilterID) {
-                    case TransactionPurchaseRouter.TRANSACTION_CANCELED_FILTER_ID:
-                        drawer.setDrawerPosition(
-                                TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED
-                        );
-                        break;
-                    default:
-                        drawer.setDrawerPosition(
-                                TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST
-                        );
-                        break;
-                }
-                break;
-            default:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION);
-                break;
-        }
-    }
-
     @Override
     public void OnMenuClick(int position, String stateTxFilter) {
         this.stateTxFilterID = stateTxFilter;
@@ -189,6 +162,40 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
             drawer.updateBalance();
     }
 
+    private void setDrawerSidePosition(int position) {
+        switch (position) {
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY:
+                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION);
+                break;
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION:
+                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS);
+                break;
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER:
+                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS);
+                break;
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER:
+                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING);
+                break;
+            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER:
+                switch (stateTxFilterID) {
+                    case TransactionPurchaseRouter.TRANSACTION_CANCELED_FILTER_ID:
+                        drawer.setDrawerPosition(
+                                TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED
+                        );
+                        break;
+                    default:
+                        drawer.setDrawerPosition(
+                                TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST
+                        );
+                        break;
+                }
+                break;
+            default:
+                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION);
+                break;
+        }
+    }
+
     private class OnTabPageChangeListener extends TabLayout.TabLayoutOnPageChangeListener {
 
         OnTabPageChangeListener(TabLayout tabLayout) {
@@ -207,5 +214,4 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
                     .hideSoftInputFromWindow(viewPager.getWindowToken(), 0);
         }
     }
-
 }

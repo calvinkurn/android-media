@@ -17,20 +17,23 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.network.entity.discovery.CatalogModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.adapter.ProductAdapter;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -90,15 +93,15 @@ public class BrowseCatalogAdapter extends ProductAdapter {
 
     public static class CatalogViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.product_image)
+        @BindView(R2.id.product_image)
         SquareImageView productImage;
-        @Bind(R2.id.title)
+        @BindView(R2.id.title)
         TextView title;
-        @Bind(R2.id.price)
+        @BindView(R2.id.price)
         TextView price;
-        @Bind(R2.id.seller)
+        @BindView(R2.id.seller)
         TextView seller;
-        @Bind(R2.id.badges_container)
+        @BindView(R2.id.badges_container)
         LinearLayout badgesContainer;
 
         private Context context;
@@ -114,17 +117,14 @@ public class BrowseCatalogAdapter extends ProductAdapter {
             this.catalogModel = data;
             ImageHandler.loadImageThumbs(context, holder.productImage, catalogModel.getCatalogImage());
             holder.seller.setText(catalogModel.getCatalogCountProduct() + " " + context.getString(R.string.title_total_prods));
-            holder.title.setText(Html.fromHtml(catalogModel.getCatalogName()));
+            holder.title.setText(MethodChecker.fromHtml(catalogModel.getCatalogName()));
             holder.price.setText(catalogModel.getCatalogPrice());
         }
 
         @OnClick(R2.id.container)
         public void onClick() {
-//            Intent intent = new Intent(context, Catalog.class);
-//            Bundle bundle = new Bundle();
-//            bundle.putString("ctg_id", catalogModel.catalogId);
-//            intent.putExtras(bundle);
-//            context.startActivity(intent);
+            UnifyTracking.eventClickCatalog(catalogModel.getCatalogName());
+            CommonUtils.dumper("GAv4 locasearched Clicked Catalog "+catalogModel.getCatalogName());
             context.startActivity(DetailProductRouter.getCatalogDetailActivity(context, catalogModel.getCatalogId()));
         }
     }

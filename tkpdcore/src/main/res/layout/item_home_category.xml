@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/linWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:selectableItemBackground"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:padding="5dp">
+
+        <ImageView
+            android:id="@+id/itemImage"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginLeft="15dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/image_description"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_loading_toped" />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:lines="2"
+            android:text="Title"
+            android:padding="5dp"
+            android:textColor="@color/tkpd_dark_gray"
+            android:textSize="12sp" />
+
+        <View
+            android:id="@+id/sparator"
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/grey_300" />
+
+    </LinearLayout>
+
+</LinearLayout>

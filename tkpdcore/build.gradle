@@ -1,0 +1,219 @@
+apply plugin: 'com.android.library'
+apply plugin: 'io.fabric'
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'android-apt'
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.jfrog.artifactory'
+apply plugin: 'maven-publish'
+apply plugin: 'maven'
+
+def getArtifactVersionCode() {
+    return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
+}
+
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath 'com.google.gms:google-services:3.0.0'
+    }
+}
+
+
+publishing {
+    publications {
+        aar(MavenPublication) {
+            groupId 'com.tokopedia.core'
+            artifactId 'core'
+            version getArtifactVersionCode()
+            artifact("$buildDir/outputs/aar/tkpdcore-release.aar")
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+
+                //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
+                configurations.compile.allDependencies.each {
+                    if (it.group != null && it.name != null) {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+                    }
+                }
+            }
+        }
+    }
+}
+
+artifactory {
+    contextUrl = rootProject.ext.artifactoryUrl
+    publish {
+        repository {
+            repoKey = 'libs-release-local'
+
+            username = artifactory_username
+            password = artifactory_password
+        }
+        defaults {
+            publications('aar')
+            publishArtifacts = true
+
+            properties = ['qa.level': 'basic', 'q.os': 'android', 'dev.team': 'core']
+            publishPom = true
+        }
+    }
+}
+
+
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+apt {
+    arguments {
+        targetModuleName 'TkpdCore'
+    }
+}
+
+
+dependencies {
+    compile fileTree(include: '*.jar', dir: 'libs')
+
+    compile(rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    testCompile rootProject.ext.testDependencies.junit
+    testCompile rootProject.ext.testDependencies.mockitorCore
+    testCompile rootProject.ext.testDependencies.assertJ
+
+    compile rootProject.ext.serviceDependencies.hockeyApp
+    compile rootProject.ext.serviceDependencies.anrWatchDogs
+
+    compile rootProject.ext.supportLibDependencies.recyclerViewV7
+    compile rootProject.ext.supportLibDependencies.supportV4
+    compile rootProject.ext.supportLibDependencies.appCompactV7
+    compile rootProject.ext.supportLibDependencies.supportV13
+    compile rootProject.ext.supportLibDependencies.design
+    compile rootProject.ext.supportLibDependencies.cardViewV7
+
+    compile rootProject.ext.playServicesDependencies.plus
+    compile rootProject.ext.playServicesDependencies.base
+    compile rootProject.ext.playServicesDependencies.appIndexing
+    compile rootProject.ext.playServicesDependencies.analytics
+    compile rootProject.ext.playServicesDependencies.gcm
+    compile rootProject.ext.playServicesDependencies.firebase
+    compile rootProject.ext.playServicesDependencies.location
+    compile rootProject.ext.playServicesDependencies.maps
+
+    apt rootProject.ext.dbDependencies.dbFlowProcessor
+    compile rootProject.ext.dbDependencies.dbFlowCore
+    compile rootProject.ext.dbDependencies.dbFlow
+
+    compile rootProject.ext.butterKnifeDependencies.butterKnife
+    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+
+    compile rootProject.ext.networkDependencies.volley
+    compile rootProject.ext.networkDependencies.retrofit
+    compile rootProject.ext.networkDependencies.converterGson
+    compile rootProject.ext.networkDependencies.adapterRxJava
+    compile rootProject.ext.networkDependencies.okHttp
+    compile rootProject.ext.networkDependencies.loggingInterceptor
+    compile rootProject.ext.networkDependencies.glide
+
+    compile rootProject.ext.analyticsDependencies.appsflyer
+    compile rootProject.ext.analyticsDependencies.localytics
+
+    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+
+    compile rootProject.ext.viewDependencies.recyclerMultiSelect
+    compile rootProject.ext.viewDependencies.appIntro
+    compile (rootProject.ext.viewDependencies.ahBottomNavigation){
+        exclude group: 'com.android.support', module: 'design'
+    }
+
+    compile rootProject.ext.miscDependencies.captureActivity
+    compile rootProject.ext.miscDependencies.multiDex
+    compile rootProject.ext.miscDependencies.parcelerApi
+    apt rootProject.ext.miscDependencies.parceler
+    compile rootProject.ext.miscDependencies.gson
+    compile (rootProject.ext.miscDependencies.facebook){
+        exclude group: 'com.android.support'
+    }
+    compile rootProject.ext.miscDependencies.rxAndroid
+    compile rootProject.ext.miscDependencies.rxJava
+    compile rootProject.ext.miscDependencies.rxJavaMath
+
+    provided rootProject.ext.miscDependencies.javaxAnnotation
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
+    compile (rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
+    }
+    compile rootProject.ext.debugToolsDependencies.stetho
+
+}
+
+apply plugin: 'com.google.gms.google-services'
+
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion '24.0.2'
+    useLibrary 'org.apache.http.legacy'
+    sourceSets {
+
+        packagingOptions {
+            exclude 'META-INF/LICENSE.txt'
+        }
+
+        main {
+            java.srcDirs = ['src/main/java']
+            resources.srcDirs = ['src/main/java']
+            aidl.srcDirs = ['src/main/java']
+            renderscript.srcDirs = ['src/main/java']
+            res.srcDirs = ['src/main/res']
+            assets.srcDirs = ['assets']
+        }
+
+        // Move the tests to tests/java, tests/res, etc...
+        instrumentTest.setRoot('tests')
+
+        debug.setRoot('build-types/debug')
+        release.setRoot('build-types/release')
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+        }
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+    }
+
+}

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/shop_1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_product_list"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.core.customwidget.SquareImageView
+            android:id="@+id/item_shop_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter" />
+
+        <ImageView
+            android:id="@+id/item_shop_gold"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/ic_shop_gold"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/item_shop_lucky"
+            android:layout_width="@dimen/large_dp"
+            android:layout_height="@dimen/large_dp"
+            android:layout_alignRight="@id/shop_image_1"
+            android:layout_below="@id/shop_gold_1"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="@dimen/margin_vvs"
+            android:visibility="visible" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/item_shop_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="left"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:textColor="@color/href_link"
+        android:textSize="@dimen/fontvs"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/item_shop_bought"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/label_color"
+        android:textSize="@dimen/fontvs" />
+
+    <TextView
+        android:id="@+id/item_shop_count_fav"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/label_color"
+        android:textSize="@dimen/fontvs" />
+</LinearLayout>

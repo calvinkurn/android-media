@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.R;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ValidationTextUtil;
 import com.tokopedia.seller.facade.FacadeShopTransaction;
@@ -53,6 +54,7 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
     public void getStatusTransactionList(boolean isVisibleToUser, Type type) {
         this.type = type;
         if (isVisibleToUser && isDataEmpty() && !isLoading) {
+            addLoading();
             switch (type) {
                 case STATUS:
                     getStatusList();
@@ -102,7 +104,7 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
                 view.hideFilterView();
                 onRefreshStatusTransaction();
             } else {
-                showToastMessage(context.getString(R2.string.keyword_min_3_char));
+                showToastMessage(context.getString(R.string.keyword_min_3_char));
             }
         }
     }
@@ -229,6 +231,7 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         listDatas.addAll(model);
         view.notifyDataSetChanged(listDatas);
         view.setRefreshPullEnable(true);
+        view.showFab();
     }
 
     @Override
@@ -240,6 +243,7 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         }
         view.getPaging().setHasNext(false);
         view.setRefreshPullEnable(true);
+        view.showFab();
         view.removeRetry();
     }
 
@@ -248,6 +252,7 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         finishConnection();
         if (listDatas.size() == 0) {
             view.addRetry();
+            view.hideFab();
         } else {
             NetworkErrorHelper.showSnackbar((Activity) context);
         }
@@ -259,13 +264,15 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         finishConnection();
         if (listDatas.size() == 0) {
             view.addRetry();
+            view.hideFab();
         } else {
             NetworkErrorHelper.showSnackbar((Activity) context);
         }
         view.setRefreshPullEnable(true);
     }
 
-    private void finishConnection() {
+    @Override
+    public void finishConnection() {
         view.finishRefresh();
         view.removeRetry();
         isLoading = false;

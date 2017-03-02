@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,9 +15,9 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
@@ -30,14 +29,16 @@ import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.adapter.HotListAdapter;
 
 import org.parceler.Parcels;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by m.normansyah on 28/10/2015.
@@ -48,17 +49,24 @@ import butterknife.ButterKnife;
  * 3. enable retry policy
  * 4. caching page one
  */
-public class FragmentHotListV2 extends Fragment implements HotListView {
+public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView {
     public static final String FRAGMENT_TAG = "FragmentHotListV2";
     
     private HotListAdapter adapter;
     private HotList hotList;
-    @Bind(R2.id.hot_product)
+    @BindView(R.id.hot_product)
     RecyclerView recyclerView;
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
     private RecyclerView.LayoutManager layoutManager;
-    
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_HOME_HOTLIST;
+    }
+
+    private Unbinder unbinder;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +86,7 @@ public class FragmentHotListV2 extends Fragment implements HotListView {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_index_main, container, false);
         hotList.subscribe();
-        ButterKnife.bind(this, parentView);
+        unbinder = ButterKnife.bind(this, parentView);
         prepareView();
         setListener();
         return parentView;
@@ -98,7 +106,7 @@ public class FragmentHotListV2 extends Fragment implements HotListView {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         hotList.unSubscribe();
     }
 
@@ -171,7 +179,7 @@ public class FragmentHotListV2 extends Fragment implements HotListView {
 //                switch (getResources().getConfiguration().orientation){
 //                    case Configuration.ORIENTATION_LANDSCAPE:
 //                        headerColumnSize = 2;
-//                        regularColumnSize = FragmentProductFeed.LANDSCAPE_COLUMN;
+//                        regularColumnSize = DaggerFragmentProductFeed.LANDSCAPE_COLUMN;
 //                        footerColumnSize = 2;
 //                        break;
 //                    case Configuration.ORIENTATION_PORTRAIT:
@@ -206,7 +214,7 @@ public class FragmentHotListV2 extends Fragment implements HotListView {
         if (isVisibleToUser && isAdded() && getActivity() !=null) {
             hotList.setLocalyticFlow(getActivity());
             hotList.sendAppsFlyerData(getActivity());
-            ScreenTracking.screen(this);
+            ScreenTracking.screen(getScreenName());
         }
         super.setUserVisibleHint(isVisibleToUser);
     }

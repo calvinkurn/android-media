@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
 import com.tokopedia.seller.ShippingConfirmationDetail;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
 import com.tokopedia.seller.facade.FacadeShopTransaction;
@@ -55,6 +56,7 @@ public class ShippingImpl extends Shipping {
     public static final int SICEPAT_SHIPPING = 11;
     public static final int NINJA_EXPRESS_SHIPPING = 12;
     public static final int GRAB_SHIPPING = 13;
+    public static final int JNT = 14;
 
     private List<Model> modelList= new ArrayList<>();
     //    private List<Fragment> detailList;
@@ -165,6 +167,8 @@ public class ShippingImpl extends Shipping {
                 return NINJA_EXPRESS_SHIPPING;
             case "Grab":
                 return GRAB_SHIPPING;
+            case "J&T":
+                return JNT;
             default:
                 return 0;
         }
@@ -175,7 +179,7 @@ public class ShippingImpl extends Shipping {
         if (remark.length() == 0) {
             remark.setError(context.getString(R.string.error_field_required));
         } else if (remark.length() < 5 && remark.length() > 0) {
-            remark.setError(context.getString(R2.string.char_should_min_5));
+            remark.setError(context.getString(R.string.char_should_min_5));
         } else if (remark.length() >= 5) {
             actionCancelShipping(pos, remark.getText().toString(), context);
             dialog.dismiss();
@@ -208,7 +212,6 @@ public class ShippingImpl extends Shipping {
     @Override
     public void doRefresh() {
         if (!isLoading && view.getUserVisible()) {
-            view.hideFilter();
             view.getPaging().resetPage();
             if (!view.isRefreshing()) {
                 clearData();
@@ -226,9 +229,10 @@ public class ShippingImpl extends Shipping {
     @Override
     public void onQueryTextSubmit(String query) {
         if (ValidationTextUtil.isValidSalesQuery(query)) {
-            doRefresh();
+            view.hideFilter();
+            onRefreshHandler();
         } else {
-            showToastMessage(context.getString(R2.string.keyword_min_3_char));
+            showToastMessage(context.getString(R.string.keyword_min_3_char));
         }
     }
 
@@ -253,6 +257,7 @@ public class ShippingImpl extends Shipping {
                 view.notifyDataSetChanged(modelList);
                 onFinishConnection();
                 view.setRefreshPullEnabled(true);
+                view.showFab();
 
             }
 
@@ -267,6 +272,7 @@ public class ShippingImpl extends Shipping {
 //                }
                 view.getPaging().setHasNext(false);
                 view.setRefreshPullEnabled(true);
+                view.showFab();
                 view.removeRetry();
             }
 
@@ -275,6 +281,7 @@ public class ShippingImpl extends Shipping {
                 onFinishConnection();
                 if (modelList.size() == 0) {
                     view.addRetry();
+                    view.hideFab();
                 } else {
                     NetworkErrorHelper.showSnackbar((Activity) context);
                 }
@@ -287,6 +294,7 @@ public class ShippingImpl extends Shipping {
                 if (isDataEmpty()) {
                     view.setRefreshPullEnabled(false);
                     view.addRetry();
+                    view.hideFab();
                 } else {
                     try {
                         CommonUtils.UniversalToast(context, context.getString(R.string.msg_connection_timeout_toast));
@@ -360,8 +368,8 @@ public class ShippingImpl extends Shipping {
         view.setRefreshing(false);
     }
 
-
-    private void onFinishConnection() {
+    @Override
+    public void onFinishConnection() {
         view.enableFilter();
         view.removeRetry();
         view.removeLoading();
@@ -488,7 +496,7 @@ public class ShippingImpl extends Shipping {
         }
     }
 
-    @Parcel(parcelsIndex = false)
+    @Parcel
     public static class Model {
         public String UserName;
         public String AvatarUrl;

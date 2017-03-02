@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
+apply plugin: 'io.fabric'
 
 def getDpiId(String density) {
 
@@ -14,11 +15,12 @@ def getAPKArchiveFolder(variant) {
 }
 
 def allowSplit() {
-    return !project.hasProperty('tkpdBuildType');
+    return gradle.startParameter.taskNames.contains("assembleRelease") &&
+            !project.hasProperty('tkpdBuildType');
 }
 
 def allowDistribution() {
-    if ( project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
+    if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
         return "true";
     }
     return "false";
@@ -54,6 +56,15 @@ def archiveAPK(variant, output) {
     }
 }
 
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
+
 
 android {
 
@@ -62,7 +73,7 @@ android {
         defaultVersionName = "2.3.1";
     }
 
-    compileSdkVersion 24
+    compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion '25'
     useLibrary 'org.apache.http.legacy'
     sourceSets {
@@ -97,24 +108,20 @@ android {
     }
 
     buildTypes {
-
         debug {
             minifyEnabled false
             zipAlignEnabled false
-            buildConfigField "boolean" , "ENABLE_DISTRIBUTION", allowDistribution()
+            buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
-
         release {
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
-            buildConfigField "boolean" , "ENABLE_DISTRIBUTION", allowDistribution()
+            buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
-
             if (allowSplit()) {
                 applicationVariants.all { variant ->
                     variant.outputs.each { output ->
@@ -139,9 +146,17 @@ android {
         }
     }
 
+    splits {
+        density {
+            enable allowSplit()
+            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
+            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
+        }
+    }
+
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 24
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
         applicationId "com.tokopedia.tkpd"
         resConfigs "en", "id"
@@ -156,29 +171,75 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
     }
-    splits {
-        density {
-            enable allowSplit()
-            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
-            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
+
+    productFlavors {
+        staging {
+            applicationIdSuffix ".staging"
+            versionNameSuffix "-staging"
+        }
+        alpha {
+            applicationIdSuffix ".alpha"
+            versionNameSuffix "-alpha"
+        }
+        live {
+
         }
     }
+
+//    variantFilter { variant ->
+//        def names = variant.flavors*.name
+//        // To check for a certain build type, use variant.buildType.name == "<buildType>"
+//        if (names.contains("staging") && names.contains("demo")) {
+//            // Gradle ignores any variants that satisfy the conditions above.
+//            setIgnore(true)
+//        }
+//    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
 
-    compile project(':tkpdinbox')
+    /*compile (rootProject.ext.tkpdDependencies.inbox) {
+        exclude group: 'com.tokopedia.core'
+    }
+    compile (rootProject.ext.tkpdDependencies.discovery) {
+        exclude group: 'com.tokopedia.core'
+    }
+    compile (rootProject.ext.tkpdDependencies.transaction) {
+        exclude group: 'com.tokopedia.core'
+    }
+    compile (rootProject.ext.tkpdDependencies.seller) {
+        exclude group: 'com.tokopedia.core'
+    }
+    compile (rootProject.ext.tkpdDependencies.session) {
+        exclude group: 'com.tokopedia.core'
+    }
+    compile (rootProject.ext.tkpdDependencies.core)*/
     compile project(':tkpddiscovery')
     compile project(':tkpdtransaction')
     compile project(':tkpdseller')
     compile project(':tkpdsession')
+    compile project(':tkpdinbox')
 
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.github.hotchemi:permissionsdispatcher:2.2.0@aar'
-    apt 'com.github.hotchemi:permissionsdispatcher-processor:2.2.0'
+    testCompile rootProject.ext.testDependencies.mockitorCore
     testCompile 'junit:junit:4.12'
+
+    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+
+    compile rootProject.ext.butterKnifeDependencies.butterKnife
+    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+
+    provided rootProject.ext.miscDependencies.javaxAnnotation
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
     compile 'com.android.support:multidex:1.0.1'
+
+    compile (rootProject.ext.miscDependencies.trueCaller) {
+        exclude group: 'com.android.support'
+    }
 }

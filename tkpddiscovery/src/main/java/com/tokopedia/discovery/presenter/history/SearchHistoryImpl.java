@@ -14,9 +14,9 @@ import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.discovery.model.searchSuggestion.SearchDataModel;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.fragment.history.SearchHistoryFragment;
@@ -123,7 +123,7 @@ public class SearchHistoryImpl extends SearchHistory {
                         view.sendSearchResult(selected.getTitle().toLowerCase());
                         break;
                     case SearchHistoryAdapter.HOTLIST:
-                        view.sendHotlistResult(new URLParser(selected.getUrl()).getHotAlias());
+                        view.sendHotlistResult(new URLParser(selected.getUrl()).getHotAlias(), selected.getKeyword());
                         break;
                     case SearchHistoryAdapter.DELETE_ITEM:
                         String unique_id = AuthUtil.md5(GCMHandler.getRegistrationId(context));

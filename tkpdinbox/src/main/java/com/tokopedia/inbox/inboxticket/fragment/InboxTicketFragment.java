@@ -35,7 +35,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.RefreshHandler;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Nisie on 4/21/16.
@@ -43,13 +43,13 @@ import butterknife.Bind;
 public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragmentPresenter>
         implements InboxTicketView, InboxTicketConstant {
 
-    @Bind(R2.id.message_list)
+    @BindView(R2.id.message_list)
     RecyclerView listMessage;
 
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
-    @Bind(R2.id.fab)
+    @BindView(R2.id.fab)
     FloatingActionButton fab;
 
     View filterLayout;
@@ -93,6 +93,11 @@ public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragme
     }
 
     @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
     protected boolean getOptionsMenuEnable() {
         return true;
     }
@@ -104,13 +109,13 @@ public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragme
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R2.id.action_help:
-                goToHelp();
-                return true;
-
+        if (item.getItemId() == R.id.action_help) {
+            goToHelp();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+
     }
 
     @Override
@@ -242,7 +247,7 @@ public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragme
         setActionEnabled(true);
         refreshHandler.finishRefresh();
         adapter.showLoading(false);
-        adapter.showEmpty(false);
+        adapter.showEmptyFull(false);
     }
 
     @Override
@@ -258,6 +263,7 @@ public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragme
         } else {
             fab.setVisibility(View.GONE);
         }
+        adapter.setActionEnabled(isEnabled);
     }
 
     @Override

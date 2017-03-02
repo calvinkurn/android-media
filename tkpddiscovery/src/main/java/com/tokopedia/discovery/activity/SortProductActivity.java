@@ -2,6 +2,7 @@ package com.tokopedia.discovery.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +20,8 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.DataValue;
+import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.fragment.browseparent.BrowseParentFragment;
@@ -29,7 +31,7 @@ import org.parceler.Parcels;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -37,14 +39,14 @@ import butterknife.ButterKnife;
  */
 public class SortProductActivity extends TActivity {
 
-    @Bind(R2.id.toolbar)
+    @BindView(R2.id.toolbar)
     Toolbar toolbar;
-    @Bind(R2.id.list)
+    @BindView(R2.id.list)
     RecyclerView recyclerView;
     private ListAdapter adapter;
     public static final String SORT_ACTION_INTENT = BuildConfig.APPLICATION_ID + ".SORT";
     private static final String TAG = SortProductActivity.class.getSimpleName();
-    private DynamicFilterModel.Data data;
+    private DataValue data;
     private String source;
 
     @Override
@@ -58,7 +60,8 @@ public class SortProductActivity extends TActivity {
         setContentView(R.layout.activity_product_sort);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        data = Parcels.unwrap(getIntent().getParcelableExtra(BrowseProductActivity.EXTRA_DATA));
+//        data = Parcels.unwrap(getIntent().getParcelableExtra(BrowseProductActivity.EXTRA_DATA));
+        data = getIntent().getExtras().getParcelable(BrowseProductActivity.EXTRA_DATA);
         source = getIntent().getStringExtra(BrowseProductRouter.EXTRA_SOURCE);
         adapter = new ListAdapter(data.getSort(), new OnItemClickListener() {
             @Override
@@ -66,7 +69,7 @@ public class SortProductActivity extends TActivity {
                 data.setSelected(sort);
                 data.setSelectedOb(ob);
                 Intent intent = new Intent(SORT_ACTION_INTENT);
-                intent.putExtra(BrowseParentFragment.SORT_EXTRA, Parcels.wrap(data));
+                intent.putExtra(BrowseParentFragment.SORT_EXTRA, (Parcelable) data);
                 intent.putExtra(BrowseParentFragment.SOURCE_EXTRA, source);
                 setResult(RESULT_OK, intent);
                 finish();
@@ -85,10 +88,8 @@ public class SortProductActivity extends TActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R2.id.action_close:
-                finish();
-                break;
+        if (item.getItemId()==R.id.action_close) {
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -101,10 +102,10 @@ public class SortProductActivity extends TActivity {
 
     private class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
-        List<DynamicFilterModel.Sort> sortList;
+        List<Sort> sortList;
         OnItemClickListener clickListener;
 
-        public ListAdapter(List<DynamicFilterModel.Sort> sortList, OnItemClickListener clickListener) {
+        public ListAdapter(List<Sort> sortList, OnItemClickListener clickListener) {
             if(sortList==null){
                 this.sortList = new ArrayList<>();
             } else {

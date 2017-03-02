@@ -15,10 +15,11 @@ import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.orderReject.ConfirmRejectOrderActivity;
 import com.tokopedia.seller.selling.orderReject.adapter.ProductListAdapter;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -26,11 +27,11 @@ import butterknife.ButterKnife;
  */
 public class ConstrainRejectedDialog extends DialogFragment {
 
-    @Bind(R2.id.confirm_button)
+    @BindView(R2.id.confirm_button)
     TextView confirmBtn;
-    @Bind(R2.id.reason)
+    @BindView(R2.id.reason)
     EditText reasonTxt;
-    @Bind(R2.id.title)
+    @BindView(R2.id.title)
     TextView titleTxt;
 
     OnConfirmReject onConfirmReject;
@@ -76,7 +77,7 @@ public class ConstrainRejectedDialog extends DialogFragment {
         super.onActivityCreated(savedInstanceState);
         String title = getArguments().getString(ConfirmRejectOrderActivity.REASON);
         type = (ProductListAdapter.Type) getArguments().getSerializable(ConfirmRejectOrderActivity.TYPE);
-        titleTxt.setText(Html.fromHtml("Alasan Penolakan: <b>"+title+"<b>"));
+        titleTxt.setText(MethodChecker.fromHtml("Alasan Penolakan: <b>"+title+"<b>"));
         confirmBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

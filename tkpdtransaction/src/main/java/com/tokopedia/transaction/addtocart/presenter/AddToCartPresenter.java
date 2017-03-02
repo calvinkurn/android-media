@@ -18,6 +18,8 @@ public interface AddToCartPresenter {
 
     void getCartFormData(@NonNull Context context, @NonNull ProductCartPass data);
 
+    void getCartKeroToken(@NonNull Context context, @NonNull ProductCartPass data, @NonNull Destination destination);
+
     void calculateProduct(@NonNull Context context, @NonNull OrderData orderData);
 
     void calculateKeroRates(@NonNull Context context, @NonNull AtcFormData atcFormData);
@@ -40,6 +42,7 @@ public interface AddToCartPresenter {
 
     void processAddToCartSuccess(@NonNull Context context, String message);
 
+    @SuppressWarnings("unused")
     void processAddToCartFailure(@NonNull Context context, String string);
 
     void sendAnalyticsATCSuccess(@NonNull Context context, @NonNull ProductCartPass productCartPass,
@@ -57,4 +60,8 @@ public interface AddToCartPresenter {
     void onViewDestroyed();
 
     void processGetGTMTicker();
+
+    boolean isAllowKeroAccess(AtcFormData data);
+
+    String calculateWeight(String initWeight, String quantity);
 }

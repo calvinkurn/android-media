@@ -16,9 +16,9 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.seller.fragment.FragmentShopNewOrderDetailV2;
 import com.tokopedia.seller.fragment.FragmentShopShippingDetailV2;
-import com.tokopedia.seller.fragment.FragmentShopTxStatusDetailV2;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
+import com.tokopedia.seller.orderstatus.fragment.FragmentShopTxStatusDetailV2;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.constant.SellingServiceConstant;
 import com.tokopedia.seller.selling.presenter.listener.SellingView;
@@ -29,7 +29,7 @@ import com.tokopedia.core.service.DownloadService;
 
 import org.parceler.Parcels;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -37,7 +37,7 @@ import butterknife.ButterKnife;
  */
 public class SellingDetailActivity extends TkpdActivity implements  DownloadResultReceiver.Receiver {
 
-    @Bind(R2.id.toolbar)
+    @BindView(R2.id.toolbar)
     Toolbar toolbar;
 
     public enum Type {

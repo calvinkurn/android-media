@@ -2,12 +2,9 @@ package com.tokopedia.seller.selling.view.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -25,7 +22,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -38,6 +34,8 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
 import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
@@ -52,7 +50,7 @@ import com.tokopedia.core.util.RefreshHandler;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -61,11 +59,11 @@ import butterknife.OnClick;
  */
 public class FragmentSellingShipping extends BaseFragment<Shipping> implements ShippingView {
 
-    @Bind(R2.id.order_list)
+    @BindView(R2.id.order_list)
     RecyclerView recyclerView;
-    @Bind(R2.id.fab)
+    @BindView(R2.id.fab)
     FloatingActionButton fab;
-    @Bind(R2.id.root)
+    @BindView(R2.id.root)
     View rootView;
     private View filterView;
     SearchView search;
@@ -141,7 +139,6 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
                 presenter.onMultiConfirm(actionMode, multiSelector.getSelectedPositions());
                 adapter.notifyDataSetChanged();
                 return true;
-
             }
             return false;
         }
@@ -166,7 +163,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         setRetainInstance(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         page = new PagingHandler();
-        adapter = new BaseSellingAdapter<ShippingImpl.Model, ShippingViewHolder>(ShippingImpl.Model.class,getActivity(),  R.layout.selling_shipping_list_item, ShippingViewHolder.class) {
+        adapter = new BaseSellingAdapter<ShippingImpl.Model, ShippingViewHolder>(ShippingImpl.Model.class, getActivity(), R.layout.selling_shipping_list_item, ShippingViewHolder.class) {
             @Override
             protected void populateViewHolder(final ShippingViewHolder viewHolder, final ShippingImpl.Model model, int position) {
                 viewHolder.bindDataModel(getActivity(), model);
@@ -177,6 +174,10 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
                     @Override
                     public void onItemClicked(int position) {
                         if (!multiSelector.tapSelection(viewHolder)) {
+                            if (adapter.isLoading()) {
+                                getPaging().setPage(getPaging().getPage() - 1);
+                                presenter.onFinishConnection();
+                            }
                             moveToDetail(position);
                         } else {
                             presenter.updateListDataChecked(position, multiSelector.isSelected(position, viewHolder.getItemId()));
@@ -265,21 +266,18 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         return new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch ((item.getItemId())) {
-                    case R2.id.action_confirm:
-                        onConfirm(position);
-                        return true;
-
-                    case R2.id.action_cancel:
-                        onCancel(position);
-                        return true;
-
-                    case R2.id.action_detail_ship:
-                        onOpenDetail(position);
-                        return true;
-
-                    default:
-                        return false;
+                int i = (item.getItemId());
+                if (i == R.id.action_confirm) {
+                    onConfirm(position);
+                    return true;
+                } else if (i == R.id.action_cancel) {
+                    onCancel(position);
+                    return true;
+                } else if (i == R.id.action_detail_ship) {
+                    onOpenDetail(position);
+                    return true;
+                } else {
+                    return false;
                 }
             }
         };
@@ -307,8 +305,10 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     public void setUserVisibleHint(boolean isVisibleToUser) {
         initPresenter();
         presenter.getShippingList(isVisibleToUser);
-        presenter.checkValidationToSendGoogleAnalytic(isVisibleToUser, getActivity());
         super.setUserVisibleHint(isVisibleToUser);
+        ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_SHIPPING);
+        ScreenTracking.eventLoca(AppScreen.SCREEN_LOCA_SHIPPING);
+        ScreenTracking.screen(AppScreen.SCREEN_TX_SHOP_CONFIRM_SHIPPING);
     }
 
     @Override
@@ -318,9 +318,9 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
 
     @Override
     public void disableFilter() {
-        search.clearFocus();
-        search.setEnabled(false);
-        search.setInputType(InputType.TYPE_NULL);
+//        search.clearFocus();
+//        search.setEnabled(false);
+//        search.setInputType(InputType.TYPE_NULL);
         shippingService.setEnabled(false);
         dueDate.setEnabled(false);
     }
@@ -556,7 +556,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     @Override
     public void onResume() {
         super.onResume();
-        if(shouldRefreshList) {
+        if (shouldRefreshList) {
             shouldRefreshList = false;
             refresh.setRefreshing(true);
             refresh.setIsRefreshing(true);
@@ -568,7 +568,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            switch (requestCode){
+            switch (requestCode) {
                 case REQUEST_CODE_BARCODE:
                     presenter.updateRefNumBarcode(getBarcodePosition, CommonUtils.getBarcode(data));
                     break;
@@ -581,6 +581,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
 
     @Override
     public void onPause() {
+        presenter.onFinishConnection();
         refresh.setRefreshing(false);
         super.onPause();
     }
@@ -640,5 +641,15 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
             }
         });
         snackbar.show();
+    }
+
+    @Override
+    public void showFab() {
+        fab.show();
+    }
+
+    @Override
+    public void hideFab() {
+        fab.hide();
     }
 }

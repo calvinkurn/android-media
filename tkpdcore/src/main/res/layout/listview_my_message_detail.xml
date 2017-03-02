@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="@dimen/padding_vs">
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/grey_100"
+        android:padding="@dimen/padding_vs"
+        android:layout_margin="@dimen/margin_vs"
+        android:textColor="@color/grey_500"
+        tools:text="13:16 wib"
+        android:singleLine="true"
+        android:textSize="@dimen/fontvs" />
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/main"
+        android:layout_width="wrap_content"
+        android:maxWidth="@dimen/message_width"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/date"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/right_bubble"
+        android:padding="@dimen/padding_small">
+
+        <TextView
+            android:id="@+id/message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textIsSelectable="true"
+            android:textColor="@color/white"
+            tools:text ="Gukguk meong meongaksjdkajshdkajhsdkajhsdkajhsdaksdjhaksjhkahsdk"
+            android:textSize="@dimen/fonts" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/main"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:textColor="@color/time_color"
+        android:textSize="@dimen/fontvvs"
+        tools:text="10:13 pm"/>
+</RelativeLayout>

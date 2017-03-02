@@ -1,0 +1,28 @@
+package com.tokopedia.core.analytics.container;
+
+import java.util.Map;
+
+/**
+ * @author by alvarisi on 10/27/16.
+ */
+
+public interface IAppsflyerContainer {
+    void initAppsFlyer(String key, String userID);
+
+    void setUserID(String userID);
+
+    /**
+     * Method for send general event
+     * @param eventName String event name
+     * @param eventValue Maps Event Detail
+     */
+    void sendTrackEvent(String eventName, Map<String, Object> eventValue);
+
+    /**
+     * get adsvertising id
+     * @param callback listener
+     */
+    void getAdsID(AppsflyerContainer.AFAdsIDCallback callback);
+
+    String getUniqueId();
+}

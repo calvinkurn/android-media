@@ -21,12 +21,14 @@ import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
 import com.tokopedia.core.network.entity.topads.TopAdsResponse;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
+import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterFactory;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.discovery.model.ErrorContainer;
 
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
 import rx.Subscriber;
@@ -34,7 +36,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
 
 /**
  * Created by noiz354 on 3/17/16.
@@ -144,7 +145,6 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
 
                             @Override
                             public void onNext(Response<TopAdsResponse> topAdsResponseResponse) {
-                                Log.d(TAG,  "TOPADS Response -> " + topAdsResponseResponse.body().toString());
                                 TopAdsResponse.TopAdsContainer topAdsContainer = new TopAdsResponse.TopAdsContainer(
                                         topAdsResponseResponse.body()
                                 );
@@ -166,6 +166,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
         Log.d(TAG, "loadSearchSuggestion query " + querySearch + " unique_id " + unique_id);
         getCompositeSubscription().add(searchSuggestionService.getApi().searchSuggestion(
                 querySearch, unique_id, String.valueOf(count))
+                .debounce(150, TimeUnit.MICROSECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())

@@ -23,7 +23,7 @@ import com.tokopedia.core.util.LabelUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -33,19 +33,28 @@ public class InboxTicketAdapter extends BaseLinearRecyclerViewAdapter implements
 
     private static final int VIEW_TICKET = 100;
     private static final String ON_GOING = "1";
+    private boolean actionEnabled;
+
+    public void setActionEnabled(boolean actionEnabled) {
+        this.actionEnabled = actionEnabled;
+    }
+
+    public boolean isActionEnabled() {
+        return actionEnabled;
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.title)
+        @BindView(R2.id.title)
         TextView title;
 
-        @Bind(R2.id.status)
+        @BindView(R2.id.status)
         TextView status;
 
-        @Bind(R2.id.create_time)
+        @BindView(R2.id.create_time)
         TextView createTime;
 
-        @Bind(R2.id.main)
+        @BindView(R2.id.main)
         View main;
 
         LabelUtils label;
@@ -148,13 +157,15 @@ public class InboxTicketAdapter extends BaseLinearRecyclerViewAdapter implements
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context.getActivity(), InboxTicketDetailActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(TICKET_ID_BUNDLE, list.get(position).getTicketId());
-                bundle.putString(INBOX_ID_BUNDLE, list.get(position).getTicketInboxId());
-                bundle.putInt(POSITION_BUNDLE, position);
-                intent.putExtras(bundle);
-                context.startActivityForResult(intent, START_INBOX_TICKET_DETAIL);
+                if (isActionEnabled()) {
+                    Intent intent = new Intent(context.getActivity(), InboxTicketDetailActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(TICKET_ID_BUNDLE, list.get(position).getTicketId());
+                    bundle.putString(INBOX_ID_BUNDLE, list.get(position).getTicketInboxId());
+                    bundle.putInt(POSITION_BUNDLE, position);
+                    intent.putExtras(bundle);
+                    context.startActivityForResult(intent, START_INBOX_TICKET_DETAIL);
+                }
             }
         };
     }

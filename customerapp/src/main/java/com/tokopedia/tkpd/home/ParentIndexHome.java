@@ -17,36 +17,40 @@ import android.view.View;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.Cart;
-import com.tokopedia.core.GCMListenerService.NotificationListener;
 import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customadapter.ListViewHotProductParent;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
+import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.interfaces.IndexHomeInterafaces;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
-import com.tokopedia.core.myproduct.ProductActivity;
-import com.tokopedia.core.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.onboarding.OnboardingActivity;
+import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.session.Login;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.WrappedTabPageIndicator;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.myproduct.ProductActivity;
+import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.FragmentIndexFavoriteV2;
+import com.tokopedia.tkpd.home.feed.view.FragmentProductFeed;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
-import com.tokopedia.tkpd.home.fragment.FragmentProductFeed;
 
 import org.parceler.Parcels;
 
@@ -55,13 +59,15 @@ import java.util.List;
 
 import rx.subscriptions.CompositeSubscription;
 
+//import com.tokopedia.tkpd.home.fragment.DaggerFragmentProductFeed;
+
 /**
  * Created by Nisie on 1/07/15.
  * modified by m.normansyah on 4/02/2016, fetch list of bank.
  * modified by alvarisi on 6/15/2016, tab selection tracking.
  * modified by Hafizh Herdi on 6/15/2016, dynamic personalization message.
  */
-public class ParentIndexHome extends TkpdActivity implements NotificationListener {
+public class ParentIndexHome extends TkpdActivity implements NotificationListener, HasComponent {
 
     public static final int INIT_STATE_FRAGMENT_HOME = 0;
     public static final int INIT_STATE_FRAGMENT_FEED = 1;
@@ -103,6 +109,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
         return mViewPager;
     }
 
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
+    }
+
 
     public interface ChangeTabListener {
         void onChangeTab(int i);
@@ -113,7 +124,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
         super.onNewIntent(intent);
         initStateFragment = intent.getIntExtra(EXTRA_INIT_FRAGMENT, -1);
         if (mViewPager != null) {
-            mViewPager.setCurrentItem(initStateFragment);
+            if (initStateFragment != -1) {
+                mViewPager.setCurrentItem(initStateFragment);
+            }
         }
 
         sendNotifLocalyticsCallback();
@@ -123,7 +136,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
     private void sendNotifLocalyticsCallback() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
-            if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)){
+            if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)) {
                 TrackingUtils.eventLocaNotificationCallback(getIntent());
             }
         }
@@ -167,7 +180,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
         content.clear();
 //        adapter.notifyDataSetChanged();
         if (SessionHandler.isV4Login(getBaseContext())) {
-            String[] CONTENT = new String[]{
+            String[] CONTENT = new String[] {
                     getString(R.string.title_categories),
                     getString(R.string.title_index_prod_shop),
                     getString(R.string.title_index_favorite),
@@ -179,7 +192,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
                 content.add(content_);
             }
         } else {
-            String[] CONTENT = new String[]{getString(R.string.title_categories), getString(R.string.title_index_hot_list)};
+            String[] CONTENT = new String[] {getString(R.string.title_categories), getString(R.string.title_index_hot_list)};
             content = new ArrayList<>();
             for (String content_ : CONTENT) {
                 indicator.addTab(indicator.newTab().setText(content_));
@@ -205,15 +218,20 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
         });
 
         t.start();
-        drawer.createDrawer(true);
-        drawer.setEnabled(true);
-        drawer.setOnSearchClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onSearchOptionSelected();
-            }
-        });
+        if (!GlobalConfig.isSellerApp()) {
+            drawer.createDrawer(true);
+            drawer.setEnabled(true);
+            drawer.setOnSearchClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onSearchOptionSelected();
+                }
+            });
+        }
+
+        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
     }
+
 
     public void initCreate() {
 
@@ -221,7 +239,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
             adapter = new PagerAdapter(getSupportFragmentManager());
             mViewPager.setAdapter(adapter);
             mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
-//            indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(mViewPager));
             indicator.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
                 @Override
                 public void onTabSelected(TabLayout.Tab tab) {
@@ -279,12 +296,12 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
      * send Localytics user attributes
      * by : Hafizh Herdi
      */
-    private void getUserCache(){
+    private void getUserCache() {
         try {
             LocalCacheHandler cacheUser = new LocalCacheHandler(this, TkpdState.CacheName.CACHE_USER);
             TrackingUtils.eventLocaUserAttributes(SessionHandler.getLoginID(this), cacheUser.getString("user_name"), "");
-        }catch (Exception e){
-            CommonUtils.dumper(TAG+" error connecting to GCM Service");
+        } catch (Exception e) {
+            CommonUtils.dumper(TAG + " error connecting to GCM Service");
             TrackingUtils.eventLogAnalytics(ParentIndexHome.class.getSimpleName(), e.getMessage());
         }
     }
@@ -390,16 +407,16 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-//            case R2.id.action_search:
+//            case R.id.action_search:
 //                return onSearchOptionSelected();
-            case R2.id.action_cart:
+            case R.id.action_cart:
                 if (!SessionHandler.isV4Login(getBaseContext())) {
-                    Intent intent = new Intent(getBaseContext(), Login.class);
+                    Intent intent = SessionRouter.getLoginActivityIntent(getApplicationContext());
                     intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.MOVE_TO_CART_TYPE);
                     intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                     startActivity(intent);
                 } else {
-                    startActivity(new Intent(getBaseContext(), Cart.class));
+                    startActivity(TransactionCartRouter.createInstanceCartActivity(this));
                 }
                 return true;
             default:
@@ -444,7 +461,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
         if (SessionHandler.isV4Login(this) && indicator.getTabCount() < 4) {
             indicator.removeAllTabs();
             content.clear();
-            String[] CONTENT = new String[]{
+            String[] CONTENT = new String[] {
                     getString(R.string.title_categories),
                     getString(R.string.title_index_prod_shop),
                     getString(R.string.title_index_favorite),
@@ -520,7 +537,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
         }, requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ONBOARDING_REQUEST && resultCode == Activity.RESULT_OK) {
-            Intent intent = new Intent(this, Login.class);
+            Intent intent = SessionRouter.getLoginActivityIntent(this);
             intent.putExtras(data.getExtras());
             startActivity(intent);
             finish();
@@ -542,7 +559,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
     }
 
     private void TrackFirstTime() {
-        TrackingUtils.activityBasedAFEvent(TrackingUtils.PARENT_HOME_ACTIVITY);
+        TrackingUtils.activityBasedAFEvent(HomeRouter.IDENTIFIER_HOME_ACTIVITY);
 
         LocalCacheHandler cache = new LocalCacheHandler(this, TkpdCache.FIRST_TIME);
         cache.putBoolean(TkpdCache.Key.IS_FIRST_TIME, true);

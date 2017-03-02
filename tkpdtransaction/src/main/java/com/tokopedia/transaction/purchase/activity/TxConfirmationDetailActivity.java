@@ -1,12 +1,13 @@
 package com.tokopedia.transaction.purchase.activity;
 
 import android.app.Dialog;
+import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,12 +16,14 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.TokopediaBankAccount;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.listener.TxConfDetailViewListener;
 import com.tokopedia.transaction.purchase.model.response.txconfirmation.TxConfData;
 import com.tokopedia.transaction.purchase.model.response.txlist.OrderData;
@@ -31,7 +34,7 @@ import com.tokopedia.transaction.purchase.presenter.TxConfDetailPresenterImpl;
 import java.text.MessageFormat;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -44,26 +47,20 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
 
     public static final int REQUEST_CONFIRMATION = 1;
 
-    @Bind(R2.id.total_tx)
+    @BindView(R2.id.total_tx)
     TextView tvTotalTx;
-    @Bind(R2.id.tx_date)
+    @BindView(R2.id.tx_date)
     TextView tvDateTx;
-    @Bind(R2.id.due_date)
+    @BindView(R2.id.due_date)
     TextView tvDueDateTx;
-    @Bind(R2.id.total_item)
+    @BindView(R2.id.total_item)
     TextView tvTotalItem;
-    @Bind(R2.id.total_item_price)
+    @BindView(R2.id.total_item_price)
     TextView tvTotalItemPrice;
-    @Bind(R2.id.deposit_used)
+    @BindView(R2.id.deposit_used)
     TextView tvDepositUsed;
-    @Bind(R2.id.lv_cart)
+    @BindView(R2.id.lv_cart)
     LinearLayout lvContainer;
-    @Bind(R2.id.check_account)
-    View btnSysAccountInfo;
-    @Bind(R2.id.cancel_button)
-    View btnCancel;
-    @Bind(R2.id.confirm_button)
-    View btnConfirm;
 
     private TxConfData txConfData;
     private TkpdProgressDialog mProgressDialog;
@@ -96,7 +93,7 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_transaction_payment_confirmation_detail;
+        return R.layout.activity_transaction_confirmation_detail_tx_module;
     }
 
     @Override
@@ -141,7 +138,7 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
                 }
 
             });
-            holder.tvShopName.setText(Html.fromHtml(data.getOrderShop().getShopName()));
+            holder.tvShopName.setText(MethodChecker.fromHtml(data.getOrderShop().getShopName()));
             holder.tvTotalPrice.setText(data.getOrderDetail().getDetailOpenAmountIdr());
             holder.tvShippingAddress.setText(data.getOrderDestination().getReceiverName());
             holder.tvShippingAgency.setText(MessageFormat.format("{0} - {1}",
@@ -168,12 +165,12 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
                     .inflate(R.layout.listview_product_cart_payment_conf, container, false);
             final HolderProductCartItem holder = new HolderProductCartItem(view);
             ImageHandler.loadImageRounded2(this, holder.ivPic, data.getProductPicture());
-            holder.tvName.setText(Html.fromHtml(data.getProductName()));
+            holder.tvName.setText(MethodChecker.fromHtml(data.getProductName()));
             holder.tvPrice.setText(data.getProductPrice());
             holder.tvWeight.setText(MessageFormat.format(" ( {0} kg ) ",
                     data.getProductWeight()));
             holder.tvPriceTotal.setText(data.getOrderSubtotalPriceIdr());
-            holder.tvNotes.setText(Html.fromHtml(alterNotesData(data.getProductNotes())));
+            holder.tvNotes.setText(MethodChecker.fromHtml(alterNotesData(data.getProductNotes())));
             holder.tvQty.setText(data.getProductQuantity());
             holder.tvNotes.setEnabled(false);
             container.addView(view);
@@ -226,6 +223,23 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
     }
 
     @Override
+    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
+
+    }
+
+    @Override
+    public String getStringFromResource(@StringRes int resId) {
+        return getString(resId);
+    }
+
+    @Override
+    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            TKPDMapParam<String, String> originParams
+    ) {
+        return null;
+    }
+
+    @Override
     public void closeView() {
         finish();
     }
@@ -275,73 +289,63 @@ public class TxConfirmationDetailActivity extends BasePresenterActivity<TxConfDe
     }
 
     public class HolderCartItem {
-        @Bind(R2.id.listview_prod)
+        @BindView(R2.id.listview_prod)
         LinearLayout containerProduct;
-        @Bind(R2.id.shop_name)
+        @BindView(R2.id.shop_name)
         TextView tvShopName;
-        @Bind(R2.id.total_price)
+        @BindView(R2.id.total_price)
         TextView tvTotalPrice;
-        @Bind(R2.id.shipping_address)
+        @BindView(R2.id.shipping_address)
         TextView tvShippingAddress;
-        @Bind(R2.id.shipping_agency)
+        @BindView(R2.id.shipping_agency)
         TextView tvShippingAgency;
-        @Bind(R2.id.total_weight)
+        @BindView(R2.id.total_weight)
         TextView tvTotalWeight;
-        @Bind(R2.id.sub_total)
+        @BindView(R2.id.sub_total)
         TextView tvSubTotal;
-        @Bind(R2.id.shipping_cost)
+        @BindView(R2.id.shipping_cost)
         TextView tvShippingCost;
-        @Bind(R2.id.insurance_price)
+        @BindView(R2.id.insurance_price)
         TextView tvInsurancePrice;
-        @Bind(R2.id.additional_cost)
+        @BindView(R2.id.additional_cost)
         TextView tvAdditionalCostPrice;
-        @Bind(R2.id.edit)
+        @BindView(R2.id.edit)
         ImageView btnEdit;
-        @Bind(R2.id.delete)
+        @BindView(R2.id.delete)
         ImageView btnDelete;
-        @Bind(R2.id.error1)
-        TextView tvError1;
-        @Bind(R2.id.error2)
-        TextView tvError2;
-        @Bind(R2.id.detail_info)
+        @BindView(R2.id.detail_info)
         View viewDetailInfo;
-        @Bind(R2.id.detail_info_but)
+        @BindView(R2.id.detail_info_but)
         View btnDetailInfo;
-        @Bind(R2.id.error_area)
-        View viewError;
-        @Bind(R2.id.main_view)
-        View viewMain;
-        @Bind(R2.id.insurance)
+        @BindView(R2.id.insurance)
         TextView tvInsurance;
-        @Bind(R2.id.remaining_stock)
+        @BindView(R2.id.remaining_stock)
         TextView btnChosen;
-        @Bind(R2.id.chevron_sign)
+        @BindView(R2.id.chevron_sign)
         ImageView ivChevron;
 
-        public HolderCartItem(View view) {
+        HolderCartItem(View view) {
             ButterKnife.bind(this, view);
         }
     }
 
     class HolderProductCartItem {
-        @Bind(R2.id.img)
+        @BindView(R2.id.img)
         ImageView ivPic;
-        @Bind(R2.id.name)
+        @BindView(R2.id.name)
         TextView tvName;
-        @Bind(R2.id.price)
+        @BindView(R2.id.price)
         TextView tvPrice;
-        @Bind(R2.id.weight)
+        @BindView(R2.id.weight)
         TextView tvWeight;
-        @Bind(R2.id.price_total)
+        @BindView(R2.id.price_total)
         TextView tvPriceTotal;
-        @Bind(R2.id.error_msg)
-        TextView tvError;
-        @Bind(R2.id.notes)
+        @BindView(R2.id.notes)
         TextView tvNotes;
-        @Bind(R2.id.qty)
+        @BindView(R2.id.qty)
         TextView tvQty;
 
-        public HolderProductCartItem(View view) {
+        HolderProductCartItem(View view) {
             ButterKnife.bind(this, view);
         }
     }

@@ -15,7 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.TopAdsUtil;
@@ -89,7 +90,7 @@ public class RecommendShopRecyclerViewAdapter extends RecyclerView.Adapter<Recom
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        holder.shopName.setText(Html.fromHtml(data.get(position).name));
+        holder.shopName.setText(MethodChecker.fromHtml(data.get(position).name));
         holder.shopLocation.setText(data.get(position).location);
         setShopCover(holder, holder.shopCover, data.get(position).coverUri);
 //        ImageHandler.LoadImageFit(holder.shopIcon, data.get(position).iconUri);

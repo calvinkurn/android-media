@@ -4,17 +4,16 @@ import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.model.RechargeOperatorModelDB;
-import com.tokopedia.core.database.recharge.operator.OperatorData;
+import com.tokopedia.core.database.model.RechargeOperatorModel;
 import com.tokopedia.core.database.recharge.product.Product;
-import com.tokopedia.core.database.recharge.product.ProductData;
 import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
-import com.tokopedia.tkpd.home.recharge.interactor.RechargeDBInteractor;
-import com.tokopedia.tkpd.home.recharge.interactor.RechargeDBInteractorImpl;
+import com.tokopedia.tkpd.home.recharge.interactor.RechargeInteractor;
+import com.tokopedia.tkpd.home.recharge.interactor.RechargeInteractorImpl;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractor;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractorImpl;
 import com.tokopedia.tkpd.home.recharge.view.RechargeView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -22,33 +21,33 @@ import java.util.List;
  * @author Kulomady 05 on 7/13/2016.
  */
 public class RechargePresenterImpl implements RechargePresenter,
-        RechargeNetworkInteractor.OnGetOperatorListener,
-        RechargeNetworkInteractor.OnGetProductListener,
-        RechargeDBInteractor.OnGetListProduct,
-        RechargeDBInteractor.OnGetOperatorByIdListener, RechargeDBInteractor.OnGetRecentNumberListener {
+        RechargeInteractor.OnGetListProduct,
+        RechargeInteractor.OnGetOperatorByIdListener, RechargeInteractor.OnGetRecentNumberListener,
+        RechargeInteractor.OnGetListProductForOperator, RechargeInteractor.OnGetListOperatorByIdsListener {
 
     private static final String RECHARGE_PHONEBOOK_CACHE_KEY = "RECHARGE_CACHE";
     private final LocalCacheHandler cacheHandlerPhoneBook;
     private final LocalCacheHandler cacheHandlerLastOrder;
     private RechargeView view;
     private RechargeNetworkInteractor interactor;
-    private RechargeDBInteractor dbInteractor;
+    private RechargeInteractor dbInteractor;
     private Context context;
 
     public RechargePresenterImpl(Context context, RechargeView view) {
         this.view = view;
         this.interactor = new RechargeNetworkInteractorImpl();
-        this.dbInteractor = new RechargeDBInteractorImpl();
+        this.dbInteractor = new RechargeInteractorImpl();
         this.context = context;
         this.cacheHandlerPhoneBook = new LocalCacheHandler(this.context, RECHARGE_PHONEBOOK_CACHE_KEY);
         this.cacheHandlerLastOrder = new LocalCacheHandler(
-                this.context, RechargeCategoryPresenterImpl.RECHARGE_CACHE_KEY
+                this.context,RechargeCategoryPresenterImpl.RECHARGE_CACHE_KEY
         );
     }
 
+
     @Override
     public void fetchDataProducts() {
-        this.interactor.getAllProduct(this);
+
     }
 
     @Override
@@ -67,8 +66,13 @@ public class RechargePresenterImpl implements RechargePresenter,
     }
 
     @Override
-    public void validateWithDefaultOperator( int categoryId, String operatorId) {
+    public void validateWithOperator(int categoryId, String operatorId) {
         dbInteractor.getListProductDefaultOperator(this, categoryId, operatorId);
+    }
+
+    @Override
+    public void getListOperatorFromCategory(int categoryId) {
+        dbInteractor.getListProductForOperator(this,categoryId);
     }
 
     @Override
@@ -107,22 +111,6 @@ public class RechargePresenterImpl implements RechargePresenter,
         LocalCacheHandler.clearCache(this.context, RECHARGE_PHONEBOOK_CACHE_KEY);
 
     }
-    @Override
-    public void onSuccess(OperatorData data) {
-        this.fetchDataProducts();
-    }
-
-    @Override
-    public void onNetworkError() {
-
-    }
-
-    @Override
-    public void onSuccess(ProductData data) {
-        if (this.view != null) {
-            this.view.hideProgressFetchData();
-        }
-    }
 
     @Override
     public void onSuccess(List<Product> listProduct) {
@@ -141,13 +129,18 @@ public class RechargePresenterImpl implements RechargePresenter,
     }
 
     @Override
+    public void onSuccessFetchOperators(List<RechargeOperatorModel> operators) {
+        view.renderDataOperators(operators);
+    }
+
+    @Override
     public void onError(Throwable e) {
         e.printStackTrace();
         view.renderDataProductsEmpty("Product List is Empty");
     }
 
     @Override
-    public void onSuccess(RechargeOperatorModelDB operator) {
+    public void onSuccess(RechargeOperatorModel operator) {
         view.showImageOperator(operator.image);
         view.setOperatorView(operator);
     }
@@ -157,4 +150,18 @@ public class RechargePresenterImpl implements RechargePresenter,
 
     }
 
+    @Override
+    public void onSuccessFetchProducts(List<Product> listProduct) {
+        List<Integer> operatorIds = new ArrayList<>();
+        for (Product prod: listProduct) {
+            if (!operatorIds.contains(prod.getRelationships().getOperator().getData().getId()))
+                operatorIds.add(prod.getRelationships().getOperator().getData().getId());
+        }
+        dbInteractor.getOperatorListByIds(operatorIds,this);
+    }
+
+    @Override
+    public void onErrorFetchProdcuts(Throwable e) {
+
+    }
 }

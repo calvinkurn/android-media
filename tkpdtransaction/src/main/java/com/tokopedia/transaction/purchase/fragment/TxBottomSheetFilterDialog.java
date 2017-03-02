@@ -2,11 +2,9 @@ package com.tokopedia.transaction.purchase.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.support.design.widget.BottomSheetDialog;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -14,8 +12,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.model.AllTxFilter;
 import com.tokopedia.transaction.purchase.model.TxFilterItem;
 import com.tokopedia.transaction.purchase.utils.FilterUtils;
@@ -24,53 +23,52 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 /**
- * Custom dialog for filter
- * Created by Kulomady on 6/27/16.
+ * @author Kulomady on 6/27/16.
  */
-public class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedListener,
+class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedListener,
         DialogInterface.OnDismissListener, DialogInterface.OnCancelListener {
 
     private final Activity activity;
     private final BottomSheetDialog dialog;
+    private final Unbinder unbinder;
     private AllTxFilter allTxFilter;
     private List<TxFilterItem> txFilterItemList = new ArrayList<>();
-    private ArrayAdapter<TxFilterItem> adapter;
 
-    @Bind(R2.id.filter)
+    @BindView(R2.id.filter)
     Spinner spnFilter;
-    @Bind(R2.id.search)
+    @BindView(R2.id.search)
     EditText searchField;
-    @Bind(R2.id.start_date)
+    @BindView(R2.id.start_date)
     TextView tvStartDate;
-    @Bind(R2.id.end_date)
+    @BindView(R2.id.end_date)
     TextView tvEndDate;
-    @Bind(R2.id.search_button)
+    @BindView(R2.id.search_button)
     TextView tvSearchSubmit;
 
 
-    public interface OnFilterListener {
+    interface OnFilterListener {
         void onFilterSearchButtonClicked(AllTxFilter allTxFilter);
     }
 
     private OnFilterListener onFilterListener;
 
     @SuppressLint("InflateParams")
-    public TxBottomSheetFilterDialog(
+    TxBottomSheetFilterDialog(
             Activity activity,
             AllTxFilter allTxFilter,
             OnFilterListener onFilterListener) {
-
         this.activity = activity;
         this.allTxFilter = allTxFilter;
         this.onFilterListener = onFilterListener;
         this.dialog = new BottomSheetDialog(activity);
-        this.dialog.setContentView(R.layout.layout_filter_payment_transaction);
-        ButterKnife.bind(this, this.dialog);
+        this.dialog.setContentView(R.layout.dialog_transaction_filter_tx_module);
+        unbinder = ButterKnife.bind(this, this.dialog);
         initViewContent(allTxFilter);
         this.dialog.setOnDismissListener(this);
         this.dialog.setOnCancelListener(this);
@@ -81,11 +79,12 @@ public class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedList
         tvStartDate.setText(allTxFilter.getDateStart());
         tvEndDate.setText(allTxFilter.getDateEnd());
         txFilterItemList = FilterUtils.filterTxAllItems(activity);
-        adapter = new ArrayAdapter<>(activity, R.layout.simple_spinner_tv_res, txFilterItemList);
+        ArrayAdapter<TxFilterItem> adapter
+                = new ArrayAdapter<>(activity, R.layout.simple_spinner_tv_res, txFilterItemList);
         spnFilter.setAdapter(adapter);
         setStateFilterSelection(allTxFilter.getFilter());
         searchField.clearFocus();
-        hideKeyboard(activity.getCurrentFocus());
+        KeyboardHandler.DropKeyboard(activity, activity.getCurrentFocus());
     }
 
     @OnClick(R2.id.start_date)
@@ -146,8 +145,7 @@ public class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedList
     @Override
     public void onDismiss(DialogInterface dialog) {
         View view = activity.getCurrentFocus();
-//        setDefaultSpinnerSelected();
-        hideKeyboard(view);
+        KeyboardHandler.DropKeyboard(activity, view);
     }
 
 
@@ -156,15 +154,7 @@ public class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedList
         setStateFilterSelection(allTxFilter.getFilter());
         spnFilter.clearFocus();
         View view = activity.getCurrentFocus();
-        hideKeyboard(view);
-    }
-
-
-    private void hideKeyboard(View view) {
-        if (view != null) {
-            InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
+        KeyboardHandler.DropKeyboard(activity, view);
     }
 
     public void show() {
@@ -173,14 +163,17 @@ public class TxBottomSheetFilterDialog implements AdapterView.OnItemSelectedList
 
     public void dismiss() {
         dialog.dismiss();
-        ButterKnife.unbind(dialog);
     }
 
-    public void setStateFilterSelection(String txFilterID) {
+    void setStateFilterSelection(String txFilterID) {
         int index = 0;
         for (int i = 0; i < txFilterItemList.size(); i++) {
             if (txFilterItemList.get(i).getId().equalsIgnoreCase(txFilterID)) index = i;
         }
         spnFilter.setSelection(index);
+    }
+
+    void unbindDialog() {
+        unbinder.unbind();
     }
 }

@@ -8,6 +8,10 @@ import android.os.Bundle;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.gcm.NotificationModHandler;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.inbox.inboxticket.fragment.InboxTicketFragment;
 import com.tokopedia.inbox.inboxticket.presenter.InboxTicketPresenter;
 import com.tokopedia.inbox.inboxticket.presenter.InboxTicketPresenterImpl;
@@ -17,6 +21,12 @@ import com.tokopedia.core.var.TkpdState;
  * Created by Nisie on 4/21/16.
  */
 public class InboxTicketActivity extends DrawerPresenterActivity<InboxTicketPresenter> {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
+    }
 
     @Override
     public String getScreenName() {
@@ -72,5 +82,17 @@ public class InboxTicketActivity extends DrawerPresenterActivity<InboxTicketPres
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot() && GlobalConfig.isSellerApp()) {
+            startActivity(SellerAppRouter.getSellerHomeActivity(this));
+            finish();
+        } else if (isTaskRoot()){
+            startActivity(HomeRouter.getHomeActivity(this));
+            finish();
+        }
+        super.onBackPressed();
     }
 }

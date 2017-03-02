@@ -5,12 +5,14 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.IntentService;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -19,15 +21,16 @@ import android.widget.AdapterView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customadapter.LazyListView;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.activity.ConfirmPaymentActivity;
 import com.tokopedia.transaction.purchase.activity.TxVerDetailActivity;
 import com.tokopedia.transaction.purchase.adapter.TxVerAdapter;
@@ -41,7 +44,7 @@ import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -50,8 +53,7 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 /**
- * TxVerificationFragment
- * Created by Angga.Prasetiyo on 24/05/2016.
+ * @author Angga.Prasetiyo on 24/05/2016.
  */
 @RuntimePermissions
 public class TxVerificationFragment extends BasePresenterFragment<TxVerificationPresenter>
@@ -61,7 +63,7 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
     public static final int REQUEST_VERIFICATION_DETAIL = 2;
     private static final String TAG = TxVerificationFragment.class.getSimpleName();
 
-    @Bind(R2.id.order_list)
+    @BindView(R2.id.order_list)
     LazyListView lvTXVerification;
 
     private View loadMoreView;
@@ -78,6 +80,11 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
 
     public static TxVerificationFragment createInstance() {
         return new TxVerificationFragment();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
@@ -122,7 +129,7 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_tx_payment_verification;
+        return R.layout.fragment_transaction_verification_list_tx_module;
     }
 
     @SuppressLint("InflateParams")
@@ -356,6 +363,23 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
     }
 
     @Override
+    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
+
+    }
+
+    @Override
+    public String getStringFromResource(@StringRes int resId) {
+        return getString(resId);
+    }
+
+    @Override
+    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            TKPDMapParam<String, String> originParams
+    ) {
+        return null;
+    }
+
+    @Override
     public void closeView() {
 
     }
@@ -400,14 +424,18 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
         myAlertDialog.setPositiveButton(getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                TxVerificationFragmentPermissionsDispatcher.onActionImagePickerWithCheck(TxVerificationFragment.this);
+                TxVerificationFragmentPermissionsDispatcher.onActionImagePickerWithCheck(
+                        TxVerificationFragment.this
+                );
 
             }
         });
         myAlertDialog.setNegativeButton(getString(R.string.title_camera), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                TxVerificationFragmentPermissionsDispatcher.onActionCameraWithCheck(TxVerificationFragment.this);
+                TxVerificationFragmentPermissionsDispatcher.onActionCameraWithCheck(
+                        TxVerificationFragment.this
+                );
 
             }
         });
@@ -416,26 +444,28 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
         dialog.show();
     }
 
+    @SuppressLint("InlinedApi")
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onActionCamera() {
         imageUploadHandler.actionCamera();
     }
 
+    @SuppressLint("InlinedApi")
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void onActionImagePicker() {
         imageUploadHandler.actionImagePicker();
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case ImageUploadHandler.REQUEST_CODE:
                 String imagePath = null;
-                if (data != null) {
-                    Log.d("URI SEMPAK GALERRY : ", data.getExtras().getString(GalleryBrowser.IMAGE_URL, "ga ada coy"));
-                    imagePath = data.getExtras().getString(GalleryBrowser.IMAGE_URL, "ga ada coy");
-                } else if (imageUploadHandler.getCameraFileloc() != null) {
-                    Log.d("URI SEMPAK CAMERA : ", imageUploadHandler.getCameraFileloc());
+                if (data != null && data.getStringExtra(GalleryBrowser.IMAGE_URL) != null) {
+                    imagePath = data.getExtras().getString(GalleryBrowser.IMAGE_URL, null);
+                } else if (imageUploadHandler != null
+                        && imageUploadHandler.getCameraFileloc() != null) {
                     imagePath = imageUploadHandler.getCameraFileloc();
                 }
                 presenter.uploadProofImageWSV4(getActivity(), imagePath, txVerDataToUpload);
@@ -443,8 +473,21 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
             case TxVerDetailActivity.REQUEST_EDIT_PAYMENT:
                 if (resultCode == ConfirmPaymentActivity.RESULT_FORM_FAILED
                         && data.hasExtra(ConfirmPaymentActivity.EXTRA_MESSAGE_ERROR_GET_FORM)) {
-                    NetworkErrorHelper.showSnackbar(getActivity(),
-                            data.getStringExtra(ConfirmPaymentActivity.EXTRA_MESSAGE_ERROR_GET_FORM));
+                    NetworkErrorHelper.showSnackbar(
+                            getActivity(), data.getStringExtra(
+                                    ConfirmPaymentActivity.EXTRA_MESSAGE_ERROR_GET_FORM
+                            )
+                    );
+                }
+                break;
+            case REQUEST_VERIFICATION_DETAIL:
+                if (resultCode == TxVerDetailActivity.RESULT_INVOICE_FAILED
+                        && data.hasExtra(TxVerDetailActivity.EXTRA_MESSAGE_ERROR_GET_INVOICE)) {
+                    NetworkErrorHelper.showSnackbar(
+                            getActivity(), data.getStringExtra(
+                                    TxVerDetailActivity.EXTRA_MESSAGE_ERROR_GET_INVOICE
+                            )
+                    );
                 }
                 break;
         }
@@ -464,13 +507,16 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        TxVerificationFragmentPermissionsDispatcher.onRequestPermissionsResult(TxVerificationFragment.this, requestCode, grantResults);
+        TxVerificationFragmentPermissionsDispatcher.onRequestPermissionsResult(
+                TxVerificationFragment.this, requestCode, grantResults
+        );
 
     }
 
+    @SuppressLint("InlinedApi")
     @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showRationaleForStorageAndCamera(final PermissionRequest request) {
         List<String> listPermission = new ArrayList<>();
@@ -480,46 +526,55 @@ public class TxVerificationFragment extends BasePresenterFragment<TxVerification
         RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
     }
 
+    @SuppressLint("InlinedApi")
     @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showRationaleForStorage(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onShowRationale(
+                getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE
+        );
     }
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
     }
 
+    @SuppressLint("InlinedApi")
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onPermissionDenied(
+                getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE
+        );
     }
 
+    @SuppressLint("InlinedApi")
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onNeverAskAgain(
+                getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE
+        );
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @SuppressLint("InlinedApi")
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
-
-        RequestPermissionUtil.onPermissionDenied(getActivity(),listPermission);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
     }
 
+    @SuppressLint("InlinedApi")
     @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showNeverAskForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
-
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 }

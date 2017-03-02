@@ -19,7 +19,7 @@ import android.widget.LinearLayout;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
@@ -35,7 +35,7 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -43,7 +43,7 @@ import butterknife.OnClick;
  */
 public class DynamicFilterOtherFragment extends BaseFragment<DynamicFilterOtherPresenter> implements DynamicFilterOtherView {
 
-    public static Fragment newInstance(DynamicFilterModel.Filter filter){
+    public static Fragment newInstance(Filter filter) {
         DynamicFilterOtherFragment dynamicFilterOtherFragment = new DynamicFilterOtherFragment();
         Bundle argument = new Bundle();
         argument.putParcelable(DynamicFilterOtherPresenter.FILTER_DATA, Parcels.wrap(filter));
@@ -51,16 +51,16 @@ public class DynamicFilterOtherFragment extends BaseFragment<DynamicFilterOtherP
         return  dynamicFilterOtherFragment;
     }
 
-    @Bind(R2.id.dynamic_filter_other_search_container)
+    @BindView(R2.id.dynamic_filter_other_search_container)
     LinearLayout dynamicFilterOtherSearchContainer;
 
-    @Bind(R2.id.dynamic_filter_other_search)
+    @BindView(R2.id.dynamic_filter_other_search)
     EditText dynamicFilterOtherSearch;
 
-    @Bind(R2.id.dynamic_filter_other_recyclerview)
+    @BindView(R2.id.dynamic_filter_other_recyclerview)
     RecyclerView dynamicFilterOtherRecyclerView;
 
-    @Bind(R2.id.dynamic_filter_other_finish)
+    @BindView(R2.id.dynamic_filter_other_finish)
     Button dynamicFilterOtherFinish;
 
     DynamicFilterOtherAdapter dynamicFilterOtherAdapter;
@@ -72,6 +72,11 @@ public class DynamicFilterOtherFragment extends BaseFragment<DynamicFilterOtherP
             dynamicFilterOtherAdapter.reset();
         }
     };
+
+    @Override
+    public String getScreenName() {
+        return null;
+    }
 
     @Override
     public void onResume() {

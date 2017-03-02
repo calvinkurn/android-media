@@ -88,32 +88,33 @@ public class SearchHistoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public void setNewSearchSuggestion(String query, SearchDataModel dataModel) {
+        searchHistoryModel.setSearchTerm(query);
         for (SearchDataModel.Data data : dataModel.getData()) {
             if(data.getId().equals("autocomplete")){
                 ArrayList<SearchHistoryModel.Data> autocomplete = new ArrayList<>();
                 for (int i = 0; i < data.getItems().size(); i++) {
-                    autocomplete.add(new SearchHistoryModel.Data(data.getItems().get(i).getKeyword().toLowerCase(), SUGGESTION, data.getItems().get(i).getUrl(), i));
+                    autocomplete.add(new SearchHistoryModel.Data(data.getItems().get(i).getKeyword().toLowerCase(), data.getItems().get(i).getKeyword(), SUGGESTION, data.getItems().get(i).getUrl(), i));
                 }
                 searchHistoryModel.setSuggestion(autocomplete);
             }
             if(data.getId().equals("hotlist")){
                 ArrayList<SearchHistoryModel.Data> hotlists = new ArrayList<>();
                 for (int i = 0; i < data.getItems().size(); i++) {
-                    hotlists.add(new SearchHistoryModel.Data(data.getItems().get(i).getKeyword().toLowerCase(), HOTLIST, data.getItems().get(i).getUrl(), i));
+                    hotlists.add(new SearchHistoryModel.Data(data.getItems().get(i).getKeyword().toLowerCase(), data.getItems().get(i).getKeyword(), HOTLIST, data.getItems().get(i).getUrl(), i));
                 }
                 searchHistoryModel.setHotlist(hotlists);
             }
             if(data.getId().equals("recent_search")){
                 ArrayList<SearchHistoryModel.Data> recent_search = new ArrayList<>();
                 for (int i = 0; i < data.getItems().size(); i++) {
-                    recent_search.add(new SearchHistoryModel.Data(data.getItems().get(i).getKeyword().toLowerCase(), HISTORY, data.getItems().get(i).getUrl(), i));
+                    recent_search.add(new SearchHistoryModel.Data(data.getItems().get(i).getKeyword().toLowerCase(), data.getItems().get(i).getKeyword(), HISTORY, data.getItems().get(i).getUrl(), i));
                 }
                 searchHistoryModel.setHistory(recent_search);
             }
             if(data.getId().equals("popular_search")){
                 ArrayList<SearchHistoryModel.Data> popular_search = new ArrayList<>();
                 for (int i = 0; i < data.getItems().size(); i++) {
-                    popular_search.add(new SearchHistoryModel.Data(data.getItems().get(i).getKeyword().toLowerCase(), POPULAR, data.getItems().get(i).getUrl(), i));
+                    popular_search.add(new SearchHistoryModel.Data(data.getItems().get(i).getKeyword().toLowerCase(), data.getItems().get(i).getKeyword(), POPULAR, data.getItems().get(i).getUrl(), i));
                 }
                 searchHistoryModel.setPopular(popular_search);
             }

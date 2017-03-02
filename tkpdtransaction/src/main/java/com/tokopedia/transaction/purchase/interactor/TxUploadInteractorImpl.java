@@ -8,12 +8,15 @@ import com.tokopedia.core.network.apiservices.upload.UploadImageService;
 import com.tokopedia.core.network.retrofit.response.GeneratedHost;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.model.response.txverification.TxVerData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,8 +31,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
- * TxUploadInteractorImpl
- * Created by anggaprasetiyo on 8/11/16.
+ * @author anggaprasetiyo on 8/11/16.
  */
 public class TxUploadInteractorImpl implements TxUploadInteractor {
     private static final String PARAM_USER_ID = "user_id";
@@ -51,8 +53,8 @@ public class TxUploadInteractorImpl implements TxUploadInteractor {
     }
 
     @Override
-    public void uploadImageProof(final Context context, final String imagePath, final TxVerData txVerData,
-                                 final OnImageProofUpload listener) {
+    public void uploadImageProof(final Context context, final String imagePath,
+                                 final TxVerData txVerData, final OnImageProofUpload listener) {
         Map<String, String> params = new HashMap<>();
         params.put("new_add", "2");
         Observable<GeneratedHost> observableGeneratedHost = generateHostActService.getApi()
@@ -67,7 +69,14 @@ public class TxUploadInteractorImpl implements TxUploadInteractor {
 
                         Map<String, String> paramsMap = AuthUtil.generateParams(context,
                                 new HashMap<String, String>());
-                        File file = new File(imagePath);
+                        File file = null;
+                        try {
+                            file = ImageUploadHandler.writeImageToTkpdPath(
+                                    ImageUploadHandler.compressImage(imagePath)
+                            );
+                        } catch (IOException e) {
+                            throw new RuntimeException(context.getString(R.string.error_upload_image));
+                        }
                         RequestBody userId = RequestBody.create(MediaType.parse("text/plain"),
                                 paramsMap.get(PARAM_USER_ID));
                         RequestBody deviceId = RequestBody.create(MediaType.parse("text/plain"),
@@ -118,8 +127,9 @@ public class TxUploadInteractorImpl implements TxUploadInteractor {
                         Map<String, String> params = new HashMap<>();
                         params.put("pic_src", picSrc);
                         params.put("pic_obj", picObj);
-                        return txActService.getApi()
-                                .uploadValidProofByPayment(AuthUtil.generateParams(context, params));
+                        return txActService.getApi().uploadValidProofByPayment(
+                                AuthUtil.generateParams(context, params)
+                        );
                     }
                 };
         compositeSubscription.add(observableGeneratedHost
@@ -137,13 +147,16 @@ public class TxUploadInteractorImpl implements TxUploadInteractor {
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        listener.onFailed("Gagal Mengupload gambar, silahkan coba lagi");
+                        listener.onFailed(context.getString(R.string.label_error_upload_image));
                     }
 
                     @Override
                     public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
-                        if (tkpdResponseResponse.isSuccessful() && !tkpdResponseResponse.body().isError())
-                            listener.onSuccess(tkpdResponseResponse.body().getStatusMessages().get(0));
+                        if (tkpdResponseResponse.isSuccessful()
+                                && !tkpdResponseResponse.body().isError())
+                            listener.onSuccess(
+                                    tkpdResponseResponse.body().getStatusMessages().get(0)
+                            );
                     }
                 }));
     }

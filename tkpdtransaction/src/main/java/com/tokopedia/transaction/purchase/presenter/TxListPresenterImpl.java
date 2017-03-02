@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -18,15 +17,12 @@ import android.widget.TextView;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
-import com.tokopedia.core.rescenter.create.activity.CreateResCenterActivity;
-import com.tokopedia.core.rescenter.detail.activity.ResCenterActivity;
-import com.tokopedia.core.rescenter.detail.model.passdata.ActivityParamenterPassData;
-import com.tokopedia.core.rescenter.inbox.activity.InboxResCenterActivity;
-import com.tokopedia.core.rescenter.onboarding.FreeReturnOnboardingActivity;
+import com.tokopedia.core.onboarding.ConstantOnBoarding;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.UploadImageHandler;
 import com.tokopedia.transaction.purchase.activity.TxDetailActivity;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractorImpl;
@@ -297,25 +293,6 @@ public class TxListPresenterImpl implements TxListPresenter {
     }
 
     @Override
-    public void processUploadTx(Context context, OrderData data) {
-        UploadImageHandler imageUpload = new UploadImageHandler((Activity) context,
-                "image-upload-tcpdn.pl", "image");
-        imageUpload.AddEntity("upload_proof", "1");
-        imageUpload.Commit(new UploadImageHandler.UploadImageInterface() {
-
-            @Override
-            public void onUploadStart() {
-                viewListener.showProgressLoading();
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-        });
-    }
-
-    @Override
     public void processConfirmDeliver(final Context context, final OrderData orderData,
                                       final int typeInstance) {
         Dialog dialogConfirm;
@@ -332,7 +309,7 @@ public class TxListPresenterImpl implements TxListPresenter {
     public void processOpenDispute(final Context context, final OrderData data, int state) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(
-                Html.fromHtml(
+                MethodChecker.fromHtml(
                         context.getString(R.string.dialog_package_not_rcv)
                                 .replace("XXX", data.getOrderShop().getShopName())
                 )
@@ -346,9 +323,9 @@ public class TxListPresenterImpl implements TxListPresenter {
                          * n=0&id=<ORDER_ID>&t=5&s=6 -> tanya kurir
                          */
                         viewListener.navigateToActivityRequest(
-                                CreateResCenterActivity.newInstancePackageNotReceived(
-                                        context, data.getOrderDetail().getDetailOrderId(), 5, 6),
-                                CREATE_RESCENTER_REQUEST_CODE
+                                InboxRouter.getCreateResCenterActivityIntent(
+                                        context, data.getOrderDetail().getDetailOrderId(), 5, 6
+                                ), CREATE_RESCENTER_REQUEST_CODE
                         );
                     }
                 });
@@ -361,9 +338,9 @@ public class TxListPresenterImpl implements TxListPresenter {
                          * n=0&id=<ORDER_ID>&t=5&s=1 --> pengembalian dana
                          */
                         viewListener.navigateToActivityRequest(
-                                CreateResCenterActivity.newInstancePackageNotReceived(
-                                        context, data.getOrderDetail().getDetailOrderId(), 5, 1),
-                                CREATE_RESCENTER_REQUEST_CODE
+                                InboxRouter.getCreateResCenterActivityIntent(
+                                        context, data.getOrderDetail().getDetailOrderId(), 5, 1
+                                ), CREATE_RESCENTER_REQUEST_CODE
                         );
                     }
                 });
@@ -383,10 +360,9 @@ public class TxListPresenterImpl implements TxListPresenter {
     public void processShowComplain(Context context, OrderData data) {
         Uri uri = Uri.parse(data.getOrderButton().getButtonResCenterUrl());
         String res_id = uri.getQueryParameter("id");
-        ActivityParamenterPassData activityParamenterPassData = new ActivityParamenterPassData();
-        activityParamenterPassData.setResCenterId(res_id);
-        Intent intent = ResCenterActivity.newInstance(context, activityParamenterPassData);
-        viewListener.navigateToActivity(intent);
+        viewListener.navigateToActivity(
+                InboxRouter.getDetailResCenterActivityIntent(context, res_id)
+        );
     }
 
     @Override
@@ -420,7 +396,9 @@ public class TxListPresenterImpl implements TxListPresenter {
         builder.setMessage(message).setPositiveButton(context.getString(R.string.title_ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        viewListener.navigateToActivity(InboxResCenterActivity.createIntent(context));
+                        viewListener.navigateToActivity(
+                                InboxRouter.getInboxResCenterActivityIntent(context)
+                        );
                     }
                 });
         Dialog alertDialog = builder.create();
@@ -432,7 +410,7 @@ public class TxListPresenterImpl implements TxListPresenter {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(context.getString(R.string.label_title_dialog_order_received));
         builder.setMessage(
-                Html.fromHtml(context.getString(R.string.dialog_package_received).replace(
+                MethodChecker.fromHtml(context.getString(R.string.dialog_package_received).replace(
                         "xx_shop_name_xx", orderData.getOrderShop().getShopName()
                 ))
         );
@@ -458,9 +436,9 @@ public class TxListPresenterImpl implements TxListPresenter {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             viewListener.navigateToActivityRequest(
-                                    CreateResCenterActivity.newInstance(
-                                            context, orderData.getOrderDetail().getDetailOrderId()),
-                                    CREATE_RESCENTER_REQUEST_CODE
+                                    InboxRouter.getCreateResCenterActivityIntent(
+                                            context, orderData.getOrderDetail().getDetailOrderId()
+                                    ), CREATE_RESCENTER_REQUEST_CODE
                             );
                         }
                     });
@@ -473,24 +451,27 @@ public class TxListPresenterImpl implements TxListPresenter {
     private Dialog generateDialogFreeReturn(final Context context, final OrderData orderData) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(context.getString(R.string.label_title_dialog_order_received_free_return));
-        builder.setMessage(Html.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg()));
+        builder.setMessage(
+                MethodChecker.fromHtml(orderData.getOrderDetail().getDetailFreeReturnMsg())
+        );
         builder.setNeutralButton(context.getString(R.string.title_open_dispute),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         LocalCacheHandler cache = new LocalCacheHandler(context,
-                                FreeReturnOnboardingActivity.CACHE_FREE_RETURN);
-                        if (cache.getBoolean(FreeReturnOnboardingActivity.HAS_SEEN_ONBOARDING))
+                                ConstantOnBoarding.CACHE_FREE_RETURN);
+                        if (cache.getBoolean(ConstantOnBoarding.HAS_SEEN_FREE_RETURN_ONBOARDING)) {
                             viewListener.navigateToActivityRequest(
-                                    CreateResCenterActivity.newInstance(context,
-                                            orderData.getOrderDetail().getDetailOrderId()),
-                                    CREATE_RESCENTER_REQUEST_CODE
+                                    InboxRouter.getCreateResCenterActivityIntent(
+                                            context, orderData.getOrderDetail().getDetailOrderId()
+                                    ), CREATE_RESCENTER_REQUEST_CODE
                             );
-                        else
+                        } else {
                             viewListener.navigateToActivityRequest(
-                                    FreeReturnOnboardingActivity.newInstance(context,
-                                            orderData.getOrderDetail().getDetailOrderId()),
-                                    CREATE_RESCENTER_REQUEST_CODE
+                                    InboxRouter.getFreeReturnOnBoardingActivityIntent(
+                                            context, orderData.getOrderDetail().getDetailOrderId()
+                                    ), CREATE_RESCENTER_REQUEST_CODE
                             );
+                        }
                     }
                 });
         builder.setPositiveButton(context.getString(R.string.title_done),

@@ -19,14 +19,16 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.adapter.GridLayoutProductAdapter;
 import com.tokopedia.tkpd.home.presenter.WishList;
 import com.tokopedia.tkpd.home.presenter.WishListImpl;
@@ -34,29 +36,31 @@ import com.tokopedia.tkpd.home.presenter.WishListView;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by m.normansyah on 01/12/2015.
  */
-public class WishListFragment extends Fragment implements WishListView {
+public class WishListFragment extends TkpdBaseV4Fragment implements WishListView {
 
     public static final String FRAGMENT_TAG = "WishListFragment";
+    private Unbinder unbinder;
 
     public WishListFragment(){}
 
     public static final Fragment newInstance(){
         return new WishListFragment();
     }
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
-    @Bind(R2.id.recycler_view)
+    @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
-    @Bind(R2.id.progress_bar)
+    @BindView(R.id.progress_bar)
     ProgressBar progressBar;
-    @Bind(R2.id.main_content)
+    @BindView(R.id.main_content)
     LinearLayout mainContent;
 
     GridLayoutManager layoutManager;
@@ -79,14 +83,18 @@ public class WishListFragment extends Fragment implements WishListView {
         isDeleteDialogShown = false;
     }
 
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_FRAGMENT_WISHLIST;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.activity_recyclerview, container, false);
-        ButterKnife.bind(this, parentView);
+        unbinder = ButterKnife.bind(this, parentView);
         wishList.subscribe();
         wishList.initAnalyticsHandler(getActivity());
-        ScreenTracking.screen(this);
         prepareView();
         setListener();
         return parentView;
@@ -101,7 +109,7 @@ public class WishListFragment extends Fragment implements WishListView {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         wishList.unSubscribe();
     }
 
@@ -109,12 +117,13 @@ public class WishListFragment extends Fragment implements WishListView {
     public void onResume() {
         super.onResume();
         wishList.setLocalyticFlow(getActivity(), getString(R.string.home_wishlist));
-        if(wishList.isAfterRotation()){
-//            displayPull(true);
-            wishList.setData();
+        if(wishList.isAfterRotation() ){
+            if  (!wishList.isLoadedFirstPage())
+                wishList.refreshData(getActivity());
         }else{
             wishList.fetchDataFromCache(getActivity());
         }
+        UnifyTracking.eventViewWishlist();
     }
 
     @Override

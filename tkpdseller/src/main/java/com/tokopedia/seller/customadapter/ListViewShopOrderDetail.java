@@ -2,9 +2,6 @@ package com.tokopedia.seller.customadapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,9 +12,11 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.seller.selling.model.shopconfirmationdetail.ShippingConfirmDetModel;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.R;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.seller.selling.model.shopconfirmationdetail.ShippingConfirmDetModel;
 
 import java.util.ArrayList;
 
@@ -82,10 +81,10 @@ public class ListViewShopOrderDetail extends BaseAdapter{
 
 		final ShippingConfirmDetModel.Data data = (ShippingConfirmDetModel.Data)getItem(position);
 		//holder.NotesName.setText(NotesListString.get(position));
-		holder.ProductName.setText(Html.fromHtml(data.NameList).toString());
+		holder.ProductName.setText(MethodChecker.fromHtml(data.NameList).toString());
 		holder.ProductPrice.setText(data.PriceList);
 		if(!data.MessageList.equals("null") && CommonUtils.checkNullForZeroJson(data.MessageList))
-			holder.Message.setText(Html.fromHtml(data.MessageList));
+			holder.Message.setText(MethodChecker.fromHtml(data.MessageList));
 		else
 			holder.Message.setText("-");
 		holder.TotalOrder.setText(" x " + data.TtlOrderList + " " + context.getString(R.string.title_item));
@@ -96,17 +95,23 @@ public class ListViewShopOrderDetail extends BaseAdapter{
 			
 			@Override
 			public void onClick(View v) {
-				
-//				Intent intent = new Intent(context, ProductDetailPresenter.class);
-				Intent intent = new Intent(context, ProductInfoActivity.class);
-				Bundle bundle = new Bundle();
-				bundle.putString(PRODUCT_URI, data.ProductUrlList);
-				bundle.putString(PRODUCT_ID, data.ProductIdList);
-				intent.putExtras(bundle);
-				context.startActivity(intent);
+				context.startActivity(
+						ProductDetailRouter.createInstanceProductDetailInfoActivity(
+								context, getProductDataToPass(data)
+						)
+				);
 			}
 		});
 		return convertView;
+	}
+
+	private ProductPass getProductDataToPass(ShippingConfirmDetModel.Data data) {
+		return ProductPass.Builder.aProductPass()
+				.setProductPrice(data.PriceList)
+				.setProductId(data.ProductIdList)
+				.setProductName(data.NameList)
+				.setProductImage(data.ImageUrlList)
+				.build();
 	}
 
 }

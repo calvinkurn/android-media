@@ -8,19 +8,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.model.HorizontalProductList;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.NetworkHandler;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.entity.home.FavoriteSendData;
 import com.tokopedia.core.network.entity.home.TopAdsData;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -28,6 +25,7 @@ import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.ShopItem;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.SimpleHomeActivity;
 import com.tokopedia.tkpd.home.favorite.interactor.FavoriteInteractor;
 import com.tokopedia.tkpd.home.favorite.interactor.FavoriteInteractorImpl;
@@ -92,7 +90,7 @@ public class FavoriteImpl implements Favorite {
         }
         view.initAdapter(data);
         view.initLayoutManager();
-        favoriteInteractor = new FavoriteInteractorImpl();
+        favoriteInteractor = new FavoriteInteractorImpl(context);
     }
 
     @Override
@@ -180,6 +178,7 @@ public class FavoriteImpl implements Favorite {
                         (HorizontalShopList) FavoriteImpl.this.data.get(TOP_ADS_START);
 
                 cacheHome.setRecommendedShopCache(horizontalShopList.getShopItemList());
+//                mContext.sendBroadcast(new Intent(FragmentProductFeed.ACTION));
             }
         };
     }
@@ -238,7 +237,7 @@ public class FavoriteImpl implements Favorite {
         mPaging.onSavedInstanceState(outState);
         index = view.getLastPosition();
         outState.putInt(POSITION_VIEW, index);
-        outState.putParcelable(DATA, Parcels.wrap(data));
+//        outState.putParcelable(DATA, Parcels.wrap(data));
     }
 
     @Override
@@ -246,7 +245,7 @@ public class FavoriteImpl implements Favorite {
         if (outState != null) {
             Log.d(TAG, "last page : " + mPaging.onCreate(outState));
             index = outState.getInt(POSITION_VIEW, defaultPositionView);
-            data = Parcels.unwrap(outState.getParcelable(DATA));
+//            data = Parcels.unwrap(outState.getParcelable(DATA));
         }
     }
 
@@ -417,23 +416,19 @@ public class FavoriteImpl implements Favorite {
             @Override
             public void onError(Throwable e) {
                 if (e != null) {
-                    if (e.getMessage() != null && RetrofitUtils.isSessionInvalid(e.getMessage())) {
-                        NetworkHandler.forceLogout(mContext);
+                    Log.e(TAG, messageTAG + "onError : " + e.getLocalizedMessage());
+                    view.displayProgressBar(false);
+                    if (data.size() == 0) {
+                        view.displayMainContent(false);
+                        view.displayRetryFull();// display full retry
                     } else {
-                        Log.e(TAG, messageTAG + "onError : " + e.getLocalizedMessage());
-                        view.displayProgressBar(false);
-                        if (data.size() == 0) {
-                            view.displayMainContent(false);
-                            view.displayRetryFull();// display full retry
-                        } else {
-                            view.displayMainContent(true);
-                            view.displayLoadMore(false);// disable load more
-                            view.displayRetry(true);// enable retry
-                        }
-                        view.displayPull(false);
-                        view.loadDataChange();
-                        //[END] display retry
+                        view.displayMainContent(true);
+                        view.displayLoadMore(false);// disable load more
+                        view.displayRetry(true);// enable retry
                     }
+                    view.displayPull(false);
+                    view.loadDataChange();
+                    //[END] display retry
                 }
             }
 

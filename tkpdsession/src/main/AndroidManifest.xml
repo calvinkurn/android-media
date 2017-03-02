@@ -3,8 +3,43 @@
 
     <application android:allowBackup="true"
                  android:label="@string/app_name"
-                 android:supportsRtl="true"
-    >
+                 android:supportsRtl="true">
+
+        <activity
+            android:name="com.tokopedia.session.session.activity.Login"
+            android:label="@string/title_activity_login"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name="com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity"
+            android:label="@string/title_activity_forgot_password"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name="com.tokopedia.session.register.activity.RegisterEmailActivity"
+            android:label="@string/title_activity_register"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity
+            android:name="com.tokopedia.session.activation.activity.ActivationActivity"
+            android:label="@string/title_activity_activation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+
+        <service
+            android:name="com.tokopedia.session.session.intentservice.LoginService"
+            android:exported="false" />
+        <service
+            android:name="com.tokopedia.session.session.intentservice.ResetPasswordService"
+            android:exported="false" />
+        <service
+            android:name="com.tokopedia.session.session.intentservice.RegisterService"
+            android:exported="false"/>
+        <service
+            android:name="com.tokopedia.session.session.intentservice.OTPService"
+            android:exported="false"/>
 
     </application>
 

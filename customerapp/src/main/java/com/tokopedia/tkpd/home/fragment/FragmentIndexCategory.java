@@ -1,73 +1,90 @@
 package com.tokopedia.tkpd.home.fragment;
 
-import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
-import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customView.WrapContentViewPager;
 import com.tokopedia.core.database.model.category.CategoryData;
+import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.home.Banner;
+import com.tokopedia.core.network.entity.home.Brand;
+import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
+import com.tokopedia.core.network.entity.topPicks.Item;
+import com.tokopedia.core.network.entity.topPicks.Toppick;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
-import com.tokopedia.core.util.NonScrollLayoutManager;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.DeepLinkChecker;
+import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
-import com.tokopedia.tkpd.home.BannerWebView;
+import com.tokopedia.tkpd.BuildConfig;
+import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.home.banner.holder.BannerHolderView;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
+import com.tokopedia.tkpd.home.OnGetBrandsListener;
+import com.tokopedia.tkpd.home.TopPicksView;
+import com.tokopedia.tkpd.home.adapter.BrandsRecyclerViewAdapter;
 import com.tokopedia.tkpd.home.adapter.RecyclerViewCategoryMenuAdapter;
 import com.tokopedia.tkpd.home.adapter.SectionListCategoryAdapter;
-import com.tokopedia.tkpd.home.adapter.TickerAnnouncementAdapter;
+import com.tokopedia.tkpd.home.adapter.TickerAdapter;
+import com.tokopedia.tkpd.home.adapter.TopPicksAdapter;
+import com.tokopedia.tkpd.home.adapter.TopPicksItemAdapter;
+import com.tokopedia.tkpd.home.banner.ConvenientBanner;
+import com.tokopedia.tkpd.home.banner.holder.BannerViewHolderCreator;
 import com.tokopedia.tkpd.home.facade.FacadePromo;
+import com.tokopedia.tkpd.home.presenter.BrandsPresenter;
+import com.tokopedia.tkpd.home.presenter.BrandsPresenterImpl;
 import com.tokopedia.tkpd.home.presenter.Category;
 import com.tokopedia.tkpd.home.presenter.CategoryImpl;
 import com.tokopedia.tkpd.home.presenter.CategoryView;
 import com.tokopedia.tkpd.home.presenter.HomeCatMenuPresenter;
 import com.tokopedia.tkpd.home.presenter.HomeCatMenuPresenterImpl;
+import com.tokopedia.tkpd.home.presenter.TopPicksPresenter;
+import com.tokopedia.tkpd.home.presenter.TopPicksPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.adapter.RechargeViewPagerAdapter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
-import com.tokopedia.tkpd.home.util.DividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,45 +94,67 @@ import java.util.Map;
 /**
  * Created by Nisie on 1/07/15.
  * modified by mady add feature Recharge and change home menu
+ * modified by alifa add Top Picks, ticker enhancement
  */
-public class FragmentIndexCategory extends Fragment implements
+public class
+FragmentIndexCategory extends TkpdBaseV4Fragment implements
         CategoryView,
         RechargeCategoryView,
         SectionListCategoryAdapter.OnCategoryClickedListener,
-        SectionListCategoryAdapter.OnGimmicClickedListener, HomeCatMenuView {
+        SectionListCategoryAdapter.OnGimmicClickedListener, HomeCatMenuView, TopPicksView,
+        TopPicksItemAdapter.OnTitleClickedListener, TopPicksItemAdapter.OnItemClickedListener,
+        TopPicksAdapter.OnClickViewAll, TickerAdapter.OnTickerClosed{
 
-    private static final long SLIDE_DELAY = 8000;
-    private static final String TAG = FragmentIndexCategory.class.getSimpleName();
+    private static final long SLIDE_DELAY = 5000;
+    private static final long TICKER_DELAY = 5000;
+    public static final String TAG = FragmentIndexCategory.class.getSimpleName();
+    private static final String TOP_PICKS_URL = "https://www.tokopedia.com/toppicks/";
+
     private ViewHolder holder;
     private Model model;
-    private PromoImagePagerAdapter pagerAdapter;
-    private Runnable incrementPage;
-    private Handler mHandler;
+    private Runnable tickerIncrementPage;
+    private Handler tickerHandler;
     Category category;
     private RechargeCategoryPresenter rechargeCategoryPresenter;
-    TickerAnnouncementAdapter tickerAdapter;
-
-
+    TickerAdapter tickerAdapter;
+    private int currentTicker = 0;
+    ArrayList<Ticker.Tickers> tickers = new ArrayList<>();
+    ArrayList<Ticker.Tickers> tickerShowed = new ArrayList<>();
+    public static final String BANNER_RECEIVER_INTENT = BuildConfig.APPLICATION_ID + ".BANNER_RECEIVER_INTENT";
     private HomeCatMenuPresenter homeCatMenuPresenter;
+    private TopPicksPresenter topPicksPresenter;
     private RecyclerViewCategoryMenuAdapter recyclerViewCategoryMenuAdapter;
+    private TopPicksAdapter topPicksAdapter;
+    private BrandsRecyclerViewAdapter brandsRecyclerViewAdapter;
+    private BrandsPresenter brandsPresenter;
 
+    private BroadcastReceiver stopBannerReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(holder.bannerPager!=null){
+                holder.bannerPager.stopTurning();
+            }
+        }
+    };
 
     private class ViewHolder {
         private View MainView;
         private View banner;
-        private ViewPager bannerViewPager;
-        private CirclePageIndicator bannerIndicator;
+        private ConvenientBanner bannerPager;
         private RelativeLayout bannerContainer;
         TabLayout tabLayoutRecharge;
         WrapContentViewPager viewpagerRecharge;
-        RecyclerView announcementContainer;
+        RecyclerView tickerContainer;
         NestedScrollView wrapperScrollview;
         RecyclerView categoriesRecylerview;
+        RecyclerView topPicksRecyclerView;
+        RecyclerView brandsRecyclerView;
+        RelativeLayout rlBrands;
         public LinearLayout wrapperLinearLayout;
-
 
         private ViewHolder() {
         }
+
     }
 
     public FragmentIndexCategory() {
@@ -139,6 +178,11 @@ public class FragmentIndexCategory extends Fragment implements
     }
 
     @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_HOME_PRODUCT_CATEGORY;
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         initVar();
         category.subscribe();
@@ -153,31 +197,38 @@ public class FragmentIndexCategory extends Fragment implements
         getAnnouncement();
         getPromo();
         homeCatMenuPresenter.fetchHomeCategoryMenu(false);
+        topPicksPresenter.fetchTopPicks();
+        brandsPresenter.fetchBrands();
 
     }
 
     private void getAnnouncement() {
-        category.fetchTickers(new Category.FetchTickersListener() {
-            @Override
-            public void onSuccess(final Ticker.Tickers[] tickers) {
-                if (tickers.length > 0) {
-
-                    holder.announcementContainer.setVisibility(View.VISIBLE);
-                    tickerAdapter.addItem(tickers);
+        if (!category.isTickerClosed()) {
+            category.fetchTickers(new Category.FetchTickersListener() {
+                @Override
+                public void onSuccess(final ArrayList<Ticker.Tickers> tickersResponse) {
+                    holder.tickerContainer.setVisibility(View.VISIBLE);
+                    if (tickersResponse.size() > 1) {
+                        tickerIncrementPage = runnableIncrementTicker();
+                        tickerHandler = new Handler();
+                        holder.tickerContainer.setVisibility(View.VISIBLE);
+                        tickers.addAll(tickersResponse);
+                        tickerShowed.add(tickers.get(currentTicker));
+                        tickerAdapter.addItem(tickerShowed);
+                        startSlideTicker();
+                    } else if (tickersResponse.size() == 1) {
+                        tickerAdapter.addItem(tickersResponse);
+                    }
                     holder.wrapperScrollview.smoothScrollTo(0, 0);
                 }
-            }
 
-            @Override
-            public void onError() {
-                holder.announcementContainer.setVisibility(View.GONE);
-
-            }
-        });
-
-
+                @Override
+                public void onError() {
+                    holder.tickerContainer.setVisibility(View.GONE);
+                }
+            });
+        }
     }
-
 
     private void getPromo() {
         category.fetchBanners(onGetPromoListener());
@@ -202,89 +253,90 @@ public class FragmentIndexCategory extends Fragment implements
 
     private void setBanner(List<FacadePromo.PromoItem> promoList) {
         if (!promoList.isEmpty()) {
-            holder.banner = getActivity().getLayoutInflater().inflate(R.layout.banner, holder.bannerContainer);
-            holder.bannerViewPager = (ViewPager) holder.banner.findViewById(R.id.view_pager);
-            holder.bannerIndicator = (CirclePageIndicator) holder.banner.findViewById(R.id.indicator);
-
-            holder.bannerViewPager.setAdapter(pagerAdapter);
-            holder.bannerViewPager.addOnPageChangeListener(onPromoChanged());
-            holder.bannerIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.green_400));
-            holder.bannerIndicator.setStrokeColor(ContextCompat.getColor(getContext(), R.color.green_500));
-            holder.bannerIndicator.setViewPager(holder.bannerViewPager);
-
-            model.listBanner.clear();
-            model.listBanner.addAll(promoList);
-            pagerAdapter.notifyDataSetChanged();
-
-            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) holder.bannerViewPager.getLayoutParams();
-            DisplayMetrics metrics = new DisplayMetrics();
-            getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-            param.height = metrics.widthPixels / 2;
-            holder.bannerViewPager.setLayoutParams(param);
-            holder.wrapperScrollview.smoothScrollTo(0, 0);
-            startSlide();
+            holder.banner = getActivity().getLayoutInflater().inflate(R.layout.home_banner, holder.bannerContainer);
+            holder.bannerPager = (ConvenientBanner) holder.banner.findViewById(R.id.bannerViewPager);
+            holder.bannerPager.setPages(getFragmentManager(), new BannerViewHolderCreator<BannerHolderView>() {
+                @Override
+                public BannerHolderView createHolder() {
+                    return new BannerHolderView();
+                }
+            }, promoList)
+                    .setPageIndicator(new int[]{R.drawable.indicator, R.drawable.indicator_focus});
+            holder.bannerPager.getViewPager().setPageMargin(getResources()
+                    .getDimensionPixelOffset(R.dimen.viewpager_margin));
+            holder.bannerPager.setOnPromoLinkClickListener(onPromoLinkClicked());
+            holder.bannerPager.getViewPager().setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    if(motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+                        holder.bannerPager.stopTurning();
+                      }
+                    return false;
+                }
+            });
+            holder.bannerPager.startTurning(SLIDE_DELAY);
         } else {
             ((ViewGroup) holder.bannerContainer.getParent()).removeView(holder.banner);
         }
     }
 
-    private ViewPager.OnPageChangeListener onPromoChanged() {
-        return new ViewPager.OnPageChangeListener() {
+    private View.OnClickListener onPromoLinkClicked() {
+        return new View.OnClickListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                stopSlide();
-                startSlide();
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), BannerWebView.class);
+                intent.putExtra("url", "https://www.tokopedia.com/promo/?flag_app=1");
+                startActivity(intent);
             }
         };
     }
 
     private void prepareView() {
-        holder.announcementContainer.setLayoutManager(new LinearLayoutManager(
+        holder.tickerContainer.setLayoutManager(new LinearLayoutManager(
                 getActivity(), LinearLayoutManager.VERTICAL, false)
         );
-        holder.announcementContainer.setAdapter(tickerAdapter);
-        holder.announcementContainer.setNestedScrollingEnabled(false);
+        holder.tickerContainer.setAdapter(tickerAdapter);
+        holder.tickerContainer.setNestedScrollingEnabled(false);
     }
 
     private void initVar() {
-        category = new CategoryImpl(this);
+        category = new CategoryImpl(getActivity(),this);
         holder = new ViewHolder();
         model = new Model();
-        pagerAdapter = new PromoImagePagerAdapter(model.listBanner);
-        incrementPage = runnableIncrement();
-        mHandler = new Handler();
-        tickerAdapter = TickerAnnouncementAdapter.createInstance(getActivity());
+        tickerAdapter = TickerAdapter.createInstance(getActivity(),this);
         rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(getActivity(), this);
         homeCatMenuPresenter = new HomeCatMenuPresenterImpl(this);
+        topPicksPresenter = new TopPicksPresenterImpl(this);
+        brandsPresenter = new BrandsPresenterImpl(new OnGetBrandsListener() {
+            @Override
+            public void onSuccess(Brands brands) {
+                holder.rlBrands.setVisibility(View.VISIBLE);
+                brandsRecyclerViewAdapter.setDataList(brands);
+                brandsRecyclerViewAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError() {
+                holder.rlBrands.setVisibility(View.GONE);
+            }
+        });
     }
 
-    private void startSlide() {
-        mHandler.removeCallbacks(incrementPage);
-        mHandler.postDelayed(incrementPage, SLIDE_DELAY);
+    private void startSlideTicker() {
+        tickerHandler.removeCallbacks(tickerIncrementPage);
+        tickerHandler.postDelayed(tickerIncrementPage, TICKER_DELAY);
     }
 
-    private Runnable runnableIncrement() {
+    private Runnable runnableIncrementTicker() {
         return new Runnable() {
             @Override
             public void run() {
                 try {
-                    int currentItem = holder.bannerViewPager.getCurrentItem();
-                    int maxItems = holder.bannerViewPager.getAdapter().getCount();
-                    if (maxItems != 0) {
-                        holder.bannerViewPager.setCurrentItem((currentItem + 1) % maxItems, true);
-                    } else {
-                        holder.bannerViewPager.setCurrentItem(0, true);
-                    }
-                    mHandler.postDelayed(incrementPage, SLIDE_DELAY);
+                    tickerShowed.clear();
+                    incrementTicker();
+                    tickerShowed.add(tickers.get(currentTicker));
+                    tickerAdapter.notifyDataSetChanged();
+                    tickerHandler.postDelayed(tickerIncrementPage, TICKER_DELAY);
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
@@ -293,9 +345,21 @@ public class FragmentIndexCategory extends Fragment implements
         };
     }
 
+    private void incrementTicker() {
+        currentTicker++;
+        if (currentTicker >= tickers.size())
+            currentTicker=0;
+    }
+
+    private boolean isTickerRotating() {
+        return (tickers != null && tickers.size()>1 && tickerHandler!=null && tickerIncrementPage!=null);
+    }
+
     @Override
     public void onStart() {
-        startSlide();
+        if (isTickerRotating()) {
+            startSlideTicker();
+        }
         super.onStart();
     }
 
@@ -309,18 +373,25 @@ public class FragmentIndexCategory extends Fragment implements
             rechargeCategoryPresenter.fetchLastOrder();
         }
         super.onResume();
+        getActivity().registerReceiver(stopBannerReceiver, new IntentFilter(BANNER_RECEIVER_INTENT));
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(stopBannerReceiver);
+    }
 
     @Override
     public void onStop() {
-        stopSlide();
+        if (isTickerRotating()) {
+            stopSlideTicker();
+        }
         super.onStop();
     }
 
-
-    private void stopSlide() {
-        mHandler.removeCallbacks(incrementPage);
+    private void stopSlideTicker() {
+        tickerHandler.removeCallbacks(tickerIncrementPage);
     }
 
     private void initView(LayoutInflater inflater, ViewGroup container) {
@@ -330,9 +401,12 @@ public class FragmentIndexCategory extends Fragment implements
         holder.tabLayoutRecharge = (TabLayout) holder.MainView.findViewById(R.id.tablayout_recharge);
         holder.viewpagerRecharge = (WrapContentViewPager) holder.MainView.findViewById(R.id.viewpager_pulsa);
         ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
-        holder.announcementContainer = (RecyclerView) holder.MainView.findViewById(R.id.announcement_ticker);
+        holder.tickerContainer = (RecyclerView) holder.MainView.findViewById(R.id.announcement_ticker);
         holder.wrapperScrollview = (NestedScrollView) holder.MainView.findViewById(R.id.category_scrollview);
+        holder.rlBrands = (RelativeLayout) holder.MainView.findViewById(R.id.rl_title_layout);
         initCategoryRecyclerView();
+        initTopPicks();
+        initBrands();
 
     }
 
@@ -342,8 +416,7 @@ public class FragmentIndexCategory extends Fragment implements
         holder.categoriesRecylerview.setHasFixedSize(true);
         holder.categoriesRecylerview.setNestedScrollingEnabled(false);
 
-        recyclerViewCategoryMenuAdapter =
-                new RecyclerViewCategoryMenuAdapter(getContext());
+        recyclerViewCategoryMenuAdapter = new RecyclerViewCategoryMenuAdapter(getContext());
 
         recyclerViewCategoryMenuAdapter.setHomeMenuWidth(getHomeMenuWidth());
 
@@ -352,47 +425,11 @@ public class FragmentIndexCategory extends Fragment implements
 
 
         holder.categoriesRecylerview.setLayoutManager(
-                new NonScrollLayoutManager(getActivity(),
+                new NonScrollLinearLayoutManager(getActivity(),
                         LinearLayoutManager.VERTICAL,
                         false)
-        );
-        holder.categoriesRecylerview.addItemDecoration(
-                new DividerItemDecoration(getActivity(),
-                        LinearLayoutManager.VERTICAL)
         );
         holder.categoriesRecylerview.setAdapter(recyclerViewCategoryMenuAdapter);
-    }
-
-    private void initHomeCatMenuAdapter(ArrayList<CategoryMenuModel> menuModelArrayList) {
-        RecyclerViewCategoryMenuAdapter adapter =
-                new RecyclerViewCategoryMenuAdapter(getContext(), menuModelArrayList,getHomeMenuWidth());
-
-        adapter.setOnCategoryClickedListener(this);
-        adapter.setOnGimmicClickedListener(this);
-
-        holder.categoriesRecylerview.setLayoutManager(
-                new NonScrollLayoutManager(getActivity(),
-                        LinearLayoutManager.VERTICAL,
-                        false)
-        );
-        holder.categoriesRecylerview.addItemDecoration(
-                new DividerItemDecoration(getActivity(),
-                        LinearLayoutManager.VERTICAL)
-        );
-        holder.categoriesRecylerview.setAdapter(adapter);
-    }
-
-    private View.OnClickListener onPromoClicked(final String url) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!url.equals("")) {
-                    Intent intent = new Intent(getActivity(), BannerWebView.class);
-                    intent.putExtra("url", url);
-                    startActivity(intent);
-                }
-            }
-        };
     }
 
     @Override
@@ -439,10 +476,98 @@ public class FragmentIndexCategory extends Fragment implements
         UnifyTracking.eventHomeCategory(title);
     }
 
+    /**
+     * Brands a.k.a. Official Store
+     * Created by Hafizh Herdi 20173001
+     */
+    private void initBrands(){
+        holder.brandsRecyclerView = (RecyclerView) holder.MainView.findViewById(R.id.rv_brands_list);
+        holder.brandsRecyclerView.setHasFixedSize(true);
+        holder.brandsRecyclerView.setNestedScrollingEnabled(false);
+        brandsRecyclerViewAdapter = new BrandsRecyclerViewAdapter(new BrandsRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClicked(String name, Brand brand, int position) {
+                UnifyTracking.eventClickOfficialStore(AppEventTracking.EventLabel.OFFICIAL_STORE+name);
+                Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
+                intent.putExtras(ShopInfoActivity.createBundle(String.valueOf(brand.getShopId()), ""));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getActivity().startActivity(intent);
+            }
+        }, getBrandsMenuWidth());
+        holder.brandsRecyclerView.setLayoutManager(
+                new NonScrollLinearLayoutManager(getActivity(),
+                        LinearLayoutManager.HORIZONTAL,
+                        false)
+        );
+        holder.brandsRecyclerView.setAdapter(brandsRecyclerViewAdapter);
+    }
+
+
+    /* TOP PICKS */
+    private void initTopPicks() {
+        holder.topPicksRecyclerView = (RecyclerView) holder.MainView.findViewById(R.id.recycler_view_toppicks);
+        holder.topPicksRecyclerView.setHasFixedSize(true);
+        holder.topPicksRecyclerView.setNestedScrollingEnabled(false);
+        topPicksAdapter = new TopPicksAdapter(getContext(), this, this, this);
+        topPicksAdapter.setHomeMenuWidth(getHomeMenuWidth());
+        holder.topPicksRecyclerView.setLayoutManager(
+                new NonScrollLinearLayoutManager(getActivity(),
+                        LinearLayoutManager.VERTICAL,
+                        false)
+        );
+        holder.topPicksRecyclerView.setAdapter(topPicksAdapter);
+    }
+
+    @Override
+    public void renderTopPicks(ArrayList<Toppick> toppicks) {
+
+        topPicksAdapter.setDataList(toppicks);
+        topPicksAdapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void onItemClicked(String toppickName, Item topPickItem, int position) {
+        String url = topPickItem.getUrl();
+        UnifyTracking.eventHomeTopPicksItem(toppickName, topPickItem.getName());
+        switch ((DeepLinkChecker.getDeepLinkType(url))) {
+            case DeepLinkChecker.BROWSE:
+                DeepLinkChecker.openBrowse(url, getActivity());
+                break;
+            case DeepLinkChecker.HOT:
+                DeepLinkChecker.openHot(url, getActivity());
+                break;
+            case DeepLinkChecker.CATALOG:
+                DeepLinkChecker.openCatalog(url, getActivity());
+                break;
+            default:
+                openWebViewTopPicksURL(url);
+        }
+    }
+
+    @Override
+    public void onTitleClicked(Toppick toppick) {
+        openWebViewTopPicksURL(toppick.getUrl());
+        UnifyTracking.eventHomeTopPicksTitle(toppick.getName());
+    }
+
+    @Override
+    public void onClick(Toppick toppick) {
+        openWebViewTopPicksURL(TOP_PICKS_URL);
+    }
+
+    public void openWebViewTopPicksURL(String url) {
+        if (url != "") {
+            startActivity(TopPicksWebView.newInstance(getActivity(), url));
+        }
+    }
+
+
+    /* TOP PICKS */
+
 
     @Override
     public void onSuccessFetchBanners(Banner banner) {
-//        setTicker(banner);
     }
 
     @Override
@@ -465,6 +590,8 @@ public class FragmentIndexCategory extends Fragment implements
             @Override
             public void onRetryClicked() {
                 homeCatMenuPresenter.fetchHomeCategoryMenu(true);
+                topPicksPresenter.fetchTopPicks();
+                brandsPresenter.fetchBrands();
             }
         }).showRetrySnackbar();
     }
@@ -502,10 +629,9 @@ public class FragmentIndexCategory extends Fragment implements
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
+        setLocalyticFlow();
         if (isVisibleToUser && getActivity() != null && isAdded()) {
-            setLocalyticFlow();
-//            ScreenTracking.screen(this);
-            ScreenTracking.screen(this);
+            ScreenTracking.screen(getScreenName());
             sendAppsFlyerData();
             holder.wrapperScrollview.smoothScrollTo(0, 0);
         } else {
@@ -517,7 +643,7 @@ public class FragmentIndexCategory extends Fragment implements
 
 
     public void sendAppsFlyerData() {
-        TrackingUtils.fragmentBasedAFEvent(getContext(), TrackingUtils.TYPE_FRAGMENT_INDEX_CATEGORY);
+        TrackingUtils.fragmentBasedAFEvent(HomeRouter.IDENTIFIER_CATEGORY_FRAGMENT);
     }
 
     @Override
@@ -525,6 +651,8 @@ public class FragmentIndexCategory extends Fragment implements
         super.onDestroyView();
         category.unSubscribe();
         homeCatMenuPresenter.OnDestroy();
+        topPicksPresenter.onDestroy();
+        brandsPresenter.onDestroy();
     }
 
     //region recharge
@@ -555,8 +683,8 @@ public class FragmentIndexCategory extends Fragment implements
         holder.viewpagerRecharge.setAdapter(rechargeViewPagerAdapter);
         holder.viewpagerRecharge.getAdapter().notifyDataSetChanged();
         LocalCacheHandler handler = new LocalCacheHandler(getActivity(), "tabSelection");
-        if (handler.getInt("rechargeSelectedPosition") != null && handler.getInt("rechargeSelectedPosition") == 2) {
-            holder.viewpagerRecharge.setCurrentItem(1);
+        if (handler.getInt("rechargeSelectedPosition") != null && handler.getInt("rechargeSelectedPosition") < rechargeCategory.getData().size()) {
+            holder.viewpagerRecharge.setCurrentItem(handler.getInt("rechargeSelectedPosition"));
             LocalCacheHandler.clearCache(getActivity(), "tabSelection");
         } else {
             holder.viewpagerRecharge.setCurrentItem(0);
@@ -647,63 +775,16 @@ public class FragmentIndexCategory extends Fragment implements
     private void setLocalyticFlow() {
         try {
             CommonUtils.dumper("LocalTag : CategoryApi");
-            String screenName = getString(R.string.top_category_page);
+            String screenName = AppScreen.SCREEN_HOME_CATEGORY;
             ScreenTracking.screenLoca(screenName);
+            ScreenTracking.eventLoca(screenName);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
 
-    protected class PromoImagePagerAdapter extends PagerAdapter {
-
-        List<FacadePromo.PromoItem> promoList = new ArrayList<>();
-
-        PromoImagePagerAdapter(List<FacadePromo.PromoItem> promoList) {
-            this.promoList = promoList;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            LayoutInflater inflater = (LayoutInflater) getActivity()
-                    .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.image_slider, container, false);
-
-            ImageView promoImage = (ImageView) view
-                    .findViewById(R.id.image);
-            promoImage.setOnClickListener(onPromoClicked(promoList.get(position).promoUrl));
-            loadImageTemp(promoImage, promoList.get(position).imgUrl);
-            container.addView(view);
-            return view;
-        }
-
-        @Override
-        public int getCount() {
-            return promoList.size();
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == object;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);
-        }
-
-
-    }
-
     public void scrollUntilBottomBanner() {
         holder.wrapperScrollview.smoothScrollTo(0, holder.banner != null ? holder.banner.getBottom() : 0);
-    }
-
-    private void loadImageTemp(ImageView imageview, String url) {
-        ImageHandler.LoadImage(
-                imageview,
-                url
-        );
-
     }
 
     private int getHomeMenuWidth() {
@@ -712,8 +793,24 @@ public class FragmentIndexCategory extends Fragment implements
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
-        int widthOfHomeMenuView = (int) (width / 5);
+        int widthOfHomeMenuView = (int) (width / 2);
         return widthOfHomeMenuView;
+    }
+
+    private int getBrandsMenuWidth() {
+        WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int widthOfHomeMenuView = (width / 5);
+        return widthOfHomeMenuView;
+    }
+
+    @Override
+    public void onItemClicked() {
+        holder.tickerContainer.setVisibility(View.GONE);
+        category.closeTicker();
     }
 
 

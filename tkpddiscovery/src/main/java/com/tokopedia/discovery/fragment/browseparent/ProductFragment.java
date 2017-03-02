@@ -19,6 +19,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
@@ -39,7 +40,7 @@ import com.tokopedia.discovery.view.FragmentBrowseProductView;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID;
 
@@ -59,7 +60,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     private static final int PORTRAIT_COLUMN_FOOTER = 2;
     private static final int PORTRAIT_COLUMN = 1;
 
-    @Bind(R2.id.fragmentv2list)
+    @BindView(R2.id.fragmentv2list)
     RecyclerView mRecyclerView;
 
     private static String ARG_1 = "";
@@ -115,6 +116,11 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
+    public String getScreenName() {
+        return null;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         getActivity().registerReceiver(changeGridReceiver, new IntentFilter(BrowseProductActivity.CHANGE_GRID_ACTION_INTENT));
@@ -167,6 +173,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         productAdapter.incrementPage();
 
         UnifyTracking.eventAppsFlyerViewListingSearch(model, browseModel.q);
+        TrackingUtils.eventLocaSearched(browseModel.q);
     }
 
     @Override
@@ -258,7 +265,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void setupRecyclerView() {
-        ((BrowseProductActivity) getActivity()).showLoading(true);
         mRecyclerView.setAdapter(productAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

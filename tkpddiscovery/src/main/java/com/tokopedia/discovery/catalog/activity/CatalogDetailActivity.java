@@ -26,6 +26,7 @@ import com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment;
 public class CatalogDetailActivity extends BasePresenterActivity implements ICatalogActionFragment {
     public static final String EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID";
     private static final String STATE_CATALOG_SHARE_DATA = "STATE_CATALOG_SHARE_DATA";
+    private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
 
     String catalogId;
     private ShareData shareData;
@@ -67,8 +68,11 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
 
     @Override
     protected void setViewListener() {
-        getFragmentManager().beginTransaction().add(R.id.activity_container,
-                CatalogDetailFragment.newInstance(catalogId)).commit();
+        if(getFragmentManager().findFragmentByTag(TAG_FRAGMENT_CATALOG_DETAIL) == null) {
+            getFragmentManager().beginTransaction().add(R.id.activity_container,
+                    CatalogDetailFragment.newInstance(catalogId), TAG_FRAGMENT_CATALOG_DETAIL)
+                    .commit();
+        }
     }
 
     @Override
@@ -122,11 +126,10 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R2.id.action_share_prod:
-                if (shareData != null) startActivity(ShareActivity.createIntent(this, shareData));
-                else NetworkErrorHelper.showSnackbar(this, "Data katalog belum tersedia");
-                return true;
+        if (item.getItemId() == R.id.action_share_prod) {
+            if (shareData != null) startActivity(ShareActivity.createIntent(this, shareData));
+            else NetworkErrorHelper.showSnackbar(this, "Data katalog belum tersedia");
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

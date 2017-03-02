@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.home.favorite.interactor;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -8,15 +9,19 @@ import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.home.model.HorizontalProductList;
 import com.tokopedia.core.network.apiservices.etc.HomeService;
 import com.tokopedia.core.network.apiservices.etc.apis.home.FavoriteApi;
+import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.apiservices.user.FaveShopActService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.FavoriteSendData;
+import com.tokopedia.core.network.entity.home.ProductItemData;
 import com.tokopedia.core.network.entity.home.ShopItemData;
 import com.tokopedia.core.network.entity.home.TopAdsData;
 import com.tokopedia.core.network.entity.home.TopAdsHome;
 import com.tokopedia.core.network.entity.home.WishlistData;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.ShopItem;
 import com.tokopedia.tkpd.home.favorite.model.params.WishlistFromNetworkParams;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
@@ -48,11 +53,15 @@ public class FavoriteInteractorImpl implements FavoriteInteractor {
     private final CompositeSubscription mCompositeSubscription;
     private final CacheHomeInteractorImpl cacheHome;
     private HomeService homeService;
+    MojitoService mojitoService;
     private FaveShopActService faveShopActService;
+    private Context mContext;
 
-    public FavoriteInteractorImpl() {
+    public FavoriteInteractorImpl(Context context) {
+        mContext = context;
         mCompositeSubscription = new CompositeSubscription();
         homeService = new HomeService();
+        mojitoService = new MojitoService();
         cacheHome = new CacheHomeInteractorImpl();
         faveShopActService = new FaveShopActService();
     }
@@ -100,10 +109,11 @@ public class FavoriteInteractorImpl implements FavoriteInteractor {
         if (params == null) {
             return;
         }
-        mCompositeSubscription.add(homeService.getApi().getWishList(params.getWishlistParams())
-                .map(new Func1<Response<WishlistData>, WishlistData>() {
+
+        mCompositeSubscription.add(mojitoService.getApi().getWishlist(SessionHandler.getLoginID(mContext), 4, 1)
+                .map(new Func1<Response<com.tokopedia.core.network.entity.wishlist.WishlistData>, WishlistData>() {
                     @Override
-                    public WishlistData call(Response<WishlistData> response) {
+                    public WishlistData call(Response<com.tokopedia.core.network.entity.wishlist.WishlistData> response) {
                         return getWishlistData(response);
                     }
                 })
@@ -140,8 +150,6 @@ public class FavoriteInteractorImpl implements FavoriteInteractor {
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(subscriber)
         );
-
-
     }
 
     @Override
@@ -202,15 +210,26 @@ public class FavoriteInteractorImpl implements FavoriteInteractor {
     }
 
     @NonNull
-    private WishlistData getWishlistData(Response<WishlistData> response) {
-        WishlistData wishlistData = response.body();
-        if (wishlistData.getMessageError() == null) {
-            return wishlistData;
-
-        } else if (response.code() == 200 && wishlistData.getMessageError()
-                != null && wishlistData.getMessageError().size() > 0) {
-
-            throw new RuntimeException(response.body().getMessageError().get(0));
+    private WishlistData getWishlistData(Response<com.tokopedia.core.network.entity.wishlist.WishlistData> response) {
+        WishlistData wishlistData = new WishlistData();
+        if (response.body() != null) {
+            ProductItemData itemData = new ProductItemData();
+            ArrayList<ProductItem> items = new ArrayList<>();
+            for (com.tokopedia.core.network.entity.wishlist.Wishlist data : response.body().getWishlist()){
+                ProductItem item = new ProductItem();
+                item.setBadges(data.getBadges());
+                item.setId(data.getId());
+                item.setImgUri(data.getImageUrl());
+                item.setIsAvailable(data.getIsAvailable());
+                item.setLabels(data.getLabels());
+                item.setName(data.getName());
+                item.setPrice(data.getPriceFmt());
+                item.setShopId(Integer.parseInt(data.getShop().getId()));
+                item.setShop(data.getShop().getName());
+                items.add(item);
+            }
+            itemData.setList(items);
+            wishlistData.setData(itemData);
         } else {
             new RetrofitUtils.DefaultErrorHandler(response.code());
         }

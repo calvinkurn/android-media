@@ -10,7 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.home.model.HotListModel;
@@ -20,7 +22,7 @@ import com.tokopedia.core.var.TkpdState;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -32,13 +34,13 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
     HotList hotList;
 
     public final class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.hotprod_img)
+        @BindView(R.id.hotprod_img)
         ImageView mImageofProduct;
-        @Bind(R.id.hotprod_name)
+        @BindView(R.id.hotprod_name)
         TextView mNameOfProduct;
-        @Bind(R.id.hotprod_price)
+        @BindView(R.id.hotprod_price)
         TextView mPrice;
-        @Bind(R.id.hot_list_cardview)
+        @BindView(R.id.hot_list_cardview_listproduct)
         CardView cardView;
 
         public ViewHolder(View itemView) {
@@ -57,7 +59,7 @@ public class HotListAdapter extends BaseRecyclerViewAdapter {
 
                 HotListModel hlm = (HotListModel) data.get(getAdapterPosition());
                 UnifyTracking.eventHotlist(hlm.getHotListName());
-
+                TrackingUtils.eventLoca(AppScreen.EVENT_CLICKED_HOTLIST);
                 hotList.moveToOtherActivity(temp);
             }
         }

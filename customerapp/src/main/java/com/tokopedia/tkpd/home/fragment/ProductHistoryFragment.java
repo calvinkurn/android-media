@@ -14,8 +14,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.tkpd.R;
+
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
@@ -27,8 +27,9 @@ import com.tokopedia.tkpd.home.presenter.ProductHistoryView;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by m.normansyah on 01/12/2015.
@@ -37,14 +38,14 @@ public class ProductHistoryFragment extends Fragment implements ProductHistoryVi
 
     public static final String FRAGMENT_TAG = "WishListFragment";
 
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
-    @Bind(R2.id.recycler_view)
+    @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
-    @Bind(R2.id.progress_bar)
+    @BindView(R.id.progress_bar)
     ProgressBar progressBar;
-    @Bind(R2.id.main_content)
+    @BindView(R.id.main_content)
     LinearLayout mainContent;
 
     GridLayoutManager layoutManager;
@@ -52,6 +53,7 @@ public class ProductHistoryFragment extends Fragment implements ProductHistoryVi
 //    ItemDecorator itemDecorator;
 
     ProductHistory productHistory;
+    private Unbinder unbinder;
 
     public ProductHistoryFragment(){}
 
@@ -71,7 +73,7 @@ public class ProductHistoryFragment extends Fragment implements ProductHistoryVi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.activity_recyclerview, container, false);
-        ButterKnife.bind(this, parentView);
+        unbinder = ButterKnife.bind(this, parentView);
         productHistory.initAnalyticsHandler(getActivity());
         prepareView();
         setListener();
@@ -88,7 +90,7 @@ public class ProductHistoryFragment extends Fragment implements ProductHistoryVi
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         productHistory.unSubscribe();
     }
 
@@ -96,12 +98,7 @@ public class ProductHistoryFragment extends Fragment implements ProductHistoryVi
     public void onResume() {
         super.onResume();
         productHistory.setLocalyticFlow(getActivity(), getString(R.string.home_history_product));
-        if(productHistory.isAfterRotation()){
-//            displayPull(true);
-            productHistory.setData();
-        }else{
-            productHistory.fetchDataFromCache(getActivity());
-        }
+        productHistory.fetchDataFromCache(getActivity());
     }
 
     @Override

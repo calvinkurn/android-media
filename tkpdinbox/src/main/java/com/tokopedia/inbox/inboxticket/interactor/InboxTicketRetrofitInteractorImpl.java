@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 
+import com.tokopedia.core.R;
 import com.tokopedia.core.customadapter.ImageUpload;
 import com.tokopedia.core.inboxreputation.model.actresult.ImageUploadResult;
 import com.tokopedia.core.inboxreputation.model.param.GenerateHostPass;
@@ -25,10 +26,12 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
+import com.tokopedia.core.util.ImageUploadHandler;
 
 import org.json.JSONException;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.List;
@@ -54,6 +57,7 @@ public class InboxTicketRetrofitInteractorImpl implements InboxTicketRetrofitInt
     private static final String DEFAULT_MSG_ERROR = "Terjadi Kesalahan, Mohon ulangi beberapa saat lagi";
     private static final String PARAM_IMAGE_ID = "id";
     private static final String PARAM_WEB_SERVICE = "web_service";
+    private static final String TOO_MANY_REQUEST = "TOO_MANY_REQUEST";
 
     private final CompositeSubscription compositeSubscription;
     private final InboxTicketService inboxTicketService;
@@ -100,8 +104,11 @@ public class InboxTicketRetrofitInteractorImpl implements InboxTicketRetrofitInt
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(InboxTicket.class));
 
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
                     } else {
-                        if (response.body().isNullData()) listener.onNullData();
+                        if (response.body().isNullData())
+                            listener.onNullData(response.body().getErrorMessages().toString().replace("[", "").replace("]", ""));
                         else listener.onError(response.body().getErrorMessages().toString());
                     }
                 } else {
@@ -180,6 +187,8 @@ public class InboxTicketRetrofitInteractorImpl implements InboxTicketRetrofitInt
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(InboxTicketDetail.class));
 
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
                     } else {
                         if (response.body().isNullData()) listener.onNullData();
                         else listener.onError(response.body().getErrorMessages().toString());
@@ -259,6 +268,8 @@ public class InboxTicketRetrofitInteractorImpl implements InboxTicketRetrofitInt
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(InboxTicketDetail.class).getTicketReply());
 
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
                     } else {
                         if (response.body().isNullData()) listener.onNullData();
                         else listener.onError(response.body().getErrorMessages().toString());
@@ -399,6 +410,8 @@ public class InboxTicketRetrofitInteractorImpl implements InboxTicketRetrofitInt
                         if (!response.body().isError()
                                 && response.body().getJsonData().getString("is_success").equals("1")) {
                             listener.onSuccess(response.body().convertDataObj(ReplyResult.class));
+                        } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                            listener.onError(response.body().getErrorMessageJoined());
                         } else {
                             if (response.body().isNullData()) listener.onNullData();
                             else listener.onError(response.body().getErrorMessages().get(0));
@@ -458,8 +471,12 @@ public class InboxTicketRetrofitInteractorImpl implements InboxTicketRetrofitInt
                 .map(new Func1<GeneratedHost, InboxTicketParam>() {
                     @Override
                     public InboxTicketParam call(GeneratedHost generatedHost) {
-                        param.setGeneratedHost(generatedHost);
-                        return param;
+                        if (generatedHost.getMessageError() == null || generatedHost.getMessageError().isEmpty()) {
+                            param.setGeneratedHost(generatedHost);
+                            return param;
+                        } else {
+                            throw new RuntimeException(generatedHost.getMessageError().get(0));
+                        }
                     }
                 });
     }
@@ -493,7 +510,12 @@ public class InboxTicketRetrofitInteractorImpl implements InboxTicketRetrofitInt
                                 .compileAllParam()
                                 .finish();
 
-                        File file = new File(imageUpload.getFileLoc());
+                        File file;
+                        try {
+                            file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(imageUpload.getFileLoc()));
+                        } catch (IOException e) {
+                            throw new RuntimeException(context.getString(R.string.error_upload_image));
+                        }
                         RequestBody userId = RequestBody.create(MediaType.parse("text/plain"),
                                 networkCalculator.getContent().get(NetworkCalculator.USER_ID));
                         RequestBody deviceId = RequestBody.create(MediaType.parse("text/plain"),

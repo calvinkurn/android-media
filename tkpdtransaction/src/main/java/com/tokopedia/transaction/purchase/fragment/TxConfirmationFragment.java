@@ -3,9 +3,11 @@ package com.tokopedia.transaction.purchase.fragment;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.IntentService;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -18,13 +20,14 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customadapter.LazyListView;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.activity.ConfirmPaymentActivity;
 import com.tokopedia.transaction.purchase.adapter.TxConfAdapter;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
@@ -38,11 +41,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
- * TxConfirmationFragment
- * Created by Angga.Prasetiyo on 13/05/2016.
+ * @author Angga.Prasetiyo on 13/05/2016.
  */
 public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmationPresenter>
         implements TxConfViewListener, LazyListView.LazyLoadListener,
@@ -50,7 +52,7 @@ public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmation
         AdapterView.OnItemClickListener, TxListUIReceiver.ActionListener {
     public static final int REQUEST_CONFIRMATION_DETAIL = 0;
 
-    @Bind(R2.id.order_list)
+    @BindView(R2.id.order_list)
     LazyListView lvTXConf;
 
     private View loadMoreView;
@@ -66,6 +68,10 @@ public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmation
     private Set<TxConfData> txConfDataSelected = new HashSet<>();
     private TxListUIReceiver txUIReceiver;
 
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
 
     public static TxConfirmationFragment createInstance() {
         return new TxConfirmationFragment();
@@ -113,7 +119,7 @@ public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmation
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_tx_payment_conf;
+        return R.layout.fragment_transaction_confirmation_tx_module;
     }
 
     @SuppressLint("InflateParams")
@@ -188,6 +194,23 @@ public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmation
     @Override
     public void dismissDialog(Dialog dialog) {
         if (dialog.isShowing()) dialog.dismiss();
+    }
+
+    @Override
+    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
+
+    }
+
+    @Override
+    public String getStringFromResource(@StringRes int resId) {
+        return getString(resId);
+    }
+
+    @Override
+    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            TKPDMapParam<String, String> originParams
+    ) {
+        return null;
     }
 
     @Override
@@ -437,13 +460,12 @@ public class TxConfirmationFragment extends BasePresenterFragment<TxConfirmation
 
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        switch (item.getItemId()) {
-            case R2.id.action_confirm:
-                presenter.processMultiConfirmPayment(getActivity(), txConfDataSelected);
-                return true;
-            case R2.id.action_cancel:
-                presenter.processMultipleCancelPayment(getActivity(), txConfDataSelected);
-                return true;
+        if (item.getItemId() == R.id.action_confirm) {
+            presenter.processMultiConfirmPayment(getActivity(), txConfDataSelected);
+            return true;
+        } else if (item.getItemId() == R.id.action_cancel) {
+            presenter.processMultipleCancelPayment(getActivity(), txConfDataSelected);
+            return true;
         }
         return false;
     }

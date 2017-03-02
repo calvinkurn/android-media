@@ -1,10 +1,10 @@
 package com.tokopedia.seller.fragment;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,40 +25,41 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ListViewHelper;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.MultiPaneActivity;
-import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
-import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
-import com.tokopedia.core.network.v4.NetworkConfig;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.seller.selling.model.orderShipping.OrderProduct;
-import com.tokopedia.seller.selling.model.shopneworderdetail.ShopNewOrderDetailView;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.v4.NetworkConfig;
+import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
+import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
 import com.tokopedia.seller.selling.SellingService;
-import com.tokopedia.seller.selling.presenter.listener.SellingView;
 import com.tokopedia.seller.selling.model.ModelParamSelling;
 import com.tokopedia.seller.selling.model.modelConfirmShipping.Data;
 import com.tokopedia.seller.selling.model.orderShipping.OrderCustomer;
 import com.tokopedia.seller.selling.model.orderShipping.OrderDestination;
 import com.tokopedia.seller.selling.model.orderShipping.OrderDetail;
 import com.tokopedia.seller.selling.model.orderShipping.OrderPayment;
+import com.tokopedia.seller.selling.model.orderShipping.OrderProduct;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShipment;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShop;
+import com.tokopedia.seller.selling.model.shopneworderdetail.ShopNewOrderDetailView;
 import com.tokopedia.seller.selling.orderReject.ConfirmRejectOrderActivity;
 import com.tokopedia.seller.selling.orderReject.adapter.ProductListAdapter;
 import com.tokopedia.seller.selling.orderReject.fragment.ConstrainRejectedDialog;
 import com.tokopedia.seller.selling.orderReject.model.DataResponseReject;
 import com.tokopedia.seller.selling.orderReject.model.ModelRejectOrder;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.seller.selling.presenter.listener.SellingView;
+import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
 import com.tokopedia.seller.util.NewOrderDialogBuilder;
-import com.tokopedia.core.var.TkpdState;
 
 import org.parceler.Parcels;
 
@@ -67,7 +67,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * Created by Tkpd_Eka on 2/12/2015.
  */
 public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrderDetailView, SellingView {
@@ -209,6 +208,10 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         public TextView pickupLocationDetail;
         public TextView deliveryLocationDetail;
         public LinearLayout wrapperInsurance;
+        View wrapperBuyerRequestCancel;
+        TextView buyerRequestCancel;
+        TextView dateRequestCancel;
+        TextView askBuyer;
     }
 
     public static class Model {
@@ -312,6 +315,10 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         holder.pickupLocationDetail = (TextView) rootView.findViewById(R.id.pickup_detail_location);
         holder.deliveryLocationDetail = (TextView) rootView.findViewById(R.id.destination_detail_location);
         holder.wrapperInsurance = (LinearLayout) rootView.findViewById(R.id.wrapper_insurance);
+        holder.wrapperBuyerRequestCancel = rootView.findViewById(R.id.wrapper_buyer_request_cancel);
+        holder.buyerRequestCancel = (TextView) rootView.findViewById(R.id.buyer_request_cancel);
+        holder.dateRequestCancel = (TextView) rootView.findViewById(R.id.date_buyer_request_cancel);
+        holder.askBuyer = (TextView) rootView.findViewById(R.id.ask_buyer);
     }
 
     private void setViewDataV4() {
@@ -323,14 +330,28 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         OrderShop shop = order.getOrderShop();
         orderId = orderDetail.getDetailOrderId().toString();
         holder.Invoice.setText(orderDetail.getDetailInvoice());
-        if (orderDetail.getDetailDropshipName() != null && !orderDetail.getDetailDropshipName().equals("") && !orderDetail.getDetailDropshipName().equals("0")) {
+        if (orderDetail.getDetailDropshipName() != null && !orderDetail.getDetailDropshipName().equals("")
+                && !orderDetail.getDetailDropshipName().equals("0")) {
             holder.SenderName.setText(orderDetail.getDetailDropshipName());
             holder.SenderPhone.setText(orderDetail.getDetailDropshipTelp());
             holder.SenderForm.setVisibility(View.VISIBLE);
         } else {
             holder.SenderForm.setVisibility(View.GONE);
         }
-        holder.BuyerName.setText(Html.fromHtml(customer.getCustomerName()));
+
+        if (orderDetail.getDetailCancelRequest() != null && orderDetail.getDetailCancelRequest().getCancelRequest() == 1) {
+            holder.wrapperBuyerRequestCancel.setVisibility(View.VISIBLE);
+//            if(Build.VERSION.SDK_INT >= 24) {
+//                holder.buyerRequestCancel.setText("\"" + Html.fromHtml(orderDetail.getDetailCancelRequest().getReason(), Html.) + "\"");
+//            }else{
+            holder.buyerRequestCancel.setText(String.format("\"%s\"",
+                    MethodChecker.fromHtml(orderDetail.getDetailCancelRequest().getReason()))
+            );
+//            }
+            holder.dateRequestCancel.setText(orderDetail.getDetailCancelRequest().getReasonTime());
+        }
+
+        holder.BuyerName.setText(MethodChecker.fromHtml(customer.getCustomerName()));
         userId = customer.getCustomerId();
         holder.AdditionalCost.setText(orderDetail.getDetailAdditionalFeeIdr());
         if (!orderDetail.getDetailInsurancePrice().equals("0") && orderDetail.getDetailInsurancePrice() != null
@@ -349,7 +370,7 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
             phoneTokopedia = getString(R.string.title_phone) + " " + destination.getReceiverPhone();
         model = new Model();
         model.shippingID = shipping.getShipmentId();
-        model.pickupAddress = Html.fromHtml(shop.getAddressStreet()
+        model.pickupAddress = MethodChecker.fromHtml(shop.getAddressStreet()
                 + "<br/>" + shop.getAddressCity() + ", " + shop.getAddressPostal()
                 + "<br/>" + shop.getAddressProvince()
                 + "<br/>" + getString(R.string.title_phone) + ":" + shop.getShipperPhone()
@@ -357,10 +378,11 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         model.shippingName = shipping.getShipmentName();
         model.shippingProduct = shipping.getShipmentProduct();
         holder.Destination.setText(model.shippingName + " - " + model.shippingProduct);
-        String vDest = Html.fromHtml(
+        String vDest = MethodChecker.fromHtml(
                 destination.getReceiverName()
                         + "<br/>" + destination.getAddressStreet()
-                        + "<br/>" + destination.getAddressDistrict() + " " + destination.getAddressCity() + ", " + destination.getAddressPostal()
+                        + "<br/>" + destination.getAddressDistrict() + " " + destination.getAddressCity()
+                        + ", " + destination.getAddressPostal()
                         + "<br/>" + destination.getAddressProvince() + "<br/>" + phoneTokopedia
 
         ).toString();
@@ -401,7 +423,7 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         holder.ProductListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(ProductInfoActivity.createInstance(getActivity(), order.getOrderProducts().get(position).getProductId().toString()));
+                startActivity(ProductInfoActivity.createInstance(getActivity(), getProductDataToPass(position)));
             }
         });
         ListViewHelper.getListViewSize(holder.ProductListView);
@@ -418,6 +440,29 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         holder.PartialButton.setOnClickListener(onPartialListener());
         holder.Invoice.setOnClickListener(onInvoiceListener());
         holder.BuyerName.setOnClickListener(onBuyerName());
+        holder.askBuyer.setOnClickListener(onAskBuyerClickListener());
+    }
+
+    private View.OnClickListener onAskBuyerClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = InboxRouter.getSendMessageActivityIntent(getActivity());
+                Bundle bundle = new Bundle();
+                bundle.putString(InboxRouter.PARAM_USER_ID, order.getOrderCustomer().getCustomerId());
+                bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, order.getOrderCustomer().getCustomerName());
+                bundle.putString(InboxRouter.PARAM_CUSTOM_SUBJECT,
+                        order.getOrderDetail().getDetailInvoice());
+                bundle.putString(InboxRouter.PARAM_CUSTOM_MESSAGE,
+                        MethodChecker.fromHtml(
+                                getString(R.string.custom_content_message_ask_seller)
+                                        .replace("XXX",
+                                                order.getOrderDetail().getDetailPdfUri())).toString()
+                );
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        };
     }
 
     private View.OnClickListener onBuyerName() {
@@ -559,7 +604,8 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
                         }
                         break;
                     case 4:
-                        ConstrainRejectedDialog dialog = ConstrainRejectedDialog.newInstance(reason, ProductListAdapter.Type.courrier);
+                        ConstrainRejectedDialog dialog = ConstrainRejectedDialog.newInstance(reason,
+                                ProductListAdapter.Type.courrier);
                         dialog.setOnConfirmReject(onConfirmReject);
                         dialog.show(getFragmentManager(), reason);
                         break;
@@ -639,13 +685,13 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         LayoutInflater li = LayoutInflater.from(context);
         @SuppressLint("InflateParams")
         View promptsView = li.inflate(R.layout.error_network_dialog, null);
-        TextView msg = (TextView) promptsView.findViewById(R2.id.msg);
+        TextView msg = (TextView) promptsView.findViewById(R.id.msg);
         Spanned textError;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            textError = Html.fromHtml(error, Html.FROM_HTML_MODE_LEGACY);
-        } else {
-            textError = Html.fromHtml(error);
-        }
+        //if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+        //  textError = MethodChecker.fromHtml(error, Html.FROM_HTML_MODE_LEGACY);
+        //} else {
+        textError = MethodChecker.fromHtml(error);
+        //}
         msg.setText(textError);
         dialog.setView(promptsView);
         dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -769,17 +815,26 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
                 model.ProductUrl = product.getProductUrl();
                 model.ProductIdList = product.getProductId().toString();
                 model.ImageUrl = product.getProductPicture();
-                model.Name = Html.fromHtml(product.getProductName()).toString();
+                model.Name = MethodChecker.fromHtml(product.getProductName()).toString();
                 model.Price = product.getProductPrice();
                 model.TotalOrder = product.getProductQuantity().toString();
                 model.TotalPrice = product.getOrderSubtotalPriceIdr();
-                model.Message = CommonUtils.checkNullForZeroJson(product.getProductNotes()) ? Html.fromHtml(product.getProductNotes()).toString() : "";
+                model.Message = CommonUtils.checkNullForZeroJson(product.getProductNotes()) ? MethodChecker.fromHtml(product.getProductNotes()).toString() : "";
                 list.add(model);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return list;
+    }
+
+    private ProductPass getProductDataToPass(int position) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(order.getOrderProducts().get(position).getProductPrice())
+                .setProductId(order.getOrderProducts().get(position).getProductId())
+                .setProductName(order.getOrderProducts().get(position).getProductName())
+                .setProductImage(order.getOrderProducts().get(position).getProductPicture())
+                .build();
     }
 
 }

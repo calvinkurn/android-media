@@ -61,7 +61,6 @@ public class NetworkParam {
         public String source;
         public Map<String, String> extraFilter;
 
-
         @Override
         public String toString() {
             return new Gson().toJson(this);
@@ -76,12 +75,8 @@ public class NetworkParam {
         data.put(BrowseApi.START, product.start);
         data.put(BrowseApi.ROWS, product.rows);
         data.put(BrowseApi.SC, product.sc);
-        if (product.source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT)) {
-            data.put(BrowseApi.DEFAULT_SC, product.sc);
-            data.remove(BrowseApi.SC);
-        }
-        data.put(BrowseApi.OB, product.ob);
         data.put(BrowseApi.Q, product.q);
+        data.put(BrowseApi.OB, product.ob);
         data.put(BrowseApi.H, product.h);
         data.put(BrowseApi.ID, product.id);// didn't use, previously for topads
         data.put(BrowseApi.NEGATIVE, product.negative);
@@ -97,7 +92,10 @@ public class NetworkParam {
         data.put(BrowseApi.HASHTAG, Boolean.toString(product.hashtag));
         data.put(BrowseApi.UNIQUE_ID, product.unique_id);
         data.put(BrowseApi.SOURCE, product.source);
-
+        if (product.source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT)) {
+            data.put(BrowseApi.DEFAULT_SC, product.sc);
+            data.remove(BrowseApi.SC);
+        }
         return data;
     }
 
@@ -129,14 +127,14 @@ public class NetworkParam {
 
     public static HashMap<String, String> generateShopQuery(Shop shop) {
         HashMap<String, String> data = new HashMap<>();
-        if (shop.extraFilter != null)
-            data.putAll(shop.extraFilter);
         data.put(BrowseApi.FLOC, shop.floc);
         data.put(BrowseApi.Q, shop.q);
         data.put(BrowseApi.FSHOP, shop.fshop);
         data.put(BrowseApi.ROWS, Integer.toString(shop.rows));
         data.put(BrowseApi.START, Integer.toString(shop.start));
         data.put(BrowseApi.DEVICE, shop.device);
+        if (shop.extraFilter != null)
+            data.putAll(shop.extraFilter);
         return data;
     }
 

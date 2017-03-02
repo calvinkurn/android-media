@@ -19,7 +19,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.CatalogModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -38,7 +38,7 @@ import com.tokopedia.discovery.view.CatalogView;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Erry on 6/30/2016.
@@ -54,7 +54,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     private static final int PORTRAIT_COLUMN_FOOTER = 2;
     private static final int PORTRAIT_COLUMN = 1;
 
-    @Bind(R2.id.list_catalog)
+    @BindView(R2.id.list_catalog)
     RecyclerView list_catalog;
 
     private List<RecyclerViewItem> browseCatalogModelList = new ArrayList<>();
@@ -75,6 +75,11 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
             list_catalog.scrollToPosition(lastItemPosition);
         }
     };
+
+    @Override
+    public String getScreenName() {
+        return null;
+    }
 
     private void changeLayoutType(BrowseProductRouter.GridType gridType) {
         this.gridType = gridType;
@@ -317,7 +322,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     }
 
     @Override
-    public void setDynamicFilterAtrribute(DynamicFilterModel.Data filterAtrribute, int activeTab) {
+    public void setDynamicFilterAtrribute(DataValue filterAtrribute, int activeTab) {
         if (filterAtrribute.getSort() != null) {
             filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());
         }

@@ -21,7 +21,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import com.tokopedia.core.R;
+import com.tokopedia.core.util.TkpdWebView;
+import com.tokopedia.tkpd.R;
 
 /**
  * @author by kulomady on 7/22/2016.
@@ -32,7 +33,7 @@ public class FragmentRechargeWebView extends Fragment {
     private static final String ACTION_KEY = "action";
     private static final String ACTION_EDIT_VALUE = "edit_data";
     private ProgressBar progressBar;
-    private WebView webviewRecharge;
+    private TkpdWebView webviewRecharge;
 
     private class MyWebViewClient extends WebChromeClient {
         @Override
@@ -112,11 +113,11 @@ public class FragmentRechargeWebView extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fragment_general_web_view, container, false);
         String url = getArguments().getString("url", RECHARGE_HOME_URL);
-        webviewRecharge = (WebView) view.findViewById(R.id.webview);
+        webviewRecharge = (TkpdWebView) view.findViewById(R.id.webview);
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
         progressBar.setIndeterminate(true);
         clearCache(webviewRecharge);
-        webviewRecharge.loadUrl(url);
+        webviewRecharge.loadAuthUrlWithFlags(url);
         webviewRecharge.setWebViewClient(new RechargeWebClient());
         webviewRecharge.setWebChromeClient(new MyWebViewClient());
         getActivity().setProgressBarIndeterminateVisibility(true);
@@ -139,7 +140,7 @@ public class FragmentRechargeWebView extends Fragment {
     }
 
     @SuppressLint("unused")
-    public void setWebviewRecharge(WebView webviewRecharge) {
+    public void setWebviewRecharge(TkpdWebView webviewRecharge) {
         this.webviewRecharge = webviewRecharge;
     }
 

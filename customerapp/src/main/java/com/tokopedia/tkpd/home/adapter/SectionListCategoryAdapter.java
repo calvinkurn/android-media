@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 
 import java.util.ArrayList;
@@ -63,6 +63,12 @@ public class SectionListCategoryAdapter extends RecyclerView.Adapter<SectionList
             }
         });
 
+        if(i % 2 != 0 ){
+            holder.sparator.setVisibility(View.GONE);
+        } else {
+            holder.sparator.setVisibility(View.VISIBLE);
+        }
+
     }
 
 
@@ -86,12 +92,13 @@ public class SectionListCategoryAdapter extends RecyclerView.Adapter<SectionList
 
         ImageView itemImage;
         LinearLayout linWrapper;
-
+        View sparator;
         protected View view;
 
         CategoryMenuRowHolder(View view) {
             super(view);
             this.view = view;
+            this.sparator = view.findViewById(R.id.sparator);
             this.tvTitle = (TextView) view.findViewById(R.id.tvTitle);
             this.itemImage = (ImageView) view.findViewById(R.id.itemImage);
 

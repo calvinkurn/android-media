@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -16,8 +15,8 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.discovery.model.Breadcrumb;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.DynamicObject;
+import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
 import com.tokopedia.discovery.dynamicfilter.adapter.DynamicCategoryAdapter;
@@ -26,12 +25,13 @@ import com.tokopedia.discovery.dynamicfilter.presenter.CategoryPresenterImpl;
 import com.tokopedia.discovery.dynamicfilter.presenter.CategoryView;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterPresenter;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
+import com.tokopedia.discovery.util.NpaLinearLayoutManager;
 
 import org.parceler.Parcels;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
@@ -41,10 +41,10 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
 
     private static final String GROUPS_KEY = "groups_key";
 
-    @Bind(R2.id.dynamic_filter_category_recyclerview)
+    @BindView(R2.id.dynamic_filter_category_recyclerview)
     RecyclerView dynamicFilterCategory;
 
-    @Bind(R2.id.dynamic_filter_category_finish)
+    @BindView(R2.id.dynamic_filter_category_finish)
     Button dynamicFilterCategoryFinish;
 
     private DynamicCategoryAdapter dynamicCategoryAdapter;
@@ -57,18 +57,34 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
         }
     };
 
+    public static DynamicFilterCategoryFragment newInstance(boolean isFromCategory) {
 
-    public static DynamicFilterCategoryFragment newInstance(List<Breadcrumb> breadCrumb, List<DynamicFilterModel.Filter> filterList,
-                                                            String currentCategory) {
+        DynamicFilterCategoryFragment dynamicFilterCategoryFragment = new DynamicFilterCategoryFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(DynamicFilterPresenter.EXTRA_FROM_CATEGORY, isFromCategory);
+        dynamicFilterCategoryFragment.setArguments(bundle);
+        return dynamicFilterCategoryFragment;
+
+    }
+
+
+    public static DynamicFilterCategoryFragment newInstance(List<Breadcrumb> breadCrumb, List<Filter> filterList,
+                                                            String currentCategory, boolean isFromCategory) {
 
         DynamicFilterCategoryFragment dynamicFilterCategoryFragment = new DynamicFilterCategoryFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(DynamicFilterPresenter.EXTRA_PRODUCT_BREADCRUMB_LIST, Parcels.wrap(breadCrumb));
         bundle.putParcelable(DynamicFilterPresenter.EXTRA_FILTER_CATEGORY_LIST, Parcels.wrap(filterList));
         bundle.putString(DynamicFilterPresenter.EXTRA_CURRENT_CATEGORY, currentCategory);
+        bundle.putBoolean(DynamicFilterPresenter.EXTRA_FROM_CATEGORY, isFromCategory);
         dynamicFilterCategoryFragment.setArguments(bundle);
         return dynamicFilterCategoryFragment;
 
+    }
+
+    @Override
+    public String getScreenName() {
+        return null;
     }
 
     @Override
@@ -115,7 +131,7 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
 
     @Override
     public void onMessageError(int type, Object... data) {
-        if(data[0] instanceof String) {
+        if (data[0] != null && data[0] instanceof String) {
             Toast.makeText(getActivity(), (String) data[0], Toast.LENGTH_SHORT).show();
         }
     }
@@ -133,20 +149,23 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
         });
         dynamicCategoryAdapter.addAll(dynamicParentObject);
         dynamicCategoryAdapter.expandCheckedCategory();
+        Bundle bundle = this.getArguments();
+        if (bundle != null && bundle.containsKey(DynamicFilterPresenter.EXTRA_FROM_CATEGORY)
+                && bundle.getBoolean(DynamicFilterPresenter.EXTRA_FROM_CATEGORY))
+            dynamicCategoryAdapter.expandGroup(0);
     }
 
     @Override
     public void setupRecyclerView() {
         // Set the layout manager to a LinearLayout manager for vertical list
-        dynamicFilterCategory.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        dynamicFilterCategory.addItemDecoration(new DividerItemDecoration(getActivity()));
+        dynamicFilterCategory.setLayoutManager(new NpaLinearLayoutManager(getActivity()));
         dynamicFilterCategory.setHasFixedSize(true);
         dynamicFilterCategory.setAdapter(dynamicCategoryAdapter);
     }
 
     @Override
     public void showLoading(boolean bool) {
-        if(bool){
+        if (bool) {
             dialog.showDialog();
         } else {
             dialog.dismiss();
@@ -154,8 +173,8 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
     }
 
     @OnClick(R2.id.dynamic_filter_category_finish)
-    public void finishTo(){
-        if(getActivity() != null && getActivity() instanceof DynamicFilterView){
+    public void finishTo() {
+        if (getActivity() != null && getActivity() instanceof DynamicFilterView) {
             ((DynamicFilterView) getActivity()).finishThis();
         }
     }
@@ -163,7 +182,8 @@ public class DynamicFilterCategoryFragment extends BaseFragment<CategoryPresente
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putIntegerArrayList(GROUPS_KEY, dynamicCategoryAdapter.saveGroups());
+        if (dynamicCategoryAdapter != null)
+            outState.putIntegerArrayList(GROUPS_KEY, dynamicCategoryAdapter.saveGroups());
     }
 
     @Override

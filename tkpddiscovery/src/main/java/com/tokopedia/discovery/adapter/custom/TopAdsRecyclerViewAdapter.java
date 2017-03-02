@@ -1,10 +1,3 @@
-/*
- * Created By Kulomady on 11/26/16 1:08 AM
- * Copyright (c) 2016. All rights reserved
- *
- * Last Modified 11/26/16 1:08 AM
- */
-
 package com.tokopedia.discovery.adapter.custom;
 
 import android.app.Activity;
@@ -17,7 +10,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +23,12 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.TopAdsUtil;
+import com.tokopedia.core.var.Badge;
+import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
 
 import java.util.List;
@@ -97,10 +94,10 @@ public class TopAdsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         if (viewHolder instanceof ViewHolder) {
             ViewHolder holder = (ViewHolder) viewHolder;
             ProductItem item = getItem(position);
-            holder.productName.setText(Html.fromHtml(item.name));
+            holder.productName.setText(MethodChecker.fromHtml(item.name));
             holder.productPrice.setText(item.price);
-            holder.shopLocation.setText(item.getShop_location());
-            holder.shopName.setText(Html.fromHtml(item.shop));
+            holder.shopLocation.setText(item.getShopLocation());
+            holder.shopName.setText(MethodChecker.fromHtml(item.shop));
             setProductImage(holder, item);
             setClickListener(holder, item);
             setLabels(holder, item);
@@ -120,7 +117,7 @@ public class TopAdsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(context, ProductInfoActivity.class);
-                bundle.putString("product_id", item.getId());
+                bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, item);
                 intent.putExtras(bundle);
                 context.startActivity(intent);
             }
@@ -129,7 +126,7 @@ public class TopAdsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     private void setLabels(ViewHolder holder, ProductItem item) {
         if (item.getLabels() != null && holder.labelContainer.getChildCount() == 0)
-            for (ProductItem.Label label : item.getLabels()) {
+            for (Label label : item.getLabels()) {
                 View view = LayoutInflater.from(context).inflate(R.layout.label_layout, null);
                 TextView labelText = (TextView) view.findViewById(R.id.label);
                 labelText.setText(label.getTitle());
@@ -149,7 +146,7 @@ public class TopAdsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     private void setBadges(ViewHolder holder, ProductItem item) {
         if (item.getBadges() != null && holder.badgeContainer.getChildCount() == 0)
-            for (ProductItem.Badge badges : item.getBadges()) {
+            for (Badge badges : item.getBadges()) {
                 View view = LayoutInflater.from(context).inflate(R.layout.badge_layout, null);
                 ImageView imageBadge = (ImageView) view.findViewById(R.id.badge);
                 holder.badgeContainer.addView(view);
@@ -192,5 +189,14 @@ public class TopAdsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             Activity activity = (Activity) context;
             infoTopAds.show(activity.getFragmentManager(), "INFO_TOPADS");
         }
+    }
+
+    private ProductPass getProductDataToPass(ProductItem productItem) {
+        return ProductPass.Builder.aProductPass()
+                .setProductPrice(productItem.getPrice())
+                .setProductId(productItem.getId())
+                .setProductName(productItem.getName())
+                .setProductImage(productItem.getImgUri())
+                .build();
     }
 }

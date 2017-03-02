@@ -14,8 +14,8 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.tkpd.R;
+
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -26,8 +26,9 @@ import com.tokopedia.tkpd.home.presenter.SimpleHome;
 import com.tokopedia.tkpd.home.presenter.SimpleHomeImpl;
 import com.tokopedia.tkpd.home.presenter.SimpleHomeView;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class SimpleHomeActivity extends TActivity
         implements SimpleHomeView {
@@ -37,12 +38,13 @@ public class SimpleHomeActivity extends TActivity
     public static final int WISHLIST_FRAGMENT = 1;
     public static final int PRODUCT_HISTORY_FRAGMENT = 2;
 
-    @Bind(R2.id.simple_home_toolbar)
+    @BindView(R.id.simple_home_toolbar)
     Toolbar toolbar;
 
     SimpleHome simpleHome;
 
     FragmentManager supportFragmentManager;
+    private Unbinder unbinder;
 
     @Override
     public String getScreenName() {
@@ -57,7 +59,7 @@ public class SimpleHomeActivity extends TActivity
             getWindow().setStatusBarColor(getResources().getColor(R.color.green_600));
         }
         setContentView(R.layout.activity_simple_home);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
         supportFragmentManager = getSupportFragmentManager();
         supportFragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -140,7 +142,6 @@ public class SimpleHomeActivity extends TActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ButterKnife.unbind(this);
     }
 
     @Override
@@ -179,15 +180,15 @@ public class SimpleHomeActivity extends TActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R2.id.home:
+            case R.id.home:
                 Log.d(TAG, messageTAG + " R.id.home !!!");
                 return true;
             case android.R.id.home:
                 Log.d(TAG, messageTAG+" android.R.id.home !!!");
                 getSupportFragmentManager().popBackStack();
                 return true;
-            case R2.id.action_cart:
-                return TActivity.onCartOptionSelected(this);
+            case R.id.action_cart:
+                return onCartOptionSelected(this);
         }
 
         return super.onOptionsItemSelected(item);

@@ -25,16 +25,20 @@ import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Breadcrumb;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
+import com.tokopedia.core.network.entity.discovery.CatalogModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.session.base.BaseFragment;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
 import com.tokopedia.discovery.model.NetworkParam;
@@ -46,9 +50,11 @@ import com.tokopedia.discovery.view.BrowseProductParentView;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -61,17 +67,23 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     public static final String SOURCE_EXTRA = "SOURCE_EXTRA";
     public static final String FILTER_EXTRA = "FILTER_EXTRA";
     public static final String POSITION_EXTRA = "POSITION_EXTRA";
-    @Bind(R2.id.pager)
+    @BindView(R2.id.pager)
     ViewPager viewPager;
-    @Bind(R2.id.tabs)
+    @BindView(R2.id.tabs)
     TabLayout tabLayout;
-    @Bind(R2.id.discovery_ticker)
+    @BindView(R2.id.discovery_ticker)
     TextView discoveryTicker;
     public static final String TAG = BrowseParentFragment.class.getSimpleName();
-    @Bind(R2.id.tab_container)
+    @BindView(R2.id.tab_container)
     LinearLayout tabContainer;
     private String source;
     private String formatKey = "%d_%s";
+
+    @Override
+    public String getScreenName() {
+        return null;
+    }
+
     public DiscoveryActivityPresenter discoveryActivityPresenter = new DiscoveryActivityPresenter.DiscoveryActivityPresenterImpl() {
         @Override
         public BrowseProductActivityModel getBrowseProductActivityModel() {
@@ -103,7 +115,8 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
                         }
                     case 1:
                         if (fragment instanceof CatalogFragment) {
-                            return ((CatalogFragment) fragment).getDataModel().result.breadcrumb;
+                            BrowseCatalogModel catalogModel = ((CatalogFragment) fragment).getDataModel();
+                            return catalogModel.result.breadcrumb;
                         }
                     default:
                         return new ArrayList<Breadcrumb>();
@@ -119,8 +132,6 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
             return ((BrowseProductActivity) getActivity()).checkHasFilterAttrIsNull(activeTab);
         }
     };
-    //    @Bind(R2.id.progressBar)
-//    ProgressBar progressBar;
     private BrowserSectionsPagerAdapter mSectionsPagerAdapter;
 
     public static BrowseParentFragment newInstance(BrowseProductActivityModel browseProductActivityModel) {
@@ -148,18 +159,22 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
 
     @Override
     public void initDiscoveryTicker() {
-        if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_SEARCH).equalsIgnoreCase("true")) {
-            String message = TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_SEARCH_TEXT);
-            showTickerGTM(message);
-        } else {
-            showTickerGTM(null);
+        try {
+            if (TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_SEARCH).equalsIgnoreCase("true")) {
+                String message = TrackingUtils.getGtmString(AppEventTracking.GTM.TICKER_SEARCH_TEXT);
+                showTickerGTM(message);
+            } else {
+                showTickerGTM(null);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
     private void showTickerGTM(String message) {
         if (discoveryTicker != null) {
             if (message != null) {
-                discoveryTicker.setText(Html.fromHtml(message));
+                discoveryTicker.setText(MethodChecker.fromHtml(message));
                 discoveryTicker.setVisibility(View.VISIBLE);
                 discoveryTicker.setAutoLinkMask(0);
                 Linkify.addLinks(discoveryTicker, Linkify.WEB_URLS);
@@ -222,8 +237,6 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
                 @Override
                 public void onRetryClicked() {
                     presenter.subscribe();
-                    presenter.fetchRotationData(null);
-                    presenter.initData(getActivity());
                     presenter.fetchFromNetwork(getActivity());
                 }
             });
@@ -231,7 +244,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     }
 
     @Override
-    public void setDynamicFilterAtrribute(DynamicFilterModel.Data filterAtrribute, int activeTab) {
+    public void setDynamicFilterAtrribute(DataValue filterAtrribute, int activeTab) {
         Log.d(TAG, filterAtrribute.toString());
         if (filterAtrribute.getSort() != null) {
             filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());
@@ -245,7 +258,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         if (uri.contains("/hot/")) {
             Uri myurl = Uri.parse(uri);
             uri = myurl.getPathSegments().get(1);
-            ((BrowseProductActivity) getActivity()).sendHotlist(uri);
+            ((BrowseProductActivity) getActivity()).sendHotlist(uri, "");
         }
         if (uri.contains("/p/")) {
             BrowseProductActivity browseProductActivity = (BrowseProductActivity) getActivity();
@@ -256,9 +269,6 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         }
         if (uri.contains("/catalog/")) {
             URLParser urlParser = new URLParser(uri);
-//            Intent intent = new Intent(getActivity(), Catalog.class);
-//            intent.putExtra(HotList.CATALOG_ID_KEY, urlParser.getHotAlias());
-//            getActivity().startActivity(intent);
             getActivity().startActivity(DetailProductRouter.getCatalogDetailActivity(getActivity(),
                     urlParser.getHotAlias()));
             getActivity().finish();
@@ -276,6 +286,10 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     @Override
     public void setupWithViewPager() {
         Log.d(TAG, "setupWithViewPager source " + source);
+        /**
+         * For called first time
+         */
+        sendTabClickGTM();
         tabLayout.setVisibility(View.GONE);
         tabContainer.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
         BrowseProductActivity productActivity = (BrowseProductActivity) getActivity();
@@ -398,18 +412,23 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         return rootView;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
-    }
-
     private void sendTabClickGTM() {
+        Map<String, String> value = new HashMap<>();
+        CommonUtils.dumper("locasearched "+source);
         switch (source) {
+            case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT:
+                value.put("tab","product");
+                TrackingUtils.eventLoca(AppScreen.SCREEN_VIEWED_SEARCH_PAGE,value);
+                UnifyTracking.eventDiscoverySearchCatalog();
+                break;
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP:
                 UnifyTracking.eventDiscoverySearchShop();
+                value.put("tab","shop");
+                TrackingUtils.eventLoca(AppScreen.SCREEN_VIEWED_SEARCH_PAGE,value);
                 break;
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG:
+                value.put("tab","catalog");
+                TrackingUtils.eventLoca(AppScreen.SCREEN_VIEWED_SEARCH_PAGE,value);
                 UnifyTracking.eventDiscoverySearchCatalog();
                 break;
         }

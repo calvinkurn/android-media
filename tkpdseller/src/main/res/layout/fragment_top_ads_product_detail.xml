@@ -1,0 +1,41 @@
+<com.tokopedia.core.customwidget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_refresh_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/container_detail_topads"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include
+                layout="@layout/include_topads_header_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/topads_detail_padding_item" />
+
+            <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+                android:id="@+id/label_view_promo_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/topads_detail_padding_item"
+                app:content_color="@color/tkpd_dark_green"
+                app:title="@string/label_top_ads_groups" />
+
+            <include
+                layout="@layout/include_topads_content_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/topads_detail_padding_item" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</com.tokopedia.core.customwidget.SwipeToRefresh>

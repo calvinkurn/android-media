@@ -1,9 +1,12 @@
 package com.tokopedia.transaction.addtocart.model.responseatcform;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ShipmentPackage {
+public class ShipmentPackage implements Parcelable {
 
     @SerializedName("price_total")
     @Expose
@@ -29,6 +32,9 @@ public class ShipmentPackage {
     @SerializedName("package_available")
     @Expose
     private Integer packageAvailable;
+
+    public ShipmentPackage() {
+    }
 
     /**
      * @return The priceTotal
@@ -139,4 +145,50 @@ public class ShipmentPackage {
         shipment.setPrice("0");
         return shipment;
     }
+
+    protected ShipmentPackage(Parcel in) {
+        priceTotal = in.readString();
+        shipmentId = in.readString();
+        desc = in.readString();
+        name = in.readString();
+        spId = in.readString();
+        isShowMap = in.readInt();
+        price = in.readString();
+        packageAvailable = in.readByte() == 0x00 ? null : in.readInt();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(priceTotal);
+        dest.writeString(shipmentId);
+        dest.writeString(desc);
+        dest.writeString(name);
+        dest.writeString(spId);
+        dest.writeInt(isShowMap);
+        dest.writeString(price);
+        if (packageAvailable == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(packageAvailable);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<ShipmentPackage> CREATOR = new Parcelable.Creator<ShipmentPackage>() {
+        @Override
+        public ShipmentPackage createFromParcel(Parcel in) {
+            return new ShipmentPackage(in);
+        }
+
+        @Override
+        public ShipmentPackage[] newArray(int size) {
+            return new ShipmentPackage[size];
+        }
+    };
 }

@@ -16,7 +16,7 @@ import com.tokopedia.discovery.presenter.history.SearchHistoryImpl;
 
 import java.util.Locale;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -26,11 +26,11 @@ public class DetailSearchHistoryViewHolder extends RecyclerView.ViewHolder {
 
 
     private final SearchHistoryImpl.OnItemClickListener listener;
-    @Bind(R2.id.detail_search_textview)
+    @BindView(R2.id.detail_search_textview)
     TextView detailSearchTextView;
-    @Bind(R2.id.icon_left)
+    @BindView(R2.id.icon_left)
     ImageView iconLeft;
-    @Bind(R2.id.icon_right)
+    @BindView(R2.id.icon_right)
     ImageView iconRight;
     private static final String TAG = DetailSearchHistoryViewHolder.class.getSimpleName();
     private int type;
@@ -77,6 +77,10 @@ public class DetailSearchHistoryViewHolder extends RecyclerView.ViewHolder {
             return displayName.toLowerCase(Locale.getDefault()).indexOf(mSearchTerm.toLowerCase(Locale.getDefault()));
         }
         return -1;
+    }
+
+    public void setIconLeftId(int id){
+        this.iconLeft.setId(id);
     }
 
     public void setIconLeft(int iconLeft) {

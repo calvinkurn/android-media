@@ -2,16 +2,15 @@ package com.tokopedia.transaction.purchase.listener;
 
 import android.view.View;
 
-import com.tokopedia.core.product.listener.ViewListener;
+import com.tokopedia.transaction.base.IBaseView;
 import com.tokopedia.transaction.purchase.model.ConfirmationData;
 import com.tokopedia.transaction.purchase.model.response.formconfirmpayment.FormConfPaymentData;
 import com.tokopedia.transaction.purchase.model.response.formconfirmpayment.FormEditPaymentData;
 
 /**
- * ConfirmPaymentViewListener
- * Created by Angga.Prasetiyo on 20/06/2016.
+ * @author Angga.Prasetiyo on 20/06/2016.
  */
-public interface ConfirmPaymentViewListener extends ViewListener {
+public interface ConfirmPaymentViewListener extends IBaseView {
     void renderFormConfirmation(FormConfPaymentData data);
 
     void renderErrorPaymentMethod(String message);

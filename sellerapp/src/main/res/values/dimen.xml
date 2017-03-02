@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="home_cover_height">280dp</dimen>
+
+    <!-- Card Header -->
+    <dimen name="card_container_margin">7.5dp</dimen>
+    <dimen name="card_header_container">32.5dp</dimen>
+    <dimen name="card_header_title">12sp</dimen>
+    <dimen name="card_header_img_width">19.5dp</dimen>
+    <dimen name="card_header_img_height">19.5dp</dimen>
+    <dimen name="card_header_see_detail">8sp</dimen>
+    <dimen name="ticker_container_margin">14.5dp</dimen>
+
+    <!-- Transaksi -->
+    <dimen name="card_text_size">32.5sp</dimen>
+    <dimen name="transaction_success_text_size">15.6sp</dimen>
+    <dimen name="transaction_from_transaction_text_size">10.4sp</dimen>
+    <dimen name="card_description_size">10.4sp</dimen>
+
+    <!-- New Order-->
+
+    <!-- Discussion -->
+    <dimen name="margin_title_with_icon">9dp</dimen>
+
+    <!-- boom menu -->
+    <!-- Boom menu dimens -->
+    <dimen name="default_corner_radius">4dp</dimen>
+    <dimen name="default_shadow_radius">4dp</dimen>
+
+    <dimen name="default_boom_button_corner_radius">28dp</dimen>
+
+    <dimen name="default_circle_button_corner_2radius">80dp</dimen>
+    <dimen name="default_circle_button_corner_radius">40dp</dimen>
+    <dimen name="default_circle_button_text_size">10sp</dimen>
+
+    <dimen name="default_ham_button_corner_radius">3dp</dimen>
+
+    <dimen name="fab_margin">16dp</dimen>
+</resources>

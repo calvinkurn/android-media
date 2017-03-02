@@ -13,9 +13,10 @@ import com.bignerdranch.android.multiselector.MultiSelector;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.presenter.ShippingImpl;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -23,55 +24,55 @@ import butterknife.ButterKnife;
  */
 public class ShippingViewHolder extends BaseSellingViewHolder<ShippingImpl.Model> {
 
-    @Bind(R2.id.invoice_text_selected)
+    @BindView(R2.id.invoice_text_selected)
     public TextView invoice_selected;
-    @Bind(R2.id.ref_number)
+    @BindView(R2.id.ref_number)
     public Button vRefNumber;
-    @Bind(R2.id.error_msg)
+    @BindView(R2.id.error_msg)
     public TextView vError;
-    @Bind(R2.id.receiver_name)
+    @BindView(R2.id.receiver_name)
     public TextView vReceiver;
-    @Bind(R2.id.insert_receiver_name)
+    @BindView(R2.id.insert_receiver_name)
     public TextView vInsertReceiver;
-    @Bind(R2.id.dest)
+    @BindView(R2.id.dest)
     public TextView vDest;
-    @Bind(R2.id.insert_dest)
+    @BindView(R2.id.insert_dest)
     public TextView vInsertDest;
-    @Bind(R2.id.shipping)
+    @BindView(R2.id.shipping)
     public TextView vShipping;
-    @Bind(R2.id.insert_shipping)
+    @BindView(R2.id.insert_shipping)
     public TextView vInsertShipping;
-    @Bind(R2.id.insert_sender_detail)
+    @BindView(R2.id.insert_sender_detail)
     public TextView vInsertSenderDS;
-    @Bind(R2.id.sender_detail)
+    @BindView(R2.id.sender_detail)
     public TextView vSenderDS;
-    @Bind(R2.id.dropshipper)
+    @BindView(R2.id.dropshipper)
     public View Dropshipper;
-    @Bind(R2.id.insert_dropshipper)
+    @BindView(R2.id.insert_dropshipper)
     public View InsertDropshipper;
-    @Bind(R2.id.info_view)
+    @BindView(R2.id.info_view)
     public View InfoView;
-    @Bind(R2.id.insert_view)
+    @BindView(R2.id.insert_view)
     public View InsertView;
-    @Bind(R2.id.user_name)
+    @BindView(R2.id.user_name)
     public TextView UserName;
-    @Bind(R2.id.insert_user_name)
+    @BindView(R2.id.insert_user_name)
     public TextView InsertUserName;
-    @Bind(R2.id.but_overflow)
+    @BindView(R2.id.but_overflow)
     public LinearLayout BtnOverflow;
-    @Bind(R2.id.deadline)
+    @BindView(R2.id.deadline)
     public TextView Deadline;
-    @Bind(R2.id.deadline_view)
+    @BindView(R2.id.deadline_view)
     public View DeadlineView;
-    @Bind(R2.id.invoice_text)
+    @BindView(R2.id.invoice_text)
     public TextView Invoice;
-    @Bind(R2.id.shipping_price)
+    @BindView(R2.id.shipping_price)
     public TextView vShippingPrice;
-    @Bind(R2.id.cancel_but)
+    @BindView(R2.id.cancel_but)
     public ImageView CancelBut;
-    @Bind(R2.id.camera_but)
+    @BindView(R2.id.camera_but)
     public ImageView CameraBut;
-    @Bind(R2.id.main_view)
+    @BindView(R2.id.main_view)
     public View MainView;
 //
 //    public ShippingViewHolder(View itemView) {
@@ -118,8 +119,8 @@ public class ShippingViewHolder extends BaseSellingViewHolder<ShippingImpl.Model
     }
 
     private void setViewData(ShippingImpl.Model model, Context context) {
-        vReceiver.setText(Html.fromHtml(model.ReceiverName));
-        vInsertReceiver.setText(Html.fromHtml(model.ReceiverName));
+        vReceiver.setText(MethodChecker.fromHtml(model.ReceiverName));
+        vInsertReceiver.setText(MethodChecker.fromHtml(model.ReceiverName));
         vDest.setText(model.Dest);
         vInsertDest.setText(model.Dest);
         vShipping.setText(model.Shipping);

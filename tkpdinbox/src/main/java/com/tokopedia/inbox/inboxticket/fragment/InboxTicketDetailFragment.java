@@ -40,7 +40,7 @@ import com.tokopedia.inbox.inboxticket.presenter.InboxTicketDetailFragmentPresen
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -60,31 +60,31 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
         void sendRating(Bundle param);
     }
 
-    @Bind(R2.id.ticket_list)
+    @BindView(R2.id.ticket_list)
     RecyclerView listTicket;
 
-    @Bind(R2.id.swipe_refresh_layout)
+    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
-    @Bind(R2.id.list_image_upload)
+    @BindView(R2.id.list_image_upload)
     RecyclerView listImage;
 
-    @Bind(R2.id.attach_but)
+    @BindView(R2.id.attach_but)
     ImageView attachButton;
 
-    @Bind(R2.id.send_but)
+    @BindView(R2.id.send_but)
     ImageView sendButton;
 
-    @Bind(R2.id.new_comment)
+    @BindView(R2.id.new_comment)
     EditText comment;
 
-    @Bind(R2.id.add_comment_area)
+    @BindView(R2.id.add_comment_area)
     View commentView;
 
-    @Bind(R2.id.loading_layout)
+    @BindView(R2.id.loading_layout)
     View loading;
 
-    @Bind(R2.id.ticket_notice)
+    @BindView(R2.id.ticket_notice)
     TextView ticketNotice;
 
     InboxTicketDetailAdapter adapter;
@@ -101,6 +101,11 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
     @Override
     protected boolean isRetainInstance() {
         return false;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
@@ -165,7 +170,7 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
         return new ImageUploadAdapter.ProductImageListener() {
             @Override
             public void onImageDeleted(int size) {
-                if(size == 0){
+                if (size == 0) {
                     listImage.setVisibility(View.GONE);
                 }
                 attachButton.setVisibility(View.VISIBLE);
@@ -215,6 +220,7 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
     public void actionImagePicker() {
         presenter.actionImagePicker();
     }
+
     @Override
     protected void initialVar() {
 
@@ -367,7 +373,7 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
         listImage.setVisibility(View.VISIBLE);
         if (imageAdapter.getList().size() == 5) {
             attachButton.setVisibility(View.GONE);
-        }else{
+        } else {
             attachButton.setVisibility(View.VISIBLE);
         }
     }
@@ -376,21 +382,12 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
     public void onSuccessReply(TicketReplyDatum ticketReply) {
         comment.setText("");
         KeyboardHandler.DropKeyboard(getActivity(), comment);
-
-        if (adapter.getTicketView().getData().size() < 2) {
-            adapter.getTicketView().getData().add(ticketReply);
-            adapter.getData().getTicketReply().getTicketReplyData().add(ticketReply);
-        } else {
-            adapter.getTicketView().getData().remove(0);
-            adapter.getData().getTicketReply().getTicketReplyData().remove(0);
-            adapter.getTicketView().getData().add(ticketReply);
-            adapter.getData().getTicketReply().getTicketReplyData().add(ticketReply);
-        }
-
-        adapter.getTicketView().notifyDataSetChanged();
+        adapter.addReply(ticketReply);
+        adapter.updateView();
         imageAdapter.getList().clear();
         imageAdapter.notifyDataSetChanged();
         listImage.setVisibility(View.GONE);
+        attachButton.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -449,31 +446,31 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onPermissionDenied(getActivity(),listPermission);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
     }
 
     @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -482,6 +479,6 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 }

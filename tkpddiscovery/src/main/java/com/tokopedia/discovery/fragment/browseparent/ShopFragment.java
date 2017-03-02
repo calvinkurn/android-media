@@ -14,7 +14,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.network.entity.discovery.ShopModel;
 import com.tokopedia.core.session.base.BaseFragment;
@@ -32,7 +32,7 @@ import com.tokopedia.discovery.view.ShopView;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 
 /**
  * Created by Erry on 6/30/2016.
@@ -41,7 +41,7 @@ import butterknife.Bind;
 public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchNetwork {
     public static final int IDFRAGMENT = 1903_909;
     public static final String INDEX = "FRAGMENT_INDEX";
-    @Bind(R2.id.list_shop)
+    @BindView(R2.id.list_shop)
     RecyclerView list_shop;
 
     List<RecyclerViewItem> browseShopModelList = new ArrayList<>();
@@ -100,6 +100,11 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
             }
             snackbar.show();
         }
+    }
+
+    @Override
+    public String getScreenName() {
+        return null;
     }
 
     @Override
@@ -237,7 +242,7 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
     }
 
     @Override
-    public void setDynamicFilterAtrribute(DynamicFilterModel.Data filterAtrribute, int activeTab) {
+    public void setDynamicFilterAtrribute(DataValue filterAtrribute, int activeTab) {
         if (filterAtrribute.getSort() != null) {
             filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());
         }

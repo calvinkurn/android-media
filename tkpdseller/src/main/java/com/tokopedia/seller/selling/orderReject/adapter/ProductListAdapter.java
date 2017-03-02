@@ -19,6 +19,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.model.orderShipping.OrderProduct;
 import com.tokopedia.seller.selling.orderReject.fragment.EditPriceDialog;
 import com.tokopedia.seller.selling.orderReject.fragment.EditVarianDialog;
@@ -32,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -134,7 +135,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
                 holder.enableEditStock();
                 break;
         }
-        holder.titleTxt.setText(Html.fromHtml(orderProduct.getProductName()));
+        holder.titleTxt.setText(MethodChecker.fromHtml(orderProduct.getProductName()));
         holder.priceTxt.setText(orderProduct.getProductPrice());
         String weight = "Kilogram (kg)";
         if(orderProduct.getProductWeightUnit()!= null && !orderProduct.getProductWeightUnit().equals("")){
@@ -147,7 +148,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         }
         holder.weightTxt.setText(orderProduct.getProductWeight() + " " + weight);
         if(CommonUtils.checkNullForZeroJson(orderProduct.getProductDescription())) {
-            holder.descTxt.setText(Html.fromHtml(orderProduct.getProductDescription()));
+            holder.descTxt.setText(MethodChecker.fromHtml(orderProduct.getProductDescription()));
         }else{
             holder.descTxt.setText(activity.getString(R.string.message_no_desc));
         }
@@ -204,27 +205,27 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R2.id.image)
+        @BindView(R2.id.image)
         ImageView imageView;
-        @Bind(R2.id.checkbox)
+        @BindView(R2.id.checkbox)
         CheckBox checkBox;
-        @Bind(R2.id.title)
+        @BindView(R2.id.title)
         TextView titleTxt;
-        @Bind(R2.id.price)
+        @BindView(R2.id.price)
         TextView priceTxt;
-        @Bind(R2.id.weight)
+        @BindView(R2.id.weight)
         TextView weightTxt;
-        @Bind(R2.id.label_stock_empty)
+        @BindView(R2.id.label_stock_empty)
         TextView labelEmptyStock;
-        @Bind(R2.id.edit_description)
+        @BindView(R2.id.edit_description)
         ImageButton editDesc;
-        @Bind(R2.id.edit_price)
+        @BindView(R2.id.edit_price)
         ImageButton editPrice;
-        @Bind(R2.id.description)
+        @BindView(R2.id.description)
         TextView descTxt;
-        @Bind(R2.id.container_description)
+        @BindView(R2.id.container_description)
         LinearLayout containerDesc;
-        @Bind(R2.id.container_price)
+        @BindView(R2.id.container_price)
         LinearLayout containerPrice;
         Context context;
 

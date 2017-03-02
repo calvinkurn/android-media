@@ -17,18 +17,18 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.ImageUpload;
 import com.tokopedia.core.customadapter.ImageUploadAdapter;
-import com.tokopedia.inbox.inboxticket.model.inboxticketdetail.InboxTicketDetail;
-import com.tokopedia.inbox.inboxticket.presenter.InboxTicketDetailFragmentPresenter;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.inbox.inboxticket.model.inboxticketdetail.InboxTicketDetail;
+import com.tokopedia.inbox.inboxticket.presenter.InboxTicketDetailFragmentPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -41,31 +41,31 @@ public class HeaderTicketDataBinder extends DataBinder<HeaderTicketDataBinder.Vi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R2.id.status)
+        @BindView(R2.id.status)
         TextView status;
 
-        @Bind(R2.id.title)
+        @BindView(R2.id.title)
         TextView title;
 
-        @Bind(R2.id.user_ava)
+        @BindView(R2.id.user_ava)
         ImageView userAva;
 
-        @Bind(R2.id.user_name)
+        @BindView(R2.id.user_name)
         TextView userName;
 
-        @Bind(R2.id.create_time)
+        @BindView(R2.id.create_time)
         TextView createTime;
 
-        @Bind(R2.id.image_upload_layout)
+        @BindView(R2.id.image_upload_layout)
         RecyclerView imageUploadLayout;
 
-        @Bind(R2.id.message)
+        @BindView(R2.id.message)
         TextView message;
 
-        @Bind(R2.id.view_more_layout)
+        @BindView(R2.id.view_more_layout)
         View viewMoreLayout;
 
-        @Bind(R2.id.view_more)
+        @BindView(R2.id.view_more)
         TextView viewMore;
 
         LabelUtils label;
@@ -200,5 +200,9 @@ public class HeaderTicketDataBinder extends DataBinder<HeaderTicketDataBinder.Vi
 
     public void setData(InboxTicketDetail data) {
         this.data = data;
+    }
+
+    public InboxTicketDetail getData() {
+        return data;
     }
 }
