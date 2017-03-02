@@ -24,4 +24,8 @@ public class TopAdsConstant {
     public static final int STATUS_AD_NOT_SENT = 2;
 
     public static final int MAX_DATE_RANGE = 60;
+
+    public static final float BUDGET_MAX = 2000;
+    public static final float BUDGET_MULTIPLE_BY = 50;
+    public static final float BUDGET_MIN_MULTIPLE_BY = 10;
 }

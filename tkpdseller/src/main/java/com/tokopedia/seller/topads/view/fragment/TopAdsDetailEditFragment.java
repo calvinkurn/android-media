@@ -14,17 +14,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.datepicker.widget.DatePickerLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.utils.ViewUtils;
 import com.tokopedia.seller.topads.view.dialog.DatePickerDialog;
 import com.tokopedia.seller.topads.view.dialog.TimePickerdialog;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailEditView;
@@ -142,6 +141,18 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 CurrencyFormatHelper.SetToRupiah(maxPriceEditText);
+                String clickBudgetString = CurrencyFormatHelper.RemoveNonNumeric(charSequence.toString());
+                if (TextUtils.isEmpty(clickBudgetString)) {
+                    maxPriceEditText.setText("0");
+                    return;
+                }
+                float clickBudget = Float.parseFloat(clickBudgetString);
+                String errorMessage = ViewUtils.getClickBudgetError(getActivity(), clickBudget);
+                if (!TextUtils.isEmpty(errorMessage)) {
+                    maxPriceInputLayout.setError(errorMessage);
+                } else {
+                    maxPriceInputLayout.setError(null);
+                }
             }
 
             @Override
@@ -158,6 +169,24 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 CurrencyFormatHelper.SetToRupiah(budgetPerDayEditText);
+                String dailyBudgetString = CurrencyFormatHelper.RemoveNonNumeric(charSequence.toString());
+                if (TextUtils.isEmpty(dailyBudgetString)) {
+                    budgetPerDayEditText.setText("0");
+                    return;
+                }
+                float dailyBudget = Float.parseFloat(dailyBudgetString);
+
+                String clickBudgetString = CurrencyFormatHelper.RemoveNonNumeric(maxPriceEditText.getText().toString());
+                float clickBudget = 0;
+                if (!TextUtils.isEmpty(clickBudgetString)) {
+                    clickBudget = Float.parseFloat(clickBudgetString);
+                }
+                String errorMessage = ViewUtils.getDailyBudgetError(getActivity(), clickBudget, dailyBudget);
+                if (!TextUtils.isEmpty(errorMessage)) {
+                    budgetPerDayInputLayout.setError(errorMessage);
+                } else {
+                    budgetPerDayInputLayout.setError(null);
+                }
             }
 
             @Override
