@@ -44,9 +44,13 @@ public class TopAdsDbManager
 
     @Override
     public Observable<Response<String>> getData() {
-        String contentTopAds = getTable().getContentTopAds();
-        if (contentTopAds != null) {
-            return Observable.just(Response.success(contentTopAds));
+        if (getTable() != null) {
+            String contentTopAds = getTable().getContentTopAds();
+            if (contentTopAds != null) {
+                return Observable.just(Response.success(contentTopAds));
+            } else {
+                return Observable.empty();
+            }
         } else {
             return Observable.empty();
         }
