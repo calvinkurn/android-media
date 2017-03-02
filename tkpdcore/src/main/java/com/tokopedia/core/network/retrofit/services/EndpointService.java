@@ -3,7 +3,7 @@ package com.tokopedia.core.network.retrofit.services;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.network.retrofit.HttpClient;
-import com.tokopedia.core.network.retrofit.coverters.DigitalResponseConverter;
+import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +31,6 @@ public abstract class EndpointService<T> {
         setupTimeout(okHttpClientBuilder);
 
 
-
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
                 .setPrettyPrinting()
@@ -41,13 +40,14 @@ public abstract class EndpointService<T> {
         Retrofit.Builder retrofit = new Retrofit.Builder();
         retrofit.baseUrl(getEndpointUrl() + getEndpointVersion());
 
-        // setupAdditionalConverterFactory(retrofit);
-        retrofit.addConverterFactory(DigitalResponseConverter.create());
-//        retrofit.addConverterFactory(new StringResponseConverter());
+        retrofit.addConverterFactory(new StringResponseConverter());
         retrofit.addConverterFactory(GsonConverterFactory.create(gson));
-        //  setupAdditionalCallAdapterFactory(retrofit);
+        setupAdditionalConverterFactory(retrofit);
+
 
         retrofit.addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+        setupAdditionalCallAdapterFactory(retrofit);
+
         retrofit.client(okHttpClientBuilder.build());
         api = initApiService(retrofit.build());
     }

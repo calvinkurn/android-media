@@ -22,10 +22,8 @@ public interface DigitalApi {
     @GET(TkpdBaseURL.DigitalApi.PATH_STATUS)
     Observable<Response<TkpdDigitalResponse>> getStatus(@QueryMap Map<String, String> params);
 
-
     @GET(TkpdBaseURL.DigitalApi.PATH_CATEGORY)
     Observable<Response<TkpdDigitalResponse>> getCategoryList(@QueryMap Map<String, String> params);
-
 
     @GET(TkpdBaseURL.DigitalApi.PATH_OPERATOR)
     Observable<Response<TkpdDigitalResponse>> getOperatorList(@QueryMap Map<String, String> params);
