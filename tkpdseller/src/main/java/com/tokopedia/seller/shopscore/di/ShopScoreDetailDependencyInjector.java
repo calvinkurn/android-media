@@ -13,6 +13,7 @@ import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shopscore.data.factory.ShopScoreFactory;
+import com.tokopedia.seller.shopscore.data.mapper.ShopScoreDetailMapper;
 import com.tokopedia.seller.shopscore.data.repository.ShopScoreRepositoryImpl;
 import com.tokopedia.seller.shopscore.data.source.cloud.ShopScoreCloud;
 import com.tokopedia.seller.shopscore.data.source.cloud.api.ShopScoreApi;
@@ -63,7 +64,8 @@ public class ShopScoreDetailDependencyInjector {
         ShopScoreCloud shopScoreCloud = new ShopScoreCloud(api, sessionHandler);
         GlobalCacheManager globalCacheManager = new GlobalCacheManager();
         ShopScoreCache shopScoreCache = new ShopScoreCache(globalCacheManager);
-        ShopScoreFactory shopScoreFactory = new ShopScoreFactory(shopScoreCloud, shopScoreCache);
+        ShopScoreDetailMapper shopScoreDetailMapper = new ShopScoreDetailMapper(context);
+        ShopScoreFactory shopScoreFactory = new ShopScoreFactory(shopScoreCloud, shopScoreCache, shopScoreDetailMapper);
         ShopScoreRepositoryImpl shopScoreRepository = new ShopScoreRepositoryImpl(shopScoreFactory);
         GetShopScoreDetailUseCase getShopScoreDetailUseCase = new GetShopScoreDetailUseCase(threadExecutor, postExecutionThread, shopScoreRepository);
         return new ShopScoreDetailPresenterImpl(getShopScoreDetailUseCase);

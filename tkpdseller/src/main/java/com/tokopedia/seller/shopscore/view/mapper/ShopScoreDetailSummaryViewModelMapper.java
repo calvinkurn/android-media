@@ -12,7 +12,6 @@ public class ShopScoreDetailSummaryViewModelMapper {
         ShopScoreDetailSummaryViewModel viewModel = new ShopScoreDetailSummaryViewModel();
         ShopScoreDetailSummaryDomainModel summaryModel = domainModels.getSummaryModel();
 
-        viewModel.setBadgeScore(summaryModel.getBadgeScore());
         viewModel.setColor(summaryModel.getColor());
         viewModel.setValue(summaryModel.getValue());
         viewModel.setText(summaryModel.getText());

@@ -196,5 +196,10 @@
     <string name="description_shop_score_percent"> / 100</string>
     <string name="subtitle_first_shop_score_detail_summary">Perfoma Toko Anda</string>
     <string name="subtitle_second_shop_score_detail_summary">dengan nilai rata-rata</string>
+    <string name="title_shop_score_detail_gold_badge_info">Gold Badge</string>
+    <string name="desc_shop_score_gold_merchant_qualified_badge">Nilai performa toko Anda sudah cukup untuk mendapatkan Gold Badge. Mulai tanggal 27 Maret 2017, Gold Badge hanya akan diberikan untuk toko Gold Merchant dengan skor minimal 75.</string>
+    <string name="desc_shop_score_gold_merchant_not_qualified_badge">Tingkatkan nilai performa Toko Anda.  Mulai tanggal 27 Maret 2017, Gold Badge hanya akan diberikan untuk toko Gold Merchant dengan skor minimal 75.</string>
+    <string name="desc_shop_score_not_gold_merchant_qualified_badge">Nilai performa toko Anda baik. Upgrade toko Anda ke Gold Merchant untuk mendapatkan Gold Badge dan terus meningkatkan performa toko Anda. Mulai tanggal 27 Maret 2017, Gold Badge hanya akan diberikan untuk toko Gold Merchant dengan skor minimal 75.</string>
+    <string name="desc_shop_score_not_gold_merchant_not_qualified_badge">Upgrade toko Anda ke Gold Merchant untuk membantu meningkatkan nilai performa toko Anda. Mulai tanggal 27 Maret 2017, Gold Badge hanya akan diberikan untuk toko Gold Merchant dengan skor minimal 75.</string>
 
 </resources>

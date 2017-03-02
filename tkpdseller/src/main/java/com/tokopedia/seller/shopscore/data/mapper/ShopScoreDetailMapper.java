@@ -1,7 +1,9 @@
 package com.tokopedia.seller.shopscore.data.mapper;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shopscore.data.source.cloud.model.detail.ShopScoreDetailItemServiceModel;
 import com.tokopedia.seller.shopscore.data.source.cloud.model.detail.ShopScoreDetailServiceModel;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailDomainModel;
@@ -17,6 +19,12 @@ import rx.functions.Func1;
  * Created by sebastianuskh on 2/24/17.
  */
 public class ShopScoreDetailMapper implements Func1<ShopScoreDetailServiceModel, ShopScoreDetailDomainModel> {
+    private final Context context;
+
+    public ShopScoreDetailMapper(Context context) {
+        this.context = context;
+    }
+
     @Override
     public ShopScoreDetailDomainModel call(ShopScoreDetailServiceModel serviceModel) {
         ShopScoreDetailDomainModel dataDomain = new ShopScoreDetailDomainModel();
@@ -27,12 +35,34 @@ public class ShopScoreDetailMapper implements Func1<ShopScoreDetailServiceModel,
         ShopScoreDetailSummaryDomainModel summaryModel = mapShopScoreDetailSummaryDomainModels(serviceModel);
         dataDomain.setSummaryModel(summaryModel);
 
+        int state = mapShopScoreDetailStateDomainModels(serviceModel);
+        dataDomain.setState(state);
+
         return dataDomain;
+    }
+
+    private int mapShopScoreDetailStateDomainModels(ShopScoreDetailServiceModel serviceModel) {
+        if (SessionHandler.isGoldMerchant(context)) {
+            if (isScoreHigherThanLimit(serviceModel)) {
+                return ShopScoreDetailDomainModel.GOLD_MERCHANT_QUALIFIED_BADGE;
+            } else {
+                return ShopScoreDetailDomainModel.GOLD_MERCHANT_NOT_QUALIFIED_BADGE;
+            }
+        } else {
+            if (isScoreHigherThanLimit(serviceModel)) {
+                return ShopScoreDetailDomainModel.NOT_GOLD_MERCHANT_QUALIFIED_BADGE;
+            } else {
+                return ShopScoreDetailDomainModel.NOT_GOLD_MERCHANT_NOT_QUALIFIED_BADGE;
+            }
+        }
+    }
+
+    private boolean isScoreHigherThanLimit(ShopScoreDetailServiceModel shopScoreDetailServiceModel) {
+        return shopScoreDetailServiceModel.getData().getSumData().getValue() >= shopScoreDetailServiceModel.getData().getBadgeScore();
     }
 
     private ShopScoreDetailSummaryDomainModel mapShopScoreDetailSummaryDomainModels(ShopScoreDetailServiceModel serviceModel) {
         ShopScoreDetailSummaryDomainModel summaryDomainModel = new ShopScoreDetailSummaryDomainModel();
-        summaryDomainModel.setBadgeScore(serviceModel.getData().getBadgeScore());
         summaryDomainModel.setValue(serviceModel.getData().getSumData().getValue());
         String color = serviceModel.getData().getSumData().getColor();
         summaryDomainModel.setColor(ColorUtil.formatColor(color));

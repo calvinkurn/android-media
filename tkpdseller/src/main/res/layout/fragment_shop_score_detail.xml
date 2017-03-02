@@ -97,10 +97,11 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Toko Anda belum bisa mendapatkan Gold Badge"
+                    android:text="@string/title_shop_score_detail_gold_badge_info"
                     android:textSize="18sp" />
 
                 <TextView
+                    android:id="@+id/description_shop_score_detail_gold_badge_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Capai nilai minimal 75 poin untuk mendapatkan Gold Badge!" />
@@ -113,9 +114,10 @@
                 android:layout_weight="1">
 
                 <ImageView
+                    android:id="@+id/image_view_gold_badge"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:src="@drawable/ic_gm_badge" />
+                    android:src="@drawable/ic_gm_badge_not_qualified" />
 
             </FrameLayout>
 

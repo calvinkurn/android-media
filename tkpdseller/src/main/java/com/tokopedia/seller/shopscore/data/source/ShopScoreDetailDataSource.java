@@ -15,10 +15,12 @@ import rx.functions.Action1;
 public class ShopScoreDetailDataSource {
     private final ShopScoreCloud shopScoreCloud;
     private final ShopScoreCache shopScoreCache;
+    private final ShopScoreDetailMapper shopScoreDetailMapper;
 
-    public ShopScoreDetailDataSource(ShopScoreCloud shopScoreCloud, ShopScoreCache shopScoreCache) {
+    public ShopScoreDetailDataSource(ShopScoreCloud shopScoreCloud, ShopScoreCache shopScoreCache, ShopScoreDetailMapper shopScoreDetailMapper) {
         this.shopScoreCloud = shopScoreCloud;
         this.shopScoreCache = shopScoreCache;
+        this.shopScoreDetailMapper = shopScoreDetailMapper;
     }
 
     public Observable<ShopScoreDetailDomainModel> getShopScoreDetail() {
@@ -27,7 +29,7 @@ public class ShopScoreDetailDataSource {
                         shopScoreCloud.getShopScoreDetailData()
                                 .doOnNext(new StoreShopDetailToCache())
                 )
-                .map(new ShopScoreDetailMapper());
+                .map(shopScoreDetailMapper);
     }
 
     private class StoreShopDetailToCache implements Action1<ShopScoreDetailServiceModel> {

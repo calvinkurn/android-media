@@ -9,12 +9,14 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopscore.di.ShopScoreDetailDependencyInjector;
 import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailItemViewModel;
+import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailStateEnum;
 import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailSummaryViewModel;
 import com.tokopedia.seller.shopscore.view.presenter.ShopScoreDetailPresenterImpl;
 import com.tokopedia.seller.shopscore.view.recyclerview.ShopScoreDetailAdapter;
@@ -30,6 +32,8 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
     private ShopScoreDetailAdapter adapter;
     private ShopScoreDetailPresenterImpl presenter;
     private TextView summaryDetailTitle;
+    private TextView descriptionGoldBadge;
+    private ImageView imageViewGoldBadge;
 
     public static Fragment createFragment() {
         return new ShopScoreDetailFragment();
@@ -46,6 +50,8 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
         View parentView = inflater.inflate(R.layout.fragment_shop_score_detail, container, false);
         setupRecyclerView(parentView);
         summaryDetailTitle = (TextView) parentView.findViewById(R.id.text_view_shop_score_summary_detail_tittle);
+        descriptionGoldBadge = (TextView) parentView.findViewById(R.id.description_shop_score_detail_gold_badge_info);
+        imageViewGoldBadge = (ImageView) parentView.findViewById(R.id.image_view_gold_badge);
         presenter.attachView(this);
         presenter.getShopScoreDetail();
         return parentView;
@@ -77,6 +83,41 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
         summaryDetailTitle.setText(Html.fromHtml(stringConcat));
     }
 
+    @Override
+    public void renderShopScoreState(ShopScoreDetailStateEnum shopScoreDetailStateEnum) {
+        String description;
+        int icon;
+        switch (shopScoreDetailStateEnum) {
+            case GOLD_MERCHANT_QUALIFIED_BADGE:
+                description = getString(R.string.desc_shop_score_gold_merchant_qualified_badge);
+                icon = R.drawable.ic_gm_badge_qualified;
+                break;
+            case GOLD_MERCHANT_NOT_QUALIFIED_BADGE:
+                description = getString(R.string.desc_shop_score_gold_merchant_not_qualified_badge);
+                icon = R.drawable.ic_gm_badge_not_qualified;
+                break;
+            case NOT_GOLD_MERCHANT_QUALIFIED_BADGE:
+                description = getString(R.string.desc_shop_score_not_gold_merchant_qualified_badge);
+                icon = R.drawable.ic_gm_badge_qualified;
+                break;
+            case NOT_GOLD_MERCHANT_NOT_QUALIFIED_BADGE:
+                description = getString(R.string.desc_shop_score_not_gold_merchant_not_qualified_badge);
+                icon = R.drawable.ic_gm_badge_not_qualified;
+                break;
+            default:
+                description = getString(R.string.desc_shop_score_gold_merchant_qualified_badge);
+                icon = R.drawable.ic_gm_badge_not_qualified;
+                break;
+        }
+        setShopScoreGoldBadgeState(description, icon);
+    }
+
+    private void setShopScoreGoldBadgeState(String description, int icon) {
+        descriptionGoldBadge.setText(description);
+        imageViewGoldBadge.setImageDrawable(getResources().getDrawable(icon));
+
+    }
+
     private String buildStringSummary(ShopScoreDetailSummaryViewModel viewModel) {
         return getString(R.string.subtitle_first_shop_score_detail_summary)
                 + " "
@@ -93,4 +134,6 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
                 + "</strong>"
                 + ".";
     }
+
+
 }

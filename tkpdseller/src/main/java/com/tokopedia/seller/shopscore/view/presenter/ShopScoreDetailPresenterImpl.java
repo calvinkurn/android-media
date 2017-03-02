@@ -6,8 +6,10 @@ import com.tokopedia.seller.shopscore.domain.interactor.GetShopScoreDetailUseCas
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailDomainModel;
 import com.tokopedia.seller.shopscore.view.fragment.ShopScoreDetailView;
 import com.tokopedia.seller.shopscore.view.mapper.ShopScoreDetailItemsViewModelMapper;
+import com.tokopedia.seller.shopscore.view.mapper.ShopScoreDetailStateMapper;
 import com.tokopedia.seller.shopscore.view.mapper.ShopScoreDetailSummaryViewModelMapper;
 import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailItemViewModel;
+import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailStateEnum;
 import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailSummaryViewModel;
 
 import java.util.List;
@@ -42,6 +44,11 @@ public class ShopScoreDetailPresenterImpl extends BaseDaggerPresenter<ShopScoreD
         getView().renderShopScoreDetail(viewModel);
     }
 
+    private void renderState(ShopScoreDetailDomainModel domainModels) {
+        ShopScoreDetailStateEnum shopScoreDetailStateEnum = ShopScoreDetailStateMapper.map(domainModels);
+        getView().renderShopScoreState(shopScoreDetailStateEnum);
+    }
+
     private class GetShopScoreDetailSubscriber extends Subscriber<ShopScoreDetailDomainModel> {
         @Override
         public void onCompleted() {
@@ -57,6 +64,7 @@ public class ShopScoreDetailPresenterImpl extends BaseDaggerPresenter<ShopScoreD
         public void onNext(ShopScoreDetailDomainModel domainModels) {
             renderItemsDetail(domainModels);
             renderSummary(domainModels);
+            renderState(domainModels);
         }
     }
 }
