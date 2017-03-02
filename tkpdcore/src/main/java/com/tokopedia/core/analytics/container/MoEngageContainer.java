@@ -3,7 +3,9 @@ package com.tokopedia.core.analytics.container;
 import android.content.Context;
 
 import com.moe.pushlibrary.MoEHelper;
+import com.moengage.core.Logger;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.app.MainApplication;
 
 import rx.Single;
@@ -54,6 +56,7 @@ public class MoEngageContainer implements IMoengageContainer {
             @Override
             public void call(SingleSubscriber<? super Void> singleSubscriber) {
                 MoEHelper.getInstance(context).autoIntegrate(MainApplication.getInstance());
+                MoEHelper.getInstance(context).setLogLevel(Logger.VERBOSE);
             }
         });
 
@@ -69,6 +72,28 @@ public class MoEngageContainer implements IMoengageContainer {
                     }
                 }
         );
+    }
+
+    @Override
+    public void setUserProfile(CustomerWrapper customerWrapper) {
+        CommonUtils.dumper("MoEngage check is existing user "+customerWrapper.getFullName());
+        Single<CustomerWrapper> isExistingUser = Single.just(customerWrapper);
+
+        executor(isExistingUser, new SingleSubscriber<CustomerWrapper>() {
+            @Override
+            public void onSuccess(CustomerWrapper value) {
+                CommonUtils.dumper("MoEngage check is existing user "+value.getFullName()+" "+value.getEmailAddress()+" "+value.getCustomerId());
+                MoEHelper helper = MoEHelper.getInstance(context);
+                helper.setFullName(value.getFullName());
+                helper.setUniqueId(value.getCustomerId());
+                helper.setEmail(value.getEmailAddress());
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                error.printStackTrace();
+            }
+        });
     }
 
     private void executor(Single single, SingleSubscriber subscriber) {

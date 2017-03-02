@@ -7,6 +7,7 @@ import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
@@ -47,6 +48,10 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void setMoEngageExistingUser(){
         getMoEngine().isExistingUser(SessionHandler.isV4Login(MainApplication.getAppContext()));
+    }
+
+    public static void setMoEngageLoginEvent(CustomerWrapper customerWrapper){
+        getMoEngine().setUserProfile(customerWrapper);
     }
 
     public static void fragmentBasedAFEvent(String tag){
