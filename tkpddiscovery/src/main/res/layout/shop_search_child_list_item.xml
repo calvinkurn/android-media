@@ -60,8 +60,7 @@
                 android:layout_margin="10dp"
                 android:background="?selectableItemBackgroundBorderless"
                 android:padding="10dp"
-                android:src="@drawable/ic_diagonal_arrow"
-                android:tint="#bdbdbd" />
+                android:src="@drawable/ic_diagonal_arrow"/>
 
         </LinearLayout>
     </LinearLayout>

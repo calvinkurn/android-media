@@ -108,7 +108,7 @@ public class SearchMainFragment extends BaseDaggerFragment implements SearchCont
     }
 
     @Override
-    public void showSearchResult(List<Visitable> list) {
+    public void showSearchResult(final List<Visitable> list) {
         SearchResultFragment resultFragment = (SearchResultFragment) pageAdapter.getItem(0);
         resultFragment.clearData();
         SearchResultFragment shopFragment = (SearchResultFragment) pageAdapter.getItem(1);

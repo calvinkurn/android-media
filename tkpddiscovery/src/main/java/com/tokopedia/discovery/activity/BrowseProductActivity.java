@@ -1,6 +1,5 @@
 package com.tokopedia.discovery.activity;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,21 +8,18 @@ import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -71,6 +67,7 @@ import com.tokopedia.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
+import com.tokopedia.discovery.search.view.materialsearchview.MaterialSearchView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,15 +77,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.core.router.CustomerRouter.IS_DEEP_LINK_SEARCH;
@@ -102,15 +93,12 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_INV
 /**
  * Created by Erry on 6/30/2016.
  */
-public class BrowseProductActivity extends TActivity implements SearchView.OnQueryTextListener,
-        DiscoveryActivityPresenter, MenuItemCompat.OnActionExpandListener, HasComponent {
+public class BrowseProductActivity extends TActivity implements DiscoveryActivityPresenter,
+        MaterialSearchView.SearchViewListener, MaterialSearchView.OnQueryTextListener, HasComponent {
 
     private static final String TAG = BrowseProductActivity.class.getSimpleName();
     private static final String KEY_GTM = "GTMFilterData";
     private static final String EXTRA_BROWSE_ATRIBUT = "EXTRA_BROWSE_ATRIBUT";
-    @BindView(R2.id.progressBar)
-    ProgressBar progressBar;
-    SearchView searchView;
     private String searchQuery;
     private FragmentManager fragmentManager;
     private SearchInteractor searchInteractor;
@@ -135,7 +123,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
 
     public enum FDest {
-        SORT, FILTER;
+        SORT, FILTER
     }
 
 
@@ -150,22 +138,31 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     private BrowseProductRouter.GridType gridType = BrowseProductRouter.GridType.GRID_2;
     private int keepActivitySettings;
     private boolean firstTime = true;
+
+    @BindView(R2.id.progressBar)
+    ProgressBar progressBar;
     @BindView(R2.id.root)
-    CoordinatorLayout coordinatorLayout;
+    FrameLayout coordinatorLayout;
     @BindView(R2.id.toolbar)
     Toolbar toolbar;
     @BindView(R2.id.bottom_navigation_container)
     AHBottomNavigation bottomNavigation;
     @BindView(R2.id.container)
     FrameLayout container;
+    @BindView(R2.id.search)
+    MaterialSearchView materialSearchView;
+
     BrowseProductActivityModel browseProductActivityModel;
     DiscoveryInteractor discoveryInteractor;
     LocalCacheHandler cacheGTM;
-
+    MenuItem searchItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_browse_category_new);
+        ButterKnife.bind(this);
+
         discoveryInteractor = new DiscoveryInteractorImpl();
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         keepActivitySettings = Settings.System.getInt(getContentResolver(), Settings.Global.ALWAYS_FINISH_ACTIVITIES, 0);
@@ -200,8 +197,6 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         } else {
             browseProductActivityModel.setUnique_id(AuthUtil.md5(GCMHandler.getRegistrationId(this)));
         }
-        setContentView(R.layout.activity_browse_category_new);
-        ButterKnife.bind(this);
         fragmentManager = getSupportFragmentManager();
         switch (browseProductActivityModel.getSource()) {
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT:
@@ -224,11 +219,11 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         cacheGTM = new LocalCacheHandler(this, KEY_GTM);
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+        materialSearchView.setActivity(this);
+        materialSearchView.setOnQueryTextListener(this);
+        materialSearchView.setOnSearchViewListener(this);
+
         if (browseProductActivityModel.alias != null && browseProductActivityModel.getHotListBannerModel() == null)
             fetchHotListHeader(browseProductActivityModel.alias);
 
@@ -242,15 +237,37 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                     }
                     break;
                 case BrowseProductRouter.VALUES_HISTORY_FRAGMENT_ID:
-                    if (!isFragmentCreated(SearchMainFragment.FRAGMENT_TAG)) {
-                        setFragment(SearchMainFragment.newInstance(), SearchMainFragment.FRAGMENT_TAG);
-                    }
+                    materialSearchView.showSearch(false);
                     break;
             }
         }
-        if (searchView != null) {
-            searchView.clearFocus();
-        }
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        sendQuery(query);
+        sendSearchGTM(query);
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        return false;
+    }
+
+    @Override
+    public void onSearchViewShown() {
+        bottomNavigation.hideBottomNavigation(false);
+    }
+
+    @Override
+    public void onSearchViewClosed() {
+        bottomNavigation.restoreBottomNavigation(false);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -273,7 +290,11 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
     @Override
     public void onBackPressed() {
-        finish();
+        if(materialSearchView.isSearchOpen()){
+            materialSearchView.closeSearch();
+        } else {
+            finish();
+        }
     }
 
     @Override
@@ -289,17 +310,6 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
     public void setFragment(Fragment fragment, String TAG) {
         if (isFinishing()) return;
-        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
-        if (fragment instanceof BrowseParentFragment) {
-            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-            CommonUtils.hideKeyboard(this, getCurrentFocus());
-        } else {
-            params.setScrollFlags(0);
-        }
-        toolbar.setLayoutParams(params);
-        toolbar.requestLayout();
-
-        Log.d(TAG, "setFragment TAG " + TAG);
         fragmentManager.beginTransaction().replace(R.id.container, fragment, TAG).addToBackStack(null).commit();
         if (fragment instanceof BrowseParentFragment) {
             bottomNavigation.setBehaviorTranslationEnabled(true);
@@ -316,80 +326,24 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.browse_category_v2, menu);
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        searchView = (SearchView) searchItem.getActionView();
-        searchView.setOnQueryTextListener(this);
-        searchView.setIconifiedByDefault(false);
-        searchView.setQueryHint(getString(R.string.search_hint));
-        searchView.setBackgroundColor(ContextCompat.getColor(this, R.color.transparent));
-        searchView.findViewById(R.id.search_src_text)
-                .setBackgroundColor(ContextCompat.getColor(this, R.color.transparent));
-
-//        SearchView.SearchAutoComplete mSearchSrcTextView =
-//                (SearchView.SearchAutoComplete) searchView.findViewById(R.id.search_src_text);
-//        mSearchSrcTextView.setTextColor(getResources().getColor(R.color.white));
-//        mSearchSrcTextView.setHintTextColor(getResources().getColor(R.color.white));
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        MenuItemCompat.setOnActionExpandListener(searchItem, this);
-        MenuItemCompat.setActionView(searchItem, searchView);
-        switch (browseProductActivityModel.getSource()) {
-            case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG:
-            case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT:
-            case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP:
-                searchItem.expandActionView();
-                break;
-            case BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT:
-                searchItem.setVisible(false);
-                break;
-        }
-        if (browseProductActivityModel.isSearchDeeplink()) {
-            searchView.setQuery(browseProductActivityModel.getQ(), false);
-            CommonUtils.hideKeyboard(this, getCurrentFocus());
-            browseProductActivityModel.setSearchDeeplink(false);
-        }
-        if (CommonUtils.isFinishActivitiesOptionEnabled(this)) {
-            searchView.clearFocus();
-        }
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+        searchItem = menu.findItem(R.id.action_search);
+        materialSearchView.setMenuItem(searchItem);
         return true;
     }
 
-    public void setSearchQuery(String query){
-        searchView.setQuery(query, false);
+    public void setSearchQuery(String query) {
+        materialSearchView.setQuery(query, false);
         CommonUtils.hideKeyboard(this, getCurrentFocus());
     }
 
-    @Override
-    public boolean onMenuItemActionExpand(MenuItem item) {
-        if (fragmentManager.findFragmentById(R.id.container) instanceof BrowseParentFragment && !browseProductActivityModel.isSearchDeeplink() && !afterRestoreSavedInstance) {
-            setFragment(SearchMainFragment.newInstance(), SearchMainFragment.FRAGMENT_TAG);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onMenuItemActionCollapse(MenuItem item) {
-        finish();
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
-
-        } else if (item.getItemId() == R.id.action_search) {
-            return false;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        sendQuery(query);
-        sendSearchGTM(query);
-        return true;
     }
 
     private void saveQueryCache(final String query) {
@@ -421,20 +375,6 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         sendBroadcast(intent);
     }
 
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        this.searchQuery = newText;
-        Fragment fragment = fragmentManager.findFragmentById(R.id.container);
-        if (fragment instanceof BrowseParentFragment &&
-                !browseProductActivityModel.isSearchDeeplink()) {
-            setFragment(SearchMainFragment.newInstance(newText), SearchMainFragment.FRAGMENT_TAG);
-        } else if(fragment instanceof SearchMainFragment) {
-            SearchMainFragment searchMainFragment = (SearchMainFragment) fragmentManager.findFragmentById(R.id.container);
-            searchMainFragment.search(newText);
-        }
-        return false;
-    }
-
     public void setFilterAttribute(DataValue filterAttribute, int activeTab) {
         if (checkHasFilterAttrIsNull(activeTab))
             mBrowseProductAtribut.getFilterAttributMap().put(activeTab, filterAttribute);
@@ -459,11 +399,8 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         setFragment(BrowseParentFragment.newInstance(browseProductActivityModel), BrowseParentFragment.FRAGMENT_TAG);
         deleteFilterCache();
         sendBroadCast(query);
-        if (searchView != null) {
-            searchView.setQuery(query, false);
-            searchView.setFocusable(false);
-        }
-        CommonUtils.hideKeyboard(this, getCurrentFocus());
+        toolbar.setTitle(query);
+        materialSearchView.closeSearch();
     }
 
     private void deleteFilterCache() {
@@ -537,7 +474,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                 // set the value get from intent
                 if (adSrc != null)
                     browseProductActivityModel.setAdSrc(adSrc);
-                if(departmentId!=null) {
+                if (departmentId != null) {
                     browseProductActivityModel.setDepartmentId(departmentId);
                     browseProductActivityModel.setParentDepartement(departmentId);
                 }
@@ -579,7 +516,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
 
     public void clearQuery() {
-        searchView.setQuery("", false);
+        materialSearchView.setQuery("", false);
     }
 
     public void changeBottomBar(String source) {
@@ -675,7 +612,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         bottomNavigation.setOnNavigationPositionListener(new AHBottomNavigation.OnNavigationPositionListener() {
             @Override
             public void onPositionChange(int y) {
-                CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) container.getLayoutParams();
+                FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) container.getLayoutParams();
                 layoutParams.setMargins(0, 0, 0, y);
                 container.setLayoutParams(layoutParams);
             }
@@ -772,10 +709,10 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         } else if (source.contains("shop")) {
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP, browseProductActivityModel.getDepartmentId());
         } else if (source.contains("directory") && activeTab == 0) {
-            Log.d(TAG,"get dynamic filter product");
+            Log.d(TAG, "get dynamic filter product");
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY, browseProductActivityModel.getDepartmentId());
         } else if (source.contains("directory") && activeTab == 1) {
-            Log.d(TAG,"get dynamic filter catalog");
+            Log.d(TAG, "get dynamic filter catalog");
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG, browseProductActivityModel.getDepartmentId());
         } else {
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT, browseProductActivityModel.getDepartmentId());
@@ -784,16 +721,16 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
     private List<AHBottomNavigationItem> getBottomItemsShop() {
         List<AHBottomNavigationItem> items = new ArrayList<>();
-        items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black_24dp));
+        items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
         return items;
     }
 
     private List<AHBottomNavigationItem> getBottomItemsAll() {
         List<AHBottomNavigationItem> items = new ArrayList<>();
-        items.add(new AHBottomNavigationItem(getString(R.string.sort), R.drawable.ic_sort_black_24dp));
-        items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black_24dp));
+        items.add(new AHBottomNavigationItem(getString(R.string.sort), R.drawable.ic_sort_black));
+        items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
         items.add(new AHBottomNavigationItem(getString(R.string.grid), gridIcon));
-        items.add(new AHBottomNavigationItem(getString(R.string.share), R.drawable.ic_share_black_24dp));
+        items.add(new AHBottomNavigationItem(getString(R.string.share), R.drawable.ic_share_black));
         return items;
     }
 
@@ -945,7 +882,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                         }
                         Map<String, String> filters;
 
-                        if ( browseProductActivityModel != null ) {
+                        if (browseProductActivityModel != null) {
                             filters = browseProductActivityModel.getFilterOptions();
                             for (Map.Entry<String, String> set : filters.entrySet()) {
                                 if (set.getKey().equals("ob")) {
@@ -1074,19 +1011,11 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     }
 
     public void deleteRecentSearch(String keyword) {
-        Fragment fragment = fragmentManager.findFragmentById(R.id.container);
-        if(fragment instanceof SearchMainFragment) {
-            SearchMainFragment searchMainFragment = (SearchMainFragment) fragment;
-            searchMainFragment.deleteRecentSearch(keyword);
-        }
+        materialSearchView.getSuggestionFragment().deleteRecentSearch(keyword);
     }
 
     public void deleteAllRecentSearch() {
-        Fragment fragment = fragmentManager.findFragmentById(R.id.container);
-        if(fragment instanceof SearchMainFragment) {
-            SearchMainFragment searchMainFragment = (SearchMainFragment) fragment;
-            searchMainFragment.deleteAllRecentSearch();
-        }
+        materialSearchView.getSuggestionFragment().deleteAllRecentSearch();
     }
 
     public BrowseProductRouter.GridType getGridType() {

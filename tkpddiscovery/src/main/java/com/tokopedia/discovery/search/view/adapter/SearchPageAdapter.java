@@ -16,7 +16,7 @@ import java.util.List;
 public class SearchPageAdapter extends FragmentStatePagerAdapter {
 
     private String[] TITLE = new String[] {
-            "Semua", "Toko"
+            "Product", "Toko"
     };
 
     private List<Fragment> fragments = new ArrayList<>();
