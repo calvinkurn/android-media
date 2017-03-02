@@ -62,21 +62,6 @@ public class TkpdDigitalResponse {
         } else {
             throw new ResponseDataNullException(DEFAULT_ERROR_MESSAGE_DATA_NULL);
         }
-//        JSONObject jsonResponse = null;
-//        try {
-//            jsonResponse = new JSONObject(strResponse);
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-//        String strData = null;
-//
-//        if (jsonResponse != null && jsonResponse.has(KEY_DATA) && !jsonResponse.isNull(KEY_DATA)) {
-//
-//        } else {
-//            throw new ResponseDataNullException(DEFAULT_ERROR_MESSAGE_DATA_NULL);
-//        }
-
-
         tkpdDigitalResponse.setJsonElementData(jsonResponse.get(KEY_DATA));
         tkpdDigitalResponse.setMessage("");
         tkpdDigitalResponse.setStrData(strData);

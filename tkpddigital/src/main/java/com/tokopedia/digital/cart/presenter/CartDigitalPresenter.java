@@ -1,19 +1,15 @@
 package com.tokopedia.digital.cart.presenter;
 
-import android.util.Log;
+import android.support.annotation.NonNull;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
-import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.digital.cart.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.cart.listener.IDigitalCartView;
+import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 
-import retrofit2.Response;
-import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * @author anggaprasetiyo on 2/24/17.
@@ -21,44 +17,58 @@ import rx.schedulers.Schedulers;
 
 public class CartDigitalPresenter implements ICartDigitalPresenter {
     private final IDigitalCartView view;
+    private final ICartDigitalInteractor cartDigitalInteractor;
 
-    public CartDigitalPresenter(IDigitalCartView view) {
+    public CartDigitalPresenter(IDigitalCartView view,
+                                ICartDigitalInteractor iCartDigitalInteractor) {
         this.view = view;
+        this.cartDigitalInteractor = iCartDigitalInteractor;
     }
 
     @Override
     public void processGetCartData(String categoryId) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("category_id", categoryId);
+        view.renderLoadingGetCartInfo();
+        cartDigitalInteractor.getCartInfoData(
+                view.getGeneratedAuthParamNetwork(param),
+                getSubscriberCartInfo()
+        );
+    }
 
-        DigitalEndpointService digitalService = new DigitalEndpointService();
-        final Observable<Response<TkpdDigitalResponse>> observable = digitalService.getApi()
-                .getCart(AuthUtil.generateParamsNetwork(MainApplication.getAppContext(), param));
-        observable.subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Response<TkpdDigitalResponse>>() {
-                    @Override
-                    public void onCompleted() {
+    @Override
+    public void processAddToCart(DigitalCheckoutPassData passData) {
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("category_id", passData.getCategoryId());
+        view.renderLoadingGetCartInfo();
+        cartDigitalInteractor.getCartInfoData(
+                view.getGeneratedAuthParamNetwork(param),
+                getSubscriberCartInfo()
+        );
+    }
 
-                    }
+    @NonNull
+    private Subscriber<CartDigitalInfoData> getSubscriberCartInfo() {
+        return new Subscriber<CartDigitalInfoData>() {
+            @Override
+            public void onCompleted() {
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
+            }
 
-                    @Override
-                    public void onNext(Response<TkpdDigitalResponse> stringResponse) {
-                        Log.d("CART RESPONSE", stringResponse.body().getStrResponse());
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                if (e instanceof ResponseDataNullException) {
+                    view.closeViewWithMessageAlert(e.getMessage());
+                } else {
+                    view.showToastMessage(e.getMessage());
+                }
+            }
 
-                    }
-                });
-
-//        try {
-//            TkpdDigitalResponse.factory("{\"data\":null}");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+            @Override
+            public void onNext(CartDigitalInfoData cartDigitalInfoData) {
+                view.renderCartDigitalInfoData(cartDigitalInfoData);
+            }
+        };
     }
 }

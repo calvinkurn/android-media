@@ -40,9 +40,10 @@ public abstract class EndpointService<T> {
         Retrofit.Builder retrofit = new Retrofit.Builder();
         retrofit.baseUrl(getEndpointUrl() + getEndpointVersion());
 
+
+        setupAdditionalConverterFactory(retrofit);
         retrofit.addConverterFactory(new StringResponseConverter());
         retrofit.addConverterFactory(GsonConverterFactory.create(gson));
-        setupAdditionalConverterFactory(retrofit);
 
 
         retrofit.addCallAdapterFactory(RxJavaCallAdapterFactory.create());

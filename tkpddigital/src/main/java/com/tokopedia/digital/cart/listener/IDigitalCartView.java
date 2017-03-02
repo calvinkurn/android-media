@@ -1,8 +1,15 @@
 package com.tokopedia.digital.cart.listener;
 
+import com.tokopedia.digital.cart.model.CartDigitalInfoData;
+
 /**
  * @author anggaprasetiyo on 2/27/17.
  */
 
 public interface IDigitalCartView extends IBaseView {
+    void renderCartDigitalInfoData(CartDigitalInfoData cartDigitalInfoData);
+
+    void renderLoadingGetCartInfo();
+
+    void closeViewWithMessageAlert(String message);
 }

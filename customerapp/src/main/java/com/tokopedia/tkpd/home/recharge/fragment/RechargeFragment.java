@@ -47,7 +47,7 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.router.digitalmodule.passdata.ExampPassData;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -836,15 +836,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         startActivity(intent);
     }
 
-    private void goToNativeCheckout() {
-        //  startActivity(CartDigitalActivity.newInstance(getActivity(), null));
-        ExampPassData passData = new ExampPassData();
-        passData.setCategoryId(category.getId() + "");
-        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-            startActivity(((IDigitalModuleRouter) getActivity().getApplication())
-                    .instanceIntentCartDigitalProduct(passData));
-        }
-    }
+
     //endregion
 
     private void gotoLogin() {
@@ -880,6 +872,31 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         return URLGenerator.generateURLSessionLogin(Uri.encode(url), getActivity());
     }
 
+    private void goToNativeCheckout() {
+        String clientNumber = rechargeEditText.getText();
+        DigitalCheckoutPassData digitalCheckoutPassData = new DigitalCheckoutPassData.Builder()
+                .action("init_data")
+                .categoryId(String.valueOf(category.getId()))
+                .clientNumber(clientNumber)
+                .instantCheckout(buyWithCreditCheckbox.isChecked() ? "1" : "0")
+                .isPromo(selectedProduct.getAttributes().getPromo() != null ? "1" : "0")
+                .operatorId(
+                        String.valueOf(selectedProduct.getRelationships().getOperator()
+                                .getData().getId())
+                )
+                .productId(String.valueOf(selectedProduct.getId()))
+                .utmCampaign(bundle.getString(ARG_UTM_CAMPAIGN, category.getAttributes().getName()))
+                .utmContent(
+                        bundle.getString(ARG_UTM_CONTENT, VersionInfo.getVersionInfo(getActivity()))
+                )
+                .utmSource(bundle.getString(ARG_UTM_SOURCE, "android"))
+                .utmMedium(bundle.getString(ARG_UTM_MEDIUM, "widget"))
+                .build();
+        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+            startActivity(((IDigitalModuleRouter) getActivity().getApplication())
+                    .instanceIntentCartDigitalProduct(digitalCheckoutPassData));
+        }
+    }
 
     private String generateATokenRechargeCheckout() {
         return SessionHandler.getLoginID(getActivity()) + "_" + System.currentTimeMillis();

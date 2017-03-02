@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.router.digitalmodule.passdata.ExampPassData;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.cart.fragment.CartDigitalFragment;
 
@@ -16,10 +16,10 @@ import com.tokopedia.digital.cart.fragment.CartDigitalFragment;
 
 public class CartDigitalActivity extends BasePresenterActivity {
     private static final String EXTRA_PASS_DIGITAL_CART_DATA = "EXTRA_PASS_DIGITAL_CART_DATA";
-    private ExampPassData passData;
+    private DigitalCheckoutPassData passData;
 
 
-    public static Intent newInstance(Context context, ExampPassData passData) {
+    public static Intent newInstance(Context context, DigitalCheckoutPassData passData) {
         return new Intent(context, CartDigitalActivity.class)
                 .putExtra(EXTRA_PASS_DIGITAL_CART_DATA, passData);
     }

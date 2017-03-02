@@ -19,6 +19,12 @@ public class Attributes {
     @SerializedName("price")
     @Expose
     private String price;
+    @SerializedName("user_id")
+    @Expose
+    private String userId;
+    @SerializedName("title")
+    @Expose
+    private String title;
     @SerializedName("price_plain")
     @Expose
     private long pricePlain;
@@ -95,6 +101,30 @@ public class Attributes {
 
     public void setUserInputPrice(UserInputPrice userInputPrice) {
         this.userInputPrice = userInputPrice;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public boolean isOtpValid() {
+        return isOtpValid;
+    }
+
+    public void setOtpValid(boolean otpValid) {
+        isOtpValid = otpValid;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public List<MainInfo> getMainInfo() {

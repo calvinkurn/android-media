@@ -15,7 +15,6 @@ import com.tokopedia.digital.R2;
 import com.tokopedia.digital.cart.model.CartAdditionalInfo;
 import com.tokopedia.digital.cart.model.CartItemDigital;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -66,18 +65,6 @@ public class ItemCartHolderView extends RelativeLayout {
     }
 
     private void setView() {
-        //Dummy data
-        List<CartItemDigital> cartItemDigitals = dummyData();
-        List<CartAdditionalInfo> additionalInfos = new ArrayList<>();
-        additionalInfos.add(new CartAdditionalInfo("Data Pelanggan", dummyData()));
-        additionalInfos.add(new CartAdditionalInfo("Detail Tagihan", dummyData()));
-
-        setImageItemCart("https://ecs7.tokopedia.net/img/og_tokopedia.jpg");
-        setCategoryName("Pulsa");
-        setOperatorName("Telkomsel - Simpati");
-        renderDataMainInfo(cartItemDigitals);
-        renderAdditionalInfo(additionalInfos);
-
         buttonDetail.setOnClickListener(getClickDetailListener());
     }
 
@@ -100,6 +87,7 @@ public class ItemCartHolderView extends RelativeLayout {
     }
 
     public void renderAdditionalInfo(List<CartAdditionalInfo> additionalInfos) {
+        buttonDetail.setVisibility(additionalInfos.isEmpty() ? GONE : VISIBLE);
         for (CartAdditionalInfo additionalInfo : additionalInfos) {
             addViewAdditionalInfo(additionalInfo);
         }
@@ -154,13 +142,4 @@ public class ItemCartHolderView extends RelativeLayout {
         additionalInfoShowed = false;
     }
 
-    //Dummy data
-    private List<CartItemDigital> dummyData() {
-        List<CartItemDigital> items = new ArrayList<>();
-        items.add(new CartItemDigital("ID Pelanggan", "11223344556"));
-        items.add(new CartItemDigital("Nama", "Tokopedia User"));
-        items.add(new CartItemDigital("Tarif/Daya", "R1/2200VA"));
-        items.add(new CartItemDigital("Total/Tagihan", "Rp 0"));
-        return items;
-    }
 }

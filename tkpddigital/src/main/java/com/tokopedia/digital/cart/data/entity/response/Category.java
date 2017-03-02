@@ -19,6 +19,10 @@ public class Category {
         this.data = data;
     }
 
+    public RelationData getData() {
+        return data;
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);

@@ -1,7 +1,5 @@
 package com.tokopedia.digital.cart.model;
 
-import com.tokopedia.core.database.recharge.product.Relationships;
-
 import java.util.List;
 
 /**
@@ -29,6 +27,26 @@ public class CartDigitalInfoData {
     private List<CartAdditionalInfo> additionalInfos;
 
     private Relationships relationships;
+
+    private String operatorName;
+
+    private String categoryName;
+
+    public String getOperatorName() {
+        return operatorName;
+    }
+
+    public void setOperatorName(String operatorName) {
+        this.operatorName = operatorName;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
 
     public String getType() {
         return type;

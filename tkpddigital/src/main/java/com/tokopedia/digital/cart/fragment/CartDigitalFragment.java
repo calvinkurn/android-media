@@ -8,27 +8,51 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.NestedScrollView;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.router.digitalmodule.passdata.ExampPassData;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.cart.compoundview.CheckoutHolderView;
+import com.tokopedia.digital.cart.compoundview.ItemCartHolderView;
+import com.tokopedia.digital.cart.compoundview.VoucherCartHolderView;
+import com.tokopedia.digital.cart.interactor.CartDigitalInteractor;
 import com.tokopedia.digital.cart.listener.IDigitalCartView;
+import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
 
+import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
  * @author anggaprasetiyo on 2/21/17.
  */
 
-public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPresenter> implements IDigitalCartView {
+public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPresenter> implements
+        IDigitalCartView, CheckoutHolderView.IAction {
 
     private static final String ARG_CART_DIGITAL_DATA_PASS = "ARG_CART_DIGITAL_DATA_PASS";
-    private ExampPassData passData;
+    private DigitalCheckoutPassData passData;
+
+    @BindView(R2.id.checkout_cart_holder_view)
+    CheckoutHolderView checkoutHolderView;
+    @BindView(R2.id.item_cart_holder_view)
+    ItemCartHolderView itemCartHolderView;
+    @BindView(R2.id.voucher_cart_holder_view)
+    VoucherCartHolderView voucherCartHolderView;
+    @BindView(R2.id.pb_main_loading)
+    ProgressBar pbMainLoading;
+    @BindView(R2.id.nsv_container)
+    NestedScrollView mainContainer;
 
     public static Fragment newInstance(Parcelable passData) {
         CartDigitalFragment cartDigitalFragment = new CartDigitalFragment();
@@ -45,7 +69,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     protected void onFirstTimeLaunched() {
-
+        //   presenter.processAddToCart(passData);
+        presenter.processGetCartData(passData.getCategoryId());
     }
 
     @Override
@@ -65,8 +90,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     protected void initialPresenter() {
-        presenter = new CartDigitalPresenter(this);
-        presenter.processGetCartData(passData.getCategoryId());
+        presenter = new CartDigitalPresenter(this, new CartDigitalInteractor());
     }
 
     @Override
@@ -127,7 +151,9 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void showToastMessage(String message) {
-
+        View view = getView();
+        if (view != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
+        else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -137,7 +163,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void dismissDialog(Dialog dialog) {
-
+        if (dialog.isShowing()) dialog.dismiss();
     }
 
     @Override
@@ -147,21 +173,69 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public String getStringFromResource(@StringRes int resId) {
-        return null;
+        return getString(resId);
     }
 
     @Override
-    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
-        return null;
+    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            TKPDMapParam<String, String> originParams) {
+        return AuthUtil.generateParamsNetwork(getActivity(), originParams);
     }
 
     @Override
     public void closeView() {
-
+        getActivity().finish();
     }
 
     @OnClick(R2.id.btn_next)
     void actionNext() {
         presenter.processGetCartData(passData.getCategoryId());
+    }
+
+    @Override
+    public void renderCartDigitalInfoData(CartDigitalInfoData cartDigitalInfoData) {
+        pbMainLoading.setVisibility(View.GONE);
+        mainContainer.setVisibility(View.VISIBLE);
+        itemCartHolderView.renderAdditionalInfo(cartDigitalInfoData.getAdditionalInfos());
+        itemCartHolderView.renderDataMainInfo(cartDigitalInfoData.getMainInfo());
+        itemCartHolderView.setCategoryName("");
+        itemCartHolderView.setOperatorName("");
+        itemCartHolderView.setImageItemCart("");
+        checkoutHolderView.renderData(
+                this,
+                cartDigitalInfoData.getAttributes().getPrice(),
+                cartDigitalInfoData.getAttributes().getPrice()
+        );
+    }
+
+    @Override
+    public void renderLoadingGetCartInfo() {
+        pbMainLoading.setVisibility(View.VISIBLE);
+        mainContainer.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void closeViewWithMessageAlert(String message) {
+        pbMainLoading.setVisibility(View.GONE);
+        mainContainer.setVisibility(View.GONE);
+        View view = getView();
+        if (view != null) {
+            Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_SHORT);
+            snackbar.setCallback(new Snackbar.Callback() {
+                @Override
+                public void onDismissed(Snackbar snackbar, int event) {
+                    getActivity().finish();
+                }
+            });
+            snackbar.show();
+        } else {
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+            getActivity().finish();
+        }
+    }
+
+    @Override
+    public void onClickButtonNext() {
+
     }
 }

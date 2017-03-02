@@ -1,0 +1,99 @@
+package com.tokopedia.digital.cart.data.mapper;
+
+import com.tokopedia.digital.cart.data.entity.response.AdditionalInfo;
+import com.tokopedia.digital.cart.data.entity.response.Detail;
+import com.tokopedia.digital.cart.data.entity.response.MainInfo;
+import com.tokopedia.digital.cart.data.entity.response.ResponseCartData;
+import com.tokopedia.digital.cart.model.AttributesDigital;
+import com.tokopedia.digital.cart.model.CartAdditionalInfo;
+import com.tokopedia.digital.cart.model.CartDigitalInfoData;
+import com.tokopedia.digital.cart.model.CartItemDigital;
+import com.tokopedia.digital.cart.model.Relation;
+import com.tokopedia.digital.cart.model.RelationData;
+import com.tokopedia.digital.cart.model.Relationships;
+import com.tokopedia.digital.cart.model.UserInputPriceDigital;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author anggaprasetiyo on 3/2/17.
+ */
+
+public class CartMapperData implements ICartMapperData {
+    @Override
+    public CartDigitalInfoData transformCartInfoData(ResponseCartData responseCartData) {
+        CartDigitalInfoData cartDigitalInfoData = new CartDigitalInfoData();
+        List<CartItemDigital> cartItemDigitalList = new ArrayList<>();
+        List<CartAdditionalInfo> cartAdditionalInfoList = new ArrayList<>();
+        for (MainInfo mainInfo : responseCartData.getAttributes().getMainInfo()) {
+            cartItemDigitalList.add(new CartItemDigital(mainInfo.getLabel(), mainInfo.getValue()));
+        }
+        for (AdditionalInfo additionalInfo : responseCartData.getAttributes().getAdditionalInfo()) {
+            List<CartItemDigital> cartItemDigitalList1 = new ArrayList<>();
+            for (Detail detail : additionalInfo.getDetail()) {
+                cartItemDigitalList1.add(new CartItemDigital(detail.getLabel(), detail.getValue()));
+            }
+            cartAdditionalInfoList.add(
+                    new CartAdditionalInfo(additionalInfo.getTitle(), cartItemDigitalList1)
+            );
+        }
+        AttributesDigital attributesDigital = new AttributesDigital();
+        attributesDigital.setClientNumber(responseCartData.getAttributes().getClientNumber());
+        attributesDigital.setPrice(responseCartData.getAttributes().getPrice());
+        attributesDigital.setPricePlain((int) responseCartData.getAttributes().getPricePlain());
+        if (responseCartData.getAttributes().getUserInputPrice() != null) {
+            UserInputPriceDigital userInputPriceDigital = new UserInputPriceDigital();
+            userInputPriceDigital.setMaxPayment(
+                    (int) responseCartData.getAttributes().getUserInputPrice().getMaxPayment()
+            );
+            userInputPriceDigital.setMinPayment(
+                    (int) responseCartData.getAttributes().getUserInputPrice().getMinPayment()
+            );
+            attributesDigital.setUserInputPrice(userInputPriceDigital);
+        }
+        attributesDigital.setUserId(responseCartData.getAttributes().getUserId());
+
+        com.tokopedia.digital.cart.data.entity.response.Relationships relationshipsResponse =
+                responseCartData.getRelationships();
+
+
+        RelationData relationDataProduct =
+                new RelationData();
+        relationDataProduct.setType(relationshipsResponse.getProduct().getData().getType());
+        relationDataProduct.setId(relationshipsResponse.getProduct().getData().getId());
+
+        RelationData relationDataCategory =
+                new RelationData();
+        relationDataCategory.setType(relationshipsResponse.getCategory().getData().getType());
+        relationDataCategory.setId(relationshipsResponse.getCategory().getData().getId());
+
+
+        RelationData relationDataOperator =
+                new RelationData();
+        relationDataOperator.setType(relationshipsResponse.getOperator().getData().getType());
+        relationDataOperator.setId(relationshipsResponse.getOperator().getData().getId());
+
+
+        Relationships relationships = new Relationships();
+        relationships.setRelationCategory(new Relation(relationDataCategory));
+        relationships.setRelationOperator(new Relation(relationDataOperator));
+        relationships.setRelationProduct(new Relation(relationDataProduct));
+
+
+        cartDigitalInfoData.setAdditionalInfos(cartAdditionalInfoList);
+        cartDigitalInfoData.setAttributes(attributesDigital);
+        cartDigitalInfoData.setId(responseCartData.getId());
+        cartDigitalInfoData.setMainInfo(cartItemDigitalList);
+        cartDigitalInfoData.setInstantCheckout(
+                responseCartData.getAttributes().isInstantCheckout()
+        );
+        cartDigitalInfoData.setOtpValid(responseCartData.getAttributes().isOtpValid());
+        cartDigitalInfoData.setSmsState(responseCartData.getAttributes().getSmsState());
+        cartDigitalInfoData.setTitle(responseCartData.getAttributes().getTitle());
+        cartDigitalInfoData.setType(responseCartData.getType());
+        cartDigitalInfoData.setRelationships(relationships);
+
+        return cartDigitalInfoData;
+    }
+}
