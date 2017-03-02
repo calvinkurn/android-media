@@ -1,43 +1,29 @@
 package com.tokopedia.seller.shopscore.domain.model;
 
+import java.util.List;
+
 /**
- * Created by sebastianuskh on 2/24/17.
+ * Created by sebastianuskh on 3/2/17.
  */
+
 public class ShopScoreDetailDomainModel {
-    private String title;
-    private Integer value;
-    private String description;
-    private Integer progressBarColor;
+    List<ShopScoreDetailItemDomainModel> itemModels;
 
-    public String getTitle() {
-        return title;
+    ShopScoreDetailSummaryDomainModel summaryModel;
+
+    public List<ShopScoreDetailItemDomainModel> getItemModels() {
+        return itemModels;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setItemModels(List<ShopScoreDetailItemDomainModel> itemModels) {
+        this.itemModels = itemModels;
     }
 
-    public Integer getValue() {
-        return value;
+    public ShopScoreDetailSummaryDomainModel getSummaryModel() {
+        return summaryModel;
     }
 
-    public void setValue(Integer value) {
-        this.value = value;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getProgressBarColor() {
-        return progressBarColor;
-    }
-
-    public void setProgressBarColor(Integer progressBarColor) {
-        this.progressBarColor = progressBarColor;
+    public void setSummaryModel(ShopScoreDetailSummaryDomainModel summaryModel) {
+        this.summaryModel = summaryModel;
     }
 }

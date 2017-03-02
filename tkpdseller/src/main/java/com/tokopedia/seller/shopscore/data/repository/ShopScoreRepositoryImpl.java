@@ -7,8 +7,6 @@ import com.tokopedia.seller.shopscore.domain.ShopScoreRepository;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailDomainModel;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
 
-import java.util.List;
-
 import rx.Observable;
 
 /**
@@ -29,7 +27,7 @@ public class ShopScoreRepositoryImpl implements ShopScoreRepository {
     }
 
     @Override
-    public Observable<List<ShopScoreDetailDomainModel>> getShopScoreDetail() {
+    public Observable<ShopScoreDetailDomainModel> getShopScoreDetail() {
         ShopScoreDetailDataSource shopScoreDetailDataSource = shopScoreFactory.createShopScoreDetailSource();
         return shopScoreDetailDataSource.getShopScoreDetail();
     }

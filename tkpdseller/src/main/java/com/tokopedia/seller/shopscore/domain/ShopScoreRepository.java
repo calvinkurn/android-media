@@ -3,8 +3,6 @@ package com.tokopedia.seller.shopscore.domain;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailDomainModel;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreMainDomainModel;
 
-import java.util.List;
-
 import rx.Observable;
 
 /**
@@ -13,5 +11,5 @@ import rx.Observable;
 public interface ShopScoreRepository {
     Observable<ShopScoreMainDomainModel> getShopScoreSummary();
 
-    Observable<List<ShopScoreDetailDomainModel>> getShopScoreDetail();
+    Observable<ShopScoreDetailDomainModel> getShopScoreDetail();
 }

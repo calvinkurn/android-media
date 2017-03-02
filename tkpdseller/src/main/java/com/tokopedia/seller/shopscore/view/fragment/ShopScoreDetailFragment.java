@@ -12,7 +12,8 @@ import android.view.ViewGroup;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopscore.di.ShopScoreDetailDependencyInjector;
-import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailViewModel;
+import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailItemViewModel;
+import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailSummaryViewModel;
 import com.tokopedia.seller.shopscore.view.presenter.ShopScoreDetailPresenterImpl;
 import com.tokopedia.seller.shopscore.view.recyclerview.ShopScoreDetailAdapter;
 
@@ -62,7 +63,12 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
 
 
     @Override
-    public void renderShopScoreDetail(List<ShopScoreDetailViewModel> viewModel) {
+    public void renderShopScoreDetail(List<ShopScoreDetailItemViewModel> viewModel) {
         adapter.updateData(viewModel);
+    }
+
+    @Override
+    public void renderShopScoreSummary(ShopScoreDetailSummaryViewModel viewModel) {
+
     }
 }

@@ -1,7 +1,8 @@
 package com.tokopedia.seller.shopscore.view.fragment;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailViewModel;
+import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailItemViewModel;
+import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailSummaryViewModel;
 
 import java.util.List;
 
@@ -10,5 +11,7 @@ import java.util.List;
  */
 public interface ShopScoreDetailView extends CustomerView {
 
-    void renderShopScoreDetail(List<ShopScoreDetailViewModel> viewModel);
+    void renderShopScoreDetail(List<ShopScoreDetailItemViewModel> viewModel);
+
+    void renderShopScoreSummary(ShopScoreDetailSummaryViewModel viewModel);
 }

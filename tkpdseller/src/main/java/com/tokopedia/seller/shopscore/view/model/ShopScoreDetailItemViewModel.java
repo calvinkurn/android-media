@@ -3,7 +3,7 @@ package com.tokopedia.seller.shopscore.view.model;
 /**
  * Created by sebastianuskh on 2/27/17.
  */
-public class ShopScoreDetailViewModel {
+public class ShopScoreDetailItemViewModel {
     private String title;
     private Integer value;
     private String description;

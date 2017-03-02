@@ -1,0 +1,23 @@
+package com.tokopedia.seller.shopscore.view.mapper;
+
+import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailDomainModel;
+import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailSummaryDomainModel;
+import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailSummaryViewModel;
+
+/**
+ * Created by sebastianuskh on 3/2/17.
+ */
+public class ShopScoreDetailSummaryViewModelMapper {
+    public static ShopScoreDetailSummaryViewModel map(ShopScoreDetailDomainModel domainModels) {
+        ShopScoreDetailSummaryViewModel viewModel = new ShopScoreDetailSummaryViewModel();
+        ShopScoreDetailSummaryDomainModel summaryModel = domainModels.getSummaryModel();
+
+        viewModel.setBadgeScore(summaryModel.getBadgeScore());
+        viewModel.setHtml(summaryModel.getHtml());
+        viewModel.setColor(summaryModel.getColor());
+        viewModel.setValue(summaryModel.getValue());
+        viewModel.setText(summaryModel.getText());
+
+        return viewModel;
+    }
+}

@@ -6,8 +6,6 @@ import com.tokopedia.seller.shopscore.data.source.cloud.model.detail.ShopScoreDe
 import com.tokopedia.seller.shopscore.data.source.disk.ShopScoreCache;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailDomainModel;
 
-import java.util.List;
-
 import rx.Observable;
 import rx.functions.Action1;
 
@@ -23,7 +21,7 @@ public class ShopScoreDetailDataSource {
         this.shopScoreCache = shopScoreCache;
     }
 
-    public Observable<List<ShopScoreDetailDomainModel>> getShopScoreDetail() {
+    public Observable<ShopScoreDetailDomainModel> getShopScoreDetail() {
         return shopScoreCache.getShopScoreDetail()
                 .onErrorResumeNext(
                         shopScoreCloud.getShopScoreDetailData()

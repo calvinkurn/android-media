@@ -5,8 +5,10 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.seller.shopscore.domain.interactor.GetShopScoreDetailUseCase;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailDomainModel;
 import com.tokopedia.seller.shopscore.view.fragment.ShopScoreDetailView;
-import com.tokopedia.seller.shopscore.view.mapper.ShopScoreViewModelMapper;
-import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailViewModel;
+import com.tokopedia.seller.shopscore.view.mapper.ShopScoreDetailItemsViewModelMapper;
+import com.tokopedia.seller.shopscore.view.mapper.ShopScoreDetailSummaryViewModelMapper;
+import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailItemViewModel;
+import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailSummaryViewModel;
 
 import java.util.List;
 
@@ -30,7 +32,17 @@ public class ShopScoreDetailPresenterImpl extends BaseDaggerPresenter<ShopScoreD
         );
     }
 
-    private class GetShopScoreDetailSubscriber extends Subscriber<List<ShopScoreDetailDomainModel>> {
+    private void renderSummary(ShopScoreDetailDomainModel domainModels) {
+        ShopScoreDetailSummaryViewModel viewModel = ShopScoreDetailSummaryViewModelMapper.map(domainModels);
+        getView().renderShopScoreSummary(viewModel);
+    }
+
+    private void renderItemsDetail(ShopScoreDetailDomainModel domainModels) {
+        List<ShopScoreDetailItemViewModel> viewModel = ShopScoreDetailItemsViewModelMapper.map(domainModels);
+        getView().renderShopScoreDetail(viewModel);
+    }
+
+    private class GetShopScoreDetailSubscriber extends Subscriber<ShopScoreDetailDomainModel> {
         @Override
         public void onCompleted() {
 
@@ -42,9 +54,9 @@ public class ShopScoreDetailPresenterImpl extends BaseDaggerPresenter<ShopScoreD
         }
 
         @Override
-        public void onNext(List<ShopScoreDetailDomainModel> domainModels) {
-            List<ShopScoreDetailViewModel> viewModel = ShopScoreViewModelMapper.map(domainModels);
-            getView().renderShopScoreDetail(viewModel);
+        public void onNext(ShopScoreDetailDomainModel domainModels) {
+            renderItemsDetail(domainModels);
+            renderSummary(domainModels);
         }
     }
 }

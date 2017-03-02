@@ -7,14 +7,12 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.shopscore.domain.ShopScoreRepository;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailDomainModel;
 
-import java.util.List;
-
 import rx.Observable;
 
 /**
  * Created by sebastianuskh on 2/24/17.
  */
-public class GetShopScoreDetailUseCase extends UseCase<List<ShopScoreDetailDomainModel>> {
+public class GetShopScoreDetailUseCase extends UseCase<ShopScoreDetailDomainModel> {
     private final ShopScoreRepository shopScoreRepository;
 
     public GetShopScoreDetailUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, ShopScoreRepository shopScoreRepository) {
@@ -23,7 +21,7 @@ public class GetShopScoreDetailUseCase extends UseCase<List<ShopScoreDetailDomai
     }
 
     @Override
-    public Observable<List<ShopScoreDetailDomainModel>> createObservable(RequestParams requestParams) {
+    public Observable<ShopScoreDetailDomainModel> createObservable(RequestParams requestParams) {
         return shopScoreRepository.getShopScoreDetail();
     }
 }

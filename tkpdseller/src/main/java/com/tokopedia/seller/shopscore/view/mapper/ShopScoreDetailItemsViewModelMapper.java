@@ -1,7 +1,8 @@
 package com.tokopedia.seller.shopscore.view.mapper;
 
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailDomainModel;
-import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailViewModel;
+import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailItemDomainModel;
+import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailItemViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,11 +10,11 @@ import java.util.List;
 /**
  * Created by sebastianuskh on 2/27/17.
  */
-public class ShopScoreViewModelMapper {
-    public static List<ShopScoreDetailViewModel> map(List<ShopScoreDetailDomainModel> domainModels) {
-        List<ShopScoreDetailViewModel> viewModels = new ArrayList<>();
-        for (ShopScoreDetailDomainModel domainModel : domainModels) {
-            ShopScoreDetailViewModel viewModel = new ShopScoreDetailViewModel();
+public class ShopScoreDetailItemsViewModelMapper {
+    public static List<ShopScoreDetailItemViewModel> map(ShopScoreDetailDomainModel domainModels) {
+        List<ShopScoreDetailItemViewModel> viewModels = new ArrayList<>();
+        for (ShopScoreDetailItemDomainModel domainModel : domainModels.getItemModels()) {
+            ShopScoreDetailItemViewModel viewModel = new ShopScoreDetailItemViewModel();
             viewModel.setTitle(domainModel.getTitle());
             viewModel.setValue(domainModel.getValue());
             viewModel.setDescription(domainModel.getDescription());
