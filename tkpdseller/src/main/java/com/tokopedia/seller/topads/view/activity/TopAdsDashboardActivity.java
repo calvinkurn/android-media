@@ -110,7 +110,6 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
             public void onClick(View v) {
                 Intent intent = new Intent(TopAdsDashboardActivity.this, TopAdsGroupNewPromoActivity.class);
                 startActivity(intent);
-//                showCreateAdsAlert(TopAdsDashboardActivity.this);
             }
         });
     }

@@ -209,6 +209,12 @@
     <string name="label_top_ads_error_fail_move_new_group">Gagal memindahkan product ke grup baru</string>
     <string name="label_top_ads_error_fail_move_exist_group">Gagal memindahkan product ke grup lain</string>
 
+    <string name="error_top_ads_click_budget_max">Biaya maksimal maksimum %1s</string>
+    <string name="error_top_ads_click_budget_minimum">Biaya minimal Rp %1s</string>
+    <string name="error_top_ads_click_budget_multiple_by">Biaya harus kelipatan Rp %1s</string>
+    <string name="error_top_ads_daily_budget_minimal">Biaya per hari minimal %1sx biaya maks per klik</string>
+    <string name="error_top_ads_daily_budget_cannot_empyt">Anggaran tidak boleh kosong</string>
+
     <string name="title_activity_top_ads_list">Tambah Produk</string>
 
     <string name="delete">Delete</string>

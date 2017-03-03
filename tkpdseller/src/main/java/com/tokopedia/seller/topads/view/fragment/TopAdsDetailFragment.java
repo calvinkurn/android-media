@@ -37,7 +37,7 @@ import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAc
  */
 public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> extends TopAdsDatePickerFragment<T> implements TopAdsDetailViewListener, CompoundButton.OnCheckedChangeListener {
 
-    protected static final int REQUEST_CODE_AD_STATUS = 2;
+    protected static final int REQUEST_CODE_AD_EDIT = 1;
 
     protected TopAdsLabelView priceAndSchedule;
     protected TopAdsLabelView name;
@@ -54,9 +54,11 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     protected TopAdsLabelView favorite;
 
     private SwipeToRefresh swipeToRefresh;
-    protected Ad adFromIntent;
     protected ProgressDialog progressDialog;
     private SnackbarRetry snackbarRetry;
+
+    protected Ad adFromIntent;
+    protected int adId;
 
     protected abstract void refreshAd();
 
@@ -103,6 +105,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     protected void setupArguments(Bundle bundle) {
         super.setupArguments(bundle);
         adFromIntent = bundle.getParcelable(TopAdsExtraConstant.EXTRA_AD);
+        adId = bundle.getInt(TopAdsExtraConstant.EXTRA_AD_ID);
     }
 
     @Override
@@ -129,11 +132,11 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         // check if the request code is the same
-        if (requestCode == REQUEST_CODE_AD_STATUS && intent != null) {
-            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, false);
-            boolean adDeleted = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_DELETED, false);
-            if (adStatusChanged || adDeleted) {
+        if (requestCode == REQUEST_CODE_AD_EDIT && intent != null) {
+            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+            if (adStatusChanged) {
                 refreshAd();
+                setResultAdDetailChanged();
             }
         }
     }
@@ -195,7 +198,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     public void onTurnOnAdSuccess() {
         loadData();
-        setResultAdStatusChanged();
+        setResultAdDetailChanged();
         snackbarRetry.hideRetrySnackbar();
     }
 
@@ -216,7 +219,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     public void onTurnOffAdSuccess() {
         loadData();
-        setResultAdStatusChanged();
+        setResultAdDetailChanged();
         snackbarRetry.hideRetrySnackbar();
     }
 
@@ -293,9 +296,9 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         status.setListenerValue(this);
     }
 
-    protected void setResultAdStatusChanged() {
+    protected void setResultAdDetailChanged() {
         Intent intent = new Intent();
-        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, true);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
         getActivity().setResult(Activity.RESULT_OK, intent);
     }
 

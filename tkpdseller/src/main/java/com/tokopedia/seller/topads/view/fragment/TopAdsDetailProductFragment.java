@@ -19,8 +19,8 @@ import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractorImpl;
 import com.tokopedia.seller.topads.domain.model.data.Ad;
 import com.tokopedia.seller.topads.domain.model.data.ProductAd;
-import com.tokopedia.seller.topads.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailEditProductActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupEditPromoActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupManagePromoActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenter;
@@ -33,8 +33,6 @@ import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
 public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDetailProductPresenter> {
 
-    public static final int EDIT_PRODUCT_GROUP_REQUEST_CODE = 1;
-
     public interface TopAdsDetailProductFragmentListener {
         void goToProductActivity(String productUrl);
     }
@@ -45,10 +43,11 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     private TopAdsDetailProductFragmentListener listener;
     private MenuItem manageGroupMenuItem;
 
-    public static Fragment createInstance(ProductAd productAd) {
+    public static Fragment createInstance(ProductAd productAd, int adId) {
         Fragment fragment = new TopAdsDetailProductFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, productAd);
+        bundle.putInt(TopAdsExtraConstant.EXTRA_AD_ID, adId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -107,7 +106,11 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
 
     @Override
     protected void refreshAd() {
-        presenter.refreshAd(startDate, endDate, productAd.getId());
+        if (productAd != null) {
+            presenter.refreshAd(startDate, endDate, productAd.getId());
+        } else {
+            presenter.refreshAd(startDate, endDate, adId);
+        }
     }
 
     @Override
@@ -116,11 +119,11 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
             Intent intent = TopAdsGroupEditPromoActivity.createIntent(getActivity(),
                     String.valueOf(productAd.getId()), TopAdsGroupEditPromoFragment.EXIST_GROUP, productAd.getGroupName(),
                     productAd.getGroupId());
-            startActivityForResult(intent, EDIT_PRODUCT_GROUP_REQUEST_CODE);
-        }else if(productAd != null){
+            startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
+        } else if (productAd != null) {
             Intent intent = new Intent(getActivity(), TopAdsDetailEditProductActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, String.valueOf(productAd.getId()));
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
         }
     }
 
@@ -172,7 +175,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     void onPromoGroupClicked() {
         if (isHasGroupAd()) {
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
-            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID_GROUP, productAd.getGroupId());
+            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, productAd.getGroupId());
             startActivity(intent);
         }
     }
@@ -189,6 +192,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         int itemId = item.getItemId();
         if (itemId == R.id.menu_manage_group) {
             manageGroup();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -196,19 +200,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     private void manageGroup() {
         Intent intent = TopAdsGroupManagePromoActivity.createIntent(getActivity(), String.valueOf(productAd.getId()),
                 TopAdsGroupManagePromoFragment.NEW_GROUP, productAd.getGroupName(), productAd.getGroupId());
-        startActivityForResult(intent, EDIT_PRODUCT_GROUP_REQUEST_CODE);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == EDIT_PRODUCT_GROUP_REQUEST_CODE && intent != null) {
-            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, false);
-            if (adStatusChanged) {
-                refreshAd();
-                setResultAdStatusChanged();
-            }
-        }
+        startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }
 
     private void updateManageGroupMenu() {
