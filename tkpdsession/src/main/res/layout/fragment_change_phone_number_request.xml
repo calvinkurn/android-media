@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:focusableInTouchMode="true"
+    android:padding="@dimen/padding_med">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_small">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_large"
+            android:text="@string/info_change_phone_number_request" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/id_photo"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:textColor="@color/grey_500"
+            android:layout_height="wrap_content"
+            android:text="@string/info_id_photo"
+            android:textSize="@dimen/fontvs" />
+
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/id_image"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_id_image"
+            android:layout_marginTop="@dimen/margin_small"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:id="@+id/upload_id_photo_button"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_height"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/dashed_line_border"
+            android:gravity="center"
+            android:text="@string/pick_file_here" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="@dimen/margin_large"
+            android:background="@color/grey_300" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/saving_book_photo"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/grey_500"
+            android:text="@string/info_bank_account"
+            android:textSize="@dimen/fontvs" />
+
+        <ImageView
+            android:id="@+id/account_book_image"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_id_image"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/margin_large"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:id="@+id/upload_account_book_button"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_height"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/dashed_line_border"
+            android:gravity="center"
+
+            android:text="@string/pick_file_here" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_height"
+            android:background="@drawable/green_button_rounded"
+            android:text="@string/send"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+</ScrollView>
