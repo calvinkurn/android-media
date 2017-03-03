@@ -1,7 +1,8 @@
-package com.tokopedia.seller.topads.listener;
+package com.tokopedia.seller.topads.view.listener;
 
-import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
 import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
+
 import java.util.List;
 
 /**

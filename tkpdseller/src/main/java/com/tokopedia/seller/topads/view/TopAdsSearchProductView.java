@@ -1,7 +1,7 @@
 package com.tokopedia.seller.topads.view;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.seller.topads.view.models.TypeBasedModel;
+import com.tokopedia.seller.topads.view.model.TypeBasedModel;
 
 import java.util.List;
 
