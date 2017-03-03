@@ -7,17 +7,14 @@ import android.os.Bundle;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
-import com.tokopedia.seller.deeplink.SellerDeeplinkModule;
-import com.tokopedia.seller.deeplink.SellerDeeplinkModuleLoader;
-import com.tokopedia.transaction.deeplink.TransactionDeeplinkModule;
-import com.tokopedia.transaction.deeplink.TransactionDeeplinkModuleLoader;
 
-@DeepLinkHandler({ConsumerDeeplinkModule.class, CoreDeeplinkModule.class, TransactionDeeplinkModule.class,
-        InboxDeeplinkModule.class, SellerDeeplinkModule.class})
+@DeepLinkHandler({
+        ConsumerDeeplinkModule.class,
+        CoreDeeplinkModule.class,
+        InboxDeeplinkModule.class
+})
 public class DeeplinkHandlerActivity extends AppCompatActivity {
 
     @Override
@@ -26,9 +23,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
         DeepLinkDelegate deepLinkDelegate = new DeepLinkDelegate(
                 new ConsumerDeeplinkModuleLoader(),
                 new CoreDeeplinkModuleLoader(),
-                new TransactionDeeplinkModuleLoader(),
-                new InboxDeeplinkModuleLoader(),
-                new SellerDeeplinkModuleLoader()
+                new InboxDeeplinkModuleLoader()
         );
         if (getIntent() != null) {
             Intent intent = getIntent();

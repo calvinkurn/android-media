@@ -1,14 +1,11 @@
 package com.tokopedia.transaction.purchase.activity;
 
-import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.inputmethod.InputMethodManager;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
@@ -42,50 +39,6 @@ import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRou
 public class PurchaseActivity extends DrawerPresenterActivity implements
         TxSummaryFragment.OnCenterMenuClickListener, NotificationReceivedListener,
         PurchaseTabAdapter.Listener, TxListFragment.StateFilterListener {
-
-    @DeepLink({
-            "tokopedia://buyer/payment"
-    })
-    public static Intent getCallingIntentPurchaseVerification(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, PurchaseActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_VERIFICATION)
-                .putExtras(extras);
-    }
-
-    @DeepLink({
-            "tokopedia://buyer/order"
-    })
-    public static Intent getCallingIntentPurchaseStatus(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, PurchaseActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_STATUS_ORDER)
-                .putExtras(extras);
-    }
-
-    @DeepLink({
-            "tokopedia://buyer/shipping-confirm"
-    })
-    public static Intent getCallingIntentPurchaseShipping(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, PurchaseActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_DELIVER_ORDER)
-                .putExtras(extras);
-    }
-
-    @DeepLink({
-            "tokopedia://buyer/history"
-    })
-    public static Intent getCallingIntentPurchaseHistory(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, PurchaseActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_PURCHASE_ALL_ORDER)
-                .putExtras(extras);
-    }
 
     @BindView(R2.id.pager)
     ViewPager viewPager;

@@ -22,7 +22,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
@@ -50,8 +49,6 @@ import com.tokopedia.seller.selling.view.fragment.FragmentSellingTxCenter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.core.router.SellerRouter.TAB_POSITION_SELLING_NEW_ORDER;
-
 public class ActivitySellingTransaction extends TkpdActivity implements FragmentSellingTxCenter.OnCenterMenuClickListener, DownloadResultReceiver.Receiver {
 
     SectionsPagerAdapter mSectionsPagerAdapter;
@@ -64,50 +61,6 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     DownloadResultReceiver mReceiver;
 
     FragmentManager fragmentManager;
-
-    @DeepLink({
-            "tokopedia://seller/new-order"
-    })
-    public static Intent getCallingIntentSellerNewOrder(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ActivitySellingTransaction.class)
-                .setData(uri.build())
-                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_NEW_ORDER)
-                .putExtras(extras);
-    }
-
-    @DeepLink({
-            "tokopedia://seller/shipment"
-    })
-    public static Intent getCallingIntentSellerShipment(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ActivitySellingTransaction.class)
-                .setData(uri.build())
-                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_CONFIRM_SHIPPING)
-                .putExtras(extras);
-    }
-
-    @DeepLink({
-            "tokopedia://seller/status"
-    })
-    public static Intent getCallingIntentSellerStatus(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ActivitySellingTransaction.class)
-                .setData(uri.build())
-                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_TRANSACTION_LIST)
-                .putExtras(extras);
-    }
-
-    @DeepLink({
-            "tokopedia://seller/history"
-    })
-    public static Intent getCallingIntentSellerHistory(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ActivitySellingTransaction.class)
-                .setData(uri.build())
-                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_SHIPPING_STATUS)
-                .putExtras(extras);
-    }
 
     @Override
     public String getScreenName() {

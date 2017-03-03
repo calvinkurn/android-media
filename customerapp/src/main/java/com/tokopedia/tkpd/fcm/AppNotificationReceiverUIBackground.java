@@ -44,7 +44,6 @@ import com.tokopedia.tkpd.fcm.notification.ResCenterSellerAgreeNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterSellerReplyNotification;
 import com.tokopedia.tkpd.fcm.notification.ReviewEditedNotification;
 import com.tokopedia.tkpd.fcm.notification.ReviewReplyNotification;
-import com.tokopedia.transaction.deeplink.TransactionDeeplinkModuleLoader;
 
 import java.util.List;
 import java.util.Map;
