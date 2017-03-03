@@ -5,7 +5,6 @@ import android.content.Intent;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.di.TopAdsDetailEditProductDI;
 import com.tokopedia.seller.topads.di.TopAdsDetailNewProductDI;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddProductListActivity;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailProductViewModel;

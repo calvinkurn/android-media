@@ -1,21 +1,19 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 import android.content.Intent;
+import android.text.TextUtils;
 
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailNewGroupActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailNewProductActivity;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.view.listener.TopAdsManageGroupPromoView;
-import com.tokopedia.seller.topads.view.presenter.TopAdsManageGroupPromoPresenter;
-
 /**
  * Created by zulfikarrahman on 2/22/17.
  */
 
 public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragment {
 
-    protected static final int REQUEST_CODE_AD_STATUS = 2;
+    public static final int REQUEST_CODE_AD_STATUS = 2;
 
     public static TopAdsGroupNewPromoFragment createInstance() {
         TopAdsGroupNewPromoFragment fragment = new TopAdsGroupNewPromoFragment();
@@ -59,8 +57,9 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
 
     @Override
     protected void onSubmitFormNewGroup(String groupName) {
-        Intent intent = new Intent(getActivity(), TopAdsDetailNewGroupActivity.class);
-        startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
+        TopAdsDetailNewGroupActivity.startNewGroup(getActivity(),
+                REQUEST_CODE_AD_STATUS,
+                groupName);
     }
 
     @Override
@@ -71,8 +70,19 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
 
     @Override
     protected void onSubmitFormChooseGroup(int choosenId) {
-        Intent intent = new Intent(getActivity(), TopAdsDetailNewGroupActivity.class);
-        startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
+        if (! inputChooseGroup.isEnabled()) { // has already been locked
+            String groupName = inputChooseGroup.getText().toString();
+            if (!TextUtils.isEmpty(groupName)){
+                TopAdsDetailNewGroupActivity.startEditExistingGroup(
+                        getActivity(),
+                        REQUEST_CODE_AD_STATUS,
+                        choosenId,
+                        groupName
+                        );
+            }
+
+        }
+
     }
 
     @Override
