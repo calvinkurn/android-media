@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -8,6 +9,7 @@ import android.widget.EditText;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.di.TopAdsDetailNewShopDI;
+import com.tokopedia.seller.topads.view.activity.TopAdsDetailShopActivity;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewShopPresenter;
@@ -48,6 +50,7 @@ public class TopAdsDetailNewShopFragment extends TopAdsDetailNewFragment<TopAdsD
         promoIconView.setVisibility(View.GONE);
         shopNameEditText = (EditText) view.findViewById(R.id.edit_text_name);
         shopNameEditText.setText(shopName);
+        detailAd = new TopAdsDetailShopViewModel();
     }
 
     @Override
@@ -60,6 +63,18 @@ public class TopAdsDetailNewShopFragment extends TopAdsDetailNewFragment<TopAdsD
     protected void saveAd() {
         super.saveAd();
         presenter.saveAd((TopAdsDetailShopViewModel) detailAd);
+    }
+
+    @Override
+    public void onSaveAdSuccess(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
+        super.onSaveAdSuccess(topAdsDetailAdViewModel);
+        goToShopItem(String.valueOf(topAdsDetailAdViewModel.getId()));
+    }
+
+    private void goToShopItem(String shopId) {
+        Intent intent = new Intent(getActivity(), TopAdsDetailShopActivity.class);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, shopId);
+        startActivity(intent);
     }
 
     @Override

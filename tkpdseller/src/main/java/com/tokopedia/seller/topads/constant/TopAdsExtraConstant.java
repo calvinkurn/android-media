@@ -14,9 +14,9 @@ public class TopAdsExtraConstant {
     public static final String EXTRA_SHOP_NAME = "EXTRA_SHOP_NAME";
     public static final String EXTRA_GROUP_NAME = "EXTRA_SHOP_NAME";
     public static final String EXTRA_TOTAL_PRODUCT_ADS = "EXTRA_TOTAL_PRODUCT_ADS";
-    public static final String EXTRA_AD_STATUS_CHANGED = "EXTRA_AD_STATUS_CHANGED";
+    public static final String EXTRA_AD_CHANGED = "EXTRA_AD_CHANGED";
     public static final String EXTRA_AD_DELETED = "EXTRA_AD_DELETED";
-    public static final String EXTRA_AD_ID_GROUP = "EXTRA_AD_ID_GROUP";
+    public static final String EXTRA_CHOOSEN_OPTION_GROUP = "EXTRA_CHOOSEN_OPTION_GROUP";
 
     public static final String EXTRA_TITLE_ITEM_LIST = "EXTRA_TITLE_ITEM_LIST";
     public static final String EXTRA_ITEM_SELECTED_POSITION = "EXTRA_ITEM_SELECTED_POSITION";
@@ -44,10 +44,4 @@ public class TopAdsExtraConstant {
     public static final String EXTRA_SELECTIONS = "EXTRA_SELECTIONS";
     public static final String EXTRA_HIDE_EXISTING_GROUP = "EXTRA_HIDE_EXISTING_GROUP";
     public static final String EXTRA_HIDE_ETALASE = "EXTRA_HIDE_ETALASE";
-
-    //EDIT PROMO PRODUCT GROUP
-    public static final String AD_ID = "AD_ID";
-    public static final String CHOOSEN_OPTION = "CHOOSEN_OPTION";
-    public static final String GROUP_ID = "GROUP_ID";
-    public static final String GROUP_NAME = "GROUP_NAME";
 }

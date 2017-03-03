@@ -19,8 +19,8 @@ import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractorImpl;
 import com.tokopedia.seller.topads.domain.model.data.Ad;
 import com.tokopedia.seller.topads.domain.model.data.ProductAd;
-import com.tokopedia.seller.topads.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailEditProductActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupEditPromoActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupManagePromoActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenter;
@@ -43,10 +43,11 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     private TopAdsDetailProductFragmentListener listener;
     private MenuItem manageGroupMenuItem;
 
-    public static Fragment createInstance(ProductAd productAd) {
+    public static Fragment createInstance(ProductAd productAd, int adId) {
         Fragment fragment = new TopAdsDetailProductFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, productAd);
+        bundle.putInt(TopAdsExtraConstant.EXTRA_AD_ID, adId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -105,7 +106,11 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
 
     @Override
     protected void refreshAd() {
-        presenter.refreshAd(startDate, endDate, productAd.getId());
+        if (productAd != null) {
+            presenter.refreshAd(startDate, endDate, productAd.getId());
+        } else {
+            presenter.refreshAd(startDate, endDate, adId);
+        }
     }
 
     @Override
@@ -113,12 +118,12 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         if (isHasGroupAd()) {
             Intent intent = TopAdsGroupEditPromoActivity.createIntent(getActivity(),
                     String.valueOf(productAd.getId()), TopAdsGroupEditPromoFragment.EXIST_GROUP, productAd.getGroupName(),
-                    String.valueOf(productAd.getGroupId()));
-            startActivity(intent);
-        }else if(productAd != null){
+                    productAd.getGroupId());
+            startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
+        } else if (productAd != null) {
             Intent intent = new Intent(getActivity(), TopAdsDetailEditProductActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, String.valueOf(productAd.getId()));
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
         }
     }
 
@@ -170,7 +175,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     void onPromoGroupClicked() {
         if (isHasGroupAd()) {
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
-            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID_GROUP, productAd.getGroupId());
+            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, productAd.getGroupId());
             startActivity(intent);
         }
     }
@@ -187,14 +192,15 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         int itemId = item.getItemId();
         if (itemId == R.id.menu_manage_group) {
             manageGroup();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void manageGroup() {
         Intent intent = TopAdsGroupManagePromoActivity.createIntent(getActivity(), String.valueOf(productAd.getId()),
-                TopAdsGroupManagePromoFragment.NEW_GROUP, productAd.getGroupName(), String.valueOf(productAd.getGroupId()));
-        startActivity(intent);
+                TopAdsGroupManagePromoFragment.NEW_GROUP, productAd.getGroupName(), productAd.getGroupId());
+        startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }
 
     private void updateManageGroupMenu() {

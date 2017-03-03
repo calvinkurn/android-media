@@ -12,14 +12,11 @@ import com.tokopedia.seller.topads.data.source.cloud.apiservice.api.TopAdsManage
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;import com.tokopedia.seller.topads.domain.model.data.ProductAdAction;
 import com.tokopedia.seller.topads.domain.model.data.ProductAdBulkAction;
 import com.tokopedia.seller.topads.domain.model.request.DataRequest;
-import com.tokopedia.seller.topads.domain.model.response.DataResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Response;
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by zulfikarrahman on 2/20/17.
@@ -47,7 +44,21 @@ public class TopAdsProductAdsDataSource {
     }
 
     public Observable<TopAdsDetailProductDomainModel> saveDetailProduct(TopAdsDetailProductDomainModel topAdsDetailProductDomainModel) {
-        return topAdsManagementApi.saveProductAd(getSaveProductDetailRequest(topAdsDetailProductDomainModel)).map(topAdsDetailProductMapper);
+        return topAdsManagementApi.editProductAd(getSaveProductDetailRequest(topAdsDetailProductDomainModel)).map(topAdsDetailProductMapper);
+    }
+
+    public Observable<TopAdsDetailProductDomainModel> createDetailProductList(List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels){
+        return topAdsManagementApi.createProductAd(getSaveProductDetailRequestList(topAdsDetailProductDomainModels)).map(topAdsDetailProductMapper);
+    }
+
+    private DataRequest<List<TopAdsProductDetailDataSourceModel>> getSaveProductDetailRequestList(List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels) {
+        DataRequest<List<TopAdsProductDetailDataSourceModel>> dataRequest = new DataRequest<>();
+        List<TopAdsProductDetailDataSourceModel> dataRequestList = new ArrayList<>();
+        for(TopAdsDetailProductDomainModel topAdsDetailProductDomainModel : topAdsDetailProductDomainModels) {
+            dataRequestList.add(convert(topAdsDetailProductDomainModel));
+        }
+        dataRequest.setData(dataRequestList);
+        return dataRequest;
     }
 
     private DataRequest<List<TopAdsProductDetailDataSourceModel>> getSaveProductDetailRequest(TopAdsDetailProductDomainModel topAdsDetailShopDomainModel) {

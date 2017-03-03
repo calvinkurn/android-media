@@ -32,16 +32,16 @@ import com.tokopedia.seller.topads.data.source.cloud.CloudTopAdsSearchProductDat
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.domain.TopAdsSearchProductRepository;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsDefaultParamUseCase;
+import com.tokopedia.seller.topads.exception.AddProductListException;
 import com.tokopedia.seller.topads.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.topads.utils.TopAdsNetworkErrorHelper;
-import com.tokopedia.seller.topads.view.activity.TopAdsFilterProductPromoActivity;
-import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
-import com.tokopedia.seller.topads.exception.AddProductListException;
-import com.tokopedia.seller.topads.listener.AddProductListInterface;
-import com.tokopedia.seller.topads.listener.FragmentItemSelection;
 import com.tokopedia.seller.topads.view.TopAdsSearchProductView;
+import com.tokopedia.seller.topads.view.activity.TopAdsFilterProductPromoActivity;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAddProductListAdapter;
-import com.tokopedia.seller.topads.view.models.TypeBasedModel;
+import com.tokopedia.seller.topads.view.listener.AddProductListInterface;
+import com.tokopedia.seller.topads.view.listener.FragmentItemSelection;
+import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
+import com.tokopedia.seller.topads.view.model.TypeBasedModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsAddProductListPresenter;
 
 import java.util.List;
@@ -53,10 +53,8 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         implements FragmentItemSelection, SearchView.OnQueryTextListener, TopAdsSearchProductView,
         DefaultErrorSubscriber.ErrorNetworkListener {
     public static final String TAG = "TAAddPrductListFragment";
-    protected int totalItem;
-
     public static final int FILTER_REQ_CODE = 100;
-
+    protected int totalItem;
     TopAdsManagementService topAdsSearchProductService;
 
     SessionHandler sessionHandler;

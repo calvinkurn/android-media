@@ -3,19 +3,18 @@ package com.tokopedia.seller.topads.view.presenter;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsDefaultParamUseCase;
 import com.tokopedia.seller.topads.domain.model.ProductDomain;
 import com.tokopedia.seller.topads.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.topads.view.TopAdsSearchProductView;
-import com.tokopedia.seller.topads.view.models.TopAdsAddProductModel;
-import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
-import com.tokopedia.seller.topads.view.models.TypeBasedModel;
+import com.tokopedia.seller.topads.view.model.TopAdsAddProductModel;
+import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
+import com.tokopedia.seller.topads.view.model.TypeBasedModel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import rx.Subscriber;
 
 /**
  * @author normansyahputa on 2/20/17.
@@ -80,25 +79,25 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
 
     private void fillParam(SessionHandler sessionHandler) {
         if (sessionHandler != null)
-            params.put("shop_id", sessionHandler.getShopID());
+            params.put(TopAdsNetworkConstant.PARAM_SHOP_ID, sessionHandler.getShopID());
         if (query != null) {
-            params.put("keyword", query);
+            params.put(TopAdsNetworkConstant.PARAM_KEYWORD, query);
         } else {
-            params.remove("keyword");
+            params.remove(TopAdsNetworkConstant.PARAM_KEYWORD);
         }
 
-        params.put("rows", Integer.toString(PAGE_ROW));
-        params.put("start", Integer.toString(PAGE_ROW * page));
+        params.put(TopAdsNetworkConstant.PARAM_ROWS, Integer.toString(PAGE_ROW));
+        params.put(TopAdsNetworkConstant.PARAM_START, Integer.toString(PAGE_ROW * page));
         if (selectedFilterEtalaseId > 0) {
-            params.put("etalase", Integer.toString(selectedFilterEtalaseId));
+            params.put(TopAdsNetworkConstant.PARAM_ETALASE, Integer.toString(selectedFilterEtalaseId));
         } else {
-            params.remove("etalase");
+            params.remove(TopAdsNetworkConstant.PARAM_ETALASE);
         }
 
         if (selectedFilterStatus > 0) {
-            params.put("is_promoted", Integer.toString(selectedFilterStatus));
+            params.put(TopAdsNetworkConstant.PARAM_IS_PROMOTED, Integer.toString(selectedFilterStatus));
         } else {
-            params.remove("is_promoted");
+            params.remove(TopAdsNetworkConstant.PARAM_IS_PROMOTED);
         }
     }
 

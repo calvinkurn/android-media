@@ -1,7 +1,7 @@
-package com.tokopedia.seller.topads.listener;
+package com.tokopedia.seller.topads.view.listener;
 
 
-import com.tokopedia.seller.topads.view.models.TopAdsAddProductModel;
+import com.tokopedia.seller.topads.view.model.TopAdsAddProductModel;
 
 /**
  * Created by normansyahputa on 2/13/17.

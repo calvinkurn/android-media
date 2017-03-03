@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.view.models;
+package com.tokopedia.seller.topads.view.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -8,10 +8,25 @@ import android.os.Parcelable;
  */
 
 public class GenericClass implements Parcelable {
+    public static final Parcelable.Creator<GenericClass> CREATOR = new Parcelable.Creator<GenericClass>() {
+        @Override
+        public GenericClass createFromParcel(Parcel source) {
+            return new GenericClass(source);
+        }
+
+        @Override
+        public GenericClass[] newArray(int size) {
+            return new GenericClass[size];
+        }
+    };
     private String className;
 
     public GenericClass(String className) {
         this.className = className;
+    }
+
+    protected GenericClass(Parcel in) {
+        this.className = in.readString();
     }
 
     public String getClassName() {
@@ -31,20 +46,4 @@ public class GenericClass implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.className);
     }
-
-    protected GenericClass(Parcel in) {
-        this.className = in.readString();
-    }
-
-    public static final Parcelable.Creator<GenericClass> CREATOR = new Parcelable.Creator<GenericClass>() {
-        @Override
-        public GenericClass createFromParcel(Parcel source) {
-            return new GenericClass(source);
-        }
-
-        @Override
-        public GenericClass[] newArray(int size) {
-            return new GenericClass[size];
-        }
-    };
 }

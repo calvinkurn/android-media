@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.view.models;
+package com.tokopedia.seller.topads.view.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -8,6 +8,17 @@ import android.support.annotation.Nullable;
 
 public class ChipsEntity<E extends GenericClass> implements Parcelable {
 
+    public static final Parcelable.Creator<ChipsEntity> CREATOR = new Parcelable.Creator<ChipsEntity>() {
+        @Override
+        public ChipsEntity createFromParcel(Parcel source) {
+            return new ChipsEntity(source);
+        }
+
+        @Override
+        public ChipsEntity[] newArray(int size) {
+            return new ChipsEntity[size];
+        }
+    };
     @DrawableRes
     private Integer drawableResId;
     @Nullable
@@ -26,6 +37,21 @@ public class ChipsEntity<E extends GenericClass> implements Parcelable {
         rawData = builder.rawData;
         className = builder.className;
         position = builder.position;
+    }
+
+    protected ChipsEntity(Parcel in) {
+        this.drawableResId = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.description = in.readString();
+        this.name = in.readString();
+        this.className = in.readString();
+        ClassLoader classLoader = null;
+        try {
+            classLoader = Class.forName(this.className).getClassLoader();
+        } catch (ClassNotFoundException cfe) {
+            cfe.printStackTrace();
+        }
+        this.rawData = in.readParcelable(classLoader);
+        this.position = in.readInt();
     }
 
     public static Builder newBuilder() {
@@ -65,6 +91,21 @@ public class ChipsEntity<E extends GenericClass> implements Parcelable {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.drawableResId);
+        dest.writeString(this.description);
+        dest.writeString(this.name);
+        dest.writeString(this.className);
+        dest.writeParcelable(this.rawData, flags);
+        dest.writeInt(this.position);
     }
 
     public static final class Builder<T extends GenericClass> {
@@ -111,46 +152,4 @@ public class ChipsEntity<E extends GenericClass> implements Parcelable {
             return new ChipsEntity(this);
         }
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.drawableResId);
-        dest.writeString(this.description);
-        dest.writeString(this.name);
-        dest.writeString(this.className);
-        dest.writeParcelable(this.rawData, flags);
-        dest.writeInt(this.position);
-    }
-
-    protected ChipsEntity(Parcel in) {
-        this.drawableResId = (Integer) in.readValue(Integer.class.getClassLoader());
-        this.description = in.readString();
-        this.name = in.readString();
-        this.className = in.readString();
-        ClassLoader classLoader = null;
-        try {
-            classLoader = Class.forName(this.className).getClassLoader();
-        } catch (ClassNotFoundException cfe) {
-            cfe.printStackTrace();
-        }
-        this.rawData = in.readParcelable(classLoader);
-        this.position = in.readInt();
-    }
-
-    public static final Parcelable.Creator<ChipsEntity> CREATOR = new Parcelable.Creator<ChipsEntity>() {
-        @Override
-        public ChipsEntity createFromParcel(Parcel source) {
-            return new ChipsEntity(source);
-        }
-
-        @Override
-        public ChipsEntity[] newArray(int size) {
-            return new ChipsEntity[size];
-        }
-    };
 }
