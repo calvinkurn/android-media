@@ -8,7 +8,6 @@ import android.widget.EditText;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.di.TopAdsDetailEditShopDI;
 import com.tokopedia.seller.topads.di.TopAdsDetailNewShopDI;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailShopActivity;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
@@ -49,7 +48,7 @@ public class TopAdsDetailNewShopFragment extends TopAdsDetailNewFragment<TopAdsD
     protected void initView(View view) {
         super.initView(view);
         promoIconView.setVisibility(View.GONE);
-        shopNameEditText = (EditText) view.findViewById(R.id.edit_text_shop_name);
+        shopNameEditText = (EditText) view.findViewById(R.id.edit_text_name);
         shopNameEditText.setText(shopName);
         detailAd = new TopAdsDetailShopViewModel();
     }

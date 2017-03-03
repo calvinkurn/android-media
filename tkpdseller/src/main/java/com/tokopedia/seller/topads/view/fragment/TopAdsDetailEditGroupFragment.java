@@ -45,7 +45,7 @@ public class TopAdsDetailEditGroupFragment extends TopAdsDetailEditFragment<TopA
     @Override
     protected void initView(View view) {
         super.initView(view);
-        shopNameEditText = (EditText) view.findViewById(R.id.edit_text_shop_name);
+        shopNameEditText = (EditText) view.findViewById(R.id.edit_text_name);
         shopNameEditText.setText(shopName);
     }
 
