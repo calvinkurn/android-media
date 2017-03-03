@@ -88,7 +88,7 @@ public class OppurtunityDetailFragment extends BasePresenterFragment<Oppurtunity
 
     @Override
     protected void initialPresenter() {
-        presenter = new OppurtunityImpl(this);
+        presenter = new OppurtunityImpl(getActivity(), this);
     }
 
     @Override
