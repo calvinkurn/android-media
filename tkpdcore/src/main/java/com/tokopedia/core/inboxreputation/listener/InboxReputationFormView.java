@@ -1,6 +1,7 @@
 package com.tokopedia.core.inboxreputation.listener;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -56,5 +57,5 @@ public interface InboxReputationFormView {
 
     void onFailedEditReview(Bundle resultData);
 
-    void showDialogShareFb();
+    void showDialogShareFb(Intent intent);
 }

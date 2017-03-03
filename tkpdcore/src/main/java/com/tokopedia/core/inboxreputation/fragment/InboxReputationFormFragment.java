@@ -364,10 +364,10 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
         bundle.putString("action",
                 InboxReputationDetailFragmentPresenterImpl.ACTION_UPDATE_PRODUCT);
         intent.putExtras(bundle);
-        getActivity().setResult(Activity.RESULT_OK, intent);
         if(checkBox.isChecked()){
-            showDialogShareFb();
+            showDialogShareFb(intent);
         }else {
+            getActivity().setResult(Activity.RESULT_OK, intent);
             getActivity().finish();
         }
     }
@@ -382,10 +382,10 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
         bundle.putString("action",
                 InboxReputationDetailFragmentPresenterImpl.ACTION_UPDATE_PRODUCT);
         intent.putExtras(bundle);
-        getActivity().setResult(Activity.RESULT_OK, intent);
         if(checkBox.isChecked()){
-            showDialogShareFb();
+            showDialogShareFb(intent);
         }else {
+            getActivity().setResult(Activity.RESULT_OK, intent);
             getActivity().finish();
         }
     }
@@ -509,7 +509,8 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
     }
 
     @Override
-    public void showDialogShareFb() {
+    public void showDialogShareFb(final Intent intent) {
+        progressDialog.showDialog();
         shareDialog = new ShareDialog(this);
         callbackManager = CallbackManager.Factory.create();
         final ShareLinkContent linkContent = new ShareLinkContent.Builder()
@@ -527,20 +528,17 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
                 ShareApi.share(linkContent, new FacebookCallback<Sharer.Result>() {
                     @Override
                     public void onSuccess(Sharer.Result result) {
-                        SnackbarManager.make(getActivity(),getString(R.string.success_share_product)
-                                , Snackbar.LENGTH_LONG).show();
+                        getActivity().setResult(Activity.RESULT_OK, intent.putExtra("message",getString(R.string.success_share_product)));
                         getActivity().finish();
                     }
                     @Override
                     public void onCancel() {
-                        Log.i("facebook", "onCancel");
                         getActivity().finish();
                     }
                     @Override
                     public void onError(FacebookException error) {
                         Log.i("facebook", "onError: "+error);
-                        SnackbarManager.make(getActivity(),getString(R.string.error_share_product)
-                                , Snackbar.LENGTH_LONG).show();
+                        getActivity().setResult(Activity.RESULT_OK, intent.putExtra("message",getString(R.string.error_share_product)));
                         getActivity().finish();
                     }
                 });
@@ -557,8 +555,7 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
                 if(e instanceof FacebookAuthorizationException){
                     LoginManager.getInstance().logOut();
                 }
-                SnackbarManager.make(getActivity(),getString(R.string.error_share_product)
-                        , Snackbar.LENGTH_LONG).show();
+                getActivity().setResult(Activity.RESULT_OK, intent.putExtra("message",getString(R.string.error_share_product)));
                 getActivity().finish();
             }
         });

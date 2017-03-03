@@ -170,6 +170,9 @@ public class
             switch (requestCode) {
                 case TkpdState.RequestCode.CODE_OPEN_DETAIL_PRODUCT_REVIEW:
                     presenter.afterPostForm(bundle);
+                    if(data.getStringExtra("message") != null){
+                        SnackbarManager.make(getActivity(),data.getStringExtra("message"), Snackbar.LENGTH_LONG).show();
+                    }
                     break;
                 default:
                     break;
