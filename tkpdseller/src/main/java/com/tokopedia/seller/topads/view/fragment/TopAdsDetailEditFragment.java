@@ -137,7 +137,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
         iconThumbsUpRadioButton = (RadioButton) view.findViewById(R.id.radio_button_icon_thumbs_up);
         iconFireRadioButton = (RadioButton) view.findViewById(R.id.radio_button_icon_fire);
         submitButton = (Button) view.findViewById(R.id.button_submit);
-        maxPriceEditText.addTextChangedListener(new TopAdsCurrencyTextWatcher(maxPriceEditText) {
+        maxPriceEditText.addTextChangedListener(new TopAdsCurrencyTextWatcher(maxPriceEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
 
             @Override
             public void onCurrencyChanged(float currencyValue) {
@@ -150,7 +150,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
                 }
             }
         });
-        budgetPerDayEditText.addTextChangedListener(new TopAdsCurrencyTextWatcher(budgetPerDayEditText) {
+        budgetPerDayEditText.addTextChangedListener(new TopAdsCurrencyTextWatcher(budgetPerDayEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
 
             @Override
             public void onCurrencyChanged(float currencyValue) {
@@ -359,7 +359,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
             budgetPerDayEditText.setText(String.valueOf(detailAd.getPriceDaily()));
         } else {
             showBudgetPerDay(false);
-            budgetPerDayEditText.setText("");
+            budgetPerDayEditText.setText(R.string.top_ads_detail_edit_default_currency_value);
         }
         convertDate(detailAd);
         if (!TextUtils.isEmpty(detailAd.getEndDate())) {

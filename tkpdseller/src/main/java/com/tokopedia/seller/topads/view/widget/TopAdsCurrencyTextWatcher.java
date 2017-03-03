@@ -13,12 +13,12 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 
 public class TopAdsCurrencyTextWatcher implements TextWatcher {
 
-    private static final String DEFAULT_VALUE = "0";
-
     private EditText editText;
+    private String defaultValue;
 
-    public TopAdsCurrencyTextWatcher(EditText editText) {
+    public TopAdsCurrencyTextWatcher(EditText editText, String defaultValue) {
         this.editText = editText;
+        this.defaultValue = defaultValue;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class TopAdsCurrencyTextWatcher implements TextWatcher {
         CurrencyFormatHelper.SetToRupiah(editText);
         String valueString = CurrencyFormatHelper.RemoveNonNumeric(charSequence.toString());
         if (TextUtils.isEmpty(valueString)) {
-            editText.setText(DEFAULT_VALUE);
+            editText.setText(defaultValue);
             return;
         }
         float value = Float.parseFloat(valueString);

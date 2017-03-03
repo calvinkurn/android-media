@@ -141,9 +141,6 @@
     <!-- Top Ads Add product-->
     <string name="label_top_ads_promoted">Promoted</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <!-- Top Ads Detail product-->
     <string name="label_top_ads_all_status">Semua Status</string>
     <string name="label_top_ads_active">Aktif</string>
@@ -208,6 +205,7 @@
     <string name="label_top_ads_error_fail_move_out_product">Gagal mengeluarkan product dari grup</string>
     <string name="label_top_ads_error_fail_move_new_group">Gagal memindahkan product ke grup baru</string>
     <string name="label_top_ads_error_fail_move_exist_group">Gagal memindahkan product ke grup lain</string>
+    <string name="top_ads_detail_edit_default_currency_value">0</string>
 
     <string name="error_top_ads_click_budget_max">Biaya maksimal maksimum %1s</string>
     <string name="error_top_ads_click_budget_minimum">Biaya minimal Rp %1s</string>
