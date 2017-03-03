@@ -1,7 +1,5 @@
 package com.tokopedia.seller.topads.view.presenter;
 
-import android.content.Context;
-
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailGroupUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailProductUseCase;
@@ -13,7 +11,7 @@ import com.tokopedia.seller.topads.utils.ViewUtils;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailEditView;
 import com.tokopedia.seller.topads.view.mapper.TopAdDetailProductMapper;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailGroupViewModel;
-import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
+import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
 
 import java.util.List;
 
@@ -36,8 +34,8 @@ public class TopAdsDetailEditGroupPresenterImpl<T extends TopAdsDetailEditView> 
 
     @Override
     public void saveAd(int groupId,
-                               TopAdsDetailGroupViewModel topAdsDetailProductViewModel,
-                               List<TopAdsProductViewModel> topAdsProductViewModelList) {
+                       TopAdsDetailGroupViewModel topAdsDetailProductViewModel,
+                       List<TopAdsProductViewModel> topAdsProductViewModelList) {
         topAdsSaveDetailGroupUseCase.execute(
                 TopAdsSaveDetailProductUseCase.createRequestParams(
                         TopAdDetailProductMapper.convertViewToDomain(topAdsDetailProductViewModel)),
@@ -61,6 +59,7 @@ public class TopAdsDetailEditGroupPresenterImpl<T extends TopAdsDetailEditView> 
 
     /**
      * retrieve to populate the fields of groups ad config to the view
+     *
      * @param adId adId here is group ID
      */
     @Override
@@ -68,21 +67,21 @@ public class TopAdsDetailEditGroupPresenterImpl<T extends TopAdsDetailEditView> 
         topAdsGetDetailGroupUseCase.execute(
                 TopAdsGetDetailProductUseCase.createRequestParams(adId),
                 new Subscriber<TopAdsDetailProductDomainModel>() {
-            @Override
-            public void onCompleted() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                getView().onLoadDetailAdError(ViewUtils.getErrorMessage(e));
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        getView().onLoadDetailAdError(ViewUtils.getErrorMessage(e));
+                    }
 
-            @Override
-            public void onNext(TopAdsDetailProductDomainModel domainModel) {
-                getView().onDetailAdLoaded(TopAdDetailProductMapper.convertDomainToView(domainModel));
-            }
-        });
+                    @Override
+                    public void onNext(TopAdsDetailProductDomainModel domainModel) {
+                        getView().onDetailAdLoaded(TopAdDetailProductMapper.convertDomainToView(domainModel));
+                    }
+                });
     }
 
     @Override

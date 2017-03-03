@@ -7,7 +7,7 @@ import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailGroupUseCas
 import com.tokopedia.seller.topads.utils.ViewUtils;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailNewGroupView;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailGroupViewModel;
-import com.tokopedia.seller.topads.view.models.TopAdsProductViewModel;
+import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import rx.Subscriber;
 /**
  * Created by Nisie on 5/9/16.
  */
-public class TopAdsDetailNewGroupPresenterImpl <T extends TopAdsDetailNewGroupView>
+public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupView>
         extends TopAdsDetailEditGroupPresenterImpl<T>
         implements TopAdsDetailNewGroupPresenter<T> {
 
@@ -37,8 +37,7 @@ public class TopAdsDetailNewGroupPresenterImpl <T extends TopAdsDetailNewGroupVi
                                List<TopAdsProductViewModel> topAdsProductViewModelList) {
         if (topAdsProductViewModelList == null || topAdsProductViewModelList.size() == 0) {
             getView().showErrorGroupEmpty();
-        }
-        else {
+        } else {
             getView().showLoading(true);
             // TODO usecase
         }
