@@ -14,9 +14,6 @@
             android:id="@+id/edit_text_max_price"
             style="@style/EditText.Currency"
             android:layout_width="match_parent"
-            android:drawablePadding="10dp"
-            android:drawableStart="@drawable/ic_currency_symbol_rp"
-            android:drawableLeft="@drawable/ic_currency_symbol_rp"
             android:hint="@string/label_top_ads_max_price_hint"/>
 
     </android.support.design.widget.TextInputLayout>
