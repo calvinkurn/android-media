@@ -140,6 +140,25 @@ public class DiskPushNotificationDataStore implements PushNotificationDataStore 
     }
 
     @Override
+    public Observable<Boolean> deleteSavedPushNotificationByCategoryAndServerId(String category, String serverId) {
+        return Observable.just(category).map(new Func1<String, Boolean>() {
+            @Override
+            public Boolean call(String category) {
+                ConditionGroup conditionGroup = ConditionGroup.clause();
+                conditionGroup.and(DbPushNotification_Table.category.eq(category));
+                conditionGroup.and(DbPushNotification_Table.serverId.eq(category));
+                pushNotificationDbManager.delete(conditionGroup);
+                return true;
+            }
+        }).onErrorReturn(new Func1<Throwable, Boolean>() {
+            @Override
+            public Boolean call(Throwable throwable) {
+                return false;
+            }
+        });
+    }
+
+    @Override
     public Observable<Boolean> deleteSavedPushNotification() {
         return Observable.just(true).map(new Func1<Boolean, Boolean>() {
             @Override
@@ -161,6 +180,7 @@ public class DiskPushNotificationDataStore implements PushNotificationDataStore 
         dbPushNotification.setCategory(category);
         dbPushNotification.setResponse(response);
         dbPushNotification.setCustomIndex(customIndex);
+        dbPushNotification.setServerId("");
 
         return Observable
                 .just(dbPushNotification)
@@ -185,6 +205,31 @@ public class DiskPushNotificationDataStore implements PushNotificationDataStore 
         dbPushNotification.setCategory(category);
         dbPushNotification.setResponse(response);
         dbPushNotification.setCustomIndex("");
+        dbPushNotification.setServerId("");
+        return Observable
+                .just(dbPushNotification)
+                .map(new Func1<DbPushNotification, Boolean>() {
+                    @Override
+                    public Boolean call(DbPushNotification dbPushNotification) {
+                        dbPushNotification.save();
+                        return true;
+                    }
+                })
+                .onErrorReturn(new Func1<Throwable, Boolean>() {
+                    @Override
+                    public Boolean call(Throwable throwable) {
+                        return false;
+                    }
+                });
+    }
+
+    @Override
+    public Observable<Boolean> savePushNotification(String category, String response, String customIndex, String serverId) {
+        DbPushNotification dbPushNotification = new DbPushNotification();
+        dbPushNotification.setCategory(category);
+        dbPushNotification.setResponse(response);
+        dbPushNotification.setCustomIndex(customIndex);
+        dbPushNotification.setCustomIndex(serverId);
         return Observable
                 .just(dbPushNotification)
                 .map(new Func1<DbPushNotification, Boolean>() {

@@ -34,11 +34,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
             Intent intent = getIntent();
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             deepLinkDelegate.dispatchFrom(this, intent);
-            if (getIntent().getExtras() != null)
-            {
-                Bundle bundle = getIntent().getExtras();
-                NotificationModHandler.clearCacheIfFromNotification(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
-            }
+//            if (getIntent().getExtras() != null)
+//            {
+//                Bundle bundle = getIntent().getExtras();
+//                NotificationModHandler.clearCacheIfFromNotification(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
+//            }
         }
         finish();
     }

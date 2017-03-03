@@ -188,12 +188,16 @@ public abstract class BaseAppNotificationReceiverUIBackground {
         }
     }
 
-    protected void saveApplinkPushNotification(String category, String response, String customIndex,
+    protected void saveApplinkPushNotification(String category,
+                                               String response,
+                                               String customIndex,
+                                               String serverId,
                                                final OnSavePushNotificationCallback callback) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(SavePushNotificationUseCase.KEY_CATEGORY, category);
         requestParams.putString(SavePushNotificationUseCase.KEY_RESPONSE, response);
         requestParams.putString(SavePushNotificationUseCase.KEY_CUSTOM_INDEX, customIndex);
+        requestParams.putString(SavePushNotificationUseCase.KEY_SERVER_ID, serverId);
         mSavePushNotificationUseCase.execute(requestParams, new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {

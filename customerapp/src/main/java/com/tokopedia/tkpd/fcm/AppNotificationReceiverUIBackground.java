@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
@@ -129,16 +130,21 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         String applinks = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
         String category = Uri.parse(applinks).getHost();
         String customIndex = "";
+        String serverId = "";
         switch (category) {
             case Constants.ARG_NOTIFICATION_APPLINK_MESSAGE:
                 customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX);
+                if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
+                    serverId = Uri.parse(applinks).getLastPathSegment();
+                }
                 break;
         }
 
         saveApplinkPushNotification(
                 category,
-                convertBundleToJsonString(data)
-                , customIndex,
+                convertBundleToJsonString(data),
+                customIndex,
+                serverId,
                 new SavePushNotificationCallback()
         );
     }

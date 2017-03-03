@@ -11,6 +11,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.gcm.data.PushNotificationDataRepository;
 import com.tokopedia.core.gcm.domain.PushNotificationRepository;
+import com.tokopedia.core.gcm.domain.usecase.DeleteSavedPushNotificationByCategoryAndServerIdUseCase;
 import com.tokopedia.core.gcm.domain.usecase.DeleteSavedPushNotificationByCategoryUseCase;
 import com.tokopedia.core.gcm.domain.usecase.DeleteSavedPushNotificationUseCase;
 import com.tokopedia.core.var.TkpdCache;
@@ -95,10 +96,46 @@ public class NotificationModHandler {
 
             @Override
             public void onNext(Boolean aBoolean) {
-                if (aBoolean)
+                if (aBoolean) {
                     CommonUtils.dumper("Success Clear Storage Notification");
-                else
+                }
+                else {
                     CommonUtils.dumper("Failed Clear Storage Notification");
+                }
+            }
+        });
+    }
+
+    public static void clearCacheIfFromNotification(String category, String serverId){
+        PushNotificationRepository pushNotificationRepository = new PushNotificationDataRepository();
+        DeleteSavedPushNotificationByCategoryAndServerIdUseCase deleteUseCase =
+                new DeleteSavedPushNotificationByCategoryAndServerIdUseCase(
+                        new JobExecutor(),
+                        new UIThread(),
+                        pushNotificationRepository
+                );
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(DeleteSavedPushNotificationByCategoryAndServerIdUseCase.PARAM_CATEGORY, category);
+        requestParams.putString(DeleteSavedPushNotificationByCategoryAndServerIdUseCase.PARAM_SERVER_ID, serverId);
+        deleteUseCase.execute(requestParams, new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                if (aBoolean) {
+                    CommonUtils.dumper("Success Clear Storage Notification");
+                }
+                else {
+                    CommonUtils.dumper("Failed Clear Storage Notification");
+                }
             }
         });
     }

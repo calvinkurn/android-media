@@ -8,10 +8,13 @@ import android.os.ResultReceiver;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.interactor.InboxMessageActRetrofitInteractor;
 import com.tokopedia.inbox.inboxmessage.interactor.InboxMessageActRetrofitInteractorImpl;
 import com.tokopedia.inbox.inboxmessage.model.ActInboxMessagePass;
+import com.tokopedia.inbox.inboxmessage.model.inboxmessage.InboxMessageItem;
 import com.tokopedia.inbox.inboxmessage.model.inboxmessagedetail.InboxMessageDetail;
 
 
@@ -355,6 +358,7 @@ public class InboxMessageIntentService extends IntentService implements InboxMes
                         @Override
                         public void onSuccess() {
                             receiver.send(STATUS_SUCCESS, resultData);
+                            handleOnSuccessDeleteForever(resultData);
                         }
 
                         @Override
@@ -380,6 +384,19 @@ public class InboxMessageIntentService extends IntentService implements InboxMes
                             receiver.send(STATUS_ERROR, resultData);
                         }
                     });
+        }
+    }
+
+    private void handleOnSuccessDeleteForever(Bundle resultData) {
+        ActInboxMessagePass actInboxMessagePass = resultData.getParcelable(PARAM_DELETE_FOREVER);
+        if (actInboxMessagePass != null) {
+            for (InboxMessageItem messageItem : actInboxMessagePass.getListMove()) {
+                String messageId = String.valueOf(messageItem.getMessageId());
+                NotificationModHandler.clearCacheIfFromNotification(
+                        Constants.ARG_NOTIFICATION_APPLINK_MESSAGE,
+                        messageId
+                );
+            }
         }
     }
 

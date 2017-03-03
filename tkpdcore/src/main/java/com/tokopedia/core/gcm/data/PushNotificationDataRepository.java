@@ -80,6 +80,13 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
     }
 
     @Override
+    public Observable<Boolean> storePushNotification(String category, String response, String customIndex, String serverId) {
+        return mPushNotificationDataStoreFactory
+                .createDiskPushNotificationDataStore()
+                .savePushNotification(category, response, customIndex, serverId);
+    }
+
+    @Override
     public Observable<Boolean> storePushNotification(String category, String response, String customIndex) {
         return mPushNotificationDataStoreFactory
                 .createDiskPushNotificationDataStore()
@@ -107,6 +114,12 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
 
     @Override
     public Observable<Boolean> clearPushNotificationStorage(String category) {
+        return mPushNotificationDataStoreFactory.createDiskPushNotificationDataStore()
+                .deleteSavedPushNotificationByCategory(category);
+    }
+
+    @Override
+    public Observable<Boolean> clearPushNotificationStorage(String category, String serverId) {
         return mPushNotificationDataStoreFactory.createDiskPushNotificationDataStore()
                 .deleteSavedPushNotificationByCategory(category);
     }

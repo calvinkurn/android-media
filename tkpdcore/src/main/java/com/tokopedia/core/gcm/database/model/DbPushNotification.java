@@ -27,6 +27,9 @@ public class DbPushNotification extends BaseModel {
     @Column
     private String customIndex;
 
+    @Column
+    private String serverId;
+
     public DbPushNotification() {
     }
 
@@ -61,5 +64,13 @@ public class DbPushNotification extends BaseModel {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getServerId() {
+        return serverId;
+    }
+
+    public void setServerId(String serverId) {
+        this.serverId = serverId;
     }
 }

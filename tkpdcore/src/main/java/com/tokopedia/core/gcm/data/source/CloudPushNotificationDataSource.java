@@ -125,6 +125,11 @@ public class CloudPushNotificationDataSource implements PushNotificationDataStor
     }
 
     @Override
+    public Observable<Boolean> deleteSavedPushNotificationByCategoryAndServerId(String category, String serverId) {
+        return null;
+    }
+
+    @Override
     public Observable<Boolean> deleteSavedPushNotification() {
         return null;
     }
@@ -139,5 +144,8 @@ public class CloudPushNotificationDataSource implements PushNotificationDataStor
         return null;
     }
 
-
+    @Override
+    public Observable<Boolean> savePushNotification(String category, String response, String customIndex, String serverId) {
+        return null;
+    }
 }
