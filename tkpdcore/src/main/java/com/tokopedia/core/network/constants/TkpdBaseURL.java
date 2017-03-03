@@ -632,4 +632,10 @@ public class TkpdBaseURL {
     public static class Truecaller{
         public static final String VERIFY_PHONE = "/web-service/v4/truecaller/check";
     }
+
+    public static class Replacement {
+        public static final String PATH_ACCEPT_REPLACEMENT = "";
+        public static final String PATH_DELETE_REPLACEMENT = "";
+        public static final String URL_REPLACEMENT_ACTION = "api/v1/wallet/";
+    }
 }
