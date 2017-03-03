@@ -115,7 +115,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         if (isHasGroupAd()) {
             Intent intent = TopAdsGroupEditPromoActivity.createIntent(getActivity(),
                     String.valueOf(productAd.getId()), TopAdsGroupEditPromoFragment.EXIST_GROUP, productAd.getGroupName(),
-                    String.valueOf(productAd.getGroupId()));
+                    productAd.getGroupId());
             startActivityForResult(intent, EDIT_PRODUCT_GROUP_REQUEST_CODE);
         }else if(productAd != null){
             Intent intent = new Intent(getActivity(), TopAdsDetailEditProductActivity.class);
@@ -195,7 +195,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
 
     private void manageGroup() {
         Intent intent = TopAdsGroupManagePromoActivity.createIntent(getActivity(), String.valueOf(productAd.getId()),
-                TopAdsGroupManagePromoFragment.NEW_GROUP, productAd.getGroupName(), String.valueOf(productAd.getGroupId()));
+                TopAdsGroupManagePromoFragment.NEW_GROUP, productAd.getGroupName(), productAd.getGroupId());
         startActivityForResult(intent, EDIT_PRODUCT_GROUP_REQUEST_CODE);
     }
 

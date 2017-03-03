@@ -51,7 +51,7 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
 
     private ArrayAdapter<String> adapterChooseGroup;
     private List<GroupAd> groupAds = new ArrayList<>();
-    private int choosenId;
+    protected int choosenId;
     private ProgressDialog progressDialog;
 
     @Override
@@ -301,7 +301,7 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
         }
 
         if(getVisibleInfoChooseGroupOption()){
-            viewInfoNewGroup.setText(getTextInfoChooseGroupOption());
+            viewInfoChooseGroup.setText(getTextInfoChooseGroupOption());
             viewInfoChooseGroup.setVisibility(View.VISIBLE);
         }else{
             viewInfoChooseGroup.setVisibility(View.GONE);
