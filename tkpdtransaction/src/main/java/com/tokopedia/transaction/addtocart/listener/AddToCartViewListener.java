@@ -64,4 +64,6 @@ public interface AddToCartViewListener extends IBaseView {
     void hideTickerGTM();
 
     void showAddressErrorMessage();
+
+    void alterGeocodeLocationValue(String temporaryLocation);
 }

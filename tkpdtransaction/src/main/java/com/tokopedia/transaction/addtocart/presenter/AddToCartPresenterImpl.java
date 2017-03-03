@@ -324,20 +324,24 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
         maps.put("address_id", orderData.getAddress().getAddressId());
         maps.put("latitude", locationPass.getLatitude());
         maps.put("longitude", locationPass.getLongitude());
-
+        final String oldLatitude = orderData.getAddress().getLatitude();
+        final String oldLongitude = orderData.getAddress().getLongitude();
+        orderData.getAddress().setLatitude(locationPass.getLatitude());
+        orderData.getAddress().setLongitude(locationPass.getLongitude());
         addToCartNetInteractor.updateAddress(context, maps,
                 new AddToCartNetInteractor.OnUpdateAddressListener() {
                     @Override
                     public void onSuccess() {
-                        orderData.getAddress().setLatitude(locationPass.getLatitude());
-                        orderData.getAddress().setLongitude(locationPass.getLongitude());
                         viewListener.renderFormAddress(orderData.getAddress());
                         calculateAllPrices(context, orderData);
                     }
 
                     @Override
                     public void onFailure(String messageError) {
+                        viewListener.renderFormAddress(orderData.getAddress());
                         viewListener.showUpdateAddressShippingError(messageError);
+                        orderData.getAddress().setLatitude(oldLatitude);
+                        orderData.getAddress().setLongitude(oldLongitude);
                     }
 
                     @Override
