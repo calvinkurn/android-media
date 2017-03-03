@@ -83,7 +83,7 @@ public class MessagePushNotificationBuildAndShow extends AbstractApplinkBuildAnd
             ApplinkNotificationPass applinkNotificationPass = builder.contents(contents)
                     .description(description)
                     .image(image)
-                    .id(1001)
+                    .id(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE_ID)
                     .title(NOTIFICATION_TITLE)
                     .group(NOTIFICATION_GROUP)
                     .category(NOTIFICATION_CATEGORY)

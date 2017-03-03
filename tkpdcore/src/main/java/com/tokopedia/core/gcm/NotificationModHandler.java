@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
@@ -138,6 +139,14 @@ public class NotificationModHandler {
                 }
             }
         });
+        switch (category){
+            case Constants.ARG_NOTIFICATION_APPLINK_MESSAGE:
+                NotificationManager notificationManager =
+                        (NotificationManager) MainApplication.getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.cancel(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE_ID);
+                break;
+        }
+
     }
 
     public void cancelNotif() {

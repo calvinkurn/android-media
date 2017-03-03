@@ -58,15 +58,11 @@ public class BuildAndShowNotification {
     public void buildAndShowNotification(ApplinkNotificationPass applinkNotificationPass) {
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
         inboxStyle.setBigContentTitle(applinkNotificationPass.getTitle());
+        inboxStyle.setSummaryText(applinkNotificationPass.getDescription());
         if (applinkNotificationPass.getContents() != null) {
-            int index = 0;
             for (String content : applinkNotificationPass.getContents()) {
                 inboxStyle.addLine(content);
-                if (++index > 5) {
-                    break;
-                }
             }
-            inboxStyle.addLine(applinkNotificationPass.getDescription());
         }
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)

@@ -29,7 +29,7 @@ public class DeleteSavedPushNotificationByCategoryAndServerIdUseCase extends Use
         String category = requestParams.getString(PARAM_CATEGORY, EMPTY_FIELD);
         String serverId = requestParams.getString(PARAM_SERVER_ID, EMPTY_FIELD);
         if (!category.equalsIgnoreCase(EMPTY_FIELD)) {
-            return pushNotificationRepository.clearPushNotificationStorage(category);
+            return pushNotificationRepository.clearPushNotificationStorage(category, serverId);
         }else {
             return Observable.empty();
         }

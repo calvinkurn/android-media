@@ -140,13 +140,13 @@ public class DiskPushNotificationDataStore implements PushNotificationDataStore 
     }
 
     @Override
-    public Observable<Boolean> deleteSavedPushNotificationByCategoryAndServerId(String category, String serverId) {
+    public Observable<Boolean> deleteSavedPushNotificationByCategoryAndServerId(String category, final String serverId) {
         return Observable.just(category).map(new Func1<String, Boolean>() {
             @Override
             public Boolean call(String category) {
                 ConditionGroup conditionGroup = ConditionGroup.clause();
                 conditionGroup.and(DbPushNotification_Table.category.eq(category));
-                conditionGroup.and(DbPushNotification_Table.serverId.eq(category));
+                conditionGroup.and(DbPushNotification_Table.serverId.eq(serverId));
                 pushNotificationDbManager.delete(conditionGroup);
                 return true;
             }
@@ -229,7 +229,7 @@ public class DiskPushNotificationDataStore implements PushNotificationDataStore 
         dbPushNotification.setCategory(category);
         dbPushNotification.setResponse(response);
         dbPushNotification.setCustomIndex(customIndex);
-        dbPushNotification.setCustomIndex(serverId);
+        dbPushNotification.setServerId(serverId);
         return Observable
                 .just(dbPushNotification)
                 .map(new Func1<DbPushNotification, Boolean>() {
