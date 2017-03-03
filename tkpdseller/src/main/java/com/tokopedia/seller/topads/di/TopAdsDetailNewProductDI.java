@@ -12,6 +12,7 @@ import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagement
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.api.TopAdsManagementApi;
 import com.tokopedia.seller.topads.domain.TopAdsProductAdsRepository;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailProductUseCase;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsCreateDetailProductListUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailProductUseCase;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewProductPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewProductPresenterImpl;
@@ -30,9 +31,10 @@ public class TopAdsDetailNewProductDI {
         TopAdsDetailProductMapper topAdsDetailProductMapper = new TopAdsDetailProductMapper();
         TopAdsBulkActionMapper topAdsBulkActionMapper = new TopAdsBulkActionMapper();
         TopAdsProductAdFactory topAdsShopAdFactory = new TopAdsProductAdFactory(context, topAdsManagementApi, topAdsDetailProductMapper, topAdsBulkActionMapper);
-        TopAdsProductAdsRepository topAdsGroupAdsRepository = new TopAdsProductAdsRepositoryImpl(topAdsShopAdFactory);
-        TopAdsGetDetailProductUseCase topAdsSearchGroupAdsNameUseCase = new TopAdsGetDetailProductUseCase(threadExecutor, postExecutionThread, topAdsGroupAdsRepository);
-        TopAdsSaveDetailProductUseCase topAdsSaveDetailShopUseCase = new TopAdsSaveDetailProductUseCase(threadExecutor, postExecutionThread, topAdsGroupAdsRepository);
-        return new TopAdsDetailNewProductPresenterImpl(topAdsSearchGroupAdsNameUseCase, topAdsSaveDetailShopUseCase);
+        TopAdsProductAdsRepository topAdsProductAdsRepository = new TopAdsProductAdsRepositoryImpl(topAdsShopAdFactory);
+        TopAdsGetDetailProductUseCase topAdsSearchGroupAdsNameUseCase = new TopAdsGetDetailProductUseCase(threadExecutor, postExecutionThread, topAdsProductAdsRepository);
+        TopAdsSaveDetailProductUseCase topAdsSaveDetailShopUseCase = new TopAdsSaveDetailProductUseCase(threadExecutor, postExecutionThread, topAdsProductAdsRepository);
+        TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase = new TopAdsCreateDetailProductListUseCase(threadExecutor, postExecutionThread, topAdsProductAdsRepository);
+        return new TopAdsDetailNewProductPresenterImpl(topAdsSearchGroupAdsNameUseCase, topAdsSaveDetailShopUseCase, topAdsCreateDetailProductListUseCase);
     }
 }
