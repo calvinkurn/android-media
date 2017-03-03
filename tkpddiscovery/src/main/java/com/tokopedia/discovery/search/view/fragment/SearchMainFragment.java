@@ -77,7 +77,6 @@ public class SearchMainFragment extends BaseDaggerFragment implements SearchCont
         unbinder = ButterKnife.bind(this, parentView);
         prepareView();
         presenter.attachView(this);
-        presenter.search("");
         return parentView;
     }
 

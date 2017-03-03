@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.Toolbar;
@@ -142,7 +143,7 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
     @BindView(R2.id.progressBar)
     ProgressBar progressBar;
     @BindView(R2.id.root)
-    FrameLayout coordinatorLayout;
+    CoordinatorLayout coordinatorLayout;
     @BindView(R2.id.toolbar)
     Toolbar toolbar;
     @BindView(R2.id.bottom_navigation_container)
@@ -237,7 +238,7 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
                     }
                     break;
                 case BrowseProductRouter.VALUES_HISTORY_FRAGMENT_ID:
-                    materialSearchView.showSearch(false);
+                    materialSearchView.showSearch(true, false);
                     break;
             }
         }
@@ -257,12 +258,12 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
 
     @Override
     public void onSearchViewShown() {
-        bottomNavigation.hideBottomNavigation(false);
+        bottomNavigation.hideBottomNavigation();
     }
 
     @Override
     public void onSearchViewClosed() {
-        bottomNavigation.restoreBottomNavigation(false);
+        bottomNavigation.restoreBottomNavigation();
     }
 
     @Override
@@ -290,8 +291,14 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
 
     @Override
     public void onBackPressed() {
-        if(materialSearchView.isSearchOpen()){
-            materialSearchView.closeSearch();
+        if (materialSearchView.isSearchOpen()) {
+            if(materialSearchView.isFinishOnClose()){
+                finish();
+            } else {
+                materialSearchView.closeSearch();
+            }
+//        } else if (fragmentManager.getBackStackEntryCount() > 1) {
+//            super.onBackPressed();
         } else {
             finish();
         }
@@ -309,17 +316,18 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
     }
 
     public void setFragment(Fragment fragment, String TAG) {
-        if (isFinishing()) return;
-        fragmentManager.beginTransaction().replace(R.id.container, fragment, TAG).addToBackStack(null).commit();
-        if (fragment instanceof BrowseParentFragment) {
-            bottomNavigation.setBehaviorTranslationEnabled(true);
-            bottomNavigation.restoreBottomNavigation();
+        String backStateName = fragment.getClass().getName();
+
+        FragmentManager manager = getSupportFragmentManager();
+        boolean fragmentPopped = manager.popBackStackImmediate(backStateName, 0);
+
+        if (!fragmentPopped) {
+            Log.d(TAG, "fragment not in back stack, create it.");
+            FragmentTransaction ft = manager.beginTransaction();
+            ft.replace(R.id.container, fragment, TAG);
+            ft.addToBackStack(backStateName);
+            ft.commit();
             browseProductActivityModel.setFragmentId(BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-        } else {
-            bottomNavigation.hideBottomNavigation();
-            bottomNavigation.setBehaviorTranslationEnabled(false);
-            browseProductActivityModel.setFragmentId(BrowseProductRouter.VALUES_HISTORY_FRAGMENT_ID);
-            showLoading(false);
         }
         Runtime.getRuntime().gc();
     }
@@ -385,12 +393,16 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
         return mBrowseProductAtribut.getFilterAttributMap().get(activeTab) == null;
     }
 
-
     public void sendQuery(String query) {
+        sendQuery(query, "");
+    }
+
+    public void sendQuery(String query, String depId) {
         breadcrumbs = null;
         saveQueryCache(query);
         resetBrowseProductActivityModel();
         browseProductActivityModel.setQ(query);
+        browseProductActivityModel.setDepartmentId(depId);
         if (firstTime || browseProductActivityModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT)
                 || browseProductActivityModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
             browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT);
@@ -612,7 +624,7 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
         bottomNavigation.setOnNavigationPositionListener(new AHBottomNavigation.OnNavigationPositionListener() {
             @Override
             public void onPositionChange(int y) {
-                FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) container.getLayoutParams();
+                CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) container.getLayoutParams();
                 layoutParams.setMargins(0, 0, 0, y);
                 container.setLayoutParams(layoutParams);
             }

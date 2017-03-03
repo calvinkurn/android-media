@@ -9,7 +9,7 @@ public class SearchItem {
     private String url;
     private String recom;
     private String applink;
-    private int sc;
+    private String sc;
     private String imageURI;
     private boolean isOfficial;
 
@@ -53,11 +53,11 @@ public class SearchItem {
         this.recom = recom;
     }
 
-    public int getSc() {
+    public String getSc() {
         return sc;
     }
 
-    public void setSc(int sc) {
+    public void setSc(String sc) {
         this.sc = sc;
     }
 

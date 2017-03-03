@@ -9,10 +9,10 @@ import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.speech.RecognizerIntent;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -25,15 +25,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -45,7 +41,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 /**
- * @author Miguel Catalan Bañuls
+ * @author Erry Suprayogi
  */
 public class MaterialSearchView extends FrameLayout implements Filter.FilterListener {
     public static final int REQUEST_VOICE = 9999;
@@ -58,7 +54,6 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
     //Views
     private View mSearchLayout;
     private View mTintView;
-    //    private ListView mSuggestionsListView;
     private SearchMainFragment mSuggestionFragment;
     private RelativeLayout mSuggestionView;
     private EditText mSearchSrcTextView;
@@ -73,9 +68,7 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
     private OnQueryTextListener mOnQueryChangeListener;
     private SearchViewListener mSearchViewListener;
     private AppCompatActivity activity;
-
-//    private ListAdapter mAdapter;
-
+    private boolean finishOnClose = false;
     private SavedState mSavedState;
     private boolean submit = false;
 
@@ -233,7 +226,11 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
 
         public void onClick(View v) {
             if (v == mBackBtn) {
-                closeSearch();
+                if (finishOnClose && activity != null) {
+                    activity.finish();
+                } else {
+                    closeSearch();
+                }
             } else if (v == mVoiceBtn) {
                 onVoiceClicked();
             } else if (v == mEmptyBtn) {
@@ -443,6 +440,9 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 showSearch();
+                if(finishOnClose){
+                    setFinishOnClose(false);
+                }
                 return true;
             }
         });
@@ -471,6 +471,27 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
      */
     public void showSearch() {
         showSearch(true);
+    }
+
+    public void showSearch(boolean finishOnClose, boolean animate) {
+        this.finishOnClose = finishOnClose;
+        if (finishOnClose) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    showKeyboard(mSearchSrcTextView);
+                }
+            }, 500);
+        }
+        showSearch(animate);
+    }
+
+    public boolean isFinishOnClose() {
+        return finishOnClose;
+    }
+
+    public void setFinishOnClose(boolean finishOnClose) {
+        this.finishOnClose = finishOnClose;
     }
 
     /**
@@ -536,6 +557,7 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
     /**
      * Close search view.
      */
+
     public void closeSearch() {
         if (!isSearchOpen()) {
             return;
@@ -550,7 +572,6 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
             mSearchViewListener.onSearchViewClosed();
         }
         mIsSearchOpen = false;
-
     }
 
     /**

@@ -79,7 +79,7 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
         unbinder.unbind();
     }
 
-    public void addSearchResult(Visitable visitable){
+    public void addSearchResult(Visitable visitable) {
         adapter.addList(visitable);
     }
 
@@ -93,12 +93,18 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
     }
 
     public void clearData() {
-        adapter.clearData();
+        if (adapter != null) {
+            adapter.clearData();
+        }
     }
 
     @Override
     public void onItemClicked(SearchItem item) {
-        ((BrowseProductActivity) getActivity()).sendQuery(item.getKeyword());
+        if (item.getSc() != null && !item.getSc().isEmpty()) {
+            ((BrowseProductActivity) getActivity()).sendQuery(item.getKeyword(), item.getSc());
+        } else {
+            ((BrowseProductActivity) getActivity()).sendQuery(item.getKeyword());
+        }
     }
 
     @Override
