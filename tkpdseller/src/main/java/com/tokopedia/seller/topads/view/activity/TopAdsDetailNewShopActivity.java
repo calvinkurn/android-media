@@ -20,7 +20,7 @@ public class TopAdsDetailNewShopActivity extends TActivity {
         inflateView(R.layout.activity_top_ads_edit_promo);
         String shopName = null;
         if (getIntent() != null && getIntent().getExtras() != null) {
-            shopName = getIntent().getExtras().getString(TopAdsExtraConstant.EXTRA_SHOP_NAME);
+            shopName = getIntent().getExtras().getString(TopAdsExtraConstant.EXTRA_NAME);
         }
         getFragmentManager().beginTransaction().disallowAddToBackStack()
                 .add(R.id.container, TopAdsDetailNewShopFragment.createInstance(shopName), TopAdsDetailEditShopFragment.class.getSimpleName())

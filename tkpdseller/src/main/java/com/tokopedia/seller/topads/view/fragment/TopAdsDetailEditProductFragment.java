@@ -33,12 +33,6 @@ public class TopAdsDetailEditProductFragment extends TopAdsDetailEditFragment<To
     }
 
     @Override
-    protected void initView(View view) {
-        super.initView(view);
-        promoIconView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
     protected void loadAdDetail() {
         super.loadAdDetail();
         presenter.getDetailAd(adId);

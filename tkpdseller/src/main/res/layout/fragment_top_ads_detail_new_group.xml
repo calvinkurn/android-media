@@ -19,7 +19,6 @@
             android:paddingRight="@dimen/top_ads_margin_layout">
 
             <include
-                android:visibility="gone"
                 layout="@layout/partial_top_ads_detail_edit_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -37,6 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/top_ads_margin_layout"/>
         </LinearLayout>
+
 
     </android.support.v4.widget.NestedScrollView>
 

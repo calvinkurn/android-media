@@ -21,7 +21,7 @@ public class TopAdsDetailEditShopActivity extends TActivity {
         String shopName = null;
         String adId = null;
         if (getIntent() != null && getIntent().getExtras() != null) {
-            shopName = getIntent().getExtras().getString(TopAdsExtraConstant.EXTRA_SHOP_NAME);
+            shopName = getIntent().getExtras().getString(TopAdsExtraConstant.EXTRA_NAME);
             adId = getIntent().getExtras().getString(TopAdsExtraConstant.EXTRA_AD_ID);
         }
         getFragmentManager().beginTransaction().disallowAddToBackStack()

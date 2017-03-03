@@ -66,7 +66,7 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     public void onCreateShop() {
         Intent intent = new Intent(getActivity(), TopAdsDetailNewShopActivity.class);
         if (!TextUtils.isEmpty(shopAd.getName())) {
-            intent.putExtra(TopAdsExtraConstant.EXTRA_SHOP_NAME, shopAd.getName());
+            intent.putExtra(TopAdsExtraConstant.EXTRA_NAME, shopAd.getName());
         }
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }

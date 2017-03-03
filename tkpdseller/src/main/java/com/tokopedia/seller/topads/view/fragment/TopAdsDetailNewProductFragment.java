@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.view.View;
 
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;

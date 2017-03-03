@@ -11,6 +11,7 @@ import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGroupAdInteractorImpl;
 import com.tokopedia.seller.topads.domain.model.data.Ad;
 import com.tokopedia.seller.topads.domain.model.data.GroupAd;
+import com.tokopedia.seller.topads.view.activity.TopAdsDetailEditGroupActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailEditProductActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailGroupPresenter;
@@ -84,7 +85,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
 
     @Override
     protected void editAd() {
-        Intent intent = new Intent(getActivity(), TopAdsDetailEditProductActivity.class);
+        Intent intent = new Intent(getActivity(), TopAdsDetailEditGroupActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, String.valueOf(ad.getId()));
         startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }

@@ -3,7 +3,6 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
@@ -13,9 +12,6 @@ import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditShopPresenter;
 
 public class TopAdsDetailEditGroupFragment extends TopAdsDetailEditFragment<TopAdsDetailEditShopPresenter> {
-
-    private EditText shopNameEditText;
-    private String shopName;
 
     public static Fragment createInstance(String groupId) {
         Fragment fragment = new TopAdsDetailEditGroupFragment();
@@ -27,13 +23,13 @@ public class TopAdsDetailEditGroupFragment extends TopAdsDetailEditFragment<TopA
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_top_ads_edit_shop;
+        return R.layout.fragment_top_ads_detail_edit_group;
     }
 
     @Override
-    protected void setupArguments(Bundle bundle) {
-        super.setupArguments(bundle);
-        shopName = bundle.getString(TopAdsExtraConstant.EXTRA_SHOP_NAME);
+    protected void initView(View view) {
+        super.initView(view);
+        nameInputLayout.setHint(getString(R.string.label_top_ads_group_name));
     }
 
     @Override
@@ -43,16 +39,9 @@ public class TopAdsDetailEditGroupFragment extends TopAdsDetailEditFragment<TopA
     }
 
     @Override
-    protected void initView(View view) {
-        super.initView(view);
-        shopNameEditText = (EditText) view.findViewById(R.id.edit_text_name);
-        shopNameEditText.setText(shopName);
-    }
-
-    @Override
     protected void loadAd(TopAdsDetailAdViewModel detailAd) {
         super.loadAd(detailAd);
-        shopNameEditText.setText(detailAd.getTitle());
+        nameEditText.setText(detailAd.getTitle());
     }
 
     @Override

@@ -93,7 +93,7 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
     protected void editAd() {
         if (ad != null) {
             Intent intent = new Intent(getActivity(), TopAdsDetailEditShopActivity.class);
-            intent.putExtra(TopAdsExtraConstant.EXTRA_SHOP_NAME, ad.getName());
+            intent.putExtra(TopAdsExtraConstant.EXTRA_NAME, ad.getName());
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, String.valueOf(ad.getId()));
             startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
         }

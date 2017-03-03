@@ -41,6 +41,8 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     private static final int STICKER_THUMBS_UP = 2;
     private static final int STICKER_FIRE = 1;
 
+    protected TextInputLayout nameInputLayout;
+    protected EditText nameEditText;
     private TextInputLayout maxPriceInputLayout;
     private EditText maxPriceEditText;
     private RadioGroup budgetRadioGroup;
@@ -67,6 +69,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     private ProgressDialog progressDialog;
 
     protected String adId;
+    protected String name;
 
     private Date startDate;
     private Date endDate;
@@ -106,10 +109,13 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     @Override
     protected void setupArguments(Bundle bundle) {
         adId = bundle.getString(TopAdsExtraConstant.EXTRA_AD_ID);
+        name = bundle.getString(TopAdsExtraConstant.EXTRA_NAME);
     }
 
     @Override
     protected void initView(View view) {
+        nameInputLayout = (TextInputLayout) view.findViewById(R.id.input_layout_name);
+        nameEditText = (EditText) view.findViewById(R.id.edit_text_name);
         maxPriceInputLayout = (TextInputLayout) view.findViewById(R.id.input_layout_max_price);
         maxPriceEditText = (EditText) view.findViewById(R.id.edit_text_max_price);
         budgetRadioGroup = (RadioGroup) view.findViewById(R.id.radio_group_budget);
@@ -286,6 +292,9 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
         if (!TextUtils.isEmpty(adId)) {
             loadAdDetail();
         }
+        if (!TextUtils.isEmpty(name)) {
+            nameEditText.setText(name);
+        }
     }
 
     @Override
@@ -343,6 +352,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
 
     protected void loadAd(TopAdsDetailAdViewModel detailAd) {
         this.detailAd = detailAd;
+        nameEditText.setText(detailAd.getTitle());
         maxPriceEditText.setText(String.valueOf(detailAd.getPriceBid()));
         if (detailAd.getPriceDaily() > 0) {
             showBudgetPerDay(true);

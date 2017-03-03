@@ -3,9 +3,7 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
 import android.view.View;
-import android.widget.EditText;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
@@ -49,11 +47,16 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
     protected void initialPresenter() {
         presenter = TopAdsDetailNewGroupDI.createPresenter(getActivity());
         presenter.attachView(this);
+
+    protected int getFragmentLayout() {
+        return R.layout.fragment_top_ads_detail_new_group;
     }
 
     @Override
     protected void initView(View view) {
         super.initView(view);
+        nameEditText.setEnabled(false);
+        nameInputLayout.setHint(getString(R.string.label_top_ads_group_name));
         setHintToGroup(view);
         checkToHideViews(view);
 
@@ -97,6 +100,14 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
     @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_top_ads_edit_group;
+        nameEditText.setEnabled(false);
+        nameInputLayout.setHint(getString(R.string.label_top_ads_group_name));
+    }
+
+    @Override
+    protected void initialPresenter() {
+        presenter = TopAdsDetailNewProductDI.createPresenter(getActivity());
+        presenter.attachView(this);
     }
 
     @Override
