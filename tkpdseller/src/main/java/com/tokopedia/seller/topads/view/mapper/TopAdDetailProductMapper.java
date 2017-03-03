@@ -6,6 +6,10 @@ import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailShopDomainModel;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailProductViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
+import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Nathaniel on 2/24/2017.
@@ -62,5 +66,14 @@ public class TopAdDetailProductMapper {
         domainModel.setAdImage(viewModel.getImage());
         domainModel.setAdTitle(viewModel.getTitle());
         return domainModel;
+    }
+
+    public static List<TopAdsDetailProductDomainModel> convertViewToDomainList(TopAdsDetailProductViewModel detailAd, ArrayList<TopAdsProductViewModel> topAdsProductList) {
+        List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels = new ArrayList<>();
+        for(TopAdsProductViewModel topAdsProductViewModel : topAdsProductList){
+            detailAd.setItemId(topAdsProductViewModel.getId());
+            topAdsDetailProductDomainModels.add(convertViewToDomain(detailAd));
+        }
+        return topAdsDetailProductDomainModels;
     }
 }

@@ -66,7 +66,7 @@ public class TopAdsGroupEditPromoFragment extends TopAdsBaseGroupEditPromoFragme
 
     @Override
     protected void onSubmitFormNotInGroup() {
-        presenter.moveOutProductGroup(adId, SessionHandler.getShopID(getActivity()));
+        presenter.moveOutProductGroup(SessionHandler.getShopID(getActivity()),adId);
     }
 
     @Override
