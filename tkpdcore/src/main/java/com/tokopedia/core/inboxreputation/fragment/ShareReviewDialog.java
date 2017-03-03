@@ -77,6 +77,9 @@ public class ShareReviewDialog {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             adapter.addItem(new ShareItem(context.getDrawable(R.drawable.ic_facebook_share), "Facebook", shareFb()));
             adapter.addItem(new ShareItem(context.getDrawable(R.drawable.ic_copy_share), "Copy Link", shareCopyLink()));
+        }else {
+            adapter.addItem(new ShareItem(context.getResources().getDrawable(R.drawable.ic_facebook_share), "Facebook", shareFb()));
+            adapter.addItem(new ShareItem(context.getResources().getDrawable(R.drawable.ic_copy_share), "Copy Link", shareCopyLink()));
         }
         appGrid.setAdapter(adapter);
     }
