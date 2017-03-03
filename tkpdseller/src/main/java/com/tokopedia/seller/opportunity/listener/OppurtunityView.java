@@ -9,4 +9,5 @@ public interface OppurtunityView {
 
     void onActionSubmitClicked();
 
+    void onActionSeeDetailProduct(String productId);
 }

@@ -2,10 +2,12 @@ package com.tokopedia.seller.opportunity.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.snapshot.SnapShotProduct;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.opportunity.customview.OppurtunityDetailButtonView;
@@ -45,6 +47,11 @@ public class OppurtunityDetailFragment extends BasePresenterFragment<Oppurtunity
     @Override
     public void onActionSubmitClicked() {
 
+    }
+
+    @Override
+    public void onActionSeeDetailProduct(String productId) {
+        startActivity(SnapShotProduct.createIntent(getActivity(), productId));
     }
 
     public static Fragment createInstance() {
