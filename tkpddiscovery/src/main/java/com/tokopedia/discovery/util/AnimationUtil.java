@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.search.view.materialsearchview.utils;
+package com.tokopedia.discovery.util;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -12,9 +12,6 @@ import android.view.ViewAnimationUtils;
 
 import com.tokopedia.discovery.R;
 
-/**
- * @author Miguel Catalan Bañuls
- */
 public class AnimationUtil {
 
     public static int ANIMATION_DURATION_SHORT = 150;

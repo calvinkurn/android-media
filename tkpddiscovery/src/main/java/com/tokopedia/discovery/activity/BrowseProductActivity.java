@@ -20,7 +20,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -58,17 +57,14 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
-import com.tokopedia.discovery.fragment.browseparent.BrowseParentFragment;
-import com.tokopedia.discovery.fragment.browseparent.ShopFragment;
+import com.tokopedia.discovery.fragment.BrowseParentFragment;
+import com.tokopedia.discovery.fragment.ShopFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
-import com.tokopedia.discovery.interactor.SearchInteractor;
-import com.tokopedia.discovery.interactor.SearchInteractorImpl;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
-import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
-import com.tokopedia.discovery.search.view.materialsearchview.MaterialSearchView;
+import com.tokopedia.discovery.search.view.DiscoverySearchView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,14 +91,13 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_INV
  * Created by Erry on 6/30/2016.
  */
 public class BrowseProductActivity extends TActivity implements DiscoveryActivityPresenter,
-        MaterialSearchView.SearchViewListener, MaterialSearchView.OnQueryTextListener, HasComponent {
+        DiscoverySearchView.SearchViewListener, DiscoverySearchView.OnQueryTextListener, HasComponent {
 
     private static final String TAG = BrowseProductActivity.class.getSimpleName();
     private static final String KEY_GTM = "GTMFilterData";
     private static final String EXTRA_BROWSE_ATRIBUT = "EXTRA_BROWSE_ATRIBUT";
     private String searchQuery;
     private FragmentManager fragmentManager;
-    private SearchInteractor searchInteractor;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
     private BrowseProductAtribut mBrowseProductAtribut;
     private FilterMapAtribut mFilterMapAtribut;
@@ -151,7 +146,7 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
     @BindView(R2.id.container)
     FrameLayout container;
     @BindView(R2.id.search)
-    MaterialSearchView materialSearchView;
+    DiscoverySearchView discoverySearchView;
 
     BrowseProductActivityModel browseProductActivityModel;
     DiscoveryInteractor discoveryInteractor;
@@ -221,9 +216,9 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
         getSupportActionBar().setHomeButtonEnabled(true);
         cacheGTM = new LocalCacheHandler(this, KEY_GTM);
 
-        materialSearchView.setActivity(this);
-        materialSearchView.setOnQueryTextListener(this);
-        materialSearchView.setOnSearchViewListener(this);
+        discoverySearchView.setActivity(this);
+        discoverySearchView.setOnQueryTextListener(this);
+        discoverySearchView.setOnSearchViewListener(this);
 
         if (browseProductActivityModel.alias != null && browseProductActivityModel.getHotListBannerModel() == null)
             fetchHotListHeader(browseProductActivityModel.alias);
@@ -238,7 +233,7 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
                     }
                     break;
                 case BrowseProductRouter.VALUES_HISTORY_FRAGMENT_ID:
-                    materialSearchView.showSearch(true, false);
+                    discoverySearchView.showSearch(true, false);
                     break;
             }
         }
@@ -291,11 +286,11 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
 
     @Override
     public void onBackPressed() {
-        if (materialSearchView.isSearchOpen()) {
-            if(materialSearchView.isFinishOnClose()){
+        if (discoverySearchView.isSearchOpen()) {
+            if(discoverySearchView.isFinishOnClose()){
                 finish();
             } else {
-                materialSearchView.closeSearch();
+                discoverySearchView.closeSearch();
             }
 //        } else if (fragmentManager.getBackStackEntryCount() > 1) {
 //            super.onBackPressed();
@@ -336,12 +331,12 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_search, menu);
         searchItem = menu.findItem(R.id.action_search);
-        materialSearchView.setMenuItem(searchItem);
+        discoverySearchView.setMenuItem(searchItem);
         return true;
     }
 
     public void setSearchQuery(String query) {
-        materialSearchView.setQuery(query, false);
+        discoverySearchView.setQuery(query, false);
         CommonUtils.hideKeyboard(this, getCurrentFocus());
     }
 
@@ -352,29 +347,6 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
             finish();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void saveQueryCache(final String query) {
-        this.searchQuery = query;
-        SearchInteractor.GetSearchCacheListener listener = new SearchInteractor.GetSearchCacheListener() {
-            @Override
-            public void onSuccess(List<String> cacheListener) {
-                if (cacheListener.contains(query)) {
-                    cacheListener.remove(query);
-                }
-                cacheListener.add(query);
-                searchInteractor.storeSearchCache(cacheListener);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-        };
-        searchInteractor = new SearchInteractorImpl();
-        searchInteractor.setListener(listener);
-        searchInteractor.setCompositeSubscription(compositeSubscription);
-        searchInteractor.getSearchCache();
     }
 
     private void sendBroadCast(String query) {
@@ -399,7 +371,6 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
 
     public void sendQuery(String query, String depId) {
         breadcrumbs = null;
-        saveQueryCache(query);
         resetBrowseProductActivityModel();
         browseProductActivityModel.setQ(query);
         browseProductActivityModel.setDepartmentId(depId);
@@ -412,7 +383,7 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
         deleteFilterCache();
         sendBroadCast(query);
         toolbar.setTitle(query);
-        materialSearchView.closeSearch();
+        discoverySearchView.closeSearch();
     }
 
     private void deleteFilterCache() {
@@ -528,7 +499,7 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
 
 
     public void clearQuery() {
-        materialSearchView.setQuery("", false);
+        discoverySearchView.setQuery("", false);
     }
 
     public void changeBottomBar(String source) {
@@ -1023,11 +994,11 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
     }
 
     public void deleteRecentSearch(String keyword) {
-        materialSearchView.getSuggestionFragment().deleteRecentSearch(keyword);
+        discoverySearchView.getSuggestionFragment().deleteRecentSearch(keyword);
     }
 
     public void deleteAllRecentSearch() {
-        materialSearchView.getSuggestionFragment().deleteAllRecentSearch();
+        discoverySearchView.getSuggestionFragment().deleteAllRecentSearch();
     }
 
     public BrowseProductRouter.GridType getGridType() {

@@ -81,7 +81,7 @@ public class SearchMainFragment extends BaseDaggerFragment implements SearchCont
     }
 
     private void prepareView(){
-        pageAdapter = new SearchPageAdapter(getChildFragmentManager());
+        pageAdapter = new SearchPageAdapter(getChildFragmentManager(), getActivity());
         viewPager.setAdapter(pageAdapter);
         tabLayout.setupWithViewPager(viewPager);
     }

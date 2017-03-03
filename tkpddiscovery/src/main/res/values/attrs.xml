@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="MaterialSearchView">
+    <declare-styleable name="DiscoverySearchView">
         <attr name="searchBackground" format="integer" />
         <attr name="searchVoiceIcon" format="integer" />
         <attr name="searchCloseIcon" format="integer" />

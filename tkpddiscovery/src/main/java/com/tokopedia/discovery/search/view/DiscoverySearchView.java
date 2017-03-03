@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.search.view.materialsearchview;
+package com.tokopedia.discovery.search.view;
 
 import android.app.Activity;
 import android.content.Context;
@@ -35,7 +35,7 @@ import android.widget.TextView;
 
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
-import com.tokopedia.discovery.search.view.materialsearchview.utils.AnimationUtil;
+import com.tokopedia.discovery.util.AnimationUtil;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -43,7 +43,7 @@ import java.util.List;
 /**
  * @author Erry Suprayogi
  */
-public class MaterialSearchView extends FrameLayout implements Filter.FilterListener {
+public class DiscoverySearchView extends FrameLayout implements Filter.FilterListener {
     public static final int REQUEST_VOICE = 9999;
 
     private MenuItem mMenuItem;
@@ -79,15 +79,15 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
 
     private Context mContext;
 
-    public MaterialSearchView(Context context) {
+    public DiscoverySearchView(Context context) {
         this(context, null);
     }
 
-    public MaterialSearchView(Context context, AttributeSet attrs) {
+    public DiscoverySearchView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public MaterialSearchView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public DiscoverySearchView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs);
 
         mContext = context;
@@ -103,47 +103,47 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
     }
 
     private void initStyle(AttributeSet attrs, int defStyleAttr) {
-        TypedArray a = mContext.obtainStyledAttributes(attrs, R.styleable.MaterialSearchView, defStyleAttr, 0);
+        TypedArray a = mContext.obtainStyledAttributes(attrs, R.styleable.DiscoverySearchView, defStyleAttr, 0);
 
         if (a != null) {
-            if (a.hasValue(R.styleable.MaterialSearchView_searchBackground)) {
-                setBackground(a.getDrawable(R.styleable.MaterialSearchView_searchBackground));
+            if (a.hasValue(R.styleable.DiscoverySearchView_searchBackground)) {
+                setBackground(a.getDrawable(R.styleable.DiscoverySearchView_searchBackground));
             }
 
-            if (a.hasValue(R.styleable.MaterialSearchView_android_textColor)) {
-                setTextColor(a.getColor(R.styleable.MaterialSearchView_android_textColor, 0));
+            if (a.hasValue(R.styleable.DiscoverySearchView_android_textColor)) {
+                setTextColor(a.getColor(R.styleable.DiscoverySearchView_android_textColor, 0));
             }
 
-            if (a.hasValue(R.styleable.MaterialSearchView_android_textColorHint)) {
-                setHintTextColor(a.getColor(R.styleable.MaterialSearchView_android_textColorHint, 0));
+            if (a.hasValue(R.styleable.DiscoverySearchView_android_textColorHint)) {
+                setHintTextColor(a.getColor(R.styleable.DiscoverySearchView_android_textColorHint, 0));
             }
 
-            if (a.hasValue(R.styleable.MaterialSearchView_android_hint)) {
-                setHint(a.getString(R.styleable.MaterialSearchView_android_hint));
+            if (a.hasValue(R.styleable.DiscoverySearchView_android_hint)) {
+                setHint(a.getString(R.styleable.DiscoverySearchView_android_hint));
             }
 
-            if (a.hasValue(R.styleable.MaterialSearchView_searchVoiceIcon)) {
-                setVoiceIcon(a.getDrawable(R.styleable.MaterialSearchView_searchVoiceIcon));
+            if (a.hasValue(R.styleable.DiscoverySearchView_searchVoiceIcon)) {
+                setVoiceIcon(a.getDrawable(R.styleable.DiscoverySearchView_searchVoiceIcon));
             }
 
-            if (a.hasValue(R.styleable.MaterialSearchView_searchCloseIcon)) {
-                setCloseIcon(a.getDrawable(R.styleable.MaterialSearchView_searchCloseIcon));
+            if (a.hasValue(R.styleable.DiscoverySearchView_searchCloseIcon)) {
+                setCloseIcon(a.getDrawable(R.styleable.DiscoverySearchView_searchCloseIcon));
             }
 
-            if (a.hasValue(R.styleable.MaterialSearchView_searchBackIcon)) {
-                setBackIcon(a.getDrawable(R.styleable.MaterialSearchView_searchBackIcon));
+            if (a.hasValue(R.styleable.DiscoverySearchView_searchBackIcon)) {
+                setBackIcon(a.getDrawable(R.styleable.DiscoverySearchView_searchBackIcon));
             }
 
-            if (a.hasValue(R.styleable.MaterialSearchView_searchSuggestionBackground)) {
-                setSuggestionBackground(a.getDrawable(R.styleable.MaterialSearchView_searchSuggestionBackground));
+            if (a.hasValue(R.styleable.DiscoverySearchView_searchSuggestionBackground)) {
+                setSuggestionBackground(a.getDrawable(R.styleable.DiscoverySearchView_searchSuggestionBackground));
             }
 
-            if (a.hasValue(R.styleable.MaterialSearchView_searchSuggestionIcon)) {
-                setSuggestionIcon(a.getDrawable(R.styleable.MaterialSearchView_searchSuggestionIcon));
+            if (a.hasValue(R.styleable.DiscoverySearchView_searchSuggestionIcon)) {
+                setSuggestionIcon(a.getDrawable(R.styleable.DiscoverySearchView_searchSuggestionIcon));
             }
 
-            if (a.hasValue(R.styleable.MaterialSearchView_android_inputType)) {
-                setInputType(a.getInt(R.styleable.MaterialSearchView_android_inputType, EditorInfo.TYPE_NULL));
+            if (a.hasValue(R.styleable.DiscoverySearchView_android_inputType)) {
+                setInputType(a.getInt(R.styleable.DiscoverySearchView_android_inputType, EditorInfo.TYPE_NULL));
             }
 
             a.recycle();
@@ -202,7 +202,7 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mUserQuery = s;
-                MaterialSearchView.this.onTextChanged(s);
+                DiscoverySearchView.this.onTextChanged(s);
             }
 
             @Override
@@ -361,7 +361,7 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
             f.setAccessible(true);
             f.set(mSearchSrcTextView, drawable);
         } catch (Exception ignored) {
-            Log.e("MaterialSearchView", ignored.toString());
+            Log.e("DiscoverySearchView", ignored.toString());
         }
     }
 
@@ -376,6 +376,7 @@ public class MaterialSearchView extends FrameLayout implements Filter.FilterList
      */
     public void showSuggestions() {
         if (mSuggestionFragment != null && mSuggestionView.getVisibility() == GONE) {
+            mSuggestionView.bringToFront();
             mSuggestionView.setVisibility(VISIBLE);
         }
     }

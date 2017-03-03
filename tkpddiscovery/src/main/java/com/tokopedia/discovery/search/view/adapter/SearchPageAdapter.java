@@ -1,9 +1,11 @@
 package com.tokopedia.discovery.search.view.adapter;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.search.view.fragment.SearchResultFragment;
 
 import java.util.ArrayList;
@@ -15,14 +17,15 @@ import java.util.List;
 
 public class SearchPageAdapter extends FragmentStatePagerAdapter {
 
-    private String[] TITLE = new String[] {
-            "Product", "Toko"
-    };
-
+    private String[] TITLE;
     private List<Fragment> fragments = new ArrayList<>();
 
-    public SearchPageAdapter(FragmentManager fm) {
+    public SearchPageAdapter(FragmentManager fm, Context context) {
         super(fm);
+        TITLE = new String[]{
+                context.getString(R.string.title_product),
+                context.getString(R.string.title_shop)
+        };
         fragments.add(SearchResultFragment.newInstance());
         fragments.add(SearchResultFragment.newInstance());
     }

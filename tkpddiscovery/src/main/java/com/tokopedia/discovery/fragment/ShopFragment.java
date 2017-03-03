@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.fragment.browseparent;
+package com.tokopedia.discovery.fragment;
 
 import android.content.Context;
 import android.graphics.Color;
