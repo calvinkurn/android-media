@@ -6,9 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -464,6 +462,15 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
         detailAd.setStartTime(showTimeStartTimeDatePicker.getValue());
         detailAd.setEndDate(showTimeEndDateDatePicker.getValue());
         detailAd.setEndTime(showTimeEndTimeDatePicker.getValue());
+        if (promoIconView.getVisibility() == View.VISIBLE) {
+            if (iconRadioGroup.getCheckedRadioButtonId() == R.id.radio_button_icon_speaker) {
+                detailAd.setStickerId(STICKER_SPEAKER);
+            } else if (iconRadioGroup.getCheckedRadioButtonId() == R.id.radio_button_icon_thumbs_up) {
+                detailAd.setStickerId(STICKER_THUMBS_UP);
+            } else if (iconRadioGroup.getCheckedRadioButtonId() == R.id.radio_button_icon_fire) {
+                detailAd.setStickerId(STICKER_FIRE);
+            }
+        }
     }
 
     protected void showLoading() {
