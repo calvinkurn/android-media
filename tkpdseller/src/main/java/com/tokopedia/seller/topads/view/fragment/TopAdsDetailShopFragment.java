@@ -32,10 +32,11 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
     private MenuItem deleteMenuItem;
     private ShopAd ad;
 
-    public static Fragment createInstance(ShopAd shopAd) {
+    public static Fragment createInstance(ShopAd shopAd, int adId) {
         Fragment fragment = new TopAdsDetailShopFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, shopAd);
+        bundle.putInt(TopAdsExtraConstant.EXTRA_AD_ID, adId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -81,7 +82,11 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
 
     @Override
     protected void refreshAd() {
-        presenter.refreshAd(startDate, endDate, ad.getId());
+        if (ad != null) {
+            presenter.refreshAd(startDate, endDate, ad.getId());
+        } else {
+            presenter.refreshAd(startDate, endDate, adId);
+        }
     }
 
     @Override
@@ -92,11 +97,6 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, String.valueOf(ad.getId()));
             startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
         }
-    }
-
-    @Override
-    protected void deleteAd() {
-        super.deleteAd();
     }
 
     @Override

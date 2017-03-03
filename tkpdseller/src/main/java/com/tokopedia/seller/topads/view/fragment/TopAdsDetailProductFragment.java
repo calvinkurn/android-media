@@ -45,10 +45,11 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     private TopAdsDetailProductFragmentListener listener;
     private MenuItem manageGroupMenuItem;
 
-    public static Fragment createInstance(ProductAd productAd) {
+    public static Fragment createInstance(ProductAd productAd, int adId) {
         Fragment fragment = new TopAdsDetailProductFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, productAd);
+        bundle.putInt(TopAdsExtraConstant.EXTRA_AD_ID, adId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -107,7 +108,11 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
 
     @Override
     protected void refreshAd() {
-        presenter.refreshAd(startDate, endDate, productAd.getId());
+        if (productAd != null) {
+            presenter.refreshAd(startDate, endDate, productAd.getId());
+        } else {
+            presenter.refreshAd(startDate, endDate, adId);
+        }
     }
 
     @Override
@@ -172,7 +177,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     void onPromoGroupClicked() {
         if (isHasGroupAd()) {
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
-            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID_GROUP, productAd.getGroupId());
+            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, productAd.getGroupId());
             startActivity(intent);
         }
     }

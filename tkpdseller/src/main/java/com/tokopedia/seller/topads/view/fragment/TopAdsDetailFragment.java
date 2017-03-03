@@ -54,9 +54,11 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     protected TopAdsLabelView favorite;
 
     private SwipeToRefresh swipeToRefresh;
-    protected Ad adFromIntent;
     protected ProgressDialog progressDialog;
     private SnackbarRetry snackbarRetry;
+
+    protected Ad adFromIntent;
+    protected int adId;
 
     protected abstract void refreshAd();
 
@@ -103,6 +105,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     protected void setupArguments(Bundle bundle) {
         super.setupArguments(bundle);
         adFromIntent = bundle.getParcelable(TopAdsExtraConstant.EXTRA_AD);
+        adId = bundle.getInt(TopAdsExtraConstant.EXTRA_AD_ID);
     }
 
     @Override
