@@ -33,8 +33,6 @@ import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
 public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDetailProductPresenter> {
 
-    public static final int EDIT_PRODUCT_GROUP_REQUEST_CODE = 1;
-
     public interface TopAdsDetailProductFragmentListener {
         void goToProductActivity(String productUrl);
     }
@@ -121,11 +119,11 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
             Intent intent = TopAdsGroupEditPromoActivity.createIntent(getActivity(),
                     String.valueOf(productAd.getId()), TopAdsGroupEditPromoFragment.EXIST_GROUP, productAd.getGroupName(),
                     String.valueOf(productAd.getGroupId()));
-            startActivityForResult(intent, EDIT_PRODUCT_GROUP_REQUEST_CODE);
+            startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
         } else if (productAd != null) {
             Intent intent = new Intent(getActivity(), TopAdsDetailEditProductActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, String.valueOf(productAd.getId()));
-            startActivityForResult(intent, EDIT_PRODUCT_GROUP_REQUEST_CODE);
+            startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
         }
     }
 
@@ -194,6 +192,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         int itemId = item.getItemId();
         if (itemId == R.id.menu_manage_group) {
             manageGroup();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -201,19 +200,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     private void manageGroup() {
         Intent intent = TopAdsGroupManagePromoActivity.createIntent(getActivity(), String.valueOf(productAd.getId()),
                 TopAdsGroupManagePromoFragment.NEW_GROUP, productAd.getGroupName(), String.valueOf(productAd.getGroupId()));
-        startActivityForResult(intent, EDIT_PRODUCT_GROUP_REQUEST_CODE);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == EDIT_PRODUCT_GROUP_REQUEST_CODE && intent != null) {
-            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, false);
-            if (adStatusChanged) {
-                refreshAd();
-                setResultAdStatusChanged();
-            }
-        }
+        startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }
 
     private void updateManageGroupMenu() {

@@ -100,7 +100,7 @@ public abstract class TopAdsBaseGroupEditPromoFragment extends TopAdsBaseManageG
 
     void finishAndSetResult() {
         Intent intent = new Intent();
-        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, true);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }

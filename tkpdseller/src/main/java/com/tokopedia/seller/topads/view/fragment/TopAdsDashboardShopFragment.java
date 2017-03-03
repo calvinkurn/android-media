@@ -10,7 +10,6 @@ import android.widget.Button;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.domain.model.data.ShopAd;
-import com.tokopedia.seller.topads.view.activity.TopAdsDetailEditShopActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailNewShopActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailShopActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsStatisticShopActivity;
@@ -95,7 +94,7 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
         super.onActivityResult(requestCode, resultCode, intent);
         // check if the request code is the same
         if (requestCode == REQUEST_CODE_AD_STATUS && intent != null) {
-            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, false);
+            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
             if (adStatusChanged) {
                 populateShop();
             }
