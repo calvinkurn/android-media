@@ -2,6 +2,7 @@ package com.tokopedia.core.inboxreputation.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -12,6 +13,10 @@ import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.share.ShareApi;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareHashtag;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
@@ -26,11 +31,10 @@ import com.tokopedia.core.inboxreputation.interactor.CacheInboxReputationInterac
 import com.tokopedia.core.inboxreputation.interactor.CacheInboxReputationInteractorImpl;
 import com.tokopedia.core.inboxreputation.listener.InboxReputationFormView;
 import com.tokopedia.core.inboxreputation.model.ImageUpload;
+import com.tokopedia.core.inboxreputation.model.inboxreputationdetail.InboxReputationDetailItem;
 import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.var.FacebookContainer;
-
-import java.util.Set;
 
 /**
  * Created by Nisie on 2/9/16.
@@ -216,6 +220,52 @@ public class InboxReputationFormFragmentPresenterImpl
         });
     }
 
+    @Override
+    public void prepareDialogShareFb(InboxReputationFormFragment fragment, ShareDialog shareDialog, CallbackManager callbackManager, InboxReputationDetailItem inboxReputationDetail, String stringDomain, String contentDescription, final Intent intent) {
+        final ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                .setContentTitle(inboxReputationDetail.getProductName())
+                .setImageUrl(Uri.parse(inboxReputationDetail.getProductImageUrl()))
+                .setContentUrl(Uri.parse(stringDomain+inboxReputationDetail.getProductUri()))
+                .setContentDescription(contentDescription)
+                .setShareHashtag(new ShareHashtag.Builder().setHashtag("#DimulaiDariTokopedia").build())
+                .build();
+        LoginManager.getInstance().logInWithPublishPermissions(fragment, FacebookContainer.writePermissions);
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(final LoginResult loginResult) {
+
+                ShareApi.share(linkContent, new FacebookCallback<Sharer.Result>() {
+                    @Override
+                    public void onSuccess(Sharer.Result result) {
+                        viewListener.onSuccessSharingFacebook(intent);
+                    }
+                    @Override
+                    public void onCancel() {
+                        viewListener.onCancelSharingFacebook(intent);
+                    }
+                    @Override
+                    public void onError(FacebookException error) {
+                        Log.i("facebook", "onError: "+error);
+                        viewListener.onErrorSharingFacebook(intent);
+                    }
+                });
+            }
+
+            @Override
+            public void onCancel() {
+                LoginManager.getInstance().logOut();
+                viewListener.onCancelSharingFacebook(intent);
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+                if(e instanceof FacebookAuthorizationException){
+                    LoginManager.getInstance().logOut();
+                }
+                viewListener.onErrorSharingFacebook(intent);
+            }
+        });
+    }
 
 
     private boolean isValidForm() {

@@ -58,4 +58,10 @@ public interface InboxReputationFormView {
     void onFailedEditReview(Bundle resultData);
 
     void showDialogShareFb(Intent intent);
+
+    void onSuccessSharingFacebook(Intent intent);
+
+    void onErrorSharingFacebook(Intent intent);
+
+    void onCancelSharingFacebook(Intent intent);
 }

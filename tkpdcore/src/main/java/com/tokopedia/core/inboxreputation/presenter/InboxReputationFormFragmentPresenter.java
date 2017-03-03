@@ -3,8 +3,10 @@ package com.tokopedia.core.inboxreputation.presenter;
 import android.content.Intent;
 
 import com.facebook.CallbackManager;
+import com.facebook.share.widget.ShareDialog;
 import com.tokopedia.core.inboxreputation.fragment.InboxReputationFormFragment;
 import com.tokopedia.core.inboxreputation.model.ImageUpload;
+import com.tokopedia.core.inboxreputation.model.inboxreputationdetail.InboxReputationDetailItem;
 import com.tokopedia.core.inboxreputation.model.param.ActReviewPass;
 
 /**
@@ -35,4 +37,6 @@ public interface InboxReputationFormFragmentPresenter {
     void openCamera();
 
     void doFacebookLogin(InboxReputationFormFragment inboxReputationFormFragment, CallbackManager callbackManager);
+
+    void prepareDialogShareFb(InboxReputationFormFragment fragment, ShareDialog shareDialog, CallbackManager callbackManager, InboxReputationDetailItem inboxReputationDetail, String stringDomain, String contentDescription, Intent intent);
 }
