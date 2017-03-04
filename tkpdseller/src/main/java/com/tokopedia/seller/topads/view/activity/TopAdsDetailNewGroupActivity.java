@@ -29,9 +29,9 @@ public class TopAdsDetailNewGroupActivity extends TActivity {
     }
 
     public static void startEditExistingGroup(Activity activity, int requestCode,
-                                              int groupId, String groupName){
+                                              String groupId, String groupName){
         Intent intent = new Intent(activity, TopAdsDetailNewGroupActivity.class);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_GROUP_ID, groupId);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, groupId);
         intent.putExtra(TopAdsExtraConstant.EXTRA_GROUP_NAME, groupName);
         activity.startActivityForResult(intent, requestCode);
     }
@@ -40,14 +40,14 @@ public class TopAdsDetailNewGroupActivity extends TActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_top_ads_edit_promo);
-        String groupName = null;
-        int groupId = 0;
+        String name = null;
+        String adId = null;
         if (getIntent() != null && getIntent().getExtras() != null) {
-            groupName = getIntent().getExtras().getString(TopAdsExtraConstant.EXTRA_GROUP_NAME);
-            groupId = getIntent().getExtras().getInt(TopAdsExtraConstant.EXTRA_GROUP_ID);
+            name = getIntent().getExtras().getString(TopAdsExtraConstant.EXTRA_NAME);
+            adId = getIntent().getExtras().getString(TopAdsExtraConstant.EXTRA_AD_ID);
         }
         getFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.container, TopAdsDetailNewGroupFragment.createInstance(groupName, groupId), TopAdsDetailEditShopFragment.class.getSimpleName())
+                .replace(R.id.container, TopAdsDetailNewGroupFragment.createInstance(name, adId), TopAdsDetailEditShopFragment.class.getSimpleName())
                 .commit();
     }
 

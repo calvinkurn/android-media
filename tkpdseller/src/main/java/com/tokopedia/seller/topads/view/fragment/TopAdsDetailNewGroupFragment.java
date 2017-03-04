@@ -23,26 +23,15 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewGroupPresenter;
  */
 
 public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAdsDetailNewGroupPresenter>
-    implements TopAdsDetailNewGroupView {
+        implements TopAdsDetailNewGroupView {
 
-    private EditText mGroupNameEditText;
-    private String mGroupName;
-    private int mGroupId;
-
-    public static Fragment createInstance(String groupName, int groupId) {
+    public static Fragment createInstance(String groupName, String groupId) {
         Fragment fragment = new TopAdsDetailNewGroupFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(TopAdsExtraConstant.EXTRA_GROUP_NAME, groupName);
-        bundle.putInt(TopAdsExtraConstant.EXTRA_GROUP_ID, groupId);
+        bundle.putString(TopAdsExtraConstant.EXTRA_NAME, groupName);
+        bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, groupId);
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    @Override
-    protected void setupArguments(Bundle bundle) {
-        super.setupArguments(bundle);
-        mGroupName = bundle.getString(TopAdsExtraConstant.EXTRA_GROUP_NAME);
-        mGroupId = bundle.getInt(TopAdsExtraConstant.EXTRA_GROUP_ID);
     }
 
     @Override
@@ -60,61 +49,18 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
         super.initView(view);
         nameEditText.setEnabled(false);
         nameInputLayout.setHint(getString(R.string.label_top_ads_group_name));
-        setHintToGroup(view);
-        checkToHideViews(view);
-
-        initDetailAd();
-    }
-
-    /**
-     * change hint of the view to "Nama group".
-     */
-    private void setHintToGroup (View view){
-        TextInputLayout textInputLayout = (TextInputLayout) view.findViewById(R.id.input_layout_name);
-        mGroupNameEditText = (EditText) textInputLayout.findViewById(R.id.edit_text_name);
-        mGroupNameEditText.setHint(R.string.label_top_ads_group_name);
-        textInputLayout.setHint(getString( R.string.label_top_ads_group_name) );
-        mGroupNameEditText.setText(mGroupName);
-    }
-
-    /**
-     * detail Ad (object at the parent) needs to initialize to store the selection
-     */
-    private void initDetailAd(){
-        if (detailAd == null) {
-            detailAd = new TopAdsDetailGroupViewModel();
-        }
-    }
-
-    /**
-     * if the group Id member is not 0, means we want to edit the product in the existing group,
-     * hide the selection
-     * @param view root view to find the object to show/hide
-     */
-    private void checkToHideViews(View view){
-        if (mGroupId == 0) {
-
-        }
-        else {
-//            view.findViewById(R.id.linear_partial_top_ads_edit_ad).setVisibility(View.GONE);
-        }
+        detailAd = new TopAdsDetailGroupViewModel();
     }
 
     @Override
     protected void loadAdDetail() {
-        presenter.getDetailAd(String.valueOf(mGroupId));
+        presenter.getDetailAd(adId);
     }
 
     @Override
     protected void saveAd() {
-        if (mGroupId == 0) { // create group
-            super.populateDataFromFields();
-            presenter.saveAdNew(mGroupName, (TopAdsDetailGroupViewModel)detailAd, topAdsProductList);
-        }
-        else {
-            presenter.saveAdExisting(mGroupId, topAdsProductList);
-        }
-
+        super.saveAd();
+        presenter.saveAdNew(name, (TopAdsDetailGroupViewModel) detailAd, topAdsProductList);
     }
 
     @Override
@@ -135,8 +81,7 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
     public void showLoading(boolean isShown) {
         if (isShown) {
             super.showLoading();
-        }
-        else {
+        } else {
             super.hideLoading();
         }
     }

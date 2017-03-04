@@ -40,6 +40,12 @@ public class TopAdsDetailEditGroupFragment extends TopAdsDetailEditFragment<TopA
     }
 
     @Override
+    protected void loadAdDetail() {
+        super.loadAdDetail();
+        presenter.getDetailAd(adId);
+    }
+
+    @Override
     protected void loadAd(TopAdsDetailAdViewModel detailAd) {
         super.loadAd(detailAd);
         nameEditText.setText(detailAd.getTitle());
