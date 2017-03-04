@@ -13,10 +13,10 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditShopPresenter;
 
 public class TopAdsDetailEditShopFragment extends TopAdsDetailEditFragment<TopAdsDetailEditShopPresenter> {
 
-    public static Fragment createInstance(String shopName, String shopAdId) {
+    public static Fragment createInstance(String name, String shopAdId) {
         Fragment fragment = new TopAdsDetailEditShopFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(TopAdsExtraConstant.EXTRA_NAME, shopName);
+        bundle.putString(TopAdsExtraConstant.EXTRA_NAME, name);
         bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, shopAdId);
         fragment.setArguments(bundle);
         return fragment;

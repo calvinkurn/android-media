@@ -24,7 +24,7 @@ import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
 public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetailGroupPresenter> {
 
-    TopAdsLabelView items;
+    private TopAdsLabelView items;
 
     private GroupAd ad;
 
@@ -86,6 +86,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
     @Override
     protected void editAd() {
         Intent intent = new Intent(getActivity(), TopAdsDetailEditGroupActivity.class);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_NAME, ad.getName());
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, String.valueOf(ad.getId()));
         startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }
