@@ -34,7 +34,7 @@ public class TopAdsGroupEditPromoActivity extends TActivity {
     }
 
     public static Intent createIntent(Context context, String adId, int choosenOption,
-                                      String groupName, int groupId){
+                                      String groupName, int groupId) {
         Intent intent = new Intent(context, TopAdsGroupEditPromoActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, adId);
         intent.putExtra(TopAdsExtraConstant.EXTRA_CHOOSEN_OPTION_GROUP, choosenOption);

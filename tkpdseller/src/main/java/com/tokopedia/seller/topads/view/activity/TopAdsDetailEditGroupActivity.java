@@ -23,7 +23,7 @@ public class TopAdsDetailEditGroupActivity extends TActivity {
             adId = getIntent().getExtras().getString(TopAdsExtraConstant.EXTRA_AD_ID);
         }
         getFragmentManager().beginTransaction().disallowAddToBackStack()
-                .add(R.id.container, TopAdsDetailEditGroupFragment.createInstance(adId), TopAdsDetailNewGroupFragment.class.getSimpleName())
+                .replace(R.id.container, TopAdsDetailEditGroupFragment.createInstance(adId), TopAdsDetailNewGroupFragment.class.getSimpleName())
                 .commit();
     }
 

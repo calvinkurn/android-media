@@ -18,7 +18,7 @@ public class TopAdsDetailNewProductActivity extends TActivity {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_top_ads_edit_promo);
         getFragmentManager().beginTransaction().disallowAddToBackStack()
-                .add(R.id.container, TopAdsDetailNewProductFragment.createInstance(), TopAdsDetailEditProductFragment.class.getSimpleName())
+                .replace(R.id.container, TopAdsDetailNewProductFragment.createInstance(), TopAdsDetailEditProductFragment.class.getSimpleName())
                 .commit();
     }
 
