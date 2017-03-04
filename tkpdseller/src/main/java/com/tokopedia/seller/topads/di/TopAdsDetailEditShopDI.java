@@ -14,8 +14,6 @@ import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailShopUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailShopUseCase;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditShopPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditShopPresenterImpl;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewShopPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewShopPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 2/21/17.

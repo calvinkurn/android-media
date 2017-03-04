@@ -6,12 +6,19 @@ import android.view.View;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.di.TopAdsDetailEditGroupDI;
 import com.tokopedia.seller.topads.di.TopAdsDetailEditShopDI;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
+import com.tokopedia.seller.topads.view.model.TopAdsDetailGroupViewModel;
+import com.tokopedia.seller.topads.view.model.TopAdsDetailProductViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
+import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditGroupPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditShopPresenter;
 
-public class TopAdsDetailEditGroupFragment extends TopAdsDetailEditFragment<TopAdsDetailEditShopPresenter> {
+import java.util.ArrayList;
+
+public class TopAdsDetailEditGroupFragment extends TopAdsDetailEditFragment<TopAdsDetailEditGroupPresenter> {
 
     public static Fragment createInstance(String name, String adId) {
         Fragment fragment = new TopAdsDetailEditGroupFragment();
@@ -35,7 +42,7 @@ public class TopAdsDetailEditGroupFragment extends TopAdsDetailEditFragment<TopA
 
     @Override
     protected void initialPresenter() {
-        presenter = TopAdsDetailEditShopDI.createPresenter(getActivity());
+        presenter = TopAdsDetailEditGroupDI.createPresenter(getActivity());
         presenter.attachView(this);
     }
 
@@ -54,6 +61,6 @@ public class TopAdsDetailEditGroupFragment extends TopAdsDetailEditFragment<TopA
     @Override
     protected void saveAd() {
         super.saveAd();
-        presenter.saveAd((TopAdsDetailShopViewModel) detailAd);
+        presenter.saveAd((TopAdsDetailGroupViewModel) detailAd, new ArrayList<TopAdsProductViewModel>());
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
  * Created by Nathan on 5/9/16.
  */
 public interface TopAdsDetailEditGroupPresenter<T extends TopAdsDetailEditView> extends TopAdsDetailEditPresenter<T> {
-    void saveAd(int groupId,
-                TopAdsDetailGroupViewModel topAdsDetailProductViewModel,
-                List<TopAdsProductViewModel> topAdsProductViewModelList);
+
+    void saveAd(TopAdsDetailGroupViewModel topAdsDetailGroupViewModel, List<TopAdsProductViewModel> topAdsProductViewModelList);
+
 }

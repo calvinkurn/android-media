@@ -33,12 +33,8 @@ public class TopAdsDetailEditGroupPresenterImpl<T extends TopAdsDetailEditView> 
     }
 
     @Override
-    public void saveAd(int groupId,
-                       TopAdsDetailGroupViewModel topAdsDetailProductViewModel,
-                       List<TopAdsProductViewModel> topAdsProductViewModelList) {
-        topAdsSaveDetailGroupUseCase.execute(
-                TopAdsSaveDetailProductUseCase.createRequestParams(
-                        TopAdDetailProductMapper.convertViewToDomain(topAdsDetailProductViewModel)),
+    public void saveAd(TopAdsDetailGroupViewModel topAdsDetailGroupViewModel, List<TopAdsProductViewModel> topAdsProductViewModelList) {
+        topAdsSaveDetailGroupUseCase.execute(TopAdsSaveDetailProductUseCase.createRequestParams(TopAdDetailProductMapper.convertViewToDomain(topAdsDetailGroupViewModel)),
                 new Subscriber<TopAdsDetailGroupDomainModel>() {
                     @Override
                     public void onCompleted() {
@@ -65,8 +61,8 @@ public class TopAdsDetailEditGroupPresenterImpl<T extends TopAdsDetailEditView> 
     @Override
     public void getDetailAd(String adId) {
         topAdsGetDetailGroupUseCase.execute(
-                TopAdsGetDetailProductUseCase.createRequestParams(adId),
-                new Subscriber<TopAdsDetailProductDomainModel>() {
+                TopAdsGetDetailGroupUseCase.createRequestParams(adId),
+                new Subscriber<TopAdsDetailGroupDomainModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -78,7 +74,7 @@ public class TopAdsDetailEditGroupPresenterImpl<T extends TopAdsDetailEditView> 
                     }
 
                     @Override
-                    public void onNext(TopAdsDetailProductDomainModel domainModel) {
+                    public void onNext(TopAdsDetailGroupDomainModel domainModel) {
                         getView().onDetailAdLoaded(TopAdDetailProductMapper.convertDomainToView(domainModel));
                     }
                 });

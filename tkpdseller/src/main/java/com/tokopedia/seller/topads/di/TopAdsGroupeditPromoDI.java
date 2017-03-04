@@ -9,7 +9,7 @@ import com.tokopedia.seller.topads.data.factory.TopAdsGroupAdFactory;
 import com.tokopedia.seller.topads.data.factory.TopAdsProductAdFactory;
 import com.tokopedia.seller.topads.data.factory.TopAdsShopAdFactory;
 import com.tokopedia.seller.topads.data.mapper.TopAdsBulkActionMapper;
-import com.tokopedia.seller.topads.data.mapper.TopAdsCreateGroupMapper;
+import com.tokopedia.seller.topads.data.mapper.TopAdsDetailGroupMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsDetailProductMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsDetailShopMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsSearchGroupMapper;
@@ -27,8 +27,6 @@ import com.tokopedia.seller.topads.domain.interactor.TopAdsMoveProductGroupToExi
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
 import com.tokopedia.seller.topads.view.presenter.TopAdsGroupEditPromoPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsGroupEditPromoPresenterImpl;
-import com.tokopedia.seller.topads.view.presenter.TopAdsManageGroupPromoPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsManageGroupPromoPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 3/1/17.
@@ -46,12 +44,12 @@ public class TopAdsGroupeditPromoDI {
         TopAdsManagementApi topAdsManagementApi = topAdsManagementService.getApi();
 
         TopAdsSearchGroupMapper topAdsSearchGroupMapper = new TopAdsSearchGroupMapper();
-        TopAdsCreateGroupMapper topAdsCreateGroupMapper = new TopAdsCreateGroupMapper();
+        TopAdsDetailGroupMapper topAdsDetailGroupMapper = new TopAdsDetailGroupMapper();
         TopAdsDetailShopMapper topAdsDetailShopMapper = new TopAdsDetailShopMapper();
         TopAdsBulkActionMapper topAdsBulkActionMapper = new TopAdsBulkActionMapper();
         TopAdsDetailProductMapper topAdsDetailProductMapper = new TopAdsDetailProductMapper();
 
-        TopAdsGroupAdFactory topAdsGroupAdFactory = new TopAdsGroupAdFactory(context, topAdsManagementApi, topAdsSearchGroupMapper, topAdsCreateGroupMapper);
+        TopAdsGroupAdFactory topAdsGroupAdFactory = new TopAdsGroupAdFactory(context, topAdsManagementApi, topAdsSearchGroupMapper, topAdsDetailGroupMapper);
         TopAdsShopAdFactory topAdsShopAdFactory = new TopAdsShopAdFactory(context, topAdsManagementApi, topAdsDetailShopMapper);
         TopAdsProductAdFactory topAdsProductAdFactory = new TopAdsProductAdFactory(context, topAdsManagementApi, topAdsDetailProductMapper, topAdsBulkActionMapper);
 

@@ -14,7 +14,7 @@ import rx.functions.Func1;
  * Created by zulfikarrahman on 2/28/17.
  */
 
-public class TopAdsCreateGroupMapper implements Func1<Response<DataResponse<DataResponseCreateGroup>>, DataResponseCreateGroup> {
+public class TopAdsDetailGroupMapper implements Func1<Response<DataResponse<DataResponseCreateGroup>>, DataResponseCreateGroup> {
     @Override
     public DataResponseCreateGroup call(Response<DataResponse<DataResponseCreateGroup>> dataResponseResponse) {
         return mappingResponse(dataResponseResponse);

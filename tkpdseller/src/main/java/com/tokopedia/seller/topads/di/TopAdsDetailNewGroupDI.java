@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.seller.topads.data.factory.TopAdsGroupAdFactory;
-import com.tokopedia.seller.topads.data.mapper.TopAdsCreateGroupMapper;
+import com.tokopedia.seller.topads.data.mapper.TopAdsDetailGroupMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsSearchGroupMapper;
 import com.tokopedia.seller.topads.data.repository.TopAdsGroupAdsRepositoryImpl;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
@@ -32,9 +32,9 @@ public class TopAdsDetailNewGroupDI {
         TopAdsManagementApi topAdsManagementApi = topAdsManagementService.getApi();
 
         TopAdsSearchGroupMapper topAdsSearchGroupMapper = new TopAdsSearchGroupMapper();
-        TopAdsCreateGroupMapper topAdsCreateGroupMapper = new TopAdsCreateGroupMapper();
+        TopAdsDetailGroupMapper topAdsDetailGroupMapper = new TopAdsDetailGroupMapper();
 
-        TopAdsGroupAdFactory topAdsGroupAdFactory = new TopAdsGroupAdFactory(context, topAdsManagementApi, topAdsSearchGroupMapper, topAdsCreateGroupMapper);
+        TopAdsGroupAdFactory topAdsGroupAdFactory = new TopAdsGroupAdFactory(context, topAdsManagementApi, topAdsSearchGroupMapper, topAdsDetailGroupMapper);
 
         TopAdsGroupAdsRepository topAdsGroupAdsRepository = new TopAdsGroupAdsRepositoryImpl(topAdsGroupAdFactory);
 

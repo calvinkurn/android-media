@@ -8,6 +8,7 @@ import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.domain.TopAdsGroupAdsRepository;
 import com.tokopedia.seller.topads.domain.TopAdsProductAdsRepository;
 import com.tokopedia.seller.topads.domain.TopAdsShopAdsRepository;
+import com.tokopedia.seller.topads.domain.model.TopAdsDetailGroupDomainModel;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailShopDomainModel;
 
@@ -16,7 +17,7 @@ import rx.Observable;
 /**
  * Created by zulfikarrahman on 2/20/17.
  */
-public class TopAdsGetDetailGroupUseCase extends UseCase<TopAdsDetailProductDomainModel> {
+public class TopAdsGetDetailGroupUseCase extends UseCase<TopAdsDetailGroupDomainModel> {
 
     private final TopAdsGroupAdsRepository topAdsGroupAdsRepository;
 
@@ -28,7 +29,7 @@ public class TopAdsGetDetailGroupUseCase extends UseCase<TopAdsDetailProductDoma
     }
 
     @Override
-    public Observable<TopAdsDetailProductDomainModel> createObservable(RequestParams requestParams) {
+    public Observable<TopAdsDetailGroupDomainModel> createObservable(RequestParams requestParams) {
         //return null
         // TODO
         return null;
