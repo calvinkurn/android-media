@@ -27,4 +27,6 @@ public interface Constants {
     String EXTRA_UNREAD = "unread";
     String EXTRA_APPLINK_CATEGORY = "applink_category";
     int ARG_NOTIFICATION_APPLINK_MESSAGE_ID = 1001;
+
+    String ACTION_BC_RESET_APPLINK = "com.tokopedia.tkpd.APPLINK_ACTION";
 }

@@ -7,11 +7,13 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.tkpd.deeplink.DeepLinkReceiver;
+import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -31,6 +33,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication {
 
         IntentFilter intentFilter = new IntentFilter(DeepLinkHandler.ACTION);
         LocalBroadcastManager.getInstance(this).registerReceiver(new DeepLinkReceiver(), intentFilter);
+        IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
+        LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
     }
 
     private void generateConsumerAppBaseUrl() {

@@ -18,11 +18,9 @@ import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerEdit
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerNotification;
 import com.tokopedia.core.gcm.notification.promotions.DeeplinkNotification;
 import com.tokopedia.core.gcm.utils.GCMUtils;
-import com.tokopedia.core.review.var.Const;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
-import com.tokopedia.seller.deeplink.SellerDeeplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.ConsumerDeeplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -73,15 +71,19 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         data.map(new Func1<Bundle, Boolean>() {
             @Override
             public Boolean call(Bundle bundle) {
-                //TODO this function for divide the new and old flow(that still supported)
-                // next if complete new plz to delete
-                if (isSupportedApplinkNotification(bundle)) {
-                    handleApplinkNotification(bundle);
-                } else {
-                    if (isDedicatedNotification(bundle)) {
-                        handleDedicatedNotification(bundle);
+                if (isAllowedNotification(bundle))
+                {
+                    mFCMCacheManager.setCache();
+                    //TODO this function for divide the new and old flow(that still supported)
+                    // next if complete new plz to delete
+                    if (isSupportedApplinkNotification(bundle)) {
+                        handleApplinkNotification(bundle);
                     } else {
-                        prepareAndExecutePromoNotification(bundle);
+                        if (isDedicatedNotification(bundle)) {
+                            handleDedicatedNotification(bundle);
+                        } else {
+                            prepareAndExecutePromoNotification(bundle);
+                        }
                     }
                 }
                 return true;
@@ -94,6 +96,14 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                         throwable.printStackTrace();
                     }
                 });
+    }
+
+    private boolean isAllowedNotification(Bundle data) {
+        return mFCMCacheManager.isAllowToHandleNotif(data)
+                && mFCMCacheManager.checkLocalNotificationAppSettings(
+                Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE)
+                )
+        );
     }
 
     private void handleApplinkNotification(Bundle data) {
@@ -186,9 +196,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         DeepLinkDelegate deepLinkDelegate = new DeepLinkDelegate(
                 new ConsumerDeeplinkModuleLoader(),
                 new CoreDeeplinkModuleLoader(),
-                new TransactionDeeplinkModuleLoader(),
-                new InboxDeeplinkModuleLoader(),
-                new SellerDeeplinkModuleLoader()
+                new InboxDeeplinkModuleLoader()
         );
         return deepLinkDelegate.supportsUri(applink);
     }
@@ -224,7 +232,6 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_NEW_ORDER, PurchaseNewOrderNotification.class);
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED_SHIPPING, PurchaseRejectedShippingNotification.class);
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_CONFIRM_SHIPPING, PurchaseShippedNotification.class);
-
 
         Class<?> clazz = dedicatedNotification.get(GCMUtils.getCode(data));
         if (clazz != null) {

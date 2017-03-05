@@ -89,9 +89,13 @@ public class BuildAndShowNotification {
                 mBuilder.setVibrate(getVibratePattern());
             }
         }
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
-        stackBuilder.addNextIntent(applinkNotificationPass.getIntent());
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(
+                mContext,
+                applinkNotificationPass.getNotificationId(),
+                applinkNotificationPass.getIntent(),
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
         mBuilder.setContentIntent(resultPendingIntent);
 
         downloadImageAndShowNotification(applinkNotificationPass, mBuilder);
