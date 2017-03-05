@@ -15,10 +15,12 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.cart.compoundview.CheckoutHolderView;
@@ -54,6 +56,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @BindView(R2.id.nsv_container)
     NestedScrollView mainContainer;
 
+    private SessionHandler sessionHandler;
+
     public static Fragment newInstance(Parcelable passData) {
         CartDigitalFragment cartDigitalFragment = new CartDigitalFragment();
         Bundle bundle = new Bundle();
@@ -70,7 +74,9 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     protected void onFirstTimeLaunched() {
         //   presenter.processAddToCart(passData);
-        presenter.processGetCartData(passData.getCategoryId());
+        sessionHandler = new SessionHandler(getActivity());
+        //   presenter.processGetCartData(passData.getCategoryId());
+        presenter.processAddToCart(passData);
     }
 
     @Override
@@ -232,6 +238,26 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             getActivity().finish();
         }
+    }
+
+    @Override
+    public String getDeviceId() {
+        return GCMHandler.getRegistrationId(getActivity());
+    }
+
+    @Override
+    public String getUserId() {
+        return sessionHandler.getLoginID();
+    }
+
+    @Override
+    public String getAccountToken() {
+        return sessionHandler.getAccessToken(getActivity());
+    }
+
+    @Override
+    public String getWalletRefreshToken() {
+        return sessionHandler.getWalletRefreshToken(getActivity());
     }
 
     @Override

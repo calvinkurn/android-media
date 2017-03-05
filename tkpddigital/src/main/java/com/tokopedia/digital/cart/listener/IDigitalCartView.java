@@ -12,4 +12,12 @@ public interface IDigitalCartView extends IBaseView {
     void renderLoadingGetCartInfo();
 
     void closeViewWithMessageAlert(String message);
+
+    String getDeviceId();
+
+    String getUserId();
+
+    String getAccountToken();
+
+    String getWalletRefreshToken();
 }

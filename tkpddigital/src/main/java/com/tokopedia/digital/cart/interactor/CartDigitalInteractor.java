@@ -1,6 +1,7 @@
 package com.tokopedia.digital.cart.interactor;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
 import com.tokopedia.digital.cart.domain.CartDigitalRepository;
 import com.tokopedia.digital.cart.domain.ICartDigitalRepository;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
@@ -32,9 +33,9 @@ public class CartDigitalInteractor implements ICartDigitalInteractor {
     }
 
     @Override
-    public void addToCart(TKPDMapParam<String, String> paramNetwork,
+    public void addToCart(RequestBodyAtcDigital requestBodyAtcDigital, String idemPotencyKeyHeader,
                           Subscriber<CartDigitalInfoData> subscriber) {
-        cartDigitalRepository.addToCart(paramNetwork)
+        cartDigitalRepository.addToCart(requestBodyAtcDigital, idemPotencyKeyHeader)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())

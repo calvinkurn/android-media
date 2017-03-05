@@ -19,6 +19,7 @@ public class DigitalCheckoutPassData implements Parcelable {
     private String utmMedium;
     private String utmCampaign;
     private String utmContent;
+    private String idemPotencyKey;
 
     private DigitalCheckoutPassData(Builder builder) {
         setAction(builder.action);
@@ -32,6 +33,7 @@ public class DigitalCheckoutPassData implements Parcelable {
         setUtmMedium(builder.utmMedium);
         setUtmCampaign(builder.utmCampaign);
         setUtmContent(builder.utmContent);
+        setIdemPotencyKey(builder.idemPotencyKey);
     }
 
     public String getAction() {
@@ -122,56 +124,16 @@ public class DigitalCheckoutPassData implements Parcelable {
         this.utmContent = utmContent;
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getIdemPotencyKey() {
+        return idemPotencyKey;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.action);
-        dest.writeString(this.categoryId);
-        dest.writeString(this.clientNumber);
-        dest.writeString(this.productId);
-        dest.writeString(this.operatorId);
-        dest.writeString(this.isPromo);
-        dest.writeString(this.instantCheckout);
-        dest.writeString(this.utmSource);
-        dest.writeString(this.utmMedium);
-        dest.writeString(this.utmCampaign);
-        dest.writeString(this.utmContent);
+    public void setIdemPotencyKey(String idemPotencyKey) {
+        this.idemPotencyKey = idemPotencyKey;
     }
 
     public DigitalCheckoutPassData() {
     }
-
-    protected DigitalCheckoutPassData(Parcel in) {
-        this.action = in.readString();
-        this.categoryId = in.readString();
-        this.clientNumber = in.readString();
-        this.productId = in.readString();
-        this.operatorId = in.readString();
-        this.isPromo = in.readString();
-        this.instantCheckout = in.readString();
-        this.utmSource = in.readString();
-        this.utmMedium = in.readString();
-        this.utmCampaign = in.readString();
-        this.utmContent = in.readString();
-    }
-
-    public static final Creator<DigitalCheckoutPassData> CREATOR =
-            new Creator<DigitalCheckoutPassData>() {
-                @Override
-                public DigitalCheckoutPassData createFromParcel(Parcel source) {
-                    return new DigitalCheckoutPassData(source);
-                }
-
-                @Override
-                public DigitalCheckoutPassData[] newArray(int size) {
-                    return new DigitalCheckoutPassData[size];
-                }
-            };
 
     public static final class Builder {
         private String action;
@@ -185,6 +147,7 @@ public class DigitalCheckoutPassData implements Parcelable {
         private String utmMedium;
         private String utmCampaign;
         private String utmContent;
+        private String idemPotencyKey;
 
         public Builder() {
         }
@@ -244,8 +207,61 @@ public class DigitalCheckoutPassData implements Parcelable {
             return this;
         }
 
+        public Builder idemPotencyKey(String val) {
+            idemPotencyKey = val;
+            return this;
+        }
+
         public DigitalCheckoutPassData build() {
             return new DigitalCheckoutPassData(this);
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.action);
+        dest.writeString(this.categoryId);
+        dest.writeString(this.clientNumber);
+        dest.writeString(this.productId);
+        dest.writeString(this.operatorId);
+        dest.writeString(this.isPromo);
+        dest.writeString(this.instantCheckout);
+        dest.writeString(this.utmSource);
+        dest.writeString(this.utmMedium);
+        dest.writeString(this.utmCampaign);
+        dest.writeString(this.utmContent);
+        dest.writeString(this.idemPotencyKey);
+    }
+
+    protected DigitalCheckoutPassData(Parcel in) {
+        this.action = in.readString();
+        this.categoryId = in.readString();
+        this.clientNumber = in.readString();
+        this.productId = in.readString();
+        this.operatorId = in.readString();
+        this.isPromo = in.readString();
+        this.instantCheckout = in.readString();
+        this.utmSource = in.readString();
+        this.utmMedium = in.readString();
+        this.utmCampaign = in.readString();
+        this.utmContent = in.readString();
+        this.idemPotencyKey = in.readString();
+    }
+
+    public static final Creator<DigitalCheckoutPassData> CREATOR = new Creator<DigitalCheckoutPassData>() {
+        @Override
+        public DigitalCheckoutPassData createFromParcel(Parcel source) {
+            return new DigitalCheckoutPassData(source);
+        }
+
+        @Override
+        public DigitalCheckoutPassData[] newArray(int size) {
+            return new DigitalCheckoutPassData[size];
+        }
+    };
 }

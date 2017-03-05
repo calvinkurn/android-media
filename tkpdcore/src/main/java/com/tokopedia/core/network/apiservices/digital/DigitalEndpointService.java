@@ -2,10 +2,15 @@ package com.tokopedia.core.network.apiservices.digital;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.coverters.DigitalResponseConverter;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthInterceptor;
 import com.tokopedia.core.network.retrofit.services.EndpointService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import okhttp3.OkHttpClient;
+import retrofit2.CallAdapter;
+import retrofit2.Converter;
 import retrofit2.Retrofit;
 
 /**
@@ -18,18 +23,23 @@ public class DigitalEndpointService extends EndpointService<DigitalApi> {
     }
 
     @Override
-    protected void setupAdditionalCallAdapterFactory(Retrofit.Builder retrofit) {
-
+    protected List<CallAdapter.Factory> getAdditionalCallAdapterFactoryList(
+            ArrayList<CallAdapter.Factory> adapterFactoryList
+    ) {
+        return adapterFactoryList;
     }
 
     @Override
-    protected void setupAdditionalConverterFactory(Retrofit.Builder retrofit) {
-        retrofit.addConverterFactory(DigitalResponseConverter.create());
+    protected List<Converter.Factory> getAdditionalConverterFactoryList(
+            ArrayList<Converter.Factory> converterFactoryList
+    ) {
+        converterFactoryList.add(DigitalResponseConverter.create());
+        return converterFactoryList;
     }
 
     @Override
     protected void setupAdditionalInterceptor(OkHttpClient.Builder client) {
-        client.addInterceptor(new TkpdAuthInterceptor(TkpdBaseURL.DigitalApi.HMAC_KEY));
+        client.addInterceptor(new DigitalHmacAuthInterceptor(TkpdBaseURL.DigitalApi.HMAC_KEY));
     }
 
     @Override

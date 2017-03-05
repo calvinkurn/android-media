@@ -1,14 +1,18 @@
 package com.tokopedia.core.network.apiservices.digital;
 
+import com.google.gson.JsonObject;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 
 import java.util.Map;
 
 import retrofit2.Response;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 import rx.Observable;
@@ -46,9 +50,13 @@ public interface DigitalApi {
     @GET(TkpdBaseURL.DigitalApi.PATH_GET_CART)
     Observable<Response<TkpdDigitalResponse>> getCart(@QueryMap Map<String, String> params);
 
-    @FormUrlEncoded
+    //    @FormUrlEncoded
     @POST(TkpdBaseURL.DigitalApi.PATH_GET_CART)
-    Observable<Response<TkpdDigitalResponse>> addToCart(@QueryMap Map<String, String> params);
+    @Headers({"Content-Type: application/json"})
+    Observable<Response<TkpdDigitalResponse>> addToCart(
+            @Body JsonObject requestBody,
+            @Header("Idempotency-Key") String idemPotencyKeyHeader
+    );
 
     @FormUrlEncoded
     @DELETE(TkpdBaseURL.DigitalApi.PATH_GET_CART)

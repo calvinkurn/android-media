@@ -889,6 +889,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 .utmContent(
                         bundle.getString(ARG_UTM_CONTENT, VersionInfo.getVersionInfo(getActivity()))
                 )
+                .idemPotencyKey(generateATokenRechargeCheckout())
                 .utmSource(bundle.getString(ARG_UTM_SOURCE, "android"))
                 .utmMedium(bundle.getString(ARG_UTM_MEDIUM, "widget"))
                 .build();
