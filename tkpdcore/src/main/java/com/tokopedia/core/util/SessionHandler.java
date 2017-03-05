@@ -57,16 +57,17 @@ public class SessionHandler {
     private static final String USER_AVATAR_URI = "USER_AVATAR_URI";
     private static final String SHOP_DOMAIN = "SHOP_DOMAIN";
     private static final String IS_FIRST_TIME_USER = "IS_FIRST_TIME";
-    public static final String SAVE_REAL = "SAVE_REAL";
-    public static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
-    public static final String DONT_REMIND_LATER = "DONT_REMIND_LATER";
-    public static final String PHONE_NUMBER = "PHONE_NUMBER";
-    public static final String TEMP_PHONE_NUMBER = "TEMP_PHONE_NUMBER";
-    public static final String TEMP_NAME = "TEMP_NAME";
+    private static final String SAVE_REAL = "SAVE_REAL";
+    private static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
+    private static final String DONT_REMIND_LATER = "DONT_REMIND_LATER";
+    private static final String PHONE_NUMBER = "PHONE_NUMBER";
+    private static final String TEMP_PHONE_NUMBER = "TEMP_PHONE_NUMBER";
+    private static final String TEMP_NAME = "TEMP_NAME";
     private static final String MSISDN_SESSION = "MSISDN_SESSION";
 
     private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     private static final String REFRESH_TOKEN = "REFRESH_TOKEN";
+    private static final String WALLET_REFRESH_TOKEN = "WALLET_REFRESH_TOKEN";
     private static final String TOKEN_TYPE = "TOKEN_TYPE";
     private static final String IS_FIRST_TIME_STORAGE = "IS_FIRST_TIME_STORAGE";
     private static final String LOGIN_UUID_KEY = "LOGIN_UUID";
@@ -105,7 +106,7 @@ public class SessionHandler {
         editor.putString(FULL_NAME, u_name);
         editor.putString(SHOP_ID, shop_id);
         editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
-        editor.commit();
+        editor.apply();
         TrackingUtils.eventPushUserID();
         Crashlytics.setUserIdentifier(u_id);
         //return status;
@@ -120,7 +121,7 @@ public class SessionHandler {
         editor.putString(FULL_NAME, u_name);
         editor.putString(SHOP_ID, shop_id);
         editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
-        editor.commit();
+        editor.apply();
         TrackingUtils.eventPushUserID();
         Crashlytics.setUserIdentifier(u_id);
         //return status;
@@ -131,12 +132,13 @@ public class SessionHandler {
      * @param isLogin flag to determine user is login or not
      * @param user_id valid user id
      */
+    @SuppressWarnings("unused")
     public static void setIsLogin(Context context, boolean isLogin, int user_id) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
         editor.putString(LOGIN_ID, user_id + "");
         editor.putBoolean(IS_LOGIN, isLogin);
-        editor.commit();
+        editor.apply();
         TrackingUtils.eventPushUserID();
     }
 
@@ -171,7 +173,7 @@ public class SessionHandler {
         editor.putString(SHOP_ID, null);
         editor.putBoolean(IS_LOGIN, false);
         editor.putBoolean(IS_MSISDN_VERIFIED, false);
-        editor.commit();
+        editor.apply();
         LocalCacheHandler.clearCache(context, MSISDN_SESSION);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_USER);
         LocalCacheHandler.clearCache(context, TkpdCache.NOTIFICATION_DATA);
@@ -189,7 +191,6 @@ public class SessionHandler {
         clearFeedCache();
 
     }
-
 
 
     private static void logoutInstagram(Context context) {
@@ -223,8 +224,8 @@ public class SessionHandler {
             webView.loadUrl("https://instagram.com/accounts/logout/");
             webView.setVisibility(View.GONE);
         }
-        if(context.getApplicationContext() instanceof TkpdCoreRouter){
-            ((TkpdCoreRouter)context.getApplicationContext()).removeInstopedToken();
+        if (context.getApplicationContext() instanceof TkpdCoreRouter) {
+            ((TkpdCoreRouter) context.getApplicationContext()).removeInstopedToken();
         }
     }
 
@@ -260,15 +261,15 @@ public class SessionHandler {
         String u_id;
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         u_id = sharedPrefs.getString(GTM_LOGIN_ID, "");
-        if(TextUtils.isEmpty(u_id)){
-            if(!TextUtils.isEmpty(SessionHandler.getLoginID(context))){
-                SessionHandler.setGTMLoginID(context,SessionHandler.getLoginID(context));
+        if (TextUtils.isEmpty(u_id)) {
+            if (!TextUtils.isEmpty(SessionHandler.getLoginID(context))) {
+                SessionHandler.setGTMLoginID(context, SessionHandler.getLoginID(context));
                 return SessionHandler.getLoginID(context);
-            }else{
+            } else {
                 return "";
             }
 
-        }else{
+        } else {
             return u_id;
         }
     }
@@ -311,11 +312,12 @@ public class SessionHandler {
         return u_name;
     }
 
+    @SuppressWarnings("unused")
     public void setLoginName(String u_name) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
         editor.putString(FULL_NAME, u_name);
-        editor.commit();
+        editor.apply();
     }
 
     public static String getLoginName(Context context) {
@@ -368,7 +370,6 @@ public class SessionHandler {
      * @param context Non Null context
      * @return always false
      */
-    @Deprecated
 //	public static Boolean isLogin (Context context) {
 //		String u_id = null;
 //		 SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
@@ -378,14 +379,14 @@ public class SessionHandler {
 ////		 }
 ////		 return true;
 //	}
-
     public static void setUserAvatarUri(Context context, String avatar_uri) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
         editor.putString(USER_AVATAR_URI, avatar_uri);
-        editor.commit();
+        editor.apply();
     }
 
+    @SuppressWarnings("unused")
     public static String getUserAvatarUri(Context context) {
         String avatar_uri = null;
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
@@ -396,13 +397,15 @@ public class SessionHandler {
         return avatar_uri;
     }
 
+    @SuppressWarnings("unused")
     public static void setGridPref(Context context, int Pref) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(STATE_BROWSE, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
         editor.putInt("STATE", Pref);
-        editor.commit();
+        editor.apply();
     }
 
+    @SuppressWarnings("unused")
     public static int getGridPref(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(STATE_BROWSE, Context.MODE_PRIVATE);
         return sharedPrefs.getInt("STATE", 1);
@@ -538,6 +541,13 @@ public class SessionHandler {
         editor.apply();
     }
 
+    public void setWalletRefreshToken(String walletRefreshToken) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        Editor editor = sharedPrefs.edit();
+        saveToSharedPref(editor, WALLET_REFRESH_TOKEN, walletRefreshToken);
+        editor.apply();
+    }
+
     private void saveToSharedPref(Editor editor, String key, String value) {
         if (value != null) {
             editor.putString(key, value);
@@ -547,6 +557,11 @@ public class SessionHandler {
     public String getAccessToken(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(ACCESS_TOKEN, "");
+    }
+
+    public String getWalletRefreshToken(Context context) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(WALLET_REFRESH_TOKEN, "");
     }
 
     public String getTokenType(Context context) {
@@ -561,14 +576,11 @@ public class SessionHandler {
 
     public static boolean isFirstTimeAskedPermissionStorage(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        boolean isFirst = sharedPrefs.getBoolean(IS_FIRST_TIME_STORAGE, true);
-        return isFirst;
+        return sharedPrefs.getBoolean(IS_FIRST_TIME_STORAGE, true);
     }
 
     public static boolean isUserSeller(Context context) {
-        if (!SessionHandler.getShopID(context).isEmpty() && !SessionHandler.getShopID(context).equals("0"))
-            return true;
-        return false;
+        return !SessionHandler.getShopID(context).isEmpty() && !SessionHandler.getShopID(context).equals("0");
     }
 
     public static String getUUID(Context context) {
