@@ -50,7 +50,7 @@ public class DigitalResponseConverter extends Converter.Factory {
         return null;
     }
 
-    public static Converter.Factory create() {
+    public static DigitalResponseConverter create() {
         return new DigitalResponseConverter();
     }
 }

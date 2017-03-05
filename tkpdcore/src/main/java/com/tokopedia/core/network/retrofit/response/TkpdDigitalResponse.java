@@ -41,7 +41,7 @@ public class TkpdDigitalResponse {
         JsonElement jsonElement = new JsonParser().parse(strResponse);
         JsonObject jsonResponse = jsonElement.getAsJsonObject();
         String strData;
-        if (jsonResponse.get(KEY_DATA).isJsonNull()) {
+        if (!jsonResponse.has(KEY_DATA) || jsonResponse.get(KEY_DATA).isJsonNull()) {
             String errorDefault = DEFAULT_ERROR_MESSAGE_DATA_NULL;
             if (jsonResponse.has(KEY_ERROR)) {
                 StringBuilder stringBuilder = new StringBuilder();

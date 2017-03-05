@@ -5,10 +5,14 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.core.network.retrofit.HttpClient;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.CallAdapter;
+import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -22,7 +26,8 @@ public abstract class EndpointService<T> {
     protected T api;
 
     public EndpointService() {
-        OkHttpClient.Builder okHttpClientBuilder = HttpClient.getInstanceOkHttpClient().newBuilder();
+        OkHttpClient.Builder okHttpClientBuilder =
+                HttpClient.getInstanceOkHttpClient().newBuilder();
 
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -41,13 +46,21 @@ public abstract class EndpointService<T> {
         retrofit.baseUrl(getEndpointUrl() + getEndpointVersion());
 
 
-        setupAdditionalConverterFactory(retrofit);
+        List<Converter.Factory> converterFactoryList =
+                getAdditionalConverterFactoryList(new ArrayList<Converter.Factory>());
+        for (Converter.Factory factory : converterFactoryList) {
+            retrofit.addConverterFactory(factory);
+        }
         retrofit.addConverterFactory(new StringResponseConverter());
         retrofit.addConverterFactory(GsonConverterFactory.create(gson));
 
 
+        List<CallAdapter.Factory> adapterFactoryList =
+                getAdditionalCallAdapterFactoryList(new ArrayList<CallAdapter.Factory>());
+        for (CallAdapter.Factory factory : adapterFactoryList) {
+            retrofit.addCallAdapterFactory(factory);
+        }
         retrofit.addCallAdapterFactory(RxJavaCallAdapterFactory.create());
-        setupAdditionalCallAdapterFactory(retrofit);
 
         retrofit.client(okHttpClientBuilder.build());
         api = initApiService(retrofit.build());
@@ -59,9 +72,13 @@ public abstract class EndpointService<T> {
         client.writeTimeout(45, TimeUnit.SECONDS);
     }
 
-    protected abstract void setupAdditionalCallAdapterFactory(Retrofit.Builder retrofit);
+    protected abstract List<CallAdapter.Factory> getAdditionalCallAdapterFactoryList(
+            ArrayList<CallAdapter.Factory> adapterFactoryList
+    );
 
-    protected abstract void setupAdditionalConverterFactory(Retrofit.Builder retrofit);
+    protected abstract List<Converter.Factory> getAdditionalConverterFactoryList(
+            ArrayList<Converter.Factory> converterFactoryList
+    );
 
     protected abstract void setupAdditionalInterceptor(OkHttpClient.Builder client);
 
