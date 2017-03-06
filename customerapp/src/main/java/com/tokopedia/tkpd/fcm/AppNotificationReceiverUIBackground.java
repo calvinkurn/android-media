@@ -139,6 +139,12 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                     serverId = Uri.parse(applinks).getLastPathSegment();
                 }
                 break;
+            case Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION:
+                customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX);
+                if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
+                    serverId = Uri.parse(applinks).getLastPathSegment();
+                }
+                break;
         }
 
         saveApplinkPushNotification(
