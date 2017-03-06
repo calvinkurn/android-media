@@ -12,6 +12,7 @@ import com.tokopedia.tkpd.home.feed.domain.model.Feed;
 import com.tokopedia.tkpd.home.feed.domain.model.ProductFeed;
 import com.tokopedia.tkpd.home.feed.domain.model.TopAds;
 
+import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
@@ -74,15 +75,44 @@ public class GetDataFeedCacheUseCase extends UseCase<DataFeed> {
     }
 
     private Observable<List<ProductFeed>> getRecentProductObservable() {
-        return feedRepository.getRecentViewProductFromCache();
+        return feedRepository.getRecentViewProductFromCache().onErrorReturn(historyErrorValue());
+    }
+
+    private Func1<Throwable, List<ProductFeed>> historyErrorValue() {
+        return new Func1<Throwable, List<ProductFeed>>() {
+            @Override
+            public List<ProductFeed> call(Throwable throwable) {
+                return Collections.emptyList();
+            }
+        };
     }
 
     private Observable<Feed> getFeedObservable() {
-        return feedRepository.getFeedCache();
+        return feedRepository.getFeedCache().onErrorReturn(feedErrorReturn());
+    }
+
+    private Func1<Throwable, Feed> feedErrorReturn() {
+        return new Func1<Throwable, Feed>() {
+            @Override
+            public Feed call(Throwable throwable) {
+                Feed feed = new Feed();
+                feed.setIsValid(false);
+                return feed;
+            }
+        };
     }
 
     private Observable<List<TopAds>> getTopAdsObservable() {
-        return feedRepository.getTopAdsCache();
+        return feedRepository.getTopAdsCache().onErrorReturn(topAdsErrorReturn());
+    }
+
+    private Func1<Throwable, List<TopAds>> topAdsErrorReturn() {
+        return new Func1<Throwable, List<TopAds>>() {
+            @Override
+            public List<TopAds> call(Throwable throwable) {
+                return Collections.emptyList();
+            }
+        };
     }
 
 

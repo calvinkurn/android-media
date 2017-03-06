@@ -13,6 +13,7 @@ import android.os.Build;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.stetho.Stetho;
 import com.github.anrwatchdog.ANRError;
 import com.github.anrwatchdog.ANRWatchDog;
 import com.localytics.android.Localytics;
@@ -61,7 +62,6 @@ public class MainApplication extends TkpdMultiDexApplication {
     public static ServiceConnection hudConnection;
     public static String PACKAGE_NAME;
     public static MainApplication instance;
-    private static GlobalConfig GlobalConfig;
 
     private DaggerAppComponent.Builder daggerBuilder;
 
@@ -87,6 +87,7 @@ public class MainApplication extends TkpdMultiDexApplication {
         initCrashlytics();
         initializeAnalytics();
         initANRWatchDogs();
+        initStetho();
         PACKAGE_NAME = getPackageName();
         isResetTickerState=true;
 
@@ -350,17 +351,12 @@ public class MainApplication extends TkpdMultiDexApplication {
         //FlowManager.initModule(TkpdCoreGeneratedDatabaseHolder.class);
 	}
 
-    public static GlobalConfig getGlobalConfig() {
-        return GlobalConfig;
-    }
-
-    public static void setGlobalConfig(GlobalConfig globalConfig) {
-        GlobalConfig = globalConfig;
-    }
-
-
     public AppComponent getApplicationComponent(ActivityModule activityModule) {
         return daggerBuilder.activityModule(activityModule)
                 .build();
+    }
+
+    public void initStetho() {
+        if (GlobalConfig.isAllowDebuggingTools()) Stetho.initializeWithDefaults(context);
     }
 }
