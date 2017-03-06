@@ -3,10 +3,12 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -171,6 +173,20 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         showLoading();
     }
 
+    private void showDeleteConfirmation() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+        alertDialog.setTitle(R.string.title_delete_promo);
+        alertDialog.setMessage(R.string.top_ads_delete_ad_alert);
+        alertDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteAd();
+            }
+        });
+        alertDialog.setNegativeButton(R.string.No, null);
+        alertDialog.show();
+    }
+
     @Override
     public void onAdLoaded(Ad ad) {
         hideLoading();
@@ -324,7 +340,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
             editAd();
             return true;
         } else if (item.getItemId() == R.id.menu_delete) {
-            deleteAd();
+            showDeleteConfirmation();
             return true;
         }
         return super.onOptionsItemSelected(item);
