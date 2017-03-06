@@ -34,7 +34,6 @@ import java.util.List;
 
 public class TopAdsDashboardActivity extends DrawerPresenterActivity implements TopAdsDashboardFragment.Callback {
 
-    public static final int REQUEST_CODE_AD_STATUS = 2;
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private FloatingActionButton fabSpeedDial;
@@ -111,7 +110,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(TopAdsDashboardActivity.this, TopAdsGroupNewPromoActivity.class);
-                startActivityForResult(intent,REQUEST_CODE_AD_STATUS);
+                dashboardProductFragment.startActivityForResult(intent, TopAdsDashboardProductFragment.REQUEST_CODE_AD_STATUS);
             }
         });
     }
@@ -161,16 +160,5 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
     public void onCreditAdded() {
         dashboardShopFragment.populateDeposit();
         dashboardProductFragment.populateDeposit();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_AD_STATUS && data != null) {
-            boolean adStatusChanged = data.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
-            if (adStatusChanged) {
-                dashboardProductFragment.loadData();
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 }
