@@ -20,6 +20,7 @@ public class ShopScoreMainDetailView extends RelativeLayout {
     private TextView descriptionTextView;
     private TextView shopScoreTextView;
     private ShopScoreMainProgressBarWithLimit progressBar;
+    private TextView shopScorePercentTextView;
 
     public ShopScoreMainDetailView(Context context) {
         super(context);
@@ -50,6 +51,7 @@ public class ShopScoreMainDetailView extends RelativeLayout {
         View view = inflate(context, R.layout.view_shop_score_main_detail, this);
         descriptionTextView = (TextView) view.findViewById(R.id.text_view_main_score_description);
         shopScoreTextView = (TextView) view.findViewById(R.id.text_view_shop_score_big);
+        shopScorePercentTextView = (TextView) view.findViewById(R.id.text_view_shop_score_percent);
         progressBar = (ShopScoreMainProgressBarWithLimit) view.findViewById(R.id.progress_bar_shop_score_with_limit);
     }
 
@@ -57,6 +59,7 @@ public class ShopScoreMainDetailView extends RelativeLayout {
     public void setProgress(float progress) {
         progressBar.setProgress(progress);
         shopScoreTextView.setText(String.valueOf(Math.round(progress)));
+        shopScorePercentTextView.setVisibility(VISIBLE);
     }
 
     public void setLimit(float limit) {
