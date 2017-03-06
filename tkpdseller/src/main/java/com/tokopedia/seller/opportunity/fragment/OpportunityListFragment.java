@@ -10,18 +10,23 @@ import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.opportunity.SortActivity;
 import com.tokopedia.seller.opportunity.adapter.OpportunityListAdapter;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenter;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenterImpl;
 import com.tokopedia.seller.opportunity.viewmodel.OpportunityItemViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.OpportunityListPageViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.SortingTypeViewModel;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 
 import java.util.ArrayList;
 
@@ -209,8 +214,34 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     public void onSuccessGetOpportunity(OpportunityListPageViewModel viewModel) {
         finishLoadingList();
         finishRefresh();
-
         adapter.setList(viewModel.getOpportunityViewModel().getListOpportunity());
+
+        setFooter(viewModel);
+    }
+
+    private void setFooter(OpportunityListPageViewModel viewModel) {
+        setFilter(viewModel);
+        setSort(viewModel);
+    }
+
+    private void setSort(OpportunityListPageViewModel viewModel) {
+
+    }
+
+    private void setFilter(OpportunityListPageViewModel viewModel) {
+        final ArrayList<String> listSort = new ArrayList<>();
+        for(SortingTypeViewModel sortItem : viewModel.getListSortingType()){
+            listSort.add(sortItem.getSortingTypeName());
+        }
+
+        sortButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), SortActivity.class);
+                intent.putExtra(SortFragment.EXTRA_LIST_SORT, listSort);
+                startActivityForResult(intent, SortFragment.REQUEST_SORT);
+            }
+        });
     }
 
     private void finishRefresh() {
@@ -259,9 +290,17 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_OPEN_DETAIL && resultCode == Activity.RESULT_OK) {
 
-        } else {
+        } else if(requestCode == SortFragment.REQUEST_SORT && resultCode == Activity.RESULT_OK) {
+            CommonUtils.dumper("NISNIS" + data.getExtras().getInt(SortFragment.SELECTED_POSITION));
+            setSortActive();
+        }else{
             super.onActivityResult(requestCode, resultCode, data);
+
         }
+    }
+
+    private void setSortActive() {
+
     }
 
     @Override
@@ -270,4 +309,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         presenter.onDestroyView();
         cacheHandler = null;
     }
+
+
 }
