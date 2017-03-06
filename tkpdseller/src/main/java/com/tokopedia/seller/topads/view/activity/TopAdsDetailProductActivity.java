@@ -6,7 +6,7 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.domain.model.data.ProductAd;
+import com.tokopedia.seller.topads.data.model.data.ProductAd;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDetailProductFragment;
 
 public class TopAdsDetailProductActivity extends TActivity implements TopAdsDetailProductFragment.TopAdsDetailProductFragmentListener {

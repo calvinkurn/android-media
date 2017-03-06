@@ -1,8 +1,8 @@
 package com.tokopedia.seller.topads.data.source.cloud.apiservice.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.seller.topads.domain.model.data.DataEtalase;
-import com.tokopedia.seller.topads.domain.model.response.DataResponse;
+import com.tokopedia.seller.topads.data.model.data.DataEtalase;
+import com.tokopedia.seller.topads.data.model.response.DataResponse;
 
 import java.util.Map;
 

@@ -1,6 +1,6 @@
 package com.tokopedia.seller.topads.view.listener;
 
-import com.tokopedia.seller.topads.domain.model.data.Cell;
+import com.tokopedia.seller.topads.data.model.data.Cell;
 
 import java.util.List;
 

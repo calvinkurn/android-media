@@ -1,7 +1,7 @@
 package com.tokopedia.seller.topads.data.source;
 
 import com.tokopedia.seller.topads.domain.model.ProductDomain;
-import com.tokopedia.seller.topads.domain.model.data.Etalase;
+import com.tokopedia.seller.topads.data.model.data.Etalase;
 
 import java.util.List;
 import java.util.Map;

@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsEtalaseListUseCase;
-import com.tokopedia.seller.topads.domain.model.data.Etalase;
+import com.tokopedia.seller.topads.data.model.data.Etalase;
 import com.tokopedia.seller.topads.view.listener.TopAdsEtalaseListView;
 
 import java.net.ConnectException;

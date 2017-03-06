@@ -5,7 +5,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.topads.domain.TopAdsProductAdsRepository;
-import com.tokopedia.seller.topads.domain.model.data.ProductAdBulkAction;
+import com.tokopedia.seller.topads.data.model.data.ProductAdBulkAction;
 
 import rx.Observable;
 import rx.functions.Func1;

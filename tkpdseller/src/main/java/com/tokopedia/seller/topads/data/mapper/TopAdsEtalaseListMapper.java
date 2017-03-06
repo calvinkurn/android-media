@@ -1,8 +1,8 @@
 package com.tokopedia.seller.topads.data.mapper;
 
-import com.tokopedia.seller.topads.domain.model.data.DataEtalase;
-import com.tokopedia.seller.topads.domain.model.data.Etalase;
-import com.tokopedia.seller.topads.domain.model.response.DataResponse;
+import com.tokopedia.seller.topads.data.model.data.DataEtalase;
+import com.tokopedia.seller.topads.data.model.data.Etalase;
+import com.tokopedia.seller.topads.data.model.response.DataResponse;
 
 import java.util.Collections;
 import java.util.List;

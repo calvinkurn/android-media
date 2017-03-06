@@ -4,7 +4,7 @@ import com.tokopedia.seller.topads.data.factory.TopAdsProductAdFactory;
 import com.tokopedia.seller.topads.data.source.cloud.TopAdsProductAdsDataSource;
 import com.tokopedia.seller.topads.domain.TopAdsProductAdsRepository;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
-import com.tokopedia.seller.topads.domain.model.data.ProductAdBulkAction;
+import com.tokopedia.seller.topads.data.model.data.ProductAdBulkAction;
 
 import java.util.List;
 

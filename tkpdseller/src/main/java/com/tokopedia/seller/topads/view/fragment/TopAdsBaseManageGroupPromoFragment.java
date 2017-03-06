@@ -17,7 +17,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.di.TopAdsAddPromoPoductDI;
-import com.tokopedia.seller.topads.domain.model.data.GroupAd;
+import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.view.presenter.TopAdsManageGroupPromoPresenter;
 import com.tokopedia.seller.topads.view.listener.TopAdsManageGroupPromoView;
 import com.tokopedia.seller.topads.view.widget.TopAdsCustomAutoCompleteTextView;

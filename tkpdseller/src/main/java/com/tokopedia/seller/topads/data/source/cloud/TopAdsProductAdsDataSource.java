@@ -9,9 +9,9 @@ import com.tokopedia.seller.topads.data.mapper.TopAdsBulkActionMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsDetailProductMapper;
 import com.tokopedia.seller.topads.data.model.TopAdsProductDetailDataSourceModel;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.api.TopAdsManagementApi;
-import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;import com.tokopedia.seller.topads.domain.model.data.ProductAdAction;
-import com.tokopedia.seller.topads.domain.model.data.ProductAdBulkAction;
-import com.tokopedia.seller.topads.domain.model.request.DataRequest;
+import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;import com.tokopedia.seller.topads.data.model.data.ProductAdAction;
+import com.tokopedia.seller.topads.data.model.data.ProductAdBulkAction;
+import com.tokopedia.seller.topads.data.model.request.DataRequest;
 
 import java.util.ArrayList;
 import java.util.List;

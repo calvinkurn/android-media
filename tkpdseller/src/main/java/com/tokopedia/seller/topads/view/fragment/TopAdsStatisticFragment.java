@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.domain.model.data.Cell;
+import com.tokopedia.seller.topads.data.model.data.Cell;
 import com.tokopedia.seller.topads.view.presenter.TopAdsStatisticPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsStatisticPresenterImpl;
 import com.tokopedia.seller.lib.williamchart.util.GrossGraphChartConfig;

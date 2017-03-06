@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.domain.model.other.FilterTitleItem;
+import com.tokopedia.seller.topads.view.model.FilterTitleItem;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -13,7 +13,7 @@ import android.widget.Button;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.domain.model.other.FilterTitleItem;
+import com.tokopedia.seller.topads.view.model.FilterTitleItem;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterContentFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterListFragment;
 

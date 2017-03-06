@@ -6,8 +6,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.domain.interactor.DashboardTopadsInteractor;
 import com.tokopedia.seller.topads.domain.interactor.DashboardTopadsInteractorImpl;
 import com.tokopedia.seller.topads.domain.interactor.ListenerInteractor;
-import com.tokopedia.seller.topads.domain.model.data.Product;
-import com.tokopedia.seller.topads.domain.model.request.SearchProductRequest;
+import com.tokopedia.seller.topads.data.model.data.Product;
+import com.tokopedia.seller.topads.data.model.request.SearchProductRequest;
 import com.tokopedia.seller.topads.view.listener.TopAdsAddProductFragmentListener;
 
 import java.util.List;

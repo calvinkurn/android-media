@@ -5,10 +5,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.domain.model.other.RadioButtonItem;
+import com.tokopedia.seller.topads.view.model.RadioButtonItem;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBasicRadioButtonAdapter;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
 

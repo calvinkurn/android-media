@@ -5,7 +5,7 @@ import android.os.Bundle;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.domain.model.data.ShopAd;
+import com.tokopedia.seller.topads.data.model.data.ShopAd;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDetailProductFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDetailShopFragment;
 
