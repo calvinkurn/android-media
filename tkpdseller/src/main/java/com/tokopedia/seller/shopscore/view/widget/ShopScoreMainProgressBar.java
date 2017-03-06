@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 public class ShopScoreMainProgressBar extends SquareProgressBar {
     private float limit;
     private ShopScoreMainProgressBarListener parent;
+    private float defaultLimit = 80;
 
     public ShopScoreMainProgressBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -31,6 +32,7 @@ public class ShopScoreMainProgressBar extends SquareProgressBar {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         initListener();
+        setLimit(defaultLimit);
     }
 
     public void setLimit(float limit) {
