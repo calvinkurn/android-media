@@ -5,8 +5,8 @@ import android.content.Intent;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.domain.model.data.Ad;
-import com.tokopedia.seller.topads.domain.model.data.GroupAd;
+import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.view.presenter.TopAdsGroupAdListPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsGroupAdListPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailGroupActivity;

@@ -18,12 +18,14 @@ public class TopAdsDetailEditGroupActivity extends TActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_top_ads_edit_promo);
+        String name = null;
         String adId = null;
         if (getIntent() != null && getIntent().getExtras() != null) {
+            name = getIntent().getExtras().getString(TopAdsExtraConstant.EXTRA_NAME);
             adId = getIntent().getExtras().getString(TopAdsExtraConstant.EXTRA_AD_ID);
         }
         getFragmentManager().beginTransaction().disallowAddToBackStack()
-                .add(R.id.container, TopAdsDetailEditGroupFragment.createInstance(adId), TopAdsDetailNewGroupFragment.class.getSimpleName())
+                .replace(R.id.container, TopAdsDetailEditGroupFragment.createInstance(name, adId), TopAdsDetailNewGroupFragment.class.getSimpleName())
                 .commit();
     }
 

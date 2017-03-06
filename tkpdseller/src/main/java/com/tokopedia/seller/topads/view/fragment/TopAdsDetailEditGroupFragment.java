@@ -3,61 +3,64 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.di.TopAdsDetailEditGroupDI;
 import com.tokopedia.seller.topads.di.TopAdsDetailEditShopDI;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
+import com.tokopedia.seller.topads.view.model.TopAdsDetailGroupViewModel;
+import com.tokopedia.seller.topads.view.model.TopAdsDetailProductViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
+import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditGroupPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditShopPresenter;
 
-public class TopAdsDetailEditGroupFragment extends TopAdsDetailEditFragment<TopAdsDetailEditShopPresenter> {
+import java.util.ArrayList;
 
-    private EditText shopNameEditText;
-    private String shopName;
+public class TopAdsDetailEditGroupFragment extends TopAdsDetailEditFragment<TopAdsDetailEditGroupPresenter> {
 
-    public static Fragment createInstance(String groupId) {
+    public static Fragment createInstance(String name, String adId) {
         Fragment fragment = new TopAdsDetailEditGroupFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(TopAdsExtraConstant.EXTRA_GROUP_ID, groupId);
+        bundle.putString(TopAdsExtraConstant.EXTRA_NAME, name);
+        bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, adId);
         fragment.setArguments(bundle);
         return fragment;
     }
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_top_ads_edit_shop;
-    }
-
-    @Override
-    protected void setupArguments(Bundle bundle) {
-        super.setupArguments(bundle);
-        shopName = bundle.getString(TopAdsExtraConstant.EXTRA_SHOP_NAME);
-    }
-
-    @Override
-    protected void initialPresenter() {
-        presenter = TopAdsDetailEditShopDI.createPresenter(getActivity());
-        presenter.attachView(this);
+        return R.layout.fragment_top_ads_detail_edit_group;
     }
 
     @Override
     protected void initView(View view) {
         super.initView(view);
-        shopNameEditText = (EditText) view.findViewById(R.id.edit_text_shop_name);
-        shopNameEditText.setText(shopName);
+        nameInputLayout.setHint(getString(R.string.label_top_ads_group_name));
+    }
+
+    @Override
+    protected void initialPresenter() {
+        presenter = TopAdsDetailEditGroupDI.createPresenter(getActivity());
+        presenter.attachView(this);
+    }
+
+    @Override
+    protected void loadAdDetail() {
+        super.loadAdDetail();
+        presenter.getDetailAd(adId);
     }
 
     @Override
     protected void loadAd(TopAdsDetailAdViewModel detailAd) {
         super.loadAd(detailAd);
-        shopNameEditText.setText(detailAd.getTitle());
+        nameEditText.setText(detailAd.getTitle());
     }
 
     @Override
     protected void saveAd() {
         super.saveAd();
-        presenter.saveAd((TopAdsDetailShopViewModel) detailAd);
+        presenter.saveAd((TopAdsDetailGroupViewModel) detailAd, new ArrayList<TopAdsProductViewModel>());
     }
 }

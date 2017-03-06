@@ -1,11 +1,7 @@
 package com.tokopedia.seller.topads.data.mapper;
 
-import com.tokopedia.seller.topads.domain.model.data.GroupAd;
-import com.tokopedia.seller.topads.domain.model.data.ProductAdBulkAction;
-import com.tokopedia.seller.topads.domain.model.response.DataResponse;
-
-import java.util.Collections;
-import java.util.List;
+import com.tokopedia.seller.topads.data.model.data.ProductAdBulkAction;
+import com.tokopedia.seller.topads.data.model.response.DataResponse;
 
 import retrofit2.Response;
 import rx.functions.Func1;

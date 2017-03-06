@@ -17,8 +17,8 @@ import com.tokopedia.seller.topads.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractorImpl;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsShopAdInteractorImpl;
-import com.tokopedia.seller.topads.domain.model.data.Ad;
-import com.tokopedia.seller.topads.domain.model.data.ShopAd;
+import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.seller.topads.data.model.data.ShopAd;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailEditShopActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailShopPresenterImpl;
@@ -32,10 +32,11 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
     private MenuItem deleteMenuItem;
     private ShopAd ad;
 
-    public static Fragment createInstance(ShopAd shopAd) {
+    public static Fragment createInstance(ShopAd shopAd, int adId) {
         Fragment fragment = new TopAdsDetailShopFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, shopAd);
+        bundle.putInt(TopAdsExtraConstant.EXTRA_AD_ID, adId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -81,22 +82,21 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
 
     @Override
     protected void refreshAd() {
-        presenter.refreshAd(startDate, endDate, ad.getId());
+        if (ad != null) {
+            presenter.refreshAd(startDate, endDate, ad.getId());
+        } else {
+            presenter.refreshAd(startDate, endDate, adId);
+        }
     }
 
     @Override
     protected void editAd() {
         if (ad != null) {
             Intent intent = new Intent(getActivity(), TopAdsDetailEditShopActivity.class);
-            intent.putExtra(TopAdsExtraConstant.EXTRA_SHOP_NAME, ad.getName());
+            intent.putExtra(TopAdsExtraConstant.EXTRA_NAME, ad.getName());
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, String.valueOf(ad.getId()));
-            startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
+            startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
         }
-    }
-
-    @Override
-    protected void deleteAd() {
-        super.deleteAd();
     }
 
     @Override

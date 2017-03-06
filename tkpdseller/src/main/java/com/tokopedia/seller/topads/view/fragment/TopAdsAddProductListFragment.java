@@ -311,12 +311,14 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         int itemId = item.getItemId();
         if (itemId == R.id.menu_filter){
             if(topAdsAddProductListPresenter != null) {
+                // TODO change param
                 TopAdsFilterProductPromoActivity.start(
                         this,
                         getActivity(),
                         FILTER_REQ_CODE,
                         topAdsAddProductListPresenter.getSelectedFilterStatus(),
-                        topAdsAddProductListPresenter.getSelectedFilterEtalaseId());
+                        topAdsAddProductListPresenter.getSelectedFilterEtalaseId(),
+                        false);
             }
         }
         return super.onOptionsItemSelected(item);

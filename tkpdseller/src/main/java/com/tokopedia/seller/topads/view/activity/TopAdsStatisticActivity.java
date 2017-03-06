@@ -24,7 +24,7 @@ import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractorImpl;
-import com.tokopedia.seller.topads.domain.model.data.Cell;
+import com.tokopedia.seller.topads.data.model.data.Cell;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;

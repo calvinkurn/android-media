@@ -9,7 +9,7 @@ import com.tokopedia.seller.topads.data.mapper.TopAdsDetailShopMapper;
 import com.tokopedia.seller.topads.data.model.TopAdsProductDetailDataSourceModel;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.api.TopAdsManagementApi;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailShopDomainModel;
-import com.tokopedia.seller.topads.domain.model.request.DataRequest;
+import com.tokopedia.seller.topads.data.model.request.DataRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ public class TopAdsShopAdsDataSource {
     }
 
     public Observable<TopAdsDetailShopDomainModel> saveDetailProduct(TopAdsDetailShopDomainModel topAdsDetailShopDomainModel) {
-        return topAdsManagementApi.saveProductAd(getSaveProductDetailRequest(topAdsDetailShopDomainModel)).map(topAdsDetailShopMapper);
+        return topAdsManagementApi.editProductAd(getSaveProductDetailRequest(topAdsDetailShopDomainModel)).map(topAdsDetailShopMapper);
     }
 
     private DataRequest<List<TopAdsProductDetailDataSourceModel>> getSaveProductDetailRequest(TopAdsDetailShopDomainModel topAdsDetailShopDomainModel) {

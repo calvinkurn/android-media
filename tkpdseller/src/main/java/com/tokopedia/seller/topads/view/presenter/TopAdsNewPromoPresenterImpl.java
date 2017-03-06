@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.seller.topads.domain.interactor.DashboardTopadsInteractor;
 import com.tokopedia.seller.topads.domain.interactor.DashboardTopadsInteractorImpl;
 import com.tokopedia.seller.topads.domain.interactor.ListenerInteractor;
-import com.tokopedia.seller.topads.domain.model.data.DataCredit;
+import com.tokopedia.seller.topads.data.model.data.DataCredit;
 import com.tokopedia.seller.topads.view.listener.TopAdsNewPromoFragmentListener;
 
 import java.util.List;

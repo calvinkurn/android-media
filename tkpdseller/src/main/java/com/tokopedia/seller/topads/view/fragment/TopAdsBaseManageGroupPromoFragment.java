@@ -17,7 +17,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.di.TopAdsAddPromoPoductDI;
-import com.tokopedia.seller.topads.domain.model.data.GroupAd;
+import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.view.presenter.TopAdsManageGroupPromoPresenter;
 import com.tokopedia.seller.topads.view.listener.TopAdsManageGroupPromoView;
 import com.tokopedia.seller.topads.view.widget.TopAdsCustomAutoCompleteTextView;
@@ -51,7 +51,7 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
 
     private ArrayAdapter<String> adapterChooseGroup;
     private List<GroupAd> groupAds = new ArrayList<>();
-    private int choosenId;
+    protected int choosenId;
     private ProgressDialog progressDialog;
 
     @Override
@@ -301,7 +301,7 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
         }
 
         if(getVisibleInfoChooseGroupOption()){
-            viewInfoNewGroup.setText(getTextInfoChooseGroupOption());
+            viewInfoChooseGroup.setText(getTextInfoChooseGroupOption());
             viewInfoChooseGroup.setVisibility(View.VISIBLE);
         }else{
             viewInfoChooseGroup.setVisibility(View.GONE);

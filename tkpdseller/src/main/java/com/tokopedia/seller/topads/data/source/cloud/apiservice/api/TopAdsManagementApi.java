@@ -4,19 +4,19 @@ import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.data.model.TopAdsProductDetailDataSourceModel;
 import com.tokopedia.seller.topads.data.model.request.CreateGroupRequest;
 import com.tokopedia.seller.topads.data.model.response.DataResponseCreateGroup;
-import com.tokopedia.seller.topads.domain.model.data.GroupAdBulkAction;
-import com.tokopedia.seller.topads.domain.model.data.ProductAdBulkAction;
-import com.tokopedia.seller.topads.domain.model.data.DataCredit;
-import com.tokopedia.seller.topads.domain.model.data.DataDeposit;
-import com.tokopedia.seller.topads.domain.model.data.DataStatistic;
-import com.tokopedia.seller.topads.domain.model.data.GroupAd;
-import com.tokopedia.seller.topads.domain.model.data.Product;
-import com.tokopedia.seller.topads.domain.model.data.ProductAd;
-import com.tokopedia.seller.topads.domain.model.data.ShopAd;
-import com.tokopedia.seller.topads.domain.model.data.TotalAd;
-import com.tokopedia.seller.topads.domain.model.request.DataRequest;
-import com.tokopedia.seller.topads.domain.model.response.DataResponse;
-import com.tokopedia.seller.topads.domain.model.response.PageDataResponse;
+import com.tokopedia.seller.topads.data.model.data.GroupAdBulkAction;
+import com.tokopedia.seller.topads.data.model.data.ProductAdBulkAction;
+import com.tokopedia.seller.topads.data.model.data.DataCredit;
+import com.tokopedia.seller.topads.data.model.data.DataDeposit;
+import com.tokopedia.seller.topads.data.model.data.DataStatistic;
+import com.tokopedia.seller.topads.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.data.model.data.Product;
+import com.tokopedia.seller.topads.data.model.data.ProductAd;
+import com.tokopedia.seller.topads.data.model.data.ShopAd;
+import com.tokopedia.seller.topads.data.model.data.TotalAd;
+import com.tokopedia.seller.topads.data.model.request.DataRequest;
+import com.tokopedia.seller.topads.data.model.response.DataResponse;
+import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -71,7 +71,10 @@ public interface TopAdsManagementApi {
     Observable<Response<DataResponse<GroupAdBulkAction>>> bulkActionGroupAd(@Body DataRequest<GroupAdBulkAction> body);
 
     @PATCH(TopAdsNetworkConstant.PATH_DETAIL_PRODUCT_AD)
-    Observable<Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>>> saveProductAd(@Body DataRequest<List<TopAdsProductDetailDataSourceModel>> body);
+    Observable<Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>>> editProductAd(@Body DataRequest<List<TopAdsProductDetailDataSourceModel>> body);
+
+    @POST(TopAdsNetworkConstant.PATH_DETAIL_PRODUCT_AD)
+    Observable<Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>>> createProductAd(@Body DataRequest<List<TopAdsProductDetailDataSourceModel>> body);
 
     @POST(TopAdsNetworkConstant.PATH_CREATE_GROUP_AD)
     Observable<Response<DataResponse<DataResponseCreateGroup>>> createGroupAd(@Body DataRequest<CreateGroupRequest> body);

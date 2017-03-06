@@ -10,7 +10,6 @@ import com.tokopedia.seller.topads.data.model.response.DataResponseCreateGroup;
 import com.tokopedia.seller.topads.domain.TopAdsGroupAdsRepository;
 import com.tokopedia.seller.topads.domain.TopAdsShopAdsRepository;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailShopDomainModel;
-import com.tokopedia.seller.topads.domain.model.response.DataResponse;
 
 import java.util.ArrayList;
 import java.util.List;

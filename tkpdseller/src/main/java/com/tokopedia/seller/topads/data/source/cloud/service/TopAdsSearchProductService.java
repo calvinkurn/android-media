@@ -1,8 +1,8 @@
 package com.tokopedia.seller.topads.data.source.cloud.service;
 
 
-import com.tokopedia.seller.topads.domain.model.data.Product;
-import com.tokopedia.seller.topads.domain.model.response.DataResponse;
+import com.tokopedia.seller.topads.data.model.data.Product;
+import com.tokopedia.seller.topads.data.model.response.DataResponse;
 
 import java.util.List;
 import java.util.Map;

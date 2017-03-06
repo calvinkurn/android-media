@@ -10,7 +10,7 @@ import android.view.View;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.domain.model.other.FilterTitleItem;
+import com.tokopedia.seller.topads.view.model.FilterTitleItem;
 import com.tokopedia.seller.topads.view.adapter.TopAdsFilterAdapter;
 
 import java.util.ArrayList;

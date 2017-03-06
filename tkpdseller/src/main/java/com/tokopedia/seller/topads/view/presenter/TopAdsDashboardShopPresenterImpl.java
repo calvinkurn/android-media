@@ -5,9 +5,9 @@ import android.content.Context;
 import com.tokopedia.seller.topads.domain.interactor.ListenerInteractor;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsShopAdInteractor;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsShopAdInteractorImpl;
-import com.tokopedia.seller.topads.domain.model.data.ShopAd;
-import com.tokopedia.seller.topads.domain.model.request.SearchAdRequest;
-import com.tokopedia.seller.topads.domain.model.request.ShopRequest;
+import com.tokopedia.seller.topads.data.model.data.ShopAd;
+import com.tokopedia.seller.topads.data.model.request.SearchAdRequest;
+import com.tokopedia.seller.topads.data.model.request.ShopRequest;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardStoreFragmentListener;
 

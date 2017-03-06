@@ -4,8 +4,9 @@ import com.tokopedia.seller.topads.data.factory.TopAdsProductAdFactory;
 import com.tokopedia.seller.topads.data.source.cloud.TopAdsProductAdsDataSource;
 import com.tokopedia.seller.topads.domain.TopAdsProductAdsRepository;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
-import com.tokopedia.seller.topads.domain.model.data.ProductAdBulkAction;
-import com.tokopedia.seller.topads.domain.model.response.DataResponse;
+import com.tokopedia.seller.topads.data.model.data.ProductAdBulkAction;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -37,5 +38,11 @@ public class TopAdsProductAdsRepositoryImpl implements TopAdsProductAdsRepositor
     public Observable<ProductAdBulkAction> moveProductGroup(String adId, String groupId, String shopId) {
         TopAdsProductAdsDataSource topAdsProductAdsDataSource = topAdsShopAdFactory.createProductAdsDataSource();
         return topAdsProductAdsDataSource.moveProductGroup(adId, groupId, shopId);
+    }
+
+    @Override
+    public Observable<TopAdsDetailProductDomainModel> saveDetailListProduct(List<TopAdsDetailProductDomainModel> topAdsDetailProductDomainModels) {
+        TopAdsProductAdsDataSource dataSource = topAdsShopAdFactory.createProductAdsDataSource();
+        return dataSource.createDetailProductList(topAdsDetailProductDomainModels);
     }
 }

@@ -5,7 +5,7 @@ import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.seller.topads.data.source.TopAdsEtalaseDataSource;
-import com.tokopedia.seller.topads.domain.model.data.Etalase;
+import com.tokopedia.seller.topads.data.model.data.Etalase;
 
 import java.util.List;
 

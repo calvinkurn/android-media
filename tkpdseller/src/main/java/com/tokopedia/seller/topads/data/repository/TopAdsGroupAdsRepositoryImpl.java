@@ -5,8 +5,7 @@ import com.tokopedia.seller.topads.data.model.request.CreateGroupRequest;
 import com.tokopedia.seller.topads.data.model.response.DataResponseCreateGroup;
 import com.tokopedia.seller.topads.data.source.cloud.TopAdsGroupAdsDataSource;
 import com.tokopedia.seller.topads.domain.TopAdsGroupAdsRepository;
-import com.tokopedia.seller.topads.domain.model.data.GroupAd;
-import com.tokopedia.seller.topads.domain.model.response.DataResponse;
+import com.tokopedia.seller.topads.data.model.data.GroupAd;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package com.tokopedia.seller.topads.view.presenter;
 
-import com.tokopedia.seller.topads.domain.model.data.ProductAd;
+import com.tokopedia.seller.topads.data.model.data.ProductAd;
 
 import java.util.Date;
 

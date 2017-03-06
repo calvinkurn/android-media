@@ -1,21 +1,21 @@
 package com.tokopedia.seller.topads.view.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.domain.model.data.ShopAd;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDashboardShopPresenterImpl;
+import com.tokopedia.seller.topads.data.model.data.ShopAd;
+import com.tokopedia.seller.topads.view.activity.TopAdsDetailNewShopActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailShopActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsStatisticShopActivity;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsViewHolder;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardStoreFragmentListener;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDashboardShopPresenterImpl;
 
 public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsDashboardShopPresenterImpl> implements TopAdsDashboardStoreFragmentListener {
 
@@ -58,20 +58,17 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
         addPromoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showCreateAdsAlert();
+                onCreateShop();
             }
         });
     }
 
-    public void showCreateAdsAlert() {
-        showCreateAdsAlert(getActivity());
-    }
-
-    public static void showCreateAdsAlert(Context context) {
-        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-        alertDialog.setMessage(R.string.top_ads_create_ad_alert);
-        alertDialog.setPositiveButton(R.string.title_ok, null);
-        alertDialog.show();
+    public void onCreateShop() {
+        Intent intent = new Intent(getActivity(), TopAdsDetailNewShopActivity.class);
+        if (!TextUtils.isEmpty(shopAd.getName())) {
+            intent.putExtra(TopAdsExtraConstant.EXTRA_NAME, shopAd.getName());
+        }
+        startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
     public void loadData() {
@@ -85,7 +82,7 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     }
 
     private void populateShop() {
-        if(startDate == null && endDate == null) {
+        if (startDate == null && endDate == null) {
             startDate = datePickerPresenter.getStartDate();
             endDate = datePickerPresenter.getEndDate();
         }
@@ -97,7 +94,7 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
         super.onActivityResult(requestCode, resultCode, intent);
         // check if the request code is the same
         if (requestCode == REQUEST_CODE_AD_STATUS && intent != null) {
-            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, false);
+            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
             if (adStatusChanged) {
                 populateShop();
             }

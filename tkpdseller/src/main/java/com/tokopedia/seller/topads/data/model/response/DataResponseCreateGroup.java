@@ -2,9 +2,9 @@ package com.tokopedia.seller.topads.data.model.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.seller.topads.domain.model.data.Ad;
-import com.tokopedia.seller.topads.domain.model.data.Product;
-import com.tokopedia.seller.topads.domain.model.data.ProductAd;
+import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.seller.topads.data.model.data.Product;
+import com.tokopedia.seller.topads.data.model.data.ProductAd;
 
 import java.util.List;
 

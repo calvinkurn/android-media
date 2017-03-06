@@ -5,7 +5,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.topads.domain.TopAdsGroupAdsRepository;
-import com.tokopedia.seller.topads.domain.model.data.GroupAd;
+import com.tokopedia.seller.topads.data.model.data.GroupAd;
 
 import java.util.List;
 

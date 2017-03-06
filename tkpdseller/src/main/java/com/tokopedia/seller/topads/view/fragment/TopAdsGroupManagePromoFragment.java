@@ -5,9 +5,6 @@ import android.os.Bundle;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.di.TopAdsAddPromoPoductDI;
-import com.tokopedia.seller.topads.view.listener.TopAdsManageGroupPromoView;
-import com.tokopedia.seller.topads.view.presenter.TopAdsManageGroupPromoPresenter;
 
 /**
  * Created by zulfikarrahman on 2/27/17.
@@ -16,20 +13,20 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsManageGroupPromoPresente
 public class TopAdsGroupManagePromoFragment extends TopAdsBaseGroupEditPromoFragment {
 
     public static TopAdsGroupManagePromoFragment createInstance(String adId, int choosenOption,
-                                                              String groupId, String groupName) {
+                                                              int groupId, String groupName) {
         TopAdsGroupManagePromoFragment fragment = new TopAdsGroupManagePromoFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(TopAdsExtraConstant.AD_ID, adId);
-        bundle.putInt(TopAdsExtraConstant.CHOOSEN_OPTION, choosenOption);
-        bundle.putString(TopAdsExtraConstant.GROUP_ID, groupId);
-        bundle.putString(TopAdsExtraConstant.GROUP_NAME, groupName);
+        bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, adId);
+        bundle.putInt(TopAdsExtraConstant.EXTRA_CHOOSEN_OPTION_GROUP, choosenOption);
+        bundle.putInt(TopAdsExtraConstant.EXTRA_GROUP_ID, groupId);
+        bundle.putString(TopAdsExtraConstant.EXTRA_GROUP_NAME, groupName);
         fragment.setupArguments(bundle);
         return fragment;
     }
 
     @Override
     protected String getTextInfoChooseGroupOption() {
-        return "";
+        return getString(R.string.label_top_ads_info_group_option);
     }
 
     @Override
@@ -39,7 +36,7 @@ public class TopAdsGroupManagePromoFragment extends TopAdsBaseGroupEditPromoFrag
 
     @Override
     protected boolean getVisibleInfoChooseGroupOption() {
-        return false;
+        return true;
     }
 
     @Override

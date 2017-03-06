@@ -1,8 +1,8 @@
 package com.tokopedia.seller.topads.data.source.local;
 
-import com.tokopedia.seller.topads.domain.model.data.Cell;
-import com.tokopedia.seller.topads.domain.model.data.Summary;
-import com.tokopedia.seller.topads.domain.model.request.StatisticRequest;
+import com.tokopedia.seller.topads.data.model.data.Cell;
+import com.tokopedia.seller.topads.data.model.data.Summary;
+import com.tokopedia.seller.topads.data.model.request.StatisticRequest;
 
 import java.util.List;
 

@@ -3,7 +3,7 @@ package com.tokopedia.seller.topads.data.repository;
 import com.tokopedia.seller.topads.data.factory.TopAdsEtalaseFactory;
 import com.tokopedia.seller.topads.data.source.TopAdsEtalaseDataSource;
 import com.tokopedia.seller.topads.domain.TopAdsEtalaseListRepository;
-import com.tokopedia.seller.topads.domain.model.data.Etalase;
+import com.tokopedia.seller.topads.data.model.data.Etalase;
 
 import java.util.List;
 

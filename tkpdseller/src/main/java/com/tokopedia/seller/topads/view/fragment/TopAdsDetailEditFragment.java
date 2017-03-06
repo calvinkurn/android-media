@@ -6,30 +6,28 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.datepicker.widget.DatePickerLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.utils.ViewUtils;
 import com.tokopedia.seller.topads.view.dialog.DatePickerDialog;
 import com.tokopedia.seller.topads.view.dialog.TimePickerdialog;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailEditView;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditPresenter;
+import com.tokopedia.seller.topads.view.widget.TopAdsCurrencyTextWatcher;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,6 +41,8 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     private static final int STICKER_THUMBS_UP = 2;
     private static final int STICKER_FIRE = 1;
 
+    protected TextInputLayout nameInputLayout;
+    protected EditText nameEditText;
     private TextInputLayout maxPriceInputLayout;
     private EditText maxPriceEditText;
     private RadioGroup budgetRadioGroup;
@@ -69,6 +69,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     private ProgressDialog progressDialog;
 
     protected String adId;
+    protected String name;
 
     private Date startDate;
     private Date endDate;
@@ -108,10 +109,13 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     @Override
     protected void setupArguments(Bundle bundle) {
         adId = bundle.getString(TopAdsExtraConstant.EXTRA_AD_ID);
+        name = bundle.getString(TopAdsExtraConstant.EXTRA_NAME);
     }
 
     @Override
     protected void initView(View view) {
+        nameInputLayout = (TextInputLayout) view.findViewById(R.id.input_layout_name);
+        nameEditText = (EditText) view.findViewById(R.id.edit_text_name);
         maxPriceInputLayout = (TextInputLayout) view.findViewById(R.id.input_layout_max_price);
         maxPriceEditText = (EditText) view.findViewById(R.id.edit_text_max_price);
         budgetRadioGroup = (RadioGroup) view.findViewById(R.id.radio_group_budget);
@@ -133,36 +137,35 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
         iconThumbsUpRadioButton = (RadioButton) view.findViewById(R.id.radio_button_icon_thumbs_up);
         iconFireRadioButton = (RadioButton) view.findViewById(R.id.radio_button_icon_fire);
         submitButton = (Button) view.findViewById(R.id.button_submit);
-        maxPriceEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+        maxPriceEditText.addTextChangedListener(new TopAdsCurrencyTextWatcher(maxPriceEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                CurrencyFormatHelper.SetToRupiah(maxPriceEditText);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
+            public void onCurrencyChanged(float currencyValue) {
+                super.onCurrencyChanged(currencyValue);
+                String errorMessage = ViewUtils.getClickBudgetError(getActivity(), currencyValue);
+                if (!TextUtils.isEmpty(errorMessage)) {
+                    maxPriceInputLayout.setError(errorMessage);
+                } else {
+                    maxPriceInputLayout.setError(null);
+                }
             }
         });
-        budgetPerDayEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+        budgetPerDayEditText.addTextChangedListener(new TopAdsCurrencyTextWatcher(budgetPerDayEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                CurrencyFormatHelper.SetToRupiah(budgetPerDayEditText);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
+            public void onCurrencyChanged(float currencyValue) {
+                super.onCurrencyChanged(currencyValue);
+                String clickBudgetString = CurrencyFormatHelper.RemoveNonNumeric(maxPriceEditText.getText().toString());
+                float clickBudget = 0;
+                if (!TextUtils.isEmpty(clickBudgetString)) {
+                    clickBudget = Float.parseFloat(clickBudgetString);
+                }
+                String errorMessage = ViewUtils.getDailyBudgetError(getActivity(), clickBudget, currencyValue);
+                if (!TextUtils.isEmpty(errorMessage)) {
+                    budgetPerDayInputLayout.setError(errorMessage);
+                } else {
+                    budgetPerDayInputLayout.setError(null);
+                }
             }
         });
         budgetRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -190,13 +193,15 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
             public void onClick(View view) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(startDate.getTime());
-                new DatePickerDialog(getActivity(), calendar, new DatePickerDialog.OnDateSetListener(showTimeStartDateDatePicker, startDate, TopAdsConstant.EDIT_PROMO_DISPLAY_DATE) {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), calendar, new DatePickerDialog.OnDateSetListener(showTimeStartDateDatePicker, startDate, TopAdsConstant.EDIT_PROMO_DISPLAY_DATE) {
                     @Override
                     public void onDateUpdated(Date date) {
                         super.onDateUpdated(date);
                         startDate = date;
                     }
-                }).show();
+                });
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                datePickerDialog.show();
             }
         });
         showTimeStartTimeDatePicker.setOnClickListener(new View.OnClickListener() {
@@ -204,13 +209,14 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
             public void onClick(View view) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(startDate.getTime());
-                new TimePickerdialog(getActivity(), calendar, false, new TimePickerdialog.OnTimeSetListener(showTimeStartTimeDatePicker, startDate, TopAdsConstant.EDIT_PROMO_DISPLAY_TIME) {
+                TimePickerdialog timePickerdialog = new TimePickerdialog(getActivity(), calendar, false, new TimePickerdialog.OnTimeSetListener(showTimeStartTimeDatePicker, startDate, TopAdsConstant.EDIT_PROMO_DISPLAY_TIME) {
                     @Override
                     public void onDateUpdated(Date date) {
                         super.onDateUpdated(date);
                         startDate = date;
                     }
-                }).show();
+                });
+                timePickerdialog.show();
             }
         });
         showTimeEndDateDatePicker.setOnClickListener(new View.OnClickListener() {
@@ -218,13 +224,15 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
             public void onClick(View view) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(endDate.getTime());
-                new DatePickerDialog(getActivity(), calendar, new DatePickerDialog.OnDateSetListener(showTimeEndDateDatePicker, endDate, TopAdsConstant.EDIT_PROMO_DISPLAY_DATE) {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), calendar, new DatePickerDialog.OnDateSetListener(showTimeEndDateDatePicker, endDate, TopAdsConstant.EDIT_PROMO_DISPLAY_DATE) {
                     @Override
                     public void onDateUpdated(Date date) {
                         super.onDateUpdated(date);
                         endDate = date;
                     }
-                }).show();
+                });
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                datePickerDialog.show();
             }
         });
         showTimeEndTimeDatePicker.setOnClickListener(new View.OnClickListener() {
@@ -232,13 +240,14 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
             public void onClick(View view) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(endDate.getTime());
-                new TimePickerdialog(getActivity(), calendar, false, new TimePickerdialog.OnTimeSetListener(showTimeEndTimeDatePicker, endDate, TopAdsConstant.EDIT_PROMO_DISPLAY_TIME) {
+                TimePickerdialog timePickerdialog = new TimePickerdialog(getActivity(), calendar, false, new TimePickerdialog.OnTimeSetListener(showTimeEndTimeDatePicker, endDate, TopAdsConstant.EDIT_PROMO_DISPLAY_TIME) {
                     @Override
                     public void onDateUpdated(Date date) {
                         super.onDateUpdated(date);
                         endDate = date;
                     }
-                }).show();
+                });
+                timePickerdialog.show();
             }
         });
         iconRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -282,6 +291,9 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     protected void setActionVar() {
         if (!TextUtils.isEmpty(adId)) {
             loadAdDetail();
+        }
+        if (!TextUtils.isEmpty(name)) {
+            nameEditText.setText(name);
         }
     }
 
@@ -340,13 +352,14 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
 
     protected void loadAd(TopAdsDetailAdViewModel detailAd) {
         this.detailAd = detailAd;
+        nameEditText.setText(detailAd.getTitle());
         maxPriceEditText.setText(String.valueOf(detailAd.getPriceBid()));
         if (detailAd.getPriceDaily() > 0) {
             showBudgetPerDay(true);
             budgetPerDayEditText.setText(String.valueOf(detailAd.getPriceDaily()));
         } else {
             showBudgetPerDay(false);
-            budgetPerDayEditText.setText("");
+            budgetPerDayEditText.setText(R.string.top_ads_detail_edit_default_currency_value);
         }
         convertDate(detailAd);
         if (!TextUtils.isEmpty(detailAd.getEndDate())) {
@@ -459,6 +472,15 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
         detailAd.setStartTime(showTimeStartTimeDatePicker.getValue());
         detailAd.setEndDate(showTimeEndDateDatePicker.getValue());
         detailAd.setEndTime(showTimeEndTimeDatePicker.getValue());
+        if (promoIconView.getVisibility() == View.VISIBLE) {
+            if (iconRadioGroup.getCheckedRadioButtonId() == R.id.radio_button_icon_speaker) {
+                detailAd.setStickerId(STICKER_SPEAKER);
+            } else if (iconRadioGroup.getCheckedRadioButtonId() == R.id.radio_button_icon_thumbs_up) {
+                detailAd.setStickerId(STICKER_THUMBS_UP);
+            } else if (iconRadioGroup.getCheckedRadioButtonId() == R.id.radio_button_icon_fire) {
+                detailAd.setStickerId(STICKER_FIRE);
+            }
+        }
     }
 
     protected void showLoading() {
@@ -490,7 +512,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
 
     private void setResultAdSaved() {
         Intent intent = new Intent();
-        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, true);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
         getActivity().setResult(Activity.RESULT_OK, intent);
     }
 }
