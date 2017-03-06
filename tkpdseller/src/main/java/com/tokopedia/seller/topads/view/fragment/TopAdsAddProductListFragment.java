@@ -296,13 +296,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setIconifiedByDefault(true);
         searchView.setOnQueryTextListener(this);
-
-        MenuItem filter = menu.findItem(R.id.menu_filter);
-        if(addProductListInterface != null){
-            filter.setVisible(
-                    addProductListInterface.isExistingGroup()
-            );
-        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -311,14 +304,13 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         int itemId = item.getItemId();
         if (itemId == R.id.menu_filter){
             if(topAdsAddProductListPresenter != null) {
-                // TODO change param
                 TopAdsFilterProductPromoActivity.start(
                         this,
                         getActivity(),
                         FILTER_REQ_CODE,
                         topAdsAddProductListPresenter.getSelectedFilterStatus(),
                         topAdsAddProductListPresenter.getSelectedFilterEtalaseId(),
-                        false);
+                        addProductListInterface.isExistingGroup());
             }
         }
         return super.onOptionsItemSelected(item);
