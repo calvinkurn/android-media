@@ -76,6 +76,19 @@ public class TrackingUtils extends TrackingConfig {
         getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_OPEN_FEED);
     }
 
+    public static void sendMoEngageOpenFavoriteEvent(int feedSize){
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, SessionHandler.isV4Login(MainApplication.getAppContext()));
+        builder.putAttrInt(AppEventTracking.MOENGAGE.PRODUCTS_NUMBER, feedSize);
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_OPEN_FAVORITE);
+    }
+
+    public static void sendMoEngageOpenHotListEvent(int feedSize){
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, SessionHandler.isV4Login(MainApplication.getAppContext()));
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_OPEN_HOTLIST);
+    }
+
     public static void fragmentBasedAFEvent(String tag){
         Map<String, Object> afValue = new HashMap<>();
         if (tag.equals(SessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(SessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)){
