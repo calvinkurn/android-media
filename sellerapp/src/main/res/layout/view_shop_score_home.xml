@@ -67,7 +67,8 @@
             android:layout_marginTop="16dp"
             android:text="@string/action_shop_score_go_to_detail"
             android:textColor="@color/tkpd_main_green"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:visibility="gone" />
 
     </LinearLayout>
 

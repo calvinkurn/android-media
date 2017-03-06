@@ -99,6 +99,7 @@ public class ShopScoreWidget extends FrameLayout {
     }
 
     public void setDescription(String description) {
+        shopScoreMainDetailView.setVisibility(VISIBLE);
         shopScoreMainDetailView.setDescription(description);
     }
 
