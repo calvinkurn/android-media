@@ -308,6 +308,12 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
+
     protected abstract String getTextInfoChooseGroupOption();
 
     protected abstract String getTextInfoNewGroupOption();
