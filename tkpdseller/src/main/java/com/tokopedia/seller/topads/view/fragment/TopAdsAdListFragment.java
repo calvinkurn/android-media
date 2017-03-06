@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -187,8 +188,15 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
             boolean adDeleted = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_DELETED, false);
             if (adStatusChanged || adDeleted) {
                 searchAd(START_PAGE);
+                setResultAdListChanged();
             }
         }
+    }
+
+    protected void setResultAdListChanged() {
+        Intent intent = new Intent();
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+        getActivity().setResult(Activity.RESULT_OK, intent);
     }
 
     @Override

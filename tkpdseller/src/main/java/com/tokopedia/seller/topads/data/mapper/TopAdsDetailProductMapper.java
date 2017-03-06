@@ -20,25 +20,30 @@ public class TopAdsDetailProductMapper implements Func1<Response<DataResponse<Li
     }
 
     private TopAdsDetailProductDomainModel mappingResponse(Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>> response) {
-        TopAdsProductDetailDataSourceModel dataModel = response.body().getData().get(0);
-        TopAdsDetailProductDomainModel domainModel = new TopAdsDetailProductDomainModel();
-        domainModel.setAdId(dataModel.getAdId());
-        domainModel.setAdType(dataModel.getAdType());
-        domainModel.setGroupId(dataModel.getGroupId());
-        domainModel.setShopId(dataModel.getShopId());
-        domainModel.setItemId(dataModel.getItemId());
-        domainModel.setStatus(dataModel.getStatus());
-        domainModel.setPriceBid(dataModel.getPriceBid());
-        domainModel.setAdBudget(dataModel.getAdBudget());
-        domainModel.setPriceDaily(dataModel.getPriceDaily());
-        domainModel.setStickerId(dataModel.getStickerId());
-        domainModel.setAdSchedule(dataModel.getAdSchedule());
-        domainModel.setAdStartDate(dataModel.getAdStartDate());
-        domainModel.setAdStartTime(dataModel.getAdStartTime());
-        domainModel.setAdEndDate(dataModel.getAdEndDate());
-        domainModel.setAdEndTime(dataModel.getAdEndTime());
-        domainModel.setAdImage(dataModel.getAdImage());
-        domainModel.setAdTitle(dataModel.getAdTitle());
-        return domainModel;
+        if (response.isSuccessful() && response.body() != null
+                && response.body().getData() != null) {
+            TopAdsProductDetailDataSourceModel dataModel = response.body().getData().get(0);
+            TopAdsDetailProductDomainModel domainModel = new TopAdsDetailProductDomainModel();
+            domainModel.setAdId(dataModel.getAdId());
+            domainModel.setAdType(dataModel.getAdType());
+            domainModel.setGroupId(dataModel.getGroupId());
+            domainModel.setShopId(dataModel.getShopId());
+            domainModel.setItemId(dataModel.getItemId());
+            domainModel.setStatus(dataModel.getStatus());
+            domainModel.setPriceBid(dataModel.getPriceBid());
+            domainModel.setAdBudget(dataModel.getAdBudget());
+            domainModel.setPriceDaily(dataModel.getPriceDaily());
+            domainModel.setStickerId(dataModel.getStickerId());
+            domainModel.setAdSchedule(dataModel.getAdSchedule());
+            domainModel.setAdStartDate(dataModel.getAdStartDate());
+            domainModel.setAdStartTime(dataModel.getAdStartTime());
+            domainModel.setAdEndDate(dataModel.getAdEndDate());
+            domainModel.setAdEndTime(dataModel.getAdEndTime());
+            domainModel.setAdImage(dataModel.getAdImage());
+            domainModel.setAdTitle(dataModel.getAdTitle());
+            return domainModel;
+        }else{
+            return null;
+        }
     }
 }

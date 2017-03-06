@@ -17,6 +17,7 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsDashboardPagerAdapter;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardFragment;
@@ -109,7 +110,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(TopAdsDashboardActivity.this, TopAdsGroupNewPromoActivity.class);
-                startActivity(intent);
+                dashboardProductFragment.startActivityForResult(intent, TopAdsDashboardProductFragment.REQUEST_CODE_AD_STATUS);
             }
         });
     }

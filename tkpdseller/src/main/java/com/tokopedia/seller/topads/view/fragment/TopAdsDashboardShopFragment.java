@@ -19,7 +19,7 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsDashboardShopPresenterIm
 
 public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsDashboardShopPresenterImpl> implements TopAdsDashboardStoreFragmentListener {
 
-    protected static final int REQUEST_CODE_AD_STATUS = TopAdsDashboardShopFragment.class.hashCode();
+    protected static final int REQUEST_CODE_AD_STATUS = 2;
 
     View shopAdView;
     View shopAdEmptyView;
