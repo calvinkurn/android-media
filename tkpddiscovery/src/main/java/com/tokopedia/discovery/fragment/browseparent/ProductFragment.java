@@ -81,6 +81,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     private LinearLayoutManager linearLayoutManager;
     private BrowseProductRouter.GridType gridType;
     int spanCount = 2;
+    private boolean isHasCategoryHeader = false;
 
     private BroadcastReceiver changeGridReceiver = new BroadcastReceiver() {
         @Override
@@ -429,8 +430,10 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void addCategoryHeader(Category category) {
+        isHasCategoryHeader = true;
         productAdapter.addCategoryHeader(new ProductAdapter.CategoryHeaderModel(category,getActivity(),getCategoryWidth(),this));
         productAdapter.notifyDataSetChanged();
+        mRecyclerView.scrollToPosition(0);
     }
 
     private int calcColumnSize(int orientation) {
@@ -457,7 +460,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void onCategoryClick(Child child) {
-        ((BrowseProductActivity) getActivity()).renderNewCategoryLevel(child.getId());
+        ((BrowseProductActivity) getActivity()).renderNewCategoryLevel(child);
         Log.d(TAG, "onCategoryClick: ");
     }
 

@@ -48,6 +48,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.categoriesHades.CategoriesHadesModel;
+import com.tokopedia.core.network.entity.categoriesHades.Child;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -57,6 +58,7 @@ import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 import com.tokopedia.discovery.fragment.browseparent.BrowseParentFragment;
@@ -1062,7 +1064,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                                     && body.getData().getCategories().size()>0) {
                                 browseProductActivityModel.categotyHeader = body.getData().getCategories().get(0);
                                 if (browseProductActivityModel.categotyHeader.getRevamp() !=null
-                                        && browseProductActivityModel.categotyHeader.getRevamp() )
+                                        && browseProductActivityModel.categotyHeader.getRevamp() && browseProductActivityModel.getCategotyHeader().getChild()!=null)
                                     parentFragment.renderCategories(browseProductActivityModel.categotyHeader);
                             }
                         }
@@ -1160,10 +1162,16 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         void onQueryChanged(String query);
     }
 
-    public void renderNewCategoryLevel(String departementId) {
-        browseProductActivityModel.setDepartmentId(departementId);
+    public void renderNewCategoryLevel(Child child) {
+        browseProductActivityModel.setDepartmentId(child.getId());
+        toolbar.setTitle(child.getName());
         setFragment(BrowseParentFragment.newInstance(browseProductActivityModel), BrowseParentFragment.FRAGMENT_TAG);
-        sendCategory(departementId);
+        BrowseParentFragment parentFragment = (BrowseParentFragment)
+                fragmentManager.findFragmentById(R.id.container);
+        ArrayMap<String, String> visibleTab = new ArrayMap<>();
+        visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, parentFragment.VISIBLE_ON);
+        parentFragment.initSectionAdapter(visibleTab);
+        parentFragment.setupWithTabViewPager();
     }
 
 
