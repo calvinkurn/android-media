@@ -44,6 +44,7 @@ public class MessagePushNotificationBuildAndShow extends AbstractApplinkBuildAnd
             String username = null;
             String uri = null;
             String image = null;
+            Boolean multipleSender = false;
             List<String> contents = new ArrayList<>();
             for (MessagePushNotification messagePushNotification : discussionPushNotifications) {
                 contents.add(messagePushNotification.getUsername() + " : " + messagePushNotification.getDescription());
@@ -58,19 +59,19 @@ public class MessagePushNotificationBuildAndShow extends AbstractApplinkBuildAnd
                     isSingle = false;
                 }
 
-                if (!messagePushNotification.getUsername().equalsIgnoreCase(username)){
+                if (!messagePushNotification.getUsername().equalsIgnoreCase(username)) {
                     senderCount++;
                     username = messagePushNotification.getUsername();
                 }
             }
 
-            if (!isSingle){
-                image = "https://ecs7.tokopedia.net/img/microsite-brand-resource/mascot-toped-new.png";
+            if (!isSingle) {
+                multipleSender = true;
             }
             String description;
-            if (discussionPushNotifications.size() >1){
+            if (discussionPushNotifications.size() > 1) {
                 description = String.format("%d pesan dari %d pengirim", discussionPushNotifications.size(), senderCount);
-            }else {
+            } else {
                 description = String.format("%d pesan", discussionPushNotifications.size());
             }
             Uri url = Uri.parse(uri);
@@ -90,6 +91,7 @@ public class MessagePushNotificationBuildAndShow extends AbstractApplinkBuildAnd
                     .category(NOTIFICATION_CATEGORY)
                     .intent(handlerIntent)
                     .applink(uri)
+                    .multipleSender(multipleSender)
                     .build();
             buildAndShowNotification.buildAndShowNotification(applinkNotificationPass);
         } else {
