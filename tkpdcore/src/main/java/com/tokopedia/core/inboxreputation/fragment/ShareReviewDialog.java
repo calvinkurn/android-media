@@ -165,7 +165,7 @@ public class ShareReviewDialog {
                             .setImageUrl(Uri.parse(item.getProductImageUrl()))
                             .setContentUrl(Uri.parse(context.getString(R.string.domain)+item.getProductUri()))
                             .setQuote(item.getReviewMessage().toString())
-                            .setShareHashtag(new ShareHashtag.Builder().setHashtag("#DimulaiDariTokopedia").build())
+                            .setShareHashtag(new ShareHashtag.Builder().setHashtag(context.getString(R.string.title_tokopedia_hashtag)).build())
                             .build();
 
                     shareDialog.show(linkContent);

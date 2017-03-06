@@ -999,6 +999,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="dialog_save_preview_product_image">Simpan gambar ?</string>
     <string name="title_follow">mengikuti</string>
     <string name="title_unfollow">berhenti mengikuti</string>
+    <string name="title_tokopedia_hashtag">#DimulaiDariTokopedia</string>
 
 
     <!-- error string -->

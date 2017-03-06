@@ -510,13 +510,13 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
 
     @Override
     public void onSuccessSharingFacebook(Intent intent) {
-        getActivity().setResult(Activity.RESULT_OK, intent.putExtra("message",getString(R.string.success_share_product)));
+        getActivity().setResult(Activity.RESULT_OK, intent.putExtra(getString(R.string.message),getString(R.string.success_share_product)));
         getActivity().finish();
     }
 
     @Override
     public void onErrorSharingFacebook(Intent intent) {
-        getActivity().setResult(Activity.RESULT_OK, intent.putExtra("message",getString(R.string.error_share_product)));
+        getActivity().setResult(Activity.RESULT_OK, intent.putExtra(getString(R.string.message),getString(R.string.error_share_product)));
         getActivity().finish();
     }
 

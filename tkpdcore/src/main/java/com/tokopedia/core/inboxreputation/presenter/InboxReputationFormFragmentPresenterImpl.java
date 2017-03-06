@@ -221,13 +221,15 @@ public class InboxReputationFormFragmentPresenterImpl
     }
 
     @Override
-    public void prepareDialogShareFb(InboxReputationFormFragment fragment, ShareDialog shareDialog, CallbackManager callbackManager, InboxReputationDetailItem inboxReputationDetail, String stringDomain, String contentDescription, final Intent intent) {
+    public void prepareDialogShareFb(InboxReputationFormFragment fragment, ShareDialog shareDialog
+            , CallbackManager callbackManager, InboxReputationDetailItem inboxReputationDetail
+            , String stringDomain, String contentDescription, final Intent intent) {
         final ShareLinkContent linkContent = new ShareLinkContent.Builder()
                 .setContentTitle(inboxReputationDetail.getProductName())
                 .setImageUrl(Uri.parse(inboxReputationDetail.getProductImageUrl()))
                 .setContentUrl(Uri.parse(stringDomain+inboxReputationDetail.getProductUri()))
                 .setContentDescription(contentDescription)
-                .setShareHashtag(new ShareHashtag.Builder().setHashtag("#DimulaiDariTokopedia").build())
+                .setShareHashtag(new ShareHashtag.Builder().setHashtag(fragment.getActivity().getString(R.string.title_tokopedia_hashtag)).build())
                 .build();
         LoginManager.getInstance().logInWithPublishPermissions(fragment, FacebookContainer.writePermissions);
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
