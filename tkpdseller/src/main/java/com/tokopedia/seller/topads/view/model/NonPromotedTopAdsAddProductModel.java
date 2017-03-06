@@ -4,7 +4,8 @@ package com.tokopedia.seller.topads.view.model;
  * @author normansyahputa on 3/6/17.
  */
 
-public class NonPromotedTopAdsAddProductModel extends TypeBasedModel {
+public class NonPromotedTopAdsAddProductModel extends TypeBasedModel
+        implements BaseTopAdsProductModel {
     public static final int TYPE = 718192;
 
     public String description;
@@ -45,5 +46,10 @@ public class NonPromotedTopAdsAddProductModel extends TypeBasedModel {
 
     public void setProductDomain(TopAdsProductViewModel productDomain) {
         this.productDomain = productDomain;
+    }
+
+    @Override
+    public TopAdsProductViewModel getTopAdsProductViewModel() {
+        return getProductDomain();
     }
 }

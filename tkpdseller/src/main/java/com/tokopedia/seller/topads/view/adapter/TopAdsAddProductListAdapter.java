@@ -14,6 +14,7 @@ import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsNonPromotedView
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsPromotedViewHolder;
 import com.tokopedia.seller.topads.view.listener.AdapterSelectionListener;
 import com.tokopedia.seller.topads.view.listener.FragmentItemSelection;
+import com.tokopedia.seller.topads.view.model.BaseTopAdsProductModel;
 import com.tokopedia.seller.topads.view.model.NonPromotedTopAdsAddProductModel;
 import com.tokopedia.seller.topads.view.model.PromotedTopAdsAddProductModel;
 import com.tokopedia.seller.topads.view.model.TopAdsAddProductModel;
@@ -171,8 +172,13 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
         List<TopAdsProductViewModel> topAdsProductViewModels =
                 new ArrayList<>();
         for (TypeBasedModel data : datas) {
-            TopAdsAddProductModel data1 = (TopAdsAddProductModel) data;
-            topAdsProductViewModels.add(data1.productDomain);
+            if (data != null && data instanceof BaseTopAdsProductModel) {
+                topAdsProductViewModels.add(((BaseTopAdsProductModel) data).
+                        getTopAdsProductViewModel());
+            } else {
+                throw new RuntimeException("all model in this adapter must implement " +
+                        "BaseTopAdsProductModel");
+            }
         }
         return topAdsProductViewModels;
     }
@@ -188,6 +194,8 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
             datas.set(position, topAdsAddProductModel);
 
 
+            notifyItemChanged(position);
+        } else {
             notifyItemChanged(position);
         }
     }
