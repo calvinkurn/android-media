@@ -230,6 +230,7 @@
             android:gravity="center"
             android:padding="@dimen/padding_small"
             android:layout_margin="@dimen/margin_small"
+            android:visibility="gone"
             android:text="Bagikan"
             android:textColor="@color/tkpd_dark_green"/>
 

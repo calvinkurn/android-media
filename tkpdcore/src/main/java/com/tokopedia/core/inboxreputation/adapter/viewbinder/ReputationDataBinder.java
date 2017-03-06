@@ -184,6 +184,7 @@ public class ReputationDataBinder extends DataBinder<ReputationDataBinder.ViewHo
         holder.productReview.setText(inboxReputationDetail.getInboxReputationDetailItemList()
                 .get(position).getReviewMessage());
         holder.productReview.setMovementMethod(new SelectableSpannedMovementMethod());
+        holder.shareButton.setVisibility(View.VISIBLE);
         setImage(holder, position);
         setRating(holder, position);
         setResponse(holder, position);
