@@ -50,4 +50,5 @@ public class TopAdsExtraConstant {
     public static final String CHOOSEN_OPTION = "CHOOSEN_OPTION";
     public static final String GROUP_ID = "GROUP_ID";
     public static final String GROUP_NAME = "GROUP_NAME";
+    public static final String EXTRA_MAX_NUMBER_SELECTION = "EXTRA_MAX_NUMBER_SELECTION";
 }
