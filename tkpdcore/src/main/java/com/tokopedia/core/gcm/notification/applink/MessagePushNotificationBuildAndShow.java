@@ -1,6 +1,7 @@
 package com.tokopedia.core.gcm.notification.applink;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -91,6 +92,10 @@ public class MessagePushNotificationBuildAndShow extends AbstractApplinkBuildAnd
                     .applink(uri)
                     .build();
             buildAndShowNotification.buildAndShowNotification(applinkNotificationPass);
+        } else {
+            NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE_ID);
         }
 
     }
