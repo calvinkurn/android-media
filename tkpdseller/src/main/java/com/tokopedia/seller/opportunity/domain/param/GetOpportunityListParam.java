@@ -1,9 +1,9 @@
-package com.tokopedia.seller.opportunity.viewmodel;
+package com.tokopedia.seller.opportunity.domain.param;
 
 /**
  * Created by nisie on 3/2/17.
  */
-public class OpportunityParam {
+public class GetOpportunityListParam {
     String page;
     String query;
     String sort;

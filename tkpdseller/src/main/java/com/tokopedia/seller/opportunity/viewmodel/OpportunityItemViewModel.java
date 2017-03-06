@@ -6,13 +6,13 @@ import com.tokopedia.core.util.MethodChecker;
  * Created by nisie on 3/1/17.
  */
 
-public class Opportunity {
+public class OpportunityItemViewModel {
     private String productName;
     private String productPrice;
     private String productImage;
     private String deadline;
 
-    public Opportunity(String productName) {
+    public OpportunityItemViewModel(String productName) {
         this.productName = productName;
         this.productPrice = "Rp 10.000.000";
         this.deadline = "24 jam lagi";

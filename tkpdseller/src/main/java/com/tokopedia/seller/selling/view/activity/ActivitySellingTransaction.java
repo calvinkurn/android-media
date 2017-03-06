@@ -174,6 +174,8 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         } else {
             sellerTickerView.setVisibility(View.GONE);
         }
+
+        hideTickerOpportunity(getIntent().getExtras().getInt("tab"));
     }
 
 
@@ -215,6 +217,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
                 if (indicator.getTabAt(position) != null) {
                     UnifyTracking.eventShopTabSelected(indicator.getTabAt(position).getText().toString());
                 }
+                hideTickerOpportunity(position);
             }
 
             @Override
@@ -225,14 +228,20 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(mViewPager));
     }
 
+    public void hideTickerOpportunity(int position) {
+        if (position == 5) {
+            sellerTickerView.setVisibility(View.GONE);
+        } else {
+            sellerTickerView.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void openTab() {
         try {
             mViewPager.setCurrentItem(getIntent().getExtras().getInt("tab"));
             setDrawerPosition(getIntent().getExtras().getInt("tab"));
         } catch (Exception e) {
-
             e.printStackTrace();
-
         }
     }
 

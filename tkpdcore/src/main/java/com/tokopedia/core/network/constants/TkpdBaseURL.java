@@ -36,6 +36,8 @@ public class TkpdBaseURL {
     public static String MOBILE_DOMAIN = "https://m.tokopedia.com/";
     public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
+    public static String BASE_ORDER_APP = "https://orderapp.tokopedia.local/";
+
 
     public static class Product {
         public static final String URL_PRODUCT = BASE_DOMAIN + "v4/product/";
@@ -634,8 +636,13 @@ public class TkpdBaseURL {
     }
 
     public static class Replacement {
-        public static final String PATH_ACCEPT_REPLACEMENT = "";
-        public static final String PATH_DELETE_REPLACEMENT = "";
-        public static final String URL_REPLACEMENT_ACTION = "api/v1/wallet/";
+        public static final String URL_REPLACEMENT = BASE_ORDER_APP + "";
+        public static final String PATH_GET_OPPORTUNITY = "v4/order/replacement/opportunity_list";
+        public static final String PATH_GET_CATEGORY = "v1/order/replacement/category_list";
+
+
+        public static final String PATH_ACCEPT_REPLACEMENT = "asd";
+        public static final String PATH_DELETE_REPLACEMENT = "asdasd";
+        public static final String URL_REPLACEMENT_ACTION = BASE_ORDER_APP + "api/v1/wallet/";
     }
 }

@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R2;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
 
 import butterknife.BindView;
@@ -19,28 +20,27 @@ import butterknife.ButterKnife;
  */
 
 public class TransactionViewHolder extends BaseSellingViewHolder<SellingStatusTxModel> {
-    @BindView(R2.id.icon)
-    ImageView icon;
-    @BindView(R2.id.subtitle)
-    TextView subtitle;
-    @BindView(R2.id.title)
-    TextView title;
-    @BindView(R2.id.overflow_btn)
+    private ImageView icon;
+    private TextView subtitle;
+    private TextView title;
     public LinearLayout overflow_btn;
-    @BindView(R2.id.deadline_view)
-    LinearLayout deadLineContainer;
-    @BindView(R2.id.status)
-    TextView status;
-    @BindView(R2.id.deadline_date)
-    TextView deadlineDate;
-    @BindView(R2.id.invoice)
-    TextView invoice;
-    @BindView(R2.id.list_item)
-    LinearLayout itemLayout;
+    private LinearLayout deadLineContainer;
+    private TextView status;
+    private TextView deadlineDate;
+    private TextView invoice;
+    private LinearLayout itemLayout;
 
     public TransactionViewHolder(View itemView) {
         super(itemView);
-        ButterKnife.bind(this, itemView);
+        icon = (ImageView) itemView.findViewById(R.id.icon);
+        subtitle = (TextView) itemView.findViewById(R.id.subtitle);
+        title = (TextView) itemView.findViewById(R.id.title);
+        overflow_btn = (LinearLayout) itemView.findViewById(R.id.overflow_btn);
+        deadLineContainer = (LinearLayout) itemView.findViewById(R.id.deadline_view);
+        status = (TextView) itemView.findViewById(R.id.status);
+        deadlineDate = (TextView) itemView.findViewById(R.id.deadline_date);
+        invoice = (TextView) itemView.findViewById(R.id.invoice);
+        itemLayout = (LinearLayout) itemView.findViewById(R.id.list_item);
     }
 
     @Override

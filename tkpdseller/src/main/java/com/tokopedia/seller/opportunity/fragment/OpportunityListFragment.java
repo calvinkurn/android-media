@@ -4,14 +4,10 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.View;
-import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
@@ -20,19 +16,14 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
-import com.tokopedia.seller.opportunity.OppurtunityDetailActivity;
 import com.tokopedia.seller.opportunity.adapter.OpportunityListAdapter;
-import com.tokopedia.seller.opportunity.interactor.OpportunityNetworkInteractorImpl;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenter;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenterImpl;
-import com.tokopedia.seller.opportunity.viewmodel.Opportunity;
+import com.tokopedia.seller.opportunity.viewmodel.OpportunityItemViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.OpportunityListPageViewModel;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by nisie on 3/1/17.
@@ -47,19 +38,12 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     RecyclerView opportunityList;
     TextView headerInfo;
     SearchView searchView;
-    FloatingActionButton fab;
+    View filterButton;
+    View sortButton;
 
     OpportunityListAdapter adapter;
     LinearLayoutManager layoutManager;
     RefreshHandler refreshHandler;
-
-    BottomSheetDialog bottomSheetDialog;
-    View filterLayout;
-    Spinner sortSpinner;
-    Spinner shippingTypeSpinner;
-    Spinner categorySpinner;
-    Button resetButton;
-    Button filterButton;
 
     LocalCacheHandler cacheHandler;
 
@@ -95,9 +79,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     protected void initialPresenter() {
-        presenter = new OpportunityListPresenterImpl(this,
-                new OpportunityNetworkInteractorImpl(),
-                new CompositeSubscription()
+        presenter = new OpportunityListPresenterImpl(this
         );
     }
 
@@ -121,7 +103,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         opportunityList = (RecyclerView) view.findViewById(R.id.opportunity_list);
         headerInfo = (TextView) view.findViewById(R.id.header_info);
         searchView = (SearchView) view.findViewById(R.id.search);
-        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        filterButton = view.findViewById(R.id.filter);
+        sortButton = view.findViewById(R.id.sort);
 
         adapter = OpportunityListAdapter.createInstance(onGoToDetail());
         layoutManager = new LinearLayoutManager(getActivity());
@@ -130,7 +113,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
         refreshHandler = new RefreshHandler(getActivity(), view, onRefresh());
         initHeaderText();
-        initBottomSheetDialog(view);
     }
 
     private void initHeaderText() {
@@ -155,57 +137,33 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     private OpportunityListAdapter.OpportunityListener onGoToDetail() {
         return new OpportunityListAdapter.OpportunityListener() {
             @Override
-            public void goToDetail(Opportunity opportunity) {
+            public void goToDetail(OpportunityItemViewModel opportunityItemViewModel) {
 //                startActivityForResult(OppurtunityDetailActivity.getDetailIntent(getActivity(), opportunity),
 //                        REQUEST_OPEN_DETAIL);
             }
         };
     }
 
-    private void initBottomSheetDialog(View view) {
-        filterLayout = getActivity().getLayoutInflater().inflate(R.layout.filter_layout_opportunity, null);
-        sortSpinner = (Spinner) filterLayout.findViewById(R.id.sort);
-        categorySpinner = (Spinner) filterLayout.findViewById(R.id.category);
-        shippingTypeSpinner = (Spinner) filterLayout.findViewById(R.id.shipping_type);
-        resetButton = (Button) filterLayout.findViewById(R.id.button_cancel);
-        filterButton = (Button) filterLayout.findViewById(R.id.button_confirm);
-        bottomSheetDialog = new BottomSheetDialog(getActivity());
-        bottomSheetDialog.setContentView(filterLayout);
-    }
 
     @Override
     protected void setViewListener() {
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bottomSheetDialog.show();
-            }
-        });
         opportunityList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 int lastItemPosition = layoutManager.findLastVisibleItemPosition();
                 int visibleItem = layoutManager.getItemCount() - 1;
-                presenter.loadMore(lastItemPosition, visibleItem);
+                if (!refreshHandler.isRefreshing()
+                        && adapter.getList().size() != 0
+                        && lastItemPosition == visibleItem)
+                    presenter.loadMore();
             }
         });
-        resetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sortSpinner.setSelection(0);
-                categorySpinner.setSelection(0);
-                shippingTypeSpinner.setSelection(0);
-            }
-        });
+
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bottomSheetDialog.hide();
-                presenter.setParamSort(getSortParam());
-                presenter.setParamCategory(getCategoryParam());
-                presenter.getParamShippingType(getShippingParam());
-                presenter.getOpportunity();
+
             }
         });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -240,22 +198,19 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     public void showLoadingList() {
-        if (adapter.getList().size() == 0 || adapter.isEmpty()) {
+        if (!refreshHandler.isRefreshing() && (adapter.getList().size() == 0 || adapter.isEmpty())) {
             adapter.showLoadingFull(true);
-        } else {
+        } else if (!refreshHandler.isRefreshing()) {
             adapter.showLoading(true);
         }
     }
 
     @Override
-    public void onSuccessGetOpportunity() {
+    public void onSuccessGetOpportunity(OpportunityListPageViewModel viewModel) {
         finishLoadingList();
         finishRefresh();
-        ArrayList<Opportunity> list = new ArrayList<>();
-        for (int i = 1; i <= 10; i++) {
-            list.add(new Opportunity("Produk " + i));
-        }
-        adapter.setList(list);
+
+        adapter.setList(viewModel.getOpportunityViewModel().getListOpportunity());
     }
 
     private void finishRefresh() {
@@ -266,6 +221,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     @Override
     public void onErrorGetOpportunity(String errorMessage) {
         finishLoadingList();
+
         finishRefresh();
         if (errorMessage.equals(""))
             NetworkErrorHelper.showSnackbar(getActivity());
@@ -280,23 +236,17 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     public String getSortParam() {
-        if (sortSpinner.getSelectedItemPosition() != 0)
-            return String.valueOf(sortSpinner.getSelectedItem());
-        else return "";
+        return "";
     }
 
     @Override
     public String getShippingParam() {
-        if (shippingTypeSpinner.getSelectedItemPosition() != 0)
-            return String.valueOf(shippingTypeSpinner.getSelectedItem());
-        else return "";
+        return "";
     }
 
     @Override
     public String getCategoryParam() {
-        if (categorySpinner.getSelectedItemPosition() != 0)
-            return String.valueOf(categorySpinner.getSelectedItem());
-        else return "";
+        return "";
     }
 
     private void finishLoadingList() {

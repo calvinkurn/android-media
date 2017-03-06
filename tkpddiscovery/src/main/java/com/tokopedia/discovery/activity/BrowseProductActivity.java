@@ -132,11 +132,9 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         browseProductActivityModel.alias = selected;
     }
 
-
     public enum FDest {
         SORT, FILTER;
     }
-
 
     public static final String EXTRA_DATA = "EXTRA_DATA";
     public static final String EXTRA_TITLE = "EXTRA_TITLE";

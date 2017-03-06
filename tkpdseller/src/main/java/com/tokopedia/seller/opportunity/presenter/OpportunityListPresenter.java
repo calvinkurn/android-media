@@ -7,7 +7,7 @@ package com.tokopedia.seller.opportunity.presenter;
 public interface OpportunityListPresenter {
     void getOpportunity();
 
-    void loadMore(int lastItemPosition, int visibleItem);
+    void loadMore();
 
     void onRefresh();
 

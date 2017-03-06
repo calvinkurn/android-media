@@ -44,6 +44,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication {
         TkpdBaseURL.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         TkpdBaseURL.MOBILE_DOMAIN = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
         TkpdBaseURL.BASE_CONTACT_US = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + "contact-us";
+        TkpdBaseURL.BASE_ORDER_APP = ConsumerAppBaseUrl.BASE_ORDER_APP;
+
     }
 
 }

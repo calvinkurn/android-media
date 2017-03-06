@@ -1,6 +1,10 @@
 package com.tokopedia.seller.opportunity.listener;
 
+import android.app.Activity;
+import android.content.Context;
+
 import com.tokopedia.seller.opportunity.adapter.OpportunityListAdapter;
+import com.tokopedia.seller.opportunity.viewmodel.OpportunityListPageViewModel;
 
 /**
  * Created by nisie on 3/2/17.
@@ -8,7 +12,7 @@ import com.tokopedia.seller.opportunity.adapter.OpportunityListAdapter;
 public interface OpportunityListView {
     void showLoadingList();
 
-    void onSuccessGetOpportunity();
+    void onSuccessGetOpportunity(OpportunityListPageViewModel viewModel);
 
     String getString(int resId);
 
@@ -21,4 +25,6 @@ public interface OpportunityListView {
     String getShippingParam();
 
     String getCategoryParam();
+
+    Activity getActivity();
 }
