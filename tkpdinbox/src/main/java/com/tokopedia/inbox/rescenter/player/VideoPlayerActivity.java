@@ -1,9 +1,12 @@
 package com.tokopedia.inbox.rescenter.player;
 
+import android.content.Context;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.widget.MediaController;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.tokopedia.core.analytics.AppScreen;
@@ -57,7 +60,27 @@ public class VideoPlayerActivity extends BasePresenterActivity<VideoPlayerPresen
         vidControl.setAnchorView(videoView);
         videoView.setMediaController(vidControl);
         videoView.setVideoURI(videoUri);
+        videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mediaPlayer, int what, int extra) {
+                switch (what) {
+                    case MediaPlayer.MEDIA_ERROR_UNKNOWN:
+                        Toast.makeText(getContext(), getString(R.string.error_unknown), Toast.LENGTH_SHORT);
+                        finish();
+                        return true;
+                    case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
+                        Toast.makeText(getContext(), getString(R.string.default_request_error_internal_server), Toast.LENGTH_SHORT);
+                        finish();
+                        return true;
+                }
+                return false;
+            }
+        });
         videoView.start();
+    }
+
+    private Context getContext() {
+        return this;
     }
 
     @Override
