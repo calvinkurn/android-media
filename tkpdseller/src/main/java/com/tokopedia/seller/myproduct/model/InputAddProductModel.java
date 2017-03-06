@@ -341,6 +341,9 @@ public class InputAddProductModel {
         produk.setProductPreOrder(inputAddProductModel.getPreOrder());
         produk.setCatalogid(inputAddProductModel.getCatalog());
         produk.setStockStatusDB(stockStatusDB);
+        for (WholesalePriceDB wholesalePriceDB : produk.getWholeSales()) {
+            wholesalePriceDB.delete();
+        }
         produk.save();
 
         if(!isWithoutImage) {
