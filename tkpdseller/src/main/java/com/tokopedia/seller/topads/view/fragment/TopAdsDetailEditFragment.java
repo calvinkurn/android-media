@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +15,6 @@ import android.widget.RadioGroup;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.datepicker.widget.DatePickerLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
@@ -65,7 +63,6 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     private RadioButton iconFireRadioButton;
     private Button submitButton;
 
-    private SnackbarRetry snackBarRetry;
     private ProgressDialog progressDialog;
 
     protected String adId;
@@ -316,13 +313,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     @Override
     public void onLoadDetailAdError(String errorMessage) {
         hideLoading();
-        showSnackBarRetry(errorMessage, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                loadAdDetail();
-                showLoading();
-            }
-        });
+        showSnackBarError(errorMessage);
     }
 
     protected void saveAd() {
@@ -340,14 +331,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     @Override
     public void onSaveAdError(String errorMessage) {
         hideLoading();
-        showSnackBarRetry(errorMessage, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                saveAd();
-                showLoading();
-
-            }
-        });
+        showSnackBarError(errorMessage);
     }
 
     protected void loadAd(TopAdsDetailAdViewModel detailAd) {
@@ -489,24 +473,13 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
 
     protected void hideLoading() {
         progressDialog.dismiss();
-        hideSnackBarRetry();
     }
 
-    protected void showSnackBarRetry(String errorMessage, NetworkErrorHelper.RetryClickedListener listener) {
-        hideSnackBarRetry();
+    protected void showSnackBarError(String errorMessage) {
         if (!TextUtils.isEmpty(errorMessage)) {
-            snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, listener);
+            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
         } else {
-            snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), listener);
-        }
-        snackBarRetry.showRetrySnackbar();
-        snackBarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
-    }
-
-    protected void hideSnackBarRetry() {
-        if (snackBarRetry != null) {
-            snackBarRetry.hideRetrySnackbar();
-            snackBarRetry = null;
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_network_error));
         }
     }
 
