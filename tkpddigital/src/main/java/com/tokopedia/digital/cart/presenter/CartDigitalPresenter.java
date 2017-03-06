@@ -2,18 +2,18 @@ package com.tokopedia.digital.cart.presenter;
 
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
-import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.Attributes;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.Field;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
 import com.tokopedia.digital.cart.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.cart.listener.IDigitalCartView;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
+import com.tokopedia.digital.utils.DeviceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,11 +58,12 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         Attributes attributes = new Attributes();
         attributes.setDeviceId(5);
         attributes.setInstantCheckout(passData.getInstantCheckout().equals("1"));
-        attributes.setIpAddress(view.getIpAddress());
+        attributes.setIpAddress(DeviceUtil.getLocalIpAddress());
         attributes.setUserAgent(
                 "Android Tokopedia Application/"
-                        + BuildConfig.VERSION_NAME
-                        + " (" + getDeviceName()
+                        + GlobalConfig.getPackageApplicationName()
+                        + " v." + GlobalConfig.VERSION_NAME
+                        + " (" + DeviceUtil.getDeviceName()
                         + "; Android; API_"
                         + Build.VERSION.SDK_INT
                         + "; Version"
@@ -128,36 +129,5 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 view.renderCartDigitalInfoData(cartDigitalInfoData);
             }
         };
-    }
-
-    private static String getDeviceName() {
-        String manufacturer = Build.MANUFACTURER;
-        String model = Build.MODEL;
-        if (model.startsWith(manufacturer)) {
-            return capitalize(model);
-        }
-        return capitalize(manufacturer) + " " + model;
-    }
-
-    private static String capitalize(String str) {
-        if (TextUtils.isEmpty(str)) {
-            return str;
-        }
-        char[] arr = str.toCharArray();
-        boolean capitalizeNext = true;
-
-        StringBuilder phrase = new StringBuilder();
-        for (char c : arr) {
-            if (capitalizeNext && Character.isLetter(c)) {
-                phrase.append(Character.toUpperCase(c));
-                capitalizeNext = false;
-                continue;
-            } else if (Character.isWhitespace(c)) {
-                capitalizeNext = true;
-            }
-            phrase.append(c);
-        }
-
-        return phrase.toString();
     }
 }

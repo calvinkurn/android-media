@@ -13,13 +13,9 @@ public interface IDigitalCartView extends IBaseView {
 
     void closeViewWithMessageAlert(String message);
 
-    String getDeviceId();
-
     String getUserId();
 
     String getAccountToken();
 
     String getWalletRefreshToken();
-
-    String getIpAddress();
 }

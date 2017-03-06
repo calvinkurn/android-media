@@ -10,13 +10,11 @@ import android.os.Parcelable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
-import android.text.format.Formatter;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -32,11 +30,6 @@ import com.tokopedia.digital.cart.listener.IDigitalCartView;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
-
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -247,11 +240,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
-    public String getDeviceId() {
-        return GCMHandler.getRegistrationId(getActivity());
-    }
-
-    @Override
     public String getUserId() {
         return sessionHandler.getLoginID();
     }
@@ -264,28 +252,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public String getWalletRefreshToken() {
         return sessionHandler.getWalletRefreshToken(getActivity());
-    }
-
-    @Override
-    public String getIpAddress() {
-        return getLocalIpAddress();
-    }
-
-    public String getLocalIpAddress() {
-        try {
-            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
-                NetworkInterface intf = en.nextElement();
-                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
-                    InetAddress inetAddress = enumIpAddr.nextElement();
-                    if (!inetAddress.isLoopbackAddress()) {
-                        return Formatter.formatIpAddress(inetAddress.hashCode());
-                    }
-                }
-            }
-        } catch (SocketException ex) {
-            return "";
-        }
-        return null;
     }
 
     @Override

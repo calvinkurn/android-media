@@ -79,12 +79,6 @@ public class AuthUtil {
     }
 
 
-    public static Map<String, String> generateHeadersDigital(String path, String strParam, String method, String authKey) {
-        Map<String, String> finalHeader = getDefaultHeaderMap(path, strParam, method, CONTENT_TYPE_JSON, authKey, DATE_FORMAT);
-        finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
-        return finalHeader;
-    }
-
     public static Map<String, String> generateHeaders(String path, String method, String authKey) {
         Map<String, String> finalHeader = getDefaultHeaderMap(path, "", method, CONTENT_TYPE_JSON, authKey, DATE_FORMAT);
         finalHeader.put(HEADER_USER_ID, SessionHandler.getLoginID(MainApplication.getAppContext()));
