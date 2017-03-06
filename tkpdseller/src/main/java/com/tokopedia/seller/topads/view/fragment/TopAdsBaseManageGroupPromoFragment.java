@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,6 +19,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.di.TopAdsAddPromoPoductDI;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.view.adapter.TopAdsAutoCompleteAdapter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsManageGroupPromoPresenter;
 import com.tokopedia.seller.topads.view.listener.TopAdsManageGroupPromoView;
 import com.tokopedia.seller.topads.view.widget.TopAdsCustomAutoCompleteTextView;
@@ -49,7 +51,8 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
     protected TopAdsRadioExpandView viewRadioNotInGroup;
     private Button buttonNext;
 
-    private ArrayAdapter<String> adapterChooseGroup;
+    private TopAdsAutoCompleteAdapter adapterChooseGroup;
+    private ArrayList<String> groupNames = new ArrayList<>();
     private List<GroupAd> groupAds = new ArrayList<>();
     protected int choosenId;
     private ProgressDialog progressDialog;
@@ -169,8 +172,13 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
 
     @Override
     protected void initialVar() {
-        ArrayList<String> groupNames = new ArrayList<>();
-        adapterChooseGroup = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_dropdown_item_1line, groupNames);
+        adapterChooseGroup = new TopAdsAutoCompleteAdapter(getActivity(), android.R.layout.simple_dropdown_item_1line);
+        adapterChooseGroup.setListenerGetData(new TopAdsAutoCompleteAdapter.ListenerGetData() {
+            @Override
+            public ArrayList<String> getData() {
+                return groupNames;
+            }
+        });
     }
 
     @Override
@@ -198,11 +206,12 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
     public void onGetGroupAdList(List<GroupAd> groupAds) {
         this.groupAds.clear();
         this.groupAds.addAll(groupAds);
-        adapterChooseGroup.clear();
+        this.groupNames.clear();
         textInputLayoutChooseGroup.setError(null);
         for(GroupAd groupAd : groupAds){
-            adapterChooseGroup.add(groupAd.getName());
+            groupNames.add(groupAd.getName());
         }
+        adapterChooseGroup.getFilter().filter(inputChooseGroup.getText());
     }
 
     @Override
