@@ -193,7 +193,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
         if (isFragmentCreated(TopAdsAddProductListFragment.TAG)) {
             inflateNewFragment(
                     getContainerId(),
-                    TopAdsAddProductListFragment.newInstance(),
+                    TopAdsAddProductListFragment.newInstance(maxNumberSelection),
                     TopAdsAddProductListFragment.TAG
             );
         } else {

@@ -4,7 +4,8 @@ package com.tokopedia.seller.topads.view.model;
  * @author normansyahputa on 2/13/17.
  */
 
-public class TopAdsAddProductModel extends StateTypeBasedModel {
+public class TopAdsAddProductModel extends StateTypeBasedModel
+        implements BaseTopAdsProductModel {
     public static final int TYPE = 1292394;
 
     public String imageUrl;
@@ -27,5 +28,10 @@ public class TopAdsAddProductModel extends StateTypeBasedModel {
                                  TopAdsProductViewModel productDomain) {
         this(imageUrl, description, snippet);
         this.productDomain = productDomain;
+    }
+
+    @Override
+    public TopAdsProductViewModel getTopAdsProductViewModel() {
+        return productDomain;
     }
 }

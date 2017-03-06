@@ -8,7 +8,8 @@ import com.tokopedia.seller.topads.domain.interactor.TopAdsDefaultParamUseCase;
 import com.tokopedia.seller.topads.domain.model.ProductDomain;
 import com.tokopedia.seller.topads.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.topads.view.TopAdsSearchProductView;
-import com.tokopedia.seller.topads.view.model.TopAdsAddProductModel;
+import com.tokopedia.seller.topads.view.model.NonPromotedTopAdsAddProductModel;
+import com.tokopedia.seller.topads.view.model.PromotedTopAdsAddProductModel;
 import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.view.model.TypeBasedModel;
 
@@ -183,17 +184,25 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
 
         for (ProductDomain productDomain : productDomains) {
 
-            if(skipWithAdId && productDomain.isPromoted()) continue;
+            if (skipWithAdId && productDomain.isPromoted()) {
+                PromotedTopAdsAddProductModel promotedTopAdsAddProductModel
+                        = new PromotedTopAdsAddProductModel(
+                        productDomain.getName(),
+                        productDomain.getGroupName(),
+                        convertModelFromDomainToView(productDomain)
+                );
+                typeBasedModels.add(promotedTopAdsAddProductModel);
+            } else {
+                NonPromotedTopAdsAddProductModel nonPromotedTopAdsAddProductModel
+                        = new NonPromotedTopAdsAddProductModel(
+                        productDomain.getName(),
+                        productDomain.getGroupName(),
+                        convertModelFromDomainToView(productDomain)
+                );
+                typeBasedModels.add(nonPromotedTopAdsAddProductModel);
+            }
 
-            TopAdsAddProductModel topAdsAddProductModel =
-                    new TopAdsAddProductModel(
-                            productDomain.getImageUrl(),
-                            productDomain.getName(),
-                            productDomain.getGroupName(),
-                            convertModelFromDomainToView(productDomain)
-                    );
 
-            typeBasedModels.add(topAdsAddProductModel);
         }
 
 
