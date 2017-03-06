@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/padding_small"
-    android:paddingRight="@dimen/padding_small"
-    android:paddingTop="@dimen/padding_small">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:paddingLeft="@dimen/padding_small"
+              android:paddingRight="@dimen/padding_small"
+              android:paddingTop="@dimen/padding_small">
 
     <android.support.v7.widget.CardView style="@style/CardViewDigital">
 
@@ -20,7 +20,7 @@
                 android:id="@+id/input_price_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="Masukkan jumlah yang dibayar" />
+                tools:text="Masukkan jumlah yang dibayar"/>
 
             <EditText
                 android:id="@+id/input_price_edittext"

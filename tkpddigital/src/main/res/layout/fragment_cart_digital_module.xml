@@ -24,7 +24,7 @@
             <com.tokopedia.digital.cart.compoundview.InputPriceHolderView
                 android:id="@+id/input_price_holder_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"/>
 
             <com.tokopedia.digital.cart.compoundview.VoucherCartHolderView
                 android:id="@+id/voucher_cart_holder_view"
