@@ -4,172 +4,178 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/container_view"
+    <FrameLayout
+        android:id="@+id/main_frame"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/text_view_shop_score_summary_detail_tittle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:paddingEnd="16dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingStart="16dp"
-            android:paddingTop="25dp"
-            android:text="Performa toko Anda kurang baik dengan nilai rata-rata 45"
-            android:textSize="16sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:paddingBottom="24dp"
-            android:paddingEnd="16dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingStart="16dp"
-            android:paddingTop="8dp"
-            android:text="Nilai dihitung berdasarkan rata-rata nilai indikator performa toko anda dalam 30 hari terakhir"
-            android:textSize="12sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/tkpd_divider" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:paddingEnd="16dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingStart="16dp"
-            android:paddingTop="24dp"
-            android:text="Indikator Performa Toko"
-            android:textSize="16sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:paddingEnd="16dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingStart="16dp"
-            android:paddingTop="4dp"
-            android:text="30 hari terakhir"
-            android:textSize="12sp" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view_shop_score_detail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:paddingBottom="20dp"
-            android:paddingEnd="16dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingStart="16dp"
-            android:paddingTop="20dp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/tkpd_divider" />
+        android:layout_height="wrap_content">
 
         <LinearLayout
+            android:id="@+id/container_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:paddingBottom="26dp"
-            android:paddingEnd="16dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingStart="16dp"
-            android:paddingTop="16dp"
-            android:weightSum="5">
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_view_shop_score_summary_detail_tittle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingEnd="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingStart="16dp"
+                android:paddingTop="25dp"
+                android:text="Performa toko Anda kurang baik dengan nilai rata-rata 45"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingBottom="24dp"
+                android:paddingEnd="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingStart="16dp"
+                android:paddingTop="8dp"
+                android:text="Nilai dihitung berdasarkan rata-rata nilai indikator performa toko anda dalam 30 hari terakhir"
+                android:textSize="12sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/tkpd_divider" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingEnd="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingStart="16dp"
+                android:paddingTop="24dp"
+                android:text="Indikator Performa Toko"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingEnd="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingStart="16dp"
+                android:paddingTop="4dp"
+                android:text="30 hari terakhir"
+                android:textSize="12sp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view_shop_score_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingBottom="20dp"
+                android:paddingEnd="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingStart="16dp"
+                android:paddingTop="20dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/tkpd_divider" />
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="4"
-                android:orientation="vertical">
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:paddingBottom="26dp"
+                android:paddingEnd="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingStart="16dp"
+                android:paddingTop="16dp"
+                android:weightSum="5">
 
-                <TextView
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@string/title_shop_score_detail_gold_badge_info"
-                    android:textSize="18sp" />
+                    android:layout_weight="4"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/description_shop_score_detail_gold_badge_info"
-                    android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/title_shop_score_detail_gold_badge_info"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/description_shop_score_detail_gold_badge_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Capai nilai minimal 75 poin untuk mendapatkan Gold Badge!" />
+
+                </LinearLayout>
+
+                <FrameLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Capai nilai minimal 75 poin untuk mendapatkan Gold Badge!" />
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:id="@+id/image_view_gold_badge"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:src="@drawable/ic_gm_badge_not_qualified" />
+
+                </FrameLayout>
+
 
             </LinearLayout>
 
-            <FrameLayout
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/button_go_to_gm_subscribe"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1">
+                android:layout_gravity="center"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/tkpd_main_green"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp"
+                android:text="@string/button_go_to_gm_subscribe"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                android:visibility="gone" />
 
-                <ImageView
-                    android:id="@+id/image_view_gold_badge"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:src="@drawable/ic_gm_badge_not_qualified" />
-
-            </FrameLayout>
-
+            <TextView
+                android:id="@+id/button_go_to_seller_center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="12dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/white"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp"
+                android:text="@string/button_go_to_seller_tokopedia_web"
+                android:textAlignment="center"
+                android:textSize="13sp" />
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/button_go_to_gm_subscribe"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:background="@color/tkpd_main_green"
-            android:paddingBottom="12dp"
-            android:paddingTop="12dp"
-            android:text="@string/button_go_to_gm_subscribe"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="13sp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/button_go_to_seller_center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="12dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:background="@color/white"
-            android:paddingBottom="12dp"
-            android:paddingTop="12dp"
-            android:text="@string/button_go_to_seller_tokopedia_web"
-            android:textAlignment="center"
-            android:textSize="13sp" />
-
-
-    </LinearLayout>
+    </FrameLayout>
 
 
 </android.support.v4.widget.NestedScrollView>

@@ -773,6 +773,11 @@ public class SellerHomeActivity
     }
 
     @Override
+    public void onErrorShopScore() {
+
+    }
+
+    @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (!isInit) {

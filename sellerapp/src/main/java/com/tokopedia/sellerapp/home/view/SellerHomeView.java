@@ -8,4 +8,6 @@ import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
  */
 public interface SellerHomeView extends CustomerView {
     void renderShopScore(ShopScoreViewModel shopScoreViewModel);
+
+    void onErrorShopScore();
 }

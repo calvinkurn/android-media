@@ -10,6 +10,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,6 +41,7 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
     private TextView descriptionGoldBadge;
     private TextView buttonGoToGmSubscribe;
     private ImageView imageViewGoldBadge;
+    private FrameLayout mainFrame;
     private TkpdProgressDialog progressDialog;
     private View.OnClickListener goToGmSubscribe = new View.OnClickListener() {
         @Override
@@ -80,6 +82,8 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.MAIN_PROGRESS);
 
         containerView = (LinearLayout) parentView.findViewById(R.id.container_view);
+
+        mainFrame = (FrameLayout) parentView.findViewById(R.id.main_frame);
 
         summaryDetailTitle = (TextView) parentView.findViewById(R.id.text_view_shop_score_summary_detail_tittle);
         descriptionGoldBadge = (TextView) parentView.findViewById(R.id.description_shop_score_detail_gold_badge_info);
@@ -175,10 +179,11 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
 
     @Override
     public void emptyState() {
+        containerView.setVisibility(View.GONE);
         NetworkErrorHelper
                 .showEmptyState(
                         getActivity(),
-                        containerView,
+                        mainFrame,
                         getString(R.string.error_title_shop_score_failed),
                         getString(R.string.error_subtitle_shop_score_failed),
                         getString(R.string.retry_shop_score),
