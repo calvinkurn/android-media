@@ -9,7 +9,7 @@
 
     <TextView
         android:id="@+id/label"
-        android:layout_width="@dimen/youtube_place_holder_horizontal_width"
+        android:layout_width="@dimen/store_name"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:textSize="@dimen/fontvvs"

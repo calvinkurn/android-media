@@ -12,7 +12,7 @@ public class AttributesDigital {
 
     private String price;
 
-    private int pricePlain;
+    private long pricePlain;
 
     private UserInputPriceDigital userInputPrice;
 
@@ -40,11 +40,11 @@ public class AttributesDigital {
         this.price = price;
     }
 
-    public int getPricePlain() {
+    public long getPricePlain() {
         return pricePlain;
     }
 
-    public void setPricePlain(int pricePlain) {
+    public void setPricePlain(long pricePlain) {
         this.pricePlain = pricePlain;
     }
 

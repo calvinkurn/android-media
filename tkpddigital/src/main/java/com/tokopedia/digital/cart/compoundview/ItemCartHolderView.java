@@ -38,6 +38,8 @@ public class ItemCartHolderView extends RelativeLayout {
     LinearLayout layoutAdditionalInfo;
     @BindView(R2.id.button_detail)
     TextView buttonDetail;
+    @BindView(R2.id.separator)
+    View separator;
 
     private boolean additionalInfoShowed;
     private Context context;
@@ -87,9 +89,12 @@ public class ItemCartHolderView extends RelativeLayout {
     }
 
     public void renderAdditionalInfo(List<CartAdditionalInfo> additionalInfos) {
+        separator.setVisibility(additionalInfos.isEmpty() ? GONE : VISIBLE);
         buttonDetail.setVisibility(additionalInfos.isEmpty() ? GONE : VISIBLE);
-        for (CartAdditionalInfo additionalInfo : additionalInfos) {
-            addViewAdditionalInfo(additionalInfo);
+        if (!additionalInfos.isEmpty()) {
+            for (CartAdditionalInfo additionalInfo : additionalInfos) {
+                addViewAdditionalInfo(additionalInfo);
+            }
         }
     }
 

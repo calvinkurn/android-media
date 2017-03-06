@@ -10,6 +10,7 @@ import android.os.Parcelable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -23,11 +24,13 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.cart.compoundview.CheckoutHolderView;
+import com.tokopedia.digital.cart.compoundview.InputPriceHolderView;
 import com.tokopedia.digital.cart.compoundview.ItemCartHolderView;
 import com.tokopedia.digital.cart.compoundview.VoucherCartHolderView;
 import com.tokopedia.digital.cart.interactor.CartDigitalInteractor;
 import com.tokopedia.digital.cart.listener.IDigitalCartView;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
+import com.tokopedia.digital.cart.model.UserInputPriceDigital;
 import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
 
@@ -39,8 +42,10 @@ import butterknife.OnClick;
  */
 
 public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPresenter> implements
-        IDigitalCartView, CheckoutHolderView.IAction {
+        IDigitalCartView, CheckoutHolderView.IAction,
+        InputPriceHolderView.EditTextUserInputListener {
 
+    private static final String TAG = CartDigitalFragment.class.getSimpleName();
     private static final String ARG_CART_DIGITAL_DATA_PASS = "ARG_CART_DIGITAL_DATA_PASS";
     private DigitalCheckoutPassData passData;
 
@@ -54,7 +59,10 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     ProgressBar pbMainLoading;
     @BindView(R2.id.nsv_container)
     NestedScrollView mainContainer;
+    @BindView(R2.id.input_price_holder_view)
+    InputPriceHolderView inputPriceHolderView;
 
+    private InputPriceHolderView.EditTextUserInputListener listener;
     private SessionHandler sessionHandler;
 
     public static Fragment newInstance(Parcelable passData) {
@@ -73,6 +81,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     protected void onFirstTimeLaunched() {
         //   presenter.processAddToCart(passData);
+        inputPriceHolderView.setEditTextUserInputListener(this);
+        presenter.processGetCartData(passData.getCategoryId());
         sessionHandler = new SessionHandler(getActivity());
         //   presenter.processGetCartData(passData.getCategoryId());
         presenter.processAddToCart(passData);
@@ -206,11 +216,25 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         itemCartHolderView.setCategoryName("");
         itemCartHolderView.setOperatorName("");
         itemCartHolderView.setImageItemCart("");
+        renderDataInputPrice(String.valueOf(cartDigitalInfoData.getAttributes().getPricePlain()),
+                cartDigitalInfoData.getAttributes().getUserInputPrice());
         checkoutHolderView.renderData(
                 this,
                 cartDigitalInfoData.getAttributes().getPrice(),
                 cartDigitalInfoData.getAttributes().getPrice()
         );
+    }
+
+    private void renderDataInputPrice(String total, UserInputPriceDigital userInputPriceDigital) {
+        if (userInputPriceDigital != null) {
+            inputPriceHolderView.setVisibility(View.VISIBLE);
+            inputPriceHolderView.setInputPriceInfo(total, userInputPriceDigital.getMinPaymentPlain(),
+                    userInputPriceDigital.getMaxPaymentPlain());
+            inputPriceHolderView.bindView(userInputPriceDigital.getMinPayment(),
+                    userInputPriceDigital.getMaxPayment());
+        } else {
+            inputPriceHolderView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -257,5 +281,10 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void onClickButtonNext() {
 
+    }
+
+    @Override
+    public void userInputPayment(long paymentAmount) {
+        Log.d(TAG, "userInputPayment: " + paymentAmount);
     }
 }

@@ -13,25 +13,47 @@ public class UserInputPrice {
 
     @SerializedName("min_payment")
     @Expose
-    private long minPayment;
+    private String minPayment;
     @SerializedName("max_payment")
     @Expose
-    private long maxPayment;
+    private String maxPayment;
+    @SerializedName("min_payment_plain")
+    @Expose
+    private long minPaymentPlain;
+    @SerializedName("max_payment_plain")
+    @Expose
+    private long maxPaymentPlain;
 
-    public long getMinPayment() {
+    public String getMinPayment() {
         return minPayment;
     }
 
-    public void setMinPayment(long minPayment) {
+    public void setMinPayment(String minPayment) {
         this.minPayment = minPayment;
     }
 
-    public long getMaxPayment() {
+    public String getMaxPayment() {
         return maxPayment;
     }
 
-    public void setMaxPayment(long maxPayment) {
+    public void setMaxPayment(String maxPayment) {
         this.maxPayment = maxPayment;
+    }
+
+    public long getMinPaymentPlain() {
+        return minPaymentPlain;
+    }
+
+    public void setMinPaymentPlain(long minPaymentPlain) {
+        this.minPaymentPlain = minPaymentPlain;
+    }
+
+    public long getMaxPaymentPlain() {
+        return maxPaymentPlain;
+    }
+
+    public void setMaxPaymentPlain(long maxPaymentPlain) {
+        this.maxPaymentPlain = maxPaymentPlain;
     }
 
     @Override
