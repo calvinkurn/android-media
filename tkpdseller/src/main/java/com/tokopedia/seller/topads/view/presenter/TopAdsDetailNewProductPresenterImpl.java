@@ -4,6 +4,7 @@ import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailProductUseCa
 import com.tokopedia.seller.topads.domain.interactor.TopAdsCreateDetailProductListUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailProductUseCase;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
+import com.tokopedia.seller.topads.utils.ViewUtils;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailEditView;
 import com.tokopedia.seller.topads.view.mapper.TopAdDetailProductMapper;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailProductViewModel;
@@ -42,7 +43,7 @@ public class TopAdsDetailNewProductPresenterImpl extends TopAdsDetailEditProduct
 
             @Override
             public void onError(Throwable e) {
-                getView().onSaveAdError(e.getMessage());
+                getView().onSaveAdError(ViewUtils.getErrorMessage(e));
             }
 
             @Override
