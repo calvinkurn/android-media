@@ -83,7 +83,7 @@ public class TrackingUtils extends TrackingConfig {
         getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_OPEN_FAVORITE);
     }
 
-    public static void sendMoEngageOpenHotListEvent(int feedSize){
+    public static void sendMoEngageOpenHotListEvent(){
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, SessionHandler.isV4Login(MainApplication.getAppContext()));
         getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_OPEN_HOTLIST);

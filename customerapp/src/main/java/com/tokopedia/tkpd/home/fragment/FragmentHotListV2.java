@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -215,6 +216,7 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
             hotList.setLocalyticFlow(getActivity());
             hotList.sendAppsFlyerData(getActivity());
             ScreenTracking.screen(getScreenName());
+            TrackingUtils.sendMoEngageOpenHotListEvent();
         }
         super.setUserVisibleHint(isVisibleToUser);
     }
