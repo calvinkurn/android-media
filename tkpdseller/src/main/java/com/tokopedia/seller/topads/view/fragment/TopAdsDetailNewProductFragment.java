@@ -47,8 +47,8 @@ public class TopAdsDetailNewProductFragment extends TopAdsDetailNewFragment<TopA
     @Override
     protected void addProduct() {
         Intent intent = new Intent(getActivity(), TopAdsAddProductListActivity.class);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, false);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_ETALASE, false);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, true);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_ETALASE, true);
         intent.putParcelableArrayListExtra(TopAdsExtraConstant.EXTRA_SELECTIONS, topAdsProductList);
         startActivityForResult(intent, ADD_PRODUCT_REQUEST_CODE);
     }

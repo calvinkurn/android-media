@@ -3,9 +3,8 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
@@ -66,8 +65,9 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
     @Override
     protected void addProduct() {
         Intent intent = new Intent(getActivity(), TopAdsAddProductListActivity.class);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, false);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_ETALASE, false);
+        boolean hideExistingGroup = !TextUtils.isEmpty(adId);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, hideExistingGroup);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_ETALASE, hideExistingGroup);
         intent.putParcelableArrayListExtra(TopAdsExtraConstant.EXTRA_SELECTIONS, topAdsProductList);
         startActivityForResult(intent, ADD_PRODUCT_REQUEST_CODE);
     }
