@@ -13,9 +13,10 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditProductPresent
 
 public class TopAdsDetailEditProductFragment extends TopAdsDetailEditFragment<TopAdsDetailEditProductPresenter> {
 
-    public static Fragment createInstance(String shopAdId) {
+    public static Fragment createInstance(String name, String shopAdId) {
         Fragment fragment = new TopAdsDetailEditProductFragment();
         Bundle bundle = new Bundle();
+        bundle.putString(TopAdsExtraConstant.EXTRA_NAME, name);
         bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, shopAdId);
         fragment.setArguments(bundle);
         return fragment;
@@ -30,6 +31,12 @@ public class TopAdsDetailEditProductFragment extends TopAdsDetailEditFragment<To
     @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_top_ads_edit_product;
+    }
+
+    @Override
+    protected void initView(View view) {
+        super.initView(view);
+        nameInputLayout.setHint(getString(R.string.label_top_ads_product_name));
     }
 
     @Override
