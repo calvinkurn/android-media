@@ -372,8 +372,14 @@ public interface AppEventTracking {
         String USER_ID = "User_ID";
         String MEDIUM = "Medium";
         String EMAIL = "Email";
+        String LOGIN_STATUS = "Logged_in_Status";
+        String PRODUCTS_NUMBER = "Number_of_Products";
 
         String EVENT_LOGIN = "Login";
+        String EVENT_OPEN_BERANDA = "Beranda_Screen_Launched";
+        String EVENT_OPEN_FEED = "Feed_Screen_Launched";
+        String EVENT_OPEN_FAVORITE = "Favorite_Screen_Launched";
+        String EVENT_OPEN_HOTLIST = "HotList_Screen_Launched";
         String REG_START = "Registration_Start";
         String REG_COMPL = "Registration_Completed";
         String ADDR_ADD = "Address_Added";
