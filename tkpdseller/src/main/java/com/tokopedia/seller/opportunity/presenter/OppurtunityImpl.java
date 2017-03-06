@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.seller.opportunity.data.factory.ActionReplacementSourceFactory;
-import com.tokopedia.seller.opportunity.data.factory.ReplacementDataSourceFactory;
+import com.tokopedia.seller.opportunity.data.factory.OpportunityDataSourceFactory;
 import com.tokopedia.seller.opportunity.data.repository.ReplacementRepositoryImpl;
 import com.tokopedia.seller.opportunity.domain.interactor.AcceptReplacementUseCase;
 import com.tokopedia.seller.opportunity.listener.OppurtunityView;
@@ -22,7 +22,7 @@ public class OppurtunityImpl implements OppurtunityPresenter {
         this.view = view;
         ReplacementRepositoryImpl repository = new ReplacementRepositoryImpl(
                 new ActionReplacementSourceFactory(context),
-                new ReplacementDataSourceFactory(context)
+                new OpportunityDataSourceFactory(context)
         );
         this.acceptReplacementUseCase = new AcceptReplacementUseCase(
                 new JobExecutor(), new UIThread(), repository

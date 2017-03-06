@@ -1,6 +1,5 @@
 package com.tokopedia.seller.opportunity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,7 +11,7 @@ import com.tokopedia.seller.opportunity.fragment.OppurtunityDetailFragment;
 import com.tokopedia.seller.opportunity.listener.OppurtunityDetailView;
 import com.tokopedia.seller.opportunity.presenter.OppurtunityDetailImpl;
 import com.tokopedia.seller.opportunity.presenter.OppurtunityDetailPresenter;
-import com.tokopedia.seller.opportunity.viewmodel.Opportunity;
+import com.tokopedia.seller.opportunity.viewmodel.OpportunityItemViewModel;
 
 /**
  * Created by hangnadi on 2/27/17.
@@ -67,7 +66,7 @@ public class OppurtunityDetailActivity extends BasePresenterActivity<Oppurtunity
 
     }
 
-    public static Intent getDetailIntent(Context context, Opportunity opportunity) {
+    public static Intent getDetailIntent(Context context, OpportunityItemViewModel opportunityItemViewModel) {
         Intent intent = new Intent(context, OppurtunityDetailActivity.class);
 //        intent.putExtra(ARGS_OPPORTUNITY, opportunity);
         return intent;

@@ -154,6 +154,9 @@
 
         <service android:name=".shop.ShopEditService"
             android:exported="false"/>
+
+        <activity android:name=".opportunity.SortActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

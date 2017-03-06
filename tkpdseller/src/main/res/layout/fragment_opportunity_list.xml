@@ -1,61 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
-    android:focusableInTouchMode="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/header_info"
+        <LinearLayout
+            android:id="@+id/footer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/bg_yellow_border_yelow"
-            android:gravity="center"
-            android:padding="@dimen/padding_small"
-            android:text="@string/header_opportunity"
-            android:layout_marginBottom="@dimen/margin_vs"/>
+            android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            android:orientation="horizontal">
 
-        <android.support.v7.widget.SearchView
-            android:id="@+id/search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/cards_ui"
-            android:hint="@string/search_product"
-            android:iconifiedByDefault="false"
-            app:iconifiedByDefault="false"
-            android:layout_marginBottom="@dimen/margin_vs"/>
+            <RelativeLayout
+                android:id="@+id/filter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/selectable_white_background"
+                android:gravity="center">
 
-        <com.tokopedia.core.customwidget.SwipeToRefresh
-            android:id="@+id/swipe_refresh_layout"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/btn_height"
+                    android:drawableLeft="@drawable/ic_filter_list_black_24dp"
+                    android:drawablePadding="@dimen/padding_vs"
+                    android:gravity="center_vertical"
+                    android:text="@string/filter" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/sort"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/selectable_white_background"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/btn_height"
+                    android:layout_gravity="center"
+                    android:drawableLeft="@drawable/ic_sort_black_24dp"
+                    android:drawablePadding="@dimen/padding_vs"
+                    android:gravity="center_vertical"
+                    android:text="@string/sort" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/filter_layout">
+            android:layout_above="@id/footer"
+            android:orientation="vertical">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/opportunity_list"
+            <TextView
+                android:id="@+id/header_info"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:scrollbars="vertical" />
-        </com.tokopedia.core.customwidget.SwipeToRefresh>
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:background="@drawable/bg_yellow_border_yelow"
+                android:gravity="center"
+                android:padding="@dimen/padding_small"
+                android:text="@string/header_opportunity" />
 
-    </LinearLayout>
+            <android.support.v7.widget.SearchView
+                android:id="@+id/search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:background="@drawable/cards_ui"
+                android:hint="@string/search_product"
+                android:iconifiedByDefault="false"
+                app:iconifiedByDefault="false" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="@dimen/fab_button_diameter"
-        android:layout_height="@dimen/fab_button_diameter"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:background="@color/tkpd_dark_green"
-        android:src="@drawable/ic_action_filter_white_24dp"
-        app:backgroundTint="@color/green_500" />
+            <com.tokopedia.core.customwidget.SwipeToRefresh
+                android:id="@+id/swipe_refresh_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/filter_layout">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/opportunity_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:scrollbars="vertical" />
+            </com.tokopedia.core.customwidget.SwipeToRefresh>
+
+        </LinearLayout>
+    </RelativeLayout>
+
 </android.support.design.widget.CoordinatorLayout>

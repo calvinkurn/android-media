@@ -1,24 +1,28 @@
 package com.tokopedia.seller.opportunity.presenter;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.model.PagingHandler;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.rxjava.RxUtils;
+import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.opportunity.interactor.OpportunityNetworkInteractor;
+import com.tokopedia.seller.opportunity.data.factory.ActionReplacementSourceFactory;
+import com.tokopedia.seller.opportunity.data.factory.OpportunityDataSourceFactory;
+import com.tokopedia.seller.opportunity.data.repository.ReplacementRepositoryImpl;
+import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityFilterUseCase;
+import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityUseCase;
+import com.tokopedia.seller.opportunity.domain.interactor.OpportunityListUseCase;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
-import com.tokopedia.seller.opportunity.viewmodel.OpportunityParam;
+import com.tokopedia.seller.opportunity.domain.param.GetOpportunityListParam;
+import com.tokopedia.seller.opportunity.viewmodel.OpportunityListPageViewModel;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
-import retrofit2.Response;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by nisie on 3/2/17.
@@ -28,76 +32,90 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
 
     private final OpportunityListView viewListener;
     private PagingHandler pagingHandler;
-    private OpportunityNetworkInteractor networkInteractor;
-    private CompositeSubscription compositeSubscription;
-    private OpportunityParam opportunityParam;
 
-    public OpportunityListPresenterImpl(OpportunityListView viewListener,
-                                        OpportunityNetworkInteractor networkInteractor,
-                                        CompositeSubscription compositeSubscription) {
+    private OpportunityListUseCase opportunityListUseCase;
+
+    private GetOpportunityListParam opportunityParam;
+
+    public OpportunityListPresenterImpl(OpportunityListView viewListener) {
         this.viewListener = viewListener;
         this.pagingHandler = new PagingHandler();
-        this.networkInteractor = networkInteractor;
-        this.compositeSubscription = compositeSubscription;
-        this.opportunityParam = new OpportunityParam();
+        this.opportunityParam = new GetOpportunityListParam();
+
+        ReplacementRepositoryImpl repository = new ReplacementRepositoryImpl(
+                new ActionReplacementSourceFactory(viewListener.getActivity()),
+                new OpportunityDataSourceFactory(viewListener.getActivity())
+        );
+        this.opportunityListUseCase = new OpportunityListUseCase(
+                new JobExecutor(), new UIThread(), repository,
+                new GetOpportunityUseCase(new JobExecutor(), new UIThread(), repository),
+                new GetOpportunityFilterUseCase(new JobExecutor(), new UIThread(), repository)
+        );
     }
 
     @Override
     public void getOpportunity() {
         viewListener.showLoadingList();
         CommonUtils.dumper("NISNIS " + getOpportunityParam().toString());
-//        compositeSubscription.add(networkInteractor.getOpportunity(getOpportunityParam())
-//                .subscribeOn(S
-// chedulers.newThread())
-//                .unsubscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Subscriber<Response<TkpdResponse>>() {
-//                    @Override
-//                    public void onCompleted() {
-//                        networkInteractor.setIsRequesting(false);
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        if (e instanceof UnknownHostException) {
-//                            viewListener.onErrorGetOpportunity(viewListener.getString(R.string.msg_no_connection));
-//                        } else if (e instanceof SocketTimeoutException) {
-//                            viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_timeout));
-//                        } else if (e instanceof IOException) {
-//                            viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_internal_server));
-//                        } else {
-//                            viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_unknown));
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onNext(Response<TkpdResponse> response) {
-//
-//                        viewListener.onSuccessGetOpportunity();
-//
-//                    }
-//                }));
 
-        viewListener.onSuccessGetOpportunity();
+        opportunityListUseCase.execute(getOpportunityParam(),
+                new Subscriber<OpportunityListPageViewModel>() {
+                    @Override
+                    public void onCompleted() {
+                        CommonUtils.dumper("NISNIS onCompleted");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof UnknownHostException) {
+                            viewListener.onErrorGetOpportunity(viewListener.getString(R.string.msg_no_connection));
+                            CommonUtils.dumper("NISNIS UnknownHostException");
+                        } else if (e instanceof SocketTimeoutException) {
+                            viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_timeout));
+                            CommonUtils.dumper("NISNIS SocketTimeoutException");
+                        } else if (e instanceof IOException) {
+                            viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_internal_server));
+                            CommonUtils.dumper("NISNIS IOException");
+                        } else {
+                            viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_unknown));
+                            CommonUtils.dumper("NISNIS Else");
+                        }
+                    }
+
+                    @Override
+                    public void onNext(OpportunityListPageViewModel viewModel) {
+                        CommonUtils.dumper("NISNIS + " + viewModel.toString());
+                        if(pagingHandler.getPage() == 1){
+                            viewListener.getAdapter().getList().clear();
+                        }
+                        viewListener.onSuccessGetOpportunity(viewModel);
+
+                    }
+                });
+
     }
 
-    private TKPDMapParam<String, String> getOpportunityParam() {
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("page", String.valueOf(pagingHandler.getPage()));
+    private RequestParams getOpportunityParam() {
+        RequestParams param = RequestParams.create();
+        param.putString("page", String.valueOf(pagingHandler.getPage()));
+        param.putString("per_page", "10");
         if (opportunityParam.getSort() != null)
-            param.put("sort", opportunityParam.getSort());
+            param.putString("order_by", opportunityParam.getSort());
         if (opportunityParam.getShippingType() != null)
-            param.put("shipping", opportunityParam.getShippingType());
+            param.putString("ship_type", opportunityParam.getShippingType());
         if (opportunityParam.getCategory() != null)
-            param.put("category", opportunityParam.getCategory());
+            param.putString("cat1", opportunityParam.getCategory());
         if (opportunityParam.getQuery() != null)
-            param.put("query", opportunityParam.getQuery());
+            param.putString("query", opportunityParam.getQuery());
+        param.putString("user_id", SessionHandler.getLoginID(viewListener.getActivity()));
+        param.putString("device_id", GCMHandler.getRegistrationId(viewListener.getActivity()));
+        param.putString("os_type", "1");
         return param;
     }
 
     @Override
-    public void loadMore(int lastItemPosition, int visibleItem) {
-        if (hasNextPage() && isOnLastPosition(lastItemPosition, visibleItem) && canLoadMore()) {
+    public void loadMore() {
+        if (hasNextPage()) {
             pagingHandler.nextPage();
             getOpportunity();
         }
@@ -106,13 +124,12 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
     @Override
     public void onRefresh() {
         pagingHandler.resetPage();
-        viewListener.getAdapter().getList().clear();
         getOpportunity();
     }
 
     @Override
     public void onDestroyView() {
-        RxUtils.unsubscribeIfNotNull(compositeSubscription);
+        opportunityListUseCase.unsubscribe();
     }
 
     @Override
@@ -138,14 +155,6 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
     private boolean hasNextPage() {
         return true;
 //        return pagingHandler.CheckNextPage();
-    }
-
-    public boolean isOnLastPosition(int itemPosition, int visibleItem) {
-        return itemPosition == visibleItem;
-    }
-
-    private boolean canLoadMore() {
-        return !networkInteractor.isRequesting();
     }
 
 

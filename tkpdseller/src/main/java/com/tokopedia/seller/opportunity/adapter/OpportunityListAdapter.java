@@ -11,7 +11,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
-import com.tokopedia.seller.opportunity.viewmodel.Opportunity;
+import com.tokopedia.seller.opportunity.viewmodel.OpportunityItemViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,14 +48,14 @@ public class OpportunityListAdapter extends BaseLinearRecyclerViewAdapter{
         }
     }
 
-    ArrayList<Opportunity> list;
+    ArrayList<OpportunityItemViewModel> list;
 
     private static final int VIEW_OPPORTUNITY = 100;
     private boolean actionEnabled;
     private OpportunityListener listener;
 
     public interface OpportunityListener {
-        void goToDetail(Opportunity opportunity);
+        void goToDetail(OpportunityItemViewModel opportunityItemViewModel);
     }
 
     public static OpportunityListAdapter createInstance(OpportunityListener listener) {
@@ -122,11 +122,11 @@ public class OpportunityListAdapter extends BaseLinearRecyclerViewAdapter{
         return position == list.size();
     }
 
-    public List<Opportunity> getList() {
+    public List<OpportunityItemViewModel> getList() {
         return list;
     }
 
-    public void setList(List<Opportunity> list) {
+    public void setList(List<OpportunityItemViewModel> list) {
         this.list.addAll(list);
         notifyDataSetChanged();
     }
