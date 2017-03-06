@@ -41,15 +41,19 @@ public class CartMapperData implements ICartMapperData {
         AttributesDigital attributesDigital = new AttributesDigital();
         attributesDigital.setClientNumber(responseCartData.getAttributes().getClientNumber());
         attributesDigital.setPrice(responseCartData.getAttributes().getPrice());
-        attributesDigital.setPricePlain((int) responseCartData.getAttributes().getPricePlain());
+        attributesDigital.setPricePlain(responseCartData.getAttributes().getPricePlain());
         if (responseCartData.getAttributes().getUserInputPrice() != null) {
             UserInputPriceDigital userInputPriceDigital = new UserInputPriceDigital();
-            userInputPriceDigital.setMaxPayment(
-                    (int) responseCartData.getAttributes().getUserInputPrice().getMaxPayment()
+            userInputPriceDigital.setMaxPaymentPlain(
+                    responseCartData.getAttributes().getUserInputPrice().getMaxPaymentPlain()
             );
-            userInputPriceDigital.setMinPayment(
-                    (int) responseCartData.getAttributes().getUserInputPrice().getMinPayment()
+            userInputPriceDigital.setMinPaymentPlain(
+                    responseCartData.getAttributes().getUserInputPrice().getMinPaymentPlain()
             );
+            userInputPriceDigital.setMinPayment(responseCartData.getAttributes()
+                    .getUserInputPrice().getMinPayment());
+            userInputPriceDigital.setMaxPayment(responseCartData.getAttributes()
+                    .getUserInputPrice().getMaxPayment());
             attributesDigital.setUserInputPrice(userInputPriceDigital);
         }
         attributesDigital.setUserId(responseCartData.getAttributes().getUserId());
