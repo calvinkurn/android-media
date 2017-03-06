@@ -99,7 +99,10 @@ public class BuildAndShowNotification {
         mBuilder.setContentIntent(resultPendingIntent);
         if (applinkNotificationPass.isMultiSender()) {
             mBuilder.setLargeIcon(
-                    BitmapFactory.decodeResource(mContext.getResources(), R.drawable.qc_launcher)
+                    ImageHandler.getRoundedCornerBitmap(
+                            BitmapFactory.decodeResource(mContext.getResources(), R.drawable.qc_launcher),
+                            100
+                    )
             );
 
             NotificationManager mNotificationManager =
