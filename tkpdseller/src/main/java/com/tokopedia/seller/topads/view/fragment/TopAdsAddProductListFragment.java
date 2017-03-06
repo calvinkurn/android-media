@@ -76,9 +76,19 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     private CloudTopAdsSearchProductDataSource cloudTopAdsSeachProductDataSource;
     private TopAdsSearchProductRepository topAdsSeachProductRepository;
     private boolean isFirstTime = true;
+    private int maxNumberChoosen;
 
     public static Fragment newInstance() {
         return new TopAdsAddProductListFragment();
+    }
+
+    public static Fragment newInstance(int maxNumberChoosen) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(TopAdsExtraConstant.EXTRA_MAX_NUMBER_SELECTION, maxNumberChoosen);
+
+        Fragment fragment = newInstance();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -150,7 +160,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     @Override
     protected void setupArguments(Bundle arguments) {
-
+        maxNumberChoosen = arguments.getInt(TopAdsExtraConstant.EXTRA_MAX_NUMBER_SELECTION);
     }
 
     @Override
@@ -259,6 +269,10 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     @Override
     public void onChecked(int position, TopAdsProductViewModel data) {
+        if (addProductListInterface.selections().size() == maxNumberChoosen) {
+            return;
+        }
+
         addProductListInterface.addSelection(data);
         addProductListInterface.onChecked(position, data);
         topAdsProductListAdapter.notifyItemChanged(position);
@@ -282,13 +296,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setIconifiedByDefault(true);
         searchView.setOnQueryTextListener(this);
-
-        MenuItem filter = menu.findItem(R.id.menu_filter);
-        if(addProductListInterface != null){
-            filter.setVisible(
-                    addProductListInterface.isExistingGroup()
-            );
-        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -297,14 +304,13 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         int itemId = item.getItemId();
         if (itemId == R.id.menu_filter){
             if(topAdsAddProductListPresenter != null) {
-                // TODO change param
                 TopAdsFilterProductPromoActivity.start(
                         this,
                         getActivity(),
                         FILTER_REQ_CODE,
                         topAdsAddProductListPresenter.getSelectedFilterStatus(),
                         topAdsAddProductListPresenter.getSelectedFilterEtalaseId(),
-                        false);
+                        addProductListInterface.isExistingGroup());
             }
         }
         return super.onOptionsItemSelected(item);
