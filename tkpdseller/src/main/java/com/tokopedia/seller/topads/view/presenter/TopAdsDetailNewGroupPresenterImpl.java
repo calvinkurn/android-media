@@ -47,7 +47,6 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
     public void saveAdNew(String groupName,
                           TopAdsDetailGroupViewModel topAdsDetailProductViewModel,
                           List<TopAdsProductViewModel> topAdsProductViewModelList) {
-        getView().showLoading(true);
         topAdsCreateNewGroupUseCase.execute(
                 TopAdsCreateNewGroupUseCase.createRequestParams(groupName, topAdsDetailProductViewModel, topAdsProductViewModelList),
                 new Subscriber<TopAdsDetailGroupViewModel>() {

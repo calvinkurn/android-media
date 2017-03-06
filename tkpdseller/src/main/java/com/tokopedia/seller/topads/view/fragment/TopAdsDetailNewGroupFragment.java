@@ -16,7 +16,7 @@ import com.tokopedia.seller.topads.view.model.TopAdsDetailGroupViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewGroupPresenter;
 
 /**
- * Activity to Create New Ads in Top Ads Group
+ * Fragment to Create New Ads in Top Ads Group
  * Pass GroupId if the group has already existed, dont pass (or pass 0) if not exist
  * Pass group name to show the group to be created/edited
  * Created by Hendry on 02.03.2017

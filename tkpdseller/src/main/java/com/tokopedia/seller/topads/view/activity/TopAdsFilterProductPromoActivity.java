@@ -21,29 +21,34 @@ public class TopAdsFilterProductPromoActivity extends TopAdsFilterActivity {
 
     private int selectedStatusPromo;
     private int selectedEtalaseId;
+    private boolean isHideEtalase;
 
     public static void start(Activity activity, int requestCode,
-                             int selectedStatusPromo, int etalaseId){
-        Intent intent = createIntent(activity, selectedStatusPromo, etalaseId);
+                             int selectedStatusPromo, int etalaseId, boolean isHideEtalase){
+        Intent intent = createIntent(activity, selectedStatusPromo, etalaseId, isHideEtalase);
         activity.startActivityForResult(intent, requestCode);
     }
 
     public static void start(Fragment fragment, Context context, int requestCode,
-                             int selectedStatusPromo, int etalaseId){
-        Intent intent = createIntent(context, selectedStatusPromo, etalaseId);
+                             int selectedStatusPromo, int etalaseId, boolean isHideEtalase){
+        Intent intent = createIntent(context, selectedStatusPromo, etalaseId, isHideEtalase);
         fragment.startActivityForResult(intent, requestCode);
     }
 
     public static void start(android.support.v4.app.Fragment fragment, Context context, int requestCode,
-                             int selectedStatusPromo, int etalaseId){
-        Intent intent = createIntent(context, selectedStatusPromo, etalaseId);
+                             int selectedStatusPromo, int etalaseId, boolean isHideEtalase){
+        Intent intent = createIntent(context, selectedStatusPromo, etalaseId, isHideEtalase);
         fragment.startActivityForResult(intent, requestCode);
     }
 
-    public static Intent createIntent(Context context, int selectedStatusPromo, int selectedEtalaseId){
+    public static Intent createIntent(Context context,
+                                      int selectedStatusPromo,
+                                      int selectedEtalaseId,
+                                      boolean isHideEtalase){
         Intent intent = new Intent(context, TopAdsFilterProductPromoActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS_PROMO, selectedStatusPromo);
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_ETALASE, selectedEtalaseId);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_HIDE_ETALASE, isHideEtalase);
         return intent;
     }
 
@@ -52,14 +57,18 @@ public class TopAdsFilterProductPromoActivity extends TopAdsFilterActivity {
         super.setupBundlePass(extras);
         selectedStatusPromo = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS_PROMO);
         selectedEtalaseId = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_ETALASE);
+        isHideEtalase = extras.getBoolean(TopAdsExtraConstant.EXTRA_FILTER_HIDE_ETALASE);
     }
 
     @Override
     protected List<TopAdsFilterContentFragment> getFilterContentList() {
         List<TopAdsFilterContentFragment> filterContentFragmentList = new ArrayList<>();
-        TopAdsFilterEtalaseFragment topAdsFilterStatusFragment = TopAdsFilterEtalaseFragment.createInstance(selectedEtalaseId);
-        topAdsFilterStatusFragment.setActive(true);
-        filterContentFragmentList.add(topAdsFilterStatusFragment);
+
+        if (!isHideEtalase) {
+            TopAdsFilterEtalaseFragment topAdsFilterStatusFragment = TopAdsFilterEtalaseFragment.createInstance(selectedEtalaseId);
+            topAdsFilterStatusFragment.setActive(true);
+            filterContentFragmentList.add(topAdsFilterStatusFragment);
+        }
 
         TopAdsFilterStatusPromoFragment topAdsFilterStatusPromoFragment = TopAdsFilterStatusPromoFragment.createInstance(selectedStatusPromo);
         topAdsFilterStatusPromoFragment.setActive(true);
