@@ -1,9 +1,11 @@
 package com.tokopedia.seller.topads.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.text.TextUtils;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailNewGroupActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailNewProductActivity;
 
@@ -90,5 +92,17 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
         return getString(R.string.title_next);
     }
 
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_AD_STATUS && data != null) {
+            boolean adStatusChanged = data.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+            if (adStatusChanged) {
+                Intent intent = new Intent();
+                intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+                getActivity().setResult(Activity.RESULT_OK, intent);
+                getActivity().finish();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

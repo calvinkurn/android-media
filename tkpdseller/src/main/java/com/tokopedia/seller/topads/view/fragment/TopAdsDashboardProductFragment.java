@@ -16,6 +16,7 @@ import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
 public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopAdsDashboardProductPresenterImpl> implements TopAdsDashboardProductFragmentListener {
 
+    public static final int REQUEST_CODE_AD_STATUS = 2;
     TopAdsLabelView groupSummaryLabelView;
     TopAdsLabelView itemSummaryLabelView;
 
@@ -94,12 +95,23 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         if (totalProductAd >= 0) {
             intent.putExtra(TopAdsExtraConstant.EXTRA_TOTAL_PRODUCT_ADS, totalProductAd);
         }
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
     void onProductItemClicked() {
         Intent intent = new Intent(getActivity(), TopAdsProductAdListActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == REQUEST_CODE_AD_STATUS && intent != null) {
+            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+            if (adStatusChanged) {
+                loadData();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, intent);
     }
 
     @Override
