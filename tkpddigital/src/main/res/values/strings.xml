@@ -10,4 +10,9 @@
     <string name="title_detail_voucher">Anda mendapatkan voucher:</string>
     <string name="link_lihat_detail">Lihat Detail</string>
     <string name="link_tutup">Tutup</string>
+    <string name="user_price_info">Masukkan jumlah nominal yang akan dibayar, %1$s sampai
+        dengan %2$s</string>
+    <string name="error_input_price">Jumlah nominal yang anda masukan tidak sesuai</string>
+    <string name="hint_input_price">Contoh: 422500</string>
+    <string name="lihat_detail">Lihat Detail</string>
 </resources>
