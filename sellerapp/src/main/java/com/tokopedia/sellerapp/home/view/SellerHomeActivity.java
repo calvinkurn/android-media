@@ -296,6 +296,7 @@ public class SellerHomeActivity
                     @Override
                     public void onRetryClicked() {
                         shopController.init(SellerHomeActivity.this);
+                        presenter.getShopScoreMainData();
                     }
                 });
 
@@ -305,6 +306,7 @@ public class SellerHomeActivity
                     @Override
                     public void onRetryClicked() {
                         shopController.init(SellerHomeActivity.this);
+                        presenter.getShopScoreMainData();
                     }
                 });
 
@@ -774,7 +776,9 @@ public class SellerHomeActivity
 
     @Override
     public void onErrorShopScore() {
-
+        if (snackbarRetryUndefinite != null) {
+            snackbarRetryUndefinite.showRetrySnackbar();
+        }
     }
 
     @Override
