@@ -35,7 +35,7 @@ abstract class AuthHmacInterceptor implements Interceptor {
         this.authKey = authKey;
     }
 
-    public AuthHmacInterceptor() {
+    AuthHmacInterceptor() {
         this.authKey = AuthUtil.KEY.KEY_WSV4;
     }
 
@@ -83,32 +83,35 @@ abstract class AuthHmacInterceptor implements Interceptor {
     private Map<String, String> prepareHeader(
             Map<String, String> authHeaders, Request originRequest
     ) {
-        String contentTypeHeader = originRequest.header("Content-Type");
+        String contentTypeHeader = null;
+        if (!"GET".equals(originRequest.method())
+                && originRequest.body() != null
+                && originRequest.body().contentType() != null)
+            contentTypeHeader = originRequest.body().contentType().toString();
+
         switch (originRequest.method()) {
             case "PATCH":
             case "DELETE":
             case "POST":
-                authHeaders = getHeaderMap(
+                authHeaders = AuthUtil.generateHeaders(
                         originRequest.url().uri().getPath(),
-                        generateParamBodyString(originRequest), originRequest.method(),
-                        authKey, contentTypeHeader
+                        generateParamBodyString(originRequest),
+                        originRequest.method(),
+                        authKey,
+                        contentTypeHeader
                 );
                 break;
             case "GET":
-                authHeaders = getHeaderMap(
+                authHeaders = AuthUtil.generateHeaders(
                         originRequest.url().uri().getPath(),
                         generateQueryString(originRequest),
-                        originRequest.method(), authKey, contentTypeHeader
+                        originRequest.method(),
+                        authKey,
+                        contentTypeHeader
                 );
                 break;
         }
         return authHeaders;
-    }
-
-    private Map<String, String> getHeaderMap(
-            String path, String strParam, String method, String authKey, String contentTypeHeader
-    ) {
-        return AuthUtil.generateHeaders(path, strParam, method, authKey, contentTypeHeader);
     }
 
     private void generateHeader(
@@ -170,6 +173,7 @@ abstract class AuthHmacInterceptor implements Interceptor {
         }
     }
 
+    @SuppressWarnings("unused")
     private Boolean isInvalidRequest(String response) {
         JSONObject json;
         try {

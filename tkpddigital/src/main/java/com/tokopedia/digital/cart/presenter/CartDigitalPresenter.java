@@ -1,7 +1,10 @@
 package com.tokopedia.digital.cart.presenter;
 
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
+import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -55,8 +58,16 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         Attributes attributes = new Attributes();
         attributes.setDeviceId(5);
         attributes.setInstantCheckout(passData.getInstantCheckout().equals("1"));
-        attributes.setIpAddress("127.0.0.1");
-        attributes.setUserAgent("Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:51.0) Gecko/20100101 Firefox/51.0");
+        attributes.setIpAddress(view.getIpAddress());
+        attributes.setUserAgent(
+                "Android Tokopedia Application/"
+                        + BuildConfig.VERSION_NAME
+                        + " (" + getDeviceName()
+                        + "; Android; API_"
+                        + Build.VERSION.SDK_INT
+                        + "; Version"
+                        + Build.VERSION.RELEASE + ") "
+        );
         attributes.setUserId(Integer.parseInt(view.getUserId()));
         attributes.setAccessToken(view.getAccountToken());
         attributes.setWalletRefreshToken(view.getWalletRefreshToken());
@@ -117,5 +128,36 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 view.renderCartDigitalInfoData(cartDigitalInfoData);
             }
         };
+    }
+
+    private static String getDeviceName() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        if (model.startsWith(manufacturer)) {
+            return capitalize(model);
+        }
+        return capitalize(manufacturer) + " " + model;
+    }
+
+    private static String capitalize(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return str;
+        }
+        char[] arr = str.toCharArray();
+        boolean capitalizeNext = true;
+
+        StringBuilder phrase = new StringBuilder();
+        for (char c : arr) {
+            if (capitalizeNext && Character.isLetter(c)) {
+                phrase.append(Character.toUpperCase(c));
+                capitalizeNext = false;
+                continue;
+            } else if (Character.isWhitespace(c)) {
+                capitalizeNext = true;
+            }
+            phrase.append(c);
+        }
+
+        return phrase.toString();
     }
 }

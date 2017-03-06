@@ -20,4 +20,6 @@ public interface IDigitalCartView extends IBaseView {
     String getAccountToken();
 
     String getWalletRefreshToken();
+
+    String getIpAddress();
 }
