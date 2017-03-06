@@ -326,6 +326,9 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                             data.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS_PROMO, 0));
                     topAdsAddProductListPresenter.putSelectedEtalaseId(
                             data.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_ETALASE, 0));
+
+                    topAdsAddProductListPresenter.setNetworkStatus(TopAdsAddProductListPresenter.NetworkStatus.LOADMORE);
+                    topAdsAddProductListPresenter.loadMore();
                 }
             }
         }

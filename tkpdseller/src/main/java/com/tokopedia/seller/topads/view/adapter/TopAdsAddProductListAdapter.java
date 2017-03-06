@@ -10,8 +10,12 @@ import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsAddProductListViewHolder;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsNonPromotedViewHolder;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsPromotedViewHolder;
 import com.tokopedia.seller.topads.view.listener.AdapterSelectionListener;
 import com.tokopedia.seller.topads.view.listener.FragmentItemSelection;
+import com.tokopedia.seller.topads.view.model.NonPromotedTopAdsAddProductModel;
+import com.tokopedia.seller.topads.view.model.PromotedTopAdsAddProductModel;
 import com.tokopedia.seller.topads.view.model.TopAdsAddProductModel;
 import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.view.model.TypeBasedModel;
@@ -25,6 +29,7 @@ import java.util.List;
  * @author normansyahputa
  *         <p>
  *         13-02-2017 - create first time and layout
+ *         06-03-2017, separate promoted and non promoted.
  *         <p>
  */
 public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
@@ -54,10 +59,19 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater from = LayoutInflater.
+                from(parent.getContext());
         switch (viewType) {
+            case PromotedTopAdsAddProductModel.TYPE:
+                View view = from.inflate(R.layout.row_top_ads_add_product_list_promoted,
+                        parent, false);
+                return new TopAdsPromotedViewHolder(view);
+            case NonPromotedTopAdsAddProductModel.TYPE:
+                view = from.inflate(R.layout.row_top_ads_add_product_list_non_promoted,
+                        parent, false);
+                return new TopAdsNonPromotedViewHolder(view, this);
             case TopAdsAddProductModel.TYPE:
-                View view = LayoutInflater.
-                        from(parent.getContext()).inflate(R.layout.row_top_ads_add_product_list, parent, false);
+                view = from.inflate(R.layout.row_top_ads_add_product_list, parent, false);
                 return new TopAdsAddProductListViewHolder(view, imageHandler, this);
             default:
                 return super.onCreateViewHolder(parent, viewType);
@@ -67,6 +81,16 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
+            case PromotedTopAdsAddProductModel.TYPE:
+                ((TopAdsPromotedViewHolder) holder).bind(
+                        ((PromotedTopAdsAddProductModel) datas.get(position))
+                );
+                break;
+            case NonPromotedTopAdsAddProductModel.TYPE:
+                ((TopAdsNonPromotedViewHolder) holder).bind(
+                        ((NonPromotedTopAdsAddProductModel) datas.get(position))
+                );
+                break;
             case TopAdsAddProductModel.TYPE:
                 TopAdsAddProductModel topAdsAddProductModel
                         = (TopAdsAddProductModel) datas.get(position);
@@ -84,7 +108,7 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
         if (isLastItemPosition(position) && (datas.isEmpty() || isLoading() || isRetry())) {
             return super.getItemViewType(position);
         } else {
-            return TopAdsAddProductModel.TYPE;
+            return datas.get(position).getType();
         }
     }
 
