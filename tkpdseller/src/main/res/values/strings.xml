@@ -201,4 +201,7 @@
     <string name="deadline">Jatuh Tempo</string>
     <string name="highest_transaction_price">Nilai Transaksi Tertinggi</string>
     <string name="lowest_transaction_price">Nilai Transaksi Terendah</string>
+    <string name="message_dialog_accept_oppurtunity">Dengan klik tombol “Setuju” anda menyetujui bahwa barang yang akan anda kirim sesuai dengan pesanan pembeli</string>
+    <string name="action_agree">Setuju</string>
+    <string name="action_back">Kembali</string>
 </resources>

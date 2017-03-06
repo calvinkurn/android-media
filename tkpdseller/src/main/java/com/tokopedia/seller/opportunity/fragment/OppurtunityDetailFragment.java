@@ -1,9 +1,13 @@
 package com.tokopedia.seller.opportunity.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -67,7 +71,24 @@ public class OppurtunityDetailFragment extends BasePresenterFragment<Oppurtunity
 
     @Override
     public void onActionSubmitClicked() {
-        presenter.setOnSubmitClickListener();
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(R.string.message_dialog_accept_oppurtunity);
+        builder.setPositiveButton(R.string.action_agree, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                presenter.setOnSubmitClickListener();
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setNegativeButton(R.string.action_back, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        Dialog dialog = builder.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.show();
     }
 
     @Override
@@ -185,27 +206,27 @@ public class OppurtunityDetailFragment extends BasePresenterFragment<Oppurtunity
         new ErrorHandler(new ErrorListener() {
             @Override
             public void onUnknown() {
-
+                setOnActionUnknownError();
             }
 
             @Override
             public void onTimeout() {
-
+                setOnActionTimeOut();
             }
 
             @Override
             public void onServerError() {
-
+                setOnActionUnknownError();
             }
 
             @Override
             public void onBadRequest() {
-
+                setOnActionUnknownError();
             }
 
             @Override
             public void onForbidden() {
-
+                setOnActionUnknownError();
             }
         }, actionViewData.getErrorCode());
     }
