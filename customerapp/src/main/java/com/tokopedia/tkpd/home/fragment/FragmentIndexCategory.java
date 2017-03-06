@@ -632,6 +632,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         setLocalyticFlow();
         if (isVisibleToUser && getActivity() != null && isAdded()) {
             ScreenTracking.screen(getScreenName());
+            TrackingUtils.sendMoEngageOpenHomeEvent();
             sendAppsFlyerData();
             holder.wrapperScrollview.smoothScrollTo(0, 0);
         } else {
