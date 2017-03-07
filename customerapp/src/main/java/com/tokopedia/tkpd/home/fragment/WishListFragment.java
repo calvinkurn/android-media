@@ -161,7 +161,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public void clearSearch() {
         searchEditText.setQuery("", false);
-        swipeToRefresh.clearFocus();
+        searchEditText.clearFocus();
     }
 
     @Override

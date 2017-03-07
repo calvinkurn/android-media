@@ -124,7 +124,6 @@ public class WishListImpl implements WishList {
     public void refreshData(final Context context) {
         wishListView.displayLoadMore(false);
         wishListView.loadDataChange();
-        wishListView.clearSearch();
         mPaging.resetPage();
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -209,7 +208,7 @@ public class WishListImpl implements WishList {
             data.clear();
         }
         wishListView.displayPull(false);
-
+        wishListView.clearSearch();
         dataWishlist.addAll(wishlistData.getWishlist());
         data.addAll(convertToProductItemList(wishlistData.getWishlist()));
         mPaging.setPagination(wishlistData.getPaging());
