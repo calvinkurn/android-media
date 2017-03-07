@@ -1,8 +1,7 @@
 package com.tokopedia.seller.topads.data.source;
 
-import com.tokopedia.seller.topads.domain.model.ProductDomain;
+import com.tokopedia.seller.topads.domain.model.ProductListDomain;
 
-import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
@@ -12,5 +11,5 @@ import rx.Observable;
  */
 
 public interface TopAdsSearchProductDataSource {
-    Observable<List<ProductDomain>> searchProduct(Map<String, String> param);
+    Observable<ProductListDomain> searchProduct(Map<String, String> param);
 }

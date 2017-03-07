@@ -26,7 +26,7 @@ import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.data.mapper.SearchProductMapper;
+import com.tokopedia.seller.topads.data.mapper.SearchProductEOFMapper;
 import com.tokopedia.seller.topads.data.repository.TopAdsSearchProductRepositoryImpl;
 import com.tokopedia.seller.topads.data.source.cloud.CloudTopAdsSearchProductDataSource;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
@@ -72,10 +72,11 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     private TopAdsAddProductListPresenter topAdsAddProductListPresenter;
     private RecyclerView.OnScrollListener onScrollListener;
     private LinearLayoutManager layoutManager;
-    private SearchProductMapper searchProductMapper;
+    private SearchProductEOFMapper searchProductMapper;
     private CloudTopAdsSearchProductDataSource cloudTopAdsSeachProductDataSource;
     private TopAdsSearchProductRepository topAdsSeachProductRepository;
     private boolean isFirstTime = true;
+    private boolean isEndOfFile = true;
     private int maxNumberChoosen;
 
     public static Fragment newInstance() {
@@ -105,11 +106,17 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
 
     private void fetchData() {
-        topAdsAddProductListPresenter.setNetworkStatus(
-                TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
-        if(topAdsAddProductListPresenter.isFirstTime()) {
-            topAdsProductListAdapter.showLoadingFull(true);
-            topAdsAddProductListPresenter.searchProduct();
+        if (topAdsAddProductListPresenter.getNetworkStatus()
+                == TopAdsAddProductListPresenter.NetworkStatus.ONACTIVITYFORRESULT) {
+            refreshHandler.setRefreshing(true);
+            topAdsAddProductListPresenter.loadMore();
+        } else {
+            topAdsAddProductListPresenter.setNetworkStatus(
+                    TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
+            if (topAdsAddProductListPresenter.isFirstTime()) {
+                topAdsProductListAdapter.showLoadingFull(true);
+                topAdsAddProductListPresenter.searchProduct();
+            }
         }
     }
 
@@ -190,8 +197,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                 topAdsAddProductListPresenter.resetPage();
                 topAdsAddProductListPresenter.setNetworkStatus(
                         TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
-                topAdsAddProductListPresenter.searchProduct();
-//                topAdsAddProductListPresenter.searchProduct();
+                searchProductNetworkCall();
             }
         });
     }
@@ -213,7 +219,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
 
-                if (!topAdsProductListAdapter.isLoading()) {
+                if (isEndOfFile) {
                     return;
                 }
 
@@ -224,7 +230,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                     topAdsAddProductListPresenter.incrementPage();
                     topAdsAddProductListPresenter.setNetworkStatus(
                             TopAdsAddProductListPresenter.NetworkStatus.LOADMORE);
-                    topAdsAddProductListPresenter.loadMore();
+                    loadMoreNetworkCall();
                     topAdsProductListAdapter.showLoading(true);
                 }
             }
@@ -232,8 +238,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         imageHandler = addProductListInterface.imageHandler();
         topAdsProductListAdapter.setImageHandler(imageHandler);
         topAdsProductListAdapter.setFragmentItemSelection(this);
-//        topAdsProductListAdapter = new TopAdsAddProductListAdapter(imageHandler, this);
-//        this.topAdsProductListAdapter.setOnItemClickListener(onItemClickListener);
         if(isFirstTime) {
             layoutManager = new LinearLayoutManager(getActivity());
             this.topAdsAddProductList.setLayoutManager(layoutManager);
@@ -241,8 +245,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         }
         isFirstTime = false;
         this.topAdsAddProductList.addOnScrollListener(onScrollListener);
-//        topAdsProductListAdapter.addAllWithoutNotify(dummyData());
-//        topAdsProductListAdapter.showLoading(true);
     }
 
     @Override
@@ -250,11 +252,19 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     }
 
+    protected void loadMoreNetworkCall() {
+        topAdsAddProductListPresenter.loadMore();
+    }
+
+    protected void searchProductNetworkCall() {
+        topAdsAddProductListPresenter.searchProduct();
+    }
+
     private void inject() {
         //[START] This is for dependent component
         topAdsSearchProductService = new TopAdsManagementService();
         sessionHandler = new SessionHandler(getActivity());
-        searchProductMapper = new SearchProductMapper();
+        searchProductMapper = new SearchProductEOFMapper();
         cloudTopAdsSeachProductDataSource = new CloudTopAdsSearchProductDataSource(
                 getActivity(),
                 topAdsSearchProductService,
@@ -321,14 +331,13 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         if (requestCode == FILTER_REQ_CODE) {
             if (resultCode == Activity.RESULT_OK) {
 
-                if(topAdsAddProductListPresenter != null){
+                if (topAdsAddProductListPresenter != null) {
                     topAdsAddProductListPresenter.putSelectedFilterStatus(
                             data.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS_PROMO, 0));
                     topAdsAddProductListPresenter.putSelectedEtalaseId(
                             data.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_ETALASE, 0));
 
-                    topAdsAddProductListPresenter.setNetworkStatus(TopAdsAddProductListPresenter.NetworkStatus.LOADMORE);
-                    topAdsAddProductListPresenter.loadMore();
+                    topAdsAddProductListPresenter.setNetworkStatus(TopAdsAddProductListPresenter.NetworkStatus.ONACTIVITYFORRESULT);
                 }
             }
         }
@@ -365,8 +374,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
         topAdsAddProductListPresenter.setNetworkStatus(
                 TopAdsAddProductListPresenter.NetworkStatus.SEARCHVIEW);
-//        topAdsAddProductListPresenter.searchProduct();
-        topAdsAddProductListPresenter.searchProduct();
+        searchProductNetworkCall();
     }
 
     @Override
@@ -386,6 +394,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         switch (topAdsAddProductListPresenter.getNetworkStatus()) {
             case LOADMORE:
                 break;
+            case ONACTIVITYFORRESULT:
             case PULLTOREFRESH:
             case SEARCHVIEW:
                 topAdsProductListAdapter.clear();
@@ -397,28 +406,25 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                 break;
         }
         topAdsProductListAdapter.addAllWithoutNotify(datas);
-        if (TopAdsAddProductListPresenter.PAGE_ROW == datas.size()) {
-            topAdsProductListAdapter.showLoading(true);
+        boolean isEmpty = topAdsProductListAdapter.getDataSize() <= 0;
+        if (isEmpty) {
+            if (!isEndOfFile) {
+                topAdsProductListAdapter.showLoading(true);
+            } else {
+                topAdsProductListAdapter.showEmptyFull(true);
+            }
         } else {
-            topAdsProductListAdapter.showLoading(false);
-        }
-        if (topAdsProductListAdapter.getDataSize() <= 0) {
-            topAdsProductListAdapter.showEmptyFull(true);
-        } else {
+            if (!isEndOfFile) {
+                topAdsProductListAdapter.showLoading(true);
+            } else {
+                topAdsProductListAdapter.showLoading(false);
+            }
             topAdsProductListAdapter.notifyDataSetChanged();
         }
     }
 
     @Override
     public void loadMore(List<TypeBasedModel> datas) {
-        /*if (datas != null && datas.isEmpty()) {
-//            topAdsProductListAdapter.showLoadingFull(false);
-            topAdsProductListAdapter.showEmptyFull(true);
-        } else {
-            topAdsProductListAdapter.clear();
-            topAdsProductListAdapter.addAllWithoutNotify(datas);
-            topAdsProductListAdapter.notifyDataSetChanged();
-        }*/
         renderDatas(datas);
     }
 
@@ -460,8 +466,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
                             topAdsAddProductListPresenter.setNetworkStatus(
                                     TopAdsAddProductListPresenter.NetworkStatus.RETRYNETWORKCALL);
-//                          topAdsAddProductListPresenter.searchProduct();
-                            topAdsAddProductListPresenter.loadMore();
+                            loadMoreNetworkCall();
                         }
                     }, getActivity());
                 }
@@ -486,5 +491,10 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
             return addProductListInterface.isExistingGroup();
         }
         return false;
+    }
+
+    @Override
+    public void setLoadMoreFlag(boolean eof) {
+        isEndOfFile = eof;
     }
 }

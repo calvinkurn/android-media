@@ -5,9 +5,8 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.topads.domain.TopAdsSearchProductRepository;
-import com.tokopedia.seller.topads.domain.model.ProductDomain;
+import com.tokopedia.seller.topads.domain.model.ProductListDomain;
 
-import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
@@ -18,7 +17,7 @@ import rx.schedulers.Schedulers;
 /**
  * @author normansyahputa on 2/20/17.
  */
-public class TopAdsDefaultParamUseCase extends UseCase<List<ProductDomain>> {
+public class TopAdsDefaultParamUseCase extends UseCase<ProductListDomain> {
     private TopAdsSearchProductRepository topAdsSearchProductRepository;
 
     public TopAdsDefaultParamUseCase(
@@ -30,15 +29,15 @@ public class TopAdsDefaultParamUseCase extends UseCase<List<ProductDomain>> {
     }
 
     @Override
-    public Observable<List<ProductDomain>> createObservable(RequestParams requestParams) {
+    public Observable<ProductListDomain> createObservable(RequestParams requestParams) {
         throw new RuntimeException("this is didn't use in here !!");
     }
 
-    public Observable<List<ProductDomain>> createObservable(Map<String, String> param) {
+    public Observable<ProductListDomain> createObservable(Map<String, String> param) {
         return topAdsSearchProductRepository.searchProduct(param);
     }
 
-    public void execute(Map<String, String> param, Subscriber<List<ProductDomain>> subscriber) {
+    public void execute(Map<String, String> param, Subscriber<ProductListDomain> subscriber) {
         this.subscription = createObservable(param)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -47,7 +46,7 @@ public class TopAdsDefaultParamUseCase extends UseCase<List<ProductDomain>> {
     }
 
     @Override
-    public void execute(RequestParams requestParams, Subscriber<List<ProductDomain>> subscriber) {
+    public void execute(RequestParams requestParams, Subscriber<ProductListDomain> subscriber) {
         throw new RuntimeException("this is didn't use in here !!");
     }
 }

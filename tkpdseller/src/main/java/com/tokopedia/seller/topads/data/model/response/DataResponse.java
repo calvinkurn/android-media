@@ -13,6 +13,18 @@ public class DataResponse<T> {
     @Expose
     private T data;
 
+    @SerializedName("eof")
+    @Expose
+    private boolean eof;
+
+    public boolean isEof() {
+        return eof;
+    }
+
+    public void setEof(boolean eof) {
+        this.eof = eof;
+    }
+
     public T getData() {
         return data;
     }
