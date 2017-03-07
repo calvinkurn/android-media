@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.Gson;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.entity.categoriesHades.Category;
+import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 
 import java.util.HashMap;
@@ -28,7 +28,7 @@ public class BrowseProductActivityModel implements Parcelable {
     public int activeTab;
     public String unique_id;
     public Map<String, String> filterOptions;
-    public Category categotyHeader;
+    public Data categotyHeader;
 
     public HotListBannerModel getHotListBannerModel() {
         return hotListBannerModel;
@@ -142,11 +142,11 @@ public class BrowseProductActivityModel implements Parcelable {
         this.filterOptions = filterOptions;
     }
 
-    public Category getCategotyHeader() {
+    public Data getCategotyHeader() {
         return categotyHeader;
     }
 
-    public void setCategotyHeader(Category categotyHeader) {
+    public void setCategotyHeader(Data categotyHeader) {
         this.categotyHeader = categotyHeader;
     }
 
@@ -211,7 +211,7 @@ public class BrowseProductActivityModel implements Parcelable {
             String value = in.readString();
             this.filterOptions.put(key, value);
         }
-        this.categotyHeader = in.readParcelable(Category.class.getClassLoader());
+        this.categotyHeader = in.readParcelable(Data.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<BrowseProductActivityModel> CREATOR

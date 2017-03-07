@@ -42,8 +42,8 @@ import com.tokopedia.core.home.model.HorizontalProductList;
 import com.tokopedia.core.home.model.ViewHolderProductTopAds;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.entity.categoriesHades.Category;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
+import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -128,8 +128,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 return onCreateBannerHotList(parent);
             case TkpdState.RecyclerView.VIEW_CATEGORY_HEADER:
                 return onCreateDefaultCategoryHeader(parent);
-            case TkpdState.RecyclerView.VIEW_CATEGORY_INTERMEDIARY_HEADER:
-                return onCreateDefaultCategoryHeader(parent);
+            case TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER:
+                return onCreateRevampCategoryHeader(parent);
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
                 return createEmptySearch(parent);
             default:
@@ -165,8 +165,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             case TkpdState.RecyclerView.VIEW_CATEGORY_HEADER:
                 ((DefaultCategoryHeaderViewHolder) holder).bind((CategoryHeaderModel) data.get(position));
                 break;
-            case TkpdState.RecyclerView.VIEW_CATEGORY_INTERMEDIARY_HEADER:
-                ((IntermediaryCategoryHeaderViewHolder) holder).bind((CategoryHeaderIntermediaryModel) data.get(position));
+            case TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER:
+                ((RevampCategoryHeaderViewHolder) holder).bind((CategoryHeaderRevampModel) data.get(position));
                 break;
             default:
                 super.onBindViewHolder(holder, position);
@@ -422,17 +422,17 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     new NonScrollGridLayoutManager(categoryHeaderModel.context, 2,
                             GridLayoutManager.VERTICAL, false));
             defaultCategoriesRecyclerView.addItemDecoration(new DividerItemDecoration(categoryHeaderModel.context));
-            categoryAdapter = new DefaultCategoryAdapter(categoryHeaderModel.categoryWidth,categoryHeaderModel.activeChilds,categoryHeaderModel.listener);
+            categoryAdapter = new DefaultCategoryAdapter(categoryHeaderModel.categoryWidth,categoryHeaderModel.activeChildren,categoryHeaderModel.listener);
             defaultCategoriesRecyclerView.setAdapter(categoryAdapter);
-            if (categoryHeaderModel.isUsedUnactiveChilds) {
+            if (categoryHeaderModel.isUsedUnactiveChildren) {
                 expandLayout.setVisibility(View.VISIBLE);
                 expandLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        categoryAdapter.addDataChild(categoryHeaderModel.category.getChild()
-                                .subList(6,categoryHeaderModel.category.getChild().size()));
+                        categoryAdapter.addDataChild(categoryHeaderModel.categoryHeader.getChild()
+                                .subList(6,categoryHeaderModel.categoryHeader.getChild().size()));
                         expandLayout.setVisibility(View.GONE);
-                        categoryHeaderModel.isUsedUnactiveChilds = false;
+                        categoryHeaderModel.isUsedUnactiveChildren = false;
                     }
                 });
             }
@@ -443,44 +443,48 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         }
     }
 
-    private IntermediaryCategoryHeaderViewHolder onCreateIntermediaryCategoryHeader(ViewGroup parent) {
-        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.default_category_header, parent, false);
-        return new IntermediaryCategoryHeaderViewHolder(inflate);
+    private RevampCategoryHeaderViewHolder onCreateRevampCategoryHeader(ViewGroup parent) {
+        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.revamp_category_header, parent, false);
+        return new RevampCategoryHeaderViewHolder(inflate);
     }
 
-    public static class IntermediaryCategoryHeaderViewHolder extends RecyclerView.ViewHolder {
+    public static class RevampCategoryHeaderViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.recycler_view_default_categories)
-        RecyclerView intermediaryCategoriesRecyclerView;
+        @BindView(R2.id.imageHeader)
+        ImageView imageHeader;
 
         @BindView(R2.id.expand_layout)
         LinearLayout expandLayout;
 
-        private IntermediaryCategoryAdapter categoryAdapter;
+        @BindView(R2.id.recycler_view_revamp_categories)
+        RecyclerView revampCategoriesRecyclerView;
 
-        public IntermediaryCategoryHeaderViewHolder(View itemView) {
+        private RevampCategoryAdapter categoryAdapter;
+
+        public RevampCategoryHeaderViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void bind(final CategoryHeaderIntermediaryModel categoryHeaderModel) {
-            intermediaryCategoriesRecyclerView.setVisibility(View.VISIBLE);
-            intermediaryCategoriesRecyclerView.setHasFixedSize(true);
-            intermediaryCategoriesRecyclerView.setLayoutManager(
+        public void bind(final CategoryHeaderRevampModel categoryHeaderModel) {
+            revampCategoriesRecyclerView.setVisibility(View.VISIBLE);
+            revampCategoriesRecyclerView.setHasFixedSize(true);
+            revampCategoriesRecyclerView.setLayoutManager(
                     new NonScrollGridLayoutManager(categoryHeaderModel.context, 3,
                             GridLayoutManager.VERTICAL, false));
-            intermediaryCategoriesRecyclerView.addItemDecoration(new DividerItemDecoration(categoryHeaderModel.context));
-            categoryAdapter = new IntermediaryCategoryAdapter(categoryHeaderModel.categoryWidth,categoryHeaderModel.activeChilds,categoryHeaderModel.listener);
-            intermediaryCategoriesRecyclerView.setAdapter(categoryAdapter);
-            if (categoryHeaderModel.isUsedUnactiveChilds) {
+            revampCategoriesRecyclerView.addItemDecoration(new DividerItemDecoration(categoryHeaderModel.context));
+            categoryAdapter = new RevampCategoryAdapter(categoryHeaderModel.categoryWidth,categoryHeaderModel.activeChildren,categoryHeaderModel.listener);
+            revampCategoriesRecyclerView.setAdapter(categoryAdapter);
+            ImageHandler.LoadImage(imageHeader,categoryHeaderModel.categoryHeader.getHeaderImage());
+            if (categoryHeaderModel.isUsedUnactiveChildren) {
                 expandLayout.setVisibility(View.VISIBLE);
                 expandLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        categoryAdapter.addDataChild(categoryHeaderModel.category.getChild()
-                                .subList(6,categoryHeaderModel.category.getChild().size()));
+                        categoryAdapter.addDataChild(categoryHeaderModel.categoryHeader.getChild()
+                                .subList(9,categoryHeaderModel.categoryHeader.getChild().size()));
                         expandLayout.setVisibility(View.GONE);
-                        categoryHeaderModel.isUsedUnactiveChilds = false;
+                        categoryHeaderModel.isUsedUnactiveChildren = false;
                     }
                 });
             }
@@ -530,7 +534,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             case TkpdState.RecyclerView.VIEW_TOP_ADS_4:
             case TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST:
             case TkpdState.RecyclerView.VIEW_CATEGORY_HEADER:
-            case TkpdState.RecyclerView.VIEW_CATEGORY_INTERMEDIARY_HEADER:
+            case TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER:
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
             case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
                 return recyclerViewItem.getType();
@@ -555,7 +559,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     public boolean isCategoryHeader(int position) {
         return (data.get(position).getType() == TkpdState.RecyclerView.VIEW_CATEGORY_HEADER
-                || data.get(position).getType() == TkpdState.RecyclerView.VIEW_CATEGORY_INTERMEDIARY_HEADER);
+                || data.get(position).getType() == TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER);
     }
 
 
@@ -669,7 +673,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     protected boolean checkIfOffset() {
         return data != null && data.size() > 1 && (data.get(0).getType() == (TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST)
         || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_CATEGORY_HEADER)
-                || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_CATEGORY_INTERMEDIARY_HEADER));
+                || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER));
     }
 
     public void setSearchNotFound() {
@@ -685,7 +689,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         data.add(0, categoryHeaderModel);
     }
 
-    public void addCategoryIntermediaryHeader(CategoryHeaderIntermediaryModel categoryHeaderModel) {
+    public void addCategoryRevampHeader(CategoryHeaderRevampModel categoryHeaderModel) {
         data.add(0, categoryHeaderModel);
     }
 
@@ -714,9 +718,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     public static class CategoryHeaderModel extends RecyclerViewItem {
 
-        private Category category;
-        private List<Child> activeChilds = new ArrayList<>();
-        private boolean isUsedUnactiveChilds = false;
+        private Data categoryHeader;
+        private List<Child> activeChildren = new ArrayList<>();
+        private boolean isUsedUnactiveChildren = false;
         private Context context;
         private int categoryWidth;
         DefaultCategoryAdapter.CategoryListener listener;
@@ -726,47 +730,47 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
         }
 
-        public CategoryHeaderModel(Category category, Context context, int categoryWidth, DefaultCategoryAdapter.CategoryListener listener) {
+        public CategoryHeaderModel(Data categoryHeader, Context context, int categoryWidth, DefaultCategoryAdapter.CategoryListener listener) {
             this();
-            this.category = category;
+            this.categoryHeader = categoryHeader;
             this.context = context;
             this.categoryWidth = categoryWidth;
             this.listener = listener;
-            if (category.getChild().size()>6) {
-                activeChilds.addAll(category.getChild()
+            if (categoryHeader.getChild().size()>6) {
+                activeChildren.addAll(categoryHeader.getChild()
                         .subList(0,6));
-                isUsedUnactiveChilds = true;
+                isUsedUnactiveChildren = true;
             } else {
-                activeChilds.addAll(category.getChild());
+                activeChildren.addAll(categoryHeader.getChild());
             }
         }
     }
 
-    public static class CategoryHeaderIntermediaryModel extends RecyclerViewItem {
+    public static class CategoryHeaderRevampModel extends RecyclerViewItem {
 
-        private Category category;
-        private List<Child> activeChilds = new ArrayList<>();
-        private boolean isUsedUnactiveChilds = false;
+        private Data categoryHeader;
+        private List<Child> activeChildren = new ArrayList<>();
+        private boolean isUsedUnactiveChildren = false;
         private Context context;
         private int categoryWidth;
-        IntermediaryCategoryAdapter.CategoryListener listener;
+        RevampCategoryAdapter.CategoryListener listener;
 
-        private CategoryHeaderIntermediaryModel() {
-            setType(TkpdState.RecyclerView.VIEW_CATEGORY_INTERMEDIARY_HEADER);
+        private CategoryHeaderRevampModel() {
+            setType(TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER);
         }
 
-        public CategoryHeaderIntermediaryModel(Category category, Context context, int categoryWidth, IntermediaryCategoryAdapter.CategoryListener listener) {
+        public CategoryHeaderRevampModel(Data categoryHeader, Context context, int categoryWidth, RevampCategoryAdapter.CategoryListener listener) {
             this();
-            this.category = category;
+            this.categoryHeader = categoryHeader;
             this.context = context;
             this.categoryWidth = categoryWidth;
             this.listener = listener;
-            if (category.getChild().size()>6) {
-                activeChilds.addAll(category.getChild()
-                        .subList(0,6));
-                isUsedUnactiveChilds = true;
+            if (categoryHeader.getChild().size()>9) {
+                activeChildren.addAll(categoryHeader.getChild()
+                        .subList(0,9));
+                isUsedUnactiveChildren = true;
             } else {
-                activeChilds.addAll(category.getChild());
+                activeChildren.addAll(categoryHeader.getChild());
             }
         }
     }

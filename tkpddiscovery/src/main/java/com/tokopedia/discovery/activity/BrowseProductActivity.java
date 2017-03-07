@@ -344,7 +344,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         toolbar.requestLayout();
 
         Log.d(TAG, "setFragment TAG " + TAG);
-        fragmentManager.beginTransaction().replace(R.id.container, fragment, TAG).addToBackStack(null).commit();
+        fragmentManager.beginTransaction().add(R.id.container, fragment, TAG).addToBackStack(null).commit();
         if (fragment instanceof BrowseParentFragment) {
             bottomNavigation.setBehaviorTranslationEnabled(true);
             bottomNavigation.restoreBottomNavigation();
@@ -1060,11 +1060,9 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                             CategoriesHadesModel.CategoriesHadesContainer categoriesHadesContainer = (CategoriesHadesModel.CategoriesHadesContainer) objContainer;
                             CategoriesHadesModel body = categoriesHadesContainer.body();
 
-                            if (browseProductActivityModel !=null && body !=null && body.getData() !=null && body.getData().getCategories()  !=null
-                                    && body.getData().getCategories().size()>0) {
-                                browseProductActivityModel.categotyHeader = body.getData().getCategories().get(0);
-                                if (browseProductActivityModel.categotyHeader.getRevamp() !=null
-                                        && browseProductActivityModel.categotyHeader.getRevamp() && browseProductActivityModel.getCategotyHeader().getChild()!=null)
+                            if (browseProductActivityModel !=null && body !=null && body.getData() !=null && body.getData() !=null) {
+                                browseProductActivityModel.categotyHeader = body.getData();
+                                if (browseProductActivityModel.getCategotyHeader().getChild()!=null)
                                     parentFragment.renderCategories(browseProductActivityModel.categotyHeader);
                             }
                         }

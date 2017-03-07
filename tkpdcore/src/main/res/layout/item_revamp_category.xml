@@ -2,15 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/margin_vs"
     android:orientation="horizontal">
 
     <LinearLayout
         android:id="@+id/linWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?android:selectableItemBackground"
+        android:background="@color/white"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:margin="10dp">
 
 
         <ImageView
@@ -26,19 +27,12 @@
             android:id="@+id/categoryTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:lines="1"
-            android:text="Title"
+            android:gravity="center_horizontal"
             android:padding="5dp"
             android:textColor="@color/tkpd_dark_gray"
-            android:textSize="13sp" />
-
-
-
-
+            android:textSize="13sp"
+            android:textAlignment="center"/>
     </LinearLayout>
-
 
 </LinearLayout>

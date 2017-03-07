@@ -30,7 +30,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.entity.categoriesHades.Category;
+import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
@@ -282,11 +282,11 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     }
 
     @Override
-    public void renderCategories(Category category) {
+    public void renderCategories(Data categoryHeader) {
         for (int i=0; i< browserSectionsPagerAdapter.getCount(); i++) {
             if (browserSectionsPagerAdapter.getItem(i) instanceof ProductFragment) {
                 ProductFragment productFragment = (ProductFragment) browserSectionsPagerAdapter.getItem(i);
-                productFragment.addCategoryHeader(category);
+                productFragment.addCategoryHeader(categoryHeader);
             }
         }
     }

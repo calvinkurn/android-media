@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 
 import com.tokopedia.core.network.entity.categoriesHades.Child;
 
@@ -21,33 +20,33 @@ import java.util.List;
  * Created by Alifa on 3/6/2017.
  */
 
-public class IntermediaryCategoryAdapter extends
+public class RevampCategoryAdapter extends
         RecyclerView.Adapter<RecyclerView.ViewHolder>  {
 
     private int categoryWidth;
     private List<Child> categories;
-    private IntermediaryCategoryAdapter.CategoryListener categoryListener;
+    private RevampCategoryAdapter.CategoryListener categoryListener;
 
-    public IntermediaryCategoryAdapter(int categoryWidth, List<Child> categories, IntermediaryCategoryAdapter.CategoryListener categoryListener) {
+    public RevampCategoryAdapter(int categoryWidth, List<Child> categories, RevampCategoryAdapter.CategoryListener categoryListener) {
         this.categoryWidth = categoryWidth;
         this.categories = categories;
         this.categoryListener = categoryListener;
     }
 
     @Override
-    public IntermediaryCategoryAdapter.ItemRowHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public RevampCategoryAdapter.ItemRowHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         @SuppressLint("InflateParams") View v = LayoutInflater.from(
-                viewGroup.getContext()).inflate(R.layout.item_intermediary_category, null
+                viewGroup.getContext()).inflate(R.layout.item_revamp_category, null
         );
         v.setMinimumWidth(categoryWidth);
-        return new IntermediaryCategoryAdapter.ItemRowHolder(v);
+        return new RevampCategoryAdapter.ItemRowHolder(v);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final  int position) {
-        IntermediaryCategoryAdapter.ItemRowHolder itemRowHolder = (IntermediaryCategoryAdapter.ItemRowHolder) holder;
+        RevampCategoryAdapter.ItemRowHolder itemRowHolder = (RevampCategoryAdapter.ItemRowHolder) holder;
         itemRowHolder.container.getLayoutParams().width = categoryWidth;
-        itemRowHolder.categoryTitle.setText(categories.get(position).getName());
+        itemRowHolder.categoryTitle.setText(categories.get(position).getName().toUpperCase());
         ImageHandler.LoadImage(itemRowHolder.thumbnail,categories.get(position).getThumbnailImage());
         itemRowHolder.container.setOnClickListener(new View.OnClickListener() {
             @Override

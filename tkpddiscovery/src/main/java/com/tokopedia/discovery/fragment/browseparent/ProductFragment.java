@@ -25,23 +25,19 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
-import com.tokopedia.core.network.entity.categoriesHades.Category;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
+import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
-import com.tokopedia.core.network.entity.topPicks.Toppick;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.session.base.BaseFragment;
-import com.tokopedia.core.util.NonScrollGridLayoutManager;
-import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.DefaultCategoryAdapter;
-import com.tokopedia.discovery.adapter.IntermediaryCategoryAdapter;
+import com.tokopedia.discovery.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.interfaces.FetchNetwork;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenter;
@@ -59,7 +55,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_PRO
  * Created by noiz354 on 3/24/16.
  */
 public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
-        implements FetchNetwork, FragmentBrowseProductView, DefaultCategoryAdapter.CategoryListener, IntermediaryCategoryAdapter.CategoryListener {
+        implements FetchNetwork, FragmentBrowseProductView, DefaultCategoryAdapter.CategoryListener, RevampCategoryAdapter.CategoryListener {
 
     public static final String TAG = "BrowseProductFragment";
     public static final String INDEX = "FRAGMENT_INDEX";
@@ -430,12 +426,12 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public void addCategoryHeader(Category category) {
+    public void addCategoryHeader(Data categoryHeader) {
         isHasCategoryHeader = true;
-        if (category.getIsInterMediary() !=null && category.getIsInterMediary()) {
-            productAdapter.addCategoryIntermediaryHeader(new ProductAdapter.CategoryHeaderIntermediaryModel(category,getActivity(),getCategoryWidth(),this));
+        if (categoryHeader.getRevamp() !=null && categoryHeader.getRevamp()) {
+            productAdapter.addCategoryRevampHeader(new ProductAdapter.CategoryHeaderRevampModel(categoryHeader,getActivity(),getCategoryWidth(),this));
         } else {
-            productAdapter.addCategoryHeader(new ProductAdapter.CategoryHeaderModel(category,getActivity(),getCategoryWidth(),this));
+            productAdapter.addCategoryHeader(new ProductAdapter.CategoryHeaderModel(categoryHeader,getActivity(),getCategoryWidth(),this));
         }
 
         productAdapter.notifyDataSetChanged();
@@ -467,12 +463,10 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void onCategoryClick(Child child) {
         ((BrowseProductActivity) getActivity()).renderNewCategoryLevel(child);
-        Log.d(TAG, "onCategoryClick: ");
     }
 
     @Override
     public void onCategoryIntermediaryClick(Child child) {
         ((BrowseProductActivity) getActivity()).renderNewCategoryLevel(child);
-        Log.d(TAG, "onCategoryClick: ");
     }
 }
