@@ -49,32 +49,35 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
         nameEditText.setEnabled(false);
         nameInputLayout.setHint(getString(R.string.label_top_ads_group_name));
         detailAd = new TopAdsDetailGroupViewModel();
+
+        view.findViewById(R.id.linear_partial_top_ads_edit_ad).setVisibility(
+                TextUtils.isEmpty(adId) ? View.VISIBLE: View.GONE);
     }
 
     @Override
     protected void loadAdDetail() {
-        presenter.getDetailAd(adId);
+        // no need to load detail for group, and for existing group
+        // presenter.getDetailAd(adId);
     }
 
     @Override
     protected void saveAd() {
-        super.saveAd();
-        presenter.saveAdNew(name, (TopAdsDetailGroupViewModel) detailAd, topAdsProductList);
+        if (TextUtils.isEmpty(adId)) { // saveNew
+            super.saveAd();
+            presenter.saveAdNew(name, (TopAdsDetailGroupViewModel) detailAd, topAdsProductList);
+        }
+        else { // save New with existing group Id
+            presenter.saveAdExisting(adId, topAdsProductList);
+        }
     }
 
     @Override
     protected void addProduct() {
         Intent intent = new Intent(getActivity(), TopAdsAddProductListActivity.class);
-        boolean hideExistingGroup = !TextUtils.isEmpty(adId);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, hideExistingGroup);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_ETALASE, hideExistingGroup);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, !TextUtils.isEmpty(adId));
+        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_ETALASE, false);
         intent.putParcelableArrayListExtra(TopAdsExtraConstant.EXTRA_SELECTIONS, topAdsProductList);
         startActivityForResult(intent, ADD_PRODUCT_REQUEST_CODE);
-    }
-
-    @Override
-    public void showErrorGroupEmpty() {
-        // TODO show error when group is empty
     }
 
     @Override

@@ -5,5 +5,14 @@ package com.tokopedia.seller.topads.domain.model;
  */
 
 public class TopAdsDetailGroupDomainModel extends TopAdsDetailProductDomainModel {
+    String groupTotal;
+
+    public String getGroupTotal() {
+        return groupTotal;
+    }
+
+    public void setGroupTotal(String groupTotal) {
+        this.groupTotal = groupTotal;
+    }
 
 }

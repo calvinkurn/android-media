@@ -70,7 +70,7 @@ public class TopAdsFilterGroupNameFragment extends TopAdsFilterRadioButtonFragme
     }
 
     private void updateSelectedPosition(List<RadioButtonItem> radioButtonItemList) {
-        if (selectedAdapterPosition > -1) {
+        if (selectedAdapterPosition > 0) { // has been updated for first time only
             return;
         }
         for (int i = 0; i < radioButtonItemList.size(); i++) {

@@ -45,4 +45,5 @@ public class TopAdsProductAdsRepositoryImpl implements TopAdsProductAdsRepositor
         TopAdsProductAdsDataSource dataSource = topAdsShopAdFactory.createProductAdsDataSource();
         return dataSource.createDetailProductList(topAdsDetailProductDomainModels);
     }
+
 }

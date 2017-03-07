@@ -6,9 +6,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.domain.TopAdsGroupAdsRepository;
-import com.tokopedia.seller.topads.domain.TopAdsProductAdsRepository;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailGroupDomainModel;
-import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
 
 import rx.Observable;
 
@@ -28,14 +26,12 @@ public class TopAdsSaveDetailGroupUseCase extends UseCase<TopAdsDetailGroupDomai
 
     @Override
     public Observable<TopAdsDetailGroupDomainModel> createObservable(RequestParams requestParams) {
-        return null;
-        // TODO
-        // return topAdsGroupAdsRepository.saveDetail((TopAdsDetailGroupDomainModel) requestParams.getObject(TopAdsNetworkConstant.PARAM_AD));
+        return topAdsGroupAdsRepository.saveDetailGroup((TopAdsDetailGroupDomainModel) requestParams.getObject(TopAdsNetworkConstant.PARAM_AD));
     }
 
-    public static RequestParams createRequestParams(TopAdsDetailProductDomainModel topAdsDetailProductDomainModel){
+    public static RequestParams createRequestParams(TopAdsDetailGroupDomainModel topAdsDetailGroupDomainModel){
         RequestParams params = RequestParams.create();
-        params.putObject(TopAdsNetworkConstant.PARAM_AD, topAdsDetailProductDomainModel);
+        params.putObject(TopAdsNetworkConstant.PARAM_AD, topAdsDetailGroupDomainModel);
         return params;
     }
 }

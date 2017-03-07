@@ -1,14 +1,20 @@
 package com.tokopedia.seller.topads.view.presenter;
 
-import com.tokopedia.seller.topads.domain.interactor.TopAdsCreateExistingGroupUseCase;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsCreateDetailProductListUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsCreateNewGroupUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailGroupUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailGroupUseCase;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailProductUseCase;
+import com.tokopedia.seller.topads.domain.model.TopAdsDetailGroupDomainModel;
+import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
 import com.tokopedia.seller.topads.utils.ViewUtils;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailNewGroupView;
+import com.tokopedia.seller.topads.view.mapper.TopAdDetailGroupMapper;
+import com.tokopedia.seller.topads.view.mapper.TopAdDetailProductMapper;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailGroupViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscriber;
@@ -20,28 +26,72 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
         extends TopAdsDetailEditGroupPresenterImpl<T>
         implements TopAdsDetailNewGroupPresenter<T> {
 
-    TopAdsCreateNewGroupUseCase topAdsCreateNewGroupUseCase;
-    TopAdsCreateExistingGroupUseCase topAdsCreateExistingGroupUseCase;
+    private TopAdsCreateNewGroupUseCase topAdsCreateNewGroupUseCase;
+    private TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase;
 
     public TopAdsDetailNewGroupPresenterImpl(TopAdsCreateNewGroupUseCase topAdsCreateNewGroupUseCase,
-                                             TopAdsCreateExistingGroupUseCase topAdsCreateExistingGroupUseCase,
                                              TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase,
-                                             TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase) {
+                                             TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase,
+                                             TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase) {
         super(topAdsGetDetailGroupUseCase, topAdsSaveDetailGroupUseCase);
         this.topAdsCreateNewGroupUseCase = topAdsCreateNewGroupUseCase;
-        this.topAdsCreateExistingGroupUseCase = topAdsCreateExistingGroupUseCase;
+        this.topAdsCreateDetailProductListUseCase = topAdsCreateDetailProductListUseCase;
     }
 
     @Override
-    public void saveAdExisting(int groupId,
-                               List<TopAdsProductViewModel> topAdsProductViewModelList) {
+    public void saveAdExisting(String groupId,
+                               final List<TopAdsProductViewModel> topAdsProductViewModelList) {
         if (topAdsProductViewModelList == null || topAdsProductViewModelList.size() == 0) {
-            getView().showErrorGroupEmpty();
-        } else {
-            getView().showLoading(true);
-            // TODO usecase
+            // need to validate product size?
+            // getView.showErrGroupEmpty();
         }
+        // chaining with reuse of parent's use cases
+        getView().showLoading(true);
+        super.getDetailAd(groupId, new Subscriber<TopAdsDetailGroupDomainModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().onLoadDetailAdError(ViewUtils.getErrorMessage(e));
+            }
+
+            @Override
+            public void onNext(TopAdsDetailGroupDomainModel topAdsDetailGroupDomainModel) {
+                // get the latest domain from API, then pass it to re-save it
+                topAdsCreateDetailProductListUseCase.execute(
+                        TopAdsCreateDetailProductListUseCase.createRequestParams(
+                                topAdsDetailGroupDomainModel,
+                                topAdsProductViewModelList
+                        ),
+                        getSaveProductSubscriber()
+                );
+            }
+        });
     }
+
+
+    protected Subscriber<TopAdsDetailProductDomainModel> getSaveProductSubscriber(){
+        return new Subscriber<TopAdsDetailProductDomainModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().onSaveAdError(ViewUtils.getErrorMessage(e));
+            }
+
+            @Override
+            public void onNext(TopAdsDetailProductDomainModel domainModel) {
+                getView().onSaveAdSuccess(TopAdDetailProductMapper.convertDomainToView(domainModel));
+            }
+        };
+    }
+
 
     @Override
     public void saveAdNew(String groupName,
@@ -68,15 +118,10 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
     }
 
     @Override
-    public void getDetailAd(String groupId) {
-        // no op since, it is either create or edit, the detail is not shown, so no need to retrieve
-    }
-
-    @Override
     public void detachView() {
         super.detachView();
-        topAdsCreateExistingGroupUseCase.unsubscribe();
         topAdsCreateNewGroupUseCase.unsubscribe();
+        topAdsCreateDetailProductListUseCase.unsubscribe();
     }
 
 }

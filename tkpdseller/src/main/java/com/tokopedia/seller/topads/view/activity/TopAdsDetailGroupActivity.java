@@ -26,8 +26,6 @@ public class TopAdsDetailGroupActivity extends TActivity {
                 .commit();
     }
 
-
-
     @Override
     public String getScreenName() {
         return null;

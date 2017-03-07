@@ -51,8 +51,8 @@ public class TopAdsFilterStatusPromoFragment extends TopAdsFilterRadioButtonFrag
     }
 
     private void updateSelectedPosition(List<RadioButtonItem> radioButtonItemList) {
-        if (selectedAdapterPosition > 0) {
-            return; // adapter position has been updated
+        if (selectedAdapterPosition > 0) { // has been updated for first time only
+            return;
         }
         for (int i = 0; i < radioButtonItemList.size(); i++) {
             RadioButtonItem radioButtonItem = radioButtonItemList.get(i);

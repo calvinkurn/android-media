@@ -6,6 +6,8 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.topads.constant.TopAdsConstant;
+import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.data.model.request.AdCreateGroupRequest;
 import com.tokopedia.seller.topads.data.model.request.CreateGroupRequest;
 import com.tokopedia.seller.topads.data.model.response.DataResponseCreateGroup;
@@ -28,9 +30,6 @@ public class TopAdsCreateNewGroupUseCase extends UseCase<TopAdsDetailGroupViewMo
     public static final String REQ_GROUP_VIEW_MODEL = "grp_mdl";
     public static final String REQ_PRODUCT_LIST = "prod_ls";
 
-    public static final String SOURCE = "sellerapp";
-    public static final String PRODUCT_AD_TYPE = "1";
-    public static final String DEFAULT_STATUS = "1"; // means not active
     public static final String DEFAULT_GROUP_ID = "0";
 
     private final TopAdsGroupAdsRepository topAdsGroupAdsRepository;
@@ -66,12 +65,12 @@ public class TopAdsCreateNewGroupUseCase extends UseCase<TopAdsDetailGroupViewMo
     private CreateGroupRequest getCreateGroupRequest(RequestParams requestParams) {
         CreateGroupRequest createGroupRequest = new CreateGroupRequest();
         createGroupRequest.setGroupName(requestParams.getString(REQ_GROUP_NAME, ""));
-        createGroupRequest.setShopId(new SessionHandler(MainApplication.getAppContext()).getShopID());
+        createGroupRequest.setShopId(SessionHandler.getShopID(MainApplication.getAppContext()));
 
         TopAdsDetailGroupViewModel viewModel = (TopAdsDetailGroupViewModel) requestParams.getObject(REQ_GROUP_VIEW_MODEL);
         List<TopAdsProductViewModel> productList = (List<TopAdsProductViewModel>) requestParams.getObject(REQ_PRODUCT_LIST);
 
-        createGroupRequest.setStatus(DEFAULT_STATUS);
+        createGroupRequest.setStatus(String.valueOf(TopAdsConstant.STATUS_AD_ACTIVE)); // default is active "1"
         createGroupRequest.setPriceBid(Math.round(viewModel.getPriceBid()));
         createGroupRequest.setPriceDaily(Math.round(viewModel.getPriceDaily()));
         createGroupRequest.setGroupBudget(viewModel.isBudget() ? "1" : "0");
@@ -81,7 +80,7 @@ public class TopAdsCreateNewGroupUseCase extends UseCase<TopAdsDetailGroupViewMo
         createGroupRequest.setGroupStartTime(viewModel.getStartTime());
         createGroupRequest.setGroupEndTime(viewModel.getEndTime());
         createGroupRequest.setStickerId(String.valueOf(viewModel.getStickerId()));
-        createGroupRequest.setSource(SOURCE);
+        createGroupRequest.setSource(TopAdsNetworkConstant.VALUE_SOURCE_ANDROID);
 
         int productSize = productList.size();
         createGroupRequest.setGroupTotal(String.valueOf(productSize));
@@ -93,7 +92,7 @@ public class TopAdsCreateNewGroupUseCase extends UseCase<TopAdsDetailGroupViewMo
             adCreateGroupRequest.setAdId(String.valueOf(productModel.getAdId())); // default "0" is not promoted
             adCreateGroupRequest.setItemId(String.valueOf(productModel.getId()));
             adCreateGroupRequest.setGroupId(DEFAULT_GROUP_ID);
-            adCreateGroupRequest.setAdType(PRODUCT_AD_TYPE);
+            adCreateGroupRequest.setAdType(String.valueOf(TopAdsConstant.AD_TYPE_PRODUCT));
             ads.add(adCreateGroupRequest);
         }
         createGroupRequest.setAds(ads);

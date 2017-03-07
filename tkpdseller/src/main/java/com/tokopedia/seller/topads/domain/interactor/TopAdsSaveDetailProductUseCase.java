@@ -6,7 +6,11 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.domain.TopAdsProductAdsRepository;
+import com.tokopedia.seller.topads.domain.model.TopAdsDetailGroupDomainModel;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
+import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
+
+import java.util.List;
 
 import rx.Observable;
 

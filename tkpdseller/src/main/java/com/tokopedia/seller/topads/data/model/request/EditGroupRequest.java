@@ -1,18 +1,16 @@
-package com.tokopedia.seller.topads.data.model.response;
+package com.tokopedia.seller.topads.data.model.request;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.seller.topads.data.model.data.Ad;
-import com.tokopedia.seller.topads.data.model.data.Product;
-import com.tokopedia.seller.topads.data.model.data.ProductAd;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by zulfikarrahman on 2/28/17.
  */
 
-public class DataResponseCreateGroup {
+public class EditGroupRequest {
     @SerializedName("group_id")
     @Expose
     private String groupId;
@@ -22,15 +20,18 @@ public class DataResponseCreateGroup {
     @SerializedName("shop_id")
     @Expose
     private String shopId;
-    @SerializedName("status")
+    @SerializedName("toggle")
     @Expose
-    private String status;
+    private String toggle;
     @SerializedName("price_bid")
     @Expose
     private Integer priceBid;
     @SerializedName("price_daily")
     @Expose
     private Integer priceDaily;
+    @SerializedName("group_budget")
+    @Expose
+    private String groupBudget;
     @SerializedName("group_schedule")
     @Expose
     private String groupSchedule;
@@ -49,12 +50,26 @@ public class DataResponseCreateGroup {
     @SerializedName("sticker_id")
     @Expose
     private String stickerId;
-    @SerializedName("ads")
+    @SerializedName("source")
     @Expose
-    private List<ProductAd> ads = null;
-    @SerializedName("group_total")
-    @Expose
-    private String groupTotal;
+    private String source;
+
+    public EditGroupRequest(String groupId, String groupName, String shopId, String toggle, Integer priceBid, Integer priceDaily, String groupBudget, String groupSchedule, String groupStartDate, String groupStartTime, String groupEndDate, String groupEndTime, String stickerId, String source) {
+        this.groupId = groupId;
+        this.groupName = groupName;
+        this.shopId = shopId;
+        this.toggle = toggle;
+        this.priceBid = priceBid;
+        this.priceDaily = priceDaily;
+        this.groupBudget = groupBudget;
+        this.groupSchedule = groupSchedule;
+        this.groupStartDate = groupStartDate;
+        this.groupStartTime = groupStartTime;
+        this.groupEndDate = groupEndDate;
+        this.groupEndTime = groupEndTime;
+        this.stickerId = stickerId;
+        this.source = source;
+    }
 
     public String getGroupId() {
         return groupId;
@@ -80,12 +95,12 @@ public class DataResponseCreateGroup {
         this.shopId = shopId;
     }
 
-    public String getStatus() {
-        return status;
+    public String getToggle() {
+        return toggle;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setToggle(String toggle) {
+        this.toggle = toggle;
     }
 
     public Integer getPriceBid() {
@@ -102,6 +117,14 @@ public class DataResponseCreateGroup {
 
     public void setPriceDaily(Integer priceDaily) {
         this.priceDaily = priceDaily;
+    }
+
+    public String getGroupBudget() {
+        return groupBudget;
+    }
+
+    public void setGroupBudget(String groupBudget) {
+        this.groupBudget = groupBudget;
     }
 
     public String getGroupSchedule() {
@@ -144,27 +167,19 @@ public class DataResponseCreateGroup {
         this.groupEndTime = groupEndTime;
     }
 
-    public List<ProductAd> getAds() {
-        return ads;
-    }
-
-    public void setAds(List<ProductAd> ads) {
-        this.ads = ads;
-    }
-
-    public String getGroupTotal() {
-        return groupTotal;
-    }
-
-    public void setGroupTotal(String groupTotal) {
-        this.groupTotal = groupTotal;
-    }
-
     public String getStickerId() {
         return stickerId;
     }
 
     public void setStickerId(String stickerId) {
         this.stickerId = stickerId;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

@@ -3,6 +3,8 @@ package com.tokopedia.seller.topads.domain;
 import com.tokopedia.seller.topads.data.model.request.CreateGroupRequest;
 import com.tokopedia.seller.topads.data.model.response.DataResponseCreateGroup;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.domain.model.TopAdsDetailGroupDomainModel;
+
 import java.util.List;
 
 import rx.Observable;
@@ -14,4 +16,8 @@ public interface TopAdsGroupAdsRepository {
     Observable<List<GroupAd>> searchGroupAds(String string);
 
     Observable<DataResponseCreateGroup> createGroup(CreateGroupRequest createGroupRequest);
+
+    Observable<TopAdsDetailGroupDomainModel> getDetailGroup(String groupId);
+
+    Observable<TopAdsDetailGroupDomainModel> saveDetailGroup(TopAdsDetailGroupDomainModel topAdsDetailGroupDomainModel);
 }

@@ -9,6 +9,7 @@ import com.tokopedia.seller.topads.data.factory.TopAdsGroupAdFactory;
 import com.tokopedia.seller.topads.data.factory.TopAdsProductAdFactory;
 import com.tokopedia.seller.topads.data.factory.TopAdsShopAdFactory;
 import com.tokopedia.seller.topads.data.mapper.TopAdsBulkActionMapper;
+import com.tokopedia.seller.topads.data.mapper.TopAdsDetailGroupDomainMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsDetailGroupMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsDetailProductMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsDetailShopMapper;
@@ -48,8 +49,10 @@ public class TopAdsGroupeditPromoDI {
         TopAdsDetailShopMapper topAdsDetailShopMapper = new TopAdsDetailShopMapper();
         TopAdsBulkActionMapper topAdsBulkActionMapper = new TopAdsBulkActionMapper();
         TopAdsDetailProductMapper topAdsDetailProductMapper = new TopAdsDetailProductMapper();
+        TopAdsDetailGroupDomainMapper topAdsDetailGroupDomainMapper = new TopAdsDetailGroupDomainMapper();
 
-        TopAdsGroupAdFactory topAdsGroupAdFactory = new TopAdsGroupAdFactory(context, topAdsManagementApi, topAdsSearchGroupMapper, topAdsDetailGroupMapper);
+        TopAdsGroupAdFactory topAdsGroupAdFactory = new TopAdsGroupAdFactory(context, topAdsManagementApi,
+                topAdsSearchGroupMapper, topAdsDetailGroupMapper, topAdsDetailGroupDomainMapper);
         TopAdsShopAdFactory topAdsShopAdFactory = new TopAdsShopAdFactory(context, topAdsManagementApi, topAdsDetailShopMapper);
         TopAdsProductAdFactory topAdsProductAdFactory = new TopAdsProductAdFactory(context, topAdsManagementApi, topAdsDetailProductMapper, topAdsBulkActionMapper);
 

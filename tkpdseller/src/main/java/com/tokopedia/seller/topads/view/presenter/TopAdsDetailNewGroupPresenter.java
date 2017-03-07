@@ -14,6 +14,6 @@ public interface TopAdsDetailNewGroupPresenter<T extends TopAdsDetailNewGroupVie
                    TopAdsDetailGroupViewModel topAdsDetailProductViewModel,
                    List<TopAdsProductViewModel> topAdsProductViewModelList);
 
-    void saveAdExisting(int groupId,
+    void saveAdExisting(String groupId,
                         List<TopAdsProductViewModel> topAdsProductViewModelList);
 }
