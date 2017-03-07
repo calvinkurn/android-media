@@ -50,6 +50,10 @@ public interface DigitalApi {
     @GET(TkpdBaseURL.DigitalApi.PATH_GET_CART)
     Observable<Response<TkpdDigitalResponse>> getCart(@QueryMap Map<String, String> params);
 
+    @GET(TkpdBaseURL.DigitalApi.PATH_CHECK_VOUCHER)
+    Observable<Response<TkpdDigitalResponse>> checkVoucher(@QueryMap Map<String, String> params);
+
+
     //    @FormUrlEncoded
     @POST(TkpdBaseURL.DigitalApi.PATH_GET_CART)
     @Headers({"Content-Type: application/json"})

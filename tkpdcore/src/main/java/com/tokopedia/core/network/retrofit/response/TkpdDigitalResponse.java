@@ -8,6 +8,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 
 import java.io.IOException;
@@ -131,4 +133,59 @@ public class TkpdDigitalResponse {
         }
     }
 
+    /**
+     * @author anggaprasetiyo on 3/7/17.
+     */
+
+    public static class DigitalErrorResponse {
+        @SerializedName("error")
+        @Expose
+        private Error error;
+
+        public Error getError() {
+            return error;
+        }
+
+        public void setError(Error error) {
+            this.error = error;
+        }
+
+        public class Error {
+
+            @SerializedName("id")
+            @Expose
+            private String id;
+            @SerializedName("status")
+            @Expose
+            private int status;
+            @SerializedName("title")
+            @Expose
+            private String title;
+
+            public String getId() {
+                return id;
+            }
+
+            public void setId(String id) {
+                this.id = id;
+            }
+
+            public int getStatus() {
+                return status;
+            }
+
+            public void setStatus(int status) {
+                this.status = status;
+            }
+
+            public String getTitle() {
+                return title;
+            }
+
+            public void setTitle(String title) {
+                this.title = title;
+            }
+
+        }
+    }
 }

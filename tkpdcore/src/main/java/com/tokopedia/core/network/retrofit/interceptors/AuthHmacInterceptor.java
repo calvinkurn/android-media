@@ -55,7 +55,7 @@ abstract class AuthHmacInterceptor implements Interceptor {
             response = chain.proceed(finalRequest);
         }
         if (!response.isSuccessful()) {
-            throwChainProcessCauseHttpError(response.code());
+            throwChainProcessCauseHttpError(response);
         }
 
         String bodyResponse = response.body().string();
@@ -71,7 +71,7 @@ abstract class AuthHmacInterceptor implements Interceptor {
         return createNewResponse(response, bodyResponse);
     }
 
-    protected abstract void throwChainProcessCauseHttpError(int code) throws IOException;
+    protected abstract void throwChainProcessCauseHttpError(Response response) throws IOException;
 
     private void generateHmacAuthRequest(Request originRequest, Request.Builder newRequest)
             throws IOException {

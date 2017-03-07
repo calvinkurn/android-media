@@ -1,10 +1,12 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
-import android.util.Log;
-
+import com.google.gson.Gson;
 import com.tokopedia.core.network.exception.ResponseHttpErrorException;
+import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 
 import java.io.IOException;
+
+import okhttp3.Response;
 
 /**
  * @author anggaprasetiyo on 3/3/17.
@@ -18,8 +20,22 @@ public class DigitalHmacAuthInterceptor extends AuthHmacInterceptor {
     }
 
     @Override
-    protected void throwChainProcessCauseHttpError(int code) throws IOException {
-        Log.d(TAG, "throwChainProcessCauseHttpError, cause error Http");
-        throw new ResponseHttpErrorException(code);
+    protected void throwChainProcessCauseHttpError(Response response) throws IOException {
+        String errorBody = response.body().string();
+        if (!errorBody.isEmpty()) {
+            try {
+                TkpdDigitalResponse.DigitalErrorResponse errorResponse =
+                        new Gson().fromJson(
+                                errorBody, TkpdDigitalResponse.DigitalErrorResponse.class
+                        );
+                throw new ResponseHttpErrorException(
+                        errorResponse.getError().getStatus(),
+                        errorResponse.getError().getTitle()
+                );
+            } catch (Exception e) {
+                throw new ResponseHttpErrorException(response.code(), null);
+            }
+        }
+        throw new ResponseHttpErrorException(response.code(), null);
     }
 }

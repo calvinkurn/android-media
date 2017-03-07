@@ -21,6 +21,17 @@ public class ResponseHttpErrorException extends IOException {
         super("Http Error : " + errorCode);
         this.errorCode = errorCode;
         this.errorDesc = "Http Error : " + errorCode;
+        defineErrorDescByCode();
+    }
+
+    public ResponseHttpErrorException(int code, String message) {
+        super("Http Error : " + code);
+        this.errorCode = code;
+        if (message != null) this.messageError = String.valueOf(message);
+        else defineErrorDescByCode();
+    }
+
+    private void defineErrorDescByCode() {
         switch (errorCode) {
             case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
                 messageError = ErrorNetMessage.MESSAGE_ERROR_SERVER;
