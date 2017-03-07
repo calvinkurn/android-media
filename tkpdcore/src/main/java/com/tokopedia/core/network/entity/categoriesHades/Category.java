@@ -26,6 +26,9 @@ public class Category implements Parcelable {
     @SerializedName("is_revamp")
     @Expose
     private Boolean isRevamp;
+    @SerializedName("is_intermediary")
+    @Expose
+    private Boolean isInterMediary;
     @SerializedName("meta_description")
     @Expose
     private String metaDescription;
@@ -82,6 +85,14 @@ public class Category implements Parcelable {
         this.metaDescription = metaDescription;
     }
 
+    public Boolean getIsInterMediary() {
+        return isInterMediary;
+    }
+
+    public void setIsInterMediary(Boolean interMediary) {
+        isInterMediary = interMediary;
+    }
+
     public Boolean getRevamp() {
         return isRevamp;
     }
@@ -130,6 +141,8 @@ public class Category implements Parcelable {
         titleTag = in.readString();
         byte isRevampVal = in.readByte();
         isRevamp = isRevampVal == 0x02 ? null : isRevampVal != 0x00;
+        byte isInterMediaryVal = in.readByte();
+        isInterMediary = isInterMediaryVal == 0x02 ? null : isInterMediaryVal != 0x00;
         metaDescription = in.readString();
         headerImage = in.readString();
         hidden = in.readByte() == 0x00 ? null : in.readInt();
@@ -157,6 +170,11 @@ public class Category implements Parcelable {
             dest.writeByte((byte) (0x02));
         } else {
             dest.writeByte((byte) (isRevamp ? 0x01 : 0x00));
+        }
+        if (isInterMediary == null) {
+            dest.writeByte((byte) (0x02));
+        } else {
+            dest.writeByte((byte) (isInterMediary ? 0x01 : 0x00));
         }
         dest.writeString(metaDescription);
         dest.writeString(headerImage);

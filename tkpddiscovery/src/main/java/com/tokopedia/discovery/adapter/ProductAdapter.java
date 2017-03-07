@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -18,17 +17,14 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.ImageHandler;
@@ -132,6 +128,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 return onCreateBannerHotList(parent);
             case TkpdState.RecyclerView.VIEW_CATEGORY_HEADER:
                 return onCreateDefaultCategoryHeader(parent);
+            case TkpdState.RecyclerView.VIEW_CATEGORY_INTERMEDIARY_HEADER:
+                return onCreateDefaultCategoryHeader(parent);
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
                 return createEmptySearch(parent);
             default:
@@ -166,6 +164,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 break;
             case TkpdState.RecyclerView.VIEW_CATEGORY_HEADER:
                 ((DefaultCategoryHeaderViewHolder) holder).bind((CategoryHeaderModel) data.get(position));
+                break;
+            case TkpdState.RecyclerView.VIEW_CATEGORY_INTERMEDIARY_HEADER:
+                ((IntermediaryCategoryHeaderViewHolder) holder).bind((CategoryHeaderIntermediaryModel) data.get(position));
                 break;
             default:
                 super.onBindViewHolder(holder, position);
@@ -440,6 +441,54 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         public interface CategoryHeaderListener {
             void onExpandClick();
         }
+    }
+
+    private IntermediaryCategoryHeaderViewHolder onCreateIntermediaryCategoryHeader(ViewGroup parent) {
+        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.default_category_header, parent, false);
+        return new IntermediaryCategoryHeaderViewHolder(inflate);
+    }
+
+    public static class IntermediaryCategoryHeaderViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R2.id.recycler_view_default_categories)
+        RecyclerView intermediaryCategoriesRecyclerView;
+
+        @BindView(R2.id.expand_layout)
+        LinearLayout expandLayout;
+
+        private IntermediaryCategoryAdapter categoryAdapter;
+
+        public IntermediaryCategoryHeaderViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+
+        public void bind(final CategoryHeaderIntermediaryModel categoryHeaderModel) {
+            intermediaryCategoriesRecyclerView.setVisibility(View.VISIBLE);
+            intermediaryCategoriesRecyclerView.setHasFixedSize(true);
+            intermediaryCategoriesRecyclerView.setLayoutManager(
+                    new NonScrollGridLayoutManager(categoryHeaderModel.context, 3,
+                            GridLayoutManager.VERTICAL, false));
+            intermediaryCategoriesRecyclerView.addItemDecoration(new DividerItemDecoration(categoryHeaderModel.context));
+            categoryAdapter = new IntermediaryCategoryAdapter(categoryHeaderModel.categoryWidth,categoryHeaderModel.activeChilds,categoryHeaderModel.listener);
+            intermediaryCategoriesRecyclerView.setAdapter(categoryAdapter);
+            if (categoryHeaderModel.isUsedUnactiveChilds) {
+                expandLayout.setVisibility(View.VISIBLE);
+                expandLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        categoryAdapter.addDataChild(categoryHeaderModel.category.getChild()
+                                .subList(6,categoryHeaderModel.category.getChild().size()));
+                        expandLayout.setVisibility(View.GONE);
+                        categoryHeaderModel.isUsedUnactiveChilds = false;
+                    }
+                });
+            }
+        }
+
+        public interface CategoryHeaderListener {
+            void onExpandClick();
+        }
 
 
 
@@ -481,6 +530,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             case TkpdState.RecyclerView.VIEW_TOP_ADS_4:
             case TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST:
             case TkpdState.RecyclerView.VIEW_CATEGORY_HEADER:
+            case TkpdState.RecyclerView.VIEW_CATEGORY_INTERMEDIARY_HEADER:
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
             case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
                 return recyclerViewItem.getType();
@@ -504,7 +554,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     public boolean isCategoryHeader(int position) {
-        return data.get(position).getType() == TkpdState.RecyclerView.VIEW_CATEGORY_HEADER;
+        return (data.get(position).getType() == TkpdState.RecyclerView.VIEW_CATEGORY_HEADER
+                || data.get(position).getType() == TkpdState.RecyclerView.VIEW_CATEGORY_INTERMEDIARY_HEADER);
     }
 
 
@@ -617,7 +668,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     protected boolean checkIfOffset() {
         return data != null && data.size() > 1 && (data.get(0).getType() == (TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST)
-        || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_CATEGORY_HEADER));
+        || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_CATEGORY_HEADER)
+                || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_CATEGORY_INTERMEDIARY_HEADER));
     }
 
     public void setSearchNotFound() {
@@ -630,6 +682,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     public void addCategoryHeader(CategoryHeaderModel categoryHeaderModel) {
+        data.add(0, categoryHeaderModel);
+    }
+
+    public void addCategoryIntermediaryHeader(CategoryHeaderIntermediaryModel categoryHeaderModel) {
         data.add(0, categoryHeaderModel);
     }
 
@@ -667,9 +723,39 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
         private CategoryHeaderModel() {
             setType(TkpdState.RecyclerView.VIEW_CATEGORY_HEADER);
+
         }
 
         public CategoryHeaderModel(Category category, Context context, int categoryWidth, DefaultCategoryAdapter.CategoryListener listener) {
+            this();
+            this.category = category;
+            this.context = context;
+            this.categoryWidth = categoryWidth;
+            this.listener = listener;
+            if (category.getChild().size()>6) {
+                activeChilds.addAll(category.getChild()
+                        .subList(0,6));
+                isUsedUnactiveChilds = true;
+            } else {
+                activeChilds.addAll(category.getChild());
+            }
+        }
+    }
+
+    public static class CategoryHeaderIntermediaryModel extends RecyclerViewItem {
+
+        private Category category;
+        private List<Child> activeChilds = new ArrayList<>();
+        private boolean isUsedUnactiveChilds = false;
+        private Context context;
+        private int categoryWidth;
+        IntermediaryCategoryAdapter.CategoryListener listener;
+
+        private CategoryHeaderIntermediaryModel() {
+            setType(TkpdState.RecyclerView.VIEW_CATEGORY_INTERMEDIARY_HEADER);
+        }
+
+        public CategoryHeaderIntermediaryModel(Category category, Context context, int categoryWidth, IntermediaryCategoryAdapter.CategoryListener listener) {
             this();
             this.category = category;
             this.context = context;
