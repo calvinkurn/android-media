@@ -38,7 +38,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/tkpd_divider" />
+            android:background="@color/tkpd_grey" />
 
         <com.tokopedia.sellerapp.home.view.widget.ShopScoreMainDetailView
             android:id="@+id/shop_score_progress_bar_group"
@@ -54,7 +54,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/tkpd_divider" />
+            android:background="@color/tkpd_grey" />
 
         <TextView
             android:id="@+id/text_view_go_to_detail"

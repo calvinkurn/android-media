@@ -44,7 +44,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/tkpd_divider" />
+                android:background="@color/tkpd_grey" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -85,7 +85,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/tkpd_divider" />
+                android:background="@color/tkpd_grey" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -158,17 +158,15 @@
             <TextView
                 android:id="@+id/button_go_to_seller_center"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_height="52dp"
                 android:layout_marginBottom="12dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/white"
-                android:paddingBottom="12dp"
-                android:paddingTop="12dp"
+                android:background="@drawable/background_shop_score_button_to_seller_center"
+                android:gravity="center"
                 android:text="@string/button_go_to_seller_tokopedia_web"
                 android:textAlignment="center"
                 android:textSize="13sp" />
