@@ -54,7 +54,7 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
         detailAd = new TopAdsDetailGroupViewModel();
 
         view.findViewById(R.id.linear_partial_top_ads_edit_ad).setVisibility(
-                TextUtils.isEmpty(adId) ? View.VISIBLE: View.GONE);
+                isEmptyOrZero(adId) ? View.VISIBLE: View.GONE);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
 
     @Override
     protected void saveAd() {
-        if (TextUtils.isEmpty(adId) || "0".equals(adId)) { // saveNew
+        if (isEmptyOrZero(adId)) { // saveNew
             super.saveAd();
             presenter.saveAdNew(name, (TopAdsDetailGroupViewModel) detailAd, topAdsProductList);
         }
@@ -74,11 +74,14 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
         }
     }
 
+    private boolean isEmptyOrZero(String string){
+        return TextUtils.isEmpty(string) || "0".equals(string);
+    }
 
     @Override
     protected void addProduct() {
         Intent intent = new Intent(getActivity(), TopAdsAddProductListActivity.class);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, false);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, !isEmptyOrZero(adId));
         intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_ETALASE, false);
         intent.putParcelableArrayListExtra(TopAdsExtraConstant.EXTRA_SELECTIONS, topAdsProductList);
         startActivityForResult(intent, ADD_PRODUCT_REQUEST_CODE);
