@@ -14,10 +14,10 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.opportunity.OppurtunityDetailActivity;
 import com.tokopedia.seller.opportunity.SortActivity;
 import com.tokopedia.seller.opportunity.adapter.OpportunityListAdapter;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
@@ -26,7 +26,6 @@ import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenterImpl;
 import com.tokopedia.seller.opportunity.viewmodel.OpportunityItemViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.OpportunityListPageViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.SortingTypeViewModel;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 
 import java.util.ArrayList;
 
@@ -40,6 +39,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     private static final int REQUEST_OPEN_DETAIL = 123;
     private static final String CACHE_SEEN_OPPORTUNITY = "CACHE_SEEN_OPPORTUNITY";
     private static final java.lang.String HAS_SEEN_OPPORTUNITY = "HAS_SEEN_OPPORTUNITY";
+    private static final int REQUEST_CODE_OPPURTUNITY_DETAIL = 2017;
+
     RecyclerView opportunityList;
     TextView headerInfo;
     SearchView searchView;
@@ -143,8 +144,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         return new OpportunityListAdapter.OpportunityListener() {
             @Override
             public void goToDetail(OpportunityItemViewModel opportunityItemViewModel) {
-//                startActivityForResult(OppurtunityDetailActivity.getDetailIntent(getActivity(), opportunity),
-//                        REQUEST_OPEN_DETAIL);
+                Intent intent = OppurtunityDetailActivity.createIntent(getActivity(), opportunityItemViewModel);
+                startActivityForResult(intent, REQUEST_CODE_OPPURTUNITY_DETAIL);
             }
         };
     }
@@ -289,6 +290,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_OPEN_DETAIL && resultCode == Activity.RESULT_OK) {
+            // refresh the list
 
         } else if(requestCode == SortFragment.REQUEST_SORT && resultCode == Activity.RESULT_OK) {
             CommonUtils.dumper("NISNIS" + data.getExtras().getInt(SortFragment.SELECTED_POSITION));
