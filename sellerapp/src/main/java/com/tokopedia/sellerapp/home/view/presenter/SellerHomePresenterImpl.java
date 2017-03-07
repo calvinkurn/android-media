@@ -38,7 +38,7 @@ public class SellerHomePresenterImpl extends BaseDaggerPresenter<SellerHomeView>
 
         @Override
         public void onError(Throwable e) {
-
+            getView().onErrorShopScore();
         }
 
         @Override

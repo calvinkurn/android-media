@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -136,6 +137,7 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
 
     @Override
     public void renderShopScoreState(ShopScoreDetailStateEnum shopScoreDetailStateEnum) {
+        setNoGravity();
         String description;
         int icon;
         switch (shopScoreDetailStateEnum) {
@@ -180,6 +182,7 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
     @Override
     public void emptyState() {
         containerView.setVisibility(View.GONE);
+        setGravityCenter();
         NetworkErrorHelper
                 .showEmptyState(
                         getActivity(),
@@ -190,6 +193,23 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
                         R.drawable.ic_error_network,
                         retryLoadShopScore
                 );
+    }
+
+    private void setGravityCenter() {
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        params.gravity = Gravity.CENTER;
+        mainFrame.setLayoutParams(params);
+    }
+
+    private void setNoGravity() {
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        mainFrame.setLayoutParams(params);
     }
 
     private void setShopScoreGoldBadgeState(String description, int icon) {
