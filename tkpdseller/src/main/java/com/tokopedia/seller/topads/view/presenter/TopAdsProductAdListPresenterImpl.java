@@ -29,14 +29,14 @@ public class TopAdsProductAdListPresenterImpl extends TopAdsAdListPresenterImpl<
     }
 
     @Override
-    public void searchAd(Date startDate, Date endDate, String keyword, int status, int group, int page) {
+    public void searchAd(Date startDate, Date endDate, String keyword, int status, long groupId, int page) {
         SearchAdRequest searchAdRequest = new SearchAdRequest();
         searchAdRequest.setShopId(getShopId());
         searchAdRequest.setStartDate(startDate);
         searchAdRequest.setEndDate(endDate);
         searchAdRequest.setKeyword(keyword);
         searchAdRequest.setStatus(status);
-        searchAdRequest.setGroup(group);
+        searchAdRequest.setGroupId(String.valueOf(groupId));
         searchAdRequest.setPage(page);
         productAdInteractor.searchAd(searchAdRequest, new ListenerInteractor<PageDataResponse<List<ProductAd>>>() {
             @Override

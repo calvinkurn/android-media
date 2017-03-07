@@ -11,7 +11,7 @@ public class ProductAd implements Ad, Parcelable {
 
     @SerializedName("ad_id")
     @Expose
-    private int id;
+    private long id;
     @SerializedName("ad_status")
     @Expose
     private int status;
@@ -102,7 +102,7 @@ public class ProductAd implements Ad, Parcelable {
     private String groupName;
     @SerializedName("group_id")
     @Expose
-    private int groupId;
+    private long groupId;
 
     @Override
     public String getStatTotalImpression() {
@@ -110,8 +110,8 @@ public class ProductAd implements Ad, Parcelable {
     }
 
     @Override
-    public int getId() {
-        return id;
+    public String getId() {
+        return String.valueOf(id);
     }
 
     @Override
@@ -242,7 +242,7 @@ public class ProductAd implements Ad, Parcelable {
         return groupName;
     }
 
-    public int getGroupId() {
+    public long getGroupId() {
         return groupId;
     }
 
@@ -256,7 +256,7 @@ public class ProductAd implements Ad, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.id);
+        dest.writeLong(this.id);
         dest.writeInt(this.status);
         dest.writeString(this.statusDesc);
         dest.writeInt(this.statusToogle);
@@ -285,11 +285,11 @@ public class ProductAd implements Ad, Parcelable {
         dest.writeString(this.productUri);
         dest.writeInt(this.productActive);
         dest.writeString(this.groupName);
-        dest.writeInt(this.groupId);
+        dest.writeLong(this.groupId);
     }
 
     protected ProductAd(Parcel in) {
-        this.id = in.readInt();
+        this.id = in.readLong();
         this.status = in.readInt();
         this.statusDesc = in.readString();
         this.statusToogle = in.readInt();
@@ -318,7 +318,7 @@ public class ProductAd implements Ad, Parcelable {
         this.productUri = in.readString();
         this.productActive = in.readInt();
         this.groupName = in.readString();
-        this.groupId = in.readInt();
+        this.groupId = in.readLong();
     }
 
     public static final Parcelable.Creator<ProductAd> CREATOR = new Parcelable.Creator<ProductAd>() {

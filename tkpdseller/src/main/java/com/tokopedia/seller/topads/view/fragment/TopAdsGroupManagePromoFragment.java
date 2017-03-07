@@ -13,12 +13,12 @@ import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 public class TopAdsGroupManagePromoFragment extends TopAdsBaseGroupEditPromoFragment {
 
     public static TopAdsGroupManagePromoFragment createInstance(String adId, int choosenOption,
-                                                              int groupId, String groupName) {
+                                                              String groupId, String groupName) {
         TopAdsGroupManagePromoFragment fragment = new TopAdsGroupManagePromoFragment();
         Bundle bundle = new Bundle();
         bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, adId);
         bundle.putInt(TopAdsExtraConstant.EXTRA_CHOOSEN_OPTION_GROUP, choosenOption);
-        bundle.putInt(TopAdsExtraConstant.EXTRA_GROUP_ID, groupId);
+        bundle.putString(TopAdsExtraConstant.EXTRA_GROUP_ID, groupId);
         bundle.putString(TopAdsExtraConstant.EXTRA_GROUP_NAME, groupName);
         fragment.setupArguments(bundle);
         return fragment;
@@ -70,7 +70,7 @@ public class TopAdsGroupManagePromoFragment extends TopAdsBaseGroupEditPromoFrag
     }
 
     @Override
-    protected void onSubmitFormChooseGroup(int choosenId) {
+    protected void onSubmitFormChooseGroup(String choosenId) {
         presenter.moveToExistProductGroup(adId, String.valueOf(choosenId), SessionHandler.getShopID(getActivity()));
     }
 

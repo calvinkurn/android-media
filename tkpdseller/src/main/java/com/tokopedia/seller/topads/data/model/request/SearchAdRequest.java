@@ -21,7 +21,6 @@ public class SearchAdRequest {
     private Date endDate;
     private String keyword;
     private int status;
-    private int group;
     private int page;
     private String adId;
     private String groupId;
@@ -66,12 +65,8 @@ public class SearchAdRequest {
         this.status = status;
     }
 
-    public int getGroup() {
-        return group;
-    }
-
-    public void setGroup(int group) {
-        this.group = group;
+    public String getGroupId() {
+        return groupId;
     }
 
     public int getPage() {
@@ -113,7 +108,6 @@ public class SearchAdRequest {
         if (status >= 0) {
             params.put(TopAdsNetworkConstant.PARAM_STATUS, String.valueOf(status));
         }
-        params.put(TopAdsNetworkConstant.PARAM_GROUP, String.valueOf(group));
         if (page >= 0) {
             params.put(TopAdsNetworkConstant.PARAM_PAGE, String.valueOf(page));
         }

@@ -25,7 +25,7 @@ public abstract class TopAdsBaseGroupEditPromoFragment extends TopAdsBaseManageG
 
     protected String adId;
     protected int choosenOption;
-    protected int groupId;
+    protected String groupId;
     protected String groupName;
 
     @Override
@@ -33,7 +33,7 @@ public abstract class TopAdsBaseGroupEditPromoFragment extends TopAdsBaseManageG
         super.setupArguments(arguments);
         adId = arguments.getString(TopAdsExtraConstant.EXTRA_AD_ID);
         choosenOption = arguments.getInt(TopAdsExtraConstant.EXTRA_CHOOSEN_OPTION_GROUP);
-        groupId = arguments.getInt(TopAdsExtraConstant.EXTRA_GROUP_ID);
+        groupId = arguments.getString(TopAdsExtraConstant.EXTRA_GROUP_ID);
         groupName = arguments.getString(TopAdsExtraConstant.EXTRA_GROUP_NAME);
         choosenId = groupId;
     }

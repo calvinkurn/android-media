@@ -6,7 +6,7 @@ package com.tokopedia.seller.topads.data.model.data;
 
 public interface Ad {
 
-    int getId();
+    String getId();
 
     int getStatus();
 

@@ -43,11 +43,11 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     private TopAdsDetailProductFragmentListener listener;
     private MenuItem manageGroupMenuItem;
 
-    public static Fragment createInstance(ProductAd productAd, int adId) {
+    public static Fragment createInstance(ProductAd productAd, String adId) {
         Fragment fragment = new TopAdsDetailProductFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, productAd);
-        bundle.putInt(TopAdsExtraConstant.EXTRA_AD_ID, adId);
+        bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, adId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -117,13 +117,13 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     protected void editAd() {
         if (isHasGroupAd()) {
             Intent intent = TopAdsGroupEditPromoActivity.createIntent(getActivity(),
-                    String.valueOf(productAd.getId()), TopAdsGroupEditPromoFragment.EXIST_GROUP, productAd.getGroupName(),
-                    productAd.getGroupId());
+                    productAd.getId(), TopAdsGroupEditPromoFragment.EXIST_GROUP, productAd.getGroupName(),
+                    String.valueOf(productAd.getGroupId()));
             startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
         } else if (productAd != null) {
             Intent intent = new Intent(getActivity(), TopAdsDetailEditProductActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_NAME, String.valueOf(productAd.getName()));
-            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, String.valueOf(productAd.getId()));
+            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, productAd.getId());
             startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
         }
     }
@@ -200,7 +200,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
 
     private void manageGroup() {
         Intent intent = TopAdsGroupManagePromoActivity.createIntent(getActivity(), String.valueOf(productAd.getId()),
-                TopAdsGroupManagePromoFragment.NEW_GROUP, productAd.getGroupName(), productAd.getGroupId());
+                TopAdsGroupManagePromoFragment.NEW_GROUP, productAd.getGroupName(), String.valueOf(productAd.getGroupId()));
         startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }
 
