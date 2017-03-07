@@ -59,6 +59,12 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
             callback.goToSellerCenter();
         }
     };
+    private View.OnClickListener goToCompleteInformation = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            callback.goToCompleteInformation();
+        }
+    };
     private NetworkErrorHelper.RetryClickedListener retryLoadShopScore = new NetworkErrorHelper.RetryClickedListener() {
         @Override
         public void onRetryClicked() {
@@ -96,6 +102,7 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
         buttonGoToGmSubscribe = (TextView) parentView.findViewById(R.id.button_go_to_gm_subscribe);
         buttonGoToGmSubscribe.setOnClickListener(goToGmSubscribe);
         parentView.findViewById(R.id.button_go_to_seller_center).setOnClickListener(goToSellerCenter);
+        parentView.findViewById(R.id.button_go_to_complete_information).setOnClickListener(goToCompleteInformation);
 
         presenter.attachView(this);
         presenter.getShopScoreDetail();

@@ -7,4 +7,6 @@ public interface ShopScoreDetailFragmentCallback {
     void goToGmSubscribe();
 
     void goToSellerCenter();
+
+    void goToCompleteInformation();
 }

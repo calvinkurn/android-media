@@ -18,6 +18,7 @@ import com.tokopedia.seller.shopscore.view.fragment.ShopScoreDetailFragmentCallb
  */
 public class ShopScoreDetailActivity extends BasePresenterActivity implements ShopScoreDetailFragmentCallback {
     private static final String SELLER_CENTER_LINK = "https://seller.tokopedia.com/";
+    private static final String SHOP_SCORE_INFORMATION = "https://help.tokopedia.com/hc/en-us/articles/115000854466-Performa-Toko";
     private FragmentManager fragmentManager;
 
     @Override
@@ -82,6 +83,12 @@ public class ShopScoreDetailActivity extends BasePresenterActivity implements Sh
     @Override
     public void goToSellerCenter() {
         Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(SELLER_CENTER_LINK));
+        startActivity(myIntent);
+    }
+
+    @Override
+    public void goToCompleteInformation() {
+        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(SHOP_SCORE_INFORMATION));
         startActivity(myIntent);
     }
 }
