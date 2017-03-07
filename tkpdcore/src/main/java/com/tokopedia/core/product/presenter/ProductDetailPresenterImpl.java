@@ -41,6 +41,7 @@ import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
+import com.tokopedia.core.product.model.productdetail.ProductBreadcrumb;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
@@ -815,6 +816,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void sendButtonClickEvent(@NonNull Context context, @NonNull ProductDetailData successResult) {
         UnifyTracking.eventPDPAddToWishlist(successResult.getInfo().getProductName());
+        TrackingUtils.sendMoEngageAddWishlistEvent(successResult);
     }
 
     private void requestVideo(@NonNull Context context, @NonNull String productID) {

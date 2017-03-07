@@ -379,6 +379,10 @@ public interface AppEventTracking {
         String CATEGORY = "Category";
         String PRODUCT_ID = "Product_id";
         String PRODUCT_NAME = "Product_name";
+        String PRODUCT_URL = "Product_url";
+        String PRODUCT_PRICE = "Product_price";
+        String BRAND_NAME = "Brand_name";
+        String BRAND_ID = "Brand_id";
 
         String EVENT_LOGIN = "Login";
         String EVENT_OPEN_BERANDA = "Beranda_Screen_Launched";
@@ -387,13 +391,12 @@ public interface AppEventTracking {
         String EVENT_OPEN_HOTLIST = "HotList_Screen_Launched";
         String EVENT_OPEN_PRODUCTPAGE = "Product_Page_Opened";
         String EVENT_CLICK_HOTLIST = "Clicked_HotList_Item";
+        String EVENT_ADD_WISHLIST = "Product_Added_To_Wishlist";
 
 
         String REG_START = "Registration_Start";
         String REG_COMPL = "Registration_Completed";
         String ADDR_ADD = "Address_Added";
-
-
 
     }
 

@@ -13,6 +13,7 @@ import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.home.model.HotListModel;
+import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.SessionHandler;
@@ -101,6 +102,27 @@ public class TrackingUtils extends TrackingConfig {
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrBoolean(AppEventTracking.MOENGAGE.LOGIN_STATUS, SessionHandler.isV4Login(MainApplication.getAppContext()));
         getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_OPEN_HOTLIST);
+    }
+
+    public static void sendMoEngageAddWishlistEvent(ProductDetailData productData){
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_NAME, productData.getInfo().getProductName());
+        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_ID, String.valueOf(productData.getInfo().getProductId()));
+        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_URL, productData.getInfo().getProductUrl());
+        builder.putAttrString(AppEventTracking.MOENGAGE.PRODUCT_PRICE, productData.getInfo().getProductPrice());
+
+        builder.putAttrString(AppEventTracking.MOENGAGE.BRAND_NAME, productData.getInfo().getProductCatalogName());
+        builder.putAttrString(AppEventTracking.MOENGAGE.BRAND_ID, productData.getInfo().getProductCatalogId());
+
+        if(productData.getBreadcrumb().size()>1)
+        {
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, productData.getBreadcrumb().get(1).getDepartmentName());
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY_ID, productData.getBreadcrumb().get(1).getDepartmentId());
+        }
+
+        builder.putAttrString(AppEventTracking.MOENGAGE.CATEGORY, productData.getBreadcrumb().get(0).getDepartmentName());
+
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_ADD_WISHLIST);
     }
 
     public static void fragmentBasedAFEvent(String tag){
