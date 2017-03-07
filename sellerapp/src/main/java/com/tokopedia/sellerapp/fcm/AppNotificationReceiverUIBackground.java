@@ -8,6 +8,8 @@ import com.tokopedia.core.gcm.base.BaseAppNotificationReceiverUIBackground;
 import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.sellerapp.fcm.notification.TopAdsBelow20kNotification;
+import com.tokopedia.sellerapp.fcm.notification.TopAdsTopupSuccessNotification;
 
 import java.util.Map;
 
@@ -31,7 +33,8 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     public void prepareAndExecuteDedicatedNotification(Bundle data) {
         Map<Integer, Class> dedicatedNotification = getCommonDedicatedNotification();
-
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TOPADS_BELOW_20K, TopAdsBelow20kNotification.class);
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TOPADS_TOPUP_SUCCESS, TopAdsTopupSuccessNotification.class);
         Class<?> clazz = dedicatedNotification.get(GCMUtils.getCode(data));
         if (clazz != null) {
             executeNotification(data, clazz);

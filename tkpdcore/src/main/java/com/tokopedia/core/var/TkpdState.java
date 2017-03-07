@@ -369,6 +369,8 @@ public class TkpdState {
         public static final int GCM_SHOP = 1006;
         public static final int GCM_WISHLIST = 1007;
         public static final int GCM_VERIFICATION = 1008;
+        public static final int GCM_TOPADS_BELOW_20K = 1100;
+        public static final int GCM_TOPADS_TOPUP_SUCCESS = 1101;
     }
 
     public class RecyclerView {
