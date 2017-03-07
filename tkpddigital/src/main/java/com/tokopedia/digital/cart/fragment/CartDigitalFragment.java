@@ -43,7 +43,7 @@ import butterknife.OnClick;
 
 public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPresenter> implements
         IDigitalCartView, CheckoutHolderView.IAction,
-        InputPriceHolderView.EditTextUserInputListener, VoucherCartHolderView.ActionListener {
+        InputPriceHolderView.EditTextUserInputListener, VoucherCartHolderView.EditTextVoucherListener {
 
     private static final String TAG = CartDigitalFragment.class.getSimpleName();
     private static final String ARG_CART_DIGITAL_DATA_PASS = "ARG_CART_DIGITAL_DATA_PASS";
@@ -62,8 +62,10 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @BindView(R2.id.input_price_holder_view)
     InputPriceHolderView inputPriceHolderView;
 
-    private InputPriceHolderView.EditTextUserInputListener listener;
     private SessionHandler sessionHandler;
+    private boolean statusVoucher;
+    private long paymentAmount = 0;
+    private String voucherCode;
 
     public static Fragment newInstance(Parcelable passData) {
         CartDigitalFragment cartDigitalFragment = new CartDigitalFragment();
@@ -81,7 +83,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     protected void onFirstTimeLaunched() {
         inputPriceHolderView.setEditTextUserInputListener(this);
-        voucherCartHolderView.setActionListener(this);
+        voucherCartHolderView.setEditTextVoucherListener(this);
         sessionHandler = new SessionHandler(getActivity());
         //   presenter.processGetCartData(passData.getCategoryId());
         presenter.processAddToCart(passData);
@@ -298,7 +300,15 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
-    public void onVoucherCheckButtonClicked(String voucherCode) {
-        presenter.processCheckVoucher(voucherCode);
+    public void showVoucherUser(boolean isUsedVoucher, String inputVoucher) {
+        this.statusVoucher = isUsedVoucher;
+        if (isUsedVoucher && inputVoucher != null && !inputVoucher.equals("")) {
+            Log.d(TAG, "voucherUsedByUser: " + inputVoucher);
+            //if berhasil dapet voucher
+            voucherCartHolderView.setUsedVoucher("Mulai Hemat 2017");
+            this.voucherCode = inputVoucher;
+            //else
+            //voucherCartHolderView.setErrorVoucher("Error message");
+        }
     }
 }

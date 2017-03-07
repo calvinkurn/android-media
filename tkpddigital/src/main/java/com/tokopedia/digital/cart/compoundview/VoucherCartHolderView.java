@@ -1,8 +1,6 @@
 package com.tokopedia.digital.cart.compoundview;
 
 import android.content.Context;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +40,7 @@ public class VoucherCartHolderView extends RelativeLayout {
     @BindView(R2.id.textview_voucher)
     TextView usedVoucher;
 
-    private ActionListener actionListener;
+    private EditTextVoucherListener listener;
 
     public VoucherCartHolderView(Context context) {
         super(context);
@@ -65,16 +63,14 @@ public class VoucherCartHolderView extends RelativeLayout {
         actionVoucher();
     }
 
-
-    public void setActionListener(ActionListener actionListener) {
-        this.actionListener = actionListener;
+    public void setEditTextVoucherListener(EditTextVoucherListener listener) {
+        this.listener = listener;
     }
 
     private void actionVoucher() {
         checkBoxVoucher.setOnCheckedChangeListener(getCheckboxVoucherListener());
         buttonVoucher.setOnClickListener(getVoucherListener());
         buttonCancel.setOnClickListener(getCancelVoucherListener());
-        editTextVoucher.addTextChangedListener(onEditTextChangeListener());
     }
 
     @NotNull
@@ -82,6 +78,9 @@ public class VoucherCartHolderView extends RelativeLayout {
         return new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (!isChecked) {
+                    listener.showVoucherUser(isChecked, editTextVoucher.getText().toString());
+                }
                 holderInputVoucher.setVisibility(isChecked ? VISIBLE : GONE);
             }
         };
@@ -93,19 +92,22 @@ public class VoucherCartHolderView extends RelativeLayout {
             @Override
             public void onClick(View v) {
                 if (!isEditTextVoucherEmpty()) {
-                    usedVoucher.setText(editTextVoucher.getText().toString());
-                    if (actionListener != null)
-                        actionListener.onVoucherCheckButtonClicked(
-                                editTextVoucher.getText().toString().trim()
-                        );
-                    else throw new IllegalArgumentException("Action Listener null coy!!");
-                    holderVoucher.setVisibility(VISIBLE);
-                    errorVoucher.setVisibility(GONE);
+                    listener.showVoucherUser(true, editTextVoucher.getText().toString());
                 } else {
                     errorVoucher.setVisibility(VISIBLE);
                 }
             }
         };
+    }
+
+    public void setUsedVoucher(String voucherName) {
+        usedVoucher.setText(voucherName);
+        holderVoucher.setVisibility(VISIBLE);
+        errorVoucher.setVisibility(GONE);
+    }
+
+    public void setErrorVoucher(String errorMessage) {
+        errorVoucher.setText(errorMessage);
     }
 
     private boolean isEditTextVoucherEmpty() {
@@ -119,30 +121,12 @@ public class VoucherCartHolderView extends RelativeLayout {
             public void onClick(View v) {
                 holderVoucher.setVisibility(GONE);
                 editTextVoucher.setText("");
+                listener.showVoucherUser(true, editTextVoucher.getText().toString());
             }
         };
     }
 
-    private TextWatcher onEditTextChangeListener() {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    errorVoucher.setVisibility(GONE);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        };
-    }
-
-    public interface ActionListener {
-        void onVoucherCheckButtonClicked(String voucherCode);
+    public interface EditTextVoucherListener {
+        void showVoucherUser(boolean isUsedVoucher, String inputVoucher);
     }
 }
