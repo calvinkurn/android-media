@@ -24,7 +24,7 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
 
     @Override
     protected String getTextInfoChooseGroupOption() {
-        return "";
+        return getString(R.string.label_top_ads_info_group_option_exist);
     }
 
     @Override
@@ -34,27 +34,12 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
 
     @Override
     protected boolean getVisibleInfoChooseGroupOption() {
-        return false;
+        return true;
     }
 
     @Override
     protected boolean getVisibleInfoNewGroupOption() {
         return false;
-    }
-
-    @Override
-    protected boolean getVisibleNotInGroupOption() {
-        return true;
-    }
-
-    @Override
-    protected boolean getVisibleChooseGroupOption() {
-        return true;
-    }
-
-    @Override
-    protected boolean getVisibleNewGroupOption() {
-        return true;
     }
 
     @Override

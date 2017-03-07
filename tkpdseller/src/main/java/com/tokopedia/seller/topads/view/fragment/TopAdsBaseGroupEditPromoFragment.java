@@ -42,9 +42,6 @@ public abstract class TopAdsBaseGroupEditPromoFragment extends TopAdsBaseManageG
     protected void initView(View view) {
         super.initView(view);
         switch(choosenOption){
-            case NEW_GROUP:
-                viewRadioNewGroup.setChecked(true);
-                break;
             case EXIST_GROUP:
                 viewRadioChooseGroup.setChecked(true);
                 inputChooseGroup.setText(groupName);
@@ -56,6 +53,26 @@ public abstract class TopAdsBaseGroupEditPromoFragment extends TopAdsBaseManageG
             default:
                 showErrorSnackBar(getString(R.string.label_top_ads_error_choose_one_option));
         }
+    }
+
+    @Override
+    protected String getTextInfoChooseGroupOption() {
+        return getString(R.string.label_top_ads_info_group_option_exist);
+    }
+
+    @Override
+    protected String getTextInfoNewGroupOption() {
+        return getString(R.string.label_top_ads_info_group_option_new);
+    }
+
+    @Override
+    protected boolean getVisibleInfoChooseGroupOption() {
+        return true;
+    }
+
+    @Override
+    protected boolean getVisibleInfoNewGroupOption() {
+        return true;
     }
 
     @Override

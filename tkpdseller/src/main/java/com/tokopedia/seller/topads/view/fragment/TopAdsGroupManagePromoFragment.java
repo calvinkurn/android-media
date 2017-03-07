@@ -25,48 +25,13 @@ public class TopAdsGroupManagePromoFragment extends TopAdsBaseGroupEditPromoFrag
     }
 
     @Override
-    protected String getTextInfoChooseGroupOption() {
-        return getString(R.string.label_top_ads_info_group_option);
-    }
-
-    @Override
-    protected String getTextInfoNewGroupOption() {
-        return "";
-    }
-
-    @Override
-    protected boolean getVisibleInfoChooseGroupOption() {
-        return true;
-    }
-
-    @Override
-    protected boolean getVisibleInfoNewGroupOption() {
-        return false;
-    }
-
-    @Override
-    protected boolean getVisibleNotInGroupOption() {
-        return false;
-    }
-
-    @Override
-    protected boolean getVisibleChooseGroupOption() {
-        return true;
-    }
-
-    @Override
-    protected boolean getVisibleNewGroupOption() {
-        return true;
-    }
-
-    @Override
     protected void onSubmitFormNewGroup(String groupName) {
         presenter.moveToNewProductGroup(adId, groupName, SessionHandler.getShopID(getActivity()));
     }
 
     @Override
     protected void onSubmitFormNotInGroup() {
-        presenter.moveOutProductGroup(SessionHandler.getShopID(getActivity()), adId);
+        finishAndSetResult();
     }
 
     @Override
