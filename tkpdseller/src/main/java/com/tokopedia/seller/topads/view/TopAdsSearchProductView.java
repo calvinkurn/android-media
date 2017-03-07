@@ -17,4 +17,6 @@ public interface TopAdsSearchProductView extends CustomerView {
     void dismissSnackbar();
 
     boolean isExistingGroup();
+
+    void setLoadMoreFlag(boolean eof);
 }

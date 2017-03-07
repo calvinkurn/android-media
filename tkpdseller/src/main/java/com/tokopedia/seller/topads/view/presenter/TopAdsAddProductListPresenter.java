@@ -6,6 +6,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsDefaultParamUseCase;
 import com.tokopedia.seller.topads.domain.model.ProductDomain;
+import com.tokopedia.seller.topads.domain.model.ProductListDomain;
 import com.tokopedia.seller.topads.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.topads.view.TopAdsSearchProductView;
 import com.tokopedia.seller.topads.view.model.NonPromotedTopAdsAddProductModel;
@@ -29,7 +30,9 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
             LOAD_MORE_NETWORK_CALL = 1,
             PULL_TO_REFRESH_NETWORK_CALL = 2,
             RETRY_NETWORK_CALL = 3,
+            ON_ACTIVITY_FOR_RESULT = 4,
             NO_NETWORK_CALL = -1;
+
     private SessionHandler sessionHandler;
     private TopAdsDefaultParamUseCase topAdsDefaultParamUseCase;
     private Map<String, String> params;
@@ -114,7 +117,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
         if (isHitNetwork()) {
             fillParam(sessionHandler);
             topAdsDefaultParamUseCase.execute(params,
-                    new DefaultErrorSubscriber<List<ProductDomain>>(errorNetworkListener) {
+                    new DefaultErrorSubscriber<ProductListDomain>(errorNetworkListener) {
                         @Override
                         public void onCompleted() {
                             resetHitNetwork();
@@ -126,10 +129,11 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
                         }
 
                         @Override
-                        public void onNext(List<ProductDomain> productDomains) {
+                        public void onNext(ProductListDomain productListDomain) {
                             if (isViewAttached()) {
                                 getView().dismissSnackbar();
-                                getView().loadMore(convertTo(productDomains));
+                                getView().setLoadMoreFlag(productListDomain.isEof());
+                                getView().loadMore(convertTo(productListDomain.getProductDomains()));
                                 networkCallCount++;
                             }
                         }
@@ -141,7 +145,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
         if (isHitNetwork()) {
             fillParam(sessionHandler);
             topAdsDefaultParamUseCase.execute(params,
-                    new DefaultErrorSubscriber<List<ProductDomain>>(errorNetworkListener) {
+                    new DefaultErrorSubscriber<ProductListDomain>(errorNetworkListener) {
                         @Override
                         public void onCompleted() {
                             resetHitNetwork();
@@ -153,10 +157,11 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
                 }
 
                         @Override
-                        public void onNext(List<ProductDomain> productDomains) {
+                        public void onNext(ProductListDomain productListDomain) {
                             if (isViewAttached()) {
                                 getView().dismissSnackbar();
-                                getView().loadData(convertTo(productDomains));
+                                getView().setLoadMoreFlag(productListDomain.isEof());
+                                getView().loadData(convertTo(productListDomain.getProductDomains()));
                                 networkCallCount++;
                             }
                         }
@@ -170,6 +175,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
             case PULLTOREFRESH:
             case SEARCHVIEW:
             case RETRYNETWORKCALL:
+            case ONACTIVITYFORRESULT:
                 return true;
             case NONETWORKCALL:
             default:
@@ -260,7 +266,8 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
         LOADMORE(LOAD_MORE_NETWORK_CALL),
         PULLTOREFRESH(PULL_TO_REFRESH_NETWORK_CALL),
         NONETWORKCALL(NO_NETWORK_CALL),
-        RETRYNETWORKCALL(RETRY_NETWORK_CALL);
+        RETRYNETWORKCALL(RETRY_NETWORK_CALL),
+        ONACTIVITYFORRESULT(ON_ACTIVITY_FOR_RESULT);
 
         private int type;
 
