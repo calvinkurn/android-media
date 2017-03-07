@@ -117,7 +117,7 @@ public class SquareMenuButton
         private int dotWidth = (int) Util.getInstance().dp2px(8);
         // Default dot width
         private int dotHeight = (int) Util.getInstance().dp2px(8);
-        // Default ic_close icon width
+        // Default close icon width
         private int closeWidth = (int) Util.getInstance().dp2px(15);
         // Default circle button width
         private int buttonWidth = (int) Util.getInstance().dp2px(88);
@@ -679,7 +679,7 @@ public class SquareMenuButton
             animator.start();
 //            dots[i].setVisibility(isShow ? View.GONE : View.VISIBLE);
         }
-//        ic_close.setVisibility(isShow ? View.VISIBLE : View.GONE);
+//        close.setVisibility(isShow ? View.VISIBLE : View.GONE);
         float sClose = isShow ? 0f : 1f;
         float eClose = isShow ? 1f : 0f;
         ObjectAnimator animator = ObjectAnimator.ofFloat(close, View.ALPHA, sClose, eClose);

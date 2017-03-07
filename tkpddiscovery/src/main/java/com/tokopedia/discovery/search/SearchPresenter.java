@@ -72,6 +72,8 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
     @Override
     public void detachView() {
         super.detachView();
+        searchUseCase.unsubscribe();
+        deleteSearchUseCase.unsubscribe();
     }
 
     private DefaultViewModel prepareDefaultViewModel(SearchData data) {

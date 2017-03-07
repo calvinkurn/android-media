@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 
 /**
  * @author rebeccafranks
- * @since 15/10/24.
+ * @since 15/10/24.Square
  */
 public class RestServiceTestHelper {
 
@@ -27,7 +27,7 @@ public class RestServiceTestHelper {
         final InputStream stream = context.getResources().getAssets().open(filePath);
 
         String ret = convertStreamToString(stream);
-        //Make sure you ic_close all streams.
+        //Make sure you close all streams.
         stream.close();
         return ret;
     }

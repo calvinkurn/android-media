@@ -31,8 +31,6 @@ import com.tokopedia.core.var.TkpdCache;
 
 
 public class DeveloperOptions extends TActivity implements SessionHandler.onLogoutListener {
-    public static final String DOMAIN_WS_4 = "DOMAIN_WS4";
-    public static final String DOMAIN_WS_41 = "DOMAIN_WS_4";
     public static final String CHUCK_ENABLED = "CHUCK_ENABLED";
     public static final String IS_CHUCK_ENABLED = "is_enable";
     //developer test
@@ -144,8 +142,4 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         startActivity(MaintenancePage.createIntentFromNetwork(this, ""));
     }
 
-    public static final String getWsV4Domain(Context context) {
-        return context.getSharedPreferences(DOMAIN_WS_41,
-                MODE_PRIVATE).getString(DOMAIN_WS_4, TkpdBaseURL.LIVE_DOMAIN);
-    }
 }
