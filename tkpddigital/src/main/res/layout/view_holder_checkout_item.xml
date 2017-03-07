@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:paddingTop="@dimen/padding_small"
-    android:paddingBottom="@dimen/padding_small">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingTop="@dimen/padding_small"
+                android:paddingBottom="@dimen/padding_small">
 
     <ImageView
         android:id="@+id/icon_category"
@@ -26,7 +26,7 @@
         android:textSize="@dimen/font_large"
         android:textColor="@color/digital_item_title"
         android:textStyle="bold"
-        tools:text="Pulsa" />
+        tools:text="Pulsa"/>
 
     <View
         android:id="@+id/separator_title"
