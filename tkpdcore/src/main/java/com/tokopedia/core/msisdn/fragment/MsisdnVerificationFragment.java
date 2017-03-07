@@ -43,8 +43,6 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
-import static com.tokopedia.core.util.SessionHandler.PHONE_NUMBER;
-
 /**
  * Created by Nisie on 7/13/16.
  */
