@@ -80,9 +80,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     protected void onFirstTimeLaunched() {
-        //   presenter.processAddToCart(passData);
         inputPriceHolderView.setEditTextUserInputListener(this);
-        presenter.processGetCartData(passData.getCategoryId());
         sessionHandler = new SessionHandler(getActivity());
         //   presenter.processGetCartData(passData.getCategoryId());
         presenter.processAddToCart(passData);

@@ -83,12 +83,14 @@ public class ItemCartHolderView extends RelativeLayout {
     }
 
     public void renderDataMainInfo(List<CartItemDigital> cartItemDigitals) {
+        layoutMainInfo.removeAllViews();
         for (CartItemDigital itemcart: cartItemDigitals) {
             addViewMainInfo(itemcart);
         }
     }
 
     public void renderAdditionalInfo(List<CartAdditionalInfo> additionalInfos) {
+        layoutAdditionalInfo.removeAllViews();
         separator.setVisibility(additionalInfos.isEmpty() ? GONE : VISIBLE);
         buttonDetail.setVisibility(additionalInfos.isEmpty() ? GONE : VISIBLE);
         if (!additionalInfos.isEmpty()) {
@@ -99,13 +101,22 @@ public class ItemCartHolderView extends RelativeLayout {
     }
 
     private void addViewAdditionalInfo(CartAdditionalInfo additionalInfo) {
-        TextView title = new TextView(context);
-        title.setText(additionalInfo.getTitle());
-        layoutAdditionalInfo.addView(title);
-
+        addTitleAdditionalInfo(additionalInfo.getTitle());
         for (CartItemDigital cartItemDigital : additionalInfo.getCartItemDigitalList()) {
             addViewItemAdditionalInfo(cartItemDigital);
         }
+    }
+
+    private void addTitleAdditionalInfo(String titleAddInfo) {
+        LinearLayout.LayoutParams layoutTitle = new LinearLayout.LayoutParams(
+                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        layoutTitle.setMargins(0, 20, 0, 5);
+        TextView title = new TextView(context);
+        title.setLayoutParams(layoutTitle);
+        title.setTextSize(context.getResources().getDimension(R.dimen.font_small) /
+                getResources().getDisplayMetrics().density);
+        title.setText(titleAddInfo);
+        layoutAdditionalInfo.addView(title);
     }
 
     private void addViewItemAdditionalInfo(CartItemDigital cartItemDigital) {

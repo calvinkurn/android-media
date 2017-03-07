@@ -47,5 +47,6 @@ public class ItemListCartView extends RelativeLayout {
     public void bindView(CartItemDigital cartItemDigital) {
         label.setText(cartItemDigital.getLabel());
         value.setText(cartItemDigital.getValue());
+        label.setVisibility(cartItemDigital.getLabel().equals("") ? GONE : VISIBLE);
     }
 }
