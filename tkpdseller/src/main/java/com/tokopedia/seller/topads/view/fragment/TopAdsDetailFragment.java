@@ -327,7 +327,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.promo_topads_detail, menu);
+        inflater.inflate(R.menu.menu_top_ads_detail, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

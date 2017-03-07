@@ -288,7 +288,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.promo_topads, menu);
+        inflater.inflate(R.menu.menu_top_ads_list, menu);
         SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setOnQueryTextListener(this);
         super.onCreateOptionsMenu(menu, inflater);

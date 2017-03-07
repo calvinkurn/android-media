@@ -196,7 +196,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.promo_topads_detail, menu);
+        getMenuInflater().inflate(R.menu.menu_top_ads_statistic, menu);
         return true;
     }
 
