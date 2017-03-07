@@ -85,9 +85,12 @@ public class TrackingUtils extends TrackingConfig {
         getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_OPEN_FAVORITE);
     }
 
-    public static void sendMoEngageOpenProductEvent(String subcategory){
+    public static void sendMoEngageOpenProductEvent(ProductDetailData productData){
         PayloadBuilder builder = new PayloadBuilder();
-        builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, subcategory);
+        if(productData.getBreadcrumb().size()>1)
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, productData.getBreadcrumb().get(1).getDepartmentName());
+        else
+            builder.putAttrString(AppEventTracking.MOENGAGE.SUBCATEGORY, productData.getBreadcrumb().get(0).getDepartmentName());
         getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_OPEN_PRODUCTPAGE);
     }
 

@@ -270,7 +270,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         pdt.addProduct(product.getProduct());
 
         UnifyTracking.eventPDPDetail(pdt);
-        TrackingUtils.sendMoEngageOpenProductEvent(successResult.getBreadcrumb().get(0).getDepartmentName());
+        TrackingUtils.sendMoEngageOpenProductEvent(successResult);
     }
 
     @Override
