@@ -72,8 +72,11 @@ public class VideoPlayerActivity extends BasePresenterActivity<VideoPlayerPresen
                         Toast.makeText(getContext(), getString(R.string.default_request_error_internal_server), Toast.LENGTH_SHORT);
                         finish();
                         return true;
+                    default:
+                        Toast.makeText(getContext(), R.string.default_request_error_timeout, Toast.LENGTH_SHORT);
+                        finish();
+                        return true;
                 }
-                return false;
             }
         });
         videoView.start();
