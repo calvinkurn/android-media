@@ -75,7 +75,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight=".5"
                     android:gravity="end"
-                    android:textColor="@color/grey"
+                    android:textColor="@color/deep_orange_500"
                     android:textSize="@dimen/text_size_l_medium"
                     android:textStyle="bold"
                     tools:text="Rp. 50.000,-"/>
@@ -86,7 +86,7 @@
     <TextView
         android:id="@+id/btn_next"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
+        android:layout_height="@dimen/tab_height"
         android:layout_below="@+id/total_pembayaran"
         android:background="@drawable/btn_buy"
         android:gravity="center"

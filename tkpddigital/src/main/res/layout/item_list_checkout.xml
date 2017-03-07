@@ -9,10 +9,9 @@
 
     <TextView
         android:id="@+id/label"
-        android:layout_width="@dimen/store_name"
+        android:layout_width="@dimen/balance_width"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:textSize="@dimen/fontvvs"
         android:textColor="@color/digital_voucher_notes"
         android:layout_alignTop="@+id/value"
         android:layout_alignBottom="@+id/value"
@@ -24,7 +23,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/label"
-        android:textSize="@dimen/fontvs"
         android:textColor="@color/digital_voucher"
         tools:text="123456789101123" />
 
