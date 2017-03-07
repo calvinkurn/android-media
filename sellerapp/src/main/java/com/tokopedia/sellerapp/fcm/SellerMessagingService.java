@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.fcm;
+package com.tokopedia.sellerapp.fcm;
 
 import android.os.Bundle;
 
@@ -10,7 +10,8 @@ import com.tokopedia.core.gcm.base.BaseNotificationMessagingService;
  * Created by Herdi_WORK on 12.01.17.
  */
 
-public class FCMMessagingService extends BaseNotificationMessagingService {
+public class SellerMessagingService extends BaseNotificationMessagingService {
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);

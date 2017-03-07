@@ -27,7 +27,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
@@ -180,74 +179,6 @@ public class ShopInfoActivity extends BaseActivity
         return bundle;
     }
 
-
-    @DeepLink({
-            "tokopedia://shop/{shop_id}"
-    })
-    public static Intent getCallingIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ShopInfoActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
-                .putExtras(extras);
-    }
-
-    @DeepLink({
-            "tokopedia://shop/{shop_id}/etalase/{etalase_id}"
-    })
-    public static Intent getCallingIntentEtalaseSelected(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ShopInfoActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_ETALASE)
-                .putExtras(extras);
-    }
-
-
-    @DeepLink({
-            "tokopedia://shop/{shop_id}/talk"
-    })
-    public static Intent getCallingIntentTalkSelected(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ShopInfoActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_TALK)
-                .putExtras(extras);
-    }
-
-    @DeepLink({
-            "tokopedia://shop/{shop_id}/review"
-    })
-    public static Intent getCallingIntentReviewSelected(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ShopInfoActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_REVIEW)
-                .putExtras(extras);
-    }
-
-    @DeepLink({
-            "tokopedia://shop/{shop_id}/note"
-    })
-    public static Intent getCallingIntentNoteSelected(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ShopInfoActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_NOTE)
-                .putExtras(extras);
-    }
-
-    @DeepLink({
-            "tokopedia://shop/{shop_id}/info"
-    })
-    public static Intent getCallingIntentInfoSelected(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ShopInfoActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, NAVIGATION_TO_INFO)
-                .putExtras(extras);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -267,69 +198,6 @@ public class ShopInfoActivity extends BaseActivity
         }
 
         sendEventLoca();
-    }
-
-    private void actionFirstLaunched(Bundle extras) {
-        if (shopModel.info.shopIsOfficial == 1) {
-            switch (extras.getInt(EXTRA_STATE_TAB_POSITION, 0)) {
-                case TAB_POSITION_HOME:
-                    holder.pager.setCurrentItem(0, true);
-                    break;
-                case TAB_POSITION_ETALASE:
-                    ProductList productListFragment = (ProductList) adapter.getItem(1);
-                    productListFragment.setSelectedEtalase(extras.getString("etalase_id"));
-                    holder.pager.setCurrentItem(1, true);
-                    break;
-                case TAB_POSITION_TALK:
-                    holder.pager.setCurrentItem(2, true);
-                    break;
-                case TAB_POSITION_REVIEW:
-                    holder.pager.setCurrentItem(3, true);
-                    break;
-                case TAB_POSITION_NOTE:
-                    holder.pager.setCurrentItem(4, true);
-                    break;
-                case NAVIGATION_TO_INFO:
-                    actionViewMore();
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            switch (extras.getInt(EXTRA_STATE_TAB_POSITION, 0)) {
-                case TAB_POSITION_HOME:
-                case TAB_POSITION_ETALASE:
-                    ProductList productListFragment = (ProductList) adapter.getItem(1);
-                    productListFragment.setSelectedEtalase(extras.getString("etalase_id"));
-                    holder.pager.setCurrentItem(0, true);
-                    break;
-                case TAB_POSITION_TALK:
-                    holder.pager.setCurrentItem(1, true);
-                    break;
-                case TAB_POSITION_REVIEW:
-                    holder.pager.setCurrentItem(2, true);
-                    break;
-                case TAB_POSITION_NOTE:
-                    holder.pager.setCurrentItem(3, true);
-                    break;
-                case NAVIGATION_TO_INFO:
-                    actionViewMore();
-                    break;
-            }
-        }
-
-    }
-
-    public void switchTab(String etalaseId) {
-        try {
-            if (!etalaseId.equals("all")) {
-                ProductList productListFragment = (ProductList) adapter.getItem(1);
-                productListFragment.setSelectedEtalase(etalaseId);
-            }
-            holder.pager.setCurrentItem(1, true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -630,12 +498,6 @@ public class ShopInfoActivity extends BaseActivity
         showNotice();
         ReputationLevelUtils.setReputationMedals(this, holder.badges, shopModel.stats.shopBadgeLevel.set, shopModel.stats.shopBadgeLevel.level, shopModel.stats.shopReputationScore);
         getIntent().putExtra(SHOP_AVATAR, shopModel.info.shopAvatar);
-
-
-        Intent intent = getIntent();
-        if (intent.getBooleanExtra(DeepLink.IS_DEEP_LINK, false)) {
-            actionFirstLaunched(intent.getExtras());
-        }
     }
 
     private void setFreeReturn(ViewHolder holder, Info data) {

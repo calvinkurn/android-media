@@ -97,8 +97,24 @@ public class BuildAndShowNotification {
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
         mBuilder.setContentIntent(resultPendingIntent);
+        if (applinkNotificationPass.isMultiSender()) {
+            mBuilder.setLargeIcon(
+                    ImageHandler.getRoundedCornerBitmap(
+                            BitmapFactory.decodeResource(mContext.getResources(), R.drawable.qc_launcher),
+                            100
+                    )
+            );
 
-        downloadImageAndShowNotification(applinkNotificationPass, mBuilder);
+            NotificationManager mNotificationManager =
+                    (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            Notification notif = mBuilder.build();
+            if (isAllowedVibrate() && isAllowBell()) {
+                notif.defaults |= Notification.DEFAULT_VIBRATE;
+            }
+            mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
+        } else {
+            downloadImageAndShowNotification(applinkNotificationPass, mBuilder);
+        }
     }
 
     private void downloadImageAndShowNotification(final ApplinkNotificationPass applinkNotificationPass,

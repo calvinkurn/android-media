@@ -64,7 +64,6 @@ public abstract class BaseAppNotificationReceiverUIBackground {
     protected Context mContext;
     protected ActivitiesLifecycleCallbacks mActivitiesLifecycleCallbacks;
     protected SavePushNotificationUseCase mSavePushNotificationUseCase;
-    protected GetSavedPushNotificationUseCase getSavedPushNotificationUseCase;
 
     public interface OnSavePushNotificationCallback {
         void onSuccessSavePushNotification();
@@ -76,34 +75,6 @@ public abstract class BaseAppNotificationReceiverUIBackground {
         mFCMCacheManager = new FCMCacheManager(application.getBaseContext());
         mContext = application.getApplicationContext();
         mActivitiesLifecycleCallbacks = new ActivitiesLifecycleCallbacks(application);
-
-        PushNotificationRepository pushNotificationRepository = new PushNotificationDataRepository();
-        mSavePushNotificationUseCase = new SavePushNotificationUseCase(
-                new JobExecutor(),
-                new UIThread(),
-                pushNotificationRepository
-        );
-
-        GetSavedMessagePushNotificationUseCase getSavedMessagePushNotificationUseCase =
-                new GetSavedMessagePushNotificationUseCase(
-                        new JobExecutor(),
-                        new UIThread(),
-                        pushNotificationRepository
-                );
-
-        GetSavedDiscussionPushNotificationUseCase getSavedDiscussionPushNotificationUseCase =
-                new GetSavedDiscussionPushNotificationUseCase(
-                        new JobExecutor(),
-                        new UIThread(),
-                        pushNotificationRepository
-                );
-
-        getSavedPushNotificationUseCase = new GetSavedPushNotificationUseCase(
-                new JobExecutor(),
-                new UIThread(),
-                getSavedMessagePushNotificationUseCase,
-                getSavedDiscussionPushNotificationUseCase
-        );
     }
 
     protected boolean isDedicatedNotification(Bundle data) {

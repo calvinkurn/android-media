@@ -101,13 +101,18 @@ public class DiskPushNotificationDataStore implements PushNotificationDataStore 
     public Observable<List<PushNotification>> getPushSavedPushNotificationWithOrderBy(String category, boolean ascendant) {
         ConditionGroup conditionGroup = ConditionGroup.clause();
         conditionGroup.and(DbPushNotification_Table.category.eq(category));
+        List<OrderBy> orderBies = new ArrayList<>();
         OrderBy orderBy = OrderBy.fromProperty(DbPushNotification_Table.customIndex);
         if (ascendant) {
             orderBy.ascending();
         } else {
             orderBy.descending();
         }
-        return Observable.just(pushNotificationDbManager.getDataWithOrderBy(conditionGroup, orderBy))
+        orderBies.add(orderBy);
+        OrderBy idOrderBy = OrderBy.fromProperty(DbPushNotification_Table.id);
+        idOrderBy.ascending();
+        orderBies.add(idOrderBy);
+        return Observable.just(pushNotificationDbManager.getDataWithOrderBy(conditionGroup, orderBies))
                 .map(new Func1<List<DbPushNotification>, List<PushNotification>>() {
                     @Override
                     public List<PushNotification> call(List<DbPushNotification> dbPushNotifications) {

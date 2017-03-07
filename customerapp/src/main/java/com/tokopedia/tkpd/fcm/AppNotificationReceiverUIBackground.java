@@ -1,19 +1,14 @@
 package com.tokopedia.tkpd.fcm;
 
 import android.app.Application;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.base.BaseAppNotificationReceiverUIBackground;
-import com.tokopedia.core.gcm.notification.applink.ApplinkTypeFactory;
-import com.tokopedia.core.gcm.notification.applink.ApplinkTypeFactoryList;
-import com.tokopedia.core.gcm.notification.applink.ApplinkVisitor;
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerEditNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerNotification;
 import com.tokopedia.core.gcm.notification.promotions.DeeplinkNotification;
@@ -23,7 +18,6 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.ConsumerDeeplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
-import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.notification.NewReviewNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAcceptedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAutoCancel2DNotification;
@@ -43,11 +37,9 @@ import com.tokopedia.tkpd.fcm.notification.ResCenterSellerReplyNotification;
 import com.tokopedia.tkpd.fcm.notification.ReviewEditedNotification;
 import com.tokopedia.tkpd.fcm.notification.ReviewReplyNotification;
 
-import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Actions;
@@ -147,6 +139,12 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                     serverId = Uri.parse(applinks).getLastPathSegment();
                 }
                 break;
+            case Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION:
+                customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX);
+                if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
+                    serverId = Uri.parse(applinks).getLastPathSegment();
+                }
+                break;
         }
 
         saveApplinkPushNotification(
@@ -241,34 +239,15 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
 
 
-    private void displayApplinkPushNotification(){
-        getSavedPushNotificationUseCase.execute(RequestParams.EMPTY, new Subscriber<List<ApplinkVisitor>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(List<ApplinkVisitor> applinkVisitors) {
-                Intent intent = new Intent(mContext, DeeplinkHandlerActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                ApplinkTypeFactory applinkTypeFactory = new ApplinkTypeFactoryList();
-                for (ApplinkVisitor applinkVisitor : applinkVisitors){
-                    applinkVisitor.type(applinkTypeFactory).process(mContext, intent);
-                }
-            }
-        });
+    private void showApplinkPushNotification(){
+        ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
+        applinkBuildAndShowNotification.show();
     }
 
     private class SavePushNotificationCallback implements OnSavePushNotificationCallback {
         @Override
         public void onSuccessSavePushNotification() {
-            AppNotificationReceiverUIBackground.this.displayApplinkPushNotification();
+            AppNotificationReceiverUIBackground.this.showApplinkPushNotification();
         }
 
         @Override

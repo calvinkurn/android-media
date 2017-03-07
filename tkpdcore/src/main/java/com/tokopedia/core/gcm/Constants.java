@@ -18,6 +18,8 @@ public interface Constants {
     String ARG_NOTIFICATION_APPLINK = "applinks";
     String ARG_NOTIFICATION_APPLINK_MESSAGE = "message";
     String ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX = "full_name";
+    String ARG_NOTIFICATION_APPLINK_DISCUSSION = "discussion";
+    String ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX = "full_name";
     int REGISTRATION_STATUS_OK = 1;
     int REGISTRATION_STATUS_ERROR = 2;
     String REGISTRATION_MESSAGE_OK = "FCM Sucessfully";
@@ -27,6 +29,7 @@ public interface Constants {
     String EXTRA_UNREAD = "unread";
     String EXTRA_APPLINK_CATEGORY = "applink_category";
     int ARG_NOTIFICATION_APPLINK_MESSAGE_ID = 1001;
+    int ARG_NOTIFICATION_APPLINK_DISCUSSION_ID = 1002;
 
     String ACTION_BC_RESET_APPLINK = "com.tokopedia.tkpd.APPLINK_ACTION";
 }

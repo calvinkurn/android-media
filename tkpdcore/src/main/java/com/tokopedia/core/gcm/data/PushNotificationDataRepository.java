@@ -103,7 +103,7 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
     @Override
     public Observable<List<DiscussionPushNotification>> getSavedDiscussionPushNotification() {
         return mPushNotificationDataStoreFactory.createDiskPushNotificationDataStore()
-                .getPushSavedPushNotificationWithOrderBy("message", true)
+                .getPushSavedPushNotificationWithOrderBy("discussion", true)
                 .map(new Func1<List<PushNotification>, List<DiscussionPushNotification>>() {
                     @Override
                     public List<DiscussionPushNotification> call(List<PushNotification> pushNotifications) {

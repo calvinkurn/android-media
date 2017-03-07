@@ -193,6 +193,10 @@ android {
         }
     }
 
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
+        resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
+    }
 }
 
 repositories {
@@ -236,7 +240,6 @@ dependencies {
     }
     compile 'com.daimajia.numberprogressbar:library:1.2@aar'
     compile rootProject.ext.butterKnifeDependencies.butterKnife
-    compile rootProject.ext.playServicesDependencies.firebase
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     provided rootProject.ext.miscDependencies.javaxAnnotation

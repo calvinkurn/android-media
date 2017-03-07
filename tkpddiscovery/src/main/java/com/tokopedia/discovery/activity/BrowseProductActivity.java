@@ -1,11 +1,9 @@
 package com.tokopedia.discovery.activity;
 
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
@@ -29,7 +27,6 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.google.gson.Gson;
@@ -126,38 +123,6 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_BROWSE_PRODUCT_FROM_SEARCH;
-    }
-
-
-    @DeepLink({"tokopedia://hot/{EXTRAS_DISCOVERY_ALIAS}", "tokopedia://hot"})
-    public static Intent getCallingHotlistIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, BrowseProductActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
-    }
-
-    @DeepLink({"tokopedia://category", "tokopedia://search", "tokopedia://catalog"})
-    public static Intent getCallingIntent(Context context, Bundle bundle) {
-        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
-        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, BrowseProductRouter.VALUES_DEFAULT_DEPARTMENT_ID);
-        bundle.putInt(FRAGMENT_ID, BrowseProductRouter.VALUES_HISTORY_FRAGMENT_ID);
-        bundle.putString(AD_SRC, TopAdsApi.SRC_BROWSE_PRODUCT);
-        return new Intent(context, BrowseProductActivity.class)
-                .setData(uri.build())
-                .putExtras(bundle);
-    }
-
-    @DeepLink({"tokopedia://category/{DEPARTMENT_ID}"})
-    public static Intent getCallingCategoryIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        Bundle bundle = new Bundle();
-        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, extras.getString(BrowseProductRouter.DEPARTMENT_ID));
-        bundle.putInt(FRAGMENT_ID, BrowseProductRouter.VALUES_HISTORY_FRAGMENT_ID);
-        bundle.putString(AD_SRC, extras.getString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_BROWSE_PRODUCT));
-        return new Intent(context, BrowseProductActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
     }
 
     public void sendHotlist(String selected, String keyword) {
@@ -835,10 +800,10 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         } else if (source.contains("shop")) {
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP, browseProductActivityModel.getDepartmentId());
         } else if (source.contains("directory") && activeTab == 0) {
-            Log.d(TAG, "get dynamic filter product");
+            Log.d(TAG,"get dynamic filter product");
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY, browseProductActivityModel.getDepartmentId());
         } else if (source.contains("directory") && activeTab == 1) {
-            Log.d(TAG, "get dynamic filter catalog");
+            Log.d(TAG,"get dynamic filter catalog");
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG, browseProductActivityModel.getDepartmentId());
         } else {
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT, browseProductActivityModel.getDepartmentId());
@@ -1008,7 +973,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                         }
                         Map<String, String> filters;
 
-                        if (browseProductActivityModel != null) {
+                        if ( browseProductActivityModel != null ) {
                             filters = browseProductActivityModel.getFilterOptions();
                             for (Map.Entry<String, String> set : filters.entrySet()) {
                                 if (set.getKey().equals("ob")) {

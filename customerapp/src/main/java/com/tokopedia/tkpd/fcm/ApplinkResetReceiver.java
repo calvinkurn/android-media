@@ -24,12 +24,7 @@ public class ApplinkResetReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String category = intent.getStringExtra(Constants.EXTRA_APPLINK_CATEGORY);
-        switch (category){
-            case Constants.ARG_NOTIFICATION_APPLINK_MESSAGE:
-                NotificationModHandler.cancelNotif(context, Constants.ARG_NOTIFICATION_APPLINK_MESSAGE_ID);
-                break;
-        }
-
+        ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(context);
+        applinkBuildAndShowNotification.show();
     }
 }

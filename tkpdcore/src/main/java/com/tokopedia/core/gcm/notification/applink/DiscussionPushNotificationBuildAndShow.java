@@ -1,11 +1,18 @@
 package com.tokopedia.core.gcm.notification.applink;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
 
 import com.tokopedia.core.gcm.BuildAndShowNotification;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.domain.model.DiscussionPushNotification;
+import com.tokopedia.core.gcm.domain.model.MessagePushNotification;
+import com.tokopedia.core.gcm.model.ApplinkNotificationPass;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,6 +22,9 @@ import java.util.List;
 public class DiscussionPushNotificationBuildAndShow extends AbstractApplinkBuildAndShowNotification<DiscussionPushNotificationWrapper> {
     private List<DiscussionPushNotification> discussionPushNotifications;
     BuildAndShowNotification buildAndShowNotification;
+    private static final String NOTIFICATION_TITLE = "Tokopedia - Diskusi Baru";
+    private static final String NOTIFICATION_GROUP = "personalized_group";
+    private static final String NOTIFICATION_CATEGORY = "msg";
 
     public DiscussionPushNotificationBuildAndShow(DiscussionPushNotificationWrapper discussionPushNotificationWrapper) {
         discussionPushNotifications = discussionPushNotificationWrapper.getDiscussionPushNotifications();
@@ -23,5 +33,66 @@ public class DiscussionPushNotificationBuildAndShow extends AbstractApplinkBuild
     @Override
     public void process(Context context, Intent handlerIntent) {
         buildAndShowNotification = new BuildAndShowNotification(context);
+        if (discussionPushNotifications.size() > 0) {
+            boolean isSingle = true;
+            int senderCount = 0;
+            String username = null;
+            String uri = null;
+            String image = null;
+            Boolean multipleSender = false;
+            List<String> contents = new ArrayList<>();
+            for (DiscussionPushNotification discussionPushNotification : discussionPushNotifications) {
+                contents.add(discussionPushNotification.getUsername() + " : " + discussionPushNotification.getDescription());
+                if (uri == null) {
+                    uri = discussionPushNotification.getApplink();
+                    image = discussionPushNotification.getThumbnail();
+                } else if (!discussionPushNotification.getApplink().equalsIgnoreCase(uri)) {
+                    if (isSingle) {
+                        Uri url = Uri.parse(uri);
+                        uri = url.getScheme() + "://" + url.getHost();
+                    }
+                    isSingle = false;
+                }
+
+                if (!discussionPushNotification.getUsername().equalsIgnoreCase(username)) {
+                    senderCount++;
+                    username = discussionPushNotification.getUsername();
+                }
+            }
+
+            if (!isSingle) {
+                multipleSender = true;
+            }
+            String description;
+            if (discussionPushNotifications.size() > 1) {
+                description = String.format("%d diskusi dari %d pengirim", discussionPushNotifications.size(), senderCount);
+            } else {
+                description = String.format("%d diskusi", discussionPushNotifications.size());
+            }
+            Uri url = Uri.parse(uri);
+            handlerIntent.setData(url);
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.EXTRA_APPLINK_CATEGORY, Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION);
+            handlerIntent.putExtras(bundle);
+
+            ApplinkNotificationPass.ApplinkNotificationPassBuilder builder =
+                    ApplinkNotificationPass.ApplinkNotificationPassBuilder.builder();
+            ApplinkNotificationPass applinkNotificationPass = builder.contents(contents)
+                    .description(description)
+                    .image(image)
+                    .id(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION_ID)
+                    .title(NOTIFICATION_TITLE)
+                    .group(NOTIFICATION_GROUP)
+                    .category(NOTIFICATION_CATEGORY)
+                    .intent(handlerIntent)
+                    .applink(uri)
+                    .multipleSender(multipleSender)
+                    .build();
+            buildAndShowNotification.buildAndShowNotification(applinkNotificationPass);
+        } else {
+            NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION_ID);
+        }
     }
 }

@@ -21,12 +21,12 @@ public class ApplinkNotificationPass {
     private String info;
     private String category;
     private String group;
+    private boolean multiSender;
 
     public ApplinkNotificationPass() {
     }
 
-
-    private ApplinkNotificationPass(String title,
+    public ApplinkNotificationPass(String title,
                                    String description,
                                    String ticker,
                                    String applink,
@@ -36,7 +36,8 @@ public class ApplinkNotificationPass {
                                    List<String> contents,
                                    String info,
                                    String category,
-                                   String group) {
+                                   String group,
+                                   boolean multiSender) {
         this.title = title;
         this.description = description;
         this.ticker = ticker;
@@ -48,8 +49,8 @@ public class ApplinkNotificationPass {
         this.info = info;
         this.category = category;
         this.group = group;
+        this.multiSender = multiSender;
     }
-
 
     public String getTitle() {
         return title;
@@ -139,6 +140,14 @@ public class ApplinkNotificationPass {
         this.group = group;
     }
 
+    public boolean isMultiSender() {
+        return multiSender;
+    }
+
+    public void setMultiSender(boolean multiSender) {
+        this.multiSender = multiSender;
+    }
+
     public static class ApplinkNotificationPassBuilder {
         private String nestedTitle;
         private String nestedDescription;
@@ -151,6 +160,7 @@ public class ApplinkNotificationPass {
         private String nestedInfo;
         private String nestedCategory;
         private String nestedGroup;
+        private boolean nestedMultipleSender;
 
         private ApplinkNotificationPassBuilder() {
         }
@@ -213,6 +223,11 @@ public class ApplinkNotificationPass {
             this.nestedCategory = category;
             return this;
         }
+
+        public ApplinkNotificationPassBuilder multipleSender(final boolean multipleSender) {
+            this.nestedMultipleSender = multipleSender;
+            return this;
+        }
         public ApplinkNotificationPass build() {
             return new ApplinkNotificationPass(
                     nestedTitle,
@@ -225,7 +240,8 @@ public class ApplinkNotificationPass {
                     nestedContents,
                     nestedInfo,
                     nestedCategory,
-                    nestedGroup
+                    nestedGroup,
+                    nestedMultipleSender
             );
         }
     }
