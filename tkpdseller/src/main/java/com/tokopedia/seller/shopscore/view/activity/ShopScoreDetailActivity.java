@@ -58,8 +58,13 @@ public class ShopScoreDetailActivity extends BasePresenterActivity implements Sh
 
     @Override
     protected void setActionVar() {
+        Fragment fragment =
+                (fragmentManager.findFragmentByTag(ShopScoreDetailFragment.TAG));
+        if (fragment == null) {
+            fragment = ShopScoreDetailFragment.createFragment();
+        }
         inflateFragment(
-                ShopScoreDetailFragment.createFragment(),
+                fragment,
                 false,
                 ShopScoreDetailFragment.TAG);
     }
