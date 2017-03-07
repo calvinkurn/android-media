@@ -41,6 +41,7 @@
         android:id="@+id/progress_bar_shop_score_detail"
         android:layout_width="match_parent"
         android:layout_height="12dp"
+        android:layout_marginTop="10dp"
         app:rcBackgroundColor="@color/grey_300"
         app:rcMax="100"
         app:rcProgress="90"
@@ -51,6 +52,8 @@
         android:id="@+id/description_shop_score_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:lineSpacingMultiplier="1.5"
         android:textSize="12sp" />
 
 
