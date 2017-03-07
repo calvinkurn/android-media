@@ -200,69 +200,6 @@ public class ShopInfoActivity extends BaseActivity
         sendEventLoca();
     }
 
-    private void actionFirstLaunched(Bundle extras) {
-        if (shopModel.info.shopIsOfficial == 1) {
-            switch (extras.getInt(EXTRA_STATE_TAB_POSITION, 0)) {
-                case TAB_POSITION_HOME:
-                    holder.pager.setCurrentItem(0, true);
-                    break;
-                case TAB_POSITION_ETALASE:
-                    ProductList productListFragment = (ProductList) adapter.getItem(1);
-                    productListFragment.setSelectedEtalase(extras.getString("etalase_id"));
-                    holder.pager.setCurrentItem(1, true);
-                    break;
-                case TAB_POSITION_TALK:
-                    holder.pager.setCurrentItem(2, true);
-                    break;
-                case TAB_POSITION_REVIEW:
-                    holder.pager.setCurrentItem(3, true);
-                    break;
-                case TAB_POSITION_NOTE:
-                    holder.pager.setCurrentItem(4, true);
-                    break;
-                case NAVIGATION_TO_INFO:
-                    actionViewMore();
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            switch (extras.getInt(EXTRA_STATE_TAB_POSITION, 0)) {
-                case TAB_POSITION_HOME:
-                case TAB_POSITION_ETALASE:
-                    ProductList productListFragment = (ProductList) adapter.getItem(1);
-                    productListFragment.setSelectedEtalase(extras.getString("etalase_id"));
-                    holder.pager.setCurrentItem(0, true);
-                    break;
-                case TAB_POSITION_TALK:
-                    holder.pager.setCurrentItem(1, true);
-                    break;
-                case TAB_POSITION_REVIEW:
-                    holder.pager.setCurrentItem(2, true);
-                    break;
-                case TAB_POSITION_NOTE:
-                    holder.pager.setCurrentItem(3, true);
-                    break;
-                case NAVIGATION_TO_INFO:
-                    actionViewMore();
-                    break;
-            }
-        }
-
-    }
-
-    public void switchTab(String etalaseId) {
-        try {
-            if (!etalaseId.equals("all")) {
-                ProductList productListFragment = (ProductList) adapter.getItem(1);
-                productListFragment.setSelectedEtalase(etalaseId);
-            }
-            holder.pager.setCurrentItem(1, true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
