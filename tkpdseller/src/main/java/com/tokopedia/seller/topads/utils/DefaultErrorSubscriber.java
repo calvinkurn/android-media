@@ -34,6 +34,10 @@ public class DefaultErrorSubscriber<T> extends Subscriber<T> {
             textMessage.append("Kesalahan tidak diketahui");
         }
 
+        showMessageError(textMessage);
+    }
+
+    protected void showMessageError(StringBuilder textMessage) {
         if (errorNetworkListener != null) {
             errorNetworkListener.showMessageError(textMessage.toString());
         }
