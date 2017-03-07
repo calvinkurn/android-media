@@ -14,6 +14,7 @@ import com.tokopedia.seller.topads.view.mapper.TopAdDetailProductMapper;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailGroupViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscriber;
@@ -25,8 +26,8 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
         extends TopAdsDetailEditGroupPresenterImpl<T>
         implements TopAdsDetailNewGroupPresenter<T> {
 
-    TopAdsCreateNewGroupUseCase topAdsCreateNewGroupUseCase;
-    TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase;
+    private TopAdsCreateNewGroupUseCase topAdsCreateNewGroupUseCase;
+    private TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase;
 
     public TopAdsDetailNewGroupPresenterImpl(TopAdsCreateNewGroupUseCase topAdsCreateNewGroupUseCase,
                                              TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase,
@@ -41,34 +42,34 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
     public void saveAdExisting(String groupId,
                                final List<TopAdsProductViewModel> topAdsProductViewModelList) {
         if (topAdsProductViewModelList == null || topAdsProductViewModelList.size() == 0) {
-            getView().showErrorGroupEmpty();
-        } else {
-            // chaining with reuse of parent's use cases
-            getView().showLoading(true);
-            super.getDetailAd(groupId, new Subscriber<TopAdsDetailGroupDomainModel>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    getView().onLoadDetailAdError(ViewUtils.getErrorMessage(e));
-                }
-
-                @Override
-                public void onNext(TopAdsDetailGroupDomainModel topAdsDetailGroupDomainModel) {
-                    // get the latest domain from API, then pass it to re-save it
-                    topAdsCreateDetailProductListUseCase.execute(
-                            TopAdsCreateDetailProductListUseCase.createRequestParams(
-                                    topAdsDetailGroupDomainModel,
-                                    topAdsProductViewModelList
-                            ),
-                            getSaveProductSubscriber()
-                    );
-                }
-            });
+            // need to validate product size?
+            // getView.showErrGroupEmpty();
         }
+        // chaining with reuse of parent's use cases
+        getView().showLoading(true);
+        super.getDetailAd(groupId, new Subscriber<TopAdsDetailGroupDomainModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().onLoadDetailAdError(ViewUtils.getErrorMessage(e));
+            }
+
+            @Override
+            public void onNext(TopAdsDetailGroupDomainModel topAdsDetailGroupDomainModel) {
+                // get the latest domain from API, then pass it to re-save it
+                topAdsCreateDetailProductListUseCase.execute(
+                        TopAdsCreateDetailProductListUseCase.createRequestParams(
+                                topAdsDetailGroupDomainModel,
+                                topAdsProductViewModelList
+                        ),
+                        getSaveProductSubscriber()
+                );
+            }
+        });
     }
 
 

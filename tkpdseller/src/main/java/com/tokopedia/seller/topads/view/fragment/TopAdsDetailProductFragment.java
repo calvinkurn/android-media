@@ -122,6 +122,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
             startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
         } else if (productAd != null) {
             Intent intent = new Intent(getActivity(), TopAdsDetailEditProductActivity.class);
+            intent.putExtra(TopAdsExtraConstant.EXTRA_NAME, String.valueOf(productAd.getName()));
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, String.valueOf(productAd.getId()));
             startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
         }

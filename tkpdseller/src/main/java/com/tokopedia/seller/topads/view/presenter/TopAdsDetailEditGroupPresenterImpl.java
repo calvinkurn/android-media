@@ -32,14 +32,14 @@ public class TopAdsDetailEditGroupPresenterImpl<T extends TopAdsDetailEditView> 
     }
 
     @Override
-    public void saveAd(TopAdsDetailGroupViewModel topAdsDetailGroupViewModel, List<TopAdsProductViewModel> topAdsProductViewModelList) {
+    public void saveAd(TopAdsDetailGroupViewModel topAdsDetailGroupViewModel) {
         topAdsSaveDetailGroupUseCase.execute(TopAdsSaveDetailGroupUseCase.createRequestParams(
                 TopAdDetailGroupMapper.convertViewToDomain(topAdsDetailGroupViewModel)),
                 getSaveGroupSubscriber());
     }
 
     /**
-     * retrieve to populate the fields of groups ad config to the view
+     * retrieve to populate the fields of groups ad detail to the view
      *
      * @param adId adId here is group ID
      */

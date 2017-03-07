@@ -3,6 +3,7 @@ package com.tokopedia.seller.topads.data.source.cloud.apiservice.api;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.data.model.TopAdsProductDetailDataSourceModel;
 import com.tokopedia.seller.topads.data.model.request.CreateGroupRequest;
+import com.tokopedia.seller.topads.data.model.request.EditGroupRequest;
 import com.tokopedia.seller.topads.data.model.response.DataResponseCreateGroup;
 import com.tokopedia.seller.topads.data.model.data.GroupAdBulkAction;
 import com.tokopedia.seller.topads.data.model.data.ProductAdBulkAction;
@@ -81,5 +82,8 @@ public interface TopAdsManagementApi {
 
     @GET(TopAdsNetworkConstant.PATH_CREATE_GROUP_AD)
     Observable<Response<DataResponse<DataResponseCreateGroup>>> getDetailGroup(@QueryMap Map<String, String> params);
+
+    @PATCH(TopAdsNetworkConstant.PATH_CREATE_GROUP_AD)
+    Observable<Response<DataResponse<DataResponseCreateGroup>>> editGroupAd(@Body DataRequest<EditGroupRequest> body);
 
 }

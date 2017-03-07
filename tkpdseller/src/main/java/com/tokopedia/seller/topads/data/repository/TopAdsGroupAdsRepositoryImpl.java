@@ -2,7 +2,6 @@ package com.tokopedia.seller.topads.data.repository;
 
 import com.tokopedia.seller.topads.data.factory.TopAdsGroupAdFactory;
 import com.tokopedia.seller.topads.data.model.request.CreateGroupRequest;
-import com.tokopedia.seller.topads.data.model.response.DataResponse;
 import com.tokopedia.seller.topads.data.model.response.DataResponseCreateGroup;
 import com.tokopedia.seller.topads.data.source.cloud.TopAdsGroupAdsDataSource;
 import com.tokopedia.seller.topads.domain.TopAdsGroupAdsRepository;
@@ -45,5 +44,11 @@ public class TopAdsGroupAdsRepositoryImpl implements TopAdsGroupAdsRepository {
         TopAdsGroupAdsDataSource topAdsGroupAdsDataSource =
                 topAdsGroupAdFactory.createGroupAdsDataSource();
         return topAdsGroupAdsDataSource.getDetailGroup(groupId);
+    }
+
+    @Override
+    public Observable<TopAdsDetailGroupDomainModel> saveDetailGroup(TopAdsDetailGroupDomainModel topAdsDetailGroupDomainModel) {
+        TopAdsGroupAdsDataSource topAdsGroupAdsDataSource = topAdsGroupAdFactory.createGroupAdsDataSource();
+        return topAdsGroupAdsDataSource.saveDetailGroup(topAdsDetailGroupDomainModel);
     }
 }

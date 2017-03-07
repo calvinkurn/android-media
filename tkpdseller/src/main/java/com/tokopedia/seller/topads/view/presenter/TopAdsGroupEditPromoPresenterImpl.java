@@ -49,6 +49,13 @@ public class TopAdsGroupEditPromoPresenterImpl extends TopAdsManageGroupPromoPre
                 getSubscriberMoveToExistProductGroup());
     }
 
+    @Override
+    public void detachView() {
+        super.detachView();
+        topAdsEditProductGroupToNewGroupUseCase.unsubscribe();
+        topAdsMoveProductGroupToExistGroupUseCase.unsubscribe();
+    }
+
     private Subscriber<Boolean> getSubscriberMoveToExistProductGroup() {
         return new Subscriber<Boolean>() {
             @Override

@@ -89,7 +89,7 @@
 
     <string name="top_ads_statistic_info_default_value">-</string>
     <string name="top_ads_range_date_text">%1$s - %2$s</string>
-    <string name="top_ads_create_ad_alert">Untuk sementara promo TopAds hanya bisa dibuat melalui Tokopedia versi desktop</string>
+    <string name="top_ads_delete_ad_alert">Apakah anda yakin untuk menghapus produk ini ?</string>
 
     <string name="title_action_on">On</string>
     <string name="title_action_off">Off</string>
@@ -101,6 +101,7 @@
     <string name="title_product_ad_detail">Detil Promo Produk</string>
     <string name="title_shop_ad_detail">Detil Promo Toko</string>
     <string name="title_group_ad_detail">Detil Promo Grup</string>
+    <string name="title_delete_promo">Hapus promo</string>
 
     <!-- Top Ads ad list -->
     <string name="label_top_ads_daily_spend">Anggaran Harian</string>
@@ -194,6 +195,7 @@
     <!-- Top Ads New Promo -->
     <string name="label_top_ads_shop_name">Nama Toko</string>
     <string name="label_top_ads_group_name">Nama Grup</string>
+    <string name="label_top_ads_product_name">Nama Product</string>
     <string name="label_top_ads_choose_group">Pilih Grup</string>
     <string name="label_top_ads_create_promo_new_group">Buat promo grup baru</string>
     <string name="label_top_ads_create_promo_from_exist_group">Promo grup yang ada</string>
@@ -225,5 +227,7 @@
 
     <!-- Top Ads add promo -->
     <string name="top_ads_title_grup_exist">Nama grup sudah ada</string>
+    <string name="top_ads_promoted_message">Produk yang sudah dipromo  tidak \ndapat dipilih</string>
+    <string name="promoted">[Promoted]</string>
 
 </resources>

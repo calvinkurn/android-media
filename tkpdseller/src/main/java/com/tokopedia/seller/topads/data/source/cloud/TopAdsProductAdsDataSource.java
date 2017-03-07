@@ -89,15 +89,6 @@ public class TopAdsProductAdsDataSource {
         dataModel.setAdImage(domainModel.getAdImage());
         dataModel.setAdTitle(domainModel.getAdTitle());
         dataModel.setSource(TopAdsNetworkConstant.VALUE_SOURCE_ANDROID);
-        switch (Integer.parseInt(domainModel.getStatus())) {
-            case TopAdsConstant.STATUS_AD_ACTIVE:
-            case TopAdsConstant.STATUS_AD_NOT_SENT:
-                dataModel.setToggle(TopAdsNetworkConstant.VALUE_TOGGLE_ON);
-                break;
-            default:
-                dataModel.setToggle(TopAdsNetworkConstant.VALUE_TOGGLE_OFF);
-                break;
-        }
         return dataModel;
     }
 

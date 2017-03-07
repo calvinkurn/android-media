@@ -11,6 +11,6 @@ import java.util.List;
  */
 public interface TopAdsDetailEditGroupPresenter<T extends TopAdsDetailEditView> extends TopAdsDetailEditPresenter<T> {
 
-    void saveAd(TopAdsDetailGroupViewModel topAdsDetailGroupViewModel, List<TopAdsProductViewModel> topAdsProductViewModelList);
+    void saveAd(TopAdsDetailGroupViewModel topAdsDetailGroupViewModel);
 
 }

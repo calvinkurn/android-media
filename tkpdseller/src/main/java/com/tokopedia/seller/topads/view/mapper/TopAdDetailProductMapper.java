@@ -2,6 +2,8 @@ package com.tokopedia.seller.topads.view.mapper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.seller.topads.constant.TopAdsConstant;
+import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailGroupDomainModel;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailShopDomainModel;

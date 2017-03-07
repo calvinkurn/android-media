@@ -23,6 +23,7 @@ public class TopAdsDetailProductViewModel implements TopAdsDetailAdViewModel {
     private String endTime;
     private String image;
     private String title;
+    private boolean toggled;
 
     @Override
     public int getStickerId() {

@@ -95,6 +95,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
     private Drawable greenButton;
     private boolean isExistingGroup;
     private boolean isHideEtalase;
+    private int maxNumberSelection;
 
     private void addPaddingBottom() {
         bottomSheetContainer.setPadding(
@@ -192,7 +193,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
         if (isFragmentCreated(TopAdsAddProductListFragment.TAG)) {
             inflateNewFragment(
                     getContainerId(),
-                    TopAdsAddProductListFragment.newInstance(),
+                    TopAdsAddProductListFragment.newInstance(maxNumberSelection),
                     TopAdsAddProductListFragment.TAG
             );
         } else {
@@ -252,6 +253,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
 
             isExistingGroup = extras.getBoolean(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, false);
             isHideEtalase = extras.getBoolean(TopAdsExtraConstant.EXTRA_HIDE_ETALASE, false);
+            maxNumberSelection = extras.getInt(TopAdsExtraConstant.EXTRA_MAX_NUMBER_SELECTION, 50);
 
             if (selections.size() > 0) {
                 enableNextButton();

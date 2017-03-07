@@ -67,7 +67,7 @@ artifactory {
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion "25.0.0"
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion

@@ -85,12 +85,6 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
     }
 
     @Override
-    public void showErrorGroupEmpty() {
-        // TODO show error when group is empty
-
-    }
-
-    @Override
     public void showLoading(boolean isShown) {
         if (isShown) {
             super.showLoading();

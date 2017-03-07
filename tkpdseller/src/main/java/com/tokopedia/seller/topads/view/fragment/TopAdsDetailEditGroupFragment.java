@@ -61,6 +61,6 @@ public class TopAdsDetailEditGroupFragment extends TopAdsDetailEditFragment<TopA
     @Override
     protected void saveAd() {
         super.saveAd();
-        presenter.saveAd((TopAdsDetailGroupViewModel) detailAd, new ArrayList<TopAdsProductViewModel>());
+        presenter.saveAd((TopAdsDetailGroupViewModel) detailAd);
     }
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.seller.topads.domain;
 
 import com.tokopedia.seller.topads.data.model.request.CreateGroupRequest;
-import com.tokopedia.seller.topads.data.model.response.DataResponse;
 import com.tokopedia.seller.topads.data.model.response.DataResponseCreateGroup;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailGroupDomainModel;
@@ -19,4 +18,6 @@ public interface TopAdsGroupAdsRepository {
     Observable<DataResponseCreateGroup> createGroup(CreateGroupRequest createGroupRequest);
 
     Observable<TopAdsDetailGroupDomainModel> getDetailGroup(String groupId);
+
+    Observable<TopAdsDetailGroupDomainModel> saveDetailGroup(TopAdsDetailGroupDomainModel topAdsDetailGroupDomainModel);
 }
