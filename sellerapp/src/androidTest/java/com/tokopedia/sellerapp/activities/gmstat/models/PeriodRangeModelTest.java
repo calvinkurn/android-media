@@ -21,7 +21,7 @@ public class PeriodRangeModelTest {
     @Test
     public void test_book_is_parcelable() {
 //        PeriodRangeModel periodRangeModel = new PeriodRangeModel(false, 7);
-//
+
 //        Parcel parcel = Parcel.obtain();
 //        periodRangeModel.writeToParcel(parcel, periodRangeModel.describeContents());
 //        parcel.setDataPosition(0);

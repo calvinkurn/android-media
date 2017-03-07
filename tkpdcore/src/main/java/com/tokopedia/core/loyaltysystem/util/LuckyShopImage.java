@@ -12,8 +12,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 
 /**
@@ -59,7 +57,6 @@ public class LuckyShopImage {
                     .load(url)
                     .asBitmap()
                     .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.RESULT)

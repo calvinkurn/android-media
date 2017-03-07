@@ -107,6 +107,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                 break;
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY:
                 p.unique_id = null;
+                p.sc = browseProductActivityModel.getDepartmentId();
                 discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(p));
                 break;
         }

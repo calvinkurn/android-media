@@ -114,9 +114,11 @@ public class TickerAdapter extends RecyclerView.Adapter<TickerAdapter.ViewHolder
         holder.message.setText(style);
 
         Drawable background = holder.announcementContainer.getBackground();
-        if (background instanceof GradientDrawable && tickers.get(position).getColor() != null) {
+        try {
             GradientDrawable gradientDrawable = (GradientDrawable) background;
-            gradientDrawable.setColor(Color.parseColor(tickers.get(position).getColor()));
+            gradientDrawable.setColor(Color.parseColor(tickers.get(position).getColor().replaceAll("\\s","")));
+        } catch (Exception e) {
+
         }
 
         holder.btnClose.setOnClickListener(new View.OnClickListener() {

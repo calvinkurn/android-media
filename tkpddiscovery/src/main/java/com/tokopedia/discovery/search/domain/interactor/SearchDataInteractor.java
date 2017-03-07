@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.common.service.AceService;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.network.apiservices.ace.UniverseService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.search.domain.model.SearchData;
@@ -15,32 +16,31 @@ import java.util.concurrent.TimeUnit;
 import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Action1;
-import rx.functions.Func1;
 
 /**
  * @author erry on 23/02/17.
  */
 
-public class SearchDataFactory {
+public class SearchDataInteractor {
     private Context context;
     private Gson gson;
-    private final AceService aceService;
+    private final UniverseService universeService;
 
-    public SearchDataFactory(Context context, Gson gson, AceService aceService) {
+    public SearchDataInteractor(Context context) {
         this.context = context;
-        this.gson = gson;
-        this.aceService = aceService;
+        this.gson = new Gson();
+        this.universeService = new UniverseService();
     }
 
     public Observable<List<SearchData>> getSearchData(TKPDMapParam<String, String> params){
-        return aceService.getUniverseSearch(params)
+        return universeService.getApi().getUniverseSearch(params)
                 .doOnNext(saveToCache())
                 .debounce(150, TimeUnit.MICROSECONDS)
                 .map(new SearchMapper(context, gson));
     }
 
     public Observable<Response<Void>> deleteRecentSearch(TKPDMapParam<String, String> params) {
-        return aceService.deleteRecentSearch(params);
+        return universeService.getApi().deleteRecentSearch(params);
     }
 
     private Action1<Response<String>> saveToCache() {
