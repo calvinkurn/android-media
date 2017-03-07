@@ -332,20 +332,26 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                 new AddToCartNetInteractor.OnUpdateAddressListener() {
                     @Override
                     public void onSuccess() {
+                        viewListener.enableQuantityTextWatcher();
                         viewListener.renderFormAddress(orderData.getAddress());
+                        viewListener.changeQuantity(String.valueOf(orderData.getQuantity()));
                         calculateAllPrices(context, orderData);
                     }
 
                     @Override
                     public void onFailure(String messageError) {
+                        viewListener.enableQuantityTextWatcher();
                         viewListener.renderFormAddress(orderData.getAddress());
                         viewListener.showUpdateAddressShippingError(messageError);
                         orderData.getAddress().setLatitude(oldLatitude);
                         orderData.getAddress().setLongitude(oldLongitude);
+                        viewListener.changeQuantity(String.valueOf(orderData.getQuantity()));
                     }
 
                     @Override
                     public void onError() {
+                        viewListener.enableQuantityTextWatcher();
+                        viewListener.changeQuantity(String.valueOf(orderData.getQuantity()));
                         viewListener.showErrorMessage(
                                 context.getString(R.string.default_request_error_unknown)
                         );

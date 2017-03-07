@@ -65,5 +65,7 @@ public interface AddToCartViewListener extends IBaseView {
 
     void showAddressErrorMessage();
 
-    void alterGeocodeLocationValue(String temporaryLocation);
+    void enableQuantityTextWatcher();
+
+    void changeQuantity(String quantity);
 }

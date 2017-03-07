@@ -416,8 +416,13 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     }
 
     @Override
-    public void alterGeocodeLocationValue(String temporaryLocation) {
+    public void enableQuantityTextWatcher() {
+        etQuantity.addTextChangedListener(this);
+    }
 
+    @Override
+    public void changeQuantity(String quantity) {
+        etQuantity.setText(quantity);
     }
 
     @Override
@@ -638,6 +643,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     }
                     break;
                 case REQUEST_CHOOSE_LOCATION:
+                    etQuantity.removeTextChangedListener(this);
                     Bundle bundle = data.getExtras();
                     LocationPass locationPass = bundle.getParcelable(
                             GeolocationActivity.EXTRA_EXISTING_LOCATION
@@ -667,6 +673,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @OnClick({R2.id.layout_value_geo_location, R2.id.et_geo_location})
     void actionGeoLocation() {
+        clearRetryInstantCourierSnackbar();
         presenter.processChooseGeoLocation(this, orderData);
     }
 
