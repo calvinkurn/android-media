@@ -8,6 +8,7 @@ import com.tokopedia.seller.topads.domain.interactor.TopAdsDefaultParamUseCase;
 import com.tokopedia.seller.topads.domain.model.ProductDomain;
 import com.tokopedia.seller.topads.domain.model.ProductListDomain;
 import com.tokopedia.seller.topads.utils.DefaultErrorSubscriber;
+import com.tokopedia.seller.topads.utils.ViewUtils;
 import com.tokopedia.seller.topads.view.TopAdsSearchProductView;
 import com.tokopedia.seller.topads.view.model.NonPromotedTopAdsAddProductModel;
 import com.tokopedia.seller.topads.view.model.PromotedTopAdsAddProductModel;
@@ -125,7 +126,13 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
 
                         @Override
                         public void onError(Throwable e) {
-                            super.onError(e);
+                            if (ViewUtils.getErrorMessage(e) != null) {
+                                showMessageError(new StringBuilder(
+                                        ViewUtils.getErrorMessage(e)
+                                ));
+                            } else {
+                                super.onError(e);
+                            }
                         }
 
                         @Override
@@ -153,8 +160,14 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
 
                         @Override
                         public void onError(Throwable e) {
-                            super.onError(e);
-                }
+                            if (ViewUtils.getErrorMessage(e) != null) {
+                                showMessageError(new StringBuilder(
+                                        ViewUtils.getErrorMessage(e)
+                                ));
+                            } else {
+                                super.onError(e);
+                            }
+                        }
 
                         @Override
                         public void onNext(ProductListDomain productListDomain) {
