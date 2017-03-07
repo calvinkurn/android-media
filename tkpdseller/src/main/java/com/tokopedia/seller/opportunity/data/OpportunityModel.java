@@ -1,6 +1,6 @@
 package com.tokopedia.seller.opportunity.data;
 
-import com.tokopedia.core.network.entity.replacement.OpportunityData;
+import com.tokopedia.core.network.entity.replacement.opportunitydata.OpportunityData;
 
 /**
  * Created by nisie on 3/3/17.
