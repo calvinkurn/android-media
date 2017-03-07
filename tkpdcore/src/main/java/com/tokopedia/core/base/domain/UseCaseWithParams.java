@@ -6,6 +6,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.Subscriptions;
 
@@ -16,15 +17,9 @@ import rx.subscriptions.Subscriptions;
 public abstract class UseCaseWithParams
         <P extends DefaultParams, T> implements InteractorParams<P, T> {
 
-    private final ThreadExecutor mThreadExecutor;
-    private final PostExecutionThread mPostExecutionThread;
     private Subscription mSubscription = Subscriptions.empty();
 
-    protected UseCaseWithParams(ThreadExecutor threadExecutor,
-                                PostExecutionThread postExecutionThread) {
-
-        mThreadExecutor = threadExecutor;
-        mPostExecutionThread = postExecutionThread;
+    protected UseCaseWithParams() {
     }
 
     protected abstract Observable<T> createObservable(P requestParams);
@@ -32,8 +27,9 @@ public abstract class UseCaseWithParams
     @Override
     public void execute(P requestParams, Subscriber<T> subscriber) {
         this.mSubscription = createObservable(requestParams)
-                .subscribeOn(Schedulers.from(mThreadExecutor))
-                .observeOn(mPostExecutionThread.getScheduler())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
                 .subscribe(subscriber);
     }
 

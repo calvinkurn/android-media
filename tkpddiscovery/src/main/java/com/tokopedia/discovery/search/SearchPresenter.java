@@ -2,11 +2,13 @@ package com.tokopedia.discovery.search;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.discovery.search.domain.DeleteParam;
 import com.tokopedia.discovery.search.domain.SearchParam;
 import com.tokopedia.discovery.search.domain.interactor.DeleteSearchUseCase;
+import com.tokopedia.discovery.search.domain.interactor.SearchDataInteractor;
 import com.tokopedia.discovery.search.domain.interactor.SearchUseCase;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 import com.tokopedia.discovery.search.view.SearchContract;
@@ -34,11 +36,10 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
     private final SearchUseCase searchUseCase;
     private final DeleteSearchUseCase deleteSearchUseCase;
 
-    @Inject
-    public SearchPresenter(Context context, SearchUseCase searchUseCase, DeleteSearchUseCase deleteSearchUseCase) {
+    public SearchPresenter(Context context) {
         this.context = context;
-        this.searchUseCase = searchUseCase;
-        this.deleteSearchUseCase = deleteSearchUseCase;
+        this.searchUseCase = new SearchUseCase(context);
+        this.deleteSearchUseCase = new DeleteSearchUseCase(context);
     }
 
     @Override

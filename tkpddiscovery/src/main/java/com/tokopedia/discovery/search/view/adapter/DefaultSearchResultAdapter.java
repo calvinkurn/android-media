@@ -133,6 +133,7 @@ public class DefaultSearchResultAdapter extends RecyclerView.Adapter<DefaultSear
                     icon.setImageResource(R.drawable.ic_close);
                     break;
                 default:
+                    icon.setImageResource(R.drawable.ic_diagonal_arrow);
                     label.setVisibility(View.GONE);
             }
         }

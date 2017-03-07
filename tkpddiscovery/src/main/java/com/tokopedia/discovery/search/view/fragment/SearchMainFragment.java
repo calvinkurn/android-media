@@ -9,20 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.R2;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.catalog.analytics.AppScreen;
 import com.tokopedia.discovery.search.SearchPresenter;
-import com.tokopedia.discovery.search.di.DaggerSearchComponent;
 import com.tokopedia.discovery.search.view.SearchContract;
 import com.tokopedia.discovery.search.view.adapter.SearchPageAdapter;
 import com.tokopedia.discovery.search.view.adapter.viewmodel.ShopViewModel;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +28,7 @@ import butterknife.Unbinder;
  * @author erry on 23/02/17.
  */
 
-public class SearchMainFragment extends BaseDaggerFragment implements SearchContract.View {
+public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchContract.View {
 
     private Unbinder unbinder;
     public static final String FRAGMENT_TAG = "SearchHistoryFragment";
@@ -43,7 +39,6 @@ public class SearchMainFragment extends BaseDaggerFragment implements SearchCont
     @BindView(R2.id.view_pager)
     ViewPager viewPager;
 
-    @Inject
     SearchPresenter presenter;
     private SearchPageAdapter pageAdapter;
 
@@ -68,6 +63,7 @@ public class SearchMainFragment extends BaseDaggerFragment implements SearchCont
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        presenter = new SearchPresenter(getActivity());
     }
 
     @Nullable
@@ -77,6 +73,7 @@ public class SearchMainFragment extends BaseDaggerFragment implements SearchCont
         unbinder = ButterKnife.bind(this, parentView);
         prepareView();
         presenter.attachView(this);
+        presenter.initializeDataSearch();
         return parentView;
     }
 
@@ -91,14 +88,6 @@ public class SearchMainFragment extends BaseDaggerFragment implements SearchCont
         super.onDestroyView();
         unbinder.unbind();
         presenter.detachView();
-    }
-
-    @Override
-    protected void initInjector() {
-        DaggerSearchComponent searchComponent = (DaggerSearchComponent)
-                DaggerSearchComponent.builder().appComponent(getComponent(AppComponent.class))
-                        .build();
-        searchComponent.inject(this);
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.tokopedia.discovery.search.domain.interactor;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.base.common.service.AceService;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.ace.UniverseService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;

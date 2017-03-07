@@ -311,6 +311,16 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
     }
 
     public void setFragment(Fragment fragment, String TAG) {
+        if (isFinishing()) return;
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+        if (fragment instanceof BrowseParentFragment) {
+            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+            CommonUtils.hideKeyboard(this, getCurrentFocus());
+        } else {
+            params.setScrollFlags(0);
+        }
+        toolbar.setLayoutParams(params);
+        toolbar.requestLayout();
         String backStateName = fragment.getClass().getName();
 
         FragmentManager manager = getSupportFragmentManager();
@@ -402,7 +412,6 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
     public void deleteFilterAndSortCache() {
         deleteFilterCache();
         browseProductActivityModel.setOb("23");
-//        filterAttributMap.clear();
         if (mBrowseProductAtribut != null && mBrowseProductAtribut.getFilterAttributMap() != null) {
             mBrowseProductAtribut.getFilterAttributMap().clear();
         }

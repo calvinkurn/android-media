@@ -1,8 +1,8 @@
 package com.tokopedia.discovery.search.domain.interactor;
 
+import android.content.Context;
+
 import com.tokopedia.core.base.domain.UseCaseWithParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.discovery.search.domain.SearchParam;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 
@@ -16,12 +16,10 @@ import rx.Observable;
 
 public class SearchUseCase extends UseCaseWithParams<SearchParam, List<SearchData>> {
 
-    private final SearchDataFactory dataFactory;
+    private final SearchDataInteractor dataFactory;
 
-    public SearchUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread
-            , SearchDataFactory dataFactory) {
-        super(threadExecutor, postExecutionThread);
-        this.dataFactory = dataFactory;
+    public SearchUseCase(Context context) {
+        this.dataFactory = new SearchDataInteractor(context);
     }
 
     @Override
