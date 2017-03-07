@@ -65,15 +65,15 @@ public class VideoPlayerActivity extends BasePresenterActivity<VideoPlayerPresen
             public boolean onError(MediaPlayer mediaPlayer, int what, int extra) {
                 switch (what) {
                     case MediaPlayer.MEDIA_ERROR_UNKNOWN:
-                        Toast.makeText(getContext(), getString(R.string.error_unknown), Toast.LENGTH_SHORT);
+                        Toast.makeText(getContext(), getString(R.string.error_unknown), Toast.LENGTH_SHORT).show();
                         finish();
                         return true;
                     case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
-                        Toast.makeText(getContext(), getString(R.string.default_request_error_internal_server), Toast.LENGTH_SHORT);
+                        Toast.makeText(getContext(), getString(R.string.default_request_error_internal_server), Toast.LENGTH_SHORT).show();
                         finish();
                         return true;
                     default:
-                        Toast.makeText(getContext(), R.string.default_request_error_timeout, Toast.LENGTH_SHORT);
+                        Toast.makeText(getContext(), R.string.default_request_error_timeout, Toast.LENGTH_SHORT).show();
                         finish();
                         return true;
                 }
