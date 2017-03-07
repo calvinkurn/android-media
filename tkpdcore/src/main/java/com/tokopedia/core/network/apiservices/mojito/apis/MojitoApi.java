@@ -36,4 +36,8 @@ public interface MojitoApi {
     Observable<Response<Brands>> getBrands(
             @Query(DEVICE) String device
     );
+
+    @GET(TkpdBaseURL.Mojito.PATH_USER_WISHLIST + "/{userId}" + TkpdBaseURL.Mojito.PATH_SEARCH_WISHLIST)
+    Observable<Response<WishlistData>> searchWishlist(
+            @Path("userId") String userId, @Query("q") String query);
 }

@@ -99,5 +99,5 @@ public interface WishListView {
 
     String getUserId();
 
-    String getQueryValue();
+    void clearSearch();
 }

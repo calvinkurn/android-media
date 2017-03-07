@@ -1,7 +1,9 @@
 package com.tokopedia.tkpd.home.wishlist.data;
 
-import com.tokopedia.core.base.common.service.MojitoService;
+import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.tkpd.home.wishlist.domain.model.DataWishlist;
+
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 
@@ -22,6 +24,8 @@ public class CloudWishlistDatasource {
     }
 
     public Observable<DataWishlist> searchWishlist(String userId, String query) {
-        return mojitoService.searchWishlist(userId, query).map(wishlistDataMapper);
+        return mojitoService.getApi().searchWishlist(userId, query)
+                .debounce(150, TimeUnit.MICROSECONDS)
+                .map(wishlistDataMapper);
     }
 }

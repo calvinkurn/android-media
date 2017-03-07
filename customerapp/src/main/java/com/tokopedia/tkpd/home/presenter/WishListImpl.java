@@ -124,6 +124,7 @@ public class WishListImpl implements WishList {
     public void refreshData(final Context context) {
         wishListView.displayLoadMore(false);
         wishListView.loadDataChange();
+        wishListView.clearSearch();
         mPaging.resetPage();
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -183,7 +184,7 @@ public class WishListImpl implements WishList {
 
             @Override
             public void onError(Throwable e) {
-                if (mPaging.getPage() == 1 && wishListView.isPullToRefresh()){
+                if (mPaging.getPage() == 1 && wishListView.isPullToRefresh()) {
                     wishListView.displayPull(false);
                 }
                 wishListView.displayErrorNetwork(false);
@@ -283,12 +284,11 @@ public class WishListImpl implements WishList {
     }
 
     @Override
-    public void searchWishlist() {
+    public void searchWishlist(String query) {
         String userId = wishListView.getUserId();
-        String queryValue = wishListView.getQueryValue();
         RequestParams params = RequestParams.create();
         params.putString(SearchWishlistUsecase.KEY_USER_ID, userId);
-        params.putString(SearchWishlistUsecase.KEY_QUERY, queryValue);
+        params.putString(SearchWishlistUsecase.KEY_QUERY, query);
         searchWishlistUsecase.execute(params, new SearchWishlistSubscriber());
     }
 
@@ -376,9 +376,23 @@ public class WishListImpl implements WishList {
         }
 
         @Override
-        public void onNext(DataWishlist dataWishlist) {
-            Log.d(TAG, "onNext() called with: dataWishlist = [" + new Gson().toJson(dataWishlist) + "]");
-            setData(convertToDataWishlistViewModel(dataWishlist));
+        public void onNext(DataWishlist wishlist) {
+            WishlistData wishlistData = convertToDataWishlistViewModel(wishlist);
+            data.clear();
+            dataWishlist.clear();
+            wishListView.displayPull(false);
+            dataWishlist.addAll(wishlistData.getWishlist());
+            data.addAll(convertToProductItemList(wishlistData.getWishlist()));
+            mPaging.setPagination(wishlistData.getPaging());
+            if (mPaging.CheckNextPage()) {
+                wishListView.displayLoadMore(true);
+            } else {
+                wishListView.displayLoadMore(false);
+            }
+            wishListView.setPullEnabled(true);
+            wishListView.loadDataChange();
+            wishListView.displayMainContent(true);
+            wishListView.displayLoading(false);
         }
 
         private WishlistData convertToDataWishlistViewModel(DataWishlist dataWishlist) {

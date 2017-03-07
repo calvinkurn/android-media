@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:padding="@dimen/padding_small"
-        android:visibility="visible"/>
+        android:visibility="visible" />
 
     <com.tokopedia.core.customwidget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
@@ -26,28 +26,39 @@
                 android:id="@+id/main_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/grey_200"
                 android:gravity="center_horizontal"
-                android:background="@color/grey_300"
                 android:orientation="vertical"
                 android:visibility="gone">
-                <EditText
-                    android:id="@+id/wishlist_search_edittext"
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/hint_search_wishlist"
-                    android:imeOptions="actionSearch"
-                    android:inputType="text"
-                    android:padding="@dimen/padding_small"
-                    android:background="@color/white"
-                    android:drawableStart="@drawable/icon_favorite_white"
-                    android:drawableLeft="@drawable/icon_favorite_white"
-                    android:maxLines="1" />
+                    android:background="@color/grey_200"
+                    android:orientation="vertical">
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp">
+
+                        <android.support.v7.widget.SearchView
+                            android:id="@+id/wishlist_search_edittext"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            app:iconifiedByDefault="false"
+                            app:queryBackground="@color/transparent"
+                            app:queryHint="@string/hint_search_wishlist"
+                            app:searchIcon="@drawable/ic_favorite" />
+                    </android.support.v7.widget.CardView>
+                </LinearLayout>
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:reverseLayout="true"
-                    android:scrollbars="vertical"/>
+                    android:scrollbars="vertical"
+                    app:reverseLayout="true" />
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
 

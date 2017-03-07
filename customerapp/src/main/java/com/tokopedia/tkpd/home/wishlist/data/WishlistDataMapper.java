@@ -27,7 +27,6 @@ import rx.functions.Func1;
 
 public class WishlistDataMapper implements Func1<Response<WishlistData>, DataWishlist> {
 
-    @Inject
     public WishlistDataMapper() {
     }
 

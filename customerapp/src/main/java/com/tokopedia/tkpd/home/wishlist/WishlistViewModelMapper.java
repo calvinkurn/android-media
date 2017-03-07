@@ -22,7 +22,6 @@ public class WishlistViewModelMapper {
 
     public WishlistViewModelMapper(DataWishlist dataWishlist) {
         wishlistData = mappingToViewModel(dataWishlist);
-
     }
 
     private WishlistData mappingToViewModel(DataWishlist dataWishlist) {
@@ -47,7 +46,6 @@ public class WishlistViewModelMapper {
             wishlist.setPriceFmt(wishlistDomain.getPriceFormated());
             wishlist.setStatus(wishlistDomain.getStatus());
             wishlist.setUrl(wishlistDomain.getUrl());
-
             if (wishlistDomain.getShop() != null) {
                 wishlist.setShop(mappingShopToViewModel(wishlistDomain.getShop()));
             }
@@ -59,7 +57,7 @@ public class WishlistViewModelMapper {
             if (wishlistDomain.getBadges() != null && wishlistDomain.getBadges().size() > 0) {
                 wishlist.setBadges(mappingBadgeToViewModel(wishlistDomain.getBadges()));
             }
-
+            wishlists.add(wishlist);
         }
         return wishlists;
     }

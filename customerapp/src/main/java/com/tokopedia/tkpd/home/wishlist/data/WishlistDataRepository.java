@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.home.wishlist.data;
 
-import com.tokopedia.core.base.common.service.MojitoService;
+import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.tkpd.home.wishlist.domain.WishlistRepository;
 import com.tokopedia.tkpd.home.wishlist.domain.model.DataWishlist;
 
@@ -14,14 +14,13 @@ public class WishlistDataRepository implements WishlistRepository{
     private final MojitoService mojitoService;
     private WishlistDataMapper wishlistDataMapper;
 
-    public WishlistDataRepository(MojitoService mojitoService,
-                                  WishlistDataMapper wishlistDataMapper) {
-        this.mojitoService = mojitoService;
-        this.wishlistDataMapper = wishlistDataMapper;
+    public WishlistDataRepository() {
+        this.mojitoService = new MojitoService();
+        this.wishlistDataMapper = new WishlistDataMapper();
     }
 
     @Override
     public Observable<DataWishlist> search_wishlist(String userId, String query) {
-        return new CloudWishlistDatasource(mojitoService,wishlistDataMapper).searchWishlist(userId, query);
+        return new CloudWishlistDatasource(mojitoService, wishlistDataMapper).searchWishlist(userId, query);
     }
 }

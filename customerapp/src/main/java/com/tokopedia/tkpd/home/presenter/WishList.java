@@ -85,5 +85,5 @@ public interface WishList {
 
     boolean isLoadedFirstPage();
 
-    void searchWishlist();
+    void searchWishlist(String query);
 }
