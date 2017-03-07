@@ -9,7 +9,7 @@ import com.tokopedia.seller.topads.domain.model.TopAdsDetailGroupDomainModel;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
 import com.tokopedia.seller.topads.utils.ViewUtils;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailEditView;
-import com.tokopedia.seller.topads.view.mapper.TopAdDetailProductMapper;
+import com.tokopedia.seller.topads.view.mapper.TopAdDetailGroupMapper;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailGroupViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
 
@@ -22,9 +22,8 @@ import rx.Subscriber;
  */
 public class TopAdsDetailEditGroupPresenterImpl<T extends TopAdsDetailEditView> extends BaseDaggerPresenter<T> implements TopAdsDetailEditGroupPresenter<T> {
 
-    // TODO change use case for edit
-    private TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase;
-    private TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase;
+    protected TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase;
+    protected TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase;
 
     public TopAdsDetailEditGroupPresenterImpl(TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase,
                                               TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase) {
@@ -34,23 +33,9 @@ public class TopAdsDetailEditGroupPresenterImpl<T extends TopAdsDetailEditView> 
 
     @Override
     public void saveAd(TopAdsDetailGroupViewModel topAdsDetailGroupViewModel, List<TopAdsProductViewModel> topAdsProductViewModelList) {
-        topAdsSaveDetailGroupUseCase.execute(TopAdsSaveDetailProductUseCase.createRequestParams(TopAdDetailProductMapper.convertViewToDomain(topAdsDetailGroupViewModel)),
-                new Subscriber<TopAdsDetailGroupDomainModel>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        getView().onSaveAdError(ViewUtils.getErrorMessage(e));
-                    }
-
-                    @Override
-                    public void onNext(TopAdsDetailGroupDomainModel domainModel) {
-                        getView().onSaveAdSuccess(TopAdDetailProductMapper.convertDomainToView(domainModel));
-                    }
-                });
+        topAdsSaveDetailGroupUseCase.execute(TopAdsSaveDetailGroupUseCase.createRequestParams(
+                TopAdDetailGroupMapper.convertViewToDomain(topAdsDetailGroupViewModel)),
+                getSaveGroupSubscriber());
     }
 
     /**
@@ -62,23 +47,53 @@ public class TopAdsDetailEditGroupPresenterImpl<T extends TopAdsDetailEditView> 
     public void getDetailAd(String adId) {
         topAdsGetDetailGroupUseCase.execute(
                 TopAdsGetDetailGroupUseCase.createRequestParams(adId),
-                new Subscriber<TopAdsDetailGroupDomainModel>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        getView().onLoadDetailAdError(ViewUtils.getErrorMessage(e));
-                    }
-
-                    @Override
-                    public void onNext(TopAdsDetailGroupDomainModel domainModel) {
-                        getView().onDetailAdLoaded(TopAdDetailProductMapper.convertDomainToView(domainModel));
-                    }
-                });
+                getDetailAdSubscriber());
     }
+
+    public void getDetailAd(String adId, Subscriber<TopAdsDetailGroupDomainModel> subscriber) {
+        topAdsGetDetailGroupUseCase.execute(
+                TopAdsGetDetailGroupUseCase.createRequestParams(adId),
+                subscriber);
+    }
+
+    private Subscriber<TopAdsDetailGroupDomainModel> getDetailAdSubscriber(){
+        return new Subscriber<TopAdsDetailGroupDomainModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().onLoadDetailAdError(ViewUtils.getErrorMessage(e));
+            }
+
+            @Override
+            public void onNext(TopAdsDetailGroupDomainModel domainModel) {
+                getView().onDetailAdLoaded(TopAdDetailGroupMapper.convertDomainToView(domainModel));
+            }
+        };
+    }
+
+    private Subscriber<TopAdsDetailGroupDomainModel> getSaveGroupSubscriber(){
+        return new Subscriber<TopAdsDetailGroupDomainModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().onSaveAdError(ViewUtils.getErrorMessage(e));
+            }
+
+            @Override
+            public void onNext(TopAdsDetailGroupDomainModel domainModel) {
+                getView().onSaveAdSuccess(TopAdDetailGroupMapper.convertDomainToView(domainModel));
+            }
+        };
+    }
+
 
     @Override
     public void detachView() {

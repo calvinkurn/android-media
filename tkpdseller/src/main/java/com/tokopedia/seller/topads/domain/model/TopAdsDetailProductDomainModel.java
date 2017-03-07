@@ -24,6 +24,39 @@ public class TopAdsDetailProductDomainModel {
     private String adImage;
     private String adTitle;
 
+    public TopAdsDetailProductDomainModel(){
+
+    }
+    public TopAdsDetailProductDomainModel(
+            String adId,
+            String adTitle,
+            String groupId,
+            String shopId,
+            String status,
+            String isScheduled,
+            String startDate,
+            String startTime,
+            String endDate,
+            String endTime,
+            float priceBid,
+            String budget,
+            int priceDaily,
+            String stickerId){
+        setAdId(adId);
+        setAdTitle(adTitle);
+        setGroupId(groupId);
+        setShopId(shopId);
+        setStatus(status);
+        setAdSchedule(isScheduled);
+        setAdStartDate(startDate);
+        setAdStartTime(startTime);
+        setAdEndDate(endDate);
+        setAdEndTime(endTime);
+        setPriceBid(priceBid);
+        setAdBudget(budget);
+        setPriceDaily(priceDaily);
+        setStickerId(stickerId);
+    }
     public String getAdEndDate() {
         return adEndDate;
     }

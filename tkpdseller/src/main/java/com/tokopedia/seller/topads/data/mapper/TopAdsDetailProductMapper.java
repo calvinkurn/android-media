@@ -22,6 +22,7 @@ public class TopAdsDetailProductMapper implements Func1<Response<DataResponse<Li
     private TopAdsDetailProductDomainModel mappingResponse(Response<DataResponse<List<TopAdsProductDetailDataSourceModel>>> response) {
         TopAdsProductDetailDataSourceModel dataModel = response.body().getData().get(0);
         TopAdsDetailProductDomainModel domainModel = new TopAdsDetailProductDomainModel();
+
         domainModel.setAdId(dataModel.getAdId());
         domainModel.setAdType(dataModel.getAdType());
         domainModel.setGroupId(dataModel.getGroupId());

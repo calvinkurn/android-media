@@ -29,13 +29,12 @@ public class TopAdsSaveDetailGroupUseCase extends UseCase<TopAdsDetailGroupDomai
     @Override
     public Observable<TopAdsDetailGroupDomainModel> createObservable(RequestParams requestParams) {
         return null;
-        // TODO
-        // return topAdsGroupAdsRepository.saveDetail((TopAdsDetailGroupDomainModel) requestParams.getObject(TopAdsNetworkConstant.PARAM_AD));
+//         return topAdsGroupAdsRepository.saveDetail((TopAdsDetailGroupDomainModel) requestParams.getObject(TopAdsNetworkConstant.PARAM_AD));
     }
 
-    public static RequestParams createRequestParams(TopAdsDetailProductDomainModel topAdsDetailProductDomainModel){
+    public static RequestParams createRequestParams(TopAdsDetailGroupDomainModel topAdsDetailGroupDomainModel){
         RequestParams params = RequestParams.create();
-        params.putObject(TopAdsNetworkConstant.PARAM_AD, topAdsDetailProductDomainModel);
+        params.putObject(TopAdsNetworkConstant.PARAM_AD, topAdsDetailGroupDomainModel);
         return params;
     }
 }

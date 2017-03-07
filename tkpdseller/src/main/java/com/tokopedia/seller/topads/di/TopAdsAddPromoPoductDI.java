@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.seller.topads.data.factory.TopAdsGroupAdFactory;
+import com.tokopedia.seller.topads.data.mapper.TopAdsDetailGroupDomainMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsDetailGroupMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsSearchGroupMapper;
 import com.tokopedia.seller.topads.data.repository.TopAdsGroupAdsRepositoryImpl;
@@ -23,7 +24,7 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsManageGroupPromoPresente
 
 public class TopAdsAddPromoPoductDI {
     public static TopAdsManageGroupPromoPresenter createPresenter(Context context) {
-        Gson gson = new Gson();
+        // Gson gson = new Gson();
 
         JobExecutor threadExecutor = new JobExecutor();
         UIThread postExecutionThread = new UIThread();
@@ -33,8 +34,11 @@ public class TopAdsAddPromoPoductDI {
 
         TopAdsSearchGroupMapper topAdsSearchGroupMapper = new TopAdsSearchGroupMapper();
         TopAdsDetailGroupMapper topAdsDetailGroupMapper = new TopAdsDetailGroupMapper();
+        TopAdsDetailGroupDomainMapper topAdsDetailGroupDomainMapper = new TopAdsDetailGroupDomainMapper();
 
-        TopAdsGroupAdFactory topAdsGroupAdFactory = new TopAdsGroupAdFactory(context, topAdsManagementApi, topAdsSearchGroupMapper, topAdsDetailGroupMapper);
+
+        TopAdsGroupAdFactory topAdsGroupAdFactory = new TopAdsGroupAdFactory(context, topAdsManagementApi,
+                topAdsSearchGroupMapper, topAdsDetailGroupMapper, topAdsDetailGroupDomainMapper);
 
         TopAdsGroupAdsRepository topAdsGroupAdsRepository = new TopAdsGroupAdsRepositoryImpl(topAdsGroupAdFactory);
 

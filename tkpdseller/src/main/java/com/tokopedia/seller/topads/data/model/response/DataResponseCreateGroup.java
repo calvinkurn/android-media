@@ -13,7 +13,9 @@ import java.util.List;
  */
 
 public class DataResponseCreateGroup {
-
+    @SerializedName("group_id")
+    @Expose
+    private String groupId;
     @SerializedName("group_name")
     @Expose
     private String groupName;
@@ -44,12 +46,23 @@ public class DataResponseCreateGroup {
     @SerializedName("group_end_time")
     @Expose
     private String groupEndTime;
+    @SerializedName("sticker_id")
+    @Expose
+    private String stickerId;
     @SerializedName("ads")
     @Expose
     private List<ProductAd> ads = null;
     @SerializedName("group_total")
     @Expose
     private String groupTotal;
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
 
     public String getGroupName() {
         return groupName;
@@ -147,4 +160,11 @@ public class DataResponseCreateGroup {
         this.groupTotal = groupTotal;
     }
 
+    public String getStickerId() {
+        return stickerId;
+    }
+
+    public void setStickerId(String stickerId) {
+        this.stickerId = stickerId;
+    }
 }

@@ -10,6 +10,7 @@ import com.tokopedia.seller.topads.data.model.request.AdCreateGroupRequest;
 import com.tokopedia.seller.topads.data.model.request.CreateGroupRequest;
 import com.tokopedia.seller.topads.data.model.response.DataResponseCreateGroup;
 import com.tokopedia.seller.topads.domain.TopAdsGroupAdsRepository;
+import com.tokopedia.seller.topads.domain.model.TopAdsDetailGroupDomainModel;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailGroupViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
 

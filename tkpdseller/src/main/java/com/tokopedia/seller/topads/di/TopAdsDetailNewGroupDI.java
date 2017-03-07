@@ -5,13 +5,19 @@ import android.content.Context;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.seller.topads.data.factory.TopAdsGroupAdFactory;
+import com.tokopedia.seller.topads.data.factory.TopAdsProductAdFactory;
+import com.tokopedia.seller.topads.data.mapper.TopAdsBulkActionMapper;
+import com.tokopedia.seller.topads.data.mapper.TopAdsDetailGroupDomainMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsDetailGroupMapper;
+import com.tokopedia.seller.topads.data.mapper.TopAdsDetailProductMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsSearchGroupMapper;
 import com.tokopedia.seller.topads.data.repository.TopAdsGroupAdsRepositoryImpl;
+import com.tokopedia.seller.topads.data.repository.TopAdsProductAdsRepositoryImpl;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.api.TopAdsManagementApi;
 import com.tokopedia.seller.topads.domain.TopAdsGroupAdsRepository;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsCreateExistingGroupUseCase;
+import com.tokopedia.seller.topads.domain.TopAdsProductAdsRepository;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsCreateDetailProductListUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsCreateNewGroupUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailGroupUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailGroupUseCase;
@@ -33,18 +39,25 @@ public class TopAdsDetailNewGroupDI {
 
         TopAdsSearchGroupMapper topAdsSearchGroupMapper = new TopAdsSearchGroupMapper();
         TopAdsDetailGroupMapper topAdsDetailGroupMapper = new TopAdsDetailGroupMapper();
+        TopAdsDetailProductMapper topAdsDetailProductMapper = new TopAdsDetailProductMapper();
+        TopAdsBulkActionMapper topAdsBulkActionMapper = new TopAdsBulkActionMapper();
+        TopAdsDetailGroupDomainMapper topAdsDetailGroupDomainMapper = new TopAdsDetailGroupDomainMapper();
 
-        TopAdsGroupAdFactory topAdsGroupAdFactory = new TopAdsGroupAdFactory(context, topAdsManagementApi, topAdsSearchGroupMapper, topAdsDetailGroupMapper);
+        TopAdsGroupAdFactory topAdsGroupAdFactory = new TopAdsGroupAdFactory(context, topAdsManagementApi,
+                topAdsSearchGroupMapper, topAdsDetailGroupMapper, topAdsDetailGroupDomainMapper);
+        TopAdsProductAdFactory topAdsShopAdFactory = new TopAdsProductAdFactory(context, topAdsManagementApi, topAdsDetailProductMapper, topAdsBulkActionMapper);
 
         TopAdsGroupAdsRepository topAdsGroupAdsRepository = new TopAdsGroupAdsRepositoryImpl(topAdsGroupAdFactory);
+        TopAdsProductAdsRepository topAdsProductAdsRepository = new TopAdsProductAdsRepositoryImpl(topAdsShopAdFactory);
 
         TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase = new TopAdsGetDetailGroupUseCase(threadExecutor, postExecutionThread, topAdsGroupAdsRepository);
         TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase = new TopAdsSaveDetailGroupUseCase(threadExecutor, postExecutionThread, topAdsGroupAdsRepository);
 
         TopAdsCreateNewGroupUseCase topAdsCreateNewGroupUseCase = new TopAdsCreateNewGroupUseCase(threadExecutor, postExecutionThread, topAdsGroupAdsRepository);
-        TopAdsCreateExistingGroupUseCase topAdsCreateExistingGroupUseCase = new TopAdsCreateExistingGroupUseCase(threadExecutor, postExecutionThread, topAdsGroupAdsRepository);
+        TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase = new TopAdsCreateDetailProductListUseCase(threadExecutor,postExecutionThread, topAdsProductAdsRepository );
 
-        return new TopAdsDetailNewGroupPresenterImpl(topAdsCreateNewGroupUseCase, topAdsCreateExistingGroupUseCase, topAdsGetDetailGroupUseCase, topAdsSaveDetailGroupUseCase);
+        return new TopAdsDetailNewGroupPresenterImpl(topAdsCreateNewGroupUseCase, topAdsGetDetailGroupUseCase,
+                topAdsSaveDetailGroupUseCase,topAdsCreateDetailProductListUseCase);
     }
 }
 

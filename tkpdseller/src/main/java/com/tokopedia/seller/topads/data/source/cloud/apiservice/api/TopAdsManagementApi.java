@@ -79,4 +79,7 @@ public interface TopAdsManagementApi {
     @POST(TopAdsNetworkConstant.PATH_CREATE_GROUP_AD)
     Observable<Response<DataResponse<DataResponseCreateGroup>>> createGroupAd(@Body DataRequest<CreateGroupRequest> body);
 
+    @GET(TopAdsNetworkConstant.PATH_CREATE_GROUP_AD)
+    Observable<Response<DataResponse<DataResponseCreateGroup>>> getDetailGroup(@QueryMap Map<String, String> params);
+
 }

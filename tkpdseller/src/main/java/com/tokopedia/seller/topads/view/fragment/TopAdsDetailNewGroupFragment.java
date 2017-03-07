@@ -3,14 +3,17 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.di.TopAdsDetailNewGroupDI;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddProductListActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailNewGroupView;
+import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailGroupViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewGroupPresenter;
 
@@ -49,25 +52,34 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
         nameEditText.setEnabled(false);
         nameInputLayout.setHint(getString(R.string.label_top_ads_group_name));
         detailAd = new TopAdsDetailGroupViewModel();
+
+        view.findViewById(R.id.linear_partial_top_ads_edit_ad).setVisibility(
+                TextUtils.isEmpty(adId) ? View.VISIBLE: View.GONE);
     }
 
     @Override
     protected void loadAdDetail() {
-        presenter.getDetailAd(adId);
+        // no need to load detail for group, and for existing group
+        // presenter.getDetailAd(adId);
     }
 
     @Override
     protected void saveAd() {
-        super.saveAd();
-        presenter.saveAdNew(name, (TopAdsDetailGroupViewModel) detailAd, topAdsProductList);
+        if (TextUtils.isEmpty(adId) || "0".equals(adId)) { // saveNew
+            super.saveAd();
+            presenter.saveAdNew(name, (TopAdsDetailGroupViewModel) detailAd, topAdsProductList);
+        }
+        else { // save New with existing group Id
+            presenter.saveAdExisting(adId, topAdsProductList);
+        }
     }
+
 
     @Override
     protected void addProduct() {
         Intent intent = new Intent(getActivity(), TopAdsAddProductListActivity.class);
-        boolean hideExistingGroup = !TextUtils.isEmpty(adId);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, hideExistingGroup);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_ETALASE, hideExistingGroup);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, false);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_ETALASE, false);
         intent.putParcelableArrayListExtra(TopAdsExtraConstant.EXTRA_SELECTIONS, topAdsProductList);
         startActivityForResult(intent, ADD_PRODUCT_REQUEST_CODE);
     }
@@ -75,6 +87,7 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
     @Override
     public void showErrorGroupEmpty() {
         // TODO show error when group is empty
+
     }
 
     @Override
