@@ -19,11 +19,11 @@ public interface PhoneVerificationFragmentView {
 
     void showProgressDialog();
 
-    void onSuccessVerifyOTP();
+    void onSuccessVerifyPhoneNumber();
 
     void showErrorPhoneNumber(String errorMessage);
 
     String getOTPCode();
 
-    void onErrorVerifyOTP(String errorMessage);
+    void onErrorVerifyPhoneNumber(String errorMessage);
 }

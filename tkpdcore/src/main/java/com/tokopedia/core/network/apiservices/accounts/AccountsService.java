@@ -17,6 +17,7 @@ import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.AccountsInterceptor;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.network.retrofit.interceptors.AuthorizationInterceptor;
 import com.tokopedia.core.util.GlobalConfig;
 
 import java.util.Collections;
@@ -41,6 +42,7 @@ public class AccountsService {
     public static final String AUTH_KEY = "AUTH_KEY";
     public static final String WEB_SERVICE = "WEB_SERVICE";
     public static final String USING_HMAC = "USING_HMAC";
+    public static final String USING_BOTH_AUTHORIZATION = "USING_BOTH_AUTHORIZATION";
 
 
     private static final String TAG = AccountsService.class.getSimpleName();
@@ -65,6 +67,10 @@ public class AccountsService {
         Interceptor authInterceptor;
         authInterceptor = new AccountsInterceptor(authKey, isUsingHMAC);
         client.interceptors().add(authInterceptor);
+        if (bundle.getBoolean(USING_BOTH_AUTHORIZATION)) {
+            AuthorizationInterceptor authorizationInterceptor = new AuthorizationInterceptor();
+            client.interceptors().add(authorizationInterceptor);
+        }
 
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);

@@ -35,7 +35,6 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.phoneverification.activity.ChangePhoneNumberActivity;
-import com.tokopedia.otp.phoneverification.interactor.PhoneVerificationNetworkInteractorImpl;
 import com.tokopedia.otp.phoneverification.listener.PhoneVerificationFragmentView;
 import com.tokopedia.otp.phoneverification.presenter.PhoneVerificationPresenter;
 import com.tokopedia.otp.phoneverification.presenter.PhoneVerificationPresenterImpl;
@@ -49,7 +48,6 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by nisie on 2/22/17.
@@ -182,9 +180,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
 
 
-        presenter = new PhoneVerificationPresenterImpl(this,
-                new CompositeSubscription(),
-                new PhoneVerificationNetworkInteractorImpl(new AccountsService(bundle)));
+        presenter = new PhoneVerificationPresenterImpl(this);
     }
 
     @Override
@@ -348,7 +344,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     }
 
     @Override
-    public void onSuccessVerifyOTP() {
+    public void onSuccessVerifyPhoneNumber() {
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
 
@@ -367,7 +363,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     }
 
     @Override
-    public void onErrorVerifyOTP(String errorMessage) {
+    public void onErrorVerifyPhoneNumber(String errorMessage) {
         finishProgressDialog();
         if (errorMessage.equals(""))
             NetworkErrorHelper.showSnackbar(getActivity());

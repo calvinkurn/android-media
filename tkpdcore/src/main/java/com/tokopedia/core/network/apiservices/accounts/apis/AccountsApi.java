@@ -15,6 +15,7 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
+import rx.Completable;
 import rx.Observable;
 
 import static com.tokopedia.core.network.apiservices.etc.apis.home.CategoryApi.HEADER_USER_ID;
@@ -74,9 +75,12 @@ public interface AccountsApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.OTP.REQUEST_OTP)
     Observable<Response<TkpdResponse>> requestOtp(@Header(HEADER_USER_ID) String userId,
-                                                          @FieldMap Map<String, String> params);
+                                                          @FieldMap Map<String, Object> params);
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.OTP.VALIDATE_OTP)
+    Observable<Response<TkpdResponse>> validateOtp( @FieldMap TKPDMapParam<String, Object> param);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.VERIFY_PHONE_NUMBER)
-    Observable<Response<TkpdResponse>> verifyPhoneNumber(@FieldMap TKPDMapParam<String, String> param);
+    Observable<Response<TkpdResponse>> verifyPhoneNumber(@FieldMap TKPDMapParam<String, Object> param);
 }
