@@ -58,7 +58,7 @@ public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddre
                 }
 
                 @Override
-                public void onTimeout(String message) {
+                public void onTimeout() {
                     viewListener.finishLoading();
                     viewListener.showErrorSnackbar("");
                 }
@@ -92,7 +92,7 @@ public class AddAddressPresenterImpl implements AddAddressPresenter, ManageAddre
                 }
 
                 @Override
-                public void onTimeout(String message) {
+                public void onTimeout() {
                     viewListener.finishLoading();
                     viewListener.showErrorSnackbar("");
                 }

@@ -82,11 +82,9 @@ public class AddAddressRetrofitInteractorImpl implements AddAddressRetrofitInter
                 if (e instanceof UnknownHostException) {
                     listener.onNoNetworkConnection();
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onTimeout("Timeout connection," +
-                            " Mohon ulangi beberapa saat lagi");
+                    listener.onTimeout();
                 } else {
-                    listener.onError("Terjadi Kesalahan, " +
-                            "Mohon ulangi beberapa saat lagi");
+                    listener.onError("");
                 }
             }
 
@@ -107,32 +105,27 @@ public class AddAddressRetrofitInteractorImpl implements AddAddressRetrofitInter
                     new ErrorHandler(new ErrorListener() {
                         @Override
                         public void onUnknown() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError("");
                         }
 
                         @Override
                         public void onTimeout() {
-                            listener.onTimeout("Timeout connection," +
-                                    " Mohon ulangi beberapa saat lagi");
+                            listener.onTimeout();
                         }
 
                         @Override
                         public void onServerError() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError("");
                         }
 
                         @Override
                         public void onBadRequest() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError("");
                         }
 
                         @Override
                         public void onForbidden() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError("");
                         }
                     }, response.code());
                 }
@@ -161,11 +154,9 @@ public class AddAddressRetrofitInteractorImpl implements AddAddressRetrofitInter
                 if (e instanceof UnknownHostException) {
                     listener.onNoNetworkConnection();
                 } else if (e instanceof SocketTimeoutException) {
-                    listener.onTimeout("Timeout connection," +
-                            " Mohon ulangi beberapa saat lagi");
+                    listener.onTimeout();
                 } else {
-                    listener.onError("Terjadi Kesalahan, " +
-                            "Mohon ulangi beberapa saat lagi");
+                    listener.onError("");
                 }
             }
 
@@ -186,32 +177,27 @@ public class AddAddressRetrofitInteractorImpl implements AddAddressRetrofitInter
                     new ErrorHandler(new ErrorListener() {
                         @Override
                         public void onUnknown() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError("");
                         }
 
                         @Override
                         public void onTimeout() {
-                            listener.onTimeout("Timeout connection," +
-                                    " Mohon ulangi beberapa saat lagi");
+                            listener.onTimeout();
                         }
 
                         @Override
                         public void onServerError() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError("");
                         }
 
                         @Override
                         public void onBadRequest() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError("");
                         }
 
                         @Override
                         public void onForbidden() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError("");
                         }
                     }, response.code());
                 }
@@ -263,8 +249,7 @@ public class AddAddressRetrofitInteractorImpl implements AddAddressRetrofitInter
                 if (e instanceof IOException) {
                     listener.onTimeout();
                 } else {
-                    listener.onError("Terjadi Kesalahan, " +
-                            "Mohon ulangi beberapa saat lagi");
+                    listener.onError("");
                 }
             }
 
@@ -290,8 +275,7 @@ public class AddAddressRetrofitInteractorImpl implements AddAddressRetrofitInter
                     new ErrorHandler(new ErrorListener() {
                         @Override
                         public void onUnknown() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError("");
                         }
 
                         @Override
@@ -301,20 +285,17 @@ public class AddAddressRetrofitInteractorImpl implements AddAddressRetrofitInter
 
                         @Override
                         public void onServerError() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError("");
                         }
 
                         @Override
                         public void onBadRequest() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError("");
                         }
 
                         @Override
                         public void onForbidden() {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError("");
                         }
                     }, response.code());
                 }
@@ -353,8 +334,7 @@ public class AddAddressRetrofitInteractorImpl implements AddAddressRetrofitInter
                         if (e instanceof IOException) {
                             listener.onTimeout();
                         } else {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError("");
                         }
                     }
 
@@ -369,8 +349,7 @@ public class AddAddressRetrofitInteractorImpl implements AddAddressRetrofitInter
                                 new ErrorHandler(new ErrorListener() {
                                     @Override
                                     public void onUnknown() {
-                                        listener.onError("Terjadi Kesalahan, " +
-                                                "Mohon ulangi beberapa saat lagi");
+                                        listener.onError("");
                                     }
 
                                     @Override
@@ -380,20 +359,17 @@ public class AddAddressRetrofitInteractorImpl implements AddAddressRetrofitInter
 
                                     @Override
                                     public void onServerError() {
-                                        listener.onError("Terjadi Kesalahan, " +
-                                                "Mohon ulangi beberapa saat lagi");
+                                        listener.onError("");
                                     }
 
                                     @Override
                                     public void onBadRequest() {
-                                        listener.onError("Terjadi Kesalahan, " +
-                                                "Mohon ulangi beberapa saat lagi");
+                                        listener.onError("");
                                     }
 
                                     @Override
                                     public void onForbidden() {
-                                        listener.onError("Terjadi Kesalahan, " +
-                                                "Mohon ulangi beberapa saat lagi");
+                                        listener.onError("");
                                     }
                                 }, model.getErrorCode());
                             }
@@ -503,8 +479,7 @@ public class AddAddressRetrofitInteractorImpl implements AddAddressRetrofitInter
                         if (e instanceof IOException) {
                             listener.onTimeout();
                         } else {
-                            listener.onError("Terjadi Kesalahan, " +
-                                    "Mohon ulangi beberapa saat lagi");
+                            listener.onError("");
                         }
                     }
 
@@ -519,8 +494,7 @@ public class AddAddressRetrofitInteractorImpl implements AddAddressRetrofitInter
                                 new ErrorHandler(new ErrorListener() {
                                     @Override
                                     public void onUnknown() {
-                                        listener.onError("Terjadi Kesalahan, " +
-                                                "Mohon ulangi beberapa saat lagi");
+                                        listener.onError("");
                                     }
 
                                     @Override
@@ -530,20 +504,17 @@ public class AddAddressRetrofitInteractorImpl implements AddAddressRetrofitInter
 
                                     @Override
                                     public void onServerError() {
-                                        listener.onError("Terjadi Kesalahan, " +
-                                                "Mohon ulangi beberapa saat lagi");
+                                        listener.onError("");
                                     }
 
                                     @Override
                                     public void onBadRequest() {
-                                        listener.onError("Terjadi Kesalahan, " +
-                                                "Mohon ulangi beberapa saat lagi");
+                                        listener.onError("");
                                     }
 
                                     @Override
                                     public void onForbidden() {
-                                        listener.onError("Terjadi Kesalahan, " +
-                                                "Mohon ulangi beberapa saat lagi");
+                                        listener.onError("");
                                     }
                                 }, model.getErrorCode());
                             }

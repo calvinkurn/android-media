@@ -35,7 +35,7 @@ public interface AddAddressRetrofitInteractor {
 
         void onSuccess(String address_id);
 
-        void onTimeout(String message);
+        void onTimeout();
 
         void onError(String error);
 
