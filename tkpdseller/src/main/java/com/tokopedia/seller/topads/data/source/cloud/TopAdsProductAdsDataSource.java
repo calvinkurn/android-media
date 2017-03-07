@@ -71,7 +71,7 @@ public class TopAdsProductAdsDataSource {
 
     private TopAdsProductDetailDataSourceModel convert(TopAdsDetailProductDomainModel domainModel) {
         TopAdsProductDetailDataSourceModel dataModel = new TopAdsProductDetailDataSourceModel();
-         dataModel.setAdId(domainModel.getAdId());
+        dataModel.setAdId(domainModel.getAdId());
         dataModel.setAdType(domainModel.getAdType());
         dataModel.setGroupId(domainModel.getGroupId());
         dataModel.setShopId(domainModel.getShopId());

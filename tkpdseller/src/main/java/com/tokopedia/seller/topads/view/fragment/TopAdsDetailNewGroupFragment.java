@@ -3,17 +3,14 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.di.TopAdsDetailNewGroupDI;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddProductListActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailNewGroupView;
-import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailGroupViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewGroupPresenter;
 
@@ -54,7 +51,7 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
         detailAd = new TopAdsDetailGroupViewModel();
 
         view.findViewById(R.id.linear_partial_top_ads_edit_ad).setVisibility(
-                isEmptyOrZero(adId) ? View.VISIBLE: View.GONE);
+                TextUtils.isEmpty(adId) ? View.VISIBLE: View.GONE);
     }
 
     @Override
@@ -65,7 +62,7 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
 
     @Override
     protected void saveAd() {
-        if (isEmptyOrZero(adId)) { // saveNew
+        if (TextUtils.isEmpty(adId)) { // saveNew
             super.saveAd();
             presenter.saveAdNew(name, (TopAdsDetailGroupViewModel) detailAd, topAdsProductList);
         }
@@ -74,14 +71,10 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
         }
     }
 
-    private boolean isEmptyOrZero(String string){
-        return TextUtils.isEmpty(string) || "0".equals(string);
-    }
-
     @Override
     protected void addProduct() {
         Intent intent = new Intent(getActivity(), TopAdsAddProductListActivity.class);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, !isEmptyOrZero(adId));
+        intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_EXISTING_GROUP, !TextUtils.isEmpty(adId));
         intent.putExtra(TopAdsExtraConstant.EXTRA_HIDE_ETALASE, false);
         intent.putParcelableArrayListExtra(TopAdsExtraConstant.EXTRA_SELECTIONS, topAdsProductList);
         startActivityForResult(intent, ADD_PRODUCT_REQUEST_CODE);
