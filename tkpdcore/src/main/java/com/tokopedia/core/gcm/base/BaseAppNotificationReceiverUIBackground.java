@@ -75,6 +75,12 @@ public abstract class BaseAppNotificationReceiverUIBackground {
         mFCMCacheManager = new FCMCacheManager(application.getBaseContext());
         mContext = application.getApplicationContext();
         mActivitiesLifecycleCallbacks = new ActivitiesLifecycleCallbacks(application);
+        PushNotificationRepository pushNotificationRepository = new PushNotificationDataRepository();
+        mSavePushNotificationUseCase = new SavePushNotificationUseCase(
+                new JobExecutor(),
+                new UIThread(),
+                pushNotificationRepository
+        );
     }
 
     protected boolean isDedicatedNotification(Bundle data) {
