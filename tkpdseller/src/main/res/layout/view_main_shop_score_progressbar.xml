@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="13dp"
         android:layout_below="@id/ic_shop_score_limit"
+        app:default_limit="80"
         app:rcBackgroundColor="@color/grey_300"
         app:rcMax="100"
         app:rcRadius="20dp" />
