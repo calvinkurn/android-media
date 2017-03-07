@@ -139,7 +139,7 @@
         <activity android:name=".deeplink.DeeplinkHandlerActivity"
             android:screenOrientation="portrait" />
         <service
-            android:name=".fcm.FcmMessagingService">
+            android:name=".fcm.CustomerMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>

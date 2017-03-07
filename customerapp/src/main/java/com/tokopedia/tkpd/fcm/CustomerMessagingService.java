@@ -10,7 +10,7 @@ import com.tokopedia.core.gcm.base.BaseNotificationMessagingService;
  * Created by Herdi_WORK on 12.01.17.
  */
 
-public class FcmMessagingService extends BaseNotificationMessagingService {
+public class CustomerMessagingService extends BaseNotificationMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
