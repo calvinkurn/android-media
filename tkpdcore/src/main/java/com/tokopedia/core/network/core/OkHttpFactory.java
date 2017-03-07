@@ -1,5 +1,7 @@
 package com.tokopedia.core.network.core;
 
+import com.tokopedia.core.network.retrofit.interceptors.AccountsInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
@@ -80,9 +82,25 @@ public class OkHttpFactory {
                 .build();
     }
 
-    public OkHttpClient buildCLientTopAdsAuth() {
+    public OkHttpClient buildClientTopAdsAuth() {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new TopAdsAuthInterceptor())
+                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                .addDebugInterceptor()
+                .build();
+    }
+
+    public OkHttpClient buildClientAccountsAuth(String authKey, Boolean isUsingHMAC) {
+        return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new AccountsInterceptor(authKey, isUsingHMAC))
+                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                .addDebugInterceptor()
+                .build();
+    }
+
+    public OkHttpClient buildClientBearerAuth(String authorizationString) {
+        return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new StandardizedInterceptor(authorizationString))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();

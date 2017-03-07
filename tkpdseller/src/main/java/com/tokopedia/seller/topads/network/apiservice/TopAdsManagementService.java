@@ -35,7 +35,7 @@ public class TopAdsManagementService extends AuthService<TopAdsManagementApi> {
         return RetrofitFactory.createRetrofitDefaultConfig(processedBaseUrl)
                 .client(OkHttpFactory.create()
                         .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                        .buildCLientTopAdsAuth())
+                        .buildClientTopAdsAuth())
                 .build();
     }
 }
