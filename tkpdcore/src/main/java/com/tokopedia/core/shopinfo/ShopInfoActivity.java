@@ -27,7 +27,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
@@ -178,74 +177,6 @@ public class ShopInfoActivity extends BaseActivity
         Bundle bundle = createBundle(id, domain, name, avatar, favorite);
         bundle.putString(SHOP_COVER, cover);
         return bundle;
-    }
-
-
-    @DeepLink({
-            "tokopedia://shop/{shop_id}"
-    })
-    public static Intent getCallingIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ShopInfoActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
-                .putExtras(extras);
-    }
-
-    @DeepLink({
-            "tokopedia://shop/{shop_id}/etalase/{etalase_id}"
-    })
-    public static Intent getCallingIntentEtalaseSelected(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ShopInfoActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_ETALASE)
-                .putExtras(extras);
-    }
-
-
-    @DeepLink({
-            "tokopedia://shop/{shop_id}/talk"
-    })
-    public static Intent getCallingIntentTalkSelected(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ShopInfoActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_TALK)
-                .putExtras(extras);
-    }
-
-    @DeepLink({
-            "tokopedia://shop/{shop_id}/review"
-    })
-    public static Intent getCallingIntentReviewSelected(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ShopInfoActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_REVIEW)
-                .putExtras(extras);
-    }
-
-    @DeepLink({
-            "tokopedia://shop/{shop_id}/note"
-    })
-    public static Intent getCallingIntentNoteSelected(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ShopInfoActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_NOTE)
-                .putExtras(extras);
-    }
-
-    @DeepLink({
-            "tokopedia://shop/{shop_id}/info"
-    })
-    public static Intent getCallingIntentInfoSelected(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ShopInfoActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_TAB_POSITION, NAVIGATION_TO_INFO)
-                .putExtras(extras);
     }
 
     @Override
@@ -630,12 +561,6 @@ public class ShopInfoActivity extends BaseActivity
         showNotice();
         ReputationLevelUtils.setReputationMedals(this, holder.badges, shopModel.stats.shopBadgeLevel.set, shopModel.stats.shopBadgeLevel.level, shopModel.stats.shopReputationScore);
         getIntent().putExtra(SHOP_AVATAR, shopModel.info.shopAvatar);
-
-
-        Intent intent = getIntent();
-        if (intent.getBooleanExtra(DeepLink.IS_DEEP_LINK, false)) {
-            actionFirstLaunched(intent.getExtras());
-        }
     }
 
     private void setFreeReturn(ViewHolder holder, Info data) {

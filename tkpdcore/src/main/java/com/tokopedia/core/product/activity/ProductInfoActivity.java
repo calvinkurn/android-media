@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
@@ -39,16 +38,6 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
     private Bundle bundleData;
 
     ProductInfoResultReceiver mReceiver;
-
-    @DeepLink({
-            "tokopedia://product/{product_id}"
-    })
-    public static Intent getCallingIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ProductInfoActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
-    }
 
     @Override
     public String getScreenName() {

@@ -10,7 +10,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
@@ -45,16 +44,6 @@ public class InboxReputationActivity extends DrawerPresenterActivity
     ViewPager viewPager;
     @BindView(R2.id.indicator)
     TabLayout indicator;
-
-    @DeepLink({
-            "tokopedia://review"
-    })
-    public static Intent getCallingIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, InboxReputationActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
