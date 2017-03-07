@@ -374,15 +374,25 @@ public interface AppEventTracking {
         String EMAIL = "Email";
         String LOGIN_STATUS = "Logged_in_Status";
         String PRODUCTS_NUMBER = "Number_of_Products";
+        String SUBCATEGORY = "SubCategory_name";
+        String SUBCATEGORY_ID = "SubCategory_id";
+        String CATEGORY = "Category";
+        String PRODUCT_ID = "Product_id";
+        String PRODUCT_NAME = "Product_name";
 
         String EVENT_LOGIN = "Login";
         String EVENT_OPEN_BERANDA = "Beranda_Screen_Launched";
         String EVENT_OPEN_FEED = "Feed_Screen_Launched";
         String EVENT_OPEN_FAVORITE = "Favorite_Screen_Launched";
         String EVENT_OPEN_HOTLIST = "HotList_Screen_Launched";
+        String EVENT_OPEN_PRODUCTPAGE = "Product_Page_Opened";
+        String EVENT_CLICK_HOTLIST = "Clicked_HotList_Item";
+
+
         String REG_START = "Registration_Start";
         String REG_COMPL = "Registration_Completed";
         String ADDR_ADD = "Address_Added";
+
 
 
     }
