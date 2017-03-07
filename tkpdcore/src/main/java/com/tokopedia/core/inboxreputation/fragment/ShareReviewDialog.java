@@ -142,7 +142,7 @@ public class ShareReviewDialog {
                         FacebookCallback<Sharer.Result>() {
                             @Override
                             public void onSuccess(Sharer.Result result) {
-                                SnackbarManager.make(fragment.getActivity(), context.getString(R.string.success_share_product)
+                                SnackbarManager.make(fragment.getActivity(), context.getString(R.string.success_share_review)
                                         , Snackbar.LENGTH_LONG).show();
                                 dismissDialog();
                             }
@@ -153,7 +153,7 @@ public class ShareReviewDialog {
                             @Override
                             public void onError(FacebookException error) {
                                 Log.i("facebook", "onError: "+error);
-                                SnackbarManager.make(fragment.getActivity(), context.getString(R.string.error_share_product)
+                                SnackbarManager.make(fragment.getActivity(), context.getString(R.string.error_share_review)
                                         , Snackbar.LENGTH_LONG).show();
                                 dismissDialog();
                             }
