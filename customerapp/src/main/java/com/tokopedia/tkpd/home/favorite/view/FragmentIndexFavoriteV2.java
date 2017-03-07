@@ -343,6 +343,8 @@ public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements Favor
     @Override
     public void displayMainContent(boolean isDisplay) {
         Log.d(TAG, " main content ingin " + (isDisplay ? "dihidupkan" : "dimatikan"));
+        if (mainContent == null)
+            return;
         if (isDisplay)
             mainContent.setVisibility(View.VISIBLE);
         else
