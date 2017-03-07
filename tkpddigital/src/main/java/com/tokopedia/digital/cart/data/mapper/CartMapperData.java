@@ -3,6 +3,7 @@ package com.tokopedia.digital.cart.data.mapper;
 import com.tokopedia.digital.cart.data.entity.response.AdditionalInfo;
 import com.tokopedia.digital.cart.data.entity.response.Detail;
 import com.tokopedia.digital.cart.data.entity.response.MainInfo;
+import com.tokopedia.digital.cart.data.entity.response.RelationshipsCart;
 import com.tokopedia.digital.cart.data.entity.response.ResponseCartData;
 import com.tokopedia.digital.cart.model.AttributesDigital;
 import com.tokopedia.digital.cart.model.CartAdditionalInfo;
@@ -58,7 +59,7 @@ public class CartMapperData implements ICartMapperData {
         }
         attributesDigital.setUserId(responseCartData.getAttributes().getUserId());
 
-        com.tokopedia.digital.cart.data.entity.response.Relationships relationshipsResponse =
+        RelationshipsCart relationshipsResponse =
                 responseCartData.getRelationships();
 
 

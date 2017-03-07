@@ -19,4 +19,8 @@ public interface ICartDigitalInteractor {
             RequestBodyAtcDigital requestBodyAtcDigital, String idemPotencyKeyHeader,
             Subscriber<CartDigitalInfoData> subscriber
     );
+
+    void checkVoucher(
+            TKPDMapParam<String, String> paramNetwork, Subscriber<String> subscriber
+    );
 }

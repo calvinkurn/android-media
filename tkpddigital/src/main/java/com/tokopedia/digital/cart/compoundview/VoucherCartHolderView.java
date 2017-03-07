@@ -42,6 +42,8 @@ public class VoucherCartHolderView extends RelativeLayout {
     @BindView(R2.id.textview_voucher)
     TextView usedVoucher;
 
+    private ActionListener actionListener;
+
     public VoucherCartHolderView(Context context) {
         super(context);
         init(context);
@@ -61,6 +63,11 @@ public class VoucherCartHolderView extends RelativeLayout {
         LayoutInflater.from(context).inflate(R.layout.view_holder_checkout_voucher, this, true);
         ButterKnife.bind(this);
         actionVoucher();
+    }
+
+
+    public void setActionListener(ActionListener actionListener) {
+        this.actionListener = actionListener;
     }
 
     private void actionVoucher() {
@@ -87,6 +94,11 @@ public class VoucherCartHolderView extends RelativeLayout {
             public void onClick(View v) {
                 if (!isEditTextVoucherEmpty()) {
                     usedVoucher.setText(editTextVoucher.getText().toString());
+                    if (actionListener != null)
+                        actionListener.onVoucherCheckButtonClicked(
+                                editTextVoucher.getText().toString().trim()
+                        );
+                    else throw new IllegalArgumentException("Action Listener null coy!!");
                     holderVoucher.setVisibility(VISIBLE);
                     errorVoucher.setVisibility(GONE);
                 } else {
@@ -128,5 +140,9 @@ public class VoucherCartHolderView extends RelativeLayout {
             public void afterTextChanged(Editable s) {
             }
         };
+    }
+
+    public interface ActionListener {
+        void onVoucherCheckButtonClicked(String voucherCode);
     }
 }

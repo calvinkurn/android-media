@@ -19,10 +19,10 @@ public class ResponseCartData {
     private String id;
     @SerializedName("attributes")
     @Expose
-    private Attributes attributes;
+    private AttributesCart attributes;
     @SerializedName("relationships")
     @Expose
-    private Relationships relationships;
+    private RelationshipsCart relationships;
 
     public String getType() {
         return type;
@@ -40,19 +40,19 @@ public class ResponseCartData {
         this.id = id;
     }
 
-    public Attributes getAttributes() {
+    public AttributesCart getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(Attributes attributes) {
+    public void setAttributes(AttributesCart attributes) {
         this.attributes = attributes;
     }
 
-    public Relationships getRelationships() {
+    public RelationshipsCart getRelationships() {
         return relationships;
     }
 
-    public void setRelationships(Relationships relationships) {
+    public void setRelationships(RelationshipsCart relationships) {
         this.relationships = relationships;
     }
 

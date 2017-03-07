@@ -18,4 +18,8 @@ public interface IDigitalCartView extends IBaseView {
     String getAccountToken();
 
     String getWalletRefreshToken();
+
+    void renderErrorCheckVoucher(String message);
+
+    String getDigitalCategoryId();
 }

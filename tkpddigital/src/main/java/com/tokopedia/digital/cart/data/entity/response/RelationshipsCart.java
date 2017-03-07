@@ -9,7 +9,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * @author anggaprasetiyo on 2/27/17.
  */
 
-public class Relationships {
+public class RelationshipsCart {
 
     @SerializedName("category")
     @Expose

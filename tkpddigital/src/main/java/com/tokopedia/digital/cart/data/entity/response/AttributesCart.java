@@ -11,7 +11,7 @@ import java.util.List;
  * @author anggaprasetiyo on 2/27/17.
  */
 
-public class Attributes {
+public class AttributesCart {
 
     @SerializedName("client_number")
     @Expose

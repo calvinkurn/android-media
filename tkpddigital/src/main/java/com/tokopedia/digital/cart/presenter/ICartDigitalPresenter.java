@@ -8,7 +8,9 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 
 public interface ICartDigitalPresenter {
 
-    void processGetCartData(String categoryId);
+    void processGetCartData();
 
     void processAddToCart(DigitalCheckoutPassData passData);
+
+    void processCheckVoucher(String voucherCode);
 }

@@ -43,7 +43,7 @@ import butterknife.OnClick;
 
 public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPresenter> implements
         IDigitalCartView, CheckoutHolderView.IAction,
-        InputPriceHolderView.EditTextUserInputListener {
+        InputPriceHolderView.EditTextUserInputListener, VoucherCartHolderView.ActionListener {
 
     private static final String TAG = CartDigitalFragment.class.getSimpleName();
     private static final String ARG_CART_DIGITAL_DATA_PASS = "ARG_CART_DIGITAL_DATA_PASS";
@@ -80,9 +80,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     protected void onFirstTimeLaunched() {
-        //   presenter.processAddToCart(passData);
         inputPriceHolderView.setEditTextUserInputListener(this);
-        presenter.processGetCartData(passData.getCategoryId());
+        voucherCartHolderView.setActionListener(this);
         sessionHandler = new SessionHandler(getActivity());
         //   presenter.processGetCartData(passData.getCategoryId());
         presenter.processAddToCart(passData);
@@ -204,7 +203,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @OnClick(R2.id.btn_next)
     void actionNext() {
-        presenter.processGetCartData(passData.getCategoryId());
+        presenter.processGetCartData();
     }
 
     @Override
@@ -279,6 +278,16 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
+    public void renderErrorCheckVoucher(String message) {
+
+    }
+
+    @Override
+    public String getDigitalCategoryId() {
+        return passData.getCategoryId();
+    }
+
+    @Override
     public void onClickButtonNext() {
 
     }
@@ -286,5 +295,10 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void userInputPayment(long paymentAmount) {
         Log.d(TAG, "userInputPayment: " + paymentAmount);
+    }
+
+    @Override
+    public void onVoucherCheckButtonClicked(String voucherCode) {
+        presenter.processCheckVoucher(voucherCode);
     }
 }

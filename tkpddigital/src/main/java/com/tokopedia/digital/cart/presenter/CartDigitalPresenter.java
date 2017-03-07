@@ -35,9 +35,9 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     }
 
     @Override
-    public void processGetCartData(String categoryId) {
+    public void processGetCartData() {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("category_id", categoryId);
+        param.put("category_id", view.getDigitalCategoryId());
         view.renderLoadingGetCartInfo();
         cartDigitalInteractor.getCartInfoData(
                 view.getGeneratedAuthParamNetwork(param),
@@ -80,6 +80,31 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         cartDigitalInteractor.addToCart(
                 requestBodyAtcDigital, passData.getIdemPotencyKey(), getSubscriberAddToCart()
         );
+    }
+
+    @Override
+    public void processCheckVoucher(String voucherCode) {
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("voucher_code", voucherCode);
+        param.put("category_id", view.getDigitalCategoryId());
+        cartDigitalInteractor.checkVoucher(view.getGeneratedAuthParamNetwork(param),
+                new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        view.renderErrorCheckVoucher(e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+
+                    }
+                });
     }
 
     private Subscriber<CartDigitalInfoData> getSubscriberAddToCart() {

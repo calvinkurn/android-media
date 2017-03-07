@@ -15,6 +15,8 @@ public interface ICartDigitalRepository {
 
     Observable<?> deleteCartData(TKPDMapParam<String, String> param);
 
-    Observable<CartDigitalInfoData> addToCart(RequestBodyAtcDigital requestBodyAtcDigital, String idemPotencyKeyHeader);
+    Observable<CartDigitalInfoData> addToCart(
+            RequestBodyAtcDigital requestBodyAtcDigital, String idemPotencyKeyHeader
+    );
 
 }
