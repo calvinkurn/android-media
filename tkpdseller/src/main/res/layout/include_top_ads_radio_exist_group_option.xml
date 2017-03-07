@@ -18,6 +18,7 @@
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/input_layout_choose_group"
+                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
                 style="@style/TextInputLayout">
 
                 <com.tokopedia.seller.topads.view.widget.TopAdsCustomAutoCompleteTextView

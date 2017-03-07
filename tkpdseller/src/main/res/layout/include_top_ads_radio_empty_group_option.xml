@@ -7,6 +7,5 @@
         android:id="@+id/view_radio_not_in_group"
         app:radio_id="@+id/radio_promo_not_in_group"
         app:title_radio="@string/label_top_ads_create_promo_not_in_group"
-        app:checked="true"
         style="@style/TopAdsRadioExpandView"/>
 </merge>

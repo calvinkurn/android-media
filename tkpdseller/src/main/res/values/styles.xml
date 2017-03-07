@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="TextView" parent="@style/TextAppearance.AppCompat">
         <item name="android:layout_width">wrap_content</item>
@@ -87,7 +87,6 @@
     </style>
 
 
-
     <style name="EditText.Currency">
         <item name="android:inputType">number</item>
     </style>
@@ -102,6 +101,7 @@
     <style name="TopAdsRadioButton" parent="@style/RadioButton">
         <item name="android:button">@drawable/top_ads_set_date_radio_button</item>
         <item name="android:textColor">@color/font_top_ads_black_70</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="Button.TopAds" parent="Widget.AppCompat.Button">
@@ -197,7 +197,9 @@
     <style name="EditText.GreenHighlight">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textColorHighlight">@color/font_top_ads_green</item>
+        <item name="android:textColor">@color/font_top_ads_black_70</item>
     </style>
 
     <style name="TopAdsRadioExpandView">
@@ -209,6 +211,18 @@
     <style name="TextInputLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:theme">@style/TextInputLayoutColorLine</item>
+    </style>
+    
+    <style name="TextInputLayoutColorLine">
+        <item name="colorControlNormal">@color/font_top_ads_black_54</item>
+        <item name="colorControlActivated">@color/font_top_ads_green</item>
+        <item name="colorControlHighlight">@color/font_top_ads_green</item>
+    </style>
+
+    <style name="TextAppearence.App.TextInputLayout" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/font_top_ads_black_54</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
     <style name="TopAdsCustomAutoCompleteTextView">
@@ -216,6 +230,8 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:drawableRight">@drawable/ic_close_green_14x14</item>
         <item name="android:textColorHighlight">@color/font_top_ads_green</item>
+        <item name="android:completionThreshold">1</item>
+        <item name="android:textColor">@color/font_top_ads_black_70</item>
     </style>
 
     <style name="TopAdsCustomRadioGroup">

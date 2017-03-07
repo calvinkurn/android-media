@@ -9,7 +9,7 @@ import java.util.List;
  * Created by zulfikarrahman on 2/17/17.
  */
 public interface TopAdsManageGroupPromoView extends CustomerView {
-    void onCheckGroupExistError(String message);
+    void onCheckGroupExistError();
 
     void onGroupExist();
 
@@ -17,7 +17,7 @@ public interface TopAdsManageGroupPromoView extends CustomerView {
 
     void onGetGroupAdList(List<GroupAd> groupAds);
 
-    void onGetGroupAdListError(String message);
+    void onGetGroupAdListError();
 
     void showLoading();
 
