@@ -159,7 +159,8 @@ public class Ticker {
         }
 
         public Spanned getMessage() {
-            return MethodChecker.fromHtml(message);
+            String str = message.replaceAll("<p>(.*?)</p>", "$1");
+            return MethodChecker.fromHtml(str);
         }
 
         public void setMessage(String message) {

@@ -519,6 +519,7 @@ public class DrawerVariableSeller extends DrawerVariable {
     @Override
     public void updateData() {
         clearData();
+        hasUpdated = true;
 
         if (isLogin()) {
             setCache();
@@ -531,6 +532,7 @@ public class DrawerVariableSeller extends DrawerVariable {
             }
 
             getDeposit();
+            getNotification();
 
             if (interval > 9000 || model.header.Loyalty.equals("")) {
                 getLoyalty();
@@ -548,7 +550,6 @@ public class DrawerVariableSeller extends DrawerVariable {
             holder.footerShadow.setVisibility(View.GONE);
         }
 
-        getNotification();
         adapter.notifyDataSetChanged();
         holder.recyclerView.smoothScrollToPosition(0);
     }
@@ -768,6 +769,23 @@ public class DrawerVariableSeller extends DrawerVariable {
 
     @Override
     public void getNotification() {
+        if (!isLogin()) {
+            return;
+        }
+        networkInteractor.getNotification(context, new NetworkInteractor.NotificationListener() {
+            @Override
+            public void onSuccess(NotificationItem notificationItem) {
+                setNotificationShop(notificationItem);
+                setNotificationInbox(notificationItem);
+                toolbar.updateToolbar(notificationItem);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(String message) {
+
+            }
+        });
     }
 
     private void setNotificationShop(NotificationItem notificationItem) {
