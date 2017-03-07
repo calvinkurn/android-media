@@ -20,25 +20,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
+                android:lineSpacingMultiplier="1.5"
                 android:paddingEnd="16dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingStart="16dp"
                 android:paddingTop="25dp"
-                android:text="Performa toko Anda kurang baik dengan nilai rata-rata 45"
                 android:textSize="16sp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:paddingBottom="24dp"
+                android:lineSpacingMultiplier="1.5"
+                android:paddingBottom="30dp"
                 android:paddingEnd="16dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingStart="16dp"
                 android:paddingTop="8dp"
-                android:text="Nilai dihitung berdasarkan rata-rata nilai indikator performa toko anda dalam 30 hari terakhir"
+                android:text="@string/subtitle_shop_score_detail_summary_description"
+                android:textColor="@color/tkpd_grey_text"
                 android:textSize="12sp" />
 
             <View
@@ -55,7 +57,7 @@
                 android:paddingRight="16dp"
                 android:paddingStart="16dp"
                 android:paddingTop="24dp"
-                android:text="Indikator Performa Toko"
+                android:text="@string/title_shop_score_indicator"
                 android:textSize="16sp" />
 
             <TextView
@@ -67,7 +69,8 @@
                 android:paddingRight="16dp"
                 android:paddingStart="16dp"
                 android:paddingTop="4dp"
-                android:text="30 hari terakhir"
+                android:text="@string/subtitle_shop_score_indicator_thirtydays"
+                android:textColor="@color/tkpd_grey_text"
                 android:textSize="12sp" />
 
             <android.support.v7.widget.RecyclerView

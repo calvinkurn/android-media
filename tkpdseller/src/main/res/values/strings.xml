@@ -214,5 +214,8 @@
     <string name="error_subtitle_shop_score_failed">Periksa koneksi internet Anda dan coba lagi</string>
     <string name="retry_shop_score">Coba Lagi</string>
     <string name="button_shop_score_go_to_complete_information">Info Selengkapnya</string>
+    <string name="subtitle_shop_score_detail_summary_description">Nilai dihitung berdasarkan rata-rata nilai indikator performa toko anda dalam 30 hari terakhir</string>
+    <string name="title_shop_score_indicator">Indikator Performa Toko</string>
+    <string name="subtitle_shop_score_indicator_thirtydays">30 hari terakhir</string>
 
 </resources>
