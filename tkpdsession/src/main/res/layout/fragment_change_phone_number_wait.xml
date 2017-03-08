@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_large"
+        android:background="@drawable/card"
+        android:padding="@dimen/padding_med"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_large"
+            android:text="@string/waiting_data_checking_process"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_large"
+            android:textStyle="bold"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_med"
+            android:text="Kami akan melakukan pengecekan terhadap data yang Anda kirim, mohon menunggu maksimum 1 x 24 jam. Kami akan mengirim pemberitahuan ke email Anda."
+            android:layout_gravity="center"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/button_return"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/navigate_back"
+            android:layout_margin="@dimen/margin_med"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:background="@drawable/green_button_rounded"/>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="@dimen/btn_height"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginTop="@dimen/margin_med"
+        android:src="@drawable/circle_green"
+        android:layout_centerHorizontal="true"
+        />
+
+    <ImageView
+        android:layout_width="@dimen/btn_height"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginTop="@dimen/margin_med"
+        android:padding="@dimen/padding_vs"
+        android:src="@drawable/ic_new_action_check"
+        android:layout_centerHorizontal="true"/>
+</RelativeLayout>

@@ -91,6 +91,7 @@
             android:text="@string/pick_file_here" />
 
         <Button
+            android:id="@+id/button_submit"
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_height"
             android:background="@drawable/green_button_rounded"

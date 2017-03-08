@@ -8,12 +8,14 @@ import android.os.Bundle;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.fragment.ChangePhoneNumberRequestFragment;
+import com.tokopedia.session.changephonenumber.fragment.ChangePhoneNumberWaitFragment;
 
 /**
  * Created by nisie on 3/2/17.
  */
 
-public class ChangePhoneNumberRequestActivity extends BasePresenterActivity {
+public class ChangePhoneNumberRequestActivity extends BasePresenterActivity implements ChangePhoneNumberRequestFragment.ChangePhoneNumberRequestListener {
+
     @Override
     protected void setupURIPass(Uri data) {
 
@@ -36,7 +38,7 @@ public class ChangePhoneNumberRequestActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-        ChangePhoneNumberRequestFragment fragment = ChangePhoneNumberRequestFragment.createInstance();
+        ChangePhoneNumberRequestFragment fragment = ChangePhoneNumberRequestFragment.createInstance(this);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
@@ -58,5 +60,14 @@ public class ChangePhoneNumberRequestActivity extends BasePresenterActivity {
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public void goToThanksPage() {
+        ChangePhoneNumberWaitFragment fragment = ChangePhoneNumberWaitFragment.createInstance();
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.commit();
     }
 }

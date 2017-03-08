@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,8 +21,10 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.session.R;
+import com.tokopedia.session.changephonenumber.activity.ChangePhoneNumberRequestActivity;
 import com.tokopedia.session.changephonenumber.listener.ChangePhoneNumberRequestView;
 import com.tokopedia.session.changephonenumber.presenter.ChangePhoneNumberRequestPresenter;
+import com.tokopedia.session.changephonenumber.presenter.ChangePhoneNumberRequestPresenterImpl;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,19 +46,30 @@ public class ChangePhoneNumberRequestFragment
         extends BasePresenterFragment<ChangePhoneNumberRequestPresenter>
         implements ChangePhoneNumberRequestView {
 
+    public interface ChangePhoneNumberRequestListener {
+        void goToThanksPage();
+    }
+
     private static final String UPLOAD_ID = "UPLOAD_ID";
     private static final String UPLOAD_ACCOUNT_BOOK = "UPLOAD_ACCOUNT_BOOK";
     TextView buttonUploadId;
     TextView buttonUploadAccountBook;
     ImageUploadHandler imageUploadHandler;
-
     ImageView idImage;
     ImageView accountBookImage;
+    Button buttonSubmit;
 
     String uploadType;
+    ChangePhoneNumberRequestListener listener;
 
-    public static ChangePhoneNumberRequestFragment createInstance() {
-        return new ChangePhoneNumberRequestFragment();
+    public static ChangePhoneNumberRequestFragment createInstance(ChangePhoneNumberRequestListener listener) {
+        ChangePhoneNumberRequestFragment fragment = new ChangePhoneNumberRequestFragment();
+        fragment.setActionListener(listener);
+        return fragment;
+    }
+
+    public void setActionListener(ChangePhoneNumberRequestListener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -85,7 +99,7 @@ public class ChangePhoneNumberRequestFragment
 
     @Override
     protected void initialPresenter() {
-
+        presenter = new ChangePhoneNumberRequestPresenterImpl(this);
     }
 
     @Override
@@ -109,6 +123,7 @@ public class ChangePhoneNumberRequestFragment
         buttonUploadId = (TextView) view.findViewById(R.id.upload_id_photo_button);
         idImage = (ImageView) view.findViewById(R.id.id_image);
         accountBookImage = (ImageView) view.findViewById(R.id.account_book_image);
+        buttonSubmit = (Button) view.findViewById(R.id.button_submit);
 
         imageUploadHandler = ImageUploadHandler.createInstance(this);
     }
@@ -119,7 +134,16 @@ public class ChangePhoneNumberRequestFragment
         accountBookImage.setOnClickListener(onUploadAccountBook());
         buttonUploadId.setOnClickListener(onUploadImageId());
         idImage.setOnClickListener(onUploadImageId());
+        buttonSubmit.setOnClickListener(onSubmit());
+    }
 
+    private View.OnClickListener onSubmit() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.submitRequest();
+            }
+        };
     }
 
     private View.OnClickListener onUploadImageId() {
@@ -254,6 +278,10 @@ public class ChangePhoneNumberRequestFragment
             ImageHandler.loadImageFromFile(getActivity(), idImage, new File(fileLoc));
     }
 
+    @Override
+    public void onGoToThanksPage() {
+        listener.goToThanksPage();
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -314,5 +342,4 @@ public class ChangePhoneNumberRequestFragment
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
-
 }
