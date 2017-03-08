@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import com.tokopedia.core.gcm.BuildAndShowNotification;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.NotificationConfiguration;
 import com.tokopedia.core.gcm.domain.model.DiscussionPushNotification;
 import com.tokopedia.core.gcm.domain.model.MessagePushNotification;
 import com.tokopedia.core.gcm.model.ApplinkNotificationPass;
@@ -21,7 +22,6 @@ import java.util.List;
 
 public class DiscussionPushNotificationBuildAndShow extends AbstractApplinkBuildAndShowNotification<DiscussionPushNotificationWrapper> {
     private List<DiscussionPushNotification> discussionPushNotifications;
-    BuildAndShowNotification buildAndShowNotification;
     private static final String NOTIFICATION_TITLE = "Tokopedia - Diskusi Baru";
     private static final String NOTIFICATION_GROUP = "personalized_group";
     private static final String NOTIFICATION_CATEGORY = "msg";
@@ -32,7 +32,12 @@ public class DiscussionPushNotificationBuildAndShow extends AbstractApplinkBuild
 
     @Override
     public void process(Context context, Intent handlerIntent) {
-        buildAndShowNotification = new BuildAndShowNotification(context);
+        process(context, handlerIntent, true);
+    }
+
+    @Override
+    public void process(Context context, Intent handlerIntent, boolean isNew) {
+        BuildAndShowNotification buildAndShowNotification = new BuildAndShowNotification(context);
         if (discussionPushNotifications.size() > 0) {
             boolean isSingle = true;
             int senderCount = 0;
@@ -60,14 +65,24 @@ public class DiscussionPushNotificationBuildAndShow extends AbstractApplinkBuild
                 }
             }
 
+            NotificationConfiguration configuration = buildDefaultConfiguration(context);
+            if (!isNew) {
+                configuration.setBell(false);
+                configuration.setVibrate(false);
+            }
+
             if (!isSingle) {
                 multipleSender = true;
+                configuration.setNetworkIcon(false);
+            } else {
+                configuration.setNetworkIcon(true);
             }
+
             String description;
 
-            if (!isSingle){
+            if (!isSingle) {
                 description = String.format("%d diskusi dari %d pengirim", discussionPushNotifications.size(), senderCount);
-            }else{
+            } else {
                 description = String.format("%d diskusi dari %d", discussionPushNotifications.size(), username);
             }
             Uri url = Uri.parse(uri);
@@ -89,7 +104,7 @@ public class DiscussionPushNotificationBuildAndShow extends AbstractApplinkBuild
                     .applink(uri)
                     .multipleSender(multipleSender)
                     .build();
-            buildAndShowNotification.buildAndShowNotification(applinkNotificationPass);
+            buildAndShowNotification.buildAndShowNotification(applinkNotificationPass, configuration);
         } else {
             NotificationManager notificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

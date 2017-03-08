@@ -55,7 +55,8 @@ public class BuildAndShowNotification {
         void onFileReady(File file);
     }
 
-    public void buildAndShowNotification(ApplinkNotificationPass applinkNotificationPass) {
+    public void buildAndShowNotification(ApplinkNotificationPass applinkNotificationPass,
+                                         NotificationConfiguration configuration) {
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
         inboxStyle.setBigContentTitle(applinkNotificationPass.getTitle());
         inboxStyle.setSummaryText(applinkNotificationPass.getDescription());
@@ -83,10 +84,10 @@ public class BuildAndShowNotification {
             mBuilder.setColor(mContext.getResources().getColor(R.color.tkpd_dark_green));
         }
 
-        if (isAllowBell()) {
-            mBuilder.setSound(getSoundUri());
-            if (isAllowedVibrate()) {
-                mBuilder.setVibrate(getVibratePattern());
+        if (configuration.isBell()) {
+            mBuilder.setSound(configuration.getSoundUri());
+            if (configuration.isVibrate()) {
+                mBuilder.setVibrate(configuration.getVibratePattern());
             }
         }
 
@@ -108,17 +109,22 @@ public class BuildAndShowNotification {
             NotificationManager mNotificationManager =
                     (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             Notification notif = mBuilder.build();
-            if (isAllowedVibrate() && isAllowBell()) {
+            if (configuration.isVibrate() && configuration.isBell()) {
                 notif.defaults |= Notification.DEFAULT_VIBRATE;
             }
             mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
         } else {
-            downloadImageAndShowNotification(applinkNotificationPass, mBuilder);
+            downloadImageAndShowNotification(applinkNotificationPass, mBuilder, configuration);
         }
     }
 
+    public void buildAndShowNotification(ApplinkNotificationPass applinkNotificationPass) {
+        buildAndShowNotification(applinkNotificationPass, new NotificationConfiguration());
+    }
+
     private void downloadImageAndShowNotification(final ApplinkNotificationPass applinkNotificationPass,
-                                                  final NotificationCompat.Builder mBuilder) {
+                                                  final NotificationCompat.Builder mBuilder,
+                                                  final NotificationConfiguration configuration) {
         Glide
                 .with(mBuilder.mContext)
                 .load(applinkNotificationPass.getImageUrl())
@@ -133,7 +139,7 @@ public class BuildAndShowNotification {
                         NotificationManager mNotificationManager =
                                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
                         Notification notif = mBuilder.build();
-                        if (isAllowedVibrate() && isAllowBell()) {
+                        if (configuration.isVibrate() && configuration.isBell()) {
                             notif.defaults |= Notification.DEFAULT_VIBRATE;
                         }
                         mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
@@ -142,64 +148,7 @@ public class BuildAndShowNotification {
 
     }
 
-    public void buildAndShowNotification(NotificationPass notificationPass, Bundle data, Intent intent) {
-        NotificationManager mNotificationManager =
-                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
-                .setSmallIcon(getDrawableIcon())
-                .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), getDrawableLargeIcon()))
-                .setAutoCancel(true);
-        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-        NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
-
-        if (notificationPass.isAllowedBigStyle) {
-            mBuilder.setContentTitle(notificationPass.title);
-            mBuilder.setContentText(notificationPass.description);
-            bigStyle.bigText(notificationPass.description);
-            mBuilder.setStyle(bigStyle);
-            mBuilder.setTicker(notificationPass.ticker);
-        } else {
-            inboxStyle.setBigContentTitle(mContext.getString(R.string.title_new_notif_general));
-            if (notificationPass.savedNotificationContents != null) {
-                for (String content : notificationPass.savedNotificationContents) {
-                    inboxStyle.addLine(content);
-                }
-            }
-            mBuilder.setContentTitle(mContext.getString(R.string.title_new_notif_general));
-            mBuilder.setContentText(notificationPass.description);
-            mBuilder.setStyle(inboxStyle);
-            mBuilder.setTicker(notificationPass.ticker);
-        }
-
-        mBuilder = configureBigPictureNotification(data, mBuilder);
-
-        mBuilder = configureIconNotification(data, mBuilder);
-
-        if (isAllowBell()) {
-            mBuilder.setSound(getSoundUri());
-            if (isAllowedVibrate()) {
-                mBuilder.setVibrate(getVibratePattern());
-            }
-        }
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
-        if (notificationPass.classParentStack != null) {
-            stackBuilder.addParentStack(notificationPass.classParentStack);
-        } else {
-            stackBuilder.addParentStack(NotificationCenter.class);
-        }
-
-        stackBuilder.addNextIntent(intent);
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
-        mBuilder.setContentIntent(resultPendingIntent);
-        Notification notif = mBuilder.build();
-        if (isAllowedVibrate() && isAllowBell()) {
-            notif.defaults |= Notification.DEFAULT_VIBRATE;
-        }
-        mNotificationManager.notify(100, notif);
-    }
-
-    public void buildAndShowNotification(NotificationPass notificationPass, Bundle data) {
+    public void buildAndShowNotification(NotificationPass notificationPass, Bundle data, NotificationConfiguration configuration) {
         //TODO : create flow again
         saveIncomingNotification(notificationPass, data);
 
@@ -243,10 +192,10 @@ public class BuildAndShowNotification {
 
         mBuilder = configureIconNotification(data, mBuilder);
 
-        if (isAllowBell()) {
-            mBuilder.setSound(getSoundUri());
-            if (isAllowedVibrate()) {
-                mBuilder.setVibrate(getVibratePattern());
+        if (configuration.isBell()) {
+            mBuilder.setSound(configuration.getSoundUri());
+            if (configuration.isVibrate()) {
+                mBuilder.setVibrate(configuration.getVibratePattern());
             }
         }
 
@@ -254,10 +203,14 @@ public class BuildAndShowNotification {
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
         Notification notif = mBuilder.build();
-        if (isAllowedVibrate() && isAllowBell()) {
+        if (configuration.isVibrate() && configuration.isBell()) {
             notif.defaults |= Notification.DEFAULT_VIBRATE;
         }
         mNotificationManager.notify(100, notif);
+    }
+
+    public void buildAndShowNotification(NotificationPass notificationPass, Bundle data) {
+        buildAndShowNotification(notificationPass, data, new NotificationConfiguration());
     }
 
     private void saveIncomingNotification(NotificationPass notificationPass, Bundle data) {
@@ -273,44 +226,6 @@ public class BuildAndShowNotification {
 
     private List<NotificationEntity> getUnOpenedNotification() {
         return cacheManager.getHistoryPushNotification();
-    }
-
-    private NotificationCompat.Builder configureIconNotification(String iconUrl, final NotificationCompat.Builder mBuilder) {
-        Glide
-                .with(mBuilder.mContext)
-                .load(iconUrl)
-                .asBitmap()
-                .into(new SimpleTarget<Bitmap>(48, 48) {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
-                        mBuilder.setLargeIcon(
-                                Bitmap.createScaledBitmap(
-                                        resource,
-                                        mContext.getResources().getDimensionPixelSize(R.dimen.icon_size),
-                                        mContext.getResources().getDimensionPixelSize(R.dimen.icon_size),
-                                        true
-                                )
-                        );
-                    }
-                });/*
-        ImageHandler.loadImageBitmapNotification(
-                mBuilder.mContext,
-                iconUrl,
-                new OnGetFileListener() {
-                    @Override
-                    public void onFileReady(File file) {
-                        mBuilder.setLargeIcon(
-                                Bitmap.createScaledBitmap(
-                                        BitmapFactory.decodeFile(file.getAbsolutePath()),
-                                        mContext.getResources().getDimensionPixelSize(R.dimen.icon_size),
-                                        mContext.getResources().getDimensionPixelSize(R.dimen.icon_size),
-                                        true
-                                )
-                        );
-                    }
-                }
-        );*/
-        return mBuilder;
     }
 
     private NotificationCompat.Builder configureIconNotification(Bundle data, final NotificationCompat.Builder mBuilder) {
@@ -380,57 +295,5 @@ public class BuildAndShowNotification {
             return R.drawable.ic_stat_notify2;
         else
             return R.drawable.ic_stat_notify;
-    }
-
-    private long[] getVibratePattern() {
-        return new long[]{500, 500, 500, 500, 500, 500, 500, 500, 500};
-    }
-
-    private Boolean isAllowedVibrate() {
-        return cacheManager.isVibrate();
-    }
-
-    private Uri getSoundUri() {
-        return cacheManager.getSoundUri();
-    }
-
-    private Boolean isAllowBell() {
-        return cacheManager.isAllowBell();
-    }
-
-    void sendUpdateAppsNotification(Bundle data) {
-        if (MainApplication.getCurrentVersion(mContext) < Integer.parseInt(data.getString("app_version", "0"))) {
-            NotificationManager mNotificationManager =
-                    (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-
-            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
-                    .setSmallIcon(getDrawableIcon())
-                    .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), getDrawableLargeIcon()))
-                    .setAutoCancel(true);
-            NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
-            mBuilder.setContentTitle(data.getString(ARG_NOTIFICATION_UPDATE_APPS_TITLE));
-            mBuilder.setContentText(mContext.getString(R.string.msg_new_update));
-            mBuilder.setStyle(bigStyle);
-            mBuilder.setTicker(data.getString(ARG_NOTIFICATION_UPDATE_APPS_TITLE));
-
-            if (cacheManager.isAllowBell()) {
-                mBuilder.setSound(cacheManager.getSoundUri());
-                if (cacheManager.isVibrate()) {
-                    mBuilder.setVibrate(getVibratePattern());
-                }
-            }
-
-            Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
-            notificationIntent.setData(Uri.parse(EXTRA_PLAYSTORE_URL));
-
-            PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, 0);
-            mBuilder.setContentIntent(contentIntent);
-            Notification notif = mBuilder.build();
-            if (cacheManager.isVibrate() && cacheManager.isAllowBell())
-                notif.defaults |= Notification.DEFAULT_VIBRATE;
-            mNotificationManager.notify(TkpdState.GCMServiceState.GCM_UPDATE_NOTIFICATION, notif);
-
-            cacheManager.updateUpdateAppStatus(data);
-        }
     }
 }
