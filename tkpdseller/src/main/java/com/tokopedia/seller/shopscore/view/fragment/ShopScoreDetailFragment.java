@@ -17,7 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
@@ -149,73 +148,23 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
 
     @Override
     public void renderShopScoreState(ShopScoreDetailStateEnum shopScoreDetailStateEnum) {
-        GTMContainer gtmContainer = new GTMContainer(getActivity());
-        if (gtmContainer.getString(IS_NEW_GOLD_BADGE).equalsIgnoreCase(TRUE)) {
-            setStateAfterRuleChange(shopScoreDetailStateEnum);
-        } else {
-            setStateBeforeRuleChange(shopScoreDetailStateEnum);
-        }
-
-    }
-
-    private void setStateAfterRuleChange(ShopScoreDetailStateEnum shopScoreDetailStateEnum) {
-        String description;
         int icon;
         switch (shopScoreDetailStateEnum) {
             case GOLD_MERCHANT_QUALIFIED_BADGE:
-                description = getString(R.string.desc_shop_score_gold_merchant_qualified_badge_after_rule);
-                icon = R.drawable.ic_gm_badge_qualified;
-                break;
             case GOLD_MERCHANT_NOT_QUALIFIED_BADGE:
-                description = getString(R.string.desc_shop_score_gold_merchant_not_qualified_badge_after_rule);
-                icon = R.drawable.ic_gm_badge_not_qualified;
+                icon = R.drawable.ic_gm_badge_qualified;
                 break;
             case NOT_GOLD_MERCHANT_QUALIFIED_BADGE:
-                description = getString(R.string.desc_shop_score_not_gold_merchant_qualified_badge_after_rule);
-                icon = R.drawable.ic_gm_badge_qualified;
-                buttonGoToGmSubscribe.setVisibility(View.VISIBLE);
-                break;
             case NOT_GOLD_MERCHANT_NOT_QUALIFIED_BADGE:
-                description = getString(R.string.desc_shop_score_not_gold_merchant_not_qualified_badge_after_rule);
                 icon = R.drawable.ic_gm_badge_not_qualified;
                 buttonGoToGmSubscribe.setVisibility(View.VISIBLE);
                 break;
             default:
-                description = getString(R.string.desc_shop_score_gold_merchant_qualified_badge_after_rule);
                 icon = R.drawable.ic_gm_badge_not_qualified;
                 break;
         }
-        setShopScoreGoldBadgeState(description, icon);
-    }
+        setShopScoreGoldBadgeState(icon);
 
-    private void setStateBeforeRuleChange(ShopScoreDetailStateEnum shopScoreDetailStateEnum) {
-        String description;
-        int icon;
-        switch (shopScoreDetailStateEnum) {
-            case GOLD_MERCHANT_QUALIFIED_BADGE:
-                description = getString(R.string.desc_shop_score_gold_merchant_qualified_badge_before_rule);
-                icon = R.drawable.ic_gm_badge_qualified;
-                break;
-            case GOLD_MERCHANT_NOT_QUALIFIED_BADGE:
-                description = getString(R.string.desc_shop_score_gold_merchant_not_qualified_badge_before_rule);
-                icon = R.drawable.ic_gm_badge_not_qualified;
-                break;
-            case NOT_GOLD_MERCHANT_QUALIFIED_BADGE:
-                description = getString(R.string.desc_shop_score_not_gold_merchant_qualified_badge_before_rule);
-                icon = R.drawable.ic_gm_badge_qualified;
-                buttonGoToGmSubscribe.setVisibility(View.VISIBLE);
-                break;
-            case NOT_GOLD_MERCHANT_NOT_QUALIFIED_BADGE:
-                description = getString(R.string.desc_shop_score_not_gold_merchant_not_qualified_badge_before_rule);
-                icon = R.drawable.ic_gm_badge_not_qualified;
-                buttonGoToGmSubscribe.setVisibility(View.VISIBLE);
-                break;
-            default:
-                description = getString(R.string.desc_shop_score_gold_merchant_qualified_badge_before_rule);
-                icon = R.drawable.ic_gm_badge_not_qualified;
-                break;
-        }
-        setShopScoreGoldBadgeState(description, icon);
     }
 
     @Override
@@ -263,10 +212,8 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
         mainFrame.setLayoutParams(params);
     }
 
-    private void setShopScoreGoldBadgeState(String description, int icon) {
-        descriptionGoldBadge.setText(description);
+    private void setShopScoreGoldBadgeState(int icon) {
         imageViewGoldBadge.setImageDrawable(getResources().getDrawable(icon));
-
     }
 
     private String buildStringSummary(ShopScoreDetailSummaryViewModel viewModel) {
