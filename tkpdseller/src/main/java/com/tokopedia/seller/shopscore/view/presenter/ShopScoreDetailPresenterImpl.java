@@ -47,7 +47,6 @@ public class ShopScoreDetailPresenterImpl extends BaseDaggerPresenter<ShopScoreD
 
     private void renderState(ShopScoreDetailDomainModel domainModels) {
         ShopScoreDetailStateEnum shopScoreDetailStateEnum = ShopScoreDetailStateMapper.map(domainModels);
-        getView().renderShopScoreState(shopScoreDetailStateEnum);
     }
 
     private class GetShopScoreDetailSubscriber extends Subscriber<ShopScoreDetailDomainModel> {

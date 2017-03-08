@@ -123,6 +123,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:lineSpacingMultiplier="1.5"
+                        android:text="@string/description_shop_score_gold_badge_state"
                         android:textColor="@color/tkpd_grey_text" />
 
                     <TextView
