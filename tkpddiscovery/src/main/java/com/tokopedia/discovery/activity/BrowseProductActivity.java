@@ -515,10 +515,11 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         }
     }
 
-    private void resetBrowseProductActivityModel() {
+    public void resetBrowseProductActivityModel() {
         deleteFilterAndSortCache();
         browseProductActivityModel.setAdSrc(TopAdsApi.SRC_BROWSE_PRODUCT);
         browseProductActivityModel.alias = null;
+        browseProductActivityModel.setHotListBannerModel(null);
         browseProductActivityModel.removeBannerModel();
         browseProductActivityModel.setDepartmentId("");
     }
