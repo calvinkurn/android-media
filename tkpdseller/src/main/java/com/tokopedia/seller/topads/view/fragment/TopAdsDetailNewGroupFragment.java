@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.view.fragment;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.di.TopAdsDetailNewGroupDI;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddProductListActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailNewGroupView;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailGroupViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewGroupPresenter;
@@ -87,5 +89,12 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
         } else {
             super.hideLoading();
         }
+    }
+
+    @Override
+    public void goToGroupDetail(int groupId) {
+        Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, groupId);
+        startActivity(intent);
     }
 }

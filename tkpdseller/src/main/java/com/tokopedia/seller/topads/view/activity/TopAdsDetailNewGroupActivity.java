@@ -19,8 +19,6 @@ import com.tokopedia.seller.topads.view.fragment.TopAdsDetailNewGroupFragment;
 
 public class TopAdsDetailNewGroupActivity extends TActivity {
 
-    // TODO set result OK if edit/new group success
-
     public static void startNewGroup(Activity activity, int requestCode,
                                      String groupName){
         Intent intent = new Intent(activity, TopAdsDetailNewGroupActivity.class);
