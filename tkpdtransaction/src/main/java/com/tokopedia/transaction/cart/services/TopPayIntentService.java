@@ -3,6 +3,8 @@ package com.tokopedia.transaction.cart.services;
 import android.app.IntentService;
 import android.content.Intent;
 
+import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -153,6 +155,8 @@ public class TopPayIntentService extends IntentService {
         params.put("deposit_amt", checkoutData.getDepositAmount());
         params.put("partial_str", checkoutData.getPartialString());
         params.put("dropship_str", checkoutData.getDropShipString());
+        params.put("client_id", TrackingUtils.getClientID());
+
         if (checkoutData.getVoucherCode() != null) {
             params.put("voucher_code", checkoutData.getVoucherCode());
         }
