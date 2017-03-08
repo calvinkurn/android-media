@@ -1,6 +1,7 @@
 package com.tokopedia.digital.cart.listener;
 
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
+import com.tokopedia.digital.cart.model.VoucherDigital;
 
 /**
  * @author anggaprasetiyo on 2/27/17.
@@ -8,6 +9,8 @@ import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 
 public interface IDigitalCartView extends IBaseView {
     void renderCartDigitalInfoData(CartDigitalInfoData cartDigitalInfoData);
+
+    void renderVoucherInfoData(VoucherDigital voucherDigital);
 
     void renderLoadingGetCartInfo();
 
