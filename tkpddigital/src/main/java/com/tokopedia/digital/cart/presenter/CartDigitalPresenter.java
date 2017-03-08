@@ -13,6 +13,7 @@ import com.tokopedia.digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigi
 import com.tokopedia.digital.cart.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.cart.listener.IDigitalCartView;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
+import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.utils.DeviceUtil;
 
 import java.util.ArrayList;
@@ -102,7 +103,8 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 
                     @Override
                     public void onNext(String s) {
-
+                        VoucherDigital voucherDigital = new VoucherDigital();
+                        view.renderVoucherInfoData(voucherDigital);
                     }
                 });
     }
