@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:textColor="@color/tkpd_dark_green"
-            android:text="Lihat Semua"
+            android:text="Lihat Lainnya"
             android:textSize="13sp"/>
 
         <ImageView
@@ -53,6 +53,31 @@
             android:gravity="center_vertical"
             android:visibility="visible"
             android:src="@drawable/ic_expand_more_black_24dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/hide_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/tkpd_dark_green"
+            android:text="Sembunyikan Lainnya"
+            android:textSize="13sp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:gravity="center_vertical"
+            android:visibility="visible"
+            android:src="@drawable/ic_expand_less_grey_24dp"/>
 
     </LinearLayout>
 

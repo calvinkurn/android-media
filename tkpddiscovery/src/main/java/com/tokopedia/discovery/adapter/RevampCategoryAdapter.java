@@ -83,4 +83,9 @@ public class RevampCategoryAdapter extends
         categories.addAll(childs);
         notifyDataSetChanged();
     }
+
+    public void hideExpandable() {
+        categories.subList(6,categories.size()).clear();
+        notifyDataSetChanged();
+    }
 }

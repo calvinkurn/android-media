@@ -408,6 +408,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         @BindView(R2.id.expand_layout)
         LinearLayout expandLayout;
 
+        @BindView(R2.id.hide_layout)
+        LinearLayout hideLayout;
+
         private DefaultCategoryAdapter categoryAdapter;
 
         public DefaultCategoryHeaderViewHolder(View itemView) {
@@ -433,9 +436,19 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                                 .subList(6,categoryHeaderModel.categoryHeader.getChild().size()));
                         expandLayout.setVisibility(View.GONE);
                         categoryHeaderModel.isUsedUnactiveChildren = false;
+                        hideLayout.setVisibility(View.VISIBLE);
                     }
                 });
             }
+            hideLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    categoryAdapter.hideExpandable();
+                    expandLayout.setVisibility(View.VISIBLE);
+                    categoryHeaderModel.isUsedUnactiveChildren = true;
+                    hideLayout.setVisibility(View.GONE);
+                }
+            });
         }
 
         public interface CategoryHeaderListener {
@@ -458,6 +471,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
         @BindView(R2.id.expand_layout)
         LinearLayout expandLayout;
+
+        @BindView(R2.id.hide_layout)
+        LinearLayout hideLayout;
 
         @BindView(R2.id.recycler_view_revamp_categories)
         RecyclerView revampCategoriesRecyclerView;
@@ -488,9 +504,20 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                                 .subList(9,categoryHeaderModel.categoryHeader.getChild().size()));
                         expandLayout.setVisibility(View.GONE);
                         categoryHeaderModel.isUsedUnactiveChildren = false;
+                        hideLayout.setVisibility(View.VISIBLE);
+
                     }
                 });
             }
+            hideLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    categoryAdapter.hideExpandable();
+                    expandLayout.setVisibility(View.VISIBLE);
+                    categoryHeaderModel.isUsedUnactiveChildren = true;
+                    hideLayout.setVisibility(View.GONE);
+                }
+            });
         }
 
         public interface CategoryHeaderListener {
@@ -722,7 +749,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     public static class CategoryHeaderModel extends RecyclerViewItem {
 
         private Data categoryHeader;
-        private List<Child> activeChildren = new ArrayList<>();
+        private ArrayList<Child> activeChildren = new ArrayList<>();
         private boolean isUsedUnactiveChildren = false;
         private Context context;
         private int categoryWidth;
@@ -752,7 +779,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     public static class CategoryHeaderRevampModel extends RecyclerViewItem {
 
         private Data categoryHeader;
-        private List<Child> activeChildren = new ArrayList<>();
+        private ArrayList<Child> activeChildren = new ArrayList<>();
         private boolean isUsedUnactiveChildren = false;
         private Context context;
         private int categoryWidth;
