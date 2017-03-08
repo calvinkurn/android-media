@@ -1,36 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <TextView
-        style="@style/TextView.TopAds.Body.Small2"
+        style="@style/TextView.TopAds.Body.Gray"
         android:text="@string/label_top_ads_icon"/>
 
     <RadioGroup
         android:id="@+id/radio_group_icon"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="0dp">
 
-        <RadioButton
-            android:id="@+id/radio_button_icon_speaker"
-            style="@style/RadioButton"
-            android:checked="true"
-            android:drawableEnd="@drawable/ic_top_ads_sticker_speaker"
-            android:drawableRight="@drawable/ic_top_ads_sticker_speaker"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/radio_button_icon_speaker"
+                style="@style/TopAdsRadioButton"
+                android:checked="true"
+                android:drawableEnd="@drawable/ic_top_ads_sticker_speaker"
+                android:drawableRight="@drawable/ic_top_ads_sticker_speaker"/>
+            <ImageView
+                android:layout_width="@dimen/new_icon_size"
+                android:layout_height="@dimen/new_icon_size"
+                android:src="@drawable/ic_top_ads_sticker_speaker"
+                android:scaleType="centerInside"
+                android:layout_gravity="center_vertical"/>
+        </LinearLayout>
 
-        <RadioButton
-            android:id="@+id/radio_button_icon_thumbs_up"
-            style="@style/RadioButton"
-            android:drawableEnd="@drawable/ic_top_ads_sticker_thumbs_up"
-            android:drawableRight="@drawable/ic_top_ads_sticker_thumbs_up"/>
+        <!--<RadioButton-->
+            <!--android:id="@+id/radio_button_icon_thumbs_up"-->
+            <!--style="@style/TopAdsRadioButton"-->
+            <!--android:drawableEnd="@drawable/ic_top_ads_sticker_thumbs_up"-->
+            <!--android:drawableRight="@drawable/ic_top_ads_sticker_thumbs_up"/>-->
 
-        <RadioButton
-            android:id="@+id/radio_button_icon_fire"
-            style="@style/RadioButton"
-            android:drawableEnd="@drawable/ic_top_ads_sticker_fire"
-            android:drawableRight="@drawable/ic_top_ads_sticker_fire"/>
+        <!--<RadioButton-->
+            <!--android:id="@+id/radio_button_icon_fire"-->
+            <!--style="@style/TopAdsRadioButton"-->
+            <!--android:drawableEnd="@drawable/ic_top_ads_sticker_fire"-->
+            <!--android:drawableRight="@drawable/ic_top_ads_sticker_fire"/>-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/radio_button_icon_thumbs_up"
+                style="@style/TopAdsRadioButton"
+                android:checked="true"
+                android:drawableEnd="@drawable/ic_top_ads_sticker_thumbs_up"
+                android:drawableRight="@drawable/ic_top_ads_sticker_thumbs_up"/>
+            <ImageView
+                android:layout_width="@dimen/new_icon_size"
+                android:layout_height="@dimen/new_icon_size"
+                android:src="@drawable/ic_top_ads_sticker_thumbs_up"
+                android:scaleType="centerInside"
+                android:layout_gravity="center_vertical"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/radio_button_icon_fire"
+                style="@style/TopAdsRadioButton"
+                android:checked="true"
+                android:drawableEnd="@drawable/ic_top_ads_sticker_fire"
+                android:drawableRight="@drawable/ic_top_ads_sticker_fire"/>
+            <ImageView
+                android:layout_width="@dimen/new_icon_size"
+                android:layout_height="@dimen/new_icon_size"
+                android:src="@drawable/ic_top_ads_sticker_fire"
+                android:scaleType="centerInside"
+                android:layout_gravity="center_vertical"/>
+        </LinearLayout>
     </RadioGroup>
 </LinearLayout>

@@ -27,7 +27,7 @@
 
         <TextView
             android:id="@+id/status_active"
-            style="@style/TextView.TopAds.Body.Small2"
+            style="@style/TextView.TopAds.Body.Gray"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
             tools:text="@string/app_name"/>
@@ -35,7 +35,7 @@
 
     <TextView
         android:id="@+id/price_promo_per_click"
-        style="@style/TextView.TopAds.Body.Small2"
+        style="@style/TextView.TopAds.Body.Gray"
         android:layout_marginTop="@dimen/margin_vs"
         tools:text="@string/app_name"/>
 
@@ -60,7 +60,7 @@
 
     <TextView
         android:id="@+id/group_name"
-        style="@style/TextView.TopAds.Body.Small2"
+        style="@style/TextView.TopAds.Body.Gray"
         android:layout_marginTop="@dimen/margin_vs"
         tools:text="@string/app_name"/>
 
@@ -84,25 +84,25 @@
             android:orientation="horizontal">
 
             <TextView
-                style="@style/TextView.TopAds.Body.Small2"
+                style="@style/TextView.TopAds.Body.Gray"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:text="@string/label_top_ads_daily_spend"/>
 
             <TextView
                 android:id="@+id/text_view_daily_spent"
-                style="@style/TextView.TopAds.Body.Small3"
+                style="@style/TextView.TopAds.Body.Black.Bold"
                 tools:text="@string/app_name"/>
 
             <TextView
-                style="@style/TextView.TopAds.Body.Small1"
+                style="@style/TextView.TopAds.Body.Black"
                 android:layout_marginLeft="@dimen/padding_vs"
                 android:layout_marginRight="@dimen/padding_vs"
                 android:text="@string/top_ads_spent_separator"/>
 
             <TextView
                 android:id="@+id/text_view_daily_total"
-                style="@style/TextView.TopAds.Body.Small2"
+                style="@style/TextView.TopAds.Body.Gray"
                 tools:text="@string/app_name"/>
         </LinearLayout>
     </LinearLayout>

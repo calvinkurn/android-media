@@ -49,6 +49,7 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
     protected void initView(View view) {
         super.initView(view);
         nameEditText.setEnabled(false);
+        nameEditText.setFocusable(false);
         nameInputLayout.setHint(getString(R.string.label_top_ads_group_name));
         detailAd = new TopAdsDetailGroupViewModel();
 

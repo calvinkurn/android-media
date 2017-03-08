@@ -12,7 +12,7 @@
         android:layout_weight="1"
         android:paddingLeft="@dimen/top_ads_margin_layout"
         android:paddingRight="@dimen/top_ads_margin_layout"
-        android:paddingTop="@dimen/top_ads_margin_layout">
+        android:paddingTop="@dimen/top_ads_margin_layout_wide">
 
         <RadioButton
             android:id="@+id/radio_button_new_group"

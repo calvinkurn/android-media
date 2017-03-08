@@ -44,20 +44,27 @@
         <item name="android:textSize">@dimen/font_small</item>
     </style>
 
-    <style name="TextView.TopAds.Body.Small1">
-        <item name="android:textColor">@color/font_top_ads_black_70</item>
-    </style>
-
-    <style name="TextView.TopAds.Body.Small2">
+    <style name="TextView.TopAds.Body.Gray">
         <item name="android:textColor">@color/font_top_ads_black_54</item>
     </style>
 
-    <style name="TextView.TopAds.Body.Small3">
+    <style name="TextView.TopAds.Gray">
+        <item name="android:textColor">@color/font_top_ads_black_54</item>
+    </style>
+
+    <style name="TextView.TopAds.Body.Black">
         <item name="android:textColor">@color/font_top_ads_black_70</item>
+    </style>
+
+    <style name="TextView.TopAds.Body.Black.Bold">
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TextView.TopAds.Body.Small4">
+    <style name="TextView.TopAds.Body.Green">
+        <item name="android:textColor">@color/font_top_ads_green</item>
+    </style>
+
+    <style name="TextView.TopAds.Green">
         <item name="android:textColor">@color/font_top_ads_green</item>
     </style>
 
@@ -211,6 +218,9 @@
     <style name="TextInputLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/top_ads_textinput_margin</item> <!-- this is to cater the inner margin android textInputlayout have in default -->
+        <item name="android:layout_marginRight">@dimen/top_ads_textinput_margin</item>
+        <item name="android:layout_marginBottom">@dimen/top_ads_textinput_margin</item>
         <item name="android:theme">@style/TextInputLayoutColorLine</item>
     </style>
     
@@ -220,9 +230,14 @@
         <item name="colorControlHighlight">@color/font_top_ads_green</item>
     </style>
 
-    <style name="TextAppearence.App.TextInputLayout" parent="@android:style/TextAppearance">
+    <style name="TextAppearence.App.TextInputLayout" parent="TextAppearance.Design.Hint">
         <item name="android:textColor">@color/font_top_ads_black_54</item>
         <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="TextAppearence.App.TextInputLayout.Small">
+        <item name="android:textColor">@color/font_top_ads_black_54</item>
+        <item name="android:textSize">@dimen/font_small</item>
     </style>
 
     <style name="TopAdsCustomAutoCompleteTextView">
