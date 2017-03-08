@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.sellerapp.R;
@@ -19,7 +20,7 @@ public class ShopScoreWidget extends FrameLayout {
     private ShopScoreMainDetailView shopScoreMainDetailView;
     private TextView shopScoreTitleWidget;
     private ShopScoreWidgetCallback callback;
-    private TextView goToDetailTextView;
+    private LinearLayout goToDetailTextView;
 
     public ShopScoreWidget(Context context) {
         super(context);
@@ -57,7 +58,7 @@ public class ShopScoreWidget extends FrameLayout {
         shopScoreMainDetailView =
                 (ShopScoreMainDetailView) view.findViewById(R.id.shop_score_progress_bar_group);
         shopScoreTitleWidget = (TextView) view.findViewById(R.id.title_shop_score_widget);
-        goToDetailTextView = (TextView) view
+        goToDetailTextView = (LinearLayout) view
                 .findViewById(R.id.text_view_go_to_detail);
         goToDetailTextView.setOnClickListener(goToDetailListener());
     }
