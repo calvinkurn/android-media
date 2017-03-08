@@ -4,15 +4,17 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
+import com.tokopedia.core.network.exception.ResponseErrorException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,7 +27,6 @@ public class TkpdDigitalResponse {
 
     private static final String KEY_DATA = "data";
     private static final String KEY_ERROR = "errors";
-    private static final String KEY_TITLE = "title";
     private static final String DEFAULT_ERROR_MESSAGE_DATA_NULL = "Tidak ada data";
 
 
@@ -38,24 +39,24 @@ public class TkpdDigitalResponse {
 
     public static TkpdDigitalResponse factory(String strResponse) throws IOException {
         Log.d(TAG, strResponse);
-
         TkpdDigitalResponse tkpdDigitalResponse = new TkpdDigitalResponse();
         JsonElement jsonElement = new JsonParser().parse(strResponse);
         JsonObject jsonResponse = jsonElement.getAsJsonObject();
         String strData;
         if (!jsonResponse.has(KEY_DATA) || jsonResponse.get(KEY_DATA).isJsonNull()) {
-            String errorDefault = DEFAULT_ERROR_MESSAGE_DATA_NULL;
             if (jsonResponse.has(KEY_ERROR)) {
-                StringBuilder stringBuilder = new StringBuilder();
-                JsonArray jsonArrayError = jsonResponse.get(KEY_ERROR).getAsJsonArray();
-                for (JsonElement jsonElementError : jsonArrayError) {
-                    String messageError = jsonElementError.getAsJsonObject()
-                            .get(KEY_TITLE).getAsString();
-                    stringBuilder.append(messageError).append(", ");
+                try {
+                    DigitalErrorResponse digitalErrorResponse =
+                            new Gson().fromJson(strResponse, DigitalErrorResponse.class);
+                    throw new ResponseErrorException(
+                            digitalErrorResponse.getErrorMessageFormatted()
+                    );
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
+                    throw new ResponseErrorException();
                 }
-                errorDefault = stringBuilder.toString();
             }
-            throw new ResponseDataNullException(errorDefault);
+            throw new ResponseDataNullException(DEFAULT_ERROR_MESSAGE_DATA_NULL);
         } else if (jsonResponse.has(KEY_DATA) && jsonResponse.get(KEY_DATA).isJsonObject()) {
             strData = jsonResponse.get(KEY_DATA).getAsJsonObject().toString();
         } else if (jsonResponse.has(KEY_DATA) && jsonResponse.get(KEY_DATA).isJsonArray()) {
@@ -87,7 +88,7 @@ public class TkpdDigitalResponse {
         return strData;
     }
 
-    void setJsonElementData(JsonElement jsonElementData) {
+    private void setJsonElementData(JsonElement jsonElementData) {
         this.jsonElementData = jsonElementData;
     }
 
@@ -95,11 +96,11 @@ public class TkpdDigitalResponse {
         this.message = message;
     }
 
-    void setStrResponse(String strResponse) {
+    private void setStrResponse(String strResponse) {
         this.strResponse = strResponse;
     }
 
-    void setStrData(String strData) {
+    private void setStrData(String strData) {
         this.strData = strData;
     }
 
@@ -138,16 +139,23 @@ public class TkpdDigitalResponse {
      */
 
     public static class DigitalErrorResponse {
-        @SerializedName("error")
+        @SerializedName("errors")
         @Expose
-        private Error error;
+        private List<Error> errors = new ArrayList<>();
 
-        public Error getError() {
-            return error;
+        public List<Error> getErrors() {
+            return errors;
         }
 
-        public void setError(Error error) {
-            this.error = error;
+        public String getErrorMessageFormatted() {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0; i < errors.size(); i++) {
+                stringBuilder.append(errors.get(i).getTitle());
+                if (i < errors.size() - 1) {
+                    stringBuilder.append(", ");
+                }
+            }
+            return stringBuilder.toString().trim();
         }
 
         public class Error {
@@ -157,7 +165,7 @@ public class TkpdDigitalResponse {
             private String id;
             @SerializedName("status")
             @Expose
-            private int status;
+            private String status;
             @SerializedName("title")
             @Expose
             private String title;
@@ -166,26 +174,13 @@ public class TkpdDigitalResponse {
                 return id;
             }
 
-            public void setId(String id) {
-                this.id = id;
-            }
-
-            public int getStatus() {
+            public String getStatus() {
                 return status;
-            }
-
-            public void setStatus(int status) {
-                this.status = status;
             }
 
             public String getTitle() {
                 return title;
             }
-
-            public void setTitle(String title) {
-                this.title = title;
-            }
-
         }
     }
 }

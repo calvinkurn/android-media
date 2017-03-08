@@ -6,32 +6,17 @@ import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import java.io.IOException;
 
 /**
- * @author anggaprasetiyo on 3/4/17.
+ * @author anggaprasetiyo on 3/8/17.
  */
 
-public class ResponseHttpErrorException extends IOException {
-
-    private static final long serialVersionUID = -3848721958439593398L;
-
-    private String errorDesc;
+public class HttpErrorException extends IOException {
+    private static final long serialVersionUID = -1507431097408727789L;
+    private final int errorCode;
     private String messageError;
-    private int errorCode;
 
-    public ResponseHttpErrorException(int errorCode) {
+    public HttpErrorException(int errorCode) {
         super("Http Error : " + errorCode);
         this.errorCode = errorCode;
-        this.errorDesc = "Http Error : " + errorCode;
-        defineErrorDescByCode();
-    }
-
-    public ResponseHttpErrorException(int code, String message) {
-        super("Http Error : " + code);
-        this.errorCode = code;
-        if (message != null) this.messageError = String.valueOf(message);
-        else defineErrorDescByCode();
-    }
-
-    private void defineErrorDescByCode() {
         switch (errorCode) {
             case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
                 messageError = ErrorNetMessage.MESSAGE_ERROR_SERVER;
@@ -47,6 +32,7 @@ public class ResponseHttpErrorException extends IOException {
                 messageError = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
                 break;
         }
+
     }
 
     @Override
@@ -58,7 +44,4 @@ public class ResponseHttpErrorException extends IOException {
         return errorCode;
     }
 
-    public String getErrorDesc() {
-        return errorDesc;
-    }
 }
