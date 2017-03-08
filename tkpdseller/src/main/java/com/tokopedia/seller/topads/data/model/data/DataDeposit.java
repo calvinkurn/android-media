@@ -11,7 +11,7 @@ public class DataDeposit {
 
     @SerializedName("amount")
     @Expose
-    private Integer amount;
+    private float amount;
     @SerializedName("amount_fmt")
     @Expose
     private String amountFmt;
@@ -21,7 +21,7 @@ public class DataDeposit {
      * @return
      * The amount
      */
-    public Integer getAmount() {
+    public float getAmount() {
         return amount;
     }
 
@@ -30,7 +30,7 @@ public class DataDeposit {
      * @param amount
      * The amount
      */
-    public void setAmount(Integer amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 

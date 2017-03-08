@@ -89,7 +89,7 @@
 
     <string name="top_ads_statistic_info_default_value">-</string>
     <string name="top_ads_range_date_text">%1$s - %2$s</string>
-    <string name="top_ads_delete_ad_alert">Apakah anda yakin untuk menghapus produk ini ?</string>
+    <string name="top_ads_delete_ad_alert">Apakah anda yakin untuk menghapus produk ini?</string>
 
     <string name="title_action_on">On</string>
     <string name="title_action_off">Off</string>
