@@ -263,27 +263,28 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderLoadingAddToCart() {
-
+        pbMainLoading.setVisibility(View.VISIBLE);
+        mainContainer.setVisibility(View.GONE);
     }
 
     @Override
     public void renderErrorAddToCart(String message) {
-
+        closeViewWithMessageAlert(message);
     }
 
     @Override
     public void renderErrorHttpAddToCart(String message) {
-
+        closeViewWithMessageAlert(message);
     }
 
     @Override
     public void renderErrorNoConnectionAddToCart(String message) {
-
+        closeViewWithMessageAlert(message);
     }
 
     @Override
     public void renderErrorTimeoutConnectionAddToCart(String message) {
-
+        closeViewWithMessageAlert(message);
     }
 
     @Override
