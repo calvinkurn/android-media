@@ -5,6 +5,7 @@ import com.tokopedia.digital.cart.data.entity.response.Detail;
 import com.tokopedia.digital.cart.data.entity.response.MainInfo;
 import com.tokopedia.digital.cart.data.entity.response.RelationshipsCart;
 import com.tokopedia.digital.cart.data.entity.response.ResponseCartData;
+import com.tokopedia.digital.cart.data.entity.response.ResponseVoucherData;
 import com.tokopedia.digital.cart.model.AttributesDigital;
 import com.tokopedia.digital.cart.model.CartAdditionalInfo;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
@@ -13,6 +14,8 @@ import com.tokopedia.digital.cart.model.Relation;
 import com.tokopedia.digital.cart.model.RelationData;
 import com.tokopedia.digital.cart.model.Relationships;
 import com.tokopedia.digital.cart.model.UserInputPriceDigital;
+import com.tokopedia.digital.cart.model.VoucherAttributeDigital;
+import com.tokopedia.digital.cart.model.VoucherDigital;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,5 +103,30 @@ public class CartMapperData implements ICartMapperData {
         cartDigitalInfoData.setRelationships(relationships);
 
         return cartDigitalInfoData;
+    }
+
+    @Override
+    public VoucherDigital transformVoucherDigitalData(ResponseVoucherData responseVoucherData) {
+        VoucherDigital voucherDigital = new VoucherDigital();
+        voucherDigital.setId(responseVoucherData.getId());
+        voucherDigital.setType(responseVoucherData.getType());
+
+        RelationData relationDataCart = new RelationData();
+        relationDataCart.setId(responseVoucherData.getRelationships().getCart().getData().getId());
+        relationDataCart.setType(
+                responseVoucherData.getRelationships().getCart().getData().getType()
+        );
+
+        Relation relationCart = new Relation(relationDataCart);
+        voucherDigital.setCart(relationCart);
+
+        VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
+        voucherAttributeDigital.setMessage(responseVoucherData.getAttributes().getMessage());
+        voucherAttributeDigital.setUserId(responseVoucherData.getAttributes().getUserId());
+        voucherAttributeDigital.setVoucherCode(responseVoucherData.getAttributes().getVoucherCode());
+
+        voucherDigital.setAttributeVoucher(voucherAttributeDigital);
+
+        return voucherDigital;
     }
 }

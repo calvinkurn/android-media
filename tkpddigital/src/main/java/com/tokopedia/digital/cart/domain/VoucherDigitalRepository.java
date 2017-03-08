@@ -3,6 +3,10 @@ package com.tokopedia.digital.cart.domain;
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.digital.cart.data.entity.response.ResponseVoucherData;
+import com.tokopedia.digital.cart.data.mapper.CartMapperData;
+import com.tokopedia.digital.cart.data.mapper.ICartMapperData;
+import com.tokopedia.digital.cart.model.VoucherDigital;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -15,18 +19,26 @@ import rx.functions.Func1;
 public class VoucherDigitalRepository implements IVoucherDigitalRepository {
 
     private final DigitalEndpointService digitalEndpointService;
+    private final ICartMapperData cartMapperData;
 
     public VoucherDigitalRepository() {
         this.digitalEndpointService = new DigitalEndpointService();
+        this.cartMapperData = new CartMapperData();
     }
 
     @Override
-    public Observable<String> checkVoucher(TKPDMapParam<String, String> param) {
+    public Observable<VoucherDigital> checkVoucher(TKPDMapParam<String, String> param) {
         return digitalEndpointService.getApi().checkVoucher(param)
-                .map(new Func1<Response<TkpdDigitalResponse>, String>() {
+                .map(new Func1<Response<TkpdDigitalResponse>, VoucherDigital>() {
                     @Override
-                    public String call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
-                        return tkpdDigitalResponseResponse.body().getStrResponse();
+                    public VoucherDigital call(
+                            Response<TkpdDigitalResponse> tkpdDigitalResponseResponse
+                    ) {
+                        return cartMapperData.transformVoucherDigitalData(
+                                tkpdDigitalResponseResponse.body().convertDataObj(
+                                        ResponseVoucherData.class
+                                )
+                        );
                     }
                 });
     }

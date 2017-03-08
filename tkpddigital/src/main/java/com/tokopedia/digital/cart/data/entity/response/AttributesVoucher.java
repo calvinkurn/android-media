@@ -26,6 +26,9 @@ public class AttributesVoucher {
     @SerializedName("cashback_amount_plain")
     @Expose
     private int cashbackAmountPlain;
+    @SerializedName("message")
+    @Expose
+    private String message;
 
     public String getVoucherCode() {
         return voucherCode;
@@ -49,5 +52,9 @@ public class AttributesVoucher {
 
     public int getCashbackAmountPlain() {
         return cashbackAmountPlain;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

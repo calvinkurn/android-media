@@ -244,10 +244,9 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderVoucherInfoData(VoucherDigital voucherDigital) {
-        //if berhasil dapet voucher
-        voucherCartHolderView.setUsedVoucher("MULAIHEMAT","Mulai Hemat 2017");
-        //else
-        //voucherCartHolderView.setErrorVoucher("Error message");
+        voucherCartHolderView.setUsedVoucher(
+                voucherDigital.getAttributeVoucher().getVoucherCode(),
+                voucherDigital.getAttributeVoucher().getMessage());
     }
 
     @Override

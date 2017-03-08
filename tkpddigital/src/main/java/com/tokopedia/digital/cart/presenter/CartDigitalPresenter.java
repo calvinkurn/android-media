@@ -89,7 +89,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         param.put("voucher_code", voucherCode);
         param.put("category_id", view.getDigitalCategoryId());
         cartDigitalInteractor.checkVoucher(view.getGeneratedAuthParamNetwork(param),
-                new Subscriber<String>() {
+                new Subscriber<VoucherDigital>() {
                     @Override
                     public void onCompleted() {
 
@@ -102,8 +102,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                     }
 
                     @Override
-                    public void onNext(String s) {
-                        VoucherDigital voucherDigital = new VoucherDigital();
+                    public void onNext(VoucherDigital voucherDigital) {
                         view.renderVoucherInfoData(voucherDigital);
                     }
                 });

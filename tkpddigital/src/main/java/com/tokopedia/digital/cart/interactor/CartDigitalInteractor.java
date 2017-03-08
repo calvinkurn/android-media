@@ -7,6 +7,7 @@ import com.tokopedia.digital.cart.domain.ICartDigitalRepository;
 import com.tokopedia.digital.cart.domain.IVoucherDigitalRepository;
 import com.tokopedia.digital.cart.domain.VoucherDigitalRepository;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
+import com.tokopedia.digital.cart.model.VoucherDigital;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -48,7 +49,7 @@ public class CartDigitalInteractor implements ICartDigitalInteractor {
 
     @Override
     public void checkVoucher(
-            TKPDMapParam<String, String> paramNetwork, Subscriber<String> subscriber
+            TKPDMapParam<String, String> paramNetwork, Subscriber<VoucherDigital> subscriber
     ) {
         voucherDigitalRepository.checkVoucher(paramNetwork)
                 .subscribeOn(Schedulers.newThread())
