@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 
 /**
  * @author rebeccafranks
- * @since 15/10/24.Square
+ * @since 15/10/24.
  */
 public class RestServiceTestHelper {
 
