@@ -26,6 +26,7 @@ public class DigitalHmacAuthInterceptor extends AuthHmacInterceptor {
     @Override
     protected void throwChainProcessCauseHttpError(Response response) throws IOException {
         String errorBody = response.body().string();
+        response.body().close();
         Log.d(TAG, "Error body response : " + errorBody);
         if (!errorBody.isEmpty()) {
             try {
