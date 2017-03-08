@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -64,6 +65,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     InputPriceHolderView inputPriceHolderView;
 
     private SessionHandler sessionHandler;
+    private ActionListener actionListener;
+    private TkpdProgressDialog progressDialogNormal;
 
     public static Fragment newInstance(Parcelable passData) {
         CartDigitalFragment cartDigitalFragment = new CartDigitalFragment();
@@ -83,7 +86,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         inputPriceHolderView.setActionListener(this);
         voucherCartHolderView.setActionListener(this);
         sessionHandler = new SessionHandler(getActivity());
-        //   presenter.processGetCartData(passData.getCategoryId());
+        progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
+        progressDialogNormal.setCancelable(false);
         presenter.processAddToCart(passData);
     }
 
@@ -109,7 +113,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     protected void initialListener(Activity activity) {
-
+        actionListener = (ActionListener) activity;
     }
 
     @Override
@@ -155,12 +159,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void showProgressLoading() {
-
+        progressDialogNormal.showDialog();
     }
 
     @Override
     public void hideProgressLoading() {
-
+        progressDialogNormal.dismiss();
     }
 
     @Override
@@ -210,10 +214,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     public void renderCartDigitalInfoData(CartDigitalInfoData cartDigitalInfoData) {
         pbMainLoading.setVisibility(View.GONE);
         mainContainer.setVisibility(View.VISIBLE);
+        actionListener.setTitleCart(cartDigitalInfoData.getTitle());
         itemCartHolderView.renderAdditionalInfo(cartDigitalInfoData.getAdditionalInfos());
         itemCartHolderView.renderDataMainInfo(cartDigitalInfoData.getMainInfo());
-        itemCartHolderView.setCategoryName("");
-        itemCartHolderView.setOperatorName("");
+        itemCartHolderView.setCategoryName(cartDigitalInfoData.getAttributes().getCategoryName());
+        itemCartHolderView.setOperatorName(cartDigitalInfoData.getAttributes().getOperatorName());
         itemCartHolderView.setImageItemCart("");
         renderDataInputPrice(String.valueOf(cartDigitalInfoData.getAttributes().getPricePlain()),
                 cartDigitalInfoData.getAttributes().getUserInputPrice());
@@ -222,6 +227,26 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 cartDigitalInfoData.getAttributes().getPrice(),
                 cartDigitalInfoData.getAttributes().getPrice()
         );
+    }
+
+    @Override
+    public void renderErrorGetCartData(String message) {
+
+    }
+
+    @Override
+    public void renderErrorHttpGetCartData(String message) {
+
+    }
+
+    @Override
+    public void renderErrorNoConnectionGetCartData(String message) {
+
+    }
+
+    @Override
+    public void renderErrorTimeoutConnectionGetCartData(String message) {
+
     }
 
     private void renderDataInputPrice(String total, UserInputPriceDigital userInputPriceDigital) {
@@ -234,6 +259,31 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         } else {
             inputPriceHolderView.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void renderLoadingAddToCart() {
+
+    }
+
+    @Override
+    public void renderErrorAddToCart(String message) {
+
+    }
+
+    @Override
+    public void renderErrorHttpAddToCart(String message) {
+
+    }
+
+    @Override
+    public void renderErrorNoConnectionAddToCart(String message) {
+
+    }
+
+    @Override
+    public void renderErrorTimeoutConnectionAddToCart(String message) {
+
     }
 
     @Override
@@ -286,12 +336,39 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderErrorCheckVoucher(String message) {
+        voucherCartHolderView.setErrorVoucher(message);
+    }
 
+    @Override
+    public void renderErrorHttpCheckVoucher(String message) {
+        showToastMessage(message);
+    }
+
+    @Override
+    public void renderErrorNoConnectionCheckVoucher(String message) {
+        NetworkErrorHelper.showDialogCustomMSG(getActivity(),
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.processCheckVoucher();
+                    }
+                }, message
+        );
+    }
+
+    @Override
+    public void renderErrorTimeoutConnectionCheckVoucher(String message) {
+        showToastMessage(message);
     }
 
     @Override
     public String getDigitalCategoryId() {
         return passData.getCategoryId();
+    }
+
+    @Override
+    public String getVoucherCode() {
+        return voucherCartHolderView.getVoucherCode();
     }
 
     @Override
@@ -305,7 +382,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
-    public void onVoucherCheckButtonClicked(String voucherCode) {
-        presenter.processCheckVoucher(voucherCode);
+    public void onVoucherCheckButtonClicked() {
+        presenter.processCheckVoucher();
+    }
+
+    public interface ActionListener {
+        void setTitleCart(String title);
     }
 }
