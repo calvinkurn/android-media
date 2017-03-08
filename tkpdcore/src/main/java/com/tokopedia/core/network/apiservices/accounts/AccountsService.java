@@ -53,6 +53,8 @@ public class AccountsService {
         String authKey = bundle.getString(AUTH_KEY, "");
         String webService = bundle.getString(WEB_SERVICE, ACCOUNTS);
         boolean isUsingHMAC = bundle.getBoolean(USING_HMAC, false);
+        boolean isUsingBothAuthorization = bundle.getBoolean(USING_BOTH_AUTHORIZATION, false);
+
 
         String status = TrackingUtils.eventHTTP();
 
@@ -65,12 +67,8 @@ public class AccountsService {
             client.protocols(Collections.singletonList(Protocol.HTTP_1_1));
         }
         Interceptor authInterceptor;
-        authInterceptor = new AccountsInterceptor(authKey, isUsingHMAC);
+        authInterceptor = new AccountsInterceptor(authKey, isUsingHMAC, isUsingBothAuthorization);
         client.interceptors().add(authInterceptor);
-        if (bundle.getBoolean(USING_BOTH_AUTHORIZATION,false)) {
-            AuthorizationInterceptor authorizationInterceptor = new AuthorizationInterceptor();
-            client.interceptors().add(authorizationInterceptor);
-        }
 
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);

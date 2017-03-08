@@ -9,15 +9,15 @@ import com.google.gson.annotations.SerializedName;
 
 public class VerifyPhoneNumberData {
 
-    @SerializedName("is_verified")
+    @SerializedName("is_success")
     @Expose
-    boolean isVerified;
+    int isSuccess;
 
-    public boolean isVerified() {
-        return isVerified;
+    public boolean isSuccess() {
+        return isSuccess == 1;
     }
 
-    public void setVerified(boolean verified) {
-        isVerified = verified;
+    public void setSuccess(int success) {
+        isSuccess = success;
     }
 }

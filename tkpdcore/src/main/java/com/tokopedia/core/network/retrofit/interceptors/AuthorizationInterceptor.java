@@ -12,14 +12,14 @@ import java.util.Map;
 
 public class AuthorizationInterceptor extends TkpdAuthInterceptor {
     private static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ";
-    private static final String CONTENT_TYPE_JSON_UT = "application/json; charset=UTF-8";
+    private static final String CONTENT_TYPE = "application/x-www-form-urlencoded;charset=UTF-8";
     private static final String HEADER_AUTHORIZATION = "Authorization";
     private static final String X_TKPD_HEADER_AUTHORIZATION = "X-TKPD-Authorization";
     private static final String BEARER = "Bearer ";
 
     @Override
     protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey) {
-        Map<String, String> headerMap = AuthUtil.getDefaultHeaderMap(path, strParam, method, CONTENT_TYPE_JSON_UT, authKey, DATE_FORMAT);
+        Map<String, String> headerMap = AuthUtil.getDefaultHeaderMap(path, strParam, method, CONTENT_TYPE, authKey, DATE_FORMAT);
 
         String xTkpdAuthorization = headerMap.get(HEADER_AUTHORIZATION);
         headerMap.put(X_TKPD_HEADER_AUTHORIZATION, xTkpdAuthorization);

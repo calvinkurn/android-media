@@ -109,7 +109,7 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
                 @Override
                 public void onNext(VerifyPhoneNumberModel verifyPhoneNumberModel) {
                     if (verifyPhoneNumberModel.isSuccess() &&
-                            verifyPhoneNumberModel.getVerifyPhoneNumberData().isVerified()
+                            verifyPhoneNumberModel.getVerifyPhoneNumberData().isSuccess()
                             && verifyPhoneNumberModel.getErrorMessage() == null
                             && verifyPhoneNumberModel.getStatusMessage() != null) {
                         viewListener.onSuccessVerifyPhoneNumber();
