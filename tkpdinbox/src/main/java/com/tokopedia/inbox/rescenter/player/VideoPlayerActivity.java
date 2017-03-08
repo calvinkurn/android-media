@@ -4,15 +4,16 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.MediaController;
 import android.widget.Toast;
-import android.widget.VideoView;
 
-import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.inbox.rescenter.player.customview.CustomVideoView;
 import com.tokopedia.inbox.rescenter.player.listener.VideoPlayerView;
 import com.tokopedia.inbox.rescenter.player.presenter.VideoPlayerImpl;
 import com.tokopedia.inbox.rescenter.player.presenter.VideoPlayerPresenter;
@@ -24,14 +25,14 @@ import butterknife.BindView;
  */
 
 public class VideoPlayerActivity extends BasePresenterActivity<VideoPlayerPresenter>
-        implements VideoPlayerView {
+        implements VideoPlayerView, MediaPlayer.OnPreparedListener {
 
     public static final String PARAMS_URL_VIDEO = "url_video";
 
     private Uri videoUri;
 
     @BindView(R2.id.myVideo)
-    VideoView videoView;
+    CustomVideoView videoView;
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -79,7 +80,7 @@ public class VideoPlayerActivity extends BasePresenterActivity<VideoPlayerPresen
                 }
             }
         });
-        videoView.start();
+        videoView.setOnPreparedListener(this);
     }
 
     private Context getContext() {
@@ -105,4 +106,38 @@ public class VideoPlayerActivity extends BasePresenterActivity<VideoPlayerPresen
     public String getScreenName() {
         return AppScreen.SCREEN_VIDEO_PLAYER;
     }
+
+    @Override
+    public void onPrepared(MediaPlayer mediaPlayer) {
+        resizeVideo(mediaPlayer.getVideoWidth(), mediaPlayer.getVideoHeight());
+        mediaPlayer.start();
+    }
+
+    private void resizeVideo(int mVideoWidth, int mVideoHeight) {
+        int videoWidth = mVideoWidth;
+        int videoHeight = mVideoHeight;
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+
+        float heightRatio = (float) videoHeight
+                / (float) displaymetrics.widthPixels;
+        float widthRatio = (float) videoWidth
+                / (float) displaymetrics.heightPixels;
+
+        if (videoWidth > videoHeight) {
+            Log.d("hangnadi1", "w:" + videoWidth + " > h: " + videoHeight);
+            videoWidth = (int) Math.ceil((float) videoWidth * widthRatio);
+            videoHeight = (int) Math.ceil((float) videoHeight * widthRatio);
+            Log.d("hangnadi2", "w:" + videoWidth + " > h: " + videoHeight);
+        } else {
+            Log.d("hangnadi3", "w:" + videoWidth + " < h: " + videoHeight);
+            videoWidth = (int) Math.ceil((float) videoWidth * heightRatio);
+            videoHeight = (int) Math.ceil((float) videoHeight * heightRatio);
+            Log.d("hangnadi4", "w:" + videoWidth + " > h: " + videoHeight);
+        }
+
+        videoView.setSize(videoWidth, videoHeight);
+        videoView.getHolder().setFixedSize(videoWidth, videoHeight);
+    }
+
 }
