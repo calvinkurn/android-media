@@ -25,6 +25,7 @@ import java.util.List;
 public class ProductFeedViewModel {
     private List<RecyclerViewItem> result;
     private PagingHandler.PagingHandlerModel pagingHandlerModel;
+    private List<RecyclerViewItem> data;
 
     public ProductFeedViewModel(DataFeed productFeed) {
         result = new ArrayList<>();
@@ -52,10 +53,16 @@ public class ProductFeedViewModel {
 
             if (dataFeed.getTopAds() != null
                     && !dataFeed.getTopAds().isEmpty() && dataFeed.getTopAds().size() > 0) {
+                if (dataFeed.getTopAds().size() <= 2) {
+                    result.add(convertTopAdsDomainToViewModel(prepareTopAdsTop(dataFeed.getTopAds())));
+                    result.addAll(getProductFeedItemsListFromFeed(dataFeed.getFeed().getProducts()));
 
-                result.add(convertTopAdsDomainToViewModel(prepareTopAdsTop(dataFeed.getTopAds())));
-                result.addAll(getProductFeedItemsListFromFeed(dataFeed.getFeed().getProducts()));
-                result.add(convertTopAdsDomainToViewModel(prepareTopAdsBottom(dataFeed.getTopAds())));
+                } else {
+                    result.add(convertTopAdsDomainToViewModel(prepareTopAdsTop(dataFeed.getTopAds())));
+                    result.addAll(getProductFeedItemsListFromFeed(dataFeed.getFeed().getProducts()));
+                    result.add(convertTopAdsDomainToViewModel(prepareTopAdsBottom(dataFeed.getTopAds())));
+                }
+
             } else {
                 result.addAll(getProductFeedItemsListFromFeed(dataFeed.getFeed().getProducts()));
             }
@@ -227,4 +234,7 @@ public class ProductFeedViewModel {
         return pager;
     }
 
+    public void setData(List<RecyclerViewItem> data) {
+        this.data = data;
+    }
 }

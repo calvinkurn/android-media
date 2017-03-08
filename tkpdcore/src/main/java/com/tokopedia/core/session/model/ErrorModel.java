@@ -15,7 +15,7 @@ public class ErrorModel implements Parcelable{
     @Expose
     private String error;
 
-    @SerializedName("errorDescription")
+    @SerializedName("error_description")
     @Expose
     private String errorDescription;
 
