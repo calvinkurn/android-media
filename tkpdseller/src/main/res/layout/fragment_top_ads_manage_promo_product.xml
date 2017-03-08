@@ -2,9 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@color/white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
         android:padding="18dp"
         android:layout_alignParentTop="true"
         android:layout_above="@+id/layout_top_ads_next_bottom"
@@ -21,7 +23,7 @@
             <include layout="@layout/include_top_ads_radio_empty_group_option" />
         </com.tokopedia.seller.topads.view.widget.TopAdsCustomRadioGroup>
 
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
     <include android:id="@+id/layout_top_ads_next_bottom" layout="@layout/include_top_ads_button_next_bottom" />
 

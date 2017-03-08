@@ -218,16 +218,22 @@
     <style name="TextInputLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">@dimen/top_ads_textinput_margin</item> <!-- this is to cater the inner margin android textInputlayout have in default -->
-        <item name="android:layout_marginRight">@dimen/top_ads_textinput_margin</item>
-        <item name="android:layout_marginBottom">@dimen/top_ads_textinput_margin</item>
+        <item name="android:layout_marginLeft">@dimen/top_ads_textinput_margin_offset</item> <!-- this is to cater the inner margin android textInputlayout have in default -->
+        <item name="android:layout_marginRight">@dimen/top_ads_textinput_margin_offset</item>
+        <item name="android:layout_marginBottom">@dimen/top_ads_textinput_margin_offset</item>
         <item name="android:theme">@style/TextInputLayoutColorLine</item>
     </style>
     
     <style name="TextInputLayoutColorLine">
-        <item name="colorControlNormal">@color/font_top_ads_black_54</item>
+        <item name="colorControlNormal">@color/colorGray</item>
         <item name="colorControlActivated">@color/font_top_ads_green</item>
         <item name="colorControlHighlight">@color/font_top_ads_green</item>
+    </style>
+
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/tkpd_main_green</item>
+        <item name="android:textColorPrimary">@color/colorBlack</item>
+        <item name="android:background">@color/white</item>
     </style>
 
     <style name="TextAppearence.App.TextInputLayout" parent="TextAppearance.Design.Hint">
