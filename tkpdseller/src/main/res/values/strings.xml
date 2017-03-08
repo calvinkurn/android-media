@@ -121,7 +121,8 @@
 
     <!-- Top Ads Edit Promo -->
     <string name="label_top_ads_add_product">Tambah Produk</string>
-    <string name="label_top_ads_total_selected_product">%1$d / 50 Terpilih</string>
+    <string name="label_top_ads_total_selected_product">%02d / 50 Terpilih</string>
+    <string name="label_top_ads_total_selected_product_zero">%1$d / 50 Terpilih</string>
     <string name="label_top_ads_max_price_hint">Biaya Maks (Rp)</string>
     <string name="label_top_ads_max_price_description">Sesuaikan biaya anggaran promo anda. Rekomendasi biaya: Rp 50 sampai Rp 200 per klik</string>
     <string name="label_top_ads_icon">Icon TopAds</string>

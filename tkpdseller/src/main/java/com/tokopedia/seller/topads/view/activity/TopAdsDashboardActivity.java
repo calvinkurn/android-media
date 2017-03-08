@@ -109,10 +109,16 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
         fabSpeedDial.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TopAdsDashboardActivity.this, TopAdsGroupNewPromoActivity.class);
-                dashboardProductFragment.startActivityForResult(intent, TopAdsDashboardProductFragment.REQUEST_CODE_AD_STATUS);
+                if(getCurrentFragment()!= null && getCurrentFragment() instanceof TopAdsDashboardProductFragment){
+                    Intent intent = new Intent(TopAdsDashboardActivity.this, TopAdsGroupNewPromoActivity.class);
+                    getCurrentFragment().startActivityForResult(intent, TopAdsDashboardProductFragment.REQUEST_CODE_AD_STATUS);
+                }
             }
         });
+    }
+
+    Fragment getCurrentFragment() {
+        return (Fragment) viewPager.getAdapter().instantiateItem(viewPager,viewPager.getCurrentItem());
     }
 
     @Override

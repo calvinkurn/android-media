@@ -231,7 +231,8 @@
         <item name="android:drawableRight">@drawable/ic_close_green_14x14</item>
         <item name="android:textColorHighlight">@color/font_top_ads_green</item>
         <item name="android:completionThreshold">1</item>
-        <item name="android:textColor">@color/font_top_ads_black_70</item>
+        <item name="android:textColor">@drawable/color_state_topads_disable_text</item>
+        <item name="android:inputType">textNoSuggestions</item>
     </style>
 
     <style name="TopAdsCustomRadioGroup">
