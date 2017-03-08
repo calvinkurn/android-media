@@ -28,26 +28,6 @@ public class CartDigitalInfoData {
 
     private Relationships relationships;
 
-    private String operatorName;
-
-    private String categoryName;
-
-    public String getOperatorName() {
-        return operatorName;
-    }
-
-    public void setOperatorName(String operatorName) {
-        this.operatorName = operatorName;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
-
     public String getType() {
         return type;
     }

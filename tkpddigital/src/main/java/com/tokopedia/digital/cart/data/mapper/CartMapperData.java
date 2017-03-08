@@ -16,6 +16,7 @@ import com.tokopedia.digital.cart.model.Relationships;
 import com.tokopedia.digital.cart.model.UserInputPriceDigital;
 import com.tokopedia.digital.cart.model.VoucherAttributeDigital;
 import com.tokopedia.digital.cart.model.VoucherDigital;
+import com.tokopedia.digital.exception.MapperDataException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,106 +28,119 @@ import java.util.List;
 public class CartMapperData implements ICartMapperData {
     @Override
     public CartDigitalInfoData transformCartInfoData(ResponseCartData responseCartData) {
-        CartDigitalInfoData cartDigitalInfoData = new CartDigitalInfoData();
-        List<CartItemDigital> cartItemDigitalList = new ArrayList<>();
-        List<CartAdditionalInfo> cartAdditionalInfoList = new ArrayList<>();
-        for (MainInfo mainInfo : responseCartData.getAttributes().getMainInfo()) {
-            cartItemDigitalList.add(new CartItemDigital(mainInfo.getLabel(), mainInfo.getValue()));
-        }
-        for (AdditionalInfo additionalInfo : responseCartData.getAttributes().getAdditionalInfo()) {
-            List<CartItemDigital> cartItemDigitalList1 = new ArrayList<>();
-            for (Detail detail : additionalInfo.getDetail()) {
-                cartItemDigitalList1.add(new CartItemDigital(detail.getLabel(), detail.getValue()));
+        try {
+            CartDigitalInfoData cartDigitalInfoData = new CartDigitalInfoData();
+            List<CartItemDigital> cartItemDigitalList = new ArrayList<>();
+            List<CartAdditionalInfo> cartAdditionalInfoList = new ArrayList<>();
+            for (MainInfo mainInfo : responseCartData.getAttributes().getMainInfo()) {
+                cartItemDigitalList.add(
+                        new CartItemDigital(mainInfo.getLabel(), mainInfo.getValue())
+                );
             }
-            cartAdditionalInfoList.add(
-                    new CartAdditionalInfo(additionalInfo.getTitle(), cartItemDigitalList1)
+            for (AdditionalInfo additionalInfo : responseCartData.getAttributes().getAdditionalInfo()) {
+                List<CartItemDigital> cartItemDigitalList1 = new ArrayList<>();
+                for (Detail detail : additionalInfo.getDetail()) {
+                    cartItemDigitalList1.add(new CartItemDigital(detail.getLabel(), detail.getValue()));
+                }
+                cartAdditionalInfoList.add(
+                        new CartAdditionalInfo(additionalInfo.getTitle(), cartItemDigitalList1)
+                );
+            }
+            AttributesDigital attributesDigital = new AttributesDigital();
+            attributesDigital.setCategoryName(responseCartData.getAttributes().getCategoryName());
+            attributesDigital.setOperatorName(responseCartData.getAttributes().getOperatorName());
+            attributesDigital.setClientNumber(responseCartData.getAttributes().getClientNumber());
+            attributesDigital.setPrice(responseCartData.getAttributes().getPrice());
+            attributesDigital.setPricePlain(responseCartData.getAttributes().getPricePlain());
+            if (responseCartData.getAttributes().getUserInputPrice() != null) {
+                UserInputPriceDigital userInputPriceDigital = new UserInputPriceDigital();
+                userInputPriceDigital.setMaxPaymentPlain(
+                        responseCartData.getAttributes().getUserInputPrice().getMaxPaymentPlain()
+                );
+                userInputPriceDigital.setMinPaymentPlain(
+                        responseCartData.getAttributes().getUserInputPrice().getMinPaymentPlain()
+                );
+                userInputPriceDigital.setMinPayment(responseCartData.getAttributes()
+                        .getUserInputPrice().getMinPayment());
+                userInputPriceDigital.setMaxPayment(responseCartData.getAttributes()
+                        .getUserInputPrice().getMaxPayment());
+                attributesDigital.setUserInputPrice(userInputPriceDigital);
+            }
+            attributesDigital.setUserId(responseCartData.getAttributes().getUserId());
+
+            RelationshipsCart relationshipsResponse =
+                    responseCartData.getRelationships();
+
+
+            RelationData relationDataProduct =
+                    new RelationData();
+            relationDataProduct.setType(relationshipsResponse.getProduct().getData().getType());
+            relationDataProduct.setId(relationshipsResponse.getProduct().getData().getId());
+
+            RelationData relationDataCategory =
+                    new RelationData();
+            relationDataCategory.setType(relationshipsResponse.getCategory().getData().getType());
+            relationDataCategory.setId(relationshipsResponse.getCategory().getData().getId());
+
+
+            RelationData relationDataOperator =
+                    new RelationData();
+            relationDataOperator.setType(relationshipsResponse.getOperator().getData().getType());
+            relationDataOperator.setId(relationshipsResponse.getOperator().getData().getId());
+
+
+            Relationships relationships = new Relationships();
+            relationships.setRelationCategory(new Relation(relationDataCategory));
+            relationships.setRelationOperator(new Relation(relationDataOperator));
+            relationships.setRelationProduct(new Relation(relationDataProduct));
+
+
+            cartDigitalInfoData.setAdditionalInfos(cartAdditionalInfoList);
+            cartDigitalInfoData.setAttributes(attributesDigital);
+            cartDigitalInfoData.setId(responseCartData.getId());
+            cartDigitalInfoData.setMainInfo(cartItemDigitalList);
+            cartDigitalInfoData.setInstantCheckout(
+                    responseCartData.getAttributes().isInstantCheckout()
             );
+            cartDigitalInfoData.setOtpValid(responseCartData.getAttributes().isOtpValid());
+            cartDigitalInfoData.setSmsState(responseCartData.getAttributes().getSmsState());
+            cartDigitalInfoData.setTitle(responseCartData.getAttributes().getTitle());
+            cartDigitalInfoData.setType(responseCartData.getType());
+            cartDigitalInfoData.setRelationships(relationships);
+
+            return cartDigitalInfoData;
+        } catch (Exception e) {
+            throw new MapperDataException(e.getMessage(), e);
         }
-        AttributesDigital attributesDigital = new AttributesDigital();
-        attributesDigital.setClientNumber(responseCartData.getAttributes().getClientNumber());
-        attributesDigital.setPrice(responseCartData.getAttributes().getPrice());
-        attributesDigital.setPricePlain(responseCartData.getAttributes().getPricePlain());
-        if (responseCartData.getAttributes().getUserInputPrice() != null) {
-            UserInputPriceDigital userInputPriceDigital = new UserInputPriceDigital();
-            userInputPriceDigital.setMaxPaymentPlain(
-                    responseCartData.getAttributes().getUserInputPrice().getMaxPaymentPlain()
-            );
-            userInputPriceDigital.setMinPaymentPlain(
-                    responseCartData.getAttributes().getUserInputPrice().getMinPaymentPlain()
-            );
-            userInputPriceDigital.setMinPayment(responseCartData.getAttributes()
-                    .getUserInputPrice().getMinPayment());
-            userInputPriceDigital.setMaxPayment(responseCartData.getAttributes()
-                    .getUserInputPrice().getMaxPayment());
-            attributesDigital.setUserInputPrice(userInputPriceDigital);
-        }
-        attributesDigital.setUserId(responseCartData.getAttributes().getUserId());
-
-        RelationshipsCart relationshipsResponse =
-                responseCartData.getRelationships();
-
-
-        RelationData relationDataProduct =
-                new RelationData();
-        relationDataProduct.setType(relationshipsResponse.getProduct().getData().getType());
-        relationDataProduct.setId(relationshipsResponse.getProduct().getData().getId());
-
-        RelationData relationDataCategory =
-                new RelationData();
-        relationDataCategory.setType(relationshipsResponse.getCategory().getData().getType());
-        relationDataCategory.setId(relationshipsResponse.getCategory().getData().getId());
-
-
-        RelationData relationDataOperator =
-                new RelationData();
-        relationDataOperator.setType(relationshipsResponse.getOperator().getData().getType());
-        relationDataOperator.setId(relationshipsResponse.getOperator().getData().getId());
-
-
-        Relationships relationships = new Relationships();
-        relationships.setRelationCategory(new Relation(relationDataCategory));
-        relationships.setRelationOperator(new Relation(relationDataOperator));
-        relationships.setRelationProduct(new Relation(relationDataProduct));
-
-
-        cartDigitalInfoData.setAdditionalInfos(cartAdditionalInfoList);
-        cartDigitalInfoData.setAttributes(attributesDigital);
-        cartDigitalInfoData.setId(responseCartData.getId());
-        cartDigitalInfoData.setMainInfo(cartItemDigitalList);
-        cartDigitalInfoData.setInstantCheckout(
-                responseCartData.getAttributes().isInstantCheckout()
-        );
-        cartDigitalInfoData.setOtpValid(responseCartData.getAttributes().isOtpValid());
-        cartDigitalInfoData.setSmsState(responseCartData.getAttributes().getSmsState());
-        cartDigitalInfoData.setTitle(responseCartData.getAttributes().getTitle());
-        cartDigitalInfoData.setType(responseCartData.getType());
-        cartDigitalInfoData.setRelationships(relationships);
-
-        return cartDigitalInfoData;
     }
 
     @Override
     public VoucherDigital transformVoucherDigitalData(ResponseVoucherData responseVoucherData) {
-        VoucherDigital voucherDigital = new VoucherDigital();
-        voucherDigital.setId(responseVoucherData.getId());
-        voucherDigital.setType(responseVoucherData.getType());
+        try {
+            VoucherDigital voucherDigital = new VoucherDigital();
 
-        RelationData relationDataCart = new RelationData();
-        relationDataCart.setId(responseVoucherData.getRelationships().getCart().getData().getId());
-        relationDataCart.setType(
-                responseVoucherData.getRelationships().getCart().getData().getType()
-        );
+            voucherDigital.setId(responseVoucherData.getId());
+            voucherDigital.setType(responseVoucherData.getType());
 
-        Relation relationCart = new Relation(relationDataCart);
-        voucherDigital.setCart(relationCart);
+            RelationData relationDataCart = new RelationData();
+            relationDataCart.setId(responseVoucherData.getRelationships().getCart().getData().getId());
+            relationDataCart.setType(
+                    responseVoucherData.getRelationships().getCart().getData().getType()
+            );
 
-        VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
-        voucherAttributeDigital.setMessage(responseVoucherData.getAttributes().getMessage());
-        voucherAttributeDigital.setUserId(responseVoucherData.getAttributes().getUserId());
-        voucherAttributeDigital.setVoucherCode(responseVoucherData.getAttributes().getVoucherCode());
+            Relation relationCart = new Relation(relationDataCart);
+            voucherDigital.setCart(relationCart);
 
-        voucherDigital.setAttributeVoucher(voucherAttributeDigital);
+            VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
+            voucherAttributeDigital.setMessage(responseVoucherData.getAttributes().getMessage());
+            voucherAttributeDigital.setUserId(responseVoucherData.getAttributes().getUserId());
+            voucherAttributeDigital.setVoucherCode(responseVoucherData.getAttributes().getVoucherCode());
 
-        return voucherDigital;
+            voucherDigital.setAttributeVoucher(voucherAttributeDigital);
+
+            return voucherDigital;
+        } catch (Exception e) {
+            throw new MapperDataException(e.getMessage(), e);
+        }
     }
 }

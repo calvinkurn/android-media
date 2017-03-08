@@ -25,6 +25,15 @@ public class AttributesCart {
     @SerializedName("title")
     @Expose
     private String title;
+    @SerializedName("category_name")
+    @Expose
+    private String categoryName;
+    @SerializedName("operator_name")
+    @Expose
+    private String operatorName;
+    @SerializedName("icon")
+    @Expose
+    private String icon;
     @SerializedName("price_plain")
     @Expose
     private long pricePlain;
@@ -141,6 +150,18 @@ public class AttributesCart {
 
     public void setAdditionalInfo(List<AdditionalInfo> additionalInfo) {
         this.additionalInfo = additionalInfo;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public String getOperatorName() {
+        return operatorName;
+    }
+
+    public String getIcon() {
+        return icon;
     }
 
     @Override

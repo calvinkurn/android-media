@@ -95,8 +95,7 @@ public class VoucherCartHolderView extends RelativeLayout {
             public void onClick(View v) {
                 if (!isEditTextVoucherEmpty()) {
                     if (actionListener != null)
-                        actionListener.onVoucherCheckButtonClicked(
-                                editTextVoucher.getText().toString().trim());
+                        actionListener.onVoucherCheckButtonClicked();
                     else throw new IllegalArgumentException("Action Listener null coy!!");
                 } else {
                     errorVoucher.setVisibility(VISIBLE);
@@ -137,6 +136,6 @@ public class VoucherCartHolderView extends RelativeLayout {
     }
 
     public interface ActionListener {
-        void onVoucherCheckButtonClicked(String voucherCode);
+        void onVoucherCheckButtonClicked();
     }
 }

@@ -12,6 +12,10 @@ public class AttributesDigital {
 
     private String price;
 
+    private String categoryName;
+
+    private String operatorName;
+
     private long pricePlain;
 
     private UserInputPriceDigital userInputPrice;
@@ -54,5 +58,21 @@ public class AttributesDigital {
 
     public void setUserInputPrice(UserInputPriceDigital userInputPrice) {
         this.userInputPrice = userInputPrice;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public String getOperatorName() {
+        return operatorName;
+    }
+
+    public void setOperatorName(String operatorName) {
+        this.operatorName = operatorName;
     }
 }

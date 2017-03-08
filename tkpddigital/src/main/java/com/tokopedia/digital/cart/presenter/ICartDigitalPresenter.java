@@ -12,5 +12,5 @@ public interface ICartDigitalPresenter {
 
     void processAddToCart(DigitalCheckoutPassData passData);
 
-    void processCheckVoucher(String voucherCode);
+    void processCheckVoucher();
 }
