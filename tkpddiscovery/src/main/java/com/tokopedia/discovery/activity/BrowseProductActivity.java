@@ -1061,9 +1061,6 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                             if (browseProductActivityModel !=null && body !=null && body.getData() !=null && body.getData() !=null) {
                                 browseProductActivityModel.categotyHeader = body.getData();
                                 parentFragment.renderCategories(browseProductActivityModel.categotyHeader);
-                                if (categoryLevel.isEmpty()) // if in state category level 1
-                                    categoryLevel.add(new SimpleCategory(browseProductActivityModel.getDepartmentId(),getIntent().getStringExtra(EXTRA_TITLE)));
-
                             }
                         }
                         break;
@@ -1175,7 +1172,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     }
 
     public void renderLowerCategoryLevel(Child child) {
-        categoryLevel.push(new SimpleCategory(child.getId(),child.getName()));
+        categoryLevel.push(new SimpleCategory(browseProductActivityModel.getDepartmentId(),getIntent().getStringExtra(EXTRA_TITLE)));
         renderNewCategoryLevel(child.getId(),child.getName());
 
     }

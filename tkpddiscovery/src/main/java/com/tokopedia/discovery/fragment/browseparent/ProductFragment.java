@@ -414,7 +414,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     public void addTopAds(List<ProductItem> passProduct, int page, String tag) {
         if(!tag.equals(ProductFragment.TAG))
             return;
-        if(!passProduct.isEmpty()) {
+        if(!passProduct.isEmpty() && !(isHasCategoryHeader && page==1) ) {
             mRecyclerView.scrollToPosition(productAdapter.addTopAds(passProduct, page));
         }
     }
