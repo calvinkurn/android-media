@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.view.fragment.TopAdsGroupNewPromoFragment;
 
 import static com.tokopedia.seller.topads.view.fragment.TopAdsGroupNewPromoFragment.REQUEST_CODE_AD_STATUS;
@@ -35,7 +36,14 @@ public class TopAdsGroupNewPromoActivity extends TActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_AD_STATUS) {
             if (resultCode == Activity.RESULT_OK) {
-                // TODO top ads new groups/edit existing group/promo not in group has been success
+                // top ads new groups/edit existing group/promo not in group has been success
+                Intent intent = new Intent();
+                boolean adStatusChanged = data.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+                if (adStatusChanged) {
+                    intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+                }
+                setResult(Activity.RESULT_OK, intent);
+                finish();
             }
         }
     }
