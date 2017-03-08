@@ -40,7 +40,8 @@ public class VoucherCartHolderView extends RelativeLayout {
     @BindView(R2.id.textview_voucher)
     TextView usedVoucher;
 
-    private EditTextVoucherListener listener;
+    private ActionListener actionListener;
+    private String voucherCode = "";
 
     public VoucherCartHolderView(Context context) {
         super(context);
@@ -63,8 +64,8 @@ public class VoucherCartHolderView extends RelativeLayout {
         actionVoucher();
     }
 
-    public void setEditTextVoucherListener(EditTextVoucherListener listener) {
-        this.listener = listener;
+    public void setActionListener(ActionListener actionListener) {
+        this.actionListener = actionListener;
     }
 
     private void actionVoucher() {
@@ -79,7 +80,8 @@ public class VoucherCartHolderView extends RelativeLayout {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isChecked) {
-                    listener.showVoucherUser(isChecked, editTextVoucher.getText().toString());
+                    if (actionListener != null)
+                        voucherCode = "";
                 }
                 holderInputVoucher.setVisibility(isChecked ? VISIBLE : GONE);
             }
@@ -92,7 +94,10 @@ public class VoucherCartHolderView extends RelativeLayout {
             @Override
             public void onClick(View v) {
                 if (!isEditTextVoucherEmpty()) {
-                    listener.showVoucherUser(true, editTextVoucher.getText().toString());
+                    if (actionListener != null)
+                        actionListener.onVoucherCheckButtonClicked(
+                                editTextVoucher.getText().toString().trim());
+                    else throw new IllegalArgumentException("Action Listener null coy!!");
                 } else {
                     errorVoucher.setVisibility(VISIBLE);
                 }
@@ -100,8 +105,13 @@ public class VoucherCartHolderView extends RelativeLayout {
         };
     }
 
-    public void setUsedVoucher(String voucherName) {
-        usedVoucher.setText(voucherName);
+    public String getVoucherCode() {
+        return voucherCode;
+    }
+
+    public void setUsedVoucher(String voucherName, String message) {
+        voucherCode = voucherName;
+        usedVoucher.setText(message);
         holderVoucher.setVisibility(VISIBLE);
         errorVoucher.setVisibility(GONE);
     }
@@ -121,12 +131,12 @@ public class VoucherCartHolderView extends RelativeLayout {
             public void onClick(View v) {
                 holderVoucher.setVisibility(GONE);
                 editTextVoucher.setText("");
-                listener.showVoucherUser(true, editTextVoucher.getText().toString());
+                voucherCode = "";
             }
         };
     }
 
-    public interface EditTextVoucherListener {
-        void showVoucherUser(boolean isUsedVoucher, String inputVoucher);
+    public interface ActionListener {
+        void onVoucherCheckButtonClicked(String voucherCode);
     }
 }

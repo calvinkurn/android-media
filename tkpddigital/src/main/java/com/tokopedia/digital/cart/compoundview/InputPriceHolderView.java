@@ -30,7 +30,7 @@ public class InputPriceHolderView extends LinearLayout {
 
     private Context context;
     private long priceInput = 0;
-    private EditTextUserInputListener editTextUserInputListener;
+    private ActionListener actionListener;
 
 
     public InputPriceHolderView(Context context) {
@@ -48,8 +48,8 @@ public class InputPriceHolderView extends LinearLayout {
         init(context);
     }
 
-    public void setEditTextUserInputListener(EditTextUserInputListener editTextUserInputListener) {
-        this.editTextUserInputListener = editTextUserInputListener;
+    public void setActionListener(ActionListener actionListener) {
+        this.actionListener = actionListener;
     }
 
     private void init(Context context) {
@@ -82,7 +82,7 @@ public class InputPriceHolderView extends LinearLayout {
                 if (isUserInputValid(s.toString(), minPayment, maxPayment)) {
                     priceInput = Long.parseLong(s.toString());
                     errorInputError.setVisibility(GONE);
-                    editTextUserInputListener.userInputPayment(priceInput);
+                    actionListener.onInputPriceByUserFilled(priceInput);
                 } else {
                     errorInputError.setVisibility(VISIBLE);
                 }
@@ -103,7 +103,7 @@ public class InputPriceHolderView extends LinearLayout {
                 minPayment, maxPayment));
     }
 
-    public interface EditTextUserInputListener {
-        void userInputPayment(long paymentAmount);
+    public interface ActionListener {
+        void onInputPriceByUserFilled(long paymentAmount);
     }
 }

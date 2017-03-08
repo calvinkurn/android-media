@@ -31,6 +31,7 @@ import com.tokopedia.digital.cart.interactor.CartDigitalInteractor;
 import com.tokopedia.digital.cart.listener.IDigitalCartView;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 import com.tokopedia.digital.cart.model.UserInputPriceDigital;
+import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
 
@@ -43,7 +44,7 @@ import butterknife.OnClick;
 
 public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPresenter> implements
         IDigitalCartView, CheckoutHolderView.IAction,
-        InputPriceHolderView.EditTextUserInputListener, VoucherCartHolderView.EditTextVoucherListener {
+        InputPriceHolderView.ActionListener, VoucherCartHolderView.ActionListener {
 
     private static final String TAG = CartDigitalFragment.class.getSimpleName();
     private static final String ARG_CART_DIGITAL_DATA_PASS = "ARG_CART_DIGITAL_DATA_PASS";
@@ -63,9 +64,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     InputPriceHolderView inputPriceHolderView;
 
     private SessionHandler sessionHandler;
-    private boolean statusVoucher;
-    private long paymentAmount = 0;
-    private String voucherCode;
 
     public static Fragment newInstance(Parcelable passData) {
         CartDigitalFragment cartDigitalFragment = new CartDigitalFragment();
@@ -82,8 +80,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     protected void onFirstTimeLaunched() {
-        inputPriceHolderView.setEditTextUserInputListener(this);
-        voucherCartHolderView.setEditTextVoucherListener(this);
+        inputPriceHolderView.setActionListener(this);
+        voucherCartHolderView.setActionListener(this);
         sessionHandler = new SessionHandler(getActivity());
         //   presenter.processGetCartData(passData.getCategoryId());
         presenter.processAddToCart(passData);
@@ -245,6 +243,14 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
+    public void renderVoucherInfoData(VoucherDigital voucherDigital) {
+        //if berhasil dapet voucher
+        voucherCartHolderView.setUsedVoucher("MULAIHEMAT","Mulai Hemat 2017");
+        //else
+        //voucherCartHolderView.setErrorVoucher("Error message");
+    }
+
+    @Override
     public void closeViewWithMessageAlert(String message) {
         pbMainLoading.setVisibility(View.GONE);
         mainContainer.setVisibility(View.GONE);
@@ -295,20 +301,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
-    public void userInputPayment(long paymentAmount) {
+    public void onInputPriceByUserFilled(long paymentAmount) {
         Log.d(TAG, "userInputPayment: " + paymentAmount);
     }
 
     @Override
-    public void showVoucherUser(boolean isUsedVoucher, String inputVoucher) {
-        this.statusVoucher = isUsedVoucher;
-        if (isUsedVoucher && inputVoucher != null && !inputVoucher.equals("")) {
-            Log.d(TAG, "voucherUsedByUser: " + inputVoucher);
-            //if berhasil dapet voucher
-            voucherCartHolderView.setUsedVoucher("Mulai Hemat 2017");
-            this.voucherCode = inputVoucher;
-            //else
-            //voucherCartHolderView.setErrorVoucher("Error message");
-        }
+    public void onVoucherCheckButtonClicked(String voucherCode) {
+        presenter.processCheckVoucher(voucherCode);
     }
 }
