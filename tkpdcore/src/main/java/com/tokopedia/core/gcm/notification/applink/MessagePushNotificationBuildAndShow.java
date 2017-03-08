@@ -83,7 +83,7 @@ public class MessagePushNotificationBuildAndShow extends AbstractApplinkBuildAnd
             if (!isSingle) {
                 description = String.format("%d pesan dari %d pengirim", discussionPushNotifications.size(), senderCount);
             } else {
-                description = String.format("%d pesan dari %d", discussionPushNotifications.size(), username);
+                description = String.format("%d pesan dari %s", discussionPushNotifications.size(), username);
             }
 
             Uri url = Uri.parse(uri);
