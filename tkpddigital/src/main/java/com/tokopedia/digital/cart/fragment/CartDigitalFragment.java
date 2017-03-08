@@ -231,22 +231,22 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderErrorGetCartData(String message) {
-
+        closeViewWithMessageAlert(message);
     }
 
     @Override
     public void renderErrorHttpGetCartData(String message) {
-
+        closeViewWithMessageAlert(message);
     }
 
     @Override
     public void renderErrorNoConnectionGetCartData(String message) {
-
+        closeViewWithMessageAlert(message);
     }
 
     @Override
     public void renderErrorTimeoutConnectionGetCartData(String message) {
-
+        closeViewWithMessageAlert(message);
     }
 
     private void renderDataInputPrice(String total, UserInputPriceDigital userInputPriceDigital) {
