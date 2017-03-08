@@ -84,7 +84,7 @@ public abstract class BaseAppNotificationReceiverUIBackground {
     }
 
     protected boolean isDedicatedNotification(Bundle data) {
-        return GCMUtils.getCode(data) < 1000 && GCMUtils.getCode(data) >= 1100;
+        return GCMUtils.getCode(data) < 1000 || GCMUtils.getCode(data) >= 1100;
     }
 
     protected void resetNotificationStatus(Bundle data) {
