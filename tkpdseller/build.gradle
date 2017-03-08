@@ -115,6 +115,7 @@ dependencies {
     compile rootProject.ext.dbDependencies.dbFlowCore
     compile rootProject.ext.dbDependencies.dbFlow
 
+    compile rootProject.ext.miscDependencies.rxJavaComputation
     compile rootProject.ext.miscDependencies.gson
     compile 'com.shootr:KMNumbers:1.0.0'
     compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'

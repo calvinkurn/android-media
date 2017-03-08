@@ -90,7 +90,7 @@
 
     <string name="top_ads_statistic_info_default_value">-</string>
     <string name="top_ads_range_date_text">%1$s - %2$s</string>
-    <string name="top_ads_delete_ad_alert">Apakah anda yakin untuk menghapus produk ini ?</string>
+    <string name="top_ads_delete_ad_alert">Apakah anda yakin untuk menghapus produk ini?</string>
 
     <string name="title_action_on">On</string>
     <string name="title_action_off">Off</string>
@@ -123,7 +123,8 @@
 
     <!-- Top Ads Edit Promo -->
     <string name="label_top_ads_add_product">Tambah Produk</string>
-    <string name="label_top_ads_total_selected_product">%1$d / 50 Terpilih</string>
+    <string name="label_top_ads_total_selected_product">%02d / 50 Terpilih</string>
+    <string name="label_top_ads_total_selected_product_zero">%1$d / 50 Terpilih</string>
     <string name="label_top_ads_max_price_hint">Biaya Maks (Rp)</string>
     <string name="label_top_ads_max_price_description">Sesuaikan biaya anggaran promo anda. Rekomendasi biaya: Rp 50 sampai Rp 200 per klik</string>
     <string name="label_top_ads_icon">Icon TopAds</string>
@@ -231,6 +232,6 @@
     <!-- Top Ads add promo -->
     <string name="top_ads_title_grup_exist">Nama grup sudah ada</string>
     <string name="top_ads_promoted_message">Produk yang sudah dipromo  tidak \ndapat dipilih</string>
-    <string name="promoted">[Promoted]</string>
+    <string name="promoted">Promoted</string>
 
 </resources>

@@ -17,6 +17,7 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsDetailEditPresente
     protected ArrayList<TopAdsProductViewModel> topAdsProductList;
     private View addProductLayout;
     private TextView selectedProductTextView;
+    private TextView addProductText;
 
     protected abstract void addProduct();
 
@@ -34,12 +35,26 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsDetailEditPresente
             }
         });
         selectedProductTextView = (TextView) view.findViewById(R.id.text_view_selected_product);
+        addProductText = (TextView) view.findViewById(R.id.add_product);
         topAdsProductList = new ArrayList<>();
         updateSelectedProductCount();
+        updateWordingAddProduct();
+    }
+
+    protected void updateWordingAddProduct() {
+        if(topAdsProductList!= null && topAdsProductList.size() > 0){
+            addProductText.setText(R.string.label_edit);
+        }else{
+            addProductText.setText(R.string.label_top_ads_add_product);
+        }
     }
 
     private void updateSelectedProductCount() {
-        selectedProductTextView.setText(getString(R.string.label_top_ads_total_selected_product, topAdsProductList.size()));
+        if(topAdsProductList!= null && topAdsProductList.size() > 0) {
+            selectedProductTextView.setText(getString(R.string.label_top_ads_total_selected_product, topAdsProductList.size()));
+        }else{
+            selectedProductTextView.setText(getString(R.string.label_top_ads_total_selected_product_zero, topAdsProductList.size()));
+        }
     }
 
     @Override
@@ -49,6 +64,7 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsDetailEditPresente
         if (requestCode == ADD_PRODUCT_REQUEST_CODE && intent != null) {
             topAdsProductList = intent.getParcelableArrayListExtra(TopAdsExtraConstant.EXTRA_SELECTIONS);
             updateSelectedProductCount();
+            updateWordingAddProduct();
         }
     }
 }

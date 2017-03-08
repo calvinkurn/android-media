@@ -112,6 +112,16 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
 
     public void setNetworkStatus(NetworkStatus networkStatus) {
         this.networkStatus = networkStatus;
+
+        switch (getNetworkStatus()) {
+            case ONACTIVITYFORRESULT:
+            case PULLTOREFRESH:
+            case SEARCHVIEW:
+                resetPage();
+                break;
+            default:
+                break;
+        }
     }
 
     public void loadMore() {
@@ -138,6 +148,9 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
                         @Override
                         public void onNext(ProductListDomain productListDomain) {
                             if (isViewAttached()) {
+                                if (page != productListDomain.getPage()) {
+                                    page = productListDomain.getPage();
+                                }
                                 getView().dismissSnackbar();
                                 getView().setLoadMoreFlag(productListDomain.isEof());
                                 getView().loadMore(convertTo(productListDomain.getProductDomains()));
@@ -172,6 +185,9 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
                         @Override
                         public void onNext(ProductListDomain productListDomain) {
                             if (isViewAttached()) {
+                                if (page != productListDomain.getPage()) {
+                                    page = productListDomain.getPage();
+                                }
                                 getView().dismissSnackbar();
                                 getView().setLoadMoreFlag(productListDomain.isEof());
                                 getView().loadData(convertTo(productListDomain.getProductDomains()));

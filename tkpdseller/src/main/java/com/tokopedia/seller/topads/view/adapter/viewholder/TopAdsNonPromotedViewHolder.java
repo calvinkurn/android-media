@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.view.adapter.viewholder;
 
+import android.content.res.Resources;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +23,7 @@ public class TopAdsNonPromotedViewHolder extends BaseTopAdsAddProductListViewHol
     private final int topAdsSelectionColor;
     private final int transparantColor;
     private final AdapterSelectionListener adapterSelectionListener;
+    private final String promoted;
     private NonPromotedTopAdsAddProductModel model;
     private int adapterPosition;
 
@@ -31,6 +33,8 @@ public class TopAdsNonPromotedViewHolder extends BaseTopAdsAddProductListViewHol
 
         checkBoxNonPromoted = (CheckBox) itemView.findViewById(R.id.checkbox_top_ads_add_product_list_non_promoted);
         checkBoxNonPromoted.setClickable(false);
+        Resources resources = itemView.getContext().getResources();
+        promoted = resources.getString(R.string.promoted);
 
         topAdsSelectionColor = ContextCompat.getColor(itemView.getContext(), R.color.selection_color_top_ads);
         transparantColor = ContextCompat.getColor(itemView.getContext(), android.R.color.white);
@@ -56,7 +60,12 @@ public class TopAdsNonPromotedViewHolder extends BaseTopAdsAddProductListViewHol
         }
 
         setDescriptionText(model.description);
-        setSnippet(model.snippet);
+
+        if (model.getProductDomain().isPromoted()) {
+            setSnippet(promoted);
+        } else {
+            setSnippet(model.snippet);
+        }
     }
 
     private View.OnClickListener onClickListener() {
