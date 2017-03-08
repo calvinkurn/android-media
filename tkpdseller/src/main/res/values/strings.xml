@@ -229,6 +229,6 @@
     <!-- Top Ads add promo -->
     <string name="top_ads_title_grup_exist">Nama grup sudah ada</string>
     <string name="top_ads_promoted_message">Produk yang sudah dipromo  tidak \ndapat dipilih</string>
-    <string name="promoted">[Promoted]</string>
+    <string name="promoted">Promoted</string>
 
 </resources>

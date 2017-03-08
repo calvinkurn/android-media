@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.app.BaseActivity;
@@ -96,6 +97,9 @@ public class TopAdsAddProductListActivity extends BaseActivity
     private boolean isExistingGroup;
     private boolean isHideEtalase;
     private int maxNumberSelection;
+    private int thirtyEightPercentBlackColor;
+    private int whiteColor;
+    private TextView topAdsButtonNext;
 
     private void addPaddingBottom() {
         bottomSheetContainer.setPadding(
@@ -118,6 +122,11 @@ public class TopAdsAddProductListActivity extends BaseActivity
         setContentView(R.layout.activity_top_ads_add_product_list_container);
 
         setAsActionBar();
+
+        thirtyEightPercentBlackColor = ContextCompat.getColor(this, R.color.thirty_eight_percent_black);
+        whiteColor = ContextCompat.getColor(this, R.color.white);
+        topAdsButtonNext = (TextView) findViewById(R.id.top_ads_btn_next);
+        topAdsButtonNext.setTextColor(thirtyEightPercentBlackColor);
 
         greyButton = ContextCompat.getDrawable(this, R.drawable.bg_button_grey);
         greenButton = ContextCompat.getDrawable(this, R.drawable.bg_button_green);
@@ -338,6 +347,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
         }else{
             nextBgButton.setBackgroundResource(R.drawable.bg_button_grey);
         }
+        topAdsButtonNext.setTextColor(thirtyEightPercentBlackColor);
     }
 
     @Override
@@ -354,6 +364,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
         }else{
             nextBgButton.setBackgroundResource(R.drawable.bg_button_green);
         }
+        topAdsButtonNext.setTextColor(whiteColor);
     }
 
     @Override
