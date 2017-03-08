@@ -29,7 +29,6 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.fragment.FragmentSecurityQuestion;
-import com.tokopedia.core.msisdn.activity.MsisdnActivity;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.router.CustomerRouter;

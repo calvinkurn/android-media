@@ -17,10 +17,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.fragment.EmailVerificationDialog;
 import com.tokopedia.core.fragment.VerificationDialog;
 import com.tokopedia.core.manage.people.profile.customdialog.UploadImageDialog;
 import com.tokopedia.core.manage.people.profile.customview.AvatarView;
@@ -36,15 +33,14 @@ import com.tokopedia.core.msisdn.fragment.PhoneManualVerificationDialog;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.NetworkErrorHelper.RetryClickedListener;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-
-import butterknife.BindView;
-import com.tokopedia.core.util.RequestPermissionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;

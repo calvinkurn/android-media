@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
-import com.tokopedia.core.msisdn.activity.MsisdnActivity;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;

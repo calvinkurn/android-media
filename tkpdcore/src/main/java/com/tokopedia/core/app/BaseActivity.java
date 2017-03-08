@@ -39,7 +39,6 @@ import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.service.constant.HadesConstant;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
-import com.tokopedia.core.util.PhoneVerificationUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
