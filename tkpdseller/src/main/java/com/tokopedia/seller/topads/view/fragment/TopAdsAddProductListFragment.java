@@ -109,7 +109,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         if (topAdsAddProductListPresenter.getNetworkStatus()
                 == TopAdsAddProductListPresenter.NetworkStatus.ONACTIVITYFORRESULT) {
             refreshHandler.setRefreshing(true);
-            topAdsAddProductListPresenter.loadMore();
+            topAdsAddProductListPresenter.searchProduct();
         } else {
             topAdsAddProductListPresenter.setNetworkStatus(
                     TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);

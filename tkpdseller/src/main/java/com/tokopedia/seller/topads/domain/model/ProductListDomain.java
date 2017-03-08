@@ -8,6 +8,7 @@ import java.util.List;
 public class ProductListDomain {
     List<ProductDomain> productDomains;
     boolean eof;
+    int page = -1;
 
     public ProductListDomain() {
     }
@@ -15,6 +16,14 @@ public class ProductListDomain {
     public ProductListDomain(List<ProductDomain> productDomains, boolean eof) {
         this.productDomains = productDomains;
         this.eof = eof;
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
     }
 
     public List<ProductDomain> getProductDomains() {

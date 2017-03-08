@@ -1,6 +1,8 @@
 package com.tokopedia.seller.topads.data.mapper;
 
 
+import android.support.annotation.NonNull;
+
 import com.tokopedia.seller.topads.data.model.data.Product;
 import com.tokopedia.seller.topads.data.model.response.DataResponse;
 import com.tokopedia.seller.topads.domain.model.ProductDomain;
@@ -17,14 +19,11 @@ import rx.functions.Func1;
  */
 
 public class SearchProductEOFMapper implements Func1<Response<DataResponse<List<Product>>>, ProductListDomain> {
-    @Override
-    public ProductListDomain call(Response<DataResponse<List<Product>>> response) {
-
-        ProductListDomain productListDomain = new ProductListDomain();
-
+    @NonNull
+    public static List<ProductDomain> getProductDomains(List<Product> data) {
         List<ProductDomain> productDomains = new ArrayList<>();
 
-        for (Product product : response.body().getData()) {
+        for (Product product : data) {
             ProductDomain productDomain = new ProductDomain();
             productDomain.setAdId(product.getAdId());
             productDomain.setId(product.getId());
@@ -35,6 +34,17 @@ public class SearchProductEOFMapper implements Func1<Response<DataResponse<List<
 
             productDomains.add(productDomain);
         }
+        return productDomains;
+    }
+
+    @Override
+    public ProductListDomain call(Response<DataResponse<List<Product>>> response) {
+
+        List<Product> data = response.body().getData();
+
+        ProductListDomain productListDomain = new ProductListDomain();
+
+        List<ProductDomain> productDomains = getProductDomains(data);
 
         productListDomain.setProductDomains(productDomains);
         productListDomain.setEof(response.body().isEof());
