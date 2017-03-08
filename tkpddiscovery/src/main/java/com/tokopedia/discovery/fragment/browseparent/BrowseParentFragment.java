@@ -263,6 +263,8 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         if (uri.contains("/p/")) {
             BrowseProductActivity browseProductActivity = (BrowseProductActivity) getActivity();
             BrowseProductActivityModel model = browseProductActivity.getBrowseProductActivityModel();
+            model.alias = null;
+            model.setHotListBannerModel(null);
             model.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
             model.setDepartmentId(productModel.result.departmentId);
             ((BrowseProductActivity) getActivity()).setFragment(BrowseParentFragment.newInstance(model), BrowseParentFragment.FRAGMENT_TAG);
