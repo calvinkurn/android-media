@@ -221,10 +221,9 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
         discoverySearchView.setOnQueryTextListener(this);
         discoverySearchView.setOnSearchViewListener(this);
 
-        if (browseProductActivityModel.alias != null && browseProductActivityModel.getHotListBannerModel() == null)
+        if (browseProductActivityModel.alias != null && browseProductActivityModel.getHotListBannerModel() == null) {
             fetchHotListHeader(browseProductActivityModel.alias);
-
-        if (browseProductActivityModel.isSearchDeeplink()) {
+        } else if (browseProductActivityModel.isSearchDeeplink()) {
             sendQuery(browseProductActivityModel.getQ());
         } else {
             switch (browseProductActivityModel.getFragmentId()) {
@@ -418,10 +417,11 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
         }
     }
 
-    private void resetBrowseProductActivityModel() {
+    public void resetBrowseProductActivityModel() {
         deleteFilterAndSortCache();
         browseProductActivityModel.setAdSrc(TopAdsApi.SRC_BROWSE_PRODUCT);
         browseProductActivityModel.alias = null;
+        browseProductActivityModel.setHotListBannerModel(null);
         browseProductActivityModel.removeBannerModel();
         browseProductActivityModel.setDepartmentId("");
     }
