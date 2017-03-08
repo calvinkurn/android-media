@@ -73,7 +73,6 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     IncomingSmsReceiver smsReceiver;
     TkpdProgressDialog progressDialog;
 
-
     public static PhoneVerificationFragment createInstance() {
         return new PhoneVerificationFragment();
     }
@@ -345,6 +344,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     @Override
     public void onSuccessVerifyPhoneNumber() {
+        SessionHandler.setIsMSISDNVerified(true);
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
 
@@ -459,4 +459,5 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     public void checkSmsPermission() {
 
     }
+
 }

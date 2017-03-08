@@ -24,6 +24,7 @@ public class SessionRouter {
 
     public static final String IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT = "RegisterNewNextFragment";
     public static final String IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT = "RegisterPassPhoneFragment";
+    public static final int REQUEST_VERIFY_PHONE = 123;
 
     /////////// INTENT
     public static Intent getLoginActivityIntent(Context context) {

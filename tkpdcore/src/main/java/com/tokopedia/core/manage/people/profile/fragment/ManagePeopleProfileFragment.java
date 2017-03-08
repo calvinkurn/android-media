@@ -296,26 +296,33 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     @Override
     public void showPhoneVerificationDialog(String userPhone) {
         SessionHandler.setPhoneNumber(userPhone);
-        startActivity(SessionRouter.getPhoneVerificationProfileActivityIntent(getActivity()));
+        startActivityForResult(SessionRouter.getPhoneVerificationProfileActivityIntent(getActivity()),
+                SessionRouter.REQUEST_VERIFY_PHONE);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        uploadDialog.onResult(
-                requestCode,
-                resultCode,
-                data,
-                new UploadImageDialog.UploadImageDialogListener() {
-                    @Override
-                    public void onSuccess(String data) {
-                        presenter.setOnUserFinishPickImage(data);
-                    }
+        if (requestCode == SessionRouter.REQUEST_VERIFY_PHONE &&
+                resultCode == Activity.RESULT_OK &&
+                SessionHandler.isMsisdnVerified()) {
+            renderData();
+        } else {
+            uploadDialog.onResult(
+                    requestCode,
+                    resultCode,
+                    data,
+                    new UploadImageDialog.UploadImageDialogListener() {
+                        @Override
+                        public void onSuccess(String data) {
+                            presenter.setOnUserFinishPickImage(data);
+                        }
 
-                    @Override
-                    public void onFailed() {
-                        showSnackBarView(getActivity().getString(R.string.error_gallery_valid));
-                    }
-                });
+                        @Override
+                        public void onFailed() {
+                            showSnackBarView(getActivity().getString(R.string.error_gallery_valid));
+                        }
+                    });
+        }
     }
 
     @Override
@@ -448,31 +455,31 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onPermissionDenied(getActivity(),listPermission);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
     }
 
     @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -481,7 +488,7 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 
     @Override
