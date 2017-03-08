@@ -106,7 +106,7 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
 
     @Override
     public void copyTextToSearchView(String text) {
-        ((BrowseProductActivity) getActivity()).setSearchQuery(text);
+        ((BrowseProductActivity) getActivity()).setSearchQuery(text+" ");
     }
 
     @Override

@@ -347,7 +347,7 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
     }
 
     public void setSearchQuery(String query) {
-        discoverySearchView.setQuery(query, false);
+        discoverySearchView.setQuery(query, false, true);
         CommonUtils.hideKeyboard(this, getCurrentFocus());
     }
 

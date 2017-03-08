@@ -76,7 +76,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
     private boolean allowVoiceSearch;
     private Drawable suggestionIcon;
-
+    private boolean copyText = false;
     private Context mContext;
 
     public DiscoverySearchView(Context context) {
@@ -100,6 +100,10 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     public void setActivity(AppCompatActivity activity) {
         this.activity = activity;
         this.mSuggestionFragment = (SearchMainFragment) activity.getSupportFragmentManager().findFragmentById(R.id.search_suggestion);
+    }
+
+    public void setCopyText(boolean copyText) {
+        this.copyText = copyText;
     }
 
     private void initStyle(AttributeSet attrs, int defStyleAttr) {
@@ -201,6 +205,10 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (copyText) {
+                    s = s.subSequence(0, s.length() - 1);
+                    copyText = false;
+                }
                 mUserQuery = s;
                 DiscoverySearchView.this.onTextChanged(s);
             }
@@ -406,6 +414,12 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
      * @param query
      * @param submit
      */
+
+    public void setQuery(CharSequence query, boolean submit, boolean copyText) {
+        this.copyText = copyText;
+        setQuery(query, submit);
+    }
+
     public void setQuery(CharSequence query, boolean submit) {
         mSearchSrcTextView.setText(query);
         if (query != null) {
@@ -441,7 +455,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 showSearch();
-                if(finishOnClose){
+                if (finishOnClose) {
                     setFinishOnClose(false);
                 }
                 return true;
