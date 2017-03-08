@@ -450,8 +450,11 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     public static class RevampCategoryHeaderViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.imageHeader)
+        @BindView(R2.id.image_header)
         ImageView imageHeader;
+
+        @BindView(R2.id.title_header)
+        TextView titleHeader;
 
         @BindView(R2.id.expand_layout)
         LinearLayout expandLayout;
@@ -472,10 +475,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             revampCategoriesRecyclerView.setLayoutManager(
                     new NonScrollGridLayoutManager(categoryHeaderModel.context, 3,
                             GridLayoutManager.VERTICAL, false));
-            revampCategoriesRecyclerView.addItemDecoration(new DividerItemDecoration(categoryHeaderModel.context));
             categoryAdapter = new RevampCategoryAdapter(categoryHeaderModel.categoryWidth,categoryHeaderModel.activeChildren,categoryHeaderModel.listener);
             revampCategoriesRecyclerView.setAdapter(categoryAdapter);
-            ImageHandler.LoadImage(imageHeader,categoryHeaderModel.categoryHeader.getHeaderImage());
+            ImageHandler.loadImageFit2(imageHeader.getContext(),imageHeader,categoryHeaderModel.categoryHeader.getHeaderImage());
+            titleHeader.setText(categoryHeaderModel.categoryHeader.getName().toUpperCase());
             if (categoryHeaderModel.isUsedUnactiveChildren) {
                 expandLayout.setVisibility(View.VISIBLE);
                 expandLayout.setOnClickListener(new View.OnClickListener() {

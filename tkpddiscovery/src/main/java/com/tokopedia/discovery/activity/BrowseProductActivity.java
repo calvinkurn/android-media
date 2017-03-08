@@ -49,6 +49,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.categoriesHades.CategoriesHadesModel;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
+import com.tokopedia.core.network.entity.categoriesHades.SimpleCategory;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -80,6 +81,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -122,6 +124,8 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     private boolean afterRestoreSavedInstance;
     private Subscription querySubscription;
     private QueryListener queryListener;
+
+    Stack<SimpleCategory> categoryLevel = new Stack<>();
 
     @Override
     public String getScreenName() {
@@ -316,11 +320,6 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     }
 
     @Override
-    public void onBackPressed() {
-        finish();
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
@@ -344,7 +343,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         toolbar.requestLayout();
 
         Log.d(TAG, "setFragment TAG " + TAG);
-        fragmentManager.beginTransaction().add(R.id.container, fragment, TAG).addToBackStack(null).commit();
+        fragmentManager.beginTransaction().replace(R.id.container, fragment, TAG).addToBackStack(null).commit();
         if (fragment instanceof BrowseParentFragment) {
             bottomNavigation.setBehaviorTranslationEnabled(true);
             bottomNavigation.restoreBottomNavigation();
@@ -1059,11 +1058,12 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                             ObjContainer objContainer = data.getModel2();
                             CategoriesHadesModel.CategoriesHadesContainer categoriesHadesContainer = (CategoriesHadesModel.CategoriesHadesContainer) objContainer;
                             CategoriesHadesModel body = categoriesHadesContainer.body();
-
                             if (browseProductActivityModel !=null && body !=null && body.getData() !=null && body.getData() !=null) {
                                 browseProductActivityModel.categotyHeader = body.getData();
-                                if (browseProductActivityModel.getCategotyHeader().getChild()!=null)
-                                    parentFragment.renderCategories(browseProductActivityModel.categotyHeader);
+                                parentFragment.renderCategories(browseProductActivityModel.categotyHeader);
+                                if (categoryLevel.isEmpty()) // if in state category level 1
+                                    categoryLevel.add(new SimpleCategory(browseProductActivityModel.getDepartmentId(),getIntent().getStringExtra(EXTRA_TITLE)));
+
                             }
                         }
                         break;
@@ -1160,16 +1160,35 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         void onQueryChanged(String query);
     }
 
-    public void renderNewCategoryLevel(Child child) {
-        browseProductActivityModel.setDepartmentId(child.getId());
-        toolbar.setTitle(child.getName());
-        setFragment(BrowseParentFragment.newInstance(browseProductActivityModel), BrowseParentFragment.FRAGMENT_TAG);
-        BrowseParentFragment parentFragment = (BrowseParentFragment)
-                fragmentManager.findFragmentById(R.id.container);
-        ArrayMap<String, String> visibleTab = new ArrayMap<>();
-        visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, parentFragment.VISIBLE_ON);
-        parentFragment.initSectionAdapter(visibleTab);
-        parentFragment.setupWithTabViewPager();
+    public void renderNewCategoryLevel(String departementId, String name) {
+        if (departementId!=null && name!=null) {
+            browseProductActivityModel.setDepartmentId(departementId);
+            toolbar.setTitle(name);
+            setFragment(BrowseParentFragment.newInstance(browseProductActivityModel), BrowseParentFragment.FRAGMENT_TAG);
+            BrowseParentFragment parentFragment = (BrowseParentFragment)
+                    fragmentManager.findFragmentById(R.id.container);
+            ArrayMap<String, String> visibleTab = new ArrayMap<>();
+            visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, parentFragment.VISIBLE_ON);
+            parentFragment.initSectionAdapter(visibleTab);
+            parentFragment.setupWithTabViewPager();
+        }
+    }
+
+    public void renderLowerCategoryLevel(Child child) {
+        categoryLevel.push(new SimpleCategory(child.getId(),child.getName()));
+        renderNewCategoryLevel(child.getId(),child.getName());
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (categoryLevel.size()>0) {
+            SimpleCategory simpleCategory = categoryLevel.pop();
+            renderNewCategoryLevel(simpleCategory.getId(),simpleCategory.getName());
+        } else {
+            finish();
+        }
+
     }
 
 
