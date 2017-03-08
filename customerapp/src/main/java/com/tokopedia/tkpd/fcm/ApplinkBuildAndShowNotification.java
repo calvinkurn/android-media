@@ -14,6 +14,7 @@ import com.tokopedia.core.gcm.domain.usecase.GetSavedPushNotificationUseCase;
 import com.tokopedia.core.gcm.notification.applink.ApplinkTypeFactory;
 import com.tokopedia.core.gcm.notification.applink.ApplinkTypeFactoryList;
 import com.tokopedia.core.gcm.notification.applink.ApplinkVisitor;
+import com.tokopedia.core.gcm.notification.applink.MessagePushNotificationWrapper;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 
 import java.util.List;
@@ -26,18 +27,20 @@ import rx.Subscriber;
 
 public class ApplinkBuildAndShowNotification {
     private GetSavedPushNotificationUseCase getSavedPushNotificationUseCase;
+    GetSavedMessagePushNotificationUseCase getSavedMessagePushNotificationUseCase;
+    GetSavedDiscussionPushNotificationUseCase getSavedDiscussionPushNotificationUseCase;
     private final Context context;
     public ApplinkBuildAndShowNotification(Context context) {
         this.context = context;
         PushNotificationRepository pushNotificationRepository = new PushNotificationDataRepository();
-        GetSavedMessagePushNotificationUseCase getSavedMessagePushNotificationUseCase =
+        getSavedMessagePushNotificationUseCase =
                 new GetSavedMessagePushNotificationUseCase(
                         new JobExecutor(),
                         new UIThread(),
                         pushNotificationRepository
                 );
 
-        GetSavedDiscussionPushNotificationUseCase getSavedDiscussionPushNotificationUseCase =
+        getSavedDiscussionPushNotificationUseCase =
                 new GetSavedDiscussionPushNotificationUseCase(
                         new JobExecutor(),
                         new UIThread(),
@@ -72,6 +75,53 @@ public class ApplinkBuildAndShowNotification {
                 for (ApplinkVisitor applinkVisitor : applinkVisitors){
                     applinkVisitor.type(applinkTypeFactory).process(context, intent);
                 }
+            }
+        });
+    }
+
+    public void resetIfActiveNotificationMessage() {
+        getSavedMessagePushNotificationUseCase.execute(RequestParams.EMPTY, new Subscriber<MessagePushNotificationWrapper>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(MessagePushNotificationWrapper messagePushNotificationWrapper) {
+                Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                ApplinkTypeFactory applinkTypeFactory = new ApplinkTypeFactoryList();
+                messagePushNotificationWrapper.type(applinkTypeFactory).process(context, intent, false);
+            }
+        });
+    }
+
+
+    public void resetIfActiveNotificationDiscussion() {
+        getSavedMessagePushNotificationUseCase.execute(RequestParams.EMPTY, new Subscriber<MessagePushNotificationWrapper>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(MessagePushNotificationWrapper messagePushNotificationWrapper) {
+                Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                ApplinkTypeFactory applinkTypeFactory = new ApplinkTypeFactoryList();
+                messagePushNotificationWrapper.type(applinkTypeFactory).process(context, intent, false);
             }
         });
     }

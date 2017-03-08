@@ -99,31 +99,36 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private void handleApplinkNotification(Bundle data) {
-        if (SessionHandler.isV4Login(mContext)
-                && SessionHandler.getLoginID(mContext).equals(
+        if (data.getString("login_required", "false").equals("true"))
+        {
+            if (SessionHandler.isV4Login(mContext)
+                    && SessionHandler.getLoginID(mContext).equals(
                     data.getString(Constants.ARG_NOTIFICATION_TARGET_USER_ID))
-                ) {
+                    ) {
 
-            resetNotificationStatus(data);
+                resetNotificationStatus(data);
 
-            if (mActivitiesLifecycleCallbacks.isAppOnBackground()) {
-                prepareAndExecuteApplinkNotification(data);
-            } else {
-                NotificationReceivedListener listener =
-                        (NotificationReceivedListener) mActivitiesLifecycleCallbacks.getLiveActivityOrNull();
-                if (listener != null) {
-                    listener.onGetNotif();
-                    if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE))
-                            == TkpdState.GCMServiceState.GCM_CART_UPDATE) {
-                        listener.onRefreshCart(data.getInt(Constants.ARG_NOTIFICATION_CART_EXISTS, 0));
+                if (mActivitiesLifecycleCallbacks.isAppOnBackground()) {
+                    prepareAndExecuteApplinkNotification(data);
+                } else {
+                    NotificationReceivedListener listener =
+                            (NotificationReceivedListener) mActivitiesLifecycleCallbacks.getLiveActivityOrNull();
+                    if (listener != null) {
+                        listener.onGetNotif();
+                        if (Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE))
+                                == TkpdState.GCMServiceState.GCM_CART_UPDATE) {
+                            listener.onRefreshCart(data.getInt(Constants.ARG_NOTIFICATION_CART_EXISTS, 0));
+                        } else {
+                            prepareAndExecuteApplinkNotification(data);
+                        }
                     } else {
                         prepareAndExecuteApplinkNotification(data);
                     }
-                } else {
-                    prepareAndExecuteApplinkNotification(data);
                 }
+                mFCMCacheManager.resetCache(data);
             }
-            mFCMCacheManager.resetCache(data);
+        }else{
+            prepareAndExecuteApplinkNotification(data);
         }
     }
 

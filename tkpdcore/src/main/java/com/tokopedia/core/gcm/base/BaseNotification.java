@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.tokopedia.core.gcm.BuildAndShowNotification;
 import com.tokopedia.core.gcm.FCMCacheManager;
+import com.tokopedia.core.gcm.NotificationConfiguration;
 import com.tokopedia.core.gcm.Visitable;
 import com.tokopedia.core.gcm.model.NotificationPass;
 
@@ -15,6 +16,7 @@ import com.tokopedia.core.gcm.model.NotificationPass;
 public abstract class BaseNotification implements Visitable {
     protected final Context mContext;
     private FCMCacheManager mFCMCacheManager;
+    private NotificationConfiguration configuration;
     protected NotificationPass mNotificationPass;
     protected BuildAndShowNotification mBuildAndShowNotification;
 
@@ -23,12 +25,20 @@ public abstract class BaseNotification implements Visitable {
         mNotificationPass = new NotificationPass();
         mBuildAndShowNotification = new BuildAndShowNotification(mContext);
         mFCMCacheManager = new FCMCacheManager(mContext);
+        configuration = new NotificationConfiguration();
     }
 
     @Override
     public void proccessReceivedNotification(Bundle incomingMessage) {
         configureNotificationData(incomingMessage);
+        buildDefaultConfiguration();
         showNotification(incomingMessage);
+    }
+
+    private void buildDefaultConfiguration() {
+        configuration.setBell(mFCMCacheManager.isAllowBell());
+        configuration.setVibrate(mFCMCacheManager.isVibrate());
+        configuration.setSoundUri(mFCMCacheManager.getSoundUri());
     }
 
     public NotificationPass getNotificationPassData(){
@@ -39,7 +49,7 @@ public abstract class BaseNotification implements Visitable {
     }
 
     protected void showNotification(Bundle incomingMessage){
-        mBuildAndShowNotification.buildAndShowNotification(mNotificationPass, incomingMessage);
+        mBuildAndShowNotification.buildAndShowNotification(mNotificationPass, incomingMessage, configuration);
     }
 
     protected abstract void configureNotificationData(Bundle data);

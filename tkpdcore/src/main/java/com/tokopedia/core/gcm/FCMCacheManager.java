@@ -117,7 +117,7 @@ public class FCMCacheManager {
         }
     }
 
-    Boolean isAllowBell() {
+    public Boolean isAllowBell() {
         long prevTime = cache.getLong(TkpdCache.Key.PREV_TIME);
         long currTIme = System.currentTimeMillis();
         CommonUtils.dumper("prev time: " + prevTime);
@@ -130,12 +130,12 @@ public class FCMCacheManager {
         return false;
     }
 
-    Boolean isVibrate() {
+    public Boolean isVibrate() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         return settings.getBoolean("notifications_new_message_vibrate", false);
     }
 
-    Uri getSoundUri() {
+    public Uri getSoundUri() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         String StringSoundUri = settings.getString("notifications_new_message_ringtone", null);
         if (StringSoundUri != null) {

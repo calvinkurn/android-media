@@ -13,7 +13,7 @@ public class DiscussionPushNotificationResponse {
     private String fullname;
     @SerializedName("applinks")
     private String applink;
-    @SerializedName("desc")
+    @SerializedName("summary")
     private String description;
 
     public DiscussionPushNotificationResponse() {

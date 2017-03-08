@@ -28,6 +28,7 @@ public interface Constants {
     String EXTRA_FROM_PUSH = "from_notif";
     String EXTRA_UNREAD = "unread";
     String EXTRA_APPLINK_CATEGORY = "applink_category";
+    String EXTRA_APPLINK_RESET = "applink_reset";
     int ARG_NOTIFICATION_APPLINK_MESSAGE_ID = 1001;
     int ARG_NOTIFICATION_APPLINK_DISCUSSION_ID = 1002;
 

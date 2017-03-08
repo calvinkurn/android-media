@@ -2,10 +2,13 @@ package com.tokopedia.core.talkview.activity;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -33,6 +36,17 @@ public class TalkViewActivity extends TActivity
     TalkViewResultReceiver mReceiver;
     InboxTalkResultReceiver mReceiverTalk;
     TalkDetailResultReceiver mReceiverTalkDetail;
+
+    @DeepLink({
+            "tokopedia://talk/{talk_id}"
+    })
+    public static Intent getCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        extras.putString("from", INBOX_TALK);
+        return new Intent(context, TalkViewActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
 
     @Override
     public String getScreenName() {
