@@ -73,11 +73,6 @@ public class SellerRouterApplication extends MainApplication implements TkpdCore
     }
 
     @Override
-    public void goToMerchantRedirect(Context context) {
-
-    }
-
-    @Override
     public void goToHome(Context context) {
         Intent intent = new Intent(context,
                 SellerHomeActivity.class);
