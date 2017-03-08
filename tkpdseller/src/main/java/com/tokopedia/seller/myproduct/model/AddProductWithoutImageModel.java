@@ -6,6 +6,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class AddProductWithoutImageModel {
 
+    @SerializedName("message_error")
+    @Expose
+    String[] message_error;
     @SerializedName("status")
     @Expose
     private String status;
@@ -89,6 +92,14 @@ public class AddProductWithoutImageModel {
      */
     public void setServerProcessTime(String serverProcessTime) {
         this.serverProcessTime = serverProcessTime;
+    }
+
+    public String[] getMessage_error() {
+        return message_error;
+    }
+
+    public void setMessage_error(String[] message_error) {
+        this.message_error = message_error;
     }
 
     public static class Data {

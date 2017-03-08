@@ -1215,8 +1215,6 @@ public class ProductService extends IntentService implements ProductServiceConst
     private void addProductEmptyImage(final InputAddProductModel inputAddProductModel, final Bundle retryBundle) {
         final String userId = SessionHandler.getLoginID(getApplicationContext());
         final String deviceId = GCMHandler.getRegistrationId(getApplicationContext());
-        notificationService = new NotificationProductService(this, 1 + inputAddProductModel.getProduk().getPictureDBs().size(),
-                inputAddProductModel.getProduk().getNameProd());
         Observable.just(inputAddProductModel)
                 .flatMap(new Func1<InputAddProductModel, Observable<AddProductWithoutImageModel>>() {
                     @Override
@@ -1227,6 +1225,10 @@ public class ProductService extends IntentService implements ProductServiceConst
                 .map(new Func1<AddProductWithoutImageModel, AddProductWithoutImageModel>() {
                     @Override
                     public AddProductWithoutImageModel call(AddProductWithoutImageModel addProductWithoutImageModel) {
+                        if (addProductWithoutImageModel.getMessage_error() != null &&
+                                addProductWithoutImageModel.getMessage_error().length != 0) {
+                            throw new RuntimeException(addProductWithoutImageModel.getMessage_error()[0]);
+                        }
                         ProductDB produk = inputAddProductModel.getProduk();
                         AddProductWithoutImageModel.Data data = addProductWithoutImageModel.getData();
                         if (data != null) {
@@ -1253,32 +1255,6 @@ public class ProductService extends IntentService implements ProductServiceConst
                     public void onError(Throwable e) {
                         if (e != null) {
                             Log.e(TAG, messageTAG + e.getLocalizedMessage());
-                            if(notificationService != null) {
-                                String errorMessage = "";
-                                if (e instanceof MessageErrorException){
-                                    errorMessage = CommonUtils.generateMessageError(getApplicationContext(), e.getMessage());
-                                }else{
-                                    Crashlytics.logException(e);
-                                    errorMessage = getString(R.string.msg_upload_error);
-                                }
-
-                                int requestCode = (int) ((System.currentTimeMillis() / 1000L) + new Random().nextInt(1000));
-                                PendingIntent eIntent;
-                                if (errorMessage.equals(getApplicationContext().getString(R.string.error_connection_problem)) ||
-                                        errorMessage.equals(getApplicationContext().getString(R.string.error_bad_gateway))) {
-                                    Intent errorIntent = new Intent(getApplicationContext(), ProductService.class);
-                                    errorIntent.putExtras(retryBundle);
-                                    errorIntent.putExtra(NOTIFICATION_ID, notificationService.getNotificationId());
-                                    errorMessage += " - " + getApplicationContext().getString(R.string.retry_upload_product);
-                                    eIntent = PendingIntent.getService(getApplicationContext(), requestCode, errorIntent, 0);
-                                } else {
-                                    Intent errorIntent = ProductActivity.moveToModifyProduct(getApplicationContext(), retryBundle.getLong(TkpdState.ProductService.PRODUCT_DB_ID));
-                                    errorIntent.putExtra(NOTIFICATION_ID, notificationService.getNotificationId());
-                                    errorMessage += " - " + getApplicationContext().getString(R.string.return_modify_product);
-                                    eIntent = PendingIntent.getActivity(getApplicationContext(), requestCode, errorIntent, 0);
-                                }
-                                notificationService.updateNotificationError(eIntent, errorMessage);
-                            }
                             sendProductServiceBroadcast(
                                     TkpdState.ProductService.ADD_PRODUCT_WITHOUT_IMAGE,
                                     TkpdState.ProductService.STATUS_ERROR,
