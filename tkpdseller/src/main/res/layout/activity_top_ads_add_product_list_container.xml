@@ -16,9 +16,9 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:theme="@style/Toolbar"
+            app:elevation="4dp"
             app:popupTheme="@style/Toolbar_Popup"
-            app:elevation="4dp" />
+            app:theme="@style/Toolbar" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -57,6 +57,7 @@
             android:background="@drawable/bg_button_green" />
 
         <TextView
+            android:id="@+id/top_ads_btn_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

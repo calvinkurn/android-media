@@ -306,6 +306,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setIconifiedByDefault(true);
         searchView.setOnQueryTextListener(this);
+        searchView.setQueryHint(getString(R.string.search_product));
         super.onCreateOptionsMenu(menu, inflater);
     }
 

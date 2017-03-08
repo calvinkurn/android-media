@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:foreground="?attr/selectableItemBackground">
@@ -22,10 +23,11 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
+        android:layout_toEndOf="@id/top_ads_add_product_list_imageview"
         android:layout_toRightOf="@id/top_ads_add_product_list_imageview"
-        android:text="Tiento Baselayer Manset Rash Guard \nCompression Long Pants Black Red"
         android:textColor="#B3000000"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        tools:text="Tiento Baselayer Manset Rash Guard \nCompression Long Pants Black Red" />
 
     <TextView
         android:id="@+id/top_ads_add_product_list_snippet"
@@ -36,8 +38,13 @@
         android:layout_below="@id/top_ads_add_product_list_description"
         android:layout_marginBottom="16dp"
         android:layout_marginTop="2dp"
-        android:text="[Nama_Grup]"
-        android:textSize="11sp" />
+        android:background="@drawable/ic_bg_white_border"
+        android:paddingBottom="3dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="3dp"
+        android:textSize="11sp"
+        tools:text="[Nama_Grup]" />
 
     <View
         android:id="@+id/empty_space"

@@ -8,11 +8,12 @@
 
     <CheckBox
         android:id="@+id/checkbox_top_ads_add_product_list_non_promoted"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="20dp" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="19dp"
+        android:layout_marginRight="19dp"
+        android:layout_marginTop="20dp"
+        android:button="@drawable/selector_enable_selection" />
 
     <TextView
         android:id="@+id/top_ads_add_product_list_description_non_promoted"
@@ -23,6 +24,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
+        android:layout_toEndOf="@id/checkbox_top_ads_add_product_list_non_promoted"
         android:layout_toRightOf="@id/checkbox_top_ads_add_product_list_non_promoted"
         android:textColor="@color/black_seventy_percent"
         android:textSize="16sp"
@@ -37,6 +39,11 @@
         android:layout_below="@id/top_ads_add_product_list_description_non_promoted"
         android:layout_marginBottom="16dp"
         android:layout_marginTop="2dp"
+        android:background="@drawable/ic_bg_white_border"
+        android:paddingBottom="3dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingTop="3dp"
         android:textColor="@color/thirty_eight_percent_black"
         android:textSize="11sp"
         tools:text="[Nama_Grup]" />
