@@ -115,6 +115,7 @@ public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopS
         recyclerView.setLayoutManager(layoutManager);
         adapter = new ShopScoreDetailAdapter();
         recyclerView.setAdapter(adapter);
+        recyclerView.setNestedScrollingEnabled(false);
     }
 
     @Override
