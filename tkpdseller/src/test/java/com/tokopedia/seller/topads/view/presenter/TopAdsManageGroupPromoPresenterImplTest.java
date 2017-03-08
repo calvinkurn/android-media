@@ -65,7 +65,7 @@ public class TopAdsManageGroupPromoPresenterImplTest {
 
 
         @Override
-        public void onCheckGroupExistError(String message) {
+        public void onCheckGroupExistError() {
             this.message = message;
         }
 

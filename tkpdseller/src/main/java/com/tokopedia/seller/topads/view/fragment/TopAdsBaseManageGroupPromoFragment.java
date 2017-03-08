@@ -3,13 +3,12 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -119,7 +118,6 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
         buttonNext.setText(getTitleButtonNext());
-        setVisibilityOption();
         setVisibilityInfoOption();
     }
 
@@ -168,6 +166,16 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
                 }
             }
         });
+        radioGroup.setOnCheckedChangeListener(new TopAdsCustomRadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(TopAdsCustomRadioGroup group, @IdRes int checkedId) {
+                if(checkedId == R.id.radio_promo_new_group){
+                    inputNewGroup.requestFocus();
+                }else if(checkedId == R.id.radio_promo_choose_group){
+                    inputChooseGroup.requestFocus();
+                }
+            }
+        });
     }
 
     @Override
@@ -186,10 +194,9 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
 
     }
 
-
     @Override
-    public void onCheckGroupExistError(String message) {
-        textInputLayoutNewGroup.setError(message);
+    public void onCheckGroupExistError() {
+        textInputLayoutNewGroup.setError(getString(R.string.error_connection_problem));
     }
 
     @Override
@@ -215,8 +222,8 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
     }
 
     @Override
-    public void onGetGroupAdListError(String message) {
-        textInputLayoutChooseGroup.setError(message);
+    public void onGetGroupAdListError() {
+        textInputLayoutChooseGroup.setError(getString(R.string.error_connection_problem));
     }
 
     @Override
@@ -281,25 +288,6 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.label_top_ads_error_choose_one_option));
     }
 
-    private void setVisibilityOption() {
-        if(getVisibleNewGroupOption()){
-            viewRadioNewGroup.setVisibility(View.VISIBLE);
-        }else{
-            viewRadioNewGroup.setVisibility(View.GONE);
-        }
-
-        if(getVisibleChooseGroupOption()){
-            viewRadioChooseGroup.setVisibility(View.VISIBLE);
-        }else{
-            viewRadioChooseGroup.setVisibility(View.GONE);
-        }
-
-        if(getVisibleNotInGroupOption()){
-            viewRadioNotInGroup.setVisibility(View.VISIBLE);
-        }else{
-            viewRadioNotInGroup.setVisibility(View.GONE);
-        }
-    }
 
     private void setVisibilityInfoOption() {
         if(getVisibleInfoNewGroupOption()){
@@ -330,12 +318,6 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
     protected abstract boolean getVisibleInfoChooseGroupOption();
 
     protected abstract boolean getVisibleInfoNewGroupOption();
-
-    protected abstract boolean getVisibleNotInGroupOption();
-
-    protected abstract boolean getVisibleChooseGroupOption();
-
-    protected abstract boolean getVisibleNewGroupOption();
 
     protected abstract void onSubmitFormNewGroup(String groupName);
 

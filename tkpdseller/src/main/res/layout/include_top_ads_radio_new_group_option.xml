@@ -6,6 +6,7 @@
 
     <com.tokopedia.seller.topads.view.widget.TopAdsRadioExpandView
         android:id="@+id/view_radio_new_group"
+        app:checked="true"
         app:radio_id="@+id/radio_promo_new_group"
         app:title_radio="@string/label_top_ads_create_promo_new_group"
         style="@style/TopAdsRadioExpandView">
@@ -17,6 +18,7 @@
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/input_layout_new_group_name"
+                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
                 style="@style/TextInputLayout">
 
                 <EditText

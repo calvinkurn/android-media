@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.AutoCompleteTextView;
@@ -12,7 +13,7 @@ import android.widget.AutoCompleteTextView;
  * Created by zulfikarrahman on 2/23/17.
  */
 
-public class TopAdsCustomAutoCompleteTextView extends AutoCompleteTextView {
+public class TopAdsCustomAutoCompleteTextView extends AppCompatAutoCompleteTextView {
 
     private Drawable drawableRight;
 
@@ -30,16 +31,6 @@ public class TopAdsCustomAutoCompleteTextView extends AutoCompleteTextView {
 
     public TopAdsCustomAutoCompleteTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(attrs);
-    }
-
-    public TopAdsCustomAutoCompleteTextView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(attrs);
-    }
-
-    public TopAdsCustomAutoCompleteTextView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes, Resources.Theme popupTheme) {
-        super(context, attrs, defStyleAttr, defStyleRes, popupTheme);
         init(attrs);
     }
 
@@ -77,7 +68,7 @@ public class TopAdsCustomAutoCompleteTextView extends AutoCompleteTextView {
                 bounds = drawableRight.getBounds();
 
                 int x, y;
-                int extraTapArea = 13;
+                int extraTapArea = 40;
 
                 /**
                  * IF USER CLICKS JUST OUT SIDE THE RECTANGLE OF THE DRAWABLE

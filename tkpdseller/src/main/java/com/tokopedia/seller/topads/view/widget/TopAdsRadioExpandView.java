@@ -78,6 +78,7 @@ public class TopAdsRadioExpandView extends LinearLayout {
         if (childView != null) {
             if (b) {
                 childView.setVisibility(VISIBLE);
+
             } else {
                 childView.setVisibility(GONE);
             }
@@ -111,4 +112,5 @@ public class TopAdsRadioExpandView extends LinearLayout {
     public void setChecked(boolean b) {
         radioButton.setChecked(b);
     }
+
 }
