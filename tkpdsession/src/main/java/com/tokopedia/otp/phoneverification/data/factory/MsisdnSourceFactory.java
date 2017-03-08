@@ -25,8 +25,8 @@ public class MsisdnSourceFactory {
         SessionHandler sessionHandler = new SessionHandler(context);
         bundle.putString(AccountsService.AUTH_KEY,
                 "Bearer " + sessionHandler.getAccessToken(context));
-        bundle.putString(AccountsService.USING_BOTH_AUTHORIZATION,
-                "true");
+        bundle.putBoolean(AccountsService.USING_BOTH_AUTHORIZATION,
+                true);
         this.accountsService = new AccountsService(bundle);
     }
 

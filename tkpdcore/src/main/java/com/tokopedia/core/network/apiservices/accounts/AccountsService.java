@@ -67,7 +67,7 @@ public class AccountsService {
         Interceptor authInterceptor;
         authInterceptor = new AccountsInterceptor(authKey, isUsingHMAC);
         client.interceptors().add(authInterceptor);
-        if (bundle.getBoolean(USING_BOTH_AUTHORIZATION)) {
+        if (bundle.getBoolean(USING_BOTH_AUTHORIZATION,false)) {
             AuthorizationInterceptor authorizationInterceptor = new AuthorizationInterceptor();
             client.interceptors().add(authorizationInterceptor);
         }
