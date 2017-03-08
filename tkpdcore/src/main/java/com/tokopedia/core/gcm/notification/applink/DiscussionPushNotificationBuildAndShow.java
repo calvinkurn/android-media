@@ -64,10 +64,11 @@ public class DiscussionPushNotificationBuildAndShow extends AbstractApplinkBuild
                 multipleSender = true;
             }
             String description;
-            if (discussionPushNotifications.size() > 1) {
+
+            if (!isSingle){
                 description = String.format("%d diskusi dari %d pengirim", discussionPushNotifications.size(), senderCount);
-            } else {
-                description = String.format("%d diskusi", discussionPushNotifications.size());
+            }else{
+                description = String.format("%d diskusi dari %d", discussionPushNotifications.size(), username);
             }
             Uri url = Uri.parse(uri);
             handlerIntent.setData(url);

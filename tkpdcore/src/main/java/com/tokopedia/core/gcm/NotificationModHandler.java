@@ -16,6 +16,7 @@ import com.tokopedia.core.gcm.domain.PushNotificationRepository;
 import com.tokopedia.core.gcm.domain.usecase.DeleteSavedPushNotificationByCategoryAndServerIdUseCase;
 import com.tokopedia.core.gcm.domain.usecase.DeleteSavedPushNotificationByCategoryUseCase;
 import com.tokopedia.core.gcm.domain.usecase.DeleteSavedPushNotificationUseCase;
+import com.tokopedia.core.review.var.Const;
 import com.tokopedia.core.var.TkpdCache;
 
 import rx.Subscriber;
@@ -73,6 +74,13 @@ public class NotificationModHandler {
                     CommonUtils.dumper("Failed Clear Storage Notification");
             }
         });
+    }
+
+    public void dismissAllActivedNotifications(){
+        NotificationManager notificationManager =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE_ID);
+        notificationManager.cancel(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION_ID);
     }
 
     public static void clearCacheIfFromNotification(String category){
