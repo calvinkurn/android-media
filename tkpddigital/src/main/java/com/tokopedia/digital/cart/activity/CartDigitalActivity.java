@@ -14,7 +14,8 @@ import com.tokopedia.digital.cart.fragment.CartDigitalFragment;
  * @author anggaprasetiyo on 2/21/17.
  */
 
-public class CartDigitalActivity extends BasePresenterActivity {
+public class CartDigitalActivity extends BasePresenterActivity implements
+        CartDigitalFragment.ActionListener {
     private static final String EXTRA_PASS_DIGITAL_CART_DATA = "EXTRA_PASS_DIGITAL_CART_DATA";
     private DigitalCheckoutPassData passData;
 
@@ -66,4 +67,8 @@ public class CartDigitalActivity extends BasePresenterActivity {
     }
 
 
+    @Override
+    public void setTitleCart(String title) {
+        toolbar.setTitle(title);
+    }
 }
