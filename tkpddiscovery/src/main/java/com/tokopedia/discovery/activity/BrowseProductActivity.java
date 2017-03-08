@@ -565,7 +565,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                 // set the value get from intent
                 if (adSrc != null)
                     browseProductActivityModel.setAdSrc(adSrc);
-                if (departmentId != null) {
+                if(departmentId!=null) {
                     browseProductActivityModel.setDepartmentId(departmentId);
                     browseProductActivityModel.setParentDepartement(departmentId);
                 }
@@ -800,10 +800,10 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
         } else if (source.contains("shop")) {
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP, browseProductActivityModel.getDepartmentId());
         } else if (source.contains("directory") && activeTab == 0) {
-            Log.d(TAG, "get dynamic filter product");
+            Log.d(TAG,"get dynamic filter product");
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY, browseProductActivityModel.getDepartmentId());
         } else if (source.contains("directory") && activeTab == 1) {
-            Log.d(TAG, "get dynamic filter catalog");
+            Log.d(TAG,"get dynamic filter catalog");
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG, browseProductActivityModel.getDepartmentId());
         } else {
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT, browseProductActivityModel.getDepartmentId());
@@ -973,7 +973,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                         }
                         Map<String, String> filters;
 
-                        if (browseProductActivityModel != null) {
+                        if ( browseProductActivityModel != null ) {
                             filters = browseProductActivityModel.getFilterOptions();
                             for (Map.Entry<String, String> set : filters.entrySet()) {
                                 if (set.getKey().equals("ob")) {
