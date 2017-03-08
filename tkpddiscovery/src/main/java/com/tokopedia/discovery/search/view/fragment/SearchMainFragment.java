@@ -33,6 +33,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     private Unbinder unbinder;
     public static final String FRAGMENT_TAG = "SearchHistoryFragment";
     public static final String INIT_QUERY = "INIT_QUERY";
+    private static final String SEARCH_INIT_KEY = "SEARCH_INIT_KEY";
 
     @BindView(R2.id.tabs)
     TabLayout tabLayout;
@@ -41,6 +42,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 
     SearchPresenter presenter;
     private SearchPageAdapter pageAdapter;
+    private String mSearch;
 
     public static SearchMainFragment newInstance() {
         
@@ -64,6 +66,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new SearchPresenter(getActivity());
+        setRetainInstance(true);
     }
 
     @Nullable
@@ -79,6 +82,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 
     private void prepareView(){
         pageAdapter = new SearchPageAdapter(getChildFragmentManager(), getActivity());
+        viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(pageAdapter);
         tabLayout.setupWithViewPager(viewPager);
     }
@@ -97,9 +101,9 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 
     @Override
     public void showSearchResult(final List<Visitable> list) {
-        SearchResultFragment resultFragment = (SearchResultFragment) pageAdapter.getItem(0);
+        SearchResultFragment resultFragment = pageAdapter.getRegisteredFragment(0);
         resultFragment.clearData();
-        SearchResultFragment shopFragment = (SearchResultFragment) pageAdapter.getItem(1);
+        SearchResultFragment shopFragment = pageAdapter.getRegisteredFragment(1);
         shopFragment.clearData();
         for (Visitable visitable : list) {
             if(visitable instanceof ShopViewModel){
@@ -110,8 +114,24 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
         }
     }
 
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if(savedInstanceState!=null) {
+            mSearch = savedInstanceState.getString(SEARCH_INIT_KEY);
+            presenter.search(mSearch);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(SEARCH_INIT_KEY, mSearch);
+    }
+
     public void search(String query){
-        presenter.search(query);
+        this.mSearch = query;
+        presenter.search(mSearch);
     }
 
     public void deleteAllRecentSearch(){
