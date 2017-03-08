@@ -73,7 +73,7 @@ buildscript {
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion '25.0.2'
+    buildToolsVersion "25.0.0"
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
