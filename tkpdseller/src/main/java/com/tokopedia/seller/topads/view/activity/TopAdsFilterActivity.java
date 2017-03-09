@@ -132,8 +132,12 @@ public abstract class TopAdsFilterActivity extends BasePresenterActivity impleme
 
     private void setFilterChangedResult() {
         Intent intent = getDefaultIntentResult();
+        // overwrite with changes
         for (TopAdsFilterContentFragment topAdsFilterContentFragment : filterContentFragmentList) {
-            topAdsFilterContentFragment.addResult(intent);
+            // only process the added fragment, not-added-fragment has no adapter created.
+            if (topAdsFilterContentFragment.isAdded()) {
+                topAdsFilterContentFragment.addResult(intent);
+            }
         }
         setResult(Activity.RESULT_OK, intent);
     }

@@ -57,7 +57,7 @@ public abstract class TopAdsFilterRadioButtonFragment<P> extends TopAdsFilterCon
     }
 
     public String getSelectedRadioValue(){
-        if (adapter.isEmpty()) {
+        if ( adapter.isEmpty()) {
             return String.valueOf(0);
         }
         return adapter.getSelectedItem().getValue();
