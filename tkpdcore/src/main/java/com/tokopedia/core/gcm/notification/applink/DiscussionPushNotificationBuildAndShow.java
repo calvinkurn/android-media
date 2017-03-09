@@ -77,12 +77,7 @@ public class DiscussionPushNotificationBuildAndShow extends AbstractApplinkBuild
                 configuration.setNetworkIcon(true);
             }
 
-            String description;
-            if (senderCount > 1) {
-                description = String.format("%d diskusi produk dari %d pengirim", discussionPushNotifications.size(), senderCount);
-            } else {
-                description = String.format("%d diskusi produk", discussionPushNotifications.size());
-            }
+            String description = String.format("%d diskusi produk", discussionPushNotifications.size());
 
             Uri url = Uri.parse(uri);
             handlerIntent.setData(url);
