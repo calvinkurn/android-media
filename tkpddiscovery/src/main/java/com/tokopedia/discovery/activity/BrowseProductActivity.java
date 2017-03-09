@@ -1170,6 +1170,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
     public void renderLowerCategoryLevel(Child child) {
         categoryLevel.push(new SimpleCategory(browseProductActivityModel.getDepartmentId(),getIntent().getStringExtra(EXTRA_TITLE)));
+        getIntent().putExtra(EXTRA_TITLE,child.getName());
         renderNewCategoryLevel(child.getId(),child.getName());
 
     }
