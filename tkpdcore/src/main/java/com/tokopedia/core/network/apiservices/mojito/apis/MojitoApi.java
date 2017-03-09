@@ -21,7 +21,7 @@ public interface MojitoApi {
 
     String DEVICE = "device";
 
-    @GET(TkpdBaseURL.Mojito.PATH_USER+"{userId}/"+TkpdBaseURL.Mojito.PATH_WISHLIST_PRODUCT)
+    @GET(TkpdBaseURL.Mojito.PATH_WISHLIST_PRODUCT)
     Observable<Response<WishlistData>> getWishlist(@Path("userId") String UserId,
                                                    @Query("count") int Count,
                                                    @Query("page") int Page);
@@ -37,7 +37,7 @@ public interface MojitoApi {
             @Query(DEVICE) String device
     );
 
-    @GET(TkpdBaseURL.Mojito.PATH_USER_WISHLIST + "/{userId}" + TkpdBaseURL.Mojito.PATH_SEARCH_WISHLIST)
+    @GET(TkpdBaseURL.Mojito.PATH_SEARCH_WISHLIST)
     Observable<Response<WishlistData>> searchWishlist(
             @Path("userId") String userId, @Query("q") String query);
 }
