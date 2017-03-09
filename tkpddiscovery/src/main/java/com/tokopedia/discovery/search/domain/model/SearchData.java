@@ -10,10 +10,6 @@ import java.util.List;
 
 public class SearchData {
 
-    public enum ItemsIds {
-        recent_search, popular_search, in_category, autocomplete, shop, hotlist, category
-    }
-
     @SerializedName("id")
     private String id;
     @SerializedName("name")
