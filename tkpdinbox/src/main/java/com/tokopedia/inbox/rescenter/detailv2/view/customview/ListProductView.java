@@ -39,7 +39,7 @@ public class ListProductView extends BaseView<Object, DetailResCenterFragmentVie
 
     @Override
     protected void setViewListener() {
-
+        setVisibility(GONE);
     }
 
     @Override

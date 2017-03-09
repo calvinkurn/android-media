@@ -5,4 +5,5 @@ package com.tokopedia.inbox.rescenter.detailv2.view.presenter;
  */
 
 public interface DetailResCenterFragmentPresenter {
+    void setOnFirstTimeLaunch();
 }

@@ -33,7 +33,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small"
-                android:visibility="gone"
                 />
 
             <com.tokopedia.inbox.rescenter.detailv2.view.customview.DetailView
@@ -41,7 +40,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small"
-                android:visibility="gone"
                 />
 
             <com.tokopedia.inbox.rescenter.detailv2.view.customview.ListProductView
@@ -49,7 +47,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small"
-                android:visibility="gone"
                 />
 
             <com.tokopedia.inbox.rescenter.detailv2.view.customview.SolutionView

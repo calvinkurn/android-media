@@ -39,7 +39,7 @@ public class DetailView extends BaseView<Object, DetailResCenterFragmentView> {
 
     @Override
     protected void setViewListener() {
-
+        setVisibility(GONE);
     }
 
     @Override
