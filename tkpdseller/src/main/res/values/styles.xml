@@ -32,12 +32,16 @@
         <item name="android:textSize">@dimen/font_medium</item>
     </style>
 
-    <style name="TextView.TopAds.Title.One">
+    <style name="TextView.TopAds.Title.Bold">
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TextView.TopAds.Title.Two">
+    <style name="TextView.TopAds.Title.Green">
         <item name="android:textColor">@color/font_top_ads_green</item>
+    </style>
+
+    <style name="TextView.TopAds.Title.Gray">
+        <item name="android:textColor">@color/font_top_ads_black_54</item>
     </style>
 
     <style name="TextView.TopAds.Body">
@@ -45,10 +49,6 @@
     </style>
 
     <style name="TextView.TopAds.Body.Gray">
-        <item name="android:textColor">@color/font_top_ads_black_54</item>
-    </style>
-
-    <style name="TextView.TopAds.Gray">
         <item name="android:textColor">@color/font_top_ads_black_54</item>
     </style>
 
@@ -61,10 +61,6 @@
     </style>
 
     <style name="TextView.TopAds.Body.Green">
-        <item name="android:textColor">@color/font_top_ads_green</item>
-    </style>
-
-    <style name="TextView.TopAds.Green">
         <item name="android:textColor">@color/font_top_ads_green</item>
     </style>
 
