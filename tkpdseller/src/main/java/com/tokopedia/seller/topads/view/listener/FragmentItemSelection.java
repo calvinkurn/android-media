@@ -10,4 +10,8 @@ public interface FragmentItemSelection extends AdapterSelectionListener<TopAdsPr
     void notifyUnchecked(TopAdsProductViewModel topAdsProductViewModel);
 
     boolean isExistingGroup();
+
+    void hideFooterViewHolder();
+
+    void showFooterViewHolder();
 }

@@ -17,10 +17,13 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
+            android:background="@color/tkpd_main_green"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/AppBarTheme"
             app:elevation="0dp"
             app:layout_collapseMode="pin"
-            app:popupTheme="@style/Toolbar_Popup"
-            app:theme="@style/Toolbar"/>
+            app:subtitleTextAppearance="@style/ToolbarSubtitleText"
+            app:titleTextAppearance="@style/ToolbarText" />
 
         <include layout="@layout/layout_tab_top_ads_indicator_main_fixed"/>
 

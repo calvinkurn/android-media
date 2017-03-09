@@ -10,11 +10,13 @@ import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsAddProductListViewHolder;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyRowViewHolder;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsNonPromotedViewHolder;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsPromotedViewHolder;
 import com.tokopedia.seller.topads.view.listener.AdapterSelectionListener;
 import com.tokopedia.seller.topads.view.listener.FragmentItemSelection;
 import com.tokopedia.seller.topads.view.model.BaseTopAdsProductModel;
+import com.tokopedia.seller.topads.view.model.EmptyTypeBasedModel;
 import com.tokopedia.seller.topads.view.model.NonPromotedTopAdsAddProductModel;
 import com.tokopedia.seller.topads.view.model.PromotedTopAdsAddProductModel;
 import com.tokopedia.seller.topads.view.model.TopAdsAddProductModel;
@@ -38,6 +40,7 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
     List<TypeBasedModel> datas;
     FragmentItemSelection fragmentItemSelection;
     private ImageHandler imageHandler;
+    private boolean isEmptyShown;
 
     public TopAdsAddProductListAdapter(ImageHandler imageHandler,
                                        FragmentItemSelection fragmentItemSelection) {
@@ -74,6 +77,9 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
             case TopAdsAddProductModel.TYPE:
                 view = from.inflate(R.layout.row_top_ads_add_product_list, parent, false);
                 return new TopAdsAddProductListViewHolder(view, imageHandler, this);
+            case EmptyTypeBasedModel.TYPE:
+                view = from.inflate(R.layout.row_top_ads_empty_list, parent, false);
+                return new TopAdsEmptyRowViewHolder(view);
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
@@ -98,6 +104,8 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
                 ((TopAdsAddProductListViewHolder) holder).
                         bind(topAdsAddProductModel);
                 break;
+            case EmptyTypeBasedModel.TYPE:
+                break; // prevent from entering super.
             default:
                 super.onBindViewHolder(holder, position);
                 break;
@@ -173,8 +181,11 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
                 new ArrayList<>();
         for (TypeBasedModel data : datas) {
             if (data != null && data instanceof BaseTopAdsProductModel) {
-                topAdsProductViewModels.add(((BaseTopAdsProductModel) data).
-                        getTopAdsProductViewModel());
+                BaseTopAdsProductModel baseTopAdsProductModel = ((BaseTopAdsProductModel) data);
+                if (baseTopAdsProductModel.getTopAdsProductViewModel() != null) {
+                    topAdsProductViewModels.add(
+                            baseTopAdsProductModel.getTopAdsProductViewModel());
+                }
             } else {
                 throw new RuntimeException("all model in this adapter must implement " +
                         "BaseTopAdsProductModel");
@@ -213,5 +224,22 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
         }
 
         return null;
+    }
+
+    public void insertEmptyFooter() {
+        if (!isEmptyShown) {
+            isEmptyShown = datas.add(new EmptyTypeBasedModel());
+            notifyItemInserted(datas.size() - 1);
+        }
+    }
+
+    public void removeEmptyFooter() {
+        if (isEmptyShown) {
+            int index = datas.size() - 1;
+            datas.remove(index);
+            notifyItemRemoved(index);
+
+            isEmptyShown = false;
+        }
     }
 }
