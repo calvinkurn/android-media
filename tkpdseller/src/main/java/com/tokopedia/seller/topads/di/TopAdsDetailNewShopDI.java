@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.data.factory.TopAdsShopAdFactory;
 import com.tokopedia.seller.topads.data.mapper.TopAdsDetailShopMapper;
 import com.tokopedia.seller.topads.data.repository.TopAdsShopAdsRepositoryImpl;
@@ -26,7 +27,7 @@ public class TopAdsDetailNewShopDI {
     public static TopAdsDetailNewShopPresenter createPresenter(Context context) {
         JobExecutor threadExecutor = new JobExecutor();
         UIThread postExecutionThread = new UIThread();
-        TopAdsManagementService topAdsManagementService = new TopAdsManagementService();
+        TopAdsManagementService topAdsManagementService = new TopAdsManagementService(new SessionHandler(context).getAccessToken(context));
         TopAdsManagementApi topAdsManagementApi = topAdsManagementService.getApi();
         TopAdsDetailShopMapper mapper = new TopAdsDetailShopMapper();
         TopAdsShopAdFactory topAdsShopAdFactory = new TopAdsShopAdFactory(context, topAdsManagementApi, mapper);

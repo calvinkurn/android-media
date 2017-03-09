@@ -266,7 +266,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
 
     private void inject() {
         //[START] This is for dependent component
-        topAdsSearchProductService = new TopAdsManagementService();
+        topAdsSearchProductService = new TopAdsManagementService(new SessionHandler(context).getAccessToken(context));
         sessionHandler = new SessionHandler(getActivity());
         searchProductMapper = new SearchProductEOFMapper();
         cloudTopAdsSeachProductDataSource = new CloudTopAdsSearchProductDataSource(
