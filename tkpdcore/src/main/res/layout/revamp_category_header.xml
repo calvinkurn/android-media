@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:textColor="@color/tkpd_dark_green"
-            android:text="Sebunyikan Lainnya"
+            android:text="Smebunyikan Lainnya"
             android:textSize="13sp"/>
 
         <ImageView
