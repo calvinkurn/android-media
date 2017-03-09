@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".50"
+            android:padding="@dimen/padding_small"
+            android:text="Tanggal Buka Komplain :"
+            android:textColor="#868686"
+            android:textSize="@dimen/fontvs" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".50"
+            android:padding="@dimen/padding_small"
+            android:textColor="#464646"
+            android:textSize="@dimen/fonts" />
+    </TableRow>
+
+    <TableRow
+        android:id="@id/tr_returnable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".50"
+            android:padding="@dimen/padding_small"
+            android:text="Beli dari Toko :"
+            android:textColor="#868686"
+            android:textSize="@dimen/fontvs" />
+
+        <TextView
+            android:id="@+id/shop_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".50"
+            android:padding="@dimen/padding_small"
+            android:textColor="#464646"
+            android:textSize="@dimen/fonts" />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".50"
+            android:padding="@dimen/padding_small"
+            android:text="No. Resi Pembelian :"
+            android:textColor="#868686"
+            android:textSize="@dimen/fontvs" />
+
+        <TextView
+            android:id="@+id/awb_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".50"
+            android:padding="@dimen/padding_small"
+            android:textColor="#464646"
+            android:textSize="@dimen/fonts" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".50"
+            android:padding="@dimen/padding_small"
+            android:text="No. Invoice :"
+            android:textColor="#868686"
+            android:textSize="@dimen/fontvs" />
+
+        <TextView
+            android:id="@+id/invoice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".50"
+            android:padding="@dimen/padding_small"
+            android:textColor="#464646"
+            android:textSize="@dimen/fonts" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".50"
+            android:padding="@dimen/padding_small"
+            android:text="Batas Waktu Respon Pembeli :"
+            android:textColor="#868686"
+            android:textSize="@dimen/fontvs" />
+
+        <TextView
+            android:id="@+id/response_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight=".50"
+            android:padding="@dimen/padding_small"
+            android:textColor="#464646"
+            android:textSize="@dimen/fonts" />
+    </TableRow>
+
+</TableLayout>
