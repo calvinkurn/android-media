@@ -1,6 +1,7 @@
 package com.tokopedia.core.network.core;
 
 import com.tokopedia.core.network.retrofit.interceptors.AccountsInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
@@ -60,7 +61,7 @@ public class OkHttpFactory {
 
     public OkHttpClient buildClientAuth(String authKey) {
         return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(new TkpdAuthInterceptor(authKey))
+                .addInterceptor(new GlobalTkpdAuthInterceptor(authKey))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();
