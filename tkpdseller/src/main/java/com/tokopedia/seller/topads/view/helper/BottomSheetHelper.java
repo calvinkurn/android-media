@@ -1,6 +1,5 @@
 package com.tokopedia.seller.topads.view.helper;
 
-import android.os.Build;
 import android.support.design.widget.BottomSheetBehavior;
 import android.view.View;
 
@@ -14,6 +13,7 @@ public class BottomSheetHelper {
     private BottomSheetBehavior mBottomSheetBehavior;
     private BottomSheetBehavior.BottomSheetCallback bottomSheetCallback;
     private int height;
+    private boolean isShown;
 
     public BottomSheetHelper(BottomSheetBehavior mBottomSheetBehavior,
                              View viewById, int actionBarSize) {
@@ -25,13 +25,19 @@ public class BottomSheetHelper {
     }
 
     public void showBottomSheet() {
+        isShown = true;
         mBottomSheetBehavior.setPeekHeight((int) (peakView.getHeight() + actionBarSize));
         peakView.requestLayout();
     }
 
     public void dismissBottomSheet() {
+        isShown = false;
         mBottomSheetBehavior.setPeekHeight(0);
         peakView.requestLayout();
+    }
+
+    public boolean isShown() {
+        return isShown;
     }
 
     public void setHeight(int height) {
