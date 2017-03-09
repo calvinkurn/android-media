@@ -83,7 +83,7 @@ public class CloudTopAdsSearchProductDataSource implements TopAdsSearchProductDa
                 .map(new Func1<ProductListDomain, ProductListDomain>() {
                     @Override
                     public ProductListDomain call(ProductListDomain productListDomain) {
-                        if (page != sourcePage) {
+                        if (page > sourcePage) {
                             productListDomain.setProductDomains(tempProducts);
                             productListDomain.setPage(page);
                         }

@@ -223,6 +223,10 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                     return;
                 }
 
+                if (topAdsAddProductListPresenter.isHitNetwork()) {
+                    return;
+                }
+
                 int lastItemPosition = layoutManager.findLastVisibleItemPosition();
                 int visibleItem = layoutManager.getItemCount() - 1;
                 if (lastItemPosition == visibleItem

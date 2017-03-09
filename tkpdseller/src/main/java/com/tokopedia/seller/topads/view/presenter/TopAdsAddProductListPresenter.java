@@ -148,7 +148,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
                         @Override
                         public void onNext(ProductListDomain productListDomain) {
                             if (isViewAttached()) {
-                                if (page != productListDomain.getPage()) {
+                                if (productListDomain.getPage() > page) {
                                     page = productListDomain.getPage();
                                 }
                                 getView().dismissSnackbar();
@@ -185,7 +185,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
                         @Override
                         public void onNext(ProductListDomain productListDomain) {
                             if (isViewAttached()) {
-                                if (page != productListDomain.getPage()) {
+                                if (productListDomain.getPage() > page) {
                                     page = productListDomain.getPage();
                                 }
                                 getView().dismissSnackbar();
@@ -198,7 +198,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
         }
     }
 
-    private boolean isHitNetwork() {
+    public boolean isHitNetwork() {
         switch (networkStatus) {
             case LOADMORE:
             case PULLTOREFRESH:
