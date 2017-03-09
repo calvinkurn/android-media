@@ -409,10 +409,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-
-        } else if (item.getItemId() == R.id.action_search) {
+        if (item.getItemId() == R.id.action_search) {
             return false;
         }
         return super.onOptionsItemSelected(item);
@@ -1058,7 +1055,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
                             ObjContainer objContainer = data.getModel2();
                             CategoriesHadesModel.CategoriesHadesContainer categoriesHadesContainer = (CategoriesHadesModel.CategoriesHadesContainer) objContainer;
                             CategoriesHadesModel body = categoriesHadesContainer.body();
-                            if (browseProductActivityModel !=null && body !=null && body.getData() !=null && body.getData() !=null) {
+                            if (browseProductActivityModel !=null && body !=null && body.getData() !=null) {
                                 browseProductActivityModel.categotyHeader = body.getData();
                                 parentFragment.renderCategories(browseProductActivityModel.categotyHeader);
                             }

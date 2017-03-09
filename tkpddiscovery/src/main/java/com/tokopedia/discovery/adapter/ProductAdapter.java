@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -45,6 +46,7 @@ import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
 import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
+import com.tokopedia.core.network.entity.topads.TopAdsResponse;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -411,6 +413,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         @BindView(R2.id.hide_layout)
         LinearLayout hideLayout;
 
+        @BindView(R2.id.card_category)
+        CardView cardViewCategory;
+
         private DefaultCategoryAdapter categoryAdapter;
 
         public DefaultCategoryHeaderViewHolder(View itemView) {
@@ -439,16 +444,20 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                         hideLayout.setVisibility(View.VISIBLE);
                     }
                 });
+                hideLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        categoryAdapter.hideExpandable();
+                        expandLayout.setVisibility(View.VISIBLE);
+                        categoryHeaderModel.isUsedUnactiveChildren = true;
+                        hideLayout.setVisibility(View.GONE);
+                    }
+                });
             }
-            hideLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    categoryAdapter.hideExpandable();
-                    expandLayout.setVisibility(View.VISIBLE);
-                    categoryHeaderModel.isUsedUnactiveChildren = true;
-                    hideLayout.setVisibility(View.GONE);
-                }
-            });
+            if (categoryHeaderModel.categoryHeader.getChild() == null || categoryHeaderModel.categoryHeader.getChild().isEmpty()) {
+                cardViewCategory.setVisibility(View.GONE);
+            }
+
         }
 
         public interface CategoryHeaderListener {
@@ -508,16 +517,16 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
                     }
                 });
+                hideLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        categoryAdapter.hideExpandable();
+                        expandLayout.setVisibility(View.VISIBLE);
+                        categoryHeaderModel.isUsedUnactiveChildren = true;
+                        hideLayout.setVisibility(View.GONE);
+                    }
+                });
             }
-            hideLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    categoryAdapter.hideExpandable();
-                    expandLayout.setVisibility(View.VISIBLE);
-                    categoryHeaderModel.isUsedUnactiveChildren = true;
-                    hideLayout.setVisibility(View.GONE);
-                }
-            });
         }
 
         public interface CategoryHeaderListener {
@@ -766,11 +775,11 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             this.context = context;
             this.categoryWidth = categoryWidth;
             this.listener = listener;
-            if (categoryHeader.getChild().size()>6) {
+            if (categoryHeader.getChild()!=null && categoryHeader.getChild().size()>6) {
                 activeChildren.addAll(categoryHeader.getChild()
                         .subList(0,6));
                 isUsedUnactiveChildren = true;
-            } else {
+            } else if (categoryHeader.getChild()!=null) {
                 activeChildren.addAll(categoryHeader.getChild());
             }
         }
@@ -795,11 +804,11 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             this.context = context;
             this.categoryWidth = categoryWidth;
             this.listener = listener;
-            if (categoryHeader.getChild().size()>9) {
+            if (categoryHeader.getChild()!=null && categoryHeader.getChild().size()>9) {
                 activeChildren.addAll(categoryHeader.getChild()
                         .subList(0,9));
                 isUsedUnactiveChildren = true;
-            } else {
+            } else if (categoryHeader.getChild()!=null){
                 activeChildren.addAll(categoryHeader.getChild());
             }
         }
