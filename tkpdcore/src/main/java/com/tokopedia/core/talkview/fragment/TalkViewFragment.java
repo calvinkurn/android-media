@@ -352,6 +352,7 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
         parseResult(result);
         adapter.notifyDataSetChanged();
         getActivity().setResult(Activity.RESULT_OK, getResult());
+        hideMainLoading();
     }
 
     private void parseResult(JSONObject result) {
