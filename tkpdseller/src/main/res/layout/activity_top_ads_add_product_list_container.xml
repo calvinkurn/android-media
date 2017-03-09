@@ -54,7 +54,7 @@
 
         <Button
             android:id="@+id/top_ads_btn_next_"
-            style="@style/Button.TopAds.Submit.GreenSelection"
+            style="@style/Button.TopAds.Submit.Green"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/next" />
