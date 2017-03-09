@@ -632,4 +632,8 @@ public class TkpdBaseURL {
     public static class Truecaller{
         public static final String VERIFY_PHONE = "/web-service/v4/truecaller/check";
     }
+
+    public static class HadesCategory {
+        public static final String CHECK_VERSION = "/v1/categories_version";
+    }
 }
