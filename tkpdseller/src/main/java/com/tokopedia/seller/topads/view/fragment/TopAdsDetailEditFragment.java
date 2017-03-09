@@ -62,7 +62,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     private RadioButton iconSpeakerRadioButton;
     private RadioButton iconThumbsUpRadioButton;
     private RadioButton iconFireRadioButton;
-    private Button submitButton;
+    protected Button submitButton;
 
     private ProgressDialog progressDialog;
 
@@ -201,7 +201,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
                         startDate = date;
                     }
                 });
-                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                datePickerDialog.setMinDate(System.currentTimeMillis());
                 datePickerDialog.show();
             }
         });
@@ -232,7 +232,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
                         endDate = date;
                     }
                 });
-                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                datePickerDialog.setMinDate(System.currentTimeMillis());
                 datePickerDialog.show();
             }
         });

@@ -22,6 +22,17 @@ public class DatePickerDialog extends android.app.DatePickerDialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
     }
 
+    public void setMinDate(long timestamp) {
+        Calendar minDateCalendar = Calendar.getInstance();
+        minDateCalendar.setTimeInMillis(timestamp);
+        minDateCalendar.set(Calendar.HOUR_OF_DAY, minDateCalendar.getMinimum(Calendar.HOUR_OF_DAY));
+        minDateCalendar.set(Calendar.MINUTE, minDateCalendar.getMinimum(Calendar.MINUTE));
+        minDateCalendar.set(Calendar.SECOND, minDateCalendar.getMinimum(Calendar.SECOND));
+        minDateCalendar.set(Calendar.MILLISECOND, minDateCalendar.getMinimum(Calendar.MILLISECOND));
+        getDatePicker().setMinDate(minDateCalendar.getTimeInMillis());
+
+    }
+
     public static class OnDateSetListener implements android.app.DatePickerDialog.OnDateSetListener {
 
         private DatePickerLabelView datePicker;

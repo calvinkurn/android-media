@@ -89,6 +89,9 @@ public class TopAdsDatePickerPresenterImpl implements TopAdsDatePickerPresenter 
         endCalendar.setTime(endDate);
         String startDateFormatted = new SimpleDateFormat(RANGE_DATE_FORMAT, Locale.ENGLISH).format(startDate);
         String endDateFormatted = new SimpleDateFormat(RANGE_DATE_FORMAT, Locale.ENGLISH).format(endDate);
+        if (startDateFormatted.equalsIgnoreCase(endDateFormatted)) {
+            return endDateFormatted;
+        }
         if (startCalendar.get(Calendar.YEAR) == endCalendar.get(Calendar.YEAR)) {
             startDateFormatted = new SimpleDateFormat(RANGE_DATE_FORMAT_WITHOUT_YEAR, Locale.ENGLISH).format(startDate);
         }
