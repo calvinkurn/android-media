@@ -46,7 +46,7 @@ public class CategoryVersioningHelper {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        listener.doAfterChecking();
                     }
 
                     @Override
