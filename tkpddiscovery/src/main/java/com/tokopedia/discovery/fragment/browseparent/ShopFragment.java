@@ -188,7 +188,7 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
 
     @Override
     public void setLoading(boolean isLoading) {
-        browseShopAdapter.setIsLoading(isLoading);
+        if (browseShopAdapter != null) browseShopAdapter.setIsLoading(isLoading);
     }
 
     @Override

@@ -10,11 +10,13 @@ import retrofit2.Retrofit;
  */
 
 public class MyShopActAfterService extends AuthService<OpenShopPicture> {
-    String baseUrl;
 
-    public MyShopActAfterService(String baseUrl) {
-        super(baseUrl, 1);
-        this.baseUrl = baseUrl;
+    public MyShopActAfterService() {
+        super();
+    }
+
+    public MyShopActAfterService(String overrideUrl) {
+        super(overrideUrl);
     }
 
     @Override
@@ -24,7 +26,7 @@ public class MyShopActAfterService extends AuthService<OpenShopPicture> {
 
     @Override
     protected String getBaseUrl() {
-        return baseUrl;
+        return null;
     }
 
     @Override

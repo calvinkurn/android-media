@@ -125,6 +125,10 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
         }
     }
 
+    public void clearSelectedIds(){
+        listIds.clear();
+    }
+
     private void checkFilter(boolean checked, DynamicFilterView dynamicFilterView, DynamicObject dynamicObject) {
         if (checked) {
             dynamicFilterView.saveCheckedPosition(dynamicObject.getKey(), true);
@@ -158,6 +162,7 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
 
     public void reset() {
         notifyItemRangeChanged(0, getItemCount());
+        clearSelectedIds();
     }
 
     /**
