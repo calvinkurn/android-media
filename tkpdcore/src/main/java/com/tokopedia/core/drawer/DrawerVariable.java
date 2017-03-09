@@ -1016,8 +1016,11 @@ public class DrawerVariable {
         } else {
             model.header.tokoCashText = topCashItem.getData().getText();
             model.header.tokoCashToWallet = false;
-            if(topCashItem.getData().getAction() != null)
+            if(topCashItem.getData().getAction() != null) {
                 model.header.tokoCashOtherAction = true;
+                model.header.tokoCashText = topCashItem.getData().getAction().getText();
+                model.header.tokoCashURL = topCashItem.getData().getAction().getRedirectUrl();
+            }
         }
     }
 
