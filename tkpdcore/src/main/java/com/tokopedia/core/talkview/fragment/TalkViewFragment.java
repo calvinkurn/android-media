@@ -33,6 +33,8 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.talk.talkproduct.fragment.TalkProductFragment;
@@ -207,7 +209,7 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
     protected void setupArguments(Bundle arguments) {
         from = arguments.getString("from");
         talk = arguments.getParcelable("talk");
-        talkID = arguments.getString("talk_id");
+        talkID = arguments.getString("talk_id", "");
         shopID = arguments.getString("shop_id", "");
         getFromBundle(talk);
         position = arguments.getInt("position");
@@ -229,7 +231,6 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
         if (!SessionHandler.isV4Login(getActivity())) {
             addCommentArea.setVisibility(View.GONE);
         }
-        label.giveLabel(headUserLabel);
         if (SessionHandler.isV4Login(context)) {
             buttonOverflow.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -307,6 +308,8 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     protected void parseHeader() {
         if (talk != null){
+
+            label.giveLabel(headUserLabel);
             pNameView.setText(productName);
             ImageHandler.loadImageRounded2(context, pImageView, prodImgUri);
             ImageHandler.loadImageCircle2(context, userTalkImageView, userImgUri);
@@ -345,6 +348,7 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
         parseResult(result);
         adapter.notifyDataSetChanged();
         getActivity().setResult(Activity.RESULT_OK, getResult());
+        hideMainLoading();
     }
 
     private void parseResult(JSONObject result) {

@@ -30,6 +30,7 @@ public class PushNotificationMapper {
             messagePushNotification.setThumbnail(response.getThumbnail());
             messagePushNotification.setDescription(response.getDescription());
             messagePushNotification.setUsername(response.getFullname());
+            messagePushNotification.setSenderId(response.getSenderId());
         }
         return messagePushNotification;
     }
@@ -72,6 +73,7 @@ public class PushNotificationMapper {
             discussionPushNotification.setThumbnail(response.getThumbnail());
             discussionPushNotification.setDescription(response.getDescription());
             discussionPushNotification.setUsername(response.getFullname());
+            discussionPushNotification.setSenderId(response.getSenderId());
         }
         return discussionPushNotification;
     }

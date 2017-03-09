@@ -16,7 +16,7 @@ import com.tokopedia.core.gcm.model.NotificationPass;
 public abstract class BaseNotification implements Visitable {
     protected final Context mContext;
     private FCMCacheManager mFCMCacheManager;
-    private NotificationConfiguration configuration;
+    protected NotificationConfiguration configuration;
     protected NotificationPass mNotificationPass;
     protected BuildAndShowNotification mBuildAndShowNotification;
 
@@ -35,7 +35,7 @@ public abstract class BaseNotification implements Visitable {
         showNotification(incomingMessage);
     }
 
-    private void buildDefaultConfiguration() {
+    protected void buildDefaultConfiguration() {
         configuration.setBell(mFCMCacheManager.isAllowBell());
         configuration.setVibrate(mFCMCacheManager.isVibrate());
         configuration.setSoundUri(mFCMCacheManager.getSoundUri());

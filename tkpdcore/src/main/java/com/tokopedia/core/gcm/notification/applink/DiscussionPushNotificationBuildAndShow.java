@@ -22,7 +22,7 @@ import java.util.List;
 
 public class DiscussionPushNotificationBuildAndShow extends AbstractApplinkBuildAndShowNotification<DiscussionPushNotificationWrapper> {
     private List<DiscussionPushNotification> discussionPushNotifications;
-    private static final String NOTIFICATION_TITLE = "Tokopedia - Diskusi Baru";
+    private static final String NOTIFICATION_TITLE = "Tokopedia - Diskusi";
     private static final String NOTIFICATION_GROUP = "personalized_group";
     private static final String NOTIFICATION_CATEGORY = "msg";
 
@@ -39,29 +39,25 @@ public class DiscussionPushNotificationBuildAndShow extends AbstractApplinkBuild
     public void process(Context context, Intent handlerIntent, boolean isNew) {
         BuildAndShowNotification buildAndShowNotification = new BuildAndShowNotification(context);
         if (discussionPushNotifications.size() > 0) {
-            boolean isSingle = true;
             int senderCount = 0;
-            String username = null;
+            String senderId = null;
             String uri = null;
             String image = null;
             Boolean multipleSender = false;
             List<String> contents = new ArrayList<>();
             for (DiscussionPushNotification discussionPushNotification : discussionPushNotifications) {
-                contents.add(discussionPushNotification.getUsername() + " : " + discussionPushNotification.getDescription());
+                contents.add(String.format("%s : %s", discussionPushNotification.getUsername(), discussionPushNotification.getDescription()));
                 if (uri == null) {
                     uri = discussionPushNotification.getApplink();
                     image = discussionPushNotification.getThumbnail();
                 } else if (!discussionPushNotification.getApplink().equalsIgnoreCase(uri)) {
-                    if (isSingle) {
-                        Uri url = Uri.parse(uri);
-                        uri = url.getScheme() + "://" + url.getHost();
-                    }
-                    isSingle = false;
+                    Uri url = Uri.parse(uri);
+                    uri = String.format("%s://%s", url.getScheme(), url.getHost());
                 }
 
-                if (!discussionPushNotification.getUsername().equalsIgnoreCase(username)) {
+                if (!discussionPushNotification.getSenderId().equalsIgnoreCase(senderId)) {
                     senderCount++;
-                    username = discussionPushNotification.getUsername();
+                    senderId = discussionPushNotification.getSenderId();
                 }
             }
 
@@ -71,20 +67,15 @@ public class DiscussionPushNotificationBuildAndShow extends AbstractApplinkBuild
                 configuration.setVibrate(false);
             }
 
-            if (!isSingle) {
+            if (senderCount > 1) {
                 multipleSender = true;
                 configuration.setNetworkIcon(false);
             } else {
                 configuration.setNetworkIcon(true);
             }
 
-            String description;
+            String description = String.format("%d diskusi produk", discussionPushNotifications.size());
 
-            if (!isSingle) {
-                description = String.format("%d diskusi dari %d pengirim", discussionPushNotifications.size(), senderCount);
-            } else {
-                description = String.format("%d diskusi dari %s", discussionPushNotifications.size(), username);
-            }
             Uri url = Uri.parse(uri);
             handlerIntent.setData(url);
             Bundle bundle = new Bundle();

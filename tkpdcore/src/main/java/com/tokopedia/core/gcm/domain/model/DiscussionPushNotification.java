@@ -14,6 +14,7 @@ public class DiscussionPushNotification{
     private String username;
     private String applink;
     private String description;
+    private String senderId;
 
     public DiscussionPushNotification() {
     }
@@ -48,5 +49,13 @@ public class DiscussionPushNotification{
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getSenderId() {
+        return senderId;
+    }
+
+    public void setSenderId(String senderId) {
+        this.senderId = senderId;
     }
 }

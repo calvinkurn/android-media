@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.ResultReceiver;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -103,7 +104,7 @@ public class InboxMessageIntentService extends IntentService implements InboxMes
                         @Override
                         public void onSuccess() {
                             receiver.send(STATUS_SUCCESS, resultData);
-
+                            handleOnSuccessDeleteForever(resultData.getParcelable(PARAM_ARCHIVE_MESSAGE));
                         }
 
                         @Override
@@ -274,7 +275,7 @@ public class InboxMessageIntentService extends IntentService implements InboxMes
                         @Override
                         public void onSuccess() {
                             receiver.send(STATUS_SUCCESS, resultData);
-
+                            handleOnSuccessDeleteForever(resultData.getParcelable(PARAM_DELETE_MESSAGE));
                         }
 
                         @Override
@@ -316,7 +317,6 @@ public class InboxMessageIntentService extends IntentService implements InboxMes
                         @Override
                         public void onSuccess() {
                             receiver.send(STATUS_SUCCESS, resultData);
-
                         }
 
                         @Override
@@ -358,7 +358,7 @@ public class InboxMessageIntentService extends IntentService implements InboxMes
                         @Override
                         public void onSuccess() {
                             receiver.send(STATUS_SUCCESS, resultData);
-                            handleOnSuccessDeleteForever(resultData);
+                            handleOnSuccessDeleteForever(resultData.getParcelable(PARAM_DELETE_FOREVER));
                         }
 
                         @Override
@@ -387,8 +387,8 @@ public class InboxMessageIntentService extends IntentService implements InboxMes
         }
     }
 
-    private void handleOnSuccessDeleteForever(Bundle resultData) {
-        ActInboxMessagePass actInboxMessagePass = resultData.getParcelable(PARAM_DELETE_FOREVER);
+    private void handleOnSuccessDeleteForever(Parcelable parcelable) {
+        ActInboxMessagePass actInboxMessagePass = (ActInboxMessagePass) parcelable;
         if (actInboxMessagePass != null) {
             for (InboxMessageItem messageItem : actInboxMessagePass.getListMove()) {
                 String messageId = String.valueOf(messageItem.getMessageId());
@@ -587,7 +587,7 @@ public class InboxMessageIntentService extends IntentService implements InboxMes
                         @Override
                         public void onSuccess() {
                             receiver.send(STATUS_SUCCESS, resultData);
-
+                            handleOnSuccessDeleteForever(resultData.getParcelable(PARAM_MARK_AS_READ));
                         }
 
                         @Override
@@ -617,4 +617,16 @@ public class InboxMessageIntentService extends IntentService implements InboxMes
         }
     }
 
+    private void handleOnSuccessMarkAsRead(Bundle resultData) {
+        ActInboxMessagePass actInboxMessagePass = resultData.getParcelable(PARAM_MARK_AS_READ);
+        if (actInboxMessagePass != null) {
+            for (InboxMessageItem messageItem : actInboxMessagePass.getListMove()) {
+                String messageId = String.valueOf(messageItem.getMessageId());
+                NotificationModHandler.clearCacheIfFromNotification(
+                        Constants.ARG_NOTIFICATION_APPLINK_MESSAGE,
+                        messageId
+                );
+            }
+        }
+    }
 }

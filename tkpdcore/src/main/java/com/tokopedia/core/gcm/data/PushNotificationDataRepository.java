@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.domain.PushNotification;
 import com.tokopedia.core.gcm.domain.PushNotificationRepository;
 import com.tokopedia.core.gcm.data.entity.FCMTokenUpdateEntity;
@@ -70,7 +71,7 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
     @Override
     public Observable<List<MessagePushNotification>> getSavedMessagePushNotification() {
         return mPushNotificationDataStoreFactory.createDiskPushNotificationDataStore()
-                .getPushSavedPushNotificationWithOrderBy("message", true)
+                .getPushSavedPushNotificationWithOrderBy(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE, true)
                 .map(new Func1<List<PushNotification>, List<MessagePushNotification>>() {
                     @Override
                     public List<MessagePushNotification> call(List<PushNotification> pushNotifications) {
@@ -103,7 +104,7 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
     @Override
     public Observable<List<DiscussionPushNotification>> getSavedDiscussionPushNotification() {
         return mPushNotificationDataStoreFactory.createDiskPushNotificationDataStore()
-                .getPushSavedPushNotificationWithOrderBy("discussion", true)
+                .getPushSavedPushNotificationWithOrderBy(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION, true)
                 .map(new Func1<List<PushNotification>, List<DiscussionPushNotification>>() {
                     @Override
                     public List<DiscussionPushNotification> call(List<PushNotification> pushNotifications) {

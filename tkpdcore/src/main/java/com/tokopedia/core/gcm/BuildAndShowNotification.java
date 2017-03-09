@@ -77,6 +77,7 @@ public class BuildAndShowNotification {
         mBuilder.setContentInfo(applinkNotificationPass.getInfo());
         mBuilder.setCategory(applinkNotificationPass.getCategory());
         mBuilder.setGroup(applinkNotificationPass.getGroup());
+        mBuilder.setGroupSummary(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             mBuilder.setColor(mContext.getColor(R.color.tkpd_dark_green));
@@ -100,10 +101,7 @@ public class BuildAndShowNotification {
         mBuilder.setContentIntent(resultPendingIntent);
         if (applinkNotificationPass.isMultiSender()) {
             mBuilder.setLargeIcon(
-                    ImageHandler.getRoundedCornerBitmap(
-                            BitmapFactory.decodeResource(mContext.getResources(), R.drawable.qc_launcher),
-                            100
-                    )
+                    BitmapFactory.decodeResource(mContext.getResources(), R.drawable.qc_launcher)
             );
 
             NotificationManager mNotificationManager =
@@ -118,10 +116,6 @@ public class BuildAndShowNotification {
         }
     }
 
-    public void buildAndShowNotification(ApplinkNotificationPass applinkNotificationPass) {
-        buildAndShowNotification(applinkNotificationPass, new NotificationConfiguration());
-    }
-
     private void downloadImageAndShowNotification(final ApplinkNotificationPass applinkNotificationPass,
                                                   final NotificationCompat.Builder mBuilder,
                                                   final NotificationConfiguration configuration) {
@@ -129,11 +123,11 @@ public class BuildAndShowNotification {
                 .with(mBuilder.mContext)
                 .load(applinkNotificationPass.getImageUrl())
                 .asBitmap()
-                .into(new SimpleTarget<Bitmap>(100, 100) {
+                .into(new SimpleTarget<Bitmap>(60, 60) {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
                         mBuilder.setLargeIcon(
-                                ImageHandler.getRoundedCornerBitmap(resource, 100)
+                                ImageHandler.getRoundedCornerBitmap(resource, 60)
                         );
 
                         NotificationManager mNotificationManager =
@@ -209,10 +203,6 @@ public class BuildAndShowNotification {
         mNotificationManager.notify(100, notif);
     }
 
-    public void buildAndShowNotification(NotificationPass notificationPass, Bundle data) {
-        buildAndShowNotification(notificationPass, data, new NotificationConfiguration());
-    }
-
     private void saveIncomingNotification(NotificationPass notificationPass, Bundle data) {
         NotificationEntity notificationEntity = new NotificationEntity();
         notificationEntity.setCode(String.valueOf(GCMUtils.getCode(data)));
@@ -281,7 +271,6 @@ public class BuildAndShowNotification {
         }
         return mBuilder;
     }
-
 
     private int getDrawableLargeIcon() {
         if (GlobalConfig.isSellerApp())

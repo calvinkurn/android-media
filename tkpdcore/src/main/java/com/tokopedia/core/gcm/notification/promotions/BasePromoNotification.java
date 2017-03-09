@@ -23,10 +23,12 @@ public abstract class BasePromoNotification extends BaseNotification {
 
     @Override
     public void proccessReceivedNotification(Bundle incomingMessage) {
+        buildDefaultConfiguration();
         Bundle data = incomingMessage;
         if (TextUtils.isEmpty(incomingMessage.getString(ARG_NOTIFICATION_IMAGE))) {
             data.putString("img_uri", incomingMessage.getString(ARG_NOTIFICATION_IMAGE, ""));
             data.putString("img_uri_600", incomingMessage.getString(ARG_NOTIFICATION_IMAGE, ""));
+            configuration.setNetworkIcon(true);
         }
         data = mNotificationAnalyticsReceiver.buildAnalyticNotificationData(data);
         configureNotificationData(data);
