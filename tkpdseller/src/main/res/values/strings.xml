@@ -90,7 +90,8 @@
 
     <string name="top_ads_statistic_info_default_value">-</string>
     <string name="top_ads_range_date_text">%1$s - %2$s</string>
-    <string name="top_ads_delete_ad_alert">Apakah anda yakin untuk menghapus produk ini?</string>
+    <string name="top_ads_delete_product_alert">Apakah anda yakin untuk menghapus produk ini?</string>
+    <string name="top_ads_delete_group_alert">Apakah anda yakin untuk menghapus grup ini?</string>
 
     <string name="title_action_on">On</string>
     <string name="title_action_off">Off</string>
@@ -104,6 +105,7 @@
     <string name="title_group_ad_detail">Detil Promo Grup</string>
     <string name="title_group_ad_edit">Ubah Promo Grup</string>
     <string name="title_delete_promo">Hapus promo</string>
+    <string name="title_delete_group">Hapus grup</string>
 
     <!-- Top Ads ad list -->
     <string name="label_top_ads_daily_spend">Anggaran Harian</string>

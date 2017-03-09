@@ -52,4 +52,10 @@ public class TopAdsDetailNewProductPresenterImpl extends TopAdsDetailEditProduct
             }
         };
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        topAdsSaveDetailProductListUseCase.unsubscribe();
+    }
 }

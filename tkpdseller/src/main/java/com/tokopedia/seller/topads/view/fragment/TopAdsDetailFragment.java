@@ -25,10 +25,10 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailPresenter;
-import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelSwitch;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
@@ -173,11 +173,10 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         showLoading();
     }
 
-    private void showDeleteConfirmation() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context,
-                R.style.AppCompatAlertDialogStyle);
-        alertDialog.setTitle(R.string.title_delete_promo);
-        alertDialog.setMessage(R.string.top_ads_delete_ad_alert);
+    protected void showDeleteConfirmation(String title, String content) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context, R.style.AppCompatAlertDialogStyle);
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(content);
         alertDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -339,9 +338,6 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
             return true;
         } else if (item.getItemId() == R.id.menu_edit) {
             editAd();
-            return true;
-        } else if (item.getItemId() == R.id.menu_delete) {
-            showDeleteConfirmation();
             return true;
         }
         return super.onOptionsItemSelected(item);

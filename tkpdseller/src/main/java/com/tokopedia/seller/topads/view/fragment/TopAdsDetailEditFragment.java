@@ -317,7 +317,12 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     @Override
     public void onLoadDetailAdError(String errorMessage) {
         hideLoading();
-        showSnackBarError(errorMessage);
+        showEmptyState(new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                loadAdDetail();
+            }
+        });
     }
 
     protected void saveAd() {
@@ -433,6 +438,10 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     }
 
     protected void populateDataFromFields() {
+        if (detailAd ==  null) {
+            onSaveAdError(null);
+            return;
+        }
         String priceBid = maxPriceEditText.getTextWithoutPrefix();
         if (TextUtils.isEmpty(priceBid)) {
             detailAd.setPriceBid(0);
@@ -485,6 +494,10 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_network_error));
         }
+    }
+
+    protected void showEmptyState(NetworkErrorHelper.RetryClickedListener retryClickedListener) {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), retryClickedListener);
     }
 
     private void setResultAdSaved() {

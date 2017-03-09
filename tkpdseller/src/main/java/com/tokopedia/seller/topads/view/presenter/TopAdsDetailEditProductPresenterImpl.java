@@ -73,6 +73,7 @@ public class TopAdsDetailEditProductPresenterImpl<T extends TopAdsDetailEditView
     @Override
     public void detachView() {
         super.detachView();
+        topAdsGetDetailProductUseCase.unsubscribe();
         topAdsSaveDetailProductUseCase.unsubscribe();
     }
 }

@@ -8,7 +8,6 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.di.TopAdsDetailEditProductDI;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailProductViewModel;
-import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditProductPresenter;
 
 public class TopAdsDetailEditProductFragment extends TopAdsDetailEditFragment<TopAdsDetailEditProductPresenter> {
@@ -30,7 +29,7 @@ public class TopAdsDetailEditProductFragment extends TopAdsDetailEditFragment<To
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_top_ads_edit_product;
+        return R.layout.fragment_top_ads_detail_edit_product;
     }
 
     @Override

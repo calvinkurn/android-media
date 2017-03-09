@@ -195,6 +195,9 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         if (itemId == R.id.menu_manage_group) {
             manageGroup();
             return true;
+        } else if (item.getItemId() == R.id.menu_delete) {
+            showDeleteConfirmation(getString(R.string.title_delete_promo), getString(R.string.top_ads_delete_product_alert));
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

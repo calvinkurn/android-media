@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.seller.R;
@@ -114,5 +115,14 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
             intent.putExtra(TopAdsExtraConstant.EXTRA_GROUP, ad);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_delete) {
+            showDeleteConfirmation(getString(R.string.title_delete_group), getString(R.string.top_ads_delete_group_alert));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
