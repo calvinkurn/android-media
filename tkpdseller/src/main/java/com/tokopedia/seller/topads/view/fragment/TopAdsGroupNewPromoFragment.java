@@ -56,14 +56,14 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
     }
 
     @Override
-    protected void onSubmitFormChooseGroup(int choosenId) {
+    protected void onSubmitFormChooseGroup(String choosenId) {
         if (!inputChooseGroup.isEnabled()) { // has already been locked
             String groupName = inputChooseGroup.getText().toString();
             if (!TextUtils.isEmpty(groupName)) {
                 TopAdsDetailNewGroupActivity.startEditExistingGroup(
                         getActivity(),
                         REQUEST_CODE_AD_STATUS,
-                        String.valueOf(choosenId),
+                        choosenId,
                         groupName
                 );
             }

@@ -1,12 +1,11 @@
 package com.tokopedia.seller.topads.data.source.cloud.apiservice;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
+import com.tokopedia.core.network.core.OkHttpFactory;
+import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.api.TopAdsShopApi;
-import com.tokopedia.seller.topads.data.source.cloud.interceptor.TopAdsAuthInterceptor;
 
-import okhttp3.Interceptor;
 import retrofit2.Retrofit;
 
 public class TopAdsShopService extends AuthService<TopAdsShopApi> {
@@ -26,7 +25,11 @@ public class TopAdsShopService extends AuthService<TopAdsShopApi> {
     }
 
     @Override
-    public Interceptor getAuthInterceptor() {
-        return new TkpdAuthInterceptor();
+    protected Retrofit createRetrofitInstance(String processedBaseUrl) {
+        return RetrofitFactory.createRetrofitDefaultConfig(processedBaseUrl)
+                .client(OkHttpFactory.create()
+                        .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                        .buildClientDefaultAuth())
+                .build();
     }
 }

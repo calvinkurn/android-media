@@ -1,9 +1,8 @@
-package com.tokopedia.seller.topads.data.source.cloud.response;
+package com.tokopedia.core.network.retrofit.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.network.retrofit.response.BaseResponseError;
-import com.tokopedia.seller.topads.exception.ResponseErrorException;
+import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
 
 import java.io.IOException;
 import java.util.List;

@@ -53,7 +53,7 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
     private TopAdsAutoCompleteAdapter adapterChooseGroup;
     private ArrayList<String> groupNames = new ArrayList<>();
     private List<GroupAd> groupAds = new ArrayList<>();
-    protected int choosenId;
+    protected String choosenId;
     private ProgressDialog progressDialog;
 
     @Override
@@ -326,7 +326,7 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
 
     protected abstract void onSubmitFormNotInGroup();
 
-    protected abstract void onSubmitFormChooseGroup(int choosenId);
+    protected abstract void onSubmitFormChooseGroup(String choosenId);
 
     protected abstract String getTitleButtonNext();
 }

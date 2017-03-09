@@ -8,7 +8,7 @@
         android:orderInCategory="101"
         android:title="@string/search_product"
         app:actionViewClass="android.support.v7.widget.SearchView"
-        app:showAsAction="always"/>
+        app:showAsAction="always|collapseActionView" />
 
     <item
         android:id="@+id/menu_filter"

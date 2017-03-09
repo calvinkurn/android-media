@@ -28,11 +28,11 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
 
     private GroupAd ad;
 
-    public static Fragment createInstance(GroupAd groupAd, int groupId) {
+    public static Fragment createInstance(GroupAd groupAd, String adIs) {
         Fragment fragment = new TopAdsDetailGroupFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, groupAd);
-        bundle.putInt(TopAdsExtraConstant.EXTRA_AD_ID, groupId);
+        bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, adIs);
         fragment.setArguments(bundle);
         return fragment;
     }

@@ -61,7 +61,7 @@ public class TopAdsViewHolder extends RecyclerView.ViewHolder {
         pricePromoPerClick.setText(promoPriceUsed.getContext().getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
         promoPriceUsed.setText(ad.getStatTotalSpent());
 
-        int groupId = -1;
+        long groupId = -1;
         String groupName = "";
         if(ad instanceof ProductAd){
             groupId = ((ProductAd) ad).getGroupId();

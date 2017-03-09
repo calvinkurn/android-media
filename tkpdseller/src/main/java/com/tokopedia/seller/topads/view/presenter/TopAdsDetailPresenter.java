@@ -7,11 +7,11 @@ import java.util.Date;
  */
 public interface TopAdsDetailPresenter extends RetrofitPresenter {
 
-    void refreshAd(Date startDate, Date endDate, int id);
+    void refreshAd(Date startDate, Date endDate, String id);
 
-    void turnOnAds(int id);
+    void turnOnAds(String id);
 
-    void turnOffAds(int id);
+    void turnOffAds(String id);
 
-    void deleteAd(int id);
+    void deleteAd(String id);
 }

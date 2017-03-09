@@ -31,12 +31,12 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl im
     }
 
     @Override
-    public void refreshAd(Date startDate, Date endDate, int id) {
+    public void refreshAd(Date startDate, Date endDate, String id) {
         SearchAdRequest searchAdRequest = new SearchAdRequest();
         searchAdRequest.setShopId(getShopId());
         searchAdRequest.setStartDate(startDate);
         searchAdRequest.setEndDate(endDate);
-        searchAdRequest.setGroupId(String.valueOf(id));
+        searchAdRequest.setGroupId(id);
         groupAdInteractor.searchAd(searchAdRequest, new ListenerInteractor<PageDataResponse<List<GroupAd>>>() {
             @Override
             public void onSuccess(PageDataResponse<List<GroupAd>> pageDataResponse) {
@@ -51,7 +51,7 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl im
     }
 
     @Override
-    public void turnOnAds(int id) {
+    public void turnOnAds(String id) {
         DataRequest<GroupAdBulkAction> dataRequest = generateActionRequest(id, TopAdsNetworkConstant.ACTION_BULK_ON_AD);
         groupAdInteractor.bulkAction(dataRequest, new ListenerInteractor<GroupAdBulkAction>() {
             @Override
@@ -67,7 +67,7 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl im
     }
 
     @Override
-    public void turnOffAds(int id) {
+    public void turnOffAds(String id) {
         DataRequest<GroupAdBulkAction> dataRequest = generateActionRequest(id, TopAdsNetworkConstant.ACTION_BULK_OFF_AD);
         groupAdInteractor.bulkAction(dataRequest, new ListenerInteractor<GroupAdBulkAction>() {
             @Override
@@ -83,7 +83,7 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl im
     }
 
     @Override
-    public void deleteAd(int id) {
+    public void deleteAd(String id) {
         DataRequest<GroupAdBulkAction> dataRequest = generateActionRequest(id, TopAdsNetworkConstant.ACTION_BULK_DELETE_AD);
         groupAdInteractor.bulkAction(dataRequest, new ListenerInteractor<GroupAdBulkAction>() {
             @Override
@@ -99,14 +99,14 @@ public class TopAdsDetailGroupPresenterImpl extends TopAdsDetailPresenterImpl im
     }
 
     @NonNull
-    private DataRequest<GroupAdBulkAction> generateActionRequest(int id, String action) {
+    private DataRequest<GroupAdBulkAction> generateActionRequest(String id, String action) {
         DataRequest<GroupAdBulkAction> dataRequest = new DataRequest<>();
         GroupAdBulkAction dataRequestGroupAd = new GroupAdBulkAction();
         dataRequestGroupAd.setAction(action);
         dataRequestGroupAd.setShopId(getShopId());
         List<GroupAdAction> dataRequestGroupAdses = new ArrayList<>();
         GroupAdAction adAction = new GroupAdAction();
-        adAction.setId(String.valueOf(id));
+        adAction.setId(id);
         dataRequestGroupAdses.add(adAction);
         dataRequestGroupAd.setAdList(dataRequestGroupAdses);
         dataRequest.setData(dataRequestGroupAd);

@@ -25,7 +25,7 @@ public class TopAdsDetailShopPresenterImpl extends TopAdsDetailProductPresenterI
     }
 
     @Override
-    public void refreshAd(Date startDate, Date endDate, int id) {
+    public void refreshAd(Date startDate, Date endDate, String id) {
         ShopRequest shopRequest = new ShopRequest();
         shopRequest.setShopId(getShopId());
         SearchAdRequest request = new SearchAdRequest();

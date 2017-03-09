@@ -31,12 +31,12 @@ public class TopAdsDetailProductPresenterImpl extends TopAdsDetailPresenterImpl 
     }
 
     @Override
-    public void refreshAd(Date startDate, Date endDate, int id) {
+    public void refreshAd(Date startDate, Date endDate, String id) {
         SearchAdRequest searchAdRequest = new SearchAdRequest();
         searchAdRequest.setShopId(getShopId());
         searchAdRequest.setStartDate(startDate);
         searchAdRequest.setEndDate(endDate);
-        searchAdRequest.setAdId(String.valueOf(id));
+        searchAdRequest.setAdId(id);
         productAdInteractor.searchAd(searchAdRequest, new ListenerInteractor<PageDataResponse<List<ProductAd>>>() {
             @Override
             public void onSuccess(PageDataResponse<List<ProductAd>> pageDataResponse) {
@@ -51,7 +51,7 @@ public class TopAdsDetailProductPresenterImpl extends TopAdsDetailPresenterImpl 
     }
 
     @Override
-    public void turnOnAds(int id) {
+    public void turnOnAds(String id) {
         DataRequest<ProductAdBulkAction> dataRequest = generateActionRequest(id, TopAdsNetworkConstant.ACTION_BULK_ON_AD);
         productAdInteractor.bulkAction(dataRequest, new ListenerInteractor<ProductAdBulkAction>() {
             @Override
@@ -67,7 +67,7 @@ public class TopAdsDetailProductPresenterImpl extends TopAdsDetailPresenterImpl 
     }
 
     @Override
-    public void turnOffAds(int id) {
+    public void turnOffAds(String id) {
         DataRequest<ProductAdBulkAction> dataRequest = generateActionRequest(id, TopAdsNetworkConstant.ACTION_BULK_OFF_AD);
         productAdInteractor.bulkAction(dataRequest, new ListenerInteractor<ProductAdBulkAction>() {
             @Override
@@ -83,7 +83,7 @@ public class TopAdsDetailProductPresenterImpl extends TopAdsDetailPresenterImpl 
     }
 
     @Override
-    public void deleteAd(int id) {
+    public void deleteAd(String id) {
         DataRequest<ProductAdBulkAction> dataRequest = generateActionRequest(id, TopAdsNetworkConstant.ACTION_BULK_DELETE_AD);
         productAdInteractor.bulkAction(dataRequest, new ListenerInteractor<ProductAdBulkAction>() {
             @Override
@@ -99,14 +99,14 @@ public class TopAdsDetailProductPresenterImpl extends TopAdsDetailPresenterImpl 
     }
 
     @NonNull
-    private DataRequest<ProductAdBulkAction> generateActionRequest(int id, String action) {
+    private DataRequest<ProductAdBulkAction> generateActionRequest(String id, String action) {
         DataRequest<ProductAdBulkAction> dataRequest = new DataRequest<>();
         ProductAdBulkAction dataRequestSingleAd = new ProductAdBulkAction();
         dataRequestSingleAd.setAction(action);
         dataRequestSingleAd.setShopId(getShopId());
         List<ProductAdAction> dataRequestSingleAdses = new ArrayList<>();
         ProductAdAction data = new ProductAdAction();
-        data.setId(String.valueOf(id));
+        data.setId(id);
         dataRequestSingleAdses.add(data);
         dataRequestSingleAd.setAds(dataRequestSingleAdses);
         dataRequest.setData(dataRequestSingleAd);

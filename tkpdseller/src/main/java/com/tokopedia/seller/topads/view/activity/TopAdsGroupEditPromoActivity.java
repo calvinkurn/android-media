@@ -23,7 +23,7 @@ public class TopAdsGroupEditPromoActivity extends TActivity {
                 .replace(R.id.container, TopAdsGroupEditPromoFragment.createInstance(
                         getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID),
                         getIntent().getIntExtra(TopAdsExtraConstant.EXTRA_CHOOSEN_OPTION_GROUP, 0),
-                        getIntent().getIntExtra(TopAdsExtraConstant.EXTRA_GROUP_ID, 0),
+                        getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_GROUP_ID),
                         getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_GROUP_NAME)), TopAdsGroupEditPromoFragment.class.getSimpleName())
                 .commit();
     }
@@ -34,7 +34,7 @@ public class TopAdsGroupEditPromoActivity extends TActivity {
     }
 
     public static Intent createIntent(Context context, String adId, int choosenOption,
-                                      String groupName, int groupId) {
+                                      String groupName, String groupId) {
         Intent intent = new Intent(context, TopAdsGroupEditPromoActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, adId);
         intent.putExtra(TopAdsExtraConstant.EXTRA_CHOOSEN_OPTION_GROUP, choosenOption);

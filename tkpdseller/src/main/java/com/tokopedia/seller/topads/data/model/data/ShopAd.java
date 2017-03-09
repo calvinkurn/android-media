@@ -14,7 +14,7 @@ public class ShopAd implements Ad, Parcelable {
 
     @SerializedName("ad_id")
     @Expose
-    private int id;
+    private long id;
     @SerializedName("ad_status")
     @Expose
     private int status;
@@ -86,7 +86,7 @@ public class ShopAd implements Ad, Parcelable {
 
     @SerializedName("shop_id")
     @Expose
-    private int shopId;
+    private long shopId;
     @SerializedName("shop_uri")
     @Expose
     private String shopUri;
@@ -97,8 +97,8 @@ public class ShopAd implements Ad, Parcelable {
     }
 
     @Override
-    public int getId() {
-        return id;
+    public String getId() {
+        return String.valueOf(id);
     }
 
     @Override
@@ -205,8 +205,8 @@ public class ShopAd implements Ad, Parcelable {
         return name;
     }
 
-    public int getShopId() {
-        return shopId;
+    public String getShopId() {
+        return String.valueOf(shopId);
     }
 
     public String getShopUri() {
@@ -220,7 +220,7 @@ public class ShopAd implements Ad, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.id);
+        dest.writeLong(this.id);
         dest.writeInt(this.status);
         dest.writeString(this.statusDesc);
         dest.writeInt(this.statusToogle);
@@ -243,7 +243,7 @@ public class ShopAd implements Ad, Parcelable {
         dest.writeString(this.labelPerClick);
         dest.writeString(this.labelOf);
         dest.writeString(this.name);
-        dest.writeInt(this.shopId);
+        dest.writeLong(this.shopId);
         dest.writeString(this.shopUri);
     }
 
@@ -251,7 +251,7 @@ public class ShopAd implements Ad, Parcelable {
     }
 
     protected ShopAd(Parcel in) {
-        this.id = in.readInt();
+        this.id = in.readLong();
         this.status = in.readInt();
         this.statusDesc = in.readString();
         this.statusToogle = in.readInt();
@@ -274,7 +274,7 @@ public class ShopAd implements Ad, Parcelable {
         this.labelPerClick = in.readString();
         this.labelOf = in.readString();
         this.name = in.readString();
-        this.shopId = in.readInt();
+        this.shopId = in.readLong();
         this.shopUri = in.readString();
     }
 

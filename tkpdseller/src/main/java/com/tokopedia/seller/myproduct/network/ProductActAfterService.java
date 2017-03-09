@@ -12,9 +12,8 @@ public class ProductActAfterService extends AuthService<UploadImageProduct> {
     public static final String WEB_SERVICE_V4_ACTION_UPLOAD_IMAGE_HELPER = "/web-service/v4/action/upload-image-helper/";
     String baseUrl;
 
-    public ProductActAfterService(String baseUrl){
-        super(baseUrl, 1);
-        this.baseUrl = baseUrl;
+    public ProductActAfterService(String baseUrl) {
+        super(baseUrl);
     }
 
     @Override

@@ -14,7 +14,7 @@ public class GroupAd implements Ad, Parcelable {
 
     @SerializedName("group_id")
     @Expose
-    private int id;
+    private long id;
     @SerializedName("group_status")
     @Expose
     private int status;
@@ -102,8 +102,8 @@ public class GroupAd implements Ad, Parcelable {
     }
 
     @Override
-    public int getId() {
-        return id;
+    public String getId() {
+        return String.valueOf(id);
     }
 
     @Override
@@ -232,7 +232,7 @@ public class GroupAd implements Ad, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.id);
+        dest.writeLong(this.id);
         dest.writeInt(this.status);
         dest.writeString(this.statusDesc);
         dest.writeInt(this.statusToogle);
@@ -261,7 +261,7 @@ public class GroupAd implements Ad, Parcelable {
     }
 
     protected GroupAd(Parcel in) {
-        this.id = in.readInt();
+        this.id = in.readLong();
         this.status = in.readInt();
         this.statusDesc = in.readString();
         this.statusToogle = in.readInt();

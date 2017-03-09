@@ -188,7 +188,7 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
 
     @Override
     public void setLoading(boolean isLoading) {
-        browseShopAdapter.setIsLoading(isLoading);
+        if (browseShopAdapter != null) browseShopAdapter.setIsLoading(isLoading);
     }
 
     @Override
@@ -224,7 +224,14 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
 
     @Override
     public int getDataSize() {
-        return browseShopAdapter.getData() != null ? browseShopAdapter.getData().size() : -1;
+        if (browseShopAdapter != null){
+            if (browseShopAdapter.getData() != null) {
+                return browseShopAdapter.getData().size();
+            } else {
+                return -1;
+            }
+        }
+        return -1;
     }
 
     @Override
