@@ -17,6 +17,6 @@ import rx.Observable;
  */
 public interface TopAdsShopApi {
     @FormUrlEncoded
-    @POST(TkpdBaseURL.Shop.PATH_GET_SHOP_INFO)
+    @POST(TkpdBaseURL.Shop.PATH_GET_SHOP_ETALASE)
     Observable<Response<DataResponse<DataEtalase>>> getShopEtalase(@FieldMap Map<String, String> params);
 }
