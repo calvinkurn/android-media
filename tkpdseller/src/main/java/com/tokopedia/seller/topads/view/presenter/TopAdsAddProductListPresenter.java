@@ -99,7 +99,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
             params.remove(TopAdsNetworkConstant.PARAM_ETALASE);
         }
 
-        if (selectedFilterStatus > 0) {
+        if (selectedFilterStatus >= 0) {
             params.put(TopAdsNetworkConstant.PARAM_IS_PROMOTED, Integer.toString(selectedFilterStatus));
         } else {
             params.remove(TopAdsNetworkConstant.PARAM_IS_PROMOTED);
@@ -228,10 +228,11 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
                 );
                 typeBasedModels.add(promotedTopAdsAddProductModel);
             } else {
+                String groupName = productDomain.getGroupName();
                 NonPromotedTopAdsAddProductModel nonPromotedTopAdsAddProductModel
                         = new NonPromotedTopAdsAddProductModel(
                         productDomain.getName(),
-                        productDomain.getGroupName(),
+                        (groupName == null || groupName.isEmpty()) ? null : groupName,
                         convertModelFromDomainToView(productDomain)
                 );
                 typeBasedModels.add(nonPromotedTopAdsAddProductModel);

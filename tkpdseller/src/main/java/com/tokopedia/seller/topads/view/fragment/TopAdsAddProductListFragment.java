@@ -499,6 +499,18 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     @Override
+    public void hideFooterViewHolder() {
+        if (isEndOfFile)
+            topAdsProductListAdapter.removeEmptyFooter();
+    }
+
+    @Override
+    public void showFooterViewHolder() {
+        if (isEndOfFile)
+            topAdsProductListAdapter.insertEmptyFooter();
+    }
+
+    @Override
     public void setLoadMoreFlag(boolean eof) {
         isEndOfFile = eof;
     }

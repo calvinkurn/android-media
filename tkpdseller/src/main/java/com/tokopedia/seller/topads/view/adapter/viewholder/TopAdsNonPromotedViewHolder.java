@@ -61,10 +61,12 @@ public class TopAdsNonPromotedViewHolder extends BaseTopAdsAddProductListViewHol
 
         setDescriptionText(model.description);
 
-        if (model.getProductDomain().isPromoted()) {
+        if (model.getSnippet() == null && model.getProductDomain().isPromoted()) {
             setSnippet(promoted);
-        } else {
+        } else if (model.getSnippet() != null) {
             setSnippet(model.snippet);
+        } else {
+            setSnippet(null);
         }
     }
 

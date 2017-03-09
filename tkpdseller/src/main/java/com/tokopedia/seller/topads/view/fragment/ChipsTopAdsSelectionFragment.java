@@ -243,6 +243,16 @@ public class ChipsTopAdsSelectionFragment extends BasePresenterFragment
     }
 
     @Override
+    public void hideFooterViewHolder() {
+        throw new RuntimeException("done use it in here !!");
+    }
+
+    @Override
+    public void showFooterViewHolder() {
+        throw new RuntimeException("done use it in here !!");
+    }
+
+    @Override
     public void hideRecyclerView() {
         recyclerView.setVisibility(View.GONE);
     }

@@ -301,6 +301,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
     public void hideBottomBecauseEmpty() {
         bottomSheetHelper.dismissBottomSheet();
         bottomSheetHelper.collapse();
+        hideFooterViewHolder();
     }
 
     @Override
@@ -325,6 +326,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
 
         if(selections.size() > 0){
             enableNextButton();
+            showFooterViewHolder();
         }
     }
 
@@ -375,6 +377,24 @@ public class TopAdsAddProductListActivity extends BaseActivity
     @Override
     public boolean isExistingGroup() {
         return isExistingGroup;
+    }
+
+    @Override
+    public void hideFooterViewHolder() {
+        TopAdsAddProductListFragment topAdsAddProductListFragment
+                = getTopAdsAddProductListFragment();
+        if (topAdsAddProductListFragment != null) {
+            topAdsAddProductListFragment.hideFooterViewHolder();
+        }
+    }
+
+    @Override
+    public void showFooterViewHolder() {
+        TopAdsAddProductListFragment topAdsAddProductListFragment
+                = getTopAdsAddProductListFragment();
+        if (topAdsAddProductListFragment != null) {
+            topAdsAddProductListFragment.showFooterViewHolder();
+        }
     }
 
     private void returnSelections(){
