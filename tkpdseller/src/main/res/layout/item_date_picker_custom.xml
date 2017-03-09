@@ -22,8 +22,8 @@
         android:foreground="?attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingBottom="10dp"
-        android:paddingTop="16sp">
+        android:paddingBottom="@dimen/margin_vs"
+        android:paddingTop="@dimen/margin_vs">
 
         <TextView
             android:id="@+id/text_view_content"

@@ -201,7 +201,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
 
     private void manageGroup() {
         Intent intent = TopAdsGroupManagePromoActivity.createIntent(getActivity(), String.valueOf(productAd.getId()),
-                TopAdsGroupManagePromoFragment.NEW_GROUP, productAd.getGroupName(), String.valueOf(productAd.getGroupId()));
+                TopAdsGroupManagePromoFragment.NOT_IN_GROUP, productAd.getGroupName(), String.valueOf(productAd.getGroupId()));
         startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }
 

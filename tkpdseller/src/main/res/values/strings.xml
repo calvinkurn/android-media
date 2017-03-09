@@ -126,12 +126,12 @@
     <string name="label_top_ads_total_selected_product">%02d / 50 Terpilih</string>
     <string name="label_top_ads_total_selected_product_zero">%1$d / 50 Terpilih</string>
     <string name="label_top_ads_max_price_hint">Biaya Maks (Rp)</string>
-    <string name="label_top_ads_max_price_description">Sesuaikan biaya anggaran promo anda. Rekomendasi biaya: Rp 50 sampai Rp 200 per klik</string>
+    <string name="label_top_ads_max_price_description">Sesuaikan biaya dengan anggaran promo Anda. Rekomendasi biaya: Rp 50 sampai Rp 200 per klik.</string>
     <string name="label_top_ads_icon">Icon TopAds</string>
 
     <!-- Top Ads Edit Promo Budget-->
     <string name="label_top_ads_budget">Anggaran</string>
-    <string name="label_top_ads_budget_lifetime">Anggaran Seumur Hidup</string>
+    <string name="label_top_ads_budget_lifetime">Anggaran Tidak Dibatasi</string>
     <string name="label_top_ads_budget_per_day">Per Hari</string>
     <string name="label_top_ads_budget_cost_per_day">Biaya per hari</string>
 
@@ -212,6 +212,7 @@
     <string name="label_top_ads_error_fail_move_new_group">Gagal memindahkan product ke grup baru</string>
     <string name="label_top_ads_error_fail_move_exist_group">Gagal memindahkan product ke grup lain</string>
     <string name="top_ads_detail_edit_default_currency_value">0</string>
+    <string name="top_ads_detail_edit_default_lifetime_currency_value">5000</string>
 
     <string name="error_top_ads_click_budget_max">Biaya maksimal maksimum %1s</string>
     <string name="error_top_ads_click_budget_minimum">Biaya minimal Rp %1s</string>
