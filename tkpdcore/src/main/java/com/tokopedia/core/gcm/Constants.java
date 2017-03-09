@@ -33,4 +33,5 @@ public interface Constants {
     int ARG_NOTIFICATION_APPLINK_DISCUSSION_ID = 1002;
 
     String ACTION_BC_RESET_APPLINK = "com.tokopedia.tkpd.APPLINK_ACTION";
+    String ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED = "login_required";
 }

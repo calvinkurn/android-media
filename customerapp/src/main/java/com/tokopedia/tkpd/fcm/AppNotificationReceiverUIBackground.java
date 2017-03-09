@@ -63,8 +63,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         data.map(new Func1<Bundle, Boolean>() {
             @Override
             public Boolean call(Bundle bundle) {
-                if (isAllowedNotification(bundle))
-                {
+                if (isAllowedNotification(bundle)) {
                     mFCMCacheManager.setCache();
                     //TODO this function for divide the new and old flow(that still supported)
                     // next if complete new plz to delete
@@ -99,8 +98,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private void handleApplinkNotification(Bundle data) {
-        if (data.getString("login_required", "false").equals("true"))
-        {
+        if (data.getString(Constants.ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED, "false").equals("true")) {
             if (SessionHandler.isV4Login(mContext)
                     && SessionHandler.getLoginID(mContext).equals(
                     data.getString(Constants.ARG_NOTIFICATION_TARGET_USER_ID))
@@ -127,7 +125,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 }
                 mFCMCacheManager.resetCache(data);
             }
-        }else{
+        } else {
             prepareAndExecuteApplinkNotification(data);
         }
     }
@@ -242,9 +240,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         }
     }
 
-
-
-    private void showApplinkPushNotification(){
+    private void showApplinkPushNotification() {
         ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
         applinkBuildAndShowNotification.show();
     }

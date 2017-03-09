@@ -39,9 +39,7 @@ public class DiscussionPushNotificationBuildAndShow extends AbstractApplinkBuild
     public void process(Context context, Intent handlerIntent, boolean isNew) {
         BuildAndShowNotification buildAndShowNotification = new BuildAndShowNotification(context);
         if (discussionPushNotifications.size() > 0) {
-            boolean isSingle = true;
             int senderCount = 0;
-            String username = null;
             String senderId = null;
             String uri = null;
             String image = null;
@@ -60,7 +58,6 @@ public class DiscussionPushNotificationBuildAndShow extends AbstractApplinkBuild
                 if (!discussionPushNotification.getSenderId().equalsIgnoreCase(senderId)) {
                     senderCount++;
                     senderId = discussionPushNotification.getSenderId();
-                    username = discussionPushNotification.getUsername();
                 }
             }
 
