@@ -6,6 +6,8 @@ import android.view.View;
 
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.R;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.talk.model.model.InboxTalk;
 import com.tokopedia.core.talkview.adapter.InboxTalkViewAdapter;
 import com.tokopedia.core.talkview.adapter.TalkViewAdapter;
@@ -77,6 +79,11 @@ public class InboxTalkViewFragment extends TalkViewFragment{
             isFollow = bundle.getTalkFollowStatus();
             totalComment = Integer.parseInt(bundle.getTalkTotalComment());
             readStatus = bundle.getTalkReadStatus();
+
+            NotificationModHandler.clearCacheIfFromNotification(
+                    Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION,
+                    talkID
+            );
         }
     }
 

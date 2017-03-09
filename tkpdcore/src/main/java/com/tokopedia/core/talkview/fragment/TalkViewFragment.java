@@ -211,10 +211,6 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
         talk = arguments.getParcelable("talk");
         talkID = arguments.getString("talk_id", "");
         shopID = arguments.getString("shop_id", "");
-        NotificationModHandler.clearCacheIfFromNotification(
-                Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION,
-                talkID
-        );
         getFromBundle(talk);
         position = arguments.getInt("position");
     }
