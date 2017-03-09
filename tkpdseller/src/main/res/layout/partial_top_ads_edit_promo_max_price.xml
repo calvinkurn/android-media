@@ -12,11 +12,13 @@
         app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.Small"
         style="@style/TextInputLayout">
 
-        <android.support.v7.widget.AppCompatEditText
+        <com.tokopedia.seller.topads.view.widget.PrefixEditText
             android:id="@+id/edit_text_max_price"
             style="@style/EditText.Currency"
             android:layout_width="match_parent"
-            android:text="@string/top_ads_detail_edit_default_currency_value"
+            app:prefix="@string/title_currency_rp_space"
+            app:prefixTextColor="@color/tkpd_main_green"
+            android:text="@string/top_ads_detail_edit_default_max_price_currency_value"
             android:hint="@string/label_top_ads_max_price_hint"/>
 
     </android.support.design.widget.TextInputLayout>
