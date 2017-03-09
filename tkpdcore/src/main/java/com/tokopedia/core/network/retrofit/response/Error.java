@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.data.source.cloud.response;
+package com.tokopedia.core.network.retrofit.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

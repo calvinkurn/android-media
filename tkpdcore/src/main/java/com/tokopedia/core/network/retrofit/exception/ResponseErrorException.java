@@ -1,6 +1,6 @@
-package com.tokopedia.seller.topads.exception;
+package com.tokopedia.core.network.retrofit.exception;
 
-import com.tokopedia.seller.topads.data.source.cloud.response.Error;
+import com.tokopedia.core.network.retrofit.response.Error;
 
 import java.io.IOException;
 import java.util.List;

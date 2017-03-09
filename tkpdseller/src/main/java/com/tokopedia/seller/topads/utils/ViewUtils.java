@@ -8,7 +8,7 @@ import android.view.Window;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.myproduct.utils.CurrencyFormatter;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.exception.ResponseErrorException;
+import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
 
 /**
  * @author normansyahputa on 2/16/17.
