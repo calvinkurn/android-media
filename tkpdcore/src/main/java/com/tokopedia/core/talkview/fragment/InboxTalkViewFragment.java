@@ -41,6 +41,7 @@ public class InboxTalkViewFragment extends TalkViewFragment{
         TalkDetailModel model = new GsonBuilder().create()
                 .fromJson(result.toString(), TalkDetailModel.class);
         talk = model.getTalk();
+        getFromBundle(talk);
         parseHeader();
         items.addAll(0, model.getTalkDetail());
     }
