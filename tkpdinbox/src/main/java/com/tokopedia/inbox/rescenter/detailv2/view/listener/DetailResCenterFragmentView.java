@@ -5,4 +5,7 @@ package com.tokopedia.inbox.rescenter.detailv2.view.listener;
  */
 
 public interface DetailResCenterFragmentView {
+    String getResolutionID();
+
+    void setResolutionID(String resolutionID);
 }

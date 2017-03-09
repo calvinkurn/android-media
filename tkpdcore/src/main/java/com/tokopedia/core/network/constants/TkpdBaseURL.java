@@ -632,4 +632,17 @@ public class TkpdBaseURL {
     public static class Truecaller{
         public static final String VERIFY_PHONE = "/web-service/v4/truecaller/check";
     }
+
+    public static class ResCenterV2 {
+        public static final String BASE_RESOLUTION = WEB_DOMAIN + "/resolution/v1";
+        static final String BASE_INBOX_RESOLUTION = "/inbox";
+        static final String BASE_DETAIL_RESOLUTION = "/detail/{resolution_id}";
+
+        public static final String GET_RESOLUTION_LIST = BASE_INBOX_RESOLUTION;
+        public static final String GET_RESOLUTION_DETAIL = BASE_DETAIL_RESOLUTION;
+        public static final String GET_RESOLUTION_CONVERSATION = BASE_DETAIL_RESOLUTION + "/conversation";
+        public static final String GET_RESOLUTION_CONVERSATION_MORE = BASE_DETAIL_RESOLUTION + "/conversation/{res_conv_id}/more";
+
+
+    }
 }

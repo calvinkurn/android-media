@@ -6,7 +6,14 @@ import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.customview.ButtonView;
+import com.tokopedia.inbox.rescenter.detailv2.view.customview.DetailView;
+import com.tokopedia.inbox.rescenter.detailv2.view.customview.HistoryView;
+import com.tokopedia.inbox.rescenter.detailv2.view.customview.ListProductView;
+import com.tokopedia.inbox.rescenter.detailv2.view.customview.SolutionView;
+import com.tokopedia.inbox.rescenter.detailv2.view.customview.StatusView;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
+import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFragmentImpl;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFragmentPresenter;
 
 /**
@@ -16,7 +23,18 @@ import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFrag
 public class DetailResCenterFragment extends BasePresenterFragment<DetailResCenterFragmentPresenter>
         implements DetailResCenterFragmentView {
 
+    View loading;
+    View mainView;
+    ButtonView buttonView;
+    StatusView statusView;
+    DetailView detailView;
+    ListProductView listProductView;
+    SolutionView solutionView;
+    HistoryView historyView;
+
     private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
+
+    private String resolutionID;
 
     public static DetailResCenterFragment createInstance(String resolutionID) {
         DetailResCenterFragment fragment = new DetailResCenterFragment();
@@ -27,23 +45,33 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     }
 
     @Override
+    public String getResolutionID() {
+        return resolutionID;
+    }
+
+    @Override
+    public void setResolutionID(String resolutionID) {
+        this.resolutionID = resolutionID;
+    }
+
+    @Override
     protected boolean isRetainInstance() {
-        return false;
+        return true;
     }
 
     @Override
     protected void onFirstTimeLaunched() {
-
+        presenter.setOnFirstTimeLaunch();
     }
 
     @Override
     public void onSaveState(Bundle state) {
-
+        state.putString(EXTRA_PARAM_RESOLUTION_ID, getResolutionID());
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-
+        setResolutionID(savedState.getString(EXTRA_PARAM_RESOLUTION_ID));
     }
 
     @Override
@@ -53,7 +81,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     protected void initialPresenter() {
-
+        presenter = new DetailResCenterFragmentImpl(getActivity(), this);
     }
 
     @Override
@@ -63,7 +91,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     protected void setupArguments(Bundle arguments) {
-
+        setResolutionID(arguments.getString(EXTRA_PARAM_RESOLUTION_ID));
     }
 
     @Override
@@ -73,7 +101,14 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     protected void initView(View view) {
-
+        loading = view.findViewById(R.id.loading);
+        mainView = view.findViewById(R.id.main_view);
+        buttonView = (ButtonView) view.findViewById(R.id.button_view);
+        statusView = (StatusView) view.findViewById(R.id.status_view);
+        detailView = (DetailView) view.findViewById(R.id.detail_view);
+        listProductView = (ListProductView) view.findViewById(R.id.product_view);
+        solutionView = (SolutionView) view.findViewById(R.id.solution_view);
+        historyView = (HistoryView) view.findViewById(R.id.history_view);
     }
 
     @Override

@@ -39,7 +39,7 @@ public class ButtonView extends BaseView<Object, DetailResCenterFragmentView> {
 
     @Override
     protected void setViewListener() {
-
+        setVisibility(GONE);
     }
 
     @Override
