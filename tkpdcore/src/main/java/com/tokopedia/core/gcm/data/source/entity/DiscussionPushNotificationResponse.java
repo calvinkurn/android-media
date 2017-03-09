@@ -15,6 +15,8 @@ public class DiscussionPushNotificationResponse {
     private String applink;
     @SerializedName("summary")
     private String description;
+    @SerializedName("sender_id")
+    private String senderId;
 
     public DiscussionPushNotificationResponse() {
     }
@@ -33,5 +35,9 @@ public class DiscussionPushNotificationResponse {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getSenderId() {
+        return senderId;
     }
 }

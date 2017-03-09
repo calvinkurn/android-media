@@ -42,25 +42,24 @@ public class DiscussionPushNotificationBuildAndShow extends AbstractApplinkBuild
             boolean isSingle = true;
             int senderCount = 0;
             String username = null;
+            String senderId = null;
             String uri = null;
             String image = null;
             Boolean multipleSender = false;
             List<String> contents = new ArrayList<>();
             for (DiscussionPushNotification discussionPushNotification : discussionPushNotifications) {
-                contents.add(discussionPushNotification.getUsername() + " : " + discussionPushNotification.getDescription());
+                contents.add(String.format("%s : %s", discussionPushNotification.getUsername(), discussionPushNotification.getDescription()));
                 if (uri == null) {
                     uri = discussionPushNotification.getApplink();
                     image = discussionPushNotification.getThumbnail();
                 } else if (!discussionPushNotification.getApplink().equalsIgnoreCase(uri)) {
-                    if (isSingle) {
-                        Uri url = Uri.parse(uri);
-                        uri = url.getScheme() + "://" + url.getHost();
-                    }
-                    isSingle = false;
+                    Uri url = Uri.parse(uri);
+                    uri = String.format("%s://%s", url.getScheme(), url.getHost());
                 }
 
-                if (!discussionPushNotification.getUsername().equalsIgnoreCase(username)) {
+                if (!discussionPushNotification.getSenderId().equalsIgnoreCase(senderId)) {
                     senderCount++;
+                    senderId = discussionPushNotification.getSenderId();
                     username = discussionPushNotification.getUsername();
                 }
             }
@@ -71,7 +70,7 @@ public class DiscussionPushNotificationBuildAndShow extends AbstractApplinkBuild
                 configuration.setVibrate(false);
             }
 
-            if (!isSingle) {
+            if (senderCount > 1) {
                 multipleSender = true;
                 configuration.setNetworkIcon(false);
             } else {
@@ -79,12 +78,12 @@ public class DiscussionPushNotificationBuildAndShow extends AbstractApplinkBuild
             }
 
             String description;
-
-            if (!isSingle) {
+            if (senderCount > 1) {
                 description = String.format("%d diskusi dari %d pengirim", discussionPushNotifications.size(), senderCount);
             } else {
                 description = String.format("%d diskusi dari %s", discussionPushNotifications.size(), username);
             }
+
             Uri url = Uri.parse(uri);
             handlerIntent.setData(url);
             Bundle bundle = new Bundle();

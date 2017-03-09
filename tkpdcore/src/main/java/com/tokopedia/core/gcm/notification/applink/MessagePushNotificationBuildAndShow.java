@@ -1,6 +1,5 @@
 package com.tokopedia.core.gcm.notification.applink;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
@@ -13,10 +12,6 @@ import com.tokopedia.core.gcm.NotificationConfiguration;
 import com.tokopedia.core.gcm.domain.model.MessagePushNotification;
 import com.tokopedia.core.gcm.model.ApplinkNotificationPass;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,38 +24,36 @@ public class MessagePushNotificationBuildAndShow extends AbstractApplinkBuildAnd
     private static final String NOTIFICATION_GROUP = "personalized_group";
     private static final String NOTIFICATION_CATEGORY = "msg";
 
-    private List<MessagePushNotification> discussionPushNotifications;
+    private List<MessagePushNotification> messagePushNotifications;
 
-    public MessagePushNotificationBuildAndShow(List<MessagePushNotification> discussionPushNotifications) {
-        this.discussionPushNotifications = discussionPushNotifications;
+    public MessagePushNotificationBuildAndShow(List<MessagePushNotification> messagePushNotifications) {
+        this.messagePushNotifications = messagePushNotifications;
     }
 
     @Override
     public void process(Context context, Intent handlerIntent, boolean isNew) {
         BuildAndShowNotification buildAndShowNotification = new BuildAndShowNotification(context);
-        if (discussionPushNotifications.size() > 0) {
-            boolean isSingle = true;
+        if (messagePushNotifications.size() > 0) {
             int senderCount = 0;
             String username = null;
+            String senderId = null;
             String uri = null;
             String image = null;
             Boolean multipleSender = false;
             List<String> contents = new ArrayList<>();
-            for (MessagePushNotification messagePushNotification : discussionPushNotifications) {
-                contents.add(messagePushNotification.getUsername() + " : " + messagePushNotification.getDescription());
+            for (MessagePushNotification messagePushNotification : messagePushNotifications) {
+                contents.add(String.format("%s : %s", messagePushNotification.getUsername(), messagePushNotification.getDescription()));
                 if (uri == null) {
                     uri = messagePushNotification.getApplink();
                     image = messagePushNotification.getThumbnail();
                 } else if (!messagePushNotification.getApplink().equalsIgnoreCase(uri)) {
-                    if (isSingle) {
-                        Uri url = Uri.parse(uri);
-                        uri = url.getScheme() + "://" + url.getHost();
-                    }
-                    isSingle = false;
+                    Uri url = Uri.parse(uri);
+                    uri = String.format("%s://%s", url.getScheme(), url.getHost());
                 }
 
-                if (!messagePushNotification.getUsername().equalsIgnoreCase(username)) {
+                if (!messagePushNotification.getSenderId().equalsIgnoreCase(senderId)) {
                     senderCount++;
+                    senderId = messagePushNotification.getSenderId();
                     username = messagePushNotification.getUsername();
                 }
             }
@@ -72,7 +65,7 @@ public class MessagePushNotificationBuildAndShow extends AbstractApplinkBuildAnd
                 configuration.setVibrate(false);
             }
 
-            if (!isSingle) {
+            if (senderCount > 1) {
                 multipleSender = true;
                 configuration.setNetworkIcon(false);
             } else {
@@ -80,10 +73,10 @@ public class MessagePushNotificationBuildAndShow extends AbstractApplinkBuildAnd
             }
 
             String description;
-            if (!isSingle) {
-                description = String.format("%d pesan dari %d pengirim", discussionPushNotifications.size(), senderCount);
+            if (senderCount > 1) {
+                description = String.format("%d pesan dari %d pengirim", messagePushNotifications.size(), senderCount);
             } else {
-                description = String.format("%d pesan dari %s", discussionPushNotifications.size(), username);
+                description = String.format("%d pesan dari %s", messagePushNotifications.size(), username);
             }
 
             Uri url = Uri.parse(uri);
@@ -94,6 +87,7 @@ public class MessagePushNotificationBuildAndShow extends AbstractApplinkBuildAnd
 
             ApplinkNotificationPass.ApplinkNotificationPassBuilder builder =
                     ApplinkNotificationPass.ApplinkNotificationPassBuilder.builder();
+
             ApplinkNotificationPass applinkNotificationPass = builder.contents(contents)
                     .description(description)
                     .image(image)

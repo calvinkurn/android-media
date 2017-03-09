@@ -33,6 +33,8 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.talk.talkproduct.fragment.TalkProductFragment;
@@ -209,6 +211,10 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
         talk = arguments.getParcelable("talk");
         talkID = arguments.getString("talk_id");
         shopID = arguments.getString("shop_id", "");
+        NotificationModHandler.clearCacheIfFromNotification(
+                Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION,
+                talkID
+        );
         getFromBundle(talk);
         position = arguments.getInt("position");
     }
