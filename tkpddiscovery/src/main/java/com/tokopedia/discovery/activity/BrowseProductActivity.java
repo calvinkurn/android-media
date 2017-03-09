@@ -254,11 +254,13 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
     @Override
     public void onSearchViewShown() {
         bottomNavigation.hideBottomNavigation();
+        bottomNavigation.setBehaviorTranslationEnabled(false);
     }
 
     @Override
     public void onSearchViewClosed() {
         bottomNavigation.restoreBottomNavigation();
+        bottomNavigation.setBehaviorTranslationEnabled(true);
     }
 
     @Override

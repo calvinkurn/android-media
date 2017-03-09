@@ -384,7 +384,6 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
      */
     public void showSuggestions() {
         if (mSuggestionFragment != null && mSuggestionView.getVisibility() == GONE) {
-            mSuggestionView.bringToFront();
             mSuggestionView.setVisibility(VISIBLE);
         }
     }
@@ -522,7 +521,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         //Request Focus
         mSearchSrcTextView.setText(null);
         mSearchSrcTextView.requestFocus();
-
+        bringToFront();
         if (animate) {
             setVisibleWithAnimation();
 
