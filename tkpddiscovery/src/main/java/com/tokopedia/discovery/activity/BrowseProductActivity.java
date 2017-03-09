@@ -92,7 +92,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_INV
  * Created by Erry on 6/30/2016.
  */
 public class BrowseProductActivity extends TActivity implements DiscoveryActivityPresenter,
-        DiscoverySearchView.SearchViewListener, DiscoverySearchView.OnQueryTextListener, HasComponent {
+        DiscoverySearchView.SearchViewListener, DiscoverySearchView.OnQueryTextListener {
 
     private static final String TAG = BrowseProductActivity.class.getSimpleName();
     private static final String KEY_GTM = "GTMFilterData";
@@ -292,8 +292,6 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
             } else {
                 discoverySearchView.closeSearch();
             }
-//        } else if (fragmentManager.getBackStackEntryCount() > 1) {
-//            super.onBackPressed();
         } else {
             finish();
         }
@@ -735,8 +733,6 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
             switch (requestCode) {
                 case REQUEST_SORT:
                     DataValue sortData = data.getParcelableExtra(BrowseParentFragment.SORT_EXTRA);
-                    String source = data.getStringExtra(BrowseParentFragment.SOURCE_EXTRA);
-//                    filterAttributMap.put(browseProductActivityModel.getActiveTab(), sortData);
                     mBrowseProductAtribut.getFilterAttributMap().put(browseProductActivityModel.getActiveTab(), sortData);
                     String newOb = sortData.getSelectedOb();
                     if (browseProductActivityModel.getActiveTab() == 1) {
@@ -1015,8 +1011,4 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
         return gridType;
     }
 
-    @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
-    }
 }

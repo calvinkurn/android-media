@@ -16,14 +16,14 @@ import rx.Observable;
 
 public class SearchUseCase extends UseCaseWithParams<SearchParam, List<SearchData>> {
 
-    private final SearchDataInteractor dataFactory;
+    private final SearchDataInteractor searchDataInteractor;
 
     public SearchUseCase(Context context) {
-        this.dataFactory = new SearchDataInteractor(context);
+        this.searchDataInteractor = new SearchDataInteractor(context);
     }
 
     @Override
     protected Observable<List<SearchData>> createObservable(SearchParam requestParams) {
-        return dataFactory.getSearchData(requestParams.getParam());
+        return searchDataInteractor.getSearchData(requestParams.getParam());
     }
 }

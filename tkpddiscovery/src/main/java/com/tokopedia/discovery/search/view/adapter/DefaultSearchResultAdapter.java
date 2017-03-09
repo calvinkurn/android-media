@@ -94,11 +94,12 @@ public class DefaultSearchResultAdapter extends RecyclerView.Adapter<DefaultSear
         void onIconClicked() {
             SearchItem item = model.getSearchItems().get(getAdapterPosition());
             switch (model.getId()) {
-                case recent_search:
+                case "recent_search":
                     clickListener.onDeleteRecentSearchItem(item);
                     break;
                 default:
                     clickListener.copyTextToSearchView(item.getKeyword());
+                    break;
             }
         }
 
@@ -123,18 +124,19 @@ public class DefaultSearchResultAdapter extends RecyclerView.Adapter<DefaultSear
                 resultTxt.setText(highlightedTitle);
             }
             switch (model.getId()) {
-                case in_category:
+                case "in_category":
                     icon.setImageResource(R.drawable.ic_diagonal_arrow);
                     label.setVisibility(View.VISIBLE);
                     label.setText(String.format(context.getString(R.string.formated_in_category), searchItem.getRecom()));
                     break;
-                case recent_search:
+                case "recent_search":
                     label.setVisibility(View.GONE);
                     icon.setImageResource(R.drawable.ic_close);
                     break;
                 default:
                     icon.setImageResource(R.drawable.ic_diagonal_arrow);
                     label.setVisibility(View.GONE);
+                    break;
             }
         }
     }

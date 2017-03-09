@@ -71,12 +71,12 @@ public class DefaultSearchViewHolder extends AbstractViewHolder<DefaultViewModel
                 CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT);
         cardView.setCardElevation(0);
         switch (element.getId()) {
-            case autocomplete:
+            case "autocomplete":
                 layoutParams.setMargins(0, 0, 0, context.getResources().
                         getDimensionPixelSize(R.dimen.search_parent_item_card_margin));
                 cardView.setCardElevation(5);
                 break;
-            case recent_search:
+            case "recent_search":
                 title.setVisibility(View.VISIBLE);
                 delete.setVisibility(View.VISIBLE);
                 title.setText(context.getString(R.string.title_search_recent));
@@ -84,7 +84,7 @@ public class DefaultSearchViewHolder extends AbstractViewHolder<DefaultViewModel
                         getDimensionPixelSize(R.dimen.search_parent_item_card_margin));
                 cardView.setCardElevation(5);
                 break;
-            case popular_search:
+            case "popular_search":
                 title.setVisibility(View.VISIBLE);
                 title.setText(context.getString(R.string.title_search_popular));
                 layoutParams.setMargins(0, 0, 0, context.getResources().

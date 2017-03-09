@@ -14,7 +14,7 @@ import java.util.List;
 
 public class DefaultViewModel implements Visitable<SearchTypeFactory> {
 
-    private SearchData.ItemsIds id;
+    private String id;
     private String searchTerm;
     private List<SearchItem> searchItems;
 
@@ -23,11 +23,11 @@ public class DefaultViewModel implements Visitable<SearchTypeFactory> {
         return typeFactory.type(this);
     }
 
-    public SearchData.ItemsIds getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(SearchData.ItemsIds id) {
+    public void setId(String id) {
         this.id = id;
     }
 

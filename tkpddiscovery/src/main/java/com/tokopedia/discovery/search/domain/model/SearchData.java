@@ -15,17 +15,17 @@ public class SearchData {
     }
 
     @SerializedName("id")
-    private ItemsIds id;
+    private String id;
     @SerializedName("name")
     private String name;
     @SerializedName("items")
     private List<SearchItem> items;
 
-    public ItemsIds getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(ItemsIds id) {
+    public void setId(String id) {
         this.id = id;
     }
 

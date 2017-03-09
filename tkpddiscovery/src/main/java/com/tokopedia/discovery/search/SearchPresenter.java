@@ -108,14 +108,14 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
             for (SearchData searchData : searchDatas) {
                 if (searchData.getItems().size() > 0) {
                     switch (searchData.getId()) {
-                        case autocomplete:
-                        case popular_search:
-                        case hotlist:
-                        case in_category:
-                        case recent_search:
+                        case "autocomplete":
+                        case "popular_search":
+                        case "hotlist":
+                        case "in_category":
+                        case "recent_search":
                             list.add(prepareDefaultViewModel(searchData));
                             continue;
-                        case shop:
+                        case "shop":
                             list.add(prepareShopViewModel(searchData));
                             continue;
                     }
