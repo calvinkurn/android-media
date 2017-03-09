@@ -50,7 +50,7 @@ public class TopAdsEtalaseCacheDataSource implements TopAdsEtalaseDataSource {
                 }.getType());
         manager.setKey(TkpdCache.ETALASE_ADD_PROD);
         manager.setValue(jsonString);
-        manager.setCacheDuration(3600);
+        manager.setCacheDuration(60);
         manager.store();
         /*final DatabaseWrapper database = FlowManager.getDatabase(TkpdSellerDatabase.NAME).getWritableDatabase();
         database.beginTransaction();
