@@ -52,20 +52,11 @@
         android:layout_gravity="bottom"
         android:background="@android:color/white">
 
-        <View
-            android:id="@+id/bg_top_ads_next"
+        <Button
+            android:id="@+id/top_ads_btn_next_"
+            style="@style/Button.TopAds.Submit.GreenSelection"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="6dp"
-            android:background="@drawable/bg_button_green" />
-
-        <TextView
-            android:id="@+id/top_ads_btn_next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Selanjutnya"
-            android:textColor="#ffffff"
-            android:textSize="14sp" />
+            android:text="@string/next" />
     </FrameLayout>
 </android.support.design.widget.CoordinatorLayout>

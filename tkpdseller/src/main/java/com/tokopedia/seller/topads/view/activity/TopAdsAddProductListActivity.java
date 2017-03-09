@@ -16,9 +16,9 @@ import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.app.BaseActivity;
@@ -92,14 +92,13 @@ public class TopAdsAddProductListActivity extends BaseActivity
             };
     private boolean isFirstTime;
     private Drawable greyButton;
-    private View nextBgButton;
     private Drawable greenButton;
     private boolean isExistingGroup;
     private boolean isHideEtalase;
     private int maxNumberSelection;
     private int thirtyEightPercentBlackColor;
     private int whiteColor;
-    private TextView topAdsButtonNext;
+    private Button topAdsButtonNext_;
 
     private void addPaddingBottom() {
         bottomSheetContainer.setPadding(
@@ -125,8 +124,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
 
         thirtyEightPercentBlackColor = ContextCompat.getColor(this, R.color.thirty_eight_percent_black);
         whiteColor = ContextCompat.getColor(this, R.color.white);
-        topAdsButtonNext = (TextView) findViewById(R.id.top_ads_btn_next);
-        topAdsButtonNext.setTextColor(thirtyEightPercentBlackColor);
+        topAdsButtonNext_ = (Button) findViewById(R.id.top_ads_btn_next_);
 
         greyButton = ContextCompat.getDrawable(this, R.drawable.bg_button_grey);
         greenButton = ContextCompat.getDrawable(this, R.drawable.bg_button_green);
@@ -142,7 +140,6 @@ public class TopAdsAddProductListActivity extends BaseActivity
         numberOfChooseFooterHelper.bindData(10, expandedOnClick);
 
         nextButton = findViewById(R.id.top_ads_next);
-        nextBgButton = findViewById(R.id.bg_top_ads_next);
         nextButtonHeight = getCoords(nextButton);
         disableNextButton();
 
@@ -342,18 +339,18 @@ public class TopAdsAddProductListActivity extends BaseActivity
 
     @Override
     public void disableNextButton() {
+        topAdsButtonNext_.setEnabled(false);
+        topAdsButtonNext_.setTextColor(thirtyEightPercentBlackColor);
+
         nextButton.setOnClickListener(null);
         nextButton.setClickable(false);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            nextBgButton.setBackground(greyButton);
-        }else{
-            nextBgButton.setBackgroundResource(R.drawable.bg_button_grey);
-        }
-        topAdsButtonNext.setTextColor(thirtyEightPercentBlackColor);
     }
 
     @Override
     public void enableNextButton() {
+        topAdsButtonNext_.setEnabled(true);
+        topAdsButtonNext_.setTextColor(whiteColor);
+
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -361,12 +358,6 @@ public class TopAdsAddProductListActivity extends BaseActivity
             }
         });
         nextButton.setClickable(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            nextBgButton.setBackground(greenButton);
-        }else{
-            nextBgButton.setBackgroundResource(R.drawable.bg_button_green);
-        }
-        topAdsButtonNext.setTextColor(whiteColor);
     }
 
     @Override
