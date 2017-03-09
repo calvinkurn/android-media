@@ -119,6 +119,9 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
         progressDialog.setMessage(getString(R.string.title_loading));
         buttonNext.setText(getTitleButtonNext());
         setVisibilityInfoOption();
+
+        // prevent other edit texts on focusing on start
+        view.requestFocus();
     }
 
     @Override

@@ -96,11 +96,11 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsDetailNewProductActivity"
-            android:label="@string/title_group_ad_detail"
+            android:label="@string/title_top_ads_add_promo_product"
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsDetailNewGroupActivity"
-            android:label="@string/title_top_ads_new_promo"
+            android:label="@string/title_top_ads_add_promo_product"
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsDetailEditShopActivity"
@@ -108,11 +108,11 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsDetailEditProductActivity"
-            android:label="@string/title_top_ads_new_promo"
+            android:label="@string/title_top_ads_edit_promo_product"
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsDetailEditGroupActivity"
-            android:label="@string/title_group_ad_detail"
+            android:label="@string/title_group_ad_edit"
             android:screenOrientation="portrait" />
         <activity
             android:name=".lib.datepicker.DatePickerActivity"

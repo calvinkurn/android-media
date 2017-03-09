@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <android.support.v4.widget.NestedScrollView
@@ -22,19 +23,19 @@
                 layout="@layout/partial_top_ads_detail_edit_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/top_ads_margin_layout"/>
+                android:layout_marginTop="@dimen/top_ads_margin_layout_wide"/>
 
             <include
                 layout="@layout/partial_top_ads_edit_promo_add_product"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/top_ads_margin_layout"/>
+                android:layout_marginTop="@dimen/top_ads_margin_layout_wide" />
 
             <include
                 layout="@layout/partial_top_ads_edit_ad"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/top_ads_margin_layout"/>
+                android:layout_marginTop="@dimen/top_ads_margin_layout_wide"/>
         </LinearLayout>
 
 

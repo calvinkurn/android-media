@@ -53,7 +53,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:scaleType="fitXY"
-            app:srcCompat="@drawable/ic_arrow_up" />
+            android:src="@drawable/ic_arrow_up" />
     </RelativeLayout>
 
     <FrameLayout

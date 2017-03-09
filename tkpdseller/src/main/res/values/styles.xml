@@ -32,32 +32,35 @@
         <item name="android:textSize">@dimen/font_medium</item>
     </style>
 
-    <style name="TextView.TopAds.Title.One">
+    <style name="TextView.TopAds.Title.Bold">
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TextView.TopAds.Title.Two">
+    <style name="TextView.TopAds.Title.Green">
         <item name="android:textColor">@color/font_top_ads_green</item>
+    </style>
+
+    <style name="TextView.TopAds.Title.Gray">
+        <item name="android:textColor">@color/font_top_ads_black_54</item>
     </style>
 
     <style name="TextView.TopAds.Body">
         <item name="android:textSize">@dimen/font_small</item>
     </style>
 
-    <style name="TextView.TopAds.Body.Small1">
-        <item name="android:textColor">@color/font_top_ads_black_70</item>
-    </style>
-
-    <style name="TextView.TopAds.Body.Small2">
+    <style name="TextView.TopAds.Body.Gray">
         <item name="android:textColor">@color/font_top_ads_black_54</item>
     </style>
 
-    <style name="TextView.TopAds.Body.Small3">
+    <style name="TextView.TopAds.Body.Black">
         <item name="android:textColor">@color/font_top_ads_black_70</item>
+    </style>
+
+    <style name="TextView.TopAds.Body.Black.Bold">
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TextView.TopAds.Body.Small4">
+    <style name="TextView.TopAds.Body.Green">
         <item name="android:textColor">@color/font_top_ads_green</item>
     </style>
 
@@ -211,18 +214,32 @@
     <style name="TextInputLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/top_ads_textinput_margin_offset</item> <!-- this is to cater the inner margin android textInputlayout have in default -->
+        <item name="android:layout_marginRight">@dimen/top_ads_textinput_margin_offset</item>
+        <item name="android:layout_marginBottom">@dimen/top_ads_textinput_margin_offset</item>
         <item name="android:theme">@style/TextInputLayoutColorLine</item>
     </style>
     
     <style name="TextInputLayoutColorLine">
-        <item name="colorControlNormal">@color/font_top_ads_black_54</item>
+        <item name="colorControlNormal">@color/colorGray</item>
         <item name="colorControlActivated">@color/font_top_ads_green</item>
         <item name="colorControlHighlight">@color/font_top_ads_green</item>
     </style>
 
-    <style name="TextAppearence.App.TextInputLayout" parent="@android:style/TextAppearance">
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/tkpd_main_green</item>
+        <item name="android:textColorPrimary">@color/colorBlack</item>
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="TextAppearence.App.TextInputLayout" parent="TextAppearance.Design.Hint">
         <item name="android:textColor">@color/font_top_ads_black_54</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">@dimen/fontvs</item>
+    </style>
+
+    <style name="TextAppearence.App.TextInputLayout.Small">
+        <item name="android:textColor">@color/font_top_ads_black_54</item>
+        <item name="android:textSize">@dimen/font_small</item>
     </style>
 
     <style name="TopAdsCustomAutoCompleteTextView">

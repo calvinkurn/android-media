@@ -174,7 +174,8 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     private void showDeleteConfirmation() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context,
+                R.style.AppCompatAlertDialogStyle);
         alertDialog.setTitle(R.string.title_delete_promo);
         alertDialog.setMessage(R.string.top_ads_delete_ad_alert);
         alertDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {

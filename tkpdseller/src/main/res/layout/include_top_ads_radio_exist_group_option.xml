@@ -24,6 +24,7 @@
                 <com.tokopedia.seller.topads.view.widget.TopAdsCustomAutoCompleteTextView
                     android:id="@+id/choose_group_auto_text"
                     android:hint="@string/label_top_ads_choose_group"
+                    android:inputType="textNoSuggestions"
                     style="@style/TopAdsCustomAutoCompleteTextView" />
             </android.support.design.widget.TextInputLayout>
 
