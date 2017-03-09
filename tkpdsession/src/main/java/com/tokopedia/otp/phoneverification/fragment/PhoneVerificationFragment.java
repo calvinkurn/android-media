@@ -148,9 +148,6 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     @Override
     protected void onFirstTimeLaunched() {
         phoneNumberEditText.setText(CustomPhoneNumberUtil.transform(SessionHandler.getPhoneNumber()));
-
-//        if (TrackingUtils.getGtmString(CAN_REQUEST_OTP_IMMEDIATELY).equals("true"))
-//            presenter.requestOtp();
     }
 
     @Override
@@ -310,6 +307,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         SnackbarManager.make(getActivity(), status, Snackbar.LENGTH_LONG).show();
         requestOtpCallButton.setVisibility(View.VISIBLE);
         inputOtpView.setVisibility(View.VISIBLE);
+        changePhoneNumberButton.setVisibility(View.GONE);
         startTimer();
     }
 
