@@ -29,6 +29,7 @@ public class BrowseProductActivityModel implements Parcelable {
     public String unique_id;
     public Map<String, String> filterOptions;
     public Data categotyHeader;
+    public String totalDataCategory ="";
 
     public HotListBannerModel getHotListBannerModel() {
         return hotListBannerModel;
@@ -150,6 +151,14 @@ public class BrowseProductActivityModel implements Parcelable {
         this.categotyHeader = categotyHeader;
     }
 
+    public String getTotalDataCategory() {
+        return totalDataCategory;
+    }
+
+    public void setTotalDataCategory(String totalDataCategory) {
+        this.totalDataCategory = totalDataCategory;
+    }
+
     @Override
     public String toString() {
         return new Gson().toJson(this);
@@ -184,7 +193,7 @@ public class BrowseProductActivityModel implements Parcelable {
             }
         }
         dest.writeParcelable(categotyHeader,flags);
-
+        dest.writeString(this.totalDataCategory);
     }
 
     public BrowseProductActivityModel() {
@@ -212,6 +221,7 @@ public class BrowseProductActivityModel implements Parcelable {
             this.filterOptions.put(key, value);
         }
         this.categotyHeader = in.readParcelable(Data.class.getClassLoader());
+        this.totalDataCategory = in.readString();
     }
 
     public static final Parcelable.Creator<BrowseProductActivityModel> CREATOR

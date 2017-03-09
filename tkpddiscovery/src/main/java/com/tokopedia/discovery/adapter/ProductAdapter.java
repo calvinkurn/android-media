@@ -46,7 +46,6 @@ import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
 import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
-import com.tokopedia.core.network.entity.topads.TopAdsResponse;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -416,6 +415,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         @BindView(R2.id.card_category)
         CardView cardViewCategory;
 
+        @BindView(R2.id.total_product)
+        TextView totalProduct;
+
         private DefaultCategoryAdapter categoryAdapter;
 
         public DefaultCategoryHeaderViewHolder(View itemView) {
@@ -457,6 +459,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             if (categoryHeaderModel.categoryHeader.getChild() == null || categoryHeaderModel.categoryHeader.getChild().isEmpty()) {
                 cardViewCategory.setVisibility(View.GONE);
             }
+            if (!categoryHeaderModel.totalProduct.equals("")) {
+                totalProduct.setText(categoryHeaderModel.totalProduct + " Produk");
+                totalProduct.setVisibility(View.VISIBLE);
+            }
 
         }
 
@@ -486,6 +492,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
         @BindView(R2.id.recycler_view_revamp_categories)
         RecyclerView revampCategoriesRecyclerView;
+
+        @BindView(R2.id.total_product)
+        TextView totalProduct;
 
         private RevampCategoryAdapter categoryAdapter;
 
@@ -527,13 +536,15 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     }
                 });
             }
+            if (!categoryHeaderModel.totalProduct.equals("")) {
+                totalProduct.setText(categoryHeaderModel.totalProduct + " Produk");
+                totalProduct.setVisibility(View.VISIBLE);
+            }
         }
 
         public interface CategoryHeaderListener {
             void onExpandClick();
         }
-
-
 
     }
 
@@ -600,7 +611,6 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         return (data.get(position).getType() == TkpdState.RecyclerView.VIEW_CATEGORY_HEADER
                 || data.get(position).getType() == TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER);
     }
-
 
     public boolean isEmptySearch(int position) {
         return data.get(position).getType() == TkpdState.RecyclerView.VIEW_EMPTY_SEARCH;
@@ -763,13 +773,15 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         private Context context;
         private int categoryWidth;
         DefaultCategoryAdapter.CategoryListener listener;
+        private String totalProduct;
 
         private CategoryHeaderModel() {
             setType(TkpdState.RecyclerView.VIEW_CATEGORY_HEADER);
 
         }
 
-        public CategoryHeaderModel(Data categoryHeader, Context context, int categoryWidth, DefaultCategoryAdapter.CategoryListener listener) {
+        public CategoryHeaderModel(Data categoryHeader, Context context, int categoryWidth,
+                                   DefaultCategoryAdapter.CategoryListener listener, String totalProduct) {
             this();
             this.categoryHeader = categoryHeader;
             this.context = context;
@@ -782,6 +794,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             } else if (categoryHeader.getChild()!=null) {
                 activeChildren.addAll(categoryHeader.getChild());
             }
+            this.totalProduct = totalProduct;
         }
     }
 
@@ -793,12 +806,14 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         private Context context;
         private int categoryWidth;
         RevampCategoryAdapter.CategoryListener listener;
+        private String totalProduct;
 
         private CategoryHeaderRevampModel() {
             setType(TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER);
         }
 
-        public CategoryHeaderRevampModel(Data categoryHeader, Context context, int categoryWidth, RevampCategoryAdapter.CategoryListener listener) {
+        public CategoryHeaderRevampModel(Data categoryHeader, Context context, int categoryWidth,
+                                         RevampCategoryAdapter.CategoryListener listener, String totalProduct) {
             this();
             this.categoryHeader = categoryHeader;
             this.context = context;
@@ -811,6 +826,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             } else if (categoryHeader.getChild()!=null){
                 activeChildren.addAll(categoryHeader.getChild());
             }
+            this.totalProduct = totalProduct;
         }
     }
 

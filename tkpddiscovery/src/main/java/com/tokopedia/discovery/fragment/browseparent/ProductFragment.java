@@ -44,8 +44,10 @@ import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenter;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenterImpl;
 import com.tokopedia.discovery.view.FragmentBrowseProductView;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 
@@ -159,7 +161,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public void onCallProductServiceResult2(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
+    public void onCallProductServiceResult2(Long totalProduct, List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
         Log.d(TAG, "onCallProductServiceResult2");
         productAdapter.addAll(true, false, new ArrayList<RecyclerViewItem>(model));
         productAdapter.setgridView(((BrowseProductActivity)getActivity()).getGridType());
@@ -178,6 +180,10 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         } else if (model.size() > 0){
             presenter.getTopAds(productAdapter.getTopAddsCounter(), TAG, getActivity(), spanCount);
         }
+
+        if (totalProduct>0)
+            browseModel.setTotalDataCategory(NumberFormat.getNumberInstance(Locale.US)
+                    .format(totalProduct.longValue()).replace(',', '.'));
         productAdapter.incrementPage();
 
         UnifyTracking.eventAppsFlyerViewListingSearch(model, browseModel.q);
@@ -245,13 +251,10 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             public int getSpanSize(int position) {
 
                 // column size default is one
-                int headerColumnSize = 1, footerColumnSize = 1, regularColumnSize = 1;
+                int regularColumnSize = 1;
 
-                headerColumnSize = PORTRAIT_COLUMN_HEADER;
                 regularColumnSize = PORTRAIT_COLUMN;
-                footerColumnSize = PORTRAIT_COLUMN_FOOTER;
 
-                // set the value of footer, regular and header
                 if (position == productAdapter.getData().size()) {
                     return spanCount;
                 } else if (position == 0 && !productAdapter.isTopAds(position) && !productAdapter.isHotListBanner(position)
@@ -260,11 +263,8 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                 } else if (productAdapter.isTopAds(position)) {
                     // top ads span column
                     return spanCount;
-                } else if (productAdapter.isHotListBanner(position)){
-                    return spanCount;
-                } else if (productAdapter.isCategoryHeader(position)){
-                    return spanCount;
-                }else if (productAdapter.isEmptySearch(position)) {
+                } else if (productAdapter.isHotListBanner(position) || productAdapter.isCategoryHeader(position)
+                        || productAdapter.isEmptySearch(position)){
                     return spanCount;
                 } else {
                     // regular one column
@@ -428,10 +428,15 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void addCategoryHeader(Data categoryHeader) {
         isHasCategoryHeader = true;
+        BrowseProductActivityModel browseModel = ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel();
         if (categoryHeader.getRevamp() !=null && categoryHeader.getRevamp()) {
-            productAdapter.addCategoryRevampHeader(new ProductAdapter.CategoryHeaderRevampModel(categoryHeader,getActivity(),getCategoryWidth(),this));
+            productAdapter.addCategoryRevampHeader(
+                    new ProductAdapter.CategoryHeaderRevampModel(categoryHeader,getActivity(),getCategoryWidth(),
+                            this,browseModel.getTotalDataCategory()));
         } else {
-            productAdapter.addCategoryHeader(new ProductAdapter.CategoryHeaderModel(categoryHeader,getActivity(),getCategoryWidth(),this));
+            productAdapter.addCategoryHeader(
+                    new ProductAdapter.CategoryHeaderModel(categoryHeader,getActivity(),getCategoryWidth(),
+                            this, browseModel.getTotalDataCategory()));
         }
 
         productAdapter.notifyDataSetChanged();

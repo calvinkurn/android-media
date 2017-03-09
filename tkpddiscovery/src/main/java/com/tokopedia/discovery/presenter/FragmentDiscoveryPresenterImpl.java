@@ -207,7 +207,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                             view.addHotListHeader(new ProductAdapter.HotListBannerModel(hotListBannerModel, browseProductModel.result.hashtag));
                             processBrowseProductLoadMore(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
                         } else {
-                            processBrowseProduct(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                            processBrowseProduct(browseProductModel.header.getTotalData(),listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
                         }
                         sendGTMNoResult(context);
                     }
@@ -251,8 +251,8 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
         return pagingHandlerModel;
     }
 
-    public void processBrowseProduct(List<ProductItem> productItems, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        view.onCallProductServiceResult2(productItems, pagingHandlerModel);
+    public void processBrowseProduct(Long totalProduct, List<ProductItem> productItems, PagingHandler.PagingHandlerModel pagingHandlerModel) {
+        view.onCallProductServiceResult2(totalProduct, productItems, pagingHandlerModel);
     }
 
     public void processBrowseProductLoadMore(List<ProductItem> productItems, PagingHandler.PagingHandlerModel pagingHandlerModel) {
