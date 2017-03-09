@@ -3,6 +3,7 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
@@ -21,7 +22,7 @@ import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBind
 
 public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProductAdListPresenter> {
 
-    private int groupId;
+    private long groupId;
     private GroupAd groupAd;
 
     public static Fragment createInstance(GroupAd groupAd) {
@@ -36,8 +37,8 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
     protected void onFirstTimeLaunched() {
         super.onFirstTimeLaunched();
         groupAd = getArguments().getParcelable(TopAdsExtraConstant.EXTRA_GROUP);
-        if (groupAd != null) {
-            groupId = groupAd.getId();
+        if (groupAd != null && !TextUtils.isEmpty(groupAd.getId())) {
+            groupId = Integer.valueOf(groupAd.getId());
         }
     }
 
@@ -88,7 +89,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
         // check if the request code is the same
         if (requestCode == REQUEST_CODE_AD_FILTER && intent != null) {
             status = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
-            groupId = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, groupId);
+            groupId = intent.getLongExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, groupId);
             searchAd();
         }
     }

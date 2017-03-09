@@ -60,7 +60,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     private SnackbarRetry snackbarRetry;
 
     protected Ad adFromIntent;
-    protected int adId;
+    protected String adId;
 
     protected abstract void refreshAd();
 
@@ -107,7 +107,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     protected void setupArguments(Bundle bundle) {
         super.setupArguments(bundle);
         adFromIntent = bundle.getParcelable(TopAdsExtraConstant.EXTRA_AD);
-        adId = bundle.getInt(TopAdsExtraConstant.EXTRA_AD_ID);
+        adId = bundle.getString(TopAdsExtraConstant.EXTRA_AD_ID);
     }
 
     @Override

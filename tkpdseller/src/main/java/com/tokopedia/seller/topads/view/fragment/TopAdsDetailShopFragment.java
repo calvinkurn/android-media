@@ -32,11 +32,11 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
     private MenuItem deleteMenuItem;
     private ShopAd ad;
 
-    public static Fragment createInstance(ShopAd shopAd, int adId) {
+    public static Fragment createInstance(ShopAd shopAd, String adId) {
         Fragment fragment = new TopAdsDetailShopFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, shopAd);
-        bundle.putInt(TopAdsExtraConstant.EXTRA_AD_ID, adId);
+        bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, adId);
         fragment.setArguments(bundle);
         return fragment;
     }

@@ -104,7 +104,7 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     @Override
     public void onAdShopLoaded(@NonNull ShopAd ad) {
         shopAd = ad;
-        if (ad.getId() > 0) {
+        if (TextUtils.isEmpty(ad.getId())) {
             loadDetailAd(ad);
         } else {
             loadAdShopNotExist();

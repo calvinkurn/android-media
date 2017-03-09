@@ -16,10 +16,10 @@ public class TopAdsDetailGroupActivity extends TActivity {
         inflateView(R.layout.activity_top_ads_detail_group);
 
         GroupAd ad = null;
-        int adId = -1;
+        String adId = null;
         if (getIntent() != null && getIntent().getExtras() != null) {
             ad = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
-            adId = getIntent().getIntExtra(TopAdsExtraConstant.EXTRA_AD_ID, -1);
+            adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
         }
         getFragmentManager().beginTransaction().disallowAddToBackStack()
                 .replace(R.id.container, TopAdsDetailGroupFragment.createInstance(ad, adId), TopAdsDetailGroupFragment.class.getSimpleName())
