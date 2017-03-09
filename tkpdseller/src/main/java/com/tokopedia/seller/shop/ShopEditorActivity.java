@@ -13,31 +13,28 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
-import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
-import com.tokopedia.seller.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.core.shipping.OpenShopEditShipping;
 import com.tokopedia.core.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.core.shipping.model.openshopshipping.OpenShopData;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.Router;
+import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
+import com.tokopedia.seller.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.seller.shop.fragment.ShopCreateFragment;
 import com.tokopedia.seller.shop.fragment.ShopEditorFragment;
 import com.tokopedia.seller.shop.presenter.ShopCreateView;
 import com.tokopedia.seller.shop.presenter.ShopEditorView;
 import com.tokopedia.seller.shop.presenter.ShopSettingView;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.util.SessionHandler;
 
 import java.io.File;
 import java.util.ArrayList;
-
-import butterknife.BindView;
 
 import static com.tokopedia.core.shipping.OpenShopEditShipping.RESUME_OPEN_SHOP_KEY;
 
@@ -50,9 +47,34 @@ public class ShopEditorActivity extends TkpdActivity implements
     FragmentManager supportFragmentManager;
     String FRAGMENT;
 
-    @BindView(R2.id.container)
     FrameLayout container;
     private String onBack;
+
+    public static void startOpenShopEditShippingActivity(AppCompatActivity context) {
+        Intent intent = new Intent(context, OpenShopEditShipping.class);
+        context.startActivityForResult(intent, ShopCreateView.REQUEST_EDIT_SHIPPING);
+    }
+
+    public static void continueOpenShopEditShippingActivity(AppCompatActivity context, OpenShopData openShopData) {
+        Intent intent = new Intent(context, OpenShopEditShipping.class);
+        intent.putExtra(RESUME_OPEN_SHOP_KEY, openShopData);
+        context.startActivityForResult(intent, ShopCreateView.REQUEST_EDIT_SHIPPING);
+    }
+
+    public static void finishActivity(Bundle bundle, Activity activity) {
+        Router.goToHome(activity);
+        Intent intent = new Intent(activity, ShopInfoActivity.class);
+        intent.putExtras(bundle);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        activity.startActivity(intent);
+        if (activity instanceof AppCompatActivity) {
+            ((AppCompatActivity) activity).finish();
+        }
+        if (activity instanceof TkpdActivity) {
+            ((TkpdActivity) activity).onGetNotif();
+        }
+        TrackingUtils.eventLoca("event : open store");
+    }
 
     @Override
     public String getScreenName() {
@@ -64,6 +86,7 @@ public class ShopEditorActivity extends TkpdActivity implements
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_simple_fragment);
         fetchExtras(getIntent());
+        container = (FrameLayout) findViewById(R.id.container);
 
         supportFragmentManager = getSupportFragmentManager();
     }
@@ -119,17 +142,6 @@ public class ShopEditorActivity extends TkpdActivity implements
         }
     }
 
-    public static void startOpenShopEditShippingActivity(AppCompatActivity context){
-        Intent intent = new Intent(context,OpenShopEditShipping.class);
-        context.startActivityForResult(intent, ShopCreateView.REQUEST_EDIT_SHIPPING);
-    }
-
-    public static void continueOpenShopEditShippingActivity(AppCompatActivity context, OpenShopData openShopData){
-        Intent intent = new Intent(context,OpenShopEditShipping.class);
-        intent.putExtra(RESUME_OPEN_SHOP_KEY, openShopData);
-        context.startActivityForResult(intent, ShopCreateView.REQUEST_EDIT_SHIPPING);
-    }
-
     @Override
     public void moveToFragment(Fragment fragment, boolean isAddtoBackStack, String TAG) {
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
@@ -159,21 +171,6 @@ public class ShopEditorActivity extends TkpdActivity implements
     @Override
     public boolean isFragmentCreated(String tag) {
         return supportFragmentManager.findFragmentByTag(tag) == null;
-    }
-
-    public static void finishActivity(Bundle bundle, Activity activity) {
-        Router.goToHome(activity);
-        Intent intent = new Intent(activity, ShopInfoActivity.class);
-        intent.putExtras(bundle);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        activity.startActivity(intent);
-        if(activity instanceof AppCompatActivity){
-            ((AppCompatActivity)activity).finish();
-        }
-        if(activity instanceof TkpdActivity){
-            ((TkpdActivity)activity).onGetNotif();
-        }
-        TrackingUtils.eventLoca("event : open store");
     }
 
     @Override

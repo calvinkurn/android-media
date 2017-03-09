@@ -20,7 +20,6 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.util.MethodChecker;
@@ -28,58 +27,96 @@ import com.tokopedia.seller.shop.presenter.ShopEditorPresenter;
 import com.tokopedia.seller.shop.presenter.ShopEditorPresenterImpl;
 import com.tokopedia.seller.shop.presenter.ShopEditorView;
 
-import butterknife.BindView;
-import butterknife.OnClick;
-
 /**
  * Created by Toped10 on 5/19/2016.
  */
 public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implements ShopEditorView {
 
-    @BindView(R2.id.shop_name)
     EditText mShopNameText;
-    @BindView(R2.id.shop_slogan)
     EditText mShopSloganText;
-    @BindView(R2.id.shop_desc)
     EditText mShopDescText;
-    @BindView(R2.id.button_send)
     TextView mBtnSend;
-    @BindView(R2.id.progress_bar)
     ProgressBar progressBar;
-    @BindView(R2.id.shop_ava)
     ImageView mShopAva;
-    @BindView(R2.id.shop_editor_scrollview)
     ScrollView mShopEditor;
-    @BindView(R2.id.edit_shop_schedule)
     ImageButton editShopSchedule;
-    @BindView(R2.id.close_image)
     ImageView closeImage;
-    @BindView(R2.id.shop_status)
     TextView shopStatus;
-    @BindView(R2.id.schedule_info)
     TextView scheduleInfo;
-    @BindView(R2.id.schedule_date)
     TextView scheduleDate;
-    @BindView(R2.id.time_icon)
     ImageView timeIcon;
-    @BindView(R2.id.icon_gold_merchant)
     ImageView icon_gold_merchant;
-    @BindView(R2.id.status_gold)
     TextView status_gold;
-    @BindView(R2.id.desc_status_gold)
     TextView desc_status;
-    @BindView(R2.id.about_gm)
     TextView about_gm;
     private TkpdProgressDialog mProgressDialog;
 
-    @OnClick(R2.id.shop_ava)
-    public void uploadImage(View vuew) {
+    public void uploadImage(View view) {
         ImageGalleryEntry.moveToImageGallery((AppCompatActivity)getActivity(), 0, 1);
     }
 
-    @OnClick(R2.id.button_send)
     public void kirimData(View view) {
         presenter.sendDataShop();
+    }
+
+    void showEditShopScheduleDialog() {
+        presenter.onClickCloseShop(presenter);
+    }
+
+    void showAboutGM() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://gold.tokopedia.com/"));
+        startActivity(browserIntent);
+    }
+
+    @Override
+    public View onCreateView(View parentView, Bundle savedInstanceState) {
+        mShopNameText = (EditText) parentView.findViewById(R.id.shop_name);
+        mShopSloganText = (EditText) parentView.findViewById(R.id.shop_slogan);
+        mShopDescText = (EditText) parentView.findViewById(R.id.shop_desc);
+        mBtnSend = (TextView) parentView.findViewById(R.id.button_send);
+        progressBar = (ProgressBar) parentView.findViewById(R.id.progress_bar);
+        mShopAva = (ImageView) parentView.findViewById(R.id.shop_ava);
+        mShopEditor = (ScrollView) parentView.findViewById(R.id.shop_editor_scrollview);
+        editShopSchedule = (ImageButton) parentView.findViewById(R.id.edit_shop_schedule);
+        closeImage = (ImageView) parentView.findViewById(R.id.close_image);
+        shopStatus = (TextView) parentView.findViewById(R.id.shop_status);
+        scheduleInfo = (TextView) parentView.findViewById(R.id.schedule_info);
+        scheduleDate = (TextView) parentView.findViewById(R.id.schedule_date);
+        timeIcon = (ImageView) parentView.findViewById(R.id.time_icon);
+        icon_gold_merchant = (ImageView) parentView.findViewById(R.id.icon_gold_merchant);
+        status_gold = (TextView) parentView.findViewById(R.id.status_gold);
+        desc_status = (TextView) parentView.findViewById(R.id.desc_status_gold);
+        about_gm = (TextView) parentView.findViewById(R.id.about_gm);
+
+        mShopAva.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadImage(v);
+            }
+        });
+
+        mBtnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                kirimData(v);
+            }
+        });
+
+        editShopSchedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showEditShopScheduleDialog();
+            }
+        });
+
+        about_gm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAboutGM();
+            }
+        });
+
+        return super.onCreateView(parentView, savedInstanceState);
     }
 
     @Override
@@ -119,17 +156,6 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
     @Override
     public void initView() {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-    }
-
-    @OnClick(R2.id.edit_shop_schedule)
-    void showEditShopScheduleDialog(){
-        presenter.onClickCloseShop(presenter);
-    }
-
-    @OnClick(R2.id.about_gm)
-    void showAboutGM(){
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://gold.tokopedia.com/"));
-        startActivity(browserIntent);
     }
 
     @Override
