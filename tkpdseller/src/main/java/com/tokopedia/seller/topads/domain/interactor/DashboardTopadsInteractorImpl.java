@@ -7,6 +7,7 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.shopinfo.facades.authservices.ShopService;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSource;
 import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSourceImpl;
@@ -55,7 +56,7 @@ public class DashboardTopadsInteractorImpl implements DashboardTopadsInteractor 
     public DashboardTopadsInteractorImpl(Context context) {
         this.context = context;
         compositeSubscription = new CompositeSubscription();
-        topAdsManagementService = new TopAdsManagementService();
+        topAdsManagementService = new TopAdsManagementService(new SessionHandler(context).getAccessToken(context));
         topAdsDbDataSource = new TopAdsDbDataSourceImpl();
         topAdsCacheDataSource = new TopAdsCacheDataSourceImpl(context);
     }

@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.view.presenter;
 
 import android.content.Context;
 
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSourceImpl;
 import com.tokopedia.seller.topads.domain.interactor.ListenerInteractor;
@@ -25,7 +26,7 @@ public class TopAdsProductAdListPresenterImpl extends TopAdsAdListPresenterImpl<
 
     public TopAdsProductAdListPresenterImpl(Context context, TopAdsListPromoViewListener topadsListPromoViewListener) {
         super(context, topadsListPromoViewListener);
-        this.productAdInteractor = new TopAdsProductAdInteractorImpl(new TopAdsManagementService(), new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(context));
+        this.productAdInteractor = new TopAdsProductAdInteractorImpl(new TopAdsManagementService(new SessionHandler(context).getAccessToken(context)), new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(context));
     }
 
     @Override

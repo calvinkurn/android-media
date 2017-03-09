@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.domain.interactor;
 
 import android.content.Context;
 
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSource;
 import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSourceImpl;
@@ -32,7 +33,7 @@ public class TopAdsShopAdInteractorImpl implements TopAdsShopAdInteractor {
     public TopAdsShopAdInteractorImpl(Context context) {
         this.context = context;
         compositeSubscription = new CompositeSubscription();
-        topAdsManagementService = new TopAdsManagementService();
+        topAdsManagementService = new TopAdsManagementService(new SessionHandler(context).getAccessToken(context));
         topAdsDbDataSource = new TopAdsDbDataSourceImpl();
         topAdsCacheDataSource = new TopAdsCacheDataSourceImpl(context);
     }

@@ -68,7 +68,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
     protected void initialPresenter() {
         super.initialPresenter();
         presenter = new TopAdsStatisticActivityPresenterImpl(this, new TopAdsProductAdInteractorImpl
-                (new TopAdsManagementService(), new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(this)), this);
+                (new TopAdsManagementService(new SessionHandler(this).getAccessToken(this)), new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(this)), this);
     }
 
     @Override

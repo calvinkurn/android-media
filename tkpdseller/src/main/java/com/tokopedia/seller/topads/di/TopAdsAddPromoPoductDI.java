@@ -2,9 +2,9 @@ package com.tokopedia.seller.topads.di;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.data.factory.TopAdsGroupAdFactory;
 import com.tokopedia.seller.topads.data.mapper.TopAdsDetailGroupDomainMapper;
 import com.tokopedia.seller.topads.data.mapper.TopAdsDetailGroupMapper;
@@ -29,7 +29,7 @@ public class TopAdsAddPromoPoductDI {
         JobExecutor threadExecutor = new JobExecutor();
         UIThread postExecutionThread = new UIThread();
 
-        TopAdsManagementService topAdsManagementService = new TopAdsManagementService();
+        TopAdsManagementService topAdsManagementService = new TopAdsManagementService(new SessionHandler(context).getAccessToken(context));
         TopAdsManagementApi topAdsManagementApi = topAdsManagementService.getApi();
 
         TopAdsSearchGroupMapper topAdsSearchGroupMapper = new TopAdsSearchGroupMapper();

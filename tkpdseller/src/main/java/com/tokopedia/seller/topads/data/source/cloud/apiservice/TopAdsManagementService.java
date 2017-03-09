@@ -3,7 +3,7 @@ package com.tokopedia.seller.topads.data.source.cloud.apiservice;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.RetrofitFactory;
-import com.tokopedia.core.network.retrofit.services.AuthService;
+import com.tokopedia.core.network.retrofit.services.BearerService;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.api.TopAdsManagementApi;
 
 import retrofit2.Retrofit;
@@ -12,7 +12,12 @@ import retrofit2.Retrofit;
  * Created by zulfikarrahman on 11/4/16.
  */
 
-public class TopAdsManagementService extends AuthService<TopAdsManagementApi> {
+public class TopAdsManagementService extends BearerService<TopAdsManagementApi> {
+
+    public TopAdsManagementService(String mToken) {
+        super(mToken);
+    }
+
     @Override
     protected void initApiService(Retrofit retrofit) {
         api = retrofit.create(TopAdsManagementApi.class);
@@ -21,6 +26,11 @@ public class TopAdsManagementService extends AuthService<TopAdsManagementApi> {
     @Override
     protected String getBaseUrl() {
         return TkpdBaseURL.TOPADS_DOMAIN;
+    }
+
+    @Override
+    protected String getOauthAuthorization() {
+        return "Bearer " + mToken;
     }
 
     @Override
@@ -33,7 +43,7 @@ public class TopAdsManagementService extends AuthService<TopAdsManagementApi> {
         return RetrofitFactory.createRetrofitDefaultConfig(processedBaseUrl)
                 .client(OkHttpFactory.create()
                         .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                        .buildClientTopAdsAuth())
+                        .buildClientTopAdsAuth(getOauthAuthorization()))
                 .build();
     }
 }

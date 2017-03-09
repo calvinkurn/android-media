@@ -84,10 +84,11 @@ public class OkHttpFactory {
                 .build();
     }
 
-    public OkHttpClient buildClientTopAdsAuth() {
+    public OkHttpClient buildClientTopAdsAuth(String authorizationString) {
         return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(new TopAdsAuthInterceptor())
+                .addInterceptor(new TopAdsAuthInterceptor(authorizationString))
                 .addInterceptor(new TkpdErrorResponseInterceptor(TkpdResponseError.class))
+                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();
