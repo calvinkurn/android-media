@@ -118,6 +118,8 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
             case PULLTOREFRESH:
             case SEARCHVIEW:
                 resetPage();
+                if (isViewAttached())
+                    getView().resetEmptyViewHolder();
                 break;
             default:
                 break;

@@ -380,6 +380,11 @@ public class TopAdsAddProductListActivity extends BaseActivity
     }
 
     @Override
+    public boolean isSelectionViewShown() {
+        return bottomSheetHelper.isShown();
+    }
+
+    @Override
     public void hideFooterViewHolder() {
         TopAdsAddProductListFragment topAdsAddProductListFragment
                 = getTopAdsAddProductListFragment();

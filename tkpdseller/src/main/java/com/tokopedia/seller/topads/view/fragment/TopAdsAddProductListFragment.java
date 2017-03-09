@@ -423,6 +423,9 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                 topAdsProductListAdapter.showLoading(true);
             } else {
                 topAdsProductListAdapter.showLoading(false);
+                if (addProductListInterface.isSelectionViewShown()) {
+                    addProductListInterface.showFooterViewHolder();
+                }
             }
             topAdsProductListAdapter.notifyDataSetChanged();
         }
@@ -513,5 +516,10 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     @Override
     public void setLoadMoreFlag(boolean eof) {
         isEndOfFile = eof;
+    }
+
+    @Override
+    public void resetEmptyViewHolder() {
+        topAdsProductListAdapter.resetEmptyShown();
     }
 }

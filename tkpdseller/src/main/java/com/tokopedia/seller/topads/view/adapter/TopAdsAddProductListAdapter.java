@@ -242,4 +242,8 @@ public class TopAdsAddProductListAdapter extends BaseLinearRecyclerViewAdapter
             isEmptyShown = false;
         }
     }
+
+    public void resetEmptyShown() {
+        isEmptyShown = false;
+    }
 }

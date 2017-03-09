@@ -19,4 +19,6 @@ public interface TopAdsSearchProductView extends CustomerView {
     boolean isExistingGroup();
 
     void setLoadMoreFlag(boolean eof);
+
+    void resetEmptyViewHolder();
 }

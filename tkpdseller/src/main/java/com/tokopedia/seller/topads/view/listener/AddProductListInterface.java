@@ -32,4 +32,6 @@ public interface AddProductListInterface extends ActivityItemSelection {
     boolean isHideEtalase();
 
     boolean isExistingGroup();
+
+    boolean isSelectionViewShown();
 }
