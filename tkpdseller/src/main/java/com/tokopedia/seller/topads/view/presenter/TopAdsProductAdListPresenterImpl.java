@@ -37,7 +37,7 @@ public class TopAdsProductAdListPresenterImpl extends TopAdsAdListPresenterImpl<
         searchAdRequest.setEndDate(endDate);
         searchAdRequest.setKeyword(keyword);
         searchAdRequest.setStatus(status);
-        searchAdRequest.setGroupId(String.valueOf(groupId));
+        searchAdRequest.setGroup(groupId);
         searchAdRequest.setPage(page);
         productAdInteractor.searchAd(searchAdRequest, new ListenerInteractor<PageDataResponse<List<ProductAd>>>() {
             @Override
