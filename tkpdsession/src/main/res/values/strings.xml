@@ -15,11 +15,12 @@
     <string name="december">Desember</string>
     <string name="wrong_input">inputan salah</string>
     <string name="title_change_phone_number_request">Pengajuan Ubah Nomor Ponsel</string>
-    <string name="info_change_phone_number_request">Mohon untuk melampirkan foto KTP dan foto halaman pertama buku tabungan yang sudah terdaftar, untuk memastikan akun tokopedia adalah milik anda. Permintaan akan di proses dalam 1 x 24 Jam dan diinformasikan melalui email.</string>
+    <string name="info_change_phone_number_request">Mohon untuk melampirkan foto KTP dan foto halaman pertama buku tabungan yang sudah terdaftar.</string>
     <string name="id_photo">Foto KTP</string>
     <string name="info_id_photo">Pastikan data KTP Anda terlihat jelas di foto.</string>
-    <string name="saving_book_photo">Foto Buku Tabungan</string>
-    <string name="info_bank_account">Pastikan buku tabungan anda terlihat jelas.</string>
+    <string name="saving_book_photo_or_transaction_proof">Foto Buku Tabungan atau Bukti Transaksi</string>
+    <string name="info_bank_account">Pastikan data terlihat jelas di foto. Bila tidak mempunyai buku tabungan, dapat diganti dengan bukti transaksi di Tokopedia.</string>
     <string name="pick_file_here">Pilih file Anda di sini</string>
     <string name="waiting_data_checking_process">Menunggu Proses Pengecekan Data</string>
+    <string name="info_change_phone_number_request_2">Permintaan akan di proses dalam 1 x 24 jam, silakan mengikuti petunjuk perubahan di email Anda.</string>
 </resources>

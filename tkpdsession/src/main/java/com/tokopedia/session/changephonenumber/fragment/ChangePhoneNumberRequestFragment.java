@@ -52,11 +52,11 @@ public class ChangePhoneNumberRequestFragment
 
     private static final String UPLOAD_ID = "UPLOAD_ID";
     private static final String UPLOAD_ACCOUNT_BOOK = "UPLOAD_ACCOUNT_BOOK";
-    TextView buttonUploadId;
-    TextView buttonUploadAccountBook;
+    ImageView buttonUploadId;
+    ImageView buttonUploadAccountBook;
+    ImageView idPhoto;
+    ImageView accountBookPhoto;
     ImageUploadHandler imageUploadHandler;
-    ImageView idImage;
-    ImageView accountBookImage;
     Button buttonSubmit;
 
     String uploadType;
@@ -70,6 +70,12 @@ public class ChangePhoneNumberRequestFragment
 
     public void setActionListener(ChangePhoneNumberRequestListener listener) {
         this.listener = listener;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
     }
 
     @Override
@@ -119,10 +125,11 @@ public class ChangePhoneNumberRequestFragment
 
     @Override
     protected void initView(View view) {
-        buttonUploadAccountBook = (TextView) view.findViewById(R.id.upload_account_book_button);
-        buttonUploadId = (TextView) view.findViewById(R.id.upload_id_photo_button);
-        idImage = (ImageView) view.findViewById(R.id.id_image);
-        accountBookImage = (ImageView) view.findViewById(R.id.account_book_image);
+        buttonUploadAccountBook = (ImageView) view.findViewById(R.id.upload_account_book_button);
+        buttonUploadId = (ImageView) view.findViewById(R.id.upload_id_photo_button);
+        idPhoto = (ImageView) view.findViewById(R.id.photo_id);
+        accountBookPhoto = (ImageView) view.findViewById(R.id.photo_account_book);
+
         buttonSubmit = (Button) view.findViewById(R.id.button_submit);
 
         imageUploadHandler = ImageUploadHandler.createInstance(this);
@@ -131,9 +138,9 @@ public class ChangePhoneNumberRequestFragment
     @Override
     protected void setViewListener() {
         buttonUploadAccountBook.setOnClickListener(onUploadAccountBook());
-        accountBookImage.setOnClickListener(onUploadAccountBook());
+        accountBookPhoto.setOnClickListener(onUploadAccountBook());
         buttonUploadId.setOnClickListener(onUploadImageId());
-        idImage.setOnClickListener(onUploadImageId());
+        idPhoto.setOnClickListener(onUploadImageId());
         buttonSubmit.setOnClickListener(onSubmit());
     }
 
@@ -247,26 +254,26 @@ public class ChangePhoneNumberRequestFragment
                 && (resultCode == Activity.RESULT_OK)
                 && uploadType.equals(UPLOAD_ID)) {
             buttonUploadId.setVisibility(View.GONE);
-            loadImageToImageView(idImage, imageUploadHandler.getCameraFileloc());
-            idImage.setVisibility(View.VISIBLE);
+            idPhoto.setVisibility(View.VISIBLE);
+            loadImageToImageView(idPhoto, imageUploadHandler.getCameraFileloc());
         } else if (requestCode == ImageUploadHandler.REQUEST_CODE
                 && (resultCode == GalleryBrowser.RESULT_CODE)
                 && uploadType.equals(UPLOAD_ID)) {
             buttonUploadId.setVisibility(View.GONE);
-            loadImageToImageView(idImage, data.getStringExtra(ImageGallery.EXTRA_URL));
-            idImage.setVisibility(View.VISIBLE);
+            idPhoto.setVisibility(View.VISIBLE);
+            loadImageToImageView(idPhoto, data.getStringExtra(ImageGallery.EXTRA_URL));
         } else if (requestCode == ImageUploadHandler.REQUEST_CODE
                 && (resultCode == Activity.RESULT_OK)
                 && uploadType.equals(UPLOAD_ACCOUNT_BOOK)) {
             buttonUploadAccountBook.setVisibility(View.GONE);
-            loadImageToImageView(accountBookImage, imageUploadHandler.getCameraFileloc());
-            accountBookImage.setVisibility(View.VISIBLE);
+            accountBookPhoto.setVisibility(View.VISIBLE);
+            loadImageToImageView(accountBookPhoto, imageUploadHandler.getCameraFileloc());
         } else if (requestCode == ImageUploadHandler.REQUEST_CODE
                 && (resultCode == GalleryBrowser.RESULT_CODE)
                 && uploadType.equals(UPLOAD_ACCOUNT_BOOK)) {
             buttonUploadAccountBook.setVisibility(View.GONE);
-            loadImageToImageView(accountBookImage, data.getStringExtra(ImageGallery.EXTRA_URL));
-            accountBookImage.setVisibility(View.VISIBLE);
+            accountBookPhoto.setVisibility(View.VISIBLE);
+            loadImageToImageView(accountBookPhoto, data.getStringExtra(ImageGallery.EXTRA_URL));
         }
 
     }
