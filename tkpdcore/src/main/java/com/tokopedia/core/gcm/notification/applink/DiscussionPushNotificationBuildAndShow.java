@@ -22,7 +22,7 @@ import java.util.List;
 
 public class DiscussionPushNotificationBuildAndShow extends AbstractApplinkBuildAndShowNotification<DiscussionPushNotificationWrapper> {
     private List<DiscussionPushNotification> discussionPushNotifications;
-    private static final String NOTIFICATION_TITLE = "Tokopedia - Diskusi Baru";
+    private static final String NOTIFICATION_TITLE = "Tokopedia - Diskusi";
     private static final String NOTIFICATION_GROUP = "personalized_group";
     private static final String NOTIFICATION_CATEGORY = "msg";
 
@@ -79,9 +79,9 @@ public class DiscussionPushNotificationBuildAndShow extends AbstractApplinkBuild
 
             String description;
             if (senderCount > 1) {
-                description = String.format("%d diskusi dari %d pengirim", discussionPushNotifications.size(), senderCount);
+                description = String.format("%d diskusi produk dari %d pengirim", discussionPushNotifications.size(), senderCount);
             } else {
-                description = String.format("%d diskusi dari %s", discussionPushNotifications.size(), username);
+                description = String.format("%d diskusi produk", discussionPushNotifications.size());
             }
 
             Uri url = Uri.parse(uri);

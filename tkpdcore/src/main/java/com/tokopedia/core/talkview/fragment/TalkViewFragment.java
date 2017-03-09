@@ -209,7 +209,7 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
     protected void setupArguments(Bundle arguments) {
         from = arguments.getString("from");
         talk = arguments.getParcelable("talk");
-        talkID = arguments.getString("talk_id");
+        talkID = arguments.getString("talk_id", "");
         shopID = arguments.getString("shop_id", "");
         NotificationModHandler.clearCacheIfFromNotification(
                 Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION,
@@ -235,7 +235,6 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
         if (!SessionHandler.isV4Login(getActivity())) {
             addCommentArea.setVisibility(View.GONE);
         }
-        label.giveLabel(headUserLabel);
         if (SessionHandler.isV4Login(context)) {
             buttonOverflow.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -313,6 +312,8 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     protected void parseHeader() {
         if (talk != null){
+
+            label.giveLabel(headUserLabel);
             pNameView.setText(productName);
             ImageHandler.loadImageRounded2(context, pImageView, prodImgUri);
             ImageHandler.loadImageCircle2(context, userTalkImageView, userImgUri);
