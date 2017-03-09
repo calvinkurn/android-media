@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/margin_med"
+        android:textStyle="bold"
         android:text="@string/welcome_to_tokopedia"
         android:textSize="@dimen/font_medium" />
 
@@ -29,5 +30,6 @@
         android:layout_marginLeft="@dimen/margin_med"
         android:layout_marginRight="@dimen/margin_med"
         android:gravity="center"
+        android:textSize="@dimen/font_medium"
         android:text="@string/protect_your_account_with_phone_verification" />
 </LinearLayout>

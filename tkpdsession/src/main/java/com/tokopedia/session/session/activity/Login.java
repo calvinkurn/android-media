@@ -217,7 +217,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     }
                 break;
             case HOME:
-                if (!SessionHandler.isMsisdnVerified()) {
+                if (SessionHandler.isV4Login(this) && !SessionHandler.isMsisdnVerified()) {
                     Intent intent = new Intent(this, PhoneVerificationActivationActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivityForResult(intent, REQUEST_VERIFY_PHONE_NUMBER);

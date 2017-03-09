@@ -25,7 +25,7 @@
         android:id="@+id/verify_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
-        android:background="@drawable/cards_grey"
+        android:background="@drawable/grey_button_rounded"
         android:enabled="false"
         android:layout_above="@id/skip_button"
         android:layout_marginLeft="@dimen/margin_small"
@@ -33,7 +33,7 @@
         android:gravity="center"
         android:text="@string/title_confirm_otp"
         android:textAllCaps="true"
-        android:textColor="@color/grey_500"
+        android:textColor="@color/grey_600"
         android:textSize="@dimen/fontvs"
         android:textStyle="bold" />
 
@@ -64,7 +64,6 @@
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="@string/title_phone_number"
                     android:background="@color/transparent"
                     android:maxLines="1"
                     android:text="089191991991"
