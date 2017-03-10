@@ -36,7 +36,11 @@ public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements 
 
         @Override
         public void afterTextChanged(Editable s) {
-            listener.onUpdateData(WholesaleAdapterImpl.QTY_ONE, position, String.valueOf(s), true);
+            try {
+                listener.onUpdateData(WholesaleAdapterImpl.QTY_ONE, position, String.valueOf(s), true);
+            } catch (NumberFormatException e) {
+                onQtyOneError("Masukan format angka dengan benar");
+            }
         }
     };
     TextWatcher qtyTwoTextWatcher = new TextWatcher() {
@@ -52,7 +56,11 @@ public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements 
 
         @Override
         public void afterTextChanged(Editable s) {
-            listener.onUpdateData(WholesaleAdapterImpl.QTY_TWO, position, String.valueOf(s), true);
+            try {
+                listener.onUpdateData(WholesaleAdapterImpl.QTY_TWO, position, String.valueOf(s), true);
+            } catch (NumberFormatException e) {
+                onQtyTwoError("Masukan format angka dengan benar");
+            }
         }
     };
     private int currency;
@@ -70,12 +78,16 @@ public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements 
 
         @Override
         public void afterTextChanged(Editable s) {
-            if(onPriceEdit)
-                return;
-            onPriceEdit = true;
-            String rawString = setPriceCurrency(s.toString());
-            listener.onUpdateData(WholesaleAdapterImpl.QTY_PRICE, position, rawString, true);
-            onPriceEdit = false;
+            try {
+                if (onPriceEdit)
+                    return;
+                onPriceEdit = true;
+                String rawString = setPriceCurrency(s.toString());
+                listener.onUpdateData(WholesaleAdapterImpl.QTY_PRICE, position, rawString, true);
+                onPriceEdit = false;
+            } catch (NumberFormatException e) {
+                onQtyPriceError("Masukan format angka dengan benar");
+            }
         }
     };
 
@@ -169,11 +181,11 @@ public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements 
         switch (currency) {
             case PriceUtils.CURRENCY_RUPIAH:
                 CurrencyFormatHelper.SetToRupiah(qtyPrice);
-                rawString = CurrencyFormatter.getRawString(s.toString());
+                rawString = CurrencyFormatter.getRawString(s);
                 break;
             case PriceUtils.CURRENCY_DOLLAR:
                 CurrencyFormatHelper.SetToDollar(qtyPrice);
-                rawString = CurrencyFormatter.getRawString(s.toString());
+                rawString = CurrencyFormatter.getRawString(s);
                 break;
         }
         return rawString;

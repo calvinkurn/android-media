@@ -70,7 +70,7 @@ public class WholesaleAdapterImpl extends RecyclerView.Adapter<WholesaleViewHold
     }
 
     @Override
-    public void onUpdateData(int type, int position, String value, boolean isShouldCheckError) {
+    public void onUpdateData(int type, int position, String value, boolean isShouldCheckError) throws NumberFormatException {
 
         WholesaleModel model = data.get(position);
         if(value.equals("")) value = "0";
