@@ -80,8 +80,10 @@ public class VoucherCartHolderView extends RelativeLayout {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (!isChecked) {
-                    if (actionListener != null)
-                        voucherCode = "";
+                    if (actionListener != null) {
+                        hideHolderVoucher();
+                        editTextVoucher.setText("");
+                    }
                 }
                 holderInputVoucher.setVisibility(isChecked ? VISIBLE : GONE);
             }
@@ -100,6 +102,7 @@ public class VoucherCartHolderView extends RelativeLayout {
                     }
                     else throw new IllegalArgumentException("Action Listener null coy!!");
                 } else {
+                    hideHolderVoucher();
                     errorVoucher.setVisibility(VISIBLE);
                 }
             }
@@ -118,6 +121,7 @@ public class VoucherCartHolderView extends RelativeLayout {
     }
 
     public void setErrorVoucher(String errorMessage) {
+        hideHolderVoucher();
         errorVoucher.setVisibility(VISIBLE);
         errorVoucher.setText(errorMessage);
     }
@@ -131,12 +135,16 @@ public class VoucherCartHolderView extends RelativeLayout {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
-                voucherCode = "";
-                holderVoucher.setVisibility(GONE);
+                hideHolderVoucher();
                 editTextVoucher.setText("");
 
             }
         };
+    }
+
+    private void hideHolderVoucher() {
+        voucherCode = "";
+        holderVoucher.setVisibility(GONE);
     }
 
     public interface ActionListener {
