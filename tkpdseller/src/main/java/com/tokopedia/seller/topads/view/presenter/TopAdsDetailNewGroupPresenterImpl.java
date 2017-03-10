@@ -88,7 +88,7 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
             @Override
             public void onNext(TopAdsDetailProductDomainModel domainModel) {
                 getView().onSaveAdSuccess(TopAdDetailProductMapper.convertDomainToView(domainModel));
-                getView().goToGroupDetail(Integer.parseInt( domainModel.getGroupId()));
+                getView().goToGroupDetail(domainModel.getGroupId());
             }
         };
     }
@@ -114,7 +114,7 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
                     @Override
                     public void onNext(TopAdsDetailGroupViewModel topAdsDetailGroupViewModel) {
                         getView().onSaveAdSuccess(topAdsDetailGroupViewModel);
-                        getView().goToGroupDetail((int) topAdsDetailGroupViewModel.getGroupId());
+                        getView().goToGroupDetail(String.valueOf(topAdsDetailGroupViewModel.getGroupId()));
                     }
                 });
     }

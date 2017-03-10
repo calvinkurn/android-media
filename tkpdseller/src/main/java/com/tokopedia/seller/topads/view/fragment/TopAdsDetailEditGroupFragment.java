@@ -39,6 +39,7 @@ public class TopAdsDetailEditGroupFragment extends TopAdsDetailEditFragment<TopA
         super.initView(view);
         nameInputLayout.setHint(getString(R.string.label_top_ads_group_name));
         nameEditText.setEnabled(true);
+        view.requestFocus();
     }
 
     @Override

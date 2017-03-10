@@ -478,6 +478,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
                 detailAd.setStickerId(STICKER_FIRE);
             }
         }
+        detailAd.setTitle(nameEditText.getText().toString());
     }
 
     protected void showLoading() {
