@@ -540,6 +540,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="title_location">Lokasi</string>
     <string name="title_price_range">Rentang Harga</string>
     <string name="title_currency_rp">Rp</string>
+    <string name="title_currency_rp_space">Rp&#160;</string>
     <string name="title_all_categories">Semua Kategori</string>
     <string name="title_categories">BERANDA</string>
     <string name="title_all_location">Semua Lokasi</string>

@@ -28,8 +28,9 @@ public class TopAdsCurrencyTextWatcher implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-        CurrencyFormatHelper.SetToRupiah(editText);
-        String valueString = CurrencyFormatHelper.RemoveNonNumeric(charSequence.toString());
+        CurrencyFormatHelper.setToRupiahCheckPrefix(editText);
+        String valueString = CurrencyFormatHelper.removeCurrencyPrefix(charSequence.toString());
+        valueString = CurrencyFormatHelper.RemoveNonNumeric (valueString);
         if (TextUtils.isEmpty(valueString)) {
             editText.setText(defaultValue);
             return;

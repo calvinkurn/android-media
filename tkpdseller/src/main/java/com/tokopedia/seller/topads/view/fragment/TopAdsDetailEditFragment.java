@@ -25,6 +25,7 @@ import com.tokopedia.seller.topads.view.dialog.TimePickerdialog;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailEditView;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditPresenter;
+import com.tokopedia.seller.topads.view.widget.PrefixEditText;
 import com.tokopedia.seller.topads.view.widget.TopAdsCurrencyTextWatcher;
 
 import java.text.ParseException;
@@ -42,12 +43,12 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     protected TextInputLayout nameInputLayout;
     protected EditText nameEditText;
     private TextInputLayout maxPriceInputLayout;
-    private EditText maxPriceEditText;
+    private PrefixEditText maxPriceEditText;
     private RadioGroup budgetRadioGroup;
     private RadioButton budgetLifeTimeRadioButton;
     private RadioButton budgetPerDayRadioButton;
     private TextInputLayout budgetPerDayInputLayout;
-    private EditText budgetPerDayEditText;
+    private PrefixEditText budgetPerDayEditText;
     private RadioGroup showTimeRadioGroup;
     private RadioButton showTimeAutomaticRadioButton;
     private RadioButton showTimeConfiguredRadioButton;
@@ -114,12 +115,12 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
         nameInputLayout = (TextInputLayout) view.findViewById(R.id.input_layout_name);
         nameEditText = (EditText) view.findViewById(R.id.edit_text_name);
         maxPriceInputLayout = (TextInputLayout) view.findViewById(R.id.input_layout_max_price);
-        maxPriceEditText = (EditText) view.findViewById(R.id.edit_text_max_price);
+        maxPriceEditText = (PrefixEditText) view.findViewById(R.id.edit_text_max_price);
         budgetRadioGroup = (RadioGroup) view.findViewById(R.id.radio_group_budget);
         budgetLifeTimeRadioButton = (RadioButton) view.findViewById(R.id.radio_button_budget_life_time);
         budgetPerDayRadioButton = (RadioButton) view.findViewById(R.id.radio_button_budget_per_day);
         budgetPerDayInputLayout = (TextInputLayout) view.findViewById(R.id.input_layout_budget_per_day);
-        budgetPerDayEditText = (EditText) view.findViewById(R.id.edit_text_budget_per_day);
+        budgetPerDayEditText = (PrefixEditText) view.findViewById(R.id.edit_text_budget_per_day);
         showTimeRadioGroup = (RadioGroup) view.findViewById(R.id.radio_group_show_time);
         showTimeAutomaticRadioButton = (RadioButton) view.findViewById(R.id.radio_button_show_time_automatic);
         showTimeConfiguredRadioButton = (RadioButton) view.findViewById(R.id.radio_button_show_time_configured);
@@ -152,7 +153,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
             @Override
             public void onCurrencyChanged(float currencyValue) {
                 super.onCurrencyChanged(currencyValue);
-                String clickBudgetString = CurrencyFormatHelper.RemoveNonNumeric(maxPriceEditText.getText().toString());
+                String clickBudgetString = CurrencyFormatHelper.RemoveNonNumeric(maxPriceEditText.getTextWithoutPrefix());
                 float clickBudget = 0;
                 if (!TextUtils.isEmpty(clickBudgetString)) {
                     clickBudget = Float.parseFloat(clickBudgetString);
@@ -165,6 +166,9 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
                 }
             }
         });
+        // trigger the watcher first time
+        budgetPerDayEditText.setText(budgetPerDayEditText.getText());
+
         budgetRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
@@ -429,7 +433,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     }
 
     protected void populateDataFromFields() {
-        String priceBid = maxPriceEditText.getText().toString();
+        String priceBid = maxPriceEditText.getTextWithoutPrefix();
         if (TextUtils.isEmpty(priceBid)) {
             detailAd.setPriceBid(0);
         } else {
@@ -439,7 +443,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
             detailAd.setBudget(false);
             detailAd.setPriceDaily(0);
         } else {
-            String priceDaily = budgetPerDayEditText.getText().toString();
+            String priceDaily = budgetPerDayEditText.getTextWithoutPrefix();
             if (TextUtils.isEmpty(priceDaily)) {
                 detailAd.setPriceDaily(0);
             } else {

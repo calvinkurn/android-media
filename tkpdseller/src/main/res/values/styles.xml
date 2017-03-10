@@ -238,11 +238,13 @@
 
     <style name="TextAppearence.App.TextInputLayout" parent="TextAppearance.Design.Hint">
         <item name="android:textColor">@color/font_top_ads_black_54</item>
+    </style>
+
+    <style name="TextAppearence.App.TextInputLayout.VerySmall">
         <item name="android:textSize">@dimen/fontvs</item>
     </style>
 
     <style name="TextAppearence.App.TextInputLayout.Small">
-        <item name="android:textColor">@color/font_top_ads_black_54</item>
         <item name="android:textSize">@dimen/font_small</item>
     </style>
 
