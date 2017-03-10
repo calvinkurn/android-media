@@ -54,6 +54,10 @@ public class CartMapperData implements ICartMapperData {
             attributesDigital.setCategoryName(responseCartData.getAttributes().getCategoryName());
             attributesDigital.setOperatorName(responseCartData.getAttributes().getOperatorName());
             attributesDigital.setClientNumber(responseCartData.getAttributes().getClientNumber());
+            attributesDigital.setIcon(responseCartData.getAttributes().getIcon());
+            attributesDigital.setInstantCheckout(responseCartData.getAttributes().isInstantCheckout());
+            attributesDigital.setNeedOtp(responseCartData.getAttributes().isNeedOtp());
+            attributesDigital.setSmsState(responseCartData.getAttributes().getSmsState());
             attributesDigital.setPrice(responseCartData.getAttributes().getPrice());
             attributesDigital.setPricePlain(responseCartData.getAttributes().getPricePlain());
             if (responseCartData.getAttributes().getUserInputPrice() != null) {
