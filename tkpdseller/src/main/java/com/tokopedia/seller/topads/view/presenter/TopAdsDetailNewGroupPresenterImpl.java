@@ -39,14 +39,7 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
     }
 
     @Override
-    public void saveAdExisting(String groupId,
-                               final List<TopAdsProductViewModel> topAdsProductViewModelList) {
-        if (topAdsProductViewModelList == null || topAdsProductViewModelList.size() == 0) {
-            // need to validate product size?
-            // getView.showErrGroupEmpty();
-        }
-        // chaining with reuse of parent's use cases
-        getView().showLoading(true);
+    public void saveAdExisting(String groupId, final List<TopAdsProductViewModel> topAdsProductViewModelList) {
         super.getDetailAd(groupId, new Subscriber<TopAdsDetailGroupDomainModel>() {
             @Override
             public void onCompleted() {

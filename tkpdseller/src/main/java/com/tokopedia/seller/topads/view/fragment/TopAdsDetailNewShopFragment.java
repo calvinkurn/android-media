@@ -54,7 +54,9 @@ public class TopAdsDetailNewShopFragment extends TopAdsDetailNewFragment<TopAdsD
     @Override
     protected void saveAd() {
         super.saveAd();
-        presenter.saveAd((TopAdsDetailShopViewModel) detailAd);
+        if (detailAd !=  null) {
+            presenter.saveAd((TopAdsDetailShopViewModel) detailAd);
+        }
     }
 
     @Override
