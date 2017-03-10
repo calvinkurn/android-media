@@ -17,6 +17,7 @@ import com.tokopedia.otp.phoneverification.presenter.ChangePhoneNumberPresenterI
 import com.tokopedia.session.R;
 
 import static android.app.Activity.RESULT_OK;
+import static com.google.ads.conversiontracking.l.g;
 
 /**
  * Created by nisie on 2/24/17.
@@ -42,7 +43,8 @@ public class ChangePhoneNumberFragment extends BasePresenterFragment<ChangePhone
 
     @Override
     protected void onFirstTimeLaunched() {
-
+        if (getActivity().getIntent().getExtras() != null)
+            phoneNumberEditText.setText(getActivity().getIntent().getExtras().getString(EXTRA_PHONE_NUMBER, ""));
     }
 
     @Override

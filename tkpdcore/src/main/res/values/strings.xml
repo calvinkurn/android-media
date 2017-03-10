@@ -1108,7 +1108,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_sender_name">Nama Pengirim (Dropshipper)</string>
     <string name="title_sender_phone">No. Telp pengirim (Dropshipper)</string>
     <string name="msg_under_maintenance">Tokopedia sedang maintenance, silahkan coba beberapa saat lagi</string>
-    <string name="title_otp">Masukkan Kode Verifikasi</string>
+    <string name="title_otp">Masukkan Kode Verifikasi :</string>
     <string name="title_otp_email">Kirim Email Verifikasi</string>
     <string name="title_otp_phone">Kirim SMS Verifikasi</string>
     <string name="send_otp">Kirim Kode Verifikasi</string>
@@ -1868,6 +1868,7 @@ di Tokopedia Sekarang!</string>
     <string name="title_phone_optional">Nomor Telepon (Opsional)</string>
     <string name="error_attachment">Mohon tambahkan lampiran.</string>
     <string name="action_send_otp_with_call">Atau kirim Kode Verifikasi melalui telepon</string>
+    <string name="action_send_otp_with_call_2">Atau lewat telepon</string>
     <string name="content_change_number">Jika nomor Anda sudah tidak aktif, silahkan Klik disini</string>
     <string name="title_resend_otp">Kirim ulang Kode Verifikasi</string>
 

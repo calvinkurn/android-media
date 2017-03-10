@@ -8,18 +8,15 @@
     <TextView
         android:id="@+id/skip_button"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
+        android:layout_height="wrap_content"
         android:padding="@dimen/padding_small"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/margin_med"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginRight="@dimen/margin_small"
-        android:layout_marginTop="@dimen/margin_small"
         android:gravity="center"
         android:text="@string/skip"
         android:textColor="@color/grey_500"
-        android:textSize="@dimen/fontvs"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/margin_small"
+         />
 
     <TextView
         android:id="@+id/verify_button"
@@ -27,32 +24,34 @@
         android:layout_height="@dimen/btn_height"
         android:background="@drawable/grey_button_rounded"
         android:enabled="false"
-        android:layout_above="@id/skip_button"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginRight="@dimen/margin_small"
         android:gravity="center"
         android:text="@string/title_confirm_otp"
-        android:textAllCaps="true"
         android:textColor="@color/grey_600"
-        android:textSize="@dimen/fontvs"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_above="@id/skip_button"
+        android:layout_marginLeft="@dimen/margin_med"
+        android:layout_marginRight="@dimen/margin_med"
+        android:layout_marginBottom="@dimen/margin_small" />
 
     <LinearLayout
         android:id="@+id/view_otp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_large"
-        android:layout_marginRight="@dimen/margin_large"
         android:orientation="vertical"
-        android:padding="@dimen/padding_med"
-        tools:visibility="visible">
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:layout_marginTop="@dimen/margin_small"
+        tools:visibility="visible"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/title_phone_number"
             android:textSize="@dimen/fontvs"
-            android:layout_marginBottom="@dimen/margin_vs"/>
+            android:layout_marginBottom="@dimen/margin_small"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -67,8 +66,9 @@
                     android:background="@color/transparent"
                     android:maxLines="1"
                     android:text="089191991991"
-                    android:textSize="@dimen/fontl"
+                    android:textSize="@dimen/font_medium"
                     android:enabled="false"
+                    android:textColor="@color/grey_500"
                     tools:text="08123401923" />
 
             <TextView
@@ -77,26 +77,28 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/button_change"
-                android:textColor="@color/href_link"
-                android:textStyle="bold" />
+                android:textColor="@color/green_300"
+                />
 
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/margin_small"
             android:background="@color/grey_400" />
 
 
         <TextView
             android:id="@+id/send_otp"
-            android:layout_width="@dimen/button_otp"
-            android:layout_height="@dimen/margin_vl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_small"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginTop="@dimen/margin_large"
             android:background="@drawable/green_button_rounded"
             android:gravity="center"
+            android:lineSpacingExtra="@dimen/padding_vs"
             android:textColor="@color/white"
             android:text="@string/send_otp_sms" />
 
@@ -106,8 +108,10 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:padding="@dimen/padding_small"
-            android:text="@string/action_send_otp_with_call"
+            android:text="@string/action_send_otp_with_call_2"
             android:textColor="@color/grey_500"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:textSize="@dimen/fontvs"
             android:visibility="gone"
             tools:visibility="visible" />
 
@@ -117,6 +121,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
+            android:layout_marginTop="@dimen/margin_med"
             android:orientation="vertical"
             android:visibility="gone"
             tools:visibility="visible">
@@ -126,7 +131,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="@dimen/margin_med"
-                android:layout_marginTop="@dimen/margin_med"
                 android:gravity="center"
                 android:text="@string/title_otp" />
 
@@ -146,7 +150,7 @@
                 android:maxLength="6"
                 android:paddingBottom="@dimen/margin_small"
                 android:textIsSelectable="false"
-                android:textSize="20sp"
+                android:textSize="28sp"
                 app:pinLineColors="@color/pin_line_colors" />
         </LinearLayout>
     </LinearLayout>

@@ -76,8 +76,9 @@ public class ChangePhoneNumberActivity extends BasePresenterActivity {
 
     }
 
-    public static Intent getChangePhoneNumberIntent(Context context) {
+    public static Intent getChangePhoneNumberIntent(Context context, String phoneNumber) {
         Intent intent = new Intent(context, ChangePhoneNumberActivity.class);
+        intent.putExtra(ChangePhoneNumberFragment.EXTRA_PHONE_NUMBER, phoneNumber);
         return intent;
     }
 }

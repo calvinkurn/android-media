@@ -49,6 +49,8 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.google.ads.conversiontracking.g.d.b;
+
 /**
  * Created by nisie on 2/22/17.
  */
@@ -174,8 +176,6 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
                 "Bearer " + sessionHandler.getAccessToken(getActivity()));
 
 
-
-
         presenter = new PhoneVerificationPresenterImpl(this);
     }
 
@@ -200,7 +200,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
         KeyboardHandler.DropKeyboard(getActivity(), getView());
 
-        Spannable spannable = new SpannableString(getString(com.tokopedia.core.R.string.action_send_otp_with_call));
+        Spannable spannable = new SpannableString(getString(com.tokopedia.core.R.string.action_send_otp_with_call_2));
 
         spannable.setSpan(new ClickableSpan() {
                               @Override
@@ -214,8 +214,8 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
                                   ds.setColor(getResources().getColor(com.tokopedia.core.R.color.tkpd_main_green));
                               }
                           }
-                , getString(com.tokopedia.core.R.string.action_send_otp_with_call).indexOf("kirim")
-                , getString(com.tokopedia.core.R.string.action_send_otp_with_call).length()
+                , getString(com.tokopedia.core.R.string.action_send_otp_with_call_2).indexOf("lewat")
+                , getString(com.tokopedia.core.R.string.action_send_otp_with_call_2).length()
                 , 0);
 
         requestOtpCallButton.setText(spannable, TextView.BufferType.SPANNABLE);
@@ -248,7 +248,10 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         changePhoneNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(ChangePhoneNumberActivity.getChangePhoneNumberIntent(getActivity()),
+                startActivityForResult(
+                        ChangePhoneNumberActivity.getChangePhoneNumberIntent(
+                                getActivity(),
+                                phoneNumberEditText.getText().toString()),
                         ChangePhoneNumberFragment.ACTION_CHANGE_PHONE_NUMBER);
             }
         });
@@ -305,7 +308,6 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     public void onSuccessRequestOtp(String status) {
         finishProgressDialog();
         SnackbarManager.make(getActivity(), status, Snackbar.LENGTH_LONG).show();
-        requestOtpCallButton.setVisibility(View.VISIBLE);
         inputOtpView.setVisibility(View.VISIBLE);
         changePhoneNumberButton.setVisibility(View.GONE);
         startTimer();
@@ -343,6 +345,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     @Override
     public void onSuccessVerifyPhoneNumber() {
         SessionHandler.setIsMSISDNVerified(true);
+        SessionHandler.setPhoneNumber(phoneNumberEditText.getText().toString().replace("-", ""));
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
 
@@ -373,12 +376,15 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
         countDownTimer = new CountDownTimer(90000, 1000) {
             public void onTick(long millisUntilFinished) {
+                requestOtpButton.setTextColor(MethodChecker.getColor(getActivity(),
+                        com.tokopedia.core.R.color.grey_600));
                 MethodChecker.setBackground(requestOtpButton,
-                        MethodChecker.getDrawable(getActivity(), R.drawable.btn_transparent_disable));
+                        MethodChecker.getDrawable(getActivity(), android.R.color.transparent));
                 requestOtpButton.setEnabled(false);
                 requestOtpButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
-                requestOtpButton.setText(getString(R.string.title_resend_otp_sms) + " ( " + String.format(FORMAT,
-                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished)) + " )");
+                requestOtpButton.setText(MethodChecker.fromHtml("Verifikasi akan dikirimkan.<br>Tunggu " + "<b>" + String.format(FORMAT,
+                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished)) + " detik</b> untuk mengirim ulang."));
+                requestOtpCallButton.setVisibility(View.GONE);
             }
 
             public void onFinish() {
@@ -391,13 +397,13 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     }
 
     private void enableOtpButton() {
-        requestOtpButton.setTextColor(MethodChecker.getColor(getActivity(),
-                com.tokopedia.core.R.color.tkpd_green_onboarding));
         MethodChecker.setBackground(requestOtpButton,
                 MethodChecker.getDrawable(getActivity(),
                         com.tokopedia.core.R.drawable.btn_share_transaparent));
         requestOtpButton.setText(com.tokopedia.session.R.string.title_resend_otp_sms);
         requestOtpButton.setEnabled(true);
+        requestOtpCallButton.setVisibility(View.VISIBLE);
+
     }
 
     @Override

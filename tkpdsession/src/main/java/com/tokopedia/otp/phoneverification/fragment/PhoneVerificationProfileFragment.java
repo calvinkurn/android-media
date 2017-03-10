@@ -2,16 +2,25 @@ package com.tokopedia.otp.phoneverification.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextPaint;
+import android.text.style.ClickableSpan;
 import android.view.View;
+import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.session.R;
+
 
 /**
  * Created by nisie on 2/27/17.
  */
 
 public class PhoneVerificationProfileFragment extends BasePresenterFragment {
+
+    TextView infoText;
+
     @Override
     protected boolean isRetainInstance() {
         return false;
@@ -59,7 +68,26 @@ public class PhoneVerificationProfileFragment extends BasePresenterFragment {
 
     @Override
     protected void initView(View view) {
+        infoText = (TextView)view.findViewById(R.id.protect_account_text);
 
+        Spannable spannable = new SpannableString(getString(R.string.protect_your_account_with_phone_verification));
+
+        spannable.setSpan(new ClickableSpan() {
+                              @Override
+                              public void onClick(View view) {
+
+                              }
+
+                              @Override
+                              public void updateDrawState(TextPaint ds) {
+                                  ds.setFakeBoldText(true);
+                              }
+                          }
+                , getString(R.string.protect_your_account_with_phone_verification).indexOf("melakukan")
+                , getString(R.string.protect_your_account_with_phone_verification).length()
+                , 0);
+
+        infoText.setText(spannable, TextView.BufferType.SPANNABLE);
     }
 
     @Override

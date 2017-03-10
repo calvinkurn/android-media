@@ -17,17 +17,19 @@
 
     <string name="title_success_activate_account">Aktivasi telah berhasil</string>
     <string name="welcome_to_tokopedia">Selamat bergabung di Tokopedia</string>
-    <string name="protect_your_account_with_phone_verification">Jaga akun Anda tetap aman dengan melakukan verifikasi nomor ponsel</string>
-    <string name="title_activity_phone_verification">Verifikasi nomor handphone</string>
+    <string name="protect_your_account_with_phone_verification">Jaga akun Anda tetap aman dengan \nmelakukan verifikasi nomor ponsel</string>
+    <string name="title_activity_phone_verification">Verifikasi Nomor Ponsel</string>
     <string name="title_resend_otp_sms">Kirim SMS Ulang</string>
     <string name="change_number">Ubah Nomor</string>
-    <string name="title_activity_change_phone_number">Ubah Nomor Handphone</string>
-    <string name="verify_phone_number">Verifikasi Nomor Handphone</string>
+    <string name="title_activity_change_phone_number">Ubah Nomor Ponsel</string>
+    <string name="verify_phone_number">Verifikasi Nomor Ponsel</string>
     <string name="profile_completion">Kelengkapan data diri</string>
     <string name="_75">75%</string>
     <string name="button_change">Ubah</string>
     <string name="send_otp_sms">Kirim SMS Verifikasi</string>
     <string name="skip">Lewati</string>
-    <string name="success_verify_phone_number">Verifikasi nomor handphone sudah berhasil.</string>
+    <string name="success_verify_phone_number">Verifikasi nomor ponsel sudah berhasil.</string>
+    <string name="title_resend_otp_sms_2">Verifikasi akan dikirimkan. Tunggu </string>
+    <string name="to_resend">untuk mengirim ulang.</string>
 
 </resources>

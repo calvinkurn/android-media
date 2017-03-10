@@ -305,6 +305,7 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
         if (requestCode == SessionRouter.REQUEST_VERIFY_PHONE &&
                 resultCode == Activity.RESULT_OK &&
                 SessionHandler.isMsisdnVerified()) {
+            getProfileData().getDataUser().setUserPhone(SessionHandler.getPhoneNumber());
             renderData();
         } else {
             uploadDialog.onResult(
