@@ -2,10 +2,12 @@ package com.tokopedia.core.network.apiservices.rescenter.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**
@@ -15,7 +17,8 @@ import rx.Observable;
 public interface ResolutionApi {
 
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_DETAIL)
-    Observable<Response<TkpdResponse>> getResCenterDetail(@Path("resolution_id") String resolutionID);
+    Observable<Response<TkpdResponse>> getResCenterDetail(@Path("resolution_id") String resolutionID,
+                                                          @QueryMap TKPDMapParam<String, Object> params);
 
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_CONVERSATION)
     Observable<Response<TkpdResponse>> getResCenterConversation(@Path("resolution_id") String resolutionID);

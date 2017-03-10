@@ -1,9 +1,11 @@
-package com.tokopedia.inbox.rescenter.detailv2.domain;
+package com.tokopedia.inbox.rescenter.detailv2.domain.interactor;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
+import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 
 import rx.Observable;
 
@@ -24,6 +26,6 @@ public class GetResCenterDetailUseCase extends UseCase<DetailResCenter> {
 
     @Override
     public Observable<DetailResCenter> createObservable(RequestParams requestParams) {
-        return resCenterRepository.getDetail();
+        return resCenterRepository.getDetail(requestParams.getParameters());
     }
 }

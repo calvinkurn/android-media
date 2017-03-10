@@ -71,6 +71,10 @@
             android:label="@string/title_video_player"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name="com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterActivity"
+            android:label="@string/title_activity_res_center"
+            android:screenOrientation="portrait" />
         <!-- ======================================================= -->
         <!-- SERVICES REGISTRY -->
         <!-- ======================================================= -->

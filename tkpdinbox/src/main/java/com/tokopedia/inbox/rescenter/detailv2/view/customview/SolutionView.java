@@ -7,12 +7,13 @@ import android.util.AttributeSet;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.SolutionData;
 
 /**
  * Created by hangnadi on 3/9/17.
  */
 
-public class SolutionView extends BaseView<Object, DetailResCenterFragmentView> {
+public class SolutionView extends BaseView<SolutionData, DetailResCenterFragmentView> {
 
     public SolutionView(Context context) {
         super(context);
@@ -43,7 +44,7 @@ public class SolutionView extends BaseView<Object, DetailResCenterFragmentView> 
     }
 
     @Override
-    public void renderData(@NonNull Object data) {
+    public void renderData(@NonNull SolutionData data) {
 
     }
 }

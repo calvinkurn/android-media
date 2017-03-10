@@ -1,7 +1,9 @@
-package com.tokopedia.inbox.rescenter.detailv2.data;
+package com.tokopedia.inbox.rescenter.detailv2.data.repository;
 
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
-import com.tokopedia.inbox.rescenter.detailv2.domain.DetailResCenter;
+import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 
 import rx.Observable;
@@ -22,10 +24,10 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
     }
 
     @Override
-    public Observable<DetailResCenter> getDetail() {
+    public Observable<DetailResCenter> getDetail(TKPDMapParam<String, Object> parameters) {
         return resCenterDataSourceFactory
                 .createCloudResCenterDataSource()
-                .getResCenterDetail(resolutionID);
+                .getResCenterDetail(resolutionID, parameters);
     }
 
     @Override

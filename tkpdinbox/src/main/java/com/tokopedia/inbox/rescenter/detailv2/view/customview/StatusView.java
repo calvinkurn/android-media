@@ -7,12 +7,13 @@ import android.util.AttributeSet;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.StatusData;
 
 /**
  * Created by hangnadi on 3/8/17.
  */
 
-public class StatusView extends BaseView<Object, DetailResCenterFragmentView> {
+public class StatusView extends BaseView<StatusData, DetailResCenterFragmentView> {
 
     public StatusView(Context context) {
         super(context);
@@ -43,7 +44,7 @@ public class StatusView extends BaseView<Object, DetailResCenterFragmentView> {
     }
 
     @Override
-    public void renderData(@NonNull Object data) {
+    public void renderData(@NonNull StatusData data) {
 
     }
 }
