@@ -86,8 +86,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="17dp"
                 android:layout_marginStart="8dp"
-                android:src="@drawable/chevron_right"
-                android:visibility="gone" />
+                android:src="@drawable/chevron_right" />
 
         </LinearLayout>
 

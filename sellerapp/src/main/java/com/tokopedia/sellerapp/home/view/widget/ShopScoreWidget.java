@@ -20,7 +20,7 @@ public class ShopScoreWidget extends FrameLayout {
     private ShopScoreMainDetailView shopScoreMainDetailView;
     private TextView shopScoreTitleWidget;
     private ShopScoreWidgetCallback callback;
-    private LinearLayout goToDetailTextView;
+    private LinearLayout goToDetailButton;
 
     public ShopScoreWidget(Context context) {
         super(context);
@@ -58,9 +58,9 @@ public class ShopScoreWidget extends FrameLayout {
         shopScoreMainDetailView =
                 (ShopScoreMainDetailView) view.findViewById(R.id.shop_score_progress_bar_group);
         shopScoreTitleWidget = (TextView) view.findViewById(R.id.title_shop_score_widget);
-        goToDetailTextView = (LinearLayout) view
+        goToDetailButton = (LinearLayout) view
                 .findViewById(R.id.text_view_go_to_detail);
-        goToDetailTextView.setOnClickListener(goToDetailListener());
+        goToDetailButton.setOnClickListener(goToDetailListener());
     }
 
     private OnClickListener goToDetailListener() {
@@ -85,7 +85,7 @@ public class ShopScoreWidget extends FrameLayout {
     }
 
     private void setButtonGoToDetailVisible() {
-        goToDetailTextView.setVisibility(VISIBLE);
+        goToDetailButton.setVisibility(VISIBLE);
     }
 
     private void setTitle(ShopScoreViewModelData data) {
