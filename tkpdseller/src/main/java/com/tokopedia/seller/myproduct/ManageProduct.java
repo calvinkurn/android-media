@@ -56,31 +56,19 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.SimpleListView;
-import com.tokopedia.seller.myproduct.adapter.ListViewManageProdAdapter;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.EtalaseDB;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
-import com.tokopedia.seller.myproduct.ManageProductPermissionsDispatcher;
-import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.myproduct.model.ActResponseModelData;
 import com.tokopedia.core.myproduct.model.GetEtalaseModel;
-import com.tokopedia.seller.myproduct.model.ManageProductModel;
-import com.tokopedia.seller.myproduct.model.getProductList.ProductList;
-import com.tokopedia.seller.myproduct.presenter.ManageProductPresenterImpl;
-import com.tokopedia.seller.myproduct.presenter.ManageProductView;
-import com.tokopedia.seller.myproduct.presenter.NetworkInteractor;
-import com.tokopedia.seller.myproduct.presenter.NetworkInteractorImpl;
-import com.tokopedia.seller.myproduct.service.ProductService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.newgallery.GalleryActivity;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.prototype.ProductCache;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -95,6 +83,15 @@ import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.core.util.RetryHandler.OnConnectionTimeout;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.myproduct.adapter.ListViewManageProdAdapter;
+import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
+import com.tokopedia.seller.myproduct.model.ManageProductModel;
+import com.tokopedia.seller.myproduct.model.getProductList.ProductList;
+import com.tokopedia.seller.myproduct.presenter.ManageProductPresenterImpl;
+import com.tokopedia.seller.myproduct.presenter.ManageProductView;
+import com.tokopedia.seller.myproduct.presenter.NetworkInteractor;
+import com.tokopedia.seller.myproduct.presenter.NetworkInteractorImpl;
+import com.tokopedia.seller.myproduct.service.ProductService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -145,6 +142,19 @@ public class ManageProduct extends TkpdActivity implements
     public static final String SORT_MOST_BUY = "8";
     public static final String SORT_LOWEST_PRICE = "9";
     public static final String SORT_HIGHER_PRICE = "10";
+    public static final String ACTION_ADD_PRODUCT = BuildConfig.APPLICATION_ID + ".ADD_PRODUCT";
+    public CompositeSubscription compositeSubscription = new CompositeSubscription();
+    SimpleListView lvListProd;
+    TextView eAddTo;
+    TextView eEtalase;
+    Spinner SpinnerAddTo;
+    Spinner SpinnerOption;
+    Spinner spinnerInsurance;
+    EditText EtalaseName;
+    View footerLV;
+    ImageView blurImage;
+    FabSpeedDial fabAddProduct;
+    ManageProductPresenterImpl manageProductPresenter;
     private ArrayList<String> menuName = new ArrayList<String>();
     private ArrayList<String> EtalaseFilters = new ArrayList<String>();
     private ArrayList<String> EtalaseIdFilters = new ArrayList<String>();
@@ -161,22 +171,14 @@ public class ManageProduct extends TkpdActivity implements
     private String mEtalase;
     private String IsAllowShop = "0";
     private ListViewManageProdAdapter lvadapter;
-    SimpleListView lvListProd;
     private Boolean loading = false;
     private AlertDialog.Builder SortMenu;
     private AlertDialog SortDialog;
-    TextView eAddTo;
-    TextView eEtalase;
-    Spinner SpinnerAddTo;
-    Spinner SpinnerOption;
-    Spinner spinnerInsurance;
     private RefreshHandler Refresh;
     private ArrayAdapter<CharSequence> adapterCondition;
     private ArrayAdapter<CharSequence> adapterInsurance;
     private ArrayAdapter<String> CategoryAdapter;
     private ArrayAdapter<String> EtalaseAdapter;
-    EditText EtalaseName;
-    View footerLV;
     private String Sort = null;
     private String mDepartment;
     private String mInsurance;
@@ -203,26 +205,24 @@ public class ManageProduct extends TkpdActivity implements
     private int FSelCond = 0;
     private boolean isMultiSelect = false;
     private TkpdProgressDialog progress;
-
-    ImageView blurImage;
     private PagingHandler mPaging = new PagingHandler();
     private RetryHandler retryHandler;
     private SimpleSpinnerAdapter simpleSpinnerAdapter;
-
-    FabSpeedDial fabAddProduct;
-
-
     // NEW NETWORK
     private NetworkInteractor networkInteractorImpl;
     private Gson gson;
     private int multiActionCount;
-    ManageProductPresenterImpl manageProductPresenter;
-    public CompositeSubscription compositeSubscription = new CompositeSubscription();
-
     private Snackbar snackbar;
+    public BroadcastReceiver onCompletedAddReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            if (snackbar != null && snackbar.isShown()) {
+                snackbar.dismiss();
+            }
+        }
+    };
     private boolean refreshData, isSnackBarShow;
-
-    public static final String ACTION_ADD_PRODUCT = BuildConfig.APPLICATION_ID + ".ADD_PRODUCT";
     private BroadcastReceiver addProductReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -842,10 +842,6 @@ public class ManageProduct extends TkpdActivity implements
         }
     }
 
-    interface EtalaseChanging {
-        void createEtalaseSpinner(String addTo);
-    }
-
     public void ShowEtalaseChange() {
         LayoutInflater li = LayoutInflater.from(ManageProduct.this);
         View promptsView = li.inflate(R.layout.prompt_dialog_etalase, null);
@@ -1325,15 +1321,21 @@ public class ManageProduct extends TkpdActivity implements
                     @Override
                     public void onClick(View v) {
 //                        Toast.makeText(ManageProduct.this, "please implement change category", Toast.LENGTH_SHORT).show();
-                        if (!ValidateCategoriesChange()) {
-                            if (!lvadapter.CheckedProductId().isEmpty()) {
-                                changeCategories(mDepartment, lvadapter.CheckedProductId());
+                        try {
+                            if (!ValidateCategoriesChange()) {
+                                if (!lvadapter.CheckedProductId().isEmpty()) {
+                                    changeCategories(mDepartment, lvadapter.CheckedProductId());
+                                }
+                                ClearCheckedData();
+                                ActionTaken = false;
+                                alertDialog.dismiss();
+                                LastSpinnerPos = 0;
+                            } else {
+                                Toast.makeText(ManageProduct.this, getResources().getString(R.string.error_select_category),
+                                        Toast.LENGTH_SHORT).show();
+                                LastSpinnerPos = 0;
                             }
-                            ClearCheckedData();
-                            ActionTaken = false;
-                            alertDialog.dismiss();
-                            LastSpinnerPos = 0;
-                        } else {
+                        } catch (Exception e) {
                             Toast.makeText(ManageProduct.this, getResources().getString(R.string.error_select_category),
                                     Toast.LENGTH_SHORT).show();
                             LastSpinnerPos = 0;
@@ -1378,7 +1380,7 @@ public class ManageProduct extends TkpdActivity implements
     // [BUG] Manage Product - When user want to set multiple product become stok kosong,
     // apps not validate user to input/select the showcase
 
-    public Boolean ValidateCategoriesChange() {
+    public Boolean ValidateCategoriesChange() throws Exception {
         Boolean ContainError = false;
         if (LastSpinnerPos == 0) ContainError = true;
         else {
@@ -1997,16 +1999,6 @@ public class ManageProduct extends TkpdActivity implements
         }
     }
 
-    public BroadcastReceiver onCompletedAddReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // Get extra data included in the Intent
-            if (snackbar != null && snackbar.isShown()) {
-                snackbar.dismiss();
-            }
-        }
-    };
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -2021,7 +2013,6 @@ public class ManageProduct extends TkpdActivity implements
 
         RequestPermissionUtil.onShowRationale(this, request, listPermission);
     }
-
 
     @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showRationaleForStorage(final PermissionRequest request) {
@@ -2064,6 +2055,10 @@ public class ManageProduct extends TkpdActivity implements
         listPermission.add(Manifest.permission.CAMERA);
 
         RequestPermissionUtil.onNeverAskAgain(this, listPermission);
+    }
+
+    interface EtalaseChanging {
+        void createEtalaseSpinner(String addTo);
     }
 
 }
