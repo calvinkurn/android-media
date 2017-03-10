@@ -135,6 +135,7 @@
 
     <style name="Button.TopAds.Submit.Green">
         <item name="android:background">@drawable/bg_button_green_selection</item>
+        <item name="android:textColor">@color/text_submit_button</item>
     </style>
 
     <style name="ImageViewStatus">
