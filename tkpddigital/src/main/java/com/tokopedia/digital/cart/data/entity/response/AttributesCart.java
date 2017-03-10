@@ -88,7 +88,6 @@ public class AttributesCart {
         this.instantCheckout = instantCheckout;
     }
 
-
     public String getSmsState() {
         return smsState;
     }

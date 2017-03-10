@@ -94,8 +94,10 @@ public class VoucherCartHolderView extends RelativeLayout {
             @Override
             public void onClick(View v) {
                 if (!isEditTextVoucherEmpty()) {
-                    if (actionListener != null)
+                    if (actionListener != null) {
+                        voucherCode = editTextVoucher.getText().toString().trim();
                         actionListener.onVoucherCheckButtonClicked();
+                    }
                     else throw new IllegalArgumentException("Action Listener null coy!!");
                 } else {
                     errorVoucher.setVisibility(VISIBLE);
@@ -116,6 +118,7 @@ public class VoucherCartHolderView extends RelativeLayout {
     }
 
     public void setErrorVoucher(String errorMessage) {
+        errorVoucher.setVisibility(VISIBLE);
         errorVoucher.setText(errorMessage);
     }
 
@@ -128,9 +131,10 @@ public class VoucherCartHolderView extends RelativeLayout {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
+                voucherCode = "";
                 holderVoucher.setVisibility(GONE);
                 editTextVoucher.setText("");
-                voucherCode = "";
+
             }
         };
     }

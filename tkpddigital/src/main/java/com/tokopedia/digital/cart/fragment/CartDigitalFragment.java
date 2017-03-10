@@ -224,7 +224,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         itemCartHolderView.renderDataMainInfo(cartDigitalInfoData.getMainInfo());
         itemCartHolderView.setCategoryName(cartDigitalInfoData.getAttributes().getCategoryName());
         itemCartHolderView.setOperatorName(cartDigitalInfoData.getAttributes().getOperatorName());
-        itemCartHolderView.setImageItemCart("");
+        itemCartHolderView.setImageItemCart(cartDigitalInfoData.getAttributes().getIcon());
         renderDataInputPrice(String.valueOf(cartDigitalInfoData.getAttributes().getPricePlain()),
                 cartDigitalInfoData.getAttributes().getUserInputPrice());
         checkoutHolderView.renderData(

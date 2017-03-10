@@ -10,6 +10,8 @@ public class AttributesDigital {
 
     private String clientNumber;
 
+    private String icon;
+
     private String price;
 
     private String categoryName;
@@ -17,6 +19,12 @@ public class AttributesDigital {
     private String operatorName;
 
     private long pricePlain;
+
+    private boolean instantCheckout;
+
+    private boolean needOtp;
+
+    private String smsState;
 
     private UserInputPriceDigital userInputPrice;
 
@@ -74,5 +82,37 @@ public class AttributesDigital {
 
     public void setOperatorName(String operatorName) {
         this.operatorName = operatorName;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public boolean isInstantCheckout() {
+        return instantCheckout;
+    }
+
+    public void setInstantCheckout(boolean instantCheckout) {
+        this.instantCheckout = instantCheckout;
+    }
+
+    public boolean isNeedOtp() {
+        return needOtp;
+    }
+
+    public void setNeedOtp(boolean needOtp) {
+        this.needOtp = needOtp;
+    }
+
+    public String getSmsState() {
+        return smsState;
+    }
+
+    public void setSmsState(String smsState) {
+        this.smsState = smsState;
     }
 }
