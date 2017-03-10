@@ -9,6 +9,11 @@
             android:name=".cart.activity.CartDigitalActivity"
             android:label="@string/title_activity_cart"
             android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".cart.activity.OtpVerificationActivity"
+            android:label="@string/title_activity_cart"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
