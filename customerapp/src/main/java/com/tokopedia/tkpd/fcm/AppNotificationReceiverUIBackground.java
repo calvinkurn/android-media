@@ -240,15 +240,12 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         }
     }
 
-    private void showApplinkPushNotification() {
-        ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
-        applinkBuildAndShowNotification.show();
-    }
-
     private class SavePushNotificationCallback implements OnSavePushNotificationCallback {
         @Override
-        public void onSuccessSavePushNotification() {
-            AppNotificationReceiverUIBackground.this.showApplinkPushNotification();
+        public void onSuccessSavePushNotification(String category) {
+            ApplinkBuildAndShowNotification applinkBuildAndShowNotification =
+                    new ApplinkBuildAndShowNotification(AppNotificationReceiverUIBackground.this.mContext);
+            applinkBuildAndShowNotification.show(category);
         }
 
         @Override

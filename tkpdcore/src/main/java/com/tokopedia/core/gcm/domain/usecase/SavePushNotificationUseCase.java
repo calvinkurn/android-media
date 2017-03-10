@@ -12,7 +12,7 @@ import rx.Observable;
  * Created by alvarisi on 2/23/17.
  */
 
-public class SavePushNotificationUseCase extends UseCase<Boolean> {
+public class SavePushNotificationUseCase extends UseCase<String> {
     public static final String KEY_CATEGORY = "category";
     public static final String KEY_RESPONSE = "response";
     public static final String KEY_CUSTOM_INDEX = "custom_index";
@@ -29,7 +29,7 @@ public class SavePushNotificationUseCase extends UseCase<Boolean> {
     }
 
     @Override
-    public Observable<Boolean> createObservable(RequestParams requestParams) {
+    public Observable<String> createObservable(RequestParams requestParams) {
         String category = requestParams.getString(KEY_CATEGORY, DEFAULT_CATEGORY);
         String response = requestParams.getString(KEY_RESPONSE, DEFAULT_EMPTY);
         String customIndex = requestParams.getString(KEY_CUSTOM_INDEX, DEFAULT_EMPTY);

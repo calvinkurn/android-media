@@ -3,6 +3,7 @@ package com.tokopedia.core.gcm.base;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.data.executor.JobExecutor;
@@ -12,9 +13,6 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.Visitable;
 import com.tokopedia.core.gcm.data.PushNotificationDataRepository;
 import com.tokopedia.core.gcm.domain.PushNotificationRepository;
-import com.tokopedia.core.gcm.domain.usecase.GetSavedDiscussionPushNotificationUseCase;
-import com.tokopedia.core.gcm.domain.usecase.GetSavedMessagePushNotificationUseCase;
-import com.tokopedia.core.gcm.domain.usecase.GetSavedPushNotificationUseCase;
 import com.tokopedia.core.gcm.domain.usecase.SavePushNotificationUseCase;
 import com.tokopedia.core.gcm.notification.dedicated.NewDiscussionNotification;
 import com.tokopedia.core.gcm.notification.dedicated.NewMessageNotification;
@@ -66,7 +64,7 @@ public abstract class BaseAppNotificationReceiverUIBackground {
     protected SavePushNotificationUseCase mSavePushNotificationUseCase;
 
     public interface OnSavePushNotificationCallback {
-        void onSuccessSavePushNotification();
+        void onSuccessSavePushNotification(String category);
 
         void onFailedSavePushNotification();
     }
@@ -175,7 +173,7 @@ public abstract class BaseAppNotificationReceiverUIBackground {
         requestParams.putString(SavePushNotificationUseCase.KEY_RESPONSE, response);
         requestParams.putString(SavePushNotificationUseCase.KEY_CUSTOM_INDEX, customIndex);
         requestParams.putString(SavePushNotificationUseCase.KEY_SERVER_ID, serverId);
-        mSavePushNotificationUseCase.execute(requestParams, new Subscriber<Boolean>() {
+        mSavePushNotificationUseCase.execute(requestParams, new Subscriber<String>() {
             @Override
             public void onCompleted() {
 
@@ -187,9 +185,9 @@ public abstract class BaseAppNotificationReceiverUIBackground {
             }
 
             @Override
-            public void onNext(Boolean aBoolean) {
-                if (aBoolean) {
-                    callback.onSuccessSavePushNotification();
+            public void onNext(String string) {
+                if (!TextUtils.isEmpty(string)) {
+                    callback.onSuccessSavePushNotification(string);
                 } else {
                     callback.onFailedSavePushNotification();
                 }

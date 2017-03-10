@@ -1,10 +1,8 @@
 package com.tokopedia.tkpd.fcm;
 
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.service.notification.StatusBarNotification;
 
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.tkpd.deeplink.DeepLinkReceiver;
@@ -23,10 +21,10 @@ public class ApplinkResetReceiver extends BroadcastReceiver {
         ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(context);
         switch (category) {
             case Constants.ARG_NOTIFICATION_APPLINK_MESSAGE:
-                applinkBuildAndShowNotification.resetIfActiveNotificationMessage();
+                applinkBuildAndShowNotification.showMessagePersonalizedNotification(false);
                 break;
             case Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION:
-                applinkBuildAndShowNotification.resetIfActiveNotificationDiscussion();
+                applinkBuildAndShowNotification.showDiscussionPersonalizedNotification(false);
                 break;
         }
     }

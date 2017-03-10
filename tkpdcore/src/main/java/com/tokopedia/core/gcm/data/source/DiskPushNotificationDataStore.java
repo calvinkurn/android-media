@@ -110,7 +110,7 @@ public class DiskPushNotificationDataStore implements PushNotificationDataStore 
         }
         orderBies.add(orderBy);
         OrderBy idOrderBy = OrderBy.fromProperty(DbPushNotification_Table.id);
-        idOrderBy.ascending();
+        idOrderBy.descending();
         orderBies.add(idOrderBy);
         return Observable.just(pushNotificationDbManager.getDataWithOrderBy(conditionGroup, orderBies))
                 .map(new Func1<List<DbPushNotification>, List<PushNotification>>() {
@@ -229,7 +229,7 @@ public class DiskPushNotificationDataStore implements PushNotificationDataStore 
     }
 
     @Override
-    public Observable<Boolean> savePushNotification(String category, String response, String customIndex, String serverId) {
+    public Observable<String> savePushNotification(String category, String response, String customIndex, String serverId) {
         DbPushNotification dbPushNotification = new DbPushNotification();
         dbPushNotification.setCategory(category);
         dbPushNotification.setResponse(response);
@@ -237,17 +237,17 @@ public class DiskPushNotificationDataStore implements PushNotificationDataStore 
         dbPushNotification.setServerId(serverId);
         return Observable
                 .just(dbPushNotification)
-                .map(new Func1<DbPushNotification, Boolean>() {
+                .map(new Func1<DbPushNotification, String>() {
                     @Override
-                    public Boolean call(DbPushNotification dbPushNotification) {
+                    public String call(DbPushNotification dbPushNotification) {
                         dbPushNotification.save();
-                        return true;
+                        return dbPushNotification.getCategory();
                     }
                 })
-                .onErrorReturn(new Func1<Throwable, Boolean>() {
+                .onErrorReturn(new Func1<Throwable, String>() {
                     @Override
-                    public Boolean call(Throwable throwable) {
-                        return false;
+                    public String call(Throwable throwable) {
+                        return null;
                     }
                 });
     }

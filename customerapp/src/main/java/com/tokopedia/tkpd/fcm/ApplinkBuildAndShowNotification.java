@@ -6,6 +6,7 @@ import android.content.Intent;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.data.PushNotificationDataRepository;
 import com.tokopedia.core.gcm.domain.PushNotificationRepository;
 import com.tokopedia.core.gcm.domain.usecase.GetSavedDiscussionPushNotificationUseCase;
@@ -13,11 +14,9 @@ import com.tokopedia.core.gcm.domain.usecase.GetSavedMessagePushNotificationUseC
 import com.tokopedia.core.gcm.domain.usecase.GetSavedPushNotificationUseCase;
 import com.tokopedia.core.gcm.notification.applink.ApplinkTypeFactory;
 import com.tokopedia.core.gcm.notification.applink.ApplinkTypeFactoryList;
-import com.tokopedia.core.gcm.notification.applink.ApplinkVisitor;
+import com.tokopedia.core.gcm.notification.applink.DiscussionPushNotificationWrapper;
 import com.tokopedia.core.gcm.notification.applink.MessagePushNotificationWrapper;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
-
-import java.util.List;
 
 import rx.Subscriber;
 
@@ -26,10 +25,10 @@ import rx.Subscriber;
  */
 
 public class ApplinkBuildAndShowNotification {
-    private GetSavedPushNotificationUseCase getSavedPushNotificationUseCase;
-    GetSavedMessagePushNotificationUseCase getSavedMessagePushNotificationUseCase;
-    GetSavedDiscussionPushNotificationUseCase getSavedDiscussionPushNotificationUseCase;
+    private GetSavedMessagePushNotificationUseCase getSavedMessagePushNotificationUseCase;
+    private GetSavedDiscussionPushNotificationUseCase getSavedDiscussionPushNotificationUseCase;
     private final Context context;
+
     public ApplinkBuildAndShowNotification(Context context) {
         this.context = context;
         PushNotificationRepository pushNotificationRepository = new PushNotificationDataRepository();
@@ -46,40 +45,20 @@ public class ApplinkBuildAndShowNotification {
                         new UIThread(),
                         pushNotificationRepository
                 );
-
-        getSavedPushNotificationUseCase = new GetSavedPushNotificationUseCase(
-                new JobExecutor(),
-                new UIThread(),
-                getSavedMessagePushNotificationUseCase,
-                getSavedDiscussionPushNotificationUseCase
-        );
     }
 
-    public void show(){
-        getSavedPushNotificationUseCase.execute(RequestParams.EMPTY, new Subscriber<List<ApplinkVisitor>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(List<ApplinkVisitor> applinkVisitors) {
-                Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                ApplinkTypeFactory applinkTypeFactory = new ApplinkTypeFactoryList();
-                for (ApplinkVisitor applinkVisitor : applinkVisitors){
-                    applinkVisitor.type(applinkTypeFactory).process(context, intent);
-                }
-            }
-        });
+    public void show(String category) {
+        switch (category) {
+            case Constants.ARG_NOTIFICATION_APPLINK_MESSAGE:
+                showMessagePersonalizedNotification(true);
+                break;
+            case Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION:
+                showDiscussionPersonalizedNotification(true);
+                break;
+        }
     }
 
-    public void resetIfActiveNotificationMessage() {
+    public void showMessagePersonalizedNotification(final Boolean isNew) {
         getSavedMessagePushNotificationUseCase.execute(RequestParams.EMPTY, new Subscriber<MessagePushNotificationWrapper>() {
             @Override
             public void onCompleted() {
@@ -97,14 +76,14 @@ public class ApplinkBuildAndShowNotification {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 ApplinkTypeFactory applinkTypeFactory = new ApplinkTypeFactoryList();
-                messagePushNotificationWrapper.type(applinkTypeFactory).process(context, intent, false);
+                messagePushNotificationWrapper.type(applinkTypeFactory).process(context, intent, isNew);
             }
         });
     }
 
 
-    public void resetIfActiveNotificationDiscussion() {
-        getSavedMessagePushNotificationUseCase.execute(RequestParams.EMPTY, new Subscriber<MessagePushNotificationWrapper>() {
+    public void showDiscussionPersonalizedNotification(final Boolean isNew) {
+        getSavedDiscussionPushNotificationUseCase.execute(RequestParams.EMPTY, new Subscriber<DiscussionPushNotificationWrapper>() {
             @Override
             public void onCompleted() {
 
@@ -116,12 +95,12 @@ public class ApplinkBuildAndShowNotification {
             }
 
             @Override
-            public void onNext(MessagePushNotificationWrapper messagePushNotificationWrapper) {
+            public void onNext(DiscussionPushNotificationWrapper discussionPushNotificationWrapper) {
                 Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 ApplinkTypeFactory applinkTypeFactory = new ApplinkTypeFactoryList();
-                messagePushNotificationWrapper.type(applinkTypeFactory).process(context, intent, false);
+                discussionPushNotificationWrapper.type(applinkTypeFactory).process(context, intent, isNew);
             }
         });
     }

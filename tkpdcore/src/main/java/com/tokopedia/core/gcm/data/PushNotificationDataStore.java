@@ -34,7 +34,7 @@ public interface PushNotificationDataStore {
 
     Observable<Boolean> savePushNotification(String category, String response, String customIndex);
 
-    Observable<Boolean> savePushNotification(String category, String response, String customIndex, String serverId);
+    Observable<String> savePushNotification(String category, String response, String customIndex, String serverId);
 
     Observable<Boolean> savePushNotification(String category, String response);
 }

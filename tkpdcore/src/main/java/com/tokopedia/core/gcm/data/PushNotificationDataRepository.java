@@ -81,7 +81,7 @@ public class PushNotificationDataRepository implements PushNotificationRepositor
     }
 
     @Override
-    public Observable<Boolean> storePushNotification(String category, String response, String customIndex, String serverId) {
+    public Observable<String> storePushNotification(String category, String response, String customIndex, String serverId) {
         return mPushNotificationDataStoreFactory
                 .createDiskPushNotificationDataStore()
                 .savePushNotification(category, response, customIndex, serverId);
