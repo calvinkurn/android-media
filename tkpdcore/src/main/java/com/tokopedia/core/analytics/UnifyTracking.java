@@ -1175,4 +1175,13 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.EventLabel.COPY_PRODUCT
         ).getEvent());
     }
+
+    public static void eventOTPSuccess(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_OTP,
+                AppEventTracking.Category.SECURITY_QUESTION,
+                AppEventTracking.Action.OTP_SUCCESS,
+                AppEventTracking.EventLabel.OTP
+        ).getEvent());
+    }
 }

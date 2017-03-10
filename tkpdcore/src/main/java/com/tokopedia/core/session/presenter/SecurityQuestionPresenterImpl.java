@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
@@ -384,6 +385,7 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
                 if(result == 0){
                     view.showError(context.getString(R.string.error_user_truecaller));
                 }else {
+                    CommonUtils.dumper("GAv4 OTP Success");
                     storeUUID(context, uuid);
                     fetchDataFromInternet(SecurityQuestionPresenter.MAKE_LOGIN,null);
                 }

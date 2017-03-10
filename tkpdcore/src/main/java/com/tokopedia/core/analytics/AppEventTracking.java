@@ -103,6 +103,7 @@ public interface AppEventTracking {
         String CLICK_ADD_PRODUCT = "clickAddProduct";
         String CLICK_INSTOPED = "clickInstoped";
         String CLICK_MANAGE_PRODUCT = "clickManageProduct";
+        String EVENT_OTP = "OTPSuccess";
     }
 
     interface Category {
@@ -149,6 +150,7 @@ public interface AppEventTracking {
         String GOLD_MERCHANT = "Gold Merchant";
         String DEPOSIT = "Saldo";
         String OTP = "OTP";
+        String SECURITY_QUESTION = "Security Question";
         String TOP_PICKS_HOME = "Toppicks Home";
         String TOP_PICKS = "Toppicks";
         String CATALOG = "Katalog";
@@ -189,6 +191,7 @@ public interface AppEventTracking {
         String SUCCESS = "Success";
         String LOAD = "Load";
         String SCROLL = "Scroll";
+        String OTP_SUCCESS = "OTP Success";
     }
 
     interface EventLabel {
@@ -320,6 +323,7 @@ public interface AppEventTracking {
         String CHANGE_PRICE_PRODUCT_LIST = "Ubah Harga - Product List";
         String CHANGE_PRICE_DROP_DOWN = "Ubah Harga - Dropdown";
         String COPY_PRODUCT = "Copy";
+        String OTP = "OTP";
     }
 
     interface SOCIAL_MEDIA {

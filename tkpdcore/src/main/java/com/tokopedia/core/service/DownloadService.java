@@ -10,12 +10,14 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tkpd.library.utils.data.DataReceiver;
 import com.tokopedia.core.R;
 import com.tokopedia.core.SplashScreen;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.City;
@@ -459,7 +461,10 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                         case ANSWER_SECURITY_QUESTION:
                             result = new Bundle();
                             result.putInt(TYPE, ANSWER_SECURITY_QUESTION);
+                            CommonUtils.dumper("GAv4 OTP enter outside verificated");
                             if (jsonObject.optBoolean("is_login", false) == true) {
+                                UnifyTracking.eventOTPSuccess();
+                                CommonUtils.dumper("GAv4 OTP enter verificated");
                                 final LoginInterruptModel loginInterruptModel = (LoginInterruptModel) parseJSON(ANSWER_SECURITY_QUESTION, jsonObject);
                                 sessionHandler.setLoginSession(loginInterruptModel.isLogin(),
                                         loginInterruptModel.getUserId(), loginInterruptModel.getFullName(), loginInterruptModel.getShopId() + "",
