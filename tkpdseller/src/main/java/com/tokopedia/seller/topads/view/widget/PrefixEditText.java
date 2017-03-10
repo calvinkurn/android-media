@@ -49,7 +49,7 @@ public class PrefixEditText extends AppCompatEditText
                 R.styleable.PrefixEditText_prefix);
         mColor = a.getColor(
                 R.styleable.PrefixEditText_prefixTextColor,
-                Color.GREEN);
+                0);
         a.recycle();
 
         int[] set = {
@@ -73,8 +73,10 @@ public class PrefixEditText extends AppCompatEditText
         else if (TextUtils.isEmpty(text)) {
             int prefixLength = mPrefix.length();
             Spannable spannable = new SpannableString(mPrefix);
-            spannable.setSpan(new ForegroundColorSpan(mColor),
-                    0, mPrefix.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            if (mColor != 0) {
+                spannable.setSpan(new ForegroundColorSpan(mColor),
+                        0, mPrefix.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
             super.setText(spannable, type);
             Selection.setSelection(spannable,prefixLength);
         }
@@ -87,8 +89,10 @@ public class PrefixEditText extends AppCompatEditText
                 String combinedString = mPrefix + textString;
                 spannable = new SpannableString(combinedString);
             }
-            spannable.setSpan(new ForegroundColorSpan(mColor),
-                    0, mPrefix.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            if (mColor != 0) {
+                spannable.setSpan(new ForegroundColorSpan(mColor),
+                        0, mPrefix.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
             super.setText(spannable, type);
             Selection.setSelection(super.getText(),
                     super.getText().length());
@@ -109,6 +113,15 @@ public class PrefixEditText extends AppCompatEditText
         String previousText = getTextWithoutPrefix();
         mPrefix = prefix;
         setText(prefix+previousText);
+    }
+
+    public void setPrefixTextColor(int color) {
+        this.mColor = color;
+        setText(getText());
+    }
+
+    public int getPrefixTextColor(){
+        return this.mColor;
     }
 
     @Override
