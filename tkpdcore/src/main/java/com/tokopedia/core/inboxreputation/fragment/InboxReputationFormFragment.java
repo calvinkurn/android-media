@@ -527,6 +527,11 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
     }
 
     @Override
+    public void unTickCheckBox() {
+        checkBox.setChecked(false);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDestroyView();
