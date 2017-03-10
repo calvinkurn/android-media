@@ -327,6 +327,9 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="tx_title">Transaksi</string>
     <string name="title_product_video">Video Produk</string>
     <string name="success_share_product">Sukses membagikan produk</string>
+    <string name="error_share_product">Gagal membagikan produk</string>
+    <string name="success_share_review">Sukses membagikan ulasan</string>
+    <string name="error_share_review">Gagal membagikan ulasan</string>
     <!-- Strings related product info -->
 
 
@@ -1002,6 +1005,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="dialog_save_preview_product_image">Simpan gambar ?</string>
     <string name="title_follow">mengikuti</string>
     <string name="title_unfollow">berhenti mengikuti</string>
+    <string name="title_tokopedia_hashtag">#DimulaiDariTokopedia</string>
 
 
     <!-- error string -->
