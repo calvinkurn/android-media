@@ -23,6 +23,8 @@ public class TopAdsConstant {
     public static final int STATUS_AD_NOT_ACTIVE = 3;
     public static final int STATUS_AD_NOT_SENT = 2;
 
+    public static final String EMPTY_AD_ID = "0";
+
     public static final int MAX_DATE_RANGE = 60;
 
     public static final int BUDGET_MAX = 2000;

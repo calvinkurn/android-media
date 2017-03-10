@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.ShopAd;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailNewShopActivity;
@@ -104,7 +105,7 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
     @Override
     public void onAdShopLoaded(@NonNull ShopAd ad) {
         shopAd = ad;
-        if (TextUtils.isEmpty(ad.getId())) {
+        if (!TextUtils.isEmpty(ad.getId()) && !ad.getId().equals(TopAdsConstant.EMPTY_AD_ID)) {
             loadDetailAd(ad);
         } else {
             loadAdShopNotExist();
