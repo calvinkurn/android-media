@@ -28,10 +28,6 @@ public class TopAdsCustomRadioButton extends AppCompatRadioButton {
         super(context, attrs, defStyleAttr);
     }
 
-//    public TopAdsCustomRadioButton(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-//        super(context, attrs, defStyleAttr, defStyleRes);
-//    }
-
     public void addOnCheckedChangeListener(OnCheckedChangeListener listener){
         listeners.add(listener);
     }
