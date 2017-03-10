@@ -3,6 +3,7 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
@@ -11,6 +12,8 @@ import com.tokopedia.seller.topads.view.model.TopAdsDetailProductViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditProductPresenter;
 
 public class TopAdsDetailEditProductFragment extends TopAdsDetailEditFragment<TopAdsDetailEditProductPresenter> {
+
+    TextView infoPriceLimit;
 
     public static Fragment createInstance(String name, String shopAdId) {
         Fragment fragment = new TopAdsDetailEditProductFragment();
@@ -35,7 +38,10 @@ public class TopAdsDetailEditProductFragment extends TopAdsDetailEditFragment<To
     @Override
     protected void initView(View view) {
         super.initView(view);
+        infoPriceLimit = (TextView) view.findViewById(R.id.info_limit_price);
+        infoPriceLimit.setVisibility(View.GONE);
         nameInputLayout.setHint(getString(R.string.label_top_ads_product_name));
+
     }
 
     @Override
@@ -47,6 +53,8 @@ public class TopAdsDetailEditProductFragment extends TopAdsDetailEditFragment<To
     @Override
     protected void saveAd() {
         super.saveAd();
-        presenter.saveAd((TopAdsDetailProductViewModel) detailAd);
+        if (detailAd !=  null) {
+            presenter.saveAd((TopAdsDetailProductViewModel) detailAd);
+        }
     }
 }

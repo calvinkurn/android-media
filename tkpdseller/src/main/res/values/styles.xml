@@ -208,7 +208,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textColorHighlight">@color/font_top_ads_green</item>
-        <item name="android:textColor">@color/font_top_ads_black_70</item>
+        <item name="android:textColor">@drawable/color_state_topads_disable_text</item>
     </style>
 
     <style name="TopAdsRadioExpandView">
@@ -250,13 +250,9 @@
         <item name="android:textSize">@dimen/font_small</item>
     </style>
 
-    <style name="TopAdsCustomAutoCompleteTextView">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="EditText.GreenHighlight.TopAdsCustomAutoCompleteTextView">
         <item name="android:drawableRight">@drawable/ic_close_green_14x14</item>
-        <item name="android:textColorHighlight">@color/font_top_ads_green</item>
         <item name="android:completionThreshold">1</item>
-        <item name="android:textColor">@drawable/color_state_topads_disable_text</item>
         <item name="android:inputType">textNoSuggestions</item>
     </style>
 

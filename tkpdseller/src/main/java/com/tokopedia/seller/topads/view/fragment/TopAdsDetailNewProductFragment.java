@@ -33,7 +33,9 @@ public class TopAdsDetailNewProductFragment extends TopAdsDetailNewFragment<TopA
     @Override
     protected void saveAd() {
         super.saveAd();
-        presenter.saveAd((TopAdsDetailProductViewModel) detailAd, topAdsProductList);
+        if (detailAd !=  null) {
+            presenter.saveAd((TopAdsDetailProductViewModel) detailAd, topAdsProductList);
+        }
     }
 
     @Override
