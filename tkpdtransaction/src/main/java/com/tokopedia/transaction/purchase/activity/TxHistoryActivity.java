@@ -12,7 +12,6 @@ import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.purchase.adapter.TxHistoryListAdapter;
-import com.tokopedia.transaction.utils.LinearLayoutManagerNonScroll;
 
 import java.util.ArrayList;
 import java.util.List;
