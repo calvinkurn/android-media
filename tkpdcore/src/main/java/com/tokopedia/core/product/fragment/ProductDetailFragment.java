@@ -574,9 +574,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDestroyView(context);
-        if (videoLayout != null && videoLayout.isShown()) {
-            videoLayout.destroyVideoLayoutProcess();
-        }
+        destroyVideoLayout();
     }
 
     @Override
@@ -657,6 +655,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 presenter.processResultTalk(resultCode, data);
                 break;
             case REQUEST_CODE_LOGIN:
+                videoLayout.refreshVideo();
                 presenter.requestProductDetail(context, productPass, RE_REQUEST, true);
                 break;
             default:
@@ -756,6 +755,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         if(getActivity().getApplication() instanceof TkpdCoreRouter){
             Intent intent = ((TkpdCoreRouter)getActivity().getApplication()).goToEditProduct(context, isEdit, productId);
             navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT);
+        }
+    }
+
+    private void destroyVideoLayout() {
+        if (videoLayout != null && videoLayout.isShown()) {
+            videoLayout.destroyVideoLayoutProcess();
         }
     }
 

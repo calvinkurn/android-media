@@ -24,6 +24,7 @@ public class CheckoutData implements Parcelable {
     private String errorPaymentMessage;
     private List<CheckoutDropShipperData> dropShipperDataList;
     private String voucherCode;
+    private String donationValue;
 
     private CheckoutData(Builder builder) {
         setLpFlag(builder.lpFlag);
@@ -38,6 +39,7 @@ public class CheckoutData implements Parcelable {
         setErrorPaymentMessage(builder.errorPaymentMessage);
         setDropShipperDataList(builder.dropShipperDataList);
         setVoucherCode(builder.voucherCode);
+        setDonationValue(builder.donationValue);
     }
 
     public List<CheckoutDropShipperData> getDropShipperDataList() {
@@ -139,6 +141,14 @@ public class CheckoutData implements Parcelable {
         this.errorPaymentMessage = errorPaymentMessage;
     }
 
+    public String getDonationValue() {
+        return donationValue;
+    }
+
+    public void setDonationValue(String donationValue) {
+        this.donationValue = donationValue;
+    }
+
     public static final class Builder {
         private String lpFlag = "1";
         private String depositAmount;
@@ -152,6 +162,7 @@ public class CheckoutData implements Parcelable {
         private String errorPaymentMessage;
         private List<CheckoutDropShipperData> dropShipperDataList;
         private String voucherCode;
+        private String donationValue;
 
         public Builder() {
         }
@@ -216,6 +227,11 @@ public class CheckoutData implements Parcelable {
             return this;
         }
 
+        public Builder donationValue(String val) {
+            donationValue = val;
+            return this;
+        }
+
         public CheckoutData build() {
             return new CheckoutData(this);
         }
@@ -241,6 +257,7 @@ public class CheckoutData implements Parcelable {
         dest.writeString(this.errorPaymentMessage);
         dest.writeTypedList(this.dropShipperDataList);
         dest.writeString(this.voucherCode);
+        dest.writeString(this.donationValue);
     }
 
     protected CheckoutData(Parcel in) {
@@ -256,6 +273,7 @@ public class CheckoutData implements Parcelable {
         this.errorPaymentMessage = in.readString();
         this.dropShipperDataList = in.createTypedArrayList(CheckoutDropShipperData.CREATOR);
         this.voucherCode = in.readString();
+        this.donationValue = in.readString();
     }
 
     public static final Creator<CheckoutData> CREATOR = new Creator<CheckoutData>() {
