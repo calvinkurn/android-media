@@ -5,9 +5,9 @@ import android.support.annotation.NonNull;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.product.model.shopscore.detail.ShopScoreDetailServiceModel;
+import com.tokopedia.core.product.model.shopscore.summary.ShopScoreSummaryServiceModel;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.seller.shopscore.data.source.cloud.model.detail.ShopScoreDetailServiceModel;
-import com.tokopedia.seller.shopscore.data.source.cloud.model.summary.ShopScoreSummaryServiceModel;
 
 import rx.Observable;
 import rx.functions.Func1;

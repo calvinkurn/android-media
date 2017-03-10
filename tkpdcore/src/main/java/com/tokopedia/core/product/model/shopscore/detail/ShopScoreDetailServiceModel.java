@@ -1,17 +1,17 @@
 
-package com.tokopedia.seller.shopscore.data.source.cloud.model.summary;
+package com.tokopedia.core.product.model.shopscore.detail;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ShopScoreSummaryServiceModel {
+public class ShopScoreDetailServiceModel {
 
     @SerializedName("links")
     @Expose
     private Links links;
     @SerializedName("data")
     @Expose
-    private Data data;
+    private ShopScoreDetailDataServiceModel data;
 
     public Links getLinks() {
         return links;
@@ -21,11 +21,11 @@ public class ShopScoreSummaryServiceModel {
         this.links = links;
     }
 
-    public Data getData() {
+    public ShopScoreDetailDataServiceModel getData() {
         return data;
     }
 
-    public void setData(Data data) {
+    public void setData(ShopScoreDetailDataServiceModel data) {
         this.data = data;
     }
 

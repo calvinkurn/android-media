@@ -1,10 +1,10 @@
 
-package com.tokopedia.seller.shopscore.data.source.cloud.model.detail;
+package com.tokopedia.core.product.model.shopscore.summary;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ShopScoreDetailItemServiceModel {
+public class DetailData {
 
     @SerializedName("Title")
     @Expose
@@ -50,5 +50,4 @@ public class ShopScoreDetailItemServiceModel {
     public void setColor(String color) {
         this.color = color;
     }
-
 }

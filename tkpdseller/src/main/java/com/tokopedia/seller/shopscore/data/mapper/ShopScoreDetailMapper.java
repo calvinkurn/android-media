@@ -3,9 +3,9 @@ package com.tokopedia.seller.shopscore.data.mapper;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.product.model.shopscore.detail.ShopScoreDetailItemServiceModel;
+import com.tokopedia.core.product.model.shopscore.detail.ShopScoreDetailServiceModel;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.shopscore.data.source.cloud.model.detail.ShopScoreDetailItemServiceModel;
-import com.tokopedia.seller.shopscore.data.source.cloud.model.detail.ShopScoreDetailServiceModel;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailDomainModel;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailItemDomainModel;
 import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailSummaryDomainModel;

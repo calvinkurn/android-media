@@ -1,5 +1,5 @@
 
-package com.tokopedia.seller.shopscore.data.source.cloud.model.detail;
+package com.tokopedia.core.product.model.shopscore.detail;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
