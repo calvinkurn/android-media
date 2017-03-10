@@ -52,6 +52,7 @@ abstract class AuthHmacInterceptor implements Interceptor {
         while (!response.isSuccessful() && count < 3) {
             Log.d(TAG, "Request is not successful - " + count + " Error code : " + response.code());
             count++;
+            response.close();
             response = chain.proceed(finalRequest);
         }
         if (!response.isSuccessful()) {

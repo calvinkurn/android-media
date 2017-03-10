@@ -13,6 +13,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 import rx.Observable;
@@ -53,8 +54,6 @@ public interface DigitalApi {
     @GET(TkpdBaseURL.DigitalApi.PATH_CHECK_VOUCHER)
     Observable<Response<TkpdDigitalResponse>> checkVoucher(@QueryMap Map<String, String> params);
 
-
-    //    @FormUrlEncoded
     @POST(TkpdBaseURL.DigitalApi.PATH_GET_CART)
     @Headers({"Content-Type: application/json"})
     Observable<Response<TkpdDigitalResponse>> addToCart(
@@ -62,12 +61,16 @@ public interface DigitalApi {
             @Header("Idempotency-Key") String idemPotencyKeyHeader
     );
 
+    @PATCH(TkpdBaseURL.DigitalApi.PATH_GET_CART)
+    @Headers({"Content-Type: application/json"})
+    Observable<Response<TkpdDigitalResponse>> patchOtpCart(@Body JsonObject requestBody);
+
     @FormUrlEncoded
     @DELETE(TkpdBaseURL.DigitalApi.PATH_GET_CART)
     Observable<Response<TkpdDigitalResponse>> deleteCart(@QueryMap Map<String, String> params);
 
-    @FormUrlEncoded
     @POST(TkpdBaseURL.DigitalApi.PATH_CHECKOUT)
-    Observable<Response<TkpdDigitalResponse>> checkout(@QueryMap Map<String, String> params);
+    @Headers({"Content-Type: application/json"})
+    Observable<Response<TkpdDigitalResponse>> checkout(@Body JsonObject requestBody);
 
 }

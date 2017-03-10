@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.retrofit.interceptors.WS4HmacAuthInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 
 import java.util.concurrent.TimeUnit;
 
@@ -37,10 +37,11 @@ public abstract class AuthService<T> extends BaseService<T> {
     /**
      * this constructor only made for creating base Url,
      * the one from the top not work anymore
+     *
      * @param baseUrl
      * @param isOverriten
      */
-    public AuthService(String baseUrl, int isOverriten){
+    public AuthService(String baseUrl, int isOverriten) {
         super(baseUrl);
         this.baseUrl = baseUrl;
         this.overrideBaseUrl = true;
@@ -57,7 +58,7 @@ public abstract class AuthService<T> extends BaseService<T> {
 
     @Override
     public Interceptor getAuthInterceptor() {
-        return new WS4HmacAuthInterceptor();
+        return new TkpdAuthInterceptor();
     }
 
     @Override

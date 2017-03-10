@@ -158,6 +158,12 @@ public class TkpdDigitalResponse {
             return stringBuilder.toString().trim();
         }
 
+        public static DigitalErrorResponse factory(String errorBody) throws JsonSyntaxException {
+            return new Gson().fromJson(
+                    errorBody, DigitalErrorResponse.class
+            );
+        }
+
         public class Error {
 
             @SerializedName("id")
