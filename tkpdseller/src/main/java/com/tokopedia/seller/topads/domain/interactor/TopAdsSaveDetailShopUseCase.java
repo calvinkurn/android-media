@@ -15,7 +15,7 @@ import rx.Observable;
  */
 public class TopAdsSaveDetailShopUseCase extends UseCase<TopAdsDetailShopDomainModel> {
 
-    private final TopAdsShopAdsRepository topAdsShopAdsRepository;
+    protected final TopAdsShopAdsRepository topAdsShopAdsRepository;
 
     public TopAdsSaveDetailShopUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, TopAdsShopAdsRepository topAdsShopAdsRepository) {
         super(threadExecutor, postExecutionThread);
