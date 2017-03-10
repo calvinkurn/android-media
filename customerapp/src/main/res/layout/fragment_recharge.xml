@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="@dimen/padding_small">
 
     <ProgressBar
         android:id="@+id/recharge_progressbar"
@@ -13,12 +13,20 @@
         android:visibility="gone"
         android:layout_gravity="center" />
 
+    <LinearLayout
+        android:id="@+id/radio_group_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_marginBottom="@dimen/margin_vs"/>
+
     <Spinner
         android:id="@+id/spnOperator"
         android:layout_width="fill_parent"
         android:layout_height="40dp"
         android:layout_gravity="bottom"
-        android:spinnerMode="dropdown"
+        android:spinnerMode="dialog"
         android:visibility="gone"
         style="@style/Base.Widget.AppCompat.Spinner.Underlined"
         >
@@ -28,7 +36,7 @@
         android:id="@+id/telp_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="3dp"
+        android:paddingLeft="@dimen/padding_vvs"
         android:text="@string/prompt_phone"
         android:visibility="gone" />
 
@@ -42,7 +50,7 @@
         android:id="@+id/nominalTextview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="3dp"
+        android:paddingLeft="@dimen/padding_vvs"
         android:text="@string/title_nominal"
         android:visibility="gone" />
 
@@ -60,8 +68,8 @@
         android:id="@+id/errorNominal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="3dp"
-        android:textSize="12sp"
+        android:paddingLeft="@dimen/padding_vvs"
+        android:textSize="@dimen/fontvs"
         android:textColor="@color/red_600"
         android:text="@string/title_empty_stock"
         android:visibility="gone" />
@@ -71,7 +79,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="10dp"
+        android:paddingTop="@dimen/padding_small"
         android:visibility="gone"
         android:weightSum="1">
         <CheckBox
