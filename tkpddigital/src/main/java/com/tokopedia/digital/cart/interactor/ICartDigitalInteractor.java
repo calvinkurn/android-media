@@ -2,7 +2,10 @@ package com.tokopedia.digital.cart.interactor;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
+import com.tokopedia.digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
+import com.tokopedia.digital.cart.data.entity.requestbody.topcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
+import com.tokopedia.digital.cart.model.CheckoutDigitalData;
 import com.tokopedia.digital.cart.model.VoucherDigital;
 
 import rx.Subscriber;
@@ -23,5 +26,14 @@ public interface ICartDigitalInteractor {
 
     void checkVoucher(
             TKPDMapParam<String, String> paramNetwork, Subscriber<VoucherDigital> subscriber
+    );
+
+    void checkout(
+            RequestBodyCheckout requestBodyCheckout, Subscriber<CheckoutDigitalData> subscriber
+    );
+
+    void patchCartOtp(
+            RequestBodyOtpSuccess requestBodyOtpSuccess, TKPDMapParam<String, String> paramgetCart,
+            Subscriber<CartDigitalInfoData> subscriber
     );
 }

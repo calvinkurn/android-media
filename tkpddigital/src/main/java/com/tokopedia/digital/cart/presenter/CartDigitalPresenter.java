@@ -1,21 +1,26 @@
 package com.tokopedia.digital.cart.presenter;
 
-import android.os.Build;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.Attributes;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.Field;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
+import com.tokopedia.digital.cart.data.entity.requestbody.checkout.Cart;
+import com.tokopedia.digital.cart.data.entity.requestbody.checkout.Data;
+import com.tokopedia.digital.cart.data.entity.requestbody.checkout.Relationships;
+import com.tokopedia.digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
+import com.tokopedia.digital.cart.data.entity.requestbody.topcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.cart.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.cart.listener.IDigitalCartView;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
+import com.tokopedia.digital.cart.model.CheckoutDataParameter;
+import com.tokopedia.digital.cart.model.CheckoutDigitalData;
 import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.utils.DeviceUtil;
 
@@ -31,6 +36,7 @@ import rx.Subscriber;
  */
 
 public class CartDigitalPresenter implements ICartDigitalPresenter {
+    private static final String TAG = CartDigitalPresenter.class.getSimpleName();
     private final IDigitalCartView view;
     private final ICartDigitalInteractor cartDigitalInteractor;
 
@@ -52,39 +58,10 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     }
 
     @Override
-    public void processAddToCart(DigitalCheckoutPassData passData) {
-        RequestBodyAtcDigital requestBodyAtcDigital = new RequestBodyAtcDigital();
-        List<Field> fieldList = new ArrayList<>();
-        if (passData.getClientNumber() != null && !passData.getClientNumber().isEmpty()) {
-            Field field = new Field();
-            field.setName("client_number");
-            field.setValue(passData.getClientNumber());
-            fieldList.add(field);
-        }
-        Attributes attributes = new Attributes();
-        attributes.setDeviceId(5);
-        attributes.setInstantCheckout(passData.getInstantCheckout().equals("1"));
-        attributes.setIpAddress(DeviceUtil.getLocalIpAddress());
-        attributes.setUserAgent(
-                "Android Tokopedia Application/"
-                        + GlobalConfig.getPackageApplicationName()
-                        + " v." + GlobalConfig.VERSION_NAME
-                        + " (" + DeviceUtil.getDeviceName()
-                        + "; Android; API_"
-                        + Build.VERSION.SDK_INT
-                        + "; Version"
-                        + Build.VERSION.RELEASE + ") "
-        );
-        attributes.setUserId(Integer.parseInt(view.getUserId()));
-        attributes.setAccessToken(view.getAccountToken());
-        attributes.setWalletRefreshToken(view.getWalletRefreshToken());
-        attributes.setProductId(Integer.parseInt(passData.getProductId()));
-        attributes.setFields(fieldList);
-        requestBodyAtcDigital.setType("add_cart");
-        requestBodyAtcDigital.setAttributes(attributes);
+    public void processAddToCart() {
         view.renderLoadingGetCartInfo();
         cartDigitalInteractor.addToCart(
-                requestBodyAtcDigital, passData.getIdemPotencyKey(), getSubscriberAddToCart()
+                getRequestBodyAtcDigital(), view.getIdemPotencyKey(), getSubscriberAddToCart()
         );
     }
 
@@ -97,6 +74,57 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         cartDigitalInteractor.checkVoucher(
                 view.getGeneratedAuthParamNetwork(param), getSubscriberCheckVoucher()
         );
+    }
+
+    @Override
+    public void processToCheckout() {
+        CheckoutDataParameter checkoutData = view.getCheckoutData();
+        if (checkoutData.isNeedOtp()) {
+            view.interuptRequestTokenVerification();
+            return;
+        }
+        cartDigitalInteractor.checkout(
+                getRequestBodyCheckout(checkoutData),
+                getSubscriberCheckout()
+        );
+    }
+
+    @Override
+    public void processPatchOtpCart() {
+        CheckoutDataParameter checkoutDataParameter = view.getCheckoutData();
+        RequestBodyOtpSuccess requestBodyOtpSuccess = new RequestBodyOtpSuccess();
+        requestBodyOtpSuccess.setType("cart");
+        requestBodyOtpSuccess.setId(checkoutDataParameter.getRelationId());
+
+        TKPDMapParam<String, String> paramGetCart = new TKPDMapParam<>();
+        paramGetCart.put("category_id", view.getDigitalCategoryId());
+        cartDigitalInteractor.patchCartOtp(
+                requestBodyOtpSuccess,
+                view.getGeneratedAuthParamNetwork(paramGetCart),
+                getSubscriberCartInfo()
+        );
+
+    }
+
+    @NonNull
+    private Subscriber<CheckoutDigitalData> getSubscriberCheckout() {
+        return new Subscriber<CheckoutDigitalData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(CheckoutDigitalData checkoutDigitalData) {
+                Log.d(TAG, checkoutDigitalData.toString());
+                view.showToastMessage("Nunggu module payment siap, Bal yaw.. eaa eaa..");
+            }
+        };
     }
 
     @NonNull
@@ -234,4 +262,52 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
             }
         };
     }
+
+    @NonNull
+    private RequestBodyAtcDigital getRequestBodyAtcDigital() {
+        RequestBodyAtcDigital requestBodyAtcDigital = new RequestBodyAtcDigital();
+        List<Field> fieldList = new ArrayList<>();
+        String clientNumber = view.getClientNumber();
+        if (clientNumber != null && !clientNumber.isEmpty()) {
+            Field field = new Field();
+            field.setName("client_number");
+            field.setValue(clientNumber);
+            fieldList.add(field);
+        }
+        Attributes attributes = new Attributes();
+        attributes.setDeviceId(5);
+        attributes.setInstantCheckout(view.isInstantCheckout());
+        attributes.setIpAddress(DeviceUtil.getLocalIpAddress());
+        attributes.setUserAgent(DeviceUtil.getUserAgentForApiCall());
+        attributes.setUserId(Integer.parseInt(view.getUserId()));
+        attributes.setAccessToken(view.getAccountToken());
+        attributes.setWalletRefreshToken(view.getWalletRefreshToken());
+        attributes.setProductId(view.getProductId());
+        attributes.setFields(fieldList);
+        requestBodyAtcDigital.setType("add_cart");
+        requestBodyAtcDigital.setAttributes(attributes);
+        return requestBodyAtcDigital;
+    }
+
+    @NonNull
+    private RequestBodyCheckout getRequestBodyCheckout(CheckoutDataParameter checkoutData) {
+        RequestBodyCheckout requestBodyCheckout = new RequestBodyCheckout();
+        requestBodyCheckout.setType("checkout");
+        com.tokopedia.digital.cart.data.entity.requestbody.checkout.Attributes attributes =
+                new com.tokopedia.digital.cart.data.entity.requestbody.checkout.Attributes();
+        attributes.setVoucherCode(checkoutData.getVoucherCode());
+        attributes.setTransactionAmount(checkoutData.getTransactionAmount());
+        attributes.setIpAddress(checkoutData.getIpAddress());
+        attributes.setUserAgent(checkoutData.getUserAgent());
+        attributes.setAccessToken(checkoutData.getAccessToken());
+        attributes.setWalletRefreshToken(checkoutData.getWalletRefreshToken());
+        requestBodyCheckout.setAttributes(attributes);
+        requestBodyCheckout.setRelationships(
+                new Relationships(new Cart(new Data(
+                        checkoutData.getRelationType(), checkoutData.getRelationId()
+                )))
+        );
+        return requestBodyCheckout;
+    }
+
 }

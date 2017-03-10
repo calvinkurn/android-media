@@ -1,8 +1,10 @@
 package com.tokopedia.digital.cart.data.mapper;
 
 import com.tokopedia.digital.cart.data.entity.response.ResponseCartData;
+import com.tokopedia.digital.cart.data.entity.response.ResponseCheckoutData;
 import com.tokopedia.digital.cart.data.entity.response.ResponseVoucherData;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
+import com.tokopedia.digital.cart.model.CheckoutDigitalData;
 import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.exception.MapperDataException;
 
@@ -18,5 +20,9 @@ public interface ICartMapperData {
 
     VoucherDigital transformVoucherDigitalData(
             ResponseVoucherData responseVoucherData
+    ) throws MapperDataException;
+
+    CheckoutDigitalData transformCheckoutData(
+            ResponseCheckoutData responseCheckoutData
     ) throws MapperDataException;
 }

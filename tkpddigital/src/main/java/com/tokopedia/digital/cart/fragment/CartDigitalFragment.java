@@ -24,6 +24,7 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.cart.activity.OtpVerificationActivity;
 import com.tokopedia.digital.cart.compoundview.CheckoutHolderView;
 import com.tokopedia.digital.cart.compoundview.InputPriceHolderView;
 import com.tokopedia.digital.cart.compoundview.ItemCartHolderView;
@@ -31,10 +32,12 @@ import com.tokopedia.digital.cart.compoundview.VoucherCartHolderView;
 import com.tokopedia.digital.cart.interactor.CartDigitalInteractor;
 import com.tokopedia.digital.cart.listener.IDigitalCartView;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
+import com.tokopedia.digital.cart.model.CheckoutDataParameter;
 import com.tokopedia.digital.cart.model.UserInputPriceDigital;
 import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
+import com.tokopedia.digital.utils.DeviceUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -67,6 +70,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     private SessionHandler sessionHandler;
     private ActionListener actionListener;
     private TkpdProgressDialog progressDialogNormal;
+    private CheckoutDataParameter.Builder checkoutDataBuilder;
 
     public static Fragment newInstance(Parcelable passData) {
         CartDigitalFragment cartDigitalFragment = new CartDigitalFragment();
@@ -83,12 +87,13 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     protected void onFirstTimeLaunched() {
+        checkoutDataBuilder = new CheckoutDataParameter.Builder();
         inputPriceHolderView.setActionListener(this);
         voucherCartHolderView.setActionListener(this);
         sessionHandler = new SessionHandler(getActivity());
         progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
         progressDialogNormal.setCancelable(false);
-        presenter.processAddToCart(passData);
+        presenter.processAddToCart();
     }
 
     @Override
@@ -149,12 +154,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
-
+        startActivityForResult(intent, requestCode);
     }
 
     @Override
     public void navigateToActivity(Intent intent) {
-
+        startActivity(intent);
     }
 
     @Override
@@ -227,6 +232,13 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 cartDigitalInfoData.getAttributes().getPrice(),
                 cartDigitalInfoData.getAttributes().getPrice()
         );
+        checkoutDataBuilder.accessToken(getAccountToken());
+        checkoutDataBuilder.walletRefreshToken(getWalletRefreshToken());
+        checkoutDataBuilder.ipAddress(DeviceUtil.getLocalIpAddress());
+        checkoutDataBuilder.relationId(cartDigitalInfoData.getId());
+        checkoutDataBuilder.relationType(cartDigitalInfoData.getType());
+        checkoutDataBuilder.transactionAmount(cartDigitalInfoData.getAttributes().getPricePlain());
+        checkoutDataBuilder.userAgent(DeviceUtil.getUserAgentForApiCall());
     }
 
     @Override
@@ -373,8 +385,43 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
-    public void onClickButtonNext() {
+    public CheckoutDataParameter getCheckoutData() {
+        checkoutDataBuilder.voucherCode(voucherCartHolderView.getVoucherCode());
+        return checkoutDataBuilder.build();
+    }
 
+    @Override
+    public String getClientNumber() {
+        return passData.getClientNumber();
+    }
+
+    @Override
+    public boolean isInstantCheckout() {
+        return passData.getInstantCheckout().equals("1");
+    }
+
+    @Override
+    public int getProductId() {
+        return Integer.parseInt(passData.getProductId());
+    }
+
+    @Override
+    public String getIdemPotencyKey() {
+        return passData.getIdemPotencyKey();
+    }
+
+    @Override
+    public void interruptRequestTokenVerification() {
+        showToastMessage("Module OTP belum siap. Bal yaw... eaaa eaaaa");
+//        navigateToActivityRequest(
+//                OtpVerificationActivity.newInstance(getActivity()),
+//                OtpVerificationActivity.REQUEST_CODE
+//        );
+    }
+
+    @Override
+    public void onClickButtonNext() {
+        presenter.processToCheckout();
     }
 
     @Override
@@ -385,6 +432,14 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void onVoucherCheckButtonClicked() {
         presenter.processCheckVoucher();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == OtpVerificationActivity.REQUEST_CODE) {
+            presenter.processPatchOtpCart();
+        }
     }
 
     public interface ActionListener {

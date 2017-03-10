@@ -1,6 +1,7 @@
 package com.tokopedia.digital.cart.listener;
 
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
+import com.tokopedia.digital.cart.model.CheckoutDataParameter;
 import com.tokopedia.digital.cart.model.VoucherDigital;
 
 /**
@@ -46,6 +47,9 @@ public interface IDigitalCartView extends IBaseView {
 
     void closeViewWithMessageAlert(String message);
 
+    void interruptRequestTokenVerification();
+
+
     String getUserId();
 
     String getAccountToken();
@@ -55,4 +59,14 @@ public interface IDigitalCartView extends IBaseView {
     String getDigitalCategoryId();
 
     String getVoucherCode();
+
+    CheckoutDataParameter getCheckoutData();
+
+    String getClientNumber();
+
+    boolean isInstantCheckout();
+
+    int getProductId();
+
+    String getIdemPotencyKey();
 }

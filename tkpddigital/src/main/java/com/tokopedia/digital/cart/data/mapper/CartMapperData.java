@@ -5,11 +5,13 @@ import com.tokopedia.digital.cart.data.entity.response.Detail;
 import com.tokopedia.digital.cart.data.entity.response.MainInfo;
 import com.tokopedia.digital.cart.data.entity.response.RelationshipsCart;
 import com.tokopedia.digital.cart.data.entity.response.ResponseCartData;
+import com.tokopedia.digital.cart.data.entity.response.ResponseCheckoutData;
 import com.tokopedia.digital.cart.data.entity.response.ResponseVoucherData;
 import com.tokopedia.digital.cart.model.AttributesDigital;
 import com.tokopedia.digital.cart.model.CartAdditionalInfo;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 import com.tokopedia.digital.cart.model.CartItemDigital;
+import com.tokopedia.digital.cart.model.CheckoutDigitalData;
 import com.tokopedia.digital.cart.model.Relation;
 import com.tokopedia.digital.cart.model.RelationData;
 import com.tokopedia.digital.cart.model.Relationships;
@@ -27,7 +29,9 @@ import java.util.List;
 
 public class CartMapperData implements ICartMapperData {
     @Override
-    public CartDigitalInfoData transformCartInfoData(ResponseCartData responseCartData) {
+    public CartDigitalInfoData transformCartInfoData(
+            ResponseCartData responseCartData
+    ) throws MapperDataException {
         try {
             CartDigitalInfoData cartDigitalInfoData = new CartDigitalInfoData();
             List<CartItemDigital> cartItemDigitalList = new ArrayList<>();
@@ -102,7 +106,7 @@ public class CartMapperData implements ICartMapperData {
             cartDigitalInfoData.setInstantCheckout(
                     responseCartData.getAttributes().isInstantCheckout()
             );
-            cartDigitalInfoData.setOtpValid(responseCartData.getAttributes().isOtpValid());
+            cartDigitalInfoData.setNeedOtp(responseCartData.getAttributes().isNeedOtp());
             cartDigitalInfoData.setSmsState(responseCartData.getAttributes().getSmsState());
             cartDigitalInfoData.setTitle(responseCartData.getAttributes().getTitle());
             cartDigitalInfoData.setType(responseCartData.getType());
@@ -115,7 +119,9 @@ public class CartMapperData implements ICartMapperData {
     }
 
     @Override
-    public VoucherDigital transformVoucherDigitalData(ResponseVoucherData responseVoucherData) {
+    public VoucherDigital transformVoucherDigitalData(
+            ResponseVoucherData responseVoucherData
+    ) throws MapperDataException {
         try {
             VoucherDigital voucherDigital = new VoucherDigital();
 
@@ -139,6 +145,33 @@ public class CartMapperData implements ICartMapperData {
             voucherDigital.setAttributeVoucher(voucherAttributeDigital);
 
             return voucherDigital;
+        } catch (Exception e) {
+            throw new MapperDataException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public CheckoutDigitalData transformCheckoutData(
+            ResponseCheckoutData responseCheckoutData
+    ) throws MapperDataException {
+        try {
+            CheckoutDigitalData checkoutDigitalData = new CheckoutDigitalData();
+            checkoutDigitalData.setFailedCallbackUrl(
+                    responseCheckoutData.getAttributes().getCallbackUrlFailed()
+            );
+            checkoutDigitalData.setSuccessCallbackUrl(
+                    responseCheckoutData.getAttributes().getCallbackUrlSuccess()
+            );
+            checkoutDigitalData.setRedirectUrl(
+                    responseCheckoutData.getAttributes().getRedirectUrl()
+            );
+            checkoutDigitalData.setStringQuery(
+                    responseCheckoutData.getAttributes().getQueryString()
+            );
+            checkoutDigitalData.setTransactionId(
+                    responseCheckoutData.getAttributes().getParameter().getTransactionId()
+            );
+            return checkoutDigitalData;
         } catch (Exception e) {
             throw new MapperDataException(e.getMessage(), e);
         }

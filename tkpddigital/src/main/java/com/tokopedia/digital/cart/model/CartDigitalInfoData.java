@@ -18,7 +18,7 @@ public class CartDigitalInfoData {
 
     private boolean instantCheckout;
 
-    private boolean isOtpValid;
+    private boolean needOtp;
 
     private String smsState;
 
@@ -68,12 +68,12 @@ public class CartDigitalInfoData {
         this.instantCheckout = instantCheckout;
     }
 
-    public boolean isOtpValid() {
-        return isOtpValid;
+    public boolean isNeedOtp() {
+        return needOtp;
     }
 
-    public void setOtpValid(boolean otpValid) {
-        isOtpValid = otpValid;
+    public void setNeedOtp(boolean needOtp) {
+        this.needOtp = needOtp;
     }
 
     public String getSmsState() {

@@ -3,6 +3,8 @@ package com.tokopedia.digital.utils;
 import android.os.Build;
 import android.text.TextUtils;
 
+import com.tokopedia.core.util.GlobalConfig;
+
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -62,5 +64,16 @@ public class DeviceUtil {
         }
 
         return phrase.toString();
+    }
+
+    public static String getUserAgentForApiCall() {
+        return "Android Tokopedia Application/"
+                + GlobalConfig.getPackageApplicationName()
+                + " v." + GlobalConfig.VERSION_NAME
+                + " (" + DeviceUtil.getDeviceName()
+                + "; Android; API_"
+                + Build.VERSION.SDK_INT
+                + "; Version"
+                + Build.VERSION.RELEASE + ") ";
     }
 }

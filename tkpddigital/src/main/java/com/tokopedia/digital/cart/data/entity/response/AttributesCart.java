@@ -40,9 +40,9 @@ public class AttributesCart {
     @SerializedName("instant_checkout")
     @Expose
     private boolean instantCheckout;
-    @SerializedName("is_otp_valid")
+    @SerializedName("need_otp")
     @Expose
-    private boolean isOtpValid;
+    private boolean needOtp;
     @SerializedName("sms_state")
     @Expose
     private String smsState;
@@ -88,13 +88,6 @@ public class AttributesCart {
         this.instantCheckout = instantCheckout;
     }
 
-    public boolean isIsOtpValid() {
-        return isOtpValid;
-    }
-
-    public void setIsOtpValid(boolean isOtpValid) {
-        this.isOtpValid = isOtpValid;
-    }
 
     public String getSmsState() {
         return smsState;
@@ -120,12 +113,8 @@ public class AttributesCart {
         this.userId = userId;
     }
 
-    public boolean isOtpValid() {
-        return isOtpValid;
-    }
-
-    public void setOtpValid(boolean otpValid) {
-        isOtpValid = otpValid;
+    public boolean isNeedOtp() {
+        return needOtp;
     }
 
     public String getTitle() {
