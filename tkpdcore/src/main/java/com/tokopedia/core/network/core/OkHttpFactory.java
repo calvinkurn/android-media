@@ -1,6 +1,7 @@
 package com.tokopedia.core.network.core;
 
 import com.tokopedia.core.network.retrofit.interceptors.AccountsInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
@@ -61,6 +62,7 @@ public class OkHttpFactory {
 
     public OkHttpClient buildClientAuth(String authKey) {
         return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new GlobalTkpdAuthInterceptor(authKey))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
@@ -69,6 +71,7 @@ public class OkHttpFactory {
 
     public OkHttpClient buildClientDefaultAuth() {
         return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new TkpdAuthInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
@@ -77,6 +80,7 @@ public class OkHttpFactory {
 
     public OkHttpClient buildClientNoAuth() {
         return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new TkpdBaseInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
@@ -85,6 +89,7 @@ public class OkHttpFactory {
 
     public OkHttpClient buildClientTopAdsAuth() {
         return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new TopAdsAuthInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
@@ -93,6 +98,7 @@ public class OkHttpFactory {
 
     public OkHttpClient buildClientAccountsAuth(String authKey, Boolean isUsingHMAC) {
         return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new AccountsInterceptor(authKey, isUsingHMAC))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
@@ -101,6 +107,7 @@ public class OkHttpFactory {
 
     public OkHttpClient buildClientBearerAuth(String authorizationString) {
         return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new StandardizedInterceptor(authorizationString))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
