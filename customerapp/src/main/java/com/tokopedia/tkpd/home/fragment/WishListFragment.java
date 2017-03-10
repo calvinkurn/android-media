@@ -167,6 +167,9 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public void prepareView() {
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.getLayoutManager().setAutoMeasureEnabled(true);
+        recyclerView.setHasFixedSize(false);
+        recyclerView.setNestedScrollingEnabled(false);
         searchEditText.setOnQueryTextListener(this);
         setAdapter();
     }
