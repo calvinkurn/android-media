@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -21,7 +22,7 @@
             android:theme="@style/AppBarTheme"
             app:elevation="4dp"
             app:subtitleTextAppearance="@style/ToolbarSubtitleText"
-            app:titleTextAppearance="@style/ToolbarText" />
+            app:titleTextAppearance="@style/ToolbarText"/>
 
     </android.support.design.widget.AppBarLayout>
 
@@ -30,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="?attr/actionBarSize"
-        android:layout_marginTop="?attr/actionBarSize" />
+        android:layout_marginTop="?attr/actionBarSize"/>
 
     <FrameLayout
         android:id="@+id/bottom_sheet_container"
@@ -42,7 +43,7 @@
         app:elevation="16dp"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
-        <include layout="@layout/bottom_sheet_content_view" />
+        <include layout="@layout/bottom_sheet_content_view"/>
     </FrameLayout>
 
     <FrameLayout
@@ -57,6 +58,6 @@
             style="@style/Button.TopAds.Submit.Green"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/next" />
+            android:text="@string/next"/>
     </FrameLayout>
 </android.support.design.widget.CoordinatorLayout>

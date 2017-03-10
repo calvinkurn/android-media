@@ -3,7 +3,6 @@ package com.tokopedia.seller.topads.view.activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -18,7 +17,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.app.BaseActivity;
@@ -39,11 +37,10 @@ import java.util.List;
 public class TopAdsAddProductListActivity extends BaseActivity
         implements AddProductListInterface {
 
-    public static final String TAG = "TopAdsAddPListAct";
+    private static final String TAG = "TopAdsAddPListAct";
 
-    ImageHandler imageHandler;
+    private ImageHandler imageHandler;
 
-    private RelativeLayout fragmentContainer;
     private BottomSheetHelper bottomSheetHelper;
     private View.OnClickListener expandedOnClick = new View.OnClickListener() {
         @Override
@@ -61,8 +58,8 @@ public class TopAdsAddProductListActivity extends BaseActivity
     };
     private View bottomSheetSelection;
     private NumberOfChooseFooterHelper numberOfChooseFooterHelper;
-    private View nextButton;
-    private int[] nextButtonHeight;
+    private View footerButtonView;
+    private Button nextButton;
     private int nextButtonRealHeight;
     private HashSet<TopAdsProductViewModel> selections;
     private View statusBarSeparation;
@@ -85,29 +82,17 @@ public class TopAdsAddProductListActivity extends BaseActivity
                     float v = slideOffset;
                     Log.d(TAG, "nextButtonRealHeight " + nextButtonRealHeight + " "
                             + (nextButtonRealHeight * v + " slideOffset " + slideOffset));
-                    nextButton.animate().translationY((nextButtonRealHeight * v)).setDuration(0).start();
+                    footerButtonView.animate().translationY((nextButtonRealHeight * v)).setDuration(0).start();
 
                     numberOfChooseFooterHelper.rotate(v * 180);
                 }
             };
     private boolean isFirstTime;
-    private Drawable greyButton;
-    private Drawable greenButton;
     private boolean isExistingGroup;
     private boolean isHideEtalase;
     private int maxNumberSelection;
     private int thirtyEightPercentBlackColor;
     private int whiteColor;
-    private Button topAdsButtonNext_;
-
-    private void addPaddingBottom() {
-        bottomSheetContainer.setPadding(
-                bottomSheetContainer.getPaddingLeft(),
-                bottomSheetContainer.getPaddingTop(),
-                bottomSheetContainer.getPaddingRight(),
-                getActionBarSize()
-        );
-    }
 
     private void removePaddingBottom() {
         bottomSheetContainer.setPadding(0, 0, 0, 0);
@@ -124,10 +109,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
 
         thirtyEightPercentBlackColor = ContextCompat.getColor(this, R.color.thirty_eight_percent_black);
         whiteColor = ContextCompat.getColor(this, R.color.white);
-        topAdsButtonNext_ = (Button) findViewById(R.id.top_ads_btn_next_);
-
-        greyButton = ContextCompat.getDrawable(this, R.drawable.bg_button_grey);
-        greenButton = ContextCompat.getDrawable(this, R.drawable.bg_button_green);
+        nextButton = (Button) findViewById(R.id.top_ads_btn_next_);
 
         bottomSheetContainer = findViewById(R.id.bottom_sheet_container);
 
@@ -139,17 +121,22 @@ public class TopAdsAddProductListActivity extends BaseActivity
         numberOfChooseFooterHelper = new NumberOfChooseFooterHelper(bottomSheetSelection);
         numberOfChooseFooterHelper.bindData(10, expandedOnClick);
 
-        nextButton = findViewById(R.id.top_ads_next);
-        nextButtonHeight = getCoords(nextButton);
+        footerButtonView = findViewById(R.id.top_ads_next);
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                returnSelections();
+            }
+        });
         disableNextButton();
 
-        ViewTreeObserver vto = nextButton.getViewTreeObserver();
+        ViewTreeObserver vto = footerButtonView.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
             @Override
             public void onGlobalLayout() {
-                nextButtonRealHeight = nextButton.getMeasuredHeight();
-                ViewTreeObserver obs = nextButton.getViewTreeObserver();
+                nextButtonRealHeight = footerButtonView.getMeasuredHeight();
+                ViewTreeObserver obs = footerButtonView.getViewTreeObserver();
 
                 getBottomSheetBehaviourFromParent();
                 if (bottomSheetHelper != null) {
@@ -171,8 +158,6 @@ public class TopAdsAddProductListActivity extends BaseActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        fragmentContainer = (RelativeLayout)
-                findViewById(R.id.activity_top_ads_add_product_list);
 
         selections = new HashSet<>();
 
@@ -187,7 +172,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
     protected void setAsActionBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        if(getSupportActionBar() != null) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
@@ -220,8 +205,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
     }
 
     private void inject() {
-//        component = BaseApplication.get(this).getComponent();
-//        component.inject(this);
+
     }
 
     private int getContainerId() {
@@ -247,7 +231,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
             ArrayList<TopAdsProductViewModel> selectionParcel = extras.getParcelableArrayList(
                     TopAdsExtraConstant.EXTRA_SELECTIONS);
 
-            if(selectionParcel != null){
+            if (selectionParcel != null) {
                 for (TopAdsProductViewModel topAdsProductViewModel : selectionParcel) {
                     selections.add(topAdsProductViewModel);
                 }
@@ -265,15 +249,6 @@ public class TopAdsAddProductListActivity extends BaseActivity
                 enableNextButton();
             }
         }
-    }
-
-    private int[] getCoords(View view) {
-        int[] coords = {0, 0};
-        view.getLocationOnScreen(coords);
-        int absoluteTop = coords[1];
-        int absoluteBottom = coords[1] + view.getHeight();
-        int[] result = {absoluteTop, absoluteBottom};
-        return result;
     }
 
     @Override
@@ -321,7 +296,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
         selections.add(data);
         numberOfChooseFooterHelper.setSelectionNumber(selections.size());
 
-        if(selections.size() > 0){
+        if (selections.size() > 0) {
             enableNextButton();
             showFooterViewHolder();
         }
@@ -339,25 +314,14 @@ public class TopAdsAddProductListActivity extends BaseActivity
 
     @Override
     public void disableNextButton() {
-        topAdsButtonNext_.setEnabled(false);
-        topAdsButtonNext_.setTextColor(thirtyEightPercentBlackColor);
-
-        nextButton.setOnClickListener(null);
-        nextButton.setClickable(false);
+        nextButton.setEnabled(false);
+        nextButton.setTextColor(thirtyEightPercentBlackColor);
     }
 
     @Override
     public void enableNextButton() {
-        topAdsButtonNext_.setEnabled(true);
-        topAdsButtonNext_.setTextColor(whiteColor);
-
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                returnSelections();
-            }
-        });
-        nextButton.setClickable(true);
+        nextButton.setEnabled(true);
+        nextButton.setTextColor(whiteColor);
     }
 
     @Override
@@ -393,7 +357,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
         }
     }
 
-    private void returnSelections(){
+    private void returnSelections() {
         Intent intent = new Intent();
         intent.putExtra(TopAdsExtraConstant.EXTRA_SELECTIONS, new ArrayList<>(selections));
         setResult(RESULT_CODE, intent);
@@ -478,15 +442,15 @@ public class TopAdsAddProductListActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
-        if(bottomSheetHelper.getState() == BottomSheetBehavior.STATE_EXPANDED){
+        if (bottomSheetHelper.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             bottomSheetHelper.collapse();
-        }else{
+        } else {
             super.onBackPressed();
         }
     }
 
     public int getStatusBarHeight() {
-       return 0;
+        return 0;
     }
 
     @Override
