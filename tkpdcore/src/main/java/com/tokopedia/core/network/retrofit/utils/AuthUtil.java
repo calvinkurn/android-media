@@ -212,6 +212,20 @@ public class AuthUtil {
         return params;
     }
 
+    public static TKPDMapParam<String, Object> generateParamsNetwork2(Context context, TKPDMapParam<String, Object> params) {
+        String deviceId = GCMHandler.getRegistrationId(context);
+        String userId = SessionHandler.getLoginID(context);
+        String hash = md5(userId + "~" + deviceId);
+
+        params.put(PARAM_USER_ID, userId);
+        params.put(PARAM_DEVICE_ID, deviceId);
+        params.put(PARAM_HASH, hash);
+        params.put(PARAM_OS_TYPE, "1");
+        params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+
+        return params;
+    }
+
     public static TKPDMapParam<String, String> generateParamsNetwork(Context context, TKPDMapParam<String, String> params) {
         String deviceId = GCMHandler.getRegistrationId(context);
         String userId = SessionHandler.getLoginID(context);

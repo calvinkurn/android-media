@@ -7,12 +7,13 @@ import android.util.AttributeSet;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ButtonData;
 
 /**
  * Created by hangnadi on 3/8/17.
  */
 
-public class ButtonView extends BaseView<Object, DetailResCenterFragmentView> {
+public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView> {
 
     public ButtonView(Context context) {
         super(context);
@@ -43,7 +44,7 @@ public class ButtonView extends BaseView<Object, DetailResCenterFragmentView> {
     }
 
     @Override
-    public void renderData(@NonNull Object data) {
+    public void renderData(@NonNull ButtonData data) {
 
     }
 }

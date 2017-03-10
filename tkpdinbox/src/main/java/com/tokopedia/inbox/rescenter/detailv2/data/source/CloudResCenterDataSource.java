@@ -3,8 +3,10 @@ package com.tokopedia.inbox.rescenter.detailv2.data.source;
 import android.content.Context;
 
 import com.tokopedia.core.network.apiservices.rescenter.ResolutionService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
-import com.tokopedia.inbox.rescenter.detailv2.domain.DetailResCenter;
+import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
 
 import rx.Observable;
 
@@ -27,9 +29,9 @@ public class CloudResCenterDataSource {
         this.detailResCenterMapper = detailResCenterMapper;
     }
 
-    public Observable<DetailResCenter> getResCenterDetail(String resolutionID) {
+    public Observable<DetailResCenter> getResCenterDetail(String resolutionID, TKPDMapParam<String, Object> parameters) {
         return resolutionService.getApi()
-                .getResCenterDetail(resolutionID)
+                .getResCenterDetail(resolutionID, AuthUtil.generateParamsNetwork2(context, parameters))
                 .map(detailResCenterMapper);
     }
 
