@@ -59,7 +59,7 @@ public class GCMHandler {
         }
     }
 
-    private void commitGCMProcess() {
+    public void commitGCMProcess() {
         mGoogleCloudMessaging = GoogleCloudMessaging.getInstance(context);
         gcmRegid = getRegistrationId(context);
         CommonUtils.dumper("start mGoogleCloudMessaging get");

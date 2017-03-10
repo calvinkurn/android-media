@@ -1175,4 +1175,13 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.EventLabel.COPY_PRODUCT
         ).getEvent());
     }
+
+    public static void eventPersonalizedClicked(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.OPEN_PUSH_NOTIFICATION,
+                AppEventTracking.Category.PUSH_NOTIFICATION,
+                AppEventTracking.Action.OPEN,
+                label
+        ).getEvent());
+    }
 }

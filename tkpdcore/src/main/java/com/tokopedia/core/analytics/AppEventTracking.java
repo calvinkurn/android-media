@@ -103,6 +103,7 @@ public interface AppEventTracking {
         String CLICK_ADD_PRODUCT = "clickAddProduct";
         String CLICK_INSTOPED = "clickInstoped";
         String CLICK_MANAGE_PRODUCT = "clickManageProduct";
+        String OPEN_PUSH_NOTIFICATION = "openPushNotification";
     }
 
     interface Category {
@@ -157,6 +158,7 @@ public interface AppEventTracking {
         String GM_STATISTIC_PRODUCT = "GM Statistic - Product";
         String GM_STATISTIC_PRODUCT_INSIGHT = "GM Statistic - Product Insight";
         String MANAGE_PRODUCT = "Manage Product";
+        String PUSH_NOTIFICATION = "Push Notification";
     }
 
     interface Action {
@@ -189,6 +191,7 @@ public interface AppEventTracking {
         String SUCCESS = "Success";
         String LOAD = "Load";
         String SCROLL = "Scroll";
+        String OPEN = "Open";
     }
 
     interface EventLabel {
