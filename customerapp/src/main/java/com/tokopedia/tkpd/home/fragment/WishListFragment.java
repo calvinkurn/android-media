@@ -394,8 +394,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     public boolean onQueryTextChange(String newText) {
         if (newText.isEmpty()) {
             wishList.refreshData(getActivity());
-        } else {
-            wishList.searchWishlist(newText);
         }
         return false;
     }
