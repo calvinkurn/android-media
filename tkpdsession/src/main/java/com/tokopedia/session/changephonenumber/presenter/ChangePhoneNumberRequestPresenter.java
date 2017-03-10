@@ -8,4 +8,10 @@ import android.view.View;
 
 public interface ChangePhoneNumberRequestPresenter {
     void submitRequest();
+
+    void checkStatus();
+
+    void setIdPath(String idPath);
+
+    void setBankBookPath(String bankBookPath);
 }

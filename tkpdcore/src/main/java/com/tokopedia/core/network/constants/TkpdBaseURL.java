@@ -603,6 +603,17 @@ public class TkpdBaseURL {
         public static final String VALIDATE_EMAIL = "/api/register/validate-email";
         public static final String RESENT_ACTIVATION = "/api/resend";
         public static final String GENERATE_HOST = "/api/upload-host";
+
+        public class Image {
+            public static final String GET_UPLOAD_HOST = "/api/image/upload-host";
+            public static final String GENERATE_POST_KEY = "/api/image/postkey";
+            public static final String SUBMIT_DETAIL = "/api/image/submit-detail";
+
+        }
+
+        public class Ktp {
+            public static final String CHECK_STATUS = "/api/ktp/check-status";
+        }
     }
 
     public static class Home {

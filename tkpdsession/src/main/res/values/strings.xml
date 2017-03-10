@@ -23,4 +23,5 @@
     <string name="pick_file_here">Pilih file Anda di sini</string>
     <string name="waiting_data_checking_process">Menunggu Proses Pengecekan Data</string>
     <string name="info_change_phone_number_request_2">Permintaan akan di proses dalam 1 x 24 jam, silakan mengikuti petunjuk perubahan di email Anda.</string>
+    <string name="info_change_phone_number">Kami akan memproses pengajuan perubahan nomor ponsel Anda dalam waktu 1 x 24 jam. Silahkan mengikuti petunjuk perubahan di email Anda.</string>
 </resources>

@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.fragment.ChangePhoneNumberRequestFragment;
@@ -69,5 +70,10 @@ public class ChangePhoneNumberRequestActivity extends BasePresenterActivity impl
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }

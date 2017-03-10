@@ -11,17 +11,18 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.entity.changephonenumberrequest.CheckStatusData;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.session.R;
-import com.tokopedia.session.changephonenumber.activity.ChangePhoneNumberRequestActivity;
 import com.tokopedia.session.changephonenumber.listener.ChangePhoneNumberRequestView;
 import com.tokopedia.session.changephonenumber.presenter.ChangePhoneNumberRequestPresenter;
 import com.tokopedia.session.changephonenumber.presenter.ChangePhoneNumberRequestPresenterImpl;
@@ -59,6 +60,8 @@ public class ChangePhoneNumberRequestFragment
     ImageUploadHandler imageUploadHandler;
     Button buttonSubmit;
 
+    TkpdProgressDialog progressDialog;
+
     String uploadType;
     ChangePhoneNumberRequestListener listener;
 
@@ -86,6 +89,7 @@ public class ChangePhoneNumberRequestFragment
     @Override
     protected void onFirstTimeLaunched() {
         KeyboardHandler.DropKeyboard(getActivity(), getView());
+        presenter.checkStatus();
     }
 
     @Override
@@ -256,24 +260,28 @@ public class ChangePhoneNumberRequestFragment
             buttonUploadId.setVisibility(View.GONE);
             idPhoto.setVisibility(View.VISIBLE);
             loadImageToImageView(idPhoto, imageUploadHandler.getCameraFileloc());
+            presenter.setIdPath(imageUploadHandler.getCameraFileloc());
         } else if (requestCode == ImageUploadHandler.REQUEST_CODE
                 && (resultCode == GalleryBrowser.RESULT_CODE)
                 && uploadType.equals(UPLOAD_ID)) {
             buttonUploadId.setVisibility(View.GONE);
             idPhoto.setVisibility(View.VISIBLE);
             loadImageToImageView(idPhoto, data.getStringExtra(ImageGallery.EXTRA_URL));
+            presenter.setIdPath(data.getStringExtra(ImageGallery.EXTRA_URL));
         } else if (requestCode == ImageUploadHandler.REQUEST_CODE
                 && (resultCode == Activity.RESULT_OK)
                 && uploadType.equals(UPLOAD_ACCOUNT_BOOK)) {
             buttonUploadAccountBook.setVisibility(View.GONE);
             accountBookPhoto.setVisibility(View.VISIBLE);
             loadImageToImageView(accountBookPhoto, imageUploadHandler.getCameraFileloc());
+            presenter.setBankBookPath(imageUploadHandler.getCameraFileloc());
         } else if (requestCode == ImageUploadHandler.REQUEST_CODE
                 && (resultCode == GalleryBrowser.RESULT_CODE)
                 && uploadType.equals(UPLOAD_ACCOUNT_BOOK)) {
             buttonUploadAccountBook.setVisibility(View.GONE);
             accountBookPhoto.setVisibility(View.VISIBLE);
             loadImageToImageView(accountBookPhoto, data.getStringExtra(ImageGallery.EXTRA_URL));
+            presenter.setBankBookPath(data.getStringExtra(ImageGallery.EXTRA_URL));
         }
 
     }
@@ -286,8 +294,54 @@ public class ChangePhoneNumberRequestFragment
     }
 
     @Override
-    public void onGoToThanksPage() {
+    public void onGoToWaitPage() {
         listener.goToThanksPage();
+    }
+
+    @Override
+    public void showLoading() {
+        if (getActivity() != null && progressDialog == null) {
+            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        } else if (getActivity() != null) {
+            progressDialog.showDialog();
+        }
+    }
+
+    public void finishLoading() {
+        if (getActivity() != null && progressDialog != null)
+            progressDialog.dismiss();
+    }
+
+    @Override
+    public void onSuccessCheckStatus(CheckStatusData checkStatusData) {
+        finishLoading();
+        if (checkStatusData.isPending()) {
+            onGoToWaitPage();
+        }
+    }
+
+    @Override
+    public void onErrorcheckStatus(String errorMessage) {
+        finishLoading();
+        if (errorMessage.equals(""))
+            NetworkErrorHelper.showSnackbar(getActivity());
+        else
+            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onErrorSubmitRequest(String errorMessage) {
+        finishLoading();
+        if (errorMessage.equals(""))
+            NetworkErrorHelper.showSnackbar(getActivity());
+        else
+            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessSubmitRequest() {
+        finishLoading();
+        onGoToWaitPage();
     }
 
     @Override

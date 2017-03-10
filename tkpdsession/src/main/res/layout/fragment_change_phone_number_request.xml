@@ -122,7 +122,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/margin_small"
                 android:src="@drawable/ic_add_photo"
-                android:layout_marginBottom="@dimen/margin_med"
+                android:layout_marginBottom="@dimen/margin_large"
                 android:visibility="visible" />
 
             <ImageView
@@ -133,7 +133,7 @@
                 android:layout_marginTop="@dimen/margin_small"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_add_photo"
-                android:layout_marginBottom="@dimen/margin_med"
+                android:layout_marginBottom="@dimen/margin_large"
                 android:visibility="gone" />
 
         </LinearLayout>

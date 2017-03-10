@@ -3,6 +3,7 @@ package com.tokopedia.core.network.apiservices.accounts.apis;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.GeneratedHost;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.Map;
 
@@ -62,9 +63,19 @@ public interface AccountsApi {
     @POST(TkpdBaseURL.Accounts.GENERATE_HOST)
     Observable<GeneratedHost> generateHost(@FieldMap Map<String, String> params);
 
-
     @FormUrlEncoded
     @POST(TkpdBaseURL.Truecaller.VERIFY_PHONE)
     Observable<Response<TkpdResponse>> verifyPhone(@FieldMap Map<String, String> params);
 
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.Image.GET_UPLOAD_HOST)
+    Observable<Response<TkpdResponse>> getUploadHost(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.Image.GET_UPLOAD_HOST)
+    Observable<Response<TkpdResponse>> generatePostKey(@FieldMap TKPDMapParam<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.Ktp.CHECK_STATUS)
+    Observable<Response<TkpdResponse>> checkStatusKtp(@FieldMap TKPDMapParam<String, Object> params);
 }
