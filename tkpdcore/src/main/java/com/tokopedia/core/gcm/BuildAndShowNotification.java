@@ -92,12 +92,23 @@ public class BuildAndShowNotification {
             }
         }
 
-        PendingIntent resultPendingIntent = PendingIntent.getActivity(
-                mContext,
-                applinkNotificationPass.getNotificationId(),
-                applinkNotificationPass.getIntent(),
-                PendingIntent.FLAG_UPDATE_CURRENT
-        );
+        PendingIntent resultPendingIntent;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            resultPendingIntent = PendingIntent.getActivity(
+                    mContext,
+                    0,
+                    applinkNotificationPass.getIntent(),
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
+        } else {
+            resultPendingIntent = PendingIntent.getActivity(
+                    mContext,
+                    applinkNotificationPass.getNotificationId(),
+                    applinkNotificationPass.getIntent(),
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
+        }
+
         mBuilder.setContentIntent(resultPendingIntent);
         if (applinkNotificationPass.isMultiSender()) {
             mBuilder.setLargeIcon(
