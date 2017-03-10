@@ -343,7 +343,6 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="title_ship_speed">Kecepatan</string>
     <string name="prompt_new_comment">Tulis Komentar Anda</string>
     <string name="title_seller">Penjual</string>
-    <string name="title_cancel">Batal</string>
     <string name="title_reason_report">Alasan</string>
     <string name="action_report">Laporkan</string>
     <string name="action_follow">Ikuti</string>
@@ -411,12 +410,12 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <!-- Strings related manage prod -->
     <string name="title_edit_prod">Ubah</string>
     <string name="title_copy_prod">Salin</string>
-    <string name="title_edit_price">Ubah Harga</string>
+    <string name="title_edit_price">Ganti Harga</string>
     <string name="title_sort_but">Urutkan</string>
     <string name="title_filter_but">Filter</string>
-    <string name="title_update_etalase">Ubah Etalase</string>
-    <string name="title_update_categories">Ubah Kategori</string>
-    <string name="title_update_insurance">Ubah Asuransi</string>
+    <string name="title_update_etalase">Ganti Etalase</string>
+    <string name="title_update_categories">Ganti Kategori</string>
+    <string name="title_update_insurance">Ganti Asuransi</string>
     <string name="title_delete">Hapus</string>
     <string name="action_edit">Ubah</string>
     <string name="title_confirm">Konfirmasi</string>
@@ -586,6 +585,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="title_post_code">Kode Pos</string>
     <string name="title_receiver_phone_no">Nomor Telepon Penerima</string>
     <string name="title_save">Simpan</string>
+    <string name="title_cancel">Batal</string>
     <string name="title_province">Provinsi</string>
     <string name="title_regency">Kabupaten</string>
     <string name="title_sub_district">Kecamatan</string>
