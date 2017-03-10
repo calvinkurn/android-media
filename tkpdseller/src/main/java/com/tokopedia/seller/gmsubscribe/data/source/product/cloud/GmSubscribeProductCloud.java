@@ -4,7 +4,6 @@ import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.api.GoldMercha
 import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.model.GmServiceModel;
 import com.tokopedia.seller.gmsubscribe.data.tools.GetResponse;
 
-import retrofit2.Retrofit;
 import rx.Observable;
 
 /**
@@ -12,20 +11,16 @@ import rx.Observable;
  */
 public class GmSubscribeProductCloud {
 
-    private final Retrofit retrofit;
+    private final GoldMerchantApi api;
 
-    public GmSubscribeProductCloud(Retrofit retrofit) {
-        this.retrofit = retrofit;
+    public GmSubscribeProductCloud(GoldMerchantApi api) {
+        this.api = api;
     }
 
     public Observable<GmServiceModel> getProduct() {
-        return getApi()
+        return api
                 .getGoldMerchantProductList()
                 .map(new GetResponse<GmServiceModel>());
-    }
-
-    public GoldMerchantApi getApi() {
-        return retrofit.create(GoldMerchantApi.class);
     }
 
 }

@@ -16,6 +16,7 @@ import com.tokopedia.seller.gmsubscribe.data.repository.GmSubscribeProductReposi
 import com.tokopedia.seller.gmsubscribe.data.source.product.GmSubscribeProductDataSource;
 import com.tokopedia.seller.gmsubscribe.data.source.product.cache.GmSubscribeProductCache;
 import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.GmSubscribeProductCloud;
+import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.api.GoldMerchantApi;
 import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetGmSubscribeCurrentProductUseCase;
 import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetGmSubscribeExtendProductUseCase;
 import com.tokopedia.seller.gmsubscribe.view.presenter.GmProductPresenterImpl;
@@ -58,7 +59,7 @@ public class GmProductDependencyInjection {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
         ;
-        GmSubscribeProductCloud gmSubscribeProductCloud = new GmSubscribeProductCloud(retrofit);
+        GmSubscribeProductCloud gmSubscribeProductCloud = new GmSubscribeProductCloud(retrofit.create(GoldMerchantApi.class));
         GmSubscribeProductMapper gmSubscribeProductMapper = new GmSubscribeProductMapper();
         GmSubscribeProductDataSource gmSubscribeProductDataSource = new GmSubscribeProductDataSource(gmSubscribeProductCache, gmSubscribeProductCloud, gmSubscribeProductMapper);
         GmSubscribeProductFactory gmSubscribeProductFactory = new GmSubscribeProductFactory(gmSubscribeProductDataSource);

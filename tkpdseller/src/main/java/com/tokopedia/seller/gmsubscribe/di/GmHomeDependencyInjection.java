@@ -14,6 +14,7 @@ import com.tokopedia.seller.gmsubscribe.data.repository.GmSubscribeProductReposi
 import com.tokopedia.seller.gmsubscribe.data.source.product.GmSubscribeProductDataSource;
 import com.tokopedia.seller.gmsubscribe.data.source.product.cache.GmSubscribeProductCache;
 import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.GmSubscribeProductCloud;
+import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.api.GoldMerchantApi;
 import com.tokopedia.seller.gmsubscribe.domain.product.interactor.ClearGmSubscribeProductCacheUseCase;
 import com.tokopedia.seller.gmsubscribe.view.presenter.GmHomePresenterImpl;
 import com.tokopedia.seller.network.interceptor.GMSubscribeInterceptor;
@@ -59,7 +60,7 @@ public class GmHomeDependencyInjection {
                 stringResponseConverter,
                 gsonConverterFactory,
                 rxJavaCallAdapterFactory);
-        GmSubscribeProductCloud gmSubscribeProductCloud = new GmSubscribeProductCloud(retrofit);
+        GmSubscribeProductCloud gmSubscribeProductCloud = new GmSubscribeProductCloud(retrofit.create(GoldMerchantApi.class));
 
         GlobalCacheManager globalCacheManager = new GlobalCacheManager();
         GmSubscribeProductCache gmSubscribeProductCache = new GmSubscribeProductCache(globalCacheManager);

@@ -16,9 +16,11 @@ import com.tokopedia.seller.gmsubscribe.data.mapper.product.GmSubscribeProductMa
 import com.tokopedia.seller.gmsubscribe.data.repository.GmSubscribeCartRepositoryImpl;
 import com.tokopedia.seller.gmsubscribe.data.repository.GmSubscribeProductRepositoryImpl;
 import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.GmSubscribeCartCloud;
+import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.api.GmSubscribeCartApi;
 import com.tokopedia.seller.gmsubscribe.data.source.product.GmSubscribeProductDataSource;
 import com.tokopedia.seller.gmsubscribe.data.source.product.cache.GmSubscribeProductCache;
 import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.GmSubscribeProductCloud;
+import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.api.GoldMerchantApi;
 import com.tokopedia.seller.gmsubscribe.domain.cart.interactor.CheckGmSubscribeVoucherUseCase;
 import com.tokopedia.seller.gmsubscribe.domain.cart.interactor.CheckoutGmSubscribeUseCase;
 import com.tokopedia.seller.gmsubscribe.domain.cart.interactor.CheckoutGmSubscribeWithVoucherCheckUseCase;
@@ -81,8 +83,8 @@ public class GmCheckoutDependencyInjection {
                 gsonConverterFactory,
                 rxJavaCallAdapterFactory);
 
-        GmSubscribeProductCloud gmSubscribeProductCloud = new GmSubscribeProductCloud(productRetrofit);
-        GmSubscribeCartCloud cartCloud = new GmSubscribeCartCloud(cartRetrofit);
+        GmSubscribeProductCloud gmSubscribeProductCloud = new GmSubscribeProductCloud(productRetrofit.create(GoldMerchantApi.class));
+        GmSubscribeCartCloud cartCloud = new GmSubscribeCartCloud(cartRetrofit.create(GmSubscribeCartApi.class));
 
         GmSubscribeProductMapper gmSubscribeProductMapper = new GmSubscribeProductMapper();
         GmSubscribeVoucherMapper voucherMapper = new GmSubscribeVoucherMapper();

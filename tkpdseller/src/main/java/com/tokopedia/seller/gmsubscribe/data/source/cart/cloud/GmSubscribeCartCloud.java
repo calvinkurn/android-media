@@ -7,21 +7,20 @@ import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.model.checkout.Gm
 import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.model.voucher.GmVoucherServiceModel;
 import com.tokopedia.seller.gmsubscribe.data.tools.GetResponse;
 
-import retrofit2.Retrofit;
 import rx.Observable;
 
 /**
  * Created by sebastianuskh on 2/3/17.
  */
 public class GmSubscribeCartCloud {
-    private final Retrofit retrofit;
+    private final GmSubscribeCartApi api;
 
-    public GmSubscribeCartCloud(Retrofit retrofit) {
-        this.retrofit = retrofit;
+    public GmSubscribeCartCloud(GmSubscribeCartApi api) {
+        this.api = api;
     }
 
     public Observable<GmVoucherServiceModel> checkVoucher(Integer selectedProduct, String voucherCode) {
-        return getApi()
+        return api
                 .checkVoucher(
                         VoucherCodeInputModel
                                 .buildInputModel(
@@ -32,16 +31,12 @@ public class GmSubscribeCartCloud {
                 .map(new GetResponse<GmVoucherServiceModel>());
     }
 
-    public GmSubscribeCartApi getApi() {
-        return retrofit.create(GmSubscribeCartApi.class);
-    }
-
     public Observable<GmCheckoutServiceModel> checkoutGMSubscribe(
             Integer selectedProduct,
             Integer autoExtendSelectedProduct,
             String voucherCode
     ) {
-        return getApi()
+        return api
                 .checkoutGMSubscribe(
                         GmCheckoutInputModel
                                 .getBodyModel(
