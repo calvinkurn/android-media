@@ -453,6 +453,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                         expandLayout.setVisibility(View.VISIBLE);
                         categoryHeaderModel.isUsedUnactiveChildren = true;
                         hideLayout.setVisibility(View.GONE);
+                        categoryHeaderModel.scrollListener.backToTop();
                     }
                 });
             }
@@ -533,6 +534,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                         expandLayout.setVisibility(View.VISIBLE);
                         categoryHeaderModel.isUsedUnactiveChildren = true;
                         hideLayout.setVisibility(View.GONE);
+                        categoryHeaderModel.scrollListener.backToTop();
                     }
                 });
             }
@@ -773,6 +775,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         private Context context;
         private int categoryWidth;
         DefaultCategoryAdapter.CategoryListener listener;
+        ScrollListener scrollListener;
         private String totalProduct;
 
         private CategoryHeaderModel() {
@@ -781,12 +784,14 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         }
 
         public CategoryHeaderModel(Data categoryHeader, Context context, int categoryWidth,
-                                   DefaultCategoryAdapter.CategoryListener listener, String totalProduct) {
+                                   DefaultCategoryAdapter.CategoryListener listener, String totalProduct,
+                                   ScrollListener scrollListener) {
             this();
             this.categoryHeader = categoryHeader;
             this.context = context;
             this.categoryWidth = categoryWidth;
             this.listener = listener;
+            this.scrollListener = scrollListener;
             if (categoryHeader.getChild()!=null && categoryHeader.getChild().size()>6) {
                 activeChildren.addAll(categoryHeader.getChild()
                         .subList(0,6));
@@ -806,6 +811,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         private Context context;
         private int categoryWidth;
         RevampCategoryAdapter.CategoryListener listener;
+        ScrollListener scrollListener;
         private String totalProduct;
 
         private CategoryHeaderRevampModel() {
@@ -813,12 +819,14 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         }
 
         public CategoryHeaderRevampModel(Data categoryHeader, Context context, int categoryWidth,
-                                         RevampCategoryAdapter.CategoryListener listener, String totalProduct) {
+                                         RevampCategoryAdapter.CategoryListener listener,
+                                         String totalProduct, ScrollListener scrollListener) {
             this();
             this.categoryHeader = categoryHeader;
             this.context = context;
             this.categoryWidth = categoryWidth;
             this.listener = listener;
+            this.scrollListener = scrollListener;
             if (categoryHeader.getChild()!=null && categoryHeader.getChild().size()>9) {
                 activeChildren.addAll(categoryHeader.getChild()
                         .subList(0,9));
@@ -950,5 +958,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             return new ViewHolderProductGrid(itemLayoutView);
         }
 
+    }
+
+    public interface ScrollListener {
+        void backToTop();
     }
 }

@@ -57,7 +57,8 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_PRO
  * Created by noiz354 on 3/24/16.
  */
 public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
-        implements FetchNetwork, FragmentBrowseProductView, DefaultCategoryAdapter.CategoryListener, RevampCategoryAdapter.CategoryListener {
+        implements FetchNetwork, FragmentBrowseProductView, DefaultCategoryAdapter.CategoryListener,
+        RevampCategoryAdapter.CategoryListener, ProductAdapter.ScrollListener {
 
     public static final String TAG = "BrowseProductFragment";
     public static final String INDEX = "FRAGMENT_INDEX";
@@ -434,11 +435,11 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         if (categoryHeader.getRevamp() !=null && categoryHeader.getRevamp()) {
             productAdapter.addCategoryRevampHeader(
                     new ProductAdapter.CategoryHeaderRevampModel(categoryHeader,getActivity(),getCategoryWidth(),
-                            this,browseModel.getTotalDataCategory()));
+                            this,browseModel.getTotalDataCategory(), this));
         } else {
             productAdapter.addCategoryHeader(
                     new ProductAdapter.CategoryHeaderModel(categoryHeader,getActivity(),getCategoryWidth(),
-                            this, browseModel.getTotalDataCategory()));
+                            this, browseModel.getTotalDataCategory(), this));
         }
 
         productAdapter.notifyDataSetChanged();
@@ -477,5 +478,10 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     public void onCategoryIntermediaryClick(Child child) {
         ((BrowseProductActivity) getActivity()).renderLowerCategoryLevel(child);
         Log.d(TAG, "onCategoryClick: ");
+    }
+
+    @Override
+    public void backToTop() {
+        mRecyclerView.scrollToPosition(0);
     }
 }
