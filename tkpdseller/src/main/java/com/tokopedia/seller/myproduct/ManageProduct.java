@@ -1323,7 +1323,7 @@ public class ManageProduct extends TkpdActivity implements
 //                        Toast.makeText(ManageProduct.this, "please implement change category", Toast.LENGTH_SHORT).show();
                         try {
                             if (!ValidateCategoriesChange()) {
-                                if (!lvadapter.CheckedProductId().isEmpty()) {
+                                if (lvadapter != null && !lvadapter.CheckedProductId().isEmpty()) {
                                     changeCategories(mDepartment, lvadapter.CheckedProductId());
                                 }
                                 ClearCheckedData();

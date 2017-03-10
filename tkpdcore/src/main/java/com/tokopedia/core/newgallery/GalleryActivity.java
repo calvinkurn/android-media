@@ -71,6 +71,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     public static final String IMAGE_URL = "image_url";
     public static final String IMAGE_PATH_CAMERA = "IMAGE_PATH_CAMERA";
     public static final String IS_CAMERA_OPEN = "IS_CAMERA_OPEN";
+    public static final String TOKOPEDIA = "Tokopedia";
 
     String FRAGMENT;
     int position;
@@ -131,10 +132,9 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     public static File getOutputMediaFile() {
         File mediaStorageDir = new File(
                 Environment.getExternalStorageDirectory() + File.separator
-                        + "Tokopedia" + File.separator);
+                        + TOKOPEDIA + File.separator);
         if (!mediaStorageDir.exists()) {
             if (!mediaStorageDir.mkdirs()) {
-                Log.d("MyCameraApp", "failed to create directory");
                 return null;
             }
         }
