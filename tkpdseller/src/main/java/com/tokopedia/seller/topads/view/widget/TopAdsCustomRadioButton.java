@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.view.widget;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.util.AttributeSet;
 import android.widget.RadioButton;
 
@@ -11,7 +12,7 @@ import java.util.List;
  * Created by zulfikarrahman on 2/23/17.
  */
 
-public class TopAdsCustomRadioButton extends RadioButton {
+public class TopAdsCustomRadioButton extends AppCompatRadioButton {
 
     private List<OnCheckedChangeListener> listeners = new ArrayList<>();
 
@@ -25,10 +26,6 @@ public class TopAdsCustomRadioButton extends RadioButton {
 
     public TopAdsCustomRadioButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-    }
-
-    public TopAdsCustomRadioButton(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     public void addOnCheckedChangeListener(OnCheckedChangeListener listener){
