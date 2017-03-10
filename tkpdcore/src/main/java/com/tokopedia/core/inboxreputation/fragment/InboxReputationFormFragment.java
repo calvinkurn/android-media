@@ -522,7 +522,7 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
 
     @Override
     public void onCancelSharingFacebook(Intent intent) {
-        getActivity().setResult(Activity.RESULT_OK, null);
+        getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
 
