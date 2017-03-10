@@ -3,6 +3,7 @@ package com.tokopedia.transaction.purchase.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.tokopedia.core.analytics.AppScreen;
@@ -45,7 +46,7 @@ public class TxHistoryActivity extends TActivity {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_transaction_history_tx_module);
         ButterKnife.bind(this);
-        rvHistory.setLayoutManager(new LinearLayoutManagerNonScroll(this));
+        rvHistory.setLayoutManager(new LinearLayoutManager(this));
         TxHistoryListAdapter adapter = new TxHistoryListAdapter(this);
         rvHistory.setAdapter(adapter);
         List<OrderHistory> orderHistories =
