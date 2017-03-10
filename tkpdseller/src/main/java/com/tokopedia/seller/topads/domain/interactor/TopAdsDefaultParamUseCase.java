@@ -38,11 +38,11 @@ public class TopAdsDefaultParamUseCase extends UseCase<ProductListDomain> {
     }
 
     public void execute(Map<String, String> param, Subscriber<ProductListDomain> subscriber) {
-        this.subscription = createObservable(param)
+        compositeSubscription.add( createObservable(param)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
-                .subscribe(subscriber);
+                .subscribe(subscriber) );
     }
 
     @Override

@@ -77,6 +77,8 @@ public class TopAdsManageGroupPromoPresenterImpl<T extends TopAdsManageGroupProm
         super.detachView();
         subscriptionCheckGroupExist.unsubscribe();
         subscriptionSearchGroupName.unsubscribe();
+        topAdsSearchGroupAdsNameUseCase.unsubscribe();
+        topAdsCheckExistGroupUseCase.unsubscribe();
     }
 
     @Override
