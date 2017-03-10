@@ -42,7 +42,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
 
     SearchPresenter presenter;
     private SearchPageAdapter pageAdapter;
-    private String mSearch;
+    private String mSearch = "";
 
     public static SearchMainFragment newInstance() {
         
