@@ -8,6 +8,8 @@ import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.inboxreputation.InboxReputationConstant;
 import com.tokopedia.core.inboxreputation.interactor.ActReputationRetrofitInteractor;
 import com.tokopedia.core.inboxreputation.interactor.ActReputationRetrofitInteractorImpl;
@@ -134,7 +136,7 @@ public class InboxReviewIntentService extends IntentService
     }
 
     private void handleEditReview(Bundle bundle, final ResultReceiver receiver) {
-        ActReviewPass param = bundle.getParcelable(PARAM_EDIT_REVIEW);
+        final ActReviewPass param = bundle.getParcelable(PARAM_EDIT_REVIEW);
 
         final Bundle resultData = new Bundle();
         resultData.putInt(EXTRA_TYPE, ACTION_EDIT_REVIEW);
@@ -148,6 +150,7 @@ public class InboxReviewIntentService extends IntentService
                             if (result.getIsSuccess() == 1) {
                                 resultData.putParcelable(EXTRA_RESULT, result);
                                 receiver.send(STATUS_SUCCESS, resultData);
+                                handleOnSuccessReview(param);
                             } else {
                                 resultData.putString(EXTRA_ERROR, "Gagal mengubah ulasan");
                                 receiver.send(STATUS_ERROR, resultData);
@@ -206,6 +209,7 @@ public class InboxReviewIntentService extends IntentService
                             if (result.getIsSuccess() == 1) {
                                 resultData.putParcelable(EXTRA_RESULT, result);
                                 receiver.send(STATUS_SUCCESS, resultData);
+                                handleOnSuccessReview(param);
                             } else {
                                 resultData.putString(EXTRA_ERROR, "Gagal memberikan ulasan");
                                 receiver.send(STATUS_ERROR, resultData);
@@ -247,6 +251,12 @@ public class InboxReviewIntentService extends IntentService
                         }
                     });
         }
+    }
+
+    private void handleOnSuccessReview(ActReviewPass param) {
+        Integer accuracy = Integer.valueOf(param.getAccuracyRate());
+        Integer quality = Integer.valueOf(param.getQualityRate());
+        UnifyTracking.eventLocaGoodReview(accuracy, quality);
     }
 
     private void handleDeleteResponse(Bundle bundle, final ResultReceiver receiver) {

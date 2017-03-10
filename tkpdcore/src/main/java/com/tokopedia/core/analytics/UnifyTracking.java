@@ -991,6 +991,12 @@ public class UnifyTracking extends TrackingUtils {
         getLocaEngine().sendEventLoggedOut(attrs);
     }
 
+    public static void eventLocaGoodReview(Integer accuracy, Integer quality) {
+        if (accuracy > 3 && quality > 3){
+            eventLoca(AppScreen.EVENT_GOOD_REVIEW);
+        }
+    }
+
     public static void eventViewATC(){
         eventLoca(AppScreen.SCREEN_VIEWED_ADD_TO_CART);
     }
