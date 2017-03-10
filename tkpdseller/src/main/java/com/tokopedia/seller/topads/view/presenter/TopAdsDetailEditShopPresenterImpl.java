@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.view.presenter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
@@ -31,7 +32,13 @@ public class TopAdsDetailEditShopPresenterImpl<T extends TopAdsDetailEditView> e
     }
 
     public void saveAd(TopAdsDetailShopViewModel viewModel) {
-        topAdsSaveDetailShopUseCase.execute(TopAdsSaveDetailShopUseCase.createRequestParams(TopAdDetailProductMapper.convertViewToDomain(viewModel)), new Subscriber<TopAdsDetailShopDomainModel>() {
+        topAdsSaveDetailShopUseCase.execute(TopAdsSaveDetailShopUseCase.createRequestParams(TopAdDetailProductMapper.convertViewToDomain(viewModel)),
+                getSubscriberSaveShop());
+    }
+
+    @NonNull
+    protected Subscriber<TopAdsDetailShopDomainModel> getSubscriberSaveShop() {
+        return new Subscriber<TopAdsDetailShopDomainModel>() {
             @Override
             public void onCompleted() {
 
@@ -46,7 +53,7 @@ public class TopAdsDetailEditShopPresenterImpl<T extends TopAdsDetailEditView> e
             public void onNext(TopAdsDetailShopDomainModel domainModel) {
                 getView().onSaveAdSuccess(TopAdDetailProductMapper.convertDomainToView(domainModel));
             }
-        });
+        };
     }
 
     @Override

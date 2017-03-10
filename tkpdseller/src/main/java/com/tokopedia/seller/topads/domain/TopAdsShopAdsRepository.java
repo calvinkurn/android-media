@@ -11,4 +11,6 @@ public interface TopAdsShopAdsRepository {
     Observable<TopAdsDetailShopDomainModel> getDetail(String adId);
 
     Observable<TopAdsDetailShopDomainModel> saveDetail(TopAdsDetailShopDomainModel topAdsDetailShopDomainModel);
+
+    Observable<TopAdsDetailShopDomainModel> createDetailShop(TopAdsDetailShopDomainModel topAdsDetailShopDomainModel);
 }

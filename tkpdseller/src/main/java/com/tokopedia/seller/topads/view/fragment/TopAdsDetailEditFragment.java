@@ -48,6 +48,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     private RadioButton budgetLifeTimeRadioButton;
     private RadioButton budgetPerDayRadioButton;
     private TextInputLayout budgetPerDayInputLayout;
+    private View containerBudgetPerDay;
     private PrefixEditText budgetPerDayEditText;
     private RadioGroup showTimeRadioGroup;
     private RadioButton showTimeAutomaticRadioButton;
@@ -120,6 +121,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
         budgetLifeTimeRadioButton = (RadioButton) view.findViewById(R.id.radio_button_budget_life_time);
         budgetPerDayRadioButton = (RadioButton) view.findViewById(R.id.radio_button_budget_per_day);
         budgetPerDayInputLayout = (TextInputLayout) view.findViewById(R.id.input_layout_budget_per_day);
+        containerBudgetPerDay = (View) view.findViewById(R.id.container_budget_per_day);
         budgetPerDayEditText = (PrefixEditText) view.findViewById(R.id.edit_text_budget_per_day);
         showTimeRadioGroup = (RadioGroup) view.findViewById(R.id.radio_group_show_time);
         showTimeAutomaticRadioButton = (RadioButton) view.findViewById(R.id.radio_button_show_time_automatic);
@@ -383,7 +385,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     }
 
     private void showBudgetPerDay(boolean show) {
-        budgetPerDayInputLayout.setVisibility(show ? View.VISIBLE : View.GONE);
+        containerBudgetPerDay.setVisibility(show ? View.VISIBLE : View.GONE);
         if (!show && !budgetLifeTimeRadioButton.isChecked()) {
             budgetLifeTimeRadioButton.setChecked(true);
         }

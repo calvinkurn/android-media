@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.di.TopAdsDetailNewShopDI;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailShopActivity;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
@@ -40,6 +43,12 @@ public class TopAdsDetailNewShopFragment extends TopAdsDetailNewFragment<TopAdsD
         nameEditText.setEnabled(false);
         promoIconView.setVisibility(View.GONE);
         detailAd = new TopAdsDetailShopViewModel();
+    }
+
+    @Override
+    protected void setActionVar() {
+        super.setActionVar();
+        ((TopAdsDetailShopViewModel)detailAd).setShopId(Long.parseLong(SessionHandler.getShopID(getActivity())));
     }
 
     @Override

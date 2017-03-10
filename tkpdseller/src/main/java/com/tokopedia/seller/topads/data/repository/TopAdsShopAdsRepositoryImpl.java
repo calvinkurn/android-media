@@ -3,7 +3,6 @@ package com.tokopedia.seller.topads.data.repository;
 import com.tokopedia.seller.topads.data.factory.TopAdsShopAdFactory;
 import com.tokopedia.seller.topads.data.source.cloud.TopAdsShopAdsDataSource;
 import com.tokopedia.seller.topads.domain.TopAdsShopAdsRepository;
-import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailShopDomainModel;
 
 import rx.Observable;
@@ -31,4 +30,12 @@ public class TopAdsShopAdsRepositoryImpl implements TopAdsShopAdsRepository {
         TopAdsShopAdsDataSource topAdsShopAdsDataSource = topAdsShopAdFactory.createShopAdsDataSource();
         return topAdsShopAdsDataSource.saveDetailProduct(topAdsDetailShopDomainModel);
     }
+
+    @Override
+    public Observable<TopAdsDetailShopDomainModel> createDetailShop(TopAdsDetailShopDomainModel topAdsDetailShopDomainModel) {
+        TopAdsShopAdsDataSource topAdsShopAdsDataSource = topAdsShopAdFactory.createShopAdsDataSource();
+        return topAdsShopAdsDataSource.createDetailShop(topAdsDetailShopDomainModel);
+    }
+
+
 }
