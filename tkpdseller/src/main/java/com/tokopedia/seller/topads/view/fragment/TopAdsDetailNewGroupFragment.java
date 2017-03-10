@@ -93,7 +93,7 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
     }
 
     @Override
-    public void goToGroupDetail(int groupId) {
+    public void goToGroupDetail(String groupId) {
         Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, groupId);
         startActivity(intent);
