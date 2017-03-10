@@ -96,6 +96,7 @@
 
     <style name="EditText.Currency">
         <item name="android:inputType">number</item>
+        <item name="android:textColor">@color/font_top_ads_black_70</item>
     </style>
 
     <style name="RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
