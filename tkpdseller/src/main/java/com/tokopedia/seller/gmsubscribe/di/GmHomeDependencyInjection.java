@@ -15,9 +15,11 @@ import com.tokopedia.seller.gmsubscribe.data.source.product.GmSubscribeProductDa
 import com.tokopedia.seller.gmsubscribe.data.source.product.cache.GmSubscribeProductCache;
 import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.GmSubscribeProductCloud;
 import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.api.GoldMerchantApi;
+import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.service.GmSubscribeProductService;
 import com.tokopedia.seller.gmsubscribe.domain.product.interactor.ClearGmSubscribeProductCacheUseCase;
 import com.tokopedia.seller.gmsubscribe.view.presenter.GmHomePresenterImpl;
-import com.tokopedia.seller.network.interceptor.GMSubscribeInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdBearerWithAuthInterceptor;
+import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
 
 import java.util.concurrent.TimeUnit;
 
@@ -34,33 +36,9 @@ public class GmHomeDependencyInjection {
     public static GmHomePresenterImpl getPresenter() {
         JobExecutor threadExecutor = new JobExecutor();
         UIThread postExecutionThread = new UIThread();
-        Gson gson = new Gson();
 
-        GeneratedHostConverter hostConverter = new GeneratedHostConverter();
-        TkpdResponseConverter tkpdResponseConverter = new TkpdResponseConverter();
-        StringResponseConverter stringResponseConverter = new StringResponseConverter();
-        GsonConverterFactory gsonConverterFactory = GsonConverterFactory.create(gson);
-        RxJavaCallAdapterFactory rxJavaCallAdapterFactory = RxJavaCallAdapterFactory.create();
-
-        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
-        clientBuilder.connectTimeout(45L, TimeUnit.SECONDS);
-        clientBuilder.readTimeout(45L, TimeUnit.SECONDS);
-        clientBuilder.writeTimeout(45L, TimeUnit.SECONDS);
-        GMSubscribeInterceptor authInterceptor = new GMSubscribeInterceptor();
-        clientBuilder.interceptors().add(authInterceptor);
-        HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
-        logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        clientBuilder.interceptors().add(logInterceptor);
-        OkHttpClient client = clientBuilder.build();
-
-        Retrofit retrofit = createRetrofit(TkpdBaseURL.GOLD_MERCHANT_DOMAIN,
-                client,
-                hostConverter,
-                tkpdResponseConverter,
-                stringResponseConverter,
-                gsonConverterFactory,
-                rxJavaCallAdapterFactory);
-        GmSubscribeProductCloud gmSubscribeProductCloud = new GmSubscribeProductCloud(retrofit.create(GoldMerchantApi.class));
+        GmSubscribeProductService gmSubscribeProductService = new GmSubscribeProductService();
+        GmSubscribeProductCloud gmSubscribeProductCloud = new GmSubscribeProductCloud(gmSubscribeProductService.getApi());
 
         GlobalCacheManager globalCacheManager = new GlobalCacheManager();
         GmSubscribeProductCache gmSubscribeProductCache = new GmSubscribeProductCache(globalCacheManager);
@@ -73,23 +51,5 @@ public class GmHomeDependencyInjection {
         ClearGmSubscribeProductCacheUseCase clearGMSubscribeProductCache = new ClearGmSubscribeProductCacheUseCase(threadExecutor, postExecutionThread, gmSubscribeProductReposistory);
 
         return new GmHomePresenterImpl(clearGMSubscribeProductCache);
-    }
-
-    private static Retrofit createRetrofit(String baseUrl,
-                                           OkHttpClient client,
-                                           GeneratedHostConverter hostConverter,
-                                           TkpdResponseConverter tkpdResponseConverter,
-                                           StringResponseConverter stringResponseConverter,
-                                           GsonConverterFactory gsonConverterFactory,
-                                           RxJavaCallAdapterFactory rxJavaCallAdapterFactory) {
-        return new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .client(client)
-                .addConverterFactory(hostConverter)
-                .addConverterFactory(tkpdResponseConverter)
-                .addConverterFactory(stringResponseConverter)
-                .addConverterFactory(gsonConverterFactory)
-                .addCallAdapterFactory(rxJavaCallAdapterFactory)
-                .build();
     }
 }

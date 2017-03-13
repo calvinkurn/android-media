@@ -12,7 +12,7 @@ import rx.functions.Func1;
  * Created by sebastianuskh on 2/2/17.
  */
 public class GmSubscribeProductCache {
-    private static final int ONE_HOUR_IN_MILISECONDS = 60 * 60;
+    private static final int ONE_HOUR_IN_SECONDS = 60 * 60;
     private static final String GM_SUBSCRIBE_PRODUCT = "GM_SUBSCRIBE_PRODUCT";
     private final GlobalCacheManager globalCacheManager;
 
@@ -44,7 +44,7 @@ public class GmSubscribeProductCache {
                         }.getType()
                 )
         );
-        globalCacheManager.setCacheDuration(ONE_HOUR_IN_MILISECONDS);
+        globalCacheManager.setCacheDuration(ONE_HOUR_IN_SECONDS);
         globalCacheManager.store();
 
     }

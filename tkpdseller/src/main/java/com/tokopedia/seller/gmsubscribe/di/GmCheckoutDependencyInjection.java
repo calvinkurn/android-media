@@ -1,13 +1,8 @@
 package com.tokopedia.seller.gmsubscribe.di;
 
-import com.google.gson.Gson;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
-import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
-import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.seller.gmsubscribe.data.factory.GmSubscribeCartFactory;
 import com.tokopedia.seller.gmsubscribe.data.factory.GmSubscribeProductFactory;
 import com.tokopedia.seller.gmsubscribe.data.mapper.GmSubscribeCheckoutMapper;
@@ -16,34 +11,23 @@ import com.tokopedia.seller.gmsubscribe.data.mapper.product.GmSubscribeProductMa
 import com.tokopedia.seller.gmsubscribe.data.repository.GmSubscribeCartRepositoryImpl;
 import com.tokopedia.seller.gmsubscribe.data.repository.GmSubscribeProductRepositoryImpl;
 import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.GmSubscribeCartCloud;
-import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.api.GmSubscribeCartApi;
+import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.service.GmSubscribeCartService;
 import com.tokopedia.seller.gmsubscribe.data.source.product.GmSubscribeProductDataSource;
 import com.tokopedia.seller.gmsubscribe.data.source.product.cache.GmSubscribeProductCache;
 import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.GmSubscribeProductCloud;
-import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.api.GoldMerchantApi;
+import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.service.GmSubscribeProductService;
 import com.tokopedia.seller.gmsubscribe.domain.cart.interactor.CheckGmSubscribeVoucherUseCase;
 import com.tokopedia.seller.gmsubscribe.domain.cart.interactor.CheckoutGmSubscribeUseCase;
 import com.tokopedia.seller.gmsubscribe.domain.cart.interactor.CheckoutGmSubscribeWithVoucherCheckUseCase;
 import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetGmAutoSubscribeSelectedProductUseCase;
 import com.tokopedia.seller.gmsubscribe.domain.product.interactor.GetGmCurrentSelectedProductUseCase;
 import com.tokopedia.seller.gmsubscribe.view.presenter.GmCheckoutPresenterImpl;
-import com.tokopedia.seller.network.interceptor.GMSubscribeInterceptor;
-
-import java.util.concurrent.TimeUnit;
-
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by sebastianuskh on 2/3/17.
  */
 public class GmCheckoutDependencyInjection {
     public static GmCheckoutPresenterImpl createPresenter() {
-        Gson gson = new Gson();
-
         JobExecutor threadExecutor = new JobExecutor();
         UIThread postExecutionThread = new UIThread();
 
@@ -51,40 +35,11 @@ public class GmCheckoutDependencyInjection {
         GlobalCacheManager globalCacheManager = new GlobalCacheManager();
         GmSubscribeProductCache gmSubscribeProductCache = new GmSubscribeProductCache(globalCacheManager);
 
-        GeneratedHostConverter hostConverter = new GeneratedHostConverter();
-        TkpdResponseConverter tkpdResponseConverter = new TkpdResponseConverter();
-        StringResponseConverter stringResponseConverter = new StringResponseConverter();
-        GsonConverterFactory gsonConverterFactory = GsonConverterFactory.create(gson);
-        RxJavaCallAdapterFactory rxJavaCallAdapterFactory = RxJavaCallAdapterFactory.create();
+        GmSubscribeProductService gmSubscribeProductService = new GmSubscribeProductService();
+        GmSubscribeProductCloud gmSubscribeProductCloud = new GmSubscribeProductCloud(gmSubscribeProductService.getApi());
 
-        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
-        clientBuilder.connectTimeout(45L, TimeUnit.SECONDS);
-        clientBuilder.readTimeout(45L, TimeUnit.SECONDS);
-        clientBuilder.writeTimeout(45L, TimeUnit.SECONDS);
-        GMSubscribeInterceptor authInterceptor = new GMSubscribeInterceptor();
-        clientBuilder.interceptors().add(authInterceptor);
-        HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
-        logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        clientBuilder.interceptors().add(logInterceptor);
-        OkHttpClient client = clientBuilder.build();
-
-        Retrofit productRetrofit = createRetrofit(TkpdBaseURL.GOLD_MERCHANT_DOMAIN,
-                client,
-                hostConverter,
-                tkpdResponseConverter,
-                stringResponseConverter,
-                gsonConverterFactory,
-                rxJavaCallAdapterFactory);
-        Retrofit cartRetrofit = createRetrofit(TkpdBaseURL.TOKOPEDIA_CART_DOMAIN,
-                client,
-                hostConverter,
-                tkpdResponseConverter,
-                stringResponseConverter,
-                gsonConverterFactory,
-                rxJavaCallAdapterFactory);
-
-        GmSubscribeProductCloud gmSubscribeProductCloud = new GmSubscribeProductCloud(productRetrofit.create(GoldMerchantApi.class));
-        GmSubscribeCartCloud cartCloud = new GmSubscribeCartCloud(cartRetrofit.create(GmSubscribeCartApi.class));
+        GmSubscribeCartService gmSubscribeCartService = new GmSubscribeCartService();
+        GmSubscribeCartCloud cartCloud = new GmSubscribeCartCloud(gmSubscribeCartService.getApi());
 
         GmSubscribeProductMapper gmSubscribeProductMapper = new GmSubscribeProductMapper();
         GmSubscribeVoucherMapper voucherMapper = new GmSubscribeVoucherMapper();
@@ -105,21 +60,4 @@ public class GmCheckoutDependencyInjection {
         return new GmCheckoutPresenterImpl(getCurrentSelectedProduct, getGmAutoSubscribeSelectedProductUseCase, checkGmSubscribeVoucherUseCase, checkoutGmSubscribeUseCase, checkoutGMSubscribeWithVoucherCheckUseCase);
     }
 
-    private static Retrofit createRetrofit(String baseUrl,
-                                           OkHttpClient client,
-                                           GeneratedHostConverter hostConverter,
-                                           TkpdResponseConverter tkpdResponseConverter,
-                                           StringResponseConverter stringResponseConverter,
-                                           GsonConverterFactory gsonConverterFactory,
-                                           RxJavaCallAdapterFactory rxJavaCallAdapterFactory) {
-        return new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .client(client)
-                .addConverterFactory(hostConverter)
-                .addConverterFactory(tkpdResponseConverter)
-                .addConverterFactory(stringResponseConverter)
-                .addConverterFactory(gsonConverterFactory)
-                .addCallAdapterFactory(rxJavaCallAdapterFactory)
-                .build();
-    }
 }
