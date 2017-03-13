@@ -384,6 +384,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
                 requestOtpButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
                 requestOtpButton.setText(MethodChecker.fromHtml("Verifikasi akan dikirimkan.<br>Tunggu " + "<b>" + String.format(FORMAT,
                         TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished)) + " detik</b> untuk mengirim ulang."));
+                requestOtpCallButton.setTextSize(12);
                 requestOtpCallButton.setVisibility(View.GONE);
             }
 
@@ -402,6 +403,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
                         com.tokopedia.core.R.drawable.btn_share_transaparent));
         requestOtpButton.setText(com.tokopedia.session.R.string.title_resend_otp_sms);
         requestOtpButton.setEnabled(true);
+        requestOtpCallButton.setTextSize(14);
         requestOtpCallButton.setVisibility(View.VISIBLE);
 
     }
