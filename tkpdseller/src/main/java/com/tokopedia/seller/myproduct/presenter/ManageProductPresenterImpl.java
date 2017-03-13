@@ -61,33 +61,6 @@ public class ManageProductPresenterImpl implements ManageProductPresenter{
         return manageProductModel;
     }
 
-    public CacheManageProduct getCache(){
-        if(cacheManager==null){
-            cacheManager = new GlobalCacheManager();
-        }
-
-        // initialize class you want to be converted from string
-        Type type = new TypeToken<CacheManageProduct>() {}.getType();
-
-        cacheManager.setKey(CACHE_KEY);
-
-        if(cacheManager.isAvailable(CACHE_KEY)){
-            try {
-                String valueString = cacheManager.getValueString(CACHE_KEY);
-                if(checkNotNull(valueString)) {// update existing value
-                    CacheManageProduct manageProduct = CacheUtil.convertStringToModel(valueString, type);
-                    return manageProduct;
-                }
-            }catch (RuntimeException e){
-                return null;
-            }
-        }else {
-            return null;
-        }
-
-        return null;
-    }
-
     public void resetCache(){
         resetCache(cacheManager);
     }
@@ -97,65 +70,6 @@ public class ManageProductPresenterImpl implements ManageProductPresenter{
             globalCacheManager = new GlobalCacheManager();
         }
         globalCacheManager.delete(CACHE_KEY);
-    }
-
-    @Override
-    public void saveCache(CacheManageProduct newManageProduct) throws MalformedURLException, UnsupportedEncodingException {
-        if(cacheManager==null){
-            cacheManager = new GlobalCacheManager();
-        }
-
-        // initialize class you want to be converted from string
-        Type type = new TypeToken<CacheManageProduct>() {}.getType();
-
-        cacheManager.setKey(CACHE_KEY);
-
-
-        if(cacheManager.isAvailable(CACHE_KEY)){
-            try {
-                String valueString = cacheManager.getValueString(CACHE_KEY);
-                if(checkNotNull(valueString)) {// update existing value
-                    // OLD
-                    CacheManageProduct manageProduct = CacheUtil.convertStringToModel(valueString, type);
-                    int uriNext = getNext(manageProduct);
-                    int uriPrevious = getPrevious(manageProduct);
-
-                    // NEW
-                    int newUriNext = getNext(newManageProduct);
-                    int newUriPrevious = getPrevious(newManageProduct);
-
-                    if(newUriNext == -1){
-                        manageProduct.pagingHandlerModel = PagingHandler.createPagingHandlerModel(Integer.MAX_VALUE, null, null);
-                    }else{
-                        if(newUriNext>uriNext){// jika benar
-                            manageProduct.pagingHandlerModel = newManageProduct.pagingHandlerModel;
-                        }
-                    }
-
-                    manageProduct.productModels.addAll(newManageProduct.productModels);
-                    manageProduct.isProdManager = newManageProduct.isProdManager;
-                    manageProduct.IsAllowShop = newManageProduct.IsAllowShop;
-
-                    // simpan yang baru
-                    cacheManager.setValue(CacheUtil.convertModelToString(manageProduct, type));
-                    cacheManager.setCacheDuration(duration);
-                    cacheManager.store();
-
-                    Log.d(TAG, MESSAGE_TAG+" [uriNext] "+uriNext+" [uriPrevious] "+uriPrevious);
-                }
-            }catch (RuntimeException e){
-                // simpan yang baru
-                cacheManager.setValue(CacheUtil.convertModelToString(newManageProduct, type));
-                cacheManager.setCacheDuration(duration);
-                cacheManager.store();
-            }
-        }else {
-            // simpan yang baru
-            cacheManager.setValue(CacheUtil.convertModelToString(newManageProduct, type));
-            cacheManager.setCacheDuration(duration);
-            cacheManager.store();
-        }
-
     }
 
     @Nullable

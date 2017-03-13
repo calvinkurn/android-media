@@ -300,6 +300,7 @@ public class ShopInfoActivity extends BaseActivity
                             )
                             .setAction("Coba lagi", onRetryClick())
                             .show();
+                holder.progressBar.setVisibility(View.GONE);
             }
         };
     }

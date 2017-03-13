@@ -1184,4 +1184,76 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.EventLabel.OTP
         ).getEvent());
     }
+
+    public static void eventChangeCategoryProductGear(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
+                AppEventTracking.Category.MANAGE_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.CHANGE_CATEGORY_PRODUCT_GEAR
+        ).getEvent());
+    }
+
+    public static void eventChangeCategoryProductTopMenu(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
+                AppEventTracking.Category.MANAGE_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.CHANGE_CATEGORY_PRODUCT_TOPMENU
+        ).getEvent());
+    }
+
+    public static void eventChangeEtalaseProductGear(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
+                AppEventTracking.Category.MANAGE_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.CHANGE_ETALASE_PRODUCT_GEAR
+        ).getEvent());
+    }
+
+    public static void eventChangeEtalaseProductTopMenu(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
+                AppEventTracking.Category.MANAGE_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.CHANGE_ETALASE_PRODUCT_TOPMENU
+        ).getEvent());
+    }
+
+    public static void eventChangeInsuranceProductGear(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
+                AppEventTracking.Category.MANAGE_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.CHANGE_INSURANCE_PRODUCT_GEAR
+        ).getEvent());
+    }
+
+    public static void eventChangeInsuranceProductTopMenu(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
+                AppEventTracking.Category.MANAGE_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.CHANGE_INSURANCE_PRODUCT_TOPMENU
+        ).getEvent());
+    }
+
+    public static void eventDeleteProductGear(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
+                AppEventTracking.Category.MANAGE_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.DELETE_PRODUCT_GEAR
+        ).getEvent());
+    }
+
+    public static void eventDeleteProductTopMenu(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
+                AppEventTracking.Category.MANAGE_PRODUCT,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.DELETE_PRODUCT_TOPMENU
+        ).getEvent());
+    }
 }
