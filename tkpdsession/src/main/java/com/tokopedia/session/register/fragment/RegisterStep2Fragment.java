@@ -168,6 +168,13 @@ public class RegisterStep2Fragment extends BasePresenterFragment<RegisterStep2Pr
             presenter.calculateDateTime();
         }
 
+        // set default value of datepicker
+        presenter.getViewModel().setDateYear(1991);
+        presenter.getViewModel().setDateMonth(1);
+        presenter.getViewModel().setDateDay(1);
+        presenter.getViewModel().setDateText(
+                RegisterUtil.formatDateTextString(1,1,1991));
+
         datePicker = new DatePickerDialog(getActivity(),
                 callBack,
                 presenter.getViewModel().getDateYear(),
@@ -178,7 +185,7 @@ public class RegisterStep2Fragment extends BasePresenterFragment<RegisterStep2Pr
         dp.setMaxDate(presenter.getViewModel().getMaxDate());
         dp.setMinDate(presenter.getViewModel().getMinDate());
 
-        dateText.setText(RegisterNewImpl.RegisterUtil.formatDateTextString(1, 1, 1989));
+        dateText.setText(presenter.getViewModel().getDateText());
         showTermsAndOptionsTextView();
     }
 
@@ -274,7 +281,11 @@ public class RegisterStep2Fragment extends BasePresenterFragment<RegisterStep2Pr
         dateText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerUtil datePicker = new DatePickerUtil(getActivity(), 1, 1, 1989);
+                DatePickerUtil datePicker = new DatePickerUtil(getActivity()
+                        , presenter.getViewModel().getDateDay()
+                        , presenter.getViewModel().getDateMonth()
+                        , presenter.getViewModel().getDateYear()
+                );
                 datePicker.SetMaxYear(2002);
                 datePicker.SetMinYear(1934);
                 datePicker.SetShowToday(false);
