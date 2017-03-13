@@ -2,10 +2,15 @@ package com.tokopedia.inbox.rescenter.detailv2.view.customview;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.customadapter.ComplaintProductAdapter;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ProductData;
 
@@ -14,6 +19,9 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ProductData;
  */
 
 public class ListProductView extends BaseView<ProductData, DetailResCenterFragmentView> {
+
+    private RecyclerView listProduct;
+    private View actionMore;
 
     public ListProductView(Context context) {
         super(context);
@@ -39,12 +47,47 @@ public class ListProductView extends BaseView<ProductData, DetailResCenterFragme
     }
 
     @Override
+    protected void initView(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(getLayoutView(), this, true);
+        listProduct = (RecyclerView) view.findViewById(R.id.list_product);
+        actionMore = view.findViewById(R.id.action_see_more_product);
+    }
+
+    @Override
     protected void setViewListener() {
         setVisibility(GONE);
     }
 
     @Override
     public void renderData(@NonNull ProductData data) {
+        if (!data.isProductRelatedComplaint()) {
+            return;
+        }
+        initRecyclerView(data);
+        actionMore.setOnClickListener(new ListProductViewOnClickListener());
+        setVisibility(VISIBLE);
 
+    }
+
+    private void initRecyclerView(ProductData data) {
+        listProduct.setHasFixedSize(true);
+
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+        listProduct.setLayoutManager(mLayoutManager);
+
+        ComplaintProductAdapter adapter
+                = ComplaintProductAdapter.createLimitInstance(data.getProductList());
+        listProduct.setAdapter(adapter);
+    }
+
+    private class ListProductViewOnClickListener implements OnClickListener {
+        @Override
+        public void onClick(View view) {
+            if (view.getId() == R.id.action_see_more_product) {
+                listener.setOnActionMoreProductClick();
+            }
+        }
     }
 }

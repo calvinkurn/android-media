@@ -18,4 +18,26 @@ public interface DetailResCenterFragmentView {
     void setOnInitResCenterDetailComplete();
 
     void showLoading(boolean isShow);
+
+    boolean isSeller();
+
+    void setOnActionAcceptProductClick();
+
+    void setOnActionAcceptSolutionClick();
+
+    void setOnActionEditSolutionClick();
+
+    void setOnActionMoreProductClick();
+
+    void setOnActionDiscussClick();
+
+    void setOnActionMoreHistoryClick();
+
+    void setOnActionTrackAwbClick();
+
+    void setOnActionAwbHistoryClick();
+
+    void setOnActionAddressHistoryClick();
+
+    void setOnActionEditAddressClick();
 }

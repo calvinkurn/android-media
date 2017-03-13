@@ -1,0 +1,87 @@
+package com.tokopedia.inbox.rescenter.detailv2.view.customadapter;
+
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ProductItem;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Created by hangnadi on 3/10/17.
+ */
+
+public class ComplaintProductAdapter extends RecyclerView.Adapter<ComplaintProductAdapter.ComplaintProductVH> {
+
+    private List<ProductItem> productItems;
+    private boolean limit;
+
+    public ComplaintProductAdapter() {
+        productItems = new ArrayList<>();
+    }
+
+    public static ComplaintProductAdapter createDefaultInstance(List<ProductItem> productItems) {
+        ComplaintProductAdapter adapter = new ComplaintProductAdapter();
+        adapter.setProductItems(productItems);
+        adapter.setLimit(false);
+        adapter.notifyDataSetChanged();
+        return adapter;
+    }
+
+    public static ComplaintProductAdapter createLimitInstance(List<ProductItem> productItems) {
+        ComplaintProductAdapter adapter = new ComplaintProductAdapter();
+        adapter.setProductItems(productItems);
+        adapter.setLimit(true);
+        adapter.notifyDataSetChanged();
+        return adapter;
+    }
+
+    public boolean isLimit() {
+        return limit;
+    }
+
+    public void setLimit(boolean limit) {
+        this.limit = limit;
+    }
+
+    public void setProductItems(List<ProductItem> productItems) {
+        this.productItems = productItems;
+    }
+
+    public List<ProductItem> getProductItems() {
+        return productItems;
+    }
+
+    public class ComplaintProductVH extends RecyclerView.ViewHolder {
+
+        public ComplaintProductVH(View itemView) {
+            super(itemView);
+        }
+    }
+
+    @Override
+    public ComplaintProductVH onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.recyclerview_complaint_product_item, parent, false);
+        return new ComplaintProductVH(view);
+    }
+
+    @Override
+    public void onBindViewHolder(ComplaintProductVH holder, int position) {
+
+    }
+
+    @Override
+    public int getItemCount() {
+        if (isLimit()) {
+            return getProductItems().size() < 3 ? getProductItems().size() : 3;
+        } else {
+            return getProductItems().size();
+        }
+    }
+
+}

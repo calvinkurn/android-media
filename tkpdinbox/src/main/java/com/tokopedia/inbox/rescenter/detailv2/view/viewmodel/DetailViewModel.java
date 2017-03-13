@@ -14,6 +14,9 @@ public class DetailViewModel {
     private ProductData productData;
     private SolutionData solutionData;
     private HistoryData historyData;
+    private String customerID;
+    private AwbData awbData;
+    private AddressReturData addressReturData;
 
     public void setTimeOut(boolean timeOut) {
         this.timeOut = timeOut;
@@ -85,5 +88,29 @@ public class DetailViewModel {
 
     public void setHistoryData(HistoryData historyData) {
         this.historyData = historyData;
+    }
+
+    public String getCustomerID() {
+        return customerID;
+    }
+
+    public void setCustomerID(String customerID) {
+        this.customerID = customerID;
+    }
+
+    public AwbData getAwbData() {
+        return awbData;
+    }
+
+    public void setAwbData(AwbData awbData) {
+        this.awbData = awbData;
+    }
+
+    public AddressReturData getAddressReturData() {
+        return addressReturData;
+    }
+
+    public void setAddressReturData(AddressReturData addressReturData) {
+        this.addressReturData = addressReturData;
     }
 }

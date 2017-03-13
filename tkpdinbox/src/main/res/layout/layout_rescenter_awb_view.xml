@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="@color/white"
     android:layout_height="match_parent">
 
     <RelativeLayout
@@ -10,13 +9,13 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/action_edit"
+            android:id="@+id/action_track"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:padding="@dimen/padding_small"
             android:layout_alignParentRight="true"
-            android:text="@string/action_edit"
+            android:text="@string/action_track"
             android:textColor="@color/tkpd_main_green"
             android:textSize="@dimen/fontvs"
             android:textStyle="bold"
@@ -37,7 +36,7 @@
                 android:paddingTop="@dimen/padding_small"
                 android:paddingLeft="@dimen/padding_small"
                 android:paddingRight="@dimen/padding_small"
-                android:text="@string/title_section_last_solution"
+                android:text="@string/title_section_resolution_retur"
                 android:textColor="#868686"
                 android:textSize="@dimen/font_small"
                 android:textStyle="bold"
@@ -61,34 +60,35 @@
         android:orientation="vertical"
         android:padding="@dimen/padding_small">
         <TextView
-            android:id="@+id/tv_last_solution_date"
+            android:id="@+id/tv_last_awb_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Solusi dari Pembeli - 24 Juli 2016 10.10 WIB"
+            android:text="@string/template_awb_additional_text"
             android:textColor="@color/grey"
             android:textSize="@dimen/fontvvs"
             />
 
         <TextView
-            android:id="@+id/tv_last_solution"
+            android:id="@+id/tv_awb_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Pembeli meminta tukar produk"
+            android:text="CGK1234567890"
             android:textSize="@dimen/font_small"
             android:textStyle="bold"
             />
     </LinearLayout>
 
     <TextView
-        android:id="@+id/action_discuss"
+        android:id="@+id/action_awb_more"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding_small"
         android:gravity="center_vertical"
-        android:text="@string/action_discuss"
+        android:text="@string/action_see_more_awb"
         android:drawableRight="@drawable/ic_chevron_right"
         android:textColor="@color/tkpd_main_green"
         android:textSize="@dimen/font_small"
         android:textStyle="bold"
         />
+
 </LinearLayout>

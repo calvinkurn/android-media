@@ -6,7 +6,10 @@ import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.customview.AddressReturView;
+import com.tokopedia.inbox.rescenter.detailv2.view.customview.AwbReturView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.ButtonView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.DetailView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.HistoryView;
@@ -29,6 +32,8 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     View mainView;
     ButtonView buttonView;
     StatusView statusView;
+    AwbReturView awbReturView;
+    AddressReturView addressReturView;
     DetailView detailView;
     ListProductView listProductView;
     SolutionView solutionView;
@@ -45,6 +50,11 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         bundle.putString(EXTRA_PARAM_RESOLUTION_ID, resolutionID);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public boolean isSeller() {
+        return SessionHandler.getLoginID(getActivity()).equals(getViewData().getCustomerID());
     }
 
     @Override
@@ -121,6 +131,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         mainView = view.findViewById(R.id.main_view);
         buttonView = (ButtonView) view.findViewById(R.id.button_view);
         statusView = (StatusView) view.findViewById(R.id.status_view);
+        awbReturView = (AwbReturView) view.findViewById(R.id.awb_view);
         detailView = (DetailView) view.findViewById(R.id.detail_view);
         listProductView = (ListProductView) view.findViewById(R.id.product_view);
         solutionView = (SolutionView) view.findViewById(R.id.solution_view);
@@ -129,7 +140,14 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     protected void setViewListener() {
-
+        buttonView.setListener(this);
+        statusView.setListener(this);
+        awbReturView.setListener(this);
+        addressReturView.setListener(this);
+        detailView.setListener(this);
+        listProductView.setListener(this);
+        solutionView.setListener(this);
+        historyView.setListener(this);
     }
 
     @Override
@@ -177,6 +195,8 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         showLoading(false);
         buttonView.renderData(getViewData().getButtonData());
         statusView.renderData(getViewData().getStatusData());
+        awbReturView.renderData(getViewData().getAwbData());
+        addressReturView.renderData(getViewData().getAddressReturData());
         detailView.renderData(getViewData().getDetailData());
         listProductView.renderData(getViewData().getProductData());
         solutionView.renderData(getViewData().getSolutionData());
@@ -188,4 +208,53 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         showEmptyState(getViewData().getMessageError(), null);
     }
 
+    @Override
+    public void setOnActionAcceptProductClick() {
+
+    }
+
+    @Override
+    public void setOnActionAcceptSolutionClick() {
+
+    }
+
+    @Override
+    public void setOnActionEditSolutionClick() {
+
+    }
+
+    @Override
+    public void setOnActionMoreProductClick() {
+
+    }
+
+    @Override
+    public void setOnActionDiscussClick() {
+
+    }
+
+    @Override
+    public void setOnActionMoreHistoryClick() {
+
+    }
+
+    @Override
+    public void setOnActionTrackAwbClick() {
+
+    }
+
+    @Override
+    public void setOnActionAwbHistoryClick() {
+
+    }
+
+    @Override
+    public void setOnActionAddressHistoryClick() {
+
+    }
+
+    @Override
+    public void setOnActionEditAddressClick() {
+
+    }
 }

@@ -11,7 +11,7 @@
         android:paddingTop="@dimen/padding_small"
         android:paddingLeft="@dimen/padding_small"
         android:paddingRight="@dimen/padding_small"
-        android:text="Produk Yang Dikomplain"
+        android:text="@string/title_section_product_resolution"
         android:textColor="#868686"
         android:textSize="@dimen/font_small"
         android:textStyle="bold"
@@ -34,12 +34,12 @@
     </android.support.v7.widget.RecyclerView>
 
     <TextView
-        android:id="@+id/action_more"
+        android:id="@+id/action_see_more_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding_small"
         android:gravity="center_vertical"
-        android:text="Lihat Semua Produk Yang Dikomplain"
+        android:text="@string/action_see_more_product_complaint"
         android:drawableRight="@drawable/ic_chevron_right"
         android:textColor="@color/tkpd_main_green"
         android:textSize="@dimen/font_small"

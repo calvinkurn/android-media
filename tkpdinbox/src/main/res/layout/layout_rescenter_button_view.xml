@@ -12,7 +12,8 @@
         android:background="@color/greyish_bg"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="Ubah Solusi"
+        android:visibility="gone"
+        android:text="@string/action_edit_solution"
         android:textColor="@color/tkpd_main_green"
         android:textSize="@dimen/fontl"
         android:textStyle="bold" />
@@ -25,7 +26,22 @@
         android:background="@color/tkpd_main_green"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="Terima Solusi"
+        android:visibility="gone"
+        android:text="@string/action_accept_solution"
+        android:textColor="@color/white"
+        android:textSize="@dimen/fontl"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/action_accept_product"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/tkpd_main_green"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="gone"
+        android:text="@string/action_accept_product"
         android:textColor="@color/white"
         android:textSize="@dimen/fontl"
         android:textStyle="bold" />
