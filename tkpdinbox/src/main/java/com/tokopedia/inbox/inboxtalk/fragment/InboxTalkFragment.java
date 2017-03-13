@@ -266,7 +266,7 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
 
     @Override
     public void onTimeoutResponse(String error, int page) {
-        floatingActionButton.setEnabled(true);
+        floatingActionButton.setEnabled(false);
         isRequest = false;
         if (page == 1) {
             refresh.finishRefresh();
