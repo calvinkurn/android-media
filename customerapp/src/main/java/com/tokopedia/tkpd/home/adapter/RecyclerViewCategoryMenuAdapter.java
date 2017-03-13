@@ -35,6 +35,7 @@ public class RecyclerViewCategoryMenuAdapter extends
 
     private SectionListCategoryAdapter.OnCategoryClickedListener onCategoryClickedListener;
     private SectionListCategoryAdapter.OnGimmicClickedListener onGimmicClickedListener;
+    private SectionListCategoryAdapter.OnApplinkClickedListener onApplinkClickedListener;
 
     public RecyclerViewCategoryMenuAdapter(Context context) {
         this.mContext = context;
@@ -62,6 +63,7 @@ public class RecyclerViewCategoryMenuAdapter extends
         final String sectionName = dataList.get(i).getHeaderTitle();
 //        ArrayList<CategoryItemModel> singleSectionItems = dataList.get(i).getAllItemsInSection();
         //
+        // TODO : remove if API is already work
         ArrayList<CategoryItemModel> singleSectionItems = new ArrayList<>();
         CategoryItemModel categoryItemModel = new CategoryItemModel();
         categoryItemModel.setName("Ride");
@@ -77,6 +79,7 @@ public class RecyclerViewCategoryMenuAdapter extends
                 homeMenuWidth);
         itemListDataAdapter.setCategoryClickedListener(onCategoryClickedListener);
         itemListDataAdapter.setGimmicClickedListener(onGimmicClickedListener);
+        itemListDataAdapter.setOnApplinkClickedListener(onApplinkClickedListener);
 
         itemRowHolder.recycler_view_list.setHasFixedSize(true);
         itemRowHolder.recycler_view_list.setLayoutManager(
@@ -95,6 +98,10 @@ public class RecyclerViewCategoryMenuAdapter extends
             SectionListCategoryAdapter.OnGimmicClickedListener onGimmicClickedListener) {
 
         this.onGimmicClickedListener = onGimmicClickedListener;
+    }
+
+    public void setOnApplinkClickedListener(SectionListCategoryAdapter.OnApplinkClickedListener onApplinkClickedListener){
+        this.onApplinkClickedListener = onApplinkClickedListener;
     }
 
     public void setOnCategoryClickedListener(

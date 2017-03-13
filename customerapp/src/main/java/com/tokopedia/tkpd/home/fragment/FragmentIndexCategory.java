@@ -58,6 +58,7 @@ import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
+import com.tokopedia.ride.bookingride.BookingRideActivity;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
@@ -429,7 +430,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
         recyclerViewCategoryMenuAdapter.setOnCategoryClickedListener(this);
         recyclerViewCategoryMenuAdapter.setOnGimmicClickedListener(this);
-
+        recyclerViewCategoryMenuAdapter.setOnApplinkClickedListener(this);
 
         holder.categoriesRecylerview.setLayoutManager(
                 new NonScrollLinearLayoutManager(getActivity(),
@@ -836,6 +837,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onApplinkClicked(CategoryItemModel categoryItemModel) {
-
+        // TODO : change to Deeplink Handler for annotate the applink
+        startActivity(BookingRideActivity.getCallingIntent(getActivity()));
     }
 }
