@@ -269,7 +269,7 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
         params.putString(UploadImageUseCase.PARAM_SERVER_ID,
                 String.valueOf(changePhoneNumberModel.getUploadHostModel().getUploadHostData().getGeneratedHost().getServerId()));
         params.putString(UploadImageUseCase.PARAM_IMAGE_ID,
-                requestParams.getString(PARAM_BANKBOOK_IMAGE_ID, ""));
+                requestParams.getString(PARAM_USER_ID, ""));
         params.putString(UploadImageUseCase.PARAM_TOKEN, changePhoneNumberModel
                 .getValidateImageModel().getValidateImageData().getToken());
         return params;
@@ -294,7 +294,7 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
         params.putString(UploadImageUseCase.PARAM_SERVER_ID,
                 String.valueOf(changePhoneNumberModel.getUploadHostModel().getUploadHostData().getGeneratedHost().getServerId()));
         params.putString(UploadImageUseCase.PARAM_IMAGE_ID,
-                requestParams.getString(PARAM_KTP_IMAGE_ID, ""));
+                requestParams.getString(PARAM_USER_ID, ""));
         params.putString(UploadImageUseCase.PARAM_TOKEN, changePhoneNumberModel
                 .getValidateImageModel().getValidateImageData().getToken());
         return params;
