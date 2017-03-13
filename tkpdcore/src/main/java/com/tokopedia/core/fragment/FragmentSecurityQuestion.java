@@ -534,14 +534,12 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     }
 
     public void onSuccessRequestOTPWithCall(String message) {
-        CommonUtils.dumper("GAv4 OTP Success with call "+message);
         startTimer();
         displayProgress(false);
         SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).show();
     }
 
     public void onSuccessRequestOTP(String message) {
-        CommonUtils.dumper("GAv4 OTP Success "+message);
         startTimer();
         displayProgress(false);
         SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).show();
@@ -549,7 +547,6 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     @Override
     public void onReceiveOTP(String otpCode) {
-        CommonUtils.dumper("GAv4 OTP Success receive "+otpCode);
         FragmentSecurityQuestionPermissionsDispatcher.processOtpWithCheck(FragmentSecurityQuestion.this, otpCode);
     }
 
