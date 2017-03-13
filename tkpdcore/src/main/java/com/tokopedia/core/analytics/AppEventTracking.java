@@ -325,6 +325,15 @@ public interface AppEventTracking {
         String OPEN_TOP_SELLER = "Open TopSeller - ";
         String OPEN_APP = "Open App";
         String DOWNLOAD_APP = "Download App";
+
+        String CHANGE_CATEGORY_PRODUCT_GEAR = "Ganti Kategori - Gear Menu";
+        String CHANGE_CATEGORY_PRODUCT_TOPMENU = "Ganti Kategori - Top Menu";
+        String CHANGE_ETALASE_PRODUCT_GEAR = "Ganti Etalase - Gear Menu";
+        String CHANGE_ETALASE_PRODUCT_TOPMENU = "Ganti Etalase - Top Menu";
+        String CHANGE_INSURANCE_PRODUCT_GEAR = "Ganti Asuransi - Gear Menu";
+        String CHANGE_INSURANCE_PRODUCT_TOPMENU = "Ganti Asuransi - Top Menu";
+        String DELETE_PRODUCT_GEAR = "Hapus - Gear Menu";
+        String DELETE_PRODUCT_TOPMENU = "Hapus - Top Menu";
     }
 
     interface SOCIAL_MEDIA {

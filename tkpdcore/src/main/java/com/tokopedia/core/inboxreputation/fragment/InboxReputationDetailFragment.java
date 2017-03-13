@@ -8,8 +8,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -51,10 +54,13 @@ public class
     @BindView(R2.id.product_list)
     RecyclerView listProduct;
 
+
     InboxReputationDetailFragmentPresenter presenter;
     private RefreshHandler refreshHandler;
     private InboxReputationDetailAdapter adapter;
     private TkpdProgressDialog progressDialog;
+    private ShareReviewDialog dialog;
+    private CallbackManager callbackManager;
 
     public InboxReputationDetailFragment() {
     }
@@ -84,7 +90,7 @@ public class
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         listProduct.setLayoutManager(linearLayoutManager);
         listProduct.setAdapter(adapter);
-
+        dialog = new ShareReviewDialog(getActivity(), this);
     }
 
     @Override
@@ -93,6 +99,8 @@ public class
 
     @Override
     protected void initialVar() {
+        FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
     }
 
@@ -162,11 +170,15 @@ public class
             switch (requestCode) {
                 case TkpdState.RequestCode.CODE_OPEN_DETAIL_PRODUCT_REVIEW:
                     presenter.afterPostForm(bundle);
+                    if(data.getStringExtra(context.getString(R.string.message)) != null){
+                        SnackbarManager.make(getActivity(),data.getStringExtra(context.getString(R.string.message)), Snackbar.LENGTH_LONG).show();
+                    }
                     break;
                 default:
                     break;
             }
         }
+        callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -399,6 +411,17 @@ public class
         }
         setActionEnabled(true);
         dismissProgressDialog();
+    }
+
+    public CallbackManager getCallbackManager() {
+        return callbackManager;
+    }
+
+    @Override
+    public void showShareProvider(InboxReputationDetailItem inboxReputationDetailItem) {
+        KeyboardHandler.DropKeyboard(getActivity(),getView());
+        dialog.setContent(inboxReputationDetailItem);
+        dialog.show();
     }
 
 }
