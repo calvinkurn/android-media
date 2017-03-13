@@ -48,7 +48,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
     private final CloverService cloverService;
     private final DepositService depositService;
     private final NotificationService notificationService;
-    private final TokoCashService tokoCashService;
     private final CompositeSubscription compositeSubscription;
 
     public NetworkInteractorImpl() {
@@ -56,7 +55,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
         depositService = new DepositService();
         cloverService = new CloverService();
         notificationService = new NotificationService();
-        tokoCashService = new TokoCashService();
         compositeSubscription = new CompositeSubscription();
     }
 
@@ -192,11 +190,9 @@ public class NetworkInteractorImpl implements NetworkInteractor {
 
     @Override
     public void getTokoCash(final Context context, final TopCashListener listener) {
-        SessionHandler sessionHandler = new SessionHandler(context);
-        tokoCashService.setToken(sessionHandler.getAccessToken(context));
         Observable<TopCashItem> observable = Observable
                 .concat(getObservableFetchCacheTokoCashData(),
-                        getObservableFetchNetworkTokoCashData())
+                        getObservableFetchNetworkTokoCashData(context))
                 .first(isTokoCashDataAvailable());
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -206,9 +202,7 @@ public class NetworkInteractorImpl implements NetworkInteractor {
 
     @Override
     public void updateTokoCash(final Context context, final TopCashListener listener) {
-        SessionHandler sessionHandler = new SessionHandler(context);
-        tokoCashService.setToken(sessionHandler.getAccessToken(context));
-        compositeSubscription.add(getObservableFetchNetworkTokoCashData()
+        compositeSubscription.add(getObservableFetchNetworkTokoCashData(context)
                 .subscribe(fetchTokoCashSubscriber(context, listener)));
     }
 
@@ -289,7 +283,9 @@ public class NetworkInteractorImpl implements NetworkInteractor {
         return drawerHeader;
     }
 
-    private Observable<TopCashItem> getObservableFetchNetworkTokoCashData() {
+    private Observable<TopCashItem> getObservableFetchNetworkTokoCashData(Context context) {
+        SessionHandler sessionHandler = new SessionHandler(context);
+        TokoCashService tokoCashService = new TokoCashService(sessionHandler.getAccessToken(context));
         return tokoCashService.getApi()
                 .getTokoCash()
                 .subscribeOn(Schedulers.newThread())
