@@ -336,6 +336,14 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         searchView.setIconifiedByDefault(true);
         searchView.setOnQueryTextListener(this);
         searchView.setQueryHint(getString(R.string.search_product));
+        SearchView.SearchAutoComplete mSearchSrcTextView =
+                (SearchView.SearchAutoComplete)
+                        searchView.findViewById(com.tokopedia.core.R.id.search_src_text);
+        mSearchSrcTextView.setTextColor(getResources().getColor(com.tokopedia.core.R.color.white));
+        mSearchSrcTextView.setHintTextColor(
+                getResources().getColor(com.tokopedia.core.R.color.white)
+        );
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -479,32 +487,33 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                 if (getActivity() != null && rootView != null) {
 
                     switch (topAdsAddProductListPresenter.getNetworkStatus()) {
+                        case ONACTIVITYFORRESULT:
+                        case PULLTOREFRESH:
                         case SEARCHVIEW:
                             topAdsProductListAdapter.clear();
                             topAdsProductListAdapter.showRetryFull(true);
                             break;
                         default:
-                            topAdsProductListAdapter.showRetryFull(true);
+                            gmNetworkErrorHelper.showSnackbar(errorMessage, "COBA KEMBALI", new ActionClickListener() {
+                            @Override
+                            public void onActionClicked(Snackbar snackbar) {
+                                Toast.makeText(
+                                        TopAdsAddProductListFragment.this.getActivity(),
+                                        errorMessage,
+                                        Toast.LENGTH_SHORT
+                                ).show();
+
+                                dismissSnackbar();
+
+                                refreshHandler.setRefreshing(true);
+
+                                topAdsAddProductListPresenter.setNetworkStatus(
+                                        TopAdsAddProductListPresenter.NetworkStatus.RETRYNETWORKCALL);
+                                loadMoreNetworkCall();
+                            }
+                        }, getActivity());
+                        break;
                     }
-
-                    /*gmNetworkErrorHelper.showSnackbar(errorMessage, "COBA KEMBALI", new ActionClickListener() {
-                        @Override
-                        public void onActionClicked(Snackbar snackbar) {
-                            Toast.makeText(
-                                    TopAdsAddProductListFragment.this.getActivity(),
-                                    errorMessage,
-                                    Toast.LENGTH_SHORT
-                            ).show();
-
-                            dismissSnackbar();
-
-                            refreshHandler.setRefreshing(true);
-
-                            topAdsAddProductListPresenter.setNetworkStatus(
-                                    TopAdsAddProductListPresenter.NetworkStatus.RETRYNETWORKCALL);
-                            loadMoreNetworkCall();
-                        }
-                    }, getActivity());*/
                 }
             }
         }, 100);
