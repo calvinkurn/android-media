@@ -1,12 +1,15 @@
 package com.tokopedia.digital.cart.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 /**
  * @author anggaprasetiyo on 2/27/17.
  */
 
-public class CartDigitalInfoData {
+public class CartDigitalInfoData implements Parcelable {
 
     private String type;
 
@@ -107,4 +110,52 @@ public class CartDigitalInfoData {
     public void setRelationships(Relationships relationships) {
         this.relationships = relationships;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.type);
+        dest.writeString(this.id);
+        dest.writeParcelable(this.attributes, flags);
+        dest.writeString(this.title);
+        dest.writeByte(this.instantCheckout ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.needOtp ? (byte) 1 : (byte) 0);
+        dest.writeString(this.smsState);
+        dest.writeTypedList(this.mainInfo);
+        dest.writeTypedList(this.additionalInfos);
+        dest.writeParcelable(this.relationships, flags);
+    }
+
+    public CartDigitalInfoData() {
+    }
+
+    protected CartDigitalInfoData(Parcel in) {
+        this.type = in.readString();
+        this.id = in.readString();
+        this.attributes = in.readParcelable(AttributesDigital.class.getClassLoader());
+        this.title = in.readString();
+        this.instantCheckout = in.readByte() != 0;
+        this.needOtp = in.readByte() != 0;
+        this.smsState = in.readString();
+        this.mainInfo = in.createTypedArrayList(CartItemDigital.CREATOR);
+        this.additionalInfos = in.createTypedArrayList(CartAdditionalInfo.CREATOR);
+        this.relationships = in.readParcelable(Relationships.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<CartDigitalInfoData> CREATOR = new Parcelable.Creator<CartDigitalInfoData>() {
+        @Override
+        public CartDigitalInfoData createFromParcel(Parcel source) {
+            return new CartDigitalInfoData(source);
+        }
+
+        @Override
+        public CartDigitalInfoData[] newArray(int size) {
+            return new CartDigitalInfoData[size];
+        }
+    };
 }

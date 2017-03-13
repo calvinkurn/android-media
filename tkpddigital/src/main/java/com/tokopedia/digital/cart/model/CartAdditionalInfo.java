@@ -1,12 +1,16 @@
 package com.tokopedia.digital.cart.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Nabilla Sabbaha on 3/1/2017.
  */
 
-public class CartAdditionalInfo {
+public class CartAdditionalInfo implements Parcelable {
 
     private String title;
 
@@ -32,4 +36,34 @@ public class CartAdditionalInfo {
     public void setCartItemDigitalList(List<CartItemDigital> cartItemDigitalList) {
         this.cartItemDigitalList = cartItemDigitalList;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.title);
+        dest.writeList(this.cartItemDigitalList);
+    }
+
+    protected CartAdditionalInfo(Parcel in) {
+        this.title = in.readString();
+        this.cartItemDigitalList = new ArrayList<CartItemDigital>();
+        in.readList(this.cartItemDigitalList, CartItemDigital.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<CartAdditionalInfo> CREATOR = new Parcelable.Creator<CartAdditionalInfo>() {
+        @Override
+        public CartAdditionalInfo createFromParcel(Parcel source) {
+            return new CartAdditionalInfo(source);
+        }
+
+        @Override
+        public CartAdditionalInfo[] newArray(int size) {
+            return new CartAdditionalInfo[size];
+        }
+    };
 }

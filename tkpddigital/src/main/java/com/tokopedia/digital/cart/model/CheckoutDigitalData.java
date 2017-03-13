@@ -1,12 +1,15 @@
 package com.tokopedia.digital.cart.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * @author anggaprasetiyo on 3/9/17.
  */
 
-public class CheckoutDigitalData {
+public class CheckoutDigitalData implements Parcelable {
 
     private String successCallbackUrl;
     private String failedCallbackUrl;
@@ -58,4 +61,41 @@ public class CheckoutDigitalData {
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.successCallbackUrl);
+        dest.writeString(this.failedCallbackUrl);
+        dest.writeString(this.redirectUrl);
+        dest.writeString(this.transactionId);
+        dest.writeString(this.stringQuery);
+    }
+
+    public CheckoutDigitalData() {
+    }
+
+    protected CheckoutDigitalData(Parcel in) {
+        this.successCallbackUrl = in.readString();
+        this.failedCallbackUrl = in.readString();
+        this.redirectUrl = in.readString();
+        this.transactionId = in.readString();
+        this.stringQuery = in.readString();
+    }
+
+    public static final Parcelable.Creator<CheckoutDigitalData> CREATOR = new Parcelable.Creator<CheckoutDigitalData>() {
+        @Override
+        public CheckoutDigitalData createFromParcel(Parcel source) {
+            return new CheckoutDigitalData(source);
+        }
+
+        @Override
+        public CheckoutDigitalData[] newArray(int size) {
+            return new CheckoutDigitalData[size];
+        }
+    };
 }

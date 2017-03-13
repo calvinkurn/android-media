@@ -1,10 +1,13 @@
 package com.tokopedia.digital.cart.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Nabilla Sabbaha on 3/7/2017.
  */
 
-public class VoucherDigital {
+public class VoucherDigital implements Parcelable {
 
     private String type;
 
@@ -45,4 +48,40 @@ public class VoucherDigital {
     public void setCart(Relation cart) {
         this.cart = cart;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.type);
+        dest.writeString(this.id);
+        dest.writeParcelable(this.attributeVoucher, flags);
+        dest.writeParcelable(this.cart, flags);
+    }
+
+    public VoucherDigital() {
+    }
+
+    protected VoucherDigital(Parcel in) {
+        this.type = in.readString();
+        this.id = in.readString();
+        this.attributeVoucher = in.readParcelable(VoucherAttributeDigital.class.getClassLoader());
+        this.cart = in.readParcelable(Relation.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<VoucherDigital> CREATOR = new Parcelable.Creator<VoucherDigital>() {
+        @Override
+        public VoucherDigital createFromParcel(Parcel source) {
+            return new VoucherDigital(source);
+        }
+
+        @Override
+        public VoucherDigital[] newArray(int size) {
+            return new VoucherDigital[size];
+        }
+    };
 }

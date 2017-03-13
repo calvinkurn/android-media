@@ -1,10 +1,13 @@
 package com.tokopedia.digital.cart.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Nabilla Sabbaha on 3/1/2017.
  */
 
-public class UserInputPriceDigital {
+public class UserInputPriceDigital implements Parcelable {
 
     private String minPayment;
 
@@ -45,4 +48,40 @@ public class UserInputPriceDigital {
     public void setMaxPaymentPlain(long maxPaymentPlain) {
         this.maxPaymentPlain = maxPaymentPlain;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.minPayment);
+        dest.writeString(this.maxPayment);
+        dest.writeLong(this.minPaymentPlain);
+        dest.writeLong(this.maxPaymentPlain);
+    }
+
+    public UserInputPriceDigital() {
+    }
+
+    protected UserInputPriceDigital(Parcel in) {
+        this.minPayment = in.readString();
+        this.maxPayment = in.readString();
+        this.minPaymentPlain = in.readLong();
+        this.maxPaymentPlain = in.readLong();
+    }
+
+    public static final Parcelable.Creator<UserInputPriceDigital> CREATOR = new Parcelable.Creator<UserInputPriceDigital>() {
+        @Override
+        public UserInputPriceDigital createFromParcel(Parcel source) {
+            return new UserInputPriceDigital(source);
+        }
+
+        @Override
+        public UserInputPriceDigital[] newArray(int size) {
+            return new UserInputPriceDigital[size];
+        }
+    };
 }

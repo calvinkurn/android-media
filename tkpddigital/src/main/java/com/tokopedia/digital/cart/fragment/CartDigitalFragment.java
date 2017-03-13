@@ -52,7 +52,15 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     private static final String TAG = CartDigitalFragment.class.getSimpleName();
     private static final String ARG_CART_DIGITAL_DATA_PASS = "ARG_CART_DIGITAL_DATA_PASS";
-    private DigitalCheckoutPassData passData;
+
+    private static final String EXTRA_STATE_CART_DIGITAL_INFO_DATA =
+            "EXTRA_STATE_CART_DIGITAL_INFO_DATA";
+    private static final String EXTRA_STATE_VOUCHER_DIGITAL =
+            "EXTRA_STATE_VOUCHER_DIGITAL";
+    private static final String EXTRA_STATE_CHECKOUT_DATA_PARAMETER =
+            "EXTRA_STATE_CHECKOUT_DATA_PARAMETER";
+    private static final String EXTRA_STATE_CHECKOUT_PASS_DATA =
+            "EXTRA_STATE_CHECKOUT_PASS_DATA";
 
     @BindView(R2.id.checkout_cart_holder_view)
     CheckoutHolderView checkoutHolderView;
@@ -72,6 +80,10 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     private TkpdProgressDialog progressDialogNormal;
     private CheckoutDataParameter.Builder checkoutDataBuilder;
 
+    private DigitalCheckoutPassData passData;
+    private CartDigitalInfoData cartDigitalInfoDataState;
+    private VoucherDigital voucherDigitalState;
+
     public static Fragment newInstance(Parcelable passData) {
         CartDigitalFragment cartDigitalFragment = new CartDigitalFragment();
         Bundle bundle = new Bundle();
@@ -87,23 +99,32 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     protected void onFirstTimeLaunched() {
-        checkoutDataBuilder = new CheckoutDataParameter.Builder();
-        inputPriceHolderView.setActionListener(this);
-        voucherCartHolderView.setActionListener(this);
-        sessionHandler = new SessionHandler(getActivity());
-        progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
-        progressDialogNormal.setCancelable(false);
         presenter.processAddToCart();
     }
 
     @Override
     public void onSaveState(Bundle state) {
-
+        state.putParcelable(EXTRA_STATE_CART_DIGITAL_INFO_DATA, cartDigitalInfoDataState);
+        state.putParcelable(EXTRA_STATE_CHECKOUT_DATA_PARAMETER, checkoutDataBuilder.build());
+        state.putParcelable(EXTRA_STATE_VOUCHER_DIGITAL, voucherDigitalState);
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-
+        DigitalCheckoutPassData digitalCheckoutPassData = (DigitalCheckoutPassData) savedState.get(
+                EXTRA_STATE_CHECKOUT_PASS_DATA
+        );
+        if (digitalCheckoutPassData != null) passData = digitalCheckoutPassData;
+        CheckoutDataParameter checkoutDataParameter = (CheckoutDataParameter) savedState.get(
+                EXTRA_STATE_CHECKOUT_DATA_PARAMETER
+        );
+        if (checkoutDataParameter != null) checkoutDataBuilder = checkoutDataParameter.newBuilder();
+        CartDigitalInfoData cartDigitalInfoData = (CartDigitalInfoData) savedState.get(
+                EXTRA_STATE_CART_DIGITAL_INFO_DATA
+        );
+        if (cartDigitalInfoData != null) renderCartDigitalInfoData(cartDigitalInfoData);
+        VoucherDigital voucherDigital = (VoucherDigital) savedState.get(EXTRA_STATE_VOUCHER_DIGITAL);
+        if (voucherDigital != null) renderVoucherInfoData(voucherDigital);
     }
 
     @Override
@@ -143,7 +164,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     protected void initialVar() {
-
+        checkoutDataBuilder = new CheckoutDataParameter.Builder();
+        inputPriceHolderView.setActionListener(this);
+        voucherCartHolderView.setActionListener(this);
+        sessionHandler = new SessionHandler(getActivity());
+        progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
+        progressDialogNormal.setCancelable(false);
     }
 
     @Override
@@ -217,6 +243,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderCartDigitalInfoData(CartDigitalInfoData cartDigitalInfoData) {
+        this.cartDigitalInfoDataState = cartDigitalInfoData;
         pbMainLoading.setVisibility(View.GONE);
         mainContainer.setVisibility(View.VISIBLE);
         actionListener.setTitleCart(cartDigitalInfoData.getTitle());
@@ -307,6 +334,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderVoucherInfoData(VoucherDigital voucherDigital) {
+        this.voucherDigitalState = voucherDigital;
         voucherCartHolderView.setUsedVoucher(
                 voucherDigital.getAttributeVoucher().getVoucherCode(),
                 voucherDigital.getAttributeVoucher().getMessage());

@@ -1,5 +1,6 @@
 package com.tokopedia.digital.cart.activity;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -51,8 +52,10 @@ public class CartDigitalActivity extends BasePresenterActivity implements
 
     @Override
     protected void setViewListener() {
-        getFragmentManager().beginTransaction().replace(R.id.container,
-                CartDigitalFragment.newInstance(passData)).commit();
+        Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
+        if (fragment == null || !(fragment instanceof CartDigitalFragment))
+            getFragmentManager().beginTransaction().replace(R.id.container,
+                    CartDigitalFragment.newInstance(passData)).commit();
 
     }
 
