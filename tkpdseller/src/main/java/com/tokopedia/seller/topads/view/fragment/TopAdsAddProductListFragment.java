@@ -494,7 +494,8 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                             }
                             break;
                         default:
-                            gmNetworkErrorHelper.showSnackbar(errorMessage, "COBA KEMBALI", new ActionClickListener() {
+                            gmNetworkErrorHelper.showSnackbar(errorMessage,
+                                    getString(R.string.try_again), new ActionClickListener() {
                             @Override
                             public void onActionClicked(Snackbar snackbar) {
                                 Toast.makeText(
