@@ -11,8 +11,9 @@ import retrofit2.Retrofit;
  */
 
 public class PushNotificationService extends BearerService<PushNotificationApi> {
-    public PushNotificationService(String Oauth){
-        this.mToken = Oauth;
+
+    public PushNotificationService(String mToken) {
+        super(mToken);
     }
 
     @Override

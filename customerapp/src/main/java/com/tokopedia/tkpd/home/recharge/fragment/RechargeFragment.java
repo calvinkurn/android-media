@@ -359,7 +359,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     @OnClick(R.id.btn_buy)
     void buttonBuyClicked() {
-        buyButton.setEnabled(false);
         if (SessionHandler.isV4Login(getActivity())) {
             sendGTMClickBeli();
 
@@ -368,7 +367,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                         selectedOperatorId, String.valueOf(selectedOperator.defaultProductId));
             } else {
                 if (checkStockProduct(selectedProduct))
-                    goToNativeCheckout();
+                    goToCheckout(getUrlCheckout());
             }
         } else {
             gotoLogin();
@@ -436,10 +435,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             spnOperator.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    rechargeEditText.setEmptyString();
                     selectedOperator = operatorList.get(i);
-                    if (selectedOperator.showProduct) {
-                        rechargeEditText.setEmptyString();
-                    }
                     selectedOperatorId = Integer.toString(selectedOperator.operatorId);
                     if (!category.getAttributes().getClientNumber().getIsShown()) {
                         setUpForNotUsingTextEdit();
@@ -483,7 +480,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         if (nominalTextview != null) nominalTextview.setVisibility(View.GONE);
         if (rechargeEditText != null) rechargeEditText.setImgOperatorVisible();
         if (errorNominal != null) errorNominal.setVisibility(View.GONE);
-        if (buyButton != null) buyButton.setEnabled(true);
     }
 
     @Override
@@ -523,8 +519,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     public void showProductById(Product product) {
         selectedProduct = product;
         if (checkStockProduct(selectedProduct))
-            goToNativeCheckout();
-//            goToCheckout(getUrlCheckout());
+            goToCheckout(getUrlCheckout());
     }
 
     @Override
@@ -545,7 +540,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     @Override
     public void showFormAndImageOperator() {
-        if (buyButton != null) buyButton.setEnabled(true);
         if (rechargeEditText != null) rechargeEditText.setImgOperatorVisible();
         if (spnNominal != null) spnNominal.setVisibility(View.VISIBLE);
         if (wrapperLinearLayout != null) wrapperLinearLayout.setVisibility(View.VISIBLE);
@@ -696,6 +690,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private void setVisibilityImageAndProductView(boolean isVisibleToUser) {
         if (isVisibleToUser) {
             if (isAlreadyHavePhonePrefixInView) {
+                setTextToEditTextOrSetVisibilityForm();
                 showFormAndImageOperator();
             } else {
                 hideFormAndImageOperator();

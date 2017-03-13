@@ -58,6 +58,7 @@ public class TkpdCache {
 
     public class Key {
 
+        public static final String UNIVERSEARCH = "universearch";
         public static final String DISTRICT_ID = "district_id";
         public static final String DISTRICT_NAME = "district_name";
 
