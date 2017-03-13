@@ -67,4 +67,11 @@ public interface AccountsApi {
     @POST(TkpdBaseURL.Truecaller.VERIFY_PHONE)
     Observable<Response<TkpdResponse>> verifyPhone(@FieldMap Map<String, String> params);
 
+
+    @GET(TkpdBaseURL.Accounts.REQUEST_OTP)
+    Observable<Response<String>> requestOTP(@QueryMap Map<String, String> params);
+
+    @GET(TkpdBaseURL.Accounts.VALIDATE_OTP)
+    Observable<Response<String>> validateOTP(@QueryMap Map<String, String> params);
+
 }

@@ -61,7 +61,7 @@ public interface DigitalApi {
             @Header("Idempotency-Key") String idemPotencyKeyHeader
     );
 
-    @PATCH(TkpdBaseURL.DigitalApi.PATH_GET_CART)
+    @PATCH(TkpdBaseURL.DigitalApi.PATH_PATCH_OTP_SUCCESS)
     @Headers({"Content-Type: application/json"})
     Observable<Response<TkpdDigitalResponse>> patchOtpCart(@Body JsonObject requestBody);
 

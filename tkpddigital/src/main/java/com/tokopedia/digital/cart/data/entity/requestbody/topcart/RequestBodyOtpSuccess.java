@@ -15,6 +15,9 @@ public class RequestBodyOtpSuccess {
     @SerializedName("id")
     @Expose
     private String id;
+    @SerializedName("attributes")
+    @Expose
+    private Attributes attributes;
 
     public String getType() {
         return type;
@@ -32,4 +35,11 @@ public class RequestBodyOtpSuccess {
         this.id = id;
     }
 
+    public Attributes getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(Attributes attributes) {
+        this.attributes = attributes;
+    }
 }

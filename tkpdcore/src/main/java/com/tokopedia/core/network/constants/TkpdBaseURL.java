@@ -606,6 +606,9 @@ public class TkpdBaseURL {
         public static final String VALIDATE_EMAIL = "/api/register/validate-email";
         public static final String RESENT_ACTIVATION = "/api/resend";
         public static final String GENERATE_HOST = "/api/upload-host";
+
+        public static final String REQUEST_OTP = "otp/request";
+        public static final String VALIDATE_OTP = "otp/validate";
     }
 
     public static class Home {
@@ -649,6 +652,7 @@ public class TkpdBaseURL {
         public static final String PATH_LAST_ORDER = "last-order";
         public static final String PATH_SALDO = "saldo";
         public static final String PATH_GET_CART = "cart";
+        public static final String PATH_PATCH_OTP_SUCCESS = "cart/otp-success";
         public static final String PATH_BANNER = "banner";
         public static final String PATH_ORDER = "order";
         public static final String PATH_ADD_TO_CART = "cart";

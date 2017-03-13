@@ -83,6 +83,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
             view.interruptRequestTokenVerification();
             return;
         }
+        view.showProgressLoading();
         cartDigitalInteractor.checkout(
                 getRequestBodyCheckout(checkoutData),
                 getSubscriberCheckout()
@@ -95,6 +96,11 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         RequestBodyOtpSuccess requestBodyOtpSuccess = new RequestBodyOtpSuccess();
         requestBodyOtpSuccess.setType("cart");
         requestBodyOtpSuccess.setId(checkoutDataParameter.getRelationId());
+        com.tokopedia.digital.cart.data.entity.requestbody.topcart.Attributes attributes =
+                new com.tokopedia.digital.cart.data.entity.requestbody.topcart.Attributes();
+        attributes.setIpAddress(DeviceUtil.getLocalIpAddress());
+        attributes.setUserAgent(DeviceUtil.getUserAgentForApiCall());
+        requestBodyOtpSuccess.setAttributes(attributes);
 
         TKPDMapParam<String, String> paramGetCart = new TKPDMapParam<>();
         paramGetCart.put("category_id", view.getDigitalCategoryId());
@@ -116,11 +122,13 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 
             @Override
             public void onError(Throwable e) {
+                view.hideProgressLoading();
                 e.printStackTrace();
             }
 
             @Override
             public void onNext(CheckoutDigitalData checkoutDigitalData) {
+                view.hideProgressLoading();
                 Log.d(TAG, checkoutDigitalData.toString());
                 view.showToastMessage("Nunggu module payment siap, Bal yaw.. eaa eaa..");
             }

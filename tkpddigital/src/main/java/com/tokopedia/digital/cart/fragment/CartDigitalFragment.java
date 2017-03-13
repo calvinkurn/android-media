@@ -440,11 +440,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void interruptRequestTokenVerification() {
-        showToastMessage("Module OTP belum siap. Bal yaw... eaaa eaaaa");
-//        navigateToActivityRequest(
-//                OtpVerificationActivity.newInstance(getActivity()),
-//                OtpVerificationActivity.REQUEST_CODE
-//        );
+        // showToastMessage("Module OTP belum siap. Bal yaw... eaaa eaaaa");
+        navigateToActivityRequest(
+                OtpVerificationActivity.newInstance(getActivity()),
+                OtpVerificationActivity.REQUEST_CODE
+        );
     }
 
     @Override
