@@ -219,20 +219,11 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
             public void onRetryCliked() {
                 dismissSnackbar();
 
-                if (topAdsProductListAdapter.getDataSize() > 0) {
-
-                } else {
-                    topAdsProductListAdapter.clear();
-                    topAdsProductListAdapter.notifyDataSetChanged();
-
-                    topAdsProductListAdapter.showLoadingFull(true);
-                }
-
                 topAdsAddProductListPresenter.resetPage();
                 refreshHandler.setRefreshing(true);
                 topAdsAddProductListPresenter.setNetworkStatus(
                         TopAdsAddProductListPresenter.NetworkStatus.RETRYNETWORKCALL);
-                loadMoreNetworkCall();
+                searchProductNetworkCall();
             }
         });
         topAdsProductListAdapter.setRetryView(topAdsRetryDataBinder);
@@ -282,10 +273,16 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     protected void loadMoreNetworkCall() {
+        if (addProductListInterface != null) {
+            addProductListInterface.showNextButton();
+        }
         topAdsAddProductListPresenter.loadMore();
     }
 
     protected void searchProductNetworkCall() {
+        if (addProductListInterface != null) {
+            addProductListInterface.showNextButton();
+        }
         topAdsAddProductListPresenter.searchProduct();
     }
 
@@ -492,6 +489,9 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                         case SEARCHVIEW:
                             topAdsProductListAdapter.clear();
                             topAdsProductListAdapter.showRetryFull(true);
+                            if (addProductListInterface != null) {
+                                addProductListInterface.dismissNextButton();
+                            }
                             break;
                         default:
                             gmNetworkErrorHelper.showSnackbar(errorMessage, "COBA KEMBALI", new ActionClickListener() {
