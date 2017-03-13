@@ -10,9 +10,12 @@ import android.widget.LinearLayout;
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 
 /**
- * Created by sebastianuskh on 2/27/17.
+ * @author sebastianuskh on 2/27/17.
  */
 public class SquareProgressBar extends RoundCornerProgressBar {
+
+    public static final double LIMIT_ROUNDED = 0.98;
+
     public SquareProgressBar(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -22,11 +25,29 @@ public class SquareProgressBar extends RoundCornerProgressBar {
     }
 
     @Override
-    protected void drawProgress(LinearLayout layoutProgress, float max, float progress, float totalWidth, int radius, int padding, int colorProgress, boolean isReverse) {
+    protected void drawProgress(
+            LinearLayout layoutProgress,
+            float max,
+            float progress,
+            float totalWidth,
+            int radius,
+            int padding,
+            int colorProgress,
+            boolean isReverse) {
         GradientDrawable backgroundDrawable = createGradientDrawable(colorProgress);
         int newRadius = radius - (padding / 2);
-        float rightRadius = ((progress / max) < 0.98) ? 0 : newRadius;
-        backgroundDrawable.setCornerRadii(new float[]{newRadius, newRadius, rightRadius, rightRadius, rightRadius, rightRadius, newRadius, newRadius});
+        float rightRadius = ((progress / max) < LIMIT_ROUNDED) ? 0 : newRadius;
+        backgroundDrawable.setCornerRadii(
+                new float[]{
+                        newRadius,
+                        newRadius,
+                        rightRadius,
+                        rightRadius,
+                        rightRadius,
+                        rightRadius,
+                        newRadius,
+                        newRadius}
+        );
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             layoutProgress.setBackground(backgroundDrawable);
         } else {

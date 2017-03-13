@@ -1,7 +1,7 @@
 package com.tokopedia.seller.shopscore.view.model;
 
 /**
- * Created by sebastianuskh on 3/2/17.
+ * @author sebastianuskh on 3/2/17.
  */
 public enum ShopScoreDetailStateEnum {
     GOLD_MERCHANT_QUALIFIED_BADGE,

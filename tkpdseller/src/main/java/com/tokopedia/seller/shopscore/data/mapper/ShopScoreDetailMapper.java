@@ -16,9 +16,10 @@ import java.util.List;
 import rx.functions.Func1;
 
 /**
- * Created by sebastianuskh on 2/24/17.
+ * @author sebastianuskh on 2/24/17.
  */
-public class ShopScoreDetailMapper implements Func1<ShopScoreDetailServiceModel, ShopScoreDetailDomainModel> {
+public class ShopScoreDetailMapper
+        implements Func1<ShopScoreDetailServiceModel, ShopScoreDetailDomainModel> {
     private final Context context;
 
     public ShopScoreDetailMapper(Context context) {
@@ -29,10 +30,12 @@ public class ShopScoreDetailMapper implements Func1<ShopScoreDetailServiceModel,
     public ShopScoreDetailDomainModel call(ShopScoreDetailServiceModel serviceModel) {
         ShopScoreDetailDomainModel dataDomain = new ShopScoreDetailDomainModel();
 
-        List<ShopScoreDetailItemDomainModel> dataDomainItemModels = mapShopScoreDetailItemDomainModels(serviceModel);
+        List<ShopScoreDetailItemDomainModel> dataDomainItemModels =
+                mapShopScoreDetailItemDomainModels(serviceModel);
         dataDomain.setItemModels(dataDomainItemModels);
 
-        ShopScoreDetailSummaryDomainModel summaryModel = mapShopScoreDetailSummaryDomainModels(serviceModel);
+        ShopScoreDetailSummaryDomainModel summaryModel =
+                mapShopScoreDetailSummaryDomainModels(serviceModel);
         dataDomain.setSummaryModel(summaryModel);
 
         int state = mapShopScoreDetailStateDomainModels(serviceModel);
@@ -57,12 +60,18 @@ public class ShopScoreDetailMapper implements Func1<ShopScoreDetailServiceModel,
         }
     }
 
-    private boolean isScoreHigherThanLimit(ShopScoreDetailServiceModel shopScoreDetailServiceModel) {
-        return shopScoreDetailServiceModel.getData().getSumData().getValue() >= shopScoreDetailServiceModel.getData().getBadgeScore();
+    private boolean isScoreHigherThanLimit(
+            ShopScoreDetailServiceModel shopScoreDetailServiceModel
+    ) {
+        return shopScoreDetailServiceModel.getData().getSumData().getValue() >=
+                shopScoreDetailServiceModel.getData().getBadgeScore();
     }
 
-    private ShopScoreDetailSummaryDomainModel mapShopScoreDetailSummaryDomainModels(ShopScoreDetailServiceModel serviceModel) {
-        ShopScoreDetailSummaryDomainModel summaryDomainModel = new ShopScoreDetailSummaryDomainModel();
+    private ShopScoreDetailSummaryDomainModel mapShopScoreDetailSummaryDomainModels(
+            ShopScoreDetailServiceModel serviceModel
+    ) {
+        ShopScoreDetailSummaryDomainModel summaryDomainModel =
+                new ShopScoreDetailSummaryDomainModel();
         summaryDomainModel.setValue(serviceModel.getData().getSumData().getValue());
         String color = serviceModel.getData().getSumData().getColor();
         summaryDomainModel.setColor(ColorUtil.formatColor(color));
@@ -71,7 +80,9 @@ public class ShopScoreDetailMapper implements Func1<ShopScoreDetailServiceModel,
     }
 
     @NonNull
-    private List<ShopScoreDetailItemDomainModel> mapShopScoreDetailItemDomainModels(ShopScoreDetailServiceModel serviceModel) {
+    private List<ShopScoreDetailItemDomainModel> mapShopScoreDetailItemDomainModels(
+            ShopScoreDetailServiceModel serviceModel
+    ) {
         List<ShopScoreDetailItemDomainModel> dataDomainItemModels = new ArrayList<>();
         for (ShopScoreDetailItemServiceModel data : serviceModel.getData().getData()) {
             ShopScoreDetailItemDomainModel dataServiceModel = dataDomainModelMap(data);
@@ -80,7 +91,9 @@ public class ShopScoreDetailMapper implements Func1<ShopScoreDetailServiceModel,
         return dataDomainItemModels;
     }
 
-    private ShopScoreDetailItemDomainModel dataDomainModelMap(ShopScoreDetailItemServiceModel data) {
+    private ShopScoreDetailItemDomainModel dataDomainModelMap(
+            ShopScoreDetailItemServiceModel data
+    ) {
         ShopScoreDetailItemDomainModel domainModel = new ShopScoreDetailItemDomainModel();
         domainModel.setTitle(data.getTitle());
         domainModel.setValue(data.getValue());

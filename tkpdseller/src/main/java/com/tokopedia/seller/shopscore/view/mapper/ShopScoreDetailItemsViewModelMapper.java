@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by sebastianuskh on 2/27/17.
+ * @author sebastianuskh on 2/27/17.
  */
 public class ShopScoreDetailItemsViewModelMapper {
     public static List<ShopScoreDetailItemViewModel> map(ShopScoreDetailDomainModel domainModels) {

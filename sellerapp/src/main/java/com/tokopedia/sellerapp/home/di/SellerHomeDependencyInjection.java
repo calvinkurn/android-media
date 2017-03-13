@@ -35,7 +35,8 @@ public class SellerHomeDependencyInjection {
         GlobalCacheManager cacheManager = new GlobalCacheManager();
         ShopScoreCache shopScoreCache = new ShopScoreCache(cacheManager);
         ShopScoreDetailMapper shopScoreDetailMapper = new ShopScoreDetailMapper(context);
-        ShopScoreFactory shopScoreFactory = new ShopScoreFactory(shopScoreCloud, shopScoreCache, shopScoreDetailMapper);
+        ShopScoreFactory shopScoreFactory =
+                new ShopScoreFactory(shopScoreCloud, shopScoreCache, shopScoreDetailMapper);
         ShopScoreRepositoryImpl shopScoreRepository = new ShopScoreRepositoryImpl(shopScoreFactory);
 
         GetShopScoreMainDataUseCase getShopScoreMainData =

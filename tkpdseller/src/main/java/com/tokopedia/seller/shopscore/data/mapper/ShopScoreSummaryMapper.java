@@ -9,7 +9,7 @@ import com.tokopedia.seller.shopscore.domain.model.ShopScoreSummaryDomainModelDa
 import rx.functions.Func1;
 
 /**
- * Created by sebastianuskh on 2/24/17.
+ * @author sebastianuskh on 2/24/17.
  */
 public class ShopScoreSummaryMapper implements Func1<ShopScoreSummaryServiceModel, ShopScoreMainDomainModel> {
     @Override

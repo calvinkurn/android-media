@@ -3,7 +3,7 @@ package com.tokopedia.seller.shopscore.domain.model;
 import java.util.List;
 
 /**
- * Created by sebastianuskh on 3/2/17.
+ * @author sebastianuskh on 3/2/17.
  */
 
 public class ShopScoreDetailDomainModel {

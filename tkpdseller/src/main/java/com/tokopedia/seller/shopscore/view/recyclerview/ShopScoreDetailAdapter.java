@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by sebastianuskh on 2/24/17.
+ * @author sebastianuskh on 2/24/17.
  */
 public class ShopScoreDetailAdapter extends BaseLinearRecyclerViewAdapter {
 

@@ -30,7 +30,7 @@ import com.tokopedia.seller.shopscore.view.recyclerview.ShopScoreDetailAdapter;
 import java.util.List;
 
 /**
- * Created by sebastianuskh on 2/24/17.
+ * @author sebastianuskh on 2/24/17.
  */
 public class ShopScoreDetailFragment extends BaseDaggerFragment implements ShopScoreDetailView {
     public static final String TAG = "ShopScoreDetail";

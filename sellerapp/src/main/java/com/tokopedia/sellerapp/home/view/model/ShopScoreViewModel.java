@@ -1,7 +1,7 @@
 package com.tokopedia.sellerapp.home.view.model;
 
 /**
- * Created by sebastianuskh on 2/24/17.
+ * @author sebastianuskh on 2/24/17.
  */
 public class ShopScoreViewModel {
     private int badgeScore;

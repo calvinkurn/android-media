@@ -14,7 +14,7 @@ import com.tokopedia.seller.shopscore.view.fragment.ShopScoreDetailFragment;
 import com.tokopedia.seller.shopscore.view.fragment.ShopScoreDetailFragmentCallback;
 
 /**
- * Created by sebastianuskh on 2/24/17.
+ * @author sebastianuskh on 2/24/17.
  */
 public class ShopScoreDetailActivity extends BasePresenterActivity implements ShopScoreDetailFragmentCallback {
     private static final String SELLER_CENTER_LINK = "https://seller.tokopedia.com/";

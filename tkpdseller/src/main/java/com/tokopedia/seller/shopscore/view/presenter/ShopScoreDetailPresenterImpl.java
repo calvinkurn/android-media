@@ -17,7 +17,7 @@ import java.util.List;
 import rx.Subscriber;
 
 /**
- * Created by sebastianuskh on 2/24/17.
+ * @author sebastianuskh on 2/24/17.
  */
 public class ShopScoreDetailPresenterImpl extends BaseDaggerPresenter<ShopScoreDetailView> implements ShopScoreDetailPresenter {
     private final GetShopScoreDetailUseCase getShopScoreDetailUseCase;

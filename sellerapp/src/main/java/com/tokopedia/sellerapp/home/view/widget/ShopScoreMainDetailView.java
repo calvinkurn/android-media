@@ -13,7 +13,7 @@ import com.tokopedia.seller.shopscore.view.widget.ShopScoreMainProgressBarWithLi
 import com.tokopedia.sellerapp.R;
 
 /**
- * Created by sebastianuskh on 2/24/17.
+ * @author sebastianuskh on 2/24/17.
  */
 
 public class ShopScoreMainDetailView extends RelativeLayout {

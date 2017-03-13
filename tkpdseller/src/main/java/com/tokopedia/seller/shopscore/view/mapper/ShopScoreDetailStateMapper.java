@@ -4,7 +4,7 @@ import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailDomainModel;
 import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailStateEnum;
 
 /**
- * Created by sebastianuskh on 3/2/17.
+ * @author sebastianuskh on 3/2/17.
  */
 public class ShopScoreDetailStateMapper {
     public static ShopScoreDetailStateEnum map(ShopScoreDetailDomainModel domainModels) {

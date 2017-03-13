@@ -17,7 +17,7 @@ import com.tokopedia.seller.shopscore.domain.interactor.GetShopScoreDetailUseCas
 import com.tokopedia.seller.shopscore.view.presenter.ShopScoreDetailPresenterImpl;
 
 /**
- * Created by sebastianuskh on 2/24/17.
+ * @author sebastianuskh on 2/24/17.
  */
 public class ShopScoreDetailDependencyInjector {
     public static ShopScoreDetailPresenterImpl getPresenter(Context context) {
@@ -31,9 +31,13 @@ public class ShopScoreDetailDependencyInjector {
         GlobalCacheManager globalCacheManager = new GlobalCacheManager();
         ShopScoreCache shopScoreCache = new ShopScoreCache(globalCacheManager);
         ShopScoreDetailMapper shopScoreDetailMapper = new ShopScoreDetailMapper(context);
-        ShopScoreFactory shopScoreFactory = new ShopScoreFactory(shopScoreCloud, shopScoreCache, shopScoreDetailMapper);
+        ShopScoreFactory shopScoreFactory =
+                new ShopScoreFactory(shopScoreCloud, shopScoreCache, shopScoreDetailMapper);
         ShopScoreRepositoryImpl shopScoreRepository = new ShopScoreRepositoryImpl(shopScoreFactory);
-        GetShopScoreDetailUseCase getShopScoreDetailUseCase = new GetShopScoreDetailUseCase(threadExecutor, postExecutionThread, shopScoreRepository);
+        GetShopScoreDetailUseCase getShopScoreDetailUseCase =
+                new GetShopScoreDetailUseCase(
+                        threadExecutor, postExecutionThread, shopScoreRepository
+                );
         return new ShopScoreDetailPresenterImpl(getShopScoreDetailUseCase);
     }
 }

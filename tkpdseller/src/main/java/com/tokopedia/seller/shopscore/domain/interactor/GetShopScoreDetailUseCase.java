@@ -10,12 +10,16 @@ import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailDomainModel;
 import rx.Observable;
 
 /**
- * Created by sebastianuskh on 2/24/17.
+ * @author sebastianuskh on 2/24/17.
  */
 public class GetShopScoreDetailUseCase extends UseCase<ShopScoreDetailDomainModel> {
     private final ShopScoreRepository shopScoreRepository;
 
-    public GetShopScoreDetailUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, ShopScoreRepository shopScoreRepository) {
+    public GetShopScoreDetailUseCase(
+            ThreadExecutor threadExecutor,
+            PostExecutionThread postExecutionThread,
+            ShopScoreRepository shopScoreRepository
+    ) {
         super(threadExecutor, postExecutionThread);
         this.shopScoreRepository = shopScoreRepository;
     }

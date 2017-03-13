@@ -3,6 +3,7 @@ package com.tokopedia.seller.shopscore.data.source.disk;
 import android.support.annotation.NonNull;
 
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.core.base.utils.ErrorCheck;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.product.model.shopscore.detail.ShopScoreDetailServiceModel;
@@ -13,7 +14,7 @@ import rx.Observable;
 import rx.functions.Func1;
 
 /**
- * Created by sebastianuskh on 2/27/17.
+ * @author sebastianuskh on 2/27/17.
  */
 public class ShopScoreCache {
     private final GlobalCacheManager cacheManager;
@@ -85,16 +86,5 @@ public class ShopScoreCache {
                          }
                      }
                 );
-    }
-
-    private class ErrorCheck<T> implements Func1<T, T> {
-        @Override
-        public T call(T serviceModel) {
-            if (serviceModel == null) {
-                throw new RuntimeException("Cache is empty");
-            } else {
-                return serviceModel;
-            }
-        }
     }
 }

@@ -5,7 +5,7 @@ import com.tokopedia.seller.shopscore.domain.model.ShopScoreDetailSummaryDomainM
 import com.tokopedia.seller.shopscore.view.model.ShopScoreDetailSummaryViewModel;
 
 /**
- * Created by sebastianuskh on 3/2/17.
+ * @author sebastianuskh on 3/2/17.
  */
 public class ShopScoreDetailSummaryViewModelMapper {
     public static ShopScoreDetailSummaryViewModel map(ShopScoreDetailDomainModel domainModels) {

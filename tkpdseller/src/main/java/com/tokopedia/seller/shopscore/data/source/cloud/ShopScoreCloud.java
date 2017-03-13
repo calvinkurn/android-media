@@ -9,7 +9,7 @@ import com.tokopedia.seller.shopscore.data.common.GetData;
 import rx.Observable;
 
 /**
- * Created by sebastianuskh on 2/24/17.
+ * @author sebastianuskh on 2/24/17.
  */
 public class ShopScoreCloud {
     private final GoldMerchantApi api;

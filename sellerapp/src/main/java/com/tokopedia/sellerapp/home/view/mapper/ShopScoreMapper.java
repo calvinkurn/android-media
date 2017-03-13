@@ -6,7 +6,7 @@ import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
 import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModelData;
 
 /**
- * Created by sebastianuskh on 2/24/17.
+ * @author sebastianuskh on 2/24/17.
  */
 public class ShopScoreMapper {
     public static ShopScoreViewModel map(ShopScoreMainDomainModel domainModel) {

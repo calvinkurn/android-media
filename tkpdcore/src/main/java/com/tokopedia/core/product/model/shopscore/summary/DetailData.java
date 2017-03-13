@@ -11,7 +11,7 @@ public class DetailData {
     private String title;
     @SerializedName("Value")
     @Expose
-    private Integer value;
+    private int value;
     @SerializedName("Description")
     @Expose
     private String description;
@@ -27,11 +27,11 @@ public class DetailData {
         this.title = title;
     }
 
-    public Integer getValue() {
+    public int getValue() {
         return value;
     }
 
-    public void setValue(Integer value) {
+    public void setValue(int value) {
         this.value = value;
     }
 

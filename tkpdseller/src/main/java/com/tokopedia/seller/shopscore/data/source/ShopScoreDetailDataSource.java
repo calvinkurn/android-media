@@ -10,7 +10,7 @@ import rx.Observable;
 import rx.functions.Action1;
 
 /**
- * Created by sebastianuskh on 2/24/17.
+ * @author sebastianuskh on 2/24/17.
  */
 public class ShopScoreDetailDataSource {
     private final ShopScoreCloud shopScoreCloud;

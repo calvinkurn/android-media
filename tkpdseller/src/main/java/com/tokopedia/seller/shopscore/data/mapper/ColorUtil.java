@@ -1,7 +1,7 @@
 package com.tokopedia.seller.shopscore.data.mapper;
 
 /**
- * Created by sebastianuskh on 3/2/17.
+ * @author sebastianuskh on 3/2/17.
  */
 
 public class ColorUtil {

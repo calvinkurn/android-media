@@ -11,10 +11,12 @@ import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
 import rx.Subscriber;
 
 /**
- * Created by sebastianuskh on 2/24/17.
+ * @author sebastianuskh on 2/24/17.
  */
 
-public class SellerHomePresenterImpl extends BaseDaggerPresenter<SellerHomeView> implements SellerHomePresenter {
+public class SellerHomePresenterImpl
+        extends BaseDaggerPresenter<SellerHomeView>
+        implements SellerHomePresenter {
 
     private final GetShopScoreMainDataUseCase getShopScoreMainData;
 

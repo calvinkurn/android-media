@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import com.tokopedia.seller.R;
 
 /**
- * Created by sebastianuskh on 2/23/17.
+ * @author sebastianuskh on 2/23/17.
  */
 
 public class ShopScoreMainProgressBar extends SquareProgressBar {
