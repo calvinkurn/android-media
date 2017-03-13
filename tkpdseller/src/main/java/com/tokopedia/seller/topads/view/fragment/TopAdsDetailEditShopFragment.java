@@ -7,9 +7,7 @@ import android.view.View;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.di.TopAdsDetailEditShopDI;
-import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditShopPresenter;
 
@@ -33,12 +31,6 @@ public class TopAdsDetailEditShopFragment extends TopAdsDetailEditFragment<TopAd
     protected void initialPresenter() {
         presenter = TopAdsDetailEditShopDI.createPresenter(getActivity());
         presenter.attachView(this);
-    }
-
-    @Override
-    protected void setActionVar() {
-        super.setActionVar();
-        ((TopAdsDetailShopViewModel)detailAd).setShopId(Long.parseLong(SessionHandler.getShopID(getActivity())));
     }
 
     @Override
