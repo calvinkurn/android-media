@@ -140,6 +140,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     }
 
     public void sendCategory(String departementId) {
+        browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
         fetchCategoriesHeader(departementId);
     }
 
@@ -735,7 +736,7 @@ public class BrowseProductActivity extends TActivity implements SearchView.OnQue
     private void openFilter(DataValue filterAttribute, String source, int activeTab, FDest dest) {
         Log.d(TAG, "openFilter source " + source);
         breadcrumbs = getProductBreadCrumb();
-        if (filterAttribute != null && breadcrumbs != null) {
+        if (filterAttribute != null ) {
             Map<String, String> filters;
             if (mFilterMapAtribut != null && mFilterMapAtribut.getFiltersMap() != null) {
                 if (mFilterMapAtribut.getFiltersMap().get(source) != null) {

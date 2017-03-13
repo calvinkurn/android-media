@@ -260,7 +260,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                         }
                     }
                     if(view.getActivityPresenter().checkHasFilterAttrIsNull(index)) {
-                        discoveryInteractor.getDynamicAttribute(view.getContext(), BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT, browseProductActivityModel.getDepartmentId());
+                        discoveryInteractor.getDynamicAttribute(view.getContext(), source, browseProductActivityModel.getDepartmentId());
                     }
                     view.setLoadingProgress(false);
                 } else {

@@ -86,7 +86,9 @@ public class NetworkParam {
         data.put(BrowseApi.ID1, product.id1);
         data.put(BrowseApi.SHOP_ID, product.shopId);
         data.put(BrowseApi.USER_ID, product.userId);
-        data.put(BrowseApi.BREADCRUMB, Boolean.toString(product.breadcrumb));
+        if (!product.source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+            data.put(BrowseApi.BREADCRUMB, Boolean.toString(product.breadcrumb));
+        }
         data.put(BrowseApi.IMAGE_SIZE, product.imageSize);
         data.put(BrowseApi.IMAGE_SQUARE, Boolean.toString(product.imageSquare));
         data.put(BrowseApi.HASHTAG, Boolean.toString(product.hashtag));
