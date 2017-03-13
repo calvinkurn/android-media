@@ -341,12 +341,12 @@ public class TopAdsAddProductListActivity extends BaseActivity
 
     @Override
     public void showNextButton() {
-        footerButtonView.setVisibility(View.VISIBLE);
+        nextButton.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void dismissNextButton() {
-        footerButtonView.setVisibility(View.GONE);
+        nextButton.setVisibility(View.GONE);
     }
 
     @Override

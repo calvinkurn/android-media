@@ -489,9 +489,6 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                         case SEARCHVIEW:
                             topAdsProductListAdapter.clear();
                             topAdsProductListAdapter.showRetryFull(true);
-                            if (addProductListInterface != null) {
-                                addProductListInterface.dismissNextButton();
-                            }
                             break;
                         default:
                             gmNetworkErrorHelper.showSnackbar(errorMessage,
@@ -514,6 +511,13 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                             }
                         }, getActivity());
                         break;
+                    }
+
+                    if (topAdsProductListAdapter != null
+                            && topAdsProductListAdapter.getDataSize() <= 0) {
+                        if (addProductListInterface != null) {
+                            addProductListInterface.dismissNextButton();
+                        }
                     }
                 }
             }
