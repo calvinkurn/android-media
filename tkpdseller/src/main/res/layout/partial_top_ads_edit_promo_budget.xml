@@ -39,14 +39,13 @@
                 app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.VerySmall"
                 style="@style/TextInputLayout">
 
-                <com.tokopedia.seller.topads.view.widget.PrefixEditText
-                    android:id="@+id/edit_text_budget_per_day"
-                    style="@style/EditText.Currency"
-                    android:layout_width="match_parent"
-                    app:prefixTextColor="@color/tkpd_main_green"
-                    app:prefix="@string/title_currency_rp_space"
-                    android:hint="@string/label_top_ads_budget_cost_per_day"
-                    android:text="@string/top_ads_detail_edit_default_lifetime_currency_value"/>
+            <com.tokopedia.seller.topads.view.widget.PrefixEditText
+                android:id="@+id/edit_text_budget_per_day"
+                style="@style/EditText.Currency"
+                android:layout_width="match_parent"
+                app:prefix="@string/title_currency_rp_space"
+                android:hint="@string/label_top_ads_budget_cost_per_day"
+                android:text="@string/top_ads_detail_edit_default_lifetime_currency_value"/>
 
             </android.support.design.widget.TextInputLayout>
 
