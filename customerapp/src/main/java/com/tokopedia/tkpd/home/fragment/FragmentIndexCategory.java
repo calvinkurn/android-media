@@ -97,14 +97,14 @@ import java.util.Map;
  * modified by mady add feature Recharge and change home menu
  * modified by alifa add Top Picks, ticker enhancement
  */
-public class
-FragmentIndexCategory extends TkpdBaseV4Fragment implements
+public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         CategoryView,
         RechargeCategoryView,
         SectionListCategoryAdapter.OnCategoryClickedListener,
         SectionListCategoryAdapter.OnGimmicClickedListener, HomeCatMenuView, TopPicksView,
         TopPicksItemAdapter.OnTitleClickedListener, TopPicksItemAdapter.OnItemClickedListener,
-        TopPicksAdapter.OnClickViewAll, TickerAdapter.OnTickerClosed {
+        TopPicksAdapter.OnClickViewAll, TickerAdapter.OnTickerClosed,
+        SectionListCategoryAdapter.OnApplinkClickedListener {
 
     private static final long SLIDE_DELAY = 5000;
     private static final long TICKER_DELAY = 5000;
@@ -834,5 +834,8 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         category.closeTicker();
     }
 
+    @Override
+    public void onApplinkClicked(CategoryItemModel categoryItemModel) {
 
+    }
 }

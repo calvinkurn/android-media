@@ -23,6 +23,7 @@ public class SectionListCategoryAdapter extends RecyclerView.Adapter<SectionList
     private ArrayList<CategoryItemModel> itemsList;
     private OnCategoryClickedListener categoryClickedListener;
     private OnGimmicClickedListener gimmicClickedListener;
+    private OnApplinkClickedListener applinkClickedListener;
     private final int homeMenuWidth;
 
     SectionListCategoryAdapter(ArrayList<CategoryItemModel> itemsList, int homeMenuWidth) {
@@ -50,20 +51,22 @@ public class SectionListCategoryAdapter extends RecyclerView.Adapter<SectionList
 
         holder.tvTitle.setText(singleItem.getName());
 
-        ImageHandler.LoadImage(holder.itemImage,singleItem.getImageUrl());
+        ImageHandler.LoadImage(holder.itemImage, singleItem.getImageUrl());
 
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (singleItem.getType().equals(CategoryItemModel.TYPE.CATEGORY)) {
                     categoryClickedListener.onCategoryClicked(singleItem, holder.getAdapterPosition());
+                } else if (singleItem.getType().equals(CategoryItemModel.TYPE.APPLINK)) {
+                    applinkClickedListener.onApplinkClicked(singleItem);
                 } else {
                     gimmicClickedListener.onGimmicClicked(singleItem);
                 }
             }
         });
 
-        if(i % 2 != 0 ){
+        if (i % 2 != 0) {
             holder.sparator.setVisibility(View.GONE);
         } else {
             holder.sparator.setVisibility(View.VISIBLE);
@@ -78,6 +81,10 @@ public class SectionListCategoryAdapter extends RecyclerView.Adapter<SectionList
 
     void setGimmicClickedListener(OnGimmicClickedListener gimmicClickedListener) {
         this.gimmicClickedListener = gimmicClickedListener;
+    }
+
+    void setOnApplinkClickedListener(OnApplinkClickedListener onApplinkClickedListener) {
+        this.applinkClickedListener = onApplinkClickedListener;
     }
 
     @Override
@@ -116,4 +123,7 @@ public class SectionListCategoryAdapter extends RecyclerView.Adapter<SectionList
         void onGimmicClicked(CategoryItemModel categoryItemModel);
     }
 
+    public interface OnApplinkClickedListener {
+        void onApplinkClicked(CategoryItemModel categoryItemModel);
+    }
 }

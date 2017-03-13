@@ -72,6 +72,7 @@ public class CategoryItemModel {
 
     public enum TYPE {
         CATEGORY,
-        GIMMIC
+        GIMMIC,
+        APPLINK
     }
 }

@@ -20,9 +20,10 @@ import com.tokopedia.tkpd.R;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 /**
  * @author by mady on 9/23/16.
- * Modified by erry
+ *         Modified by erry
  */
 public class RecyclerViewCategoryMenuAdapter extends
         RecyclerView.Adapter<RecyclerViewCategoryMenuAdapter.ItemRowHolder> {
@@ -30,7 +31,6 @@ public class RecyclerViewCategoryMenuAdapter extends
     private final Context mContext;
     private List<CategoryMenuModel> dataList;
     private int homeMenuWidth;
-
 
 
     private SectionListCategoryAdapter.OnCategoryClickedListener onCategoryClickedListener;
@@ -60,7 +60,17 @@ public class RecyclerViewCategoryMenuAdapter extends
     @Override
     public void onBindViewHolder(ItemRowHolder itemRowHolder, int i) {
         final String sectionName = dataList.get(i).getHeaderTitle();
-        ArrayList<CategoryItemModel> singleSectionItems = dataList.get(i).getAllItemsInSection();
+//        ArrayList<CategoryItemModel> singleSectionItems = dataList.get(i).getAllItemsInSection();
+        //
+        ArrayList<CategoryItemModel> singleSectionItems = new ArrayList<>();
+        CategoryItemModel categoryItemModel = new CategoryItemModel();
+        categoryItemModel.setName("Ride");
+        categoryItemModel.setImageUrl("https://ecs7.tokopedia.net/img/category/new/v1/icon_telepon.png");
+        categoryItemModel.setRedirectValue("https://www.tokopedia.com/telepon?utm_source=mobile&utm_medium=categoriesicon&utm_campaign=");
+        categoryItemModel.setType(CategoryItemModel.TYPE.APPLINK);
+        singleSectionItems.add(categoryItemModel);
+        singleSectionItems.addAll(dataList.get(i).getAllItemsInSection());
+        //
         itemRowHolder.itemTitle.setText(sectionName);
         SectionListCategoryAdapter itemListDataAdapter = new SectionListCategoryAdapter(
                 singleSectionItems,
@@ -71,7 +81,7 @@ public class RecyclerViewCategoryMenuAdapter extends
         itemRowHolder.recycler_view_list.setHasFixedSize(true);
         itemRowHolder.recycler_view_list.setLayoutManager(
                 new NonScrollGridLayoutManager(mContext, 2,
-                GridLayoutManager.VERTICAL, false));
+                        GridLayoutManager.VERTICAL, false));
         itemRowHolder.recycler_view_list.addItemDecoration(new DividerItemDecoration(mContext));
         itemRowHolder.recycler_view_list.setAdapter(itemListDataAdapter);
     }
