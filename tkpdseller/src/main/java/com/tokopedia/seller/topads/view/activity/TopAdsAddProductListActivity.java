@@ -340,6 +340,16 @@ public class TopAdsAddProductListActivity extends BaseActivity
     }
 
     @Override
+    public void showNextButton() {
+        footerButtonView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void dismissNextButton() {
+        footerButtonView.setVisibility(View.GONE);
+    }
+
+    @Override
     public void hideFooterViewHolder() {
         TopAdsAddProductListFragment topAdsAddProductListFragment
                 = getTopAdsAddProductListFragment();
