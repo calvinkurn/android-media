@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_pool_confirmation_buttons"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:visibility="visible">
+
+    <LinearLayout
+        android:gravity="center"
+        android:id="@+id/price_layout"
+        android:layout_height="wrap_content"
+        android:layout_weight="3.0"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp"
+        android:visibility="visible">
+
+        <TextView
+            android:gravity="center"
+            android:id="@+id/tv_pool_price"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Rp 100.000 - Rp 110.000"
+            android:textColor="@color/colorAccent"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/crux_cabs_pool_estimate_footer"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:text="You Pay"
+            android:textColor="@color/black"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <View
+        android:background="#e3e3e3"
+        android:layout_height="match_parent"
+        android:layout_width="0.5dp" />
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_height="match_parent"
+        android:layout_weight="3.0"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="15dp"
+        android:paddingTop="17dp">
+
+        <RadioGroup
+            android:id="@+id/rg_seat_count"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:background="@drawable/selector_cabs_seat_count"
+                android:gravity="center"
+                android:id="@+id/rb_seat_one"
+                android:layout_height="25dp"
+                android:layout_marginRight="@dimen/fifteen_dp"
+                android:layout_width="25dp"
+                android:text="1"
+                android:textColor="@color/black"
+                android:textSize="13sp" />
+
+            <RadioButton
+                android:background="@drawable/selector_cabs_seat_count"
+                android:gravity="center"
+                android:id="@+id/rb_seat_two"
+                android:layout_height="25dp"
+                android:layout_width="25dp"
+                android:text="2"
+                android:textColor="@color/black"
+                android:textSize="13sp" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/tv_seats_needed"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:text="Seats Needed : "
+            android:textColor="@color/black"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <View
+        android:background="#e3e3e3"
+        android:layout_height="match_parent"
+        android:layout_width="0.5dp" />
+
+    <RelativeLayout
+        android:id="@+id/apply_coupon_layout_pool"
+        android:layout_height="match_parent"
+        android:layout_weight="3.0"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="15dp"
+        android:paddingTop="17dp">
+
+        <ImageView
+            android:id="@id/imgApplyCouponIcon"
+            android:layout_centerHorizontal="true"
+            android:layout_height="25dp"
+            android:layout_width="wrap_content"
+            android:scaleType="centerCrop"
+            android:src="@drawable/cab_dollar_symbol"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:gravity="center"
+            android:id="@id/tvApplyCoupon"
+            android:layout_below="@id/imgApplyCouponIcon"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:text="Apply Coupon"
+            android:textColor="@color/black"
+            android:textSize="11sp" />
+
+        <TextView
+            android:background="@drawable/round_circle_green"
+            android:gravity="center"
+            android:id="@id/txt_cab_offers_count"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="-10dp"
+            android:layout_toRightOf="@id/imgApplyCouponIcon"
+            android:layout_width="wrap_content"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:visibility="gone" />
+    </RelativeLayout>
+</LinearLayout>

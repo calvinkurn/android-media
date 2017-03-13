@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="text_error">#FFFF6E6E</color>
+    <color name="black">#000</color>
+    <color name="pdp_rating_color_new">#ff999999</color>
+    <color name="grey">#ffe7e7e7</color>
+    <color name="gray_background">#fff2f3f4</color>
+    <color name="white">#FFFFFF</color>
+    <color name="grey_for_home_search_view">#ff999999</color>
+    <color name="blue_filter">#ff4a90e2</color>
+    <color name="pdp_grey_separator">#ffe5e5e5</color>
+    <color name="shop_sub_cat">#ff999999</color>
+    <color name="forgot_password_bg">#fffafafa</color>
+    <color name="discount_strip_bg">#ff60c079</color>
+    <color name="gray_color">#ffb3b3b3</color>
+    <color name="overflow_menu_color">#ff333333</color>
+</resources>

@@ -1,5 +1,6 @@
 package com.tokopedia.ride.bookingride;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
@@ -24,6 +25,14 @@ public interface BookingRideContract {
         boolean isUserPhoneNumberVerified();
 
         void prepareMainView();
+
+        Activity getActivity();
+
+        void showMessage(String message);
+
+        void hideMessage(String message);
+
+        void moveToCurrentLocation(double latitude, double longitude);
     }
 
     interface Presenter extends CustomerPresenter<View>{

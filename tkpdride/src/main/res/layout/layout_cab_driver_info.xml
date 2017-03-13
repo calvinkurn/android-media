@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cab_on_trip_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rounded_corner"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:visibility="visible">
+
+    <RelativeLayout
+        android:id="@+id/cab_driver_detail_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingBottom="15dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp">
+
+        <com.pkmmte.view.CircularImageView
+            android:id="@+id/cab_driver_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/default_user_pic_light" />
+
+        <TextView
+            android:id="@+id/tv_driver_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/cab_driver_image"
+            android:paddingLeft="15dp"
+            android:singleLine="true"
+            android:text="X Driver"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tv_cab_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_driver_name"
+            android:layout_marginTop="3dp"
+            android:layout_toRightOf="@id/cab_driver_image"
+            android:paddingLeft="15dp"
+            android:text="Maruti Suzuki Swift Dezire DL 8888"
+            android:textColor="@color/black"
+            android:textSize="13sp" />
+
+        <RatingBar
+            android:id="@+id/rb_driver_rating"
+            style="@style/avgRatingBarSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="15dp"
+            android:layout_below="@id/tv_cab_detail"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/cab_driver_image"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:rating="3.6" />
+
+        <TextView
+            android:id="@+id/tv_driver_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_cab_detail"
+            android:layout_marginLeft="@dimen/five_dp"
+            android:layout_marginTop="8dp"
+            android:layout_toRightOf="@id/rb_driver_rating"
+            android:singleLine="true"
+            android:text="4.3"
+            android:textColor="@color/black"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/driver_eta_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:singleLine="true"
+            android:text="10 min away"
+            android:textColor="@color/accent_material_light"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#e3e3e3" />
+
+    <LinearLayout
+        android:id="@+id/layout_on_trip_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/call_driver_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3.0"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp">
+
+            <ImageView
+                android:id="@+id/img_call_driver"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/cab_call"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/tv_call_driver"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/img_call_driver"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:text="Call Driver"
+                android:textColor="@color/black"
+                android:textSize="11sp" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="#e3e3e3" />
+
+        <RelativeLayout
+            android:id="@+id/help_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3.0"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp">
+
+            <ImageView
+                android:id="@+id/img_help"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/cab_help"
+                android:textColor="@color/black"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/tv_help"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/img_help"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:text="Share status"
+                android:textColor="@color/black"
+                android:textSize="11sp" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="#e3e3e3" />
+
+        <RelativeLayout
+            android:id="@+id/layout_cancel_ride"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3.0"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp">
+
+            <ImageView
+                android:id="@+id/img_cancel_ride"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/cab_cancel_cross"
+                android:textColor="@color/black"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/tv_cancel_ride"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/img_cancel_ride"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:text="Cancel Ride"
+                android:textColor="@color/black"
+                android:textSize="11sp" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_pool_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/forgot_password_bg"
+        android:drawableLeft="@drawable/cabs_pool_looking"
+        android:drawablePadding="10dp"
+        android:gravity="right"
+        android:padding="12dp"
+        android:text="Looking for another rider, Paying Rs 73.61"
+        android:textColor="@color/black"
+        android:textSize="11sp"
+        android:visibility="gone" />
+</LinearLayout>

@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Tokopedia Ride</string>
+
+    <string name="title_activity_uber_home">Book Uber</string>
+    <string name="title_activity_cab_on_trip">Book Uber</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="crux_cabs_please_pay_in_cash">Payment in only TokoCash</string>
+    <string name="navigation_drawer_open">Open</string>
+    <string name="navigation_drawer_close">Close</string>
+    <string name="unavailable_play_service">This device supported. Please update your Play Services.</string>
+    <string name="unsupported_device">This devices is not supported.</string>
+    <string name="location_permission_required">Please enable location permission.</string>
 </resources>
