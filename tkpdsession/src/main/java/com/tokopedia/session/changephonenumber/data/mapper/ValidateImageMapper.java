@@ -1,8 +1,8 @@
 package com.tokopedia.session.changephonenumber.data.mapper;
 
-import com.tokopedia.core.network.entity.changephonenumberrequest.GeneratePostKeyData;
+import com.tokopedia.core.network.entity.changephonenumberrequest.ValidateImageData;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.session.changephonenumber.data.GeneratePostKeyModel;
+import com.tokopedia.session.changephonenumber.data.ValidateImageModel;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -11,22 +11,22 @@ import rx.functions.Func1;
  * Created by nisie on 3/9/17.
  */
 
-public class GeneratePostKeyMapper implements Func1<Response<TkpdResponse>, GeneratePostKeyModel> {
+public class ValidateImageMapper implements Func1<Response<TkpdResponse>, ValidateImageModel> {
 
 
     @Override
-    public GeneratePostKeyModel call(Response<TkpdResponse> response) {
+    public ValidateImageModel call(Response<TkpdResponse> response) {
         return mappingResponse(response);
     }
 
-    private GeneratePostKeyModel mappingResponse(Response<TkpdResponse> response) {
-        GeneratePostKeyModel model = new GeneratePostKeyModel();
+    private ValidateImageModel mappingResponse(Response<TkpdResponse> response) {
+        ValidateImageModel model = new ValidateImageModel();
 
         if (response.isSuccessful()) {
             if (!response.body().isError()) {
-                GeneratePostKeyData data = response.body().convertDataObj(GeneratePostKeyData.class);
+                ValidateImageData data = response.body().convertDataObj(ValidateImageData.class);
                 model.setSuccess(true);
-                model.setGeneratePostKeyData(data);
+                model.setValidateImageData(data);
             } else {
                 if (response.body().getErrorMessages() == null
                         && response.body().getErrorMessages().isEmpty()) {

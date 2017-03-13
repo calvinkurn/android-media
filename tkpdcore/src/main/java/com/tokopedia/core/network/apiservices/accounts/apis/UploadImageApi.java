@@ -22,6 +22,6 @@ public interface UploadImageApi {
     @Multipart
     @POST("")
     Observable<Response<TkpdResponse>> uploadImage(@Url String url,
-                                                        @PartMap Map<String, RequestBody> params,
-                                                        @Part("filename=\"image.jpg") RequestBody imageFile);
+                                                   @PartMap Map<String, RequestBody> params,
+                                                   @Part("fileToUpload\"; filename=\"image.jpg") RequestBody imageFile);
 }

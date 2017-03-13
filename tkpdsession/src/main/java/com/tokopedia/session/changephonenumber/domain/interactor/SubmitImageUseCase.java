@@ -4,25 +4,23 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.session.changephonenumber.data.UploadHostModel;
+import com.tokopedia.session.changephonenumber.data.SubmitImageModel;
 import com.tokopedia.session.changephonenumber.domain.UploadImageRepository;
 
 import rx.Observable;
 
 /**
- * Created by nisie on 3/9/17.
+ * Created by nisie on 3/13/17.
  */
 
-public class GetUploadHostUseCase extends UseCase<UploadHostModel> {
+public class SubmitImageUseCase extends UseCase<SubmitImageModel> {
 
     public static final String PARAM_USER_ID = "user_id";
-    public static final String PARAM_NEW_ADD = "new_add";
-    public static final String DEFAULT_NEW_ADD = "1";
-
+    public static final String PARAM_FILE_UPLOADED = "file_uploaded";
 
     private final UploadImageRepository uploadImageRepository;
 
-    public GetUploadHostUseCase(ThreadExecutor threadExecutor,
+    public SubmitImageUseCase(ThreadExecutor threadExecutor,
                                 PostExecutionThread postExecutionThread,
                                 UploadImageRepository uploadImageRepository) {
         super(threadExecutor, postExecutionThread);
@@ -30,7 +28,7 @@ public class GetUploadHostUseCase extends UseCase<UploadHostModel> {
     }
 
     @Override
-    public Observable<UploadHostModel> createObservable(RequestParams requestParams) {
-        return uploadImageRepository.getUploadHost(requestParams.getParameters());
+    public Observable<SubmitImageModel> createObservable(RequestParams requestParams) {
+        return uploadImageRepository.submitImage(requestParams.getParameters());
     }
 }

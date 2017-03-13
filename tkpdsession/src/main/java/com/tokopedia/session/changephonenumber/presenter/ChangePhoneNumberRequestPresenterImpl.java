@@ -1,5 +1,7 @@
 package com.tokopedia.session.changephonenumber.presenter;
 
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -7,6 +9,7 @@ import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -19,17 +22,23 @@ import com.tokopedia.session.changephonenumber.data.CheckStatusModel;
 import com.tokopedia.session.changephonenumber.data.factory.KtpSourceFactory;
 import com.tokopedia.session.changephonenumber.data.factory.UploadImageSourceFactory;
 import com.tokopedia.session.changephonenumber.data.mapper.CheckStatusMapper;
-import com.tokopedia.session.changephonenumber.data.mapper.GeneratePostKeyMapper;
+import com.tokopedia.session.changephonenumber.data.mapper.SubmitImageMapper;
+import com.tokopedia.session.changephonenumber.data.mapper.ValidateImageMapper;
 import com.tokopedia.session.changephonenumber.data.mapper.GetUploadHostMapper;
 import com.tokopedia.session.changephonenumber.data.mapper.UploadImageMapper;
 import com.tokopedia.session.changephonenumber.data.repository.KtpRepositoryImpl;
 import com.tokopedia.session.changephonenumber.data.repository.UploadImageRepositoryImpl;
 import com.tokopedia.session.changephonenumber.domain.interactor.CheckStatusUseCase;
-import com.tokopedia.session.changephonenumber.domain.interactor.GeneratePostKeyUseCase;
+import com.tokopedia.session.changephonenumber.domain.interactor.SubmitImageUseCase;
+import com.tokopedia.session.changephonenumber.domain.interactor.ValidateImageUseCase;
 import com.tokopedia.session.changephonenumber.domain.interactor.GetUploadHostUseCase;
 import com.tokopedia.session.changephonenumber.domain.interactor.UploadChangePhoneNumberRequestUseCase;
 import com.tokopedia.session.changephonenumber.domain.interactor.UploadImageUseCase;
 import com.tokopedia.session.changephonenumber.listener.ChangePhoneNumberRequestView;
+
+import java.io.File;
+import java.net.UnknownHostException;
+import java.util.UUID;
 
 import rx.Subscriber;
 
@@ -70,8 +79,9 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
                         accountsService,
                         uploadImageService,
                         new GetUploadHostMapper(),
-                        new GeneratePostKeyMapper(),
-                        new UploadImageMapper()
+                        new ValidateImageMapper(),
+                        new UploadImageMapper(),
+                        new SubmitImageMapper()
                 )
         );
 
@@ -83,7 +93,11 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
                 new JobExecutor(), new UIThread(), uploadImageRepository
         );
 
-        GeneratePostKeyUseCase generatePostKeyUseCase = new GeneratePostKeyUseCase(
+        ValidateImageUseCase validateImageUseCase = new ValidateImageUseCase(
+                new JobExecutor(), new UIThread(), uploadImageRepository
+        );
+
+        SubmitImageUseCase submitImageUseCase = new SubmitImageUseCase(
                 new JobExecutor(), new UIThread(), uploadImageRepository
         );
 
@@ -93,7 +107,8 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
         this.uploadChangePhoneNumberRequestUseCase = new UploadChangePhoneNumberRequestUseCase(
                 new JobExecutor(), new UIThread(),
                 uploadImageRepository, getUploadHostUseCase,
-                uploadImageUseCase, generatePostKeyUseCase
+                uploadImageUseCase, validateImageUseCase,
+                submitImageUseCase
         );
     }
 
@@ -110,13 +125,59 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
 
                         @Override
                         public void onError(Throwable e) {
-                            viewListener.onErrorSubmitRequest("WALALALA");
+                            if (e instanceof UnknownHostException) {
+                                viewListener.onErrorSubmitRequest(
+                                        viewListener.getString(R.string.msg_no_connection));
+                            } else if (e instanceof RuntimeException &&
+                                    e.getLocalizedMessage() != null &&
+                                    e.getLocalizedMessage().length() <= 3) {
+                                new ErrorHandler(new ErrorListener() {
+                                    @Override
+                                    public void onUnknown() {
+                                        viewListener.onErrorSubmitRequest(
+                                                viewListener.getString(R.string.default_request_error_unknown));
+                                    }
+
+                                    @Override
+                                    public void onTimeout() {
+                                        viewListener.onErrorSubmitRequest(
+                                                viewListener.getString(R.string.default_request_error_timeout));
+                                    }
+
+                                    @Override
+                                    public void onServerError() {
+                                        viewListener.onErrorSubmitRequest(
+                                                viewListener.getString(R.string.default_request_error_internal_server));
+                                    }
+
+                                    @Override
+                                    public void onBadRequest() {
+                                        viewListener.onErrorSubmitRequest(
+                                                viewListener.getString(R.string.default_request_error_bad_request));
+                                    }
+
+                                    @Override
+                                    public void onForbidden() {
+                                        viewListener.onErrorSubmitRequest(
+                                                viewListener.getString(R.string.default_request_error_forbidden_auth));
+                                    }
+                                }, Integer.parseInt(e.getLocalizedMessage()));
+                            } else if (e instanceof ErrorMessageException &&
+                                    e.getLocalizedMessage() != null) {
+                                viewListener.onErrorSubmitRequest(e.getLocalizedMessage());
+                            } else {
+                                viewListener.onErrorSubmitRequest(
+                                        viewListener.getString(R.string.default_request_error_unknown));
+                            }
                         }
 
                         @Override
                         public void onNext(ChangePhoneNumberModel changePhoneNumberModel) {
-                            CommonUtils.dumper("NISNIS " + changePhoneNumberModel);
-                            viewListener.onErrorSubmitRequest("WALALA");
+                            if (changePhoneNumberModel.isSuccess()) {
+                                viewListener.onSuccessSubmitRequest();
+                            } else {
+                                viewListener.onErrorSubmitRequest(changePhoneNumberModel.getErrorMessage());
+                            }
                         }
                     });
         }
@@ -128,19 +189,34 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
                 SessionHandler.getTempLoginSession(viewListener.getActivity()));
         params.putString(UploadChangePhoneNumberRequestUseCase.PARAM_DEVICE_ID,
                 GCMHandler.getRegistrationId(viewListener.getActivity()));
+        setParamValidateImage(params);
         setParamGetUploadHost(params);
         setParamUploadIdImage(params);
         setParamUploadBankBookImage(params);
         return params;
     }
 
+    private void setParamValidateImage(RequestParams params) {
+        params.putString(UploadChangePhoneNumberRequestUseCase.PARAM_ID_HEIGHT,
+                pass.getIdHeight());
+        params.putString(UploadChangePhoneNumberRequestUseCase.PARAM_ID_WIDTH,
+                pass.getIdWidth());
+        params.putString(UploadChangePhoneNumberRequestUseCase.PARAM_BANKBOOK_HEIGHT,
+                pass.getBankBookHeight());
+        params.putString(UploadChangePhoneNumberRequestUseCase.PARAM_BANKBOOK_WIDTH,
+                pass.getBankBookWidth());
+    }
+
     private void setParamUploadBankBookImage(RequestParams params) {
+        params.putString(UploadChangePhoneNumberRequestUseCase.PARAM_BANKBOOK_IMAGE_ID,
+                pass.getBankBookImageId());
         params.putString(UploadChangePhoneNumberRequestUseCase.PARAM_BANK_BOOK_IMAGE_PATH,
                 pass.getUploadBankBookPath());
     }
 
     private void setParamUploadIdImage(RequestParams params) {
-
+        params.putString(UploadChangePhoneNumberRequestUseCase.PARAM_KTP_IMAGE_ID,
+                pass.getIdImageId());
         params.putString(UploadChangePhoneNumberRequestUseCase.PARAM_KTP_IMAGE_PATH,
                 pass.getUploadIdPath());
     }
@@ -151,7 +227,7 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
     }
 
     private boolean isValid() {
-        return pass != null;
+        return pass.getUploadBankBookPath() != null && pass.getUploadIdPath() != null;
     }
 
     @Override
@@ -211,14 +287,40 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
     }
 
     @Override
-    public void setIdPath(String idPath) {
+    public void setIdImage(String idPath) {
         pass.setUploadIdPath(idPath);
+        setIdImageHeightAndWidth(pass, idPath);
+        pass.setIdImageId("image" + UUID.randomUUID().toString());
+    }
+
+    private void setIdImageHeightAndWidth(ChangePhoneNumberRequestPass pass, String idPath) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(new File(Uri.parse(idPath).getPath()).getAbsolutePath(), options);
+        int imageHeight = options.outHeight;
+        int imageWidth = options.outWidth;
+        pass.setIdHeight(String.valueOf(imageHeight));
+        pass.setIdWidth(String.valueOf(imageWidth));
     }
 
     @Override
-    public void setBankBookPath(String bankBookPath) {
+    public void setBankBookImage(String bankBookPath) {
         pass.setUploadBankBookPath(bankBookPath);
+        setBankBookImageHeightAndWidth(pass, bankBookPath);
+        pass.setBankBookImageId("image" + UUID.randomUUID().toString());
+
     }
+
+    private void setBankBookImageHeightAndWidth(ChangePhoneNumberRequestPass pass, String path) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(new File(Uri.parse(path).getPath()).getAbsolutePath(), options);
+        int imageHeight = options.outHeight;
+        int imageWidth = options.outWidth;
+        pass.setBankBookHeight(String.valueOf(imageHeight));
+        pass.setBankBookWidth(String.valueOf(imageWidth));
+    }
+
 
     private RequestParams getCheckStatusParam() {
         RequestParams requestParams = RequestParams.create();

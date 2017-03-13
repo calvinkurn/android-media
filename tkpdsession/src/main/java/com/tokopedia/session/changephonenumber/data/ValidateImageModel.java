@@ -1,14 +1,14 @@
 package com.tokopedia.session.changephonenumber.data;
 
-import com.tokopedia.core.network.entity.changephonenumberrequest.GeneratePostKeyData;
+import com.tokopedia.core.network.entity.changephonenumberrequest.ValidateImageData;
 
 /**
  * Created by nisie on 3/9/17.
  */
 
-public class GeneratePostKeyModel {
+public class ValidateImageModel {
     private boolean success;
-    private GeneratePostKeyData generatePostKeyData;
+    private ValidateImageData validateImageData;
     private String errorMessage;
     private String statusMessage;
     private int responseCode;
@@ -49,11 +49,11 @@ public class GeneratePostKeyModel {
         return responseCode == 200;
     }
 
-    public GeneratePostKeyData getGeneratePostKeyData() {
-        return generatePostKeyData;
+    public ValidateImageData getValidateImageData() {
+        return validateImageData;
     }
 
-    public void setGeneratePostKeyData(GeneratePostKeyData generatePostKeyData) {
-        this.generatePostKeyData = generatePostKeyData;
+    public void setValidateImageData(ValidateImageData validateImageData) {
+        this.validateImageData = validateImageData;
     }
 }

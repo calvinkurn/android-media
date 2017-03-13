@@ -2,7 +2,8 @@ package com.tokopedia.session.changephonenumber.data.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.session.changephonenumber.data.ChangePhoneNumberModel;
-import com.tokopedia.session.changephonenumber.data.GeneratePostKeyModel;
+import com.tokopedia.session.changephonenumber.data.SubmitImageModel;
+import com.tokopedia.session.changephonenumber.data.ValidateImageModel;
 import com.tokopedia.session.changephonenumber.data.UploadHostModel;
 import com.tokopedia.session.changephonenumber.data.UploadImageModel;
 import com.tokopedia.session.changephonenumber.data.factory.UploadImageSourceFactory;
@@ -39,8 +40,11 @@ public class UploadImageRepositoryImpl implements UploadImageRepository {
     }
 
     @Override
-    public Observable<ChangePhoneNumberModel> submitRequest(TKPDMapParam<String, Object> parameters) {
-        return null;
+    public Observable<SubmitImageModel> submitImage(TKPDMapParam<String, Object> parameters) {
+        return uploadImageSourceFactory
+                .createCloudSubmitImageDataStore()
+                .submitImage(
+                        parameters);
     }
 
     @Override
@@ -51,9 +55,9 @@ public class UploadImageRepositoryImpl implements UploadImageRepository {
     }
 
     @Override
-    public Observable<GeneratePostKeyModel> generatePostKey(TKPDMapParam<String, Object> parameters) {
+    public Observable<ValidateImageModel> validateImage(TKPDMapParam<String, Object> parameters) {
         return uploadImageSourceFactory
-                .createCloudGeneratePostKeyDataStore()
-                .generatePostKey(parameters);
+                .createCloudValidateImageDataStore()
+                .validateImage(parameters);
     }
 }

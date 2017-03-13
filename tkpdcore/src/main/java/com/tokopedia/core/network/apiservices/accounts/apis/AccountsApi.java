@@ -72,8 +72,12 @@ public interface AccountsApi {
     Observable<Response<TkpdResponse>> getUploadHost(@FieldMap Map<String, Object> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.Accounts.Image.GET_UPLOAD_HOST)
-    Observable<Response<TkpdResponse>> generatePostKey(@FieldMap TKPDMapParam<String, Object> params);
+    @POST(TkpdBaseURL.Accounts.Image.VALIDATE_SIZE)
+    Observable<Response<TkpdResponse>> validateImage(@FieldMap TKPDMapParam<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.Image.SUBMIT_DETAIL)
+    Observable<Response<TkpdResponse>> submitImage(@FieldMap TKPDMapParam<String, Object> params);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.Ktp.CHECK_STATUS)

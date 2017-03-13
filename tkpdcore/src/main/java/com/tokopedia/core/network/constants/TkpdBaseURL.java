@@ -605,10 +605,9 @@ public class TkpdBaseURL {
         public static final String GENERATE_HOST = "/api/upload-host";
 
         public class Image {
+            public static final String VALIDATE_SIZE = "/api/image/validate-size";
             public static final String GET_UPLOAD_HOST = "/api/image/upload-host";
-            public static final String GENERATE_POST_KEY = "/api/image/postkey";
             public static final String SUBMIT_DETAIL = "/api/image/submit-detail";
-
         }
 
         public class Ktp {
@@ -620,11 +619,11 @@ public class TkpdBaseURL {
         public static final String PATH_API_V1_ANNOUNCEMENT_TICKER = "/api/v1/tickers";
     }
 
-    public static class GoldMerchant{
+    public static class GoldMerchant {
         public static final String GET_PRODUCT_VIDEO = "/v1/product/video/";
     }
 
-    public static class FCM{
+    public static class FCM {
         public static final String UPDATE_FCM = "/api/gcm/update";
     }
 
@@ -636,11 +635,12 @@ public class TkpdBaseURL {
         public static final String URL_CHANGE_NUMBER = "https://www.tokopedia.com/contact-us?solution_id=54";
     }
 
-    public static class TopCash{
+    public static class TopCash {
         public static final String GET_WALLET = ACCOUNTS_DOMAIN + "api/v1/wallet/";
         public static final String PATH_WALLET = "balance";
     }
-    public static class Truecaller{
+
+    public static class Truecaller {
         public static final String VERIFY_PHONE = "/web-service/v4/truecaller/check";
     }
 }

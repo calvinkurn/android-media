@@ -40,6 +40,9 @@ public class UploadImageUseCase extends UseCase<UploadImageModel> {
 
     private static final String NEW_ADD = "1";
     private static final String PARAM_NEW_ADD = "new_add";
+    public static final String PARAM_FILE_TO_UPLOAD = "fileToUpload";
+    public static final String PARAM_IMAGE_ID = "id";
+    public static final String PARAM_TOKEN = "token";
 
     private final UploadImageRepository uploadImageRepository;
 
@@ -52,7 +55,9 @@ public class UploadImageUseCase extends UseCase<UploadImageModel> {
 
     @Override
     public Observable<UploadImageModel> createObservable(RequestParams requestParams) {
-        String url = requestParams.getString(PARAM_URL,"") + "/upload/attachment";
+//        String url = requestParams.getString(PARAM_URL,"") + "/upload/attachment";
+        String url = "https://up-staging.tokopedia.net/upload/attachment";
+
         return uploadImageRepository.uploadImage(url,
                 generateRequestBody(requestParams),
                 getUploadImageFile(requestParams)
@@ -63,7 +68,7 @@ public class UploadImageUseCase extends UseCase<UploadImageModel> {
         File file = null;
         try {
             file = ImageUploadHandler.writeImageToTkpdPath(
-                    ImageUploadHandler.compressImage(requestParams.getString(PARAM_IMAGE_PATH, ""))
+                    ImageUploadHandler.compressImage(requestParams.getString(PARAM_FILE_TO_UPLOAD, ""))
             );
         } catch (IOException e) {
             throw new RuntimeException(MainApplication.getAppContext().getString(R.string.error_upload_image));
@@ -97,6 +102,13 @@ public class UploadImageUseCase extends UseCase<UploadImageModel> {
                 String.valueOf(requestParams.getString(PARAM_SERVER_ID, "")));
         RequestBody newAdd = RequestBody.create(MediaType.parse("text/plain"),
                 NEW_ADD);
+        RequestBody imageId = RequestBody.create(MediaType.parse("text/plain"),
+                requestParams.getString(PARAM_IMAGE_ID, ""));
+//        RequestBody token = RequestBody.create(MediaType.parse("text/plain"),
+//                requestParams.getString(PARAM_TOKEN, ""
+//                ));
+
+        RequestBody webService = RequestBody.create(MediaType.parse("text/plain"),"1");
 
         Map<String, RequestBody> requestBodyMap = new HashMap<>();
         requestBodyMap.put(PARAM_USER_ID, userId);
@@ -106,6 +118,10 @@ public class UploadImageUseCase extends UseCase<UploadImageModel> {
         requestBodyMap.put(PARAM_TIMESTAMP, deviceTime);
         requestBodyMap.put(PARAM_NEW_ADD, newAdd);
         requestBodyMap.put(PARAM_SERVER_ID, serverId);
+        requestBodyMap.put(PARAM_IMAGE_ID, imageId);
+        requestBodyMap.put(PARAM_FILE_TO_UPLOAD, imageId);
+//        requestBodyMap.put(PARAM_TOKEN, token);
+        requestBodyMap.put("web_service", webService);
 
         return requestBodyMap;
     }

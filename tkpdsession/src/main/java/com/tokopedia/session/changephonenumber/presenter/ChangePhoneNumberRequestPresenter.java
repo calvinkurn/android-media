@@ -11,7 +11,7 @@ public interface ChangePhoneNumberRequestPresenter {
 
     void checkStatus();
 
-    void setIdPath(String idPath);
+    void setIdImage(String idPath);
 
-    void setBankBookPath(String bankBookPath);
+    void setBankBookImage(String bankBookPath);
 }

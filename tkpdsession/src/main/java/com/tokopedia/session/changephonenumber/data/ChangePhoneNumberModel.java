@@ -9,6 +9,11 @@ public class ChangePhoneNumberModel {
     private String errorMessage;
     private String statusMessage;
     private int responseCode;
+    private UploadHostModel uploadHostModel;
+    private UploadImageModel uploadIdImageModel;
+    private UploadImageModel uploadBankBookImageModel;
+    private ValidateImageModel validateImageModel;
+    private SubmitImageModel submitImageModel;
 
     public boolean isSuccess() {
         return success;
@@ -44,5 +49,45 @@ public class ChangePhoneNumberModel {
 
     public boolean isResponseSuccess() {
         return responseCode == 200;
+    }
+
+    public void setUploadHostModel(UploadHostModel uploadHostModel) {
+        this.uploadHostModel = uploadHostModel;
+    }
+
+    public UploadHostModel getUploadHostModel() {
+        return uploadHostModel;
+    }
+
+    public void setUploadIdImageModel(UploadImageModel uploadIdImageModel) {
+        this.uploadIdImageModel = uploadIdImageModel;
+    }
+
+    public UploadImageModel getUploadIdImageModel() {
+        return uploadIdImageModel;
+    }
+
+    public void setUploadBankBookImageModel(UploadImageModel uploadBankBookImageModel) {
+        this.uploadBankBookImageModel = uploadBankBookImageModel;
+    }
+
+    public UploadImageModel getUploadBankBookImageModel() {
+        return uploadBankBookImageModel;
+    }
+
+    public void setValidateImageModel(ValidateImageModel validateImageModel) {
+        this.validateImageModel = validateImageModel;
+    }
+
+    public ValidateImageModel getValidateImageModel() {
+        return validateImageModel;
+    }
+
+    public void setSubmitImageModel(SubmitImageModel submitImageModel) {
+        this.submitImageModel = submitImageModel;
+    }
+
+    public SubmitImageModel getSubmitImageModel() {
+        return submitImageModel;
     }
 }

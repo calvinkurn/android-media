@@ -76,12 +76,6 @@ public class ChangePhoneNumberRequestFragment
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        KeyboardHandler.DropKeyboard(getActivity(), getView());
-    }
-
-    @Override
     protected boolean isRetainInstance() {
         return false;
     }
@@ -260,28 +254,28 @@ public class ChangePhoneNumberRequestFragment
             buttonUploadId.setVisibility(View.GONE);
             idPhoto.setVisibility(View.VISIBLE);
             loadImageToImageView(idPhoto, imageUploadHandler.getCameraFileloc());
-            presenter.setIdPath(imageUploadHandler.getCameraFileloc());
+            presenter.setIdImage(imageUploadHandler.getCameraFileloc());
         } else if (requestCode == ImageUploadHandler.REQUEST_CODE
                 && (resultCode == GalleryBrowser.RESULT_CODE)
                 && uploadType.equals(UPLOAD_ID)) {
             buttonUploadId.setVisibility(View.GONE);
             idPhoto.setVisibility(View.VISIBLE);
             loadImageToImageView(idPhoto, data.getStringExtra(ImageGallery.EXTRA_URL));
-            presenter.setIdPath(data.getStringExtra(ImageGallery.EXTRA_URL));
+            presenter.setIdImage(data.getStringExtra(ImageGallery.EXTRA_URL));
         } else if (requestCode == ImageUploadHandler.REQUEST_CODE
                 && (resultCode == Activity.RESULT_OK)
                 && uploadType.equals(UPLOAD_ACCOUNT_BOOK)) {
             buttonUploadAccountBook.setVisibility(View.GONE);
             accountBookPhoto.setVisibility(View.VISIBLE);
             loadImageToImageView(accountBookPhoto, imageUploadHandler.getCameraFileloc());
-            presenter.setBankBookPath(imageUploadHandler.getCameraFileloc());
+            presenter.setBankBookImage(imageUploadHandler.getCameraFileloc());
         } else if (requestCode == ImageUploadHandler.REQUEST_CODE
                 && (resultCode == GalleryBrowser.RESULT_CODE)
                 && uploadType.equals(UPLOAD_ACCOUNT_BOOK)) {
             buttonUploadAccountBook.setVisibility(View.GONE);
             accountBookPhoto.setVisibility(View.VISIBLE);
             loadImageToImageView(accountBookPhoto, data.getStringExtra(ImageGallery.EXTRA_URL));
-            presenter.setBankBookPath(data.getStringExtra(ImageGallery.EXTRA_URL));
+            presenter.setBankBookImage(data.getStringExtra(ImageGallery.EXTRA_URL));
         }
 
     }
