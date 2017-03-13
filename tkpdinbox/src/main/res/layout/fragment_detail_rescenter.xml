@@ -35,6 +35,20 @@
                 android:layout_marginBottom="@dimen/margin_small"
                 />
 
+            <com.tokopedia.inbox.rescenter.detailv2.view.customview.AwbReturView
+                android:id="@+id/awb_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
+                />
+
+            <com.tokopedia.inbox.rescenter.detailv2.view.customview.AddressReturView
+                android:id="@+id/address_retur_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
+                />
+
             <com.tokopedia.inbox.rescenter.detailv2.view.customview.DetailView
                 android:id="@+id/detail_view"
                 android:layout_width="match_parent"

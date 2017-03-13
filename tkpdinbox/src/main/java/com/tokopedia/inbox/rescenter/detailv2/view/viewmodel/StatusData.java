@@ -5,4 +5,13 @@ package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel;
  */
 
 public class StatusData {
+    private String statusText;
+
+    public String getStatusText() {
+        return statusText;
+    }
+
+    public void setStatusText(String statusText) {
+        this.statusText = statusText;
+    }
 }

@@ -3,6 +3,9 @@ package com.tokopedia.inbox.rescenter.detailv2.view.customview;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.inbox.R;
@@ -14,6 +17,8 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.StatusData;
  */
 
 public class StatusView extends BaseView<StatusData, DetailResCenterFragmentView> {
+
+    TextView lastStatus;
 
     public StatusView(Context context) {
         super(context);
@@ -39,12 +44,21 @@ public class StatusView extends BaseView<StatusData, DetailResCenterFragmentView
     }
 
     @Override
+    protected void initView(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(getLayoutView(), this, true);
+        lastStatus = (TextView) view.findViewById(R.id.textview_last_status);
+    }
+
+    @Override
     protected void setViewListener() {
         setVisibility(GONE);
     }
 
     @Override
     public void renderData(@NonNull StatusData data) {
-
+        setVisibility(VISIBLE);
+        lastStatus.setText(data.getStatusText());
     }
 }
