@@ -43,7 +43,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
         super.initView(view);
         items = (TopAdsLabelView) view.findViewById(R.id.items);
         name.setTitle(getString(R.string.label_top_ads_groups));
-        name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
+        name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.black_fifty_four_percent));
         items.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

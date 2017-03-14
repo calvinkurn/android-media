@@ -12,9 +12,6 @@ import com.tokopedia.seller.topads.view.model.TopAdsDetailProductViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditProductPresenter;
 
 public class TopAdsDetailEditProductFragment extends TopAdsDetailEditFragment<TopAdsDetailEditProductPresenter> {
-
-    TextView infoPriceLimit;
-
     public static Fragment createInstance(String name, String shopAdId) {
         Fragment fragment = new TopAdsDetailEditProductFragment();
         Bundle bundle = new Bundle();
@@ -38,8 +35,6 @@ public class TopAdsDetailEditProductFragment extends TopAdsDetailEditFragment<To
     @Override
     protected void initView(View view) {
         super.initView(view);
-        infoPriceLimit = (TextView) view.findViewById(R.id.info_limit_price);
-        infoPriceLimit.setVisibility(View.GONE);
         nameInputLayout.setHint(getString(R.string.label_top_ads_product_name));
 
     }

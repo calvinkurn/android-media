@@ -106,6 +106,7 @@
     <string name="title_group_ad_edit">Ubah Promo Grup</string>
     <string name="title_delete_promo">Hapus promo</string>
     <string name="title_delete_group">Hapus grup</string>
+    <string name="title_edit_shop_ad">Ubah Promo Toko</string>
 
     <!-- Top Ads ad list -->
     <string name="label_top_ads_daily_spend">Anggaran Harian</string>
