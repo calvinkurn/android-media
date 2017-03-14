@@ -239,7 +239,7 @@
     </style>
 
     <style name="TextAppearence.App.TextInputLayout" parent="TextAppearance.Design.Hint">
-        <item name="android:textColor">@color/font_top_ads_black_54</item>
+        <item name="android:textColor">@color/black_fifty_four_percent</item>
     </style>
 
     <style name="TextAppearence.App.TextInputLayout.VerySmall">

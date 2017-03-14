@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -356,7 +357,8 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
             budgetPerDayEditText.setText(String.valueOf(detailAd.getPriceDaily()));
         } else {
             showBudgetPerDay(false);
-            budgetPerDayEditText.setText(R.string.top_ads_detail_edit_default_currency_value);
+            // no need to set, already default from xml
+            // budgetPerDayEditText.setText(R.string.top_ads_detail_edit_default_currency_value);
         }
         convertDate(detailAd);
         if (!TextUtils.isEmpty(detailAd.getEndDate())) {
@@ -487,10 +489,12 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
 
     protected void showLoading() {
         progressDialog.show();
+        getView().setVisibility(View.GONE);
     }
 
     protected void hideLoading() {
         progressDialog.dismiss();
+        getView().setVisibility(View.VISIBLE);
     }
 
     protected void showSnackBarError(String errorMessage) {
