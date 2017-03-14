@@ -55,6 +55,7 @@ public class ShopProductListHeaderDelegate {
     }
 
     public void setSelectedEtalase(int pos){
+        spinnerLastPos = pos;
         spinnerSelectedPos = pos;
         if(listener!=null) {
             listener.onEtalaseClick(pos);
