@@ -73,7 +73,7 @@ public class ApplinkBuildAndShowNotification {
             @Override
             public void onNext(MessagePushNotificationWrapper messagePushNotificationWrapper) {
                 Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
                 ApplinkTypeFactory applinkTypeFactory = new ApplinkTypeFactoryList();
                 messagePushNotificationWrapper.type(applinkTypeFactory).process(context, intent, isNew);
@@ -97,7 +97,7 @@ public class ApplinkBuildAndShowNotification {
             @Override
             public void onNext(DiscussionPushNotificationWrapper discussionPushNotificationWrapper) {
                 Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
                 ApplinkTypeFactory applinkTypeFactory = new ApplinkTypeFactoryList();
                 discussionPushNotificationWrapper.type(applinkTypeFactory).process(context, intent, isNew);
