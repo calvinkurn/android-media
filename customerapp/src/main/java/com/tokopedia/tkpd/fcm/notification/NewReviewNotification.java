@@ -27,7 +27,7 @@ public class NewReviewNotification extends BaseNotification {
                 InboxRouter.getInboxMessageActivityIntent(mContext)
         );
         mNotificationPass.classParentStack= InboxRouter.getInboxMessageActivityClass();
-        mNotificationPass.title = String.format("%s %s", data.getString("counter"), mContext.getString(R.string.title_new_talk));
+        mNotificationPass.title = String.format("%s %s", data.getString("counter"), mContext.getString(R.string.title_new_review));
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
     }

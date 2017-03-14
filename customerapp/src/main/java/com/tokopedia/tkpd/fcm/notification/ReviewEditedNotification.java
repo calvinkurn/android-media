@@ -26,7 +26,7 @@ public class ReviewEditedNotification extends BaseNotification {
                 new Intent(mContext, InboxReputationActivity.class)
         );
         mNotificationPass.classParentStack = InboxReputationActivity.class;
-        mNotificationPass.title = String.format("%s %s", data.getString("counter"), mContext.getString(R.string.title_new_talk));
+        mNotificationPass.title = String.format("%s %s", data.getString("counter"), mContext.getString(R.string.title_review_edited));
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
     }

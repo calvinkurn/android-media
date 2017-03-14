@@ -24,9 +24,9 @@ public class NewDiscussionNotification extends BaseNotification {
     @Override
     protected void configureNotificationData(Bundle incomingMessage) {
         mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
-                InboxRouter.getInboxMessageActivityIntent(mContext)
+                InboxRouter.getInboxTalkActivityIntent(mContext)
         );
-        mNotificationPass.classParentStack = InboxRouter.getInboxMessageActivityClass();
+        mNotificationPass.classParentStack = InboxRouter.getInboxTalkActivityClass();
         mNotificationPass.title = String.format(
                 "%s %s",
                 incomingMessage.getString("counter"),
