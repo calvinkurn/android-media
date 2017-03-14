@@ -3,13 +3,15 @@ package com.tokopedia.digital.cart.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.payment.model.TopPayBaseModel;
+
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * @author anggaprasetiyo on 3/9/17.
  */
 
-public class CheckoutDigitalData implements Parcelable {
+public class CheckoutDigitalData implements Parcelable, TopPayBaseModel {
 
     private String successCallbackUrl;
     private String failedCallbackUrl;
@@ -98,4 +100,24 @@ public class CheckoutDigitalData implements Parcelable {
             return new CheckoutDigitalData[size];
         }
     };
+
+    @Override
+    public String getRedirectUrlToPass() {
+        return redirectUrl;
+    }
+
+    @Override
+    public String getQueryStringToPass() {
+        return stringQuery;
+    }
+
+    @Override
+    public String getCallbackUrlToPass() {
+        return successCallbackUrl;
+    }
+
+    @Override
+    public String getTransactionIdToPass() {
+        return transactionId;
+    }
 }

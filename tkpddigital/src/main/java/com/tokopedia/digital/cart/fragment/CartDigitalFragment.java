@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -39,6 +40,8 @@ import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.payment.cart.activity.TopPayActivity;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -406,6 +409,10 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void renderToTopPay(CheckoutDigitalData checkoutDigitalData) {
         //TODO ke payment module
+        PaymentPassData paymentPassData = new PaymentPassData();
+        paymentPassData.convertToPaymenPassData(checkoutDigitalData);
+        navigateToActivityRequest(TopPayActivity.createInstance(getActivity(), paymentPassData),
+                TopPayActivity.REQUEST_CODE);
         // navigateToActivityRequest();
     }
 
@@ -494,9 +501,10 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == OtpVerificationActivity.REQUEST_CODE) {
             presenter.processPatchOtpCart();
-        } else if (requestCode == 2) {// ini request code payment. bisa diganti
+        } else if (requestCode == TopPayActivity.REQUEST_CODE) {// ini request code payment. bisa diganti
             switch (resultCode) {
-                case 1:
+                case TopPayActivity.PAYMENT_SUCCESS:
+                    CommonUtils.dumper("PORING PAYMENT SUCCESSFUL");
                     getActivity().finish();
                     break;
                 default:
