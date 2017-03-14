@@ -123,7 +123,31 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
             @Override
             public void onError(Throwable e) {
                 view.hideProgressLoading();
-                e.printStackTrace();
+                if (e instanceof UnknownHostException) {
+                    /* Ini kalau ga ada internet */
+                    view.renderErrorNoConnectionCheckout(
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                    );
+                } else if (e instanceof SocketTimeoutException) {
+                    /* Ini kalau timeout */
+                    view.renderErrorTimeoutConnectionCheckout(
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                    );
+                } else if (e instanceof ResponseErrorException) {
+                     /* Ini kalau error dari API kasih message error */
+                    view.renderErrorCheckout(e.getMessage());
+                } else if (e instanceof ResponseDataNullException) {
+                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+                    view.renderErrorCheckout(e.getMessage());
+                } else if (e instanceof HttpErrorException) {
+                    /* Ini Http error, misal 403, 500, 404,
+                     code http errornya bisa diambil
+                     e.getErrorCode */
+                    view.renderErrorHttpCheckout(e.getMessage());
+                } else {
+                    /* Ini diluar dari segalanya hahahaha */
+                    view.renderErrorHttpCheckout(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
             }
 
             @Override

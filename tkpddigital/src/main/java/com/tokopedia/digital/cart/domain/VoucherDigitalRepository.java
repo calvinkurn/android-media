@@ -4,7 +4,6 @@ import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.cart.data.entity.response.ResponseVoucherData;
-import com.tokopedia.digital.cart.data.mapper.CartMapperData;
 import com.tokopedia.digital.cart.data.mapper.ICartMapperData;
 import com.tokopedia.digital.cart.model.VoucherDigital;
 
@@ -21,9 +20,10 @@ public class VoucherDigitalRepository implements IVoucherDigitalRepository {
     private final DigitalEndpointService digitalEndpointService;
     private final ICartMapperData cartMapperData;
 
-    public VoucherDigitalRepository() {
-        this.digitalEndpointService = new DigitalEndpointService();
-        this.cartMapperData = new CartMapperData();
+    public VoucherDigitalRepository(DigitalEndpointService digitalEndpointService,
+                                    ICartMapperData mapperData) {
+        this.digitalEndpointService = digitalEndpointService;
+        this.cartMapperData = mapperData;
     }
 
     @Override

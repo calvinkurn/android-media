@@ -28,10 +28,12 @@ public class CartDigitalInteractor implements ICartDigitalInteractor {
     private final IVoucherDigitalRepository voucherDigitalRepository;
     private final ICheckoutRepository checkoutRepository;
 
-    public CartDigitalInteractor() {
-        cartDigitalRepository = new CartDigitalRepository();
-        voucherDigitalRepository = new VoucherDigitalRepository();
-        checkoutRepository = new CheckoutRepository();
+    public CartDigitalInteractor(CartDigitalRepository cartDigitalRepository,
+                                 VoucherDigitalRepository voucherDigitalRepository,
+                                 CheckoutRepository checkoutRepository) {
+        this.cartDigitalRepository = cartDigitalRepository;
+        this.voucherDigitalRepository = voucherDigitalRepository;
+        this.checkoutRepository = checkoutRepository;
     }
 
     @Override
