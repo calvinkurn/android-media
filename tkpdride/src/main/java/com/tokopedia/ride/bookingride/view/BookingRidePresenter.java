@@ -1,4 +1,4 @@
-package com.tokopedia.ride.bookingride;
+package com.tokopedia.ride.bookingride.view;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -38,7 +38,6 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
                     createLocationRequest();
                     initializeLocationService();
                 }
-                getView().renderUberProductView();
             }
         } else {
             getView().navigateToLoginPage();

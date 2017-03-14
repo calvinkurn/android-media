@@ -58,7 +58,7 @@ import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
-import com.tokopedia.ride.bookingride.RideHomeActivity;
+import com.tokopedia.ride.bookingride.view.RideHomeActivity;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.HomeCatMenuView;

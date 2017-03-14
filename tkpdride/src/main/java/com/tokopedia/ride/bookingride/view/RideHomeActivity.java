@@ -1,4 +1,4 @@
-package com.tokopedia.ride.bookingride;
+package com.tokopedia.ride.bookingride.view;
 
 import android.Manifest;
 import android.app.Activity;
@@ -9,14 +9,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.R2;
 
+import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
-public class RideHomeActivity extends BaseActivity implements RideHomeFragment.OnFragmentInteractionListener {
+public class RideHomeActivity extends BaseActivity implements RideHomeFragment.OnFragmentInteractionListener,
+        UberProductFragment.OnFragmentInteractionListener {
+
+    @BindView(R2.id.cabs_crux_sliding_layout)
+    SlidingUpPanelLayout mSlidingUpPanelLayout;
 
     public static Intent getCallingIntent(Activity activity) {
         return new Intent(activity, RideHomeActivity.class);
@@ -31,7 +38,8 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
 
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     public void initFragment() {
-        addFragment(R.id.fl_container, RideHomeFragment.newInstance());
+        addFragment(R.id.top_container, RideHomeFragment.newInstance());
+        addFragment(R.id.bottom_container, UberProductFragment.newInstance());
     }
 
     private void addFragment(int containerViewId, Fragment fragment) {
@@ -47,6 +55,11 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onProductClicked() {
 
     }
 }

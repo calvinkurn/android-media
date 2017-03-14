@@ -1,12 +1,10 @@
-package com.tokopedia.ride.bookingride;
+package com.tokopedia.ride.bookingride.view;
 
 import android.app.Activity;
 import android.content.Context;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.core.presenter.BaseView;
 
 /**
  * Created by alvarisi on 3/13/17.
@@ -33,8 +31,6 @@ public interface BookingRideContract {
         void hideMessage(String message);
 
         void moveToCurrentLocation(double latitude, double longitude);
-
-        void renderUberProductView();
     }
 
     interface Presenter extends CustomerPresenter<View>{

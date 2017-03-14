@@ -1,17 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:sothree="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:clickable="true"
-    tools:context=".bookingride.RideHomeActivity">
+              xmlns:sothree="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:clickable="true"
+              tools:context=".bookingride.view.RideHomeActivity">
 
-    <FrameLayout
-        android:id="@+id/fl_container"
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        android:id="@+id/cabs_crux_sliding_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:elevation="@dimen/default_elevation"/>
+        android:gravity="bottom"
+        sothree:umanoDragView="@+id/bottom_container"
+        sothree:umanoFadeColor="@android:color/transparent"
+        sothree:umanoOverlay="true"
+        sothree:umanoPanelHeight="100dp"
+        sothree:umanoParallaxOffset="67dp"
+        sothree:umanoScrollableView="@+id/cabsHomeListView"
+        sothree:umanoShadowHeight="0dp">
 
+        <FrameLayout
+            android:id="@+id/top_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <FrameLayout
+            android:id="@+id/bottom_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="false"/>
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 </LinearLayout>

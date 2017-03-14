@@ -11,5 +11,5 @@
     <string name="unavailable_play_service">This device supported. Please update your Play Services.</string>
     <string name="unsupported_device">This devices is not supported.</string>
     <string name="location_permission_required">Please enable location permission.</string>
-    <string name="select_pickup">ride_home_source_picker</string>
+    <string name="ride_home_source_picker">Select Pickup</string>
 </resources>

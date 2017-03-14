@@ -1,35 +1,18 @@
-package com.tokopedia.ride.bookingride;
+package com.tokopedia.ride.bookingride.view;
 
 import android.Manifest;
-import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.transition.ChangeBounds;
-import android.transition.Slide;
-import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -38,7 +21,6 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.SessionHandler;
@@ -55,8 +37,6 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     public static final int REQUEST_CODE_LOGIN = 1005;
     BookingRideContract.Presenter mPresenter;
 
-    @BindView(R2.id.layout_view_flipper)
-    ViewFlipper viewFlipper;
     @BindView(R2.id.toolbar)
     Toolbar mToolbar;
     @BindView(R2.id.mapview)
@@ -246,25 +226,5 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         super.onLowMemory();
         if (mapView != null)
             mapView.onLowMemory();
-    }
-
-    @Override
-    public void renderUberProductView() {
-        Fragment fragment = UberProductFragment.newInstance();
-
-        Slide slideTransition = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            slideTransition = new Slide(Gravity.END);
-            ChangeBounds changeBoundsTransition = new ChangeBounds();
-            changeBoundsTransition.setDuration(getResources().getInteger(R.integer.anim_duration_medium));
-            fragment.setEnterTransition(slideTransition);
-            fragment.setAllowEnterTransitionOverlap(true);
-            fragment.setAllowReturnTransitionOverlap(true);
-            fragment.setSharedElementEnterTransition(changeBoundsTransition);
-        }
-        getFragmentManager().beginTransaction()
-                .replace(R.id.option_container, fragment)
-                .addToBackStack(null)
-                .commit();
     }
 }
