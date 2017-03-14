@@ -4,41 +4,41 @@
     android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:background="@drawable/material_card"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
-        android:layout_width="match_parent">
+        android:background="@drawable/material_card">
 
         <ImageView
             android:id="@+id/crux_cabs_src_dest_line"
-            android:layout_centerVertical="true"
-            android:layout_height="35dp"
-            android:layout_marginLeft="20.5dp"
             android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20.5dp"
             android:src="@drawable/crux_cabs_src_dest_line" />
 
         <RelativeLayout
             android:id="@+id/crux_cabs_source_container"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/crux_cabs_source_icon"
-                android:layout_centerVertical="true"
-                android:layout_height="13dp"
-                android:layout_marginLeft="15dp"
                 android:layout_width="13dp"
+                android:layout_height="13dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
                 android:src="@drawable/crux_cabs_source_ic" />
 
             <TextView
-                android:ellipsize="marquee"
-                android:hint="Select Pickup"
                 android:id="@+id/crux_cabs_source"
-                android:layout_centerVertical="true"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/crux_cabs_source_icon"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/crux_cabs_source_icon"
+                android:ellipsize="marquee"
+                android:hint="@string/select_pickup"
                 android:paddingBottom="12dp"
                 android:paddingLeft="18dp"
                 android:paddingRight="12dp"
@@ -51,32 +51,32 @@
 
         <RelativeLayout
             android:id="@+id/layout_destination"
-            android:layout_below="@id/crux_cabs_source_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent">
+            android:layout_below="@id/crux_cabs_source_container">
 
             <View
-                android:background="@color/grey"
+                android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginLeft="47dp"
-                android:layout_width="match_parent" />
+                android:background="@color/grey" />
 
             <ImageView
                 android:id="@+id/crux_cabs_destination_icon"
-                android:layout_centerVertical="true"
-                android:layout_height="13dp"
-                android:layout_marginLeft="15dp"
                 android:layout_width="13dp"
+                android:layout_height="13dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
                 android:src="@drawable/crux_cabs_dest_ic" />
 
             <TextView
+                android:id="@+id/crux_cabs_destination"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/crux_cabs_destination_icon"
                 android:ellipsize="marquee"
                 android:hint="Select Destination"
-                android:id="@+id/crux_cabs_destination"
-                android:layout_centerVertical="true"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/crux_cabs_destination_icon"
-                android:layout_width="match_parent"
                 android:paddingBottom="12dp"
                 android:paddingLeft="18dp"
                 android:paddingTop="12dp"

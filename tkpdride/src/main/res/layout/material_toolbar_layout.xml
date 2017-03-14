@@ -5,9 +5,8 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/colorPrimary"
+    android:background="@color/tkpd_main_green"
     android:minHeight="?attr/actionBarSize"
-    android:theme="@style/ToolbarTheme"
-    app:contentInsetLeft="0dp"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-    app:titleTextAppearance="@style/Toolbar.TitleText" />
+    android:theme="@style/AppBarTheme"
+    app:titleTextAppearance="@style/ToolbarText"
+    app:subtitleTextAppearance="@style/ToolbarSubtitleText" />

@@ -30,7 +30,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
     }
 
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
-    private void initFragment() {
+    public void initFragment() {
         addFragment(R.id.fl_container, RideHomeFragment.newInstance());
     }
 

@@ -32,12 +32,13 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
     public void initialize() {
         if (getView().isUserLoggedIn()) {
             if (getView().isUserPhoneNumberVerified()) {
-                getView().showVerificationPhoneNumberDialog();
+                getView().showVerificationPhoneNumberPage();
             } else {
                 if (checkPlayServices()) {
                     createLocationRequest();
                     initializeLocationService();
                 }
+                getView().renderUberProductView();
             }
         } else {
             getView().navigateToLoginPage();

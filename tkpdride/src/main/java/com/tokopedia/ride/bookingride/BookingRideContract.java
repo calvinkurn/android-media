@@ -20,7 +20,7 @@ public interface BookingRideContract {
 
         void navigateToLoginPage();
 
-        void showVerificationPhoneNumberDialog();
+        void showVerificationPhoneNumberPage();
 
         boolean isUserPhoneNumberVerified();
 
@@ -33,6 +33,8 @@ public interface BookingRideContract {
         void hideMessage(String message);
 
         void moveToCurrentLocation(double latitude, double longitude);
+
+        void renderUberProductView();
     }
 
     interface Presenter extends CustomerPresenter<View>{

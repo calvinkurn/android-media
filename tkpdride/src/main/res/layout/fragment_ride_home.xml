@@ -1,27 +1,24 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:sothree="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.tokopedia.ride.bookingride.RideHomeFragment">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="com.tokopedia.ride.bookingride.RideHomeFragment">
 
-    <com.sothree.slidinguppanel.SlidingUpPanelLayout
-        android:id="@+id/cabs_crux_sliding_layout"
+    <include
+        android:id="@+id/toolbar_layout"
+        layout="@layout/material_toolbar_layout"/>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="bottom"
-        sothree:umanoDragView="@+id/crux_cabs_draggable_container"
-        sothree:umanoFadeColor="@android:color/transparent"
-        sothree:umanoOverlay="true"
-        sothree:umanoPanelHeight="100dp"
-        sothree:umanoParallaxOffset="56dp"
-        sothree:umanoScrollableView="@+id/cabsHomeListView"
-        sothree:umanoShadowHeight="0dp">
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/toolbar_layout"
+        android:orientation="vertical"
+        android:weightSum="1">
 
         <RelativeLayout
-            android:id="@+id/crux_cabs_androids_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_weight="0.5">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -30,8 +27,8 @@
 
                 <com.google.android.gms.maps.MapView
                     android:id="@+id/mapview"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent" />
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
 
                 <ImageView
                     android:id="@+id/iv_android_center_marker"
@@ -39,7 +36,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:src="@drawable/crux_cabs_center_marker_ic"
-                    android:visibility="visible" />
+                    android:visibility="visible"/>
 
                 <ImageView
                     android:id="@+id/iv_my_location_button"
@@ -50,160 +47,19 @@
                     android:layout_marginBottom="116dp"
                     android:layout_marginRight="26dp"
                     android:src="@drawable/crux_cabs_mylocation_button"
-                    android:visibility="visible" />
-
-                <include layout="@layout/material_toolbar_layout" />
+                    android:visibility="visible"/>
             </RelativeLayout>
 
-            <include layout="@layout/view_source_destination_picker" />
+            <include layout="@layout/view_source_destination_picker"/>
 
         </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/crux_cabs_draggable_container"
+        <FrameLayout
+            android:id="@+id/option_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="false"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:layout_weight="0.5">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/five_dp"
-                android:layout_marginRight="@dimen/five_dp"
-                android:paddingTop="@dimen/five_dp">
-
-                <ViewFlipper
-                    android:id="@+id/layout_view_flipper"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:autoStart="false"
-                    android:clickable="true"
-                    android:measureAllChildren="false">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
-
-                        <include
-                            layout="@layout/crux_cabs_home_ad_layout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="5dp"
-                            android:layout_marginLeft="2dp"
-                            android:layout_marginRight="2dp" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@color/white"
-                            android:orientation="vertical">
-
-                            <include
-                                layout="@layout/layout_cabs_booking_header"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
-
-                            <include layout="@layout/dummy_cabs_list" />
-
-                            <include
-                                layout="@layout/cabs_home_empty_list_layout"
-                                android:visibility="gone" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <include
-                        android:id="@+id/cab_confirm_booking_bar"
-                        layout="@layout/layout_cabs_confirm_booking"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                </ViewFlipper>
-
-                <ProgressBar
-                    android:id="@+id/materialLoader"
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="67dp"
-                    android:background="@drawable/white_circle_with_shadow"
-                    android:padding="13dp"
-                    android:visibility="gone" />
-            </RelativeLayout>
-        </LinearLayout>
-    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
-
-    <FrameLayout
-        android:id="@+id/block_translucent_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#00000000"
-        android:visibility="visible" />
-
-
-    <RelativeLayout
-        android:id="@+id/hidden_panel"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@color/white"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="How many seats you need?"
-                android:textColor="@color/black"
-                android:textSize="14sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?selectableItemBackground"
-                android:onClick="slideUpDown"
-                android:padding="16dp"
-                android:text="1 seat"
-                android:textColor="#212121"
-                android:textSize="14sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?selectableItemBackground"
-                android:onClick="slideUpDown"
-                android:padding="16dp"
-                android:text="2 seats"
-                android:textColor="#212121"
-                android:textSize="14sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?selectableItemBackground"
-                android:onClick="slideUpDown"
-                android:padding="16dp"
-                android:text="3 seats"
-                android:textColor="#212121"
-                android:textSize="14sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?selectableItemBackground"
-                android:onClick="slideUpDown"
-                android:padding="16dp"
-                android:text="4 seats"
-                android:textColor="#212121"
-                android:textSize="14sp" />
-        </LinearLayout>
-
-    </RelativeLayout>
-
-</FrameLayout>
+        </FrameLayout>
+    </LinearLayout>
+</RelativeLayout>

@@ -4,16 +4,24 @@ import android.Manifest;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.ChangeBounds;
+import android.transition.Slide;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -23,12 +31,18 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
@@ -41,23 +55,14 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     public static final int REQUEST_CODE_LOGIN = 1005;
     BookingRideContract.Presenter mPresenter;
 
-    @BindView(R2.id.cabs_crux_sliding_layout)
-    SlidingUpPanelLayout mSlidingUpPanelLayout;
     @BindView(R2.id.layout_view_flipper)
     ViewFlipper viewFlipper;
-    @BindView(R2.id.hidden_panel)
-    RelativeLayout hiddenPanel;
-    @BindView(R2.id.block_translucent_view)
-    FrameLayout blockScreenView;
     @BindView(R2.id.toolbar)
     Toolbar mToolbar;
     @BindView(R2.id.mapview)
     MapView mapView;
 
     GoogleMap mGoogleMap;
-
-    private boolean isPanelShown;
-    private DisplayMetrics displayMetrics;
 
     private OnFragmentInteractionListener mListener;
 
@@ -80,15 +85,21 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         super.onViewCreated(view, savedInstanceState);
         setInitialVariable();
         setViewListener();
+        setupToolbar();
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
-
         mPresenter.attachView(this);
         mPresenter.initialize();
     }
 
+    private void setupToolbar() {
+        if (mToolbar != null) {
+            ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
     private void setViewListener() {
-        hiddenPanel.setVisibility(View.GONE);
     }
 
     @Override
@@ -136,11 +147,14 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
 
     @Override
     public void navigateToLoginPage() {
-
+        Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
+        intent.putExtra(Session.WHICH_FRAGMENT_KEY,
+                TkpdState.DrawerPosition.LOGIN);
+        startActivityForResult(intent, REQUEST_CODE_LOGIN);
     }
 
     @Override
-    public void showVerificationPhoneNumberDialog() {
+    public void showVerificationPhoneNumberPage() {
 
     }
 
@@ -181,8 +195,6 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
 
     private void setInitialVariable() {
         mPresenter = new BookingRidePresenter();
-        isPanelShown = false;
-        displayMetrics = getResources().getDisplayMetrics();
     }
 
     @Override
@@ -192,6 +204,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
             switch (requestCode) {
                 case REQUEST_CODE_LOGIN:
                     Toast.makeText(getActivity(), "User Logged In", Toast.LENGTH_SHORT).show();
+                    mPresenter.initialize();
                     break;
             }
         }
@@ -210,7 +223,9 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
 
     @Override
     public void moveToCurrentLocation(double latitude, double longitude) {
-
+        LatLng currentLocation = new LatLng(latitude, longitude);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentLocation, 12);
+        mGoogleMap.animateCamera(cameraUpdate);
     }
 
     @Override
@@ -233,55 +248,23 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
             mapView.onLowMemory();
     }
 
-    public void slideUpDown(final View view) {
-        if (!isPanelShown) {
-            showBlockingView(500);
+    @Override
+    public void renderUberProductView() {
+        Fragment fragment = UberProductFragment.newInstance();
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    // Show the panel
-                    Animation bottomUp = AnimationUtils.loadAnimation(getActivity(),
-                            R.anim.bottom_up);
-
-                    hiddenPanel.startAnimation(bottomUp);
-                    hiddenPanel.setVisibility(View.VISIBLE);
-                    isPanelShown = true;
-                }
-            }, 500);
-        } else {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    // Hide the Panel
-                    Animation bottomDown = AnimationUtils.loadAnimation(getActivity(),
-                            R.anim.bottom_down);
-
-                    hiddenPanel.startAnimation(bottomDown);
-                    hiddenPanel.setVisibility(View.INVISIBLE);
-                    isPanelShown = false;
-
-                    hideBlockingView();
-                }
-            }, 200);
+        Slide slideTransition = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            slideTransition = new Slide(Gravity.END);
+            ChangeBounds changeBoundsTransition = new ChangeBounds();
+            changeBoundsTransition.setDuration(getResources().getInteger(R.integer.anim_duration_medium));
+            fragment.setEnterTransition(slideTransition);
+            fragment.setAllowEnterTransitionOverlap(true);
+            fragment.setAllowReturnTransitionOverlap(true);
+            fragment.setSharedElementEnterTransition(changeBoundsTransition);
         }
+        getFragmentManager().beginTransaction()
+                .replace(R.id.option_container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
-
-    private void hideBlockingView() {
-        blockScreenView.setVisibility(View.GONE);
-    }
-
-    private void showBlockingView(int delay) {
-        blockScreenView.setVisibility(View.VISIBLE);
-
-        final ObjectAnimator backgroundColorAnimator = ObjectAnimator.ofObject(blockScreenView,
-                "backgroundColor",
-                new ArgbEvaluator(),
-                0x00000000,
-                0xBB000000);
-        backgroundColorAnimator.setDuration(delay);
-        backgroundColorAnimator.start();
-    }
-
-
 }

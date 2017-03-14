@@ -1,0 +1,57 @@
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/five_dp"
+    android:layout_marginRight="@dimen/five_dp"
+    android:paddingTop="@dimen/five_dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:context="com.tokopedia.ride.bookingride.UberProductFragment">
+
+    <ViewFlipper
+        android:id="@+id/layout_view_flipper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autoStart="false"
+        android:clickable="true"
+        android:measureAllChildren="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <include
+                layout="@layout/crux_cabs_home_ad_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <include
+                    layout="@layout/layout_cabs_booking_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <include layout="@layout/dummy_cabs_list" />
+
+                <include
+                    layout="@layout/cabs_home_empty_list_layout"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <include
+            android:id="@+id/cab_confirm_booking_bar"
+            layout="@layout/layout_cabs_confirm_booking"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </ViewFlipper>
+</RelativeLayout>

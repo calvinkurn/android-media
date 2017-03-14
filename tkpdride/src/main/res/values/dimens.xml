@@ -17,4 +17,6 @@
     <dimen name="ninety_dp">90dp</dimen>
     <dimen name="eight_dp">8dp</dimen>
     <dimen name="default_elevation">8dp</dimen>
+
+    <integer name="anim_duration_medium">300</integer>
 </resources>
