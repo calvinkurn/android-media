@@ -309,9 +309,9 @@ public class ChangePhoneNumberRequestFragment
     @Override
     public void onSuccessCheckStatus(CheckStatusData checkStatusData) {
         finishLoading();
-        if (checkStatusData.isPending()) {
-            onGoToWaitPage();
-        }
+//        if (checkStatusData.isPending()) {
+//            onGoToWaitPage();
+//        }
     }
 
     @Override

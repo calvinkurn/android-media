@@ -13,9 +13,6 @@ public class ChangePhoneNumberRequestPass {
 
     String bankBookHeight;
     String bankBookWidth;
-    private String idImageId;
-    private String bankBookImageId;
-
 
     public String getUploadIdPath() {
         return uploadIdPath;
@@ -63,21 +60,5 @@ public class ChangePhoneNumberRequestPass {
 
     public void setBankBookWidth(String bankBookWidth) {
         this.bankBookWidth = bankBookWidth;
-    }
-
-    public void setIdImageId(String idImageId) {
-        this.idImageId = idImageId;
-    }
-
-    public String getIdImageId() {
-        return idImageId;
-    }
-
-    public void setBankBookImageId(String bankBookImageId) {
-        this.bankBookImageId = bankBookImageId;
-    }
-
-    public String getBankBookImageId() {
-        return bankBookImageId;
     }
 }

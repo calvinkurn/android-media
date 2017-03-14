@@ -32,8 +32,8 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
     public static final String PARAM_NEW_ADD = "new_add";
     public static final String DEFAULT_NEW_ADD = "2";
 
-    public static final String PARAM_KTP_IMAGE_ID = "ktp_image_id";
-    public static final String PARAM_BANKBOOK_IMAGE_ID = "bankbook_image_id";
+    public static final String PARAM_KTP_IMAGE_ID = "ktp";
+    public static final String PARAM_BANKBOOK_IMAGE_ID = "tabungan";
 
     public static final String PARAM_KTP_IMAGE_PATH = "ktp_image_path";
     public static final String PARAM_BANK_BOOK_IMAGE_PATH = "bank_book_image_path";
@@ -218,9 +218,9 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
         JSONObject reviewPhotos = new JSONObject();
 
         try {
-            reviewPhotos.put(requestParams.getString(PARAM_KTP_IMAGE_ID, ""),
+            reviewPhotos.put(PARAM_KTP_IMAGE_ID,
                     changePhoneNumberModel.getUploadIdImageModel().getUploadImageData().getPicObj());
-            reviewPhotos.put(requestParams.getString(PARAM_BANKBOOK_IMAGE_ID, ""),
+            reviewPhotos.put(PARAM_BANKBOOK_IMAGE_ID,
                     changePhoneNumberModel.getUploadBankBookImageModel().getUploadImageData().getPicObj());
         } catch (JSONException e) {
             throw new ErrorMessageException(MainApplication.getAppContext().getString(R.string.default_error_upload_image));

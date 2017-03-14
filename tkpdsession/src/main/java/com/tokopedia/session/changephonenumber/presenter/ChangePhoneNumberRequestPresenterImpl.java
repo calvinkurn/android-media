@@ -208,15 +208,11 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
     }
 
     private void setParamUploadBankBookImage(RequestParams params) {
-        params.putString(UploadChangePhoneNumberRequestUseCase.PARAM_BANKBOOK_IMAGE_ID,
-                pass.getBankBookImageId());
         params.putString(UploadChangePhoneNumberRequestUseCase.PARAM_BANK_BOOK_IMAGE_PATH,
                 pass.getUploadBankBookPath());
     }
 
     private void setParamUploadIdImage(RequestParams params) {
-        params.putString(UploadChangePhoneNumberRequestUseCase.PARAM_KTP_IMAGE_ID,
-                pass.getIdImageId());
         params.putString(UploadChangePhoneNumberRequestUseCase.PARAM_KTP_IMAGE_PATH,
                 pass.getUploadIdPath());
     }
@@ -290,7 +286,6 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
     public void setIdImage(String idPath) {
         pass.setUploadIdPath(idPath);
         setIdImageHeightAndWidth(pass, idPath);
-        pass.setIdImageId("image" + UUID.randomUUID().toString());
     }
 
     private void setIdImageHeightAndWidth(ChangePhoneNumberRequestPass pass, String idPath) {
@@ -307,7 +302,6 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
     public void setBankBookImage(String bankBookPath) {
         pass.setUploadBankBookPath(bankBookPath);
         setBankBookImageHeightAndWidth(pass, bankBookPath);
-        pass.setBankBookImageId("image" + UUID.randomUUID().toString());
 
     }
 
