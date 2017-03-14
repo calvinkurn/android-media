@@ -357,7 +357,8 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
             budgetPerDayEditText.setText(String.valueOf(detailAd.getPriceDaily()));
         } else {
             showBudgetPerDay(false);
-            budgetPerDayEditText.setText(R.string.top_ads_detail_edit_default_currency_value);
+            // no need to set, already default from xml
+            // budgetPerDayEditText.setText(R.string.top_ads_detail_edit_default_currency_value);
         }
         convertDate(detailAd);
         if (!TextUtils.isEmpty(detailAd.getEndDate())) {
