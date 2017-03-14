@@ -484,6 +484,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                 if (getActivity() != null && rootView != null) {
 
                     switch (topAdsAddProductListPresenter.getNetworkStatus()) {
+                        case RETRYNETWORKCALL:
                         case ONACTIVITYFORRESULT:
                         case PULLTOREFRESH:
                         case SEARCHVIEW:
