@@ -1065,38 +1065,32 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         }
     }
 
+    private Observable<List<File>> downloadImages(final List<String> urls){
+        if(!addProductType.equals(AddProductType.EDIT)){
+            return null;
+        }
+
+        return Observable.from(urls)
+                .flatMap(new Func1<String, Observable<File>>() {
+                    @Override
+                    public Observable<File> call(String url) {
+                        return downloadObservable(url).first();
+                    }
+                }).toList();
+
+    }
+
     /**
      * This method specific for socmed only
      *
      * @param url
      */
-    private void downloadImage(final String url) {
+    private void downloadImage(String url) {
         // if not edit then do nothing
         if (!addProductType.equals(AddProductType.ADD_FROM_SOCIAL_MEDIA))
             return;
 
-        Observable.just(true)
-                .map(new Func1<Boolean, File>() {
-                    @Override
-                    public File call(Boolean aBoolean) {
-                        FutureTarget<File> future = Glide.with(getActivity())
-                                .load(url)
-                                .downloadOnly(4096, 2160);
-                        File photo = null;
-                        try {
-                            File cacheFile = future.get();
-                            photo = UploadPhotoTask.writeImageToTkpdPath(cacheFile);
-                            Log.d(TAG, messageTAG + "path -> " + (photo != null ? photo.getAbsolutePath() : "kosong"));
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                            throw new RuntimeException(e.getMessage());
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                            throw new RuntimeException(e.getMessage());
-                        }
-                        return photo;
-                    }
-                }).subscribeOn(Schedulers.io())
+        downloadObservable(url).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(
@@ -1136,6 +1130,32 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                             }
                         }
                 );
+    }
+
+    @NonNull
+    private Observable<File> downloadObservable(String url) {
+        return Observable.just(url)
+                .map(new Func1<String, File>() {
+                    @Override
+                    public File call(String url) {
+                        FutureTarget<File> future = Glide.with(getActivity())
+                                .load(url)
+                                .downloadOnly(4096, 2160);
+                        File photo = null;
+                        try {
+                            File cacheFile = future.get();
+                            photo = UploadPhotoTask.writeImageToTkpdPath(cacheFile);
+                            Log.d(TAG, messageTAG + "path -> " + (photo != null ? photo.getAbsolutePath() : "kosong"));
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                            throw new RuntimeException(e.getMessage());
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                            throw new RuntimeException(e.getMessage());
+                        }
+                        return photo;
+                    }
+                });
     }
 
     @Override
@@ -1227,6 +1247,38 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     @Override
     public void setProductPreOrder(String preOrderDay) {
         addProductEdittextPreorder.setText(preOrderDay);
+    }
+
+    @Override
+    public void addImageAfterSelectDownload(List<String> urls, final int position) {
+        downloadImages(urls)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(
+                        new Subscriber<List<File>>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onNext(List<File> files) {
+                                addImageAfterSelect(files.get(0).getAbsolutePath(), position);
+                                files.remove(0);
+                                ArrayList<String> imageUrls = new ArrayList<>();
+                                for (int i=0, sizei = files.size(); i<sizei;i++) {
+                                    imageUrls.add(files.get(i).getAbsolutePath());
+                                }
+                                addImageAfterSelect(imageUrls);
+                            }
+                        }
+                );
     }
 
 

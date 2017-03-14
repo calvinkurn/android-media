@@ -174,7 +174,7 @@ public class ProductSocMedActivity extends BaseProductActivity implements
         Intent intent = getIntent();
         if(intent != null ) {
             instagramMediaModelSparseArray
-                    = Parcels.unwrap(intent.getParcelableExtra(PRODUCT_SOC_MED_DATA));
+                    = Parcels.unwrap(intent.getParcelableExtra(GalleryActivity.PRODUCT_SOC_MED_DATA));
 
             //[START] convert instagram model to new models
             imageModels = new ArrayList<>();
@@ -317,11 +317,23 @@ public class ProductSocMedActivity extends BaseProductActivity implements
             Log.d(TAG, messageTAG + imageUrl+" & "+position);
             AddProductFragment adf = getFragment(productSocMedViewPager.getCurrentItem());
             if(adf != null && CommonUtils.checkNotNull(imageUrl)){
-                adf.addImageAfterSelect(imageUrl, position);
+                if (imageUrl.startsWith("http")) {
+                    List<String> toDownloadList = new ArrayList<String>();
+                    toDownloadList.add(imageUrl);
+                    adf.addImageAfterSelectDownload(toDownloadList, position);
+                }
+                else {
+                    adf.addImageAfterSelect(imageUrl, position);
+                }
             }
             ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryBrowser.IMAGE_URLS);
             if(adf != null && checkCollectionNotNull(imageUrls)){
-                adf.addImageAfterSelect(imageUrls);
+                if (imageUrls.get(0).startsWith("http")) {
+                    adf.addImageAfterSelectDownload(imageUrls, position);
+                }
+                else {
+                    adf.addImageAfterSelect(imageUrls);
+                }
             }
         }
     }

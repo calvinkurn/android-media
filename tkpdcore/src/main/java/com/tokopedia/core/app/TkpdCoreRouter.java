@@ -1,5 +1,6 @@
 package com.tokopedia.core.app;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import com.tokopedia.core.drawer.DrawerVariable;
 public interface TkpdCoreRouter {
     DrawerVariable getDrawer(AppCompatActivity activity);
     void startInstopedActivity(Context context);
+    void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult);
     void removeInstopedToken();
     void goToManageProduct(Context context);
     void clearEtalaseCache();

@@ -37,7 +37,9 @@ import android.widget.FrameLayout;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.DownloadResultSender;
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.GalleryBrowser;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.fragment.TwitterDialogV4;
 import com.tokopedia.core.myproduct.fragment.ImageGalleryAlbumFragment;
 import com.tokopedia.core.myproduct.fragment.ImageGalleryFragment;
@@ -76,6 +78,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -83,9 +86,13 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
+import static com.tkpd.library.utils.CommonUtils.convertDpToPixel;
 
 /**
  * Created by sebastianusk on 03/01/2017.
@@ -625,13 +632,26 @@ public class ProductActivity extends BaseProductActivity implements
             Fragment fragment = supportFragmentManager.findFragmentByTag(AddProductFragment.FRAGMENT_TAG);
             if (fragment != null && fragment instanceof AddProductFragment && checkNotNull(imageUrl)) {
                 ((AddProductFragment) fragment).addImageAfterSelect(imageUrl, position);
+                if (imageUrl.startsWith("http")) {
+                    List<String> toDownloadList = new ArrayList<>();
+                    toDownloadList.add(imageUrl);
+                    ((AddProductFragment) fragment).addImageAfterSelectDownload(toDownloadList, position);
+                }
+                else {
+                    ((AddProductFragment) fragment).addImageAfterSelect(imageUrl, position);
+                }
             }
-
             ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryBrowser.IMAGE_URLS);
-            if(fragment != null && fragment instanceof AddProductFragment && checkCollectionNotNull(imageUrls)){
-                ((AddProductFragment) fragment).addImageAfterSelect(imageUrls.get(0), position);
-                imageUrls.remove(0);
-                ((AddProductFragment) fragment).addImageAfterSelect(imageUrls);
+            if (fragment != null && fragment instanceof AddProductFragment && checkCollectionNotNull(imageUrls)) {
+                if (imageUrls.get(0).startsWith("http")) {
+                    ((AddProductFragment) fragment).addImageAfterSelectDownload(imageUrls, position);
+                }
+                else {
+                    ((AddProductFragment) fragment).addImageAfterSelect(imageUrls.get(0), position);
+                    imageUrls.remove(0);
+                    ((AddProductFragment) fragment).addImageAfterSelect(imageUrls);
+                }
+
             }
         }
 
