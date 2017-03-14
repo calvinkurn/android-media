@@ -29,7 +29,7 @@ public class CheckoutDataParameter implements Parcelable {
         setWalletRefreshToken(builder.walletRefreshToken);
         setRelationType(builder.relationType);
         setRelationId(builder.relationId);
-        needOtp = builder.needOtp;
+        setNeedOtp(builder.needOtp);
     }
 
     public String getVoucherCode() {
@@ -128,6 +128,7 @@ public class CheckoutDataParameter implements Parcelable {
             this.walletRefreshToken = checkoutData.walletRefreshToken;
             this.relationType = checkoutData.relationType;
             this.relationId = checkoutData.relationId;
+            this.needOtp = checkoutData.isNeedOtp();
         }
 
         public Builder voucherCode(String val) {

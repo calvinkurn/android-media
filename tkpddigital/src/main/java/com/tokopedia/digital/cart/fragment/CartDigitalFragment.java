@@ -267,6 +267,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         checkoutDataBuilder.relationType(cartDigitalInfoData.getType());
         checkoutDataBuilder.transactionAmount(cartDigitalInfoData.getAttributes().getPricePlain());
         checkoutDataBuilder.userAgent(DeviceUtil.getUserAgentForApiCall());
+        checkoutDataBuilder.needOtp(cartDigitalInfoData.isNeedOtp());
     }
 
     @Override
@@ -411,22 +412,27 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderErrorCheckout(String message) {
-
+        showToastMessage(message);
     }
 
     @Override
     public void renderErrorHttpCheckout(String message) {
-
+        showToastMessage(message);
     }
 
     @Override
     public void renderErrorNoConnectionCheckout(String message) {
-
+        NetworkErrorHelper.showDialog(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.processToCheckout();
+            }
+        });
     }
 
     @Override
     public void renderErrorTimeoutConnectionCheckout(String message) {
-
+        showToastMessage(message);
     }
 
     @Override
