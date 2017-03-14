@@ -45,7 +45,6 @@
                     android:background="@color/transparent"
                     android:enabled="false"
                     android:maxLines="1"
-                    android:text="089191991991"
                     android:textColor="@color/grey_500"
                     android:textSize="@dimen/font_medium"
                     tools:text="08123401923" />

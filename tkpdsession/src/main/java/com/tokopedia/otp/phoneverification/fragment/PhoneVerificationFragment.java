@@ -114,12 +114,15 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
                 Manifest.permission.READ_SMS) == PackageManager.PERMISSION_DENIED
                 && !getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
             new android.support.v7.app.AlertDialog.Builder(getActivity())
-                    .setMessage(RequestPermissionUtil.getNeedPermissionMessage(Manifest.permission.READ_SMS)
+                    .setMessage(
+                            RequestPermissionUtil
+                                    .getNeedPermissionMessage(Manifest.permission.READ_SMS)
                     )
                     .setPositiveButton(com.tokopedia.core.R.string.button_ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            PhoneVerificationFragmentPermissionsDispatcher.checkSmsPermissionWithCheck(PhoneVerificationFragment.this);
+                            PhoneVerificationFragmentPermissionsDispatcher
+                                    .checkSmsPermissionWithCheck(PhoneVerificationFragment.this);
 
                         }
                     })
@@ -127,12 +130,14 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_SMS);
+                            RequestPermissionUtil.onPermissionDenied(getActivity(),
+                                    Manifest.permission.READ_SMS);
                         }
                     })
                     .show();
         } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
-            PhoneVerificationFragmentPermissionsDispatcher.checkSmsPermissionWithCheck(PhoneVerificationFragment.this);
+            PhoneVerificationFragmentPermissionsDispatcher
+                    .checkSmsPermissionWithCheck(PhoneVerificationFragment.this);
         }
     }
 
@@ -170,13 +175,6 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     @Override
     protected void initialPresenter() {
-
-        Bundle bundle = new Bundle();
-        SessionHandler sessionHandler = new SessionHandler(getActivity());
-        bundle.putString(AccountsService.AUTH_KEY,
-                "Bearer " + sessionHandler.getAccessToken(getActivity()));
-
-
         presenter = new PhoneVerificationPresenterImpl(this);
     }
 
@@ -212,7 +210,8 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
                               @Override
                               public void updateDrawState(TextPaint ds) {
                                   ds.setUnderlineText(true);
-                                  ds.setColor(getResources().getColor(com.tokopedia.core.R.color.tkpd_main_green));
+                                  ds.setColor(MethodChecker.getColor(getActivity(),
+                                          com.tokopedia.core.R.color.tkpd_main_green));
                               }
                           }
                 , getString(com.tokopedia.core.R.string.action_send_otp_with_call_2).indexOf("lewat")
@@ -379,8 +378,10 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
             public void onTick(long millisUntilFinished) {
                 requestOtpButton.setVisibility(View.GONE);
                 countdownText.setVisibility(View.VISIBLE);
-                countdownText.setText(MethodChecker.fromHtml("Verifikasi akan dikirimkan.<br>Tunggu " + "<b>" + String.format(FORMAT,
-                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished)) + " detik</b> untuk mengirim ulang."));
+                countdownText.setText(MethodChecker.fromHtml(
+                        "Verifikasi akan dikirimkan.<br>Tunggu " + "<b>" + String.format(FORMAT,
+                                TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished))
+                                + " detik</b> untuk mengirim ulang."));
                 requestOtpCallButton.setVisibility(View.GONE);
             }
 

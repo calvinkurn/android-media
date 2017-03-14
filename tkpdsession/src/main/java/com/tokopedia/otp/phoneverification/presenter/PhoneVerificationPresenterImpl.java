@@ -55,7 +55,8 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
     public void verifyPhoneNumber() {
         if (isValid()) {
 
-            verifyPhoneNumberUseCase.execute(getVerifyPhoneNumberParam(), new Subscriber<VerifyPhoneNumberModel>() {
+            verifyPhoneNumberUseCase.execute(getVerifyPhoneNumberParam(),
+                    new Subscriber<VerifyPhoneNumberModel>() {
                 @Override
                 public void onCompleted() {
 

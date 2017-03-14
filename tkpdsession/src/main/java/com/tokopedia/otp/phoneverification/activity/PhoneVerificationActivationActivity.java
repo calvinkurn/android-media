@@ -50,18 +50,16 @@ public class PhoneVerificationActivationActivity extends BasePresenterActivity {
     protected void initView() {
 
         PhoneVerificationActivationFragment fragmentHeader = PhoneVerificationActivationFragment.createInstance();
+        PhoneVerificationFragment fragment = PhoneVerificationFragment.createInstance();
+
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container_header) == null) {
             fragmentTransaction.add(R.id.container_header, fragmentHeader, fragmentHeader.getClass().getSimpleName());
         }
-        fragmentTransaction.commit();
-
-        PhoneVerificationFragment fragment = PhoneVerificationFragment.createInstance();
-        FragmentTransaction fragmentTransaction2 = getFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
-            fragmentTransaction2.add(R.id.container, fragment, fragment.getClass().getSimpleName());
+            fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
         }
-        fragmentTransaction2.commit();
+        fragmentTransaction.commit();
     }
 
     @Override

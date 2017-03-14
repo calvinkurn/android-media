@@ -59,6 +59,7 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     private static final String TAG = ManagePeopleProfileFragment.class.getSimpleName();
     private static final String IMAGE_PATH_DATA = "IMAGE_PATH_DATA";
     private static final String PROFILE_DATA = "PROFILE_DATA";
+    public static final int REQUEST_VERIFY_PHONE = 123;
 
     @BindView(R2.id.layout_main)
     View layoutMain;
@@ -297,12 +298,12 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     public void showPhoneVerificationDialog(String userPhone) {
         SessionHandler.setPhoneNumber(userPhone);
         startActivityForResult(SessionRouter.getPhoneVerificationProfileActivityIntent(getActivity()),
-                SessionRouter.REQUEST_VERIFY_PHONE);
+                REQUEST_VERIFY_PHONE);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == SessionRouter.REQUEST_VERIFY_PHONE &&
+        if (requestCode == REQUEST_VERIFY_PHONE &&
                 resultCode == Activity.RESULT_OK &&
                 SessionHandler.isMsisdnVerified()) {
             getProfileData().getDataUser().setUserPhone(SessionHandler.getPhoneNumber());

@@ -1,6 +1,7 @@
 package com.tokopedia.session.session.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -208,13 +209,13 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         Log.d(getClass().getSimpleName(), "moveTo " + type);
         switch (type) {
             case MOVE_TO_CART_TYPE:
-                    if (SessionHandler.isV4Login(this)) {
-                        startActivity(TransactionCartRouter.createInstanceCartActivity(this));
-                    } else {
-                        Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
-                        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME);
-                        startActivity(intent);
-                    }
+                if (SessionHandler.isV4Login(this)) {
+                    startActivity(TransactionCartRouter.createInstanceCartActivity(this));
+                } else {
+                    Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+                    intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME);
+                    startActivity(intent);
+                }
                 break;
             case HOME:
                 if (SessionHandler.isV4Login(this) && !SessionHandler.isMsisdnVerified()) {
@@ -861,7 +862,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     fragment.onFailedProfileShared(data.getStringExtra("error"));
                 }
             }
-        }else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER){
+        } else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER) {
             loginToHome();
         }
     }

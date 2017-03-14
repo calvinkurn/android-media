@@ -95,8 +95,8 @@ public class AuthUtil {
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
         return headerMap;
     }
-    public static Map<String, String> generateHeadersAccount(String path, String strParam, String method,
-                                                             String contentType, String authKey, String dateFormat) {
+    public static Map<String, String> generateBothAuthHeadersAccount(String path, String strParam, String method,
+                                                                     String contentType, String authKey, String dateFormat) {
 
         String date = generateDate(dateFormat);
         String contentMD5 = generateContentMd5(strParam);
