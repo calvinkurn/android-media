@@ -17,7 +17,7 @@ import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.adapter.ProductAdapter;
-import com.tokopedia.discovery.fragment.browseparent.ProductFragment;
+import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;

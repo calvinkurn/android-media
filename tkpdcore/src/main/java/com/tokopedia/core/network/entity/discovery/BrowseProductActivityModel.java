@@ -37,9 +37,10 @@ public class BrowseProductActivityModel implements Parcelable {
 
     public void setHotListBannerModel(HotListBannerModel hotListBannerModel) {
         this.hotListBannerModel = hotListBannerModel;
-
-        fragmentId = BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID;
-        adSrc = TopAdsApi.SRC_HOTLIST;
+        if(hotListBannerModel!=null) {
+            fragmentId = BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID;
+            adSrc = TopAdsApi.SRC_HOTLIST;
+        }
     }
 
     public void removeBannerModel() {

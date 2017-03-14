@@ -29,6 +29,7 @@ import com.tokopedia.core.inboxreputation.interactor.CacheInboxReputationInterac
 import com.tokopedia.core.inboxreputation.interactor.InboxReputationCacheManager;
 import com.tokopedia.core.message.interactor.CacheInteractorImpl;
 import com.tokopedia.core.msisdn.fragment.MsisdnVerificationFragment;
+import com.tokopedia.core.product.presenter.ProductDetailPresenterImpl;
 import com.tokopedia.core.prototype.InboxCache;
 import com.tokopedia.core.prototype.ManageProductCache;
 import com.tokopedia.core.prototype.PembelianCache;
@@ -179,6 +180,7 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, "REGISTERED");
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_MAIN);
         LocalCacheHandler.clearCache(context, MsisdnVerificationFragment.PHONE_VERIFICATION);
+        LocalCacheHandler.clearCache(context, ProductDetailPresenterImpl.CACHE_PROMOTION_PRODUCT);
         CacheInboxReputationInteractorImpl reputationCache = new CacheInboxReputationInteractorImpl();
         reputationCache.deleteCache();
         InboxReputationCacheManager reputationDetailCache = new InboxReputationCacheManager();

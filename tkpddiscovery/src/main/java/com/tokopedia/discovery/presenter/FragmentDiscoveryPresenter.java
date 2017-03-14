@@ -3,7 +3,7 @@ package com.tokopedia.discovery.presenter;
 import android.content.Context;
 
 import com.tokopedia.core.session.base.BaseImpl;
-import com.tokopedia.discovery.fragment.browseparent.ProductFragment;
+import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.view.FragmentBrowseProductView;
 
 /**

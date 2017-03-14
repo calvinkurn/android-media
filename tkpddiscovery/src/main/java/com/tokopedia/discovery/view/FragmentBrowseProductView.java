@@ -8,7 +8,7 @@ import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.adapter.ProductAdapter;
-import com.tokopedia.discovery.fragment.browseparent.ProductFragment;
+import com.tokopedia.discovery.fragment.ProductFragment;
 
 import java.util.List;
 
