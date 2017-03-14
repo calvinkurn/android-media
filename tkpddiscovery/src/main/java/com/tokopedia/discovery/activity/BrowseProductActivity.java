@@ -340,7 +340,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         boolean fragmentPopped = manager.popBackStackImmediate(backStateName, 0);
 
         if (!fragmentPopped) {
-            Log.d(TAG, "fragment not in back stack, create it.");
             FragmentTransaction ft = manager.beginTransaction();
             ft.replace(R.id.container, fragment, TAG);
             ft.addToBackStack(backStateName);
@@ -647,7 +646,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     private void openFilter(DataValue filterAttribute, String source, int activeTab, FDest dest) {
-        Log.d(TAG, "openFilter source " + source);
         breadcrumbs = getProductBreadCrumb();
         if (filterAttribute != null ) {
             Map<String, String> filters;
@@ -671,22 +669,18 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     private void fetchDynamicAttribute(final int activeTab, final String source, final FDest dest) {
-        Log.d(TAG, "Source " + source);
         discoveryInteractor.setDiscoveryListener(new DiscoveryListener() {
             @Override
             public void onComplete(int type, Pair<String, ? extends ObjContainer> data) {
-                Log.d(TAG, "onComplete type " + type);
             }
 
             @Override
             public void onFailed(int type, Pair<String, ? extends ObjContainer> data) {
-                Log.e(TAG, "onFailed type " + type);
                 Toast.makeText(BrowseProductActivity.this, getString(R.string.try_again), Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onSuccess(int type, Pair<String, ? extends ObjContainer> data) {
-                Log.d(TAG, "onSuccess type " + type);
                 switch (type) {
                     case DYNAMIC_ATTRIBUTE:
                         DynamicFilterModel.DynamicFilterContainer dynamicFilterContainer
@@ -715,10 +709,8 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         } else if (source.contains("shop")) {
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP, browseProductActivityModel.getDepartmentId());
         } else if (source.contains("directory") && activeTab == 0) {
-            Log.d(TAG, "get dynamic filter product");
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY, browseProductActivityModel.getDepartmentId());
         } else if (source.contains("directory") && activeTab == 1) {
-            Log.d(TAG, "get dynamic filter catalog");
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG, browseProductActivityModel.getDepartmentId());
         } else {
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT, browseProductActivityModel.getDepartmentId());
@@ -767,7 +759,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                     mFilterMapAtribut.getFiltersMap()
                             .put(browseProductActivityModel.getActiveTab(), filterMapValue);
                     browseProductActivityModel.setFilterOptions(filterMapValue.getValue());
-                    Log.d(TAG, "filter option " + filterMapValue.getValue());
                     sendFilterGTM(filterMapValue.getValue());
                     break;
             }
@@ -853,7 +844,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     private void fetchHotListHeader(final String alias) {
-        Log.d(TAG, "fetchHotListHeader alias " + alias);
         HashMap<String, String> query = new HashMap<>();
         query.put("key", alias);
         showLoading(true);
@@ -877,7 +867,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
             public void onSuccess(int type, Pair<String, ? extends ObjContainer> data) {
                 switch (type) {
                     case DiscoveryListener.HOTLIST_BANNER:
-                        Log.d(TAG, "fetch " + data.getModel1());
                         ObjContainer model2 = data.getModel2();
                         HotListBannerModel.HotListBannerContainer hotListBannerContainer = (HotListBannerModel.HotListBannerContainer) model2;
                         HotListBannerModel body = hotListBannerContainer.body();
@@ -914,7 +903,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                             editor.putString(DynamicFilterActivity.FILTER_SELECTED_PREF, new Gson().toJson(filters));
                             editor.apply();
                         }
-                        Log.d(TAG, "Hotlist query " + body.query.toString());
 
                         FilterMapAtribut.FilterMapValue filterMapValue
                                 = new FilterMapAtribut.FilterMapValue();
@@ -957,10 +945,8 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
             @Override
             public void onSuccess(int type, Pair<String, ? extends ObjContainer> data) {
-                Log.d(TAG, "onSuccess: ");
                 switch (type) {
                     case DiscoveryListener.CATEGORY_HEADER:
-                        Log.d(TAG, "onSuccess: ");
                         BrowseParentFragment parentFragment = (BrowseParentFragment)
                                 fragmentManager.findFragmentById(R.id.container);
                         if (parentFragment!=null) {

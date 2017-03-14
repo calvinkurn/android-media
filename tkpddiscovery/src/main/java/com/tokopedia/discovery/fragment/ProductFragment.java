@@ -150,7 +150,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     protected void initPresenter() {
-        Log.d(TAG, "initPresenter");
         presenter = new FragmentDiscoveryPresenterImpl(this);
         presenter.setTAG(TAG);
         ScreenTracking.eventDiscoveryScreenAuth();
@@ -163,7 +162,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void onCallProductServiceResult2(Long totalProduct, List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        Log.d(TAG, "onCallProductServiceResult2");
         productAdapter.addAll(true, false, new ArrayList<RecyclerViewItem>(model));
         productAdapter.setgridView(((BrowseProductActivity)getActivity()).getGridType());
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
@@ -203,7 +201,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void onCallProductServiceLoadMore(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        Log.d(TAG, "onCallProductServiceLoadMore");
         productAdapter.addAll(true, new ArrayList<RecyclerViewItem>(model));
         productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
@@ -443,7 +440,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         }
 
         productAdapter.notifyDataSetChanged();
-        mRecyclerView.scrollToPosition(0);
+        backToTop();
     }
 
     private int calcColumnSize(int orientation) {
@@ -471,13 +468,11 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void onCategoryClick(Child child) {
         ((BrowseProductActivity) getActivity()).renderLowerCategoryLevel(child);
-        Log.d(TAG, "onCategoryClick: ");
     }
 
     @Override
     public void onCategoryIntermediaryClick(Child child) {
         ((BrowseProductActivity) getActivity()).renderLowerCategoryLevel(child);
-        Log.d(TAG, "onCategoryClick: ");
     }
 
     @Override

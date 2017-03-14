@@ -132,8 +132,6 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
 
                             @Override
                             public void onError(Throwable e) {
-                                Log.d(TAG, "onError: ");
-                                Log.e(DiscoveryService.TAG, DiscoveryService.TAG + " -> " + e.getMessage());
                                 Pair<String, ErrorContainer> pair = new Pair<>(
                                         DiscoveryListener.ERRORCONTAINER,
                                         new ErrorContainer(e)
@@ -143,7 +141,6 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
 
                             @Override
                             public void onNext(Response<CategoriesHadesModel> categoriesHadesModel) {
-                                Log.d(TAG, "onNext: ");
                                 Pair<String, CategoriesHadesModel.CategoriesHadesContainer> pair =
                                         new Pair<>(
                                                 DiscoveryListener.CATEGORYHEADER,
