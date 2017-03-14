@@ -28,8 +28,6 @@ public class ShopProductListHeaderDelegate {
     private SpinnerInteractionListener spinnerInteractionListener;
     private SimpleSpinnerAdapter etalaseAdapter;
     private int spinnerLastPos = 0;
-    // if selection == -1, no selection request
-    private int spinnerSelectedPos = -1;
     private VHolder vholder;
 
     public ShopProductListHeaderDelegate() {
@@ -56,7 +54,6 @@ public class ShopProductListHeaderDelegate {
 
     public void setSelectedEtalase(int pos){
         spinnerLastPos = pos;
-        spinnerSelectedPos = pos;
         if(listener!=null) {
             listener.onEtalaseClick(pos);
         }
@@ -80,12 +77,6 @@ public class ShopProductListHeaderDelegate {
         if(vholder.etalase.getAdapter() == null)
             vholder.etalase.setAdapter(etalaseAdapter);
         vholder.toggle.setImageResource(toggleIcon);
-        if(hasSelection(spinnerSelectedPos))
-            vholder.etalase.setSelection(spinnerSelectedPos);
-    }
-
-    private boolean hasSelection(int spinnerSelectedPos) {
-        return spinnerSelectedPos > -1;
     }
 
     public class SpinnerInteractionListener implements AdapterView.OnItemSelectedListener, View.OnTouchListener {
@@ -109,8 +100,6 @@ public class ShopProductListHeaderDelegate {
                 }
                 userSelect = false;
             }
-            if(i == spinnerSelectedPos)
-                spinnerSelectedPos = -1;
         }
 
         @Override
