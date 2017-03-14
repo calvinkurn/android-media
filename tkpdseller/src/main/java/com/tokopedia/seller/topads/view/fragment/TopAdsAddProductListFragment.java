@@ -21,6 +21,7 @@ import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
@@ -38,6 +39,7 @@ import com.tokopedia.seller.topads.utils.TopAdsNetworkErrorHelper;
 import com.tokopedia.seller.topads.view.TopAdsSearchProductView;
 import com.tokopedia.seller.topads.view.activity.TopAdsFilterProductPromoActivity;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAddProductListAdapter;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsWhiteRetryDataBinder;
 import com.tokopedia.seller.topads.view.listener.AddProductListInterface;
 import com.tokopedia.seller.topads.view.listener.FragmentItemSelection;
 import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
@@ -211,6 +213,20 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     protected void initialVar() {
         totalItem = Integer.MAX_VALUE;
         topAdsProductListAdapter = new TopAdsAddProductListAdapter();
+        TopAdsWhiteRetryDataBinder topAdsRetryDataBinder = new TopAdsWhiteRetryDataBinder(topAdsProductListAdapter);
+        topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
+            @Override
+            public void onRetryCliked() {
+                dismissSnackbar();
+
+                topAdsAddProductListPresenter.resetPage();
+                refreshHandler.setRefreshing(true);
+                topAdsAddProductListPresenter.setNetworkStatus(
+                        TopAdsAddProductListPresenter.NetworkStatus.RETRYNETWORKCALL);
+                searchProductNetworkCall();
+            }
+        });
+        topAdsProductListAdapter.setRetryView(topAdsRetryDataBinder);
     }
 
     private void setupRecyclerView() {
@@ -257,10 +273,16 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     }
 
     protected void loadMoreNetworkCall() {
+        if (addProductListInterface != null) {
+            addProductListInterface.showNextButton();
+        }
         topAdsAddProductListPresenter.loadMore();
     }
 
     protected void searchProductNetworkCall() {
+        if (addProductListInterface != null) {
+            addProductListInterface.showNextButton();
+        }
         topAdsAddProductListPresenter.searchProduct();
     }
 
@@ -311,6 +333,14 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
         searchView.setIconifiedByDefault(true);
         searchView.setOnQueryTextListener(this);
         searchView.setQueryHint(getString(R.string.search_product));
+        SearchView.SearchAutoComplete mSearchSrcTextView =
+                (SearchView.SearchAutoComplete)
+                        searchView.findViewById(com.tokopedia.core.R.id.search_src_text);
+        mSearchSrcTextView.setTextColor(getResources().getColor(com.tokopedia.core.R.color.white));
+        mSearchSrcTextView.setHintTextColor(
+                getResources().getColor(com.tokopedia.core.R.color.white)
+        );
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -445,6 +475,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
     public void showMessageError(final String errorMessage) {
         // disable pull to refresh + hide
         refreshHandler.setRefreshing(false);
+        topAdsProductListAdapter.showLoading(false);
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -453,30 +484,41 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                 if (getActivity() != null && rootView != null) {
 
                     switch (topAdsAddProductListPresenter.getNetworkStatus()) {
+                        case ONACTIVITYFORRESULT:
+                        case PULLTOREFRESH:
                         case SEARCHVIEW:
                             topAdsProductListAdapter.clear();
-                            topAdsProductListAdapter.showEmptyFull(true);
+                            topAdsProductListAdapter.showRetryFull(true);
                             break;
+                        default:
+                            gmNetworkErrorHelper.showSnackbar(errorMessage,
+                                    getString(R.string.try_again), new ActionClickListener() {
+                            @Override
+                            public void onActionClicked(Snackbar snackbar) {
+                                Toast.makeText(
+                                        TopAdsAddProductListFragment.this.getActivity(),
+                                        errorMessage,
+                                        Toast.LENGTH_SHORT
+                                ).show();
+
+                                dismissSnackbar();
+
+                                refreshHandler.setRefreshing(true);
+
+                                topAdsAddProductListPresenter.setNetworkStatus(
+                                        TopAdsAddProductListPresenter.NetworkStatus.RETRYNETWORKCALL);
+                                loadMoreNetworkCall();
+                            }
+                        }, getActivity());
+                        break;
                     }
 
-                    gmNetworkErrorHelper.showSnackbar(errorMessage, "COBA KEMBALI", new ActionClickListener() {
-                        @Override
-                        public void onActionClicked(Snackbar snackbar) {
-                            Toast.makeText(
-                                    TopAdsAddProductListFragment.this.getActivity(),
-                                    errorMessage,
-                                    Toast.LENGTH_SHORT
-                            ).show();
-
-                            dismissSnackbar();
-
-                            refreshHandler.setRefreshing(true);
-
-                            topAdsAddProductListPresenter.setNetworkStatus(
-                                    TopAdsAddProductListPresenter.NetworkStatus.RETRYNETWORKCALL);
-                            loadMoreNetworkCall();
+                    if (topAdsProductListAdapter != null
+                            && topAdsProductListAdapter.getDataSize() <= 0) {
+                        if (addProductListInterface != null) {
+                            addProductListInterface.dismissNextButton();
                         }
-                    }, getActivity());
+                    }
                 }
             }
         }, 100);

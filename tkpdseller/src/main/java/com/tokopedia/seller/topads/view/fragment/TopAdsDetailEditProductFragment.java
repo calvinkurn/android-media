@@ -48,6 +48,8 @@ public class TopAdsDetailEditProductFragment extends TopAdsDetailEditFragment<To
     @Override
     protected void saveAd() {
         super.saveAd();
-        presenter.saveAd((TopAdsDetailProductViewModel) detailAd);
+        if (detailAd !=  null) {
+            presenter.saveAd((TopAdsDetailProductViewModel) detailAd);
+        }
     }
 }

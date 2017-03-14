@@ -12,6 +12,8 @@ public interface TopAdsDetailAdViewModel {
 
     int getStatus();
 
+    void setTitle(String title);
+
     String getTitle();
 
     float getPriceBid();

@@ -7,9 +7,7 @@ import android.view.View;
 
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.di.TopAdsDetailNewShopDI;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailShopActivity;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
@@ -48,13 +46,15 @@ public class TopAdsDetailNewShopFragment extends TopAdsDetailNewFragment<TopAdsD
     @Override
     protected void setActionVar() {
         super.setActionVar();
-        ((TopAdsDetailShopViewModel)detailAd).setShopId(Long.parseLong(SessionHandler.getShopID(getActivity())));
+        ((TopAdsDetailShopViewModel) detailAd).setShopId(Long.parseLong(SessionHandler.getShopID(getActivity())));
     }
 
     @Override
     protected void saveAd() {
         super.saveAd();
-        presenter.saveAd((TopAdsDetailShopViewModel) detailAd);
+        if (detailAd != null) {
+            presenter.saveAd((TopAdsDetailShopViewModel) detailAd);
+        }
     }
 
     @Override

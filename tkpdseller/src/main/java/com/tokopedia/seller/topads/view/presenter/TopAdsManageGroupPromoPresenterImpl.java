@@ -3,9 +3,9 @@ package com.tokopedia.seller.topads.view.presenter;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsCheckExistGroupUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
-import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.view.listener.TopAdsManageGroupPromoView;
 
 import java.util.List;
@@ -49,7 +49,7 @@ public class TopAdsManageGroupPromoPresenterImpl<T extends TopAdsManageGroupProm
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getSubscriberDebounceCheckGroupExist());
 
-        subscriptionSearchGroupName =Observable.create(new Observable.OnSubscribe<String>() {
+        subscriptionSearchGroupName = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(final Subscriber<? super String> subscriber) {
                 listenerSearchGroupName = new QueryListener() {
@@ -77,20 +77,22 @@ public class TopAdsManageGroupPromoPresenterImpl<T extends TopAdsManageGroupProm
         super.detachView();
         subscriptionCheckGroupExist.unsubscribe();
         subscriptionSearchGroupName.unsubscribe();
+        topAdsSearchGroupAdsNameUseCase.unsubscribe();
+        topAdsCheckExistGroupUseCase.unsubscribe();
     }
 
     @Override
     public void searchGroupName(String keyword) {
-        if(listenerSearchGroupName != null){
+        if (listenerSearchGroupName != null) {
             listenerSearchGroupName.getQueryString(keyword);
         }
     }
 
     @Override
     public void checkIsGroupExistOnSubmitNewGroup(String keyword) {
-        if(keyword.isEmpty()){
+        if (keyword.trim().isEmpty()) {
             getView().showErrorShouldFillGroupName();
-        }else{
+        } else {
             getView().showLoading();
             topAdsCheckExistGroupUseCase.execute(TopAdsSearchGroupAdsNameUseCase.createRequestParams(keyword)
                     , getSubscriberCheckGroupExistOnSubmitNewGroup());

@@ -13,14 +13,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.di.TopAdsAddPromoPoductDI;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.di.TopAdsAddPromoPoductDI;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAutoCompleteAdapter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsManageGroupPromoPresenter;
 import com.tokopedia.seller.topads.view.listener.TopAdsManageGroupPromoView;
+import com.tokopedia.seller.topads.view.presenter.TopAdsManageGroupPromoPresenter;
 import com.tokopedia.seller.topads.view.widget.TopAdsCustomAutoCompleteTextView;
 import com.tokopedia.seller.topads.view.widget.TopAdsCustomRadioGroup;
 import com.tokopedia.seller.topads.view.widget.TopAdsRadioExpandView;
@@ -164,7 +165,7 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 inputChooseGroup.lockView();
-                if(groupAds.get(i) != null) {
+                if (groupAds.get(i) != null) {
                     choosenId = groupAds.get(i).getId();
                 }
             }
@@ -172,10 +173,12 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
         radioGroup.setOnCheckedChangeListener(new TopAdsCustomRadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(TopAdsCustomRadioGroup group, @IdRes int checkedId) {
-                if(checkedId == R.id.radio_promo_new_group){
+                if (checkedId == R.id.radio_promo_new_group) {
                     inputNewGroup.requestFocus();
-                }else if(checkedId == R.id.radio_promo_choose_group){
+                } else if (checkedId == R.id.radio_promo_choose_group) {
                     inputChooseGroup.requestFocus();
+                } else if (checkedId == R.id.radio_promo_not_in_group) {
+                    CommonUtils.hideKeyboard(getActivity(), getView());
                 }
             }
         });
@@ -216,9 +219,9 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
     public void onGetGroupAdList(List<GroupAd> groupAds) {
         this.groupAds.clear();
         this.groupAds.addAll(groupAds);
-        this.groupNames.clear();
+        groupNames.clear();
         textInputLayoutChooseGroup.setError(null);
-        for(GroupAd groupAd : groupAds){
+        for (GroupAd groupAd : groupAds) {
             groupNames.add(groupAd.getName());
         }
         adapterChooseGroup.getFilter().filter(inputChooseGroup.getText());
@@ -260,13 +263,13 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
     }
 
     protected void onValidateForm(int checkedRadioButtonId) {
-        if(checkedRadioButtonId == R.id.radio_promo_new_group){
+        if (checkedRadioButtonId == R.id.radio_promo_new_group) {
             onSubmitPromoNewGroup();
-        }else if(checkedRadioButtonId == R.id.radio_promo_choose_group){
+        } else if (checkedRadioButtonId == R.id.radio_promo_choose_group) {
             onSubmitPromoChooseGroup();
-        }else if(checkedRadioButtonId == R.id.radio_promo_not_in_group){
+        } else if (checkedRadioButtonId == R.id.radio_promo_not_in_group) {
             onSubmitPromoNotInGroup();
-        }else {
+        } else {
             onErrorSubmit();
         }
     }
@@ -276,9 +279,9 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
     }
 
     private void onSubmitPromoChooseGroup() {
-        if(!inputChooseGroup.isEnabled()){
+        if (!inputChooseGroup.isEnabled()) {
             onSubmitFormChooseGroup(choosenId);
-        }else{
+        } else {
             textInputLayoutChooseGroup.setError(getString(R.string.label_top_ads_error_choose_one_group));
         }
     }
@@ -293,17 +296,17 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
 
 
     private void setVisibilityInfoOption() {
-        if(getVisibleInfoNewGroupOption()){
+        if (getVisibleInfoNewGroupOption()) {
             viewInfoNewGroup.setVisibility(View.VISIBLE);
             viewInfoNewGroup.setText(getTextInfoNewGroupOption());
-        }else{
+        } else {
             viewInfoNewGroup.setVisibility(View.GONE);
         }
 
-        if(getVisibleInfoChooseGroupOption()){
+        if (getVisibleInfoChooseGroupOption()) {
             viewInfoChooseGroup.setText(getTextInfoChooseGroupOption());
             viewInfoChooseGroup.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             viewInfoChooseGroup.setVisibility(View.GONE);
         }
     }

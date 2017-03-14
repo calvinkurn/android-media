@@ -5,6 +5,5 @@ package com.tokopedia.seller.topads.view.listener;
  */
 public interface TopAdsDetailNewGroupView extends TopAdsDetailEditView {
 
-    void showLoading(boolean isShown);
-    void goToGroupDetail(int groupId);
+    void goToGroupDetail(String groupId);
 }

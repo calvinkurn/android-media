@@ -1,6 +1,5 @@
 package com.tokopedia.seller.topads.view.fragment;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -54,7 +53,7 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
         detailAd = new TopAdsDetailGroupViewModel();
 
         view.findViewById(R.id.linear_partial_top_ads_edit_ad).setVisibility(
-                TextUtils.isEmpty(adId) ? View.VISIBLE: View.GONE);
+                TextUtils.isEmpty(adId) ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -65,11 +64,13 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
 
     @Override
     protected void saveAd() {
-        if (TextUtils.isEmpty(adId)) { // saveNew
-            super.saveAd();
-            presenter.saveAdNew(name, (TopAdsDetailGroupViewModel) detailAd, topAdsProductList);
+        super.saveAd();
+        if (detailAd ==  null) {
+            return;
         }
-        else { // save New with existing group Id
+        if (TextUtils.isEmpty(adId)) { // saveNew
+            presenter.saveAdNew(name, (TopAdsDetailGroupViewModel) detailAd, topAdsProductList);
+        } else { // save New with existing group Id
             presenter.saveAdExisting(adId, topAdsProductList);
         }
     }
@@ -84,16 +85,7 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
     }
 
     @Override
-    public void showLoading(boolean isShown) {
-        if (isShown) {
-            super.showLoading();
-        } else {
-            super.hideLoading();
-        }
-    }
-
-    @Override
-    public void goToGroupDetail(int groupId) {
+    public void goToGroupDetail(String groupId) {
         Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, groupId);
         startActivity(intent);

@@ -83,6 +83,7 @@
     <style name="EditText" parent="Widget.AppCompat.EditText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@drawable/color_state_topads_disable_text</item>
     </style>
 
     <style name="EditText.Date">

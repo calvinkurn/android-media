@@ -8,9 +8,7 @@ import android.widget.TextView;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.di.TopAdsDetailEditShopDI;
-import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditShopPresenter;
 
@@ -37,12 +35,6 @@ public class TopAdsDetailEditShopFragment extends TopAdsDetailEditFragment<TopAd
     }
 
     @Override
-    protected void setActionVar() {
-        super.setActionVar();
-        ((TopAdsDetailShopViewModel)detailAd).setShopId(Long.parseLong(SessionHandler.getShopID(getActivity())));
-    }
-
-    @Override
     protected void initView(View view) {
         super.initView(view);
         nameEditText.setEnabled(false);
@@ -58,6 +50,8 @@ public class TopAdsDetailEditShopFragment extends TopAdsDetailEditFragment<TopAd
     @Override
     protected void saveAd() {
         super.saveAd();
-        presenter.saveAd((TopAdsDetailShopViewModel) detailAd);
+        if (detailAd !=  null) {
+            presenter.saveAd((TopAdsDetailShopViewModel) detailAd);
+        }
     }
 }

@@ -15,6 +15,7 @@ import android.widget.RadioGroup;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.datepicker.widget.DatePickerLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
@@ -24,6 +25,7 @@ import com.tokopedia.seller.topads.view.dialog.DatePickerDialog;
 import com.tokopedia.seller.topads.view.dialog.TimePickerdialog;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailEditView;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
+import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditPresenter;
 import com.tokopedia.seller.topads.view.widget.PrefixEditText;
 import com.tokopedia.seller.topads.view.widget.TopAdsCurrencyTextWatcher;
@@ -480,6 +482,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
                 detailAd.setStickerId(STICKER_FIRE);
             }
         }
+        detailAd.setTitle(nameEditText.getText().toString());
     }
 
     protected void showLoading() {

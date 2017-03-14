@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.seller.R;
@@ -39,6 +40,7 @@ public class TopAdsDetailEditGroupFragment extends TopAdsDetailEditFragment<TopA
         super.initView(view);
         nameInputLayout.setHint(getString(R.string.label_top_ads_group_name));
         nameEditText.setEnabled(true);
+        view.requestFocus();
     }
 
     @Override
@@ -62,6 +64,12 @@ public class TopAdsDetailEditGroupFragment extends TopAdsDetailEditFragment<TopA
     @Override
     protected void saveAd() {
         super.saveAd();
-        presenter.saveAd((TopAdsDetailGroupViewModel) detailAd);
+        if (TextUtils.isEmpty(nameEditText.getText().toString().trim())) {
+            onSaveAdError(getString(R.string.label_top_ads_error_empty_group_name));
+            return;
+        }
+        if (detailAd !=  null) {
+            presenter.saveAd((TopAdsDetailGroupViewModel) detailAd);
+        }
     }
 }
