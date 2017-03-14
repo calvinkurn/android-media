@@ -19,8 +19,8 @@ import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
-import com.tokopedia.discovery.fragment.browseparent.BrowseParentFragment;
-import com.tokopedia.discovery.fragment.browseparent.ProductFragment;
+import com.tokopedia.discovery.fragment.BrowseParentFragment;
+import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
@@ -107,7 +107,6 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                 break;
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY:
                 p.unique_id = null;
-                p.sc = browseProductActivityModel.getDepartmentId();
                 discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(p));
                 break;
         }

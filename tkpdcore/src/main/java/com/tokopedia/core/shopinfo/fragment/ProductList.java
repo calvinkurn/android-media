@@ -376,13 +376,6 @@ public class ProductList extends V2BaseFragment {
                         )
                 );
             }
-
-            @Override
-            public void onSpinnerEtalaseClick() {
-                if (getActivity() != null) {
-                    CommonUtils.dumper("GAv4 clicked spinner etalase shops");
-                }
-            }
         };
     }
 

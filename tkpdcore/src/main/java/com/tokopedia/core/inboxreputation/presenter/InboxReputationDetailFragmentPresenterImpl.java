@@ -542,6 +542,11 @@ public class InboxReputationDetailFragmentPresenterImpl implements
     }
 
     @Override
+    public void showShareProvider(InboxReputationDetailItem inboxReputationDetailItem) {
+        viewListener.showShareProvider(inboxReputationDetailItem);
+    }
+
+    @Override
     public String getMessageForSmileyForOpponent(String smiley) {
         switch (smiley) {
             case HeaderReputationDataBinder.STATUS_BAD:

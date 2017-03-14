@@ -27,7 +27,7 @@ import okio.Buffer;
 /**
  * @author Angga.Prasetiyo on 27/11/2015.
  */
-public class TkpdAuthInterceptor implements Interceptor {
+public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String TAG = TkpdAuthInterceptor.class.getSimpleName();
     private final String authKey;
 
@@ -47,14 +47,7 @@ public class TkpdAuthInterceptor implements Interceptor {
         generateHmacAuthRequest(originRequest, newRequest);
 
         final Request finalRequest = newRequest.build();
-        Response response = chain.proceed(finalRequest);
-        int count = 0;
-        while (!response.isSuccessful() && count < 3) {
-            Log.d(TAG, "Request is not successful - " + count + " Error code : " + response.code());
-            count++;
-            response = chain.proceed(finalRequest);
-        }
-
+        Response response = getResponse(chain, finalRequest);
 
         String bodyResponse = response.body().string();
         if (isMaintenance(bodyResponse)) {
@@ -70,12 +63,10 @@ public class TkpdAuthInterceptor implements Interceptor {
             showTimezoneErrorSnackbar();
         }
 
-
         return createNewResponse(response, bodyResponse);
     }
 
     private void showTimezoneErrorSnackbar() {
-        CommonUtils.dumper("NISNIS showTimezoneErrorSnackbar");
         Intent intent = new Intent();
         intent.setAction("com.tokopedia.tkpd.TIMEZONE_ERROR");
         MainApplication.getAppContext().sendBroadcast(intent);

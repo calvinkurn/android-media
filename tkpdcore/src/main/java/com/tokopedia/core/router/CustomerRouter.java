@@ -29,4 +29,5 @@ public class CustomerRouter {
         Intent intent = RouterUtils.getActivityIntent(context, TRUECALLER_ACTIVITY);
         return intent;
     }
+
 }
