@@ -25,7 +25,6 @@ import android.view.WindowManager;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
@@ -930,7 +929,6 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     @Override
     public void onTimezoneError() {
-        CommonUtils.dumper("NISNIS" + "onTimezoneError Login");
         final Snackbar snackBar = SnackbarManager.make(this, getString(R.string.check_timezone),
                 Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.action_check, new View.OnClickListener() {
@@ -944,9 +942,9 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     public void sendEmailComplain() {
         Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(Uri.parse("mailto:" + "android.feedback@tokopedia.com"));
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Masalah Server Error");
-        intent.putExtra(Intent.EXTRA_TEXT, "Versi Aplikasi: " + GlobalConfig.VERSION_CODE);
-        startActivity(Intent.createChooser(intent, "Kirim Email"));
+        intent.setData(Uri.parse(getString(com.tokopedia.session.R.string.mail_to) + getString(com.tokopedia.session.R.string.android_feedback_email)));
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(com.tokopedia.session.R.string.server_error_problem));
+        intent.putExtra(Intent.EXTRA_TEXT, getString(com.tokopedia.session.R.string.application_version_text) + GlobalConfig.VERSION_CODE);
+        startActivity(Intent.createChooser(intent, getString(com.tokopedia.session.R.string.send_email)));
     }
 }

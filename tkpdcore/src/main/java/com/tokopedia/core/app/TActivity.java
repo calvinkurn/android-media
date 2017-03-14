@@ -2,51 +2,25 @@ package com.tokopedia.core.app;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import com.localytics.android.Localytics;
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
-import com.tokopedia.core.SplashScreen;
-import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
-import com.tokopedia.core.database.manager.CategoryDatabaseManager;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
-import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
-import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.HockeyAppHelper;
-import com.tokopedia.core.util.PhoneVerificationUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.ToolbarVariable;
-import com.tokopedia.core.welcome.WelcomeActivity;
 
 /**
  * Created by Nisie on 31/08/15.

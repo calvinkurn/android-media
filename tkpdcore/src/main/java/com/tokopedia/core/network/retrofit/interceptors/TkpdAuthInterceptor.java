@@ -29,6 +29,8 @@ import okio.Buffer;
  */
 public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String TAG = TkpdAuthInterceptor.class.getSimpleName();
+    private static final int ERROR_FORBIDDEN_REQUEST = 403;
+    private static final String ACTION_TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
     private final String authKey;
 
     public TkpdAuthInterceptor(String authKey) {
@@ -68,7 +70,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     private void showTimezoneErrorSnackbar() {
         Intent intent = new Intent();
-        intent.setAction("com.tokopedia.tkpd.TIMEZONE_ERROR");
+        intent.setAction(ACTION_TIMEZONE_ERROR);
         MainApplication.getAppContext().sendBroadcast(intent);
     }
 
@@ -77,7 +79,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     private boolean isForbiddenRequest(Response response) {
-        return response.code() == 403;
+        return response.code() == ERROR_FORBIDDEN_REQUEST;
     }
 
     protected void generateHmacAuthRequest(Request originRequest, Request.Builder newRequest)
