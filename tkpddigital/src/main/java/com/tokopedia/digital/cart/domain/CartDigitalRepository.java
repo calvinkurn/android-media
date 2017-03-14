@@ -10,7 +10,6 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
 import com.tokopedia.digital.cart.data.entity.requestbody.topcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.cart.data.entity.response.ResponseCartData;
-import com.tokopedia.digital.cart.data.mapper.CartMapperData;
 import com.tokopedia.digital.cart.data.mapper.ICartMapperData;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 
@@ -27,9 +26,10 @@ public class CartDigitalRepository implements ICartDigitalRepository {
     private final DigitalEndpointService digitalEndpointService;
     private final ICartMapperData cartMapperData;
 
-    public CartDigitalRepository() {
-        cartMapperData = new CartMapperData();
-        digitalEndpointService = new DigitalEndpointService();
+    public CartDigitalRepository(DigitalEndpointService digitalEndpointService,
+                                 ICartMapperData iCartMapperData) {
+        this.cartMapperData = iCartMapperData;
+        this.digitalEndpointService = digitalEndpointService;
     }
 
     @Override

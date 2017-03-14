@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -29,6 +30,11 @@ import com.tokopedia.digital.cart.compoundview.CheckoutHolderView;
 import com.tokopedia.digital.cart.compoundview.InputPriceHolderView;
 import com.tokopedia.digital.cart.compoundview.ItemCartHolderView;
 import com.tokopedia.digital.cart.compoundview.VoucherCartHolderView;
+import com.tokopedia.digital.cart.data.mapper.CartMapperData;
+import com.tokopedia.digital.cart.data.mapper.ICartMapperData;
+import com.tokopedia.digital.cart.domain.CartDigitalRepository;
+import com.tokopedia.digital.cart.domain.CheckoutRepository;
+import com.tokopedia.digital.cart.domain.VoucherDigitalRepository;
 import com.tokopedia.digital.cart.interactor.CartDigitalInteractor;
 import com.tokopedia.digital.cart.listener.IDigitalCartView;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
@@ -135,7 +141,13 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     protected void initialPresenter() {
-        presenter = new CartDigitalPresenter(this, new CartDigitalInteractor());
+        DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
+        ICartMapperData cartMapperData = new CartMapperData();
+        presenter = new CartDigitalPresenter(this, new CartDigitalInteractor(
+                new CartDigitalRepository(digitalEndpointService, cartMapperData),
+                new VoucherDigitalRepository(digitalEndpointService, cartMapperData),
+                new CheckoutRepository(digitalEndpointService, cartMapperData)
+        ));
     }
 
     @Override
