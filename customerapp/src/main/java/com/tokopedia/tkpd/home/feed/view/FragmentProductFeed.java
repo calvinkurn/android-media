@@ -73,6 +73,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Inject
     FeedPresenter feedPresenter;
+    View parentView;
 
     private GridLayoutManager gridLayoutManager;
     private DataFeedAdapter adapter;
@@ -92,7 +93,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View parentView = inflater.inflate(R.layout.fragment_feed, container, false);
+        parentView = inflater.inflate(R.layout.fragment_feed, container, false);
         unbinder = ButterKnife.bind(this, parentView);
         prepareView(parentView);
         feedPresenter.attachView(this);
@@ -320,10 +321,19 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         return !adapter.getData().isEmpty();
     }
 
+
     @Override
-    public void forceShowEmptyHistory() {
-         emptyHistoryView.setVisibility(View.VISIBLE);
+    public void showErrorFeed() {
+        NetworkErrorHelper.showEmptyState(getContext(), parentView,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        feedPresenter.refreshDataFeed();
+                    }
+                });
     }
+
+
 
     @Override
     public HistoryProductListItem getViewmodelHistory() {
