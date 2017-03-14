@@ -42,9 +42,7 @@ public class VerifyPhoneNumberUseCase extends UseCase<VerifyPhoneNumberModel> {
                 .flatMap(new Func1<ValidateOtpModel, Observable<VerifyPhoneNumberModel>>() {
                     @Override
                     public Observable<VerifyPhoneNumberModel> call(ValidateOtpModel validateOtpModel) {
-//                        return doVerifyPhoneNumber(getVerifyPhoneNumberParam(requestParams));
-                        VerifyPhoneNumberModel verifyPhoneNumberModel = new VerifyPhoneNumberModel();
-                        return Observable.just(verifyPhoneNumberModel);
+                        return doVerifyPhoneNumber(getVerifyPhoneNumberParam(requestParams));
                     }
                 });
     }
