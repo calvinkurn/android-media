@@ -35,22 +35,6 @@ public interface DataManager {
      */
     void getListBank(Context context, DataReceiver dataReceiver);
 
-    /**
-     * get list department from database or network.
-     * @param context
-     * @param dataReceiver
-     * @param departmentId 0 for parent and larger than 0 for childs
-     */
-    void getListDepartment(Context context, DataReceiver dataReceiver, int departmentId);
-
-    void getListDepartment2(Context context, DataReceiver dataReceiver, int departmentId, boolean currentThread);
-
-    /**
-     * get all list of department from database or network.
-     * @param context
-     * @param dataReceiver
-     */
-    @Deprecated
     void getListDepartment2(Context context, DataReceiver dataReceiver, int departmentId);
 
     /**
