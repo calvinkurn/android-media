@@ -18,6 +18,8 @@ public class ErrorNetworkReceiver extends BroadcastReceiver {
                 mReceiver.onForceLogout();
             } else if (intent.getAction().equals("com.tokopedia.tkpd.SERVER_ERROR")) {
                 mReceiver.onServerError();
+            } else if (intent.getAction().equals("com.tokopedia.tkpd.TIMEZONE_ERROR")) {
+                mReceiver.onTimezoneError();
             }
         }
     }
@@ -25,6 +27,7 @@ public class ErrorNetworkReceiver extends BroadcastReceiver {
     public interface ReceiveListener {
         void onForceLogout();
         void onServerError();
+        void onTimezoneError();
     }
 
     public void setReceiver(ErrorNetworkReceiver.ReceiveListener mReceiver) {
