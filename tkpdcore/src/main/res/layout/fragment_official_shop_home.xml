@@ -3,10 +3,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.tokopedia.core.widgets.NestedWebView
-        android:id="@+id/webview"
+    <com.tokopedia.core.widgets.CustomNestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+        <WebView
+            android:id="@+id/webview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.tokopedia.core.widgets.CustomNestedScrollView>
 
     <ProgressBar
         android:id="@+id/progress"
