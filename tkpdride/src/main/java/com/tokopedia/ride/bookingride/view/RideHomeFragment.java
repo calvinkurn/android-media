@@ -8,12 +8,18 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,6 +27,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.SessionHandler;
@@ -28,19 +35,28 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
+import com.tokopedia.ride.bookingride.di.BookingRideDependencyInjection;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
 
 public class RideHomeFragment extends BaseFragment implements BookingRideContract.View, OnMapReadyCallback {
-    public static final int REQUEST_CODE_LOGIN = 1005;
+    public static final int LOGIN_REQUEST_CODE = 1005;
+    private static final int PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE = 1006;
+    private static final int PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE = 1007;
+
     BookingRideContract.Presenter mPresenter;
 
     @BindView(R2.id.toolbar)
     Toolbar mToolbar;
     @BindView(R2.id.mapview)
     MapView mapView;
+    @BindView(R2.id.crux_cabs_source)
+    TextView tvSource;
+    @BindView(R2.id.crux_cabs_destination)
+    TextView tvDestination;
 
     GoogleMap mGoogleMap;
 
@@ -57,7 +73,6 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = new BookingRidePresenter();
     }
 
     @Override
@@ -130,7 +145,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
         intent.putExtra(Session.WHICH_FRAGMENT_KEY,
                 TkpdState.DrawerPosition.LOGIN);
-        startActivityForResult(intent, REQUEST_CODE_LOGIN);
+        startActivityForResult(intent, LOGIN_REQUEST_CODE);
     }
 
     @Override
@@ -174,7 +189,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     }
 
     private void setInitialVariable() {
-        mPresenter = new BookingRidePresenter();
+        mPresenter = BookingRideDependencyInjection.createPresenter("TOKEN");
     }
 
     @Override
@@ -182,9 +197,17 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case REQUEST_CODE_LOGIN:
+                case LOGIN_REQUEST_CODE:
                     Toast.makeText(getActivity(), "User Logged In", Toast.LENGTH_SHORT).show();
                     mPresenter.initialize();
+                    break;
+                case PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE:
+                    Place source = PlaceAutocomplete.getPlace(getActivity(), data);
+                    setSourceLocationText(String.valueOf(source.getAddress()));
+                    break;
+                case PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE:
+                    Place destination = PlaceAutocomplete.getPlace(getActivity(), data);
+                    setSourceLocationText(String.valueOf(destination.getAddress()));
                     break;
             }
         }
@@ -193,12 +216,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
 
     @Override
     public void showMessage(String message) {
-
-    }
-
-    @Override
-    public void hideMessage(String message) {
-
+        Snackbar.make(getView(), message, Snackbar.LENGTH_LONG).show();
     }
 
     @Override
@@ -206,6 +224,11 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         LatLng currentLocation = new LatLng(latitude, longitude);
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentLocation, 12);
         mGoogleMap.animateCamera(cameraUpdate);
+    }
+
+    @Override
+    public void renderDefaultPickupLocation(double latitude, double longitude) {
+        setSourceLocationText(GeoLocationUtils.reverseGeoCode(getActivity(), latitude, longitude));
     }
 
     @Override
@@ -226,5 +249,47 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         super.onLowMemory();
         if (mapView != null)
             mapView.onLowMemory();
+    }
+
+    @OnClick(R2.id.crux_cabs_source)
+    public void actionSourceButtonClicked() {
+        Intent intent =
+                null;
+        try {
+            intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
+                    .build(getActivity());
+
+            startActivityForResult(intent, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE);
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @OnClick(R2.id.crux_cabs_destination)
+    public void actionDestinationButtonClicked() {
+        Intent intent =
+                null;
+        try {
+            intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
+                    .build(getActivity());
+
+            startActivityForResult(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
+        } catch (GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void setSourceLocationText(String address) {
+        tvSource.setText(address);
+    }
+
+    @Override
+    public void setDestinationLocationText(String address) {
+        tvDestination.setText(address);
     }
 }

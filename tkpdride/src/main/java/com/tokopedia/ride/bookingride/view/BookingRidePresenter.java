@@ -13,8 +13,23 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.Places;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.base.data.BookingRideDataStoreFactory;
+import com.tokopedia.ride.base.data.BookingRideRepositoryData;
+import com.tokopedia.ride.base.data.ProductEntityMapper;
+import com.tokopedia.ride.base.domain.BookingRideRepository;
+import com.tokopedia.ride.base.domain.model.Product;
+import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
+
+import java.util.List;
+
+import rx.Subscriber;
 
 /**
  * Created by alvarisi on 3/13/17.
@@ -24,8 +39,10 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
         implements BookingRideContract.Presenter {
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    private final GetUberProductsUseCase mGetUberProductsUseCase;
 
-    public BookingRidePresenter() {
+    public BookingRidePresenter(GetUberProductsUseCase getUberProductsUseCase) {
+        mGetUberProductsUseCase = getUberProductsUseCase;
     }
 
     @Override
@@ -75,6 +92,7 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
                             if (getFuzedLocation() != null) {
                                 Location location = getFuzedLocation();
                                 getView().moveToCurrentLocation(location.getLatitude(), location.getLongitude());
+                                getView().renderDefaultPickupLocation(location.getLatitude(), location.getLongitude());
                             } else {
                                 getView().showMessage(getView().getActivity().getString(R.string.location_permission_required));
                             }
@@ -92,6 +110,7 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
                         }
                     })
                     .addApi(LocationServices.API)
+                    .addApi(Places.GEO_DATA_API)
                     .build();
         }
 
@@ -105,6 +124,31 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
                 != PackageManager.PERMISSION_GRANTED)) {
             return null;
         }
+
         return LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+    }
+
+    @Override
+    public void getAvailableProducts() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetUberProductsUseCase.PARAM_LATITUDE, "latitude");
+        requestParams.putString(GetUberProductsUseCase.PARAM_LONGITUDE, "longitude");
+        mGetUberProductsUseCase.execute(requestParams, new Subscriber<List<Product>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<Product> products) {
+
+            }
+        });
+
     }
 }

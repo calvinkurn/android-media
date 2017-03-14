@@ -11,7 +11,7 @@ import com.tokopedia.core.base.presentation.CustomerView;
  */
 
 public interface BookingRideContract {
-    interface View extends CustomerView{
+    interface View extends CustomerView {
         Context getActivityContext();
 
         boolean isUserLoggedIn();
@@ -28,13 +28,19 @@ public interface BookingRideContract {
 
         void showMessage(String message);
 
-        void hideMessage(String message);
+        void setSourceLocationText(String address);
+
+        void setDestinationLocationText(String address);
 
         void moveToCurrentLocation(double latitude, double longitude);
+
+        void renderDefaultPickupLocation(double latitude, double longitude);
     }
 
-    interface Presenter extends CustomerPresenter<View>{
+    interface Presenter extends CustomerPresenter<View> {
         void initialize();
 
+
+        void getAvailableProducts();
     }
 }
