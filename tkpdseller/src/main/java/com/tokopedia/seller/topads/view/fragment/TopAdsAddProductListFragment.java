@@ -219,6 +219,10 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
             public void onRetryCliked() {
                 dismissSnackbar();
 
+                if (topAdsAddProductListPresenter.isHitNetwork()) {
+                    return;
+                }
+
                 topAdsAddProductListPresenter.resetPage();
                 refreshHandler.setRefreshing(true);
                 topAdsAddProductListPresenter.setNetworkStatus(
