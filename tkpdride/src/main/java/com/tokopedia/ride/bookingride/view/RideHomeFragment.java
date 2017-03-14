@@ -207,7 +207,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
                     break;
                 case PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE:
                     Place destination = PlaceAutocomplete.getPlace(getActivity(), data);
-                    setSourceLocationText(String.valueOf(destination.getAddress()));
+                    setDestinationLocationText(String.valueOf(destination.getAddress()));
                     break;
             }
         }
