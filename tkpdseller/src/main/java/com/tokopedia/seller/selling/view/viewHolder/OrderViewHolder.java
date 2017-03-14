@@ -1,6 +1,8 @@
 package com.tokopedia.seller.selling.view.viewHolder;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,6 +37,8 @@ public class OrderViewHolder extends BaseSellingViewHolder<OrderShippingList> {
     TextView vOrderDate;
     @BindView(R2.id.buyer_request_cancel)
     TextView buyerRequestCancel;
+    @BindView(R2.id.colored_border)
+    View deadlineColoredBorder;
 
     public OrderViewHolder(View itemView) {
         super(itemView);
@@ -44,7 +48,7 @@ public class OrderViewHolder extends BaseSellingViewHolder<OrderShippingList> {
     @Override
     public void bindDataModel(Context context, OrderShippingList model) {
         UserName.setText(model.getOrderCustomer().getCustomerName());
-        CommonUtils.getProcessDay(context, model.getOrderPayment().getPaymentProcessDayLeft()+"", Deadline, DeadlineView);
+        setDeadLine(model);
         Invoice.setText(model.getOrderDetail().getDetailInvoice());
         vOrderDate.setText(model.getOrderDetail().getDetailOrderDate());
         TotalTransaksi.setText(model.getOrderPayment().getPaymentKomisi());
@@ -54,6 +58,12 @@ public class OrderViewHolder extends BaseSellingViewHolder<OrderShippingList> {
         }else{
             buyerRequestCancel.setVisibility(View.GONE);
         }
+    }
+
+    private void setDeadLine(OrderShippingList model) {
+        Deadline.setText(model.getOrderDeadline().getDeadLineProcess());
+        deadlineColoredBorder.setBackgroundColor(Color
+                .parseColor(model.getOrderDeadline().getDeadlineColor()));
     }
 
     @Override

@@ -136,4 +136,8 @@
         <attr name="chart_setSpacing" format="dimension"/>
     </declare-styleable>
 
+    <declare-styleable name="ShopScoreLimitProgressBar">
+        <attr name="default_limit" format="float" />
+    </declare-styleable>
+
 </resources>

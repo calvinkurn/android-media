@@ -44,6 +44,7 @@ public class BuyerEditResCenterFormFragment extends BasePresenterFragment<BuyerE
         implements BuyerEditResCenterListener {
 
     private static final String ARGS_PARAM_PASS_DATA = "ARGS_PARAM_PASS_DATA";
+    private static final String TAG_STEP_1 = "step_1";
     private static final String TAG_STEP_2 = "step_2";
 
     private ActionParameterPassData passData;
@@ -348,7 +349,7 @@ public class BuyerEditResCenterFormFragment extends BasePresenterFragment<BuyerE
     public void openSolutionFragment() {
         if (getFragmentManager().findFragmentByTag(BuyerEditSolutionResCenterFragment.class.getSimpleName()) == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container,
+                    .replace(R.id.container,
                             BuyerEditSolutionResCenterFragment.newInstance(passData),
                             BuyerEditSolutionResCenterFragment.class.getSimpleName())
                     .addToBackStack(TAG_STEP_2)
@@ -360,10 +361,10 @@ public class BuyerEditResCenterFormFragment extends BasePresenterFragment<BuyerE
     public void openProductDetailTroubleFragment() {
         if (getFragmentManager().findFragmentByTag(BuyerEditProductResCenterFragment.class.getSimpleName()) == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container,
+                    .replace(R.id.container,
                             BuyerEditProductResCenterFragment.newInstane(getPassData()),
                             BuyerEditProductResCenterFragment.class.getSimpleName())
-                    .addToBackStack(TAG_STEP_2)
+                    .addToBackStack(TAG_STEP_1)
                     .commit();
         }
     }

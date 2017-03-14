@@ -34,7 +34,7 @@ public class RechargeViewPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         Category category = categoryList.get(position);
-        return RechargeFragment.newInstance(category,position);
+        return RechargeFragment.newInstance(category, position);
     }
 
     @Override

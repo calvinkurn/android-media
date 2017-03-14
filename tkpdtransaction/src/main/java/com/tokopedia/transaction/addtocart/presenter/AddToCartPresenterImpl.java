@@ -316,28 +316,42 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
     @Override
     public void updateAddressShipping(@NonNull final Context context,
-                                      @NonNull final OrderData orderData) {
+                                      @NonNull final OrderData orderData,
+                                      @NonNull final LocationPass locationPass) {
         Map<String, String> maps = new HashMap<>();
         maps.put("act", "edit_address");
         maps.put("is_from_cart", "1");
         maps.put("address_id", orderData.getAddress().getAddressId());
-        maps.put("latitude", orderData.getAddress().getLatitude());
-        maps.put("longitude", orderData.getAddress().getLongitude());
-
+        maps.put("latitude", locationPass.getLatitude());
+        maps.put("longitude", locationPass.getLongitude());
+        final String oldLatitude = orderData.getAddress().getLatitude();
+        final String oldLongitude = orderData.getAddress().getLongitude();
+        orderData.getAddress().setLatitude(locationPass.getLatitude());
+        orderData.getAddress().setLongitude(locationPass.getLongitude());
         addToCartNetInteractor.updateAddress(context, maps,
                 new AddToCartNetInteractor.OnUpdateAddressListener() {
                     @Override
                     public void onSuccess() {
+                        viewListener.enableQuantityTextWatcher();
+                        viewListener.renderFormAddress(orderData.getAddress());
+                        viewListener.changeQuantity(String.valueOf(orderData.getQuantity()));
                         calculateAllPrices(context, orderData);
                     }
 
                     @Override
                     public void onFailure(String messageError) {
+                        viewListener.enableQuantityTextWatcher();
+                        viewListener.renderFormAddress(orderData.getAddress());
                         viewListener.showUpdateAddressShippingError(messageError);
+                        orderData.getAddress().setLatitude(oldLatitude);
+                        orderData.getAddress().setLongitude(oldLongitude);
+                        viewListener.changeQuantity(String.valueOf(orderData.getQuantity()));
                     }
 
                     @Override
                     public void onError() {
+                        viewListener.enableQuantityTextWatcher();
+                        viewListener.changeQuantity(String.valueOf(orderData.getQuantity()));
                         viewListener.showErrorMessage(
                                 context.getString(R.string.default_request_error_unknown)
                         );

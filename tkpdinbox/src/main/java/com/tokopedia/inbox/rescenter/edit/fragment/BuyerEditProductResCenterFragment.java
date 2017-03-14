@@ -53,8 +53,6 @@ public class BuyerEditProductResCenterFragment
     RecyclerView productRecyclerView;
     @BindView(R2.id.main_view)
     View mainView;
-    @BindView(R2.id.include_loading)
-    View loading;
 
     public static Fragment newInstane(ActionParameterPassData passData) {
         BuyerEditProductResCenterFragment fragment = new BuyerEditProductResCenterFragment();
@@ -74,7 +72,7 @@ public class BuyerEditProductResCenterFragment
 
     @Override
     protected void onFirstTimeLaunched() {
-        loading.setVisibility(View.GONE);
+
     }
 
     @Override
@@ -249,7 +247,7 @@ public class BuyerEditProductResCenterFragment
     public void openSolutionFragment() {
         if (getFragmentManager().findFragmentByTag(BuyerEditSolutionResCenterFragment.class.getSimpleName()) == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container,
+                    .replace(R.id.container,
                             BuyerEditSolutionResCenterFragment.newInstance(passData),
                             BuyerEditSolutionResCenterFragment.class.getSimpleName())
                     .addToBackStack(TAG_STEP_2)

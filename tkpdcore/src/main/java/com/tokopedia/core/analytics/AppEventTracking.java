@@ -323,6 +323,15 @@ public interface AppEventTracking {
         String CHANGE_PRICE_PRODUCT_LIST = "Ubah Harga - Product List";
         String CHANGE_PRICE_DROP_DOWN = "Ubah Harga - Dropdown";
         String COPY_PRODUCT = "Copy";
+
+        String CHANGE_CATEGORY_PRODUCT_GEAR = "Ganti Kategori - Gear Menu";
+        String CHANGE_CATEGORY_PRODUCT_TOPMENU = "Ganti Kategori - Top Menu";
+        String CHANGE_ETALASE_PRODUCT_GEAR = "Ganti Etalase - Gear Menu";
+        String CHANGE_ETALASE_PRODUCT_TOPMENU = "Ganti Etalase - Top Menu";
+        String CHANGE_INSURANCE_PRODUCT_GEAR = "Ganti Asuransi - Gear Menu";
+        String CHANGE_INSURANCE_PRODUCT_TOPMENU = "Ganti Asuransi - Top Menu";
+        String DELETE_PRODUCT_GEAR = "Hapus - Gear Menu";
+        String DELETE_PRODUCT_TOPMENU = "Hapus - Top Menu";
     }
 
     interface SOCIAL_MEDIA {

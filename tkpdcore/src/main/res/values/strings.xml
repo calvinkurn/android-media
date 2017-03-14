@@ -332,6 +332,9 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="tx_title">Transaksi</string>
     <string name="title_product_video">Video Produk</string>
     <string name="success_share_product">Sukses membagikan produk</string>
+    <string name="error_share_product">Gagal membagikan produk</string>
+    <string name="success_share_review">Sukses membagikan ulasan</string>
+    <string name="error_share_review">Gagal membagikan ulasan</string>
     <!-- Strings related product info -->
 
 
@@ -345,7 +348,6 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="title_ship_speed">Kecepatan</string>
     <string name="prompt_new_comment">Tulis Komentar Anda</string>
     <string name="title_seller">Penjual</string>
-    <string name="title_cancel">Batal</string>
     <string name="title_reason_report">Alasan</string>
     <string name="action_report">Laporkan</string>
     <string name="action_follow">Ikuti</string>
@@ -413,12 +415,12 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <!-- Strings related manage prod -->
     <string name="title_edit_prod">Ubah</string>
     <string name="title_copy_prod">Salin</string>
-    <string name="title_edit_price">Ubah Harga</string>
+    <string name="title_edit_price">Ganti Harga</string>
     <string name="title_sort_but">Urutkan</string>
     <string name="title_filter_but">Filter</string>
-    <string name="title_update_etalase">Ubah Etalase</string>
-    <string name="title_update_categories">Ubah Kategori</string>
-    <string name="title_update_insurance">Ubah Asuransi</string>
+    <string name="title_update_etalase">Ganti Etalase</string>
+    <string name="title_update_categories">Ganti Kategori</string>
+    <string name="title_update_insurance">Ganti Asuransi</string>
     <string name="title_delete">Hapus</string>
     <string name="action_edit">Ubah</string>
     <string name="title_confirm">Konfirmasi</string>
@@ -588,6 +590,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="title_post_code">Kode Pos</string>
     <string name="title_receiver_phone_no">Nomor Telepon Penerima</string>
     <string name="title_save">Simpan</string>
+    <string name="title_cancel">Batal</string>
     <string name="title_province">Provinsi</string>
     <string name="title_regency">Kabupaten</string>
     <string name="title_sub_district">Kecamatan</string>
@@ -1007,6 +1010,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="dialog_save_preview_product_image">Simpan gambar ?</string>
     <string name="title_follow">mengikuti</string>
     <string name="title_unfollow">berhenti mengikuti</string>
+    <string name="title_tokopedia_hashtag">#DimulaiDariTokopedia</string>
 
 
     <!-- error string -->
@@ -1895,8 +1899,10 @@ di Tokopedia Sekarang!</string>
     <string name="_2">2</string>
     <string name="_1">1</string>
     <string name="see_all">Lihat Semua</string>
-
+    <string name="search_hint">Cari produk atau Toko</string>
     <string name="title_ask_buyer_selling">Tanya Pembeli</string>
     <string name="minute">" menit"</string>
+    <string name="check_timezone">Kami mendeteksi perangkat anda tidak menggunakan waktu yang sesuai dengan zona waktu anda. Silahkan periksa pengaturan waktu anda.</string>
+    <string name="action_check">Periksa</string>
 
 </resources>
