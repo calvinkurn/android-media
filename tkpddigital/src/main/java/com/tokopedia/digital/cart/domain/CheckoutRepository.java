@@ -8,7 +8,6 @@ import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.digital.cart.data.entity.response.ResponseCheckoutData;
-import com.tokopedia.digital.cart.data.mapper.CartMapperData;
 import com.tokopedia.digital.cart.data.mapper.ICartMapperData;
 import com.tokopedia.digital.cart.model.CheckoutDigitalData;
 
@@ -24,9 +23,10 @@ public class CheckoutRepository implements ICheckoutRepository {
     private final DigitalEndpointService digitalEndpointService;
     private final ICartMapperData cartMapperData;
 
-    public CheckoutRepository() {
-        this.digitalEndpointService = new DigitalEndpointService();
-        this.cartMapperData = new CartMapperData();
+    public CheckoutRepository(DigitalEndpointService digitalEndpointService,
+                              ICartMapperData mapperData) {
+        this.digitalEndpointService = digitalEndpointService;
+        this.cartMapperData = mapperData;
     }
 
     @Override
