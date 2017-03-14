@@ -20,10 +20,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:textSize="25dp"
+            android:textSize="25sp"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="@dimen/margin_large"
             />
 
     </RelativeLayout>
@@ -53,7 +53,7 @@
             android:layout_gravity="center_horizontal"
             android:textColor="@color/tkpd_dark_green"
             android:text="Lihat Lainnya"
-            android:textSize="13sp"/>
+            android:textSize="@dimen/textsize"/>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -78,11 +78,11 @@
             android:layout_gravity="center_horizontal"
             android:textColor="@color/tkpd_dark_green"
             android:text="Sembunyikan Lainnya"
-            android:textSize="13sp"/>
+            android:textSize="@dimen/textsize"/>
 
         <ImageView
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
+            android:layout_height="@dimen/med_dp"
             android:gravity="center_vertical"
             android:visibility="visible"
             android:src="@drawable/ic_expand_less_grey_24dp"/>
@@ -96,7 +96,7 @@
         android:layout_gravity="start"
         android:maxLines="1"
         android:textColor="@color/grey_600"
-        android:textSize="15sp"
+        android:textSize="@dimen/font_medium"
         android:layout_marginLeft="@dimen/margin_small"
         android:layout_marginTop="@dimen/margin_vs"
         android:textAlignment="viewStart"

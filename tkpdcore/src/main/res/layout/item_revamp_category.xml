@@ -4,7 +4,7 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/linWrapper"
+        android:id="@id/linWrapper"
         android:layout_width="match_parent"
         android:layout_height="140dp"
         android:background="@color/white"
@@ -14,7 +14,7 @@
         android:layout_marginTop="@dimen/margin_vs">
 
             <ImageView
-                android:id="@+id/thumbnail"
+                android:id="@id/thumbnail"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:visibility="visible"
@@ -22,7 +22,7 @@
                 android:src="@drawable/ic_navigate_next_black_24dp"/>
 
             <TextView
-                android:id="@+id/categoryTitle"
+                android:id="@id/categoryTitle"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

@@ -12,9 +12,13 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 
+import com.tokopedia.core.R2;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by Alifa on 3/6/2017.
@@ -63,15 +67,18 @@ public class RevampCategoryAdapter extends
 
     class ItemRowHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R2.id.categoryTitle)
         TextView categoryTitle;
+
+        @BindView(R2.id.linWrapper)
         LinearLayout container;
+
+        @BindView(R2.id.thumbnail)
         ImageView thumbnail;
 
         ItemRowHolder(View view) {
             super(view);
-            this.categoryTitle = (TextView) view.findViewById(R.id.categoryTitle);
-            this.container = (LinearLayout) view.findViewById(R.id.linWrapper);
-            this.thumbnail = (ImageView) view.findViewById(R.id.thumbnail);
+            ButterKnife.bind(this,view);
         }
     }
 
