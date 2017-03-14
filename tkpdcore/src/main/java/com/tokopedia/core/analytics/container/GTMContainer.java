@@ -139,7 +139,6 @@ public class GTMContainer implements IGTMContainer {
                         //setExpiryRefresh();
                     }
 
-                    CommonUtils.dumper("GAv4 container loaded");
                     validateGTM();
                 }
             }, 2, TimeUnit.SECONDS);
