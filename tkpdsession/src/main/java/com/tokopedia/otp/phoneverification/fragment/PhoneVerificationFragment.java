@@ -66,6 +66,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     TextView phoneNumberEditText;
     TextView changePhoneNumberButton;
     TextView requestOtpButton;
+    TextView countdownText;
     TextView requestOtpCallButton;
     View inputOtpView;
     EditText otpEditText;
@@ -91,6 +92,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         changePhoneNumberButton = (TextView) view.findViewById(R.id.change_phone_number_button);
         requestOtpButton = (TextView) view.findViewById(R.id.send_otp);
         requestOtpCallButton = (TextView) view.findViewById(R.id.send_otp_call);
+        countdownText = (TextView) view.findViewById(R.id.countdown_text);
         inputOtpView = view.findViewById(R.id.input_otp_view);
         otpEditText = (EditText) view.findViewById(R.id.input_otp);
 
@@ -375,15 +377,10 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
         countDownTimer = new CountDownTimer(90000, 1000) {
             public void onTick(long millisUntilFinished) {
-                requestOtpButton.setTextColor(MethodChecker.getColor(getActivity(),
-                        com.tokopedia.core.R.color.grey_600));
-                MethodChecker.setBackground(requestOtpButton,
-                        MethodChecker.getDrawable(getActivity(), android.R.color.transparent));
-                requestOtpButton.setEnabled(false);
-                requestOtpButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
-                requestOtpButton.setText(MethodChecker.fromHtml("Verifikasi akan dikirimkan.<br>Tunggu " + "<b>" + String.format(FORMAT,
+                requestOtpButton.setVisibility(View.GONE);
+                countdownText.setVisibility(View.VISIBLE);
+                countdownText.setText(MethodChecker.fromHtml("Verifikasi akan dikirimkan.<br>Tunggu " + "<b>" + String.format(FORMAT,
                         TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished)) + " detik</b> untuk mengirim ulang."));
-                requestOtpCallButton.setTextSize(12);
                 requestOtpCallButton.setVisibility(View.GONE);
             }
 
@@ -397,17 +394,20 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     }
 
     private void enableOtpButton() {
+        requestOtpButton.setVisibility(View.VISIBLE);
+        countdownText.setVisibility(View.GONE);
         MethodChecker.setBackground(requestOtpButton,
                 MethodChecker.getDrawable(getActivity(),
-                        com.tokopedia.core.R.drawable.cards_ui_2));
-        requestOtpButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
+                        com.tokopedia.core.R.drawable.cards_ui));
+        requestOtpButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_600));
         requestOtpButton.setText(com.tokopedia.session.R.string.title_resend_otp_sms);
-        requestOtpButton.setEnabled(true);
-        requestOtpButton.setTextSize(14);
-        requestOtpButton.setHeight(130);
-        requestOtpButton.setWidth(500);
         requestOtpCallButton.setVisibility(View.VISIBLE);
-
+        requestOtpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startTimer();
+            }
+        });
     }
 
     @Override

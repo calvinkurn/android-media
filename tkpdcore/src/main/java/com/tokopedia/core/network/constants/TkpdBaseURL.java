@@ -512,6 +512,8 @@ public class TkpdBaseURL {
         public static final String PATH_FAV_SHOP_FEED = "catalog/product";
         public static final String PATH_CATALOG = "v1/catalog";
         public static final String PATH_TOP_PICKS = "/hoth/toppicks/widget";
+        public static final String PATH_UNIVERSE_SEARCH = "/universe/v3";
+        public static final String PATH_DELETE_SEARCH = "/universe/v1?device=android&source=searchbar";
 
     }
 

@@ -1,6 +1,5 @@
 package com.tokopedia.seller.myproduct.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -70,7 +69,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
     public boolean IsLoading = false;
     public int isProdManager;
     private TkpdProgressDialog mProgressDialog;
-    public Activity context;
+    public ManageProduct activity;
     public LayoutInflater inflater;
     private ArrayList<ManageProductModel> manageProductModels;
     private Set<Integer> Checked = new HashSet<>();
@@ -80,12 +79,12 @@ public class ListViewManageProdAdapter extends BaseAdapter
     NetworkInteractor networkInteractorImpl;
     private boolean multiselect;
 
-    public ListViewManageProdAdapter(Activity context, int isProductManager) {
+    public ListViewManageProdAdapter(ManageProduct activity, int isProductManager) {
         super();
-        mProgressDialog = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
-        this.context = context;
+        mProgressDialog = new TkpdProgressDialog(activity, TkpdProgressDialog.NORMAL_PROGRESS);
+        this.activity = activity;
         isProdManager = isProductManager;
-        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         manageProductModels = new ArrayList<>();
         networkInteractorImpl = new NetworkInteractorImpl();
         multiselect = false;
@@ -162,14 +161,14 @@ public class ListViewManageProdAdapter extends BaseAdapter
 
     public ArrayList<String> getMenuName(String mAddTo) {
         ArrayList<String> menuName = new ArrayList<>();
-        menuName.add(context.getString(R.string.title_update_etalase));
+        menuName.add(activity.getString(R.string.title_update_etalase));
         List<EtalaseDB> etalaseDBs = DbManagerImpl.getInstance().getEtalases();
         for (EtalaseDB etalaseDB :
                 etalaseDBs) {
             menuName.add(String.valueOf(MethodChecker.fromHtml(etalaseDB.getEtalaseName())));
         }
 //		if (mAddTo.equals("1")){
-        menuName.add(context.getString(R.string.title_add_new_etalase));
+        menuName.add(activity.getString(R.string.title_add_new_etalase));
 //		}
         return menuName;
     }
@@ -195,13 +194,13 @@ public class ListViewManageProdAdapter extends BaseAdapter
     @Override
     public void onFailureEditPrice(String e, EditPriceParam param) {
         mProgressDialog.dismiss();
-        String message = CommonUtils.generateMessageError(context, e);
+        String message = CommonUtils.generateMessageError(activity, e);
         showSnackBar(message);
 
     }
 
     private void showSnackBar(String err) {
-        SnackbarManager.make(context, err, Snackbar.LENGTH_LONG).show();
+        SnackbarManager.make(activity, err, Snackbar.LENGTH_LONG).show();
     }
 
     @Override
@@ -223,12 +222,12 @@ public class ListViewManageProdAdapter extends BaseAdapter
         mProgressDialog.dismiss();
 
         if (data.getIsSuccess() == 1) {
-            showSnackBar(context.getString(R.string.title_quick_success));
+            showSnackBar(activity.getString(R.string.title_quick_success));
             KeyboardHandler keyboardHandler = new KeyboardHandler();
-            KeyboardHandler.hideSoftKeyboard(context);
+            KeyboardHandler.hideSoftKeyboard(activity);
             clearCheckdData();
-            ((ManageProduct) context).ClearData();
-            ((ManageProduct) context).CheckCache();
+            ((ManageProduct) activity).ClearData();
+            ((ManageProduct) activity).CheckCache();
         }
 
     }
@@ -240,6 +239,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
         TextView CopyBut;
         TextView Etalase;
         TextView SaveBut;
+        TextView CancelBut;
         TextView Dept;
         TextView UnderRev;
         View EditorArea;
@@ -253,6 +253,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
         TextView returnableView;
         //		CardView itemManageProduct;
         int position;
+
     }
 
     @Override
@@ -264,6 +265,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
             holder.ButOverflow = convertView.findViewById(R.id.but_overflow);
             holder.pImageView = (ImageView) convertView.findViewById(R.id.prod_img);
             holder.SaveBut = (TextView) convertView.findViewById(R.id.save_button);
+            holder.CancelBut = (TextView) convertView.findViewById(R.id.cancel_button);
             holder.pNameView = (TextView) convertView.findViewById(R.id.prod_name);
             holder.PriceView = (TextView) convertView.findViewById(R.id.price_view);
             holder.Etalase = (TextView) convertView.findViewById(R.id.etalase);
@@ -296,7 +298,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
         String Status = manageProductModel.getPStatus();
 
         if (!productImage.equals("null")) {
-            ImageHandler.loadImageRounded2(context, holder.pImageView, productImage);
+            ImageHandler.loadImageRounded2(activity, holder.pImageView, productImage);
         }
 
         if (isProdManager == 0) {
@@ -314,21 +316,23 @@ public class ListViewManageProdAdapter extends BaseAdapter
             holder.PriceView.setVisibility(View.GONE);
             holder.Currency.setVisibility(View.VISIBLE);
             holder.SaveBut.setVisibility(View.VISIBLE);
+            holder.CancelBut.setVisibility(View.VISIBLE);
         } else {
             holder.Prices.setVisibility(View.GONE);
             holder.Currency.setVisibility(View.GONE);
             holder.PriceView.setVisibility(View.VISIBLE);
             holder.SaveBut.setVisibility(View.GONE);
+            holder.CancelBut.setVisibility(View.GONE);
         }
         holder.Dept.setText(DepName);
-        if (!Etalase.equals(context.getResources().getString(R.string.title_warehouse))) {
+        if (!Etalase.equals(activity.getResources().getString(R.string.title_warehouse))) {
             holder.Etalase.setVisibility(View.VISIBLE);
             if (Etalase.equals("Stok Kosong")) {
                 holder.GudangTag.setVisibility(View.VISIBLE);
             } else {
                 holder.GudangTag.setVisibility(View.GONE);
             }
-            holder.Etalase.setText(context.getString(R.string.prompt_etalase) + ": " + MethodChecker.fromHtml(Etalase));
+            holder.Etalase.setText(activity.getString(R.string.prompt_etalase) + ": " + MethodChecker.fromHtml(Etalase));
         } else {
             holder.Etalase.setVisibility(View.GONE);
             holder.GudangTag.setVisibility(View.VISIBLE);
@@ -339,7 +343,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
 
 //			if (ContainWholesale.get(holder.position))
 
-        if (SessionHandler.isGoldMerchant(context)) {
+        if (SessionHandler.isGoldMerchant(activity)) {
             holder.Currency.setEnabled(true);
         } else {
             holder.Currency.setEnabled(false);
@@ -377,29 +381,13 @@ public class ListViewManageProdAdapter extends BaseAdapter
             holder.PriceView.setText("$ " + price);
         }
 
-        holder.PriceView.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                if (!multiselect) {
-                    holder.Prices.setVisibility(View.VISIBLE);
-                    holder.PriceView.setVisibility(View.GONE);
-                    holder.Currency.setVisibility(View.VISIBLE);
-                    holder.SaveBut.setVisibility(View.VISIBLE);
-
-                    // analytic below : https://phab.tokopedia.com/T18496
-                    UnifyTracking.eventChangeCurrencyProductList();
-                }
-            }
-        });
-
         holder.Prices.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (position < manageProductModels.size()) {
                     String currencycode = manageProductModels.get(position).getCurrencyCode().equals("1") ? "Rp" : "US$";
-                    Pair<Boolean, String> verif = VerificationUtils.validatePrice(context, currencycode, s.toString());
+                    Pair<Boolean, String> verif = VerificationUtils.validatePrice(activity, currencycode, s.toString());
                     if (!verif.getModel1()) {
                         holder.Prices.setError(verif.getModel2());
                     } else {
@@ -445,10 +433,24 @@ public class ListViewManageProdAdapter extends BaseAdapter
                     holder.Currency.setVisibility(View.GONE);
                     holder.PriceView.setVisibility(View.VISIBLE);
                     holder.SaveBut.setVisibility(View.GONE);
-                    KeyboardHandler.DropKeyboard(context, holder.MainView);
+                    holder.CancelBut.setVisibility(View.GONE);
+                    KeyboardHandler.DropKeyboard(activity, holder.MainView);
                     editPrice(position, holder.Currency.getSelectedItemPosition() + 1, holder.Prices.getText().toString());
                 }
             }
+        });
+        holder.CancelBut.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                holder.Prices.setVisibility(View.GONE);
+                holder.Currency.setVisibility(View.GONE);
+                holder.PriceView.setVisibility(View.VISIBLE);
+                holder.SaveBut.setVisibility(View.GONE);
+                holder.CancelBut.setVisibility(View.GONE);
+                EditMode.remove(ProductID);
+                KeyboardHandler.DropKeyboard(activity, holder.MainView);
+                }
         });
         holder.pNameView.setText(MethodChecker.fromHtml(prodName));
         holder.returnableView.setText(returnableCondition(returnablePolicy));
@@ -461,15 +463,15 @@ public class ListViewManageProdAdapter extends BaseAdapter
             public void onClick(View arg0) {
                 if (!multiselect) {
                     boolean isEdit = true;
-                    Intent intent = ProductActivity.moveToEditFragment(context, isEdit, ProductID);
-                    context.startActivityForResult(intent, 1);
+                    Intent intent = ProductActivity.moveToEditFragment(activity, isEdit, ProductID);
+                    activity.startActivityForResult(intent, 1);
                 }
 
             }
 
         });
 
-        if (Status.equals(context.getString(R.string.PRD_STATE_PENDING))) {
+        if (Status.equals(activity.getString(R.string.PRD_STATE_PENDING))) {
             holder.CopyBut.setVisibility(View.GONE);
             holder.EditBut.setVisibility(View.GONE);
             holder.UnderRev.setVisibility(View.VISIBLE);
@@ -487,8 +489,8 @@ public class ListViewManageProdAdapter extends BaseAdapter
             public void onClick(View v) {
                 if (!multiselect) {
                     boolean isEdit = true;
-                    Intent intent = ProductActivity.moveToEditFragment(context, isEdit, ProductID);
-                    context.startActivityForResult(intent, 1);
+                    Intent intent = ProductActivity.moveToEditFragment(activity, isEdit, ProductID);
+                    activity.startActivityForResult(intent, 1);
                 }
             }
         });
@@ -499,9 +501,6 @@ public class ListViewManageProdAdapter extends BaseAdapter
             public void onClick(View v) {
                 if (!multiselect) {
                     showPopup(v, position, holder);
-
-                    // analytic below : https://phab.tokopedia.com/T18496
-                    UnifyTracking.eventChangeCurrencyDropDown();
                 }
             }
         });
@@ -512,7 +511,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
         if (holder.Prices.getText().length() > 0 && Integer.parseInt(CurrencyFormatHelper.RemoveNonNumeric(holder.Prices.getText().toString())) > 0)
             return true;
         else {
-            holder.Prices.setError(context.getString(R.string.error_field_required));
+            holder.Prices.setError(activity.getString(R.string.error_field_required));
             holder.Prices.requestFocus();
             return false;
         }
@@ -523,7 +522,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
         final ManageProductModel manageProductModel = manageProductModels.get(position);
         final String ProductID = manageProductModel.getProdID();
 
-        PopupMenu popup = new PopupMenu(context, v);
+        PopupMenu popup = new PopupMenu(activity, v);
         MenuInflater inflater = popup.getMenuInflater();
         inflater.inflate(R.menu.manage_product_menu, popup.getMenu());
         popup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
@@ -537,23 +536,56 @@ public class ListViewManageProdAdapter extends BaseAdapter
                 boolean isCopy;
                 if (item.getItemId() == R.id.action_edit) {
                     isEdit = true;
-                    intent = ProductActivity.moveToEditFragment(context, isEdit, ProductID);
-                    context.startActivityForResult(intent, 1);
+                    intent = ProductActivity.moveToEditFragment(activity, isEdit, ProductID);
+                    activity.startActivityForResult(intent, 1);
                     return true;
                 } else if (item.getItemId() == R.id.action_copy) {
                     isCopy = true;
-                    intent = ProductActivity.moveToCopyFragment(context, isCopy, ProductID);
-                    context.startActivityForResult(intent, 1);
+                    intent = ProductActivity.moveToCopyFragment(activity, isCopy, ProductID);
+                    activity.startActivityForResult(intent, 1);
 
                     // analytic below : https://phab.tokopedia.com/T18496
                     UnifyTracking.eventCopyProduct();
                     return true;
                 } else if (item.getItemId() == R.id.action_edit_price) {
                     holder.Prices.setVisibility(View.VISIBLE);
+                    holder.Prices.setText(manageProductModel.getPrice());
                     holder.PriceView.setVisibility(View.GONE);
                     holder.Currency.setVisibility(View.VISIBLE);
                     holder.SaveBut.setVisibility(View.VISIBLE);
+                    holder.CancelBut.setVisibility(View.VISIBLE);
                     EditMode.add(ProductID);
+
+                    // analytic below : https://phab.tokopedia.com/T18496
+                    UnifyTracking.eventChangeCurrencyDropDown();
+                    return true;
+                } else if (item.getItemId() == R.id.action_update_categories) {
+                    Checked.add(position);
+                    activity.ShowCategoriesChange();
+
+                    // analytic below : https://phab.tokopedia.com/T19758
+                    UnifyTracking.eventChangeCategoryProductGear();
+                    return true;
+                } else if (item.getItemId() == R.id.action_update_etalase){
+                    Checked.add(position);
+                    activity.ShowEtalaseChange();
+
+                    // analytic below : https://phab.tokopedia.com/T19758
+                    UnifyTracking.eventChangeEtalaseProductGear();
+                    return true;
+                } else if (item.getItemId() == R.id.action_update_insurance){
+                    Checked.add(position);
+                    activity.ShowInsuranceChange();
+
+                    // analytic below : https://phab.tokopedia.com/T19758
+                    UnifyTracking.eventChangeInsuranceProductGear();
+                    return true;
+                } else if (item.getItemId() == R.id.action_delete){
+                    Checked.add(position);
+                    activity.ShowDeleteChange();
+
+                    // analytic below : https://phab.tokopedia.com/T19758
+                    UnifyTracking.eventDeleteProductGear();
                     return true;
                 } else {
                     return false;
@@ -576,11 +608,11 @@ public class ListViewManageProdAdapter extends BaseAdapter
     private String returnableCondition(int condition) {
         String returnableInfo;
         if (condition == 1)
-            returnableInfo = context.getString(R.string.table_policy_option);
+            returnableInfo = activity.getString(R.string.table_policy_option);
         else if (condition == 2)
-            returnableInfo = context.getString(R.string.table_policy_option_no);
+            returnableInfo = activity.getString(R.string.table_policy_option_no);
         else {
-            returnableInfo = context.getString(R.string.return_no_policy);
+            returnableInfo = activity.getString(R.string.return_no_policy);
         }
         return returnableInfo;
     }
@@ -592,8 +624,8 @@ public class ListViewManageProdAdapter extends BaseAdapter
         mProgressDialog.showDialog();
 
         ManageProduct manageProduct = null;
-        if (checkNotNull((context)) && context instanceof ManageProduct) {
-            manageProduct = (ManageProduct) context;
+        if (checkNotNull((activity)) && activity instanceof ManageProduct) {
+            manageProduct = (ManageProduct) activity;
         }
 
         ((NetworkInteractorImpl) networkInteractorImpl).setEditPrice(this);
@@ -603,9 +635,9 @@ public class ListViewManageProdAdapter extends BaseAdapter
         param.setCurrency(Integer.toString(currency));
         param.setPrice(CurrencyFormatHelper.RemoveNonNumeric(price));
         param.setProductId(manageProductModels.get(position).getProdID());
-        param.setShopId(SessionHandler.getShopID(context));
+        param.setShopId(SessionHandler.getShopID(activity));
 
-        networkInteractorImpl.editPrice(context, param);
+        networkInteractorImpl.editPrice(activity, param);
     }
 
     public void setMultiselect(boolean multiselect) {

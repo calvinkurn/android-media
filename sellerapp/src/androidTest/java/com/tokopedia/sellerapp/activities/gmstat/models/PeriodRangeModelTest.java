@@ -18,10 +18,10 @@ import static org.junit.Assert.assertThat;
 @RunWith(AndroidJUnit4.class)
 public class PeriodRangeModelTest {
 
-//    @Test
-//    public void test_book_is_parcelable() {
+    @Test
+    public void test_book_is_parcelable() {
 //        PeriodRangeModel periodRangeModel = new PeriodRangeModel(false, 7);
-//
+
 //        Parcel parcel = Parcel.obtain();
 //        periodRangeModel.writeToParcel(parcel, periodRangeModel.describeContents());
 //        parcel.setDataPosition(0);
@@ -29,5 +29,5 @@ public class PeriodRangeModelTest {
 //        PeriodRangeModel createdFromParcel = PeriodRangeModel.CREATOR.createFromParcel(parcel);
 //        assertThat(createdFromParcel.type, is(PeriodRangeModel.TYPE));
 //        assertThat(createdFromParcel.isRange, is(false));
-//    }
+    }
 }

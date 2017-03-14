@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.tokopedia.core.inboxreputation.adapter.InboxReputationDetailAdapter;
 import com.tokopedia.core.inboxreputation.model.inboxreputation.InboxReputationItem;
+import com.tokopedia.core.inboxreputation.model.inboxreputationdetail.InboxReputationDetailItem;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
 
@@ -77,4 +78,6 @@ public interface InboxReputationDetailFragmentView {
     void onFailedDeleteResponse(Bundle resultData);
 
     void onFailedPostReport(Bundle resultData);
+
+    void showShareProvider(InboxReputationDetailItem inboxReputationDetailItem);
 }
