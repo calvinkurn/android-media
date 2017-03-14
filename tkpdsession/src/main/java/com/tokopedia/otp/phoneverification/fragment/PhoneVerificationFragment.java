@@ -19,6 +19,7 @@ import android.text.TextPaint;
 import android.text.TextWatcher;
 import android.text.style.ClickableSpan;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -48,8 +49,6 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
-
-import static com.google.ads.conversiontracking.g.d.b;
 
 /**
  * Created by nisie on 2/22/17.
@@ -400,10 +399,13 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     private void enableOtpButton() {
         MethodChecker.setBackground(requestOtpButton,
                 MethodChecker.getDrawable(getActivity(),
-                        com.tokopedia.core.R.drawable.btn_share_transaparent));
+                        com.tokopedia.core.R.drawable.cards_ui_2));
+        requestOtpButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
         requestOtpButton.setText(com.tokopedia.session.R.string.title_resend_otp_sms);
         requestOtpButton.setEnabled(true);
-        requestOtpCallButton.setTextSize(14);
+        requestOtpButton.setTextSize(14);
+        requestOtpButton.setHeight(130);
+        requestOtpButton.setWidth(500);
         requestOtpCallButton.setVisibility(View.VISIBLE);
 
     }
