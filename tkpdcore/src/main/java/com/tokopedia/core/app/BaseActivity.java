@@ -25,6 +25,8 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.module.ActivityModule;
+import com.tokopedia.core.category.data.utils.CategoryVersioningHelper;
+import com.tokopedia.core.category.data.utils.CategoryVersioningHelperListener;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -60,9 +62,9 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     private static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     private static final long DISMISS_TIME = 10000;
     private static final String HADES = "TAG HADES";
+    protected Boolean isAllowFetchDepartmentView = false;
     private Boolean isPause = false;
     private boolean isDialogNotConnectionShown = false;
-    protected Boolean isAllowFetchDepartmentView = false;
     private HadesBroadcastReceiver hadesBroadcastReceiver;
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private SessionHandler sessionHandler;
@@ -143,14 +145,18 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     }
 
     public boolean verifyFetchDepartment() {
-        if (categoryDatabaseManager.isExpired(System.currentTimeMillis())) {
-            if (!HadesService.getIsHadesRunning()) {
-                fetchDepartment();
-            } else {
-                registerHadesReceiver();
+        CategoryVersioningHelper.checkVersionCategory(this, new CategoryVersioningHelperListener() {
+            @Override
+            public void doAfterChecking() {
+                if (categoryDatabaseManager.isExpired(System.currentTimeMillis())) {
+                    if (!HadesService.getIsHadesRunning()) {
+                        fetchDepartment();
+                    } else {
+                        registerHadesReceiver();
+                    }
+                }
             }
-            return true;
-        }
+        });
         return false;
     }
 
@@ -311,6 +317,20 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                 snackBar.dismiss();
             }
         }, DISMISS_TIME);
+    }
+
+    @Override
+    public void onTimezoneError() {
+
+        final Snackbar snackBar = SnackbarManager.make(this, getString(R.string.check_timezone),
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.action_check, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS));
+                    }
+                });
+        snackBar.show();
     }
 
     public void showForceLogoutDialog() {

@@ -191,14 +191,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 if (SessionHandler.isMsisdnVerified()) {
                     finishLogin();
                 } else {
-                    Intent intent = HomeRouter.getHomeActivity(context);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    Intent intent2 = SessionRouter.getPhoneVerificationActivationActivityIntent(context);
+                    Intent intentHome = HomeRouter.getHomeActivity(context);
+                    intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    Intent intentPhoneVerif = SessionRouter.getPhoneVerificationActivationActivityIntent(context);
 
                     context.startActivities(new Intent[]
                             {
-                                    intent,
-                                    intent2
+                                    intentHome,
+                                    intentPhoneVerif
                             });
                     context.finish();
                 }

@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.home.adapter;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,16 +10,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.tkpd.R;
-
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
-import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.ProductAdapter;
+import com.tokopedia.tkpd.R;
 
 import org.parceler.Parcel;
 
@@ -87,45 +84,6 @@ public class CategoryAdapter extends ProductAdapter{
         return TkpdState.RecyclerView.VIEW_CATEGORY;
     }
 
-    public class ViewHolder extends BaseRecyclerViewAdapter.ViewHolder{
-
-        @BindView(R.id.category_cardview)
-        CardView categoryCardView;
-        @BindView(R.id.image_cat)
-        ImageView pImageView;
-        @BindView(R.id.title_cat)
-        TextView pNameView;
-        Model data;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-
-        public void onBind(int position){
-             data = ((Model)getData().get(position));
-            pImageView.setImageResource(data.drawRes);
-            pNameView.setText(itemView.getContext().getString(data.textRes));
-        }
-
-        @OnClick(R.id.category_cardview)
-        public void onClick(View view){
-            BrowseProductActivity.moveTo(itemView.getContext(), data.depId + "", TopAdsApi.SRC_DIRECTORY);
-
-            Map<String, String> values = new HashMap<String, String>();
-            values.put(
-                    itemView.getContext().getString(R.string.value_category_name),
-                    itemView.getContext().getString(data.textRes)
-            );
-
-            TrackingUtils.eventLoca("event : "+
-                    itemView.getContext().getString(R.string.event_click_category),values);
-
-            CommonUtils.dumper("LocalTag : Event - CategoryApi : "
-                    + itemView.getContext().getString(data.textRes));
-        }
-    }
-
     @Parcel
     public static class Model extends RecyclerViewItem{
         int drawRes = -1;
@@ -145,23 +103,6 @@ public class CategoryAdapter extends ProductAdapter{
             this.drawRes = drawRes;
             this.textRes = textRes;
             this.depId = depId;
-        }
-
-        public static List<Model> mergeWithOnline(Context context, List<Model> offline, List<CategoryDB> online){
-            for (int k=0;k<online.size();k++) {
-                for (int m=0;m<offline.size();m++){
-                    Model model = offline.get(m);
-                    CategoryDB kategori = online.get(k);
-                    if(context.getString(model.textRes).toLowerCase().equals(kategori.getNameCategory().toLowerCase())){
-                        model.depId = kategori.getDepartmentId();
-                        offline.remove(m);
-                        offline.add(m, model);
-                    }else{
-                        Log.d("MNORMANSYAH", " lain "+kategori.getNameCategory()+" "+context.getString(model.textRes));
-                    }
-                }
-            }
-            return offline;
         }
 
         public static List<Model> getStaticList(){
@@ -189,6 +130,45 @@ public class CategoryAdapter extends ProductAdapter{
             list.add(new Model("57", R.drawable.ic_cat_movies_games_music_big, R.string.title_cat_movie));
             list.add(new Model("36", R.drawable.ic_cat_everything_else_big, R.string.title_everything_else));
             return list;
+        }
+    }
+
+    public class ViewHolder extends BaseRecyclerViewAdapter.ViewHolder {
+
+        @BindView(R.id.category_cardview)
+        CardView categoryCardView;
+        @BindView(R.id.image_cat)
+        ImageView pImageView;
+        @BindView(R.id.title_cat)
+        TextView pNameView;
+        Model data;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+
+        public void onBind(int position) {
+            data = ((Model) getData().get(position));
+            pImageView.setImageResource(data.drawRes);
+            pNameView.setText(itemView.getContext().getString(data.textRes));
+        }
+
+        @OnClick(R.id.category_cardview)
+        public void onClick(View view) {
+            BrowseProductActivity.moveTo(itemView.getContext(), data.depId + "", TopAdsApi.SRC_DIRECTORY);
+
+            Map<String, String> values = new HashMap<String, String>();
+            values.put(
+                    itemView.getContext().getString(R.string.value_category_name),
+                    itemView.getContext().getString(data.textRes)
+            );
+
+            TrackingUtils.eventLoca("event : " +
+                    itemView.getContext().getString(R.string.event_click_category), values);
+
+            CommonUtils.dumper("LocalTag : Event - CategoryApi : "
+                    + itemView.getContext().getString(data.textRes));
         }
     }
 }

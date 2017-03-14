@@ -32,4 +32,9 @@
     <string name="title_resend_otp_sms_2">Verifikasi akan dikirimkan. Tunggu </string>
     <string name="to_resend">untuk mengirim ulang.</string>
 
+    <string name="mail_to">mailto:</string>
+    <string name="android_feedback_email">android.feedback@tokopedia.com</string>
+    <string name="server_error_problem">Masalah Server Error</string>
+    <string name="application_version_text">Versi Aplikasi:</string>
+    <string name="send_email">Kirim Email</string>
 </resources>

@@ -84,7 +84,7 @@
             android:scrollbars="none" />
 
         <RelativeLayout
-            android:visibility="invisible"
+            android:visibility="gone"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:id="@id/rl_title_layout"

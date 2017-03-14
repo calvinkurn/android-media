@@ -131,5 +131,4 @@ public abstract class TActivity extends BaseActivity {
     public void hideToolbar() {
         getSupportActionBar().hide();
     }
-
 }
