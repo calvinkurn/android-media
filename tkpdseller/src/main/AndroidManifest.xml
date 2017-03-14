@@ -51,6 +51,10 @@
             android:label="@string/title_top_ads_filter"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".topads.view.activity.TopAdsFilterProductPromoActivity"
+            android:label="@string/title_top_ads_filter"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".topads.view.activity.TopAdsAddCreditActivity"
             android:label="@string/title_top_ads_add_credit"
             android:screenOrientation="portrait" />
@@ -59,12 +63,16 @@
             android:label="@string/title_top_ads_add_credit"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsNewPromoActivity"
+            android:name=".topads.view.activity.TopAdsGroupNewPromoActivity"
             android:label="@string/title_top_ads_new_promo"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsEditPromoActivity"
-            android:label="@string/title_top_ads_new_promo"
+            android:name=".topads.view.activity.TopAdsGroupEditPromoActivity"
+            android:label="@string/title_top_ads_edit_promo_product"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsGroupManagePromoActivity"
+            android:label="@string/title_top_ads_manage_promo_product"
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsAddProductActivity"
@@ -81,6 +89,30 @@
         <activity
             android:name=".topads.view.activity.TopAdsDetailGroupActivity"
             android:label="@string/title_group_ad_detail"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsDetailNewShopActivity"
+            android:label="@string/title_top_ads_new_promo"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsDetailNewProductActivity"
+            android:label="@string/title_top_ads_add_promo_product"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsDetailNewGroupActivity"
+            android:label="@string/title_top_ads_add_promo_product"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsDetailEditShopActivity"
+            android:label="@string/title_group_ad_detail"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsDetailEditProductActivity"
+            android:label="@string/title_top_ads_edit_promo_product"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsDetailEditGroupActivity"
+            android:label="@string/title_group_ad_edit"
             android:screenOrientation="portrait" />
         <activity
             android:name=".lib.datepicker.DatePickerActivity"
@@ -147,6 +179,11 @@
             android:screenOrientation="portrait"
             android:label="@string/title_activity_statistic"
             android:name=".topads.view.activity.TopAdsStatisticShopActivity"/>
+
+        <activity
+            android:name=".topads.view.activity.TopAdsAddProductListActivity"
+            android:label="@string/title_activity_top_ads_list"
+            android:theme="@style/Theme.Tokopedia3"/>
 
         <service
             android:name="com.tokopedia.seller.selling.SellingService"

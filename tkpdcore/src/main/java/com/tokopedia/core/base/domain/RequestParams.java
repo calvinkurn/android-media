@@ -29,6 +29,10 @@ public class RequestParams {
         parameters.put(key, value);
     }
 
+    public void putObject(String key, Object object) {
+        parameters.put(key, object);
+    }
+
     public int getInt(String key, int defaultValue) {
         final Object object = parameters.get(key);
         if (object == null) {
@@ -63,6 +67,10 @@ public class RequestParams {
         } catch (ClassCastException e) {
             return defaultValue;
         }
+    }
+
+    public Object getObject(String key) {
+        return parameters.get(key);
     }
 
     public void clearValue(String key) {

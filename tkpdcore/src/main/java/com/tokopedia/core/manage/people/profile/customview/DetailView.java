@@ -86,7 +86,23 @@ public class DetailView extends BaseView<Profile, ManagePeopleProfileFragmentPre
     }
 
     private StringBuilder generateDate(String birthDay, String birthMonth, String birthYear) {
-        return new StringBuilder().append(birthDay).append("/").append(birthMonth).append("/").append(birthYear);
+        return new StringBuilder().append(getBirthDay(birthDay)).append("/").append(getBirthMonth(birthMonth)).append("/").append(getBirthYear(birthYear));
+    }
+
+    private boolean isValid(String param) {
+        return param != null && !param.isEmpty();
+    }
+
+    private int getBirthDay(String birthDay) {
+        return isValid(birthDay) ? Integer.parseInt(birthDay) : 1;
+    }
+
+    private int getBirthMonth(String birthMonth) {
+        return isValid(birthMonth) ? Integer.parseInt(birthMonth) : 1;
+    }
+
+    private int getBirthYear(String birthYear) {
+        return isValid(birthYear) ? Integer.parseInt(birthYear) : 1989;
     }
 
     @Override
@@ -107,9 +123,9 @@ public class DetailView extends BaseView<Profile, ManagePeopleProfileFragmentPre
             DatePickerUtil datePicker =
                     new DatePickerUtil(
                             (Activity) getContext(),
-                            Integer.parseInt(dataUser.getBirthDay()),
-                            Integer.parseInt(dataUser.getBirthMonth()),
-                            Integer.parseInt(dataUser.getBirthYear())
+                            getBirthDay(dataUser.getBirthDay()),
+                            getBirthMonth(dataUser.getBirthMonth()),
+                            getBirthYear(dataUser.getBirthYear())
                     );
             datePicker.SetMaxYear(2002);
             datePicker.SetMinYear(1936);

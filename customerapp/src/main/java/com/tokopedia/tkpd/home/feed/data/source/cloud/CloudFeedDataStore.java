@@ -7,7 +7,7 @@ import com.tokopedia.core.database.model.DbFeed;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.home.feed.data.mapper.FeedMapper;
-import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.FeedDbManager;
+import com.tokopedia.core.base.common.dbManager.FeedDbManager;
 import com.tokopedia.tkpd.home.feed.domain.model.Feed;
 
 import retrofit2.Response;

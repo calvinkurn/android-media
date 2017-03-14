@@ -80,8 +80,12 @@ public class ManagePeopleProfileInteractorImpl implements ManagePeopleProfileInt
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(Profile.class));
                     } else {
-                        if (response.body().isNullData()) listener.onNullData();
-                        else listener.onError(response.body().getErrorMessages().toString().replace("[", "").replace("]", ""));
+                        if (response.body().getErrorMessages() != null
+                                && !response.body().getErrorMessages().isEmpty()) {
+                            listener.onError(response.body().getErrorMessages().get(0));
+                        } else {
+                            listener.onNullData();
+                        }
                     }
                 } else {
                     new ErrorHandler(new ErrorListener() {

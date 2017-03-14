@@ -1,13 +1,13 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,9 +25,9 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.presenter.TopAdsAdListPresenter;
-import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenter;
-import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenterImpl;
+import com.tokopedia.seller.topads.view.presenter.TopAdsAdListPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
@@ -184,11 +184,19 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         super.onActivityResult(requestCode, resultCode, intent);
         // check if the request code is the same
         if (requestCode == REQUEST_CODE_AD_STATUS && intent != null) {
-            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, false);
-            if (adStatusChanged) {
+            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+            boolean adDeleted = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_DELETED, false);
+            if (adStatusChanged || adDeleted) {
                 searchAd(START_PAGE);
+                setResultAdListChanged();
             }
         }
+    }
+
+    protected void setResultAdListChanged() {
+        Intent intent = new Intent();
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+        getActivity().setResult(Activity.RESULT_OK, intent);
     }
 
     @Override
@@ -207,8 +215,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         hideLoading();
         if (adapter.getDataSize() < 1) {
             adapter.showEmptyFull(true);
-            fabFilter.setVisibility(View.GONE);
-        } else {
+        }
+        if (fabFilter.getVisibility() == View.GONE) {
             fabFilter.setVisibility(View.VISIBLE);
         }
     }
@@ -227,7 +235,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
             recyclerView.removeOnScrollListener(onScrollListener);
             swipeToRefresh.setEnabled(false);
             adapter.showRetryFull(true);
-            fabFilter.setVisibility(View.GONE);
+            if (fabFilter.getVisibility() == View.VISIBLE) {
+                fabFilter.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -278,7 +288,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.promo_topads, menu);
+        inflater.inflate(R.menu.menu_top_ads_list, menu);
         SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setOnQueryTextListener(this);
         super.onCreateOptionsMenu(menu, inflater);

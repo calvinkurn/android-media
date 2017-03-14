@@ -3,10 +3,12 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -22,11 +24,11 @@ import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.model.data.Ad;
-import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenter;
-import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenterImpl;
-import com.tokopedia.seller.topads.presenter.TopAdsDetailPresenter;
+import com.tokopedia.seller.topads.data.model.data.Ad;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDetailPresenter;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelSwitch;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
@@ -37,28 +39,32 @@ import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAc
  */
 public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> extends TopAdsDatePickerFragment<T> implements TopAdsDetailViewListener, CompoundButton.OnCheckedChangeListener {
 
-    TopAdsLabelView priceAndSchedule;
-    TopAdsLabelView name;
-    TopAdsLabelSwitch status;
-    TopAdsLabelView maxBid;
-    TopAdsLabelView avgCost;
-    TopAdsLabelView start;
-    TopAdsLabelView end;
-    TopAdsLabelView dailyBudget;
-    TopAdsLabelView sent;
-    TopAdsLabelView impr;
-    TopAdsLabelView click;
-    TopAdsLabelView ctr;
-    TopAdsLabelView favorite;
+    protected static final int REQUEST_CODE_AD_EDIT = 1;
 
-    SwipeToRefresh swipeToRefresh;
-    protected Ad adFromIntent;
+    protected TopAdsLabelView priceAndSchedule;
+    protected TopAdsLabelView name;
+    private TopAdsLabelSwitch status;
+    private TopAdsLabelView maxBid;
+    private TopAdsLabelView avgCost;
+    protected TopAdsLabelView start;
+    protected TopAdsLabelView end;
+    protected TopAdsLabelView dailyBudget;
+    private TopAdsLabelView sent;
+    private TopAdsLabelView impr;
+    private TopAdsLabelView click;
+    private TopAdsLabelView ctr;
+    protected TopAdsLabelView favorite;
+
+    private SwipeToRefresh swipeToRefresh;
     protected ProgressDialog progressDialog;
-    private SnackbarRetry snackbarRetryRefresh;
-    private SnackbarRetry snackbarRetryOnAd;
-    private SnackbarRetry snackbarRetryOffAd;
+    private SnackbarRetry snackbarRetry;
+
+    protected Ad adFromIntent;
+    protected String adId;
 
     protected abstract void refreshAd();
+
+    protected abstract void editAd();
 
     public TopAdsDetailFragment() {
         // Required empty public constructor
@@ -88,35 +94,53 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         priceAndSchedule = (TopAdsLabelView) view.findViewById(R.id.title_price_and_schedule);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
-        snackbarRetryRefresh = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+        snackbarRetry = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 refreshAd();
             }
         });
-        snackbarRetryOnAd = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                setStatusSwitch(true);
-                turnOnAd();
-            }
-        });
-        snackbarRetryOffAd = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                setStatusSwitch(false);
-                turnOffAd();
-            }
-        });
-        snackbarRetryRefresh.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
-        snackbarRetryOffAd.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
-        snackbarRetryOnAd.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
+        snackbarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
     }
 
     @Override
     protected void setupArguments(Bundle bundle) {
         super.setupArguments(bundle);
         adFromIntent = bundle.getParcelable(TopAdsExtraConstant.EXTRA_AD);
+        adId = bundle.getString(TopAdsExtraConstant.EXTRA_AD_ID);
+    }
+
+    @Override
+    protected void initialVar() {
+        super.initialVar();
+        new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
+            @Override
+            public void onRefresh(View view) {
+                loadData();
+            }
+        });
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+        if (checked) {
+            turnOnAd();
+        } else {
+            turnOffAd();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        // check if the request code is the same
+        if (requestCode == REQUEST_CODE_AD_EDIT && intent != null) {
+            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+            if (adStatusChanged) {
+                refreshAd();
+                setResultAdDetailChanged();
+            }
+        }
     }
 
     @Override
@@ -137,32 +161,30 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         }
     }
 
-    @Override
-    protected void initialVar() {
-        super.initialVar();
-        RefreshHandler refresh = new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
-            @Override
-            public void onRefresh(View view) {
-                loadData();
-            }
-        });
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-        if (checked) {
-            turnOnAd();
-        } else {
-            turnOffAd();
-        }
-    }
-
     protected void turnOnAd() {
         showLoading();
     }
 
     protected void turnOffAd() {
         showLoading();
+    }
+
+    protected void deleteAd() {
+        showLoading();
+    }
+
+    protected void showDeleteConfirmation(String title, String content) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context, R.style.AppCompatAlertDialogStyle);
+        alertDialog.setTitle(title);
+        alertDialog.setMessage(content);
+        alertDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteAd();
+            }
+        });
+        alertDialog.setNegativeButton(R.string.No, null);
+        alertDialog.show();
     }
 
     @Override
@@ -174,40 +196,82 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     private void hideLoading() {
         progressDialog.dismiss();
         swipeToRefresh.setRefreshing(false);
+        snackbarRetry.hideRetrySnackbar();
     }
 
     @Override
     public void onLoadAdError() {
         hideLoading();
-        snackbarRetryRefresh.showRetrySnackbar();
+        snackbarRetry = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                refreshAd();
+            }
+        });
+        snackbarRetry.showRetrySnackbar();
     }
 
     @Override
     public void onTurnOnAdSuccess() {
         loadData();
-        setResultAdStatusChanged();
-        snackbarRetryOnAd.hideRetrySnackbar();
+        setResultAdDetailChanged();
+        snackbarRetry.hideRetrySnackbar();
     }
 
     @Override
     public void onTurnOnAdError() {
         setStatusSwitch(!status.isChecked());
         hideLoading();
-        snackbarRetryOnAd.showRetrySnackbar();
+        snackbarRetry = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                setStatusSwitch(true);
+                turnOnAd();
+            }
+        });
+        snackbarRetry.showRetrySnackbar();
     }
 
     @Override
     public void onTurnOffAdSuccess() {
         loadData();
-        setResultAdStatusChanged();
-        snackbarRetryOffAd.hideRetrySnackbar();
+        setResultAdDetailChanged();
+        snackbarRetry.hideRetrySnackbar();
     }
 
     @Override
     public void onTurnOffAdError() {
         setStatusSwitch(!status.isChecked());
         hideLoading();
-        snackbarRetryOffAd.showRetrySnackbar();
+        snackbarRetry = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                setStatusSwitch(false);
+                turnOffAd();
+            }
+        });
+        snackbarRetry.showRetrySnackbar();
+    }
+
+    @Override
+    public void onDeleteAdSuccess() {
+        hideLoading();
+        setResultAdDeleted();
+        if (isAdded()) {
+            getActivity().finish();
+        }
+    }
+
+    @Override
+    public void onDeleteAdError() {
+        hideLoading();
+        snackbarRetry = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                deleteAd();
+            }
+        });
+        snackbarRetry.showRetrySnackbar();
     }
 
     protected void loadAdDetail(Ad ad) {
@@ -243,21 +307,28 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     protected void setStatusSwitch(boolean checked) {
+        status.setSwitchEnabled(true);
         status.setListenerValue(null);
         status.setChecked(checked);
         status.setListenerValue(this);
     }
 
-    private void setResultAdStatusChanged() {
+    protected void setResultAdDetailChanged() {
         Intent intent = new Intent();
-        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_STATUS_CHANGED, true);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+    }
+
+    private void setResultAdDeleted() {
+        Intent intent = new Intent();
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_DELETED, true);
         getActivity().setResult(Activity.RESULT_OK, intent);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.promo_topads_detail, menu);
+        inflater.inflate(R.menu.menu_top_ads_detail, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -265,6 +336,9 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_date) {
             openDatePicker();
+            return true;
+        } else if (item.getItemId() == R.id.menu_edit) {
+            editAd();
             return true;
         }
         return super.onOptionsItemSelected(item);

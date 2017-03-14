@@ -110,7 +110,8 @@ public class ContactUsActivity extends BasePresenterActivity implements
             ContactUsFaqFragment fragment = ContactUsFaqFragment.createInstance(bundle);
             listener = fragment.getBackButtonListener();
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.main_view, fragment, fragment.getClass().getSimpleName());
+            fragmentTransaction.add(R.id.main_view, fragment, fragment.getClass().getSimpleName());
+            fragmentTransaction.addToBackStack(fragment.getClass().getSimpleName());
             fragmentTransaction.commit();
         }
     }
@@ -156,7 +157,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
         } else if (listener != null && listener.canGoBack()) {
             listener.onBackPressed();
         } else {
-            super.onBackPressed();
+            finish();
         }
     }
 

@@ -16,4 +16,9 @@
     <color name="font_top_ads_black_54">#8C000000</color>
     <color name="font_top_ads_black_70">#B3000000</color>
 
+    <color name="font_top_ads_editext_state_disable">#61000000</color>
+
+    <color name="selection_color_top_ads">#f3fef3</color>
+    <color name="thirty_eight_percent_black">#61000000</color>
+
 </resources>

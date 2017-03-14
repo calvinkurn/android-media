@@ -20,6 +20,7 @@
             <flag name="italic" value="2" />
         </attr>
         <attr name="content_small" format="boolean"/>
+        <attr name="switch_enable" format="boolean"/>
     </declare-styleable>
     <declare-styleable name="loader_view">
         <attr name="width_weight" format="float" />
@@ -133,6 +134,13 @@
     <declare-styleable name="BarChartAttrs">
         <attr name="chart_barSpacing" format="dimension"/>
         <attr name="chart_setSpacing" format="dimension"/>
+    </declare-styleable>
+
+    <!-- Top ads widget radio expand view-->
+    <declare-styleable name="TopAdsRadioExpand" >
+        <attr name="title_radio" format="reference|string" />
+        <attr name="checked" format="boolean"/>
+        <attr name="radio_id" format="reference" />
     </declare-styleable>
 
 </resources>
