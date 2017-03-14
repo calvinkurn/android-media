@@ -14,6 +14,10 @@ import retrofit2.Retrofit;
 
 public class TokoCashService extends BearerService<TokoCashApi> {
 
+    public TokoCashService(String mToken) {
+        super(mToken);
+    }
+
     @Override
     protected void initApiService(Retrofit retrofit) {
         this.mApi = retrofit.create(TokoCashApi.class);
@@ -31,6 +35,7 @@ public class TokoCashService extends BearerService<TokoCashApi> {
 
     @Override
     public TokoCashApi getApi() {
+        initApiService(createRetrofitInstance(getBaseUrl()));
         return this.mApi;
     }
 

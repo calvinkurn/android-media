@@ -210,7 +210,7 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
                         SessionHandler.getLoginID(MainApplication.getAppContext())));
         params.putString(SubmitImageUseCase.PARAM_FILE_UPLOADED,
                 generateFileUploaded(requestParams, changePhoneNumberModel));
-
+        params.putString(SubmitImageUseCase.PARAM_OS_TYPE, SubmitImageUseCase.DEFAULT_OS_TYPE);
         return params;
     }
 

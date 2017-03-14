@@ -17,6 +17,9 @@ public class SubmitImageUseCase extends UseCase<SubmitImageModel> {
 
     public static final String PARAM_USER_ID = "user_id";
     public static final String PARAM_FILE_UPLOADED = "file_uploaded";
+    public static final String PARAM_OS_TYPE = "os_type";
+    public static final String DEFAULT_OS_TYPE = "1";
+
 
     private final UploadImageRepository uploadImageRepository;
 

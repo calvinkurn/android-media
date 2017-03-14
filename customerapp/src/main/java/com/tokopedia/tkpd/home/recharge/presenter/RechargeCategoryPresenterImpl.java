@@ -59,15 +59,20 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
     }
 
     @Override
+    public void fetchStatusDigitalProductData() {
+        rechargeDBInteractor.getStatusOnResume(this);
+    }
+
+    @Override
     public void fetchRecentNumberList() {
         this.rechargeNetworkInteractor.getRecentNumbers(
-                AuthUtil.generateParams(activity),this
+                AuthUtil.generateParams(activity), this
         );
     }
 
     @Override
     public void fetchLastOrder() {
-        this.rechargeNetworkInteractor.getLastOrder(AuthUtil.generateParams(activity),this);
+        this.rechargeNetworkInteractor.getLastOrder(AuthUtil.generateParams(activity), this);
     }
 
     private boolean isAlreadyHaveDataOnCache(String key) {
@@ -101,10 +106,10 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
 
     @Override
     public void onSuccess(Status data) {
-        if(SessionHandler.isV4Login(activity)){
+        view.hideRechargeWidget();
+        if (SessionHandler.isV4Login(activity)) {
             fetchRecentNumberList();
         }
-
         if (data.getData().getAttributes().getIsMaintenance()) {
             view.failedRenderDataRechargeCategory();
         } else if (!isVersionMatch(data)) {
@@ -134,7 +139,7 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter,
 
     @Override
     public void onGetLastOrderSuccess(LastOrder lastOrder) {
-        storeNewDataToCache(KEY_LAST_ORDER,CacheUtil.convertModelToString(lastOrder,LastOrder.class));
+        storeNewDataToCache(KEY_LAST_ORDER, CacheUtil.convertModelToString(lastOrder, LastOrder.class));
     }
 
     @Override
