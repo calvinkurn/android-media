@@ -130,6 +130,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
             public void onNext(CheckoutDigitalData checkoutDigitalData) {
                 view.hideProgressLoading();
                 Log.d(TAG, checkoutDigitalData.toString());
+                view.renderToTopPay(checkoutDigitalData);
                 view.showToastMessage("Nunggu module payment siap, Bal yaw.. eaa eaa..");
             }
         };

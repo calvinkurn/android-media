@@ -33,6 +33,7 @@ import com.tokopedia.digital.cart.interactor.CartDigitalInteractor;
 import com.tokopedia.digital.cart.listener.IDigitalCartView;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 import com.tokopedia.digital.cart.model.CheckoutDataParameter;
+import com.tokopedia.digital.cart.model.CheckoutDigitalData;
 import com.tokopedia.digital.cart.model.UserInputPriceDigital;
 import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
@@ -403,6 +404,32 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
+    public void renderToTopPay(CheckoutDigitalData checkoutDigitalData) {
+        //TODO ke payment module
+        // navigateToActivityRequest();
+    }
+
+    @Override
+    public void renderErrorCheckout(String message) {
+
+    }
+
+    @Override
+    public void renderErrorHttpCheckout(String message) {
+
+    }
+
+    @Override
+    public void renderErrorNoConnectionCheckout(String message) {
+
+    }
+
+    @Override
+    public void renderErrorTimeoutConnectionCheckout(String message) {
+
+    }
+
+    @Override
     public String getDigitalCategoryId() {
         return passData.getCategoryId();
     }
@@ -467,6 +494,15 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == OtpVerificationActivity.REQUEST_CODE) {
             presenter.processPatchOtpCart();
+        } else if (requestCode == 2) {// ini request code payment. bisa diganti
+            switch (resultCode) {
+                case 1:
+                    getActivity().finish();
+                    break;
+                default:
+                    presenter.processGetCartData();
+                    break;
+            }
         }
     }
 
