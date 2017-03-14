@@ -104,7 +104,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsDetailEditShopActivity"
-            android:label="@string/title_group_ad_detail"
+            android:label="@string/title_edit_shop_ad"
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsDetailEditProductActivity"
