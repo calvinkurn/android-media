@@ -117,6 +117,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                     TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
             if (topAdsAddProductListPresenter.isFirstTime()) {
                 topAdsProductListAdapter.showLoadingFull(true);
+                swipeToRefresh.setEnabled(false);
                 topAdsAddProductListPresenter.searchProduct();
             }
         }
@@ -219,12 +220,17 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
             public void onRetryCliked() {
                 dismissSnackbar();
 
-                if (topAdsAddProductListPresenter.isHitNetwork()) {
-                    return;
+                if (topAdsProductListAdapter.getDataSize() > 0) {
+
+                } else {
+                    topAdsProductListAdapter.clear();
+                    topAdsProductListAdapter.notifyDataSetChanged();
+
+                    topAdsProductListAdapter.showLoadingFull(true);
+                    swipeToRefresh.setEnabled(false);
                 }
 
                 topAdsAddProductListPresenter.resetPage();
-                refreshHandler.setRefreshing(true);
                 topAdsAddProductListPresenter.setNetworkStatus(
                         TopAdsAddProductListPresenter.NetworkStatus.RETRYNETWORKCALL);
                 searchProductNetworkCall();
@@ -463,6 +469,7 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
             }
             topAdsProductListAdapter.notifyDataSetChanged();
         }
+        swipeToRefresh.setEnabled(true);
     }
 
     @Override
