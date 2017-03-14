@@ -1,5 +1,6 @@
 package com.tokopedia.otp.data.mapper;
 
+import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.entity.phoneverification.ValidateOtpData;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.otp.data.ValidateOtpModel;
@@ -28,15 +29,14 @@ public class ValidateOtpMapper implements Func1<Response<TkpdResponse>, Validate
                         && response.body().getErrorMessages().isEmpty()) {
                     model.setSuccess(false);
                 } else {
-                    model.setSuccess(false);
-                    model.setErrorMessage(response.body().getErrorMessageJoined());
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 }
             }
             model.setStatusMessage(response.body().getStatusMessageJoined());
+            model.setResponseCode(response.code());
         } else {
-            model.setSuccess(false);
+            throw new RuntimeException(String.valueOf(response.code()));
         }
-        model.setResponseCode(response.code());
         return model;
     }
 }

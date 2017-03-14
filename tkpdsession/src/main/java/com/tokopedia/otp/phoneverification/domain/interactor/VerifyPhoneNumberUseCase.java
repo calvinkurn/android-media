@@ -37,25 +37,14 @@ public class VerifyPhoneNumberUseCase extends UseCase<VerifyPhoneNumberModel> {
     }
 
     @Override
-    public Observable<VerifyPhoneNumberModel> createObservable(RequestParams requestParams) {
-        return Observable.zip(
-                doValidateOtp(getValidateOtpParam(requestParams)),
-                doVerifyPhoneNumber(getVerifyPhoneNumberParam(requestParams)),
-                new Func2<ValidateOtpModel, VerifyPhoneNumberModel, VerifyPhoneNumberModel>() {
+    public Observable<VerifyPhoneNumberModel> createObservable(final RequestParams requestParams) {
+        return doValidateOtp(getValidateOtpParam(requestParams))
+                .flatMap(new Func1<ValidateOtpModel, Observable<VerifyPhoneNumberModel>>() {
                     @Override
-                    public VerifyPhoneNumberModel call(ValidateOtpModel validateOtpModel,
-                                                       VerifyPhoneNumberModel verifyPhoneNumberModel) {
-                        if (!validateOtpModel.isSuccess()) {
-                            verifyPhoneNumberModel.setSuccess(validateOtpModel.isSuccess());
-                            if (validateOtpModel.getErrorMessage() != null
-                                    && verifyPhoneNumberModel.getErrorMessage() != null)
-                                verifyPhoneNumberModel.setErrorMessage(validateOtpModel.getErrorMessage()
-                                        + " ," + verifyPhoneNumberModel.getErrorMessage());
-                            else if (validateOtpModel.getErrorMessage() != null) {
-                                verifyPhoneNumberModel.setErrorMessage(validateOtpModel.getErrorMessage());
-                            }
-                        }
-                        return verifyPhoneNumberModel;
+                    public Observable<VerifyPhoneNumberModel> call(ValidateOtpModel validateOtpModel) {
+//                        return doVerifyPhoneNumber(getVerifyPhoneNumberParam(requestParams));
+                        VerifyPhoneNumberModel verifyPhoneNumberModel = new VerifyPhoneNumberModel();
+                        return Observable.just(verifyPhoneNumberModel);
                     }
                 });
     }

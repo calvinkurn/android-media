@@ -1,9 +1,9 @@
 package com.tokopedia.otp.phoneverification.presenter;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.util.SessionHandler;
@@ -57,95 +57,65 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
 
             verifyPhoneNumberUseCase.execute(getVerifyPhoneNumberParam(),
                     new Subscriber<VerifyPhoneNumberModel>() {
-                @Override
-                public void onCompleted() {
+                        @Override
+                        public void onCompleted() {
 
-                }
+                        }
 
-                @Override
-                public void onError(Throwable e) {
-                    if (e instanceof UnknownHostException) {
-                        viewListener.onErrorRequestOTP(
-                                viewListener.getString(R.string.msg_no_connection));
-                    } else if (e instanceof RuntimeException &&
-                            e.getLocalizedMessage() != null &&
-                            e.getLocalizedMessage().length() <= 3) {
-                        new ErrorHandler(new ErrorListener() {
-                            @Override
-                            public void onUnknown() {
+                        @Override
+                        public void onError(Throwable e) {
+                            if (e instanceof UnknownHostException) {
+                                viewListener.onErrorRequestOTP(
+                                        viewListener.getString(R.string.msg_no_connection));
+                            } else if (e instanceof RuntimeException &&
+                                    e.getLocalizedMessage() != null &&
+                                    e.getLocalizedMessage().length() <= 3) {
+                                new ErrorHandler(new ErrorListener() {
+                                    @Override
+                                    public void onUnknown() {
+                                        viewListener.onErrorVerifyPhoneNumber(
+                                                viewListener.getString(R.string.default_request_error_unknown));
+                                    }
+
+                                    @Override
+                                    public void onTimeout() {
+                                        viewListener.onErrorVerifyPhoneNumber(
+                                                viewListener.getString(R.string.default_request_error_timeout));
+                                    }
+
+                                    @Override
+                                    public void onServerError() {
+                                        viewListener.onErrorVerifyPhoneNumber(
+                                                viewListener.getString(R.string.default_request_error_internal_server));
+                                    }
+
+                                    @Override
+                                    public void onBadRequest() {
+                                        viewListener.onErrorVerifyPhoneNumber(
+                                                viewListener.getString(R.string.default_request_error_bad_request));
+                                    }
+
+                                    @Override
+                                    public void onForbidden() {
+                                        viewListener.onErrorVerifyPhoneNumber(
+                                                viewListener.getString(R.string.default_request_error_forbidden_auth));
+                                    }
+                                }, Integer.parseInt(e.getLocalizedMessage()));
+                            } else if (e instanceof ErrorMessageException
+                                    && e.getLocalizedMessage() != null) {
+                                viewListener.onErrorVerifyPhoneNumber(e.getLocalizedMessage());
+                            } else {
                                 viewListener.onErrorVerifyPhoneNumber(
                                         viewListener.getString(R.string.default_request_error_unknown));
                             }
+                        }
 
-                            @Override
-                            public void onTimeout() {
-                                viewListener.onErrorVerifyPhoneNumber(
-                                        viewListener.getString(R.string.default_request_error_timeout));
-                            }
+                        @Override
+                        public void onNext(VerifyPhoneNumberModel verifyPhoneNumberModel) {
+                            viewListener.onErrorVerifyPhoneNumber(verifyPhoneNumberModel.getErrorMessage());
 
-                            @Override
-                            public void onServerError() {
-                                viewListener.onErrorVerifyPhoneNumber(
-                                        viewListener.getString(R.string.default_request_error_internal_server));
-                            }
-
-                            @Override
-                            public void onBadRequest() {
-                                viewListener.onErrorVerifyPhoneNumber(
-                                        viewListener.getString(R.string.default_request_error_bad_request));
-                            }
-
-                            @Override
-                            public void onForbidden() {
-                                viewListener.onErrorVerifyPhoneNumber(
-                                        viewListener.getString(R.string.default_request_error_forbidden_auth));
-                            }
-                        }, Integer.parseInt(e.getLocalizedMessage()));
-                    } else {
-                        viewListener.onErrorVerifyPhoneNumber(
-                                viewListener.getString(R.string.default_request_error_unknown));
-                    }
-                }
-
-                @Override
-                public void onNext(VerifyPhoneNumberModel verifyPhoneNumberModel) {
-                    if (verifyPhoneNumberModel.isSuccess() &&
-                            verifyPhoneNumberModel.getVerifyPhoneNumberData().isSuccess()
-                            && verifyPhoneNumberModel.getErrorMessage() == null
-                            && verifyPhoneNumberModel.getStatusMessage() != null) {
-                        viewListener.onSuccessVerifyPhoneNumber();
-                    } else if (verifyPhoneNumberModel.getErrorMessage() != null) {
-                        viewListener.onErrorVerifyPhoneNumber(verifyPhoneNumberModel.getErrorMessage());
-                    } else {
-                        new ErrorHandler(new ErrorListener() {
-                            @Override
-                            public void onUnknown() {
-                                viewListener.onErrorVerifyPhoneNumber(viewListener.getString(R.string.default_request_error_unknown));
-                            }
-
-                            @Override
-                            public void onTimeout() {
-                                viewListener.onErrorVerifyPhoneNumber(viewListener.getString(R.string.default_request_error_timeout));
-                            }
-
-                            @Override
-                            public void onServerError() {
-                                viewListener.onErrorVerifyPhoneNumber(viewListener.getString(R.string.default_request_error_internal_server));
-                            }
-
-                            @Override
-                            public void onBadRequest() {
-                                viewListener.onErrorVerifyPhoneNumber(viewListener.getString(R.string.default_request_error_bad_request));
-                            }
-
-                            @Override
-                            public void onForbidden() {
-                                viewListener.onErrorVerifyPhoneNumber(viewListener.getString(R.string.default_request_error_forbidden_auth));
-                            }
-                        }, verifyPhoneNumberModel.getResponseCode());
-                    }
-                }
-            });
+                        }
+                    });
 
         }
     }
@@ -209,6 +179,9 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
                                                 viewListener.getString(R.string.default_request_error_forbidden_auth));
                                     }
                                 }, Integer.parseInt(e.getLocalizedMessage()));
+                            } else if (e instanceof ErrorMessageException
+                                    && e.getLocalizedMessage() != null) {
+                                viewListener.onErrorRequestOTP(e.getLocalizedMessage());
                             } else {
                                 viewListener.onErrorRequestOTP(
                                         viewListener.getString(R.string.default_request_error_unknown));
@@ -217,42 +190,7 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
 
                         @Override
                         public void onNext(RequestOtpModel requestOtpModel) {
-                            if (requestOtpModel.isSuccess() &&
-                                    requestOtpModel.getRequestOtpData().isSuccess()
-                                    && requestOtpModel.getErrorMessage() == null
-                                    && requestOtpModel.getStatusMessage() != null) {
-                                viewListener.onSuccessRequestOtp(requestOtpModel.getStatusMessage());
-                            } else if (requestOtpModel.getErrorMessage() != null) {
-                                viewListener.onErrorRequestOTP(requestOtpModel.getErrorMessage());
-                            } else {
-
-                                new ErrorHandler(new ErrorListener() {
-                                    @Override
-                                    public void onUnknown() {
-                                        viewListener.onErrorRequestOTP(viewListener.getString(R.string.default_request_error_unknown));
-                                    }
-
-                                    @Override
-                                    public void onTimeout() {
-                                        viewListener.onErrorRequestOTP(viewListener.getString(R.string.default_request_error_timeout));
-                                    }
-
-                                    @Override
-                                    public void onServerError() {
-                                        viewListener.onErrorRequestOTP(viewListener.getString(R.string.default_request_error_internal_server));
-                                    }
-
-                                    @Override
-                                    public void onBadRequest() {
-                                        viewListener.onErrorRequestOTP(viewListener.getString(R.string.default_request_error_bad_request));
-                                    }
-
-                                    @Override
-                                    public void onForbidden() {
-                                        viewListener.onErrorRequestOTP(viewListener.getString(R.string.default_request_error_forbidden_auth));
-                                    }
-                                }, requestOtpModel.getResponseCode());
-                            }
+                            viewListener.onSuccessRequestOtp(requestOtpModel.getStatusMessage());
                         }
 
                     }
@@ -274,7 +212,6 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
 
                 @Override
                 public void onError(Throwable e) {
-                    CommonUtils.dumper("NISNIS " + e.toString());
                     if (e instanceof UnknownHostException) {
                         viewListener.onErrorRequestOTP(
                                 viewListener.getString(R.string.msg_no_connection));
@@ -312,6 +249,9 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
                                         viewListener.getString(R.string.default_request_error_forbidden_auth));
                             }
                         }, Integer.parseInt(e.getLocalizedMessage()));
+                    } else if (e instanceof ErrorMessageException
+                            && e.getLocalizedMessage() != null) {
+                        viewListener.onErrorRequestOTP(e.getLocalizedMessage());
                     } else {
                         viewListener.onErrorRequestOTP(
                                 viewListener.getString(R.string.default_request_error_unknown));
@@ -320,42 +260,9 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
 
                 @Override
                 public void onNext(RequestOtpModel requestOtpModel) {
-                    if (requestOtpModel.isSuccess() &&
-                            requestOtpModel.getRequestOtpData().isSuccess()
-                            && requestOtpModel.getErrorMessage() == null
-                            && requestOtpModel.getStatusMessage() != null) {
-                        viewListener.onSuccessRequestOtp(requestOtpModel.getStatusMessage());
-                    } else if (requestOtpModel.getErrorMessage() != null) {
-                        viewListener.onErrorRequestOTP(requestOtpModel.getErrorMessage());
-                    } else {
 
-                        new ErrorHandler(new ErrorListener() {
-                            @Override
-                            public void onUnknown() {
-                                viewListener.onErrorRequestOTP(viewListener.getString(R.string.default_request_error_unknown));
-                            }
+                    viewListener.onSuccessRequestOtp(requestOtpModel.getStatusMessage());
 
-                            @Override
-                            public void onTimeout() {
-                                viewListener.onErrorRequestOTP(viewListener.getString(R.string.default_request_error_timeout));
-                            }
-
-                            @Override
-                            public void onServerError() {
-                                viewListener.onErrorRequestOTP(viewListener.getString(R.string.default_request_error_internal_server));
-                            }
-
-                            @Override
-                            public void onBadRequest() {
-                                viewListener.onErrorRequestOTP(viewListener.getString(R.string.default_request_error_bad_request));
-                            }
-
-                            @Override
-                            public void onForbidden() {
-                                viewListener.onErrorRequestOTP(viewListener.getString(R.string.default_request_error_forbidden_auth));
-                            }
-                        }, requestOtpModel.getResponseCode());
-                    }
                 }
             });
         }

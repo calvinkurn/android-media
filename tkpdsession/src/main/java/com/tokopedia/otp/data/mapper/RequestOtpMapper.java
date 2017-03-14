@@ -1,6 +1,6 @@
 package com.tokopedia.otp.data.mapper;
 
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.entity.otp.RequestOtpData;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.otp.data.RequestOtpModel;
@@ -20,7 +20,6 @@ public class RequestOtpMapper implements Func1<Response<TkpdResponse>, RequestOt
 
     private RequestOtpModel mappingResponse(Response<TkpdResponse> response) {
         RequestOtpModel model = new RequestOtpModel();
-
         if (response.isSuccessful()) {
             if (!response.body().isError()) {
                 RequestOtpData data = response.body().convertDataObj(RequestOtpData.class);
@@ -31,16 +30,14 @@ public class RequestOtpMapper implements Func1<Response<TkpdResponse>, RequestOt
                         && response.body().getErrorMessages().isEmpty()) {
                     model.setSuccess(false);
                 } else {
-                    model.setSuccess(false);
-                    model.setErrorMessage(response.body().getErrorMessageJoined());
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 }
             }
             model.setStatusMessage(response.body().getStatusMessageJoined());
+            model.setResponseCode(response.code());
         } else {
-            model.setSuccess(false);
+            throw new RuntimeException(String.valueOf(response.code()));
         }
-        model.setResponseCode(response.code());
         return model;
     }
-
 }
