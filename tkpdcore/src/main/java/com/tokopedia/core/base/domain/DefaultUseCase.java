@@ -6,6 +6,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.Subscriptions;
 
@@ -13,23 +14,19 @@ import rx.subscriptions.Subscriptions;
  * @author Kulomady on 2/1/17.
  */
 
-public abstract class UseCase<T> implements Interactor<T> {
-    private ThreadExecutor threadExecutor;
-    private PostExecutionThread postExecutionThread;
+public abstract class DefaultUseCase<T> implements Interactor<T> {
     private Subscription subscription = Subscriptions.empty();
 
-    public UseCase(ThreadExecutor threadExecutor,
-                   PostExecutionThread postExecutionThread) {
-        this.threadExecutor = threadExecutor;
-        this.postExecutionThread = postExecutionThread;
+    public DefaultUseCase() {
     }
 
     public abstract Observable<T> createObservable(RequestParams requestParams);
 
     public void execute(RequestParams requestParams, Subscriber<T> subscriber) {
         this.subscription = createObservable(requestParams)
-                .subscribeOn(Schedulers.from(threadExecutor))
-                .observeOn(postExecutionThread.getScheduler())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
                 .subscribe(subscriber);
     }
 

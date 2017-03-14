@@ -532,13 +532,15 @@ public class TkpdBaseURL {
         public static final String PATH_PRODUCT = "v1/products/";
         public static final String PATH_CATALOG = "v1/catalogs/";
 
-        public static final String PATH_WISHLIST_PRODUCT = "wishlist/products";
+        public static final String PATH_WISHLIST_PRODUCT = TkpdBaseURL.Mojito.PATH_USER + "{userId}/wishlist/products";
         public static final String PATH_WISHLIST = "wishlist";
 
         public static final String API_HOME_CATEGORY_MENU = "/api/v1/layout/category";
         public static final String PATH_USER_RECENT_VIEW = "users/";
         public static final String PATH_RECENT_VIEW = "/recentview/products/v1";
         public static final String API_V1_BRANDS = "/os/api/v1/brands/list";
+        public static final String PATH_USER_WISHLIST = "/users";
+        public static final String PATH_SEARCH_WISHLIST = PATH_USER_WISHLIST+"/{userId}/wishlist/search/v2";
     }
 
 
