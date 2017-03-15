@@ -94,7 +94,7 @@ public class ScroogeWebView extends WebView {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.invalidate();
-            if (url.contains(paymentPassData.getCallbackUrl())) {
+            if (url.contains(paymentPassData.getCallbackSuccessUrl())) {
                 view.stopLoading();
                 processRedirectUrlContainsTopPayCallbackUrl(url);
                 return true;

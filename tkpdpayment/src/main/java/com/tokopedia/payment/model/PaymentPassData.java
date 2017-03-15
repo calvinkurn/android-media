@@ -1,4 +1,5 @@
 package com.tokopedia.payment.model;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -11,7 +12,8 @@ public class PaymentPassData implements Parcelable {
     private String paymentId;
     private String queryString;
     private String redirectUrl;
-    private String callbackUrl;
+    private String callbackSuccessUrl;
+    private String callbackFailedUrl;
     private String transactionId;
 
     public String getPaymentId() {
@@ -38,12 +40,12 @@ public class PaymentPassData implements Parcelable {
         this.redirectUrl = redirectUrl;
     }
 
-    public String getCallbackUrl() {
-        return callbackUrl;
+    public String getCallbackSuccessUrl() {
+        return callbackSuccessUrl;
     }
 
-    public void setCallbackUrl(String callbackUrl) {
-        this.callbackUrl = callbackUrl;
+    public void setCallbackSuccessUrl(String callbackSuccessUrl) {
+        this.callbackSuccessUrl = callbackSuccessUrl;
     }
 
     public String getTransactionId() {
@@ -54,11 +56,23 @@ public class PaymentPassData implements Parcelable {
         this.transactionId = transactionId;
     }
 
+    public String getCallbackFailedUrl() {
+        return callbackFailedUrl;
+    }
+
+    public void setCallbackFailedUrl(String callbackFailedUrl) {
+        this.callbackFailedUrl = callbackFailedUrl;
+    }
+
     public void convertToPaymenPassData(TopPayBaseModel data) {
         queryString = data.getQueryStringToPass();
         redirectUrl = data.getRedirectUrlToPass();
-        callbackUrl = data.getCallbackUrlToPass();
+        callbackSuccessUrl = data.getCallbackSuccessUrlToPass();
         transactionId = data.getTransactionIdToPass();
+        callbackFailedUrl = data.getCallbackFailedUrlToPass();
+    }
+
+    public PaymentPassData() {
     }
 
     @Override
@@ -71,29 +85,29 @@ public class PaymentPassData implements Parcelable {
         dest.writeString(this.paymentId);
         dest.writeString(this.queryString);
         dest.writeString(this.redirectUrl);
-        dest.writeString(this.callbackUrl);
-    }
-
-    public PaymentPassData() {
+        dest.writeString(this.callbackSuccessUrl);
+        dest.writeString(this.callbackFailedUrl);
+        dest.writeString(this.transactionId);
     }
 
     protected PaymentPassData(Parcel in) {
         this.paymentId = in.readString();
         this.queryString = in.readString();
         this.redirectUrl = in.readString();
-        this.callbackUrl = in.readString();
+        this.callbackSuccessUrl = in.readString();
+        this.callbackFailedUrl = in.readString();
+        this.transactionId = in.readString();
     }
 
-    public static final Parcelable.Creator<PaymentPassData> CREATOR =
-            new Parcelable.Creator<PaymentPassData>() {
-                @Override
-                public PaymentPassData createFromParcel(Parcel source) {
-                    return new PaymentPassData(source);
-                }
+    public static final Creator<PaymentPassData> CREATOR = new Creator<PaymentPassData>() {
+        @Override
+        public PaymentPassData createFromParcel(Parcel source) {
+            return new PaymentPassData(source);
+        }
 
-                @Override
-                public PaymentPassData[] newArray(int size) {
-                    return new PaymentPassData[size];
-                }
-            };
+        @Override
+        public PaymentPassData[] newArray(int size) {
+            return new PaymentPassData[size];
+        }
+    };
 }

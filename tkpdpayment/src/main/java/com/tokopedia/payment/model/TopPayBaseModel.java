@@ -10,8 +10,11 @@ public interface TopPayBaseModel {
 
     String getQueryStringToPass();
 
-    String getCallbackUrlToPass();
+    String getCallbackSuccessUrlToPass();
+
+    String getCallbackFailedUrlToPass();
 
     String getTransactionIdToPass();
+
 
 }

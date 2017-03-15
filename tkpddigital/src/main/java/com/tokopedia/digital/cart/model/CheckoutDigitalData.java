@@ -112,8 +112,13 @@ public class CheckoutDigitalData implements Parcelable, TopPayBaseModel {
     }
 
     @Override
-    public String getCallbackUrlToPass() {
+    public String getCallbackSuccessUrlToPass() {
         return successCallbackUrl;
+    }
+
+    @Override
+    public String getCallbackFailedUrlToPass() {
+        return failedCallbackUrl;
     }
 
     @Override
