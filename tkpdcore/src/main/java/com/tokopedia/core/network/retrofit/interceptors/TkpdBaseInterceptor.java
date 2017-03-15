@@ -28,17 +28,17 @@ public class TkpdBaseInterceptor implements Interceptor {
         while (!response.isSuccessful() && count < maxRetryAttempt) {
             Log.d(TAG, "Request is not successful - " + count + " Error code : " + response.code());
             count++;
-            response = chain.proceed(request);
+            response = chain.proceed(chain.request());
         }
         return response;
-    }
-
-    public int getMaxRetryAttempt() {
-        return maxRetryAttempt;
     }
 
     public TkpdBaseInterceptor setMaxRetryAttempt(int maxRetryAttempt) {
         this.maxRetryAttempt = maxRetryAttempt;
         return this;
+    }
+
+    public int getMaxRetryAttempt() {
+        return maxRetryAttempt;
     }
 }
