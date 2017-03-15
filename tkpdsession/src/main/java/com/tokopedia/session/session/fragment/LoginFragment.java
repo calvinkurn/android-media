@@ -32,6 +32,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -44,6 +46,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -89,7 +92,8 @@ import permissions.dispatcher.RuntimePermissions;
  * edited by steven
  */
 @RuntimePermissions
-public class LoginFragment extends Fragment implements LoginView {
+public class
+LoginFragment extends Fragment implements LoginView {
     // demo only
     int anTestInt = 0;
     Login login;
@@ -119,6 +123,9 @@ public class LoginFragment extends Fragment implements LoginView {
     TextInputLayout wrapperEmail;
     @BindView(R2.id.wrapper_password)
     TextInputLayout wrapperPassword;
+    @BindView(R2.id.remember_account)
+    CheckBox rememberAccount;
+
 
     ArrayAdapter<String> autoCompleteAdapter;
     List<LoginProviderModel.ProvidersBean> listProvider;
@@ -173,6 +180,7 @@ public class LoginFragment extends Fragment implements LoginView {
         unbinder = ButterKnife.bind(this, rootView);
         forgotPass.setPaintFlags(forgotPass.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         setListener();
+        setRememberAccountState();
 
         String temp = getArguments().getString("login");
         if (temp != null) {
@@ -347,6 +355,8 @@ public class LoginFragment extends Fragment implements LoginView {
                 startActivity(ForgotPasswordActivity.getCallingIntent(getActivity(), mEmailView.getText().toString()));
             }
         });
+
+
     }
 
     private TextWatcher watcher(final TextInputLayout wrapper) {
@@ -658,6 +668,18 @@ public class LoginFragment extends Fragment implements LoginView {
         SnackbarManager.make(getActivity(), string, Snackbar.LENGTH_LONG).show();
     }
 
+    @Override
+    public void triggerSaveAccount() {
+        login.setRememberAccountState(rememberAccount.isChecked());
+
+        if (login.getSavedAccountState()) {
+            login.saveAccountInfo(mEmailView.getText().toString(),
+                    mPasswordView.getText().toString());
+        } else {
+            login.clearSavedAccount();
+        }
+    }
+
     private void loginProvideOnClick(final String url, final String name) {
         WebViewLoginFragment newFragment = WebViewLoginFragment
                 .createInstance(url);
@@ -781,5 +803,13 @@ public class LoginFragment extends Fragment implements LoginView {
     @OnNeverAskAgain(Manifest.permission.GET_ACCOUNTS)
     void showNeverAskForGetAccounts() {
         RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.GET_ACCOUNTS);
+    }
+
+    private void setRememberAccountState() {
+        if (login.getSavedAccountState()) {
+            rememberAccount.setChecked(true);
+            mEmailView.setText(login.getSavedAccountEmail());
+            mPasswordView.setText(login.getSavedAccountPassword());
+        }
     }
 }

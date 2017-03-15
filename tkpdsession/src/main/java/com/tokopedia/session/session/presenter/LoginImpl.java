@@ -22,6 +22,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
 import com.tokopedia.core.session.model.CreatePasswordModel;
@@ -33,6 +34,7 @@ import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.util.EncoderDecoder;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.FacebookContainer;
 import com.tokopedia.session.R;
@@ -57,6 +59,14 @@ import java.util.Set;
  * Modified by m.normansyah on 21-11-2015, move all download or upload to the internet
  */
 public class LoginImpl implements Login {
+
+    private static final String REMEMBER_ACC_STATE = "REMEMBER_ACC_STATE";
+    private static final String STATE = "STATE";
+    private static final String REMEMBER_ACC_INFO = "REMEMBER_ACC_STATE";
+    private static final String ACC_EMAIL = "ACC_EMAIL";
+    private static final String ACC_PASSWORD = "ACC_PASSWORD";
+    private static final String KEY_IV = "tokopedia7891234";
+
     LoginView loginView;
     LocalCacheHandler cache;
     LocalCacheHandler loginUuid;
@@ -172,6 +182,48 @@ public class LoginImpl implements Login {
                 loginView.showError(fragment.getActivity().getString(R.string.msg_network_error));
             }
         });
+    }
+
+    @Override
+    public void setRememberAccountState(Boolean state) {
+        LocalCacheHandler cache = new LocalCacheHandler(mContext, REMEMBER_ACC_STATE);
+        cache.putBoolean(STATE, state);
+        cache.applyEditor();
+    }
+
+    @Override
+    public void saveAccountInfo(String userEmail, String userPassword) {
+        LocalCacheHandler cache = new LocalCacheHandler(mContext, REMEMBER_ACC_INFO);
+        String encryptedPassword = EncoderDecoder.Encrypt(userPassword, KEY_IV);
+        cache.putString(ACC_EMAIL, userEmail);
+        cache.putString(ACC_PASSWORD, encryptedPassword);
+        cache.applyEditor();
+    }
+
+    @Override
+    public Boolean getSavedAccountState() {
+        LocalCacheHandler cache = new LocalCacheHandler(mContext, REMEMBER_ACC_STATE);
+        return cache.getBoolean(STATE, false);
+    }
+
+    @Override
+    public String getSavedAccountEmail() {
+        LocalCacheHandler cache = new LocalCacheHandler(mContext, REMEMBER_ACC_INFO);
+        return cache.getString(ACC_EMAIL, "");
+    }
+
+    @Override
+    public String getSavedAccountPassword() {
+        LocalCacheHandler cache = new LocalCacheHandler(mContext, REMEMBER_ACC_INFO);
+        String decryptedPassword = EncoderDecoder.Decrypt(cache.getString(ACC_PASSWORD, ""),
+                KEY_IV);
+        return decryptedPassword;
+    }
+
+    @Override
+    public void clearSavedAccount() {
+        LocalCacheHandler.clearCache(mContext, REMEMBER_ACC_INFO);
+        LocalCacheHandler.clearCache(mContext, REMEMBER_ACC_STATE);
     }
 
     private void requestProfileFacebook(final LoginResult loginResult) {
@@ -416,6 +468,7 @@ public class LoginImpl implements Login {
                             loginSecurityModel.getSecurity().getUser_check_security_2(),
                             loginSecurityModel.getUser_id());
                 } else if (sessionHandler.isV4Login()) {// go back to home
+                    loginView.triggerSaveAccount();
                     loginView.destroyActivity();
                 } else if (data.getInt(DownloadService.VALIDATION_OF_DEVICE_ID, LoginEmailModel.INVALID_DEVICE_ID) == LoginEmailModel.INVALID_DEVICE_ID) {
 

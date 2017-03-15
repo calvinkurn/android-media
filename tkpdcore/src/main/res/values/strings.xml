@@ -1899,5 +1899,6 @@ di Tokopedia Sekarang!</string>
     <string name="minute">" menit"</string>
     <string name="check_timezone">Kami mendeteksi perangkat anda tidak menggunakan waktu yang sesuai dengan zona waktu anda. Silahkan periksa pengaturan waktu anda.</string>
     <string name="action_check">Periksa</string>
+    <string name="action_remember_account">Simpan Email dan Kata Sandi</string>
 
 </resources>
