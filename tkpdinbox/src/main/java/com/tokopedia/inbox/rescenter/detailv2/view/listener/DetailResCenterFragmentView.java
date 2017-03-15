@@ -40,4 +40,6 @@ public interface DetailResCenterFragmentView {
     void setOnActionAddressHistoryClick();
 
     void setOnActionEditAddressClick();
+
+    void setOnActionProductClick(String productID);
 }

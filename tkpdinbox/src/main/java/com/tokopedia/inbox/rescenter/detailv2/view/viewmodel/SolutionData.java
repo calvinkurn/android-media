@@ -5,15 +5,15 @@ package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel;
  */
 
 public class SolutionData {
-    private int solutionText;
+    private String solutionText;
     private String solutionProvider;
     private String solutionDate;
 
-    public int getSolutionText() {
+    public String getSolutionText() {
         return solutionText;
     }
 
-    public void setSolutionText(int solutionText) {
+    public void setSolutionText(String solutionText) {
         this.solutionText = solutionText;
     }
 

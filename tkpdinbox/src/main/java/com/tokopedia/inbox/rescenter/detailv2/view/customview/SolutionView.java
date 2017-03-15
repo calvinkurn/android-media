@@ -51,7 +51,7 @@ public class SolutionView extends BaseView<SolutionData, DetailResCenterFragment
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(getLayoutView(), this, true);
-        actionEdit = view.findViewById(R.id.action_edit_solution);
+        actionEdit = view.findViewById(R.id.action_edit);
         actionDiscuss = view.findViewById(R.id.action_discuss);
         informationText = (TextView) view.findViewById(R.id.tv_last_solution_date);
         solutionText = (TextView) view.findViewById(R.id.tv_last_solution);

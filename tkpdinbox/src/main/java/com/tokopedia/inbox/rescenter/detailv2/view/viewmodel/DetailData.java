@@ -8,10 +8,13 @@ public class DetailData {
     private String awbNumber;
     private String complaintDate;
     private String invoice;
+    private String shopID;
     private String shopName;
     private String responseDeadline;
     private boolean buyerDeadlineVisibility;
     private boolean sellerDeadlineVisibility;
+    private String buyerID;
+    private String buyerName;
 
     public String getAwbNumber() {
         return awbNumber;
@@ -68,5 +71,29 @@ public class DetailData {
 
     public void setSellerDeadlineVisibility(boolean sellerDeadlineVisibility) {
         this.sellerDeadlineVisibility = sellerDeadlineVisibility;
+    }
+
+    public String getBuyerID() {
+        return buyerID;
+    }
+
+    public void setBuyerID(String buyerID) {
+        this.buyerID = buyerID;
+    }
+
+    public void setBuyerName(String buyerName) {
+        this.buyerName = buyerName;
+    }
+
+    public String getBuyerName() {
+        return buyerName;
+    }
+
+    public void setShopID(String shopID) {
+        this.shopID = shopID;
+    }
+
+    public String getShopID() {
+        return shopID;
     }
 }

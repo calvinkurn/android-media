@@ -30,7 +30,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list_history"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/recyclerview_rescenter_history_item">
 
     </android.support.v7.widget.RecyclerView>
 

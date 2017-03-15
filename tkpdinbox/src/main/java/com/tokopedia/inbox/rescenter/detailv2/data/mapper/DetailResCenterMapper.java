@@ -1,5 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.data.mapper;
 
+import android.util.Log;
+
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
 
@@ -19,11 +21,20 @@ public class DetailResCenterMapper implements Func1<Response<TkpdResponse>, Deta
     public DetailResCenter call(Response<TkpdResponse> response) {
         DetailResCenter domainModel = new DetailResCenter();
         if (response.isSuccessful()) {
-            domainModel.setSuccess(true);
+            if (response.body().isError()) {
+                domainModel.setSuccess(true);
+            } else {
+                domainModel.setSuccess(false);
+                domainModel.setMessageError(generateMessageError(response));
+            }
         } else {
             domainModel.setSuccess(false);
             domainModel.setErrorCode(response.code());
         }
         return domainModel;
+    }
+
+    private String generateMessageError(Response<TkpdResponse> response) {
+        return response.body().getErrorMessageJoined();
     }
 }

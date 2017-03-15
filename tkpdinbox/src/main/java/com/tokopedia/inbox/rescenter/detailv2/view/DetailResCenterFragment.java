@@ -54,7 +54,8 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     public boolean isSeller() {
-        return SessionHandler.getLoginID(getActivity()).equals(getViewData().getCustomerID());
+        return SessionHandler.getLoginID(getActivity())
+                .equals(getViewData().getDetailData().getBuyerID());
     }
 
     @Override
@@ -132,6 +133,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         buttonView = (ButtonView) view.findViewById(R.id.button_view);
         statusView = (StatusView) view.findViewById(R.id.status_view);
         awbReturView = (AwbReturView) view.findViewById(R.id.awb_view);
+        addressReturView = (AddressReturView) view.findViewById(R.id.address_retur_view);
         detailView = (DetailView) view.findViewById(R.id.detail_view);
         listProductView = (ListProductView) view.findViewById(R.id.product_view);
         solutionView = (SolutionView) view.findViewById(R.id.solution_view);
@@ -255,6 +257,11 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     public void setOnActionEditAddressClick() {
+
+    }
+
+    @Override
+    public void setOnActionProductClick(String productID) {
 
     }
 }

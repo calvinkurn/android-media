@@ -4,8 +4,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ProductItem;
 
 import java.util.ArrayList;
@@ -17,23 +21,25 @@ import java.util.List;
 
 public class ComplaintProductAdapter extends RecyclerView.Adapter<ComplaintProductAdapter.ComplaintProductVH> {
 
+    private final DetailResCenterFragmentView listener;
     private List<ProductItem> productItems;
     private boolean limit;
 
-    public ComplaintProductAdapter() {
-        productItems = new ArrayList<>();
+    public ComplaintProductAdapter(DetailResCenterFragmentView listener) {
+        this.listener = listener;
+        this.productItems = new ArrayList<>();
     }
 
-    public static ComplaintProductAdapter createDefaultInstance(List<ProductItem> productItems) {
-        ComplaintProductAdapter adapter = new ComplaintProductAdapter();
+    public static ComplaintProductAdapter createDefaultInstance(DetailResCenterFragmentView listener, List<ProductItem> productItems) {
+        ComplaintProductAdapter adapter = new ComplaintProductAdapter(listener);
         adapter.setProductItems(productItems);
         adapter.setLimit(false);
         adapter.notifyDataSetChanged();
         return adapter;
     }
 
-    public static ComplaintProductAdapter createLimitInstance(List<ProductItem> productItems) {
-        ComplaintProductAdapter adapter = new ComplaintProductAdapter();
+    public static ComplaintProductAdapter createLimitInstance(DetailResCenterFragmentView listener, List<ProductItem> productItems) {
+        ComplaintProductAdapter adapter = new ComplaintProductAdapter(listener);
         adapter.setProductItems(productItems);
         adapter.setLimit(true);
         adapter.notifyDataSetChanged();
@@ -58,8 +64,13 @@ public class ComplaintProductAdapter extends RecyclerView.Adapter<ComplaintProdu
 
     public class ComplaintProductVH extends RecyclerView.ViewHolder {
 
+        ImageView productImage;
+        TextView productName;
+
         public ComplaintProductVH(View itemView) {
             super(itemView);
+            productImage = (ImageView) itemView.findViewById(R.id.iv_product_image);
+            productName = (TextView) itemView.findViewById(R.id.tv_product_name);
         }
     }
 
@@ -72,7 +83,9 @@ public class ComplaintProductAdapter extends RecyclerView.Adapter<ComplaintProdu
 
     @Override
     public void onBindViewHolder(ComplaintProductVH holder, int position) {
-
+        ImageHandler.LoadImage(holder.productImage, getProductItems().get(position).getProductImageUrl());
+        holder.productName.setText(getProductItems().get(position).getProductName());
+        holder.productName.setOnClickListener(new OnProductClick(getProductItems().get(position).getProductID()));
     }
 
     @Override
@@ -84,4 +97,16 @@ public class ComplaintProductAdapter extends RecyclerView.Adapter<ComplaintProdu
         }
     }
 
+    private class OnProductClick implements View.OnClickListener {
+        private final String productID;
+
+        public OnProductClick(String productID) {
+            this.productID = productID;
+        }
+
+        @Override
+        public void onClick(View view) {
+            listener.setOnActionProductClick(productID);
+        }
+    }
 }

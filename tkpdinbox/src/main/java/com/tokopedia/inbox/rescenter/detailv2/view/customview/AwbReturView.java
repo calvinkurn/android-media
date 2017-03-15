@@ -1,7 +1,9 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.customview;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,7 +68,11 @@ public class AwbReturView extends BaseView<AwbData, DetailResCenterFragmentView>
     public void renderData(@NonNull AwbData data) {
         setVisibility(VISIBLE);
         informationText.setText(generateInformationText(data));
-        awbText.setText(data.getAwbText());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            awbText.setText(Html.fromHtml(data.getAwbText(), Html.FROM_HTML_MODE_COMPACT));
+        } else {
+            awbText.setText(Html.fromHtml(data.getAwbText()));
+        }
         actionTrack.setOnClickListener(new AwbViewOnClickListener());
         actionMoreAwb.setOnClickListener(new AwbViewOnClickListener());
     }
