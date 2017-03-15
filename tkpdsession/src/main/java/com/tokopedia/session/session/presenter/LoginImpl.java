@@ -203,7 +203,7 @@ public class LoginImpl implements Login {
     @Override
     public Boolean getSavedAccountState() {
         LocalCacheHandler cache = new LocalCacheHandler(mContext, REMEMBER_ACC_STATE);
-        return cache.getBoolean(STATE, false);
+        return cache.getBoolean(STATE, true);
     }
 
     @Override
@@ -215,6 +215,8 @@ public class LoginImpl implements Login {
     @Override
     public String getSavedAccountPassword() {
         LocalCacheHandler cache = new LocalCacheHandler(mContext, REMEMBER_ACC_INFO);
+        String encryptedPassword = cache.getString(ACC_PASSWORD, "");
+        if (encryptedPassword.equals("")) return encryptedPassword;
         String decryptedPassword = EncoderDecoder.Decrypt(cache.getString(ACC_PASSWORD, ""),
                 KEY_IV);
         return decryptedPassword;
