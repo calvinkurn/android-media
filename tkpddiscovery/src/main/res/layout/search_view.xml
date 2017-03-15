@@ -33,6 +33,8 @@
                 android:imeOptions="actionSearch"
                 android:inputType="textNoSuggestions"
                 android:paddingLeft="@dimen/search_view_text_padding"
+                android:drawableTint="#727272"
+                android:drawableLeft="@drawable/ic_search_black_24dp"
                 android:paddingRight="@dimen/search_view_text_padding"
                 android:singleLine="true"
                 android:textColor="#212121"
