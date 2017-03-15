@@ -58,10 +58,13 @@ public class GetShopProductRetrofit {
 
     public void getShopProduct(GetShopProductParam param) {
         Observable<Response<TkpdResponse>> observable = shopService.getApi().getShopProduct(AuthUtil.generateParams(context, paramGetShopProduct(param)));
+        onGetShopProductSubs = observable.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(onGetShopProduct());
+    }
+
+    public void unsubscribeGetShopProduct() {
         if (onGetShopProductSubs != null) {
             onGetShopProductSubs.unsubscribe();
         }
-        onGetShopProductSubs = observable.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(onGetShopProduct());
     }
 
     private Observer<Response<TkpdResponse>> onGetShopProduct() {
