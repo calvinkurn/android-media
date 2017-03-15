@@ -22,7 +22,7 @@ public class HadesService extends AuthService<HadesApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.Hades.URL_HADES;
+        return TkpdBaseURL.HadesCategory.URL_HADES;
     }
 
     @Override

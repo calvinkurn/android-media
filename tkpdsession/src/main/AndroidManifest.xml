@@ -40,7 +40,15 @@
         <service
             android:name="com.tokopedia.session.session.intentservice.OTPService"
             android:exported="false"/>
-
+        <receiver
+            android:name="com.tokopedia.core.service.ErrorNetworkReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="com.tokopedia.tkpd.FORCE_LOGOUT" />
+                <action android:name="com.tokopedia.tkpd.SERVER_ERROR" />
+                <action android:name="com.tokopedia.tkpd.TIMEZONE_ERROR" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

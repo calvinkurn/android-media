@@ -64,4 +64,6 @@ public interface InboxReputationFormView {
     void onErrorSharingFacebook(Intent intent);
 
     void onCancelSharingFacebook(Intent intent);
+
+    void unTickCheckBox();
 }

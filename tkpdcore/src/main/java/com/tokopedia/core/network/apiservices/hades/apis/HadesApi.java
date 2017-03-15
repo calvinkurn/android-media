@@ -19,7 +19,7 @@ import rx.Observable;
 
 public interface HadesApi {
 
-    @GET(TkpdBaseURL.Hades.PATH_CATEGORIES)
+    @GET(TkpdBaseURL.HadesCategory.PATH_CATEGORIES)
     Observable<Response<CategoriesHadesModel>> getCategories(@Path("catId") String categoryId);
 
 }

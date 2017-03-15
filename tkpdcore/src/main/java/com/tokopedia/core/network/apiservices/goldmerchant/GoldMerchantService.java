@@ -1,6 +1,6 @@
 package com.tokopedia.core.network.apiservices.goldmerchant;
 
-import com.tokopedia.core.network.apiservices.goldmerchant.apis.ProductVideoApi;
+import com.tokopedia.core.network.apiservices.goldmerchant.apis.GoldMerchantApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 
@@ -10,10 +10,10 @@ import retrofit2.Retrofit;
  * Created by kris on 11/9/16. Tokopedia
  */
 
-public class ProductVideoService extends AuthService<ProductVideoApi> {
+public class GoldMerchantService extends AuthService<GoldMerchantApi> {
     @Override
     protected void initApiService(Retrofit retrofit) {
-        api = retrofit.create(ProductVideoApi.class);
+        api = retrofit.create(GoldMerchantApi.class);
     }
 
     @Override
@@ -22,7 +22,7 @@ public class ProductVideoService extends AuthService<ProductVideoApi> {
     }
 
     @Override
-    public ProductVideoApi getApi() {
+    public GoldMerchantApi getApi() {
         return api;
     }
 }
