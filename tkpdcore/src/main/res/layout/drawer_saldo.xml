@@ -147,9 +147,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:background="@drawable/btn_buy"
+                android:background="@drawable/button_rounded_corner"
                 android:textColor="@color/white"
-                android:text="Aktivasi TokoCash"
                 android:visibility="gone"/>
 
             <ProgressBar

@@ -476,10 +476,10 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             holder.topCashLayout.setVisibility(View.VISIBLE);
             holder.tokoCashRedirectArrow.setVisibility(View.GONE);
             holder.tokoCashActivationButton.setVisibility(View.VISIBLE);
-            holder.tokoCashLabel.setText(headerValue.tokoCashText);
             holder.tokoCashActivationButton.setText(headerValue.tokoCashText);
             holder.topCashLayout
                     .setOnClickListener(onLayoutTopCashSelected(headerValue.tokoCashURL));
+            holder.loadingTopCash.setVisibility(View.GONE);
         } else {
             holder.tokoCashLabel.setText(headerValue.tokoCashText);
             holder.topCashLayout
@@ -495,7 +495,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private boolean isTokoCashDisabled(DrawerHeader headerValue) {
-        return headerValue.tokoCashValue == null || headerValue.tokoCashText.isEmpty();
+        return headerValue.tokoCashText == null || headerValue.tokoCashText.isEmpty();
     }
 
     private boolean isUnregistered(DrawerHeader headerValue) {
