@@ -25,6 +25,8 @@ import com.tokopedia.core.gcm.data.entity.NotificationEntity;
 import com.tokopedia.core.gcm.model.ApplinkNotificationPass;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.GCMUtils;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 
@@ -168,6 +170,13 @@ public class BuildAndShowNotification {
         NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
+        Intent homeIntent = null;
+        if (GlobalConfig.isSellerApp()) {
+            homeIntent = SellerAppRouter.getSellerHomeActivity(mContext);
+        } else {
+            homeIntent = HomeRouter.getHomeActivity(mContext);
+        }
+        stackBuilder.addNextIntent(homeIntent);
 
         if (notificationPass.isAllowedBigStyle || isSingleNotification()) {
             mBuilder.setContentTitle(notificationPass.title);
