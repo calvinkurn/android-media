@@ -45,6 +45,7 @@ public class GTMContainer implements IGTMContainer {
 
     private static final String IS_EXCEPTION_ENABLED = "is_exception_enabled";
     private static final String IS_USING_HTTP_2 = "is_using_http_2";
+    public static final String CLIENT_ID = "client_id";
     private static final String TAG = GTMContainer.class.getSimpleName();
 
     private Context context;
@@ -71,7 +72,7 @@ public class GTMContainer implements IGTMContainer {
             return clientID;
         }catch (Exception e){
             e.printStackTrace();
-            return null;
+            return "";
         }
     }
 
@@ -100,7 +101,6 @@ public class GTMContainer implements IGTMContainer {
 
     private void validateGTM() {
         if (ContainerHolderSingleton.getContainerHolder().getStatus().isSuccess()) {
-            Log.i("GAv4", "container has been loaded");
             Log.i("GAv4", "GTM is exception enabled " + TrackingUtils.getGtmString(GTMContainer.IS_EXCEPTION_ENABLED));
         } else {
             Log.e("GTMContainer", "failure loading container");
