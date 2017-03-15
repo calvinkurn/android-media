@@ -17,6 +17,7 @@ public class TkpdBaseURL {
     public static String MOJITO_DOMAIN = "https://mojito.tokopedia.com/";
     public static String MOJITO_STAGING_DOMAIN = "https://mojito-staging.tokopedia.com/";
     public static String HADES_DOMAIN = "https://hades.tokopedia.com";
+    public static String HADES_STAGING_DOMAIN = "https://hades-staging.tokopedia.com";
     public static String RECHARGE_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
     public static String RECHARGE_STAGING_DOMAIN = "https://pulsa-api-staging.tokopedia.com/";
     public static String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
@@ -646,8 +647,10 @@ public class TkpdBaseURL {
     public static class Truecaller {
         public static final String VERIFY_PHONE = "/web-service/v4/truecaller/check";
     }
-
+    
     public static class HadesCategory {
         public static final String CHECK_VERSION = "/v1/categories_version";
+        public static final String URL_HADES = HADES_DOMAIN;
+        public static final String PATH_CATEGORIES =  "/v1/categories/{catId}/detail";
     }
 }
