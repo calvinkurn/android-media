@@ -52,7 +52,6 @@ public class TopPayActivity extends TopPayBaseActivity implements ITopPayView {
         if (getIntent().getData() != null) {
             setupURIPass(getIntent().getData());
         }
-        setContentView(R.layout.activity_top_pay);
         initVar();
         setViewListener();
         setActionVar();
@@ -72,6 +71,7 @@ public class TopPayActivity extends TopPayBaseActivity implements ITopPayView {
     }
 
     private void initView() {
+        setContentView(R.layout.scrooge_payment);
         scroogeWebView = (ScroogeWebView) findViewById(R.id.scrooge_webview);
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
     }
