@@ -78,6 +78,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class DownloadService extends IntentService implements DownloadServiceConstant, DataReceiver {
     public static final String TAG = "DownloadService";
+    private static final String IS_LOGIN = "is_login";
     public static final String messageTAG = DownloadService.class.getSimpleName() + " ";
 
     private AuthService service;
@@ -460,7 +461,7 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                         case ANSWER_SECURITY_QUESTION:
                             result = new Bundle();
                             result.putInt(TYPE, ANSWER_SECURITY_QUESTION);
-                            if (jsonObject.optBoolean("is_login", false) == true) {
+                            if (jsonObject.optBoolean(IS_LOGIN, false) == true) {
                                 UnifyTracking.eventOTPSuccess();
                                 final LoginInterruptModel loginInterruptModel = (LoginInterruptModel) parseJSON(ANSWER_SECURITY_QUESTION, jsonObject);
                                 sessionHandler.setLoginSession(loginInterruptModel.isLogin(),
