@@ -83,6 +83,7 @@ import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.core.util.RetryHandler.OnConnectionTimeout;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.myproduct.ManageProductPermissionsDispatcher;
 import com.tokopedia.seller.myproduct.adapter.ListViewManageProdAdapter;
 import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.seller.myproduct.model.ManageProductModel;
@@ -97,9 +98,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcels;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -114,7 +113,6 @@ import retrofit2.Response;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
-import static com.tkpd.library.utils.CommonUtils.checkNotNull;
 
 @RuntimePermissions
 public class ManageProduct extends TkpdActivity implements
@@ -278,7 +276,9 @@ public class ManageProduct extends TkpdActivity implements
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
                 int id = menuItem.getItemId();
-
+                lvadapter.clearCheckdData();
+                lvListProd.clearChoices();
+                lvListProd.setItemChecked(-1, false);
                 if (id == R.id.action_instagram) {
                     if(getApplication() instanceof TkpdCoreRouter)
                         ((TkpdCoreRouter)getApplication()).startInstopedActivity(ManageProduct.this);
@@ -421,21 +421,33 @@ public class ManageProduct extends TkpdActivity implements
                     ActionTaken = true;
                     ShowEtalaseChange();
                     mode.finish();
+
+                    // analytic below : https://phab.tokopedia.com/T19758
+                    UnifyTracking.eventChangeEtalaseProductTopMenu();
                     return true;
                 } else if (item.getItemId() == R.id.action_update_categories) {
                     ActionTaken = true;
                     ShowCategoriesChange();
                     mode.finish();
+
+                    // analytic below : https://phab.tokopedia.com/T19758
+                    UnifyTracking.eventChangeCategoryProductTopMenu();
                     return true;
                 } else if (item.getItemId() == R.id.action_update_insurance) {
                     ActionTaken = true;
                     ShowInsuranceChange();
                     mode.finish();
+
+                    // analytic below : https://phab.tokopedia.com/T19758
+                    UnifyTracking.eventChangeInsuranceProductTopMenu();
                     return true;
                 } else if (item.getItemId() == R.id.action_delete) {
                     ActionTaken = true;
                     ShowDeleteChange();
                     mode.finish();
+
+                    // analytic below : https://phab.tokopedia.com/T19758
+                    UnifyTracking.eventDeleteProductTopMenu();
                     return true;
                 }
                 mode.finish();
@@ -1420,16 +1432,12 @@ public class ManageProduct extends TkpdActivity implements
     }
 
     public void CheckCache() {
-        if (checkNotNull(manageProductPresenter.getCache())) {// if there is cache then show
-            Refresh.setPullEnabled(true);
-            setToUI(manageProductPresenter.getCache());
-        } else {// if no cache then get product
-            Refresh.setPullEnabled(false);
-            clearData();
-            lvListProd.removeNoResult();
-            lvListProd.addLoadingFooter();
-            GetProductList(mPaging.getPage(), null);
-        }
+        Refresh.setPullEnabled(false);
+        clearData();
+        lvListProd.removeNoResult();
+        lvListProd.addLoadingFooter();
+        GetProductList(mPaging.getPage(), null);
+
     }
 
     private void GetProductList(final int page, String sort) {
@@ -1674,12 +1682,6 @@ public class ManageProduct extends TkpdActivity implements
             manageProduct.productModels = new ArrayList<>(manageProductModels);
         }
         manageProduct.pagingHandlerModel = pagingHandlerModel;
-
-        try {
-            manageProductPresenter.saveCache(manageProduct);// save cache
-        } catch (MalformedURLException | UnsupportedEncodingException e) {
-            Snackbar.make(parentView, e.getMessage(), Snackbar.LENGTH_LONG).show();
-        }
     }
 
 

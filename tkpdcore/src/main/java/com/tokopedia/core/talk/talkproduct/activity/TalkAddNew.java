@@ -39,7 +39,6 @@ public class TalkAddNew extends TActivity implements TalkAddNewResultReceiver.Re
 			Fragment fragment = TalkAddNewFragment.createInstance(bundle);
 			FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
 			fragmentTransaction.replace(R.id.container, fragment, TalkAddNew.class.getSimpleName());
-			fragmentTransaction.addToBackStack(null);
 			fragmentTransaction.commit();
 		}
 	}

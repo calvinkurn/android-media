@@ -10,15 +10,20 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+import com.facebook.share.widget.ShareDialog;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
@@ -65,6 +70,8 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
     public static final String PARAM_INBOX_REPUTATION = "inbox_reputation";
     public static final String PARAM_INBOX_REPUTATION_DETAIL = "inbox_reputation_detail";
     private static final String DEFAULT_MSG_ERROR = "Mohon maaf, mohon coba kembali";
+    private CallbackManager callbackManager;
+    private ShareDialog shareDialog;
 
     public interface DoActionReputationListener {
         void postReview(Bundle param);
@@ -105,6 +112,8 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
     @BindView(R2.id.quality_error_message)
     TextView qualityError;
 
+    @BindView(R2.id.checkbox)
+    CheckBox checkBox;
 
     private InboxReputationFormFragmentPresenter presenter;
     private InboxReputationDetailItem inboxReputationDetail;
@@ -122,6 +131,8 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
     }
 
     @Override
@@ -164,7 +175,26 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
 
         productAvatar.setOnClickListener(onGoToProduct(inboxReputationDetail));
         productName.setOnClickListener(onGoToProduct(inboxReputationDetail));
+        checkBox.setOnClickListener(onTickedCheckbox());
+    }
 
+    private View.OnClickListener onTickedCheckbox() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (((CheckBox)view).isChecked() ) {
+                    processFacebookLogin();
+                }else{
+                    if (AccessToken.getCurrentAccessToken() != null) {
+                        LoginManager.getInstance().logOut();
+                    }
+                }
+            }
+        };
+    }
+
+    private void processFacebookLogin() {
+        presenter.doFacebookLogin(this, callbackManager);
     }
 
     private View.OnClickListener onGoToProduct(final InboxReputationDetailItem inboxReputationDetail) {
@@ -323,9 +353,12 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
         bundle.putString("action",
                 InboxReputationDetailFragmentPresenterImpl.ACTION_UPDATE_PRODUCT);
         intent.putExtras(bundle);
-        getActivity().setResult(Activity.RESULT_OK, intent);
-        getActivity().finish();
-
+        if(checkBox.isChecked()){
+            showDialogShareFb(intent);
+        }else {
+            getActivity().setResult(Activity.RESULT_OK, intent);
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -338,8 +371,12 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
         bundle.putString("action",
                 InboxReputationDetailFragmentPresenterImpl.ACTION_UPDATE_PRODUCT);
         intent.putExtras(bundle);
-        getActivity().setResult(Activity.RESULT_OK, intent);
-        getActivity().finish();
+        if(checkBox.isChecked()){
+            showDialogShareFb(intent);
+        }else {
+            getActivity().setResult(Activity.RESULT_OK, intent);
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -414,6 +451,7 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
         presenter.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -457,6 +495,40 @@ public class InboxReputationFormFragment extends BasePresenterFragment<InboxRepu
         }
         dismissProgressDialog();
         setActionsEnabled(true);
+    }
+
+    @Override
+    public void showDialogShareFb(final Intent intent) {
+        progressDialog.showDialog();
+        shareDialog = new ShareDialog(this);
+        callbackManager = CallbackManager.Factory.create();
+        String stringDomain = getString(R.string.domain);
+        String contentDescription = editTextReview.getText().toString();
+        presenter.prepareDialogShareFb(this, shareDialog, callbackManager, inboxReputationDetail
+                , stringDomain, contentDescription, intent);
+    }
+
+    @Override
+    public void onSuccessSharingFacebook(Intent intent) {
+        getActivity().setResult(Activity.RESULT_OK, intent.putExtra(getString(R.string.message),getString(R.string.success_share_review)));
+        getActivity().finish();
+    }
+
+    @Override
+    public void onErrorSharingFacebook(Intent intent) {
+        getActivity().setResult(Activity.RESULT_OK, intent.putExtra(getString(R.string.message),getString(R.string.error_share_review)));
+        getActivity().finish();
+    }
+
+    @Override
+    public void onCancelSharingFacebook(Intent intent) {
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
+    }
+
+    @Override
+    public void unTickCheckBox() {
+        checkBox.setChecked(false);
     }
 
     @Override

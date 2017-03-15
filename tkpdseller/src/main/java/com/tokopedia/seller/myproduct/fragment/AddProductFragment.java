@@ -603,7 +603,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             imageModel.setDbId(0);
             photos.remove(i);
             photos.add(imageModel);
-
             setSelectedImageAsPrimary(0);
         } else {
             // do nothing
@@ -1297,33 +1296,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         addProductCategorySpinner.requestFocus();
         int level = model.getLevel();
         fetchDepartmentChild(model.getPosition(), ++level);
-    }
-
-    private TextDeleteModel saveCategory(SimpleTextModel model) {
-        //[START] query based on name
-        CategoryDB categoryDB = new Select().from(CategoryDB.class).where(
-                CategoryDB_Table.nameCategory.eq(model.getText())
-        ).querySingle();
-        String d_id = categoryDB.getDepartmentId() + "";
-        String parent = categoryDB.getParentId() + "";
-        Log.d(TAG, messageTAG + "kategori : " + model.getText() + " d_id : " + d_id + " parent " + parent);
-        //[END] query based on name
-
-        TextDeleteModel textDeleteModel = new TextDeleteModel(model.getText());
-        textDeleteModel.setDataPosition(model.getPosition());
-        CategoryDB existingCategoryDB = new Select().from(CategoryDB.class).where(
-                CategoryDB_Table.nameCategory.eq(model.getText())
-        ).querySingle();
-        if (existingCategoryDB == null) {
-            CategoryDB categoryDB1 = new CategoryDB(model.getText(), model.getLevel(), -1, Integer.parseInt(parent), Integer.parseInt(d_id), "");
-            categoryDB1.save();
-            long id = categoryDB1.Id;
-            existingCategoryDB = new Select().from(CategoryDB.class).where(
-                    CategoryDB_Table.nameCategory.eq(model.getText())
-            ).querySingle();
-        }
-        textDeleteModel.setDepartmentId(existingCategoryDB.departmentId);
-        return textDeleteModel;
     }
 
     @Override

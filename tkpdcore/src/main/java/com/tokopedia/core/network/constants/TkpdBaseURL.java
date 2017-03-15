@@ -513,6 +513,8 @@ public class TkpdBaseURL {
         public static final String PATH_FAV_SHOP_FEED = "catalog/product";
         public static final String PATH_CATALOG = "v1/catalog";
         public static final String PATH_TOP_PICKS = "/hoth/toppicks/widget";
+        public static final String PATH_UNIVERSE_SEARCH = "/universe/v3";
+        public static final String PATH_DELETE_SEARCH = "/universe/v1?device=android&source=searchbar";
 
     }
 
@@ -530,13 +532,15 @@ public class TkpdBaseURL {
         public static final String PATH_PRODUCT = "v1/products/";
         public static final String PATH_CATALOG = "v1/catalogs/";
 
-        public static final String PATH_WISHLIST_PRODUCT = "wishlist/products";
+        public static final String PATH_WISHLIST_PRODUCT = TkpdBaseURL.Mojito.PATH_USER + "{userId}/wishlist/products";
         public static final String PATH_WISHLIST = "wishlist";
 
         public static final String API_HOME_CATEGORY_MENU = "/api/v1/layout/category";
         public static final String PATH_USER_RECENT_VIEW = "users/";
         public static final String PATH_RECENT_VIEW = "/recentview/products/v1";
         public static final String API_V1_BRANDS = "/os/api/v1/brands/list";
+        public static final String PATH_USER_WISHLIST = "/users";
+        public static final String PATH_SEARCH_WISHLIST = PATH_USER_WISHLIST+"/{userId}/wishlist/search/v2";
     }
 
 
@@ -611,6 +615,8 @@ public class TkpdBaseURL {
 
     public static class GoldMerchant{
         public static final String GET_PRODUCT_VIDEO = "/v1/product/video/";
+        public static final String GET_SHOP_SCORE_SUMMARY = "/v1/shopstats/shopscore/sum/";
+        public static final String GET_SHOP_SCORE_DETAIL = "/v1/shopstats/shopscore/dtl/";
     }
 
     public static class FCM{
@@ -631,5 +637,9 @@ public class TkpdBaseURL {
     }
     public static class Truecaller{
         public static final String VERIFY_PHONE = "/web-service/v4/truecaller/check";
+    }
+
+    public static class HadesCategory {
+        public static final String CHECK_VERSION = "/v1/categories_version";
     }
 }

@@ -427,6 +427,7 @@ public class CartPresenter implements ICartPresenter {
 
         String depositCheckout = view.getDepositCheckoutData();
         checkoutDataBuilder.usedDeposit(depositCheckout.replaceAll("\\D+", ""));
+        checkoutDataBuilder.donationValue(view.getDonationValue());
 
         for (int i = 0, cartItemEditablesSize = cartItemEditables.size();
              i < cartItemEditablesSize; i++) {
@@ -587,6 +588,7 @@ public class CartPresenter implements ICartPresenter {
     }
 
     private void processRenderViewCartData(CartData data) {
+        view.renderCheckboxDonasi(data.getDonation());
         if (data.getCartItemList().isEmpty()) {
             view.renderErrorEmptyCart();
             return;
@@ -619,7 +621,5 @@ public class CartPresenter implements ICartPresenter {
             view.renderInvisibleErrorPaymentCart();
         }
         view.renderButtonCheckVoucherListener();
-
-
     }
 }
