@@ -5,7 +5,7 @@ import com.tokopedia.tkpd.home.feed.data.mapper.TopAdsMapper;
 import com.tokopedia.tkpd.home.feed.data.source.TopAdsDataSource;
 import com.tokopedia.tkpd.home.feed.data.source.cloud.CloudTopAdsDataStore;
 import com.tokopedia.tkpd.home.feed.data.source.local.LocalTopAdsDataStore;
-import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.TopAdsDbManager;
+import com.tokopedia.core.base.common.dbManager.TopAdsDbManager;
 
 /**
  * @author Kulomady on 12/9/16.

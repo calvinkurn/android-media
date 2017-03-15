@@ -328,6 +328,8 @@ public class TkpdBaseURL {
         public static final String PATH_GET_SHOP_NOTES = "get_shop_notes.pl";
         public static final String PATH_GET_SHOP_PRODUCT = "get_shop_product.pl";
         public static final String PATH_GET_SHOP_REVIEW = "get_shop_review.pl";
+
+        public static final String PATH_RETRY_PICKUP = "retry_pickup.pl";
     }
 
     public static final class Etc {
@@ -511,6 +513,8 @@ public class TkpdBaseURL {
         public static final String PATH_FAV_SHOP_FEED = "catalog/product";
         public static final String PATH_CATALOG = "v1/catalog";
         public static final String PATH_TOP_PICKS = "/hoth/toppicks/widget";
+        public static final String PATH_UNIVERSE_SEARCH = "/universe/v3";
+        public static final String PATH_DELETE_SEARCH = "/universe/v1?device=android&source=searchbar";
 
     }
 

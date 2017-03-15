@@ -235,4 +235,14 @@ public class TkpdResponse {
             return (List<T>) objData;
         }
     }
+
+    @SuppressWarnings("unchecked")
+    public <T> T convertToObj(Class<T> clazz) {
+        try {
+            return gson.fromJson(stringData, clazz);
+        } catch (ClassCastException | JsonSyntaxException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

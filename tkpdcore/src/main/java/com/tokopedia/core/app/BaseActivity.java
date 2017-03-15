@@ -334,6 +334,20 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         }, DISMISS_TIME);
     }
 
+    @Override
+    public void onTimezoneError() {
+
+        final Snackbar snackBar = SnackbarManager.make(this, getString(R.string.check_timezone),
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.action_check, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS));
+                    }
+                });
+        snackBar.show();
+    }
+
     public void showForceLogoutDialog() {
         DialogForceLogout.createShow(this,
                 new DialogForceLogout.ActionListener() {

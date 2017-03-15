@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.home.feed.data.source.local;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.tkpd.home.feed.data.mapper.TopAdsMapper;
 import com.tokopedia.tkpd.home.feed.data.source.TopAdsDataSource;
-import com.tokopedia.tkpd.home.feed.data.source.local.dbManager.TopAdsDbManager;
+import com.tokopedia.core.base.common.dbManager.TopAdsDbManager;
 import com.tokopedia.tkpd.home.feed.domain.model.TopAds;
 
 import java.util.List;
@@ -31,9 +31,6 @@ public class LocalTopAdsDataStore implements TopAdsDataSource {
 
     @Override
     public Observable<List<TopAds>> getTopAdsCache() {
-        if (topAdsDbManager.isExpired(System.currentTimeMillis())) {
-            return Observable.empty();
-        }
         return topAdsDbManager.getData().map(topAdsMapper);
     }
 }

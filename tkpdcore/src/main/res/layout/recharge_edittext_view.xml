@@ -28,6 +28,7 @@
                 android:inputType="numberDecimal"
                 android:maxLength="14"
                 android:popupBackground="@color/white"
+                android:textColorHint="@color/grey_400"
                 android:maxLines="1" />
 
             <LinearLayout
@@ -42,7 +43,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="25dp"
                     android:layout_gravity="end|center_vertical"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginRight="@dimen/margin_vs"
                     android:contentDescription="@string/app_name"
                     tools:src="@drawable/ic_launcher" />
 
@@ -51,7 +52,7 @@
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_gravity="end|center_vertical"
-                    android:layout_marginRight="10dp" />
+                    android:layout_marginRight="@dimen/margin_small" />
 
             </LinearLayout>
         </FrameLayout>

@@ -520,4 +520,9 @@ public class FavoriteImpl implements Favorite {
         topAddParams.setPage(PARAM_VALUE_PAGE);
         return topAddParams;
     }
+
+    @Override
+    public void onDestroy() {
+        favoriteInteractor.removeAllSubscriptions();
+    }
 }

@@ -27,8 +27,6 @@ public class ShopProductListAdapter extends RecyclerView.Adapter {
         void onFilterClick(View v);
 
         void onProductClick(int pos);
-
-        void onSpinnerEtalaseClick();
     }
 
     public interface RetryClickedListener {
@@ -238,7 +236,6 @@ public class ShopProductListAdapter extends RecyclerView.Adapter {
 
             @Override
             public void onSpinnerEtalaseClick() {
-                listener.onSpinnerEtalaseClick();
             }
         };
     }

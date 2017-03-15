@@ -20,7 +20,7 @@ import okio.Buffer;
  * <p/>
  * for WS V4 use TkpdAuthInterceptor
  */
-public class GlobalTkpdAuthInterceptor implements Interceptor {
+public class GlobalTkpdAuthInterceptor extends TkpdAuthInterceptor {
     private static final String TAG = GlobalTkpdAuthInterceptor.class.getSimpleName();
     private String AuthKey = AuthUtil.KEY.KEY_WSV4;
 
@@ -28,54 +28,29 @@ public class GlobalTkpdAuthInterceptor implements Interceptor {
         AuthKey = Key;
     }
 
-    public GlobalTkpdAuthInterceptor() {
-    }
-
-
     @Override
     public Response intercept(Chain chain) throws IOException {
         final Request originRequest = chain.request();
         Request.Builder newRequest = chain.request().newBuilder();
+
+        generateHmacAuthRequest(originRequest, newRequest);
+
+        Request finalRequest = newRequest.build();
+        return getResponse(chain, finalRequest);
+
+    }
+
+    @Override
+    protected void generateHmacAuthRequest(Request originRequest, Request.Builder newRequest)
+            throws IOException {
         Map<String, String> Headers = AuthUtil.generateHeaders(originRequest.url().uri()
                 .getPath(), originRequest.method(), AuthKey);
         for (Map.Entry<String, String> entry : Headers.entrySet()) {
             newRequest.addHeader(entry.getKey(), entry.getValue());
         }
+
         newRequest.method(originRequest.method(), originRequest.body());
-        Log.d(TAG, "MAP HEADER = " + Headers.toString());
-        Log.d(TAG, "METHOD = " + originRequest.method());
-        Log.d(TAG, "URI = " + originRequest.url().uri().toString());
-        Log.d(TAG, "URI PATH = " + originRequest.url().uri().getPath());
-        final Request finalRequest = newRequest.build();
-        Response response = chain.proceed(finalRequest);
-        int count = 0;
-        while (!response.isSuccessful() && count < 3) {
-            Log.d(TAG, "Request is not successful - " + count + " Error code : " + response.code());
-            count++;
-            response = chain.proceed(finalRequest);
-        }
-        return response;
     }
 
-    private Map<String, String> generateMapBody(final Request request) {
-        try {
-            final Buffer buffer = new Buffer();
-            request.body().writeTo(buffer);
-            String bodyStr = buffer.readUtf8();
-            Map<String, String> myMap = new HashMap<>();
-            String[] pairs = bodyStr.split("&");
-            for (String pair : pairs) {
-                int indexSplit = pair.indexOf('=');
-                String key1 = pair.substring(0, indexSplit);
-                String key2 = "";
-                if (pair.length() > indexSplit + 1) {
-                    key2 = pair.substring(indexSplit + 1);
-                }
-                myMap.put(key1.trim(), key2.trim());
-            }
-            return myMap;
-        } catch (final IOException e) {
-            return new HashMap<>();
-        }
-    }
+
 }

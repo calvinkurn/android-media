@@ -208,6 +208,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         if (adapter.getDataSize() < 1) {
             adapter.showEmptyFull(true);
         }
+        if (fabFilter.getVisibility() == View.GONE) {
+            fabFilter.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -224,6 +227,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
             recyclerView.removeOnScrollListener(onScrollListener);
             swipeToRefresh.setEnabled(false);
             adapter.showRetryFull(true);
+            if (fabFilter.getVisibility() == View.VISIBLE) {
+                fabFilter.setVisibility(View.GONE);
+            }
         }
     }
 
