@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/on_trip_complete_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?actionBarSize"
+            android:padding="16dp">
+
+
+            <TextView
+                android:id="@+id/tv_total_fare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:paddingTop="12dp"
+                android:text="IDR 49.887"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
+
+            <LinearLayout
+                android:id="@+id/layout_driver_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_total_fare"
+                android:layout_centerHorizontal="true"
+                android:paddingTop="20dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <com.pkmmte.view.CircularImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:src="@drawable/default_user_pic_light" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="-4dp"
+                        android:background="@drawable/shape_bg_rounded_white_rectangle"
+                        android:drawableLeft="@drawable/star_yellow"
+                        android:drawablePadding="4dp"
+                        android:drawableStart="@drawable/star_yellow"
+                        android:padding="4dp"
+                        android:text="4.6"
+                        android:textColor="@color/black_400"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="12dp"
+                        android:text="Jhon Doe"
+                        android:textColor="@color/black_400"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="80dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <com.pkmmte.view.CircularImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/crux_cabs_uber_ic" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="-4dp"
+                        android:background="@drawable/shape_bg_rounded_white_rectangle"
+                        android:padding="4dp"
+                        android:text="B 123 XYZ"
+                        android:textColor="@color/black_400"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="12dp"
+                        android:text="Honda Brio"
+                        android:textColor="@color/black_400"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layout_driver_details"
+                android:orientation="vertical"
+                android:paddingTop="24dp">
+
+                <LinearLayout
+                    android:id="@+id/seprator_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"
+                        android:background="@color/grey_sep" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="12dp"
+                        android:paddingRight="12dp"
+                        android:text="Fare Breakdown"
+                        android:textSize="14sp" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"
+                        android:background="@color/grey_sep" />
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:id="@+id/label_base_fare"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/seprator_1"
+                    android:paddingTop="16dp"
+                    android:text="Base Fare"
+                    android:textColor="@color/black_400"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tv_base_fare"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/seprator_1"
+                    android:paddingTop="16dp"
+                    android:text="IDR 5000"
+                    android:textColor="@color/black_400"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/label_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/label_base_fare"
+                    android:paddingTop="16dp"
+                    android:text="14.19 Kilometers"
+                    android:textColor="@color/black_400"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tv_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/label_base_fare"
+                    android:paddingTop="16dp"
+                    android:text="33.375"
+                    android:textColor="@color/black_400"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/label_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/label_distance"
+                    android:paddingTop="16dp"
+                    android:text="31.03 Minutes"
+                    android:textColor="@color/black_400"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/label_distance"
+                    android:paddingTop="16dp"
+                    android:text="9.310"
+                    android:textColor="@color/black_400"
+                    android:textSize="14sp" />
+
+                <View
+                    android:id="@+id/sep_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/label_time"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/grey_sep" />
+
+
+                <TextView
+                    android:id="@+id/label_sub_total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/sep_2"
+                    android:paddingTop="16dp"
+                    android:text="Subtotal"
+                    android:textColor="@color/black_400"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tv_sub_total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/sep_2"
+                    android:paddingTop="16dp"
+                    android:text="IDR 49.887"
+                    android:textColor="@color/black_400"
+                    android:textSize="14sp" />
+
+                <View
+                    android:id="@+id/sep_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/label_sub_total"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/grey_sep" />
+
+                <TextView
+                    android:id="@+id/label_total_charged"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/sep_3"
+                    android:layout_marginTop="16dp"
+                    android:drawableLeft="@drawable/cab_cash_payment"
+                    android:drawablePadding="10dp"
+                    android:gravity="center"
+                    android:text="Toko Cash Charged"
+                    android:textColor="@color/black_full"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tv_total_charged"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/sep_3"
+                    android:paddingTop="16dp"
+                    android:text="IDR 49.887"
+                    android:textColor="@color/black_full"
+                    android:textSize="16sp" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+
+    <LinearLayout
+        android:id="@+id/layout_loader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/material_card"
+        android:paddingBottom="@dimen/fifteen_dp"
+        android:paddingLeft="@dimen/fifteen_dp"
+        android:paddingRight="@dimen/fifteen_dp"
+        android:paddingTop="@dimen/fifteen_dp"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/materialLoader"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="12dp"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/cabs_ontrip_progress_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/materialLoader"
+            android:text="Loading..." />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="?selectableItemBackground"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_400" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SIGN UP "
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FOR UBER NOW TO GET SOME PROMO!"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <include layout="@layout/material_toolbar_layout" />
+
+    <!--<include layout="@layout/network_error_view" />-->
+</RelativeLayout>
