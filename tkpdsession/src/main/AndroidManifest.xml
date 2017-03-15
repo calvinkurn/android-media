@@ -1,9 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.tokopedia.session">
+    package="com.tokopedia.session">
 
-    <application android:allowBackup="true"
-                 android:label="@string/app_name"
-                 android:supportsRtl="true">
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true">
 
         <activity
             android:name="com.tokopedia.session.session.activity.Login"
@@ -28,6 +29,24 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" />
 
+        <activity
+        android:name="com.tokopedia.otp.phoneverification.activity.PhoneVerificationActivationActivity"
+        android:label="@string/title_activity_phone_verification"
+        android:screenOrientation="portrait"
+        android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name="com.tokopedia.otp.phoneverification.activity.PhoneVerificationProfileActivity"
+            android:label="@string/title_activity_phone_verification"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name="com.tokopedia.otp.phoneverification.activity.ChangePhoneNumberActivity"
+            android:label="@string/title_activity_change_phone_number"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+
         <service
             android:name="com.tokopedia.session.session.intentservice.LoginService"
             android:exported="false" />
@@ -36,10 +55,11 @@
             android:exported="false" />
         <service
             android:name="com.tokopedia.session.session.intentservice.RegisterService"
-            android:exported="false"/>
+            android:exported="false" />
         <service
             android:name="com.tokopedia.session.session.intentservice.OTPService"
             android:exported="false"/>
+
         <receiver
             android:name="com.tokopedia.core.service.ErrorNetworkReceiver"
             android:enabled="true">

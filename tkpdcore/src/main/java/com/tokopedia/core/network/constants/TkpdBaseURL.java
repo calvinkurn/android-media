@@ -236,7 +236,6 @@ public class TkpdBaseURL {
         public static final String PATH_REMOVE_WISHLIST_PRODUCT = "remove_wishlist_product.pl";
 
         public static final String PATH_IS_ALREADY_WISHLIST_PRODUCT = "is_already_wishlist_product.pl";
-        public static final String PATH_OTP_WITH_CALL = "otp/request";
     }
 
     public static class Shop {
@@ -607,19 +606,27 @@ public class TkpdBaseURL {
         public static final String VALIDATE_EMAIL = "/api/register/validate-email";
         public static final String RESENT_ACTIVATION = "/api/resend";
         public static final String GENERATE_HOST = "/api/upload-host";
+        public static final String VERIFY_PHONE_NUMBER = "/api/msisdn/verify-msisdn";
+
+
+        public class OTP {
+            private static final String BASE_OTP = "/otp";
+            public static final String REQUEST_OTP = BASE_OTP + "/request";
+            public static final String VALIDATE_OTP = BASE_OTP + "/validate";
+        }
     }
 
     public static class Home {
         public static final String PATH_API_V1_ANNOUNCEMENT_TICKER = "/api/v1/tickers";
     }
 
-    public static class GoldMerchant{
+    public static class GoldMerchant {
         public static final String GET_PRODUCT_VIDEO = "/v1/product/video/";
         public static final String GET_SHOP_SCORE_SUMMARY = "/v1/shopstats/shopscore/sum/";
         public static final String GET_SHOP_SCORE_DETAIL = "/v1/shopstats/shopscore/dtl/";
     }
 
-    public static class FCM{
+    public static class FCM {
         public static final String UPDATE_FCM = "/api/gcm/update";
     }
 
@@ -631,11 +638,12 @@ public class TkpdBaseURL {
         public static final String URL_CHANGE_NUMBER = "https://www.tokopedia.com/contact-us?solution_id=54";
     }
 
-    public static class TopCash{
+    public static class TopCash {
         public static final String GET_WALLET = ACCOUNTS_DOMAIN + "api/v1/wallet/";
         public static final String PATH_WALLET = "balance";
     }
-    public static class Truecaller{
+
+    public static class Truecaller {
         public static final String VERIFY_PHONE = "/web-service/v4/truecaller/check";
     }
 
