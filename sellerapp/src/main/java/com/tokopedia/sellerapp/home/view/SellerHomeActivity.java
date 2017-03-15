@@ -742,7 +742,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
                     if (shopModel == null || shopModel.info == null || shopModel.info.shopName == null)
                         toolbar.setTitleText("Home");
                     else
-                        toolbar.setTitleText(shopModel.info.shopName);
+                        toolbar.setTitleText(MethodChecker.fromHtml(shopModel.info.shopName).toString());
                 } else {
                     toolbar.setTitleText(" ");
                 }
@@ -1028,7 +1028,6 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
     protected void onResume() {
         super.onResume();
         shopController.init(this);
-        smoothAppBarLayout.setExpanded(true);
         sendToGTM();
         sendToLocalytics();
     }
