@@ -64,7 +64,8 @@
     <string name="title_top_ads_store">Toko</string>
     <string name="title_top_ads_promo_group">Grup</string>
     <string name="title_top_ads_add_credit">Tambah Kredit TopAds</string>
-    <string name="title_top_ads_new_promo">Pilih Atau Buat Promo</string>
+    <string name="title_top_ads_new_promo_shop">Pilih Atau Buat Promo</string>
+    <string name="title_top_ads_new_promo_product">Tambah Promo Produk</string>
     <string name="title_top_ads_filter">Filter</string>
     <string name="title_date_picker">Atur Tanggal</string>
     <string name="title_top_ads_manage_promo_product">Atur Grup</string>
@@ -204,9 +205,9 @@
     <string name="label_top_ads_group_name">Nama Grup</string>
     <string name="label_top_ads_product_name">Nama Product</string>
     <string name="label_top_ads_choose_group">Pilih Grup</string>
-    <string name="label_top_ads_create_promo_new_group">Buat grup promo baru</string>
-    <string name="label_top_ads_create_promo_from_exist_group">Grup promo yang ada</string>
-    <string name="label_top_ads_create_promo_not_in_group">Tidak masuk ke grup promo</string>
+    <string name="label_top_ads_create_promo_new_group">Grup Baru</string>
+    <string name="label_top_ads_create_promo_from_exist_group">Grup Yang Ada</string>
+    <string name="label_top_ads_create_promo_not_in_group">Tanpa Grup</string>
     <string name="label_top_ads_error_choose_one_group">Pilih salah satu grup</string>
     <string name="label_top_ads_error_choose_one_option">Silahkan pilih salah satu opsi</string>
     <string name="label_top_ads_error_empty_group_name">Silahkan isi nama grup</string>
