@@ -8,6 +8,7 @@ public class ProductItem {
 
     String productImageUrl;
     String productName;
+    private String productID;
 
     public String getProductImageUrl() {
         return productImageUrl;
@@ -23,5 +24,13 @@ public class ProductItem {
 
     public void setProductName(String productName) {
         this.productName = productName;
+    }
+
+    public String getProductID() {
+        return productID;
+    }
+
+    public void setProductID(String productID) {
+        this.productID = productID;
     }
 }

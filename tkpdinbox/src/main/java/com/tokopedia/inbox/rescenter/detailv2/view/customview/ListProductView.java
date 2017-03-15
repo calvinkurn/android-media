@@ -78,7 +78,7 @@ public class ListProductView extends BaseView<ProductData, DetailResCenterFragme
         listProduct.setLayoutManager(mLayoutManager);
 
         ComplaintProductAdapter adapter
-                = ComplaintProductAdapter.createLimitInstance(data.getProductList());
+                = ComplaintProductAdapter.createLimitInstance(listener, data.getProductList());
         listProduct.setAdapter(adapter);
     }
 

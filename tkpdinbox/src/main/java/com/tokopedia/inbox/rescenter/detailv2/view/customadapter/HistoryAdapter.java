@@ -1,9 +1,12 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.customadapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.HistoryItem;
@@ -58,21 +61,39 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     public class HistoryViewHolder extends RecyclerView.ViewHolder {
 
+        TextView date;
+        TextView history;
+        ImageView indicator;
+
         public HistoryViewHolder(View itemView) {
             super(itemView);
+            date = (TextView) itemView.findViewById(R.id.tv_date);
+            history = (TextView) itemView.findViewById(R.id.tv_history_text);
+            indicator = (ImageView) itemView.findViewById(R.id.indicator);
         }
     }
 
     @Override
     public HistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recyclerview_complaint_product_item, parent, false);
+                .inflate(R.layout.recyclerview_rescenter_history_item, parent, false);
         return new HistoryViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(HistoryViewHolder holder, int position) {
-
+        HistoryItem item = historyItems.get(position);
+        Context context = holder.itemView.getContext();
+        String additionalText = context.getString(R.string.template_history_additional_information);
+        holder.date.setText(
+                additionalText
+                        .replace("X123", item.getProvider())
+                        .replace("Y123", item.getDate())
+        );
+        holder.history.setText(item.getHistoryText());
+        holder.indicator.setImageResource(
+                item.isLatest() ? R.drawable.ic_check_circle_48dp : R.drawable.ic_dot_grey_24dp
+        );
     }
 
     @Override

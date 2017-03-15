@@ -14,7 +14,6 @@ public class DetailViewModel {
     private ProductData productData;
     private SolutionData solutionData;
     private HistoryData historyData;
-    private String customerID;
     private AwbData awbData;
     private AddressReturData addressReturData;
 
@@ -88,14 +87,6 @@ public class DetailViewModel {
 
     public void setHistoryData(HistoryData historyData) {
         this.historyData = historyData;
-    }
-
-    public String getCustomerID() {
-        return customerID;
-    }
-
-    public void setCustomerID(String customerID) {
-        this.customerID = customerID;
     }
 
     public AwbData getAwbData() {
