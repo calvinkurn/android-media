@@ -1333,15 +1333,21 @@ public class ManageProduct extends TkpdActivity implements
                     @Override
                     public void onClick(View v) {
 //                        Toast.makeText(ManageProduct.this, "please implement change category", Toast.LENGTH_SHORT).show();
-                        if (!ValidateCategoriesChange()) {
-                            if (!lvadapter.CheckedProductId().isEmpty()) {
-                                changeCategories(mDepartment, lvadapter.CheckedProductId());
+                        try {
+                            if (!ValidateCategoriesChange()) {
+                                if (lvadapter != null && !lvadapter.CheckedProductId().isEmpty()) {
+                                    changeCategories(mDepartment, lvadapter.CheckedProductId());
+                                }
+                                ClearCheckedData();
+                                ActionTaken = false;
+                                alertDialog.dismiss();
+                                LastSpinnerPos = 0;
+                            } else {
+                                Toast.makeText(ManageProduct.this, getResources().getString(R.string.error_select_category),
+                                        Toast.LENGTH_SHORT).show();
+                                LastSpinnerPos = 0;
                             }
-                            ClearCheckedData();
-                            ActionTaken = false;
-                            alertDialog.dismiss();
-                            LastSpinnerPos = 0;
-                        } else {
+                        } catch (Exception e) {
                             Toast.makeText(ManageProduct.this, getResources().getString(R.string.error_select_category),
                                     Toast.LENGTH_SHORT).show();
                             LastSpinnerPos = 0;
@@ -1386,7 +1392,7 @@ public class ManageProduct extends TkpdActivity implements
     // [BUG] Manage Product - When user want to set multiple product become stok kosong,
     // apps not validate user to input/select the showcase
 
-    public Boolean ValidateCategoriesChange() {
+    public Boolean ValidateCategoriesChange() throws Exception {
         Boolean ContainError = false;
         if (LastSpinnerPos == 0) ContainError = true;
         else {

@@ -173,7 +173,6 @@ public class ImageHandler {
                 .into(imageview);
     }
 
-
     /**
      * this class is not good for performances. please use LoadImageCustom
      *
@@ -181,35 +180,13 @@ public class ImageHandler {
      * @param url
      */
     public static void LoadImage(ImageView imageview, String url) {
-        if (url != null) {
-            if (!url.isEmpty())
-                Glide.with(imageview.getContext())
-                        .load(url)
-                        .fitCenter()
-                        .dontAnimate()
-                        .placeholder(R.drawable.loading_page)
-                        .error(R.drawable.error_drawable)
-                        .into(imageview);
-//                PicassoHelper.getPicasso()
-//                        .load(url)
-//                        .placeholder(R.drawable.loading_page)
-//                        .error(R.drawable.error_drawable)
-//                        .into(imageview);
-        } else if (url == null) {
-            //[BUGFIX] if no url dont do anything
-//            PicassoHelper.getPicasso()
-//                    .load(url)
-//                    .placeholder(R.drawable.product_no_photo)
-//                    .error(R.drawable.product_no_photo)
-//                    .into(imageview);
-//            Glide.with(imageview.getContext())
-//                    .load(url)
-//                    .fitCenter()
-//                    .dontAnimate()
-//                    .placeholder(R.drawable.product_no_photo)
-//                    .error(R.drawable.product_no_photo)
-//                    .into(imageview);
-        }
+        Glide.with(imageview.getContext())
+                .load(url)
+                .fitCenter()
+                .dontAnimate()
+                .placeholder(R.drawable.loading_page)
+                .error(R.drawable.error_drawable)
+                .into(imageview);
     }
 
     public static void loadImage2(ImageView imageview, String url, int resId) {

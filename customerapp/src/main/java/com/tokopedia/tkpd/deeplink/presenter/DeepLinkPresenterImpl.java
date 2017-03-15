@@ -22,6 +22,7 @@ import com.tokopedia.core.fragment.FragmentShopPreview;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -114,8 +115,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     @Override
     public void checkUriLogin(Uri uriData) {
-        if(getDeepLinkType(uriData) == ACCOUNTS && uriData.getPath().contains("activation")){
-            if(!SessionHandler.isV4Login(context)){
+        if (getDeepLinkType(uriData) == ACCOUNTS && uriData.getPath().contains("activation")) {
+            if (!SessionHandler.isV4Login(context)) {
                 login(uriData);
             }
         }
@@ -199,12 +200,25 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             @Override
             public void onSuccess(AccountsModel result) {
                 Log.d(TAG, "onSuccess: ");
-                finishLogin();
+                if (SessionHandler.isMsisdnVerified()) {
+                    finishLogin();
+                } else {
+                    Intent intentHome = HomeRouter.getHomeActivity(context);
+                    intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    Intent intentPhoneVerif = SessionRouter.getPhoneVerificationActivationActivityIntent(context);
+
+                    context.startActivities(new Intent[]
+                            {
+                                    intentHome,
+                                    intentPhoneVerif
+                            });
+                    context.finish();
+                }
             }
 
             @Override
             public void onError(String error) {
-                Log.d(TAG, "onError: "+error);
+                Log.d(TAG, "onError: " + error);
                 finishLogin();
             }
 
@@ -552,11 +566,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private boolean isPulsa(List<String> linkSegment) {
-        return linkSegment.size() == 1 && linkSegment.get(0).equals("pulsa") ;
+        return linkSegment.size() == 1 && linkSegment.get(0).equals("pulsa");
     }
 
     private boolean isInvoice(List<String> linkSegment) {
-        return linkSegment.size() == 1 && linkSegment.get(0).startsWith("invoice.pl") ;
+        return linkSegment.size() == 1 && linkSegment.get(0).startsWith("invoice.pl");
     }
 
     private boolean isShop(List<String> linkSegment) {
@@ -584,11 +598,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private boolean isCatalog(List<String> linkSegment) {
-        return linkSegment.size() > 0  && linkSegment.get(0).equals("catalog");
+        return linkSegment.size() > 0 && linkSegment.get(0).equals("catalog");
     }
 
     private boolean isHot(List<String> linkSegment) {
-        return linkSegment.size() > 0 &&  linkSegment.get(0).equals("hot");
+        return linkSegment.size() > 0 && linkSegment.get(0).equals("hot");
     }
 
     private boolean isBrowse(List<String> linkSegment) {
@@ -596,6 +610,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 linkSegment.get(0).equals("search") || linkSegment.get(0).equals("p")
         );
     }
+
     private boolean isHomepage(List<String> linkSegment) {
         return linkSegment.size() == 0;
     }
