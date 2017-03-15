@@ -1066,10 +1066,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     }
 
     private Observable<List<File>> downloadImages(final List<String> urls){
-        if(!addProductType.equals(AddProductType.EDIT)){
-            return null;
-        }
-
         return Observable.from(urls)
                 .flatMap(new Func1<String, Observable<File>>() {
                     @Override
@@ -1077,7 +1073,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                         return downloadObservable(url).first();
                     }
                 }).toList();
-
     }
 
     /**
@@ -1271,11 +1266,13 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                             public void onNext(List<File> files) {
                                 addImageAfterSelect(files.get(0).getAbsolutePath(), position);
                                 files.remove(0);
-                                ArrayList<String> imageUrls = new ArrayList<>();
-                                for (int i=0, sizei = files.size(); i<sizei;i++) {
-                                    imageUrls.add(files.get(i).getAbsolutePath());
+                                if (files.size() > 0) {
+                                    ArrayList<String> imageUrls = new ArrayList<>();
+                                    for (int i = 0, sizei = files.size(); i < sizei; i++) {
+                                        imageUrls.add(files.get(i).getAbsolutePath());
+                                    }
+                                    addImageAfterSelect(imageUrls);
                                 }
-                                addImageAfterSelect(imageUrls);
                             }
                         }
                 );
@@ -1350,6 +1347,9 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                         if(imageModel.getPath() == null){
                             positionToFillImage = i;
                         }
+                    }
+                    if (position < positionToFillImage) {
+                        positionToFillImage = position;
                     }
                     photos.set(positionToFillImage, newPhoto);
 

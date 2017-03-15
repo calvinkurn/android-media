@@ -497,7 +497,7 @@ public class ProductSocMedActivity extends BaseProductActivity implements
                 } else {
                     int emptyPicture = 6 - ((AddProductFragment)fragment).countPicture();
                     Log.i(TAG, messageTAG + " max photo will get : " + emptyPicture);
-                    GalleryActivity.moveToImageGallery(this, position);
+                    GalleryActivity.moveToImageGallery(this, position, emptyPicture);
                 }
                 break;
             case DialogFragmentImageAddProduct.ADD_DESCRIPTION:
