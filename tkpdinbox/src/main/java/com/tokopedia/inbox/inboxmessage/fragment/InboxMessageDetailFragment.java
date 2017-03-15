@@ -170,6 +170,24 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
         attachmentButton.setOnClickListener(onAttachmentClicked());
         viewReputation.setOnClickListener(onReputationClicked());
         mainList.addOnScrollListener(onScroll());
+        mainList.addOnLayoutChangeListener(onKeyboardShows());
+    }
+
+    private View.OnLayoutChangeListener onKeyboardShows() {
+        return new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if ( bottom < oldBottom) {
+                    mainList.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            scrollToBottom();
+                        }
+                    }, 100);
+                }
+            }
+        };
     }
 
     private View.OnClickListener onReputationClicked() {
