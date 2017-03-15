@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 
@@ -15,6 +16,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.adapter.MessagePagerAdapter;
@@ -46,14 +48,23 @@ public class InboxMessageActivity extends DrawerPresenterActivity
 
     InboxMessageResultReceiver mReceiver;
 
-    @DeepLink({
-            "tokopedia://message"
-    })
-    public static Intent getCallingIntent(Context context, Bundle extras) {
+    @DeepLink(Constants.Applinks.MESSAGE)
+    public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, InboxMessageActivity.class)
+
+        Intent homeIntent = null;
+        if (GlobalConfig.isSellerApp()) {
+            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
+        } else {
+            homeIntent = HomeRouter.getHomeActivity(context);
+        }
+        Intent destination = new Intent(context, InboxMessageActivity.class)
                 .setData(uri.build())
                 .putExtras(extras);
+        taskStackBuilder.addNextIntent(homeIntent);
+        taskStackBuilder.addNextIntent(destination);
+        return taskStackBuilder;
     }
 
     @Override

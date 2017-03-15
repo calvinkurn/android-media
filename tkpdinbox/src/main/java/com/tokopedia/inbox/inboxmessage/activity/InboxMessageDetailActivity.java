@@ -12,6 +12,10 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.fragment.InboxMessageDetailFragment;
 import com.tokopedia.inbox.inboxmessage.intentservice.InboxMessageIntentService;
@@ -28,11 +32,18 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
     private static final String TAG = "INBOX_MESSAGE_DETAIL_FRAGMENT";
     InboxMessageResultReceiver mReceiver;
 
-    @DeepLink("tokopedia://message/{message_id}")
+    @DeepLink(Constants.Applinks.MESSAGE_DETAIL)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
+        Intent homeIntent = null;
+        if (GlobalConfig.isSellerApp()) {
+            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
+        } else {
+            homeIntent = HomeRouter.getHomeActivity(context);
+        }
         Intent detailsIntent = new Intent(context, InboxMessageDetailActivity.class).putExtras(extras);
         Intent parentIntent = new Intent(context, InboxMessageActivity.class);
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(parentIntent);
         taskStackBuilder.addNextIntent(detailsIntent);
         return taskStackBuilder;

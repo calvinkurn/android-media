@@ -34,4 +34,11 @@ public interface Constants {
 
     String ACTION_BC_RESET_APPLINK = "com.tokopedia.tkpd.APPLINK_ACTION";
     String ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED = "login_required";
+
+    interface Applinks{
+        String MESSAGE = "tokopedia://message";
+        String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
+        String TALK = "tokopedia://talk";
+        String TALK_DETAIL = "tokopedia://talk/{talk_id}";
+    }
 }

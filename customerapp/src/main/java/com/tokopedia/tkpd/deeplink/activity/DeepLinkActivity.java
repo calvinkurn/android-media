@@ -43,19 +43,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         ProductDetailFragment.OnFragmentInteractionListener,
         FragmentGeneralWebView.OnFragmentInteractionListener, ICatalogActionFragment {
     private static final String EXTRA_STATE_APP_WEB_VIEW = "EXTRA_STATE_APP_WEB_VIEW";
-    private static final String APPLINK_URL = "encoded_url";
     private Bundle mExtras;
-
-    @DeepLink({
-            "tokopedia://webview/{encoded_url}"
-    })
-    public static Intent getCallingIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, DeepLinkActivity.class)
-                .setData(uri.build())
-                .putExtra(EXTRA_STATE_APP_WEB_VIEW, true)
-                .putExtras(extras);
-    }
 
     private TkpdProgressDialog progressDialog;
 
