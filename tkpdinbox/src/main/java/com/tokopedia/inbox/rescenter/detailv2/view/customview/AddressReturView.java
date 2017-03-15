@@ -64,6 +64,7 @@ public class AddressReturView extends BaseView<AddressReturData, DetailResCenter
 
     @Override
     public void renderData(@NonNull AddressReturData data) {
+        setVisibility(VISIBLE);
         addressReturDate.setText(generateInformationText(data));
         awbText.setText(data.getAddressText());
         actionEdit.setOnClickListener(new AddressReturViewOnClickListener());

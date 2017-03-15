@@ -19,6 +19,9 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailData;
 public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView> {
 
     private TextView textComplaintDate;
+    private View viewCustomer;
+    private TextView textCustomerName;
+    private View viewShop;
     private TextView textShopName;
     private TextView textAwbNumber;
     private TextView textInvoice;
@@ -56,6 +59,9 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(getLayoutView(), this, true);
         textComplaintDate = (TextView) view.findViewById(R.id.tv_complaint_date);
+        viewCustomer = view.findViewById(R.id.view_customer);
+        textCustomerName = (TextView) view.findViewById(R.id.tv_people_name);
+        viewShop = view.findViewById(R.id.view_shop);
         textShopName = (TextView) view.findViewById(R.id.tv_shop_name);
         textAwbNumber = (TextView) view.findViewById(R.id.tv_awb_number);
         textInvoice = (TextView) view.findViewById(R.id.tv_invoice);
@@ -68,8 +74,6 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
     @Override
     protected void setViewListener() {
         setVisibility(GONE);
-        viewBuyerResponseDeadline.setVisibility(GONE);
-        viewSellerResponseDeadline.setVisibility(GONE);
     }
 
     @Override
@@ -79,9 +83,9 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
         textComplaintDate.setText(data.getComplaintDate());
         textInvoice.setText(data.getInvoice());
         textShopName.setText(data.getShopName());
-        viewBuyerResponseDeadline.setVisibility(data.isBuyerDeadlineVisibility() ? VISIBLE : GONE);
+//        viewBuyerResponseDeadline.setVisibility(data.isBuyerDeadlineVisibility() ? VISIBLE : GONE);
         textBuyerResponseDeadline.setText(data.getResponseDeadline());
-        viewSellerResponseDeadline.setVisibility(data.isSellerDeadlineVisibility() ? VISIBLE : GONE);
+//        viewSellerResponseDeadline.setVisibility(data.isSellerDeadlineVisibility() ? VISIBLE : GONE);
         textSellerResponseDeadline.setText(data.getResponseDeadline());
     }
 }

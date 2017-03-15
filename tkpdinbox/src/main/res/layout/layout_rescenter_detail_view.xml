@@ -29,6 +29,34 @@
     </TableRow>
 
     <TableRow
+        android:id="@+id/view_customer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".50"
+            android:padding="@dimen/padding_small"
+            android:text="@string/detail_rescenter_customer"
+            android:textColor="#868686"
+            android:textSize="@dimen/fontvs" />
+
+        <TextView
+            android:id="@+id/tv_people_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".50"
+            android:ellipsize="end"
+            android:padding="@dimen/padding_small"
+            android:textColor="#464646"
+            android:textSize="@dimen/fonts" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/view_shop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal">
@@ -47,6 +75,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".50"
+            android:ellipsize="end"
             android:padding="@dimen/padding_small"
             android:textColor="#464646"
             android:textSize="@dimen/fonts" />
@@ -97,6 +126,7 @@
             android:layout_height="wrap_content"
             android:layout_weight=".50"
             android:padding="@dimen/padding_small"
+            android:ellipsize="end"
             android:textColor="#464646"
             android:textSize="@dimen/fonts" />
     </TableRow>

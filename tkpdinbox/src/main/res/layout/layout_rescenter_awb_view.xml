@@ -14,6 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:layout_marginRight="@dimen/margin_vs"
             android:padding="@dimen/padding_small"
             android:layout_alignParentRight="true"
             android:text="@string/action_track"
@@ -46,7 +47,7 @@
             <View
                 android:layout_width="50dp"
                 android:layout_height="1dp"
-                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_marginTop="@dimen/margin_small"
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginBottom="@dimen/margin_small"
                 android:background="@color/deep_orange_500"
@@ -60,13 +61,15 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="@dimen/padding_small">
+
         <TextView
             android:id="@+id/tv_last_awb_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_vs"
             android:text="@string/template_awb_additional_text"
             android:textColor="@color/grey"
-            android:textSize="@dimen/fontvvs"
+            android:textSize="@dimen/fontvs"
             />
 
         <TextView
