@@ -149,6 +149,9 @@ public class InboxReputationFormFragmentPresenterImpl
                     postReview(getActReviewPass());
                     break;
             }
+            Integer accuracy = Integer.valueOf(viewListener.getAccuracyRating());
+            Integer quality = Integer.valueOf(viewListener.getQualityRating());
+            UnifyTracking.eventLocaGoodReview(accuracy, quality);
         }
     }
 
