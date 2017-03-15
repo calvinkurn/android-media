@@ -4,12 +4,9 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
 import com.tokopedia.digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.digital.cart.data.entity.requestbody.topcart.RequestBodyOtpSuccess;
-import com.tokopedia.digital.cart.domain.CartDigitalRepository;
-import com.tokopedia.digital.cart.domain.CheckoutRepository;
 import com.tokopedia.digital.cart.domain.ICartDigitalRepository;
 import com.tokopedia.digital.cart.domain.ICheckoutRepository;
 import com.tokopedia.digital.cart.domain.IVoucherDigitalRepository;
-import com.tokopedia.digital.cart.domain.VoucherDigitalRepository;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 import com.tokopedia.digital.cart.model.CheckoutDigitalData;
 import com.tokopedia.digital.cart.model.VoucherDigital;
@@ -28,9 +25,9 @@ public class CartDigitalInteractor implements ICartDigitalInteractor {
     private final IVoucherDigitalRepository voucherDigitalRepository;
     private final ICheckoutRepository checkoutRepository;
 
-    public CartDigitalInteractor(CartDigitalRepository cartDigitalRepository,
-                                 VoucherDigitalRepository voucherDigitalRepository,
-                                 CheckoutRepository checkoutRepository) {
+    public CartDigitalInteractor(ICartDigitalRepository cartDigitalRepository,
+                                 IVoucherDigitalRepository voucherDigitalRepository,
+                                 ICheckoutRepository checkoutRepository) {
         this.cartDigitalRepository = cartDigitalRepository;
         this.voucherDigitalRepository = voucherDigitalRepository;
         this.checkoutRepository = checkoutRepository;
