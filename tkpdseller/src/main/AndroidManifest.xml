@@ -64,7 +64,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsGroupNewPromoActivity"
-            android:label="@string/title_top_ads_new_promo"
+            android:label="@string/title_top_ads_new_promo_product"
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsGroupEditPromoActivity"
@@ -92,7 +92,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsDetailNewShopActivity"
-            android:label="@string/title_top_ads_new_promo"
+            android:label="@string/title_top_ads_new_promo_shop"
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsDetailNewProductActivity"
