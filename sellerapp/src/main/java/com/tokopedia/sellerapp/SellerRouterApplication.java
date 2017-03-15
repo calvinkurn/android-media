@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,6 +33,11 @@ public class SellerRouterApplication extends MainApplication implements TkpdCore
     @Override
     public void startInstopedActivity(Context context) {
         InstopedActivity.startInstopedActivity(context);
+    }
+
+    @Override
+    public void startInstopedActivityForResult (Activity activity, int resultCode, int maxResult){
+        InstopedActivity.startInstopedActivityForResult(activity, resultCode,maxResult);
     }
 
     @Override
