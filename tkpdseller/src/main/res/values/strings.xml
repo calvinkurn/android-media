@@ -206,7 +206,7 @@
     <string name="label_top_ads_product_name">Nama Product</string>
     <string name="label_top_ads_choose_group">Pilih Grup</string>
     <string name="label_top_ads_create_promo_new_group">Grup Baru</string>
-    <string name="label_top_ads_create_promo_from_exist_group">Grup Yang Ada</string>
+    <string name="label_top_ads_create_promo_from_exist_group">Grup yang Ada</string>
     <string name="label_top_ads_create_promo_not_in_group">Tanpa Grup</string>
     <string name="label_top_ads_error_choose_one_group">Pilih salah satu grup</string>
     <string name="label_top_ads_error_choose_one_option">Silahkan pilih salah satu opsi</string>
