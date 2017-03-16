@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -32,6 +33,8 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.talk.talkproduct.fragment.TalkProductFragment;
@@ -110,6 +113,8 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     int paramMaster=0;
 
+    @BindView(R2.id.progress_bar) ProgressBar progressBar;
+    @BindView(R2.id.content_lv) LinearLayout contentLv;
     @BindView(R2.id.new_comment) EditText comment;
     @BindView(R2.id.send_but) ImageView sendBut;
     @BindView(R2.id.comment_list) RecyclerView recyclerView;
@@ -170,6 +175,7 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
     @Override
     protected void onFirstTimeLaunched() {
         displayLoading(true);
+        showMainLoading();
         getComment();
     }
 
@@ -203,6 +209,8 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
     protected void setupArguments(Bundle arguments) {
         from = arguments.getString("from");
         talk = arguments.getParcelable("talk");
+        talkID = arguments.getString("talk_id", "");
+        shopID = arguments.getString("shop_id", "");
         getFromBundle(talk);
         position = arguments.getInt("position");
     }
@@ -223,7 +231,6 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
         if (!SessionHandler.isV4Login(getActivity())) {
             addCommentArea.setVisibility(View.GONE);
         }
-        label.giveLabel(headUserLabel);
         if (SessionHandler.isV4Login(context)) {
             buttonOverflow.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -299,22 +306,26 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     }
 
-    private void parseHeader() {
-        pNameView.setText(productName);
-        ImageHandler.loadImageRounded2(context, pImageView, prodImgUri);
-        ImageHandler.loadImageCircle2(context, userTalkImageView, userImgUri);
-        timeView.setText(createTime);
-        messageView.setText(message);
-        userView.setText(userName);
-        reputation.setVisibility(View.GONE);
-        reputationUser.setVisibility(View.VISIBLE);
-        textReputation.setText(String.format("%s%%", reputationHeader));
-        if (noReputationHeader == 0) {
-            iconReputation.setImageResource(R.drawable.ic_icon_repsis_smile_active);
-            textReputation.setVisibility(View.VISIBLE);
-        } else {
-            iconReputation.setImageResource(R.drawable.ic_icon_repsis_smile);
-            textReputation.setVisibility(View.GONE);
+    protected void parseHeader() {
+        if (talk != null){
+
+            label.giveLabel(headUserLabel);
+            pNameView.setText(productName);
+            ImageHandler.loadImageRounded2(context, pImageView, prodImgUri);
+            ImageHandler.loadImageCircle2(context, userTalkImageView, userImgUri);
+            timeView.setText(createTime);
+            messageView.setText(message);
+            userView.setText(userName);
+            reputation.setVisibility(View.GONE);
+            reputationUser.setVisibility(View.VISIBLE);
+            textReputation.setText(String.format("%s%%", reputationHeader));
+            if (noReputationHeader == 0) {
+                iconReputation.setImageResource(R.drawable.ic_icon_repsis_smile_active);
+                textReputation.setVisibility(View.VISIBLE);
+            } else {
+                iconReputation.setImageResource(R.drawable.ic_icon_repsis_smile);
+                textReputation.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -337,6 +348,7 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
         parseResult(result);
         adapter.notifyDataSetChanged();
         getActivity().setResult(Activity.RESULT_OK, getResult());
+        hideMainLoading();
     }
 
     private void parseResult(JSONObject result) {
@@ -368,6 +380,7 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     @Override
     public void showError(String error) {
+        hideMainLoading();
         isRequest = false;
         swipe.setRefreshing(false);
         displayRetry(true);
@@ -809,5 +822,13 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     public void reportCommentTalk(TalkDetail talk, int position) {
         presenter.reportCommentTalk(talk, position);
+    }
+
+    protected void showMainLoading(){
+
+    }
+
+    protected void hideMainLoading(){
+
     }
 }

@@ -1,9 +1,11 @@
 package com.tokopedia.session.session.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.facebook.login.LoginManager;
@@ -29,7 +32,6 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.fragment.FragmentSecurityQuestion;
-import com.tokopedia.core.msisdn.activity.MsisdnActivity;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.router.CustomerRouter;
@@ -38,6 +40,7 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.service.ErrorNetworkReceiver;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
 import com.tokopedia.core.session.model.CreatePasswordModel;
 import com.tokopedia.core.session.model.LoginFacebookViewModel;
@@ -50,6 +53,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.otp.phoneverification.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.register.activity.RegisterEmailActivity;
 import com.tokopedia.session.session.fragment.LoginFragment;
 import com.tokopedia.session.session.fragment.RegisterInitialFragment;
@@ -95,11 +99,13 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         , LoginResultReceiver.Receiver
         , RegisterResultReceiver.Receiver
         , ResetPasswordResultReceiver.Receiver
-        , OTPResultReceiver.Receiver {
+        , OTPResultReceiver.Receiver
+        , ErrorNetworkReceiver.ReceiveListener {
 
     private static final String INTENT_EXTRA_PARAM_EMAIL = "INTENT_EXTRA_PARAM_EMAIL";
     private static final String INTENT_EXTRA_PARAM_PASSWORD = "INTENT_EXTRA_PARAM_PASSWORD";
     private static final String INTENT_AUTOMATIC_LOGIN = "INTENT_AUTOMATIC_LOGIN";
+    private static final int REQUEST_VERIFY_PHONE_NUMBER = 900;
 
     //    int whichFragmentKey;
     LocalCacheHandler cacheGTM;
@@ -111,6 +117,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     RegisterResultReceiver registerReceiver;
     ResetPasswordResultReceiver resetPasswordReceiver;
     OTPResultReceiver otpReceiver;
+    ErrorNetworkReceiver mReceiverLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +128,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
             getWindow().setStatusBarColor(getResources().getColor(R.color.green_600));
         }
         setContentView(R.layout.activity_login2);
+        mReceiverLogout = new ErrorNetworkReceiver();
 
         session = new SessionImpl(this);
         session.fetchExtras(getIntent());
@@ -207,37 +215,21 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         Log.d(getClass().getSimpleName(), "moveTo " + type);
         switch (type) {
             case MOVE_TO_CART_TYPE:
-                if (GlobalConfig.isSellerApp() && !SessionHandler.isMsisdnVerified()) {
-                    Intent intent = new Intent(this, MsisdnActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+                if (SessionHandler.isV4Login(this)) {
+                    startActivity(TransactionCartRouter.createInstanceCartActivity(this));
                 } else {
-                    if (SessionHandler.isV4Login(this)) {
-                        startActivity(TransactionCartRouter.createInstanceCartActivity(this));
-                    } else {
-                        Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
-                        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME);
-                        startActivity(intent);
-                    }
+                    Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+                    intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME);
+                    startActivity(intent);
                 }
                 break;
             case HOME:
-                if (GlobalConfig.isSellerApp() && !SessionHandler.isMsisdnVerified()) {
-                    Intent intent = new Intent(this, MsisdnActivity.class);
+                if (SessionHandler.isV4Login(this) && !SessionHandler.isMsisdnVerified()) {
+                    Intent intent = new Intent(this, PhoneVerificationActivationActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+                    startActivityForResult(intent, REQUEST_VERIFY_PHONE_NUMBER);
                 } else {
-                    if (SessionHandler.isV4Login(this)) {
-                        Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
-                        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                                HomeRouter.INIT_STATE_FRAGMENT_FEED);
-                        startActivity(intent);
-                    } else {
-                        Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
-                        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                                HomeRouter.INIT_STATE_FRAGMENT_HOME);
-                        startActivity(intent);
-                    }
+                    loginToHome();
                 }
                 break;
 
@@ -262,6 +254,20 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     startActivity(intent);
                 }
                 break;
+        }
+    }
+
+    private void loginToHome() {
+        if (SessionHandler.isV4Login(this)) {
+            Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+            intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                    HomeRouter.INIT_STATE_FRAGMENT_FEED);
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+            intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                    HomeRouter.INIT_STATE_FRAGMENT_HOME);
+            startActivity(intent);
         }
     }
 
@@ -364,6 +370,9 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     protected void onResume() {
         super.onResume();
 
+        mReceiverLogout.setReceiver(this);
+
+
         switch (session.getWhichFragment()) {
             case TkpdState.DrawerPosition.LOGIN:
                 if (isFragmentCreated(LOGIN_FRAGMENT_TAG)) {
@@ -411,6 +420,13 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                 break;
         }
         session.sendNotifLocalyticsCallback(getIntent());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mReceiverLogout.setReceiver(null);
+
     }
 
     @Override
@@ -862,6 +878,8 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     fragment.onFailedProfileShared(data.getStringExtra("error"));
                 }
             }
+        } else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER) {
+            loginToHome();
         }
     }
 
@@ -886,5 +904,49 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         else
             callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
         return callingIntent;
+    }
+
+    @Override
+    public void onForceLogout() {
+
+    }
+
+    @Override
+    public void onServerError() {
+        final Snackbar snackBar = SnackbarManager.make(this, getString(R.string.msg_server_error_2), Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.action_report, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        sendEmailComplain();
+                    }
+                });
+        snackBar.show();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                snackBar.dismiss();
+            }
+        }, 10000);
+    }
+
+    @Override
+    public void onTimezoneError() {
+        final Snackbar snackBar = SnackbarManager.make(this, getString(R.string.check_timezone),
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.action_check, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS));
+                    }
+                });
+        snackBar.show();
+    }
+
+    public void sendEmailComplain() {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse(getString(com.tokopedia.session.R.string.mail_to) + getString(com.tokopedia.session.R.string.android_feedback_email)));
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(com.tokopedia.session.R.string.server_error_problem));
+        intent.putExtra(Intent.EXTRA_TEXT, getString(com.tokopedia.session.R.string.application_version_text) + GlobalConfig.VERSION_CODE);
+        startActivity(Intent.createChooser(intent, getString(com.tokopedia.session.R.string.send_email)));
     }
 }

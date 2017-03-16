@@ -20,7 +20,6 @@ public abstract class UseCase<T> implements Interactor<T> {
 
     public UseCase(ThreadExecutor threadExecutor,
                    PostExecutionThread postExecutionThread) {
-
         this.threadExecutor = threadExecutor;
         this.postExecutionThread = postExecutionThread;
     }

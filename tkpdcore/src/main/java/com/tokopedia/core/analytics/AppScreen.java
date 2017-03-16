@@ -192,6 +192,7 @@ public final class AppScreen {
     public static final String SCREEN_ADDRESS_GEOLOCATION = "Add Geolocation Address page";
     public static final String SCREEN_INBOX_REPUTATION = "Inbox reputation page";
     public static final String SCREEN_WEBVIEW_BANNER = "Banner Web View";
+    public static final String SCREEN_WEBVIEW = "General Web View";
     public static final String SCREEN_SHOP_INFO = "Shop info detail page";
     public static final String SCREEN_PRODUCT_IMAGE_PREVIEW = "Preview Image Product page";
     public static final String SCREEN_LOYALTY = "Loyalty page";
@@ -245,4 +246,5 @@ public final class AppScreen {
     public static final String EVENT_ADDED_WISHLIST = "event : Add to wishlist";
     public static final String EVENT_CLICKED_HOTLIST= "event : Clicked Hot List";
     public static final String SCREEN_VIEWED_WISHLIST_PAGE = "event : Viewed Wishlist Page";
+    public static final String SCREEN_VIDEO_PLAYER = "Video player page";
 }

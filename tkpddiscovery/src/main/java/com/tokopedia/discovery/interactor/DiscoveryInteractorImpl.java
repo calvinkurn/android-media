@@ -11,10 +11,12 @@ import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.discovery.model.searchSuggestion.SearchDataModel;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.DiscoveryService;
+import com.tokopedia.core.network.apiservices.hades.HadesService;
 import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.apiservices.search.SearchSuggestionService;
 import com.tokopedia.core.network.apiservices.topads.TopAdsService;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.entity.categoriesHades.CategoriesHadesModel;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
@@ -47,6 +49,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
     DiscoveryListener discoveryListener;
     HotListService hotListService;
     TopAdsService topAdsService;
+    HadesService hadesService;
     SearchSuggestionService searchSuggestionService;
     CompositeSubscription compositeSubscription;
 
@@ -62,6 +65,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
         discoveryService = new DiscoveryService();
         hotListService = new HotListService();
         topAdsService = new TopAdsService();
+        hadesService = new HadesService();
         searchSuggestionService = new SearchSuggestionService();
     }
 
@@ -108,6 +112,43 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
                                                 )
                                         );
                                 discoveryListener.onSuccess(DiscoveryListener.HOTLIST_BANNER, pair);
+                            }
+                        }
+                ));
+    }
+
+    @Override
+    public void getCategoryHeader(String categoryId) {
+        getCompositeSubscription().add(hadesService.getApi().getCategories(categoryId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(
+                        new Subscriber<Response<CategoriesHadesModel>>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Pair<String, ErrorContainer> pair = new Pair<>(
+                                        DiscoveryListener.ERRORCONTAINER,
+                                        new ErrorContainer(e)
+                                );
+                                discoveryListener.onFailed(DiscoveryListener.CATEGORY_HEADER, pair);
+                            }
+
+                            @Override
+                            public void onNext(Response<CategoriesHadesModel> categoriesHadesModel) {
+                                Pair<String, CategoriesHadesModel.CategoriesHadesContainer> pair =
+                                        new Pair<>(
+                                                DiscoveryListener.CATEGORYHEADER,
+                                                new CategoriesHadesModel.CategoriesHadesContainer(
+                                                        categoriesHadesModel.body()
+                                                )
+                                        );
+                                discoveryListener.onSuccess(DiscoveryListener.CATEGORY_HEADER, pair);
                             }
                         }
                 ));

@@ -92,6 +92,9 @@ public class ChooseTroubleFragment extends BasePresenterFragment<ChooseTroublePr
     @Override
     public void onRestoreState(Bundle savedState) {
         passData = savedState.getParcelable(KEY_PARAM_PASS_DATA);
+        renderData(passData.getFormData());
+        showLoading(false);
+        showMainView(true);
     }
 
     @Override

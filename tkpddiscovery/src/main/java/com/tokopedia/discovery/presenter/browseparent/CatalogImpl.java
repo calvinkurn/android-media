@@ -12,7 +12,7 @@ import com.tokopedia.core.network.entity.discovery.CatalogModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.Pair;
-import com.tokopedia.discovery.fragment.browseparent.CatalogFragment;
+import com.tokopedia.discovery.fragment.CatalogFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
