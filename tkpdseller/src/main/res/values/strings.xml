@@ -136,7 +136,7 @@
 
     <!-- Top Ads Edit Promo Budget-->
     <string name="label_top_ads_budget">Anggaran</string>
-    <string name="label_top_ads_budget_lifetime">Anggaran Tidak Dibatasi</string>
+    <string name="label_top_ads_budget_lifetime">Anggaran tidak dibatasi</string>
     <string name="label_top_ads_budget_per_day">Per Hari</string>
     <string name="label_top_ads_budget_cost_per_day">Biaya per hari</string>
 
