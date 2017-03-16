@@ -45,6 +45,7 @@ public class ShopSearchViewHolder extends AbstractViewHolder<ShopViewModel> {
         if(element.getSearchItems().size()>0){
             adapter.setSearchTerm(element.getSearchTerm());
             adapter.setItems(element.getSearchItems());
+            adapter.setEventAction(element.getId());
         }
     }
 }

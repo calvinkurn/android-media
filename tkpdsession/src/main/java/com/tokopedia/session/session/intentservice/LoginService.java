@@ -386,11 +386,13 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                                 sendLocalyticsUserAttr(data.getAccountsModel().getUserId() + "", data.getAccountsModel().getFullName(), data.getEmail());
                                 AccountsModel accountsModel = accountsParameter.getAccountsModel();
                                 setLoginSession(accountsModel);
-                                result.putString(AppEventTracking.USER_ID_KEY, accountsModel.getUserId() + "");
-                                result.putString(AppEventTracking.FULLNAME_KEY, accountsModel.getFullName());
-                                result.putString(AppEventTracking.EMAIL_KEY, accountsParameter.getEmail());
+                                SessionHandler.setPhoneNumber(accountsParameter.getInfoModel().getPhone());
+                                result.putString(AppEventTracking.USER_ID_KEY,accountsModel.getUserId() + "");
+                                result.putString(AppEventTracking.FULLNAME_KEY,accountsModel.getFullName());
+                                result.putString(AppEventTracking.EMAIL_KEY,accountsParameter.getEmail());
                                 result.putInt(VALIDATION_OF_DEVICE_ID, accountsModel.getIsRegisterDevice());
-                                SessionHandler.setGoldMerchant(getApplicationContext(), accountsModel.getShopIsGold());
+                                sessionHandler.setGoldMerchant(getApplicationContext(), accountsModel.getShopIsGold());
+
                             }
 
                             result.putBoolean(LOGIN_MOVE_SECURITY, accountsParameter.isMoveSecurity());

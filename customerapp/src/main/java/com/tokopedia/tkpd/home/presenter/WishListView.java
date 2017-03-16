@@ -97,5 +97,7 @@ public interface WishListView {
 
     void displayErrorNetwork(Boolean isAction);
 
+    String getUserId();
 
+    void clearSearch();
 }

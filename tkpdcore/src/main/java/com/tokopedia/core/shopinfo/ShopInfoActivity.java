@@ -82,6 +82,15 @@ public class ShopInfoActivity extends BaseActivity
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String URL_RECHARGE_HOST = "pulsa.tokopedia.com";
 
+    public static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
+
+    public final static int TAB_POSITION_HOME = 1;
+    public final static int TAB_POSITION_ETALASE = 2;
+    public final static int TAB_POSITION_TALK = 3;
+    public final static int TAB_POSITION_REVIEW = 4;
+    public final static int TAB_POSITION_NOTE = 5;
+    public final static int NAVIGATION_TO_INFO = 6;
+
     private class ViewHolder {
         ViewPager pager;
         TabLayout indicator;
