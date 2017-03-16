@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.StringRes;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
@@ -77,14 +76,14 @@ public class TopPayActivity extends TopPayBaseActivity implements ITopPayView {
     }
 
     private void initialPresenter() {
-       presenter = new TopPayPresenter(this);
+        presenter = new TopPayPresenter(this);
     }
 
     private void setupURIPass(Uri data) {
     }
 
     private void setupBundlePass(Bundle extras) {
-        presenter.setPaymentPassData((PaymentPassData)extras
+        presenter.setPaymentPassData((PaymentPassData) extras
                 .getParcelable(EXTRA_PARAMETER_TOP_PAY_DATA));
         scroogeWebView.initiateScroogeData(presenter.getPaymentPassData());
     }
@@ -108,7 +107,7 @@ public class TopPayActivity extends TopPayBaseActivity implements ITopPayView {
     }
 
     @Override
-    public String getStringFromResource(@StringRes int resId) {
+    public String getStringFromResource(int resId) {
         return null;
     }
 
