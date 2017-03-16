@@ -356,6 +356,15 @@ LoginFragment extends Fragment implements LoginView {
             }
         });
 
+        rememberAccount.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean state) {
+                if (!state) {
+                    login.clearSavedAccount();
+                }
+            }
+        });
+
 
     }
 
