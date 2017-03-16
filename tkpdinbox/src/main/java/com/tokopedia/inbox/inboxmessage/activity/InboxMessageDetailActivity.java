@@ -1,13 +1,21 @@
 package com.tokopedia.inbox.inboxmessage.activity;
 
 import android.app.Fragment;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.TaskStackBuilder;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.fragment.InboxMessageDetailFragment;
 import com.tokopedia.inbox.inboxmessage.intentservice.InboxMessageIntentService;
@@ -18,11 +26,28 @@ import com.tokopedia.inbox.inboxmessage.intentservice.InboxMessageResultReceiver
  */
 public class InboxMessageDetailActivity extends BasePresenterActivity
         implements InboxMessageDetailFragment.DoActionInboxMessageListener,
-        InboxMessageConstant, InboxMessageResultReceiver.Receiver  {
+        InboxMessageConstant, InboxMessageResultReceiver.Receiver {
 
 
     private static final String TAG = "INBOX_MESSAGE_DETAIL_FRAGMENT";
     InboxMessageResultReceiver mReceiver;
+
+    @DeepLink(Constants.Applinks.MESSAGE_DETAIL)
+    public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
+        Intent homeIntent = null;
+        if (GlobalConfig.isSellerApp()) {
+            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
+        } else {
+            homeIntent = HomeRouter.getHomeActivity(context);
+        }
+        Intent detailsIntent = new Intent(context, InboxMessageDetailActivity.class).putExtras(extras);
+        Intent parentIntent = new Intent(context, InboxMessageActivity.class);
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntent(homeIntent);
+        taskStackBuilder.addNextIntent(parentIntent);
+        taskStackBuilder.addNextIntent(detailsIntent);
+        return taskStackBuilder;
+    }
 
     @Override
     public String getScreenName() {

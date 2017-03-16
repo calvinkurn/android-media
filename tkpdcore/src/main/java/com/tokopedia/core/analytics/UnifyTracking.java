@@ -1256,4 +1256,13 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.EventLabel.DELETE_PRODUCT_TOPMENU
         ).getEvent());
     }
+
+    public static void eventPersonalizedClicked(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.OPEN_PUSH_NOTIFICATION,
+                AppEventTracking.Category.PUSH_NOTIFICATION,
+                AppEventTracking.Action.OPEN,
+                label
+        ).getEvent());
+    }
 }
