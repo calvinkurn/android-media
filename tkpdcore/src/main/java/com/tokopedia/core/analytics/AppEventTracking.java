@@ -81,6 +81,7 @@ public interface AppEventTracking {
         String BUY = "clickBuy";
         String MESSAGE_SHOP = "clickMessageShop";
         String FAVORITE_SHOP = "clickFavoriteShop";
+        String TOP_SELLER = "clickTopSeller";
 
         String SHOP_MANAGE = "clickManageShop";
         String NOTES = "clickNotes";
@@ -160,6 +161,7 @@ public interface AppEventTracking {
         String GM_STATISTIC_PRODUCT = "GM Statistic - Product";
         String GM_STATISTIC_PRODUCT_INSIGHT = "GM Statistic - Product Insight";
         String MANAGE_PRODUCT = "Manage Product";
+        String GM_SWITCHER = "GM Switcher";
         String PUSH_NOTIFICATION = "Push Notification";
     }
 
@@ -326,6 +328,9 @@ public interface AppEventTracking {
         String CHANGE_PRICE_PRODUCT_LIST = "Ubah Harga - Product List";
         String CHANGE_PRICE_DROP_DOWN = "Ubah Harga - Dropdown";
         String COPY_PRODUCT = "Copy";
+        String OPEN_TOP_SELLER = "Open TopSeller - ";
+        String OPEN_APP = "Open App";
+        String DOWNLOAD_APP = "Download App";
         String OTP = "OTP";
 
         String CHANGE_CATEGORY_PRODUCT_GEAR = "Ganti Kategori - Gear Menu";
