@@ -128,4 +128,9 @@
     <item name="youtube_activity_thumbnail_view" type="id"/>
     <item name="video_thumbnail_main_view" type="id"/>
 
+    <item name="linWrapper" type="id"/>
+    <item name="categoryTitle" type="id"/>
+    <item name="separator" type="id"/>
+    <item name="thumbnail" type="id"/>
+
 </resources>

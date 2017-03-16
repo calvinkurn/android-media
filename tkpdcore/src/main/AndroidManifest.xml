@@ -489,6 +489,7 @@
             <intent-filter>
                 <action android:name="com.tokopedia.tkpd.FORCE_LOGOUT" />
                 <action android:name="com.tokopedia.tkpd.SERVER_ERROR" />
+                <action android:name="com.tokopedia.tkpd.TIMEZONE_ERROR" />
             </intent-filter>
         </receiver>
         <receiver android:name="com.tokopedia.core.msisdn.IncomingSmsReceiver">
@@ -507,13 +508,6 @@
             android:name="com.tokopedia.core.manage.people.profile.intentservice.ManagePeopleProfileIntentService"
             android:exported="false" />
         <service android:name="com.tokopedia.core.service.HUDIntent" />
-        <service
-            android:name="com.tokopedia.core.gcm.FCMMessagingService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
         <service
             android:name=".gcm.FCMInstanceIDService">
             <intent-filter>

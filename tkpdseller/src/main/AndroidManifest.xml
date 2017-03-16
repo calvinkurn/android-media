@@ -172,13 +172,18 @@
             android:exported="false" />
 
         <activity
-            android:screenOrientation="portrait"
+            android:name=".topads.view.activity.TopAdsStatisticProductActivity"
             android:label="@string/title_activity_statistic"
-            android:name=".topads.view.activity.TopAdsStatisticProductActivity" />
+            android:screenOrientation="portrait" />
         <activity
-            android:screenOrientation="portrait"
+            android:name=".topads.view.activity.TopAdsStatisticShopActivity"
             android:label="@string/title_activity_statistic"
-            android:name=".topads.view.activity.TopAdsStatisticShopActivity"/>
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".shopscore.view.activity.ShopScoreDetailActivity"
+            android:label="@string/title_shop_score"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".topads.view.activity.TopAdsAddProductListActivity"

@@ -17,6 +17,4 @@ public interface ManageProductPresenter {
     int duration = 120;
 
     ManageProductModel convertTo(ProductList.Product product);
-    void saveCache(ManageProductPresenterImpl.CacheManageProduct cacheManageProduct) throws MalformedURLException, UnsupportedEncodingException;
-    ManageProductPresenterImpl.CacheManageProduct getCache();
 }

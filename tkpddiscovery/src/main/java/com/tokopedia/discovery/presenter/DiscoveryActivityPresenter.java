@@ -34,15 +34,8 @@ public interface DiscoveryActivityPresenter {
     String TAG = "DiscoveryActivity";
     String SEARCH_ACTION_INTENT = BuildConfig.APPLICATION_ID+".SEARCH";
     String CHANGE_GRID_ACTION_INTENT = BuildConfig.APPLICATION_ID+".LAYOUT";
-    //    String EXTRAS_SEARCH_TERM = "EXTRAS_SEARCH_TERM";
     String GRID_TYPE_EXTRA = "GRID_TYPE_EXTRA";
     int REQUEST_SORT = 121;
-
-    //    String DEPARTMENT_ID = "DEPARTMENT_ID";
-//    String VALUES_HISTORY_FRAGMENT_ID = "VALUES_HISTORY_FRAGMENT_ID";
-//    int VALUES_INVALID_FRAGMENT_ID = -1;
-//    String AD_SRC = "AD_SRC";
-//    String EXTRAS_DISCOVERY_ALIAS = "EXTRAS_DISCOVERY_ALIAS";
 
     abstract class DiscoveryActivityPresenterImpl implements DiscoveryActivityPresenter{
         @Override

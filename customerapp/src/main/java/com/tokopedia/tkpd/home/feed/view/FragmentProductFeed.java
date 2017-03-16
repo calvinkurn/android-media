@@ -107,8 +107,11 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         super.onResume();
         String shopID = SessionHandler.getShopID(getActivity());
         String invalidShopId = "0";
-        if (shopID == null || invalidShopId.equals(shopID) || shopID.length() == 0) {
+        if (shopID == null || shopID.equals("0") || shopID.length() == 0) {
             fabAddProduct.setVisibility(View.GONE);
+            fabAddProduct.setVisibility(View.GONE);
+        } else {
+            fabAddProduct.setVisibility(View.VISIBLE);
         }
     }
 
