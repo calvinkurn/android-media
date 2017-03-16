@@ -1,4 +1,4 @@
-package com.tokopedia.ride.bookingride.view;
+package com.tokopedia.ride.bookingride.view.activity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -13,6 +13,8 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.bookingride.view.fragment.RideHomeFragment;
+import com.tokopedia.ride.bookingride.view.fragment.UberProductFragment;
 
 import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;

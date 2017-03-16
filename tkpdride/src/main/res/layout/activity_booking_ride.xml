@@ -6,7 +6,7 @@
               android:layout_height="wrap_content"
               android:background="@color/white"
               android:clickable="true"
-              tools:context=".bookingride.view.RideHomeActivity">
+              tools:context=".bookingride.view.activity.RideHomeActivity">
 
     <com.sothree.slidinguppanel.SlidingUpPanelLayout
         android:id="@+id/cabs_crux_sliding_layout"

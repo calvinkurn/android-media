@@ -1,4 +1,4 @@
-package com.tokopedia.ride.bookingride.view;
+package com.tokopedia.ride.bookingride.view.fragment;
 
 
 import android.app.Activity;
@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.base.presentation.BaseFragment;
+import com.tokopedia.ride.bookingride.view.UberProductContract;
 
 /**
  * A simple {@link Fragment} subclass.

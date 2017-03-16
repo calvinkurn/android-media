@@ -1,4 +1,4 @@
-package com.tokopedia.ride.bookingride.view;
+package com.tokopedia.ride.bookingride.view.fragment;
 
 import android.Manifest;
 import android.app.Activity;
@@ -16,10 +16,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -36,6 +32,9 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.BookingRideDependencyInjection;
+import com.tokopedia.ride.bookingride.view.BookingRideContract;
+import com.tokopedia.ride.bookingride.view.activity.GooglePlacePickerActivity;
+import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -57,6 +56,8 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     TextView tvSource;
     @BindView(R2.id.crux_cabs_destination)
     TextView tvDestination;
+
+    private PlacePassViewModel mSource, mDestination;
 
     GoogleMap mGoogleMap;
 
@@ -202,12 +203,12 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
                     mPresenter.initialize();
                     break;
                 case PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE:
-                    Place source = PlaceAutocomplete.getPlace(getActivity(), data);
-                    setSourceLocationText(String.valueOf(source.getAddress()));
+                    mSource = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
+                    setSourceLocationText(String.valueOf(mSource.getAddress()));
                     break;
                 case PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE:
-                    Place destination = PlaceAutocomplete.getPlace(getActivity(), data);
-                    setDestinationLocationText(String.valueOf(destination.getAddress()));
+                    mDestination = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
+                    setDestinationLocationText(String.valueOf(mDestination.getAddress()));
                     break;
             }
         }
@@ -253,34 +254,16 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
 
     @OnClick(R2.id.crux_cabs_source)
     public void actionSourceButtonClicked() {
-        Intent intent =
-                null;
-        try {
-            intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
-                    .build(getActivity());
-
-            startActivityForResult(intent, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE);
-        } catch (GooglePlayServicesRepairableException e) {
-            e.printStackTrace();
-        } catch (GooglePlayServicesNotAvailableException e) {
-            e.printStackTrace();
-        }
+        Intent intent = GooglePlacePickerActivity.getCallingIntent(getActivity());
+        intent.putExtra(GooglePlacePickerActivity.EXTRA_REQUEST_CODE, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE);
+        startActivityForResult(intent, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE);
     }
 
     @OnClick(R2.id.crux_cabs_destination)
     public void actionDestinationButtonClicked() {
-        Intent intent =
-                null;
-        try {
-            intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
-                    .build(getActivity());
-
-            startActivityForResult(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
-        } catch (GooglePlayServicesRepairableException e) {
-            e.printStackTrace();
-        } catch (GooglePlayServicesNotAvailableException e) {
-            e.printStackTrace();
-        }
+        Intent intent = GooglePlacePickerActivity.getCallingIntent(getActivity());
+        intent.putExtra(GooglePlacePickerActivity.EXTRA_REQUEST_CODE, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
+        startActivityForResult(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
     }
 
     @Override
