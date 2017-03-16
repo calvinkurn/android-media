@@ -53,6 +53,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
@@ -120,11 +121,8 @@ import rx.functions.Action1;
 
 import static com.tokopedia.sellerapp.drawer.DrawerVariableSeller.goToShopNewOrder;
 
-public class SellerHomeActivity
-        extends AppCompatActivity
-        implements GCMHandlerListener,
-        SessionHandler.onLogoutListener,
-        SellerHomeView, ShopScoreWidgetCallback {
+public class SellerHomeActivity extends BaseActivity implements GCMHandlerListener,
+        SessionHandler.onLogoutListener {
     public static final String messageTAG = SellerHomeActivity.class.getSimpleName();
     public static final String STUART = "STUART";
     private static final String ARG_TRUECALLER_PACKAGE = "com.truecaller";
