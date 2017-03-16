@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.listener;
 
+import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailViewModel;
 
 /**
@@ -20,6 +21,8 @@ public interface DetailResCenterFragmentView {
     void showLoading(boolean isShow);
 
     boolean isSeller();
+
+    void showConfirmationDialog(String messageDialog, ConfirmationDialog.Listener listener);
 
     void setOnActionAcceptProductClick();
 
@@ -42,4 +45,14 @@ public interface DetailResCenterFragmentView {
     void setOnActionEditAddressClick();
 
     void setOnActionProductClick(String productID);
+
+    void setOnActionPeopleDetailClick(String buyerID);
+
+    void setOnActionShopDetailClick(String shopID);
+
+    void setOnActionInvoiceClick(String invoice, String url);
+
+    void setOnActionHelpClick();
+
+    void setOnActionAppealClick();
 }

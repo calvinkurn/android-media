@@ -18,7 +18,8 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.StatusData;
 
 public class StatusView extends BaseView<StatusData, DetailResCenterFragmentView> {
 
-    TextView lastStatus;
+    private TextView lastStatus;
+    private View actionDiscuss;
 
     public StatusView(Context context) {
         super(context);
@@ -49,6 +50,7 @@ public class StatusView extends BaseView<StatusData, DetailResCenterFragmentView
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(getLayoutView(), this, true);
         lastStatus = (TextView) view.findViewById(R.id.textview_last_status);
+        actionDiscuss = view.findViewById(R.id.action_discuss);
     }
 
     @Override
@@ -60,5 +62,11 @@ public class StatusView extends BaseView<StatusData, DetailResCenterFragmentView
     public void renderData(@NonNull StatusData data) {
         setVisibility(VISIBLE);
         lastStatus.setText(data.getStatusText());
+        actionDiscuss.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.setOnActionDiscussClick();
+            }
+        });
     }
 }

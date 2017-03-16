@@ -16,25 +16,26 @@
         android:layout_alignParentBottom="true"
         />
 
+    <com.tokopedia.inbox.rescenter.detailv2.view.customview.StatusView
+        android:id="@+id/status_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_alignParentTop="true"
+        />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/main_view"
         android:scrollbars="none"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/status_view"
         android:layout_above="@id/button_view">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <com.tokopedia.inbox.rescenter.detailv2.view.customview.StatusView
-                android:id="@+id/status_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
-                />
 
             <com.tokopedia.inbox.rescenter.detailv2.view.customview.DetailView
                 android:id="@+id/detail_view"

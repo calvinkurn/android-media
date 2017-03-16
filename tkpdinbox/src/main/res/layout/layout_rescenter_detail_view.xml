@@ -49,8 +49,9 @@
             android:layout_height="wrap_content"
             android:layout_weight=".50"
             android:ellipsize="end"
+            android:maxLines="1"
             android:padding="@dimen/padding_small"
-            android:textColor="#464646"
+            android:textColor="@color/tkpd_main_green"
             android:textSize="@dimen/fonts" />
 
     </TableRow>
@@ -76,8 +77,9 @@
             android:layout_height="wrap_content"
             android:layout_weight=".50"
             android:ellipsize="end"
+            android:maxLines="1"
             android:padding="@dimen/padding_small"
-            android:textColor="#464646"
+            android:textColor="@color/tkpd_main_green"
             android:textSize="@dimen/fonts" />
 
     </TableRow>
@@ -102,7 +104,7 @@
             android:layout_height="wrap_content"
             android:layout_weight=".50"
             android:padding="@dimen/padding_small"
-            android:textColor="#464646"
+            android:textColor="@color/tkpd_main_green"
             android:textSize="@dimen/fonts" />
     </TableRow>
 
@@ -127,8 +129,10 @@
             android:layout_weight=".50"
             android:padding="@dimen/padding_small"
             android:ellipsize="end"
-            android:textColor="#464646"
-            android:textSize="@dimen/fonts" />
+            android:maxLines="1"
+            android:textColor="@color/tkpd_main_green"
+            android:textSize="@dimen/fonts"
+            />
     </TableRow>
 
     <TableRow

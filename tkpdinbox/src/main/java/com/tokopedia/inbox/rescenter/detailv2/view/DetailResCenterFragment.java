@@ -1,13 +1,21 @@
 package com.tokopedia.inbox.rescenter.detailv2.view;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.manage.people.address.ManageAddressConstant;
+import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
+import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.AddressReturView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.AwbReturView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.ButtonView;
@@ -20,6 +28,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragm
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFragmentImpl;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFragmentPresenter;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailViewModel;
+import com.tokopedia.inbox.rescenter.edit.activity.EditResCenterActivity;
 
 /**
  * Created by hangnadi on 3/8/17.
@@ -27,6 +36,14 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailViewModel;
 
 public class DetailResCenterFragment extends BasePresenterFragment<DetailResCenterFragmentPresenter>
         implements DetailResCenterFragmentView {
+
+    private static final int REQUEST_EDIT_SOLUTION = 6789;
+    private static final int REQUEST_APPEAL_SOLUTION = 5;
+    private static final int REQUEST_INPUT_SHIPPING = 6;
+    private static final int REQUEST_EDIT_SHIPPING = 7;
+    private static final int REQUEST_CHOOSE_ADDRESS = 7890;
+    private static final int REQUEST_CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION = 7892;
+    private static final int REQUEST_EDIT_ADDRESS = 5678;
 
     View loading;
     View mainView;
@@ -211,18 +228,125 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     }
 
     @Override
-    public void setOnActionAcceptProductClick() {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_EDIT_SOLUTION:
+                if (resultCode == Activity.RESULT_OK) {
+                    presenter.refreshPage();
+                }
+                break;
+            case REQUEST_APPEAL_SOLUTION:
+                if (resultCode == Activity.RESULT_OK) {
+                    presenter.refreshPage();
+                }
+                break;
+            case REQUEST_EDIT_SHIPPING:
+                if (resultCode == Activity.RESULT_OK) {
+                    presenter.refreshPage();
+                }
+                break;
+            case REQUEST_INPUT_SHIPPING:
+                if (resultCode == Activity.RESULT_OK) {
+                    presenter.refreshPage();
+                }
+                break;
+            case REQUEST_CHOOSE_ADDRESS:
+                if (resultCode == Activity.RESULT_OK) {
+                    Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
+//                    presenter.actionInputAddress(getActivity(), destination.getAddressId());
+                }
+                break;
+            case REQUEST_CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION:
+                if (resultCode == Activity.RESULT_OK) {
+                    Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
+//                    presenter.actionInputAddressAcceptAdminSolution(getActivity(), destination.getAddressId());
+                }
+                break;
+            case REQUEST_EDIT_ADDRESS:
+                if (resultCode == Activity.RESULT_OK) {
+                    Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
+//                    presenter.actionEditAddress(getActivity(), destination.getAddressId(), ahrefEditAddressURL);
+                }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 
+    @Override
+    public void showConfirmationDialog(String messageDialog, ConfirmationDialog.Listener listener) {
+        ConfirmationDialog.Builder(getActivity())
+                .initView()
+                .initValue(messageDialog)
+                .initListener(listener)
+                .show();
+    }
+
+    @Override
+    public void setOnActionAcceptProductClick() {
+        showConfirmationDialog(getActivity().getString(R.string.msg_rescen_finish),
+                new ConfirmationDialog.Listener() {
+                    @Override
+                    public void onSubmitButtonClick() {
+                        presenter.finishReturProduct(resolutionID);
+                    }
+                });
     }
 
     @Override
     public void setOnActionAcceptSolutionClick() {
+        showConfirmationDialog(getActivity().getString(R.string.msg_accept_sol),
+                new ConfirmationDialog.Listener() {
+                    @Override
+                    public void onSubmitButtonClick() {
+                        if (getViewData().getButtonData().isAcceptReturSolution()) {
+                            Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+                            intent.putExtra("resolution_center", true);
+                            startActivityForResult(intent, REQUEST_CHOOSE_ADDRESS);
+                        } else {
+                            presenter.acceptSolution(resolutionID);
+                        }
+                    }
+                });
+    }
 
+    @Override
+    public void setOnActionHelpClick() {
+        showConfirmationDialog(getActivity().getString(R.string.msg_rescen_help),
+                new ConfirmationDialog.Listener() {
+                    @Override
+                    public void onSubmitButtonClick() {
+                        presenter.askHelpResolution();
+                    }
+                });
+    }
+
+    @Override
+    public void setOnActionAppealClick() {
+        String orderID = getViewData().getDetailData().getOrderID();
+        boolean isReceived = getViewData().getDetailData().isReceived();
+
+        startActivityForResult(
+                EditResCenterActivity.newAppealInstance(getActivity(), resolutionID, orderID, isSeller(), isReceived),
+                REQUEST_APPEAL_SOLUTION);
     }
 
     @Override
     public void setOnActionEditSolutionClick() {
+        startActivityForResult(getIntentEditResCenter(), REQUEST_EDIT_SOLUTION);
+    }
 
+    private Intent getIntentEditResCenter() {
+        String orderID = getViewData().getDetailData().getOrderID();
+        boolean isReceived = getViewData().getDetailData().isReceived();
+
+        if (isSeller()) {
+            return EditResCenterActivity
+                    .newSellerInstance(getActivity(), resolutionID, orderID, isReceived);
+        } else {
+            return EditResCenterActivity
+                    .newBuyerInstance(getActivity(), resolutionID, orderID, isReceived);
+        }
     }
 
     @Override
@@ -242,7 +366,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     public void setOnActionTrackAwbClick() {
-
+        presenter.trackReturProduck();
     }
 
     @Override
@@ -257,11 +381,31 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     public void setOnActionEditAddressClick() {
-
+        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+        intent.putExtra("resolution_center", true);
+        startActivityForResult(intent, REQUEST_EDIT_ADDRESS);
     }
 
     @Override
     public void setOnActionProductClick(String productID) {
 
+    }
+
+    @Override
+    public void setOnActionPeopleDetailClick(String buyerID) {
+        startActivity(PeopleInfoNoDrawerActivity.createInstance(context, buyerID));
+    }
+
+    @Override
+    public void setOnActionShopDetailClick(String shopID) {
+        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
+        Bundle bundle = ShopInfoActivity.createBundle(shopID, "");
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    @Override
+    public void setOnActionInvoiceClick(String invoice, String url) {
+        AppUtils.InvoiceDialog(getActivity(), url, invoice);
     }
 }
