@@ -12,13 +12,13 @@ public class SearchItem {
     private String sc;
     private String imageURI;
     private boolean isOfficial;
-    private EventAction eventAction;
+    private String eventAction;
 
-    public EventAction getEventAction() {
+    public String getEventAction() {
         return eventAction;
     }
 
-    public void setEventAction(EventAction eventAction) {
+    public void setEventAction(String eventAction) {
         this.eventAction = eventAction;
     }
 

@@ -22,7 +22,6 @@ import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.search.domain.model.EventAction;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
 
 import java.net.MalformedURLException;
@@ -45,6 +44,7 @@ public class ShopSearchResultAdapter extends RecyclerView.Adapter<ShopSearchResu
     private Context context;
     private String searchTerm;
     private final ItemClickListener clickListener;
+    private String eventAction;
 
     public ShopSearchResultAdapter(Context context, ItemClickListener clickListener) {
         items = new ArrayList<>();
@@ -55,6 +55,10 @@ public class ShopSearchResultAdapter extends RecyclerView.Adapter<ShopSearchResu
     public void setItems(List<SearchItem> items) {
         this.items = items;
         notifyDataSetChanged();
+    }
+
+    public void setEventAction(String eventAction) {
+        this.eventAction = eventAction;
     }
 
     @Override
@@ -129,7 +133,7 @@ public class ShopSearchResultAdapter extends RecyclerView.Adapter<ShopSearchResu
         @OnClick(R2.id.title)
         void onItemClicked(){
             SearchItem searchItem = items.get(getAdapterPosition());
-            searchItem.setEventAction(EventAction.AUTOCOMPLETE_SHOP);
+            searchItem.setEventAction(eventAction);
             if(searchItem.getApplink()!=null) {
                 List<String> segments = Uri.parse(searchItem.getApplink()).getPathSegments();
                 if(segments!=null && segments.size()>0) {

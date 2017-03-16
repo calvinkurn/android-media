@@ -17,7 +17,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.tokopedia.core.R2;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.search.domain.model.EventAction;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
 import com.tokopedia.discovery.search.view.adapter.viewmodel.DefaultViewModel;
 
@@ -108,29 +107,7 @@ public class DefaultSearchResultAdapter extends RecyclerView.Adapter<DefaultSear
         @OnClick(R2.id.container)
         void onTextClicked() {
             SearchItem item = model.getSearchItems().get(getAdapterPosition());
-            switch (model.getId()){
-                case "recent_search":
-                    item.setEventAction(EventAction.RECENT_SEARCH);
-                    break;
-                case "popular_search":
-                    item.setEventAction(EventAction.POPULAR_SEARCH);
-                    break;
-                case "autocomplete":
-                    item.setEventAction(EventAction.SEARCH_AUTOCOMPLETE);
-                    break;
-                case "hotlist":
-                    item.setEventAction(EventAction.SEARCH_HOTLIST);
-                    break;
-                case "shop":
-                    item.setEventAction(EventAction.AUTOCOMPLETE_SHOP);
-                    break;
-                case "category":
-                    item.setEventAction(EventAction.AUTOCOMPLETE_CATEGORY);
-                    break;
-                case "in_category":
-                    item.setEventAction(EventAction.AUTOCOMPLETE_IN_CATEGORY);
-                    break;
-            }
+            item.setEventAction(model.getId());
             clickListener.onItemClicked(item);
         }
 
