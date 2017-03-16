@@ -21,11 +21,6 @@ public interface MojitoApi {
 
     String DEVICE = "device";
 
-    @GET(TkpdBaseURL.Mojito.PATH_WISHLIST_PRODUCT)
-    Observable<Response<WishlistData>> getWishlist(@Path("userId") String UserId,
-                                                   @Query("count") int Count,
-                                                   @Query("page") int Page);
-
     //api requirement add static header
     @Headers({
             "X-Device: android"})
