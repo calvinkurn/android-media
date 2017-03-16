@@ -170,23 +170,27 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         }else{
             productAdapter.setIsLoading(false);
         }
-        BrowseProductActivityModel browseModel = ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel();
-        if(browseModel.getHotListBannerModel()!=null){
-            HotListBannerModel bannerModel = browseModel.getHotListBannerModel();
-            if(bannerModel.query.shop_id.isEmpty()){
+        if (getActivity() !=null && getActivity() instanceof BrowseProductActivity) {
+            BrowseProductActivityModel browseModel = ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel();
+            if(browseModel.getHotListBannerModel()!=null){
+                HotListBannerModel bannerModel = browseModel.getHotListBannerModel();
+                if(bannerModel.query.shop_id.isEmpty()){
+                    presenter.getTopAds(productAdapter.getTopAddsCounter(), TAG, getActivity(), spanCount);
+                }
+            } else if (model.size() > 0){
                 presenter.getTopAds(productAdapter.getTopAddsCounter(), TAG, getActivity(), spanCount);
             }
-        } else if (model.size() > 0){
-            presenter.getTopAds(productAdapter.getTopAddsCounter(), TAG, getActivity(), spanCount);
+
+            if (totalProduct>0)
+                browseModel.setTotalDataCategory(NumberFormat.getNumberInstance(Locale.US)
+                        .format(totalProduct.longValue()).replace(',', '.'));
+            productAdapter.incrementPage();
+
+            UnifyTracking.eventAppsFlyerViewListingSearch(model, browseModel.q);
+            TrackingUtils.eventLocaSearched(browseModel.q);
+
         }
 
-        if (totalProduct>0)
-            browseModel.setTotalDataCategory(NumberFormat.getNumberInstance(Locale.US)
-                    .format(totalProduct.longValue()).replace(',', '.'));
-        productAdapter.incrementPage();
-
-        UnifyTracking.eventAppsFlyerViewListingSearch(model, browseModel.q);
-        TrackingUtils.eventLocaSearched(browseModel.q);
     }
 
     @Override
@@ -209,14 +213,17 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         }else{
             productAdapter.setIsLoading(false);
         }
-        BrowseProductActivityModel browseModel = ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel();
-        if(browseModel.getHotListBannerModel()!=null){
-            HotListBannerModel bannerModel = browseModel.getHotListBannerModel();
-            if(bannerModel.query.shop_id.isEmpty()){
+
+        if (getActivity()!=null && getActivity() instanceof  BrowseProductActivity) {
+            BrowseProductActivityModel browseModel = ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel();
+            if(browseModel.getHotListBannerModel()!=null){
+                HotListBannerModel bannerModel = browseModel.getHotListBannerModel();
+                if(bannerModel.query.shop_id.isEmpty()){
+                    presenter.getTopAds(getPage(ProductFragment.TAG), TAG, getActivity(), spanCount);
+                }
+            } else {
                 presenter.getTopAds(getPage(ProductFragment.TAG), TAG, getActivity(), spanCount);
             }
-        } else {
-            presenter.getTopAds(getPage(ProductFragment.TAG), TAG, getActivity(), spanCount);
         }
         if (model.isEmpty()) {
             productAdapter.setSearchNotFound();
@@ -428,19 +435,20 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void addCategoryHeader(Data categoryHeader) {
         isHasCategoryHeader = true;
-        BrowseProductActivityModel browseModel = ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel();
-        if (categoryHeader.getRevamp() !=null && categoryHeader.getRevamp()) {
-            productAdapter.addCategoryRevampHeader(
-                    new ProductAdapter.CategoryHeaderRevampModel(categoryHeader,getActivity(),getCategoryWidth(),
-                            this,browseModel.getTotalDataCategory(), this));
-        } else {
-            productAdapter.addCategoryHeader(
-                    new ProductAdapter.CategoryHeaderModel(categoryHeader,getActivity(),getCategoryWidth(),
-                            this, browseModel.getTotalDataCategory(), this));
+        if (getActivity()!=null && getActivity() instanceof  BrowseProductActivity) {
+            BrowseProductActivityModel browseModel = ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel();
+            if (categoryHeader.getRevamp() !=null && categoryHeader.getRevamp()) {
+                productAdapter.addCategoryRevampHeader(
+                        new ProductAdapter.CategoryHeaderRevampModel(categoryHeader,getActivity(),getCategoryWidth(),
+                                this,browseModel.getTotalDataCategory(), this));
+            } else {
+                productAdapter.addCategoryHeader(
+                        new ProductAdapter.CategoryHeaderModel(categoryHeader,getActivity(),getCategoryWidth(),
+                                this, browseModel.getTotalDataCategory(), this));
+            }
+            productAdapter.notifyDataSetChanged();
+            backToTop();
         }
-
-        productAdapter.notifyDataSetChanged();
-        backToTop();
     }
 
     private int calcColumnSize(int orientation) {

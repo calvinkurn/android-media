@@ -97,7 +97,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     public ProductAdapter(Context context, List<RecyclerViewItem> data) {
         super(context, data);
         Log.d(TAG, "ProductAdapter data " + data.size());
-        if (context instanceof BrowseProductActivity) {
+        if (context !=null && context instanceof BrowseProductActivity) {
             BrowseProductActivity activity = (BrowseProductActivity) context;
             switch (activity.getBrowseProductActivityModel().getSource()) {
                 case BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT:
