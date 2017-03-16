@@ -41,7 +41,7 @@ public class PlaceAutoCompleteAdapter extends RecyclerView.Adapter<AbstractViewH
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mVisitables.size();
     }
 
     @SuppressWarnings("unchecked")
