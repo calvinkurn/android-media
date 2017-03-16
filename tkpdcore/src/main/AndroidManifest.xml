@@ -421,6 +421,10 @@
             android:label="@string/title_msisdn"
             android:parentActivityName=".session.Login"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tokopedia.core.home.BrandsWebViewActivity"
+            android:label="@string/title_activity_deep_link"
+            android:screenOrientation="portrait" />
 
         <!--=======================================================-->
         <!--RECEIVERS REGISTRY-->

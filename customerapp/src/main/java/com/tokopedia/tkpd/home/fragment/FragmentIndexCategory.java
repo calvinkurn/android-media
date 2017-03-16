@@ -38,6 +38,7 @@ import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customView.WrapContentViewPager;
 import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -151,6 +152,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         RecyclerView topPicksRecyclerView;
         RecyclerView brandsRecyclerView;
         RelativeLayout rlBrands;
+        TextView viewAllBrands;
         public LinearLayout wrapperLinearLayout;
 
         private ViewHolder() {
@@ -486,9 +488,11 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     /**
      * Brands a.k.a. Official Store
      * Created by Hafizh Herdi 20173001
+     * Modified by Oka 20170315
      */
     private void initBrands() {
         holder.brandsRecyclerView = (RecyclerView) holder.MainView.findViewById(R.id.rv_brands_list);
+        holder.viewAllBrands = (TextView) holder.MainView.findViewById(R.id.view_all_brands);
         holder.brandsRecyclerView.setHasFixedSize(true);
         holder.brandsRecyclerView.setNestedScrollingEnabled(false);
         brandsRecyclerViewAdapter = new BrandsRecyclerViewAdapter(new BrandsRecyclerViewAdapter.OnItemClickListener() {
@@ -507,8 +511,23 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
                         false)
         );
         holder.brandsRecyclerView.setAdapter(brandsRecyclerViewAdapter);
+        holder.viewAllBrands.setOnClickListener(onMoreBrandsClicked());
     }
 
+    private View.OnClickListener onMoreBrandsClicked() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openWebViewBrandsURL("https://m-staging.tokopedia.com/official-store");
+            }
+        };
+    }
+
+    private void openWebViewBrandsURL(String url) {
+        if (!url.trim().equals("")) {
+            startActivity(BrandsWebViewActivity.newInstance(getActivity(), url));
+        }
+    }
 
     /* TOP PICKS */
     private void initTopPicks() {
