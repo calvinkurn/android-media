@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">16sp</item>
     </style>
+
     <style name="avgRatingBarSmall" parent="@android:style/Widget.RatingBar">
         <item name="android:maxHeight">14.0dip</item>
         <item name="android:indeterminateDrawable">@drawable/material_rating_bar</item>
@@ -10,4 +12,12 @@
         <item name="android:minHeight">14.0dip</item>
         <item name="android:isIndicator">true</item>
     </style>
+
+    <style name="AppTheme.Ride.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
 </resources>
