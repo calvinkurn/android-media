@@ -186,7 +186,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     }
 
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
+        void onSourceAndDestinationChanged(PlacePassViewModel source, PlacePassViewModel destination);
     }
 
     private void setInitialVariable() {
@@ -205,14 +205,22 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
                 case PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE:
                     mSource = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
                     setSourceLocationText(String.valueOf(mSource.getAddress()));
+                    proccessToRenderRideProduct();
                     break;
                 case PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE:
                     mDestination = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
                     setDestinationLocationText(String.valueOf(mDestination.getAddress()));
+                    proccessToRenderRideProduct();
                     break;
             }
         }
 
+    }
+
+    private void proccessToRenderRideProduct() {
+        if (mSource != null && mDestination != null){
+            mListener.onSourceAndDestinationChanged(mSource, mDestination);
+        }
     }
 
     @Override

@@ -6,12 +6,14 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.ride.common.exception.UnprocessableEntityHttpException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
+import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -38,19 +40,37 @@ public class RideInterceptor extends TkpdAuthInterceptor {
         String bodyResponse = response.body().string();
         try {
             JSONObject jsonResponse = new JSONObject(bodyResponse);
-            String JSON_ERROR_KEY = "error";
+            String JSON_ERROR_KEY = "message_error";
             if (jsonResponse.has(JSON_ERROR_KEY)) {
                 handleError(jsonResponse.getString(JSON_ERROR_KEY));
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return createNewResponse(response, bodyResponse);
+        return constructNewResponse(response, bodyResponse);
     }
 
-    private void handleError(String errorMessage) throws SessionExpiredException {
+    private void handleError(String errorMessage) throws SessionExpiredException,
+            UnprocessableEntityHttpException {
         if (errorMessage.equals("invalid_request") || errorMessage.equals("invalid_grant"))
             throw new SessionExpiredException(errorMessage);
+        else
+            throw new UnprocessableEntityHttpException(errorMessage);
+    }
+
+    private Response constructNewResponse(Response response, String responseString) {
+        try {
+            JSONObject jsonObject = new JSONObject(responseString);
+            if (jsonObject.has("data")) {
+                String newResponseString = jsonObject.getString("data");
+                return createNewResponse(response, newResponseString);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return response;
+        }
+
+        return response;
     }
 
     private Response createNewResponse(Response oldResponse, String oldBodyResponse) {

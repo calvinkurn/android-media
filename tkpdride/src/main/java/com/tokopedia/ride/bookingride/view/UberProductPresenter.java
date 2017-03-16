@@ -1,22 +1,55 @@
 package com.tokopedia.ride.bookingride.view;
 
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.ride.base.domain.model.Product;
+import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
+import com.tokopedia.ride.bookingride.view.adapter.viewmodel.mapper.RideProductViewModelMapper;
+import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+
+import java.util.List;
+
+import rx.Subscriber;
+
 /**
  * Created by alvarisi on 3/14/17.
  */
 
-public class UberProductPresenter implements UberProductContract.Presenter {
-    @Override
-    public void attachView(UberProductContract.View view) {
+public class UberProductPresenter extends BaseDaggerPresenter<UberProductContract.View> implements UberProductContract.Presenter {
+    GetUberProductsUseCase mGetUberProductsUseCase;
+    RideProductViewModelMapper mProductViewModelMapper;
 
-    }
-
-    @Override
-    public void detachView() {
-
+    public UberProductPresenter(GetUberProductsUseCase getUberProductsUseCase) {
+        mGetUberProductsUseCase = getUberProductsUseCase;
+        mProductViewModelMapper = new RideProductViewModelMapper();
     }
 
     @Override
     public void initialize() {
+
+    }
+
+    @Override
+    public void actionGetRideProducts(PlacePassViewModel source, PlacePassViewModel destination) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetUberProductsUseCase.PARAM_LATITUDE, String.valueOf(source.getLatitude()));
+        requestParams.putString(GetUberProductsUseCase.PARAM_LONGITUDE, String.valueOf(source.getLongitude()));
+        mGetUberProductsUseCase.execute(requestParams, new Subscriber<List<Product>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(List<Product> products) {
+                getView().renderProductList(mProductViewModelMapper.transform(products));
+            }
+        });
 
     }
 }

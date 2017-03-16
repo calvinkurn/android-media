@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
@@ -13,8 +12,10 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewModel;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeFragment;
 import com.tokopedia.ride.bookingride.view.fragment.UberProductFragment;
+import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 
 import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
@@ -56,12 +57,19 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-
+    public void onSourceAndDestinationChanged(PlacePassViewModel source, PlacePassViewModel destination) {
+        UberProductFragment productFragment = (UberProductFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
+        if (productFragment != null) {
+            productFragment.updateProductList(source, destination);
+        } else {
+            productFragment = UberProductFragment.newInstance();
+            addFragment(R.id.bottom_container, productFragment);
+            productFragment.updateProductList(source, destination);
+        }
     }
 
     @Override
-    public void onProductClicked() {
+    public void onProductClicked(RideProductViewModel rideProductViewModel) {
 
     }
 }

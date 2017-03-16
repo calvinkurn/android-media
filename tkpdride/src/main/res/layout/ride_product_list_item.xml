@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:id="@+id/row_cab_list"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:paddingLeft="@dimen/fifteen_dp"
+                android:paddingTop="@dimen/ten_dp">
+
+    <ImageView
+        android:id="@+id/iv_cab_img"
+        android:layout_width="@dimen/crux_cab_img_h_w"
+        android:layout_height="@dimen/crux_cab_img_h_w"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/fifteen_dp"
+        android:src="@drawable/crux_cabs_uber_ic" />
+
+    <TextView
+        android:id="@+id/tv_cab_name"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/iv_cab_img"
+        android:text="Uber X"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_twelev_revamp" />
+
+    <FrameLayout
+        android:id="@+id/cab_price_estimate_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/fifteen_dp"
+        android:paddingLeft="10dp">
+
+        <LinearLayout
+            android:id="@+id/cab_price_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right">
+
+                <TextView
+                    android:id="@+id/tv_cab_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:text="Rp 100.000/Km"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_twelev_revamp" />
+
+                <ImageView
+                    android:id="@+id/iv_cab_surge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:src="@drawable/cab_surge"
+                    android:visibility="visible" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_cab_base_fare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Base Fare: Rp 100.000"
+                android:textColor="@color/gray_color"
+                android:textSize="@dimen/text_size_twelev_revamp"
+                android:visibility="visible" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_cab_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/ten_dp"
+        android:layout_toLeftOf="@id/cab_price_estimate_layout"
+        android:layout_toRightOf="@id/tv_cab_name"
+        android:gravity="left"
+        android:text="2 min"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_twelev_revamp" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/tv_cab_time"
+        android:layout_marginTop="@dimen/thirty_dp"
+        android:layout_toRightOf="@id/iv_cab_img"
+        android:background="@color/pdp_grey_separator" />
+</RelativeLayout>

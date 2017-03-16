@@ -70,6 +70,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     }
 
     private void prepareInitialView() {
+        getView().hideAutoCompleteLoadingCross();
         getView().showAutoDetectLocationButton();
         getView().showHomeLocationButton();
         getView().showWorkLocationButton();
@@ -143,6 +144,10 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
     @Override
     public void actionQueryPlacesByKeyword(final String keyword) {
+        getView().showAutoCompleteLoadingCross();
+        getView().hideAutoDetectLocationButton();
+        getView().hideHomeLocationButton();
+        getView().hideWorkLocationButton();
         mCompositeSubscription.add(
                 Observable.create(new Observable.OnSubscribe<String>() {
                     @Override
@@ -167,10 +172,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
         @Override
         public void onNext(String keyword) {
-            getView().showAutoCompleteLoadingCross();
-            getView().hideAutoDetectLocationButton();
-            getView().hideHomeLocationButton();
-            getView().hideWorkLocationButton();
             getView().showListPlaces();
 
             getPlacesAndRenderViewByKeyword(keyword);
@@ -196,7 +197,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         ArrayList<Visitable> addresses = new ArrayList<>();
         for (AutocompletePrediction autocompletePrediction : results) {
             PlaceAutoCompeleteViewModel address = new PlaceAutoCompeleteViewModel();
-            address.setAddress(String.valueOf(autocompletePrediction.getPrimaryText(null)));
+            address.setAddress(String.valueOf(autocompletePrediction.getSecondaryText(null)));
             address.setTitle(String.valueOf(autocompletePrediction.getPrimaryText(null)));
             address.setAddressId(autocompletePrediction.getPlaceId());
             addresses.add(address);

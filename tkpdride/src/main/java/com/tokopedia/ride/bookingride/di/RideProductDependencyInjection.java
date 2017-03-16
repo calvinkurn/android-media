@@ -11,11 +11,10 @@ import com.tokopedia.ride.base.data.BookingRideRepositoryData;
 import com.tokopedia.ride.base.data.ProductEntityMapper;
 import com.tokopedia.ride.base.data.source.api.RideApi;
 import com.tokopedia.ride.base.data.source.api.RideUrl;
-import com.tokopedia.ride.base.data.source.api.UberApi;
-import com.tokopedia.ride.base.data.source.api.UberUrl;
 import com.tokopedia.ride.base.domain.BookingRideRepository;
 import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
-import com.tokopedia.ride.bookingride.view.BookingRidePresenter;
+import com.tokopedia.ride.bookingride.view.UberProductContract;
+import com.tokopedia.ride.bookingride.view.UberProductPresenter;
 import com.tokopedia.ride.common.network.RideInterceptor;
 
 import java.util.concurrent.TimeUnit;
@@ -27,12 +26,11 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by alvarisi on 3/14/17.
+ * Created by alvarisi on 3/16/17.
  */
 
-public class BookingRideDependencyInjection {
-
-    public static BookingRidePresenter createPresenter(String token) {
+public class RideProductDependencyInjection {
+    public static UberProductContract.Presenter createPresenter(String token) {
         Gson gson = new Gson();
 
         JobExecutor threadExecutor = new JobExecutor();
@@ -77,7 +75,7 @@ public class BookingRideDependencyInjection {
                 postExecutionThread,
                 repository
         );
-        return new BookingRidePresenter(getUberProductsUseCase);
+        return new UberProductPresenter(getUberProductsUseCase);
     }
 
     private static Retrofit createRetrofit(String baseUrl,

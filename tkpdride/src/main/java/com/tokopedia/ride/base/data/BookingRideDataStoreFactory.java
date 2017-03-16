@@ -1,5 +1,6 @@
 package com.tokopedia.ride.base.data;
 
+import com.tokopedia.ride.base.data.source.api.RideApi;
 import com.tokopedia.ride.base.data.source.api.UberApi;
 import com.tokopedia.ride.base.data.source.cloud.CloudBookingRideDataStore;
 
@@ -8,12 +9,12 @@ import com.tokopedia.ride.base.data.source.cloud.CloudBookingRideDataStore;
  */
 
 public class BookingRideDataStoreFactory {
-    private final UberApi mUberApi;
-    public BookingRideDataStoreFactory(UberApi uberApi) {
-        mUberApi = uberApi;
+    private final RideApi mRideApi;
+    public BookingRideDataStoreFactory(RideApi uberApi) {
+        mRideApi = uberApi;
     }
 
     public BookingRideDataStore createCloudDataStore(){
-        return new CloudBookingRideDataStore(mUberApi);
+        return new CloudBookingRideDataStore(mRideApi);
     }
 }
