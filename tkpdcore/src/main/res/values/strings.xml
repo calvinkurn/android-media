@@ -318,16 +318,17 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_sold_out">Gudangkan</string>
     <string name="message_share_category">Klik link ini untuk menemukan produk yang baru saya temukan di Tokopedia \n</string>
     <string name="title_to_etalase">Ke etalase</string>
-    <string name="toast_promo_error">        Anda belum dapat menggunakan fitur Promo pada saat ini.\n
+    <string name="toast_promo_error1">        Anda belum dapat menggunakan fitur Promo pada saat ini.\n
 		Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\n
 		Promo masih aktif untuk produk:\n</string>
+    <string name="toast_promo_error2">Ingin bebas promosikan produk Anda ? Yuk, pakai TopAds sekarang juga!</string>
     <string name="toast_promo_error_cache">        Anda belum dapat menggunakan fitur Promo pada saat ini.\n
 		Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\n
         Silahkan coba kembali dalam
 		</string>
     <string name="toast_success_promo1">Promo pada produk</string>
     <string name="toast_success_promo2">telah berhasil.
-Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
+Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi belum maksimal? Yuk,pakai TopAds untuk tingkatkan penjualan Anda!</string>
     <string name="tx_success_from">Transaksi Sukses dari </string>
     <string name="tx_title">Transaksi</string>
     <string name="title_product_video">Video Produk</string>
