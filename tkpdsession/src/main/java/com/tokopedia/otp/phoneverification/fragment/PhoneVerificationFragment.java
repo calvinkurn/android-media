@@ -394,8 +394,6 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
         countDownTimer = new CountDownTimer(cacheHandler.getRemainingTime() * 1000, COUNTDOWN_INTERVAL_SECOND) {
             public void onTick(long millisUntilFinished) {
-                CommonUtils.dumper("NISNIS - " + cacheHandler.getRemainingTime() + " - " + String.format(FORMAT,
-                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished)));
                 requestOtpButton.setVisibility(View.GONE);
                 countdownText.setVisibility(View.VISIBLE);
                 countdownText.setText(MethodChecker.fromHtml(
