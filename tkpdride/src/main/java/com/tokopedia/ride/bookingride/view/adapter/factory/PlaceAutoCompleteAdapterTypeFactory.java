@@ -21,7 +21,7 @@ public class PlaceAutoCompleteAdapterTypeFactory extends BaseAdapterTypeFactory 
 
     @Override
     public int type(PlaceAutoCompeleteViewModel placeAutoCompeleteViewModel) {
-        return 0;
+        return PlaceAutoCompleteViewHolder.LAYOUT;
     }
 
     @Override

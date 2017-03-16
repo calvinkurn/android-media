@@ -35,6 +35,11 @@ public interface PlaceAutoCompleteContract {
 
         void hideWorkLocationButton();
 
+
+        void hideListPlaces();
+
+        void showListPlaces();
+
         void renderPlacesList(ArrayList<Visitable> visitables);
 
         void resetSearch();

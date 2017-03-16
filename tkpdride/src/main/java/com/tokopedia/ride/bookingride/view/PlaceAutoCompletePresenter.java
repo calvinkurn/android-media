@@ -61,11 +61,19 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         if (checkPlayServices()) {
             createLocationRequest();
             initializeLocationService();
+            prepareInitialView();
             mCompositeSubscription = new CompositeSubscription();
             AutocompleteFilter.Builder mbuilder = new AutocompleteFilter.Builder()
                     .setTypeFilter(AutocompleteFilter.TYPE_FILTER_NONE);
             mAutocompleteFilter = mbuilder.build();
         }
+    }
+
+    private void prepareInitialView() {
+        getView().showAutoDetectLocationButton();
+        getView().showHomeLocationButton();
+        getView().showWorkLocationButton();
+        getView().hideListPlaces();
     }
 
     private void createLocationRequest() {
@@ -163,6 +171,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
             getView().hideAutoDetectLocationButton();
             getView().hideHomeLocationButton();
             getView().hideWorkLocationButton();
+            getView().showListPlaces();
 
             getPlacesAndRenderViewByKeyword(keyword);
         }

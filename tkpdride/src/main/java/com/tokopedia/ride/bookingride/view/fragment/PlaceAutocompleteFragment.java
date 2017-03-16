@@ -227,8 +227,19 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     }
 
     @Override
+    public void hideListPlaces() {
+        mAutoCompleteRecylerView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showListPlaces() {
+        mAutoCompleteRecylerView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void renderPlacesList(ArrayList<Visitable> visitables) {
         mAdapter.clearData();
+        mAutoCompleteRecylerView.setAdapter(mAdapter);
         mAdapter.setElement(visitables);
     }
 

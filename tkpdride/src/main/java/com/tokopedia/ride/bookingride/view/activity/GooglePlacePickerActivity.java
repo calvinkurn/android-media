@@ -37,8 +37,7 @@ public class GooglePlacePickerActivity extends BaseActivity
     public void onLocationSelected(PlacePassViewModel placePassViewModel) {
         Intent intent = getIntent();
         intent.putExtra(EXTRA_SELECTED_PLACE, placePassViewModel);
-        int requestCode = getIntent().getIntExtra(EXTRA_REQUEST_CODE, 0);
-        setResult(requestCode, intent);
+        setResult(RESULT_OK, intent);
         finish();
     }
 }
