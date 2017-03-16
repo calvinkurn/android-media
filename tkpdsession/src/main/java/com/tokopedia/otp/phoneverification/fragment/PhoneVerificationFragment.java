@@ -30,6 +30,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -160,8 +161,11 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     @Override
     protected void onFirstTimeLaunched() {
-        phoneNumberEditText.setText(CustomPhoneNumberUtil.transform(SessionHandler.getPhoneNumber()));
+        phoneNumberEditText.setText(CustomPhoneNumberUtil.transform(
+                SessionHandler.getPhoneNumber()));
         if (!cacheHandler.isExpired() && cacheHandler.getBoolean(HAS_PHONE_VERIF_TIMER, false)) {
+            inputOtpView.setVisibility(View.VISIBLE);
+            changePhoneNumberButton.setVisibility(View.GONE);
             startTimer();
         }
     }
@@ -419,12 +423,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         requestOtpButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_600));
         requestOtpButton.setText(com.tokopedia.session.R.string.title_resend_otp_sms);
         requestOtpCallButton.setVisibility(View.VISIBLE);
-        requestOtpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startTimer();
-            }
-        });
+        changePhoneNumberButton.setVisibility(View.VISIBLE);
     }
 
     @Override
