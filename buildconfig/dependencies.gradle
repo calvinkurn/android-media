@@ -90,20 +90,22 @@ ext {
     ]
 
     miscDependencies = [
-            captureActivity : "info.vividcode.android.zxing:capture-activity:2.3.0-1.2",
-            facebook : "com.facebook.android:facebook-android-sdk:4.18.0",
-            parcelerApi : "org.parceler:parceler-api:1.1.6",
-            parceler : "org.parceler:parceler:1.1.6",
-            gson : "com.google.code.gson:gson:2.7",
-            rxAndroid : "io.reactivex:rxandroid:1.0.1",
-            rxJava : "io.reactivex:rxjava:1.1.5",
-            rxJavaMath : "io.reactivex:rxjava-math:1.0.0",
-            multiDex : "com.android.support:multidex:1.0.1",
-            javaxAnnotation : "javax.annotation:jsr250-api:1.0",
-            dagger : "com.google.dagger:dagger:2.5",
-            daggerCompiler : "com.google.dagger:dagger-compiler:2.5",
-            smoothAppBarLayout : "me.henrytao:smooth-app-bar-layout:24.1.1.0",
-            trueCaller : "true.caller.sdk:truecaller:0.5"
+            captureActivity   : "info.vividcode.android.zxing:capture-activity:2.3.0-1.2",
+            facebook          : "com.facebook.android:facebook-android-sdk:4.18.0",
+            parcelerApi       : "org.parceler:parceler-api:1.1.6",
+            parceler          : "org.parceler:parceler:1.1.6",
+            gson              : "com.google.code.gson:gson:2.7",
+            rxAndroid         : "io.reactivex:rxandroid:1.0.1",
+            rxJava            : "io.reactivex:rxjava:1.1.5",
+            rxJavaMath        : "io.reactivex:rxjava-math:1.0.0",
+            rxJavaComputation : 'io.reactivex:rxjava-computation-expressions:0.21.0',
+            multiDex          : "com.android.support:multidex:1.0.1",
+            javaxAnnotation   : "javax.annotation:jsr250-api:1.0",
+            dagger            : "com.google.dagger:dagger:2.5",
+            daggerCompiler    : "com.google.dagger:dagger-compiler:2.5",
+            smoothAppBarLayout: "me.henrytao:smooth-app-bar-layout:24.1.1.0",
+            trueCaller        : "true.caller.sdk:truecaller:0.5",
+            chips             : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar'
     ]
 
     testDependencies = [
