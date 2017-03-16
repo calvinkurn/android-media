@@ -55,8 +55,7 @@ public class UploadImageUseCase extends UseCase<UploadImageModel> {
 
     @Override
     public Observable<UploadImageModel> createObservable(RequestParams requestParams) {
-//        String url = requestParams.getString(PARAM_URL,"") + "/upload/attachment";
-        String url = "https://up-staging.tokopedia.net/upload/attachment";
+        String url = requestParams.getString(PARAM_URL,"") + "/upload/attachment";
 
         return uploadImageRepository.uploadImage(url,
                 generateRequestBody(requestParams),
@@ -104,11 +103,9 @@ public class UploadImageUseCase extends UseCase<UploadImageModel> {
                 NEW_ADD);
         RequestBody imageId = RequestBody.create(MediaType.parse("text/plain"),
                 requestParams.getString(PARAM_IMAGE_ID, ""));
-//        RequestBody token = RequestBody.create(MediaType.parse("text/plain"),
-//                requestParams.getString(PARAM_TOKEN, ""
-//                ));
-
-        RequestBody webService = RequestBody.create(MediaType.parse("text/plain"),"1");
+        RequestBody token = RequestBody.create(MediaType.parse("text/plain"),
+                requestParams.getString(PARAM_TOKEN, ""
+                ));
 
         Map<String, RequestBody> requestBodyMap = new HashMap<>();
         requestBodyMap.put(PARAM_USER_ID, userId);
@@ -120,8 +117,7 @@ public class UploadImageUseCase extends UseCase<UploadImageModel> {
         requestBodyMap.put(PARAM_SERVER_ID, serverId);
         requestBodyMap.put(PARAM_IMAGE_ID, imageId);
         requestBodyMap.put(PARAM_FILE_TO_UPLOAD, imageId);
-//        requestBodyMap.put(PARAM_TOKEN, token);
-        requestBodyMap.put("web_service", webService);
+        requestBodyMap.put(PARAM_TOKEN, token);
 
         return requestBodyMap;
     }
