@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.webview;
+package com.tokopedia.transaction.wallet;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -11,7 +11,7 @@ import com.tokopedia.transaction.R;
  * Created by kris on 1/13/17. Tokopedia
  */
 
-public class WalletWebView extends TActivity implements FragmentGeneralWebView.OnFragmentInteractionListener {
+public class WalletActivity extends TActivity implements FragmentGeneralWebView.OnFragmentInteractionListener {
 
     private String Url;
 
