@@ -122,7 +122,8 @@ import rx.functions.Action1;
 import static com.tokopedia.sellerapp.drawer.DrawerVariableSeller.goToShopNewOrder;
 
 public class SellerHomeActivity extends BaseActivity implements GCMHandlerListener,
-        SessionHandler.onLogoutListener {
+        SessionHandler.onLogoutListener,
+        SellerHomeView, ShopScoreWidgetCallback {
     public static final String messageTAG = SellerHomeActivity.class.getSimpleName();
     public static final String STUART = "STUART";
     private static final String ARG_TRUECALLER_PACKAGE = "com.truecaller";
