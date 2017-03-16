@@ -79,7 +79,7 @@ ext {
     ]
 
     analyticsDependencies = [
-            localytics : "com.localytics.android:library:4.2.0",
+            localytics : "com.localytics.android:library:4.2.1",
             appsflyer : "com.appsflyer:af-android-sdk:4.6.1@aar"
     ]
 
