@@ -152,7 +152,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         RecyclerView topPicksRecyclerView;
         RecyclerView brandsRecyclerView;
         RelativeLayout rlBrands;
-        TextView viewAllBrands;
+        TextView textViewAllBrands;
         public LinearLayout wrapperLinearLayout;
 
         private ViewHolder() {
@@ -492,7 +492,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
      */
     private void initBrands() {
         holder.brandsRecyclerView = (RecyclerView) holder.MainView.findViewById(R.id.rv_brands_list);
-        holder.viewAllBrands = (TextView) holder.MainView.findViewById(R.id.view_all_brands);
+        holder.textViewAllBrands = (TextView) holder.MainView.findViewById(R.id.text_view_all_brands);
         holder.brandsRecyclerView.setHasFixedSize(true);
         holder.brandsRecyclerView.setNestedScrollingEnabled(false);
         brandsRecyclerViewAdapter = new BrandsRecyclerViewAdapter(new BrandsRecyclerViewAdapter.OnItemClickListener() {
@@ -511,7 +511,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
                         false)
         );
         holder.brandsRecyclerView.setAdapter(brandsRecyclerViewAdapter);
-        holder.viewAllBrands.setOnClickListener(onMoreBrandsClicked());
+        holder.textViewAllBrands.setOnClickListener(onMoreBrandsClicked());
     }
 
     private View.OnClickListener onMoreBrandsClicked() {
