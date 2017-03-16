@@ -65,8 +65,7 @@ public class ShopController extends BaseController{
         if(gcmHandlerListener == null)
             return;
 
-        gcmHandler.commitFCMProcess(gcmHandlerListener);
-        gcmHandler.commitGCMProcess();
+        gcmHandler.actionRegisterOrUpdateDevice(gcmHandlerListener);
     }
 
     public void getShopInfo(String gcmId, String userId,

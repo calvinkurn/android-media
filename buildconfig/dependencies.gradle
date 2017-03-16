@@ -7,6 +7,7 @@ ext {
     okHttpVersion = '3.4.1'
     glideVersion = '3.7.0'
     permissionDispatcherVersion = '2.2.0'
+    deeplinkDispatchVersion = '3.0.0-rc1'
     tkpdCoreVersion =  '1.+'
     tkpdInboxVersion = '1.+'
     tkpdSessionVersion = '1.+'
@@ -79,8 +80,13 @@ ext {
     ]
 
     analyticsDependencies = [
-            localytics : "com.localytics.android:library:4.2.0",
+            localytics : "com.localytics.android:library:4.2.1",
             appsflyer : "com.appsflyer:af-android-sdk:4.6.1@aar"
+    ]
+
+    deeplinkDispatchDependencies = [
+            deeplinkDispatch : "com.airbnb:deeplinkdispatch:${deeplinkDispatchVersion}",
+            deeplinkDispatchProcessor : "com.airbnb:deeplinkdispatch-processor:${deeplinkDispatchVersion}"
     ]
 
     miscDependencies = [

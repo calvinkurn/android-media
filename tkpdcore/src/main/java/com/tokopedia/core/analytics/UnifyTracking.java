@@ -1176,6 +1176,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventOTPSuccess(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_OTP,
+                AppEventTracking.Category.SECURITY_QUESTION,
+                AppEventTracking.Action.OTP_SUCCESS,
+                AppEventTracking.EventLabel.OTP
+        ).getEvent());
+    }
+
     public static void eventChangeCategoryProductGear(){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
@@ -1257,4 +1266,13 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+
+    public static void eventPersonalizedClicked(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.OPEN_PUSH_NOTIFICATION,
+                AppEventTracking.Category.PUSH_NOTIFICATION,
+                AppEventTracking.Action.OPEN,
+                label
+        ).getEvent());
+    }
 }

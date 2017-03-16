@@ -1,6 +1,7 @@
 package com.tokopedia.core.inboxreputation.activity;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -146,7 +147,7 @@ public class InboxReputationActivity extends DrawerPresenterActivity
         if (isTaskRoot() && GlobalConfig.isSellerApp()) {
             startActivity(SellerAppRouter.getSellerHomeActivity(this));
             finish();
-        } else if (isTaskRoot()){
+        } else if (isTaskRoot()) {
             startActivity(HomeRouter.getHomeActivity(this));
             finish();
         }
