@@ -62,7 +62,7 @@ public class LoginImpl implements Login {
 
     private static final String REMEMBER_ACC_STATE = "REMEMBER_ACC_STATE";
     private static final String STATE = "STATE";
-    private static final String REMEMBER_ACC_INFO = "REMEMBER_ACC_STATE";
+    private static final String REMEMBER_ACC_INFO = "REMEMBER_ACC_INFO";
     private static final String ACC_EMAIL = "ACC_EMAIL";
     private static final String ACC_PASSWORD = "ACC_PASSWORD";
     private static final String KEY_IV = "tokopedia7891234";
@@ -83,6 +83,9 @@ public class LoginImpl implements Login {
     Context mContext;
 
     ArrayList<String> LoginIdList;
+
+    LocalCacheHandler cacheState;
+    LocalCacheHandler cacheInfo;
 
     public LoginImpl(LoginView view) {
         loginView = view;
@@ -117,6 +120,8 @@ public class LoginImpl implements Login {
         providerListCache = new LocalCacheHandler(mContext, PROVIDER_LIST);
         gcmHandler = new GCMHandler(context);
         sessionHandler = new SessionHandler(context);
+        cacheState = new LocalCacheHandler(mContext, REMEMBER_ACC_STATE);
+        cacheInfo = new LocalCacheHandler(mContext, REMEMBER_ACC_INFO);
     }
 
     @Override
@@ -186,38 +191,33 @@ public class LoginImpl implements Login {
 
     @Override
     public void setRememberAccountState(Boolean state) {
-        LocalCacheHandler cache = new LocalCacheHandler(mContext, REMEMBER_ACC_STATE);
-        cache.putBoolean(STATE, state);
-        cache.applyEditor();
+        cacheState.putBoolean(STATE, state);
+        cacheState.applyEditor();
     }
 
     @Override
     public void saveAccountInfo(String userEmail, String userPassword) {
-        LocalCacheHandler cache = new LocalCacheHandler(mContext, REMEMBER_ACC_INFO);
         String encryptedPassword = EncoderDecoder.Encrypt(userPassword, KEY_IV);
-        cache.putString(ACC_EMAIL, userEmail);
-        cache.putString(ACC_PASSWORD, encryptedPassword);
-        cache.applyEditor();
+        cacheInfo.putString(ACC_EMAIL, userEmail);
+        cacheInfo.putString(ACC_PASSWORD, encryptedPassword);
+        cacheInfo.applyEditor();
     }
 
     @Override
     public Boolean getSavedAccountState() {
-        LocalCacheHandler cache = new LocalCacheHandler(mContext, REMEMBER_ACC_STATE);
-        return cache.getBoolean(STATE, true);
+        return cacheState.getBoolean(STATE, true);
     }
 
     @Override
     public String getSavedAccountEmail() {
-        LocalCacheHandler cache = new LocalCacheHandler(mContext, REMEMBER_ACC_INFO);
-        return cache.getString(ACC_EMAIL, "");
+        return cacheInfo.getString(ACC_EMAIL, "");
     }
 
     @Override
     public String getSavedAccountPassword() {
-        LocalCacheHandler cache = new LocalCacheHandler(mContext, REMEMBER_ACC_INFO);
-        String encryptedPassword = cache.getString(ACC_PASSWORD, "");
+        String encryptedPassword = cacheInfo.getString(ACC_PASSWORD, "");
         if (encryptedPassword.equals("")) return encryptedPassword;
-        String decryptedPassword = EncoderDecoder.Decrypt(cache.getString(ACC_PASSWORD, ""),
+        String decryptedPassword = EncoderDecoder.Decrypt(encryptedPassword,
                 KEY_IV);
         return decryptedPassword;
     }
