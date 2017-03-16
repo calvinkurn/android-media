@@ -19,18 +19,17 @@ import android.text.TextPaint;
 import android.text.TextWatcher;
 import android.text.style.ClickableSpan;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -50,6 +49,8 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+import static twitter4j.internal.json.z_T4JInternalParseUtil.getInt;
+
 /**
  * Created by nisie on 2/22/17.
  */
@@ -58,8 +59,11 @@ import permissions.dispatcher.RuntimePermissions;
 public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerificationPresenter>
         implements PhoneVerificationFragmentView, IncomingSmsReceiver.ReceiveSMSListener {
 
-    private static final String CAN_REQUEST_OTP_IMMEDIATELY = "auto_request_otp";
     private static final String FORMAT = "%02d";
+    private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
+    private static final String HAS_PHONE_VERIF_TIMER = "HAS_PHONE_VERIF_TIMER";
+    private static final int DEFAULT_COUNTDOWN_TIMER_SECOND = 90;
+    private static final long COUNTDOWN_INTERVAL_SECOND = 1000;
 
     TextView verifyButton;
     TextView skipButton;
@@ -74,6 +78,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     CountDownTimer countDownTimer;
     IncomingSmsReceiver smsReceiver;
     TkpdProgressDialog progressDialog;
+    LocalCacheHandler cacheHandler;
 
     public static PhoneVerificationFragment createInstance() {
         return new PhoneVerificationFragment();
@@ -156,6 +161,9 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     @Override
     protected void onFirstTimeLaunched() {
         phoneNumberEditText.setText(CustomPhoneNumberUtil.transform(SessionHandler.getPhoneNumber()));
+        if (!cacheHandler.isExpired() && cacheHandler.getBoolean(HAS_PHONE_VERIF_TIMER, false)) {
+            startTimer();
+        }
     }
 
     @Override
@@ -296,6 +304,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     @Override
     protected void initialVar() {
+        cacheHandler = new LocalCacheHandler(getActivity(), CACHE_PHONE_VERIF_TIMER);
 
     }
 
@@ -373,9 +382,16 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     }
 
     private void startTimer() {
+        if (cacheHandler.isExpired() || !cacheHandler.getBoolean(HAS_PHONE_VERIF_TIMER, false)) {
+            cacheHandler.putBoolean(HAS_PHONE_VERIF_TIMER, true);
+            cacheHandler.setExpire(DEFAULT_COUNTDOWN_TIMER_SECOND);
+            cacheHandler.applyEditor();
+        }
 
-        countDownTimer = new CountDownTimer(90000, 1000) {
+        countDownTimer = new CountDownTimer(cacheHandler.getRemainingTime() * 1000, COUNTDOWN_INTERVAL_SECOND) {
             public void onTick(long millisUntilFinished) {
+                CommonUtils.dumper("NISNIS - " + cacheHandler.getRemainingTime() + " - " + String.format(FORMAT,
+                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished)));
                 requestOtpButton.setVisibility(View.GONE);
                 countdownText.setVisibility(View.VISIBLE);
                 countdownText.setText(MethodChecker.fromHtml(
@@ -428,6 +444,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
             countDownTimer = null;
         }
         presenter.onDestroyView();
+        cacheHandler = null;
     }
 
     @Override
