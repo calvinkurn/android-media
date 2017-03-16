@@ -8,6 +8,9 @@ public class ButtonData {
     private boolean showEdit;
     private boolean showAcceptSolution;
     private boolean showAcceptProduct;
+    private boolean acceptReturSolution;
+    private boolean showAppealSolution;
+    private boolean showAskHelp;
 
     public boolean isShowEdit() {
         return showEdit;
@@ -31,5 +34,29 @@ public class ButtonData {
 
     public void setShowAcceptProduct(boolean showAcceptProduct) {
         this.showAcceptProduct = showAcceptProduct;
+    }
+
+    public boolean isAcceptReturSolution() {
+        return acceptReturSolution;
+    }
+
+    public void setAcceptReturSolution(boolean acceptReturSolution) {
+        this.acceptReturSolution = acceptReturSolution;
+    }
+
+    public boolean isShowAppealSolution() {
+        return showAppealSolution;
+    }
+
+    public void setShowAppealSolution(boolean showAppealSolution) {
+        this.showAppealSolution = showAppealSolution;
+    }
+
+    public boolean isShowAskHelp() {
+        return showAskHelp;
+    }
+
+    public void setShowAskHelp(boolean showAskHelp) {
+        this.showAskHelp = showAskHelp;
     }
 }

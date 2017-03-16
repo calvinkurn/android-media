@@ -15,6 +15,9 @@ public class DetailData {
     private boolean sellerDeadlineVisibility;
     private String buyerID;
     private String buyerName;
+    private String invoiceUrl;
+    private String orderID;
+    private boolean received;
 
     public String getAwbNumber() {
         return awbNumber;
@@ -95,5 +98,29 @@ public class DetailData {
 
     public String getShopID() {
         return shopID;
+    }
+
+    public String getInvoiceUrl() {
+        return invoiceUrl;
+    }
+
+    public void setInvoiceUrl(String invoiceUrl) {
+        this.invoiceUrl = invoiceUrl;
+    }
+
+    public String getOrderID() {
+        return orderID;
+    }
+
+    public void setOrderID(String orderID) {
+        this.orderID = orderID;
+    }
+
+    public boolean isReceived() {
+        return received;
+    }
+
+    public void setReceived(boolean received) {
+        this.received = received;
     }
 }

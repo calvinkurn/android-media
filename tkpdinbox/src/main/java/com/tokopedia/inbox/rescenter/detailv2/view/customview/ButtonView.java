@@ -21,6 +21,8 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
     private View actionAcceptProduct;
     private View actionAcceptSolution;
     private View actionEdit;
+    private View actionHelp;
+    private View actionAppeal;
 
     public ButtonView(Context context) {
         super(context);
@@ -53,6 +55,8 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         actionEdit = view.findViewById(R.id.action_edit_solution);
         actionAcceptSolution = view.findViewById(R.id.action_accept_solution);
         actionAcceptProduct = view.findViewById(R.id.action_accept_product);
+        actionHelp = view.findViewById(R.id.action_help);
+        actionAppeal = view.findViewById(R.id.action_appeal_solution);
     }
 
     @Override
@@ -64,16 +68,26 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
     public void renderData(@NonNull ButtonData data) {
         setButtonData(data);
         actionEdit.setOnClickListener(new ButtonViewOnClickListener());
+        actionAcceptSolution.setOnClickListener(new ButtonViewOnClickListener());
+        actionAcceptProduct.setOnClickListener(new ButtonViewOnClickListener());
+        actionHelp.setOnClickListener(new ButtonViewOnClickListener());
+        actionAppeal.setOnClickListener(new ButtonViewOnClickListener());
+
         actionEdit.setVisibility(canEdit() ? VISIBLE : GONE);
         actionAcceptProduct.setVisibility(canAcceptProduct() ? VISIBLE : GONE);
         actionAcceptSolution.setVisibility(canAcceptSolution() ? VISIBLE : GONE);
+        actionHelp.setVisibility(canAskHelp() ? VISIBLE : GONE);
+        actionAppeal.setVisibility(canAppealSolution() ? VISIBLE : GONE);
+
         setVisibility(isAnyButtonVisible() ? VISIBLE : GONE);
     }
 
     private boolean isAnyButtonVisible() {
         return actionEdit.getVisibility() == VISIBLE ||
                 actionAcceptProduct.getVisibility() == VISIBLE ||
-                actionAcceptSolution.getVisibility() == VISIBLE;
+                actionAcceptSolution.getVisibility() == VISIBLE ||
+                actionHelp.getVisibility() == VISIBLE ||
+                actionAppeal.getVisibility() == VISIBLE;
     }
 
     public void setButtonData(ButtonData buttonData) {
@@ -96,6 +110,14 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         return getButtonData().isShowAcceptSolution();
     }
 
+    private boolean canAskHelp() {
+        return getButtonData().isShowAskHelp();
+    }
+
+    private boolean canAppealSolution() {
+        return getButtonData().isShowAppealSolution();
+    }
+
     private class ButtonViewOnClickListener implements OnClickListener {
         @Override
         public void onClick(View view) {
@@ -105,6 +127,10 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
                 listener.setOnActionAcceptSolutionClick();
             } else if (view.getId() == R.id.action_edit) {
                 listener.setOnActionEditSolutionClick();
+            } else if (view.getId() == R.id.action_help) {
+                listener.setOnActionHelpClick();
+            } else if (view.getId() == R.id.action_appeal_solution) {
+                listener.setOnActionAppealClick();
             }
         }
     }

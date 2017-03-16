@@ -77,16 +77,35 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
     }
 
     @Override
-    public void renderData(@NonNull DetailData data) {
+    public void renderData(@NonNull final DetailData data) {
         setVisibility(VISIBLE);
         textAwbNumber.setText(data.getAwbNumber());
         textComplaintDate.setText(data.getComplaintDate());
+        textCustomerName.setText(data.getBuyerName());
         textInvoice.setText(data.getInvoice());
         textShopName.setText(data.getShopName());
 //        viewBuyerResponseDeadline.setVisibility(data.isBuyerDeadlineVisibility() ? VISIBLE : GONE);
         textBuyerResponseDeadline.setText(data.getResponseDeadline());
 //        viewSellerResponseDeadline.setVisibility(data.isSellerDeadlineVisibility() ? VISIBLE : GONE);
         textSellerResponseDeadline.setText(data.getResponseDeadline());
+        textCustomerName.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.setOnActionPeopleDetailClick(data.getBuyerID());
+            }
+        });
+        textCustomerName.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.setOnActionShopDetailClick(data.getShopID());
+            }
+        });
+        textInvoice.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.setOnActionInvoiceClick(data.getInvoice(), data.getInvoiceUrl());
+            }
+        });
     }
 }
 
