@@ -43,8 +43,6 @@ import com.tokopedia.session.register.util.RegisterUtil;
 import com.tokopedia.session.register.viewlistener.RegisterStep2ViewListener;
 import com.tokopedia.session.session.presenter.RegisterNewImpl;
 
-import net.hockeyapp.android.Tracking;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -399,7 +397,7 @@ public class RegisterStep2Fragment extends BasePresenterFragment<RegisterStep2Pr
         finishLoadingProgress();
 
         if (registerResult.getIsActive() == RegisterResult.USER_INACTIVE
-                || registerResult.getIsActive() == RegisterResult.USER_PENDING ) {
+                || registerResult.getIsActive() == RegisterResult.USER_PENDING) {
             sendLocalyticsRegisterEvent(registerResult.getUserId());
             sendGTMRegisterEvent();
             sendMoEngageRegisterEvent();
@@ -441,8 +439,8 @@ public class RegisterStep2Fragment extends BasePresenterFragment<RegisterStep2Pr
         attr.put(AppEventTracking.MOENGAGE.MOBILE_NUM, presenter.getViewModel().getPhone());
         attr.put(AppEventTracking.MOENGAGE.DATE_OF_BIRTH,
                 presenter.getViewModel().getDateYear() + "-"
-                + presenter.getViewModel().getDateMonth() + "-"
-                + presenter.getViewModel().getDateDay()
+                        + presenter.getViewModel().getDateMonth() + "-"
+                        + presenter.getViewModel().getDateDay()
         );
         customer.setExtraAttr(attr);
         TrackingUtils.sendMoRegisterEvent(customer);
