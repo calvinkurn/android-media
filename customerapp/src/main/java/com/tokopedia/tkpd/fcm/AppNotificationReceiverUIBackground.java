@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
+import com.tokopedia.core.gcm.Visitable;
 import com.tokopedia.core.gcm.base.BaseAppNotificationReceiverUIBackground;
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerEditNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerNotification;
@@ -212,7 +213,12 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private void prepareAndExecuteDedicatedNotification(Bundle data) {
-        Map<Integer, Class> dedicatedNotification = getCommonDedicatedNotification();
+        Map<Integer, Visitable> visitableMap = getCommonDedicatiedObject();
+        Visitable visitable = visitableMap.get(GCMUtils.getCode(data));
+        if (visitable != null){
+            visitable.proccessReceivedNotification(data);
+        }
+        /*Map<Integer, Class> dedicatedNotification = getCommonDedicatedNotification();
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REVIEW, NewReviewNotification.class);
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REVIEW_EDIT, ReviewEditedNotification.class);
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REVIEW_REPLY, ReviewReplyNotification.class);
@@ -237,7 +243,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         Class<?> clazz = dedicatedNotification.get(GCMUtils.getCode(data));
         if (clazz != null) {
             executeNotification(data, clazz);
-        }
+        }*/
     }
 
     private class SavePushNotificationCallback implements OnSavePushNotificationCallback {

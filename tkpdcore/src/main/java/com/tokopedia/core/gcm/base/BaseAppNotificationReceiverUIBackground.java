@@ -2,6 +2,7 @@ package com.tokopedia.core.gcm.base;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -105,6 +106,12 @@ public abstract class BaseAppNotificationReceiverUIBackground {
     public abstract void handlePromotionNotification(Bundle data);
 
     public abstract void notifyReceiverBackgroundMessage(Observable<Bundle> data);
+
+    protected Map<Integer, Visitable> getCommonDedicatiedObject(){
+        Map<Integer, Visitable> dedicatedNotification = new HashMap<>();
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_MESSAGE, new NewMessageNotification(mContext));
+        return dedicatedNotification;
+    }
 
     protected Map<Integer, Class> getCommonDedicatedNotification() {
         Map<Integer, Class> dedicatedNotification = new HashMap<>();
