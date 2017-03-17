@@ -604,6 +604,10 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                                         .setTextContent(getString(R.string.message_share_category))
                                         .setUri(shareUrl)
                                         .build();
+                                if (browseProductActivityModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+                                    shareData.setType(ShareData.CATEGORY_TYPE);
+                                    shareData.setDescription(browseProductActivityModel.getDepartmentId());
+                                }
                                 sintent.putExtra(ShareData.TAG, shareData);
                                 startActivity(sintent);
                             }
@@ -992,6 +996,9 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                             if (TextUtils.isEmpty(item.getString("value")) ||
                                     item.getString("value").equalsIgnoreCase(map.getValue())) {
                                 UnifyTracking.eventDiscoveryFilter(item.getString("label"));
+                                if (browseProductActivityModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+                                    UnifyTracking.eventFilterCategory(item.getString("label"));
+                                }
                             }
                             break;
                         }
@@ -1023,6 +1030,9 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                 JSONObject item = (JSONObject) dynamicSort.get(i);
                 if (item.getString("value").equalsIgnoreCase(valueSort)) {
                     UnifyTracking.eventDiscoverySort(item.getString("label"));
+                    if (browseProductActivityModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+                        UnifyTracking.eventSortCategory(item.getString("label"));
+                    }
                     break;
                 }
             }

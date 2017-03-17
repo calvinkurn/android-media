@@ -1,5 +1,7 @@
 package com.tokopedia.core.analytics;
 
+import android.util.Log;
+
 import com.appsflyer.AFInAppEventType;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
@@ -50,6 +52,80 @@ public class UnifyTracking extends TrackingUtils {
                 label
         ).getEvent());
     }
+
+    /* CATEGORY IMPROVEMENT*/
+
+    public static void eventProductOnCategory( String label){
+        Log.d("alifa", "eventProductOnCategory: ");
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PRODUCT,
+                AppEventTracking.Action.PRODUCT_CATEGORY,
+                label
+        ).getEvent());
+    }
+
+    public static void eventLevelCategory( String label){
+        Log.d("alifa", "eventLevelCategory: ");
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE,
+                AppEventTracking.Action.CATEGORY_LEVEL,
+                label
+        ).getEvent());
+    }
+
+    public static void eventShowMoreCategory(){
+        Log.d("alifa", "eventShowMoreCategory: ");
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE,
+                AppEventTracking.Action.CATEGORY_MORE,
+                AppEventTracking.EventLabel.CATEGORY_SHOW_MORE
+        ).getEvent());
+    }
+
+    public static void eventSortCategory(String label){
+        Log.d("alifa", "eventSortCategory: ");
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE,
+                AppEventTracking.Action.CATEGORY_SORT,
+                label
+        ).getEvent());
+    }
+
+    public static void eventFilterCategory(String label){
+        Log.d("alifa", "eventFilterCategory: ");
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE,
+                AppEventTracking.Action.CATEGORY_FILTER,
+                label
+        ).getEvent());
+    }
+
+    public static void eventDisplayCategory(String label){
+        Log.d("alifa", "eventDisplayCategory: ");
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE,
+                AppEventTracking.Action.CATEGORY_DISLPAY,
+                label
+        ).getEvent());
+    }
+
+    public static void eventShareCategory(String label){
+        Log.d("alifa", "eventShareCategory: ");
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE,
+                AppEventTracking.Action.CATEGORY_SHARE,
+                label
+        ).getEvent());
+    }
+
+     /* CATEGORY IMPROVEMENT*/
 
     public static void eventHomeTopPicksTitle( String label){
         sendGTMEvent(new EventTracking(

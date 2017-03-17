@@ -16,6 +16,7 @@ public class ShareData implements Parcelable {
     public static final String CATALOG_TYPE = "Catalog";
     public static final String SHOP_TYPE = "Shop";
     public static final String PRODUCT_TYPE = "Product";
+    public static final String CATEGORY_TYPE = "Discovery";
     public static final String DISCOVERY_TYPE = "Discovery";
     public static final String HOTLIST_TYPE = "Hotlist";
     private static final String ARG_UTM_MEDIUM = "Android%20Share%20Button";

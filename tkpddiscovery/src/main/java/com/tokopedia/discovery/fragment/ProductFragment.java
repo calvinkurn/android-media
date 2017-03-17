@@ -475,11 +475,13 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void onCategoryClick(Child child) {
+        UnifyTracking.eventLevelCategory(child.getId());
         ((BrowseProductActivity) getActivity()).renderLowerCategoryLevel(child);
     }
 
     @Override
-    public void onCategoryIntermediaryClick(Child child) {
+    public void onCategoryRevampClick(Child child) {
+        UnifyTracking.eventLevelCategory(child.getId());
         ((BrowseProductActivity) getActivity()).renderLowerCategoryLevel(child);
     }
 
