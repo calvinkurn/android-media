@@ -1,26 +1,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context="com.tokopedia.ride.bookingride.view.fragment.RideHomeFragment">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/tkpd_main_green"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="@style/AppBarTheme"
-        app:contentInsetLeft="0dp"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:subtitleTextAppearance="@style/ToolbarSubtitleText"
-        app:titleTextAppearance="@style/ToolbarText"/>
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tokopedia.ride.bookingride.view.fragment.RideHomeFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@+id/toolbar"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:weightSum="1">
 
@@ -38,7 +25,7 @@
                 <com.google.android.gms.maps.MapView
                     android:id="@+id/mapview"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent" />
 
                 <ImageView
                     android:id="@+id/iv_android_center_marker"
@@ -46,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:src="@drawable/crux_cabs_center_marker_ic"
-                    android:visibility="visible"/>
+                    android:visibility="visible" />
 
                 <ImageView
                     android:id="@+id/iv_my_location_button"
@@ -59,16 +46,29 @@
                     android:layout_marginEnd="26dp"
                     android:layout_marginRight="26dp"
                     android:src="@drawable/crux_cabs_mylocation_button"
-                    android:visibility="visible"/>
+                    android:visibility="visible" />
 
             </RelativeLayout>
 
             <include
+                android:id="@+id/layout_src_destination"
                 layout="@layout/view_source_destination_picker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="68dp" />
 
         </RelativeLayout>
     </LinearLayout>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/tkpd_main_green"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/AppBarTheme"
+        app:contentInsetLeft="0dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:subtitleTextAppearance="@style/ToolbarSubtitleText"
+        app:titleTextAppearance="@style/ToolbarText" />
 </RelativeLayout>

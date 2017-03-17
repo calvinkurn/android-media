@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:sothree="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:background="@color/white"
-              android:clickable="true"
-              tools:context=".bookingride.view.activity.RideHomeActivity">
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:clickable="true"
+    tools:context=".bookingride.view.activity.RideHomeActivity">
 
     <com.sothree.slidinguppanel.SlidingUpPanelLayout
-        android:id="@+id/cabs_crux_sliding_layout"
+        android:id="@+id/cabs_sliding_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom"
         sothree:umanoDragView="@+id/bottom_container"
         sothree:umanoFadeColor="@android:color/transparent"
         sothree:umanoOverlay="true"
-        sothree:umanoPanelHeight="100dp"
-        sothree:umanoParallaxOffset="67dp"
+        sothree:umanoPanelHeight="@dimen/sliding_panel_min_height"
+        sothree:umanoParallaxOffset="@dimen/tooler_height"
         sothree:umanoScrollableView="@+id/cabsHomeListView"
         sothree:umanoShadowHeight="0dp">
 
         <FrameLayout
             android:id="@+id/top_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
         <FrameLayout
             android:id="@+id/bottom_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:focusable="false"/>
+            android:focusable="false" />
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 </LinearLayout>

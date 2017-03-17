@@ -26,6 +26,7 @@ import com.tokopedia.ride.base.data.ProductEntityMapper;
 import com.tokopedia.ride.base.domain.BookingRideRepository;
 import com.tokopedia.ride.base.domain.model.Product;
 import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
+import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private final GetUberProductsUseCase mGetUberProductsUseCase;
+    private boolean isMapDragging = false;
 
     public BookingRidePresenter(GetUberProductsUseCase getUberProductsUseCase) {
         mGetUberProductsUseCase = getUberProductsUseCase;
@@ -149,6 +151,21 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
 
             }
         });
+    }
 
+    @Override
+    public void onMapMoveCameraStarted() {
+        if (!isMapDragging) {
+            getView().onMapDragStarted();
+        }
+        isMapDragging = true;
+    }
+
+    @Override
+    public void onMapMoveCameraIdle() {
+        if (isMapDragging) {
+            getView().onMapDragStopped();
+            isMapDragging = false;
+        }
     }
 }

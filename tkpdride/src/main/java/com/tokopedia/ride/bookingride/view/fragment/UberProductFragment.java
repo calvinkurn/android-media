@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.Visitable;
@@ -20,7 +21,6 @@ import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.RideProductDependencyInjection;
 import com.tokopedia.ride.bookingride.view.UberProductContract;
-import com.tokopedia.ride.bookingride.view.UberProductPresenter;
 import com.tokopedia.ride.bookingride.view.adapter.RideProductAdapter;
 import com.tokopedia.ride.bookingride.view.adapter.RideProductItemClickListener;
 import com.tokopedia.ride.bookingride.view.adapter.factory.RideProductAdapterTypeFactory;
@@ -49,11 +49,15 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @BindView(R2.id.crux_cabs_ad_cross)
     ImageView mAdsCrossImageView;
     @BindView(R2.id.empty_product_list)
-    LinearLayout mEmptyProductLinearLayout;
+    View mEmptyProductLinearLayout;
     @BindView(R2.id.tv_error_desc)
     TextView mErrorDescriptionTextView;
     @BindView(R2.id.empty_list_retry)
     TextView mRetryButtonTextView;
+    @BindView(R2.id.product_list_progress)
+    ProgressBar mProgressBar;
+    @BindView(R2.id.layout_progress_and_error_view)
+    View mProgreessAndErrorView;
 
     RideProductAdapter mAdapter;
 
@@ -126,11 +130,14 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
 
 
     public void updateProductList(PlacePassViewModel source, PlacePassViewModel destination) {
+        showProgress();
         mPresenter.actionGetRideProducts(source, destination);
     }
 
     @Override
     public void renderProductList(List<Visitable> datas) {
+        mProgreessAndErrorView.setVisibility(View.GONE);
+        mRideProductsRecyclerView.setVisibility(View.VISIBLE);
         mAdapter.clearData();
         mAdapter.setElement(datas);
     }
@@ -138,6 +145,11 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @OnClick(R2.id.crux_cabs_ad_cross)
     public void actionCloseAdsButtonClicked() {
         hideAdsBadges();
+    }
+
+    @OnClick(R2.id.empty_list_retry)
+    public void actionRetry() {
+
     }
 
     @Override
@@ -149,5 +161,28 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @Override
     public void hideAdsBadges() {
         mAdsContainerLinearLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showProgress() {
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        mProgressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showErrorMessage(int messageResourceID) {
+        mProgreessAndErrorView.setVisibility(View.VISIBLE);
+        mEmptyProductLinearLayout.setVisibility(View.VISIBLE);
+        mErrorDescriptionTextView.setText(messageResourceID);
+    }
+
+    @Override
+    public void hideErrorMessage(String message) {
+        mProgreessAndErrorView.setVisibility(View.GONE);
+        mEmptyProductLinearLayout.setVisibility(View.GONE);
     }
 }

@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/empty_product_list"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:layout_gravity="center"
+    android:padding="16dp"
     android:visibility="visible">
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1.0"
         android:layout_gravity="center"
+        android:layout_weight="1.0"
         android:orientation="vertical">
 
         <TextView
@@ -32,8 +31,8 @@
             android:layout_gravity="left"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="20dp"
-            android:text="Error Description"
             android:gravity="left"
+            android:text="Error Description"
             android:textColor="@color/black"
             android:textSize="14sp" />
     </LinearLayout>
@@ -45,12 +44,12 @@
         android:layout_gravity="center"
         android:layout_marginRight="16dp"
         android:background="@drawable/rounded_corner_theme_blue"
+        android:gravity="center"
         android:paddingBottom="7dp"
         android:paddingLeft="15dp"
-        android:gravity="center"
-        android:text="Retry"
         android:paddingRight="15dp"
         android:paddingTop="7dp"
+        android:text="Retry"
         android:textColor="@color/colorAccent"
         android:textSize="14sp" />
 </LinearLayout>

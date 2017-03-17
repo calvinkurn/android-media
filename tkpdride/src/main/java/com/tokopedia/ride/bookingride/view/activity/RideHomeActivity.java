@@ -7,6 +7,9 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.FrameLayout;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tokopedia.core.app.BaseActivity;
@@ -18,6 +21,8 @@ import com.tokopedia.ride.bookingride.view.fragment.UberProductFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
@@ -25,8 +30,14 @@ import permissions.dispatcher.RuntimePermissions;
 public class RideHomeActivity extends BaseActivity implements RideHomeFragment.OnFragmentInteractionListener,
         UberProductFragment.OnFragmentInteractionListener {
 
-    @BindView(R2.id.cabs_crux_sliding_layout)
+    private Unbinder unbinder;
+
+    @BindView(R2.id.cabs_sliding_layout)
     SlidingUpPanelLayout mSlidingUpPanelLayout;
+    @BindView(R2.id.bottom_container)
+    FrameLayout mBottomContainer;
+
+    private int mSlidingPanelMinHeightInPx, mToolBarHeightinPx;
 
     public static Intent getCallingIntent(Activity activity) {
         return new Intent(activity, RideHomeActivity.class);
@@ -36,7 +47,13 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking_ride);
+        unbinder = ButterKnife.bind(this);
+
         RideHomeActivityPermissionsDispatcher.initFragmentWithCheck(this);
+
+        //mSlidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.cabs_sliding_layout);
+        mSlidingPanelMinHeightInPx = (int) getResources().getDimension(R.dimen.sliding_panel_min_height);
+        mToolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);
     }
 
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
@@ -69,7 +86,29 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
     }
 
     @Override
+    public void animateOnMapDragging(Toolbar toolbar, View srcDestLayout) {
+        mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+
+        mBottomContainer.animate().translationY(mSlidingPanelMinHeightInPx).setDuration(300);
+        toolbar.animate().translationY(-mToolBarHeightinPx).setDuration(300);
+        srcDestLayout.animate().translationY(-mToolBarHeightinPx).setDuration(300);
+    }
+
+    @Override
+    public void animateOnMapStopped(Toolbar toolbar, View srcDestLayout) {
+        mBottomContainer.animate().translationY(0).setDuration(300);
+        toolbar.animate().translationY(0).setDuration(300);
+        srcDestLayout.animate().translationY(0).setDuration(300);
+    }
+
+    @Override
     public void onProductClicked(RideProductViewModel rideProductViewModel) {
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
     }
 }
