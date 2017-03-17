@@ -218,5 +218,14 @@
     <string name="title_shop_score_indicator">Indikator Performa Toko</string>
     <string name="subtitle_shop_score_indicator_thirtydays">30 hari terakhir</string>
     <string name="description_shop_score_gold_badge_state">Mulai tanggal 27 Maret 2017, ikon Gold Badge hanya akan diberikan kepada seller dengan skor minimal 75 poin.</string>
+    <string name="title_shop_setting_location">Lokasi Pengiriman</string>
+    <string name="description_shop_setting_location">Lengkapi informasi lokasi pengiriman untuk memilih layanan jasa pengiriman yang tersedia di lokasi Anda.</string>
+    <string name="hint_shop_setting_location_city">Kota Asal Pengiriman</string>
+    <string name="hint_shop_setting_location_zip_code">Kode Pos</string>
+    <string name="title_shop_setting">Pengaturan Toko</string>
+    <string name="title_shop_setting_location_pickup">Lokasi pickup (Opsional)</string>
+    <string name="description_shop_setting_location_pickup"><![CDATA[Wajib diisi untuk aktifkan jasa pengiriman Go-JEK, Grab, & Ninja Xpress. Pastikan lokasi yang Anda tandai di peta sesuai dengan Alamat Pickup.]]></string>
+    <string name="action_shop_setting_location_pickup">Lokasi Pickup</string>
+    <string name="title_shop_setting_location_address">Alamat Pickup</string>
 
 </resources>
