@@ -56,7 +56,6 @@ public class UnifyTracking extends TrackingUtils {
     /* CATEGORY IMPROVEMENT*/
 
     public static void eventProductOnCategory( String label){
-        Log.d("alifa", "eventProductOnCategory: ");
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PRODUCT,
@@ -66,7 +65,6 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventLevelCategory( String label){
-        Log.d("alifa", "eventLevelCategory: ");
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE,
@@ -76,7 +74,6 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventShowMoreCategory(){
-        Log.d("alifa", "eventShowMoreCategory: ");
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE,
@@ -86,7 +83,6 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventSortCategory(String label){
-        Log.d("alifa", "eventSortCategory: ");
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE,
@@ -96,7 +92,6 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventFilterCategory(String label){
-        Log.d("alifa", "eventFilterCategory: ");
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE,
@@ -106,7 +101,6 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventDisplayCategory(String label){
-        Log.d("alifa", "eventDisplayCategory: ");
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE,
@@ -116,7 +110,6 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventShareCategory(String label){
-        Log.d("alifa", "eventShareCategory: ");
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE,

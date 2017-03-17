@@ -155,6 +155,10 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     public static final String EXTRA_FIRST_TIME = "EXTRA_FIRST_TIME";
     public static final String EXTRA_FILTER_MAP = "EXTRA_FILTER_MAP";
     public static final String EXTRA_FILTER_MAP_ATTR = "EXTRA_FILTER_MAP_ATTR";
+    public static final String LAYOUT_GRID_DEFAULT = "1";
+    public static final String LAYOUT_GRID_BOX = "2";
+    public static final String LAYOUT_LIST = "3";
+
     public static String browseType;
     private int gridIcon = R.drawable.ic_grid_default;
     private BrowseProductRouter.GridType gridType = BrowseProductRouter.GridType.GRID_2;
@@ -572,16 +576,19 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                                 gridType = BrowseProductRouter.GridType.GRID_2;
                                 gridIcon = R.drawable.ic_grid_default;
                                 bottomNavigation.getItem(2).setTitle(getString(R.string.grid));
+                                UnifyTracking.eventDisplayCategory(LAYOUT_GRID_DEFAULT);
                                 break;
                             case GRID_2:
                                 gridType = BrowseProductRouter.GridType.GRID_3;
                                 gridIcon = R.drawable.ic_grid_box;
                                 bottomNavigation.getItem(2).setTitle(getString(R.string.grid));
+                                UnifyTracking.eventDisplayCategory(LAYOUT_GRID_BOX);
                                 break;
                             case GRID_3:
                                 gridType = BrowseProductRouter.GridType.GRID_1;
                                 gridIcon = R.drawable.ic_list;
                                 bottomNavigation.getItem(2).setTitle(getString(R.string.list));
+                                UnifyTracking.eventDisplayCategory(LAYOUT_LIST);
                                 break;
                             default:
                                 gridIcon = R.drawable.ic_grid_default;
