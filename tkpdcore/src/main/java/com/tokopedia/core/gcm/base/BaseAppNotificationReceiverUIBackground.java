@@ -141,7 +141,7 @@ public abstract class BaseAppNotificationReceiverUIBackground {
         Constructor<?> ctor = null;
         CommonUtils.dumper("executeNotification");
         try {
-            ctor = clazz.getConstructor(Context.class.getClasses());
+            ctor = clazz.getConstructor(Context.class);
         } catch (NoSuchMethodException e) {
             CommonUtils.dumper(clazz.toString());
             e.printStackTrace();
