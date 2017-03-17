@@ -17,7 +17,6 @@ import android.text.TextUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.NotificationCenter;
 import com.tokopedia.core.R;
@@ -158,7 +157,6 @@ public class BuildAndShowNotification {
 
     public void buildAndShowNotification(NotificationPass notificationPass, Bundle data, NotificationConfiguration configuration) {
         //TODO : create flow again
-        CommonUtils.dumper("buildAndShowNotification");
         saveIncomingNotification(notificationPass, data);
 
         NotificationManager mNotificationManager =

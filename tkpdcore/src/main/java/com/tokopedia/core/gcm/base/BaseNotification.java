@@ -3,7 +3,6 @@ package com.tokopedia.core.gcm.base;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.gcm.BuildAndShowNotification;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationConfiguration;
@@ -34,8 +33,6 @@ public abstract class BaseNotification implements Visitable {
         configureNotificationData(incomingMessage);
         buildDefaultConfiguration();
         showNotification(incomingMessage);
-
-        CommonUtils.dumper("proccessReceivedNotification");
     }
 
     protected void buildDefaultConfiguration() {
@@ -52,8 +49,6 @@ public abstract class BaseNotification implements Visitable {
     }
 
     protected void showNotification(Bundle incomingMessage){
-
-        CommonUtils.dumper("showNotification");
         mBuildAndShowNotification.buildAndShowNotification(mNotificationPass, incomingMessage, configuration);
     }
 
