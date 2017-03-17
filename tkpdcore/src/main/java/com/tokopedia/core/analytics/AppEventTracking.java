@@ -105,6 +105,8 @@ public interface AppEventTracking {
         String CLICK_INSTOPED = "clickInstoped";
         String CLICK_MANAGE_PRODUCT = "clickManageProduct";
         String CATEGORY_PAGE = "clickKategori";
+        String OPEN_PUSH_NOTIFICATION = "openPushNotification";
+        String EVENT_OTP = "OTPSuccess";
     }
 
     interface Category {
