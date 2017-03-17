@@ -1,9 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Test"/>
-</LinearLayout>
+        android:padding="@dimen/activity_horizontal_margin">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.AppCompat.Headline"
+            android:text="@string/hello_blank_name"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.AppCompat.Large"
+            android:text="@string/fill_domain_and_shop"/>
+
+        <com.tokopedia.seller.lib.widget.TkpdTextInputLayout
+            android:id="@+id/text_input_shop_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:counterEnabled="true"
+            app:counterMaxLength="@integer/max_shop_name"
+            android:hint="@string/shop_name" >
+
+            ​<android.support.v7.widget.AppCompatEditText
+            android:id="@+id/edit_text_shop_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/EditText"/>
+            ​
+        </com.tokopedia.seller.lib.widget.TkpdTextInputLayout>
+
+        <com.tokopedia.seller.lib.widget.TkpdTextInputLayout
+            android:id="@+id/text_input_domain_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:counterEnabled="true"
+            app:counterMaxLength="@integer/max_domain_name"
+            app:prefixString="@string/domain"
+            android:hint="@string/domain_name" >
+
+            ​<com.tokopedia.seller.topads.view.widget.PrefixEditText
+                android:id="@+id/edit_text_domain_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:prefix="@string/domain"
+                style="@style/EditText"/>
+            ​
+        </com.tokopedia.seller.lib.widget.TkpdTextInputLayout>
+
+        <Button
+            style="@style/Button.TopAds.Submit.Green"
+            android:text="@string/title_open_shop"/>
+    </LinearLayout>
+</ScrollView>
+

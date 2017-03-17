@@ -9,7 +9,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.AppCompatTextView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +28,16 @@ import com.tokopedia.seller.R;
  * attrb successTextAppearance will refer to TextAppearance class
  * attrb successFocusColor - color when success is shown and focus
  * attrb successLeaveColor - color when success is shown but not in focus
+ * attrb prefixString - if not null, the length of this prefix will decrease the counter.
+ *      for ex: prefix String "http://"
+ *              input http://a.com will count as 5 characters in the counter instead of 12
  *
  * use hideErrorSuccess to set visibility to INVISIBLE
  * use setErrorSuccessEnabled to set visibility to VISIBLE/GONE
+ *
  */
 
-public class TkpdTextInputLayout extends TextInputLayout {
+public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher {
     int mSuccessFocusColor;
     int mSuccessLeaveColor;
 
@@ -44,7 +50,12 @@ public class TkpdTextInputLayout extends TextInputLayout {
 
     private int mSuccessTextAppearance;
 
+    private String mPrefixString;
+    private int mPrefixLength;
+
     private int COLOR_GREEN = Color.parseColor("#42b549");
+    private TextView mCounterView;
+    private boolean enabledPrefixCounter;
 
     public TkpdTextInputLayout(Context context) {
         super(context);
@@ -75,18 +86,25 @@ public class TkpdTextInputLayout extends TextInputLayout {
         mSuccessTextAppearance = a.getResourceId(
                 R.styleable.TkpdTextInputLayout_successTextAppearance,
                 android.support.v7.appcompat.R.style.TextAppearance_AppCompat_Caption);
+        mPrefixString = a.getString(
+                R.styleable.TkpdTextInputLayout_prefixString);
         a.recycle();
 
 
+        mPrefixLength = mPrefixString==null?0:mPrefixString.length();
+
+        if (isCounterEnabled() && mPrefixLength > 0) {
+            setCounterMaxLength(getCounterMaxLength()+mPrefixLength);
+        }
         // this is to initialize the indicatorView
         super.setErrorEnabled(true);
-
-        mIndicatorView = (ViewGroup) this.getChildAt(this.getChildCount()-1);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mIndicatorView = (ViewGroup) this.getChildAt(this.getChildCount()-1);
+
         EditText editText = getEditText();
         if (editText!= null) {
             editText.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -97,6 +115,42 @@ public class TkpdTextInputLayout extends TextInputLayout {
                     }
                 }
             });
+        }
+
+        setCounterEnabled(isCounterEnabled());
+    }
+
+    private void setCounterCheckPrefix (){
+        if (isCounterEnabled() && mPrefixLength > 0 && !enabledPrefixCounter) {
+            // get last view
+            mCounterView = (TextView) mIndicatorView.getChildAt(mIndicatorView.getChildCount()-1);
+            mCounterView.addTextChangedListener(this);
+            mCounterView.setText(getEditText().getText());
+            enabledPrefixCounter = true;
+        }
+    }
+
+    private void removeCounterCheckPrefix (){
+        if (enabledPrefixCounter) {
+            mCounterView.removeTextChangedListener(this);
+            mCounterView = null;
+            enabledPrefixCounter = false;
+        }
+    }
+
+    @Override
+    public void setCounterEnabled(boolean enabled) {
+        if (mPrefixLength > 0) {
+            if (enabled) {
+                super.setCounterEnabled(true);
+                setCounterCheckPrefix();
+            } else {
+                removeCounterCheckPrefix();
+                super.setCounterEnabled(false);
+            }
+        }
+        else {
+            super.setCounterEnabled(enabled);
         }
     }
 
@@ -205,5 +259,37 @@ public class TkpdTextInputLayout extends TextInputLayout {
     public void setErrorSuccessEnabled(boolean errorSuccessEnabled){
         super.setErrorEnabled(errorSuccessEnabled);
         setSuccessEnabled(errorSuccessEnabled);
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        mCounterView.removeTextChangedListener(this);
+        EditText editText = getEditText();
+        String text = editText == null?"": editText.getText().toString();
+        mCounterView.setText(
+                (text.length() - mPrefixLength)
+                + "/" +
+                (getCounterMaxLength() - mPrefixLength) );
+        mCounterView.addTextChangedListener(this);
+    }
+
+    public void setPrefixString(String mPrefixString) {
+        this.mPrefixString = mPrefixString;
+        mPrefixLength = mPrefixString.length();
+
+        if (isCounterEnabled() && mPrefixLength > 0) {
+            setCounterMaxLength(getCounterMaxLength()+mPrefixLength);
+        }
+        setCounterCheckPrefix();
     }
 }
