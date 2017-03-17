@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -97,6 +98,9 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
 
     @Override
     public void onItemClicked(SearchItem item) {
+
+        CommonUtils.dumper("GAv4 search clicked "+item.getEventAction());
+
         if (item.getSc() != null && !item.getSc().isEmpty()) {
             ((BrowseProductActivity) getActivity()).sendQuery(item.getKeyword(), item.getSc());
         } else {
