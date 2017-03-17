@@ -189,3 +189,4 @@ public protected *;
 
 -keep class com.tokopedia.core.util.GlobalConfig
 -keep class com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity
+-keep class com.tokopedia.tkpd.fcm.** { *; }
