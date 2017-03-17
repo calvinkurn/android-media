@@ -280,6 +280,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     public void onSearchViewShown() {
         bottomNavigation.hideBottomNavigation();
         bottomNavigation.setBehaviorTranslationEnabled(false);
+        discoverySearchView.setQuery(searchQuery, false);
     }
 
     @Override
@@ -393,6 +394,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     public void sendQuery(String query, String depId) {
         breadcrumbs = null;
+        searchQuery = query;
         resetBrowseProductActivityModel();
         browseProductActivityModel.setQ(query);
         browseProductActivityModel.setDepartmentId(depId);

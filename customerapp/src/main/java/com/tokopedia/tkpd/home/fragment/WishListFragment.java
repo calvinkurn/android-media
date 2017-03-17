@@ -81,7 +81,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     TkpdProgressDialog progressDialog;
     Boolean isDeleteDialogShown;
     Boolean isLoadingMore = false;
-//    ItemDecorator itemDecorator;
 
     WishList wishList;
 
@@ -153,7 +152,20 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                wishList.refreshData(getActivity());
+                if(searchEditText.getQuery().length()>0){
+                    wishList.refreshDataOnSearch(searchEditText.getQuery());
+                } else {
+                    wishList.refreshData(getActivity());
+                }
+            }
+        });
+        searchEditText.findViewById(R.id.search_close_btn)
+                .setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchEditText.setQuery("",false);
+                searchEditText.setIconified(true);
+                wishList.fetchDataActerClearSearch(getActivity());
             }
         });
     }
@@ -171,6 +183,10 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         recyclerView.setHasFixedSize(false);
         recyclerView.setNestedScrollingEnabled(false);
         searchEditText.setOnQueryTextListener(this);
+        searchEditText.setSuggestionsAdapter(null);
+        searchEditText.setFocusable(false);
+        searchEditText.clearFocus();
+        searchEditText.requestFocusFromTouch();
         setAdapter();
     }
 
@@ -395,9 +411,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        if (newText.isEmpty()) {
-            wishList.refreshData(getActivity());
-        }
         return false;
     }
 

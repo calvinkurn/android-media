@@ -208,7 +208,6 @@ public class WishListImpl implements WishList {
             data.clear();
         }
         wishListView.displayPull(false);
-        wishListView.clearSearch();
         dataWishlist.addAll(wishlistData.getWishlist());
         data.addAll(convertToProductItemList(wishlistData.getWishlist()));
         mPaging.setPagination(wishlistData.getPaging());
@@ -224,6 +223,7 @@ public class WishListImpl implements WishList {
         wishListView.loadDataChange();
         wishListView.displayMainContent(true);
         wishListView.displayLoading(false);
+        wishListView.clearSearch();
     }
 
     @Override
@@ -300,6 +300,51 @@ public class WishListImpl implements WishList {
     public void unSubscribe() {
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
         cache.unSubscribeObservable();
+    }
+
+    @Override
+    public void fetchDataActerClearSearch(Context context) {
+        mPaging.resetPage();
+        Observable<Response<WishlistData>> observable = mojitoService.getApi().getWishlist(
+                SessionHandler.getLoginID(context),
+                10,
+                mPaging.getPage()
+        );
+
+        Subscriber<Response<WishlistData>> subscriber = new Subscriber<Response<WishlistData>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (mPaging.getPage() == 1 && wishListView.isPullToRefresh()) {
+                    wishListView.displayPull(false);
+                }
+                wishListView.displayErrorNetwork(false);
+            }
+
+            @Override
+            public void onNext(Response<WishlistData> response) {
+                WishlistData wishlistData = response.body();
+                dataWishlist.addAll(wishlistData.getWishlist());
+                data.addAll(convertToProductItemList(wishlistData.getWishlist()));
+                mPaging.setPagination(wishlistData.getPaging());
+                wishListView.loadDataChange();
+                wishListView.displayMainContent(true);
+            }
+        };
+
+        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber));
+    }
+
+    @Override
+    public void refreshDataOnSearch(CharSequence query) {
+        searchWishlist(query.toString());
     }
 
     @Override
