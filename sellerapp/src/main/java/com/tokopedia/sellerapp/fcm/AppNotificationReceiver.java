@@ -7,6 +7,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.INotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.NotificationAnalyticsReceiver;
+import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
 import com.tokopedia.core.gcm.utils.GCMUtils;
 
@@ -18,14 +19,16 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
  * Created by alvarisi on 1/18/17.
  */
 
-public enum  AppNotificationReceiver {
-    Notifications;
-    AppNotificationReceiverUIBackground mAppNotificationReceiverUIBackground;
+public class AppNotificationReceiver  implements IAppNotificationReceiver {
+    private AppNotificationReceiverUIBackground mAppNotificationReceiverUIBackground;
     private FCMCacheManager cacheManager;
-    INotificationAnalyticsReceiver mNotificationAnalyticsReceiver;
-    ActivitiesLifecycleCallbacks mActivitiesLifecycleCallbacks;
+    private INotificationAnalyticsReceiver mNotificationAnalyticsReceiver;
+    private ActivitiesLifecycleCallbacks mActivitiesLifecycleCallbacks;
 
-    void init(Application application){
+    public AppNotificationReceiver() {
+    }
+
+    public void init(Application application){
         mAppNotificationReceiverUIBackground = new AppNotificationReceiverUIBackground(application);
         mNotificationAnalyticsReceiver = new NotificationAnalyticsReceiver();
         mActivitiesLifecycleCallbacks = new ActivitiesLifecycleCallbacks(application);

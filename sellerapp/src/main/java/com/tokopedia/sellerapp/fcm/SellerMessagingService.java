@@ -17,7 +17,7 @@ public class SellerMessagingService extends BaseNotificationMessagingService {
         super.onMessageReceived(remoteMessage);
         Bundle data = convertMap(remoteMessage);
         CommonUtils.dumper(data.toString());
-        AppNotificationReceiver.Notifications.init(getApplication());
-        AppNotificationReceiver.Notifications.onNotificationReceived(remoteMessage.getFrom(), data);
+//        AppNotificationReceiver.Notifications.init(getApplication());
+//        AppNotificationReceiver.Notifications.onNotificationReceived(remoteMessage.getFrom(), data);
     }
 }

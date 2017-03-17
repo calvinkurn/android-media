@@ -286,6 +286,8 @@
 #selling
 -keep class com.tokopedia.seller.selling.model.** { *; }
 
+-keep class com.tokopedia.tkpd.fcm.** { *; }
+
 # Parceler configuration
 -keep interface org.parceler.Parcel
 -keep @org.parceler.Parcel class * { *; }
