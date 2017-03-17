@@ -601,8 +601,8 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             imageModel.setPath(null);
             imageModel.setResId(R.drawable.addproduct);
             imageModel.setDbId(0);
-            photos.set(i, imageModel);
-
+            photos.remove(i);
+            photos.add(imageModel);
             setSelectedImageAsPrimary(0);
         } else {
             // do nothing
@@ -1366,10 +1366,12 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                     ImageModel oldPhoto = photos.get(position);
 
                     int positionToFillImage = position;
-                    for(int i=photos.size()-1; i>=0; i--){
-                        ImageModel imageModel = photos.get(i);
-                        if(imageModel.getPath() == null){
-                            positionToFillImage = i;
+                    if (photos.get(position).getPath() == null) {
+                        for (int i = photos.size() - 1; i >= 0; i--) {
+                            ImageModel imageModel = photos.get(i);
+                            if (imageModel.getPath() == null) {
+                                positionToFillImage = i;
+                            }
                         }
                     }
                     photos.set(positionToFillImage, newPhoto);
@@ -1866,12 +1868,14 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                     addProductCurrency.setText(selectedCurrencyDesc);
                     return;
                 }
-                if (selectedCurrencyDesc != null && !item.getLabel().equals(selectedCurrencyDesc)) {
-                    wholesaleLayout.removeAllWholesale();
-                }
                 selectedCurrency = selectedIndex;
+                String selectedCurrencyDescOld = selectedCurrencyDesc;
                 selectedCurrencyDesc = item.getLabel();
                 reformatPrice();
+                if (selectedCurrencyDescOld != null && !item.getLabel().equals(selectedCurrencyDescOld)) {
+                    wholesaleLayout.removeAllWholesale();
+                    initWholeSaleAdapter();
+                }
             }
         });
         addProductCurrency.setLongClickable(false);

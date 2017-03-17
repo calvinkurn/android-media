@@ -1,5 +1,6 @@
 package com.tokopedia.core.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -108,6 +109,13 @@ public class MethodChecker {
     public static void setAllowMixedContent(WebSettings webSettings) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+    }
+
+    public static Drawable getDrawable(Context context, int resId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
+            return context.getResources().getDrawable(resId, context.getApplicationContext().getTheme());
+        else
+            return context.getResources().getDrawable(resId);
     }
 
     public static boolean isTimezoneNotAutomatic() {
