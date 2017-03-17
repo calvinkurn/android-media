@@ -12,6 +12,7 @@ import com.tokopedia.core.gcm.Visitable;
 import com.tokopedia.core.gcm.base.BaseAppNotificationReceiverUIBackground;
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerEditNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerNotification;
+import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
 import com.tokopedia.core.gcm.notification.promotions.DeeplinkNotification;
 import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.util.SessionHandler;
@@ -34,7 +35,6 @@ import com.tokopedia.tkpd.fcm.notification.PurchaseShippedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseVerifiedNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterAdminBuyerReplyNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterSellerAgreeNotification;
-import com.tokopedia.tkpd.fcm.notification.ResCenterSellerReplyNotification;
 import com.tokopedia.tkpd.fcm.notification.ReviewEditedNotification;
 import com.tokopedia.tkpd.fcm.notification.ReviewReplyNotification;
 
@@ -224,7 +224,6 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_PARTIAL_PROCESSED, new PurchasePartialProcessedNotification(mContext));
         visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED, new PurchaseRejectedNotification(mContext));
         visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_DELIVERED, new PurchaseDeliveredNotification(mContext));
-        visitables.put(TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY, new ResCenterSellerReplyNotification(mContext));
         visitables.put(TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_AGREE, new ResCenterSellerAgreeNotification(mContext));
         visitables.put(TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY, new ResCenterAdminBuyerReplyNotification(mContext));
         visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_AUTO_CANCEL_2D, new PurchaseAutoCancel2DNotification(mContext));
@@ -234,6 +233,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_NEW_ORDER, new PurchaseNewOrderNotification(mContext));
         visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED_SHIPPING, new PurchaseRejectedShippingNotification(mContext));
         visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_CONFIRM_SHIPPING, new PurchaseShippedNotification(mContext));
+        visitables.put(TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_REPLY, new ResCenterBuyerReplyNotification(mContext));
 
         Visitable visitable = visitables.get(GCMUtils.getCode(data));
         if (visitable != null){

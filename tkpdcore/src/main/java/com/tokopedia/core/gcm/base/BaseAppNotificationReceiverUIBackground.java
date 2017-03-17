@@ -24,8 +24,8 @@ import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToSellerEdi
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToSellerNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ResCenterAdminSellerReplyNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ResCenterBuyerAgreeNotification;
-import com.tokopedia.core.gcm.notification.dedicated.ResCenterBuyerReplyNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ResCenterNewNotification;
+import com.tokopedia.core.gcm.notification.dedicated.ResCenterSellerReplyNotification;
 import com.tokopedia.core.gcm.notification.dedicated.SellingAutoCancel2DNotification;
 import com.tokopedia.core.gcm.notification.dedicated.SellingAutoCancel4DNotification;
 import com.tokopedia.core.gcm.notification.dedicated.SellingInvalidResiNotification;
@@ -123,7 +123,6 @@ public abstract class BaseAppNotificationReceiverUIBackground {
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_SELLER, new ReputationSmileyToSellerNotification(mContext));
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_SELLER, new ReputationSmileyToSellerEditNotification(mContext));
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_DISPUTE, new PurchaseDisputeNotification(mContext));
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_REPLY, new ResCenterBuyerReplyNotification(mContext));
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_AGREE, new ResCenterBuyerAgreeNotification(mContext));
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_SELLER_REPLY, new ResCenterAdminSellerReplyNotification(mContext));
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_CANCEL_2D_SELLER, new SellingAutoCancel2DNotification(mContext));
@@ -131,6 +130,7 @@ public abstract class BaseAppNotificationReceiverUIBackground {
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_INVALID_RESI, new SellingInvalidResiNotification(mContext));
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_DELIVERED_SELLER, new SellingOrderDeliveredNotification(mContext));
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_FINISH_SELLER, new SellingOrderFinishedNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY, new ResCenterSellerReplyNotification(mContext));
         return dedicatedNotification;
     }
 

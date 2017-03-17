@@ -32,14 +32,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
         if (getIntent() != null) {
             Intent intent = getIntent();
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            DeepLinkResult deepLinkResult = deepLinkDelegate.dispatchFrom(this, intent);
-            if (deepLinkResult.isSuccessful()){
-                CommonUtils.dumper(deepLinkResult.error());
-            }else {
-                CommonUtils.dumper(deepLinkResult.error());
-            }
-            if (getIntent().getExtras() != null)
-            {
+            deepLinkDelegate.dispatchFrom(this, intent);
+            if (getIntent().getExtras() != null) {
                 Bundle bundle = getIntent().getExtras();
                 UnifyTracking.eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
 //                NotificationModHandler.clearCacheIfFromNotification(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
