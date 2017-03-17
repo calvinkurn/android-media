@@ -143,6 +143,7 @@ public abstract class BaseAppNotificationReceiverUIBackground {
         try {
             ctor = clazz.getConstructor(Context.class.getClasses());
         } catch (NoSuchMethodException e) {
+            CommonUtils.dumper(clazz.toString());
             e.printStackTrace();
             return;
         }
@@ -198,13 +199,13 @@ public abstract class BaseAppNotificationReceiverUIBackground {
         });
     }
 
-    protected String convertBundleToJsonString(Bundle bundle){
+    protected String convertBundleToJsonString(Bundle bundle) {
         JSONObject json = new JSONObject();
         Set<String> keys = bundle.keySet();
         for (String key : keys) {
             try {
                 json.put(key, bundle.getString(key));
-            } catch(JSONException e) {
+            } catch (JSONException e) {
                 return null;
             }
         }
