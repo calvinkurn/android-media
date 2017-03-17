@@ -6,12 +6,14 @@ import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationPresenterImpl;
+import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationView;
 
 /**
  * Created by Nathaniel on 3/16/2017.
  */
 
-public class ShopSettingLocationFragment extends BasePresenterFragment {
+public class ShopSettingLocationFragment extends BasePresenterFragment<ShopSettingLocationPresenterImpl> implements ShopSettingLocationView {
     public static final String TAG = "ShopSettingLocation";
 
     public static ShopSettingLocationFragment getInstance() {
@@ -80,6 +82,7 @@ public class ShopSettingLocationFragment extends BasePresenterFragment {
 
     @Override
     protected void setActionVar() {
+        presenter.fetchDistrictData();
 
     }
 
