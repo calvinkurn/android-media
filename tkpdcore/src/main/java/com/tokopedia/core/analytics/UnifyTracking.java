@@ -1,7 +1,5 @@
 package com.tokopedia.core.analytics;
 
-import android.util.Log;
-
 import com.appsflyer.AFInAppEventType;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;

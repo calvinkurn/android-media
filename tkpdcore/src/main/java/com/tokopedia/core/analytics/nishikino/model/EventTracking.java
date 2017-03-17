@@ -1,7 +1,5 @@
 package com.tokopedia.core.analytics.nishikino.model;
 
-import android.util.Log;
-
 import java.util.HashMap;
 import java.util.Map;
 
