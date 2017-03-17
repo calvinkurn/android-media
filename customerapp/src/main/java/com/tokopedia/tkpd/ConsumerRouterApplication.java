@@ -27,8 +27,7 @@ import com.tokopedia.transaction.wallet.WalletActivity;
 public class ConsumerRouterApplication extends MainApplication implements TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter {
     @Override
     public void goToHome(Context context) {
-        Intent intent = new Intent(context,
-                ParentIndexHome.class);
+        Intent intent = getHomeIntent(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
@@ -97,5 +96,10 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
     public void goToMerchantRedirect(Context context) {
         Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
         context.startActivity(intent);
+    }
+
+    @Override
+    public Intent getHomeIntent(Context context) {
+        return new Intent(context, ParentIndexHome.class);
     }
 }

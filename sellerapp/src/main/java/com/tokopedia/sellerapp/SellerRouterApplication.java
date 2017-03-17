@@ -74,9 +74,13 @@ public class SellerRouterApplication extends MainApplication implements TkpdCore
     }
 
     @Override
+    public Intent getHomeIntent(Context context) {
+        return new Intent(context, SellerHomeActivity.class);
+    }
+
+    @Override
     public void goToHome(Context context) {
-        Intent intent = new Intent(context,
-                SellerHomeActivity.class);
+        Intent intent = getHomeIntent(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
