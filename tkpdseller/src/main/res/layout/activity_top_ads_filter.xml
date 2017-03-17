@@ -29,13 +29,11 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:padding="5dp">
+        android:background="@color/white">
 
         <Button
             android:id="@+id/button_submit"
             style="@style/Button.TopAds.Submit.Green"
-            android:layout_width="match_parent"
             android:text="@string/label_top_ads_choose_credit"/>
     </LinearLayout>
 </LinearLayout>

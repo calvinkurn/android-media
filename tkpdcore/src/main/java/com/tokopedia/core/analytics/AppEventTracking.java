@@ -81,6 +81,7 @@ public interface AppEventTracking {
         String BUY = "clickBuy";
         String MESSAGE_SHOP = "clickMessageShop";
         String FAVORITE_SHOP = "clickFavoriteShop";
+        String TOP_SELLER = "clickTopSeller";
 
         String SHOP_MANAGE = "clickManageShop";
         String NOTES = "clickNotes";
@@ -103,6 +104,8 @@ public interface AppEventTracking {
         String CLICK_ADD_PRODUCT = "clickAddProduct";
         String CLICK_INSTOPED = "clickInstoped";
         String CLICK_MANAGE_PRODUCT = "clickManageProduct";
+        String OPEN_PUSH_NOTIFICATION = "openPushNotification";
+        String EVENT_OTP = "OTPSuccess";
     }
 
     interface Category {
@@ -149,6 +152,7 @@ public interface AppEventTracking {
         String GOLD_MERCHANT = "Gold Merchant";
         String DEPOSIT = "Saldo";
         String OTP = "OTP";
+        String SECURITY_QUESTION = "Security Question";
         String TOP_PICKS_HOME = "Toppicks Home";
         String TOP_PICKS = "Toppicks";
         String CATALOG = "Katalog";
@@ -157,6 +161,8 @@ public interface AppEventTracking {
         String GM_STATISTIC_PRODUCT = "GM Statistic - Product";
         String GM_STATISTIC_PRODUCT_INSIGHT = "GM Statistic - Product Insight";
         String MANAGE_PRODUCT = "Manage Product";
+        String GM_SWITCHER = "GM Switcher";
+        String PUSH_NOTIFICATION = "Push Notification";
     }
 
     interface Action {
@@ -195,6 +201,8 @@ public interface AppEventTracking {
         String SEARCH_AUTOCOMPLETE = "Search Autocomplete";
         String SEARCH_AUTOCOMPLETE_SHOP = "Search Autocomplete Shop";
 
+        String OPEN = "Open";
+        String OTP_SUCCESS = "OTP Success";
     }
 
     interface EventLabel {
@@ -326,6 +334,10 @@ public interface AppEventTracking {
         String CHANGE_PRICE_PRODUCT_LIST = "Ubah Harga - Product List";
         String CHANGE_PRICE_DROP_DOWN = "Ubah Harga - Dropdown";
         String COPY_PRODUCT = "Copy";
+        String OPEN_TOP_SELLER = "Open TopSeller - ";
+        String OPEN_APP = "Open App";
+        String DOWNLOAD_APP = "Download App";
+        String OTP = "OTP";
 
         String CHANGE_CATEGORY_PRODUCT_GEAR = "Ganti Kategori - Gear Menu";
         String CHANGE_CATEGORY_PRODUCT_TOPMENU = "Ganti Kategori - Top Menu";

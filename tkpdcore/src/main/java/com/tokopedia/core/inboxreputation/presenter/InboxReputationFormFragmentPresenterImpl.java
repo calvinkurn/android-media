@@ -209,11 +209,13 @@ public class InboxReputationFormFragmentPresenterImpl
 
             @Override
             public void onCancel() {
+                viewListener.unTickCheckBox();
                 LoginManager.getInstance().logOut();
             }
 
             @Override
             public void onError(FacebookException e) {
+                viewListener.unTickCheckBox();
                 if(e instanceof FacebookAuthorizationException){
                     LoginManager.getInstance().logOut();
                 }
@@ -232,6 +234,8 @@ public class InboxReputationFormFragmentPresenterImpl
                 .setContentDescription(contentDescription)
                 .setShareHashtag(new ShareHashtag.Builder().setHashtag(fragment.getActivity().getString(R.string.title_tokopedia_hashtag)).build())
                 .build();
+
+        LoginManager.getInstance().logInWithPublishPermissions(fragment, FacebookContainer.writePermissions);
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(final LoginResult loginResult) {

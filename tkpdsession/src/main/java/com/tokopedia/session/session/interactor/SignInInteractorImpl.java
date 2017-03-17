@@ -132,6 +132,7 @@ public class SignInInteractorImpl implements SignInInteractor{
                                 Log.d("steven", "berhasil make login");
                                 AccountsModel accountsModel = accountsParameter.getAccountsModel();
                                 setLoginSession(accountsModel);
+                                SessionHandler.setPhoneNumber(accountsParameter.getInfoModel().getPhone());
                                 SessionHandler.setGoldMerchant(context, accountsModel.getShopIsGold());
                                 listener.onSuccess(accountsModel);
 

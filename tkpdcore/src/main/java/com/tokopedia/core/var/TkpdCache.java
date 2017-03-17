@@ -90,6 +90,7 @@ public class TkpdCache {
         public static final String SERVER = "server";
         public static final String IMG_DESC = "img_desc";
 
+        public static final String NOTIFICATION_PASS_DATA = "notification_pass_data";
         public static final String NOTIFICATION_CONTENT = "notification_content";
         public static final String NOTIFICATION_DESC = "notification_desc";
         public static final String NOTIFICATION_CODE = "notification_code";
@@ -173,6 +174,9 @@ public class TkpdCache {
         public static final String SHOP_INFO = "SHOP_INFO";
         public static final String SHOP_NOTE_LIST = "SHOP_NOTE_LIST";
         public static final String KEBIJAKAN_PENGEMBALIAN_PRODUK = "KEBIJAKAN_PENGEMBALIAN_PRODUK";
+
+        public static final String SHOP_SCORE_SUMMARY = "SHOP_SCORE_SUMMARY";
+        public static final String SHOP_SCORE_DETAIL = "SHOP_SCORE_DETAIL";
 
         public static final String WIDGET_RECHARGE_TAB_LAST_SELECTED = "WIDGET_RECHARGE_TAB_LAST_SELECTED";
     }

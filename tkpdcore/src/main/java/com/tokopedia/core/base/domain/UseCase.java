@@ -16,11 +16,10 @@ import rx.subscriptions.Subscriptions;
 public abstract class UseCase<T> implements Interactor<T> {
     private ThreadExecutor threadExecutor;
     private PostExecutionThread postExecutionThread;
-    private Subscription subscription = Subscriptions.empty();
+    protected Subscription subscription = Subscriptions.empty();
 
     public UseCase(ThreadExecutor threadExecutor,
                    PostExecutionThread postExecutionThread) {
-
         this.threadExecutor = threadExecutor;
         this.postExecutionThread = postExecutionThread;
     }

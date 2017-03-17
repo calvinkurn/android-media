@@ -1,6 +1,7 @@
 package com.tokopedia.core.router.home;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
@@ -46,6 +47,10 @@ public class HomeRouter {
             e.printStackTrace();
         }
         return parentIndexHomeClass;
+    }
+
+    public static ComponentName getActivityHomeName(Context context) {
+        return RouterUtils.getActivityComponentName(context, ACTIVITY_PARENT_INDEX_HOME);
     }
 
     @SuppressWarnings("TryWithIdenticalCatches")

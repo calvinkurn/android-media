@@ -89,6 +89,7 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
 
     private void renderPhoneVerificationView(String userPhone) {
         verification.setText(userPhone);
+        verification.setEnabled(false);
         if (SessionHandler.isMsisdnVerified()) {
             phoneVerificationSection.setVisibility(GONE);
         } else {
