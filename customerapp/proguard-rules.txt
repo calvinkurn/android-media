@@ -287,6 +287,21 @@
 -keep class com.tokopedia.seller.selling.model.** { *; }
 
 -keep class com.tokopedia.tkpd.fcm.** { *; }
+-keep class com.tokopedia.core.talkview.activity.TalkViewActivity {
+    public static TaskStackBuilder getCallingTaskStack(android.content.Context, android.os.Bundle);
+}
+-keep com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity {
+    public static TaskStackBuilder getCallingTaskStack(android.content.Context, android.os.Bundle);
+}
+-keep class com.tokopedia.inbox.inboxmessage.activity.InboxMessageDetailActivity {
+    public static TaskStackBuilder getCallingTaskStack(android.content.Context, android.os.Bundle);
+}
+-keep class com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity {
+    public static TaskStackBuilder getCallingTaskStack(android.content.Context, android.os.Bundle);
+}
+
+
+
 
 # Parceler configuration
 -keep interface org.parceler.Parcel
