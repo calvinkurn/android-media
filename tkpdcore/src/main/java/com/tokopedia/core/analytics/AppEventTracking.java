@@ -29,7 +29,7 @@ public interface AppEventTracking {
         String EMAIL = "Email";
         String FACEBOOK = "Facebook";
         String GMAIL = "Gmail";
-        String WEBVIEW = "Webview";
+        String WEBVIEW = "Web View";
         String REGISTER = "Register";
         String LOGIN = "Login";
     }
@@ -372,13 +372,13 @@ public interface AppEventTracking {
         String USER_ID = "User_ID";
         String MEDIUM = "Medium";
         String EMAIL = "Email";
+        String DATE_OF_BIRTH = "Date of Birth";
+        String NAME = "Name";
 
         String EVENT_LOGIN = "Login";
-        String REG_START = "Registration_Start";
-        String REG_COMPL = "Registration_Completed";
-        String ADDR_ADD = "Address_Added";
-
-
+        String EVENT_REG_START = "Registration_Start";
+        String EVENT_REG_COMPL = "Registration_Completed";
+        String EVENT_ADDR_ADD = "Address_Added";
     }
 
 

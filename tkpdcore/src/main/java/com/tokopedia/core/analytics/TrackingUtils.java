@@ -14,6 +14,7 @@ import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONArray;
@@ -30,6 +31,7 @@ import java.util.Map;
  */
 
 public class TrackingUtils extends TrackingConfig {
+    private static final String DATE_FORMAT_1 = "yyyy-MM-dd";
 
     public static void eventCampaign(Campaign campaign){
         Campaign temp = new Campaign(campaign);
@@ -62,6 +64,28 @@ public class TrackingUtils extends TrackingConfig {
         builder.putAttrString(AppEventTracking.MOENGAGE.EMAIL, customerWrapper.getEmailAddress());
         getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_LOGIN);
     }
+
+    public static void sendMoRegistrationStartEvent(String medium) {
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrString(AppEventTracking.MOENGAGE.MEDIUM, medium);
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_REG_START);
+    }
+
+    public static void sendMoRegisterEvent(CustomerWrapper customerWrapper) {
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrString(AppEventTracking.MOENGAGE.NAME, customerWrapper.getFullName());
+        builder.putAttrString(
+                AppEventTracking.MOENGAGE.MOBILE_NUM,
+                customerWrapper.getExtraAttr().get(AppEventTracking.MOENGAGE.MOBILE_NUM)
+        );
+        builder.putAttrDate(
+                AppEventTracking.MOENGAGE.DATE_OF_BIRTH,
+                customerWrapper.getExtraAttr().get(AppEventTracking.MOENGAGE.DATE_OF_BIRTH),
+                DATE_FORMAT_1
+        );
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.MOENGAGE.EVENT_REG_COMPL);
+    }
+
 
     public static void fragmentBasedAFEvent(String tag){
         Map<String, Object> afValue = new HashMap<>();

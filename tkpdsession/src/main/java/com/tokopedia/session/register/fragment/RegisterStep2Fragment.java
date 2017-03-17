@@ -20,6 +20,8 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.widget.MaterialSpinner;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -40,6 +42,8 @@ import com.tokopedia.session.register.presenter.RegisterStep2PresenterImpl;
 import com.tokopedia.session.register.util.RegisterUtil;
 import com.tokopedia.session.register.viewlistener.RegisterStep2ViewListener;
 import com.tokopedia.session.session.presenter.RegisterNewImpl;
+
+import net.hockeyapp.android.Tracking;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -398,6 +402,7 @@ public class RegisterStep2Fragment extends BasePresenterFragment<RegisterStep2Pr
                 || registerResult.getIsActive() == RegisterResult.USER_PENDING ) {
             sendLocalyticsRegisterEvent(registerResult.getUserId());
             sendGTMRegisterEvent();
+            sendMoEngageRegisterEvent();
             goToRegisterActivation();
         } else {
             onErrorRegister(getString(R.string.alert_email_address_is_already_registered));
@@ -427,6 +432,20 @@ public class RegisterStep2Fragment extends BasePresenterFragment<RegisterStep2Pr
 
     private void sendGTMRegisterEvent() {
         UnifyTracking.eventRegisterSuccess(getString(com.tokopedia.core.R.string.title_email));
+    }
+
+    private void sendMoEngageRegisterEvent() {
+        Map<String, String> attr = new HashMap<>();
+        CustomerWrapper customer = new CustomerWrapper();
+        customer.setFullName(presenter.getViewModel().getRegisterStep1ViewModel().getName());
+        attr.put(AppEventTracking.MOENGAGE.MOBILE_NUM, presenter.getViewModel().getPhone());
+        attr.put(AppEventTracking.MOENGAGE.DATE_OF_BIRTH,
+                presenter.getViewModel().getDateYear() + "-"
+                + presenter.getViewModel().getDateMonth() + "-"
+                + presenter.getViewModel().getDateDay()
+        );
+        customer.setExtraAttr(attr);
+        TrackingUtils.sendMoRegisterEvent(customer);
     }
 
     @Override
