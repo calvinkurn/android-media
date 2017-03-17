@@ -213,37 +213,32 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private void prepareAndExecuteDedicatedNotification(Bundle data) {
-        Map<Integer, Visitable> visitableMap = getCommonDedicatiedObject();
-        Visitable visitable = visitableMap.get(GCMUtils.getCode(data));
+        Map<Integer, Visitable> visitables = getCommonDedicatedNotification();
+        visitables.put(TkpdState.GCMServiceState.GCM_REVIEW, new NewReviewNotification(mContext));
+        visitables.put(TkpdState.GCMServiceState.GCM_REVIEW_EDIT, new ReviewEditedNotification(mContext));
+        visitables.put(TkpdState.GCMServiceState.GCM_REVIEW_REPLY, new ReviewReplyNotification(mContext));
+        visitables.put(TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER, new ReputationSmileyToBuyerNotification(mContext));
+        visitables.put(TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER, new ReputationSmileyToBuyerEditNotification(mContext));
+        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_VERIFIED, new PurchaseVerifiedNotification(mContext));
+        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_ACCEPTED, new PurchaseAcceptedNotification(mContext));
+        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_PARTIAL_PROCESSED, new PurchasePartialProcessedNotification(mContext));
+        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED, new PurchaseRejectedNotification(mContext));
+        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_DELIVERED, new PurchaseDeliveredNotification(mContext));
+        visitables.put(TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY, new ResCenterSellerReplyNotification(mContext));
+        visitables.put(TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_AGREE, new ResCenterSellerAgreeNotification(mContext));
+        visitables.put(TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY, new ResCenterAdminBuyerReplyNotification(mContext));
+        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_AUTO_CANCEL_2D, new PurchaseAutoCancel2DNotification(mContext));
+        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_AUTO_CANCEL_4D, new PurchaseAutoCancel4DNotification(mContext));
+        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_FINISH, new PurchaseFinishedNotification(mContext));
+        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_FINISH_REMINDER, new PurchaseFinishReminderNotification(mContext));
+        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_NEW_ORDER, new PurchaseNewOrderNotification(mContext));
+        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED_SHIPPING, new PurchaseRejectedShippingNotification(mContext));
+        visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_CONFIRM_SHIPPING, new PurchaseShippedNotification(mContext));
+
+        Visitable visitable = visitables.get(GCMUtils.getCode(data));
         if (visitable != null){
             visitable.proccessReceivedNotification(data);
         }
-        /*Map<Integer, Class> dedicatedNotification = getCommonDedicatedNotification();
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REVIEW, NewReviewNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REVIEW_EDIT, ReviewEditedNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REVIEW_REPLY, ReviewReplyNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER, ReputationSmileyToBuyerNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER, ReputationSmileyToBuyerEditNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_VERIFIED, PurchaseVerifiedNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_ACCEPTED, PurchaseAcceptedNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_PARTIAL_PROCESSED, PurchasePartialProcessedNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED, PurchaseRejectedNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_DELIVERED, PurchaseDeliveredNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY, ResCenterSellerReplyNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_AGREE, ResCenterSellerAgreeNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY, ResCenterAdminBuyerReplyNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_AUTO_CANCEL_2D, PurchaseAutoCancel2DNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_AUTO_CANCEL_4D, PurchaseAutoCancel4DNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_FINISH, PurchaseFinishedNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_FINISH_REMINDER, PurchaseFinishReminderNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_NEW_ORDER, PurchaseNewOrderNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED_SHIPPING, PurchaseRejectedShippingNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_CONFIRM_SHIPPING, PurchaseShippedNotification.class);
-
-        Class<?> clazz = dedicatedNotification.get(GCMUtils.getCode(data));
-        if (clazz != null) {
-            executeNotification(data, clazz);
-        }*/
     }
 
     private class SavePushNotificationCallback implements OnSavePushNotificationCallback {

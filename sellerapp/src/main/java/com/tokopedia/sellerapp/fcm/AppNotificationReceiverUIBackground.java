@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
+import com.tokopedia.core.gcm.Visitable;
 import com.tokopedia.core.gcm.base.BaseAppNotificationReceiverUIBackground;
 import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.util.SessionHandler;
@@ -33,14 +34,12 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     public void prepareAndExecuteDedicatedNotification(Bundle data) {
-
-        CommonUtils.dumper("prepareAndExecuteDedicatedNotification");
-        Map<Integer, Class> dedicatedNotification = getCommonDedicatedNotification();
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TOPADS_BELOW_20K, TopAdsBelow20kNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TOPADS_TOPUP_SUCCESS, TopAdsTopupSuccessNotification.class);
-        Class<?> clazz = dedicatedNotification.get(GCMUtils.getCode(data));
-        if (clazz != null) {
-            executeNotification(data, clazz);
+        Map<Integer, Visitable> dedicatedNotification = getCommonDedicatedNotification();
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TOPADS_BELOW_20K, new TopAdsBelow20kNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TOPADS_TOPUP_SUCCESS, new TopAdsTopupSuccessNotification(mContext));
+        Visitable visitable = dedicatedNotification.get(GCMUtils.getCode(data));
+        if (visitable != null){
+            visitable.proccessReceivedNotification(data);
         }
     }
 
@@ -49,7 +48,6 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         data.map(new Func1<Bundle, Boolean>() {
             @Override
             public Boolean call(Bundle bundle) {
-                CommonUtils.dumper("notifyReceiverBackgroundMessage");
                 if (isDedicatedNotification(bundle)) {
                     handleDedicatedNotification(bundle);
                 } else {
@@ -69,8 +67,6 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     public void handleDedicatedNotification(Bundle data) {
-
-        CommonUtils.dumper("handleDedicatedNotification");
         if (SessionHandler.isV4Login(mContext)
                 && SessionHandler.getLoginID(mContext).equals(data.getString("to_user_id"))) {
 

@@ -113,24 +113,24 @@ public abstract class BaseAppNotificationReceiverUIBackground {
         return dedicatedNotification;
     }
 
-    protected Map<Integer, Class> getCommonDedicatedNotification() {
-        Map<Integer, Class> dedicatedNotification = new HashMap<>();
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_MESSAGE, NewMessageNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TALK, NewDiscussionNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TICKET, TicketResponseNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RES_CENTER, ResCenterNewNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_NEWORDER, NewOrderNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_SELLER, ReputationSmileyToSellerNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_SELLER, ReputationSmileyToSellerEditNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_DISPUTE, PurchaseDisputeNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_REPLY, ResCenterBuyerReplyNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_AGREE, ResCenterBuyerAgreeNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_SELLER_REPLY, ResCenterAdminSellerReplyNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_CANCEL_2D_SELLER, SellingAutoCancel2DNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_CANCEL_4D_SELLER, SellingAutoCancel4DNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_INVALID_RESI, SellingInvalidResiNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_DELIVERED_SELLER, SellingOrderDeliveredNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_FINISH_SELLER, SellingOrderFinishedNotification.class);
+    protected Map<Integer, Visitable> getCommonDedicatedNotification() {
+        Map<Integer, Visitable> dedicatedNotification = new HashMap<>();
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_MESSAGE, new NewMessageNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TALK, new NewDiscussionNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TICKET, new TicketResponseNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RES_CENTER, new ResCenterNewNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_NEWORDER, new NewOrderNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_SELLER, new ReputationSmileyToSellerNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_SELLER, new ReputationSmileyToSellerEditNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_DISPUTE, new PurchaseDisputeNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_REPLY, new ResCenterBuyerReplyNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_AGREE, new ResCenterBuyerAgreeNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_SELLER_REPLY, new ResCenterAdminSellerReplyNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_CANCEL_2D_SELLER, new SellingAutoCancel2DNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_CANCEL_4D_SELLER, new SellingAutoCancel4DNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_INVALID_RESI, new SellingInvalidResiNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_DELIVERED_SELLER, new SellingOrderDeliveredNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_FINISH_SELLER, new SellingOrderFinishedNotification(mContext));
         return dedicatedNotification;
     }
 
