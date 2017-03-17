@@ -3,6 +3,7 @@ package com.tokopedia.sellerapp.fcm;
 import android.app.Application;
 import android.os.Bundle;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.INotificationAnalyticsReceiver;
 import com.tokopedia.core.gcm.NotificationAnalyticsReceiver;
@@ -32,8 +33,10 @@ public enum  AppNotificationReceiver {
     }
 
     public void onNotificationReceived(String from, Bundle data){
+        CommonUtils.dumper("onNotificationReceived");
         if (isAllowedNotification(data)){
             cacheManager.setCache();
+            CommonUtils.dumper("isAllowedNotification");
             mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(Observable.just(data));
         }
         mNotificationAnalyticsReceiver.onNotificationReceived(Observable.just(data));

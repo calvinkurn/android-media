@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -138,6 +139,7 @@ public abstract class BaseAppNotificationReceiverUIBackground {
 
     protected void executeNotification(Bundle data, Class<?> clazz) {
         Constructor<?> ctor = null;
+        CommonUtils.dumper("executeNotification");
         try {
             ctor = clazz.getConstructor(Context.class);
         } catch (NoSuchMethodException e) {
@@ -159,6 +161,7 @@ public abstract class BaseAppNotificationReceiverUIBackground {
         }
 
         if (object != null && object instanceof Visitable) {
+            CommonUtils.dumper("object instanceof Visitable");
             ((Visitable) object).proccessReceivedNotification(data);
         }
     }
