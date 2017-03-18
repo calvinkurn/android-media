@@ -233,13 +233,13 @@
                 android:layout_marginTop="5dp"
                 android:background="@color/gray_background"/>
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/cabs_autocomplete_recycler_view"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="5dp"
-                android:src="@drawable/powered_by_google_light"/>
+            <!--<ImageView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/cabs_autocomplete_recycler_view"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:layout_marginTop="5dp"-->
+                <!--android:src="@drawable/powered_by_google_light"/>-->
         </RelativeLayout>
 
     </RelativeLayout>

@@ -1,8 +1,10 @@
 package com.tokopedia.ride.bookingride.view;
 
+import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.ride.common.ride.domain.model.Product;
+import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.mapper.RideProductViewModelMapper;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
@@ -47,7 +49,15 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
 
             @Override
             public void onNext(List<Product> products) {
-                getView().renderProductList(mProductViewModelMapper.transform(products));
+                List<Visitable> productsList = mProductViewModelMapper.transform(products);
+
+                getView().hideProgress();
+
+                if(productsList.size() == 0){
+                    getView().showErrorMessage(R.string.no_rides_found);
+                }
+
+                getView().renderProductList(productsList);
             }
         });
 

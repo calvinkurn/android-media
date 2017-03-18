@@ -56,6 +56,8 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     TextView tvSource;
     @BindView(R2.id.crux_cabs_destination)
     TextView tvDestination;
+    @BindView(R2.id.layout_src_destination)
+    View mSrcDestLayout;
 
     private PlacePassViewModel mSource, mDestination;
 
@@ -183,10 +185,45 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         }
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
         mGoogleMap.setMyLocationEnabled(true);
+
+        mGoogleMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
+            @Override
+            public void onCameraMoveStarted(int i) {
+                if (i == REASON_GESTURE) {
+                    mPresenter.onMapMoveCameraStarted();
+                }
+            }
+        });
+
+        mGoogleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+            @Override
+            public void onCameraIdle() {
+                mPresenter.onMapMoveCameraIdle();
+            }
+        });
+    }
+
+    @Override
+    public void onMapDragStarted() {
+        //set source as go to pin
+        setSourceLocationText("GO TO PIN");
+        mListener.animateOnMapDragging(mToolbar , mSrcDestLayout);
+    }
+
+    @Override
+    public void onMapDragStopped() {
+        //set address based on current address and refresh the product list
+        renderDefaultPickupLocation(mGoogleMap.getCameraPosition().target.latitude, mGoogleMap.getCameraPosition().target.longitude);
+
+        mListener.animateOnMapStopped(mToolbar , mSrcDestLayout);
     }
 
     public interface OnFragmentInteractionListener {
         void onSourceAndDestinationChanged(PlacePassViewModel source, PlacePassViewModel destination);
+
+        void animateOnMapDragging(Toolbar toolbar, View srcDestLayout);
+
+        void animateOnMapStopped(Toolbar toolbar, View srcDestLayout);
     }
 
     private void setInitialVariable() {
@@ -218,9 +255,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     }
 
     private void proccessToRenderRideProduct() {
-        if (mSource != null && mDestination != null){
-            mListener.onSourceAndDestinationChanged(mSource, mDestination);
-        }
+        mListener.onSourceAndDestinationChanged(mSource, mDestination);
     }
 
     @Override
@@ -231,12 +266,19 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     @Override
     public void moveToCurrentLocation(double latitude, double longitude) {
         LatLng currentLocation = new LatLng(latitude, longitude);
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentLocation, 12);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentLocation, 18);
         mGoogleMap.animateCamera(cameraUpdate);
     }
 
     @Override
     public void renderDefaultPickupLocation(double latitude, double longitude) {
+        String sourceAddress = GeoLocationUtils.reverseGeoCode(getActivity(), latitude, longitude);
+        mSource = new PlacePassViewModel();
+        mSource.setAddress(sourceAddress);
+        mSource.setLatitude(latitude);
+        mSource.setLongitude(longitude);
+        proccessToRenderRideProduct();
+
         setSourceLocationText(GeoLocationUtils.reverseGeoCode(getActivity(), latitude, longitude));
     }
 

@@ -12,4 +12,5 @@
     <string name="unsupported_device">This devices is not supported.</string>
     <string name="location_permission_required">Please enable location permission.</string>
     <string name="ride_home_source_picker">Select Pickup</string>
+    <string name="no_rides_found">No Rides Found at your location</string>
 </resources>

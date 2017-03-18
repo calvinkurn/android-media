@@ -22,6 +22,14 @@ public interface UberProductContract {
         void showAdsBadges(String message);
 
         void hideAdsBadges();
+
+        void showProgress();
+
+        void hideProgress();
+
+        void showErrorMessage(int messageResourceId);
+
+        void hideErrorMessage(String message);
     }
 
     interface Presenter extends CustomerPresenter<View> {
