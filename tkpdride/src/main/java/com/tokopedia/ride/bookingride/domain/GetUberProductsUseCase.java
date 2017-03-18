@@ -4,8 +4,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.ride.base.domain.BookingRideRepository;
-import com.tokopedia.ride.base.domain.model.Product;
+import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
+import com.tokopedia.ride.common.ride.domain.model.Product;
 
 import java.util.List;
 

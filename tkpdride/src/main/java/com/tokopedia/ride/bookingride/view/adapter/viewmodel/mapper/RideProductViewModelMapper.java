@@ -1,7 +1,7 @@
 package com.tokopedia.ride.bookingride.view.adapter.viewmodel.mapper;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.ride.base.domain.model.Product;
+import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewModel;
 
 import java.util.ArrayList;

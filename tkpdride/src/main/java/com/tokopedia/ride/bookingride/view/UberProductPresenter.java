@@ -2,7 +2,7 @@ package com.tokopedia.ride.bookingride.view;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.ride.base.domain.model.Product;
+import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.mapper.RideProductViewModelMapper;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;

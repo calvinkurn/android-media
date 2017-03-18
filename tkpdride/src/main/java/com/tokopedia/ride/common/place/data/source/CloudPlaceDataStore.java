@@ -1,0 +1,24 @@
+package com.tokopedia.ride.common.place.data.source;
+
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.ride.common.place.data.PlaceDataStore;
+import com.tokopedia.ride.common.place.data.entity.DirectionEntity;
+import com.tokopedia.ride.common.place.data.source.api.PlaceApi;
+
+import rx.Observable;
+
+/**
+ * Created by alvarisi on 3/18/17.
+ */
+
+public class CloudPlaceDataStore implements PlaceDataStore {
+    private final PlaceApi placeApi;
+    public CloudPlaceDataStore(PlaceApi placeApi) {
+        this.placeApi = placeApi;
+    }
+
+    @Override
+    public Observable<DirectionEntity> getDirection(String output, TKPDMapParam<String, Object> param) {
+        return this.placeApi.getRoute(output, param);
+    }
+}
