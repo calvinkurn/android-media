@@ -1,7 +1,6 @@
 package com.tokopedia.core.gcm.notification.promotions;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.core.gcm.utils.NotificationUtils;
@@ -22,10 +21,10 @@ public class GeneralNotification extends BasePromoNotification {
     @Override
     protected void configureNotificationData(Bundle data) {
         mNotificationPass.mIntent = NotificationUtils.configurePromoIntent(
-                new Intent(mContext, HomeRouter.getHomeActivityClass()),
+                HomeRouter.getHomeActivityInterfaceRouter(mContext),
                 data
         );
-        mNotificationPass.classParentStack = HomeRouter.getHomeActivityClass();
+        mNotificationPass.classParentStack = HomeRouter.getHomeActivityClassInterfaceRouter(mContext);
         mNotificationPass.title = data.getString(ARG_NOTIFICATION_TITLE, "");
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION, "");
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION, "");

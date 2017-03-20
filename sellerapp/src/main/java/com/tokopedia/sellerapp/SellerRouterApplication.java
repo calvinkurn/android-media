@@ -9,6 +9,8 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.util.DeepLinkChecker;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -24,6 +26,10 @@ import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
  */
 
 public class SellerRouterApplication extends MainApplication implements TkpdCoreRouter, SellerModuleRouter {
+
+    public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.home.view.SellerHomeActivity";
+    public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
+
     @Override
     public DrawerVariable getDrawer(AppCompatActivity activity) {
         return new DrawerVariableSeller(activity);
@@ -74,9 +80,26 @@ public class SellerRouterApplication extends MainApplication implements TkpdCore
     }
 
     @Override
+    public Intent getHomeIntent(Context context) {
+        if (SessionHandler.isV4Login(context)) {
+            return new Intent(context, SellerHomeActivity.class);
+        } else {
+            return new Intent(context, WelcomeActivity.class);
+        }
+    }
+
+    @Override
+    public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
+        if (SessionHandler.isV4Login(context)) {
+            return Class.forName(COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY);
+        } else {
+            return Class.forName(COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY);
+        }
+    }
+
+    @Override
     public void goToHome(Context context) {
-        Intent intent = new Intent(context,
-                SellerHomeActivity.class);
+        Intent intent = getHomeIntent(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
