@@ -38,8 +38,6 @@ import com.tokopedia.seller.reputation.presenter.SellerReputationFragmentPresent
 import com.tokopedia.seller.reputation.view.SellerReputationView;
 import com.tokopedia.seller.reputation.view.adapter.SellerReputationAdapter;
 import com.tokopedia.seller.reputation.view.helper.ReputationViewHelper;
-import com.tokopedia.seller.reputation.view.listener.SellerReputationInterface;
-import com.tokopedia.seller.topads.exception.AddProductListException;
 import com.tokopedia.seller.topads.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.topads.utils.TopAdsNetworkErrorHelper;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsWhiteRetryDataBinder;
@@ -80,7 +78,6 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
     ReviewReputationMergeUseCase reviewReputationMergeUseCase;
     private TopAdsNetworkErrorHelper gmNetworkErrorHelper;
     private View rootView;
-    private SellerReputationInterface sellerReputationInterface;
     private AppComponent baseApplication;
     private ReputationViewHelper reputationViewHelper;
     private boolean isFirstTime = true;
@@ -132,11 +129,6 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
 
     @Override
     protected void initialListener(Activity activity) {
-        if (activity != null && activity instanceof SellerReputationInterface) {
-            sellerReputationInterface = (SellerReputationInterface) activity;
-        } else {
-            throw new AddProductListException();
-        }
     }
 
     @Override

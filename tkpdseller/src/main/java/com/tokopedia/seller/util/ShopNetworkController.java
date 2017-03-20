@@ -105,7 +105,8 @@ public class ShopNetworkController extends BaseNetworkController {
     public Map<String, String> paramShopInfo(ShopInfoParam shopInfoParam) {
         Map<String, String> params = new TKPDMapParam<>();
         params.put("shop_id", shopInfoParam.shopId);
-        params.put("shop_domain", shopInfoParam.shopDomain);
+        if (shopInfoParam.shopDomain != null)
+            params.put("shop_domain", shopInfoParam.shopDomain);
         params.put("show_all", "1");
         return params;
     }

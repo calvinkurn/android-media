@@ -15,7 +15,7 @@
         android:layout_centerHorizontal="true"
         tools:text="wewe" />
 
-    <com.tokopedia.sellerapp.home.view.ReputationView
+    <com.tokopedia.seller.home.view.ReputationView
         android:id="@+id/seller_reputation_header_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -15,7 +15,7 @@ public class SellerReputationService extends AuthService<SellerReputationApi> {
 
     @Override
     protected void initApiService(Retrofit retrofit) {
-        retrofit.create(SellerReputationService.class);
+        api = retrofit.create(SellerReputationApi.class);
     }
 
     @Override
