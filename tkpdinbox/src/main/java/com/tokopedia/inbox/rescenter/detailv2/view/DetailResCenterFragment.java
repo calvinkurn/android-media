@@ -15,7 +15,6 @@ import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.customdialog.TrackShippingDialog;
@@ -216,19 +215,6 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         NetworkErrorHelper.showSnackbar(getActivity(), messageError);
     }
 
-    @Override
-    public void setOnInitResCenterDetailComplete() {
-        if (viewData.isTimeOut()) {
-            doOnInitTimeOut();
-        } else {
-            if (viewData.isSuccess()) {
-                doOnInitSuccess();
-            } else {
-                doOnInitFailed();
-            }
-        }
-    }
-
     private void showEmptyState(String message, NetworkErrorHelper.RetryClickedListener listener) {
         if (message != null) {
             NetworkErrorHelper.showEmptyState(getActivity(), getView(), message, listener);
@@ -237,7 +223,8 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         }
     }
 
-    private void doOnInitTimeOut() {
+    @Override
+    public void doOnInitTimeOut() {
         showLoading(false);
         showEmptyState(null, new NetworkErrorHelper.RetryClickedListener() {
             @Override
@@ -247,7 +234,8 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         });
     }
 
-    private void doOnInitSuccess() {
+    @Override
+    public void doOnInitSuccess() {
         showLoading(false);
         if (getViewData().getButtonData() != null) {
             buttonView.renderData(getViewData().getButtonData());
@@ -275,7 +263,8 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         }
     }
 
-    private void doOnInitFailed() {
+    @Override
+    public void doOnInitFailed() {
         showLoading(false);
         showEmptyState(getViewData().getMessageError(), null);
     }
