@@ -19,6 +19,10 @@ public class DetailResCenterResolution {
     private int freeReturn;
     @SerializedName("splitInfo")
     private String splitInfo;
+    @SerializedName("expireTimeStr")
+    private String expireTimeStr;
+    @SerializedName("updateTimeStr")
+    private String updateTimeStr;
 
     public String getId() {
         return id;
@@ -67,4 +71,21 @@ public class DetailResCenterResolution {
     public void setSplitInfo(String splitInfo) {
         this.splitInfo = splitInfo;
     }
+
+    public String getExpireTimeStr() {
+        return expireTimeStr;
+    }
+
+    public void setExpireTimeStr(String expireTimeStr) {
+        this.expireTimeStr = expireTimeStr;
+    }
+
+    public String getUpdateTimeStr() {
+        return updateTimeStr;
+    }
+
+    public void setUpdateTimeStr(String updateTimeStr) {
+        this.updateTimeStr = updateTimeStr;
+    }
+
 }

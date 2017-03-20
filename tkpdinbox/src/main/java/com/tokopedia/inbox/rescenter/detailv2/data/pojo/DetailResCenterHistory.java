@@ -17,7 +17,7 @@ public class DetailResCenterHistory  {
     private String createTimeStr;
     @SerializedName("remark")
     private String remark;
-    @SerializedName("actionByText")
+    @SerializedName("actionByStr")
     private String actionByText;
 
     public String getResConvId() {

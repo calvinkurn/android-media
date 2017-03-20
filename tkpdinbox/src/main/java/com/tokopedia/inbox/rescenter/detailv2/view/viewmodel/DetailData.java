@@ -18,6 +18,7 @@ public class DetailData {
     private String invoiceUrl;
     private String orderID;
     private boolean received;
+    private int responseDeadlineUrgency;
 
     public String getAwbNumber() {
         return awbNumber;
@@ -122,5 +123,13 @@ public class DetailData {
 
     public void setReceived(boolean received) {
         this.received = received;
+    }
+
+    public int getResponseDeadlineUrgency() {
+        return responseDeadlineUrgency;
+    }
+
+    public void setResponseDeadlineUrgency(int responseDeadlineUrgency) {
+        this.responseDeadlineUrgency = responseDeadlineUrgency;
     }
 }

@@ -25,7 +25,7 @@ public class DetailResCenterLastSolution {
     private TroubleType troubleType;
     @SerializedName("problemType")
     private ProblemType problemType;
-    @SerializedName("actionByText")
+    @SerializedName("actionByStr")
     private String actionByText;
 
     public String getId() {

@@ -25,6 +25,8 @@ public class DetailResCenterEntity {
     private DetailResCenterResolution resolution;
     @SerializedName("history")
     private List<DetailResCenterHistory> history;
+    @SerializedName("by")
+    private DetailResCenterBy by;
 
     public DetailResCenterLast getLast() {
         return last;
@@ -82,4 +84,11 @@ public class DetailResCenterEntity {
         this.history = history;
     }
 
+    public DetailResCenterBy getBy() {
+        return by;
+    }
+
+    public void setBy(DetailResCenterBy by) {
+        this.by = by;
+    }
 }

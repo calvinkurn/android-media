@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.data.mapper;
 
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.DetailResCenterBy;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.DetailResCenterCustomer;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.DetailResCenterEntity;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.DetailResCenterHistory;
@@ -96,8 +97,7 @@ public class DetailResCenterMapper implements Func1<Response<TkpdResponse>, Deta
                 data.setShipmentRef(shipping.getShippingRefNum());
                 data.setShipmentDate(shipping.getCreateTimeStr());
                 data.setShipmentID(shipping.getShippingId());
-//                data.setProviderText(shipping.getActionByText());
-                data.setProviderText("Not yet set");
+                data.setProviderText(shipping.getActionByText());
                 data.setAttachment(mappingShippingAttacment(shipping.getAttachments()));
             }
         }
@@ -145,6 +145,7 @@ public class DetailResCenterMapper implements Func1<Response<TkpdResponse>, Deta
         DetailResCenterCustomer customer = entity.getCustomer();
         DetailResCenterShop shop = entity.getShop();
         DetailResCenterLast last = entity.getLast();
+        DetailResCenterBy by = entity.getBy();
         DetailResCenterLastSolution lastSolution = last.getSolution();
 
         ResolutionDomainModel data = new ResolutionDomainModel();
@@ -156,9 +157,9 @@ public class DetailResCenterMapper implements Func1<Response<TkpdResponse>, Deta
         data.setInvoice(order.getInvoice().getRefNum());
         data.setInvoiceUrl(order.getInvoice().getUrl());
         // -----------
-        data.setResponseDeadline("NOT SET OR ASK BACKEND");
-        data.setSellerDeadlineVisibility(true);
-        data.setBuyerDeadlineVisibility(true);
+        data.setResponseDeadline(resolution.getExpireTimeStr());
+        data.setSellerDeadlineVisibility(by.getCustomer() == 1);
+        data.setBuyerDeadlineVisibility(by.getCustomer() == 0);
         // -----------
         data.setShopID(shop.getId());
         data.setShopName(shop.getName());
@@ -179,8 +180,7 @@ public class DetailResCenterMapper implements Func1<Response<TkpdResponse>, Deta
             ResolutionHistoryItemDomainModel domainModel = new ResolutionHistoryItemDomainModel();
             domainModel.setRemark(item.getRemark());
             domainModel.setDate(item.getCreateTimeStr());
-//            domainModel.setActionBy(item.getActionByText());
-            domainModel.setActionBy("not yet set");
+            domainModel.setActionBy(item.getActionByText());
             domainModels.add(domainModel);
         }
         data.setList(domainModels);
@@ -208,8 +208,7 @@ public class DetailResCenterMapper implements Func1<Response<TkpdResponse>, Deta
     private SolutionDomainModel mappingSolutionData(DetailResCenterLastSolution entity) {
         SolutionDomainModel data = new SolutionDomainModel();
         data.setSolutionDate(entity.getCreateTimeStr());
-//        data.setSolutionActionBy(entity.getActionByText());
-        data.setSolutionActionBy("Not yet set");
+        data.setSolutionActionBy(entity.getActionByText());
         data.setSolutionRemark(entity.getName());
         return data;
     }
