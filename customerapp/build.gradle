@@ -162,6 +162,7 @@ android {
         resConfigs "en", "id"
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
+        vectorDrawables.useSupportLibrary = true
     }
 
 

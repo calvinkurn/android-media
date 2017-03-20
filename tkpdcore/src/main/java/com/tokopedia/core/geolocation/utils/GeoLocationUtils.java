@@ -53,6 +53,37 @@ public class GeoLocationUtils {
         return reseponseAddress;
     }
 
+    public static String reverseGeoCodeToShortAdd(Context context, double latitude, double longitude) {
+        String reseponseAddress = "";
+        try {
+            Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+            List<Address> listAddress = geocoder.getFromLocation(latitude, longitude, 1);
+
+            Address address = listAddress.get(0);
+            reseponseAddress = address.getAddressLine(0);
+
+            Log.d(TAG, "reverseGeoCode: 1." + address.getAddressLine(0));
+            Log.d(TAG, "reverseGeoCode: 2." + address.getLocality());
+            Log.d(TAG, "reverseGeoCode: 3." + address.getSubLocality());
+            Log.d(TAG, "reverseGeoCode: 4." + address.getAdminArea());
+            Log.d(TAG, "reverseGeoCode: 5." + address.getSubAdminArea());
+            Log.d(TAG, "reverseGeoCode: 6." + address.getPremises());
+            Log.d(TAG, "reverseGeoCode: 7." + address.getThoroughfare());
+            Log.d(TAG, "reverseGeoCode: 8." + address.getSubThoroughfare());
+            Log.d(TAG, "reverseGeoCode: 9." + address.getFeatureName());
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (reseponseAddress == null || reseponseAddress.isEmpty()) {
+            reseponseAddress = String.valueOf(latitude) + ", " + String.valueOf(longitude);
+        }
+
+        return reseponseAddress;
+    }
+
     public static String reverseGeoCode(Context context, String latitude, String longitude) {
         if (latitude == null || longitude == null) {
             return "";

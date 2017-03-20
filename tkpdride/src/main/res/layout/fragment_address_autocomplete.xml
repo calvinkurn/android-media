@@ -1,5 +1,4 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,7 +20,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:background="@color/colorPrimary"/>
+                android:background="@color/colorPrimary" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -38,7 +37,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_gravity="center"
                     android:padding="10dp"
-                    android:src="@drawable/header_blue_back_icon"/>
+                    android:src="@drawable/header_blue_back_icon" />
 
                 <FrameLayout
                     android:id="@+id/layout_loader_cross"
@@ -54,7 +53,7 @@
                         android:layout_gravity="center"
                         android:padding="10dp"
                         android:src="@drawable/blue_close_icon"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                     <ProgressBar
                         android:id="@+id/materialLoader"
@@ -62,7 +61,7 @@
                         android:layout_height="40dp"
                         android:layout_gravity="center"
                         android:padding="8dp"
-                        android:visibility="visible"/>
+                        android:visibility="visible" />
                 </FrameLayout>
 
                 <EditText
@@ -76,7 +75,7 @@
                     android:paddingBottom="2dp"
                     android:singleLine="true"
                     android:textColor="@color/black"
-                    android:textSize="14sp"/>
+                    android:textSize="14sp" />
             </RelativeLayout>
         </RelativeLayout>
 
@@ -89,13 +88,13 @@
                 android:id="@+id/crux_cabs_auto_detect_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:visibility="visible"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true">
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@android:color/white"
+                android:visibility="visible">
 
                 <ImageView
                     android:id="@+id/auto_detect_icon"
@@ -106,7 +105,7 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginLeft="15dp"
                     android:layout_marginTop="10dp"
-                    android:src="@drawable/crux_cabs_auto_detect_ic"/>
+                    android:src="@drawable/crux_cabs_auto_detect_ic" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -117,7 +116,7 @@
                     android:layout_toRightOf="@id/auto_detect_icon"
                     android:singleLine="true"
                     android:text="Auto-detect current location"
-                    android:textColor="#616161"/>
+                    android:textColor="#616161" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -125,7 +124,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="20dp"
-                    android:src="@drawable/track_arrow"/>
+                    android:src="@drawable/track_arrow" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -146,7 +145,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="5dp"
                     android:padding="3dp"
-                    android:src="@drawable/cab_home_location_icon"/>
+                    android:src="@drawable/cab_home_location_icon" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -162,7 +161,7 @@
                         android:layout_height="wrap_content"
                         android:text="Home"
                         android:textColor="@color/black"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/cabs_autocomplete_home_address"
@@ -171,7 +170,7 @@
                         android:singleLine="true"
                         android:text="Home adress"
                         android:textColor="@color/grey_for_home_search_view"
-                        android:textSize="12sp"/>
+                        android:textSize="12sp" />
                 </LinearLayout>
             </RelativeLayout>
 
@@ -196,7 +195,7 @@
                     android:adjustViewBounds="true"
                     android:padding="3dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/cab_work_location_icon"/>
+                    android:src="@drawable/cab_work_location_icon" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -212,7 +211,7 @@
                         android:layout_height="wrap_content"
                         android:text="Work"
                         android:textColor="@color/black"
-                        android:textSize="14sp"/>
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/cabs_autocomplete_work_address"
@@ -221,25 +220,26 @@
                         android:singleLine="true"
                         android:text="Work adress"
                         android:textColor="@color/grey_for_home_search_view"
-                        android:textSize="12sp"/>
+                        android:textSize="12sp" />
                 </LinearLayout>
             </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/cabs_autocomplete_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/cabs_autocomplete_work_box"
-                android:layout_marginTop="5dp"
-                android:background="@color/gray_background"/>
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp"
+                android:background="@color/white" />
 
-            <!--<ImageView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_below="@+id/cabs_autocomplete_recycler_view"-->
-                <!--android:layout_centerHorizontal="true"-->
-                <!--android:layout_marginTop="5dp"-->
-                <!--android:src="@drawable/powered_by_google_light"/>-->
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/cabs_autocomplete_recycler_view"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
+                android:src="@drawable/powered_by_google_light" />
         </RelativeLayout>
 
     </RelativeLayout>

@@ -452,23 +452,18 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     @Override
     public void actionAutoDetectLocation() {
         if (mCurrentLocation != null) {
+            String currentAddress = GeoLocationUtils.reverseGeoCodeToShortAdd(getView().getActivity(),
+                    mCurrentLocation.getLatitude(),
+                    mCurrentLocation.getLongitude()
+            );
+
             PlacePassViewModel placePassViewModel = new PlacePassViewModel();
             placePassViewModel.setLatitude(mCurrentLocation.getLatitude());
             placePassViewModel.setLongitude(mCurrentLocation.getLongitude());
-            placePassViewModel.setTitle(
-                    GeoLocationUtils.reverseGeoCode(getView().getActivity(),
-                            mCurrentLocation.getLatitude(),
-                            mCurrentLocation.getLongitude()
-                    )
-            );
-//        placePassViewModel.setPlaceId(mCurrentLocation);
+            placePassViewModel.setTitle(currentAddress);
+            //placePassViewModel.setPlaceId(mCurrentLocation);
             placePassViewModel.setType(PlacePassViewModel.TYPE.OTHER);
-            placePassViewModel.setAddress(
-                    GeoLocationUtils.reverseGeoCode(getView().getActivity(),
-                            mCurrentLocation.getLatitude(),
-                            mCurrentLocation.getLongitude()
-                    )
-            );
+            placePassViewModel.setAddress(currentAddress);
             getView().onPlaceSelectedFound(placePassViewModel);
         } else {
             getView().showMessage("Location not setted");

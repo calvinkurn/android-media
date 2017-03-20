@@ -33,7 +33,57 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:src="@drawable/crux_cabs_center_marker_ic"
+                    android:tint="@color/black_full"
                     android:visibility="visible" />
+
+                <RelativeLayout
+                    android:id="@+id/layout_marker_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/iv_android_center_marker"
+                    android:layout_centerInParent="true"
+                    android:layout_marginBottom="-20dp">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/shape_bg_circle_black"
+                        android:tint="@color/black_full" />
+
+                    <ImageView
+                        android:id="@+id/marker_time"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:padding="2dp"
+                        android:text="2\nmin"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        app:srcCompat="@drawable/avd_ride_marker" />
+
+                    <TextView
+                        android:id="@+id/tv_marker_pickup_eta"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:text="--"
+                        android:textColor="@color/white"
+                        android:textSize="10dp" />
+                </RelativeLayout>
+
+                <ImageView
+                    android:id="@+id/iv_android_center_marker_cross"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerInParent="true"
+                    android:scaleX="0"
+                    android:scaleY="0"
+                    android:tint="@color/black_full"
+                    android:visibility="visible"
+                    app:srcCompat="@drawable/ic_close_24dp" />
 
                 <ImageView
                     android:id="@+id/iv_my_location_button"

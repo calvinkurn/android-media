@@ -6,8 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.Animatable;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -15,7 +15,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,12 +68,23 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     View mSrcDestLayout;
     @BindView(R2.id.iv_my_location_button)
     ImageView myLocationButton;
+    @BindView(R2.id.marker_time)
+    ImageView mMarkerTimeBackgroundImage;
+    @BindView(R2.id.tv_marker_pickup_eta)
+    TextView mMarkerTimeTextView;
+    @BindView(R2.id.layout_marker_time)
+    RelativeLayout mMarkerTimeLayout;
+    @BindView(R2.id.iv_android_center_marker)
+    ImageView mMarkerImageView;
+    @BindView(R2.id.iv_android_center_marker_cross)
+    ImageView mMarkerCenterCrossImage;
 
     private PlacePassViewModel mSource, mDestination;
 
     GoogleMap mGoogleMap;
 
     private OnFragmentInteractionListener mListener;
+    private int mToolBarHeightinPx;
 
     public RideHomeFragment() {
     }
@@ -215,7 +228,18 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     public void onMapDragStarted() {
         //set source as go to pin
         setSourceLocationText("GO TO PIN");
-        mListener.animateOnMapDragging(mToolbar, mSrcDestLayout);
+
+        //animate marker to lift up
+        AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
+        mMarkerTimeLayout.animate().setInterpolator(interpolator).translationY(-mToolBarHeightinPx).setDuration(300);
+        mMarkerImageView.animate().setInterpolator(interpolator).translationY(-mToolBarHeightinPx).setDuration(300);
+        mMarkerCenterCrossImage.animate().setInterpolator(interpolator).scaleX(1).scaleY(1).setDuration(300);
+
+        //animate toolbar and source destination layout
+        mToolbar.animate().translationY(-mToolBarHeightinPx).setDuration(300);
+        mSrcDestLayout.animate().translationY(-mToolBarHeightinPx).setDuration(300);
+
+        mListener.animateBottomPanelOnMapDragging();
     }
 
     @Override
@@ -223,15 +247,25 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         //set address based on current address and refresh the product list
         renderDefaultPickupLocation(mGoogleMap.getCameraPosition().target.latitude, mGoogleMap.getCameraPosition().target.longitude);
 
-        mListener.animateOnMapStopped(mToolbar, mSrcDestLayout);
+        //animate marker to lift down
+        AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
+        mMarkerTimeLayout.animate().setInterpolator(interpolator).translationY(0).setDuration(300);
+        mMarkerImageView.animate().setInterpolator(interpolator).translationY(0).setDuration(300);
+        mMarkerCenterCrossImage.animate().setInterpolator(interpolator).scaleX(0).scaleY(0).setDuration(300);
+
+        //animate toolbar and source destination layout
+        mToolbar.animate().translationY(0).setDuration(300);
+        mSrcDestLayout.animate().translationY(0).setDuration(300);
+
+        mListener.animateBottomPanelOnMapStopped();
     }
 
     public interface OnFragmentInteractionListener {
         void onSourceAndDestinationChanged(PlacePassViewModel source, PlacePassViewModel destination);
 
-        void animateOnMapDragging(Toolbar toolbar, View srcDestLayout);
+        void animateBottomPanelOnMapDragging();
 
-        void animateOnMapStopped(Toolbar toolbar, View srcDestLayout);
+        void animateBottomPanelOnMapStopped();
     }
 
     private void setInitialVariable() {
@@ -239,6 +273,8 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
                 getActivity().getApplicationContext(),
                 "TOKEN"
         );
+
+        mToolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);
     }
 
     @Override
@@ -266,6 +302,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     }
 
     private void proccessToRenderRideProduct() {
+        startMarkerAnimation();
         mListener.onSourceAndDestinationChanged(mSource, mDestination);
         if (mSource != null && mDestination != null) {
             mPresenter.getOverviewPolyline(mSource.getLatitude(), mSource.getLongitude(),
@@ -287,14 +324,15 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
 
     @Override
     public void renderDefaultPickupLocation(double latitude, double longitude) {
-        String sourceAddress = GeoLocationUtils.reverseGeoCode(getActivity(), latitude, longitude);
+        String sourceAddress = GeoLocationUtils.reverseGeoCodeToShortAdd(getActivity(), latitude, longitude);
         mSource = new PlacePassViewModel();
         mSource.setAddress(sourceAddress);
+        mSource.setTitle(sourceAddress);
         mSource.setLatitude(latitude);
         mSource.setLongitude(longitude);
         proccessToRenderRideProduct();
 
-        setSourceLocationText(GeoLocationUtils.reverseGeoCode(getActivity(), latitude, longitude));
+        setSourceLocationText(sourceAddress);
     }
 
     @Override
@@ -345,6 +383,15 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     public void setDestinationLocationText(String address) {
         tvDestination.setText(address);
     }
+
+    private void startMarkerAnimation() {
+        mMarkerTimeTextView.setText("--");
+
+        if (mMarkerTimeBackgroundImage.getDrawable() instanceof Animatable) {
+            ((Animatable) mMarkerTimeBackgroundImage.getDrawable()).start();
+        }
+    }
+
 
     @Override
     public void renderTripRoute(List<List<LatLng>> routes) {
