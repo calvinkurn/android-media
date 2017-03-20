@@ -19,13 +19,17 @@ import com.tokopedia.core.gcm.domain.usecase.SavePushNotificationUseCase;
 import com.tokopedia.core.gcm.notification.dedicated.NewDiscussionNotification;
 import com.tokopedia.core.gcm.notification.dedicated.NewMessageNotification;
 import com.tokopedia.core.gcm.notification.dedicated.NewOrderNotification;
+import com.tokopedia.core.gcm.notification.dedicated.NewReviewNotification;
 import com.tokopedia.core.gcm.notification.dedicated.PurchaseDisputeNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToSellerEditNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToSellerNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ResCenterAdminSellerReplyNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ResCenterBuyerAgreeNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ResCenterNewNotification;
+import com.tokopedia.core.gcm.notification.dedicated.ResCenterSellerAgreeNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ResCenterSellerReplyNotification;
+import com.tokopedia.core.gcm.notification.dedicated.ReviewEditedNotification;
+import com.tokopedia.core.gcm.notification.dedicated.ReviewReplyNotification;
 import com.tokopedia.core.gcm.notification.dedicated.SellingAutoCancel2DNotification;
 import com.tokopedia.core.gcm.notification.dedicated.SellingAutoCancel4DNotification;
 import com.tokopedia.core.gcm.notification.dedicated.SellingInvalidResiNotification;
@@ -117,13 +121,15 @@ public abstract class BaseAppNotificationReceiverUIBackground {
         Map<Integer, Visitable> dedicatedNotification = new HashMap<>();
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_MESSAGE, new NewMessageNotification(mContext));
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TALK, new NewDiscussionNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REVIEW, new NewReviewNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REVIEW_EDIT, new ReviewEditedNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REVIEW_REPLY, new ReviewReplyNotification(mContext));
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TICKET, new TicketResponseNotification(mContext));
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RES_CENTER, new ResCenterNewNotification(mContext));
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_NEWORDER, new NewOrderNotification(mContext));
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_SELLER, new ReputationSmileyToSellerNotification(mContext));
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_SELLER, new ReputationSmileyToSellerEditNotification(mContext));
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_PURCHASE_DISPUTE, new PurchaseDisputeNotification(mContext));
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_AGREE, new ResCenterBuyerAgreeNotification(mContext));
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_SELLER_REPLY, new ResCenterAdminSellerReplyNotification(mContext));
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_CANCEL_2D_SELLER, new SellingAutoCancel2DNotification(mContext));
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_CANCEL_4D_SELLER, new SellingAutoCancel4DNotification(mContext));
@@ -131,6 +137,7 @@ public abstract class BaseAppNotificationReceiverUIBackground {
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_DELIVERED_SELLER, new SellingOrderDeliveredNotification(mContext));
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_ORDER_FINISH_SELLER, new SellingOrderFinishedNotification(mContext));
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY, new ResCenterSellerReplyNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_AGREE, new ResCenterSellerAgreeNotification(mContext));
         return dedicatedNotification;
     }
 

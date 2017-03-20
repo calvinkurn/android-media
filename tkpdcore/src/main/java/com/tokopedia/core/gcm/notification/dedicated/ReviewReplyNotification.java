@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.fcm.notification;
+package com.tokopedia.core.gcm.notification.dedicated;
 
 import android.content.Context;
 import android.content.Intent;

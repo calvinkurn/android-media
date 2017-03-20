@@ -46,8 +46,7 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
     }
 
     private boolean isAllowedNotification(Bundle data) {
-        return GCMUtils.isValidForSellerApp(GCMUtils.getCode(data))
-                && cacheManager.isAllowToHandleNotif(data)
+        return cacheManager.isAllowToHandleNotif(data)
                 && cacheManager.checkLocalNotificationAppSettings(
                 Integer.parseInt(data.getString(ARG_NOTIFICATION_CODE))
         );
