@@ -182,7 +182,6 @@ public class WishListImpl implements WishList {
 
     @Override
     public void fetchDataFromInternet(final Context context) {
-        params = RequestParams.create();
         Observable<Response<WishlistData>> observable = mojitoService.getApi().getWishlist(
                 SessionHandler.getLoginID(context),
                 10,
@@ -320,6 +319,7 @@ public class WishListImpl implements WishList {
     @Override
     public void fetchDataAfterClearSearch(Context context) {
         mPaging.resetPage();
+        params = RequestParams.create();
         Observable<Response<WishlistData>> observable = mojitoService.getApi().getWishlist(
                 SessionHandler.getLoginID(context),
                 10,
