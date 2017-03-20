@@ -3,7 +3,10 @@ package com.tokopedia.core.util;
 /**
  * Created by Alvarisi on 6/15/2016.
  * modified by Hafizh 8/23/2016
+ *
+ * This interface is deprecated, use {@link com.tokopedia.core.analytics.AppEventTracking} instead
  */
+@Deprecated
 public interface AppEventTracking {
     String GTM_CACHE = "GTM_CACHE";
     String EMAIL_KEY = "EMAIL_KEY";

@@ -14,6 +14,7 @@ import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONArray;
@@ -30,7 +31,6 @@ import java.util.Map;
  */
 
 public class TrackingUtils extends TrackingConfig {
-
     public static void eventCampaign(Campaign campaign){
         Campaign temp = new Campaign(campaign);
         getGTMEngine()

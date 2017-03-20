@@ -1,6 +1,5 @@
 package com.tokopedia.core.analytics.container;
 
-import com.moe.pushlibrary.PayloadBuilder;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 
 import org.json.JSONObject;
@@ -18,4 +17,8 @@ public interface IMoengageContainer
     void setUserProfile(CustomerWrapper customerWrapper);
 
     void sendEvent(JSONObject jsonObject, String eventName);
+
+    void sendRegistrationStartEvent(String medium);
+
+    void sendRegisterEvent(String fullName, String mobileNo, String dateOfBirth);
 }
