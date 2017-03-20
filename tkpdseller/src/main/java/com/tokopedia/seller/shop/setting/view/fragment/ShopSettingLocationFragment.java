@@ -1,63 +1,42 @@
 package com.tokopedia.seller.shop.setting.view.fragment;
 
-import android.app.Activity;
-import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationPresenterImpl;
+import com.tokopedia.seller.app.BaseDiFragment;
+import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingLocationComponent;
+import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
+import com.tokopedia.seller.shop.setting.di.component.ShopSettingLocationComponent;
+import com.tokopedia.seller.shop.setting.di.module.ShopSettingLocationModule;
+import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationPresenter;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationView;
 
 /**
  * Created by Nathaniel on 3/16/2017.
  */
 
-public class ShopSettingLocationFragment extends BasePresenterFragment<ShopSettingLocationPresenterImpl> implements ShopSettingLocationView {
+public class ShopSettingLocationFragment extends BaseDiFragment<ShopSettingLocationPresenter> implements ShopSettingLocationView {
     public static final String TAG = "ShopSettingLocation";
+    private ShopSettingLocationComponent component;
+    private TextView textViewShopSettingLocationPickup;
 
     public static ShopSettingLocationFragment getInstance() {
         return new ShopSettingLocationFragment();
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
+    protected void initInjection() {
+        component = DaggerShopSettingLocationComponent
+                .builder()
+                .shopSettingLocationModule(new ShopSettingLocationModule(this))
+                .shopSettingComponent(getComponent(ShopSettingComponent.class))
+                .build();
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
+    protected ShopSettingLocationPresenter getPresenter() {
+        return component.getPresenter();
     }
 
     @Override
@@ -67,24 +46,25 @@ public class ShopSettingLocationFragment extends BasePresenterFragment<ShopSetti
 
     @Override
     protected void initView(View view) {
+        view.findViewById(R.id.verify_button)
+                .setOnClickListener(getVerifyButton());
+        textViewShopSettingLocationPickup =
+                (TextView) view.findViewById(R.id.text_view_shop_setting_location_pickup);
+    }
 
+
+    public View.OnClickListener getVerifyButton() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.changeLocationPickup();
+
+            }
+        };
     }
 
     @Override
-    protected void setViewListener() {
-
+    public void changeLocationString(String s) {
+        textViewShopSettingLocationPickup.setText(s);
     }
-
-    @Override
-    protected void initialVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-        presenter.fetchDistrictData();
-
-    }
-
-
 }

@@ -3,37 +3,23 @@ package com.tokopedia.seller.shop.open.view.activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.net.Uri;
-import android.os.Bundle;
 import android.widget.FrameLayout;
 
-import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.app.BaseDiActivity;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenMandatoryPresenter;
+import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingComponent;
+import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
+import com.tokopedia.seller.shop.setting.di.module.ShopSettingModule;
 import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLocationFragment;
 
 /**
  * Created by Nathaniel on 3/16/2017.
  */
 
-public class ShopOpenMandatoryActivity extends BasePresenterActivity<ShopOpenMandatoryPresenter> {
+public class ShopOpenMandatoryActivity extends BaseDiActivity<ShopOpenMandatoryPresenter, ShopSettingComponent> {
     private FrameLayout container;
     private FragmentManager fragmentManager;
-
-    @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
 
     @Override
     protected int getLayoutId() {
@@ -46,14 +32,21 @@ public class ShopOpenMandatoryActivity extends BasePresenterActivity<ShopOpenMan
     }
 
     @Override
-    protected void setViewListener() {
+    protected ShopSettingComponent initComponent() {
+        return DaggerShopSettingComponent
+                .builder()
+                .shopSettingModule(new ShopSettingModule(this))
+                .build();
+    }
 
+    @Override
+    protected ShopOpenMandatoryPresenter getPresenter() {
+        return null;
     }
 
     @Override
     protected void initVar() {
         fragmentManager = getFragmentManager();
-
     }
 
     @Override
@@ -73,4 +66,5 @@ public class ShopOpenMandatoryActivity extends BasePresenterActivity<ShopOpenMan
         }
         ft.commit();
     }
+
 }
