@@ -13,7 +13,7 @@ import android.widget.Button;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.model.other.FilterTitleItem;
+import com.tokopedia.seller.topads.view.model.FilterTitleItem;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterContentFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterListFragment;
 
@@ -29,6 +29,7 @@ public abstract class TopAdsFilterActivity extends BasePresenterActivity impleme
     private TopAdsFilterListFragment topAdsFilterListFragment;
     private List<TopAdsFilterContentFragment> filterContentFragmentList;
     private Button submitButton;
+    TopAdsFilterContentFragment currentContentFragment;
 
     protected abstract List<TopAdsFilterContentFragment> getFilterContentList();
 
@@ -72,9 +73,9 @@ public abstract class TopAdsFilterActivity extends BasePresenterActivity impleme
         filterContentFragmentList = getFilterContentList();
         topAdsFilterListFragment = TopAdsFilterListFragment.createInstance(getFilterTitleItemList(), selectedPosition);
         topAdsFilterListFragment.setCallback(this);
-        TopAdsFilterContentFragment contentFragment = filterContentFragmentList.get(selectedPosition);
+        currentContentFragment = filterContentFragmentList.get(selectedPosition);
         getFragmentManager().beginTransaction().add(R.id.container_filter_list, topAdsFilterListFragment, TopAdsFilterListFragment.class.getSimpleName()).commit();
-        getFragmentManager().beginTransaction().add(R.id.container_filter_content, contentFragment, TopAdsFilterListFragment.class.getSimpleName()).commit();
+        getFragmentManager().beginTransaction().add(R.id.container_filter_content, currentContentFragment, TopAdsFilterListFragment.class.getSimpleName()).commit();
     }
 
     @Override
@@ -94,7 +95,15 @@ public abstract class TopAdsFilterActivity extends BasePresenterActivity impleme
 
     private void changeContent(TopAdsFilterContentFragment filterContentFragment) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container_filter_content, filterContentFragment);
+        // fragmentTransaction.replace(R.id.container_filter_content, filterContentFragment);
+        fragmentTransaction.hide(currentContentFragment);
+        if (! filterContentFragment.isAdded() ) {
+            fragmentTransaction.add(R.id.container_filter_content, filterContentFragment);
+        }
+        else {
+            fragmentTransaction.show(filterContentFragment);
+        }
+        currentContentFragment = filterContentFragment;
         fragmentTransaction.commit();
         filterContentFragment.setCallback(this);
     }
@@ -123,8 +132,12 @@ public abstract class TopAdsFilterActivity extends BasePresenterActivity impleme
 
     private void setFilterChangedResult() {
         Intent intent = getDefaultIntentResult();
+        // overwrite with changes
         for (TopAdsFilterContentFragment topAdsFilterContentFragment : filterContentFragmentList) {
-            topAdsFilterContentFragment.addResult(intent);
+            // only process the added fragment, not-added-fragment has no adapter created.
+            if (topAdsFilterContentFragment.isAdded()) {
+                topAdsFilterContentFragment.addResult(intent);
+            }
         }
         setResult(Activity.RESULT_OK, intent);
     }

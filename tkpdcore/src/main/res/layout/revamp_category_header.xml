@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/margin_vs"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/image_header"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:scaleType="centerCrop"/>
+
+        <TextView
+            android:id="@+id/title_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_large"
+            />
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view_revamp_categories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:focusableInTouchMode="true"
+        android:visibility="gone"
+        android:scrollbars="none" />
+
+    <LinearLayout
+        android:id="@+id/expand_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/tkpd_dark_green"
+            android:text="Lihat Lainnya"
+            android:textSize="@dimen/textsize"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:gravity="center_vertical"
+            android:visibility="visible"
+            android:src="@drawable/ic_expand_more_black_24dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/hide_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="center_horizontal">
+
+        <TextView
+            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/tkpd_dark_green"
+            android:text="Sembunyikan Lainnya"
+            android:textSize="@dimen/textsize"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/med_dp"
+            android:gravity="center_vertical"
+            android:visibility="visible"
+            android:src="@drawable/ic_expand_less_grey_24dp"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/total_product"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:maxLines="1"
+        android:textColor="@color/grey_600"
+        android:textSize="@dimen/font_medium"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:textAlignment="viewStart"
+        android:visibility="gone"
+        android:layout_weight="1"/>
+
+</LinearLayout>

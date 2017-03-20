@@ -62,6 +62,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TextView deposit;
         TextView topPoint;
         TextView tokoCashValueView;
+        TextView tokoCashActivationButton;
         TextView tokoCashLabel;
         ImageView coverImg;
         RelativeLayout gradientBlack;
@@ -72,6 +73,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         View loadingSaldo;
         View loadingLoyalty;
         View loadingTopCash;
+        View tokoCashRedirectArrow;
 
         public HeaderViewHolder(View itemView) {
             super(itemView);
@@ -81,6 +83,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             topPoint = (TextView) itemView.findViewById(R.id.toppoints_text);
             tokoCashLabel = (TextView) itemView.findViewById(R.id.toko_cash_label);
             tokoCashValueView = (TextView) itemView.findViewById(R.id.top_cash_value);
+            tokoCashActivationButton = (TextView) itemView
+                    .findViewById(R.id.toko_cash_activation_button);
             coverImg = (ImageView) itemView.findViewById(R.id.cover_img);
             gradientBlack = (RelativeLayout) itemView.findViewById(R.id.gradient_black);
             drawerPointsLayout = (LinearLayout) itemView.findViewById(R.id.drawer_points_layout);
@@ -90,6 +94,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             loadingSaldo = itemView.findViewById(R.id.loading_saldo);
             loadingLoyalty = itemView.findViewById(R.id.loading_loyalty);
             loadingTopCash = itemView.findViewById(R.id.loading_top_cash);
+            tokoCashRedirectArrow = itemView.findViewById(R.id.toko_cash_redirect_arrow);
         }
     }
 
@@ -467,7 +472,15 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private void setTokoCashLayoutValue(HeaderViewHolder holder, DrawerHeader headerValue) {
         if(isTokoCashDisabled(headerValue) || isTokoNoAction(headerValue)) {
            holder.topCashLayout.setVisibility(View.GONE);
-        }else {
+        } else if(isUnregistered(headerValue)) {
+            holder.topCashLayout.setVisibility(View.VISIBLE);
+            holder.tokoCashRedirectArrow.setVisibility(View.GONE);
+            holder.tokoCashActivationButton.setVisibility(View.VISIBLE);
+            holder.tokoCashActivationButton.setText(headerValue.tokoCashText);
+            holder.topCashLayout
+                    .setOnClickListener(onLayoutTopCashSelected(headerValue.tokoCashURL));
+            holder.loadingTopCash.setVisibility(View.GONE);
+        } else {
             holder.tokoCashLabel.setText(headerValue.tokoCashText);
             holder.topCashLayout
                     .setOnClickListener(onLayoutTopCashSelected(headerValue.tokoCashURL));
@@ -482,7 +495,11 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private boolean isTokoCashDisabled(DrawerHeader headerValue) {
-        return headerValue.tokoCashValue == null || headerValue.tokoCashText.isEmpty();
+        return headerValue.tokoCashText == null || headerValue.tokoCashText.isEmpty();
+    }
+
+    private boolean isUnregistered(DrawerHeader headerValue) {
+        return !headerValue.tokoCashToWallet && headerValue.tokoCashOtherAction;
     }
 
     private View.OnClickListener onLayoutTopCashSelected(final String redirectURL) {

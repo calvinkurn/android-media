@@ -115,7 +115,7 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
     public void addSolutionFragmentStacked(ActionParameterPassData passData) {
         if (getFragmentManager().findFragmentByTag(ChooseSolutionFragment.class.getSimpleName()) == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, ChooseSolutionFragment.newInstance(passData), ChooseSolutionFragment.class.getSimpleName())
+                    .replace(R.id.container, ChooseSolutionFragment.newInstance(passData), ChooseSolutionFragment.class.getSimpleName())
                     .addToBackStack(TAG_STEP_2)
                     .commit();
         }
@@ -125,8 +125,8 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
     public void addProductDetailTroubleFragmentStacked(ActionParameterPassData passData) {
         if (getFragmentManager().findFragmentByTag(ChooseProductTroubleFragment.class.getSimpleName()) == null) {
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, ChooseProductTroubleFragment.newInstance(passData), ChooseProductTroubleFragment.class.getSimpleName())
-                    .addToBackStack(TAG_STEP_2)
+                    .replace(R.id.container, ChooseProductTroubleFragment.newInstance(passData), ChooseProductTroubleFragment.class.getSimpleName())
+                    .addToBackStack(TAG_STEP_1)
                     .commit();
         }
     }

@@ -417,12 +417,13 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                         .getString(R.string.toast_success_promo2);
                                 viewListener.showToastMessage(msg);
                             } else {
-                                String msg = context.getResources()
-                                        .getString(R.string.toast_promo_error)
+                                String msg = context.getResources().getString(R.string.toast_promo_error1)
                                         + " "
                                         + MethodChecker.fromHtml(productName)
                                         + "\n"
-                                        + data.getExpiry();
+                                        + data.getExpiry()
+                                        + "\n"
+                                        + context.getResources().getString(R.string.toast_promo_error2);
 
                                 viewListener.showToastMessage(msg);
                             }
@@ -450,11 +451,13 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     });
         } else {
             String msg = context.getResources()
-                    .getString(R.string.toast_promo_error)
+                    .getString(R.string.toast_promo_error1)
                     + " "
                     + MethodChecker.fromHtml(cacheHandler.getString(PRODUCT_NAME,""))
                     + "\n"
-                    + cacheHandler.getString(DATE_EXPIRE,"");
+                    + cacheHandler.getString(DATE_EXPIRE,"")
+                    + "\n"
+                    + context.getResources().getString(R.string.toast_promo_error2);
             viewListener.showToastMessage(msg);
         }
     }

@@ -3,8 +3,11 @@ package com.tokopedia.tkpd.home.presenter;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
+import com.google.gson.Gson;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheDuration;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
@@ -21,6 +24,9 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.service.FavoritePart1Service;
+import com.tokopedia.tkpd.home.wishlist.WishlistViewModelMapper;
+import com.tokopedia.tkpd.home.wishlist.domain.SearchWishlistUsecase;
+import com.tokopedia.tkpd.home.wishlist.domain.model.DataWishlist;
 
 import org.parceler.Parcels;
 
@@ -57,16 +63,24 @@ public class WishListImpl implements WishList {
 
     MojitoAuthService mojitoAuthService;
 
+    SearchWishlistUsecase searchWishlistUsecase;
+
     List<Wishlist> dataWishlist = new ArrayList<>();
 
-    public WishListImpl(WishListView wishListView) {
+    public WishListImpl(WishListView wishListView, SearchWishlistUsecase searchWishlistUsecase) {
         this.wishListView = wishListView;
+        this.searchWishlistUsecase = searchWishlistUsecase;
         mPaging = new WishlistPaging();
         wishlist = new FavoritePart1Service();
         cache = new CacheHomeInteractorImpl();
         mojitoService = new MojitoService();
         compositeSubscription = new CompositeSubscription();
         mojitoAuthService = new MojitoAuthService();
+
+    }
+
+    private com.tokopedia.core.base.common.service.MojitoService initNewMojitoService() {
+        return null;
     }
 
 
@@ -169,7 +183,7 @@ public class WishListImpl implements WishList {
 
             @Override
             public void onError(Throwable e) {
-                if (mPaging.getPage() == 1 && wishListView.isPullToRefresh()){
+                if (mPaging.getPage() == 1 && wishListView.isPullToRefresh()) {
                     wishListView.displayPull(false);
                 }
                 wishListView.displayErrorNetwork(false);
@@ -194,7 +208,7 @@ public class WishListImpl implements WishList {
             data.clear();
         }
         wishListView.displayPull(false);
-
+        wishListView.clearSearch();
         dataWishlist.addAll(wishlistData.getWishlist());
         data.addAll(convertToProductItemList(wishlistData.getWishlist()));
         mPaging.setPagination(wishlistData.getPaging());
@@ -269,6 +283,15 @@ public class WishListImpl implements WishList {
     }
 
     @Override
+    public void searchWishlist(String query) {
+        String userId = wishListView.getUserId();
+        RequestParams params = RequestParams.create();
+        params.putString(SearchWishlistUsecase.KEY_USER_ID, userId);
+        params.putString(SearchWishlistUsecase.KEY_QUERY, query);
+        searchWishlistUsecase.execute(params, new SearchWishlistSubscriber());
+    }
+
+    @Override
     public void subscribe() {
         RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
     }
@@ -338,5 +361,41 @@ public class WishListImpl implements WishList {
                 wishListView.onSuccessDeleteWishlist();
             }
         }, CacheDuration.onSecond(5));
+    }
+
+    private class SearchWishlistSubscriber extends Subscriber<DataWishlist> {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Log.e(TAG, "onError: ", e);
+        }
+
+        @Override
+        public void onNext(DataWishlist wishlist) {
+            WishlistData wishlistData = convertToDataWishlistViewModel(wishlist);
+            data.clear();
+            dataWishlist.clear();
+            wishListView.displayPull(false);
+            dataWishlist.addAll(wishlistData.getWishlist());
+            data.addAll(convertToProductItemList(wishlistData.getWishlist()));
+            mPaging.setPagination(wishlistData.getPaging());
+            if (mPaging.CheckNextPage()) {
+                wishListView.displayLoadMore(true);
+            } else {
+                wishListView.displayLoadMore(false);
+            }
+            wishListView.setPullEnabled(true);
+            wishListView.loadDataChange();
+            wishListView.displayMainContent(true);
+            wishListView.displayLoading(false);
+        }
+
+        private WishlistData convertToDataWishlistViewModel(DataWishlist dataWishlist) {
+            return new WishlistViewModelMapper(dataWishlist).getWishlistData();
+        }
     }
 }

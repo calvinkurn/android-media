@@ -56,6 +56,10 @@ import rx.subscriptions.CompositeSubscription;
 public class RegisterStep2Fragment extends BasePresenterFragment<RegisterStep2Presenter>
         implements RegisterStep2ViewListener, RegisterConstant {
 
+    private static final int DEFAULT_DATE_DAY = 1;
+    private static final int DEFAULT_DATE_MONTH = 1;
+    private static final int DEFAULT_DATE_YEAR = 1991;
+
     @BindView(R2.id.register_next_status)
     LinearLayout registerNextStatus;
     @BindView(R2.id.register_next_status_message)
@@ -170,6 +174,18 @@ public class RegisterStep2Fragment extends BasePresenterFragment<RegisterStep2Pr
             presenter.calculateDateTime();
         }
 
+        // set default value of datepicker
+        presenter.getViewModel().setDateYear(DEFAULT_DATE_YEAR);
+        presenter.getViewModel().setDateMonth(DEFAULT_DATE_MONTH);
+        presenter.getViewModel().setDateDay(DEFAULT_DATE_DAY);
+        presenter.getViewModel().setDateText(
+                RegisterUtil.formatDateTextString(
+                        presenter.getViewModel().getDateDay(),
+                        presenter.getViewModel().getDateMonth(),
+                        presenter.getViewModel().getDateYear()
+                )
+        );
+
         datePicker = new DatePickerDialog(getActivity(),
                 callBack,
                 presenter.getViewModel().getDateYear(),
@@ -180,7 +196,7 @@ public class RegisterStep2Fragment extends BasePresenterFragment<RegisterStep2Pr
         dp.setMaxDate(presenter.getViewModel().getMaxDate());
         dp.setMinDate(presenter.getViewModel().getMinDate());
 
-        dateText.setText(RegisterNewImpl.RegisterUtil.formatDateTextString(1, 1, 1989));
+        dateText.setText(presenter.getViewModel().getDateText());
         showTermsAndOptionsTextView();
     }
 
@@ -276,7 +292,11 @@ public class RegisterStep2Fragment extends BasePresenterFragment<RegisterStep2Pr
         dateText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerUtil datePicker = new DatePickerUtil(getActivity(), 1, 1, 1989);
+                DatePickerUtil datePicker = new DatePickerUtil(getActivity()
+                        , presenter.getViewModel().getDateDay()
+                        , presenter.getViewModel().getDateMonth()
+                        , presenter.getViewModel().getDateYear()
+                );
                 datePicker.SetMaxYear(2002);
                 datePicker.SetMinYear(1934);
                 datePicker.SetShowToday(false);
