@@ -70,9 +70,14 @@ public class TopAdsAddProductListActivity extends BaseActivity
                 public void onStateChanged(@NonNull View bottomSheet, int newState) {
                     switch (newState) {
                         case BottomSheetBehavior.STATE_COLLAPSED:
+                            viewShadowGray.setVisibility(View.VISIBLE);
                             break;
                         case BottomSheetBehavior.STATE_EXPANDED:
+                            viewShadowGray.setVisibility(View.GONE);
                             removePaddingBottom();
+                            break;
+                        case BottomSheetBehavior.STATE_DRAGGING:
+                            viewShadowGray.setVisibility(View.VISIBLE);
                             break;
                     }
                 }
@@ -93,6 +98,7 @@ public class TopAdsAddProductListActivity extends BaseActivity
     private int maxNumberSelection;
     private int thirtyEightPercentBlackColor;
     private int whiteColor;
+    private View viewShadowGray;
 
     private void removePaddingBottom() {
         bottomSheetContainer.setPadding(0, 0, 0, 0);
@@ -120,6 +126,8 @@ public class TopAdsAddProductListActivity extends BaseActivity
         bottomSheetSelection = findViewById(R.id.bottom_sheet_selection);
         numberOfChooseFooterHelper = new NumberOfChooseFooterHelper(bottomSheetSelection);
         numberOfChooseFooterHelper.bindData(10, expandedOnClick);
+
+        viewShadowGray = findViewById(R.id.view_shadow_gray);
 
         footerButtonView = findViewById(R.id.top_ads_next);
         nextButton.setOnClickListener(new View.OnClickListener() {

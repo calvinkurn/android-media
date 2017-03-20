@@ -72,6 +72,7 @@ public class SessionHandler {
     private static final String LOGIN_UUID_KEY = "LOGIN_UUID";
     private static final String UUID_KEY = "uuid";
     private static final String DEFAULT_UUID_VALUE = "";
+    private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
 
     private Context context;
 
@@ -179,6 +180,7 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, "REGISTERED");
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_MAIN);
         LocalCacheHandler.clearCache(context, ProductDetailPresenterImpl.CACHE_PROMOTION_PRODUCT);
+        LocalCacheHandler.clearCache(context, CACHE_PHONE_VERIF_TIMER);
         CacheInboxReputationInteractorImpl reputationCache = new CacheInboxReputationInteractorImpl();
         reputationCache.deleteCache();
         InboxReputationCacheManager reputationDetailCache = new InboxReputationCacheManager();
@@ -189,7 +191,6 @@ public class SessionHandler {
         clearFeedCache();
 
     }
-
 
 
     private static void logoutInstagram(Context context) {
@@ -223,8 +224,8 @@ public class SessionHandler {
             webView.loadUrl("https://instagram.com/accounts/logout/");
             webView.setVisibility(View.GONE);
         }
-        if(context.getApplicationContext() instanceof TkpdCoreRouter){
-            ((TkpdCoreRouter)context.getApplicationContext()).removeInstopedToken();
+        if (context.getApplicationContext() instanceof TkpdCoreRouter) {
+            ((TkpdCoreRouter) context.getApplicationContext()).removeInstopedToken();
         }
     }
 
@@ -260,15 +261,15 @@ public class SessionHandler {
         String u_id;
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         u_id = sharedPrefs.getString(GTM_LOGIN_ID, "");
-        if(TextUtils.isEmpty(u_id)){
-            if(!TextUtils.isEmpty(SessionHandler.getLoginID(context))){
-                SessionHandler.setGTMLoginID(context,SessionHandler.getLoginID(context));
+        if (TextUtils.isEmpty(u_id)) {
+            if (!TextUtils.isEmpty(SessionHandler.getLoginID(context))) {
+                SessionHandler.setGTMLoginID(context, SessionHandler.getLoginID(context));
                 return SessionHandler.getLoginID(context);
-            }else{
+            } else {
                 return "";
             }
 
-        }else{
+        } else {
             return u_id;
         }
     }

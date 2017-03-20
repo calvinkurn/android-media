@@ -94,6 +94,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private interface QueryListener {
         void onQueryChanged(String query);
     }
+    private String lastQuery;
 
     public DiscoverySearchView(Context context) {
         this(context, null);
@@ -575,7 +576,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         }
 
         //Request Focus
-        mSearchSrcTextView.setText(null);
+        mSearchSrcTextView.setText(lastQuery);
         mSearchSrcTextView.requestFocus();
         if (animate) {
             setVisibleWithAnimation();
@@ -641,6 +642,10 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             mSearchViewListener.onSearchViewClosed();
         }
         mIsSearchOpen = false;
+    }
+
+    public void setLastQuery(String lastQuery) {
+        this.lastQuery = lastQuery;
     }
 
     /**
