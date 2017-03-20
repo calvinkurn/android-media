@@ -10,9 +10,27 @@ public class SetDateHeaderModel extends TypeBasedModel {
     public static final int TYPE = 1292832;
     String startDate;
     String endDate;
+    long sDate;
+    long eDate;
 
     public SetDateHeaderModel() {
         super(TYPE);
+    }
+
+    public long getsDate() {
+        return sDate;
+    }
+
+    public void setsDate(long sDate) {
+        this.sDate = sDate;
+    }
+
+    public long geteDate() {
+        return eDate;
+    }
+
+    public void seteDate(long eDate) {
+        this.eDate = eDate;
     }
 
     public String getStartDate() {

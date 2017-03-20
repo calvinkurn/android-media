@@ -1,6 +1,7 @@
 package com.tokopedia.seller.reputation.view.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,6 +27,7 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.datepicker.DatePickerResultListener;
 import com.tokopedia.seller.reputation.data.mapper.ReputationReviewMapper;
 import com.tokopedia.seller.reputation.data.repository.ReputationReviewRepositoryImpl;
 import com.tokopedia.seller.reputation.data.source.cloud.CloudReputationReviewDataSource;
@@ -38,6 +40,7 @@ import com.tokopedia.seller.reputation.presenter.SellerReputationFragmentPresent
 import com.tokopedia.seller.reputation.view.SellerReputationView;
 import com.tokopedia.seller.reputation.view.adapter.SellerReputationAdapter;
 import com.tokopedia.seller.reputation.view.helper.ReputationViewHelper;
+import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
 import com.tokopedia.seller.topads.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.topads.utils.TopAdsNetworkErrorHelper;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsWhiteRetryDataBinder;
@@ -47,13 +50,11 @@ import com.tokopedia.seller.util.ShopNetworkController;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 /**
  * @author normansyahputa
  */
 public class SellerReputationFragment extends BasePresenterFragment<SellerReputationFragmentPresenter>
-        implements SellerReputationView, RetryDataBinder.OnRetryListener, DefaultErrorSubscriber.ErrorNetworkListener {
+        implements SellerReputationView, RetryDataBinder.OnRetryListener, DefaultErrorSubscriber.ErrorNetworkListener, DatePickerResultListener.DatePickerResult {
 
     public static final String TAG = "SellerReputationFragmen";
 
@@ -68,14 +69,11 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
     LinearLayoutManager linearLayoutManager;
 
     SwipeToRefresh swipeToRefresh;
-    @Inject
     SessionHandler sessionHandler;
-    @Inject
     ReviewReputationUseCase reviewReputationUseCase;
-    @Inject
     GCMHandler gcmHandler;
-    @Inject
     ReviewReputationMergeUseCase reviewReputationMergeUseCase;
+
     private TopAdsNetworkErrorHelper gmNetworkErrorHelper;
     private View rootView;
     private AppComponent baseApplication;
@@ -83,6 +81,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
     private boolean isFirstTime = true;
     private boolean isEndOfFile = true;
     private RecyclerView.OnScrollListener onScrollListener;
+    private DatePickerResultListener datePickerResultListener;
 
     public static SellerReputationFragment createInstance() {
         SellerReputationFragment fragment = new SellerReputationFragment();
@@ -140,6 +139,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();
+        adapter.setFragment(null);
     }
 
     @Override
@@ -160,15 +160,19 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
     @Override
     public void onResume() {
         super.onResume();
-        inject();
-        presenter.setSessionHandler(sessionHandler);
-        presenter.setReviewReputationUseCase(reviewReputationUseCase);
-        presenter.setGcmHandler(gcmHandler);
-        presenter.setErrorNetworkListener(this);
-        presenter.setReviewReputationMergeUseCase(reviewReputationMergeUseCase);
-        gmNetworkErrorHelper = new TopAdsNetworkErrorHelper(null, rootView);
-        reputationViewHelper = new ReputationViewHelper(topSlideOffBar);
-        setupRecyclerView();
+        if (isFirstTime) {
+            inject();
+            presenter.setSessionHandler(sessionHandler);
+            presenter.setReviewReputationUseCase(reviewReputationUseCase);
+            presenter.setGcmHandler(gcmHandler);
+            presenter.setErrorNetworkListener(this);
+            presenter.setReviewReputationMergeUseCase(reviewReputationMergeUseCase);
+            gmNetworkErrorHelper = new TopAdsNetworkErrorHelper(null, rootView);
+            reputationViewHelper = new ReputationViewHelper(topSlideOffBar);
+            setupRecyclerView();
+
+            isFirstTime = false;
+        }
         fetchData();
     }
 
@@ -178,9 +182,9 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
             refreshHandler.setRefreshing(true);
             firstTimeNetworkCall();
         } else {
-            presenter.setNetworkStatus(
-                    TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
             if (presenter.isFirstTime()) {
+                presenter.setNetworkStatus(
+                        TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
                 adapter.showLoadingFull(true);
                 swipeToRefresh.setEnabled(false);
                 firstTimeNetworkCall();
@@ -207,14 +211,15 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
                         && adapter.getDataSize() < Integer.MAX_VALUE) {
                     presenter.incrementPage();
                     presenter.setNetworkStatus(TopAdsAddProductListPresenter.NetworkStatus.LOADMORE);
-
+                    presenter.loadMoreNetworkCall();
                 }
-//                presenter.loadMore(lastItemPosition, visibleItem);
             }
         };
+        listViewBalance.addOnScrollListener(onScrollListener);
     }
 
     private void inject() {
+
         //[START] This is for dependent component
         ThreadExecutor threadExecutor = new JobExecutor();
         PostExecutionThread postExecutionThread = new UIThread();
@@ -298,36 +303,10 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
     protected void setViewListener() {
     }
 
-    private View.OnClickListener onSearchClicked() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                presenter.onSearchClicked();
-            }
-        };
-    }
-
-    private View.OnClickListener onEndDateClicked() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                presenter.onEndDateClicked(datePicker);
-            }
-        };
-    }
-
-    private View.OnClickListener onStartDateClicked() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                presenter.onStartDateClicked(datePicker);
-            }
-        };
-    }
-
     @Override
     protected void initialVar() {
         adapter = SellerReputationAdapter.createInstance(getActivity());
+        adapter.setFragment(this);
         TopAdsWhiteRetryDataBinder topAdsRetryDataBinder = new TopAdsWhiteRetryDataBinder(adapter);
         topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
@@ -355,6 +334,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         listViewBalance.setLayoutManager(linearLayoutManager);
         listViewBalance.setAdapter(adapter);
+        datePickerResultListener = new DatePickerResultListener(this);
     }
 
     @Override
@@ -389,6 +369,11 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
     @Override
     public void loadShopInfo(ShopModel shopModel) {
         reputationViewHelper.renderData(shopModel);
+    }
+
+    @Override
+    public SetDateHeaderModel getHeaderModel() {
+        return adapter.getHeaderModel();
     }
 
     private void renderDatas(List<TypeBasedModel> datas) {
@@ -464,37 +449,44 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
 
     @Override
     public void showErrorMessage(final String errorMessage) {
+        // disable pull to refresh + hide
+        refreshHandler.setRefreshing(false);
+        adapter.showLoading(false);
+
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (getActivity() != null && rootView != null) {
 
-//                    switch (topAdsAddProductListPresenter.getNetworkStatus()) {
-//                        case SEARCHVIEW:
-//                            topAdsProductListAdapter.clear();
-//                            topAdsProductListAdapter.showEmptyFull(true);
-//                            break;
-//                    }
+                    switch (presenter.getNetworkStatus()) {
+                        case ONACTIVITYFORRESULT:
+                        case PULLTOREFRESH:
+                            adapter.clear();
+                            adapter.showEmptyFull(true);
+                            break;
+                        default:
+                            gmNetworkErrorHelper.showSnackbar(errorMessage, "COBA KEMBALI", new ActionClickListener() {
+                                @Override
+                                public void onActionClicked(com.nispok.snackbar.Snackbar snackbar) {
+                                    Toast.makeText(
+                                            SellerReputationFragment.this.getActivity(),
+                                            errorMessage,
+                                            Toast.LENGTH_SHORT
+                                    ).show();
 
-                    gmNetworkErrorHelper.showSnackbar(errorMessage, "COBA KEMBALI", new ActionClickListener() {
-                        @Override
-                        public void onActionClicked(com.nispok.snackbar.Snackbar snackbar) {
-                            Toast.makeText(
-                                    SellerReputationFragment.this.getActivity(),
-                                    errorMessage,
-                                    Toast.LENGTH_SHORT
-                            ).show();
+                                    dismissSnackbar();
 
-                            dismissSnackbar();
+                                    refreshHandler.setRefreshing(true);
 
-                            refreshHandler.setRefreshing(true);
+                                    presenter.setNetworkStatus(
+                                            TopAdsAddProductListPresenter.NetworkStatus.RETRYNETWORKCALL);
+                                    loadMoreCall();
+                                }
+                            }, getActivity());
+                            break;
+                    }
 
-//                            topAdsAddProductListPresenter.setNetworkStatus(
-//                                    TopAdsAddProductListPresenter.NetworkStatus.RETRYNETWORKCALL);
-//                            loadMoreNetworkCall();
-                        }
-                    }, getActivity());
                 }
             }
         }, 100);
@@ -587,5 +579,33 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
     @Override
     public void showMessageError(String errorMessage) {
         showErrorMessage(errorMessage);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (datePickerResultListener != null) {
+            datePickerResultListener.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public void onDateChoosen(long sDate, long eDate, int lastSelection, int selectionType) {
+        // get header - index 0
+        SetDateHeaderModel headerModel = adapter.getHeaderModel();
+        // reformat view model
+        headerModel.setStartDate(presenter.formatDate(sDate));
+        headerModel.setEndDate(presenter.formatDate(eDate));
+        headerModel.setsDate(sDate);
+        headerModel.seteDate(eDate);
+        // add to header adapter back
+        adapter.notifyHeaderChange(headerModel);
+
+        // set start date and end date to presenter
+        presenter.setStartDate(sDate);
+        presenter.setEndDate(eDate);
+
+        presenter.setNetworkStatus(
+                TopAdsAddProductListPresenter.NetworkStatus.ONACTIVITYFORRESULT);
     }
 }

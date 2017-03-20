@@ -28,6 +28,7 @@ import java.util.List;
  * @author normansyahputa on 3/15/17.
  */
 public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<SellerReputationView> {
+    public static final String REPUTATION_DATE = "dd-MM-yyyy";
     private SellerReputationRequest sellerReputationRequest;
     private SessionHandler sessionHandler;
     private TopAdsAddProductListPresenter.NetworkStatus networkStatus;
@@ -67,6 +68,20 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
 
     public void resetHitNetwork() {
         setNetworkStatus(TopAdsAddProductListPresenter.NetworkStatus.NONETWORKCALL);
+    }
+
+    public void setStartDate(long startDate) {
+        sellerReputationRequest.setStartDate(
+                GoldMerchantDateUtils
+                        .getDateFormatForInput(startDate, ReputationDateUtils.DATE_FORMAT)
+        );
+    }
+
+    public void setEndDate(long endDate) {
+        sellerReputationRequest.setEndDate(
+                GoldMerchantDateUtils
+                        .getDateFormatForInput(endDate, ReputationDateUtils.DATE_FORMAT)
+        );
     }
 
     public boolean isFirstTime() {
@@ -164,7 +179,6 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
                                     getView().loadShopInfo((ShopModel) object);
                                 }
 
-
                                 object = objects.get(1);
                                 if (object != null && object instanceof SellerReputationDomain) {
                                     SellerReputationDomain sellerReputationDomain
@@ -174,18 +188,21 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
                                     getView().setLoadMoreFlag(
                                             sellerReputationDomain.getLinks().getNext() == null);
                                     List<TypeBasedModel> typeBasedModels = convertTo(sellerReputationDomain.getList());
-                                    SetDateHeaderModel setDateHeaderModel = new SetDateHeaderModel();
-                                    setDateHeaderModel.setStartDate(
-                                            GoldMerchantDateUtils.getDateFormatForInput(
-                                                    sellerReputationRequest.getsDate(), "dd-MM-yyyy"
-                                            ));
-                                    setDateHeaderModel.setEndDate(
-                                            GoldMerchantDateUtils.getDateFormatForInput(
-                                                    sellerReputationRequest.geteDate(), "dd-MM-yyyy"
-                                            )
-                                    );
 
-                                    typeBasedModels.add(0, setDateHeaderModel);
+                                    SetDateHeaderModel headerModel = getView().getHeaderModel();
+                                    if (headerModel == null) {
+                                        SetDateHeaderModel setDateHeaderModel = new SetDateHeaderModel();
+                                        setDateHeaderModel.setStartDate(
+                                                formatDate(sellerReputationRequest.getsDate()));
+                                        setDateHeaderModel.setsDate(sellerReputationRequest.getsDate());
+                                        setDateHeaderModel.setEndDate(
+                                                formatDate(sellerReputationRequest.geteDate()));
+                                        setDateHeaderModel.seteDate(sellerReputationRequest.geteDate());
+
+                                        typeBasedModels.add(0, setDateHeaderModel);
+                                    } else {
+                                        typeBasedModels.add(0, headerModel);
+                                    }
                                     getView().loadMore(typeBasedModels);
                                 }
                             }
@@ -195,10 +212,10 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
         }
     }
 
-    public void loadMoreNetworkCall2() {
-        if (isHitNetwork()) {
-
-        }
+    public String formatDate(long date) {
+        return GoldMerchantDateUtils.getDateFormatForInput(
+                date, REPUTATION_DATE
+        );
     }
 
     public void firstTimeNetworkCall() {

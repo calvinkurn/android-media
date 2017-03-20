@@ -9,10 +9,11 @@ import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getPreviou
  */
 
 public class ReputationDateUtils {
+    public static final String DATE_FORMAT = "yyyy-MM-dd";
     private static final Locale locale = new Locale("in", "ID");
     private static final String TAG = "ReputationDateUtils";
 
     public static String getDateFormat(long date, int previousDateCount) {
-        return getPreviousDate(date, previousDateCount, "yyyy-MM-dd");
+        return getPreviousDate(date, previousDateCount, DATE_FORMAT);
     }
 }

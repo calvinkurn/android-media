@@ -1,11 +1,14 @@
 package com.tokopedia.seller.reputation.view.adapter;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Fragment;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +19,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
 import com.tokopedia.seller.reputation.view.helper.ReputationHeaderViewHelper;
 import com.tokopedia.seller.reputation.view.model.ReputationReviewModel;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
@@ -36,6 +40,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
     private static final String TAG = "SellerReputationAdapter";
     private final Context context;
     private ArrayList<TypeBasedModel> list;
+    private Fragment fragment;
 
     public SellerReputationAdapter(Context context) {
         this.context = context;
@@ -44,6 +49,10 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
     public static SellerReputationAdapter createInstance(Context context) {
         return new SellerReputationAdapter(context);
+    }
+
+    public void setFragment(@Nullable Fragment fragment) {
+        this.fragment = fragment;
     }
 
     @Override
@@ -56,7 +65,9 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
             case SetDateHeaderModel.TYPE:
                 itemLayoutView = LayoutInflater.from(viewGroup.getContext())
                         .inflate(R.layout.widget_header_gmstat, null);
-                return new ViewHolder2(itemLayoutView);
+                ViewHolder2 viewHolder2 = new ViewHolder2(itemLayoutView);
+                viewHolder2.setFragment(fragment);
+                return viewHolder2;
             default:
                 return super.onCreateViewHolder(viewGroup, viewType);
         }
@@ -165,6 +176,22 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
         list.addAll(datas);
     }
 
+    public void notifyHeaderChange(SetDateHeaderModel headerModel) {
+        list.set(0, headerModel);
+        notifyItemChanged(0);
+    }
+
+    public SetDateHeaderModel getHeaderModel() {
+        if (getDataSize() > 0) {
+            TypeBasedModel typeBasedModel = list.get(0);
+            if (typeBasedModel != null && typeBasedModel instanceof SetDateHeaderModel) {
+                SetDateHeaderModel setDateHeaderModel = (SetDateHeaderModel) typeBasedModel;
+                return setDateHeaderModel;
+            }
+        }
+        return null;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView date;
@@ -188,18 +215,50 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
         private final ReputationHeaderViewHelper reputationViewHelper;
         private SetDateHeaderModel setDateHeaderModel;
+        private Fragment fragment;
 
         public ViewHolder2(View itemView) {
             super(itemView);
             reputationViewHelper = new ReputationHeaderViewHelper(itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClickHeader();
+                }
+            });
+        }
+
+        public Fragment getFragment() {
+            return fragment;
+        }
+
+        public void setFragment(Fragment fragment) {
+            this.fragment = fragment;
+        }
+
+        public void onClickHeader() {
+            if (fragment != null) {
+                reputationViewHelper.onClick(fragment);
+                return;
+            }
+
+            if (reputationViewHelper != null) {
+                if (itemView.getContext() != null
+                        && itemView.getContext() instanceof Activity) {
+                    reputationViewHelper.onClick((Activity) itemView.getContext());
+                }
+            }
         }
 
         public void bindData(SetDateHeaderModel setDateHeaderModel) {
             this.setDateHeaderModel = setDateHeaderModel;
 
-            reputationViewHelper.setData(
-                    setDateHeaderModel.getStartDate(),
-                    setDateHeaderModel.getEndDate());
+            reputationViewHelper.bindDate(
+                    setDateHeaderModel.getsDate(),
+                    setDateHeaderModel.geteDate(),
+                    0,
+                    DatePickerConstant.SELECTION_TYPE_PERIOD_DATE
+            );
         }
     }
 
