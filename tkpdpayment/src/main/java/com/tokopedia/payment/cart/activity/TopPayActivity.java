@@ -22,11 +22,11 @@ import com.tokopedia.payment.webview.ScroogeWebView;
 public class TopPayActivity extends TopPayBaseActivity implements ITopPayView {
 
     private static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
-    private static final String PAYMENT_FAILED = "payment failed";
     public static final String EXTRA_RESULT_MESSAGE = "EXTRA_RESULT_MESSAGE";
-    public static final int RESULT_TOPPAY_CANCELED_OR_NOT_VERIFIED = TopPayActivity.class.hashCode();
     public static final String EXTRA_PARAMETER_TOP_PAY_RESULT = "EXTRA_PARAMETER_TOP_PAY_RESULT";
     public static final int PAYMENT_SUCCESS = 5;
+    public static final int PAYMENT_CANCELLED = 6;
+    public static final int PAYMENT_FAILED = 7;
 
     private TopPayPresenter presenter;
     private ScroogeWebView scroogeWebView;
@@ -97,7 +97,7 @@ public class TopPayActivity extends TopPayBaseActivity implements ITopPayView {
     public void showToastMessageWithForceCloseView(String message) {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_RESULT_MESSAGE, message);
-        setResult(RESULT_TOPPAY_CANCELED_OR_NOT_VERIFIED, intent);
+        setResult(PAYMENT_CANCELLED, intent);
         closeView();
     }
 
@@ -115,16 +115,18 @@ public class TopPayActivity extends TopPayBaseActivity implements ITopPayView {
         return new CartActivityListener() {
             @Override
             public void onBackKeyPressed(String stringId) {
-                presenter.processVerifyPaymentIdByCancelTopPay(
-                        scroogeWebView.getPaymentId() != null ?
-                                scroogeWebView.getPaymentId() :
-                                presenter.getPaymentPassData().getTransactionId());
+                presenter.processVerifyPaymentIdByCancelTopPay(stringId);
                 onBackPressed();
             }
 
             @Override
             public void processVerifyPaymentId(Bundle bundle) {
-                finishActivity(bundle);
+                processPaymentSuccess(bundle);
+            }
+
+            @Override
+            public void processPaymentFailed(Bundle bundle) {
+                processPaymentFailure(bundle);
             }
 
             @Override
@@ -164,7 +166,7 @@ public class TopPayActivity extends TopPayBaseActivity implements ITopPayView {
         bundle.putInt(ScroogeWebView.EXTRA_ACTION,
                 ScroogeWebView.SERVICE_ACTION_GET_THANKS_TOP_PAY);
         bundle.putString(ScroogeWebView.EXTRA_PAYMENT_ID, presenter.getCurrentPaymentId());
-        finishActivity(bundle);
+        cancelPayment(bundle);
     }
 
     @Override
@@ -172,11 +174,27 @@ public class TopPayActivity extends TopPayBaseActivity implements ITopPayView {
         super.onDestroy();
     }
 
-    private void finishActivity(Bundle bundle) {
+    private void cancelPayment(Bundle bundle) {
+        hideProgressLoading();
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_PARAMETER_TOP_PAY_RESULT, bundle);
+        setResult(PAYMENT_CANCELLED, intent);
+        finish();
+    }
+
+    private void processPaymentSuccess(Bundle bundle) {
         hideProgressLoading();
         Intent intent = new Intent();
         intent.putExtra(EXTRA_PARAMETER_TOP_PAY_RESULT, bundle);
         setResult(PAYMENT_SUCCESS, intent);
+        finish();
+    }
+
+    private void processPaymentFailure(Bundle bundle) {
+        hideProgressLoading();
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_PARAMETER_TOP_PAY_RESULT, bundle);
+        setResult(PAYMENT_FAILED, intent);
         finish();
     }
 

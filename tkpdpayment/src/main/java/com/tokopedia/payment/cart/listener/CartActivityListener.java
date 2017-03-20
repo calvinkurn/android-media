@@ -12,6 +12,8 @@ public interface CartActivityListener {
 
     void processVerifyPaymentId(Bundle bundle);
 
+    void processPaymentFailed(Bundle bundle);
+
     void showMessageWithForceCloseView(String errorMessage);
 
     void hideProgressBar();
