@@ -15,4 +15,5 @@
     <string name="error_input_price">Jumlah nominal yang anda masukan tidak sesuai</string>
     <string name="hint_input_price">Contoh: 422500</string>
     <string name="lihat_detail">Lihat Detail</string>
+    <string name="title_activity_cart_digital_module">Keranjang</string>
 </resources>

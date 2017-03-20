@@ -45,8 +45,8 @@ import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.cart.activity.TopPayActivity;
+import com.tokopedia.payment.model.PaymentPassData;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -517,7 +517,13 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == OtpVerificationActivity.REQUEST_CODE) {
-            presenter.processPatchOtpCart();
+            switch (requestCode) {
+                case OtpVerificationActivity.RESULT_OTP_VERIFIED:
+                    presenter.processPatchOtpCart();
+                    break;
+                default:
+                    break;
+            }
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {// ini request code payment. bisa diganti
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:

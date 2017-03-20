@@ -79,7 +79,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     @Override
     public void processToCheckout() {
         CheckoutDataParameter checkoutData = view.getCheckoutData();
-        if (!checkoutData.isNeedOtp()) {
+        if (checkoutData.isNeedOtp()) {
             view.interruptRequestTokenVerification();
             return;
         }

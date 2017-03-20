@@ -7,11 +7,11 @@ import com.tokopedia.core.otp.domain.OtpRepository;
 import com.tokopedia.digital.cart.data.mapper.ICartMapperData;
 import com.tokopedia.digital.cart.model.OtpData;
 
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 3/20/17.
@@ -21,15 +21,19 @@ public class OtpVerificationInteractor implements IOtpVerificationInteractor {
 
     private final OtpRepository otpRepository;
     private final ICartMapperData cartMapperData;
+    private final CompositeSubscription compositeSubscription;
 
-    public OtpVerificationInteractor(OtpRepository otpRepository, ICartMapperData cartMapperData) {
+    public OtpVerificationInteractor(OtpRepository otpRepository,
+                                     ICartMapperData cartMapperData,
+                                     CompositeSubscription compositeSubscription) {
         this.otpRepository = otpRepository;
         this.cartMapperData = cartMapperData;
+        this.compositeSubscription = compositeSubscription;
     }
 
     @Override
     public void requestOtp(TKPDMapParam<String, Object> parameters, Subscriber<OtpData> subscriber) {
-        Observable.just(otpRepository.requestOtp(parameters)
+        compositeSubscription.add(otpRepository.requestOtp(parameters)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -44,7 +48,7 @@ public class OtpVerificationInteractor implements IOtpVerificationInteractor {
 
     @Override
     public void verifyOtp(TKPDMapParam<String, Object> parameters, Subscriber<OtpData> subscriber) {
-        Observable.just(otpRepository.validateOtp(parameters)
+        compositeSubscription.add(otpRepository.validateOtp(parameters)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
