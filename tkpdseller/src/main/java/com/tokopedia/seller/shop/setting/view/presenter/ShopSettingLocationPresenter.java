@@ -12,5 +12,5 @@ public abstract class ShopSettingLocationPresenter extends BaseDiPresenter<ShopS
         super(view);
     }
 
-    public abstract void changeLocationPickup();
+    public abstract void getDistrictData();
 }

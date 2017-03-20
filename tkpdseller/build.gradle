@@ -108,6 +108,9 @@ dependencies {
     compile rootProject.ext.butterKnifeDependencies.butterKnife
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
     compile rootProject.ext.miscDependencies.parcelerApi
     apt rootProject.ext.miscDependencies.parceler
 

@@ -41,6 +41,7 @@ public class ShopOpenMandatoryActivity extends BaseDiActivity<ShopOpenMandatoryP
         return DaggerShopSettingComponent
                 .builder()
                 .shopSettingModule(new ShopSettingModule(this))
+                .appComponent(getApplicationComponent())
                 .build();
     }
 
