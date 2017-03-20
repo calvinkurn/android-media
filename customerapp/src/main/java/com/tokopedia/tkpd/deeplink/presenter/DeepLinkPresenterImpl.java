@@ -44,6 +44,7 @@ import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -56,6 +57,7 @@ import java.util.Map;
  */
 public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String TAG = DeepLinkPresenterImpl.class.getSimpleName();
+    private static final String FORMAT_UTF_8 = "UTF-8";
     private static final int HOMEPAGE = 0;
     private static final int BROWSE = 1;
     private static final int HOT = 2;
@@ -66,10 +68,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final int OTHER = 7;
     private static final int INVOICE = 8;
     private static final int RECHARGE = 9;
+    private static final int APPLINK = 10;
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
     private static final String DL_TOKOPEDIA_HOST = "apps.tokopedia.com";
     private static final String DF_TOKOPEDIA_HOST = "tokopedia.com";
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
+    private static final String TOKOPEDIA_HOST = "tokopedia";
     private final Activity context;
     private final DeepLinkView viewListener;
     SignInInteractor interactor;
@@ -155,15 +159,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_SHOP_INFO;
                     break;
                 case ACCOUNTS:
-                    if (!uriData.getPath().contains("activation")) {
-                        openWebView(uriData);
-                    } else {
+                    if(!uriData.getPath().contains("activation")) {
+                        prepareOpenWebView(uriData);
+                    }else {
                         context.finish();
                     }
                     screenName = AppScreen.SCREEN_LOGIN;
                     break;
                 case OTHER:
-                    openWebView(uriData);
+                    prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
                     break;
                 case INVOICE:
@@ -174,8 +178,16 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openRecharge(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_RECHARGE;
                     break;
+                case APPLINK:
+                    if (linkSegment != null && linkSegment.size() > 0){
+                        openWebView(Uri.parse(String.valueOf(linkSegment.get(0))));
+                        screenName = AppScreen.SCREEN_WEBVIEW;
+                    }else {
+                        return;
+                    }
+                    break;
                 default:
-                    openWebView(uriData);
+                    prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
                     break;
             }
@@ -352,16 +364,31 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return false;
     }
 
-    private void openWebView(Uri uriData) {
+    private void prepareOpenWebView(Uri uriData) {
         CommonUtils.dumper("wvlogin URL links " + getUrl(uriData.toString()));
-        String url = getUrl(uriData.toString());
-        Fragment fragment = FragmentGeneralWebView.createInstance(url);
+        String url = encodeUrl(uriData.toString());
+        openWebView(Uri.parse(url));
+    }
+
+    private void openWebView(Uri encodedUri){
+        Fragment fragment = FragmentGeneralWebView.createInstance(getUrl(encodedUri.toString()));
         viewListener.inflateFragment(fragment, "WEB_VIEW");
     }
 
     private String getUrl(String data) {
         Log.d(TAG, "getUrl: " + URLGenerator.generateURLSessionLoginV4(data, context));
         return URLGenerator.generateURLSessionLoginV4(data, context);
+    }
+
+    private String encodeUrl(String url) {
+        String encodedUrl;
+        try {
+            encodedUrl = URLEncoder.encode(url, FORMAT_UTF_8);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return encodedUrl;
     }
 
     private void openShopInfo(List<String> linkSegment, Uri uriData) {
@@ -487,6 +514,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         List<String> linkSegment = uriData.getPathSegments();
         if (uriData.toString().contains("accounts.tokopedia.com"))
             return ACCOUNTS;
+        else if (uriData.getScheme().equals(TOKOPEDIA_HOST))
+            return APPLINK;
+
         try {
             if (isExcludedHostUrl(uriData))
                 return OTHER;

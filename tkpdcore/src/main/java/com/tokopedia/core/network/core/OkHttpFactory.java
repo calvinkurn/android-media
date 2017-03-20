@@ -6,7 +6,9 @@ import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthIntercepto
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
+import com.tokopedia.core.network.retrofit.response.TkpdResponseError;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -87,10 +89,12 @@ public class OkHttpFactory {
                 .build();
     }
 
-    public OkHttpClient buildClientTopAdsAuth() {
+    public OkHttpClient buildClientTopAdsAuth(String authorizationString) {
         return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(new FingerprintInterceptor())
-                .addInterceptor(new TopAdsAuthInterceptor())
+        		.addInterceptor(new FingerprintInterceptor())
+                .addInterceptor(new TopAdsAuthInterceptor(authorizationString))
+                .addInterceptor(new TkpdErrorResponseInterceptor(TkpdResponseError.class))
+                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();

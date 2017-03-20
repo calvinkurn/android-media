@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rounded_red"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    tools:layout_gravity="center">
+
+    <TextView
+        android:id="@+id/tvText"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:textColor="@android:color/white"
+        tools:text="Item1222" />
+
+    <ImageButton
+        android:id="@+id/ibClose"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/tvText"
+        android:layout_toRightOf="@id/tvText"
+        android:background="@null"
+        app:srcCompat="@drawable/vector_cancel_white_24dp" />
+
+
+</RelativeLayout>

@@ -8,8 +8,7 @@ import android.widget.RadioButton;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.model.other.RadioButtonItem;
-import com.tokopedia.seller.topads.view.fragment.TopAdsFilterListFragment;
+import com.tokopedia.seller.topads.view.model.RadioButtonItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +51,14 @@ public class TopAdsBasicRadioButtonAdapter extends BaseLinearRecyclerViewAdapter
 
     @Override
     public int getItemCount() {
+        if (data == null) { // data might come empty, because loading from net
+            return super.getItemCount();
+        }
         return data.size() + super.getItemCount();
+    }
+
+    public boolean isEmpty(){
+        return (data == null || data.size() == 0);
     }
 
     @Override
@@ -79,7 +85,7 @@ public class TopAdsBasicRadioButtonAdapter extends BaseLinearRecyclerViewAdapter
 
     @Override
     public int getItemViewType(int position) {
-        if (data.isEmpty() || isLoading() || isRetry()) {
+        if (null== data|| data.isEmpty() || isLoading() || isRetry()) {
             return super.getItemViewType(position);
         } else {
             return VIEW_DATA;

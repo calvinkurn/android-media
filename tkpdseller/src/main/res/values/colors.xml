@@ -10,11 +10,17 @@
 
     <color name="black_seventy_percent">#B3000000</color>
     <color name="black_fifty_four_percent">#8A000000</color>
+    <color name="black_thirty_eight_percent">#61000000</color>
     <color name="color_gray">#1f000000</color>
 
     <color name="font_top_ads_green">#42b549</color>
     <color name="font_top_ads_black_54">#8C000000</color>
     <color name="font_top_ads_black_70">#B3000000</color>
+
+    <color name="font_top_ads_editext_state_disable">#61000000</color>
+
+    <color name="selection_color_top_ads">#f3fef3</color>
+    <color name="thirty_eight_percent_black">#61000000</color>
 
     <color name="tkpd_grey">#E0E0E0</color>
     <color name="tkpd_grey_text">#60000000</color>

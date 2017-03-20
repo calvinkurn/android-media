@@ -31,9 +31,10 @@ public class ImageHandler {
                 .into(imageview);
     }
 
-    public void loadImage(ImageView imageView, @NonNull String url){
+    public void loadImage(ImageView imageView, @NonNull  String url){
         Glide.with(context)
                 .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .dontAnimate()
                 .into(imageView);
     }
