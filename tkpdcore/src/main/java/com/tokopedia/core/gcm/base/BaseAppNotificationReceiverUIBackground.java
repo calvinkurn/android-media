@@ -134,13 +134,8 @@ public abstract class BaseAppNotificationReceiverUIBackground {
         return dedicatedNotification;
     }
 
-    protected Map<Integer, Class> getCommonPromoNotification() {
-        Map<Integer, Class> promotionsNotification = new HashMap<>();
-        promotionsNotification.put(TkpdState.GCMServiceState.GCM_PROMO, PromoNotification.class);
-        promotionsNotification.put(TkpdState.GCMServiceState.GCM_GENERAL, GeneralNotification.class);
-        promotionsNotification.put(TkpdState.GCMServiceState.GCM_CART, CartNotification.class);
-        promotionsNotification.put(TkpdState.GCMServiceState.GCM_VERIFICATION, VerificationNotification.class);
-        promotionsNotification.put(TkpdState.GCMServiceState.GCM_WISHLIST, WishlistNotification.class);
+    protected Map<Integer, Visitable> getCommonPromoNotification() {
+        Map<Integer, Visitable> promotionsNotification = new HashMap<>();
         return promotionsNotification;
     }
 

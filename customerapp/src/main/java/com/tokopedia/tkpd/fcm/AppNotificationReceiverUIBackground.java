@@ -12,6 +12,11 @@ import com.tokopedia.core.gcm.Visitable;
 import com.tokopedia.core.gcm.base.BaseAppNotificationReceiverUIBackground;
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerEditNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerNotification;
+import com.tokopedia.core.gcm.notification.promotions.CartNotification;
+import com.tokopedia.core.gcm.notification.promotions.GeneralNotification;
+import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
+import com.tokopedia.core.gcm.notification.promotions.VerificationNotification;
+import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
 import com.tokopedia.core.gcm.notification.promotions.DeeplinkNotification;
 import com.tokopedia.core.gcm.utils.GCMUtils;
@@ -204,11 +209,16 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private void prepareAndExecutePromoNotification(Bundle data) {
-        Map<Integer, Class> promoNotifications = getCommonPromoNotification();
-        promoNotifications.put(TkpdState.GCMServiceState.GCM_DEEPLINK, DeeplinkNotification.class);
-        Class<?> clazz = promoNotifications.get(GCMUtils.getCode(data));
-        if (clazz != null) {
-            executeNotification(data, clazz);
+        Map<Integer, Visitable> promoNotifications = getCommonPromoNotification();
+        promoNotifications.put(TkpdState.GCMServiceState.GCM_PROMO, new PromoNotification(mContext));
+        promoNotifications.put(TkpdState.GCMServiceState.GCM_GENERAL, new GeneralNotification(mContext));
+        promoNotifications.put(TkpdState.GCMServiceState.GCM_CART, new CartNotification(mContext));
+        promoNotifications.put(TkpdState.GCMServiceState.GCM_VERIFICATION, new VerificationNotification(mContext));
+        promoNotifications.put(TkpdState.GCMServiceState.GCM_WISHLIST, new WishlistNotification(mContext));
+        promoNotifications.put(TkpdState.GCMServiceState.GCM_DEEPLINK, new DeeplinkNotification(mContext));
+        Visitable visitable = promoNotifications.get(GCMUtils.getCode(data));
+        if (visitable != null) {
+            visitable.proccessReceivedNotification(data);
         }
     }
 
@@ -236,7 +246,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         visitables.put(TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_REPLY, new ResCenterBuyerReplyNotification(mContext));
 
         Visitable visitable = visitables.get(GCMUtils.getCode(data));
-        if (visitable != null){
+        if (visitable != null) {
             visitable.proccessReceivedNotification(data);
         }
     }

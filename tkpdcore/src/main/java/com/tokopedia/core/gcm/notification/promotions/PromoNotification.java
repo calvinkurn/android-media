@@ -15,7 +15,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_TITLE;
  */
 
 public class PromoNotification extends BasePromoNotification {
-    protected PromoNotification(Context context) {
+    public PromoNotification(Context context) {
         super(context);
     }
 
