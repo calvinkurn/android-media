@@ -13,8 +13,8 @@ import retrofit2.Retrofit;
 public class OTPOnCallService extends BearerService<OtpOnCallApi> {
     private static final String TAG = OTPOnCallService.class.getSimpleName();
 
-    public OTPOnCallService(String Oauth) {
-        this.mToken = Oauth;
+    public OTPOnCallService(String mToken) {
+        super(mToken);
     }
 
     @Override

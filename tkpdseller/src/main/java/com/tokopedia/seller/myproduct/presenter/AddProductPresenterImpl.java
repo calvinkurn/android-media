@@ -11,6 +11,8 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.SplashScreen;
+import com.tokopedia.core.category.data.utils.CategoryVersioningHelper;
+import com.tokopedia.core.category.data.utils.CategoryVersioningHelperListener;
 import com.tokopedia.core.database.manager.DbManager;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
@@ -20,17 +22,12 @@ import com.tokopedia.core.database.model.EtalaseDB;
 import com.tokopedia.core.database.model.PictureDB;
 import com.tokopedia.core.database.model.ProductDB;
 import com.tokopedia.core.etalase.EtalaseVariable;
-import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.core.myproduct.model.CatalogDataModel;
 import com.tokopedia.core.myproduct.model.DepartmentParentModel;
-import com.tokopedia.seller.myproduct.model.EtalaseModel;
 import com.tokopedia.core.myproduct.model.GetEtalaseModel;
 import com.tokopedia.core.myproduct.model.ImageModel;
-import com.tokopedia.seller.myproduct.model.SimpleTextModel;
 import com.tokopedia.core.myproduct.model.TextDeleteModel;
 import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
-import com.tokopedia.seller.myproduct.model.editProductForm.EditProductForm;
-import com.tokopedia.seller.myproduct.utils.ProductEditHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -38,6 +35,11 @@ import com.tokopedia.core.product.model.productdetail.ProductPreOrder;
 import com.tokopedia.core.product.model.productdetail.ProductWholesalePrice;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
+import com.tokopedia.seller.myproduct.model.EtalaseModel;
+import com.tokopedia.seller.myproduct.model.SimpleTextModel;
+import com.tokopedia.seller.myproduct.model.editProductForm.EditProductForm;
+import com.tokopedia.seller.myproduct.utils.ProductEditHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -77,8 +79,8 @@ public class AddProductPresenterImpl implements AddProductPresenter
     public static final String FETCH_ETALASE = "fetch_etalase";
     private final NetworkInteractor networkInteractorImpl;
     private final DbManager dbManager;
-    private AddProductView addProductView;
     private final Gson gson;
+    private AddProductView addProductView;
     private Map<String, Object> originalEditData;
     private LocalCacheHandler fetchDepParentTimer;
     private LocalCacheHandler fetchDepChildTimer;
@@ -92,31 +94,6 @@ public class AddProductPresenterImpl implements AddProductPresenter
         networkInteractorImpl = new NetworkInteractorImpl();
         dbManager = DbManagerImpl.getInstance();
         gson = new GsonBuilder().create();
-    }
-
-
-    @Override
-    public void setView(AddProductView addProductView) {
-        this.addProductView = addProductView;
-    }
-
-    /**
-     * fetch if expired more than 1 week, and if already at database then show.
-     *
-     * @param context
-     */
-    @Override
-    public void fetchDepartmentParent(Context context) {
-        fetchDepParentTimer = initCacheIfNotNull(context, FETCH_DEP_PARENT);
-        List<CategoryDB> categoryDBs = new Select().from(CategoryDB.class).where(CategoryDB_Table.levelId.is(0)).queryList();
-        if (fetchDepParentTimer.isExpired() || checkCollectionNotNull(categoryDBs)) {
-            ((NetworkInteractorImpl) networkInteractorImpl).setFetchDepartment(this);
-            ((NetworkInteractorImpl) networkInteractorImpl).setCompositeSubscription(compositeSubscription);
-            networkInteractorImpl.fetchDepartment(context);
-        } else {
-            addProductView.addLevelZeroCategory();
-            addProductView.fetchEtalase();
-        }
     }
 
     /**
@@ -137,6 +114,120 @@ public class AddProductPresenterImpl implements AddProductPresenter
         }
     }
 
+    public static void clearEtalaseCache(Context context) {
+        LocalCacheHandler fetchEtalaseTimer = initCacheIfNotNull(context, FETCH_ETALASE);
+        fetchEtalaseTimer.setExpire(0);
+    }
+
+    public static void clearDepartementCache(Context context) {
+        LocalCacheHandler.clearCache(context, AddProductPresenterImpl.FETCH_DEP_CHILD);
+        LocalCacheHandler.clearCache(context, AddProductPresenterImpl.FETCH_DEP_PARENT);
+    }
+
+    public static int findPrimaryImage(List<ImageModel> imageModelList, DbManager dbManager) {
+        //[START] set primary image position
+        // search for primary image
+        int positionPrimaryImage = -1, count = 0;
+        A:
+        for (ImageModel image :
+                imageModelList) {
+            PictureDB pictureDB = dbManager.getGambarById(image.getDbId());
+            if (pictureDB.getPicturePrimary() == PictureDB.PRIMARY_IMAGE) {
+                positionPrimaryImage = count;
+                break A;
+            }
+            count++;
+        }
+        return positionPrimaryImage;
+    }
+
+    public static int findPrimaryImage(List<PictureDB> imageModelList) {
+        //[START] set primary image position
+        // search for primary image
+        int positionPrimaryImage = -1, count = 0;
+        A:
+        for (PictureDB image :
+                imageModelList) {
+            if (image.getPicturePrimary() == PictureDB.PRIMARY_IMAGE) {
+                positionPrimaryImage = count;
+                break A;
+            }
+            count++;
+        }
+        return positionPrimaryImage;
+    }
+
+    @NonNull
+    public static ArrayList<WholeSaleAdapterModel> convertToWholeSaleAdapterModel(List<ProductWholesalePrice> wholesalePrice, String currency) {
+        ArrayList<WholeSaleAdapterModel> wholeSaleAdapterModels = new ArrayList<>();
+        for (ProductWholesalePrice productWholesalePrice : wholesalePrice) {
+            WholeSaleAdapterModel wholeSaleAdapterModel = new WholeSaleAdapterModel(
+                    productWholesalePrice.getWholesaleMin(),
+                    productWholesalePrice.getWholesaleMax(),
+                    productWholesalePrice.getWholesalePrice(),
+                    currency
+            );
+            wholeSaleAdapterModels.add(wholeSaleAdapterModel);
+        }
+        return wholeSaleAdapterModels;
+    }
+
+    /**
+     * Recursive method to get the model for filling category in add product
+     *
+     * @param lists
+     * @param textDeleteModels
+     * @param categoryDB
+     * @return
+     */
+    public static Pair<List<List<SimpleTextModel>>, ArrayList<TextDeleteModel>> getCategoryTree(List<List<SimpleTextModel>> lists, ArrayList<TextDeleteModel> textDeleteModels, CategoryDB categoryDB) {
+
+        List<SimpleTextModel> levelSelection = AddProductFragment.toSimpleText(categoryDB.getLevelId(), categoryDB.getDepartmentId());
+        lists.add(0, levelSelection);
+
+        TextDeleteModel textToDisplay = new TextDeleteModel(categoryDB.getNameCategory());
+        textToDisplay.setDepartmentId(Integer.parseInt(String.valueOf(categoryDB.getDepartmentId())));
+        textDeleteModels.add(0, textToDisplay);
+
+        if (categoryDB.getParentId() != 0) {
+            CategoryDB parentDB = new Select().from(CategoryDB.class)
+                    .where(CategoryDB_Table.departmentId.is(categoryDB.getParentId()))
+                    .querySingle();
+            return getCategoryTree(lists, textDeleteModels, parentDB);
+        } else {
+            return new Pair<>(lists, textDeleteModels);
+        }
+    }
+
+    @Override
+    public void setView(AddProductView addProductView) {
+        this.addProductView = addProductView;
+    }
+
+    /**
+     * fetch if expired more than 1 week, and if already at database then show.
+     *
+     * @param context
+     */
+    @Override
+    public void fetchDepartmentParent(final Context context) {
+        CategoryVersioningHelper.checkVersionCategory(context, new CategoryVersioningHelperListener() {
+            @Override
+            public void doAfterChecking() {
+                fetchDepParentTimer = initCacheIfNotNull(context, FETCH_DEP_PARENT);
+                List<CategoryDB> categoryDBs = new Select().from(CategoryDB.class).where(CategoryDB_Table.levelId.is(0)).queryList();
+                if (fetchDepParentTimer.isExpired() || checkCollectionNotNull(categoryDBs)) {
+                    ((NetworkInteractorImpl) networkInteractorImpl).setFetchDepartment(AddProductPresenterImpl.this);
+                    ((NetworkInteractorImpl) networkInteractorImpl).setCompositeSubscription(compositeSubscription);
+                    networkInteractorImpl.fetchDepartment(context);
+                } else {
+                    addProductView.addLevelZeroCategory();
+                    addProductView.fetchEtalase();
+                }
+            }
+        });
+    }
+
     @Override
     public void fetchEtalase(Context context) {
         fetchEtalaseTimer = initCacheIfNotNull(context, FETCH_ETALASE);
@@ -149,17 +240,6 @@ public class AddProductPresenterImpl implements AddProductPresenter
         }
 
     }
-
-    public static void clearEtalaseCache(Context context) {
-        LocalCacheHandler fetchEtalaseTimer = initCacheIfNotNull(context, FETCH_ETALASE);
-        fetchEtalaseTimer.setExpire(0);
-    }
-
-    public static void clearDepartementCache(Context context) {
-        LocalCacheHandler.clearCache(context, AddProductPresenterImpl.FETCH_DEP_CHILD);
-        LocalCacheHandler.clearCache(context, AddProductPresenterImpl.FETCH_DEP_PARENT);
-    }
-
 
     @Override
     public void fetchDepartmentChild(Context context, int depId, int level) {
@@ -214,7 +294,7 @@ public class AddProductPresenterImpl implements AddProductPresenter
         produk.setWholesalePriceDBs(produk.getWholeSales());
 
         // tampilkan image models 1
-        if (produk.getPictureDBs() != null) {// && object instanceof List<?>
+        if (produk.getPictureDBs() != null && !produk.getPictureDBs().isEmpty()) {
             List<ImageModel> imageModelList = new ArrayList<>();
             int positionPrimaryImage = 0;
             for (int i = 0; i < produk.getPictureDBs().size(); i++) {
@@ -305,21 +385,6 @@ public class AddProductPresenterImpl implements AddProductPresenter
         // set currency  7
         addProductView.setProductPrice(productPrice);
 
-
-        // set currency unit 6
-        // just for rupiah
-//            String productPrice = productDetailData.getInfo().getProductPrice().replace(".","");
-//            String[] hargaDanUnitHarga = productPrice.split(" ");
-//            List<MataUang> mataUangs = new Select().from(MataUang.class)
-//                    .execute();
-//            for(MataUang mataUang : mataUangs){
-//                if(hargaDanUnitHarga[0].contains(mataUang.getAbrvCurr())){
-//                    addProductView.setProductCurrencyUnit(mataUang.getAbrvCurr());
-//                }
-//            }
-//            // set currency  7
-//            addProductView.setProductPrice(hargaDanUnitHarga[1]);
-
         // set weight unit 8
         String productWeightUnit = String.valueOf(produk.getWeightUnitDB().getWsInput());
         addProductView.setWeightUnit(productWeightUnit);
@@ -384,7 +449,7 @@ public class AddProductPresenterImpl implements AddProductPresenter
 
         // set catalog 15 in here
         long catalog = produk.getCatalogid();
-        if (catalog != 0) {
+        if (catalog != -1) {
             ArrayList<CatalogDataModel.Catalog> catalogItemDB = dbManager.getCatalogList(String.valueOf(produk.getCategoryDB().getDepartmentId()), produk.getNameProd());
             onSuccessFetchCatalog(catalogItemDB);
             int selection = 0;
@@ -600,7 +665,6 @@ public class AddProductPresenterImpl implements AddProductPresenter
         defaultMessageError(e);
     }
 
-
     @Override
     public void onSuccessFetchEditData(Map<String, Object> map) {
         originalEditData = map;
@@ -805,79 +869,8 @@ public class AddProductPresenterImpl implements AddProductPresenter
 
     }
 
-
-    public static int findPrimaryImage(List<ImageModel> imageModelList, DbManager dbManager) {
-        //[START] set primary image position
-        // search for primary image
-        int positionPrimaryImage = -1, count = 0;
-        A:
-        for (ImageModel image :
-                imageModelList) {
-            PictureDB pictureDB = dbManager.getGambarById(image.getDbId());
-            if (pictureDB.getPicturePrimary() == PictureDB.PRIMARY_IMAGE) {
-                positionPrimaryImage = count;
-                break A;
-            }
-            count++;
-        }
-        return positionPrimaryImage;
-    }
-
-    public static int findPrimaryImage(List<PictureDB> imageModelList) {
-        //[START] set primary image position
-        // search for primary image
-        int positionPrimaryImage = -1, count = 0;
-        A:
-        for (PictureDB image :
-                imageModelList) {
-            if (image.getPicturePrimary() == PictureDB.PRIMARY_IMAGE) {
-                positionPrimaryImage = count;
-                break A;
-            }
-            count++;
-        }
-        return positionPrimaryImage;
-    }
-
-    @NonNull
-    public static ArrayList<WholeSaleAdapterModel> convertToWholeSaleAdapterModel(List<ProductWholesalePrice> wholesalePrice, String currency) {
-        ArrayList<WholeSaleAdapterModel> wholeSaleAdapterModels = new ArrayList<>();
-        for (ProductWholesalePrice productWholesalePrice : wholesalePrice) {
-            WholeSaleAdapterModel wholeSaleAdapterModel = new WholeSaleAdapterModel(
-                    productWholesalePrice.getWholesaleMin(),
-                    productWholesalePrice.getWholesaleMax(),
-                    productWholesalePrice.getWholesalePrice(),
-                    currency
-            );
-            wholeSaleAdapterModels.add(wholeSaleAdapterModel);
-        }
-        return wholeSaleAdapterModels;
-    }
-
-    /**
-     * Recursive method to get the model for filling category in add product
-     * @param lists
-     * @param textDeleteModels
-     * @param categoryDB
-     * @return
-     */
-    public static Pair<List<List<SimpleTextModel>>, ArrayList<TextDeleteModel>> getCategoryTree(List<List<SimpleTextModel>> lists, ArrayList<TextDeleteModel> textDeleteModels, CategoryDB categoryDB) {
-
-        List<SimpleTextModel> levelSelection = AddProductFragment.toSimpleText(categoryDB.getLevelId(), categoryDB.getDepartmentId());
-        lists.add(0, levelSelection);
-
-        TextDeleteModel textToDisplay = new TextDeleteModel(categoryDB.getNameCategory());
-        textToDisplay.setDepartmentId(Integer.parseInt(String.valueOf(categoryDB.getDepartmentId())));
-        textDeleteModels.add(0, textToDisplay);
-
-        if(categoryDB.getParentId() != 0) {
-            CategoryDB parentDB = new Select().from(CategoryDB.class)
-                    .where(CategoryDB_Table.departmentId.is(categoryDB.getParentId()))
-                    .querySingle();
-            return getCategoryTree(lists, textDeleteModels, parentDB);
-        } else {
-            return new Pair<> (lists, textDeleteModels);
-        }
+    interface ProductNameListener {
+        void onNameChange(CatalogParams name);
     }
 
     private class CatalogParams{
@@ -888,10 +881,5 @@ public class AddProductPresenterImpl implements AddProductPresenter
             this.depId = depId;
             this.productName = productName;
         }
-    }
-
-
-    interface ProductNameListener{
-        void onNameChange(CatalogParams name);
     }
 }

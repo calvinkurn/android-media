@@ -376,13 +376,6 @@ public class ProductList extends V2BaseFragment {
                         )
                 );
             }
-
-            @Override
-            public void onSpinnerEtalaseClick() {
-                if (getActivity() != null) {
-                    CommonUtils.dumper("GAv4 clicked spinner etalase shops");
-                }
-            }
         };
     }
 
@@ -540,6 +533,7 @@ public class ProductList extends V2BaseFragment {
         adapter.notifyDataSetChanged();
         adapter.addLoading();
         productShopParam.setPage(1);
+        facadeShopProd.unsubscribeGetShopProduct();
         facadeShopProd.getShopProduct(productShopParam);
     }
 
@@ -554,10 +548,12 @@ public class ProductList extends V2BaseFragment {
         productModel.list.clear();
         adapter.notifyDataSetChanged();
         adapter.addLoading();
+        facadeShopProd.unsubscribeGetShopProduct();
         facadeShopProd.getShopProduct(getShopProductParam);
     }
 
     private void getProductNextPage() {
+        facadeShopProd.unsubscribeGetShopProduct();
         facadeShopProd.getShopProduct(productShopParam);
     }
 

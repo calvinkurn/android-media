@@ -149,6 +149,7 @@ public class TopPayIntentService extends IntentService {
 
     private void getParameterDataTopPay(CheckoutData checkoutData) {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        params.put("donation_amt", checkoutData.getDonationValue());
         params.put("gateway", checkoutData.getGateway());
         params.put("token_cart", checkoutData.getToken());
         params.put("chosen", checkoutData.getPartialString());

@@ -193,6 +193,10 @@ android {
         }
     }
 
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
+        resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
+    }
 }
 
 repositories {

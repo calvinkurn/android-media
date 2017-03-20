@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/TextView.TopAds.Body.Gray"
+        android:text="@string/label_top_ads_icon"/>
+
+    <RadioGroup
+        android:id="@+id/radio_group_icon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="0dp">
+
+        <RadioButton
+            android:id="@+id/radio_button_icon_speaker"
+            style="@style/TopAdsRadioButton"
+            android:checked="true"
+            android:drawablePadding="@dimen/margin_vs"
+            android:drawableEnd="@drawable/ic_top_ads_sticker_speaker"
+            android:drawableRight="@drawable/ic_top_ads_sticker_speaker"/>
+        <RadioButton
+            android:id="@+id/radio_button_icon_thumbs_up"
+            style="@style/TopAdsRadioButton"
+            android:drawablePadding="@dimen/margin_vs"
+            android:drawableEnd="@drawable/ic_top_ads_sticker_thumbs_up"
+            android:drawableRight="@drawable/ic_top_ads_sticker_thumbs_up"/>
+        <RadioButton
+            android:id="@+id/radio_button_icon_fire"
+            style="@style/TopAdsRadioButton"
+            android:drawablePadding="@dimen/margin_vs"
+            android:drawableEnd="@drawable/ic_top_ads_sticker_fire"
+            android:drawableRight="@drawable/ic_top_ads_sticker_fire"/>
+    </RadioGroup>
+</LinearLayout>
