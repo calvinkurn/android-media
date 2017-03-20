@@ -4,7 +4,10 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.widget.FrameLayout;
+import android.os.Bundle;
+import android.view.View;
 
+import com.stepstone.stepper.StepperLayout;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.app.BaseDiActivity;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenMandatoryPresenter;
@@ -12,23 +15,25 @@ import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingComponent
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingModule;
 import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLocationFragment;
+import com.tokopedia.seller.shop.open.view.adapter.ShopOpenStepperViewAdapterOpenShop;
 
 /**
  * Created by Nathaniel on 3/16/2017.
  */
 
 public class ShopOpenMandatoryActivity extends BaseDiActivity<ShopOpenMandatoryPresenter, ShopSettingComponent> {
-    private FrameLayout container;
-    private FragmentManager fragmentManager;
+
+    StepperLayout stepperLayout;
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_simple_fragment;
+        return R.layout.activity_shop_open_mandatory;
     }
 
     @Override
     protected void initView() {
-        container = (FrameLayout) findViewById(R.id.container);
+        stepperLayout = (StepperLayout) findViewById(R.id.stepper_view);
+        stepperLayout.setAdapter(new ShopOpenStepperViewAdapterOpenShop(getFragmentManager(), this));
     }
 
     @Override
@@ -46,25 +51,11 @@ public class ShopOpenMandatoryActivity extends BaseDiActivity<ShopOpenMandatoryP
 
     @Override
     protected void initVar() {
-        fragmentManager = getFragmentManager();
     }
 
     @Override
     protected void setActionVar() {
-        Fragment fragment = fragmentManager.findFragmentByTag(ShopSettingLocationFragment.TAG);
-        if (fragment == null) {
-            fragment = ShopSettingLocationFragment.getInstance();
-        }
-        inflateFragment(fragment, false, ShopSettingLocationFragment.TAG);
-    }
 
-    private void inflateFragment(Fragment fragment, boolean isAddToBackStack, String tag) {
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.replace(R.id.container, fragment, tag);
-        if (isAddToBackStack) {
-            ft.addToBackStack(null);
-        }
-        ft.commit();
     }
 
 }
