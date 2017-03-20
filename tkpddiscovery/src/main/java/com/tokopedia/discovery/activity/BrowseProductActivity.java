@@ -225,6 +225,13 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG:
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP:
                 toolbar.setTitle("");
+                toolbar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        discoverySearchView.showSearch();
+                        discoverySearchView.setFinishOnClose(false);
+                    }
+                });
                 break;
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY:
                 toolbar.setTitle(getString(R.string.title_activity_browse_category));
@@ -405,6 +412,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         deleteFilterCache();
         sendBroadCast(query);
         toolbar.setTitle(query);
+        discoverySearchView.setLastQuery(query);
         discoverySearchView.closeSearch();
     }
 

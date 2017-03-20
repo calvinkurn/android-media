@@ -267,14 +267,18 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
             if (isViewAttached()) {
                 getView().hideRefreshLoading();
                 ProductFeedViewModel productFeedViewModel = new ProductFeedViewModel(dataFeed);
-                if (productFeedViewModel.getData().size() > 0) {
+                if (isFeedError(dataFeed)) {
+                    if (getView().isViewNotEmpty()) {
+                        getView().showContentView();
+                        getView().showMessageRefreshFailed();
+                    } else {
+                        getView().hideContentView();
+                        getView().showErrorFeed();
+                    }
+                } else {
                     setPagging(productFeedViewModel.getPagingHandlerModel());
                     validateDataFeed(dataFeed, productFeedViewModel);
                     doCheckLoadMore();
-                } else {
-                    if (!getView().isViewNotEmpty()) {
-                        showEmptyView(productFeedViewModel);
-                    }
                 }
             }
         }
@@ -287,19 +291,19 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
             if (!isHasHistoryProduct(dataFeed) && !isHasFeedProduct(dataFeed)) {
                 showEmptyView(productFeedViewModel);
             } else if (!isHasHistoryProduct(dataFeed) && isHasFeedProduct(dataFeed)) {
-                HistoryProductListItem viewmodelHistory = getView().getViewmodelHistory();
-                if (viewmodelHistory == null) {
-                    final int recentViewPosition = 0;
-                    HistoryProductListItem fakeHistory
-                            = new HistoryProductListItem(Collections.<ProductItem>emptyList());
-                    productFeedViewModel.getData().add(recentViewPosition, fakeHistory);
-                } else {
-                    productFeedViewModel.getData().add(0, viewmodelHistory);
-                }
-                getView().hideEmptyHistoryProduct();
-                getView().showContentView();
-                getView().hideEmptyFeed();
-                displayRefreshData(productFeedViewModel);
+                    HistoryProductListItem viewmodelHistory = getView().getViewmodelHistory();
+                    if (viewmodelHistory == null) {
+                        final int recentViewPosition = 0;
+                        HistoryProductListItem fakeHistory
+                                = new HistoryProductListItem(Collections.<ProductItem>emptyList());
+                        productFeedViewModel.getData().add(recentViewPosition, fakeHistory);
+                    } else {
+                        productFeedViewModel.getData().add(0, viewmodelHistory);
+                    }
+                    getView().hideEmptyHistoryProduct();
+                    getView().showContentView();
+                    getView().hideEmptyFeed();
+                    displayRefreshData(productFeedViewModel);
             } else if (isHasHistoryProduct(dataFeed) && !isHasFeedProduct(dataFeed)) {
                 List<RecyclerViewItem> viewmodelFeed = getView().getViewmodelFeed();
 
@@ -326,18 +330,21 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
         }
 
         private void showEmptyView(ProductFeedViewModel productFeedViewModel) {
-            if (!(getView().isViewNotEmpty())) {
                 getView().showContentView();
                 productFeedViewModel.getData().add(
                         new HistoryProductListItem(Collections.<ProductItem>emptyList()));
 
                 productFeedViewModel.getData().add(new EmptyFeedModel());
                 displayRefreshData(productFeedViewModel);
-            }
+
         }
 
         private void displayRefreshData(ProductFeedViewModel productFeedViewModel) {
             getView().refreshFeedData(productFeedViewModel.getData());
+        }
+
+        private Boolean isFeedError(DataFeed dataFeed) {
+            return dataFeed.isFeedError() || dataFeed.isRecentProductError();
         }
 
     }
