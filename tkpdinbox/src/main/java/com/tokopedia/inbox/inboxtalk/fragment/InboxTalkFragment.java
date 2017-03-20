@@ -466,8 +466,6 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
                             getString(R.string.message_success_delete_talk),Snackbar.LENGTH_LONG).show();
                 }else if(resultCode == Activity.RESULT_OK){
                     if (position != -1){
-                        items.remove(position);
-                        adapter.notifyDataSetChanged();
                         int size = data.getExtras().getInt("total_comment");
                         int followStatus = data.getExtras().getInt("is_follow");
                         int readStatus = data.getExtras().getInt("read_status");
