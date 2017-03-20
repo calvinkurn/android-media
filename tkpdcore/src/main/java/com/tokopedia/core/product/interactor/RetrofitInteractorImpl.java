@@ -33,6 +33,7 @@ import com.tokopedia.core.product.model.productotherace.ProductOtherAce;
 import com.tokopedia.core.product.model.productotherace.ProductOtherDataAce;
 import com.tokopedia.core.session.model.network.ReportType;
 import com.tokopedia.core.session.model.network.ReportTypeModel;
+import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -441,7 +442,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     public void addToWishList(@NonNull Context context, @NonNull Integer params,
                               @NonNull final AddWishListListener listener) {
         Observable<Response<TkpdResponse>> observable = mojitoAuthService.getApi()
-                .addWishlist(String.valueOf(params));
+                .addWishlist(String.valueOf(params), SessionHandler.getLoginID(context));
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override
             public void onCompleted() {
@@ -479,7 +480,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     public void removeFromWishList(@NonNull Context context, @NonNull Integer params,
                                    @NonNull final RemoveWishListListener listener) {
         final Observable<Response<TkpdResponse>> observable = mojitoAuthService.getApi()
-                .removeWishlist(String.valueOf(params));
+                .removeWishlist(String.valueOf(params), SessionHandler.getLoginID(context));
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override
             public void onCompleted() {
@@ -576,7 +577,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
                     @Override
                     public void onNext(Response<ProductVideoData> productVideoDataResponse) {
-                        if(productVideoDataResponse.body() != null)
+                        if (productVideoDataResponse.body() != null)
                             listener.onSuccess(productVideoDataResponse.body().getData().get(0));
                     }
                 };
