@@ -6,17 +6,15 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 
 import com.stepstone.stepper.Step;
-import com.stepstone.stepper.adapter.AbstractFragmentStepAdapter;
 import com.stepstone.stepper.viewmodel.StepViewModel;
-import com.tokopedia.seller.shop.open.view.fragment.ShopOpenStepOneFragment;
 
 /**
  * Created by zulfikarrahman on 3/16/17.
  */
 
-public class ShopOpenStepperViewAdapterOpenShop extends AbstractNativeFragmentStepAdapter {
+public class ShopOpenStepperViewAdapter extends AbstractNativeFragmentStepAdapter {
 
-    public ShopOpenStepperViewAdapterOpenShop(@NonNull FragmentManager fm, @NonNull Context context) {
+    public ShopOpenStepperViewAdapter(@NonNull FragmentManager fm, @NonNull Context context) {
         super(fm, context);
     }
 
@@ -37,12 +35,6 @@ public class ShopOpenStepperViewAdapterOpenShop extends AbstractNativeFragmentSt
     @Override
     public Step createStep(@IntRange(from = 0L) int position) {
         switch (position){
-            case 0:
-                return ShopOpenStepOneFragment.createInstance();
-            case 1:
-                return ShopOpenStepOneFragment.createInstance();
-            case 2:
-                return ShopOpenStepOneFragment.createInstance();
             default:
                 return null;
         }
