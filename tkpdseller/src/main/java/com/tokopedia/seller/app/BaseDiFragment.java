@@ -10,16 +10,18 @@ import com.tokopedia.core.base.di.component.HasComponent;
  * Created by sebastianuskh on 3/17/17.
  */
 
-public abstract class BaseDiFragment<P extends BaseDiPresenter> extends BasePresenterFragment<P> {
+public abstract class BaseDiFragment<C, P extends BaseDiPresenter> extends BasePresenterFragment<P> {
+
+    protected C component;
 
     @SuppressWarnings("unchecked")
-    protected <C> C getComponent(Class<C> componentType) {
-        return componentType.cast(((HasComponent<C>) getActivity()).getComponent());
+    protected <CA> CA getComponent(Class<CA> componentType) {
+        return componentType.cast(((HasComponent<CA>) getActivity()).getComponent());
     }
 
     @Override
     protected void initialPresenter() {
-        initInjection();
+        component = initInjection();
         presenter = getPresenter();
     }
 
@@ -50,11 +52,6 @@ public abstract class BaseDiFragment<P extends BaseDiPresenter> extends BasePres
     }
 
     @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
     public void onSaveState(Bundle state) {
 
     }
@@ -80,7 +77,7 @@ public abstract class BaseDiFragment<P extends BaseDiPresenter> extends BasePres
         return false;
     }
 
-    protected abstract void initInjection();
+    protected abstract C initInjection();
 
     protected abstract P getPresenter();
 
