@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.util.RouterUtils;
 
 import java.lang.reflect.Constructor;
@@ -38,6 +39,10 @@ public class HomeRouter {
         return RouterUtils.getActivityIntent(context, ACTIVITY_PARENT_INDEX_HOME);
     }
 
+    public static Intent getHomeActivityInterfaceRouter(Context context) {
+        return ((TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
+    }
+
     public static Intent getBannerWebviewActivity(Context context, String url) {
         Intent intent = RouterUtils.getActivityIntent(context, ACTIVITY_BANNER_WEBVIEW);
         intent.putExtra(EXTRA_BANNERWEBVIEW_URL, url);
@@ -53,6 +58,17 @@ public class HomeRouter {
         }
         return parentIndexHomeClass;
     }
+
+    public static Class<?> getHomeActivityClassInterfaceRouter(Context context) {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = ((TkpdCoreRouter) context.getApplicationContext()).getHomeClass(context);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
+
 
     public static ComponentName getActivityHomeName(Context context) {
         return RouterUtils.getActivityComponentName(context, ACTIVITY_PARENT_INDEX_HOME);
