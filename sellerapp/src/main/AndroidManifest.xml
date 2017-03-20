@@ -52,6 +52,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:screenOrientation="portrait"
+            android:name="com.tokopedia.seller.shop.open.view.activity.ShopOpenMandatoryActivity"/>
+
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="d02324f74e70ffcd2dc00ab722d32baecf1884b4" />
