@@ -7,5 +7,5 @@ import com.tokopedia.seller.app.BaseDiView;
  */
 
 public interface ShopSettingLocationView extends BaseDiView {
-    void changeLocationString(String s);
+
 }

@@ -15,10 +15,8 @@ import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationView;
 /**
  * Created by Nathaniel on 3/16/2017.
  */
-
-public class ShopSettingLocationFragment extends BaseDiFragment<ShopSettingLocationPresenter> implements ShopSettingLocationView {
+public class ShopSettingLocationFragment extends BaseDiFragment<ShopSettingLocationComponent, ShopSettingLocationPresenter> implements ShopSettingLocationView {
     public static final String TAG = "ShopSettingLocation";
-    private ShopSettingLocationComponent component;
     private TextView textViewShopSettingLocationPickup;
 
     public static ShopSettingLocationFragment getInstance() {
@@ -26,8 +24,8 @@ public class ShopSettingLocationFragment extends BaseDiFragment<ShopSettingLocat
     }
 
     @Override
-    protected void initInjection() {
-        component = DaggerShopSettingLocationComponent
+    protected ShopSettingLocationComponent initInjection() {
+        return DaggerShopSettingLocationComponent
                 .builder()
                 .shopSettingLocationModule(new ShopSettingLocationModule(this))
                 .shopSettingComponent(getComponent(ShopSettingComponent.class))
@@ -52,19 +50,18 @@ public class ShopSettingLocationFragment extends BaseDiFragment<ShopSettingLocat
                 (TextView) view.findViewById(R.id.text_view_shop_setting_location_pickup);
     }
 
+    @Override
+    protected void setActionVar() {
+        presenter.getDistrictData();
+    }
+
 
     public View.OnClickListener getVerifyButton() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.changeLocationPickup();
 
             }
         };
-    }
-
-    @Override
-    public void changeLocationString(String s) {
-        textViewShopSettingLocationPickup.setText(s);
     }
 }
