@@ -443,7 +443,7 @@ public class RegisterStep2Fragment extends BasePresenterFragment<RegisterStep2Pr
                         + presenter.getViewModel().getDateDay()
         );
         customer.setExtraAttr(attr);
-        TrackingUtils.sendMoRegisterEvent(customer);
+        UnifyTracking.eventMoRegister(customer);
     }
 
     @Override
