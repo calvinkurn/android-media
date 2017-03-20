@@ -3,7 +3,9 @@ package com.tokopedia.sellerapp.fcm;
 import android.app.Application;
 import android.os.Bundle;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
+import com.tokopedia.core.gcm.Visitable;
 import com.tokopedia.core.gcm.base.BaseAppNotificationReceiverUIBackground;
 import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.util.SessionHandler;
@@ -32,12 +34,12 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     public void prepareAndExecuteDedicatedNotification(Bundle data) {
-        Map<Integer, Class> dedicatedNotification = getCommonDedicatedNotification();
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TOPADS_BELOW_20K, TopAdsBelow20kNotification.class);
-        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TOPADS_TOPUP_SUCCESS, TopAdsTopupSuccessNotification.class);
-        Class<?> clazz = dedicatedNotification.get(GCMUtils.getCode(data));
-        if (clazz != null) {
-            executeNotification(data, clazz);
+        Map<Integer, Visitable> dedicatedNotification = getCommonDedicatedNotification();
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TOPADS_BELOW_20K, new TopAdsBelow20kNotification(mContext));
+        dedicatedNotification.put(TkpdState.GCMServiceState.GCM_TOPADS_TOPUP_SUCCESS, new TopAdsTopupSuccessNotification(mContext));
+        Visitable visitable = dedicatedNotification.get(GCMUtils.getCode(data));
+        if (visitable != null){
+            visitable.proccessReceivedNotification(data);
         }
     }
 
@@ -69,6 +71,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 && SessionHandler.getLoginID(mContext).equals(data.getString("to_user_id"))) {
 
             resetNotificationStatus(data);
+            CommonUtils.dumper("resetNotificationStatus");
 
             if (mActivitiesLifecycleCallbacks.isAppOnBackground()) {
                 prepareAndExecuteDedicatedNotification(data);
@@ -93,10 +96,10 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     @Override
     public void handlePromotionNotification(Bundle data) {
-        Map<Integer, Class> dedicatedNotification = getCommonPromoNotification();
-        Class<?> clazz = dedicatedNotification.get(GCMUtils.getCode(data));
-        if (clazz != null) {
-            executeNotification(data, clazz);
+        Map<Integer, Visitable> promoNotifications = getCommonPromoNotification();
+        Visitable visitable = promoNotifications.get(GCMUtils.getCode(data));
+        if (visitable != null) {
+            visitable.proccessReceivedNotification(data);
         }
     }
 }

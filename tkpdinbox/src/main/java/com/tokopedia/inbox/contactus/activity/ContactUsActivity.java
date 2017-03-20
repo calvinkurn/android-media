@@ -157,7 +157,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
         } else if (listener != null && listener.canGoBack()) {
             listener.onBackPressed();
         } else {
-            super.onBackPressed();
+            finish();
         }
     }
 

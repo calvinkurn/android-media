@@ -5,8 +5,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
+import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.util.RouterUtils;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author Kulomady on 11/18/16.
@@ -28,6 +32,7 @@ public class HomeRouter {
 
     private static final String ACTIVITY_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
     private static final String ACTIVITY_BANNER_WEBVIEW = "com.tokopedia.core.home.BannerWebView";
+    private static final String FCM_NOTIFICATIONRECEIVER = "com.tokopedia.tkpd.fcm.AppNotificationReceiver";
 
 
     public static Intent getHomeActivity(Context context) {
@@ -86,4 +91,30 @@ public class HomeRouter {
     }
 
 
+    public static IAppNotificationReceiver getAppNotificationReceiver() {
+        Constructor<?> ctor = null;
+        try {
+            ctor = RouterUtils.getActivityClass(FCM_NOTIFICATIONRECEIVER)
+                    .getConstructor();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        Object object = null;
+        try {
+            object = ctor.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return (IAppNotificationReceiver) object;
+    }
 }
