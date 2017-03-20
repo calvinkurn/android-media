@@ -1,7 +1,9 @@
 package com.tokopedia.tkpd.home.favorite.domain;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.tkpd.home.favorite.domain.interactor.ShopItemParam;
 import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
+import com.tokopedia.tkpd.home.favorite.domain.model.FavShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
 
@@ -18,4 +20,7 @@ public interface FavoriteRepository {
     Observable<FavoriteShop> getFavoriteShop(TKPDMapParam<String, String> param);
 
     Observable<TopAdsShop> getTopAdsShop(TKPDMapParam<String, Object> params);
+
+    Observable<FavShop> postFavShop(
+            TKPDMapParam<String, String> param, ShopItemParam shopItem);
 }

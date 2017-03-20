@@ -88,6 +88,7 @@ public class TopAdsShopMapper implements rx.functions.Func1<Response<String>, To
     private void mappingShopResponse(TopAdsShopItem topAdsShopItem, TopAdsHome.Shop shopResponse) {
         topAdsShopItem.setLuckyShop(shopResponse.luckyShop);
         topAdsShopItem.setShopId(shopResponse.id);
+        topAdsShopItem.setShopDomain(shopResponse.domain);
         topAdsShopItem.setGoldShop(shopResponse.goldShop);
         topAdsShopItem.setShopLocation(shopResponse.location);
         topAdsShopItem.setShopName(shopResponse.name);

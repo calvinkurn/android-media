@@ -20,4 +20,5 @@ public interface FavoriteTypeFactory {
     int type(FavoriteShopViewModel viewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
+
 }

@@ -7,6 +7,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.home.favorite.view.adapter.viewholders.FavoriteShopViewHolder;
 import com.tokopedia.tkpd.home.favorite.view.adapter.viewholders.TopAdsShopViewHolder;
 import com.tokopedia.tkpd.home.favorite.view.adapter.viewholders.WishlistViewHolder;
+import com.tokopedia.tkpd.home.favorite.view.viewListener.FavoriteClickListener;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopViewModel;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.WishlistViewModel;
@@ -16,6 +17,13 @@ import com.tokopedia.tkpd.home.favorite.view.viewmodel.WishlistViewModel;
  */
 
 public class FavoriteAdapterTypeFactory extends BaseAdapterTypeFactory implements FavoriteTypeFactory {
+
+    private FavoriteClickListener favoriteClickListener;
+
+    public FavoriteAdapterTypeFactory(FavoriteClickListener favoriteClickListener) {
+        this.favoriteClickListener = favoriteClickListener;
+    }
+
     @Override
     public int type(WishlistViewModel viewModel) {
         return WishlistViewHolder.LAYOUT;
@@ -26,10 +34,12 @@ public class FavoriteAdapterTypeFactory extends BaseAdapterTypeFactory implement
         return TopAdsShopViewHolder.LAYOUT;
     }
 
+
     @Override
     public int type(FavoriteShopViewModel viewModel) {
         return FavoriteShopViewHolder.LAYOUT;
     }
+
 
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
@@ -39,7 +49,7 @@ public class FavoriteAdapterTypeFactory extends BaseAdapterTypeFactory implement
                 creatViewHolder = new WishlistViewHolder(parent);
                 break;
             case TopAdsShopViewHolder.LAYOUT:
-                creatViewHolder = new TopAdsShopViewHolder(parent);
+                creatViewHolder = new TopAdsShopViewHolder(parent, favoriteClickListener);
                 break;
             case FavoriteShopViewHolder.LAYOUT:
                 creatViewHolder = new FavoriteShopViewHolder(parent);

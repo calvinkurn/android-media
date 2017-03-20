@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.home.favorite.view.adapter.viewholders;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,25 +10,26 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.adapter.WishlistRecyclerViewAdapter;
+import com.tokopedia.tkpd.home.SimpleHomeActivity;
+import com.tokopedia.tkpd.home.favorite.view.adapter.WishlistAdapter;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.WishlistViewModel;
 
-import java.util.Collections;
-import java.util.List;
-
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * @author kulomady on 1/24/17.
  */
 
 public class WishlistViewHolder extends AbstractViewHolder<WishlistViewModel> {
+    @LayoutRes
+    public static final int LAYOUT = R.layout.child_favorite_wishlist;
 
-    private final WishlistRecyclerViewAdapter wishlistAdapter;
-
+    private final WishlistAdapter wishlistAdapter;
+    private Context mContext;
     @BindView(R.id.title)
     TextView titleTextView;
     @BindView(R.id.textview_see_all)
@@ -41,28 +43,39 @@ public class WishlistViewHolder extends AbstractViewHolder<WishlistViewModel> {
     @BindView(R.id.find_now)
     TextView findNowTextview;
 
-
-    @LayoutRes
-    public static final int LAYOUT = R.layout.child_favorite_wishlist;
-
     public WishlistViewHolder(View itemView) {
         super(itemView);
-        Context context = itemView.getContext();
+        mContext = itemView.getContext();
         LinearLayoutManager linearLayoutManager
-                = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+                = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         wishlistRecyclerView.setLayoutManager(linearLayoutManager);
         wishlistRecyclerView.setHasFixedSize(true);
-
-        List<ProductItem> empty = Collections.emptyList();
-        wishlistAdapter = new WishlistRecyclerViewAdapter(context, empty);
+        wishlistAdapter = new WishlistAdapter();
         wishlistRecyclerView.setAdapter(wishlistAdapter);
 
     }
 
     @Override
     public void bind(WishlistViewModel wishlistViewModel) {
-        titleTextView.setText("ok");
+        if (wishlistViewModel.getWishlistItems().size() > 0) {
+            wishlistRecyclerView.setVisibility(View.VISIBLE);
+            titleTextView.setVisibility(View.VISIBLE);
+            seeAllTextView.setVisibility(View.VISIBLE);
+            emptyWishlistLayout.setVisibility(View.GONE);
+            wishlistAdapter.setData(wishlistViewModel.getWishlistItems());
+        } else {
+            wishlistRecyclerView.setVisibility(View.GONE);
+            titleTextView.setVisibility(View.GONE);
+            seeAllTextView.setVisibility(View.GONE);
+            emptyWishlistLayout.setVisibility(View.VISIBLE);
+        }
     }
 
-
+    @OnClick(R.id.textview_see_all)
+    public void onClick() {
+        UnifyTracking.eventWishlistAll();
+        Intent intent = new Intent(mContext, SimpleHomeActivity.class);
+        intent.putExtra(SimpleHomeActivity.FRAGMENT_TYPE, SimpleHomeActivity.WISHLIST_FRAGMENT);
+        mContext.startActivity(intent);
+    }
 }

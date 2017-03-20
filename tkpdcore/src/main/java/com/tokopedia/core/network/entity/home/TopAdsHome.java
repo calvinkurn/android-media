@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  */
 public class TopAdsHome {
     @SerializedName("data")
-     Data[] data;
+    Data[] data;
 
     public Data[] getData() {
         return data;
@@ -54,6 +54,12 @@ public class TopAdsHome {
 
         @SerializedName("lucky_shop")
         public String luckyShop;
+
+        @SerializedName("shop_is_official")
+        public boolean shopIsOfficial;
+
+        @SerializedName("domain")
+        public String domain;
     }
 
     public static class Data {

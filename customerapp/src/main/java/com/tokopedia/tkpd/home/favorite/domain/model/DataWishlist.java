@@ -10,6 +10,7 @@ public class DataWishlist {
     private String id;
     private String name;
     private String price;
+    private String productImageUrl;
 
     private List<WishListLabel> labels;
     private List<WishListBadge> badges;
@@ -80,5 +81,13 @@ public class DataWishlist {
 
     public void setAvailable(boolean available) {
         isAvailable = available;
+    }
+
+    public String getProductImageUrl() {
+        return productImageUrl;
+    }
+
+    public void setProductImageUrl(String productImageUrl) {
+        this.productImageUrl = productImageUrl;
     }
 }

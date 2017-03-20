@@ -1,27 +1,66 @@
 package com.tokopedia.tkpd.home.favorite.view.adapter.viewholders;
 
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.text.Html;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
+
+import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * @author kulomady on 1/24/17.
  */
 
 public class FavoriteShopViewHolder extends AbstractViewHolder<FavoriteShopViewModel> {
-
     @LayoutRes
     public static final int LAYOUT = R.layout.listview_manage_favorited_shop;
+    private static final String TAG = "FavoriteShopViewHolder";
+    private FavoriteShopViewModel mFavoriteShop;
+    private Context mContext;
+    @BindView(R.id.shop_avatar)
+    ImageView avatarImageView;
+    @BindView(R.id.shop_name)
+    TextView nameTextView;
+    @BindView(R.id.location)
+    TextView locationTextview;
+    @BindView(R.id.fav_button)
+    ImageView favoriteImageView;
 
     public FavoriteShopViewHolder(View itemView) {
         super(itemView);
+        mContext = itemView.getContext();
     }
 
     @Override
-    public void bind(FavoriteShopViewModel element) {
+    public void bind(FavoriteShopViewModel favoriteShop) {
+        mFavoriteShop = favoriteShop;
+        nameTextView.setText(Html.fromHtml(favoriteShop.getShopName()));
+        locationTextview.setText(favoriteShop.getShopLocation());
+        favoriteImageView.setImageResource(
+                favoriteShop.isFavoriteShop() ? R.drawable.ic_faved : R.drawable.ic_fav);
 
+        ImageHandler.loadImageFit2(
+                itemView.getContext(), avatarImageView, favoriteShop.getShopAvatarImageUrl());
+    }
+
+    @OnClick(R.id.shop_layout)
+    void onShopLayoutClicked() {
+        UnifyTracking.eventFavoriteShop(mFavoriteShop.getShopName());
+        Intent intent = new Intent(mContext, ShopInfoActivity.class);
+        Bundle bundle = ShopInfoActivity.createBundle(mFavoriteShop.getShopId(), "");
+        intent.putExtras(bundle);
+        mContext.startActivity(intent);
     }
 }

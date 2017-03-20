@@ -1,0 +1,97 @@
+package com.tokopedia.tkpd.home.favorite.di.modul;
+
+import android.content.Context;
+
+import com.google.gson.Gson;
+import com.tokopedia.core.base.common.service.MojitoService;
+import com.tokopedia.core.base.common.service.ServiceV4;
+import com.tokopedia.core.base.common.service.TopAdsService;
+import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.BaseDomainQualifier;
+import com.tokopedia.core.base.di.qualifier.MojitoQualifier;
+import com.tokopedia.core.base.di.qualifier.TopAdsQualifier;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.tkpd.home.favorite.data.FavoriteDataRepository;
+import com.tokopedia.tkpd.home.favorite.data.FavoriteFactory;
+import com.tokopedia.tkpd.home.favorite.di.scope.FavoriteScope;
+import com.tokopedia.tkpd.home.favorite.domain.FavoriteRepository;
+import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteAndWishlistUsecase;
+import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteShopUsecase;
+import com.tokopedia.tkpd.home.favorite.domain.interactor.GetTopAdsShopUseCase;
+import com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUsecase;
+
+import dagger.Module;
+import dagger.Provides;
+import retrofit2.Retrofit;
+
+/**
+ * @author Kulomady on 1/20/17.
+ */
+
+@Module
+public class FavoriteModule {
+
+    @FavoriteScope
+    @Provides
+    FavoriteFactory provideFavoriteFactory(@ActivityContext Context context,
+                                           Gson gson,
+                                           ServiceV4 serviceVersion4,
+                                           TopAdsService topAdsService,
+                                           MojitoService mojitoService) {
+
+        return new FavoriteFactory(context, gson, serviceVersion4, topAdsService, mojitoService);
+    }
+
+    @FavoriteScope
+    @Provides
+    FavoriteRepository provideFavoriteRepository(FavoriteFactory favoriteFactory) {
+        return new FavoriteDataRepository(favoriteFactory);
+    }
+
+    @FavoriteScope
+    @Provides
+    GetFavoriteShopUsecase provideFavoriteShopUsecase(ThreadExecutor threadExecutor,
+                                                      PostExecutionThread postExecutor,
+                                                      FavoriteRepository favoriteRepository) {
+
+        return new GetFavoriteShopUsecase(threadExecutor, postExecutor, favoriteRepository);
+    }
+
+    @FavoriteScope
+    @Provides
+    GetTopAdsShopUseCase provideGetTopAdsShopUsecase(ThreadExecutor threadExecutor,
+                                                     PostExecutionThread postExecutionThread,
+                                                     FavoriteRepository favoriteRepository) {
+
+        return new GetTopAdsShopUseCase(threadExecutor, postExecutionThread, favoriteRepository);
+    }
+
+    @FavoriteScope
+    @Provides
+    GetFavoriteAndWishlistUsecase provideFavoriteWishlitUsecase(
+            ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
+            GetFavoriteShopUsecase getFavoriteShopUsecase, GetWishlistUsecase getWishlistUse) {
+
+        return new GetFavoriteAndWishlistUsecase(
+                threadExecutor, postExecutionThread, getFavoriteShopUsecase, getWishlistUse);
+    }
+
+    @FavoriteScope
+    @Provides
+    ServiceV4 provideHomeService(@BaseDomainQualifier Retrofit retrofit) {
+        return retrofit.create(ServiceV4.class);
+    }
+
+    @FavoriteScope
+    @Provides
+    TopAdsService provideTopAdsService(@TopAdsQualifier Retrofit retrofit) {
+        return retrofit.create(TopAdsService.class);
+    }
+
+    @FavoriteScope
+    @Provides
+    MojitoService provideMojitoService(@MojitoQualifier Retrofit retrofit) {
+        return retrofit.create(MojitoService.class);
+    }
+}

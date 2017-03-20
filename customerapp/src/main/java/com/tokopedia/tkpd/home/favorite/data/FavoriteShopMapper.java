@@ -64,6 +64,7 @@ public class FavoriteShopMapper implements rx.functions.Func1<Response<String>, 
             favoriteShop.setDataIsValid(true);
             favoriteShop.setMessage(mSuccessMessage);
             favoriteShop.setData(mappingDataShopItem(shopItemDataResponse.getList()));
+            favoriteShop.setPagingModel(shopItemDataResponse.getPagingHandlerModel());
             return favoriteShop;
         } else {
             return invalidResponse(mEmptyErrorMessage);
@@ -79,7 +80,7 @@ public class FavoriteShopMapper implements rx.functions.Func1<Response<String>, 
             favoriteShopItem.setCoverUri(shopItem.coverUri);
             favoriteShopItem.setIconUri(shopItem.iconUri);
             favoriteShopItem.setId(shopItem.id);
-            favoriteShopItem.setIsFav(shopItem.isFav);
+            favoriteShopItem.setIsFav("1".equals(shopItem.isFav));
             favoriteShopItem.setLocation(shopItem.location);
             favoriteShopItem.setShopClickUrl(shopItem.shopClickUrl);
             favoriteShopItem.setName(shopItem.name);

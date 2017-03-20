@@ -10,7 +10,9 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.tkpd.home.favorite.data.source.cloud.CloudFavoriteShopDataSource;
 import com.tokopedia.tkpd.home.favorite.data.source.cloud.CloudTopAdsShopDataSource;
 import com.tokopedia.tkpd.home.favorite.data.source.cloud.CloudWishlistDataStore;
+import com.tokopedia.tkpd.home.favorite.domain.interactor.ShopItemParam;
 import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
+import com.tokopedia.tkpd.home.favorite.domain.model.FavShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
 
@@ -50,5 +52,11 @@ public class FavoriteFactory {
         CloudTopAdsShopDataSource topAdsShopDataSource
                 = new CloudTopAdsShopDataSource(mContext, mGson, mTopAdsService);
         return topAdsShopDataSource.getTopAdsShop(params);
+    }
+
+
+    Observable<FavShop> postFavShop(TKPDMapParam<String, String> param, ShopItemParam shopItem) {
+        return new CloudFavoriteShopDataSource(
+                mContext, mGson, mServiceVersion4).postFavoriteShop(param, shopItem);
     }
 }

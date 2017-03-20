@@ -5,10 +5,12 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.network.entity.wishlist.WishlistData;
+import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.domain.model.DataWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
+import com.tokopedia.tkpd.home.favorite.domain.model.WishListBadge;
 import com.tokopedia.tkpd.home.favorite.domain.model.WishListLabel;
 
 import java.util.ArrayList;
@@ -56,17 +58,32 @@ public class WishlistMapper implements rx.functions.Func1<Response<String>, Doma
         List<DataWishlist> result = new ArrayList<>();
         for (Wishlist wishlist : wishlistResponse) {
             DataWishlist dataWishlist = new DataWishlist();
+            dataWishlist.setId(wishlist.getId());
+            dataWishlist.setName(wishlist.getName());
+            dataWishlist.setProductImageUrl(wishlist.getImageUrl());
             dataWishlist.setShop_name(wishlist.getShop().getName());
             dataWishlist.setShop_location(wishlist.getShop().getLocation());
+            dataWishlist.setProductImageUrl(wishlist.getImageUrl());
             dataWishlist.setPrice(wishlist.getPriceFmt());
             if (wishlist.getLabels() != null && wishlist.getLabels().size() > 0) {
                 dataWishlist.setLabels(mappingLabelResponse(wishlist.getLabels()));
+            }
+            if (wishlist.getBadges() != null && wishlist.getBadges().size() > 0) {
+                dataWishlist.setBadges(mappingBadgeResponse(wishlist.getBadges()));
             }
             result.add(dataWishlist);
         }
         domainWishlist.setDataIsValid(true);
         domainWishlist.setData(result);
         return domainWishlist;
+    }
+
+    private List<WishListBadge> mappingBadgeResponse(List<Badge> badges) {
+        ArrayList<WishListBadge> wishListBadges = new ArrayList<>();
+        for (Badge badge : badges) {
+            wishListBadges.add(new WishListBadge(badge.getTitle(), badge.getImageUrl()));
+        }
+        return wishListBadges;
     }
 
     private List<WishListLabel> mappingLabelResponse(List<Label> labels) {

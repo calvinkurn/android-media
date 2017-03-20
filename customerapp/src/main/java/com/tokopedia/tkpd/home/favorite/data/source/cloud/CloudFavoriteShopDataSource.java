@@ -9,6 +9,9 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.tkpd.home.favorite.data.FavoriteShopMapper;
+import com.tokopedia.tkpd.home.favorite.data.SetFavoriteShopMapper;
+import com.tokopedia.tkpd.home.favorite.domain.interactor.ShopItemParam;
+import com.tokopedia.tkpd.home.favorite.domain.model.FavShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 
 import retrofit2.Response;
@@ -30,11 +33,16 @@ public class CloudFavoriteShopDataSource {
     }
 
     public Observable<FavoriteShop> getFavorite(TKPDMapParam<String, String> param) {
-
         TKPDMapParam<String, String> paramWithAuth = AuthUtil.generateParamsNetwork(mContext, param);
         return mServiceVersion4.getFavoriteShop(paramWithAuth)
                 .doOnNext(saveToCache())
                 .map(new FavoriteShopMapper(mContext, mGson));
+    }
+
+    public Observable<FavShop> postFavoriteShop(TKPDMapParam<String, String> param, ShopItemParam shopItem) {
+        TKPDMapParam<String, String> paramWithAuth = AuthUtil.generateParamsNetwork(mContext, param);
+        return mServiceVersion4.postFavoriteShop(paramWithAuth)
+                .map(new SetFavoriteShopMapper(mContext, mGson, shopItem));
     }
 
     private Action1<Response<String>> saveToCache() {
@@ -50,5 +58,4 @@ public class CloudFavoriteShopDataSource {
             }
         };
     }
-
 }

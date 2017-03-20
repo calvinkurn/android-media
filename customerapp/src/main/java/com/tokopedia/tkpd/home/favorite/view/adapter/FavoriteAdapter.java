@@ -1,28 +1,27 @@
 package com.tokopedia.tkpd.home.favorite.view.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.core.base.adapter.BaseAdapter;
+import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author kulomady on 1/24/17.
  */
 
-public class FavoriteAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
-    private List<Visitable> elements;
+public class FavoriteAdapter extends BaseAdapter {
     private final FavoriteTypeFactory mFavoriteTypeFactory;
 
-    public FavoriteAdapter(FavoriteTypeFactory favoriteTypeFactory) {
-        this.mFavoriteTypeFactory = favoriteTypeFactory;
-        this.elements = new ArrayList<>();
+    public FavoriteAdapter(BaseAdapterTypeFactory adapterTypeFactory, List<Visitable> data) {
+        super(adapterTypeFactory, data);
+        this.mFavoriteTypeFactory = (FavoriteTypeFactory) adapterTypeFactory;
     }
 
     @Override
@@ -35,29 +34,31 @@ public class FavoriteAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
-        holder.bind(elements.get(position));
-    }
-
-    @Override
-    public int getItemCount() {
-        return elements.size();
+        holder.bind(visitables.get(position));
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public int getItemViewType(int position) {
-        return elements.get(position).type(mFavoriteTypeFactory);
+        return visitables.get(position).type(mFavoriteTypeFactory);
     }
 
-    public void setElements(List<Visitable> elements) {
-        this.elements.clear();
-        this.elements.addAll(elements);
-        this.notifyDataSetChanged();
+    public void addElement(List<Visitable> data, boolean clearData) {
+        hideLoading();
+        if (clearData) {
+            visitables.clear();
+            visitables.addAll(data);
+            notifyDataSetChanged();
+        } else {
+            final int positionStart = visitables.size() + 1;
+            visitables.addAll(data);
+            notifyItemRangeInserted(positionStart, data.size());
+        }
     }
 
-    public void addElement(int position, Visitable element) {
-        this.elements.add(position, element);
-        this.notifyDataSetChanged();
+    public void setElement(int position, Visitable element) {
+        visitables.set(position, element);
+        notifyItemInserted(position);
     }
 
 }

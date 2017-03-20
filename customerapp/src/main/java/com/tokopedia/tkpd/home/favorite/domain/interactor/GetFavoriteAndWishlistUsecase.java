@@ -1,7 +1,5 @@
 package com.tokopedia.tkpd.home.favorite.domain.interactor;
 
-import android.support.annotation.NonNull;
-
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -20,16 +18,16 @@ import rx.functions.Func2;
 
 public class GetFavoriteAndWishlistUsecase extends UseCase<DataFavorite> {
 
-    private GetFavoriteShopUsecase getFavoriteShopUsecase;
-    private GetWishlistUsecase getWishlistUsecase;
+    private GetFavoriteShopUsecase mGetFavoriteShopUsecase;
+    private GetWishlistUseCase mGetWishlistUseCase;
 
     public GetFavoriteAndWishlistUsecase(ThreadExecutor threadExecutor,
                                          PostExecutionThread postExecutionThread,
                                          GetFavoriteShopUsecase getFavoriteShopUsecase,
-                                         GetWishlistUsecase getWishlistUsecase) {
+                                         GetWishlistUseCase getWishlistUseCase) {
         super(threadExecutor, postExecutionThread);
-        this.getFavoriteShopUsecase = getFavoriteShopUsecase;
-        this.getWishlistUsecase = getWishlistUsecase;
+        mGetFavoriteShopUsecase = getFavoriteShopUsecase;
+        mGetWishlistUseCase = getWishlistUseCase;
     }
 
     @Override
@@ -38,9 +36,7 @@ public class GetFavoriteAndWishlistUsecase extends UseCase<DataFavorite> {
                 new Func2<DomainWishlist, FavoriteShop, DataFavorite>() {
 
                     @Override
-                    public DataFavorite call(
-                            DomainWishlist domainWishlist, FavoriteShop favoriteShop) {
-
+                    public DataFavorite call(DomainWishlist domainWishlist, FavoriteShop favoriteShop) {
                         DataFavorite dataFavorite = new DataFavorite();
                         dataFavorite.setWishListData(domainWishlist);
                         dataFavorite.setFavoriteShop(favoriteShop);
@@ -50,41 +46,11 @@ public class GetFavoriteAndWishlistUsecase extends UseCase<DataFavorite> {
     }
 
     private Observable<FavoriteShop> getFavoriteShop() {
-        return getFavoriteShopUsecase.createObservable(buildFavoriteParams());
+        return mGetFavoriteShopUsecase.createObservable(GetFavoriteShopUsecase.getDefaultParams());
     }
 
     private Observable<DomainWishlist> getWishlist() {
-        return getWishlistUsecase.createObservable(buildWishlistTkpdMapParam());
+        return mGetWishlistUseCase.createObservable(GetWishlistUseCase.getDefaultParams());
     }
-
-    @NonNull
-    private RequestParams buildFavoriteParams() {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(
-                GetFavoriteShopUsecase.KEY_OPTION_LOCATION,
-                GetFavoriteShopUsecase.DEFAULT_OPTION_LOCATION
-        );
-        requestParams.putString(
-                GetFavoriteShopUsecase.KEY_OPTION_NAME, GetFavoriteShopUsecase.DEFAULT_OPTION_NAME);
-        requestParams.putString(
-                GetFavoriteShopUsecase.KEY_PER_PAGE, GetFavoriteShopUsecase.DEFAULT_PER_PAGE);
-        requestParams.putString(
-                GetFavoriteShopUsecase.KEY_PAGE, GetFavoriteShopUsecase.INITIAL_VALUE);
-
-        return requestParams;
-    }
-
-
-    @NonNull
-    private RequestParams buildWishlistTkpdMapParam() {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(
-                GetWishlistUsecase.KEY_COUNT, GetWishlistUsecase.DEFAULT_COUNT_VALUE);
-        requestParams.putString(
-                GetWishlistUsecase.KEY_PAGE, GetWishlistUsecase.DEFAULT_PAGE_VALUE);
-
-        return requestParams;
-    }
-
 
 }

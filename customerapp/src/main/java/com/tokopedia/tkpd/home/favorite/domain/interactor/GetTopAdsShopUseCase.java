@@ -14,6 +14,7 @@ import rx.Observable;
  */
 
 public class GetTopAdsShopUseCase extends UseCase<TopAdsShop> {
+
     public static final String TOPADS_PAGE_DEFAULT_VALUE = "1";
     public static final String TOPADS_ITEM_DEFAULT_VALUE = "4";
     public static final String SRC_FAV_SHOP_VALUE = "fav_shop";
@@ -36,5 +37,13 @@ public class GetTopAdsShopUseCase extends UseCase<TopAdsShop> {
     @Override
     public Observable<TopAdsShop> createObservable(RequestParams requestParams) {
         return favoriteRepository.getTopAdsShop(requestParams.getParameters());
+    }
+
+    public static RequestParams getDefaultParams() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(KEY_PAGE, TOPADS_PAGE_DEFAULT_VALUE);
+        requestParams.putString(KEY_ITEM, TOPADS_ITEM_DEFAULT_VALUE);
+        requestParams.putString(KEY_SRC, SRC_FAV_SHOP_VALUE);
+        return requestParams;
     }
 }

@@ -18,6 +18,7 @@ public class TopAdsShopItem {
     private String shopUri;
     private String shopImageCover;
     private String shopImageUrl;
+    private String shopDomain;
 
 
     public String getId() {
@@ -26,6 +27,14 @@ public class TopAdsShopItem {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getShopDomain() {
+        return shopDomain;
+    }
+
+    public void setShopDomain(String shopDomain) {
+        this.shopDomain = shopDomain;
     }
 
     public String getAdRefKey() {

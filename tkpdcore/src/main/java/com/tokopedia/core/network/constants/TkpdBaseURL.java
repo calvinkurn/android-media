@@ -119,6 +119,8 @@ public class TkpdBaseURL {
         public static final String URL_TICKET_ACTION = BASE_DOMAIN + "v4/action/ticket/";
         public static final String URL_REGISTER_NEW = BASE_DOMAIN + "/v4/action/register/";
 
+        public static final String URL_POST_FAVORITE_SHOP = "v4/action/favorite-shop/fav_shop.pl";
+
 
         public static final String REGISTER_NEW = "register.pl";
         public static final String PATH_FAVE_SHOP = "fav_shop.pl";

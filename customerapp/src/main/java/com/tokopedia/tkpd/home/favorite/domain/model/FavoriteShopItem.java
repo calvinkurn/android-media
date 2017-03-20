@@ -3,14 +3,13 @@ package com.tokopedia.tkpd.home.favorite.domain.model;
 /**
  * @author Kulomady on 1/23/17.
  */
-
 public class FavoriteShopItem {
 
     private String name;
     private String iconUri;
     private String coverUri;
     private String location;
-    private String isFav;
+    private boolean isFav;
     private String id;
     private String adKey;
     private String adR;
@@ -48,11 +47,11 @@ public class FavoriteShopItem {
         this.location = location;
     }
 
-    public String getIsFav() {
+    public boolean isFav() {
         return isFav;
     }
 
-    public void setIsFav(String isFav) {
+    public void setIsFav(boolean isFav) {
         this.isFav = isFav;
     }
 

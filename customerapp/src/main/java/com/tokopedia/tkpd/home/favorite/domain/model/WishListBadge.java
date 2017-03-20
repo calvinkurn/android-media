@@ -8,6 +8,11 @@ public class WishListBadge {
     private String title;
     private String imgUrl;
 
+    public WishListBadge(String title, String imgUrl) {
+        this.title = title;
+        this.imgUrl = imgUrl;
+    }
+
     public String getTitle() {
         return title;
     }
