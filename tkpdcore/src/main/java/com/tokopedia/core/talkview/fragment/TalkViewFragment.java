@@ -175,7 +175,6 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
     @Override
     protected void onFirstTimeLaunched() {
         displayLoading(true);
-        showMainLoading();
         getComment();
     }
 
@@ -348,7 +347,6 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
         parseResult(result);
         adapter.notifyDataSetChanged();
         getActivity().setResult(Activity.RESULT_OK, getResult());
-        hideMainLoading();
     }
 
     private void parseResult(JSONObject result) {
@@ -380,7 +378,6 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     @Override
     public void showError(String error) {
-        hideMainLoading();
         isRequest = false;
         swipe.setRefreshing(false);
         displayRetry(true);
@@ -822,13 +819,5 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     public void reportCommentTalk(TalkDetail talk, int position) {
         presenter.reportCommentTalk(talk, position);
-    }
-
-    protected void showMainLoading(){
-
-    }
-
-    protected void hideMainLoading(){
-
     }
 }
