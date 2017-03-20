@@ -56,7 +56,7 @@ public class ShopSettingInfoFragment extends BasePresenterFragment<ShopSettingIn
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_shop_open_step_one;
+        return R.layout.fragment_shop_setting_info;
     }
 
     @Override
