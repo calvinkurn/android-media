@@ -62,9 +62,6 @@ public class ListProductView extends BaseView<ProductData, DetailResCenterFragme
 
     @Override
     public void renderData(@NonNull ProductData data) {
-        if (!data.isProductRelatedComplaint()) {
-            return;
-        }
         initRecyclerView(data);
         actionMore.setOnClickListener(new ListProductViewOnClickListener());
         setVisibility(VISIBLE);

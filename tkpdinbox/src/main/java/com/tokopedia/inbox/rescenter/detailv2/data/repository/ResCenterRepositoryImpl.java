@@ -4,6 +4,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
+import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
 
 import rx.Observable;
 
@@ -39,5 +40,11 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
     @Override
     public Observable<Object> getConversationMore() {
         return null;
+    }
+
+    @Override
+    public Observable<TrackingAwbReturProduct> getTrackingAwbReturProduct(TKPDMapParam<String, Object> parameters) {
+        return resCenterDataSourceFactory.createCloudInboxResCenterDataSource()
+                .trackAwbReturProduct(parameters);
     }
 }

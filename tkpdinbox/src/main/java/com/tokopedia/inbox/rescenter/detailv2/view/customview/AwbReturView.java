@@ -1,9 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.customview;
 
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.NonNull;
-import android.text.Html;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,13 +66,9 @@ public class AwbReturView extends BaseView<AwbData, DetailResCenterFragmentView>
     public void renderData(@NonNull AwbData data) {
         setVisibility(VISIBLE);
         informationText.setText(generateInformationText(data));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            awbText.setText(Html.fromHtml(data.getAwbText(), Html.FROM_HTML_MODE_COMPACT));
-        } else {
-            awbText.setText(Html.fromHtml(data.getAwbText()));
-        }
-        actionTrack.setOnClickListener(new AwbViewOnClickListener());
-        actionMoreAwb.setOnClickListener(new AwbViewOnClickListener());
+        awbText.setText(data.getShipmentRef());
+        actionTrack.setOnClickListener(new AwbViewOnClickListener(data.getShipmentRef(), data.getShipmentID()));
+        actionMoreAwb.setOnClickListener(new AwbViewOnClickListener(data.getShipmentRef(), data.getShipmentID()));
     }
 
     private String generateInformationText(AwbData data) {
@@ -83,10 +77,18 @@ public class AwbReturView extends BaseView<AwbData, DetailResCenterFragmentView>
     }
 
     private class AwbViewOnClickListener implements OnClickListener {
+        private final String shipmentID;
+        private final String shipmentRef;
+
+        public AwbViewOnClickListener(String shipmentRef, String shipmentID) {
+            this.shipmentRef = shipmentRef;
+            this.shipmentID = shipmentID;
+        }
+
         @Override
         public void onClick(View view) {
             if (view.getId() == R.id.action_track) {
-                listener.setOnActionTrackAwbClick();
+                listener.setOnActionTrackAwbClick(shipmentID, shipmentRef);
             } else if (view.getId() == R.id.action_awb_more) {
                 listener.setOnActionAwbHistoryClick();
             }

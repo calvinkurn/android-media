@@ -11,6 +11,13 @@ public class ButtonData {
     private boolean acceptReturSolution;
     private boolean showAppealSolution;
     private boolean showAskHelp;
+    private String askHelpDialogText;
+    private boolean showCancel;
+    private String cancelDialogText;
+    private boolean showInputAddress;
+    private boolean showInputAwb;
+    private boolean showAcceptAdminSolution;
+    private String acceptDialogText;
 
     public boolean isShowEdit() {
         return showEdit;
@@ -58,5 +65,62 @@ public class ButtonData {
 
     public void setShowAskHelp(boolean showAskHelp) {
         this.showAskHelp = showAskHelp;
+    }
+
+
+    public void setAskHelpDialogText(String askHelpDialogText) {
+        this.askHelpDialogText = askHelpDialogText;
+    }
+
+    public String getAskHelpDialogText() {
+        return askHelpDialogText;
+    }
+
+    public void setShowCancel(boolean showCancel) {
+        this.showCancel = showCancel;
+    }
+
+    public boolean isShowCancel() {
+        return showCancel;
+    }
+
+    public void setCancelDialogText(String cancelDialogText) {
+        this.cancelDialogText = cancelDialogText;
+    }
+
+    public String getCancelDialogText() {
+        return cancelDialogText;
+    }
+
+    public void setShowInputAddress(boolean showInputAddress) {
+        this.showInputAddress = showInputAddress;
+    }
+
+    public boolean isShowInputAddress() {
+        return showInputAddress;
+    }
+
+    public void setShowInputAwb(boolean showInputAwb) {
+        this.showInputAwb = showInputAwb;
+    }
+
+    public boolean isShowInputAwb() {
+        return showInputAwb;
+    }
+
+    public void setShowAcceptAdminSolution(boolean showAcceptAdminSolution) {
+        this.showAcceptAdminSolution = showAcceptAdminSolution;
+    }
+
+    public boolean isShowAcceptAdminSolution() {
+        return showAcceptAdminSolution;
+    }
+
+    public void setAcceptProductDialogText(String acceptDialogText) {
+        this.acceptDialogText = acceptDialogText;
+    }
+
+    public String getAcceptDialogText() {
+        return acceptDialogText;
     }
 }
