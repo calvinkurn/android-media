@@ -303,7 +303,7 @@ public class WishListImpl implements WishList {
     }
 
     @Override
-    public void fetchDataActerClearSearch(Context context) {
+    public void fetchDataAfterClearSearch(Context context) {
         mPaging.resetPage();
         Observable<Response<WishlistData>> observable = mojitoService.getApi().getWishlist(
                 SessionHandler.getLoginID(context),
@@ -328,11 +328,19 @@ public class WishListImpl implements WishList {
             @Override
             public void onNext(Response<WishlistData> response) {
                 WishlistData wishlistData = response.body();
+                data.clear();
                 dataWishlist.addAll(wishlistData.getWishlist());
                 data.addAll(convertToProductItemList(wishlistData.getWishlist()));
                 mPaging.setPagination(wishlistData.getPaging());
                 wishListView.loadDataChange();
                 wishListView.displayMainContent(true);
+
+                if (mPaging.CheckNextPage()) {
+                    wishListView.displayLoadMore(true);
+                } else {
+                    wishListView.displayLoadMore(false);
+                }
+                wishListView.setPullEnabled(true);
             }
         };
 

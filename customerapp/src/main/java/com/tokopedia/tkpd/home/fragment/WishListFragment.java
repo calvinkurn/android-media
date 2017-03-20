@@ -12,16 +12,11 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
@@ -42,8 +37,6 @@ import com.tokopedia.tkpd.home.presenter.WishListView;
 import com.tokopedia.tkpd.home.wishlist.domain.SearchWishlistUsecase;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -165,7 +158,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
             public void onClick(View view) {
                 searchEditText.setQuery("",false);
                 searchEditText.setIconified(true);
-                wishList.fetchDataActerClearSearch(getActivity());
+                wishList.fetchDataAfterClearSearch(getActivity());
             }
         });
     }

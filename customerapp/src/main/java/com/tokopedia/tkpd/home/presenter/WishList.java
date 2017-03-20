@@ -87,7 +87,7 @@ public interface WishList {
 
     void searchWishlist(String query);
 
-    void fetchDataActerClearSearch(Context context);
+    void fetchDataAfterClearSearch(Context context);
 
     void refreshDataOnSearch(CharSequence query);
 }
