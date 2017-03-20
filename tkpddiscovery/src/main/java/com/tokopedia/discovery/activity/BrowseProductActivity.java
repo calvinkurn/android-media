@@ -72,6 +72,7 @@ import com.tokopedia.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
+import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -405,6 +406,14 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         deleteFilterCache();
         sendBroadCast(query);
         toolbar.setTitle(query);
+
+        int currentSuggestionTab = discoverySearchView.getSuggestionFragment().getCurrentTab();
+
+        if (currentSuggestionTab == SearchMainFragment.PAGER_POSITION_PRODUCT) {
+            browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT);
+        } else if (currentSuggestionTab == SearchMainFragment.PAGER_POSITION_SHOP) {
+            browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP);
+        }
         discoverySearchView.closeSearch();
     }
 
