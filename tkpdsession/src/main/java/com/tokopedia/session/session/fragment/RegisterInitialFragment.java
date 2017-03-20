@@ -57,7 +57,7 @@ import com.tokopedia.session.session.presenter.RegisterInitialPresenter;
 import com.tokopedia.session.session.presenter.RegisterInitialPresenterImpl;
 import com.tokopedia.session.session.presenter.RegisterInitialView;
 import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.util.AppEventTracking;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.var.TkpdState;
 
 import org.json.JSONObject;
@@ -129,6 +129,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
             public void onClick(View v) {
                 UnifyTracking.eventRegisterChannel(AppEventTracking.GTMCacheValue.EMAIL);
                 UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.EMAIL);
+                UnifyTracking.eventMoRegistrationStart(AppEventTracking.GTMCacheValue.EMAIL);
                 ((SessionView) getActivity()).moveToRegister();
             }
         });
@@ -322,6 +323,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     public void startLoginWithGoogle(String type, LoginGoogleModel loginGoogleModel) {
         presenter.startLoginWithGoogle(getActivity(), type, loginGoogleModel);
         UserAuthenticationAnalytics.setActiveAuthenticationMedium( AppEventTracking.GTMCacheValue.GMAIL);
+        UnifyTracking.eventMoRegistrationStart(AppEventTracking.GTMCacheValue.GMAIL);
     }
 
     @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
@@ -341,6 +343,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
 
     private void processFacebookLogin() {
         presenter.doFacebookLogin(this, callbackManager);
+        UnifyTracking.eventMoRegistrationStart(com.tokopedia.core.analytics.AppEventTracking.GTMCacheValue.FACEBOOK);
     }
 
     @Override

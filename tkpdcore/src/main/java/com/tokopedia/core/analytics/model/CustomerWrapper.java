@@ -80,6 +80,10 @@ public class CustomerWrapper extends BaseAnalyticsModel {
         this.extraAttr = extraAttr;
     }
 
+    public Map<String, String> getExtraAttr() {
+        return this.extraAttr;
+    }
+
     public String getmCustomerId() {
         return mCustomerId;
     }

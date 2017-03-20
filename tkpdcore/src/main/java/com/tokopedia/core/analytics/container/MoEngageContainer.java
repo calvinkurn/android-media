@@ -6,6 +6,7 @@ import com.moe.pushlibrary.MoEHelper;
 import com.moe.pushlibrary.PayloadBuilder;
 import com.moengage.core.Logger;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.app.MainApplication;
 
@@ -22,6 +23,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class MoEngageContainer implements IMoengageContainer {
+    private static final String DATE_FORMAT_1 = "yyyy-MM-dd";
 
     private Context context;
     private CompositeSubscription subscription;
@@ -114,6 +116,30 @@ public class MoEngageContainer implements IMoengageContainer {
                 error.printStackTrace();
             }
         });
+    }
+
+    @Override
+    public void sendRegistrationStartEvent(String medium) {
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrString(AppEventTracking.MOENGAGE.MEDIUM, medium);
+        sendEvent(
+                new PayloadBuilder()
+                    .putAttrString(AppEventTracking.MOENGAGE.MEDIUM, medium)
+                    .build()
+                , AppEventTracking.MOENGAGE.EVENT_REG_START
+        );
+    }
+
+    @Override
+    public void sendRegisterEvent(String fullName, String mobileNo, String dateOfBirth) {
+        sendEvent(
+                new PayloadBuilder()
+                    .putAttrString(AppEventTracking.MOENGAGE.NAME, fullName)
+                    .putAttrString(AppEventTracking.MOENGAGE.MOBILE_NUM, mobileNo)
+                    .putAttrDate(AppEventTracking.MOENGAGE.DATE_OF_BIRTH, dateOfBirth, DATE_FORMAT_1)
+                    .build()
+                , AppEventTracking.MOENGAGE.EVENT_REG_COMPL
+        );
     }
 
     private void executor(Single single, SingleSubscriber subscriber) {
