@@ -107,7 +107,7 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
     }
 
     @Override
-    public Class<?> getHomeClass() throws ClassNotFoundException {
+    public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
         return Class.forName(COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME);
     }
 }

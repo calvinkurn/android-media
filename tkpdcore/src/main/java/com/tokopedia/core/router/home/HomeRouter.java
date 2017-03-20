@@ -57,7 +57,7 @@ public class HomeRouter {
     public static Class<?> getHomeActivityClassInterfaceRouter(Context context) {
         Class<?> parentIndexHomeClass = null;
         try {
-            parentIndexHomeClass = ((TkpdCoreRouter) context.getApplicationContext()).getHomeClass();
+            parentIndexHomeClass = ((TkpdCoreRouter) context.getApplicationContext()).getHomeClass(context);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }

@@ -33,5 +33,5 @@ public interface TkpdCoreRouter {
 
     Intent getHomeIntent(Context context);
 
-    Class<?> getHomeClass() throws ClassNotFoundException;
+    Class<?> getHomeClass(Context context) throws ClassNotFoundException;
 }
