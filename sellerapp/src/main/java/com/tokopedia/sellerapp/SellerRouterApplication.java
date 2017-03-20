@@ -24,6 +24,9 @@ import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
  */
 
 public class SellerRouterApplication extends MainApplication implements TkpdCoreRouter, SellerModuleRouter {
+
+    public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.home.view.SellerHomeActivity";
+
     @Override
     public DrawerVariable getDrawer(AppCompatActivity activity) {
         return new DrawerVariableSeller(activity);
@@ -76,6 +79,11 @@ public class SellerRouterApplication extends MainApplication implements TkpdCore
     @Override
     public Intent getHomeIntent(Context context) {
         return new Intent(context, SellerHomeActivity.class);
+    }
+
+    @Override
+    public Class<?> getHomeClass() throws ClassNotFoundException {
+        return Class.forName(COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY);
     }
 
     @Override
