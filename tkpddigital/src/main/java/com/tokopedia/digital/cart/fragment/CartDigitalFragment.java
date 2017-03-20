@@ -16,7 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
@@ -522,7 +521,15 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {// ini request code payment. bisa diganti
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:
-                    CommonUtils.dumper("PORING PAYMENT SUCCESSFUL");
+                    //TODO On Success
+                    getActivity().finish();
+                    break;
+                case TopPayActivity.PAYMENT_FAILED:
+                    //TODO On Failed
+                    getActivity().finish();
+                    break;
+                case TopPayActivity.PAYMENT_CANCELLED:
+                    //TODO On Cancelled
                     getActivity().finish();
                     break;
                 default:
