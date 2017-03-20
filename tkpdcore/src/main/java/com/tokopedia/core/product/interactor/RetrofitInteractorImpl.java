@@ -7,7 +7,7 @@ import android.util.Log;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.core.network.apiservices.ace.AceSearchService;
-import com.tokopedia.core.network.apiservices.goldmerchant.ProductVideoService;
+import com.tokopedia.core.network.apiservices.goldmerchant.GoldMerchantService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.product.ProductActService;
 import com.tokopedia.core.network.apiservices.product.ProductService;
@@ -66,7 +66,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     private final FaveShopActService faveShopActService;
     private final AceSearchService aceSearchService;
     private final MojitoAuthService mojitoAuthService;
-    private final ProductVideoService productVideoService;
+    private final GoldMerchantService goldMerchantService;
     private final int SERVER_ERROR_CODE = 500;
 
     public RetrofitInteractorImpl() {
@@ -77,7 +77,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         this.compositeSubscription = new CompositeSubscription();
         this.aceSearchService = new AceSearchService();
         this.mojitoAuthService = new MojitoAuthService();
-        this.productVideoService = new ProductVideoService();
+        this.goldMerchantService = new GoldMerchantService();
     }
 
     @Override
@@ -558,7 +558,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                     @NonNull String productId,
                                     @NonNull final VideoLoadedListener listener) {
 
-        Observable<Response<ProductVideoData>> observable = productVideoService.getApi()
+        Observable<Response<ProductVideoData>> observable = goldMerchantService.getApi()
                 .fetchVideo(productId);
 
         Subscriber<Response<ProductVideoData>> subscriber =

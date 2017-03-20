@@ -103,4 +103,6 @@ public interface DetailResCenterView {
     void startActivity(Intent intent);
 
     void startActivityForResult(Intent intent, int requestCode);
+
+    void openVideoPlayer(String url);
 }

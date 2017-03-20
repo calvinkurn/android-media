@@ -12,6 +12,15 @@ public class SearchItem {
     private String sc;
     private String imageURI;
     private boolean isOfficial;
+    private String eventAction;
+
+    public String getEventAction() {
+        return eventAction;
+    }
+
+    public void setEventAction(String eventAction) {
+        this.eventAction = eventAction;
+    }
 
     public String getKeyword() {
         return keyword;

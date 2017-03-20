@@ -503,6 +503,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderCheckboxDonasi(CartDonation donation) {
+        setDonationValue("0");
         donasiTitle.setText(donation.getDonationNoteTitle());
         donasiCheckbox.setText(donation.getDonationNoteInfo());
         donasiCheckbox.setOnCheckedChangeListener(getOnCheckedDonasiListener(donation.getDonationValue()));

@@ -43,7 +43,7 @@ public class DynamicFilterPresenterImpl implements DynamicFilterPresenter {
                 this.filterList = filterList;
             }
             if (!intent.getStringExtra(EXTRA_FILTER_SOURCE).equals("search_shop") &&
-                    !filterList.get(0).getTitle().equals(Filter.TITLE_CATEGORY)) {
+                    !filterList.get(0).getTitle().equals(Filter.TITLE_CATEGORY) && !(breadcrumbs==null)) {
 
                 filterList.add(0, Filter.createCategory());
             }

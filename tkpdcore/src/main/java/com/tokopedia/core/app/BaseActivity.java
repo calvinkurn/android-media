@@ -25,6 +25,8 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.module.ActivityModule;
+import com.tokopedia.core.category.data.utils.CategoryVersioningHelper;
+import com.tokopedia.core.category.data.utils.CategoryVersioningHelperListener;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -39,7 +41,6 @@ import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.service.constant.HadesConstant;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
-import com.tokopedia.core.util.PhoneVerificationUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -61,9 +62,9 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     private static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     private static final long DISMISS_TIME = 10000;
     private static final String HADES = "TAG HADES";
+    protected Boolean isAllowFetchDepartmentView = false;
     private Boolean isPause = false;
     private boolean isDialogNotConnectionShown = false;
-    protected Boolean isAllowFetchDepartmentView = false;
     private HadesBroadcastReceiver hadesBroadcastReceiver;
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private SessionHandler sessionHandler;
@@ -71,7 +72,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     private GCMHandler gcmHandler;
     private GlobalCacheManager globalCacheManager;
     private LocalCacheHandler cache;
-    private PhoneVerificationUtil phoneVerificationUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +84,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         categoryDatabaseManager = new CategoryDatabaseManager();
         gcmHandler = new GCMHandler(this);
         hadesBroadcastReceiver = new HadesBroadcastReceiver();
-        phoneVerificationUtil = new PhoneVerificationUtil(this);
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         globalCacheManager = new GlobalCacheManager();
         Localytics.registerPush(gcmHandler.getSenderID());
@@ -116,14 +115,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         super.onPause();
         MainApplication.setActivityState(0);
         MainApplication.setActivityname(null);
-
-        if (!GlobalConfig.isSellerApp()) {
-            if (phoneVerificationUtil != null) {
-                phoneVerificationUtil.setHasShown(false);
-                phoneVerificationUtil.dismissDialog();
-
-            }
-        }
         HockeyAppHelper.unregisterManager();
     }
 
@@ -143,13 +134,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         initGTM();
         sendScreenAnalytics();
         verifyFetchDepartment();
-        if (!GlobalConfig.isSellerApp()) {
-            if (phoneVerificationUtil != null) {
-                if (!phoneVerificationUtil.hasShown())
-                    phoneVerificationUtil.checkIsMSISDNVerified();
 
-            }
-        }
 
         registerForceLogoutReceiver();
         checkIfForceLogoutMustShow();
@@ -160,14 +145,18 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     }
 
     public boolean verifyFetchDepartment() {
-        if (categoryDatabaseManager.isExpired(System.currentTimeMillis())) {
-            if (!HadesService.getIsHadesRunning()) {
-                fetchDepartment();
-            } else {
-                registerHadesReceiver();
+        CategoryVersioningHelper.checkVersionCategory(this, new CategoryVersioningHelperListener() {
+            @Override
+            public void doAfterChecking() {
+                if (categoryDatabaseManager.isExpired(System.currentTimeMillis())) {
+                    if (!HadesService.getIsHadesRunning()) {
+                        fetchDepartment();
+                    } else {
+                        registerHadesReceiver();
+                    }
+                }
             }
-            return true;
-        }
+        });
         return false;
     }
 
@@ -188,15 +177,11 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     protected void onDestroy() {
         super.onDestroy();
         unregisterHadesReceiver();
-        if (!GlobalConfig.isSellerApp()
-                && phoneVerificationUtil != null) {
-            phoneVerificationUtil.unSubscribe();
-        }
+
         unregisterForceLogoutReceiver();
         HockeyAppHelper.unregisterManager();
 
         sessionHandler = null;
-        phoneVerificationUtil = null;
         categoryDatabaseManager = null;
         gcmHandler = null;
         globalCacheManager = null;
@@ -334,6 +319,20 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         }, DISMISS_TIME);
     }
 
+    @Override
+    public void onTimezoneError() {
+
+        final Snackbar snackBar = SnackbarManager.make(this, getString(R.string.check_timezone),
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.action_check, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS));
+                    }
+                });
+        snackBar.show();
+    }
+
     public void showForceLogoutDialog() {
         DialogForceLogout.createShow(this,
                 new DialogForceLogout.ActionListener() {
@@ -368,10 +367,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     @Override
     public String getScreenName() {
         return null;
-    }
-
-    public PhoneVerificationUtil getPhoneVerificationUtil() {
-        return phoneVerificationUtil;
     }
 
     protected AppComponent getApplicationComponent() {

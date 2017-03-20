@@ -119,7 +119,6 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
 
     @Override
     public void setFragmentForFirstTime3(List<Filter> data) {
-        setFragmentBasedOnData(Filter.createCategory());
         Fragment dynamicFilterListFragment = DynamicFilterListFragment.newInstance2(data);
         setFragment(dynamicFilterListFragment, DynamicFilterListView.FRAGMENT_TAG, R.id.dynamic_filter_list);
     }

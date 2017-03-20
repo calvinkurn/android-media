@@ -1015,9 +1015,11 @@ public class DrawerVariable {
             model.header.tokoCashToWallet = true;
         } else {
             model.header.tokoCashText = topCashItem.getData().getText();
-            model.header.tokoCashToWallet = false;
-            if(topCashItem.getData().getAction() != null)
+            if(topCashItem.getData().getAction() != null) {
                 model.header.tokoCashOtherAction = true;
+                model.header.tokoCashText = topCashItem.getData().getAction().getText();
+                model.header.tokoCashURL = topCashItem.getData().getAction().getRedirectUrl();
+            } else model.header.tokoCashOtherAction = false;
         }
     }
 
@@ -1036,6 +1038,6 @@ public class DrawerVariable {
         Cache.putString(CACHE_TOKO_CASH_LABEL, model.header.tokoCashText);
         Cache.putInt(CACHE_TOKO_CASH_LINK, model.header.tokoCashLink);
         Cache.putBoolean(CACHE_TOKO_CASH_ACTION_TYPE,model.header.tokoCashToWallet);
-        model.header.tokoCashOtherAction = Cache.getBoolean(CACHE_TOKO_CASH_OTHER_ACTION);
+        Cache.getBoolean(CACHE_TOKO_CASH_OTHER_ACTION);
     }
 }
