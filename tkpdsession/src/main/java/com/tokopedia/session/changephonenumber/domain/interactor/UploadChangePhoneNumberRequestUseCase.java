@@ -272,6 +272,7 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
                 requestParams.getString(PARAM_USER_ID, ""));
         params.putString(UploadImageUseCase.PARAM_TOKEN, changePhoneNumberModel
                 .getValidateImageModel().getValidateImageData().getToken());
+        params.putString(UploadImageUseCase.PARAM_WEB_SERVICE, "1");
         return params;
     }
 
@@ -297,6 +298,7 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
                 requestParams.getString(PARAM_USER_ID, ""));
         params.putString(UploadImageUseCase.PARAM_TOKEN, changePhoneNumberModel
                 .getValidateImageModel().getValidateImageData().getToken());
+        params.putString(UploadImageUseCase.PARAM_WEB_SERVICE, "1");
         return params;
     }
 

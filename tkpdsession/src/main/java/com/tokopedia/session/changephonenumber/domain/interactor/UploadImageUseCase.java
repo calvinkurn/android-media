@@ -42,7 +42,10 @@ public class UploadImageUseCase extends UseCase<UploadImageModel> {
     private static final String PARAM_NEW_ADD = "new_add";
     public static final String PARAM_FILE_TO_UPLOAD = "fileToUpload";
     public static final String PARAM_IMAGE_ID = "id";
-    public static final String PARAM_TOKEN = "token";
+    public static final String PARA
+    M_TOKEN = "token";
+    public static final String PARAM_WEB_SERVICE = "web_service";
+
 
     private final UploadImageRepository uploadImageRepository;
 
@@ -55,7 +58,7 @@ public class UploadImageUseCase extends UseCase<UploadImageModel> {
 
     @Override
     public Observable<UploadImageModel> createObservable(RequestParams requestParams) {
-        String url = requestParams.getString(PARAM_URL,"") + "/upload/attachment";
+        String url = requestParams.getString(PARAM_URL, "") + "/upload/attachment";
 
         return uploadImageRepository.uploadImage(url,
                 generateRequestBody(requestParams),
@@ -106,6 +109,9 @@ public class UploadImageUseCase extends UseCase<UploadImageModel> {
         RequestBody token = RequestBody.create(MediaType.parse("text/plain"),
                 requestParams.getString(PARAM_TOKEN, ""
                 ));
+        RequestBody webservice = RequestBody.create(MediaType.parse("text/plain"),
+                requestParams.getString(PARAM_WEB_SERVICE, "1"
+                ));
 
         Map<String, RequestBody> requestBodyMap = new HashMap<>();
         requestBodyMap.put(PARAM_USER_ID, userId);
@@ -118,6 +124,7 @@ public class UploadImageUseCase extends UseCase<UploadImageModel> {
         requestBodyMap.put(PARAM_IMAGE_ID, imageId);
         requestBodyMap.put(PARAM_FILE_TO_UPLOAD, imageId);
         requestBodyMap.put(PARAM_TOKEN, token);
+        requestBodyMap.put(PARAM_WEB_SERVICE, webservice);
 
         return requestBodyMap;
     }
