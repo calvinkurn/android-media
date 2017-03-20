@@ -41,8 +41,8 @@ artifactory {
         repository {
             repoKey = 'libs-release-local'
 
-            username = "apps"
-            password = "tokopedia789"
+            username = artifactory_username
+            password = artifactory_password
         }
         defaults {
             publications('aar')
