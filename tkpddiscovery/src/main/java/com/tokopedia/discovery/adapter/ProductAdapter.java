@@ -91,7 +91,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     int page = 1;
     private int topAddsCounter = 0;
     private String source = "search";
-    private String caegory = "";
+    private String category = "";
 
     public int getTopAddsCounter() {
         return topAddsCounter + 1; // + 1 because it will indexed as 0
@@ -107,7 +107,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     source = "hotlist";
                     break;
                 case BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY:
-                    caegory = activity.getIntent().getStringExtra(EXTRA_TITLE);
+                    category = activity.getIntent().getStringExtra(EXTRA_TITLE);
                     source = "directory";
                     break;
                 default:
@@ -120,10 +120,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case TkpdState.RecyclerView.VIEW_PRODUCT:
-                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_list, parent, false), source, caegory);
+                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_list, parent, false), source, category);
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
-                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_grid, parent, false), source, caegory);
+                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_grid, parent, false), source, category);
             case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
             case TkpdState.RecyclerView.VIEW_TOP_ADS:
                 return ProductFeedAdapter.createViewTopAds(parent);
