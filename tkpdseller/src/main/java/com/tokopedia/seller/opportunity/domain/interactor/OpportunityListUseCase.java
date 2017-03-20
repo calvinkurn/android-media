@@ -65,23 +65,25 @@ public class OpportunityListUseCase extends UseCase<OpportunityListPageViewModel
 
     @Override
     public Observable<OpportunityListPageViewModel> createObservable(RequestParams params) {
-        return Observable.zip(
-                getOpportunityListObservable(params),
-                getOpportunityFilterObservable(params),
-                new Func2<OpportunityModel,
-                        OpportunityCategoryModel,
-                        OpportunityListPageViewModel>() {
-                    @Override
-                    public OpportunityListPageViewModel call(OpportunityModel opportunityModel,
-                                                             OpportunityCategoryModel opportunityCategoryModel) {
-                        return getCombinedPageData(opportunityModel, opportunityCategoryModel);
-                    }
-                }).onErrorReturn(new Func1<Throwable, OpportunityListPageViewModel>() {
-            @Override
-            public OpportunityListPageViewModel call(Throwable throwable) {
-                return null;
-            }
-        });
+//        return Observable.zip(
+//                getOpportunityListObservable(params),
+//                getOpportunityFilterObservable(params),
+//                new Func2<OpportunityModel,
+//                        OpportunityCategoryModel,
+//                        OpportunityListPageViewModel>() {
+//                    @Override
+//                    public OpportunityListPageViewModel call(OpportunityModel opportunityModel,
+//                                                             OpportunityCategoryModel opportunityCategoryModel) {
+//                        return getCombinedPageData(opportunityModel, opportunityCategoryModel);
+//                    }
+//                }).onErrorReturn(new Func1<Throwable, OpportunityListPageViewModel>() {
+//            @Override
+//            public OpportunityListPageViewModel call(Throwable throwable) {
+//                return null;
+//            }
+//        });
+        return Observable.just(getCombinedPageData(new OpportunityModel(), new OpportunityCategoryModel()));
+
     }
 
     private OpportunityListPageViewModel getCombinedPageData(OpportunityModel opportunityModel,

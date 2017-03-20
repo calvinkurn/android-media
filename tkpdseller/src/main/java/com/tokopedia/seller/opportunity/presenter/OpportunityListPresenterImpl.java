@@ -30,6 +30,10 @@ import rx.Subscriber;
 
 public class OpportunityListPresenterImpl implements OpportunityListPresenter {
 
+    public static final String KEY_SORT = "OPPORTUNITY_SORT_CACHE";
+    public static final String KEY_CATEGORY = "OPPORTUNITY_CATEGORY_CACHE";
+    public static final String KEY_SHIPPING_TYPE = "OPPORTUNITY_SHIPPING_TYPE_CACHE";
+
     private final OpportunityListView viewListener;
     private PagingHandler pagingHandler;
 
@@ -88,6 +92,7 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
                         if(pagingHandler.getPage() == 1){
                             viewListener.getAdapter().getList().clear();
                         }
+
                         viewListener.onSuccessGetOpportunity(viewModel);
 
                     }
@@ -150,6 +155,11 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
     @Override
     public void getParamShippingType(String shippingParam) {
         opportunityParam.setShippingType(shippingParam);
+    }
+
+    @Override
+    public GetOpportunityListParam getPass() {
+        return opportunityParam;
     }
 
     private boolean hasNextPage() {

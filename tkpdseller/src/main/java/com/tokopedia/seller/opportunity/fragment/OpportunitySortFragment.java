@@ -16,9 +16,7 @@ import java.util.List;
  * Created by nisie on 3/6/17.
  */
 
-public class SortFragment extends TopAdsFilterRadioButtonFragment {
-
-    public static final int REQUEST_SORT = 101;
+public class OpportunitySortFragment extends TopAdsFilterRadioButtonFragment {
 
     public static final String EXTRA_LIST_SORT = "EXTRA_LIST_SORT";
     public static final String SELECTED_POSITION = "SELECTED_POSITION";
@@ -56,7 +54,6 @@ public class SortFragment extends TopAdsFilterRadioButtonFragment {
         super.onItemSelected(radioButtonItem, position);
         getActivity().setResult(Activity.RESULT_OK, getResultIntent(radioButtonItem, position));
         getActivity().finish();
-
     }
 
     private Intent getResultIntent(RadioButtonItem radioButtonItem, int position) {
@@ -65,8 +62,8 @@ public class SortFragment extends TopAdsFilterRadioButtonFragment {
         return intent;
     }
 
-    public static SortFragment createInstance(Bundle extras) {
-        SortFragment fragment = new SortFragment();
+    public static OpportunitySortFragment createInstance(Bundle extras) {
+        OpportunitySortFragment fragment = new OpportunitySortFragment();
         fragment.setArguments(extras);
         return fragment;
     }

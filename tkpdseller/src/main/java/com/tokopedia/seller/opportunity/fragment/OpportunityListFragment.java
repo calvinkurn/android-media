@@ -14,15 +14,16 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.opportunity.SortActivity;
+import com.tokopedia.seller.opportunity.OpportunityFilterActivity;
+import com.tokopedia.seller.opportunity.OpportunitySortActivity;
 import com.tokopedia.seller.opportunity.adapter.OpportunityListAdapter;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenter;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenterImpl;
+import com.tokopedia.seller.opportunity.viewmodel.CategoryViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.OpportunityItemViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.OpportunityListPageViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.SortingTypeViewModel;
@@ -38,8 +39,13 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         implements OpportunityListView {
 
     private static final int REQUEST_OPEN_DETAIL = 123;
+    public static final int REQUEST_SORT = 101;
+    public static final int REQUEST_FILTER = 102;
+
+
     private static final String CACHE_SEEN_OPPORTUNITY = "CACHE_SEEN_OPPORTUNITY";
     private static final java.lang.String HAS_SEEN_OPPORTUNITY = "HAS_SEEN_OPPORTUNITY";
+    private static final int DEFAULT_CATEGORY_SELECTED = 1;
     RecyclerView opportunityList;
     TextView headerInfo;
     SearchView searchView;
@@ -165,12 +171,6 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             }
         });
 
-        filterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -226,22 +226,35 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     private void setSort(OpportunityListPageViewModel viewModel) {
 
-    }
-
-    private void setFilter(OpportunityListPageViewModel viewModel) {
         final ArrayList<String> listSort = new ArrayList<>();
-        for(SortingTypeViewModel sortItem : viewModel.getListSortingType()){
+        for (SortingTypeViewModel sortItem : viewModel.getListSortingType()) {
             listSort.add(sortItem.getSortingTypeName());
         }
 
         sortButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), SortActivity.class);
-                intent.putExtra(SortFragment.EXTRA_LIST_SORT, listSort);
-                startActivityForResult(intent, SortFragment.REQUEST_SORT);
+                Intent intent = new Intent(getActivity(), OpportunitySortActivity.class);
+                intent.putExtra(OpportunitySortFragment.EXTRA_LIST_SORT, listSort);
+                startActivityForResult(intent, REQUEST_SORT);
             }
         });
+
+    }
+
+    private void setFilter(OpportunityListPageViewModel viewModel) {
+        filterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), OpportunityFilterActivity.class);
+                intent.putExtra(OpportunityFilterActivity.EXTRA_CATEGORY_SELECTED_VALUE, getSelectedFilter());
+                startActivityForResult(intent, REQUEST_FILTER);
+            }
+        });
+    }
+
+    private int getSelectedFilter() {
+        return presenter.getPass().getCategory() != null ? Integer.parseInt(presenter.getPass().getCategory()) : DEFAULT_CATEGORY_SELECTED;
     }
 
     private void finishRefresh() {
@@ -290,12 +303,14 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_OPEN_DETAIL && resultCode == Activity.RESULT_OK) {
 
-        } else if(requestCode == SortFragment.REQUEST_SORT && resultCode == Activity.RESULT_OK) {
-            CommonUtils.dumper("NISNIS" + data.getExtras().getInt(SortFragment.SELECTED_POSITION));
+        } else if (requestCode == REQUEST_SORT && resultCode == Activity.RESULT_OK) {
+            CommonUtils.dumper("NISNIS Sort" + data.getExtras().getInt(OpportunitySortFragment.SELECTED_POSITION));
             setSortActive();
-        }else{
+        } else if (requestCode == REQUEST_FILTER && resultCode == Activity.RESULT_OK) {
+            CommonUtils.dumper("NISNIS Category" + data.getExtras().getInt(OpportunityCategoryFragment.SELECTED_POSITION));
+            setSortActive();
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
-
         }
     }
 

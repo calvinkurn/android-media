@@ -23,4 +23,5 @@ public class ConsumerAppBaseUrl {
     public static final String BASE_GOLD_MERCHANT_DOMAIN = "https://goldmerchant.tokopedia.com";
     public static final String BASE_WEB_DOMAIN = "https://www.tokopedia.com/";
     public static final String BASE_MOBILE_DOMAIN = "https://m.tokopedia.com/";
+    public static final String BASE_ORDER_APP = "https://orderapp.tokopedia.local/";
 }

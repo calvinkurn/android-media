@@ -7,14 +7,14 @@ import android.support.v7.app.ActionBar;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.opportunity.fragment.SortFragment;
+import com.tokopedia.seller.opportunity.fragment.OpportunitySortFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterContentFragment;
 
 /**
  * Created by nisie on 3/6/17.
  */
 
-public class SortActivity extends BasePresenterActivity implements TopAdsFilterContentFragment.Callback{
+public class OpportunitySortActivity extends BasePresenterActivity implements TopAdsFilterContentFragment.Callback{
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -43,7 +43,7 @@ public class SortActivity extends BasePresenterActivity implements TopAdsFilterC
             actionBar.setDisplayHomeAsUpEnabled(false);
         }
 
-        SortFragment fragment = SortFragment.createInstance(getIntent().getExtras());
+        OpportunitySortFragment fragment = OpportunitySortFragment.createInstance(getIntent().getExtras());
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container, fragment);
         fragmentTransaction.commit();
