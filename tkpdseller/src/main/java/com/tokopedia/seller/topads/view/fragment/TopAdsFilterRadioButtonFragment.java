@@ -25,6 +25,8 @@ public abstract class TopAdsFilterRadioButtonFragment<P> extends TopAdsFilterCon
 
     protected abstract List<RadioButtonItem> getRadioButtonList();
 
+
+
     @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_top_ads_filter_content_group_name;

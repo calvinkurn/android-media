@@ -8,13 +8,11 @@ import android.os.Bundle;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.viewmodel.CategoryViewModel;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.model.other.RadioButtonItem;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterRadioButtonFragment;
+import com.tokopedia.seller.topads.view.model.RadioButtonItem;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.tokopedia.seller.opportunity.fragment.OpportunitySortFragment.SELECTED_POSITION;
 
 /**
  * Created by nisie on 3/15/17.
@@ -22,15 +20,14 @@ import static com.tokopedia.seller.opportunity.fragment.OpportunitySortFragment.
 
 public class OpportunityCategoryFragment extends TopAdsFilterRadioButtonFragment {
 
-    public static final String EXTRA_LIST_SORT = "EXTRA_LIST_SORT";
     public static final String SELECTED_POSITION = "CATEGORY_SELECTED_POSITION";
 
-    private int selectedStatus;
+    private int selectedCategoryValue;
 
     public static OpportunityCategoryFragment createInstance(int status) {
         OpportunityCategoryFragment fragment = new OpportunityCategoryFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
+        bundle.putInt(SELECTED_POSITION, status);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -43,7 +40,7 @@ public class OpportunityCategoryFragment extends TopAdsFilterRadioButtonFragment
     @Override
     protected void setupArguments(Bundle bundle) {
         super.setupArguments(bundle);
-        selectedStatus = bundle.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, selectedStatus);
+        selectedCategoryValue = bundle.getInt(SELECTED_POSITION, selectedCategoryValue);
     }
 
 
@@ -54,9 +51,6 @@ public class OpportunityCategoryFragment extends TopAdsFilterRadioButtonFragment
 
     @Override
     public Intent addResult(Intent intent) {
-        if (selectedRadioButtonItem != null) {
-            intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, Integer.parseInt(selectedRadioButtonItem.getValue()));
-        }
         return intent;
     }
 
@@ -105,13 +99,17 @@ public class OpportunityCategoryFragment extends TopAdsFilterRadioButtonFragment
     }
 
     private void updateSelectedPosition(List<RadioButtonItem> radioButtonItemList) {
-        if (selectedRadioButtonItem != null) {
+        if (selectedCategoryValue == 0) { // default to all etalase
+            selectedAdapterPosition = 0;
+            return;
+        }
+        if (selectedAdapterPosition > 0) { // has been updated for first time only
             return;
         }
         for (int i = 0; i < radioButtonItemList.size(); i++) {
             RadioButtonItem radioButtonItem = radioButtonItemList.get(i);
-            if (Integer.valueOf(radioButtonItem.getValue()) == selectedStatus) {
-                selectedRadioButtonItem = radioButtonItem;
+            if (Integer.valueOf(radioButtonItem.getValue()) == selectedCategoryValue) {
+                selectedAdapterPosition = i;
                 break;
             }
         }

@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.model.other.RadioButtonItem;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterRadioButtonFragment;
+import com.tokopedia.seller.topads.view.model.RadioButtonItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ public class OpportunitySortFragment extends TopAdsFilterRadioButtonFragment {
             sortItem.setValue(String.valueOf(i));
             listSort.add(sortItem);
         }
-        selectedRadioButtonItem = listSort.get(0);
+        selectedAdapterPosition = 0;
         return listSort;
     }
 
