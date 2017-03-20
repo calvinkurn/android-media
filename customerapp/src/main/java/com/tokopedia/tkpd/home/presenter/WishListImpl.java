@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheDuration;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
@@ -47,6 +48,7 @@ import rx.subscriptions.CompositeSubscription;
  * migrate retrofit 2 by Angga.Prasetiyo
  */
 public class WishListImpl implements WishList {
+    private static final String TAG = WishListImpl.class.getSimpleName();
     WishListView wishListView;
 
     List<RecyclerViewItem> data = new ArrayList<>();
@@ -66,6 +68,7 @@ public class WishListImpl implements WishList {
     SearchWishlistUsecase searchWishlistUsecase;
 
     List<Wishlist> dataWishlist = new ArrayList<>();
+    RequestParams params = RequestParams.create();
 
     public WishListImpl(WishListView wishListView, SearchWishlistUsecase searchWishlistUsecase) {
         this.wishListView = wishListView;
@@ -138,10 +141,20 @@ public class WishListImpl implements WishList {
     @Override
     public void loadMore(Context context) {
         wishListView.setPullEnabled(false);
-        if (mPaging.CheckNextPage()) {
+        if(mPaging.getPagination().getNextUrl().contains("search") && mPaging.CheckNextPage()){
+            searchWishlistLoadMore();
+        } else if (mPaging.CheckNextPage()) {
             mPaging.nextPage();
             fetchDataFromInternet(context);
         }
+    }
+
+    @Override
+    public void searchWishlistLoadMore() {
+        wishListView.setPullEnabled(false);
+        mPaging.nextPage();
+        params.putInt(SearchWishlistUsecase.KEY_PAGE, mPaging.getPage());
+        searchWishlistUsecase.execute(params, new SearchWishlistSubscriber());
     }
 
     @Override
@@ -284,10 +297,11 @@ public class WishListImpl implements WishList {
 
     @Override
     public void searchWishlist(String query) {
+        mPaging.resetPage();
         String userId = wishListView.getUserId();
-        RequestParams params = RequestParams.create();
         params.putString(SearchWishlistUsecase.KEY_USER_ID, userId);
         params.putString(SearchWishlistUsecase.KEY_QUERY, query);
+        params.putInt(SearchWishlistUsecase.KEY_PAGE, mPaging.getPage());
         searchWishlistUsecase.execute(params, new SearchWishlistSubscriber());
     }
 
@@ -352,6 +366,7 @@ public class WishListImpl implements WishList {
 
     @Override
     public void refreshDataOnSearch(CharSequence query) {
+        mPaging.resetPage();
         searchWishlist(query.toString());
     }
 
@@ -430,8 +445,10 @@ public class WishListImpl implements WishList {
         @Override
         public void onNext(DataWishlist wishlist) {
             WishlistData wishlistData = convertToDataWishlistViewModel(wishlist);
-            data.clear();
-            dataWishlist.clear();
+            if(mPaging.getPage() == 1 || wishlist.getWishlists().size() == 0) {
+                data.clear();
+                dataWishlist.clear();
+            }
             wishListView.displayPull(false);
             dataWishlist.addAll(wishlistData.getWishlist());
             data.addAll(convertToProductItemList(wishlistData.getWishlist()));
