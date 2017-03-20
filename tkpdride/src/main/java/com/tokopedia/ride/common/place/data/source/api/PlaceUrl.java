@@ -5,5 +5,5 @@ package com.tokopedia.ride.common.place.data.source.api;
  */
 
 public interface PlaceUrl {
-    String BASE_URL = "https://ride-staging.tokopedia.com/";
+    String BASE_URL = "https://maps.googleapis.com/";
 }

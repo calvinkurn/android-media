@@ -8,6 +8,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
+import android.transition.ChangeBounds;
+import android.transition.Slide;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -16,6 +19,7 @@ import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewModel;
+import com.tokopedia.ride.bookingride.view.fragment.ConfirmBookingRideFragment;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeFragment;
 import com.tokopedia.ride.bookingride.view.fragment.UberProductFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
@@ -25,6 +29,8 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
+
+import static com.tokopedia.ride.bookingride.view.fragment.ConfirmBookingRideFragment.EXTRA_PRODUCT;
 
 @RuntimePermissions
 public class RideHomeActivity extends BaseActivity implements RideHomeFragment.OnFragmentInteractionListener,
@@ -68,6 +74,12 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
         fragmentTransaction.commit();
     }
 
+    private void replaceFragment(int containerViewId, Fragment fragment) {
+        FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(containerViewId, fragment);
+        fragmentTransaction.commit();
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         RideHomeActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
@@ -103,7 +115,19 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
 
     @Override
     public void onProductClicked(RideProductViewModel rideProductViewModel) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_PRODUCT, rideProductViewModel);
+        ConfirmBookingRideFragment fragment = ConfirmBookingRideFragment.newInstance(bundle);
+        Slide slideTransition = new Slide(Gravity.RIGHT);
+        slideTransition.setDuration(getResources().getInteger(R.integer.anim_duration_medium));
 
+        ChangeBounds changeBoundsTransition = new ChangeBounds();
+        changeBoundsTransition.setDuration(getResources().getInteger(R.integer.anim_duration_medium));
+        fragment.setEnterTransition(slideTransition);
+        fragment.setAllowEnterTransitionOverlap(true);
+        fragment.setAllowReturnTransitionOverlap(true);
+        fragment.setSharedElementEnterTransition(changeBoundsTransition);
+        replaceFragment(R.id.bottom_container, fragment);
     }
 
     @Override

@@ -11,4 +11,5 @@ import rx.Observable;
 
 public interface PlaceRepository {
     Observable<OverviewPolyline> getOveriewPolyline(TKPDMapParam<String, Object> param);
+
 }

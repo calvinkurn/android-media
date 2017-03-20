@@ -11,19 +11,24 @@ import android.support.v4.app.ActivityCompat;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.model.LatLng;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.common.ride.data.BookingRideDataStoreFactory;
 import com.tokopedia.ride.common.ride.data.BookingRideRepositoryData;
 import com.tokopedia.ride.common.ride.data.ProductEntityMapper;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.google.maps.android.PolyUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Subscriber;
@@ -37,10 +42,14 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private final GetUberProductsUseCase mGetUberProductsUseCase;
+    private final GetOverviewPolylineUseCase getOverviewPolylineUseCase;
     private boolean isMapDragging = false;
+    private Location mCurrentLocation;
 
-    public BookingRidePresenter(GetUberProductsUseCase getUberProductsUseCase) {
+    public BookingRidePresenter(GetUberProductsUseCase getUberProductsUseCase,
+                                GetOverviewPolylineUseCase getOverviewPolylineUseCase) {
         mGetUberProductsUseCase = getUberProductsUseCase;
+        this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
     }
 
     @Override
@@ -89,8 +98,11 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
                         public void onConnected(@Nullable Bundle bundle) {
                             if (getFuzedLocation() != null) {
                                 Location location = getFuzedLocation();
+                                mCurrentLocation = location;
+                                startLocationUpdates();
                                 getView().moveToCurrentLocation(location.getLatitude(), location.getLongitude());
                                 getView().renderDefaultPickupLocation(location.getLatitude(), location.getLongitude());
+                                getView().setSourceLocation(location);
                             } else {
                                 getView().showMessage(getView().getActivity().getString(R.string.location_permission_required));
                             }
@@ -124,6 +136,21 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
         }
 
         return LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+    }
+
+    private void startLocationUpdates() {
+        if ((ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED)
+                && (ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED)) {
+            return;
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                mCurrentLocation = location;
+            }
+        });
     }
 
     @Override
@@ -163,5 +190,44 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
             getView().onMapDragStopped();
             isMapDragging = false;
         }
+    }
+
+    @Override
+    public void getOverviewPolyline(double sourceLat, double sourceLng, double destinationLat, double destinationLng) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString("origin", String.format("%s,%s",
+                sourceLat,
+                sourceLng
+        ));
+        requestParams.putString("destination", String.format("%s,%s",
+                destinationLat,
+                destinationLng
+        ));
+        requestParams.putString("sensor", "false");
+        getOverviewPolylineUseCase.execute(requestParams, new Subscriber<List<String>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(List<String> strings) {
+                List<List<LatLng>> routes = new ArrayList<>();
+                for (String route : strings) {
+                    routes.add(PolyUtil.decode(route));
+                }
+                getView().renderTripRoute(routes);
+            }
+        });
+    }
+
+    @Override
+    public void actionMyLocation() {
+        getView().moveToCurrentLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
     }
 }

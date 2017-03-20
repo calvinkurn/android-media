@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +26,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.Session;
@@ -35,6 +39,8 @@ import com.tokopedia.ride.bookingride.di.BookingRideDependencyInjection;
 import com.tokopedia.ride.bookingride.view.BookingRideContract;
 import com.tokopedia.ride.bookingride.view.activity.GooglePlacePickerActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -58,6 +64,8 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     TextView tvDestination;
     @BindView(R2.id.layout_src_destination)
     View mSrcDestLayout;
+    @BindView(R2.id.iv_my_location_button)
+    ImageView myLocationButton;
 
     private PlacePassViewModel mSource, mDestination;
 
@@ -207,7 +215,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     public void onMapDragStarted() {
         //set source as go to pin
         setSourceLocationText("GO TO PIN");
-        mListener.animateOnMapDragging(mToolbar , mSrcDestLayout);
+        mListener.animateOnMapDragging(mToolbar, mSrcDestLayout);
     }
 
     @Override
@@ -215,7 +223,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         //set address based on current address and refresh the product list
         renderDefaultPickupLocation(mGoogleMap.getCameraPosition().target.latitude, mGoogleMap.getCameraPosition().target.longitude);
 
-        mListener.animateOnMapStopped(mToolbar , mSrcDestLayout);
+        mListener.animateOnMapStopped(mToolbar, mSrcDestLayout);
     }
 
     public interface OnFragmentInteractionListener {
@@ -227,7 +235,10 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     }
 
     private void setInitialVariable() {
-        mPresenter = BookingRideDependencyInjection.createPresenter("TOKEN");
+        mPresenter = BookingRideDependencyInjection.createPresenter(
+                getActivity().getApplicationContext(),
+                "TOKEN"
+        );
     }
 
     @Override
@@ -256,6 +267,10 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
 
     private void proccessToRenderRideProduct() {
         mListener.onSourceAndDestinationChanged(mSource, mDestination);
+        if (mSource != null && mDestination != null) {
+            mPresenter.getOverviewPolyline(mSource.getLatitude(), mSource.getLongitude(),
+                    mDestination.getLatitude(), mDestination.getLongitude());
+        }
     }
 
     @Override
@@ -280,6 +295,11 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         proccessToRenderRideProduct();
 
         setSourceLocationText(GeoLocationUtils.reverseGeoCode(getActivity(), latitude, longitude));
+    }
+
+    @Override
+    public void setSourceLocation(Location location) {
+
     }
 
     @Override
@@ -324,5 +344,22 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     @Override
     public void setDestinationLocationText(String address) {
         tvDestination.setText(address);
+    }
+
+    @Override
+    public void renderTripRoute(List<List<LatLng>> routes) {
+        mGoogleMap.clear();
+        for (List<LatLng> route : routes) {
+            mGoogleMap.addPolyline(new PolylineOptions()
+                    .addAll(route)
+                    .width(10)
+                    .color(Color.BLUE)
+                    .geodesic(true));
+        }
+    }
+
+    @OnClick(R2.id.iv_my_location_button)
+    public void actionMyLocationButtonClicked() {
+        mPresenter.actionMyLocation();
     }
 }
