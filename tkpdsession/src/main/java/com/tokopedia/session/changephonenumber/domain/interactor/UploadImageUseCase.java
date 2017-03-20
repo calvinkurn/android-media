@@ -42,8 +42,7 @@ public class UploadImageUseCase extends UseCase<UploadImageModel> {
     private static final String PARAM_NEW_ADD = "new_add";
     public static final String PARAM_FILE_TO_UPLOAD = "fileToUpload";
     public static final String PARAM_IMAGE_ID = "id";
-    public static final String PARA
-    M_TOKEN = "token";
+    public static final String PARAM_TOKEN = "token";
     public static final String PARAM_WEB_SERVICE = "web_service";
 
 
