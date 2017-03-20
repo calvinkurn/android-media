@@ -252,13 +252,17 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
-    public void onSuccessDeleteWishlist() {
+    public void onSuccessDeleteWishlist(String searchTerm) {
         SnackbarManager.make(getActivity(),
                 MainApplication.getAppContext().getString(R.string.msg_delete_wishlist_success),
                 Snackbar.LENGTH_SHORT)
                 .show();
         displayPull(false);
-        wishList.refreshData(getActivity());
+        if(searchTerm.isEmpty()) {
+            wishList.refreshData(getActivity());
+        } else {
+            wishList.refreshDataOnSearch(searchTerm);
+        }
     }
 
     @Override

@@ -426,7 +426,7 @@ public class WishListImpl implements WishList {
             @Override
             public void run() {
                 wishListView.dismissProgressDialog();
-                wishListView.onSuccessDeleteWishlist();
+                wishListView.onSuccessDeleteWishlist(params.getString(SearchWishlistUsecase.KEY_QUERY, ""));
             }
         }, CacheDuration.onSecond(5));
     }
