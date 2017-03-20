@@ -28,7 +28,7 @@ public class OtpSourceFactory {
         Bundle bundle = new Bundle();
         SessionHandler sessionHandler = new SessionHandler(context);
         bundle.putString(AccountsService.AUTH_KEY,
-                "Bearer " + sessionHandler.getAccessToken(context));
+                String.format("Bearer %s", sessionHandler.getAccessToken(context)));
 
         this.accountsService = new AccountsService(bundle);
     }

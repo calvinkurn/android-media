@@ -86,6 +86,7 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
 
     private ShopViewModel prepareShopViewModel(SearchData data) {
         ShopViewModel viewModel = new ShopViewModel();
+        viewModel.setId(data.getId());
         viewModel.setSearchItems(data.getItems());
         viewModel.setSearchTerm(querySearch);
         return viewModel;

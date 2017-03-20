@@ -2,28 +2,33 @@ package com.tokopedia.inbox.inboxtalk.activity;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
 import android.view.ActionMode;
 import android.view.View;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.gcm.FCMMessagingService;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.NotificationModHandler;
+import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
+import com.tokopedia.core.review.var.Const;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity;
 import com.tokopedia.inbox.inboxtalk.fragment.InboxTalkFragment;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkResultReceiver;
@@ -41,7 +46,7 @@ import butterknife.ButterKnife;
 
 public class InboxTalkActivity extends DrawerPresenterActivity implements
         InboxTalkActivityView,
-        FCMMessagingService.NotificationListener, InboxTalkResultReceiver.Receiver {
+        NotificationReceivedListener, InboxTalkResultReceiver.Receiver {
 
     private static final String BUNDLE_POSITION = "INBOX_TALK_POSITION";
     PagerAdapter adapter;
@@ -60,6 +65,25 @@ public class InboxTalkActivity extends DrawerPresenterActivity implements
     private Boolean fromNotif = false;
     private Boolean forceUnread;
     InboxTalkResultReceiver mReceiver;
+
+    @DeepLink(Constants.Applinks.TALK)
+    public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        Intent homeIntent = null;
+        if (GlobalConfig.isSellerApp()) {
+            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
+        } else {
+            homeIntent = HomeRouter.getHomeActivity(context);
+        }
+
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        Intent destination = new Intent(context, InboxTalkActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
+        taskStackBuilder.addNextIntent(homeIntent);
+        taskStackBuilder.addNextIntent(destination);
+        return taskStackBuilder;
+    }
 
     @Override
     public void onStart() {

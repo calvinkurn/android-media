@@ -3,7 +3,7 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.app.Fragment;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.model.data.Cell;
+import com.tokopedia.seller.topads.data.model.data.Cell;
 
 /**
  * Created by zulfikarrahman on 1/6/17.

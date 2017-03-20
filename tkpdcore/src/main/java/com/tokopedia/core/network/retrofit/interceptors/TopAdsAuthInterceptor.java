@@ -1,7 +1,6 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -23,6 +22,14 @@ public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
     private static final String HEADER_DATE = "X-Date";
     private static final String HEADER_DEVICE = "X-Device";
     private static final String HEADER_USER_ID = "Tkpd-UserId";
+    private static final String HEADER_AUTHORIZATION = "Authorization";
+    private static final String HEADER_X_AUTHORIZATION = "X-Tkpd-Authorization";
+
+    private String bearerToken;
+
+    public TopAdsAuthInterceptor(String bearerToken) {
+        this.bearerToken = bearerToken;
+    }
 
     @Override
     protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey) {
@@ -32,6 +39,9 @@ public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
         headerMap.put(HEADER_DATE, date);
         headerMap.put(HEADER_USER_ID, SessionHandler.getLoginID(MainApplication.getAppContext()));
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
+
+        headerMap.put(HEADER_X_AUTHORIZATION, headerMap.get(HEADER_AUTHORIZATION));
+        headerMap.put(HEADER_AUTHORIZATION, bearerToken);
         return headerMap;
     }
 }

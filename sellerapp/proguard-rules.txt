@@ -327,6 +327,11 @@
 -keepnames class dagger.Lazy
 -dontwarn com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar
 
+-keep class com.beloo.widget.* { *; }
+ -keep interface com.beloo.widget.io.**
+ -keep enum com.beloo.widget.**
+-dontwarn com.beloo.widget.**
+
 
 
 
