@@ -55,7 +55,7 @@ public class RevampCategoryAdapter extends
         itemRowHolder.container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                categoryListener.onCategoryIntermediaryClick(categories.get(position));
+                categoryListener.onCategoryRevampClick(categories.get(position));
             }
         });
     }
@@ -83,7 +83,7 @@ public class RevampCategoryAdapter extends
     }
 
     public interface CategoryListener {
-        void onCategoryIntermediaryClick(Child child);
+        void onCategoryRevampClick(Child child);
     }
 
     public void addDataChild(List<Child> childs) {
