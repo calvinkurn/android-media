@@ -27,11 +27,9 @@
             android:layout_height="wrap_content"
             app:tabBackground="@color/white"
             app:tabGravity="fill"
-            app:tabIndicatorColor="@color/deep_orange_500"
+            app:tabIndicatorColor="@color/tkpd_green_header"
             app:tabMode="fixed"
-            app:tabMaxWidth="0dp"
-            app:tabSelectedTextColor="@color/black"
-            app:tabTextColor="@color/grey_800" />
+            app:tabSelectedTextColor="@color/tkpd_green_header" />
     </LinearLayout>
 
     <android.support.v4.view.ViewPager

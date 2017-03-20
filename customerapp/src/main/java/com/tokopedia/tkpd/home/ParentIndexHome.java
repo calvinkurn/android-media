@@ -17,6 +17,8 @@ import android.view.View;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.Cart;
+import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -28,7 +30,6 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customadapter.ListViewHotProductParent;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
-import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.interfaces.IndexHomeInterafaces;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
@@ -67,7 +68,7 @@ import rx.subscriptions.CompositeSubscription;
  * modified by alvarisi on 6/15/2016, tab selection tracking.
  * modified by Hafizh Herdi on 6/15/2016, dynamic personalization message.
  */
-public class ParentIndexHome extends TkpdActivity implements NotificationListener, HasComponent {
+public class ParentIndexHome extends TkpdActivity implements NotificationReceivedListener, HasComponent {
 
     public static final int INIT_STATE_FRAGMENT_HOME = 0;
     public static final int INIT_STATE_FRAGMENT_FEED = 1;
@@ -124,7 +125,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
         super.onNewIntent(intent);
         initStateFragment = intent.getIntExtra(EXTRA_INIT_FRAGMENT, -1);
         if (mViewPager != null) {
-            mViewPager.setCurrentItem(initStateFragment);
+            if (initStateFragment != -1) {
+                mViewPager.setCurrentItem(initStateFragment);
+            }
         }
 
         sendNotifLocalyticsCallback();
@@ -178,7 +181,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
         content.clear();
 //        adapter.notifyDataSetChanged();
         if (SessionHandler.isV4Login(getBaseContext())) {
-            String[] CONTENT = new String[]{
+            String[] CONTENT = new String[] {
                     getString(R.string.title_categories),
                     getString(R.string.title_index_prod_shop),
                     getString(R.string.title_index_favorite),
@@ -190,7 +193,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
                 content.add(content_);
             }
         } else {
-            String[] CONTENT = new String[]{getString(R.string.title_categories), getString(R.string.title_index_hot_list)};
+            String[] CONTENT = new String[] {getString(R.string.title_categories), getString(R.string.title_index_hot_list)};
             content = new ArrayList<>();
             for (String content_ : CONTENT) {
                 indicator.addTab(indicator.newTab().setText(content_));
@@ -459,7 +462,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationListene
         if (SessionHandler.isV4Login(this) && indicator.getTabCount() < 4) {
             indicator.removeAllTabs();
             content.clear();
-            String[] CONTENT = new String[]{
+            String[] CONTENT = new String[] {
                     getString(R.string.title_categories),
                     getString(R.string.title_index_prod_shop),
                     getString(R.string.title_index_favorite),

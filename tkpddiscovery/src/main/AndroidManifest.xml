@@ -14,9 +14,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.discovery.activity.BrowseProductActivity"
-            android:label="Pencarian"
+            android:label=""
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.BrowseProduct"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity

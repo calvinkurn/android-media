@@ -328,7 +328,19 @@ public class TkpdState {
         public static final int GCM_PURCHASE_REJECTED = 304;
         public static final int GCM_PURCHASE_DELIVERED = 305;
         public static final int GCM_PURCHASE_DISPUTE = 306;
+        public static final int GCM_PURCHASE_CONFIRM_SHIPPING = 307;
+        public static final int GCM_PURCHASE_FINISH = 308;
+        public static final int GCM_PURCHASE_FINISH_REMINDER = 309;
+        public static final int GCM_PURCHASE_NEW_ORDER = 310;
+        public static final int GCM_PURCHASE_AUTO_CANCEL_2D = 311;
+        public static final int GCM_PURCHASE_REJECTED_SHIPPING = 312;
+        public static final int GCM_PURCHASE_AUTO_CANCEL_4D = 313;
         public static final int GCM_NEWORDER = 401;
+        public static final int GCM_ORDER_INVALID_RESI = 402;
+        public static final int GCM_ORDER_FINISH_SELLER = 403;
+        public static final int GCM_ORDER_CANCEL_2D_SELLER = 404;
+        public static final int GCM_ORDER_CANCEL_4D_SELLER = 405;
+        public static final int GCM_ORDER_DELIVERED_SELLER = 406;
         public static final int GCM_DRAWER_UPDATE = 501;
         public static final int GCM_NOTIF_UPDATE = 502;
         public static final int GCM_CART_UPDATE = 503;
@@ -358,6 +370,8 @@ public class TkpdState {
         public static final int GCM_SHOP = 1006;
         public static final int GCM_WISHLIST = 1007;
         public static final int GCM_VERIFICATION = 1008;
+        public static final int GCM_TOPADS_BELOW_20K = 1100;
+        public static final int GCM_TOPADS_TOPUP_SUCCESS = 1101;
     }
 
     public class RecyclerView {
@@ -376,6 +390,8 @@ public class TkpdState {
         public static final int VIEW_TOP_ADS_4 = 999;
         public static final int VIEW_BANNER_HOT_LIST = 998;
         public static final int VIEW_TOP_ADS_LIST = 997;
+        public static final int VIEW_CATEGORY_HEADER = 996;
+        public static final int VIEW_CATEGORY_REVAMP_HEADER = 995;
 
         // hotlist view type
         public static final int VIEW_STANDARD = 9;

@@ -22,19 +22,19 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
             <intent-filter>
 
                 <!-- LOCALYTICS TEST MESSAGE KEY -->
-                <data android:scheme="@string/key_localytics_testmessage" />
+                <data android:scheme="@string/key_localytics_testmessage"/>
 
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
             </intent-filter>
         </activity>
         <activity
@@ -43,55 +43,55 @@
             android:label="@string/title_activity_deep_link"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
 
                 <data
                     android:host="www.tokopedia.com"
                     android:pathPattern=".*"
-                    android:scheme="https" />
+                    android:scheme="https"/>
                 <data
                     android:host="www.tokopedia.com"
                     android:pathPattern=".*"
-                    android:scheme="tkpd" />
+                    android:scheme="tkpd"/>
                 <data
                     android:host="tokopedia.com"
                     android:pathPattern=".*"
-                    android:scheme="https" />
+                    android:scheme="https"/>
                 <data
                     android:host="m.tokopedia.com"
                     android:pathPattern=".*"
-                    android:scheme="https" />
+                    android:scheme="https"/>
                 <data
                     android:host="www.tokopedia.com"
                     android:pathPrefix="/reset.pl"
-                    android:scheme="https" />
+                    android:scheme="https"/>
                 <data
                     android:host="m.tokopedia.com"
                     android:pathPrefix="/reset.pl"
-                    android:scheme="https" />
+                    android:scheme="https"/>
                 <data
                     android:host="www.tokopedia.com"
                     android:pathPrefix="/activation.pl"
-                    android:scheme="https" />
+                    android:scheme="https"/>
                 <data
                     android:host="m.tokopedia.com"
                     android:pathPrefix="/activation.pl"
-                    android:scheme="https" />
+                    android:scheme="https"/>
                 <data
                     android:host="tokopedia.onelink.me"
-                    android:scheme="https" />
+                    android:scheme="https"/>
                 <data
                     android:host="accounts.tokopedia.com"
                     android:scheme="https" />
                 <data
                     android:host="apps.tokopedia.com"
-                    android:scheme="http" />
+                    android:scheme="http"/>
                 <data
                     android:host="apps.tokopedia.com"
-                    android:scheme="https" />
+                    android:scheme="https"/>
             </intent-filter>
         </activity>
 
@@ -121,20 +121,29 @@
             android:name=".home.SimpleHomeActivity"
             android:label="@string/title_activity_simple_home"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" />
+            android:theme="@style/Theme.Tokopedia3"/>
         <activity
             android:name=".home.recharge.activity.RechargePaymentWebView"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
 
         <activity android:name=".goldmerchant.GoldMerchantRedirectActivity"
             android:screenOrientation="portrait"
             android:label="@string/label_gold_merchant"/>
 
         <provider
-            android:authorities="com.facebook.app.FacebookContentProviderOQcSB25ec2f92263c41b5a3d10152ace7888e"
             android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProviderOQcSB25ec2f92263c41b5a3d10152ace7888e"
             android:exported="true"/>
+
+        <activity android:name=".deeplink.DeeplinkHandlerActivity"
+            android:screenOrientation="portrait" />
+        <service
+            android:name=".fcm.CustomerMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
         <activity android:name=".truecaller.TruecallerActivity"/>
     </application>
 

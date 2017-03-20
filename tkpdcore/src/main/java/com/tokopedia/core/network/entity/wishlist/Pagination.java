@@ -9,4 +9,8 @@ public class Pagination {
 
     @SerializedName("next_url")
     String NextUrl;
+
+    public String getNextUrl() {
+        return NextUrl;
+    }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
@@ -31,32 +32,39 @@
         <item name="android:textSize">@dimen/font_medium</item>
     </style>
 
-    <style name="TextView.TopAds.Title.One">
+    <style name="TextView.TopAds.Title.Bold">
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TextView.TopAds.Title.Two">
+    <style name="TextView.TopAds.Title.Green">
         <item name="android:textColor">@color/font_top_ads_green</item>
+    </style>
+
+    <style name="TextView.TopAds.Title.Gray">
+        <item name="android:textColor">@color/font_top_ads_black_54</item>
+    </style>
+
+    <style name="TextView.TopAds.Title.Black">
+        <item name="android:textColor">@color/font_top_ads_black_70</item>
     </style>
 
     <style name="TextView.TopAds.Body">
         <item name="android:textSize">@dimen/font_small</item>
     </style>
 
-    <style name="TextView.TopAds.Body.Small1">
-        <item name="android:textColor">@color/font_top_ads_black_70</item>
-    </style>
-
-    <style name="TextView.TopAds.Body.Small2">
+    <style name="TextView.TopAds.Body.Gray">
         <item name="android:textColor">@color/font_top_ads_black_54</item>
     </style>
 
-    <style name="TextView.TopAds.Body.Small3">
+    <style name="TextView.TopAds.Body.Black">
         <item name="android:textColor">@color/font_top_ads_black_70</item>
+    </style>
+
+    <style name="TextView.TopAds.Body.Black.Bold">
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TextView.TopAds.Body.Small4">
+    <style name="TextView.TopAds.Body.Green">
         <item name="android:textColor">@color/font_top_ads_green</item>
     </style>
 
@@ -65,9 +73,17 @@
         <item name="android:textColor">@color/blue_link</item>
     </style>
 
+    <style name="TextView.infoInputType">
+        <item name="android:textColor">@color/black_fifty_four_percent</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
     <style name="EditText" parent="Widget.AppCompat.EditText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@drawable/color_state_topads_disable_text</item>
     </style>
 
     <style name="EditText.Date">
@@ -77,6 +93,7 @@
         <item name="android:inputType">none</item>
         <item name="android:textColor">@color/green_200</item>
     </style>
+
 
     <style name="EditText.Currency">
         <item name="android:inputType">number</item>
@@ -92,6 +109,7 @@
     <style name="TopAdsRadioButton" parent="@style/RadioButton">
         <item name="android:button">@drawable/top_ads_set_date_radio_button</item>
         <item name="android:textColor">@color/font_top_ads_black_70</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="Button.TopAds" parent="Widget.AppCompat.Button">
@@ -105,16 +123,20 @@
     </style>
 
     <style name="Button.TopAds.Submit">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:maxHeight">52dp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">@dimen/font_medium</item>
         <item name="android:background">@drawable/bg_button_orange</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_marginRight">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:layout_marginTop">5dp</item>
     </style>
 
     <style name="Button.TopAds.Submit.Green">
-        <item name="android:background">@drawable/bg_button_green</item>
+        <item name="android:background">@drawable/bg_button_green_selection</item>
+        <item name="android:textColor">@color/text_submit_button</item>
     </style>
 
     <style name="ImageViewStatus">
@@ -180,4 +202,77 @@
         <item name="tabIndicatorColor">@color/white</item>
         <item name="tabSelectedTextColor">@color/white</item>
     </style>
+
+    <style name="EditText.GreenHighlight">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColorHighlight">@color/font_top_ads_green</item>
+        <item name="android:textColor">@drawable/color_state_topads_disable_text</item>
+    </style>
+
+    <style name="TopAdsRadioExpandView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">16dp</item>
+    </style>
+
+    <style name="TextInputLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/top_ads_textinput_margin_offset</item> <!-- this is to cater the inner margin android textInputlayout have in default -->
+        <item name="android:layout_marginRight">@dimen/top_ads_textinput_margin_offset</item>
+        <item name="android:layout_marginBottom">@dimen/top_ads_textinput_margin_offset</item>
+        <item name="android:theme">@style/TextInputLayoutColorLine</item>
+    </style>
+    
+    <style name="TextInputLayoutColorLine">
+        <item name="colorControlNormal">@color/colorGray</item>
+        <item name="colorControlActivated">@color/font_top_ads_green</item>
+        <item name="colorControlHighlight">@color/font_top_ads_green</item>
+    </style>
+
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/tkpd_main_green</item>
+        <item name="android:textColorPrimary">@color/colorBlack</item>
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="TextAppearence.App.TextInputLayout" parent="TextAppearance.Design.Hint">
+        <item name="android:textColor">@color/black_fifty_four_percent</item>
+    </style>
+
+    <style name="TextAppearence.App.TextInputLayout.VerySmall">
+        <item name="android:textSize">@dimen/fontvs</item>
+    </style>
+
+    <style name="TextAppearence.App.TextInputLayout.Small">
+        <item name="android:textSize">@dimen/font_small</item>
+    </style>
+
+    <style name="EditText.GreenHighlight.TopAdsCustomAutoCompleteTextView">
+        <item name="android:drawableRight">@drawable/ic_close_green_14x14</item>
+        <item name="android:completionThreshold">1</item>
+        <item name="android:inputType">textNoSuggestions</item>
+    </style>
+
+    <style name="TopAdsCustomRadioGroup">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="Button.TopAds.WithoutBorder">
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_margin">5dp</item>
+        <item name="android:background">@drawable/bg_button_green</item>
+        <item name="android:buttonStyle">?android:attr/borderlessButtonStyle</item>
+    </style>
+
+
 </resources>
