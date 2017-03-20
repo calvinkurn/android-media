@@ -166,11 +166,9 @@ public class GetResCenterDetailSubscriber extends rx.Subscriber<DetailResCenter>
         data.setComplaintDate(domainModel.getComplaintDate());
         data.setInvoice(domainModel.getInvoice());
         data.setInvoiceUrl(domainModel.getInvoiceUrl());
-        // -----------
-        data.setResponseDeadline("NOT SET OR ASK BACKEND");
-        data.setSellerDeadlineVisibility(true);
-        data.setBuyerDeadlineVisibility(true);
-        // -----------
+        data.setResponseDeadline(domainModel.getResponseDeadline());
+        data.setSellerDeadlineVisibility(domainModel.isSellerDeadlineVisibility());
+        data.setBuyerDeadlineVisibility(domainModel.isBuyerDeadlineVisibility());
         data.setShopID(domainModel.getShopID());
         data.setShopName(domainModel.getShopName());
         data.setReceived(domainModel.getReceivedFlag() == 1);

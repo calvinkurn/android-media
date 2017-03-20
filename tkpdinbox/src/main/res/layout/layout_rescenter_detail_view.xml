@@ -137,7 +137,6 @@
         android:id="@+id/view_buyer_response_deadline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:paddingBottom="@dimen/padding_small"
         android:orientation="vertical">
 
@@ -151,10 +150,10 @@
 
         <TextView
             android:id="@+id/tv_buyer_response_deadline"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="#464646"
+            android:padding="@dimen/padding_vs"
+            android:textColor="@color/white"
             android:textSize="@dimen/fonts" />
 
     </LinearLayout>
@@ -163,7 +162,6 @@
         android:id="@+id/view_seller_response_deadline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:paddingBottom="@dimen/padding_small"
         android:orientation="vertical">
 
@@ -177,10 +175,10 @@
 
         <TextView
             android:id="@+id/tv_seller_response_deadline"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="#464646"
+            android:padding="@dimen/padding_vs"
+            android:textColor="@color/white"
             android:textSize="@dimen/fonts" />
 
     </LinearLayout>

@@ -25,7 +25,7 @@ public class DetailResCenterLastShipping {
     private String remark;
     @SerializedName("attachments")
     private List<Attachments> attachments;
-    @SerializedName("actionByText")
+    @SerializedName("actionByStr")
     private String actionByText;
 
     public String getResConvId() {

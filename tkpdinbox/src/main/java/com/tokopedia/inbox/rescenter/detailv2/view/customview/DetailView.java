@@ -1,6 +1,8 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.customview;
 
 import android.content.Context;
+import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -84,10 +86,18 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
         textCustomerName.setText(data.getBuyerName());
         textInvoice.setText(data.getInvoice());
         textShopName.setText(data.getShopName());
-//        viewBuyerResponseDeadline.setVisibility(data.isBuyerDeadlineVisibility() ? VISIBLE : GONE);
+        viewBuyerResponseDeadline.setVisibility(
+                data.isBuyerDeadlineVisibility() && data.getResponseDeadline() != null ?
+                        VISIBLE : GONE
+        );
         textBuyerResponseDeadline.setText(data.getResponseDeadline());
-//        viewSellerResponseDeadline.setVisibility(data.isSellerDeadlineVisibility() ? VISIBLE : GONE);
+        generateDeadlineBackgroundView(textBuyerResponseDeadline, getBackgroundColor(data.getResponseDeadlineUrgency()));
+        viewSellerResponseDeadline.setVisibility(
+                data.isSellerDeadlineVisibility() && data.getResponseDeadline() != null ?
+                        VISIBLE : GONE
+        );
         textSellerResponseDeadline.setText(data.getResponseDeadline());
+        generateDeadlineBackgroundView(textSellerResponseDeadline, getBackgroundColor(data.getResponseDeadlineUrgency()));
         textCustomerName.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,6 +116,26 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
                 listener.setOnActionInvoiceClick(data.getInvoice(), data.getInvoiceUrl());
             }
         });
+    }
+
+    private int getBackgroundColor(int responseDeadlineUrgency) {
+        switch (responseDeadlineUrgency) {
+            case 1: return R.color.red_a700;
+            case 2: return R.color.colorBlue;
+            default: return R.color.black;
+        }
+    }
+
+    public static void generateDeadlineBackgroundView(View v, int backgroundColor) {
+        GradientDrawable shape = new GradientDrawable();
+        shape.setShape(GradientDrawable.RECTANGLE);
+        shape.setCornerRadii(new float[] { 8, 8, 8, 8, 8, 8, 8, 8 });
+        shape.setColor(backgroundColor);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            v.setBackground(shape);
+        } else {
+            v.setBackgroundDrawable(shape);
+        }
     }
 }
 

@@ -77,7 +77,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     public boolean isSeller() {
-        return SessionHandler.getLoginID(getActivity())
+        return !SessionHandler.getLoginID(getActivity())
                 .equals(getViewData().getDetailData().getBuyerID());
     }
 
