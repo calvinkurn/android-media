@@ -9,6 +9,9 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.var.NotificationVariable;
 
+/**
+ * modify by mnormansyah 18 feb 2017
+ */
 public class RefreshHandler {
 
 	private SwipeToRefresh swipeToRefreshLayout;
@@ -21,6 +24,15 @@ public class RefreshHandler {
 
 	public interface OnRefreshHandlerListener {
 		void onRefresh(View view);
+	}
+
+	public RefreshHandler(SwipeToRefresh swipeToRefresh,
+						  OnRefreshHandlerListener onRefreshHandlerListener){
+		this.swipeToRefreshLayout = swipeToRefresh;
+		notif = MainApplication.getNotifInstance();
+		notif.setContext((Activity) swipeToRefresh.getContext());
+		this.RefreshHandlerListener = onRefreshHandlerListener;
+		swipeToRefresh.setOnRefreshListener(onSwipeRefresh());
 	}
 
 	public RefreshHandler(Activity context, View view, OnRefreshHandlerListener RefreshListener) {

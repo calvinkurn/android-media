@@ -40,4 +40,14 @@ public class SessionRouter {
         Intent intent = RouterUtils.getActivityIntent(context, PHONE_VERIFICATION_PROFILE_ACTIVITY);
         return intent;
     }
+
+    public static Class<?> getLoginActivityClass() {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = RouterUtils.getActivityClass(LOGIN_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
 }

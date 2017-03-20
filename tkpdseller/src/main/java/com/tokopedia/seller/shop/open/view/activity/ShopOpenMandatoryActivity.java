@@ -1,49 +1,61 @@
 package com.tokopedia.seller.shop.open.view.activity;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.widget.FrameLayout;
 import android.os.Bundle;
 import android.view.View;
 
 import com.stepstone.stepper.StepperLayout;
-import com.stepstone.stepper.VerificationError;
 import com.tokopedia.seller.R;
-import com.tokopedia.core.app.TActivity;
+import com.tokopedia.seller.app.BaseDiActivity;
+import com.tokopedia.seller.shop.open.view.presenter.ShopOpenMandatoryPresenter;
+import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingComponent;
+import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
+import com.tokopedia.seller.shop.setting.di.module.ShopSettingModule;
+import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLocationFragment;
 import com.tokopedia.seller.shop.open.view.adapter.ShopOpenStepperViewAdapterOpenShop;
 
 /**
  * Created by Nathaniel on 3/16/2017.
  */
 
-public class ShopOpenMandatoryActivity extends TActivity implements StepperLayout.StepperListener {
+public class ShopOpenMandatoryActivity extends BaseDiActivity<ShopOpenMandatoryPresenter, ShopSettingComponent> {
 
     StepperLayout stepperLayout;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_shop_open_mandatory);
+    protected int getLayoutId() {
+        return R.layout.activity_shop_open_mandatory;
+    }
 
+    @Override
+    protected void initView() {
         stepperLayout = (StepperLayout) findViewById(R.id.stepper_view);
         stepperLayout.setAdapter(new ShopOpenStepperViewAdapterOpenShop(getFragmentManager(), this));
-        stepperLayout.setListener(this);
     }
 
     @Override
-    public void onCompleted(View completeButton) {
-
+    protected ShopSettingComponent initComponent() {
+        return DaggerShopSettingComponent
+                .builder()
+                .shopSettingModule(new ShopSettingModule(this))
+                .build();
     }
 
     @Override
-    public void onError(VerificationError verificationError) {
-
+    protected ShopOpenMandatoryPresenter getPresenter() {
+        return null;
     }
 
     @Override
-    public void onStepSelected(int newStepPosition) {
-
+    protected void initVar() {
     }
 
     @Override
-    public void onReturn() {
+    protected void setActionVar() {
 
     }
+
 }

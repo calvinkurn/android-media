@@ -2,9 +2,9 @@ package com.tokopedia.seller.topads.view.dialog;
 
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.TimePicker;
+
+import com.tokopedia.seller.lib.datepicker.widget.DatePickerLabelView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -27,12 +27,12 @@ public class TimePickerdialog extends TimePickerDialog {
 
     public static class OnTimeSetListener implements TimePickerDialog.OnTimeSetListener {
 
-        private EditText editText;
+        private DatePickerLabelView datePicker;
         private String dateFormat;
         private Date date;
 
-        public OnTimeSetListener(EditText editText, Date date, String dateFormat) {
-            this.editText = editText;
+        public OnTimeSetListener(DatePickerLabelView datePicker, Date date, String dateFormat) {
+            this.datePicker = datePicker;
             this.date = date;
             this.dateFormat = dateFormat;
         }
@@ -43,7 +43,7 @@ public class TimePickerdialog extends TimePickerDialog {
             calendar.set(Calendar.HOUR_OF_DAY, selectedHour);
             calendar.set(Calendar.MINUTE, selectedMinute);
             date = calendar.getTime();
-            editText.setText(new SimpleDateFormat(dateFormat, Locale.ENGLISH).format(date));
+            datePicker.setContent(new SimpleDateFormat(dateFormat, Locale.ENGLISH).format(date));
             onDateUpdated(date);
         }
 

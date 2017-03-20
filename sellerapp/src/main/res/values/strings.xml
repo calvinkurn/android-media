@@ -14,4 +14,6 @@
     <string name="action_shop_score_go_to_detail">Lihat Detail</string>
     <string name="decription_shop_score_summary_30days_info">Skor dihitung berdasarkan performa toko dalam 30 hari terakhir.</string>
 
+    <string name="title_push_notif_general">Notifikasi baru dari Tokopedia</string>
+
 </resources>
