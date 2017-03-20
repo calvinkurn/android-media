@@ -316,7 +316,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     @Override
     protected void onPause() {
         super.onPause();
-        discoverySearchView.onPause();
     }
 
     @Override

@@ -112,8 +112,11 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
         initStyle(attrs, defStyleAttr);
 
-        compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
+        initCompositeSubscriber();
+    }
 
+    private void initCompositeSubscriber() {
+        compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
         compositeSubscription.add(querySubscription = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(final Subscriber<? super String> subscriber) {
@@ -148,10 +151,6 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
                         }
                     }
                 }));
-    }
-
-    public void onPause(){
-        RxUtils.unsubscribeIfNotNull(compositeSubscription);
     }
 
     public void setActivity(AppCompatActivity activity) {
