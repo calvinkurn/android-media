@@ -14,6 +14,14 @@ import rx.Observable;
  */
 
 public class GetTopAdsShopUseCase extends UseCase<TopAdsShop> {
+    public static final String TOPADS_PAGE_DEFAULT_VALUE = "1";
+    public static final String TOPADS_ITEM_DEFAULT_VALUE = "4";
+    public static final String SRC_FAV_SHOP_VALUE = "fav_shop";
+
+    public static final String KEY_ITEM = "item";
+    public static final String KEY_SRC = "src";
+    public static final String KEY_PAGE = "page";
+
     private final FavoriteRepository favoriteRepository;
 
     public GetTopAdsShopUseCase(ThreadExecutor threadExecutor,

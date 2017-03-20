@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.tkpd.home.favorite.domain.FavoriteRepository;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 
@@ -37,7 +38,19 @@ public class GetFavoriteShopUsecase extends UseCase<FavoriteShop> {
 
     @Override
     public Observable<FavoriteShop> createObservable(RequestParams requestParams) {
-        return favoriteRepository.getFavoriteShop(requestParams.getParameters());
+
+        return favoriteRepository.getFavoriteShop(getParamsInstring(requestParams));
+    }
+
+    private TKPDMapParam<String, String> getParamsInstring(RequestParams requestParams) {
+
+        TKPDMapParam<String, String> results = new TKPDMapParam<>();
+        results.put(KEY_OPTION_NAME, requestParams.getString(KEY_OPTION_NAME, ""));
+        results.put(KEY_OPTION_LOCATION, requestParams.getString(KEY_OPTION_LOCATION, ""));
+        results.put(KEY_PER_PAGE, requestParams.getString(KEY_PER_PAGE, ""));
+        results.put(KEY_PAGE, requestParams.getString(KEY_PAGE, ""));
+
+        return results;
     }
 }
 
