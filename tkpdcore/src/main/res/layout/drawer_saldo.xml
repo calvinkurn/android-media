@@ -43,15 +43,28 @@
                 android:text="@string/saldo"
                 android:textStyle="bold"/>
 
+            <View
+                android:id="@+id/saldo_redirect_arrow"
+                android:layout_width="@dimen/padding_small"
+                android:layout_height="@dimen/padding_small"
+                android:layout_marginRight="@dimen/padding_med"
+                android:layout_marginEnd="@dimen/padding_med"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/chevron_thin_right"/>
+
             <TextView
                 android:id="@+id/deposit_text"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_toLeftOf="@id/saldo_redirect_arrow"
+                android:layout_toStartOf="@id/saldo_redirect_arrow"
                 android:paddingLeft="@dimen/padding_small"
-                android:paddingRight="@dimen/padding_med"
+                android:paddingStart="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small"
+                android:paddingEnd="@dimen/padding_small"
                 android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:textStyle="bold" />
 
             <ProgressBar
@@ -99,21 +112,47 @@
                 android:text="@string/toko_cash_info"
                 android:textStyle="bold"/>
 
+            <View
+                android:id="@+id/toko_cash_redirect_arrow"
+                android:layout_width="@dimen/padding_small"
+                android:layout_height="@dimen/padding_small"
+                android:layout_marginRight="@dimen/padding_med"
+                android:layout_marginEnd="@dimen/padding_med"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/chevron_thin_right"/>
+
             <TextView
                 android:id="@+id/top_cash_value"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:paddingBottom="5dp"
+                android:layout_toLeftOf="@id/toko_cash_redirect_arrow"
+                android:layout_toStartOf="@id/toko_cash_redirect_arrow"
                 android:paddingLeft="@dimen/padding_small"
-                android:paddingRight="@dimen/padding_med"
+                android:paddingStart="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small"
+                android:paddingEnd="@dimen/padding_small"
                 android:layout_centerVertical="true"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/toko_cash_activation_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/margin_vs"
+                android:layout_marginRight="@dimen/padding_med"
+                android:layout_marginEnd="@dimen/padding_med"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:textStyle="bold" />
+                android:layout_centerVertical="true"
+                android:background="@drawable/button_rounded_corner"
+                android:textColor="@color/white"
+                android:visibility="gone"/>
 
             <ProgressBar
                 android:id="@+id/loading_top_cash"
-                android:layout_gravity="center"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginStart="@dimen/margin_med"
@@ -157,16 +196,29 @@
                 android:text="@string/loyalty_points_info"
                 android:textStyle="bold"/>
 
+            <View
+                android:id="@+id/top_points_redirect_arrow"
+                android:layout_width="@dimen/padding_small"
+                android:layout_height="@dimen/padding_small"
+                android:layout_marginRight="@dimen/padding_med"
+                android:layout_marginEnd="@dimen/padding_med"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/chevron_thin_right"/>
+
             <TextView
                 android:id="@+id/toppoints_text"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:paddingBottom="5dp"
+                android:layout_toLeftOf="@id/top_points_redirect_arrow"
+                android:layout_toStartOf="@id/top_points_redirect_arrow"
                 android:paddingLeft="@dimen/padding_small"
-                android:paddingRight="@dimen/padding_med"
+                android:paddingStart="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small"
+                android:paddingEnd="@dimen/padding_small"
                 android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:textStyle="bold" />
 
             <ProgressBar

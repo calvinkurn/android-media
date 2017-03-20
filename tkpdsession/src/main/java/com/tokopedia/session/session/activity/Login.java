@@ -1,6 +1,7 @@
 package com.tokopedia.session.session.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -31,7 +32,6 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.fragment.FragmentSecurityQuestion;
-import com.tokopedia.core.msisdn.activity.MsisdnActivity;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.router.CustomerRouter;
@@ -53,6 +53,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.otp.phoneverification.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.register.activity.RegisterEmailActivity;
 import com.tokopedia.session.session.fragment.LoginFragment;
 import com.tokopedia.session.session.fragment.RegisterInitialFragment;
@@ -104,6 +105,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     private static final String INTENT_EXTRA_PARAM_EMAIL = "INTENT_EXTRA_PARAM_EMAIL";
     private static final String INTENT_EXTRA_PARAM_PASSWORD = "INTENT_EXTRA_PARAM_PASSWORD";
     private static final String INTENT_AUTOMATIC_LOGIN = "INTENT_AUTOMATIC_LOGIN";
+    private static final int REQUEST_VERIFY_PHONE_NUMBER = 900;
 
     //    int whichFragmentKey;
     LocalCacheHandler cacheGTM;
@@ -213,37 +215,21 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         Log.d(getClass().getSimpleName(), "moveTo " + type);
         switch (type) {
             case MOVE_TO_CART_TYPE:
-                if (GlobalConfig.isSellerApp() && !SessionHandler.isMsisdnVerified()) {
-                    Intent intent = new Intent(this, MsisdnActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+                if (SessionHandler.isV4Login(this)) {
+                    startActivity(TransactionCartRouter.createInstanceCartActivity(this));
                 } else {
-                    if (SessionHandler.isV4Login(this)) {
-                        startActivity(TransactionCartRouter.createInstanceCartActivity(this));
-                    } else {
-                        Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
-                        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME);
-                        startActivity(intent);
-                    }
+                    Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+                    intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME);
+                    startActivity(intent);
                 }
                 break;
             case HOME:
-                if (GlobalConfig.isSellerApp() && !SessionHandler.isMsisdnVerified()) {
-                    Intent intent = new Intent(this, MsisdnActivity.class);
+                if (SessionHandler.isV4Login(this) && !SessionHandler.isMsisdnVerified()) {
+                    Intent intent = new Intent(this, PhoneVerificationActivationActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+                    startActivityForResult(intent, REQUEST_VERIFY_PHONE_NUMBER);
                 } else {
-                    if (SessionHandler.isV4Login(this)) {
-                        Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
-                        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                                HomeRouter.INIT_STATE_FRAGMENT_FEED);
-                        startActivity(intent);
-                    } else {
-                        Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
-                        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                                HomeRouter.INIT_STATE_FRAGMENT_HOME);
-                        startActivity(intent);
-                    }
+                    loginToHome();
                 }
                 break;
 
@@ -268,6 +254,20 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     startActivity(intent);
                 }
                 break;
+        }
+    }
+
+    private void loginToHome() {
+        if (SessionHandler.isV4Login(this)) {
+            Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+            intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                    HomeRouter.INIT_STATE_FRAGMENT_FEED);
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+            intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                    HomeRouter.INIT_STATE_FRAGMENT_HOME);
+            startActivity(intent);
         }
     }
 
@@ -878,6 +878,8 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     fragment.onFailedProfileShared(data.getStringExtra("error"));
                 }
             }
+        } else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER) {
+            loginToHome();
         }
     }
 
