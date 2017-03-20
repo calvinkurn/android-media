@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:id="@+id/row_cab_list"
-                android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
-                android:paddingLeft="@dimen/fifteen_dp"
-                android:paddingTop="@dimen/ten_dp">
+    android:id="@+id/row_cab_list"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:paddingLeft="@dimen/fifteen_dp"
+    android:paddingTop="@dimen/ten_dp">
 
     <ImageView
         android:id="@+id/iv_cab_img"
@@ -14,6 +14,8 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/fifteen_dp"
+        android:background="@drawable/shape_bg_cab_img"
+        android:padding="6dp"
         android:src="@drawable/crux_cabs_uber_ic" />
 
     <TextView
