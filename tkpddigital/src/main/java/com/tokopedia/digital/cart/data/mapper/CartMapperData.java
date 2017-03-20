@@ -1,5 +1,7 @@
 package com.tokopedia.digital.cart.data.mapper;
 
+import com.tokopedia.core.otp.data.RequestOtpModel;
+import com.tokopedia.core.otp.data.ValidateOtpModel;
 import com.tokopedia.digital.cart.data.entity.response.AdditionalInfo;
 import com.tokopedia.digital.cart.data.entity.response.Detail;
 import com.tokopedia.digital.cart.data.entity.response.MainInfo;
@@ -12,6 +14,7 @@ import com.tokopedia.digital.cart.model.CartAdditionalInfo;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 import com.tokopedia.digital.cart.model.CartItemDigital;
 import com.tokopedia.digital.cart.model.CheckoutDigitalData;
+import com.tokopedia.digital.cart.model.OtpData;
 import com.tokopedia.digital.cart.model.Relation;
 import com.tokopedia.digital.cart.model.RelationData;
 import com.tokopedia.digital.cart.model.Relationships;
@@ -178,6 +181,42 @@ public class CartMapperData implements ICartMapperData {
             return checkoutDigitalData;
         } catch (Exception e) {
             throw new MapperDataException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public OtpData transformOtpData(RequestOtpModel requestOtpModel) throws MapperDataException {
+        try {
+            OtpData otpData = new OtpData();
+            if (requestOtpModel.isSuccess() && requestOtpModel.isResponseSuccess()
+                    && requestOtpModel.getRequestOtpData().isSuccess()) {
+                otpData.setSuccess(true);
+                otpData.setMessage(requestOtpModel.getStatusMessage());
+            } else {
+                otpData.setSuccess(false);
+                otpData.setMessage(requestOtpModel.getErrorMessage());
+            }
+            return otpData;
+        } catch (Exception e) {
+            throw new MapperDataException(e.getMessage(), e.getCause());
+        }
+    }
+
+    @Override
+    public OtpData transformOtpData(ValidateOtpModel validateOtpModel) throws MapperDataException {
+        try {
+            OtpData otpData = new OtpData();
+            if (validateOtpModel.isSuccess() && validateOtpModel.isResponseSuccess()
+                    && validateOtpModel.getValidateOtpData().isSuccess()) {
+                otpData.setSuccess(true);
+                otpData.setMessage(validateOtpModel.getStatusMessage());
+            } else {
+                otpData.setSuccess(false);
+                otpData.setMessage(validateOtpModel.getErrorMessage());
+            }
+            return otpData;
+        } catch (Exception e) {
+            throw new MapperDataException(e.getMessage(), e.getCause());
         }
     }
 }
