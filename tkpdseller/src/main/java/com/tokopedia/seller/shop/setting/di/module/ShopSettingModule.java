@@ -58,8 +58,8 @@ public class ShopSettingModule extends BaseActivityModule {
 
     @Provides
     @ShopSettingScope
-    public DistrictDataCloud provideDistrictDataCloud(MyShopApi api) {
-        return new DistrictDataCloud(api);
+    public DistrictDataCloud provideDistrictDataCloud(MyShopApi api, Activity activity) {
+        return new DistrictDataCloud(api, activity);
     }
 
     @Provides
