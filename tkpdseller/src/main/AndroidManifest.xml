@@ -167,6 +167,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
 
+        <activity
+            android:name=".shop.open.view.activity.ShopOpenMandatoryActivity"
+            android:label="@string/title_shop_setting"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3" />
+
         <service
             android:name=".myproduct.service.ProductService"
             android:exported="false" />
