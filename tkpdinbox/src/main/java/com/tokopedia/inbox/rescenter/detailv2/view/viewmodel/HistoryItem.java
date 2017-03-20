@@ -41,4 +41,5 @@ public class HistoryItem {
     public void setLatest(boolean latest) {
         this.latest = latest;
     }
+
 }

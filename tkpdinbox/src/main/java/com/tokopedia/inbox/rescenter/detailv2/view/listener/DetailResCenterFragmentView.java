@@ -1,7 +1,9 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.listener;
 
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
+import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.ResCenterTrackShipping;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
 
 /**
  * Created by hangnadi on 3/8/17.
@@ -16,7 +18,17 @@ public interface DetailResCenterFragmentView {
 
     void setViewData(DetailViewModel model);
 
+    void showLoadingDialog(boolean show);
+
+    void showTimeOutMessage();
+
+    void showSnackBar(String messageError);
+
     void setOnInitResCenterDetailComplete();
+
+    TrackingDialogViewModel getTrackingData();
+
+    void setTrackingData(TrackingDialogViewModel trackingData);
 
     void showLoading(boolean isShow);
 
@@ -36,7 +48,7 @@ public interface DetailResCenterFragmentView {
 
     void setOnActionMoreHistoryClick();
 
-    void setOnActionTrackAwbClick();
+    void setOnActionTrackAwbClick(String shipmentID, String shipmentRef);
 
     void setOnActionAwbHistoryClick();
 
@@ -55,4 +67,7 @@ public interface DetailResCenterFragmentView {
     void setOnActionHelpClick();
 
     void setOnActionAppealClick();
+
+    void setOnRequestTrackingComplete();
+
 }

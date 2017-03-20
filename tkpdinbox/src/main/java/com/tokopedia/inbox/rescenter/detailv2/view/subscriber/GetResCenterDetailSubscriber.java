@@ -1,6 +1,16 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.subscriber;
 
+import com.tokopedia.inbox.rescenter.detailv2.domain.model.AddressDomainModel;
+import com.tokopedia.inbox.rescenter.detailv2.domain.model.AwbAttachmentDomainModel;
+import com.tokopedia.inbox.rescenter.detailv2.domain.model.ButtonDomainModel;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
+import com.tokopedia.inbox.rescenter.detailv2.domain.model.ProductComplainedDomainModel;
+import com.tokopedia.inbox.rescenter.detailv2.domain.model.ProductDataDomainModel;
+import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionDomainModel;
+import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionHistoryDomainModel;
+import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionHistoryItemDomainModel;
+import com.tokopedia.inbox.rescenter.detailv2.domain.model.ShippingDomainModel;
+import com.tokopedia.inbox.rescenter.detailv2.domain.model.SolutionDomainModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AddressReturData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AwbData;
@@ -11,6 +21,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.HistoryData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.HistoryItem;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ProductData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ProductItem;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AwbAttachmentViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.SolutionData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.StatusData;
 
@@ -63,16 +74,32 @@ public class GetResCenterDetailSubscriber extends rx.Subscriber<DetailResCenter>
 
     private DetailViewModel mappingViewModel(DetailResCenter detailResCenter) {
         DetailViewModel model = new DetailViewModel();
-        if (true) {
+        if (detailResCenter != null && detailResCenter.isSuccess()) {
             model.setSuccess(true);
-            model.setAddressReturData(mappingAddressReturData(detailResCenter));
-            model.setAwbData(mappingAwbReturData(detailResCenter));
-            model.setButtonData(mappingButtonData(detailResCenter));
-            model.setDetailData(mappingDetailData(detailResCenter));
-            model.setHistoryData(mappingHistoryData(detailResCenter));
-            model.setProductData(mappingProductData(detailResCenter));
-            model.setSolutionData(mappingSolutionData(detailResCenter));
-            model.setStatusData(mappingStatusData(detailResCenter));
+            model.setAddressReturData(detailResCenter.getAddress() != null ?
+                    mappingAddressReturData(detailResCenter.getAddress()) : null
+            );
+            model.setAwbData(detailResCenter.getShipping() != null ?
+                    mappingAwbReturData(detailResCenter.getShipping()) : null
+            );
+            model.setButtonData(detailResCenter.getButton() != null ?
+                    mappingButtonData(detailResCenter.getButton()) : null
+            );
+            model.setDetailData(detailResCenter.getResolution() != null ?
+                    mappingDetailData(detailResCenter.getResolution()) : null
+            );
+            model.setHistoryData(detailResCenter.getResolutionHistory() != null ?
+                    mappingHistoryData(detailResCenter.getResolutionHistory()) : null
+            );
+            model.setProductData(detailResCenter.getProductData() != null ?
+                    mappingProductData(detailResCenter.getProductData()) : null
+            );
+            model.setSolutionData(detailResCenter.getSolutionData() != null ?
+                    mappingSolutionData(detailResCenter.getSolutionData()) : null
+            );
+            model.setStatusData(detailResCenter.getResolution() != null ?
+                    mappingStatusData(detailResCenter.getResolution()) : null
+            );
         } else {
             model.setSuccess(false);
             model.setMessageError(detailResCenter != null ? detailResCenter.getMessageError() : null);
@@ -80,95 +107,117 @@ public class GetResCenterDetailSubscriber extends rx.Subscriber<DetailResCenter>
         return model;
     }
 
-    private AddressReturData mappingAddressReturData(DetailResCenter detailResCenter) {
+    private AddressReturData mappingAddressReturData(AddressDomainModel domainModel) {
         AddressReturData data = new AddressReturData();
-        data.setAddressText("<b>Rumah Jali</b>" + "\n" +
-                "Jl. Letjen S. Parman Kav.77 " + "\n" +
-                "DKI Jakarta 11410" + "\n" +
-                "Telp: 08788101732"
+        data.setAddressText("<b>" + domainModel.getReceiver()+ "</b>" + "\n" +
+                domainModel.getStreet() + "\n" +
+                domainModel.getDistrict() + ", " + domainModel.getCity() + "\n" +
+                domainModel.getProvince() + "\n" +
+                domainModel.getPostalCode() + "\n" +
+                domainModel.getPhoneReceiver()
         );
-        data.setAddressReturDate("24 Juli 2016 12:22 WIB");
+        data.setAddressReturDate("NOT SET OR ASK BACKEND");
         return data;
     }
 
-    private AwbData mappingAwbReturData(DetailResCenter detailResCenter) {
+    private AwbData mappingAwbReturData(ShippingDomainModel domainModel) {
         AwbData data = new AwbData();
-        data.setAwbText("<b>CGK1233454546</b>");
-        data.setAwbDate("24 Juli 2016 12:22 WIB");
+        data.setShipmentRef(domainModel.getShipmentRef());
+        data.setAwbDate(domainModel.getShipmentDate());
+        data.setShipmentID(domainModel.getShipmentID());
+        data.setAttachments(mappingShippingAttacment(domainModel.getAttachment()));
         return data;
     }
 
-    private ButtonData mappingButtonData(DetailResCenter detailResCenter) {
+    private List<AwbAttachmentViewModel> mappingShippingAttacment(List<AwbAttachmentDomainModel> attachmentList) {
+        List<AwbAttachmentViewModel> viewModels = new ArrayList<>();
+        for (AwbAttachmentDomainModel items : attachmentList) {
+            AwbAttachmentViewModel viewModel = new AwbAttachmentViewModel();
+            viewModel.setImageUrl(items.getImageUrl());
+            viewModel.setImageThumbUrl(items.getImageThumbUrl());
+            viewModels.add(viewModel);
+        }
+        return viewModels;
+    }
+
+    private ButtonData mappingButtonData(ButtonDomainModel domainModel) {
         ButtonData data = new ButtonData();
-        data.setShowAcceptProduct(true);
-        data.setShowAcceptSolution(false);
-        data.setShowEdit(false);
+        data.setShowAskHelp(domainModel.getReport() == 1);
+        data.setAskHelpDialogText(domainModel.getReportDialogText());
+        data.setShowCancel(domainModel.getCancel() == 1);
+        data.setCancelDialogText(domainModel.getCancelDialogText());
+        data.setShowEdit(domainModel.getEdit() == 1);
+        data.setShowInputAddress(domainModel.getInputAddress() == 1);
+        data.setShowAppealSolution(domainModel.getAppeal() == 1);
+        data.setShowInputAwb(domainModel.getInputAwb() == 1);
+        data.setShowAcceptProduct(domainModel.getFinish() == 1);
+        data.setShowAcceptSolution(domainModel.getAccept() == 1);
+        data.setShowAcceptAdminSolution(domainModel.getAcceptByAdmin() == 1);
+        data.setAcceptProductDialogText(domainModel.getAcceptProductDialogText());
         return data;
     }
 
-    private DetailData mappingDetailData(DetailResCenter detailResCenter) {
+    private DetailData mappingDetailData(ResolutionDomainModel domainModel) {
         DetailData data = new DetailData();
-        data.setAwbNumber("BKS0001234567");
-        data.setBuyerDeadlineVisibility(false);
-        data.setBuyerID("1234009");
-        data.setBuyerName("Arif Riyanto");
-        data.setComplaintDate("22 Juli 2016 10:10 WIB");
-        data.setInvoice("INV/20162090/XV/III/1234");
-        data.setResponseDeadline("");
-        data.setSellerDeadlineVisibility(false);
-        data.setShopID("67890");
-        data.setShopName("ST. Toms Store");
+        data.setOrderID(domainModel.getOrderID());
+        data.setAwbNumber(domainModel.getOrderAwbNumber());
+        data.setBuyerID(domainModel.getBuyerID());
+        data.setBuyerName(domainModel.getBuyerName());
+        data.setComplaintDate(domainModel.getComplaintDate());
+        data.setInvoice(domainModel.getInvoice());
+        data.setInvoiceUrl(domainModel.getInvoiceUrl());
+        // -----------
+        data.setResponseDeadline("NOT SET OR ASK BACKEND");
+        data.setSellerDeadlineVisibility(true);
+        data.setBuyerDeadlineVisibility(true);
+        // -----------
+        data.setShopID(domainModel.getShopID());
+        data.setShopName(domainModel.getShopName());
+        data.setReceived(domainModel.getReceivedFlag() == 1);
         return data;
     }
 
-    private HistoryData mappingHistoryData(DetailResCenter detailResCenter) {
+    private HistoryData mappingHistoryData(ResolutionHistoryDomainModel domainModel) {
         HistoryData data = new HistoryData();
-        List<HistoryItem> historyItems = new ArrayList<>();
-        HistoryItem item = new HistoryItem();
-        item.setDate("30 Juli 2016 09:33 WIB");
-        item.setLatest(true);
-        item.setProvider("Pembeli");
-        item.setHistoryText("Produk telah dikirim kembali oleh Pembeli. " +
-                "Menunggu konfirmasi terima produk oleh Penjual");
-        historyItems.add(item);
-
-        // ---------------- carefull delete this if ws ready
-        HistoryItem item2 = new HistoryItem();
-        item2.setDate("28 Juli 2016 09:33 WIB");
-        item2.setLatest(false);
-        item2.setProvider("Penjual");
-        item2.setHistoryText("Penjual telah memberi alamat retur produk. " +
-                "Menunggu nomor resi retur produk dari Pembeli");
-        historyItems.add(item2);
-        // ---------------- carefull delete this if ws ready
-
-        data.setHistoryList(historyItems);
+        List<HistoryItem> viewModels = new ArrayList<>();
+        for (int i = 0; i < domainModel.getList().size() ; i++) {
+            ResolutionHistoryItemDomainModel item = domainModel.getList().get(i);
+            HistoryItem viewModel = new HistoryItem();
+            viewModel.setHistoryText(item.getRemark());
+            viewModel.setDate(item.getDate());
+            viewModel.setProvider(item.getActionBy());
+            viewModel.setLatest(i == 0);
+            viewModels.add(viewModel);
+        }
+        data.setHistoryList(viewModels);
         return data;
     }
 
-    private ProductData mappingProductData(DetailResCenter detailResCenter) {
+    private ProductData mappingProductData(ProductDataDomainModel domainModel) {
         ProductData data = new ProductData();
-        data.setProductRelatedComplaint(true);
-        List<ProductItem> productItems = new ArrayList<>();
-        ProductItem item = new ProductItem();
-        item.setProductImageUrl("https://ecs7.tokopedia.net/img/cache/300/product-1/2016/9/4/279371/279371_c6424ac7-a5b5-406d-80ec-de298a8a14b8");
-        item.setProductName("Boneka Star Wars Plush BB8 Droid R2D2 Storm Trooper Darth Vader");
-        productItems.add(item);
-        data.setProductList(productItems);
+        List<ProductItem> viewModels = new ArrayList<>();
+        for (ProductComplainedDomainModel item : domainModel.getList()) {
+            ProductItem viewModel = new ProductItem();
+            viewModel.setProductName(item.getProductName());
+            viewModel.setProductImageUrl(item.getProductImageUrl());
+            viewModel.setProductID(item.getProductID());
+            viewModels.add(viewModel);
+        }
+        data.setProductList(viewModels);
         return data;
     }
 
-    private SolutionData mappingSolutionData(DetailResCenter detailResCenter) {
+    private SolutionData mappingSolutionData(SolutionDomainModel domainModel) {
         SolutionData data = new SolutionData();
-        data.setSolutionDate("28 Juli 2016 12:11 WIB");
-        data.setSolutionProvider("Penjual");
-        data.setSolutionText("Penjual minta retur produk dan pengembalian dana sebesar Rp. 1.750.000");
+        data.setSolutionDate(domainModel.getSolutionDate());
+        data.setSolutionProvider(domainModel.getSolutionActionBy());
+        data.setSolutionText(domainModel.getSolutionRemark());
         return data;
     }
 
-    private StatusData mappingStatusData(DetailResCenter detailResCenter) {
+    private StatusData mappingStatusData(ResolutionDomainModel domainModel) {
         StatusData data = new StatusData();
-        data.setStatusText("Menunggu konfirmasi terima produk oleh penjual");
+        data.setStatusText(domainModel.getStatus());
         return data;
     }
 }

@@ -16,5 +16,5 @@ public interface DetailResCenterFragmentPresenter {
 
     void askHelpResolution();
 
-    void trackReturProduck();
+    void trackReturProduck(String shipmentID, String shipmentRef);
 }

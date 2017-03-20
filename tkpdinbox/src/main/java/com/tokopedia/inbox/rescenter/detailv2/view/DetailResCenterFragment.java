@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
@@ -14,8 +15,10 @@ import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
+import com.tokopedia.inbox.rescenter.detailv2.view.customdialog.TrackShippingDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.AddressReturView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.AwbReturView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.ButtonView;
@@ -28,6 +31,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragm
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFragmentImpl;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFragmentPresenter;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
 import com.tokopedia.inbox.rescenter.edit.activity.EditResCenterActivity;
 
 /**
@@ -37,6 +41,7 @@ import com.tokopedia.inbox.rescenter.edit.activity.EditResCenterActivity;
 public class DetailResCenterFragment extends BasePresenterFragment<DetailResCenterFragmentPresenter>
         implements DetailResCenterFragmentView {
 
+    private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
     private static final int REQUEST_EDIT_SOLUTION = 6789;
     private static final int REQUEST_APPEAL_SOLUTION = 5;
     private static final int REQUEST_INPUT_SHIPPING = 6;
@@ -56,10 +61,11 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     SolutionView solutionView;
     HistoryView historyView;
 
-    private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
+    private TkpdProgressDialog normalLoading;
 
     private String resolutionID;
     private DetailViewModel viewData;
+    private TrackingDialogViewModel trackingData;
 
     public static DetailResCenterFragment createInstance(String resolutionID) {
         DetailResCenterFragment fragment = new DetailResCenterFragment();
@@ -94,8 +100,27 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     }
 
     @Override
+    public TrackingDialogViewModel getTrackingData() {
+        return trackingData;
+    }
+
+    @Override
+    public void setTrackingData(TrackingDialogViewModel trackingData) {
+        this.trackingData = trackingData;
+    }
+
+    @Override
     public void showLoading(boolean isShow) {
         loading.setVisibility(isShow ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void showLoadingDialog(boolean show) {
+        if (show) {
+            normalLoading.showDialog();
+        } else {
+            normalLoading.dismiss();
+        }
     }
 
     @Override
@@ -155,6 +180,8 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         listProductView = (ListProductView) view.findViewById(R.id.product_view);
         solutionView = (SolutionView) view.findViewById(R.id.solution_view);
         historyView = (HistoryView) view.findViewById(R.id.history_view);
+
+        normalLoading = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
     }
 
     @Override
@@ -177,6 +204,16 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public void showTimeOutMessage() {
+        NetworkErrorHelper.showSnackbar(getActivity());
+    }
+
+    @Override
+    public void showSnackBar(String messageError) {
+        NetworkErrorHelper.showSnackbar(getActivity(), messageError);
     }
 
     @Override
@@ -212,14 +249,30 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     private void doOnInitSuccess() {
         showLoading(false);
-        buttonView.renderData(getViewData().getButtonData());
-        statusView.renderData(getViewData().getStatusData());
-        awbReturView.renderData(getViewData().getAwbData());
-        addressReturView.renderData(getViewData().getAddressReturData());
-        detailView.renderData(getViewData().getDetailData());
-        listProductView.renderData(getViewData().getProductData());
-        solutionView.renderData(getViewData().getSolutionData());
-        historyView.renderData(getViewData().getHistoryData());
+        if (getViewData().getButtonData() != null) {
+            buttonView.renderData(getViewData().getButtonData());
+        }
+        if (getViewData().getStatusData() != null) {
+            statusView.renderData(getViewData().getStatusData());
+        }
+        if (getViewData().getAwbData() != null) {
+            awbReturView.renderData(getViewData().getAwbData());
+        }
+        if (getViewData().getAddressReturData() != null) {
+            addressReturView.renderData(getViewData().getAddressReturData());
+        }
+        if (getViewData().getDetailData() != null) {
+            detailView.renderData(getViewData().getDetailData());
+        }
+        if (getViewData().getProductData() != null) {
+            listProductView.renderData(getViewData().getProductData());
+        }
+        if (getViewData().getSolutionData() != null) {
+            solutionView.renderData(getViewData().getSolutionData());
+        }
+        if (getViewData().getHistoryData() != null) {
+            historyView.renderData(getViewData().getHistoryData());
+        }
     }
 
     private void doOnInitFailed() {
@@ -365,8 +418,8 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     }
 
     @Override
-    public void setOnActionTrackAwbClick() {
-        presenter.trackReturProduck();
+    public void setOnActionTrackAwbClick(String shipmentID, String shipmentRef) {
+        presenter.trackReturProduck(shipmentID, shipmentRef);
     }
 
     @Override
@@ -408,4 +461,35 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     public void setOnActionInvoiceClick(String invoice, String url) {
         AppUtils.InvoiceDialog(getActivity(), url, invoice);
     }
+
+    @Override
+    public void setOnRequestTrackingComplete() {
+        if (trackingData.isTimeOut()) {
+            doOnTrackingTimeOut();
+        } else {
+            if (trackingData.isSuccess()) {
+                doOnTrackingSuccess();
+            } else {
+                doOnTrackingFailed();
+            }
+        }
+    }
+
+    private void doOnTrackingTimeOut() {
+        showLoadingDialog(false);
+        showTimeOutMessage();
+    }
+
+    private void doOnTrackingSuccess() {
+        TrackShippingDialog.Builder(getActivity())
+                .initView()
+                .initValue(getTrackingData())
+                .show();
+    }
+
+    private void doOnTrackingFailed() {
+        showLoadingDialog(false);
+        showSnackBar(trackingData.getMessageError());
+    }
+
 }
