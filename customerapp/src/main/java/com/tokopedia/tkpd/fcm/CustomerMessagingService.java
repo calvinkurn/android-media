@@ -13,6 +13,5 @@ public class CustomerMessagingService extends BaseNotificationMessagingService {
         super.onMessageReceived(remoteMessage);
         AppNotificationReceiver.Notifications.init(getApplication());
         AppNotificationReceiver.Notifications.onNotificationReceived(remoteMessage);
-        AppNotificationReceiver.Notifications.onMoengageNotificationReceived(remoteMessage);
     }
 }

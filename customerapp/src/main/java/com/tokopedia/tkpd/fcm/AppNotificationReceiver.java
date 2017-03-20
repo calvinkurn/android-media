@@ -37,21 +37,17 @@ public enum AppNotificationReceiver {
 
         if (message != null) {
             Map<String, String> pushPayload = message.getData();
+            CommonUtils.dumper("FCM notification received "+message);
             if (MoEngageNotificationUtils.isFromMoEngagePlatform(pushPayload)) {
                 CommonUtils.dumper("FCM messaging moengage " + message.getData().toString());
                 PushManager.getInstance().getPushHandler().handlePushPayload(ConsumerMainApplication.getAppContext(), pushPayload);
+            } else {
+                Bundle bundle = GCMUtils.convertMap(message.getData());
+                CommonUtils.dumper("FCM messaging "+bundle.toString());
+                mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(Observable.just(bundle));
+                mNotificationAnalyticsReceiver.onNotificationReceived(Observable.just(bundle));
             }
-        } else {
-            Bundle bundle = GCMUtils.convertMap(message.getData());
-            CommonUtils.dumper("FCM messaging "+bundle.toString());
-            mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(Observable.just(bundle));
-            mNotificationAnalyticsReceiver.onNotificationReceived(Observable.just(bundle));
         }
-
-
     }
 
-    public void onMoengageNotificationReceived(RemoteMessage message){
-
-    }
 }
