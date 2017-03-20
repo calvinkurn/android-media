@@ -357,6 +357,7 @@ public interface AppEventTracking {
 
     interface GTM {
         String GTM_ID = "GTM_ID";
+        String GA_ID = "GA_ID";
         String GTM_RESOURCE = "GTM_RESOURCE";
 
         String LUCKY_BUYER = "msg_lucky_buyer";
