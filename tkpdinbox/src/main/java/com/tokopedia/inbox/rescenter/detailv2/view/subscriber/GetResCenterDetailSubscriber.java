@@ -13,6 +13,7 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.model.ShippingDomainModel;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.SolutionDomainModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AddressReturData;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AwbAttachmentViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AwbData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ButtonData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailData;
@@ -21,7 +22,6 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.HistoryData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.HistoryItem;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ProductData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ProductItem;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AwbAttachmentViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.SolutionData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.StatusData;
 
@@ -43,21 +43,24 @@ public class GetResCenterDetailSubscriber extends rx.Subscriber<DetailResCenter>
 
     @Override
     public void onCompleted() {
-        fragmentView.setOnInitResCenterDetailComplete();
+
     }
 
     @Override
     public void onError(Throwable e) {
         if (e instanceof IOException) {
             fragmentView.setViewData(mappingTimeOutViewModel());
+            fragmentView.doOnInitTimeOut();
         } else {
             fragmentView.setViewData(mappingDefaultErrorViewModel());
+            fragmentView.doOnInitFailed();
         }
     }
 
     @Override
     public void onNext(DetailResCenter detailResCenter) {
         fragmentView.setViewData(mappingViewModel(detailResCenter));
+        fragmentView.doOnInitSuccess();
     }
 
 
@@ -125,7 +128,10 @@ public class GetResCenterDetailSubscriber extends rx.Subscriber<DetailResCenter>
         data.setShipmentRef(domainModel.getShipmentRef());
         data.setAwbDate(domainModel.getShipmentDate());
         data.setShipmentID(domainModel.getShipmentID());
-        data.setAttachments(mappingShippingAttacment(domainModel.getAttachment()));
+        data.setAttachments(
+                domainModel.getAttachment() == null || domainModel.getAttachment().isEmpty() ?
+                        null : mappingShippingAttacment(domainModel.getAttachment())
+        );
         return data;
     }
 
