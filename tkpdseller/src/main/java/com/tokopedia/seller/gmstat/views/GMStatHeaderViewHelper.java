@@ -32,14 +32,13 @@ import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateWit
 
 public class GMStatHeaderViewHelper {
 
+    static final int MOVE_TO_SET_DATE = 1;
     private static final int MAX_DATE_RANGE = 60;
     private static final String MIN_DATE = "25/07/2015";
     private static final String DATE_FORMAT = "dd/MM/yyyy";
-
-    static final int MOVE_TO_SET_DATE = 1;
     private static final Locale locale = new Locale("in", "ID");
+    protected LoaderTextView calendarRange;
     private String[] monthNamesAbrev;
-    private LoaderTextView calendarRange;
     private LoaderImageView calendarArrowIcon;
     private LoaderImageView calendarIcon;
     private int gredyColor;

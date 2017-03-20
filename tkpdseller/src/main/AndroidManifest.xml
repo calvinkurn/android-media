@@ -190,6 +190,11 @@
             android:label="@string/title_activity_top_ads_list"
             android:theme="@style/Theme.Tokopedia3"/>
 
+        <activity
+            android:name=".reputation.view.activity.SellerReputationActivity"
+            android:label="@string/title_activity_reputation"
+            android:theme="@style/AppTheme" />
+
         <service
             android:name="com.tokopedia.seller.selling.SellingService"
             android:exported="false"/>

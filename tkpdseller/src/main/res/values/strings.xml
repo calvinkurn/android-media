@@ -50,6 +50,8 @@
         <item>Wanita</item>
     </string-array>
 
+    <string name="title_activity_reputation">Reputasi Toko</string>
+
     <string name="try_again">COBA KEMBALI</string>
     <string name="unknown_exception_description">Tidak ada koneksi.\nSilahkan coba kembali</string>
     <string name="message_exception_description">Terjadi kesalahan koneksi.\nSilahkan coba kembali"</string>
@@ -267,5 +269,7 @@
     <string name="top_ads_promoted_message">Produk yang sudah dipromo  tidak \ndapat dipilih</string>
     <string name="promoted">Promoted</string>
     <string name="next">Selanjutnya</string>
+
+    <string name="your_shop_reputation">REPUTASI TOKO ANDA</string>
 
 </resources>

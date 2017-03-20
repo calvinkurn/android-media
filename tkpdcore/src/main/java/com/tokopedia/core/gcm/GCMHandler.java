@@ -40,6 +40,14 @@ public class GCMHandler {
         this.context = context;
     }
 
+    public static String getRegistrationId(Context context) {
+        return FCMCacheManager.getRegistrationId(context);
+    }
+
+    public static void clearRegistrationId(Context context) {
+        FCMCacheManager.clearRegistrationId(context);
+    }
+
     public String getSenderID() {
         return Constants.FIREBASE_PROJECT_ID;
     }
@@ -160,12 +168,8 @@ public class GCMHandler {
         }
     }
 
-    public static String getRegistrationId(Context context) {
+    public String getRegistrationId() {
         return FCMCacheManager.getRegistrationId(context);
-    }
-
-    public static void clearRegistrationId(Context context) {
-        FCMCacheManager.clearRegistrationId(context);
     }
 
     private boolean isPlayServicesAvailable() {

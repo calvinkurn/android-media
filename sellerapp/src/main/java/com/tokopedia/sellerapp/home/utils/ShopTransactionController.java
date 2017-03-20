@@ -9,6 +9,7 @@ import com.tkpd.library.utils.network.CommonListener;
 import com.tokopedia.core.network.apiservices.shop.MyShopOrderService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.seller.util.ShopNetworkController;
 import com.tokopedia.sellerapp.home.model.orderShipping.OrderShippingData;
 
 import java.util.HashMap;
@@ -30,6 +31,20 @@ public class ShopTransactionController extends BaseNetworkController {
     public ShopTransactionController(MyShopOrderService myShopOrderService, Context context, Gson gson) {
         super(context, gson);
         this.myShopOrderService = myShopOrderService;
+    }
+
+    public static HashMap<String, String> getNewOrderParam(GetNewOrderModel getNewOrderModel) {
+        return getNewOrderParam(getNewOrderModel.page, getNewOrderModel.deadline, getNewOrderModel.filter);
+    }
+
+    public static HashMap<String, String> getNewOrderParam(int page, int deadline, String filter) {
+        HashMap<String, String> params = new NonNullStringMap();
+        if (deadline > 0)
+            params.put("deadline", Integer.toString(deadline));
+        params.put("status", filter);
+        params.put("page", Integer.toString(page));
+        params.put("per_page", "10");
+        return params;
     }
 
     public void getNewOrder(String userId, String deviceId, GetNewOrderModel getNewOrderModel, final GetNewOrder getNewOrder){
@@ -78,19 +93,5 @@ public class ShopTransactionController extends BaseNetworkController {
         public int page;
         public int deadline;
         public String filter;
-    }
-
-    public static HashMap<String, String> getNewOrderParam(GetNewOrderModel getNewOrderModel){
-        return getNewOrderParam(getNewOrderModel.page, getNewOrderModel.deadline, getNewOrderModel.filter);
-    }
-
-    public static HashMap<String, String> getNewOrderParam(int page, int deadline, String filter) {
-        HashMap<String, String> params = new NonNullStringMap();
-        if (deadline > 0)
-            params.put("deadline", Integer.toString(deadline));
-        params.put("status", filter);
-        params.put("page", Integer.toString(page));
-        params.put("per_page", "10");
-        return params;
     }
 }
