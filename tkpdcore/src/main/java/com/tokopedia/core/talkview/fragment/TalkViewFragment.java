@@ -113,7 +113,6 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     int paramMaster=0;
 
-    @BindView(R2.id.progress_bar) ProgressBar progressBar;
     @BindView(R2.id.content_lv) LinearLayout contentLv;
     @BindView(R2.id.new_comment) EditText comment;
     @BindView(R2.id.send_but) ImageView sendBut;
