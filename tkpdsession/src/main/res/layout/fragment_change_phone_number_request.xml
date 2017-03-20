@@ -142,9 +142,10 @@
             android:id="@+id/button_submit"
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_height"
-            android:background="@drawable/green_button_rounded"
+            android:background="@drawable/grey_button_rounded"
             android:text="@string/send"
-            android:textColor="@color/white" />
+            android:layout_margin="@dimen/margin_small"
+            android:textColor="@color/grey_500" />
 
     </LinearLayout>
 </ScrollView>

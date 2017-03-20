@@ -4,7 +4,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
@@ -38,7 +37,6 @@ import com.tokopedia.session.changephonenumber.listener.ChangePhoneNumberRequest
 
 import java.io.File;
 import java.net.UnknownHostException;
-import java.util.UUID;
 
 import rx.Subscriber;
 
@@ -114,7 +112,7 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
 
     @Override
     public void submitRequest() {
-        if (isValid()) {
+        if (isValidParam()) {
             viewListener.showLoading();
             uploadChangePhoneNumberRequestUseCase.execute(getUploadChangePhoneNumberRequestParam(),
                     new Subscriber<ChangePhoneNumberModel>() {
@@ -222,7 +220,8 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
                 UploadChangePhoneNumberRequestUseCase.DEFAULT_NEW_ADD);
     }
 
-    private boolean isValid() {
+    @Override
+    public boolean isValidParam() {
         return pass.getUploadBankBookPath() != null && pass.getUploadIdPath() != null;
     }
 

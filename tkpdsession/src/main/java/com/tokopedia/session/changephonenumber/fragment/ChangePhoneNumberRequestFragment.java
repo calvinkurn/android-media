@@ -21,6 +21,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.changephonenumberrequest.CheckStatusData;
 import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.listener.ChangePhoneNumberRequestView;
@@ -278,6 +279,19 @@ public class ChangePhoneNumberRequestFragment
             presenter.setBankBookImage(data.getStringExtra(ImageGallery.EXTRA_URL));
         }
 
+        setSubmitButton();
+
+    }
+
+    private void setSubmitButton() {
+        if (presenter.isValidParam()) {
+            MethodChecker.setBackground(buttonSubmit,
+                    MethodChecker.getDrawable(getActivity(),
+                            R.drawable.green_button_rounded
+                    ));
+            buttonSubmit.setTextColor(MethodChecker.getColor(getActivity(),
+                    R.color.white));
+        }
     }
 
     private void loadImageToImageView(ImageView idImage, String fileLoc) {
