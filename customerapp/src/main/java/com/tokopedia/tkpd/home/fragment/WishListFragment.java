@@ -181,7 +181,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.getLayoutManager().setAutoMeasureEnabled(true);
         recyclerView.setHasFixedSize(false);
-        recyclerView.setNestedScrollingEnabled(false);
         searchEditText.setOnQueryTextListener(this);
         searchEditText.setSuggestionsAdapter(null);
         searchEditText.setFocusable(false);
