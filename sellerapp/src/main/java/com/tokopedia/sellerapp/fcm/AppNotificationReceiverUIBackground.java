@@ -96,10 +96,10 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     @Override
     public void handlePromotionNotification(Bundle data) {
-        Map<Integer, Class> dedicatedNotification = getCommonPromoNotification();
-        Class<?> clazz = dedicatedNotification.get(GCMUtils.getCode(data));
-        if (clazz != null) {
-            executeNotification(data, clazz);
+        Map<Integer, Visitable> promoNotifications = getCommonPromoNotification();
+        Visitable visitable = promoNotifications.get(GCMUtils.getCode(data));
+        if (visitable != null) {
+            visitable.proccessReceivedNotification(data);
         }
     }
 }
