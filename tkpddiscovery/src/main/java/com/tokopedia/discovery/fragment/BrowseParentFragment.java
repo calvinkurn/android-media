@@ -262,12 +262,14 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
             ((BrowseProductActivity) getActivity()).sendHotlist(uri, "");
         }
         if (uri.contains("/p/")) {
-            BrowseProductActivity browseProductActivity = (BrowseProductActivity) getActivity();
-            browseProductActivity.resetBrowseProductActivityModel();
-            BrowseProductActivityModel model = browseProductActivity.getBrowseProductActivityModel();
-            model.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
-            model.setDepartmentId(productModel.result.departmentId);
-            ((BrowseProductActivity) getActivity()).setFragment(BrowseParentFragment.newInstance(model), BrowseParentFragment.FRAGMENT_TAG);
+            if (getActivity() !=null && getActivity() instanceof  BrowseProductActivity) {
+                BrowseProductActivity browseProductActivity = (BrowseProductActivity) getActivity();
+                browseProductActivity.resetBrowseProductActivityModel();
+                BrowseProductActivityModel model = browseProductActivity.getBrowseProductActivityModel();
+                model.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
+                model.setDepartmentId(productModel.result.departmentId);
+                ((BrowseProductActivity) getActivity()).setFragment(BrowseParentFragment.newInstance(model), BrowseParentFragment.FRAGMENT_TAG);
+            }
         }
         if (uri.contains("/catalog/")) {
             URLParser urlParser = new URLParser(uri);
@@ -320,8 +322,10 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
             @Override
             public void onPageSelected(int position) {
                 Log.d(TAG, MESSAGE_TAG + " >> position >> " + position);
-                ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel().setActiveTab(position);
-                ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel().setSource(source);
+                if (getActivity() !=null && getActivity() instanceof  BrowseProductActivity) {
+
+                }
+
                 fetchData(position);
                 sendTabClickGTM();
             }

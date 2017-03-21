@@ -1,7 +1,6 @@
 package com.tokopedia.session.session.activity;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -119,6 +118,52 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     OTPResultReceiver otpReceiver;
     ErrorNetworkReceiver mReceiverLogout;
 
+    @NonNull
+    public static Intent moveToCreateShop(Context context) {
+        if (context == null)
+            return null;
+
+        if (SessionHandler.isMsisdnVerified()) {
+            Intent intent;
+            intent = SellerRouter.getAcitivityShopCreateEdit(context);
+            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            return intent;
+        } else {
+            // TODO move to msisdn activity
+            /*Intent intent;
+            intent = new Intent(context, MsisdnActivity.class);
+            intent.putExtra(MsisdnActivity.SOURCE, Login.class.getSimpleName());
+            return intent;*/
+
+            return null;
+        }
+    }
+
+    public static Intent getAutomaticLoginIntent(Context context, String email, String password) {
+        Intent callingIntent = new Intent(context, Login.class);
+        callingIntent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
+        callingIntent.putExtra(INTENT_EXTRA_PARAM_PASSWORD, password);
+        callingIntent.putExtra(INTENT_AUTOMATIC_LOGIN, true);
+        callingIntent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+        if (GlobalConfig.isSellerApp())
+            callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
+        else
+            callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
+        return callingIntent;
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        Intent callingIntent = new Intent(context, Login.class);
+        callingIntent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+        if (GlobalConfig.isSellerApp())
+            callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
+        else
+            callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
+        return callingIntent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.Theme_Tokopedia3);
@@ -218,7 +263,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                 if (SessionHandler.isV4Login(this)) {
                     startActivity(TransactionCartRouter.createInstanceCartActivity(this));
                 } else {
-                    Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+                    Intent intent = HomeRouter.getHomeActivityInterfaceRouter(this);
                     intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOME);
                     startActivity(intent);
                 }
@@ -259,38 +304,15 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     private void loginToHome() {
         if (SessionHandler.isV4Login(this)) {
-            Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+            Intent intent = HomeRouter.getHomeActivityInterfaceRouter(this);
             intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
                     HomeRouter.INIT_STATE_FRAGMENT_FEED);
             startActivity(intent);
         } else {
-            Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+            Intent intent = HomeRouter.getHomeActivityInterfaceRouter(this);
             intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
                     HomeRouter.INIT_STATE_FRAGMENT_HOME);
             startActivity(intent);
-        }
-    }
-
-    @NonNull
-    public static Intent moveToCreateShop(Context context) {
-        if (context == null)
-            return null;
-
-        if (SessionHandler.isMsisdnVerified()) {
-            Intent intent;
-            intent = SellerRouter.getAcitivityShopCreateEdit(context);
-            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            return intent;
-        } else {
-            // TODO move to msisdn activity
-            /*Intent intent;
-            intent = new Intent(context, MsisdnActivity.class);
-            intent.putExtra(MsisdnActivity.SOURCE, Login.class.getSimpleName());
-            return intent;*/
-
-            return null;
         }
     }
 
@@ -356,7 +378,6 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
             startActivityForResult(CustomerRouter.getTruecallerIntent(this), 100);
         }
     }
-
 
     @Override
     public void onCancelChooseAccount() {
@@ -881,29 +902,6 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         } else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER) {
             loginToHome();
         }
-    }
-
-    public static Intent getAutomaticLoginIntent(Context context, String email, String password) {
-        Intent callingIntent = new Intent(context, Login.class);
-        callingIntent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
-        callingIntent.putExtra(INTENT_EXTRA_PARAM_PASSWORD, password);
-        callingIntent.putExtra(INTENT_AUTOMATIC_LOGIN, true);
-        callingIntent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-        if (GlobalConfig.isSellerApp())
-            callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
-        else
-            callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
-        return callingIntent;
-    }
-
-    public static Intent getCallingIntent(Context context) {
-        Intent callingIntent = new Intent(context, Login.class);
-        callingIntent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-        if (GlobalConfig.isSellerApp())
-            callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
-        else
-            callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
-        return callingIntent;
     }
 
     @Override

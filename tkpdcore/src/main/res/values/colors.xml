@@ -78,4 +78,6 @@
     <color name="digital_cancel">#1f000000</color>
     <color name="digital_item_title">#b3000000</color>
 
+    <color name="checkbox_text">#61000000</color>
+
 </resources>

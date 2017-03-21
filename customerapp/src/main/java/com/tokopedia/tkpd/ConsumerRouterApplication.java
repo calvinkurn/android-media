@@ -27,12 +27,13 @@ import com.tokopedia.transaction.wallet.WalletActivity;
  * @author normansyahputa on 12/15/16.
  */
 
-public class ConsumerRouterApplication extends MainApplication implements TkpdCoreRouter,
-        SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter {
+public class ConsumerRouterApplication extends MainApplication implements TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter {
+
+    public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
+
     @Override
     public void goToHome(Context context) {
-        Intent intent = new Intent(context,
-                ParentIndexHome.class);
+        Intent intent = getHomeIntent(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
@@ -106,5 +107,15 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
     @Override
     public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
         return CartDigitalActivity.newInstance(this, passData);
+    }
+
+    @Override
+    public Intent getHomeIntent(Context context) {
+        return new Intent(context, ParentIndexHome.class);
+    }
+
+    @Override
+    public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
+        return Class.forName(COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME);
     }
 }

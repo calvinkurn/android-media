@@ -16,7 +16,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_TITLE;
  */
 
 public class WishlistNotification extends BasePromoNotification {
-    protected WishlistNotification(Context context) {
+    public WishlistNotification(Context context) {
         super(context);
     }
 

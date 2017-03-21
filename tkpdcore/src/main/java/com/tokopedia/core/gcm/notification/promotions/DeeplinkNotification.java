@@ -17,7 +17,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_URL;
  */
 
 public class DeeplinkNotification extends BasePromoNotification {
-    protected DeeplinkNotification(Context context) {
+    public DeeplinkNotification(Context context) {
         super(context);
     }
 

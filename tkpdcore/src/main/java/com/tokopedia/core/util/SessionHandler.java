@@ -73,6 +73,8 @@ public class SessionHandler {
     private static final String LOGIN_UUID_KEY = "LOGIN_UUID";
     private static final String UUID_KEY = "uuid";
     private static final String DEFAULT_UUID_VALUE = "";
+    private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
+    private static final String KEY_LAST_ORDER = "RECHARGE_LAST_ORDER";
 
     private Context context;
 
@@ -179,8 +181,10 @@ public class SessionHandler {
         LocalCacheHandler.clearCache(context, TkpdCache.NOTIFICATION_DATA);
         LocalCacheHandler.clearCache(context, "ETALASE_ADD_PROD");
         LocalCacheHandler.clearCache(context, "REGISTERED");
+        LocalCacheHandler.clearCache(context, KEY_LAST_ORDER);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_MAIN);
         LocalCacheHandler.clearCache(context, ProductDetailPresenterImpl.CACHE_PROMOTION_PRODUCT);
+        LocalCacheHandler.clearCache(context, CACHE_PHONE_VERIF_TIMER);
         CacheInboxReputationInteractorImpl reputationCache = new CacheInboxReputationInteractorImpl();
         reputationCache.deleteCache();
         InboxReputationCacheManager reputationDetailCache = new InboxReputationCacheManager();
@@ -191,7 +195,6 @@ public class SessionHandler {
         clearFeedCache();
 
     }
-
 
     private static void logoutInstagram(Context context) {
         if (isV4Login(context) && context instanceof AppCompatActivity) {

@@ -79,7 +79,7 @@ public class RechargeEditText extends LinearLayout {
     }
 
     private void initBackgroundContactButtonAndClearButton() {
-        Glide.with(getContext()).load(R.drawable.ic_clear).asBitmap().into(
+        Glide.with(getContext()).load(R.drawable.ic_clear_widget).asBitmap().into(
                 new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource,
@@ -89,7 +89,7 @@ public class RechargeEditText extends LinearLayout {
                     }
                 });
 
-        Glide.with(getContext()).load(R.drawable.ic_phonebook).asBitmap().into(
+        Glide.with(getContext()).load(R.drawable.ic_phonebook_widget).asBitmap().into(
                 new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource,
