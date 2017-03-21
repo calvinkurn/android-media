@@ -126,6 +126,7 @@ public class ScroogeWebView extends WebView {
         public void onPageFinished(WebView view, String url) {
             timeout = false;
             cartActivityListener.hideProgressBar();
+            cartActivityListener.setWebPageTitle(view.getTitle());
             view.stopLoading();
         }
 
@@ -160,6 +161,7 @@ public class ScroogeWebView extends WebView {
                 }
             }).start();
             cartActivityListener.showProgressBar();
+            cartActivityListener.setWebPageTitle(view.getTitle());
         }
     }
 

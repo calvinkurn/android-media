@@ -11,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.tokopedia.payment.R;
 import com.tokopedia.payment.cart.listener.CartActivityListener;
@@ -36,6 +37,10 @@ public class TopPayActivity extends Activity implements ITopPayView {
     private ScroogeWebView scroogeWebView;
     private ProgressBar progressBar;
 
+    private View btnBack;
+    private View btnClose;
+    private TextView tvTitle;
+
     public static final int REQUEST_CODE = TopPayActivity.class.hashCode();
 
     public static Intent createInstance(Context context, PaymentPassData paymentPassData) {
@@ -52,15 +57,17 @@ public class TopPayActivity extends Activity implements ITopPayView {
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                window.setStatusBarColor(getResources().getColor(R.color.tkpd_main_green_payment_module, null));
+                window.setStatusBarColor(getResources().getColor(
+                        R.color.tkpd_main_green_payment_module, null
+                ));
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    window.setStatusBarColor(getResources().getColor(R.color.tkpd_main_green_payment_module));
+                    window.setStatusBarColor(getResources().getColor(
+                            R.color.tkpd_main_green_payment_module
+                    ));
                 }
             }
         }
-
-// finally change the color
         initialPresenter();
         initView();
         if (getIntent().getExtras() != null) {
@@ -81,6 +88,18 @@ public class TopPayActivity extends Activity implements ITopPayView {
     private void setViewListener() {
         progressBar.setIndeterminate(true);
         scroogeWebView.setScroogeListener(cartActivityListener());
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     private void initVar() {
@@ -89,6 +108,9 @@ public class TopPayActivity extends Activity implements ITopPayView {
 
     private void initView() {
         setContentView(R.layout.scrooge_payment);
+        tvTitle = (TextView) findViewById(R.id.tv_title);
+        btnBack = findViewById(R.id.btn_back);
+        btnClose = findViewById(R.id.btn_close);
         scroogeWebView = (ScroogeWebView) findViewById(R.id.scrooge_webview);
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
     }
@@ -170,6 +192,11 @@ public class TopPayActivity extends Activity implements ITopPayView {
                         scroogeWebView.showError(WebViewClient.ERROR_TIMEOUT);
                     }
                 });
+            }
+
+            @Override
+            public void setWebPageTitle(String title) {
+                tvTitle.setText(title);
             }
         };
     }

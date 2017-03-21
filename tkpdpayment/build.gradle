@@ -20,6 +20,11 @@ android {
         }
     }
 
+    dataBinding {
+        enabled true
+    }
+
+
     dexOptions {
         javaMaxHeapSize "4g"
     }

@@ -21,4 +21,6 @@ public interface CartActivityListener {
     void showProgressBar();
 
     void showTimeoutErrorOnUiThread();
+
+    void setWebPageTitle(String title);
 }

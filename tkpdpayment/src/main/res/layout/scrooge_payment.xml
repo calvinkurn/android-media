@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
@@ -11,10 +12,35 @@
         android:background="@color/tkpd_main_green_payment_module">
 
         <ImageView
+            android:id="@+id/btn_back"
             android:layout_width="?android:actionBarSize"
             android:layout_height="?android:actionBarSize"
-            android:padding="10dp"
+            android:padding="12dp"
             android:src="@drawable/ic_arrow_back_white"/>
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@+id/btn_back"
+            android:layout_toLeftOf="@+id/btn_close"
+            android:layout_toRightOf="@+id/btn_back"
+            android:layout_toStartOf="@+id/btn_close"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            tools:text="Tokopedia"/>
+
+        <ImageView
+            android:id="@+id/btn_close"
+            android:layout_width="?android:actionBarSize"
+            android:layout_height="?android:actionBarSize"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:padding="12dp"
+            android:src="@drawable/ic_close_white"
+            android:visibility="invisible"/>
     </RelativeLayout>
 
     <RelativeLayout
