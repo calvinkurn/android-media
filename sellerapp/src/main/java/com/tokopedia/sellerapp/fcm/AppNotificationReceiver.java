@@ -3,6 +3,7 @@ package com.tokopedia.sellerapp.fcm;
 import android.app.Application;
 import android.os.Bundle;
 
+import com.google.firebase.messaging.RemoteMessage;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.INotificationAnalyticsReceiver;
@@ -43,6 +44,11 @@ public class AppNotificationReceiver  implements IAppNotificationReceiver {
             mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(Observable.just(data));
         }
         mNotificationAnalyticsReceiver.onNotificationReceived(Observable.just(data));
+    }
+
+    @Override
+    public void onMoengageNotificationReceived(RemoteMessage message) {
+        // @TODO kalo udah implementasi moengage di sellerapp
     }
 
     private boolean isAllowedNotification(Bundle data) {
