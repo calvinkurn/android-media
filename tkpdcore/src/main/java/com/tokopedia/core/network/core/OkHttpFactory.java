@@ -1,7 +1,6 @@
 package com.tokopedia.core.network.core;
 
 import com.tokopedia.core.network.retrofit.interceptors.AccountsInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.EnrichedTkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
@@ -65,15 +64,6 @@ public class OkHttpFactory {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new GlobalTkpdAuthInterceptor(authKey))
-                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                .addDebugInterceptor()
-                .build();
-    }
-
-    public OkHttpClient buildClientAuth(String authKey, String deviceId) {
-        return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(new FingerprintInterceptor())
-                .addInterceptor(new EnrichedTkpdAuthInterceptor(authKey, deviceId))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();
