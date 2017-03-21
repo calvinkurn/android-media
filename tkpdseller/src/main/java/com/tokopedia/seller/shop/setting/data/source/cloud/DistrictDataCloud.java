@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.core.base.common.util.GetData;
 import com.tokopedia.core.network.apiservices.shop.apis.MyShopApi;
-import com.tokopedia.core.network.apiservices.shop.apis.model.openshopdistrict.OpenShopDistrictModel;
+import com.tokopedia.core.network.apiservices.shop.apis.model.openshopdistrict.OpenShopDistrictServiceModel;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
@@ -25,14 +25,14 @@ public class DistrictDataCloud {
         this.context = context;
     }
 
-    public Observable<OpenShopDistrictModel> fetchDistrictData() {
+    public Observable<OpenShopDistrictServiceModel> fetchDistrictData() {
         return api
                 .fetchDistrictData(
                         AuthUtil.generateParamsNetwork(
                                 context, getFetchDistrictDataParams()
                         )
                 )
-                .map(new GetData<OpenShopDistrictModel>());
+                .map(new GetData<OpenShopDistrictServiceModel>());
     }
 
     private TKPDMapParam<String, String> getFetchDistrictDataParams() {
