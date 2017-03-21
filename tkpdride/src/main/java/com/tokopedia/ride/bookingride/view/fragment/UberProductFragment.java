@@ -76,7 +76,8 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mPresenter = RideProductDependencyInjection.createPresenter("X9hkRQ6OjJHrZNcfQKT5dbdZC28zJLjQcM31xTP8");
+        mPresenter = RideProductDependencyInjection.createPresenter(getActivity().getApplicationContext(),
+                "X9hkRQ6OjJHrZNcfQKT5dbdZC28zJLjQcM31xTP8");
         mPresenter.attachView(this);
         mPresenter.initialize();
         setViewListener();
