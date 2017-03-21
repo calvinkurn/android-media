@@ -1,6 +1,6 @@
 package com.tokopedia.seller.shop.setting.data.source;
 
-import com.tokopedia.core.network.apiservices.shop.apis.model.OpenShopDistrictModel;
+import com.tokopedia.core.network.apiservices.shop.apis.model.openshopdistrict.OpenShopDistrictModel;
 import com.tokopedia.seller.shop.setting.data.source.cache.DistrictDataCache;
 import com.tokopedia.seller.shop.setting.data.source.cloud.DistrictDataCloud;
 
