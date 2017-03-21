@@ -570,7 +570,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         tlpLabelTextView.setText(clientNumber.getText());
         rechargeEditText.setHint(clientNumber.getPlaceholder());
         buyWithCreditCheckbox.setVisibility(
-                categoryAttributes.getInstantCheckoutAvailable() ? View.VISIBLE : View.INVISIBLE
+                categoryAttributes.getInstantCheckoutAvailable() ? View.VISIBLE : View.GONE
         );
 
         setTextToEditTextOrSetVisibilityForm();
@@ -609,7 +609,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             RadioButton radioButton = new RadioButton(getActivity());
             radioButton.setId(i);
             radioButton.setText(operators.get(i).name);
-            radioButton.setTextSize(getResources().getDimension(R.dimen.text_size_medium) /
+            radioButton.setTextSize(getResources().getDimension(R.dimen.text_size_small) /
                     getResources().getDisplayMetrics().density);
             radioButton.setTextColor(ContextCompat.getColor(getActivity(), R.color.grey_600));
             radGroup.addView(radioButton);

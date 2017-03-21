@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 
 /**
@@ -21,11 +22,9 @@ public class DeepLinkReceiver extends BroadcastReceiver {
         String deepLinkUri = intent.getStringExtra(DeepLinkHandler.EXTRA_URI);
 
         if (intent.getBooleanExtra(DeepLinkHandler.EXTRA_SUCCESSFUL, false)) {
-            Log.i(TAG, "Success deep linking: " + deepLinkUri);
+            CommonUtils.dumper("Success deep linking: " + deepLinkUri);
         } else {
-            Intent deeplinkIntent = new Intent(context, DeepLinkActivity.class);
-            deeplinkIntent.setData(Uri.parse(deepLinkUri));
-            context.startActivity(deeplinkIntent);
+            CommonUtils.dumper("Failed deep linking: " + deepLinkUri);
         }
     }
 }

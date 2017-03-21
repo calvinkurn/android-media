@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.tagmanager.Container;
@@ -44,6 +45,8 @@ public class GTMContainer implements IGTMContainer {
 
     private static final String IS_EXCEPTION_ENABLED = "is_exception_enabled";
     private static final String IS_USING_HTTP_2 = "is_using_http_2";
+    private static final String STR_GTM_EXCEPTION_ENABLED = "GTM is exception enabled";
+    public static final String CLIENT_ID = "client_id";
     private static final String TAG = GTMContainer.class.getSimpleName();
 
     private Context context;
@@ -59,6 +62,19 @@ public class GTMContainer implements IGTMContainer {
     @Override
     public TagManager getTagManager() {
         return TagManager.getInstance(context);
+    }
+
+    @Override
+    public String getClientIDString(){
+        try{
+            Bundle bundle = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).metaData;
+            String clientID = GoogleAnalytics.getInstance(context).newTracker(bundle.getString(AppEventTracking.GTM.GA_ID)).get("&cid");
+
+            return clientID;
+        }catch (Exception e){
+            e.printStackTrace();
+            return "";
+        }
     }
 
     private Boolean isAllowRefreshDefault() {
@@ -86,8 +102,7 @@ public class GTMContainer implements IGTMContainer {
 
     private void validateGTM() {
         if (ContainerHolderSingleton.getContainerHolder().getStatus().isSuccess()) {
-            Log.i("GTMContainer", "container has been loaded");
-            Log.i("GTMContainer", "GTM is exception enabled " + TrackingUtils.getGtmString(GTMContainer.IS_EXCEPTION_ENABLED));
+            Log.i(TAG, STR_GTM_EXCEPTION_ENABLED + TrackingUtils.getGtmString(GTMContainer.IS_EXCEPTION_ENABLED));
         } else {
             Log.e("GTMContainer", "failure loading container");
         }
@@ -124,6 +139,7 @@ public class GTMContainer implements IGTMContainer {
                         ContainerHolderSingleton.getContainerHolder().refresh();
                         //setExpiryRefresh();
                     }
+
                     validateGTM();
                 }
             }, 2, TimeUnit.SECONDS);

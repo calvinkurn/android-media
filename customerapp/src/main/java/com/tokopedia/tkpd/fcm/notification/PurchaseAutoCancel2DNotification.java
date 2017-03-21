@@ -16,7 +16,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
  */
 
 public class PurchaseAutoCancel2DNotification extends BaseNotification {
-    protected PurchaseAutoCancel2DNotification(Context context) {
+    public PurchaseAutoCancel2DNotification(Context context) {
         super(context);
     }
 

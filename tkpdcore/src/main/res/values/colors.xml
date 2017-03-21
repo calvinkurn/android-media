@@ -72,4 +72,6 @@
     <color name="colorAccent">#2BAF2B</color>
     <color name="text_error">#FFFF6E6E</color>
 
+    <color name="checkbox_text">#61000000</color>
+
 </resources>

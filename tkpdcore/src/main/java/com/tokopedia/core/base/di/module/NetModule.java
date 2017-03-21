@@ -45,7 +45,7 @@ public class NetModule {
     @AceQualifier
     @ApplicationScope
     @Provides
-    public Retrofit provideAceRetrofit(@WithAuthInterceptor OkHttpClient okHttpClient) {
+    public Retrofit provideAceRetrofit(@NoAuthInterceptor OkHttpClient okHttpClient) {
 
         return RetrofitFactory.createRetrofitDefaultConfig(TkpdBaseURL.ACE_DOMAIN)
                 .client(okHttpClient)
