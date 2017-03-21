@@ -1,14 +1,18 @@
 package com.tokopedia.payment.cart.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.tokopedia.payment.R;
-import com.tokopedia.payment.activity.TopPayBaseActivity;
 import com.tokopedia.payment.cart.listener.CartActivityListener;
 import com.tokopedia.payment.cart.listener.ITopPayView;
 import com.tokopedia.payment.cart.presenter.TopPayPresenter;
@@ -19,7 +23,7 @@ import com.tokopedia.payment.webview.ScroogeWebView;
  * Created by kris on 3/9/17. Tokopedia
  */
 
-public class TopPayActivity extends TopPayBaseActivity implements ITopPayView {
+public class TopPayActivity extends Activity implements ITopPayView {
 
     private static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
     public static final String EXTRA_RESULT_MESSAGE = "EXTRA_RESULT_MESSAGE";
@@ -43,6 +47,20 @@ public class TopPayActivity extends TopPayBaseActivity implements ITopPayView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                window.setStatusBarColor(getResources().getColor(R.color.tkpd_main_green_payment_module, null));
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    window.setStatusBarColor(getResources().getColor(R.color.tkpd_main_green_payment_module));
+                }
+            }
+        }
+
+// finally change the color
         initialPresenter();
         initView();
         if (getIntent().getExtras() != null) {
@@ -199,10 +217,10 @@ public class TopPayActivity extends TopPayBaseActivity implements ITopPayView {
     }
 
     private void hideProgressLoading() {
-
+        progressBar.setVisibility(View.GONE);
     }
 
     private void showProgressLoading() {
-
+        progressBar.setVisibility(View.VISIBLE);
     }
 }
