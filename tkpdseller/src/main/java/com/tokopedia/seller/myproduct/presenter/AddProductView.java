@@ -80,7 +80,6 @@ public interface AddProductView extends BaseView{
     
     List<SimpleTextModel> toSimpleTextEtalase(List<EtalaseModel> etalaseModels, int... levelOrPosition);
     void addImageAfterSelect(String path, int position);
-    void addImageAfterSelectDownload(List<String> urls, int position);
     void addEtalaseAfterSelect(SimpleTextModel model);
     void initVar();
     void fetchEtalase();

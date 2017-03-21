@@ -1065,15 +1065,15 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         }
     }
 
-    private Observable<List<File>> downloadImages(final List<String> urls){
-        return Observable.from(urls)
-                .flatMap(new Func1<String, Observable<File>>() {
-                    @Override
-                    public Observable<File> call(String url) {
-                        return downloadObservable(url).first();
-                    }
-                }).toList();
-    }
+//    private Observable<List<File>> downloadImages(final List<String> urls){
+//        return Observable.from(urls)
+//                .flatMap(new Func1<String, Observable<File>>() {
+//                    @Override
+//                    public Observable<File> call(String url) {
+//                        return downloadObservable(url).first();
+//                    }
+//                }).toList();
+//    }
 
     /**
      * This method specific for socmed only
@@ -1244,39 +1244,39 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         addProductEdittextPreorder.setText(preOrderDay);
     }
 
-    @Override
-    public void addImageAfterSelectDownload(List<String> urls, final int position) {
-        downloadImages(urls)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(
-                        new Subscriber<List<File>>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-
-                            @Override
-                            public void onNext(List<File> files) {
-                                addImageAfterSelect(files.get(0).getAbsolutePath(), position);
-                                files.remove(0);
-                                if (files.size() > 0) {
-                                    ArrayList<String> imageUrls = new ArrayList<>();
-                                    for (int i = 0, sizei = files.size(); i < sizei; i++) {
-                                        imageUrls.add(files.get(i).getAbsolutePath());
-                                    }
-                                    addImageAfterSelect(imageUrls);
-                                }
-                            }
-                        }
-                );
-    }
+//    @Override
+//    public void addImageAfterSelectDownload(List<String> urls, final int position) {
+//        downloadImages(urls)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .unsubscribeOn(Schedulers.io())
+//                .subscribe(
+//                        new Subscriber<List<File>>() {
+//                            @Override
+//                            public void onCompleted() {
+//
+//                            }
+//
+//                            @Override
+//                            public void onError(Throwable e) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onNext(List<File> files) {
+//                                addImageAfterSelect(files.get(0).getAbsolutePath(), position);
+//                                files.remove(0);
+//                                if (files.size() > 0) {
+//                                    ArrayList<String> imageUrls = new ArrayList<>();
+//                                    for (int i = 0, sizei = files.size(); i < sizei; i++) {
+//                                        imageUrls.add(files.get(i).getAbsolutePath());
+//                                    }
+//                                    addImageAfterSelect(imageUrls);
+//                                }
+//                            }
+//                        }
+//                );
+//    }
 
 
     public void addImageAfterSelect(ArrayList<String> path) {

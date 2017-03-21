@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,11 +15,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -34,6 +36,7 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.instoped.InstagramAuth;
 import com.tokopedia.seller.instoped.InstopedActivity;
+import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
@@ -63,7 +66,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     @BindView(R.id.swipe_refresh_layout)
     SwipeToRefresh swipeRefreshLayout;
     @BindView(R.id.fab_speed_dial)
-    FabSpeedDial fabAddProduct;
+    FloatingActionButton fabAddProduct;
     @BindView(R.id.main_content)
     LinearLayout mainContentLinearLayout;
     @BindView(R.id.empty_wishlist)
@@ -170,9 +173,9 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     public void onFabClick() {
-        if (!fabAddProduct.isShown()) {
-            fabAddProduct.setVisibility(View.VISIBLE);
-        }
+//        if (!fabAddProduct.isShown()) {
+//            fabAddProduct.setVisibility(View.VISIBLE);
+//        }
     }
 
     @Override
@@ -436,26 +439,32 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     }
 
     private void setFabListener() {
-        fabAddProduct.setListenerFabClick(this);
-        fabAddProduct.setMenuListener(new SimpleMenuListenerAdapter() {
+        fabAddProduct.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onMenuItemSelected(MenuItem menuItem) {
-                int id = menuItem.getItemId();
-
-                switch (id) {
-                    case R.id.action_instagram:
-                        onAddInstagram();
-                        break;
-                    case R.id.action_gallery:
-                        GalleryActivity.moveToImageGalleryCamera(getActivity(), 0, false, 5);
-                        break;
-                    case R.id.action_camera:
-                        onAddGallery();
-                        break;
-                }
-                return false;
+            public void onClick(View v) {
+                ProductActivity.moveToAddProduct(getActivity());
             }
         });
+//        fabAddProduct.setListenerFabClick(this);
+//        fabAddProduct.setMenuListener(new SimpleMenuListenerAdapter() {
+//            @Override
+//            public boolean onMenuItemSelected(MenuItem menuItem) {
+//                int id = menuItem.getItemId();
+//
+//                switch (id) {
+//                    case R.id.action_instagram:
+//                        onAddInstagram();
+//                        break;
+//                    case R.id.action_gallery:
+//                        GalleryActivity.moveToImageGalleryCamera(getActivity(), 0, false, 5);
+//                        break;
+//                    case R.id.action_camera:
+//                        onAddGallery();
+//                        break;
+//                }
+//                return false;
+//            }
+//        });
     }
 
     private void onAddGallery() {

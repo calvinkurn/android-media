@@ -617,26 +617,13 @@ public class ProductActivity extends BaseProductActivity implements
             Log.d(TAG, messageTAG + imageUrl + " & " + position);
             Fragment fragment = supportFragmentManager.findFragmentByTag(AddProductFragment.FRAGMENT_TAG);
             if (fragment != null && fragment instanceof AddProductFragment && checkNotNull(imageUrl)) {
-                if (imageUrl.startsWith("http")) {
-                    List<String> toDownloadList = new ArrayList<>();
-                    toDownloadList.add(imageUrl);
-                    ((AddProductFragment) fragment).addImageAfterSelectDownload(toDownloadList, position);
-                }
-                else {
-                    ((AddProductFragment) fragment).addImageAfterSelect(imageUrl, position);
-                }
+                ((AddProductFragment) fragment).addImageAfterSelect(imageUrl, position);
             }
             ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryBrowser.IMAGE_URLS);
             if (fragment != null && fragment instanceof AddProductFragment && checkCollectionNotNull(imageUrls)) {
-                if (imageUrls.get(0).startsWith("http")) {
-                    ((AddProductFragment) fragment).addImageAfterSelectDownload(imageUrls, position);
-                }
-                else {
-                    ((AddProductFragment) fragment).addImageAfterSelect(imageUrls.get(0), position);
-                    imageUrls.remove(0);
-                    ((AddProductFragment) fragment).addImageAfterSelect(imageUrls);
-                }
-
+                ((AddProductFragment) fragment).addImageAfterSelect(imageUrls.get(0), position);
+                imageUrls.remove(0);
+                ((AddProductFragment) fragment).addImageAfterSelect(imageUrls);
             }
         }
 

@@ -317,23 +317,11 @@ public class ProductSocMedActivity extends BaseProductActivity implements
             Log.d(TAG, messageTAG + imageUrl+" & "+position);
             AddProductFragment adf = getFragment(productSocMedViewPager.getCurrentItem());
             if(adf != null && CommonUtils.checkNotNull(imageUrl)){
-                if (imageUrl.startsWith("http")) {
-                    List<String> toDownloadList = new ArrayList<String>();
-                    toDownloadList.add(imageUrl);
-                    adf.addImageAfterSelectDownload(toDownloadList, position);
-                }
-                else {
-                    adf.addImageAfterSelect(imageUrl, position);
-                }
+                adf.addImageAfterSelect(imageUrl, position);
             }
             ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryBrowser.IMAGE_URLS);
             if(adf != null && checkCollectionNotNull(imageUrls)){
-                if (imageUrls.get(0).startsWith("http")) {
-                    adf.addImageAfterSelectDownload(imageUrls, position);
-                }
-                else {
-                    adf.addImageAfterSelect(imageUrls);
-                }
+                adf.addImageAfterSelect(imageUrls);
             }
         }
     }

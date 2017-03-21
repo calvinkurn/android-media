@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,9 +24,12 @@ import android.view.View;
 import android.view.Window;
 
 import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.FutureTarget;
 import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.R;
@@ -40,6 +44,7 @@ import com.tokopedia.core.myproduct.fragment.ImageGalleryFragment;
 import com.tokopedia.core.myproduct.model.FolderModel;
 import com.tokopedia.core.myproduct.model.ImageModel;
 import com.tokopedia.core.myproduct.presenter.ImageGallery;
+import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.newgallery.presenter.ImageGalleryImpl;
 import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
 import com.tokopedia.core.util.MethodChecker;
@@ -49,8 +54,14 @@ import com.tokopedia.core.util.SessionHandler;
 import org.parceler.Parcels;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,6 +72,11 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
@@ -101,6 +117,8 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     private String imagePathCamera;
 
     private FabSpeedDial fabSpeedDial;
+
+    private TkpdProgressDialog progressDialog;
 
 
     /**
@@ -419,34 +437,129 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                             = Parcels.unwrap(data.getParcelableExtra(PRODUCT_SOC_MED_DATA));
 
                     //[START] convert instagram model to new models
-                    List<ImageModel> imageModels = new ArrayList<>();
-//
                     List<InstagramMediaModel> images = new ArrayList<>();
                     images.addAll(fromSparseArray(instagramMediaModelSparseArray));
-//
-                    for (int i = 0; i < instagramMediaModelSparseArray.size(); i++) {
-                        String standardResolution = instagramMediaModelSparseArray.get(
-                                instagramMediaModelSparseArray.keyAt(i)).standardResolution;
-                        ImageModel imageModel = new ImageModel(
-                                standardResolution
-                        );
-                        imageModels.add(imageModel);
-                    }
                     ArrayList<String> paths = new ArrayList<>();
                     for (int i = 0; i < images.size(); i++) {
                         paths.add(images.get(i).standardResolution);
                     }
-                    Intent intent = new Intent();
-                    intent.putStringArrayListExtra(GalleryBrowser.IMAGE_URLS, paths);
-                    intent.putExtra(ADD_PRODUCT_IMAGE_LOCATION, position);
-                    setResult(GalleryBrowser.RESULT_CODE, intent);
-                    finish();
+
+                    convertHttpPathToLocalPath(paths);
                     break;
                 default:
                     // no op
                     break;
             }
         }
+    }
+
+    private Observable<List<File>> downloadImages(final List<String> urls){
+        return Observable.from(urls)
+                .flatMap(new Func1<String, Observable<File>>() {
+                    @Override
+                    public Observable<File> call(String url) {
+                        return downloadObservable(url).first();
+                    }
+                }).toList();
+    }
+
+    @NonNull
+    private Observable<File> downloadObservable(String url) {
+        return Observable.just(url)
+                .map(new Func1<String, File>() {
+                    @Override
+                    public File call(String url) {
+                        FutureTarget<File> future = Glide.with(GalleryActivity.this)
+                                .load(url)
+                                .downloadOnly(4096, 2160);
+                        File photo = null;
+                        try {
+                            File cacheFile = future.get();
+                            photo = writeImageToTkpdPath(cacheFile);
+                            Log.d(TAG, messageTAG + "path -> " + (photo != null ? photo.getAbsolutePath() : "kosong"));
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                            throw new RuntimeException(e.getMessage());
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                            throw new RuntimeException(e.getMessage());
+                        }
+                        return photo;
+                    }
+                });
+    }
+
+    public static File writeImageToTkpdPath(File source) {
+        InputStream inStream = null;
+        OutputStream outStream = null;
+        File dest = null;
+        try {
+
+            File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+            dest = new File(directory.getAbsolutePath() + "/image.jpg");
+
+            inStream = new FileInputStream(source);
+            outStream = new FileOutputStream(dest);
+
+            byte[] buffer = new byte[1024];
+
+            int length;
+            //copy the file content in bytes
+            while ((length = inStream.read(buffer)) > 0) {
+
+                outStream.write(buffer, 0, length);
+
+            }
+
+            inStream.close();
+            outStream.close();
+
+            Log.d(TAG, "File is copied successful!");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return dest;
+    }
+
+    public void convertHttpPathToLocalPath(List<String> urls) {
+        progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
+        progressDialog.setCancelable(false);
+        progressDialog.showDialog();
+
+        downloadImages(urls)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(
+                        new Subscriber<List<File>>() {
+                            @Override
+                            public void onCompleted() {
+                            }
+                            @Override
+                            public void onError(Throwable e) {
+                            }
+                            @Override
+                            public void onNext(List<File> files) {
+                                if (progressDialog != null && progressDialog.isProgress()) {
+                                    progressDialog.dismiss();
+                                }
+                                Intent intent = new Intent();
+                                ArrayList<String> localPaths = new ArrayList<>();
+                                for (int i = 0, sizei = files.size(); i < sizei; i++) {
+                                    localPaths.add(files.get(i).getAbsolutePath());
+                                }
+                                intent.putStringArrayListExtra(GalleryBrowser.IMAGE_URLS, localPaths);
+                                intent.putExtra(ADD_PRODUCT_IMAGE_LOCATION, position);
+                                setResult(GalleryBrowser.RESULT_CODE, intent);
+                                finish();
+                            }
+                        }
+                );
     }
 
     private List<InstagramMediaModel> fromSparseArray(SparseArray<InstagramMediaModel> data){

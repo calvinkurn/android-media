@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
@@ -209,7 +210,7 @@ public class ManageProduct extends TkpdActivity implements
     private RetryHandler retryHandler;
     private SimpleSpinnerAdapter simpleSpinnerAdapter;
 
-    FabSpeedDial fabAddProduct;
+    FloatingActionButton fabAddProduct;
 
 
     // NEW NETWORK
@@ -248,7 +249,7 @@ public class ManageProduct extends TkpdActivity implements
         compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
         lvListProd = (SimpleListView) findViewById(R.id.prod_list);
         blurImage = (ImageView) findViewById(R.id.blur_image);
-        fabAddProduct = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
+        fabAddProduct = (FloatingActionButton) findViewById(R.id.fab);
 
         checkLogin();
         if (this.isFinishing()) {
@@ -261,40 +262,55 @@ public class ManageProduct extends TkpdActivity implements
 
         getOverflowMenu();
 
-        fabAddProduct = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
-        fabAddProduct.setListenerFabClick(new ListenerFabClick() {
+        fabAddProduct.setOnClickListener(new OnClickListener() {
             @Override
-            public void onFabClick() {
-                if (!fabAddProduct.isShown()) {
-                    fabAddProduct.setVisibility(View.VISIBLE);
-                }
-
-                // analytic below : https://phab.tokopedia.com/T18496
-                UnifyTracking.eventClickAPManageProductPlus();
-            }
-        });
-
-        fabAddProduct.setMenuListener(new SimpleMenuListenerAdapter() {
-            @Override
-            public boolean onMenuItemSelected(MenuItem menuItem) {
-                int id = menuItem.getItemId();
-
-                if (id == R.id.action_instagram) {
-                    if(getApplication() instanceof TkpdCoreRouter)
-                        ((TkpdCoreRouter)getApplication()).startInstopedActivity(ManageProduct.this);
+            public void onClick(View v) {
+                if (isProdManager == 1) {
+                    ProductActivity.moveToAddProduct(ManageProduct.this);
 
                     // analytic below : https://phab.tokopedia.com/T18496
-                    UnifyTracking.eventClickInstoped();
-                } else if (id == R.id.action_gallery) {
-                    ManageProductPermissionsDispatcher.onAddFromGalleryWithCheck(ManageProduct.this);
-
-                } else if (id == R.id.action_camera) {
-                    ManageProductPermissionsDispatcher.onAddFromCameraWithCheck(ManageProduct.this);
-
+                    UnifyTracking.eventClickAPManageProductPlus();
+                } else {
+                    CommonUtils.UniversalToast(getBaseContext(),
+                            getString(R.string.error_permission));
                 }
-                return false;
             }
         });
+
+//        fabAddProduct = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
+//        fabAddProduct.setListenerFabClick(new ListenerFabClick() {
+//            @Override
+//            public void onFabClick() {
+//                if (!fabAddProduct.isShown()) {
+//                    fabAddProduct.setVisibility(View.VISIBLE);
+//                }
+//
+//                // analytic below : https://phab.tokopedia.com/T18496
+//                UnifyTracking.eventClickAPManageProductPlus();
+//            }
+//        });
+//
+//        fabAddProduct.setMenuListener(new SimpleMenuListenerAdapter() {
+//            @Override
+//            public boolean onMenuItemSelected(MenuItem menuItem) {
+//                int id = menuItem.getItemId();
+//
+//                if (id == R.id.action_instagram) {
+//                    if(getApplication() instanceof TkpdCoreRouter)
+//                        ((TkpdCoreRouter)getApplication()).startInstopedActivity(ManageProduct.this);
+//
+//                    // analytic below : https://phab.tokopedia.com/T18496
+//                    UnifyTracking.eventClickInstoped();
+//                } else if (id == R.id.action_gallery) {
+//                    ManageProductPermissionsDispatcher.onAddFromGalleryWithCheck(ManageProduct.this);
+//
+//                } else if (id == R.id.action_camera) {
+//                    ManageProductPermissionsDispatcher.onAddFromCameraWithCheck(ManageProduct.this);
+//
+//                }
+//                return false;
+//            }
+//        });
 
         footerLV = View.inflate(this, R.layout.footer_list_view, null);
         footerLV.setOnClickListener(null);
