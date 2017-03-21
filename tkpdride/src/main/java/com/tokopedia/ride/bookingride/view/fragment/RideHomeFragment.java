@@ -82,6 +82,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     private PlacePassViewModel mSource, mDestination;
 
     boolean isAlreadySelectDestination;
+    boolean isDisableSelectLocation;
 
     GoogleMap mGoogleMap;
 
@@ -268,6 +269,10 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         mListener.animateBottomPanelOnMapStopped();
     }
 
+    public void disablePickLocation() {
+        isDisableSelectLocation = true;
+    }
+
     public interface OnFragmentInteractionListener {
         void onSourceAndDestinationChanged(PlacePassViewModel source, PlacePassViewModel destination);
 
@@ -297,6 +302,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
                 case PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE:
                     mSource = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
                     setSourceLocationText(String.valueOf(mSource.getAddress()));
+                    proccessToRenderInitialRideProduct();
                     proccessToRenderRideProduct();
                     break;
                 case PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE:
@@ -308,6 +314,10 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
                     break;
             }
         }
+
+    }
+
+    private void proccessToRenderInitialRideProduct() {
 
     }
 
@@ -372,6 +382,8 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
 
     @OnClick(R2.id.crux_cabs_source)
     public void actionSourceButtonClicked() {
+        if (isDisableSelectLocation)
+            return;
         Intent intent = GooglePlacePickerActivity.getCallingIntent(getActivity());
         intent.putExtra(GooglePlacePickerActivity.EXTRA_REQUEST_CODE, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE);
         startActivityForResult(intent, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE);
@@ -379,6 +391,8 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
 
     @OnClick(R2.id.crux_cabs_destination)
     public void actionDestinationButtonClicked() {
+        if (isDisableSelectLocation)
+            return;
         Intent intent = GooglePlacePickerActivity.getCallingIntent(getActivity());
         intent.putExtra(GooglePlacePickerActivity.EXTRA_REQUEST_CODE, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
         startActivityForResult(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);

@@ -110,6 +110,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
 
     @Override
     public void onProductClicked(RideProductViewModel rideProductViewModel) {
+        onBottomContainerChangeToBookingScreen();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_PRODUCT, rideProductViewModel);
         ConfirmBookingRideFragment fragment = ConfirmBookingRideFragment.newInstance(bundle);
@@ -123,6 +124,17 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
         fragment.setAllowReturnTransitionOverlap(true);
         fragment.setSharedElementEnterTransition(changeBoundsTransition);
         replaceFragment(R.id.bottom_container, fragment);
+    }
+
+    private void onBottomContainerChangeToBookingScreen() {
+        RideHomeFragment fragment = (RideHomeFragment) getFragmentManager().findFragmentById(R.id.top_container);
+        if (fragment != null) {
+            fragment.disablePickLocation();
+        } else {
+            fragment = RideHomeFragment.newInstance();
+            addFragment(R.id.top_container, fragment);
+            fragment.disablePickLocation();
+        }
     }
 
     @Override
