@@ -3,12 +3,9 @@ package com.tokopedia.tkpd.deeplink;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.util.Log;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 
 /**
  * Created by alvarisi on 1/31/17.

@@ -47,7 +47,7 @@
                     android:layout_gravity="end|center_vertical"
                     android:layout_marginRight="@dimen/margin_vs"
                     android:contentDescription="@string/app_name"
-                    tools:src="@drawable/ic_close_24dp" />
+                    tools:src="@drawable/ic_close_24dp"/>
 
                 <Button
                     android:id="@+id/btnClear"
@@ -66,7 +66,7 @@
             android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="2dp"
             android:layout_marginRight="2dp"
-            android:layout_weight="0.08" />
+            android:layout_weight="0.08"/>
 
     </LinearLayout>
 </merge>

@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/transparent"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@android:color/transparent"
+              android:orientation="vertical">
 
     <View
         android:id="@+id/status_bar_separation"
@@ -16,11 +15,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <View
             android:id="@+id/view_shadow_gray"
             android:layout_width="match_parent"
             android:layout_height="6dp"
             android:background="@drawable/cover_shader_gray"/>
+
         <RelativeLayout
             android:id="@+id/bottom_sheet_selection"
             android:layout_width="match_parent"
@@ -38,7 +39,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="13dp"
                 android:textColor="@color/black_seventy_percent"
-                android:textSize="14sp" />
+                android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/bt_selection_description"
@@ -50,7 +51,7 @@
                 android:text="50 batas maksimum produk terpilih"
                 android:textColor="@color/thirty_eight_percent_black"
                 android:textSize="11sp"
-                android:textStyle="italic" />
+                android:textStyle="italic"/>
 
             <ImageView
                 android:id="@+id/image_bt_selection"
@@ -62,7 +63,7 @@
                 android:layout_marginEnd="24dp"
                 android:layout_marginRight="24dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/ic_arrow_up" />
+                android:src="@drawable/ic_arrow_up"/>
         </RelativeLayout>
     </LinearLayout>
 

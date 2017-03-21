@@ -94,7 +94,7 @@
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:textSize="@dimen/fontvs"
             android:textColor="@color/checkbox_text"
-            android:visibility="gone" />
+            android:visibility="gone"/>
         <Button
             android:id="@+id/btn_buy"
             android:layout_width="match_parent"

@@ -262,7 +262,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
             ((BrowseProductActivity) getActivity()).sendHotlist(uri, "");
         }
         if (uri.contains("/p/")) {
-            if (getActivity() !=null && getActivity() instanceof  BrowseProductActivity) {
+            if (getActivity() != null && getActivity() instanceof BrowseProductActivity) {
                 BrowseProductActivity browseProductActivity = (BrowseProductActivity) getActivity();
                 browseProductActivity.resetBrowseProductActivityModel();
                 BrowseProductActivityModel model = browseProductActivity.getBrowseProductActivityModel();
@@ -322,7 +322,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
             @Override
             public void onPageSelected(int position) {
                 Log.d(TAG, MESSAGE_TAG + " >> position >> " + position);
-                if (getActivity() !=null && getActivity() instanceof  BrowseProductActivity) {
+                if (getActivity() != null && getActivity() instanceof BrowseProductActivity) {
 
                 }
 
