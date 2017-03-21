@@ -10,14 +10,14 @@ public class Data {
 
     @SerializedName("provinces_cities_districts")
     @Expose
-    private List<ProvincesCitiesDistrict> provincesCitiesDistricts = null;
+    private List<DistrictModel> districtModels = null;
 
-    public List<ProvincesCitiesDistrict> getProvincesCitiesDistricts() {
-        return provincesCitiesDistricts;
+    public List<DistrictModel> getDistrictModels() {
+        return districtModels;
     }
 
-    public void setProvincesCitiesDistricts(List<ProvincesCitiesDistrict> provincesCitiesDistricts) {
-        this.provincesCitiesDistricts = provincesCitiesDistricts;
+    public void setDistrictModels(List<DistrictModel> districtModels) {
+        this.districtModels = districtModels;
     }
 
 }
