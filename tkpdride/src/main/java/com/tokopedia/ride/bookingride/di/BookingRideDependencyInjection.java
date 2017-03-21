@@ -2,7 +2,6 @@ package com.tokopedia.ride.bookingride.di;
 
 import android.content.Context;
 
-import com.google.android.gms.location.places.Place;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -21,6 +20,7 @@ import com.tokopedia.ride.common.place.domain.PlaceRepository;
 import com.tokopedia.ride.common.ride.data.BookingRideDataStoreFactory;
 import com.tokopedia.ride.common.ride.data.BookingRideRepositoryData;
 import com.tokopedia.ride.common.ride.data.ProductEntityMapper;
+import com.tokopedia.ride.common.ride.data.TimeEstimateEntityMapper;
 import com.tokopedia.ride.common.ride.data.source.api.RideApi;
 import com.tokopedia.ride.common.ride.data.source.api.RideUrl;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
@@ -122,8 +122,8 @@ public class BookingRideDependencyInjection {
     }
 
     private BookingRideRepository provideBookingRideRepository(BookingRideDataStoreFactory factory,
-                                                               ProductEntityMapper mapper) {
-        return new BookingRideRepositoryData(factory, mapper);
+                                                               ProductEntityMapper mapper, TimeEstimateEntityMapper estimateEntityMapper) {
+        return new BookingRideRepositoryData(factory, mapper, estimateEntityMapper);
     }
 
     private OkHttpClient providePlaceOkHttpClient(Cache cache, HttpLoggingInterceptor loggingInterceptor) {
@@ -179,7 +179,8 @@ public class BookingRideDependencyInjection {
                                         )
                                 )
                         ),
-                        new ProductEntityMapper()
+                        new ProductEntityMapper(),
+                        new TimeEstimateEntityMapper()
                 )
         );
     }

@@ -1,9 +1,13 @@
 package com.tokopedia.ride.common.ride.data;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
+import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
+import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
+import com.tokopedia.ride.common.ride.domain.model.TimesEstimate;
 
 import java.util.List;
 
@@ -17,10 +21,16 @@ import rx.functions.Func1;
 public class BookingRideRepositoryData implements BookingRideRepository {
     private final BookingRideDataStoreFactory mBookingRideDataStoreFactory;
     private final ProductEntityMapper mProductEntityMapper;
+    private final TimeEstimateEntityMapper mTimeEstimateEntityMapper;
+    private final FareEstimateMapper estimateMapper;
 
-    public BookingRideRepositoryData(BookingRideDataStoreFactory bookingRideDataStoreFactory, ProductEntityMapper productEntityMapper) {
+    public BookingRideRepositoryData(BookingRideDataStoreFactory bookingRideDataStoreFactory,
+                                     ProductEntityMapper productEntityMapper,
+                                     TimeEstimateEntityMapper timeEstimateEntityMapper) {
         mBookingRideDataStoreFactory = bookingRideDataStoreFactory;
         mProductEntityMapper = productEntityMapper;
+        mTimeEstimateEntityMapper = timeEstimateEntityMapper;
+        estimateMapper = new FareEstimateMapper();
     }
 
     @Override
@@ -34,5 +44,26 @@ public class BookingRideRepositoryData implements BookingRideRepository {
                 });
     }
 
+    @Override
+    public Observable<List<TimesEstimate>> getEstimatedTimes(TKPDMapParam<String, Object> productParams) {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .getEstimatedTimes(productParams).map(new Func1<List<TimesEstimateEntity>, List<TimesEstimate>>() {
+                    @Override
+                    public List<TimesEstimate> call(List<TimesEstimateEntity> timesEstimateEntities) {
+                        return mTimeEstimateEntityMapper.transform(timesEstimateEntities);
+                    }
+                });
+    }
 
+    @Override
+    public Observable<FareEstimate> getEstimatedFare(TKPDMapParam<String, Object> productParams) {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .getEstimatedFare(productParams)
+                .map(new Func1<FareEstimateEntity, FareEstimate>() {
+                    @Override
+                    public FareEstimate call(FareEstimateEntity fareEstimateEntity) {
+                        return estimateMapper.transform(fareEstimateEntity);
+                    }
+                });
+    }
 }

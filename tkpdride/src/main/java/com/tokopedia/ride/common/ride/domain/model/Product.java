@@ -7,8 +7,7 @@ import android.os.Parcelable;
  * Created by alvarisi on 3/14/17.
  */
 
-public class Product implements Parcelable {
-    boolean upfrontFareEnabled;
+public class Product implements Parcelable{
     int capacity;
     String productId;
     String image;
@@ -18,12 +17,12 @@ public class Product implements Parcelable {
     String displayName;
     String productGroup;
     String description;
+    PriceDetail priceDetail;
 
     public Product() {
     }
 
     protected Product(Parcel in) {
-        upfrontFareEnabled = in.readByte() != 0;
         capacity = in.readInt();
         productId = in.readString();
         image = in.readString();
@@ -33,6 +32,7 @@ public class Product implements Parcelable {
         displayName = in.readString();
         productGroup = in.readString();
         description = in.readString();
+        priceDetail = in.readParcelable(PriceDetail.class.getClassLoader());
     }
 
     public static final Creator<Product> CREATOR = new Creator<Product>() {
@@ -46,10 +46,6 @@ public class Product implements Parcelable {
             return new Product[size];
         }
     };
-
-    public boolean isUpfrontFareEnabled() {
-        return upfrontFareEnabled;
-    }
 
     public int getCapacity() {
         return capacity;
@@ -85,10 +81,6 @@ public class Product implements Parcelable {
 
     public String getDescription() {
         return description;
-    }
-
-    public void setUpfrontFareEnabled(boolean upfrontFareEnabled) {
-        this.upfrontFareEnabled = upfrontFareEnabled;
     }
 
     public void setCapacity(int capacity) {
@@ -127,6 +119,14 @@ public class Product implements Parcelable {
         this.description = description;
     }
 
+    public PriceDetail getPriceDetail() {
+        return priceDetail;
+    }
+
+    public void setPriceDetail(PriceDetail priceDetail) {
+        this.priceDetail = priceDetail;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -134,7 +134,6 @@ public class Product implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte((byte) (upfrontFareEnabled ? 1 : 0));
         dest.writeInt(capacity);
         dest.writeString(productId);
         dest.writeString(image);
@@ -144,5 +143,6 @@ public class Product implements Parcelable {
         dest.writeString(displayName);
         dest.writeString(productGroup);
         dest.writeString(description);
+        dest.writeParcelable(priceDetail, flags);
     }
 }

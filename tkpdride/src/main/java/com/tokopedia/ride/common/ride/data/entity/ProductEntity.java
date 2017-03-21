@@ -9,22 +9,28 @@ import com.google.gson.annotations.SerializedName;
 
 public class ProductEntity {
     /**
-    {
-        "upfront_fare_enabled": true,
-            "capacity": 2,
-            "product_id": "26546650-e557-4a7b-86e7-6a3942445247",
-            "image": "http://d1a3f4spazzrp4.cloudfront.net/car-types/mono/mono-uberx.png",
-            "cash_enabled": false,
-            "shared": true,
-            "short_description": "POOL",
-            "display_name": "POOL",
-            "product_group": "rideshare",
-            "description": "Share the ride, split the cost."
-    }
+     {
+     "capacity": 1,
+     "cash_enabled": true,
+     "description": "FAST, CHEAP, RELIABLE",
+     "display_name": "uberMotor",
+     "image": "http://d1a3f4spazzrp4.cloudfront.net/car-types/mono/mono-scooter.png",
+     "price_details": {
+     "base": 1000,
+     "cancellation_fee": 5000,
+     "cost_per_distance": 1250,
+     "cost_per_minute": 0,
+     "currency_code": "IDR",
+     "distance_unit": "km",
+     "minimum": 5000,
+     "service_fees": []
+     },
+     "product_group": "uberx",
+     "product_id": "89da0988-cb4f-4c85-b84f-aac2f5115068",
+     "shared": false,
+     "short_description": "uberMOTOR"
+     }
      **/
-    @SerializedName("upfront_fare_enabled")
-    @Expose
-    boolean upfrontFareEnabled;
     @SerializedName("capacity")
     @Expose
     int capacity;
@@ -52,13 +58,12 @@ public class ProductEntity {
     @SerializedName("description")
     @Expose
     String description;
+    @SerializedName("price_details")
+    @Expose
+    PriceDetailEntity priceDetailEntity;
 
 
     public ProductEntity() {
-    }
-
-    public boolean isUpfrontFareEnabled() {
-        return upfrontFareEnabled;
     }
 
     public int getCapacity() {
@@ -95,5 +100,9 @@ public class ProductEntity {
 
     public String getDescription() {
         return description;
+    }
+
+    public PriceDetailEntity getPriceDetailEntity() {
+        return priceDetailEntity;
     }
 }

@@ -68,7 +68,7 @@ public class RideProductDependencyInjection {
         RideApi uberApi = retrofit.create(RideApi.class);
         BookingRideDataStoreFactory bookingRideDataStoreFactory = new BookingRideDataStoreFactory(uberApi);
         BookingRideRepository repository = new BookingRideRepositoryData(bookingRideDataStoreFactory
-                , new ProductEntityMapper());
+                , new ProductEntityMapper(), mTimeEstimateEntityMapper);
 
         GetUberProductsUseCase getUberProductsUseCase = new GetUberProductsUseCase(
                 threadExecutor,
