@@ -303,27 +303,28 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_VERIFY_PHONE &&
-                resultCode == Activity.RESULT_OK &&
-                SessionHandler.isMsisdnVerified()) {
-            getProfileData().getDataUser().setUserPhone(SessionHandler.getPhoneNumber());
-            renderData();
-        } else {
-            uploadDialog.onResult(
-                    requestCode,
-                    resultCode,
-                    data,
-                    new UploadImageDialog.UploadImageDialogListener() {
-                        @Override
-                        public void onSuccess(String data) {
-                            presenter.setOnUserFinishPickImage(data);
-                        }
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_VERIFY_PHONE &&
+                    SessionHandler.isMsisdnVerified()) {
+                getProfileData().getDataUser().setUserPhone(SessionHandler.getPhoneNumber());
+                renderData();
+            } else {
+                uploadDialog.onResult(
+                        requestCode,
+                        resultCode,
+                        data,
+                        new UploadImageDialog.UploadImageDialogListener() {
+                            @Override
+                            public void onSuccess(String data) {
+                                presenter.setOnUserFinishPickImage(data);
+                            }
 
-                        @Override
-                        public void onFailed() {
-                            showSnackBarView(getActivity().getString(R.string.error_gallery_valid));
-                        }
-                    });
+                            @Override
+                            public void onFailed() {
+                                showSnackBarView(getActivity().getString(R.string.error_gallery_valid));
+                            }
+                        });
+            }
         }
     }
 
