@@ -124,6 +124,9 @@ dependencies {
     compile rootProject.ext.butterKnifeDependencies.butterKnife
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
+    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
     compile rootProject.ext.networkDependencies.volley
     compile rootProject.ext.networkDependencies.retrofit
     compile rootProject.ext.networkDependencies.converterGson
@@ -174,7 +177,7 @@ apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion '24.0.2'
+    buildToolsVersion '25.0.0'
     useLibrary 'org.apache.http.legacy'
     sourceSets {
 
@@ -212,8 +215,14 @@ android {
     dexOptions {
         javaMaxHeapSize "4g"
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
     }
 
 }

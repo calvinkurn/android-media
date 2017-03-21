@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.model.data.Ad;
-import com.tokopedia.seller.topads.model.data.ProductAd;
+import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.seller.topads.data.model.data.ProductAd;
 
 /**
  * Created by zulfikarrahman on 11/28/16.
@@ -61,7 +61,7 @@ public class TopAdsViewHolder extends RecyclerView.ViewHolder {
         pricePromoPerClick.setText(promoPriceUsed.getContext().getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
         promoPriceUsed.setText(ad.getStatTotalSpent());
 
-        int groupId = -1;
+        long groupId = -1;
         String groupName = "";
         if(ad instanceof ProductAd){
             groupId = ((ProductAd) ad).getGroupId();

@@ -15,6 +15,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -46,6 +48,9 @@ import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.entity.categoriesHades.CategoriesHadesModel;
+import com.tokopedia.core.network.entity.categoriesHades.Child;
+import com.tokopedia.core.network.entity.categoriesHades.SimpleCategory;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -55,6 +60,7 @@ import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
@@ -75,6 +81,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -91,8 +99,8 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_INV
 /**
  * Created by Erry on 6/30/2016.
  */
-public class BrowseProductActivity extends TActivity implements DiscoveryActivityPresenter,
-        DiscoverySearchView.SearchViewListener, DiscoverySearchView.OnQueryTextListener {
+public class BrowseProductActivity extends TActivity implements DiscoverySearchView.SearchViewListener,
+        DiscoveryActivityPresenter, MenuItemCompat.OnActionExpandListener, DiscoverySearchView.OnQueryTextListener {
 
     private static final String TAG = BrowseProductActivity.class.getSimpleName();
     private static final String KEY_GTM = "GTMFilterData";
@@ -106,6 +114,8 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
     private List<Breadcrumb> breadcrumbs;
     private boolean afterRestoreSavedInstance;
 
+    Stack<SimpleCategory> categoryLevel = new Stack<>();
+
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_BROWSE_PRODUCT_FROM_SEARCH;
@@ -116,6 +126,21 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
         browseProductActivityModel.setQ(keyword);
         browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
         browseProductActivityModel.alias = selected;
+    }
+
+    public void sendCategory(String departementId) {
+        browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
+        fetchCategoriesHeader(departementId);
+    }
+
+    @Override
+    public boolean onMenuItemActionExpand(MenuItem item) {
+        return false;
+    }
+
+    @Override
+    public boolean onMenuItemActionCollapse(MenuItem item) {
+        return false;
     }
 
 
@@ -130,6 +155,10 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
     public static final String EXTRA_FIRST_TIME = "EXTRA_FIRST_TIME";
     public static final String EXTRA_FILTER_MAP = "EXTRA_FILTER_MAP";
     public static final String EXTRA_FILTER_MAP_ATTR = "EXTRA_FILTER_MAP_ATTR";
+    public static final String LAYOUT_GRID_DEFAULT = "1";
+    public static final String LAYOUT_GRID_BOX = "2";
+    public static final String LAYOUT_LIST = "3";
+
     public static String browseType;
     private int gridIcon = R.drawable.ic_grid_default;
     private BrowseProductRouter.GridType gridType = BrowseProductRouter.GridType.GRID_2;
@@ -200,6 +229,13 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG:
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP:
                 toolbar.setTitle("");
+                toolbar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        discoverySearchView.showSearch();
+                        discoverySearchView.setFinishOnClose(false);
+                    }
+                });
                 break;
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY:
                 toolbar.setTitle(getString(R.string.title_activity_browse_category));
@@ -266,6 +302,7 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
     @Override
     protected void onResume() {
         super.onResume();
+        RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
     }
 
     @Override
@@ -287,27 +324,14 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
     }
 
     @Override
-    public void onBackPressed() {
-        if (discoverySearchView.isSearchOpen()) {
-            if(discoverySearchView.isFinishOnClose()){
-                finish();
-            } else {
-                discoverySearchView.closeSearch();
-            }
-        } else {
-            finish();
-        }
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
-        RxUtils.unsubscribeIfNotNull(compositeSubscription);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        RxUtils.unsubscribeIfNotNull(compositeSubscription);
     }
 
     public void setFragment(Fragment fragment, String TAG) {
@@ -327,7 +351,6 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
         boolean fragmentPopped = manager.popBackStackImmediate(backStateName, 0);
 
         if (!fragmentPopped) {
-            Log.d(TAG, "fragment not in back stack, create it.");
             FragmentTransaction ft = manager.beginTransaction();
             ft.replace(R.id.container, fragment, TAG);
             ft.addToBackStack(backStateName);
@@ -353,8 +376,8 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
+        if (item.getItemId() == R.id.action_search) {
+            return false;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -393,6 +416,7 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
         deleteFilterCache();
         sendBroadCast(query);
         toolbar.setTitle(query);
+        discoverySearchView.setLastQuery(query);
         discoverySearchView.closeSearch();
     }
 
@@ -560,16 +584,19 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
                                 gridType = BrowseProductRouter.GridType.GRID_2;
                                 gridIcon = R.drawable.ic_grid_default;
                                 bottomNavigation.getItem(2).setTitle(getString(R.string.grid));
+                                UnifyTracking.eventDisplayCategory(LAYOUT_GRID_DEFAULT);
                                 break;
                             case GRID_2:
                                 gridType = BrowseProductRouter.GridType.GRID_3;
                                 gridIcon = R.drawable.ic_grid_box;
                                 bottomNavigation.getItem(2).setTitle(getString(R.string.grid));
+                                UnifyTracking.eventDisplayCategory(LAYOUT_GRID_BOX);
                                 break;
                             case GRID_3:
                                 gridType = BrowseProductRouter.GridType.GRID_1;
                                 gridIcon = R.drawable.ic_list;
                                 bottomNavigation.getItem(2).setTitle(getString(R.string.list));
+                                UnifyTracking.eventDisplayCategory(LAYOUT_LIST);
                                 break;
                             default:
                                 gridIcon = R.drawable.ic_grid_default;
@@ -592,6 +619,10 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
                                         .setTextContent(getString(R.string.message_share_category))
                                         .setUri(shareUrl)
                                         .build();
+                                if (browseProductActivityModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+                                    shareData.setType(ShareData.CATEGORY_TYPE);
+                                    shareData.setDescription(browseProductActivityModel.getDepartmentId());
+                                }
                                 sintent.putExtra(ShareData.TAG, shareData);
                                 startActivity(sintent);
                             }
@@ -634,9 +665,8 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
     }
 
     private void openFilter(DataValue filterAttribute, String source, int activeTab, FDest dest) {
-        Log.d(TAG, "openFilter source " + source);
         breadcrumbs = getProductBreadCrumb();
-        if (filterAttribute != null && breadcrumbs != null) {
+        if (filterAttribute != null ) {
             Map<String, String> filters;
             if (mFilterMapAtribut != null && mFilterMapAtribut.getFiltersMap() != null) {
                 if (mFilterMapAtribut.getFiltersMap().get(source) != null) {
@@ -658,22 +688,18 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
     }
 
     private void fetchDynamicAttribute(final int activeTab, final String source, final FDest dest) {
-        Log.d(TAG, "Source " + source);
         discoveryInteractor.setDiscoveryListener(new DiscoveryListener() {
             @Override
             public void onComplete(int type, Pair<String, ? extends ObjContainer> data) {
-                Log.d(TAG, "onComplete type " + type);
             }
 
             @Override
             public void onFailed(int type, Pair<String, ? extends ObjContainer> data) {
-                Log.e(TAG, "onFailed type " + type);
                 Toast.makeText(BrowseProductActivity.this, getString(R.string.try_again), Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onSuccess(int type, Pair<String, ? extends ObjContainer> data) {
-                Log.d(TAG, "onSuccess type " + type);
                 switch (type) {
                     case DYNAMIC_ATTRIBUTE:
                         DynamicFilterModel.DynamicFilterContainer dynamicFilterContainer
@@ -702,10 +728,8 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
         } else if (source.contains("shop")) {
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP, browseProductActivityModel.getDepartmentId());
         } else if (source.contains("directory") && activeTab == 0) {
-            Log.d(TAG, "get dynamic filter product");
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY, browseProductActivityModel.getDepartmentId());
         } else if (source.contains("directory") && activeTab == 1) {
-            Log.d(TAG, "get dynamic filter catalog");
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG, browseProductActivityModel.getDepartmentId());
         } else {
             discoveryInteractor.getDynamicAttribute(this, BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT, browseProductActivityModel.getDepartmentId());
@@ -754,7 +778,6 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
                     mFilterMapAtribut.getFiltersMap()
                             .put(browseProductActivityModel.getActiveTab(), filterMapValue);
                     browseProductActivityModel.setFilterOptions(filterMapValue.getValue());
-                    Log.d(TAG, "filter option " + filterMapValue.getValue());
                     sendFilterGTM(filterMapValue.getValue());
                     break;
             }
@@ -840,7 +863,6 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
     }
 
     private void fetchHotListHeader(final String alias) {
-        Log.d(TAG, "fetchHotListHeader alias " + alias);
         HashMap<String, String> query = new HashMap<>();
         query.put("key", alias);
         showLoading(true);
@@ -864,7 +886,6 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
             public void onSuccess(int type, Pair<String, ? extends ObjContainer> data) {
                 switch (type) {
                     case DiscoveryListener.HOTLIST_BANNER:
-                        Log.d(TAG, "fetch " + data.getModel1());
                         ObjContainer model2 = data.getModel2();
                         HotListBannerModel.HotListBannerContainer hotListBannerContainer = (HotListBannerModel.HotListBannerContainer) model2;
                         HotListBannerModel body = hotListBannerContainer.body();
@@ -901,7 +922,6 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
                             editor.putString(DynamicFilterActivity.FILTER_SELECTED_PREF, new Gson().toJson(filters));
                             editor.apply();
                         }
-                        Log.d(TAG, "Hotlist query " + body.query.toString());
 
                         FilterMapAtribut.FilterMapValue filterMapValue
                                 = new FilterMapAtribut.FilterMapValue();
@@ -922,6 +942,47 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
         });
         ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
         discoveryInteractor.getHotListBanner(query);
+    }
+
+    private void fetchCategoriesHeader(final String departementId) {
+        showLoading(true);
+        discoveryInteractor.setDiscoveryListener(new DiscoveryListener() {
+            @Override
+            public void onComplete(int type, Pair<String, ? extends ObjContainer> data) {
+                showLoading(false);
+            }
+
+            @Override
+            public void onFailed(int type, Pair<String, ? extends ObjContainer> data) {
+                showEmptyState(new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        fetchCategoriesHeader(departementId);
+                    }
+                });
+            }
+
+            @Override
+            public void onSuccess(int type, Pair<String, ? extends ObjContainer> data) {
+                switch (type) {
+                    case DiscoveryListener.CATEGORY_HEADER:
+                        BrowseParentFragment parentFragment = (BrowseParentFragment)
+                                fragmentManager.findFragmentById(R.id.container);
+                        if (parentFragment!=null) {
+                            ObjContainer objContainer = data.getModel2();
+                            CategoriesHadesModel.CategoriesHadesContainer categoriesHadesContainer = (CategoriesHadesModel.CategoriesHadesContainer) objContainer;
+                            CategoriesHadesModel body = categoriesHadesContainer.body();
+                            if (browseProductActivityModel !=null && body !=null && body.getData() !=null) {
+                                browseProductActivityModel.categotyHeader = body.getData();
+                                parentFragment.renderCategories(browseProductActivityModel.categotyHeader);
+                            }
+                        }
+                        break;
+                }
+            }
+        });
+        ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
+        discoveryInteractor.getCategoryHeader(departementId);
     }
 
 
@@ -950,6 +1011,9 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
                             if (TextUtils.isEmpty(item.getString("value")) ||
                                     item.getString("value").equalsIgnoreCase(map.getValue())) {
                                 UnifyTracking.eventDiscoveryFilter(item.getString("label"));
+                                if (browseProductActivityModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+                                    UnifyTracking.eventFilterCategory(item.getString("label"));
+                                }
                             }
                             break;
                         }
@@ -981,6 +1045,9 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
                 JSONObject item = (JSONObject) dynamicSort.get(i);
                 if (item.getString("value").equalsIgnoreCase(valueSort)) {
                     UnifyTracking.eventDiscoverySort(item.getString("label"));
+                    if (browseProductActivityModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+                        UnifyTracking.eventSortCategory(item.getString("label"));
+                    }
                     break;
                 }
             }
@@ -1012,5 +1079,49 @@ public class BrowseProductActivity extends TActivity implements DiscoveryActivit
     public BrowseProductRouter.GridType getGridType() {
         return gridType;
     }
+
+    private interface QueryListener {
+        void onQueryChanged(String query);
+    }
+
+    public void renderNewCategoryLevel(String departementId, String name) {
+        if (departementId!=null && name!=null) {
+            browseProductActivityModel.setDepartmentId(departementId);
+            toolbar.setTitle(name);
+            setFragment(BrowseParentFragment.newInstance(browseProductActivityModel), BrowseParentFragment.FRAGMENT_TAG);
+            BrowseParentFragment parentFragment = (BrowseParentFragment)
+                    fragmentManager.findFragmentById(R.id.container);
+            ArrayMap<String, String> visibleTab = new ArrayMap<>();
+            visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, parentFragment.VISIBLE_ON);
+            parentFragment.initSectionAdapter(visibleTab);
+            parentFragment.setupWithTabViewPager();
+        }
+    }
+
+    public void renderLowerCategoryLevel(Child child) {
+        categoryLevel.push(new SimpleCategory(browseProductActivityModel.getDepartmentId(),getIntent().getStringExtra(EXTRA_TITLE)));
+        getIntent().putExtra(EXTRA_TITLE,child.getName());
+        renderNewCategoryLevel(child.getId(),child.getName());
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (discoverySearchView.isSearchOpen()) {
+            if(discoverySearchView.isFinishOnClose()){
+                finish();
+            } else {
+                discoverySearchView.closeSearch();
+            }
+        } else if (categoryLevel.size()>0) {
+            SimpleCategory simpleCategory = categoryLevel.pop();
+            getIntent().putExtra(EXTRA_TITLE,simpleCategory.getName());
+            renderNewCategoryLevel(simpleCategory.getId(),simpleCategory.getName());
+        } else {
+            finish();
+        }
+
+    }
+
 
 }

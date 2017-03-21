@@ -1,13 +1,8 @@
 package com.tokopedia.seller.topads.view.listener;
 
 import android.support.annotation.NonNull;
-import android.support.v7.view.ActionMode;
-import android.view.Menu;
-import android.view.MenuItem;
 
-import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
-import com.tokopedia.seller.topads.model.data.Ad;
-import com.tokopedia.seller.topads.model.data.DataCredit;
+import com.tokopedia.seller.topads.data.model.data.Ad;
 
 import java.util.List;
 
