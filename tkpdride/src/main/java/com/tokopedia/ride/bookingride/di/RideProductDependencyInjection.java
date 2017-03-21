@@ -10,6 +10,7 @@ import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
+import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetProductAndEstimatedUseCase;
 import com.tokopedia.ride.common.ride.data.BookingRideDataStoreFactory;
 import com.tokopedia.ride.common.ride.data.BookingRideRepositoryData;
@@ -148,12 +149,37 @@ public class RideProductDependencyInjection {
         );
     }
 
+    private GetFareEstimateUseCase provideGetFareEstimateUseCase(Context context, String token){
+        return new GetFareEstimateUseCase(
+                provideThreadExecutor(),
+                providePostExecutionThread(),
+                provideBookingRideRepository(
+                        provideBookingRideDataStoreFactory(
+                                provideRideApi(
+                                        provideRideRetrofit(
+                                                provideRideOkHttpClient(provideRideInterceptor(token),
+                                                        provideLoggingInterceptory()),
+                                                provideGeneratedHostConverter(),
+                                                provideTkpdResponseConverter(),
+                                                provideResponseConverter(),
+                                                provideGsonConverterFactory(provideGson()),
+                                                provideRxJavaCallAdapterFactory()
+                                        )
+                                )
+                        ),
+                        new ProductEntityMapper(),
+                        new TimeEstimateEntityMapper()
+                )
+        );
+    }
+
 
     public static UberProductContract.Presenter createPresenter(Context context, String token) {
 
         RideProductDependencyInjection injection = new RideProductDependencyInjection();
         GetProductAndEstimatedUseCase getUberProductsUseCase = injection.provideGetProductAndEstimatedUseCase(context, token);
-        return new UberProductPresenter(getUberProductsUseCase);
+        GetFareEstimateUseCase getFareEstimateUseCase = injection.provideGetFareEstimateUseCase(context, token);
+        return new UberProductPresenter(getUberProductsUseCase, getFareEstimateUseCase);
     }
 
     private static Retrofit createRetrofit(String baseUrl,

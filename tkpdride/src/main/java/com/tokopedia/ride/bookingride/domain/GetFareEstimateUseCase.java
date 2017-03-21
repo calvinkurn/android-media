@@ -14,6 +14,11 @@ import rx.Observable;
  */
 
 public class GetFareEstimateUseCase extends UseCase<FareEstimate> {
+    public static final String PARAM_START_LATITUDE = "start_latitude";
+    public static final String PARAM_START_LONGITUDE = "start_longitude";
+    public static final String PARAM_END_LATITUDE = "end_latitude";
+    public static final String PARAM_END_LONGITUDE = "end_longitude";
+    public static final String PARAM_PRODUCT_ID = "product_id";
     private final BookingRideRepository bookingRideRepository;
     public GetFareEstimateUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, BookingRideRepository bookingRideRepository) {
         super(threadExecutor, postExecutionThread);

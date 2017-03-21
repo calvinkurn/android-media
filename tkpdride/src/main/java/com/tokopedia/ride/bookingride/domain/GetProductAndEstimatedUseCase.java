@@ -23,6 +23,7 @@ public class GetProductAndEstimatedUseCase extends UseCase<List<ProductEstimate>
     private final BookingRideRepository mBookingRideRepository;
     private GetEstimatedTimesUseCase getEstimatedTimesUseCase;
     private GetUberProductsUseCase getUberProductsUseCase;
+
     public GetProductAndEstimatedUseCase(ThreadExecutor threadExecutor,
                                          PostExecutionThread postExecutionThread,
                                          BookingRideRepository mBookingRideRepository) {
@@ -35,17 +36,18 @@ public class GetProductAndEstimatedUseCase extends UseCase<List<ProductEstimate>
     @Override
     public Observable<List<ProductEstimate>> createObservable(RequestParams requestParams) {
         return Observable.zip(getUberProductsUseCase.createObservable(requestParams),
-                getEstimatedTimesUseCase.createObservable(requestParams), new Func2<List<Product>, List<TimesEstimate>, List<ProductEstimate>>() {
+                getEstimatedTimesUseCase.createObservable(transformEstimatedTimeRequest(requestParams)),
+                new Func2<List<Product>, List<TimesEstimate>, List<ProductEstimate>>() {
                     @Override
                     public List<ProductEstimate> call(List<Product> products,
                                                       List<TimesEstimate> timesEstimates) {
                         List<ProductEstimate> productEstimates = new ArrayList<>();
                         ProductEstimate productEstimate = null;
-                        for (Product product : products){
+                        for (Product product : products) {
                             productEstimate = new ProductEstimate();
                             productEstimate.setProduct(product);
-                            for (TimesEstimate estimate : timesEstimates){
-                                if (estimate.getProductId().equals(product.getProductId())){
+                            for (TimesEstimate estimate : timesEstimates) {
+                                if (estimate.getProductId().equals(product.getProductId())) {
                                     productEstimate.setTimesEstimate(estimate);
                                     break;
                                 }
@@ -55,5 +57,14 @@ public class GetProductAndEstimatedUseCase extends UseCase<List<ProductEstimate>
                         return productEstimates;
                     }
                 });
+    }
+
+    private RequestParams transformEstimatedTimeRequest(RequestParams requestParams) {
+        String latitude = requestParams.getString(GetUberProductsUseCase.PARAM_LATITUDE, "");
+        String longitude = requestParams.getString(GetUberProductsUseCase.PARAM_LONGITUDE, "");
+        RequestParams requestParams1 = RequestParams.create();
+        requestParams1.putString(GetEstimatedTimesUseCase.PARAM_START_LATITUDE, latitude);
+        requestParams1.putString(GetEstimatedTimesUseCase.PARAM_START_LONGITUDE, longitude);
+        return requestParams1;
     }
 }

@@ -20,6 +20,7 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.RideProductDependencyInjection;
+import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
 import com.tokopedia.ride.bookingride.view.UberProductContract;
 import com.tokopedia.ride.bookingride.view.adapter.RideProductAdapter;
 import com.tokopedia.ride.bookingride.view.adapter.RideProductItemClickListener;
@@ -27,6 +28,7 @@ import com.tokopedia.ride.bookingride.view.adapter.factory.RideProductAdapterTyp
 import com.tokopedia.ride.bookingride.view.adapter.factory.RideProductTypeFactory;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
 import java.util.List;
 
@@ -58,6 +60,8 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     ProgressBar mProgressBar;
     @BindView(R2.id.layout_progress_and_error_view)
     View mProgreessAndErrorView;
+
+    List<RideProductViewModel> rideProductViewModels;
 
     RideProductAdapter mAdapter;
 
@@ -185,5 +189,13 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     public void hideErrorMessage(String message) {
         mProgreessAndErrorView.setVisibility(View.GONE);
         mEmptyProductLinearLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderFareProduct(Visitable productEstimate,
+                                  String productId,
+                                  int position,
+                                  FareEstimate fareEstimate) {
+        mAdapter.setChangedItem(position, productEstimate);
     }
 }

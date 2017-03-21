@@ -2,6 +2,7 @@ package com.tokopedia.ride.bookingride.view.adapter.viewmodel.mapper;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
+import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewModel;
 
@@ -59,5 +60,20 @@ public class RideProductViewModelMapper {
             rideProductViewModel.setTimeEstimate(product.getTimesEstimate().getEstimate());
         }
         return rideProductViewModel;
+    }
+
+    public Visitable transform(ProductEstimate product, FareEstimate fareEstimate){
+        RideProductViewModel rideProductViewModel = null;
+        if (product != null) {
+            rideProductViewModel = new RideProductViewModel();
+            rideProductViewModel.setProductName(product.getProduct().getDisplayName());
+            rideProductViewModel.setProductId(product.getProduct().getProductId());
+            rideProductViewModel.setProductImage(product.getProduct().getImage());
+            rideProductViewModel.setProductPrice(fareEstimate.getFare().getDisplay());
+            rideProductViewModel.setBaseFare(fareEstimate.getFare().getDisplay());
+            rideProductViewModel.setTimeEstimate(fareEstimate.getPickupEstimate());
+        }
+        return rideProductViewModel;
+
     }
 }

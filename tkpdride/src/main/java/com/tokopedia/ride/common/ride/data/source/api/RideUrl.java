@@ -8,6 +8,6 @@ public interface RideUrl {
     String BASE_URL = "https://ride-staging.tokopedia.com/";
 
     String PRODUCTS = "/uber/products";
-    String ESTIMATED_TIME = "uber/estimates/time";
-    String ESTIMATED_FARE = "uber/estimates/fare";
+    String ESTIMATED_TIME = "/uber/estimates/time";
+    String ESTIMATED_FARE = "/uber/estimates/fare";
 }

@@ -3,8 +3,10 @@ package com.tokopedia.ride.bookingride.view;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
 import java.util.List;
 
@@ -30,11 +32,15 @@ public interface UberProductContract {
         void showErrorMessage(int messageResourceId);
 
         void hideErrorMessage(String message);
+
+        void renderFareProduct(Visitable productEstimate, String productId, int position, FareEstimate fareEstimate);
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void initialize();
 
         void actionGetRideProducts(PlacePassViewModel source, PlacePassViewModel destination);
+
+        void actionFareProductEstimate(ProductEstimate productEstimate, PlacePassViewModel source, PlacePassViewModel destination, String productId, int position);
     }
 }

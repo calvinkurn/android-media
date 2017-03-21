@@ -17,6 +17,8 @@ import rx.Observable;
 
 public class GetEstimatedTimesUseCase extends UseCase<List<TimesEstimate>> {
     private final BookingRideRepository mBookingRideRepository;
+    public static final String PARAM_START_LATITUDE = "start_latitude";
+    public static final String PARAM_START_LONGITUDE = "start_longitude";
 
     public GetEstimatedTimesUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, BookingRideRepository mBookingRideRepository) {
         super(threadExecutor, postExecutionThread);
