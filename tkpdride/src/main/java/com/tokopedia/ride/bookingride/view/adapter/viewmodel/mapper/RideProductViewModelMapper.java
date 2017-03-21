@@ -1,6 +1,7 @@
 package com.tokopedia.ride.bookingride.view.adapter.viewmodel.mapper;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewModel;
 
@@ -15,7 +16,7 @@ public class RideProductViewModelMapper {
     public RideProductViewModelMapper() {
     }
 
-    public Visitable transform(Product product) {
+    /*public Visitable transform(Product product) {
         RideProductViewModel rideProductViewModel = null;
         if (product != null) {
             rideProductViewModel = new RideProductViewModel();
@@ -35,5 +36,28 @@ public class RideProductViewModelMapper {
                 rideProductViewModels.add(productViewModel);
         }
         return rideProductViewModels;
+    }*/
+
+    public List<Visitable> transform(List<ProductEstimate> products) {
+        List<Visitable> rideProductViewModels = new ArrayList<>();
+        Visitable productViewModel = null;
+        for (ProductEstimate product : products) {
+            productViewModel = transform(product);
+            if (productViewModel != null)
+                rideProductViewModels.add(productViewModel);
+        }
+        return rideProductViewModels;
+    }
+
+    public Visitable transform(ProductEstimate product) {
+        RideProductViewModel rideProductViewModel = null;
+        if (product != null) {
+            rideProductViewModel = new RideProductViewModel();
+            rideProductViewModel.setProductName(product.getProduct().getDisplayName());
+            rideProductViewModel.setProductId(product.getProduct().getProductId());
+            rideProductViewModel.setProductImage(product.getProduct().getImage());
+            rideProductViewModel.setTimeEstimate(product.getTimesEstimate().getEstimate());
+        }
+        return rideProductViewModel;
     }
 }

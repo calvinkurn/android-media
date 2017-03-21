@@ -3,6 +3,8 @@ package com.tokopedia.ride.bookingride.view;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.ride.bookingride.domain.GetProductAndEstimatedUseCase;
+import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
@@ -18,10 +20,10 @@ import rx.Subscriber;
  */
 
 public class UberProductPresenter extends BaseDaggerPresenter<UberProductContract.View> implements UberProductContract.Presenter {
-    GetUberProductsUseCase mGetUberProductsUseCase;
     RideProductViewModelMapper mProductViewModelMapper;
+    GetProductAndEstimatedUseCase mGetUberProductsUseCase;
 
-    public UberProductPresenter(GetUberProductsUseCase getUberProductsUseCase) {
+    public UberProductPresenter(GetProductAndEstimatedUseCase getUberProductsUseCase) {
         mGetUberProductsUseCase = getUberProductsUseCase;
         mProductViewModelMapper = new RideProductViewModelMapper();
     }
@@ -36,6 +38,30 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GetUberProductsUseCase.PARAM_LATITUDE, String.valueOf(source.getLatitude()));
         requestParams.putString(GetUberProductsUseCase.PARAM_LONGITUDE, String.valueOf(source.getLongitude()));
+        mGetUberProductsUseCase.execute(requestParams, new Subscriber<List<ProductEstimate>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<ProductEstimate> productEstimates) {
+                List<Visitable> productsList = mProductViewModelMapper.transform(productEstimates);
+
+                getView().hideProgress();
+
+                if(productsList.size() == 0){
+                    getView().showErrorMessage(R.string.no_rides_found);
+                }
+
+                getView().renderProductList(productsList);
+            }
+        });/*
         mGetUberProductsUseCase.execute(requestParams, new Subscriber<List<Product>>() {
             @Override
             public void onCompleted() {
@@ -60,6 +86,6 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                 getView().renderProductList(productsList);
             }
         });
-
+*/
     }
 }
