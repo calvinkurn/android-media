@@ -49,6 +49,8 @@ public interface BookingRideContract {
         void renderTripRoute(List<List<LatLng>> routes);
 
         void setSourceLocation(Location location);
+
+        void hideMarkerCenter();
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -81,6 +81,8 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
 
     private PlacePassViewModel mSource, mDestination;
 
+    boolean isAlreadySelectDestination;
+
     GoogleMap mGoogleMap;
 
     private OnFragmentInteractionListener mListener;
@@ -226,8 +228,12 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
 
     @Override
     public void onMapDragStarted() {
+
         //set source as go to pin
-        setSourceLocationText("GO TO PIN");
+        //add validation if user already pick destination
+        if (!isAlreadySelectDestination) {
+            setSourceLocationText("GO TO PIN");
+        }
 
         //animate marker to lift up
         AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
@@ -245,8 +251,10 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     @Override
     public void onMapDragStopped() {
         //set address based on current address and refresh the product list
-        renderDefaultPickupLocation(mGoogleMap.getCameraPosition().target.latitude, mGoogleMap.getCameraPosition().target.longitude);
-
+        //add validation if user already pick destination
+        if (!isAlreadySelectDestination) {
+            renderDefaultPickupLocation(mGoogleMap.getCameraPosition().target.latitude, mGoogleMap.getCameraPosition().target.longitude);
+        }
         //animate marker to lift down
         AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
         mMarkerTimeLayout.animate().setInterpolator(interpolator).translationY(0).setDuration(300);
@@ -295,6 +303,8 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
                     mDestination = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
                     setDestinationLocationText(String.valueOf(mDestination.getAddress()));
                     proccessToRenderRideProduct();
+                    isAlreadySelectDestination = true;
+                    hideMarkerCenter();
                     break;
             }
         }
@@ -408,5 +418,14 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     @OnClick(R2.id.iv_my_location_button)
     public void actionMyLocationButtonClicked() {
         mPresenter.actionMyLocation();
+    }
+
+    @Override
+    public void hideMarkerCenter() {
+        mMarkerTimeBackgroundImage.setVisibility(View.GONE);
+        mMarkerTimeTextView.setVisibility(View.GONE);
+        mMarkerTimeLayout.setVisibility(View.GONE);
+        mMarkerImageView.setVisibility(View.GONE);
+        mMarkerCenterCrossImage.setVisibility(View.GONE);
     }
 }
