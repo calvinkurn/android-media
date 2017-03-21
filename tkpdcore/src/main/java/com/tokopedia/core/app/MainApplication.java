@@ -105,8 +105,6 @@ public class MainApplication extends TkpdMultiDexApplication {
     }
 
 
-
-
     public static boolean isAppIsInBackground(Context context) {
         boolean isInBackground = true;
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);

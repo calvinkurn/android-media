@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheDuration;
@@ -229,7 +228,8 @@ public class WishListImpl implements WishList {
     @Override
     public void deleteWishlist(final Context context, String productId) {
         wishListView.showProgressDialog();
-        Observable<Response<Void>> observable = mojitoAuthService.getApi().deleteWishlist(productId);
+        Observable<Response<Void>> observable = mojitoAuthService.getApi()
+                .deleteWishlist(productId, SessionHandler.getLoginID(context));
 
         Subscriber<Response<Void>> subscriber = new Subscriber<Response<Void>>() {
             @Override

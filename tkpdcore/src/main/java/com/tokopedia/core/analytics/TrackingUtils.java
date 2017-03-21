@@ -143,12 +143,6 @@ public class TrackingUtils extends TrackingConfig {
         return getGTMEngine().eventHTTP();
     }
 
-    public static void eventAuthenticateLogin(Authenticated authenticated){
-        getGTMEngine()
-                .eventAuthenticate(authenticated)
-                .sendScreen(Authenticated.KEY_CD_NAME);
-    }
-
     public static void eventError(String className, String errorMessage){
         getGTMEngine()
                 .eventError(className, errorMessage);
@@ -247,6 +241,10 @@ public class TrackingUtils extends TrackingConfig {
 
     static void sendGTMEvent(Map<String, Object> dataLayers){
         getGTMEngine().sendEvent(dataLayers);
+    }
+
+    public static String getClientID(){
+        return getGTMEngine().getClientIDString();
     }
 
     public static String getGtmString(String key) {

@@ -114,6 +114,9 @@
             android:name="GTM_ID"
             android:value="@string/key_gtm" />
         <meta-data
+            android:name="GA_ID"
+            android:value="@string/key_ga" />
+        <meta-data
             android:name="APPSFLYER_KEY"
             android:value="@string/key_appsflyer" />
         <meta-data
@@ -147,12 +150,6 @@
 
         <activity android:name=".deeplink.DeeplinkHandlerActivity"
             android:screenOrientation="portrait" />
-        <service
-            android:name=".fcm.CustomerMessagingService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
         <activity android:name=".truecaller.TruecallerActivity"/>
     </application>
 

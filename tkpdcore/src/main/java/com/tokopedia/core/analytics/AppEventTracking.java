@@ -104,6 +104,7 @@ public interface AppEventTracking {
         String CLICK_ADD_PRODUCT = "clickAddProduct";
         String CLICK_INSTOPED = "clickInstoped";
         String CLICK_MANAGE_PRODUCT = "clickManageProduct";
+        String CATEGORY_PAGE = "clickKategori";
         String OPEN_PUSH_NOTIFICATION = "openPushNotification";
         String EVENT_OTP = "OTPSuccess";
     }
@@ -161,6 +162,8 @@ public interface AppEventTracking {
         String GM_STATISTIC_PRODUCT = "GM Statistic - Product";
         String GM_STATISTIC_PRODUCT_INSIGHT = "GM Statistic - Product Insight";
         String MANAGE_PRODUCT = "Manage Product";
+        String CATEGORY_PAGE = "Category Page";
+        String CATEGORY_PRODUCT = "Kategori";
         String GM_SWITCHER = "GM Switcher";
         String PUSH_NOTIFICATION = "Push Notification";
     }
@@ -195,6 +198,13 @@ public interface AppEventTracking {
         String SUCCESS = "Success";
         String LOAD = "Load";
         String SCROLL = "Scroll";
+        String PRODUCT_CATEGORY = "Click Product";
+        String CATEGORY_LEVEL = "Category";
+        String CATEGORY_MORE = "Category Breakdown";
+        String CATEGORY_SORT = "Bottom Navigation - Sort";
+        String CATEGORY_FILTER = "Bottom Navigation - Filter";
+        String CATEGORY_DISLPAY = "Bottom Navigation - Display";
+        String CATEGORY_SHARE = "Bottom Navigation - Share";
         String OPEN = "Open";
         String OTP_SUCCESS = "OTP Success";
     }
@@ -341,6 +351,7 @@ public interface AppEventTracking {
         String CHANGE_INSURANCE_PRODUCT_TOPMENU = "Ganti Asuransi - Top Menu";
         String DELETE_PRODUCT_GEAR = "Hapus - Gear Menu";
         String DELETE_PRODUCT_TOPMENU = "Hapus - Top Menu";
+        String CATEGORY_SHOW_MORE = "Lihat Lainnya";
     }
 
     interface SOCIAL_MEDIA {
@@ -357,6 +368,7 @@ public interface AppEventTracking {
 
     interface GTM {
         String GTM_ID = "GTM_ID";
+        String GA_ID = "GA_ID";
         String GTM_RESOURCE = "GTM_RESOURCE";
 
         String LUCKY_BUYER = "msg_lucky_buyer";

@@ -14,6 +14,7 @@ import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.tkpd.ConsumerMainApplication;
 
 import java.util.Map;
+import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 
 import rx.Observable;
 
@@ -23,12 +24,15 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
  * Created by alvarisi on 1/17/17.
  */
 
-public enum AppNotificationReceiver {
-    Notifications;
+public class AppNotificationReceiver implements IAppNotificationReceiver {
     private AppNotificationReceiverUIBackground mAppNotificationReceiverUIBackground;
     private INotificationAnalyticsReceiver mNotificationAnalyticsReceiver;
 
-    void init(Application application) {
+    public AppNotificationReceiver() {
+
+    }
+
+    public void init(Application application) {
         mAppNotificationReceiverUIBackground = new AppNotificationReceiverUIBackground(application);
         mNotificationAnalyticsReceiver = new NotificationAnalyticsReceiver();
     }

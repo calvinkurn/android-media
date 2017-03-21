@@ -148,6 +148,9 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         CategoryVersioningHelper.checkVersionCategory(this, new CategoryVersioningHelperListener() {
             @Override
             public void doAfterChecking() {
+                if (categoryDatabaseManager == null) {
+                    categoryDatabaseManager = new CategoryDatabaseManager();
+                }
                 if (categoryDatabaseManager.isExpired(System.currentTimeMillis())) {
                     if (!HadesService.getIsHadesRunning()) {
                         fetchDepartment();
