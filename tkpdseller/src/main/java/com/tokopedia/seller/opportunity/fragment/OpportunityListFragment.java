@@ -23,11 +23,9 @@ import com.tokopedia.seller.opportunity.adapter.OpportunityListAdapter;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenter;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenterImpl;
-import com.tokopedia.seller.opportunity.viewmodel.CategoryViewModel;
-import com.tokopedia.seller.opportunity.viewmodel.OpportunityItemViewModel;
-import com.tokopedia.seller.opportunity.viewmodel.OpportunityListPageViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityListPageViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.SortingTypeViewModel;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 
 import java.util.ArrayList;
 
@@ -166,7 +164,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                 int visibleItem = layoutManager.getItemCount() - 1;
                 if (!refreshHandler.isRefreshing()
                         && adapter.getList().size() != 0
-                        && lastItemPosition == visibleItem)
+                        && lastItemPosition == visibleItem
+                        && !adapter.isLoading())
                     presenter.loadMore();
             }
         });
@@ -207,6 +206,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             adapter.showLoadingFull(true);
         } else if (!refreshHandler.isRefreshing()) {
             adapter.showLoading(true);
+            opportunityList.smoothScrollToPosition(adapter.getItemCount());
         }
     }
 
@@ -265,12 +265,25 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     @Override
     public void onErrorGetOpportunity(String errorMessage) {
         finishLoadingList();
-
         finishRefresh();
-        if (errorMessage.equals(""))
+
+        if (adapter.getList().size() == 0 && errorMessage.equals("")) {
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), onRetry());
+        } else if (adapter.getList().size() == 0) {
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, onRetry());
+        } else if (errorMessage.equals("")) {
             NetworkErrorHelper.showSnackbar(getActivity());
-        else
+        } else
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    private NetworkErrorHelper.RetryClickedListener onRetry() {
+        return new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.getOpportunity();
+            }
+        };
     }
 
     @Override

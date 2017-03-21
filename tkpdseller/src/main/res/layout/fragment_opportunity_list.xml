@@ -19,25 +19,6 @@
             android:orientation="horizontal">
 
             <RelativeLayout
-                android:id="@+id/filter"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:background="@drawable/selectable_white_background"
-                android:gravity="center">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/btn_height"
-                    android:drawableLeft="@drawable/ic_filter_list_black_24dp"
-                    android:drawablePadding="@dimen/padding_vs"
-                    android:gravity="center_vertical"
-                    android:text="@string/filter" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
                 android:id="@+id/sort"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -54,6 +35,26 @@
                     android:drawablePadding="@dimen/padding_vs"
                     android:gravity="center_vertical"
                     android:text="@string/sort" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/filter"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/selectable_white_background"
+
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/btn_height"
+                    android:drawableLeft="@drawable/ic_filter_list_black_24dp"
+                    android:drawablePadding="@dimen/padding_vs"
+                    android:gravity="center_vertical"
+                    android:text="@string/filter" />
+
             </RelativeLayout>
 
         </LinearLayout>

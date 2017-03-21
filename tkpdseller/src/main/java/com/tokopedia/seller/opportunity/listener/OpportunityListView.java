@@ -1,10 +1,9 @@
 package com.tokopedia.seller.opportunity.listener;
 
 import android.app.Activity;
-import android.content.Context;
 
 import com.tokopedia.seller.opportunity.adapter.OpportunityListAdapter;
-import com.tokopedia.seller.opportunity.viewmodel.OpportunityListPageViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityListPageViewModel;
 
 /**
  * Created by nisie on 3/2/17.

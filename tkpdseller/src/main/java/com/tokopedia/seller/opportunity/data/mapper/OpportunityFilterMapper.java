@@ -1,5 +1,6 @@
 package com.tokopedia.seller.opportunity.data.mapper;
 
+import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.entity.replacement.OpportunityCategoryData;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.seller.opportunity.data.OpportunityCategoryModel;
@@ -29,13 +30,11 @@ public class OpportunityFilterMapper implements Func1<Response<TkpdResponse>, Op
                         && response.body().getErrorMessages().isEmpty()) {
                     model.setSuccess(false);
                 } else {
-                    model.setSuccess(false);
-                    model.setErrorMessage(response.body().getErrorMessages().get(0));
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 }
             }
         } else {
-            model.setSuccess(false);
-            model.setErrorCode(response.code());
+            throw new RuntimeException(String.valueOf(response.code()));
         }
         return model;
     }

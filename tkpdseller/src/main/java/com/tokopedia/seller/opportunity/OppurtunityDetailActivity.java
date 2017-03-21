@@ -11,7 +11,7 @@ import com.tokopedia.seller.opportunity.fragment.OppurtunityDetailFragment;
 import com.tokopedia.seller.opportunity.listener.OppurtunityDetailView;
 import com.tokopedia.seller.opportunity.presenter.OppurtunityDetailImpl;
 import com.tokopedia.seller.opportunity.presenter.OppurtunityDetailPresenter;
-import com.tokopedia.seller.opportunity.viewmodel.OpportunityItemViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
 
 /**
  * Created by hangnadi on 2/27/17.

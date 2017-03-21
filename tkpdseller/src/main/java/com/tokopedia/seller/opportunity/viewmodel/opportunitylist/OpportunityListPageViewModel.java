@@ -1,4 +1,8 @@
-package com.tokopedia.seller.opportunity.viewmodel;
+package com.tokopedia.seller.opportunity.viewmodel.opportunitylist;
+
+import com.tokopedia.seller.opportunity.viewmodel.CategoryViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.ShippingTypeViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.SortingTypeViewModel;
 
 import java.util.ArrayList;
 

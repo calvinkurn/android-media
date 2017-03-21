@@ -11,7 +11,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
-import com.tokopedia.seller.opportunity.viewmodel.OpportunityItemViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,14 +92,15 @@ public class OpportunityListAdapter extends BaseLinearRecyclerViewAdapter{
     }
 
     private void bindOpportunity(ViewHolder holder, final int position) {
-        ImageHandler.LoadImage(holder.productAvatar, list.get(position).getProductImage());
-        holder.productName.setText(list.get(position).getProductName());
-        holder.productPrice.setText(list.get(position).getProductPrice());
-        holder.deadline.setText(list.get(position).getDeadline());
+        ImageHandler.LoadImage(holder.productAvatar, list.get(position).getOrderProducts().get(0).getProductPicture());
+        holder.productName.setText(list.get(position).getOrderProducts().get(0).getProductName());
+        holder.productPrice.setText(list.get(position).getOrderDetail().getDetailOpenAmountIdr());
+        holder.deadline.setText(list.get(position).getOrderDeadline().getDeadlineProcess());
         holder.mainView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listener.goToDetail(list.get(position));
+
             }
         });
     }

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.opportunity.viewmodel;
+package com.tokopedia.seller.opportunity.viewmodel.opportunitylist;
 
 import com.tokopedia.core.database.model.PagingHandler;
 

@@ -6,6 +6,9 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.data.factory.ActionReplacementSourceFactory;
@@ -16,7 +19,7 @@ import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityUseCase;
 import com.tokopedia.seller.opportunity.domain.interactor.OpportunityListUseCase;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
 import com.tokopedia.seller.opportunity.domain.param.GetOpportunityListParam;
-import com.tokopedia.seller.opportunity.viewmodel.OpportunityListPageViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityListPageViewModel;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -73,31 +76,66 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
                     public void onError(Throwable e) {
                         if (e instanceof UnknownHostException) {
                             viewListener.onErrorGetOpportunity(viewListener.getString(R.string.msg_no_connection));
-                            CommonUtils.dumper("NISNIS UnknownHostException");
                         } else if (e instanceof SocketTimeoutException) {
                             viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_timeout));
-                            CommonUtils.dumper("NISNIS SocketTimeoutException");
                         } else if (e instanceof IOException) {
                             viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_internal_server));
-                            CommonUtils.dumper("NISNIS IOException");
+                        } else if (e.getLocalizedMessage() != null
+                                && e instanceof ErrorMessageException) {
+                            viewListener.onErrorGetOpportunity(e.getLocalizedMessage());
+                        } else if (e instanceof RuntimeException
+                                && e.getLocalizedMessage() != null &&
+                                e.getLocalizedMessage().length() <= 3) {
+                            new ErrorHandler(new ErrorListener() {
+                                @Override
+                                public void onUnknown() {
+                                    viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_unknown));
+                                }
+
+                                @Override
+                                public void onTimeout() {
+                                    viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_timeout));
+
+                                }
+
+                                @Override
+                                public void onServerError() {
+                                    viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_internal_server));
+
+                                }
+
+                                @Override
+                                public void onBadRequest() {
+                                    viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_bad_request));
+
+                                }
+
+                                @Override
+                                public void onForbidden() {
+                                    viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_forbidden_auth));
+
+                                }
+                            }, Integer.parseInt(e.toString()));
                         } else {
                             viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_unknown));
-                            CommonUtils.dumper("NISNIS Else");
                         }
                     }
 
                     @Override
                     public void onNext(OpportunityListPageViewModel viewModel) {
-                        CommonUtils.dumper("NISNIS + " + viewModel.toString());
-                        if(pagingHandler.getPage() == 1){
+                        if (pagingHandler.getPage() == 1) {
                             viewListener.getAdapter().getList().clear();
                         }
-
+                        pagingHandler.setHasNext(checkHasNext(viewModel.getOpportunityViewModel().getPagingHandlerModel()));
                         viewListener.onSuccessGetOpportunity(viewModel);
 
                     }
                 });
 
+    }
+
+    private boolean checkHasNext(PagingHandler.PagingHandlerModel pagingHandlerModel) {
+        return !pagingHandlerModel.getUriNext().equals("0") && !pagingHandlerModel.getUriNext().equals("");
     }
 
     private RequestParams getOpportunityParam() {
@@ -163,8 +201,7 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
     }
 
     private boolean hasNextPage() {
-        return true;
-//        return pagingHandler.CheckNextPage();
+        return pagingHandler.CheckNextPage();
     }
 
 

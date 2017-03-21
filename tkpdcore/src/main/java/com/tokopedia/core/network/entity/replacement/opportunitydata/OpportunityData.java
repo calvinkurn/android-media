@@ -4,6 +4,8 @@ package com.tokopedia.core.network.entity.replacement.opportunitydata;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class OpportunityData {
 
     @SerializedName("booking")
@@ -17,7 +19,7 @@ public class OpportunityData {
     private Paging paging;
     @SerializedName("list")
     @Expose
-    private java.util.List<List> list = null;
+    private List<OpportunityList> opportunityList = null;
 
     public Object getBooking() {
         return booking;
@@ -43,12 +45,12 @@ public class OpportunityData {
         this.paging = paging;
     }
 
-    public java.util.List<List> getList() {
-        return list;
+    public List<OpportunityList> getOpportunityList() {
+        return opportunityList;
     }
 
-    public void setList(java.util.List<List> list) {
-        this.list = list;
+    public void setOpportunityList(List<OpportunityList> opportunityList) {
+        this.opportunityList = opportunityList;
     }
 
 }

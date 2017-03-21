@@ -1,106 +1,41 @@
+package com.tokopedia.seller.opportunity.viewmodel.opportunitylist;
 
-package com.tokopedia.core.network.entity.replacement.opportunitydata;
+/**
+ * Created by nisie on 3/7/17.
+ */
+public class OrderDetailViewModel {
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-public class OrderDetail {
-
-    @SerializedName("detail_insurance_price")
-    @Expose
     private String detailInsurancePrice;
-    @SerializedName("detail_open_amount")
-    @Expose
     private String detailOpenAmount;
-    @SerializedName("detail_dropship_name")
-    @Expose
     private String detailDropshipName;
-    @SerializedName("detail_total_add_fee")
-    @Expose
     private String detailTotalAddFee;
-    @SerializedName("detail_partial_order")
-    @Expose
     private String detailPartialOrder;
-    @SerializedName("detail_quantity")
-    @Expose
     private int detailQuantity;
-    @SerializedName("detail_product_price_idr")
-    @Expose
     private String detailProductPriceIdr;
-    @SerializedName("detail_invoice")
-    @Expose
     private String detailInvoice;
-    @SerializedName("detail_shipping_price_idr")
-    @Expose
     private String detailShippingPriceIdr;
-    @SerializedName("detail_free_return")
-    @Expose
     private String detailFreeReturn;
-    @SerializedName("detail_pdf_path")
-    @Expose
     private String detailPdfPath;
-    @SerializedName("detail_free_return_msg")
-    @Expose
     private String detailFreeReturnMsg;
-    @SerializedName("detail_additional_fee_idr")
-    @Expose
     private String detailAdditionalFeeIdr;
-    @SerializedName("detail_product_price")
-    @Expose
     private String detailProductPrice;
-    @SerializedName("detail_preorder")
-    @Expose
-    private DetailPreorder detailPreorder;
-    @SerializedName("detail_cancel_request")
-    @Expose
-    private DetailCancelRequest detailCancelRequest;
-    @SerializedName("detail_force_insurance")
-    @Expose
+    private DetailPreorderViewModel detailPreorder;
+    private DetailCancelRequestViewModel detailCancelRequest;
     private String detailForceInsurance;
-    @SerializedName("detail_open_amount_idr")
-    @Expose
     private String detailOpenAmountIdr;
-    @SerializedName("detail_additional_fee")
-    @Expose
     private String detailAdditionalFee;
-    @SerializedName("detail_dropship_telp")
-    @Expose
     private String detailDropshipTelp;
-    @SerializedName("detail_order_id")
-    @Expose
     private int detailOrderId;
-    @SerializedName("detail_total_add_fee_idr")
-    @Expose
     private String detailTotalAddFeeIdr;
-    @SerializedName("detail_order_date")
-    @Expose
     private String detailOrderDate;
-    @SerializedName("detail_shipping_price")
-    @Expose
     private String detailShippingPrice;
-    @SerializedName("detail_pay_due_date")
-    @Expose
     private String detailPayDueDate;
-    @SerializedName("detail_total_weight")
-    @Expose
     private String detailTotalWeight;
-    @SerializedName("detail_insurance_price_idr")
-    @Expose
     private String detailInsurancePriceIdr;
-    @SerializedName("detail_pdf_uri")
-    @Expose
     private String detailPdfUri;
-    @SerializedName("detail_ship_ref_num")
-    @Expose
     private String detailShipRefNum;
-    @SerializedName("detail_print_address_uri")
-    @Expose
     private String detailPrintAddressUri;
-    @SerializedName("detail_pdf")
-    @Expose
     private String detailPdf;
-    @SerializedName("detail_order_status")
-    @Expose
     private int detailOrderStatus;
 
     public String getDetailInsurancePrice() {
@@ -215,19 +150,19 @@ public class OrderDetail {
         this.detailProductPrice = detailProductPrice;
     }
 
-    public DetailPreorder getDetailPreorder() {
+    public DetailPreorderViewModel getDetailPreorder() {
         return detailPreorder;
     }
 
-    public void setDetailPreorder(DetailPreorder detailPreorder) {
+    public void setDetailPreorder(DetailPreorderViewModel detailPreorder) {
         this.detailPreorder = detailPreorder;
     }
 
-    public DetailCancelRequest getDetailCancelRequest() {
+    public DetailCancelRequestViewModel getDetailCancelRequest() {
         return detailCancelRequest;
     }
 
-    public void setDetailCancelRequest(DetailCancelRequest detailCancelRequest) {
+    public void setDetailCancelRequest(DetailCancelRequestViewModel detailCancelRequest) {
         this.detailCancelRequest = detailCancelRequest;
     }
 
@@ -358,5 +293,4 @@ public class OrderDetail {
     public void setDetailOrderStatus(int detailOrderStatus) {
         this.detailOrderStatus = detailOrderStatus;
     }
-
 }

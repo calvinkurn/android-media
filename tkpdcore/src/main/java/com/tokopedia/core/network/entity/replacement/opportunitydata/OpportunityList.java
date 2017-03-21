@@ -3,80 +3,107 @@ package com.tokopedia.core.network.entity.replacement.opportunitydata;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 
-public class List {
+import java.util.List;
 
-    @SerializedName("order_JOB_status")
+public class OpportunityList {
+
+    @SerializedName("order_replacement_id")
     @Expose
-    private int orderJOBStatus;
-    @SerializedName("order_is_pickup")
+    private int orderReplacementId;
+    @SerializedName("order_order_id")
     @Expose
-    private int orderIsPickup;
-    @SerializedName("order_shipping_retry")
+    private int orderOrderId;
+    @SerializedName("order_payment_at")
     @Expose
-    private int orderShippingRetry;
+    private String orderPaymentAt;
+    @SerializedName("order_expired_at")
+    @Expose
+    private String orderExpiredAt;
+    @SerializedName("order_cashback_idr")
+    @Expose
+    private String orderCashbackIdr;
+    @SerializedName("order_cashback")
+    @Expose
+    private String orderCashback;
     @SerializedName("order_customer")
     @Expose
     private OrderCustomer orderCustomer;
     @SerializedName("order_payment")
     @Expose
-    private Object orderPayment;
+    private OrderPayment orderPayment;
     @SerializedName("order_detail")
     @Expose
     private OrderDetail orderDetail;
-    @SerializedName("order_auto_resi")
-    @Expose
-    private String orderAutoResi;
     @SerializedName("order_deadline")
     @Expose
     private OrderDeadline orderDeadline;
-    @SerializedName("order_auto_awb")
-    @Expose
-    private int orderAutoAwb;
     @SerializedName("order_shop")
     @Expose
     private OrderShop orderShop;
     @SerializedName("order_products")
     @Expose
-    private java.util.List<OrderProduct> orderProducts = null;
+    private List<OrderProduct> orderProducts = null;
     @SerializedName("order_shipment")
     @Expose
     private OrderShipment orderShipment;
     @SerializedName("order_last")
     @Expose
-    private Object orderLast;
+    private OrderLast orderLast;
     @SerializedName("order_history")
     @Expose
-    private Object orderHistory;
-    @SerializedName("order_JOB_detail")
-    @Expose
-    private Object orderJOBDetail;
+    private List<OrderHistory> orderHistory = null;
     @SerializedName("order_destination")
     @Expose
     private OrderDestination orderDestination;
 
-    public int getOrderJOBStatus() {
-        return orderJOBStatus;
+    public int getOrderReplacementId() {
+        return orderReplacementId;
     }
 
-    public void setOrderJOBStatus(int orderJOBStatus) {
-        this.orderJOBStatus = orderJOBStatus;
+    public void setOrderReplacementId(int orderReplacementId) {
+        this.orderReplacementId = orderReplacementId;
     }
 
-    public int getOrderIsPickup() {
-        return orderIsPickup;
+    public int getOrderOrderId() {
+        return orderOrderId;
     }
 
-    public void setOrderIsPickup(int orderIsPickup) {
-        this.orderIsPickup = orderIsPickup;
+    public void setOrderOrderId(int orderOrderId) {
+        this.orderOrderId = orderOrderId;
     }
 
-    public int getOrderShippingRetry() {
-        return orderShippingRetry;
+    public String getOrderPaymentAt() {
+        return orderPaymentAt;
     }
 
-    public void setOrderShippingRetry(int orderShippingRetry) {
-        this.orderShippingRetry = orderShippingRetry;
+    public void setOrderPaymentAt(String orderPaymentAt) {
+        this.orderPaymentAt = orderPaymentAt;
+    }
+
+    public String getOrderExpiredAt() {
+        return orderExpiredAt;
+    }
+
+    public void setOrderExpiredAt(String orderExpiredAt) {
+        this.orderExpiredAt = orderExpiredAt;
+    }
+
+    public String getOrderCashbackIdr() {
+        return orderCashbackIdr;
+    }
+
+    public void setOrderCashbackIdr(String orderCashbackIdr) {
+        this.orderCashbackIdr = orderCashbackIdr;
+    }
+
+    public String getOrderCashback() {
+        return orderCashback;
+    }
+
+    public void setOrderCashback(String orderCashback) {
+        this.orderCashback = orderCashback;
     }
 
     public OrderCustomer getOrderCustomer() {
@@ -87,11 +114,11 @@ public class List {
         this.orderCustomer = orderCustomer;
     }
 
-    public Object getOrderPayment() {
+    public OrderPayment getOrderPayment() {
         return orderPayment;
     }
 
-    public void setOrderPayment(Object orderPayment) {
+    public void setOrderPayment(OrderPayment orderPayment) {
         this.orderPayment = orderPayment;
     }
 
@@ -103,28 +130,12 @@ public class List {
         this.orderDetail = orderDetail;
     }
 
-    public String getOrderAutoResi() {
-        return orderAutoResi;
-    }
-
-    public void setOrderAutoResi(String orderAutoResi) {
-        this.orderAutoResi = orderAutoResi;
-    }
-
     public OrderDeadline getOrderDeadline() {
         return orderDeadline;
     }
 
     public void setOrderDeadline(OrderDeadline orderDeadline) {
         this.orderDeadline = orderDeadline;
-    }
-
-    public int getOrderAutoAwb() {
-        return orderAutoAwb;
-    }
-
-    public void setOrderAutoAwb(int orderAutoAwb) {
-        this.orderAutoAwb = orderAutoAwb;
     }
 
     public OrderShop getOrderShop() {
@@ -151,28 +162,20 @@ public class List {
         this.orderShipment = orderShipment;
     }
 
-    public Object getOrderLast() {
+    public OrderLast getOrderLast() {
         return orderLast;
     }
 
-    public void setOrderLast(Object orderLast) {
+    public void setOrderLast(OrderLast orderLast) {
         this.orderLast = orderLast;
     }
 
-    public Object getOrderHistory() {
+    public java.util.List<OrderHistory> getOrderHistory() {
         return orderHistory;
     }
 
-    public void setOrderHistory(Object orderHistory) {
+    public void setOrderHistory(java.util.List<OrderHistory> orderHistory) {
         this.orderHistory = orderHistory;
-    }
-
-    public Object getOrderJOBDetail() {
-        return orderJOBDetail;
-    }
-
-    public void setOrderJOBDetail(Object orderJOBDetail) {
-        this.orderJOBDetail = orderJOBDetail;
     }
 
     public OrderDestination getOrderDestination() {

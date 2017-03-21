@@ -5,26 +5,51 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.entity.replacement.opportunitydata.DetailCancelRequest;
+import com.tokopedia.core.network.entity.replacement.opportunitydata.DetailPreorder;
+import com.tokopedia.core.network.entity.replacement.opportunitydata.OpportunityData;
+import com.tokopedia.core.network.entity.replacement.opportunitydata.OpportunityList;
+import com.tokopedia.core.network.entity.replacement.opportunitydata.OrderCustomer;
+import com.tokopedia.core.network.entity.replacement.opportunitydata.OrderDeadline;
+import com.tokopedia.core.network.entity.replacement.opportunitydata.OrderDestination;
+import com.tokopedia.core.network.entity.replacement.opportunitydata.OrderDetail;
+import com.tokopedia.core.network.entity.replacement.opportunitydata.OrderLast;
+import com.tokopedia.core.network.entity.replacement.opportunitydata.OrderPayment;
+import com.tokopedia.core.network.entity.replacement.opportunitydata.OrderProduct;
+import com.tokopedia.core.network.entity.replacement.opportunitydata.OrderShipment;
+import com.tokopedia.core.network.entity.replacement.opportunitydata.OrderShop;
+import com.tokopedia.core.network.entity.replacement.opportunitydata.Paging;
+import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.opportunity.data.OpportunityCategoryModel;
 import com.tokopedia.seller.opportunity.data.OpportunityModel;
 import com.tokopedia.seller.opportunity.domain.ReplacementRepository;
 import com.tokopedia.seller.opportunity.viewmodel.CategoryViewModel;
-import com.tokopedia.seller.opportunity.viewmodel.OpportunityItemViewModel;
-import com.tokopedia.seller.opportunity.viewmodel.OpportunityListPageViewModel;
-import com.tokopedia.seller.opportunity.viewmodel.OpportunityViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.DetailCancelRequestViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.DetailPreorderViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityListPageViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.ShippingTypeViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.SortingTypeViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OrderCustomerViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OrderDeadlineViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OrderDestinationViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OrderDetailViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OrderHistoryViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OrderLastViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OrderPaymentViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OrderProductViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OrderShipmentViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OrderShopViewModel;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import rx.Observable;
-import rx.functions.Func1;
 import rx.functions.Func2;
-import rx.functions.Func3;
 
 /**
  * Created by nisie on 3/6/17.
@@ -65,24 +90,19 @@ public class OpportunityListUseCase extends UseCase<OpportunityListPageViewModel
 
     @Override
     public Observable<OpportunityListPageViewModel> createObservable(RequestParams params) {
-//        return Observable.zip(
-//                getOpportunityListObservable(params),
-//                getOpportunityFilterObservable(params),
-//                new Func2<OpportunityModel,
-//                        OpportunityCategoryModel,
-//                        OpportunityListPageViewModel>() {
-//                    @Override
-//                    public OpportunityListPageViewModel call(OpportunityModel opportunityModel,
-//                                                             OpportunityCategoryModel opportunityCategoryModel) {
-//                        return getCombinedPageData(opportunityModel, opportunityCategoryModel);
-//                    }
-//                }).onErrorReturn(new Func1<Throwable, OpportunityListPageViewModel>() {
-//            @Override
-//            public OpportunityListPageViewModel call(Throwable throwable) {
-//                return null;
-//            }
-//        });
-        return Observable.just(getCombinedPageData(new OpportunityModel(), new OpportunityCategoryModel()));
+        return Observable.zip(
+                getOpportunityListObservable(params),
+                getOpportunityFilterObservable(params),
+                new Func2<OpportunityModel,
+                        OpportunityCategoryModel,
+                        OpportunityListPageViewModel>() {
+                    @Override
+                    public OpportunityListPageViewModel call(OpportunityModel opportunityModel,
+                                                             OpportunityCategoryModel opportunityCategoryModel) {
+                        return getCombinedPageData(opportunityModel, opportunityCategoryModel);
+                    }
+                });
+//        return Observable.just(getCombinedPageData(new OpportunityModel(), new OpportunityCategoryModel()));
 
     }
 
@@ -150,26 +170,244 @@ public class OpportunityListUseCase extends UseCase<OpportunityListPageViewModel
     }
 
     private OpportunityViewModel getOpportunityViewModel(OpportunityModel opportunityModel) {
-        ArrayList<OpportunityItemViewModel> list = new ArrayList<>();
-        for (int i = 1; i <= 10; i++) {
-            list.add(new OpportunityItemViewModel("Produk " + i));
-        }
 
         OpportunityViewModel viewModel = new OpportunityViewModel();
-        viewModel.setListOpportunity(list);
-
+        viewModel.setListOpportunity(
+                getListOpportunityViewModel(opportunityModel.getOpportunityData().getOpportunityList()));
+        viewModel.setPagingHandlerModel(
+                getPagingModel(opportunityModel.getOpportunityData().getPaging()));
         return viewModel;
     }
 
+    private PagingHandler.PagingHandlerModel getPagingModel(Paging paging) {
+        PagingHandler.PagingHandlerModel pagingViewModel = new PagingHandler.PagingHandlerModel();
+        pagingViewModel.setUriNext(paging.getUriNext());
+        pagingViewModel.setUriPrevious(paging.getUriPrevious());
+        pagingViewModel.setStartIndex(1);
+        return pagingViewModel;
+    }
+
+    private ArrayList<OpportunityItemViewModel> getListOpportunityViewModel(List<OpportunityList> listOpportunity) {
+        ArrayList<OpportunityItemViewModel> list = new ArrayList<>();
+
+        for (OpportunityList opportunityItem : listOpportunity) {
+            OpportunityItemViewModel opportunityItemViewModel = new OpportunityItemViewModel();
+            opportunityItemViewModel.setOrderReplacementId(opportunityItem.getOrderReplacementId());
+            opportunityItemViewModel.setOrderOrderId(opportunityItem.getOrderOrderId());
+            opportunityItemViewModel.setOrderPaymentAt(opportunityItem.getOrderPaymentAt());
+            opportunityItemViewModel.setOrderExpiredAt(opportunityItem.getOrderExpiredAt());
+            opportunityItemViewModel.setOrderCashbackIdr(opportunityItem.getOrderCashbackIdr());
+            opportunityItemViewModel.setOrderCashback(opportunityItem.getOrderCashback());
+            opportunityItemViewModel.setOrderCustomer(getOrderCustomerViewModel(opportunityItem.getOrderCustomer()));
+            opportunityItemViewModel.setOrderPayment(getOrderPaymentViewModel(opportunityItem.getOrderPayment()));
+            opportunityItemViewModel.setOrderDetail(getOrderDetailViewModel(opportunityItem.getOrderDetail()));
+            opportunityItemViewModel.setOrderDeadline(getOrderDeadlineViewModel(opportunityItem.getOrderDeadline()));
+            opportunityItemViewModel.setOrderShop(getOrderShopViewModel(opportunityItem.getOrderShop()));
+            opportunityItemViewModel.setOrderProducts(getOrderProductsViewModel(opportunityItem.getOrderProducts()));
+            opportunityItemViewModel.setOrderShipment(getOrderShipmentViewModel(opportunityItem.getOrderShipment()));
+            opportunityItemViewModel.setOrderLast(getOrderLastViewModel(opportunityItem.getOrderLast()));
+            opportunityItemViewModel.setOrderHistory(getOrderHistoryViewModel(opportunityItem.getOrderHistory()));
+            opportunityItemViewModel.setOrderDestination(getOrderDestinationViewModel(opportunityItem.getOrderDestination()));
+            list.add(opportunityItemViewModel);
+        }
+        return list;
+    }
+
+    private OrderDestinationViewModel getOrderDestinationViewModel(OrderDestination orderDestination) {
+        OrderDestinationViewModel orderDestinationViewModel = new OrderDestinationViewModel();
+        orderDestinationViewModel.setReceiverPhoneIsTokopedia(orderDestination.getReceiverPhoneIsTokopedia());
+        orderDestinationViewModel.setReceiverName(orderDestination.getReceiverName());
+        orderDestinationViewModel.setAddressCountry(orderDestination.getAddressCountry());
+        orderDestinationViewModel.setAddressPostal(orderDestination.getAddressPostal());
+        orderDestinationViewModel.setAddressDistrict(orderDestination.getAddressDistrict());
+        orderDestinationViewModel.setReceiverPhone(orderDestination.getReceiverPhone());
+        orderDestinationViewModel.setAddressStreet(orderDestination.getAddressStreet());
+        orderDestinationViewModel.setAddressCity(orderDestination.getAddressCity());
+        orderDestinationViewModel.setAddressProvince(orderDestination.getAddressProvince());
+        return orderDestinationViewModel;
+    }
+
+    private List<OrderHistoryViewModel> getOrderHistoryViewModel(List<OrderHistory> listOrderHistory) {
+        List<OrderHistoryViewModel> list = new ArrayList<>();
+        for (OrderHistory orderHistory : listOrderHistory) {
+            OrderHistoryViewModel orderHistoryViewModel = new OrderHistoryViewModel();
+            orderHistoryViewModel.setHistoryStatusDate(orderHistory.getHistoryStatusDate());
+            orderHistoryViewModel.setHistoryStatusDateFull(orderHistory.getHistoryStatusDateFull());
+            orderHistoryViewModel.setHistoryOrderStatus(orderHistory.getHistoryOrderStatus());
+            orderHistoryViewModel.setHistoryComments(orderHistory.getHistoryComments());
+            orderHistoryViewModel.setHistoryActionBy(orderHistory.getHistoryActionBy());
+            orderHistoryViewModel.setHistoryBuyerStatus(orderHistory.getHistoryBuyerStatus());
+            orderHistoryViewModel.setHistorySellerStatus(orderHistory.getHistorySellerStatus());
+            list.add(orderHistoryViewModel);
+        }
+        return list;
+    }
+
+    private OrderLastViewModel getOrderLastViewModel(OrderLast orderLast) {
+        OrderLastViewModel orderLastViewModel = new OrderLastViewModel();
+        orderLastViewModel.setLastOrderId(orderLast.getLastOrderId());
+        orderLastViewModel.setLastShipmentId(orderLast.getLastShipmentId());
+        orderLastViewModel.setLastEstShippingLeft(String.valueOf(orderLast.getLastEstShippingLeft()));
+        orderLastViewModel.setLastOrderStatus(orderLast.getLastOrderStatus());
+        orderLastViewModel.setLastStatusDate(orderLast.getLastStatusDate());
+        orderLastViewModel.setLastPodCode(String.valueOf(orderLast.getLastPodCode()));
+        orderLastViewModel.setLastPodDesc(orderLast.getLastPodDesc());
+        orderLastViewModel.setLastShippingRefNum(orderLast.getLastShippingRefNum());
+        orderLastViewModel.setLastPodReceiver(String.valueOf(orderLast.getLastPodReceiver()));
+        orderLastViewModel.setLastComments(orderLast.getLastComments());
+        orderLastViewModel.setLastBuyerStatus(orderLast.getLastBuyerStatus());
+        orderLastViewModel.setLastStatusDateWib(orderLast.getLastStatusDateWib());
+        orderLastViewModel.setLastSellerStatus(orderLast.getLastSellerStatus());
+        return orderLastViewModel;
+    }
+
+    private OrderShipmentViewModel getOrderShipmentViewModel(OrderShipment orderShipment) {
+        OrderShipmentViewModel orderShipmentViewModel = new OrderShipmentViewModel();
+        orderShipmentViewModel.setShipmentLogo(orderShipment.getShipmentLogo());
+        orderShipmentViewModel.setShipmentPackageId(orderShipment.getShipmentPackageId());
+        orderShipmentViewModel.setShipmentId(orderShipment.getShipmentId());
+        orderShipmentViewModel.setShipmentProduct(orderShipment.getShipmentProduct());
+        orderShipmentViewModel.setShipmentName(orderShipment.getShipmentName());
+        orderShipmentViewModel.setSameDay(orderShipment.getSameDay());
+        return orderShipmentViewModel;
+    }
+
+    private List<OrderProductViewModel> getOrderProductsViewModel(List<OrderProduct> orderProducts) {
+        List<OrderProductViewModel> list = new ArrayList<>();
+        for (OrderProduct orderProduct : orderProducts) {
+            OrderProductViewModel orderProductViewModel = new OrderProductViewModel();
+            orderProductViewModel.setOrderDeliverQuantity(orderProduct.getOrderDeliverQuantity());
+            orderProductViewModel.setProductWeightUnit(orderProduct.getProductWeightUnit());
+            orderProductViewModel.setOrderDetailId(orderProduct.getOrderDetailId());
+            orderProductViewModel.setProductStatus(orderProduct.getProductStatus());
+            orderProductViewModel.setProductId(orderProduct.getProductId());
+            orderProductViewModel.setProductCurrentWeight(orderProduct.getProductCurrentWeight());
+            orderProductViewModel.setProductPicture(orderProduct.getProductPicture());
+            orderProductViewModel.setProductPrice(orderProduct.getProductPrice());
+            orderProductViewModel.setProductDescription(orderProduct.getProductDescription());
+            orderProductViewModel.setProductNormalPrice(orderProduct.getProductNormalPrice());
+            orderProductViewModel.setProductPriceCurrency(String.valueOf(orderProduct.getProductPriceCurrency()));
+            orderProductViewModel.setProductNotes(String.valueOf(orderProduct.getProductNotes()));
+            orderProductViewModel.setOrderSubtotalPrice(orderProduct.getOrderSubtotalPrice());
+            orderProductViewModel.setProductQuantity(orderProduct.getProductQuantity());
+            orderProductViewModel.setProductWeight(orderProduct.getProductWeight());
+            orderProductViewModel.setOrderSubtotalPriceIdr(orderProduct.getOrderSubtotalPriceIdr());
+            orderProductViewModel.setProductRejectQuantity(orderProduct.getProductRejectQuantity());
+            orderProductViewModel.setProductUrl(orderProduct.getProductUrl());
+            orderProductViewModel.setProductName(orderProduct.getProductName());
+            list.add(orderProductViewModel);
+        }
+        return list;
+    }
+
+    private OrderShopViewModel getOrderShopViewModel(OrderShop orderShop) {
+        OrderShopViewModel orderShopViewModel = new OrderShopViewModel();
+        orderShopViewModel.setAddressPostal(orderShop.getAddressPostal());
+        orderShopViewModel.setAddressDistrict(orderShop.getAddressDistrict());
+        orderShopViewModel.setAddressCity(orderShop.getAddressCity());
+        orderShopViewModel.setAddressStreet(orderShop.getAddressStreet());
+        orderShopViewModel.setShipperPhone(orderShop.getShipperPhone());
+        orderShopViewModel.setAddressCountry(String.valueOf(orderShop.getAddressCountry()));
+        orderShopViewModel.setAddressProvince(orderShop.getAddressProvince());
+        return orderShopViewModel;
+    }
+
+    private OrderDeadlineViewModel getOrderDeadlineViewModel(OrderDeadline orderDeadline) {
+        OrderDeadlineViewModel orderDeadlineViewModel = new OrderDeadlineViewModel();
+        orderDeadlineViewModel.setDeadlineProcessDayLeft(String.valueOf(orderDeadline.getDeadlineProcessDayLeft()));
+        orderDeadlineViewModel.setDeadlineProcessHourLeft(String.valueOf(orderDeadline.getDeadlineProcessHourLeft()));
+        orderDeadlineViewModel.setDeadlineProcess(orderDeadline.getDeadlineProcess());
+        orderDeadlineViewModel.setDeadlinePoProcessDayLeft(String.valueOf(orderDeadline.getDeadlinePoProcessDayLeft()));
+        orderDeadlineViewModel.setDeadlineShippingDayLeft(orderDeadlineViewModel.getDeadlineShippingDayLeft());
+        orderDeadlineViewModel.setDeadlineShippingHourLeft(orderDeadlineViewModel.getDeadlineShippingHourLeft());
+        orderDeadlineViewModel.setDeadlineShipping(orderDeadline.getDeadlineShipping());
+        orderDeadlineViewModel.setDeadlineFinishDayLeft(String.valueOf(orderDeadline.getDeadlineFinishDayLeft()));
+        orderDeadlineViewModel.setDeadlineFinishHourLeft(String.valueOf(orderDeadline.getDeadlineFinishHourLeft()));
+        orderDeadlineViewModel.setDeadlineFinishDate(String.valueOf(orderDeadline.getDeadlineFinishDate()));
+        orderDeadlineViewModel.setDeadlineColor(orderDeadline.getDeadlineColor());
+        return orderDeadlineViewModel;
+    }
+
+    private OrderDetailViewModel getOrderDetailViewModel(OrderDetail orderDetail) {
+        OrderDetailViewModel orderDetailViewModel = new OrderDetailViewModel();
+        orderDetailViewModel.setDetailInsurancePrice(orderDetail.getDetailInsurancePrice());
+        orderDetailViewModel.setDetailOpenAmount(orderDetail.getDetailOpenAmount());
+        orderDetailViewModel.setDetailDropshipName(String.valueOf(orderDetail.getDetailDropshipName()));
+        orderDetailViewModel.setDetailTotalAddFee(String.valueOf(orderDetail.getDetailTotalAddFee()));
+        orderDetailViewModel.setDetailPartialOrder(orderDetail.getDetailPartialOrder());
+        orderDetailViewModel.setDetailQuantity(orderDetail.getDetailQuantity());
+        orderDetailViewModel.setDetailProductPriceIdr(orderDetail.getDetailProductPriceIdr());
+        orderDetailViewModel.setDetailInvoice(orderDetail.getDetailInvoice());
+        orderDetailViewModel.setDetailShippingPriceIdr(orderDetail.getDetailShippingPriceIdr());
+        orderDetailViewModel.setDetailFreeReturn(String.valueOf(orderDetail.getDetailFreeReturn()));
+        orderDetailViewModel.setDetailPdfPath(orderDetail.getDetailPdfPath());
+        orderDetailViewModel.setDetailFreeReturnMsg(orderDetail.getDetailFreeReturnMsg());
+        orderDetailViewModel.setDetailAdditionalFeeIdr(orderDetail.getDetailAdditionalFeeIdr());
+        orderDetailViewModel.setDetailProductPrice(orderDetail.getDetailProductPrice());
+        orderDetailViewModel.setDetailPreorder(getDetailPreorderViewModel(orderDetail.getDetailPreorder()));
+        orderDetailViewModel.setDetailCancelRequest(getDetailCancelRequestViewModel(orderDetail.getDetailCancelRequest()));
+        orderDetailViewModel.setDetailForceInsurance(String.valueOf(orderDetail.getDetailForceInsurance()));
+        orderDetailViewModel.setDetailOpenAmountIdr(orderDetail.getDetailOpenAmountIdr());
+        orderDetailViewModel.setDetailAdditionalFee(String.valueOf(orderDetail.getDetailAdditionalFee()));
+        orderDetailViewModel.setDetailDropshipTelp(String.valueOf(orderDetail.getDetailDropshipTelp()));
+        orderDetailViewModel.setDetailOrderId(orderDetail.getDetailOrderId());
+        orderDetailViewModel.setDetailTotalAddFeeIdr(orderDetail.getDetailTotalAddFeeIdr());
+        orderDetailViewModel.setDetailOrderDate(orderDetail.getDetailOrderDate());
+        orderDetailViewModel.setDetailShippingPrice(orderDetail.getDetailShippingPrice());
+        orderDetailViewModel.setDetailPayDueDate(orderDetail.getDetailPayDueDate());
+        orderDetailViewModel.setDetailTotalWeight(String.valueOf(orderDetail.getDetailTotalWeight()));
+        orderDetailViewModel.setDetailInsurancePriceIdr(orderDetail.getDetailInsurancePriceIdr());
+        orderDetailViewModel.setDetailPdfUri(orderDetail.getDetailPdfUri());
+        orderDetailViewModel.setDetailShipRefNum(orderDetail.getDetailShipRefNum());
+        orderDetailViewModel.setDetailPrintAddressUri(orderDetail.getDetailPrintAddressUri());
+        orderDetailViewModel.setDetailPdf(orderDetail.getDetailPdf());
+        orderDetailViewModel.setDetailOrderStatus(orderDetail.getDetailOrderStatus());
+        return orderDetailViewModel;
+    }
+
+    private DetailCancelRequestViewModel getDetailCancelRequestViewModel(DetailCancelRequest detailCancelRequest) {
+        DetailCancelRequestViewModel detailCancelRequestViewModel = new DetailCancelRequestViewModel();
+        detailCancelRequestViewModel.setCancelRequest(detailCancelRequest.getCancelRequest());
+        detailCancelRequestViewModel.setReason(detailCancelRequest.getReason());
+        detailCancelRequestViewModel.setReasonTime(detailCancelRequest.getReasonTime());
+        return detailCancelRequestViewModel;
+    }
+
+    private DetailPreorderViewModel getDetailPreorderViewModel(DetailPreorder detailPreorder) {
+        DetailPreorderViewModel detailPreorderViewModel = new DetailPreorderViewModel();
+        detailPreorderViewModel.setPreorderStatus(detailPreorder.getPreorderStatus());
+        detailPreorderViewModel.setPreorderProcessTimeType(String.valueOf(detailPreorder.getPreorderProcessTimeType()));
+        detailPreorderViewModel.setPreorderProcessTimeTypeString(String.valueOf(detailPreorder.getPreorderProcessTimeTypeString()));
+        detailPreorderViewModel.setPreorderProcessTime(String.valueOf(detailPreorder.getPreorderProcessTime()));
+        return detailPreorderViewModel;
+    }
+
+    private OrderPaymentViewModel getOrderPaymentViewModel(OrderPayment orderPayment) {
+        OrderPaymentViewModel orderPaymentViewModel = new OrderPaymentViewModel();
+        orderPaymentViewModel.setPaymentProcessDueDate(orderPayment.getPaymentProcessDueDate());
+        orderPaymentViewModel.setPaymentKomisi(orderPayment.getPaymentKomisi());
+        orderPaymentViewModel.setPaymentVerifyDate(orderPayment.getPaymentVerifyDate());
+        orderPaymentViewModel.setPaymentShippingDueDate(orderPayment.getPaymentShippingDueDate());
+        orderPaymentViewModel.setPaymentProcessDayLeft(orderPayment.getPaymentProcessDueDate());
+        orderPaymentViewModel.setPaymentGatewayId(orderPayment.getPaymentGatewayId());
+        orderPaymentViewModel.setPaymentShippingDayLeft(String.valueOf(orderPayment.getPaymentShippingDayLeft()));
+        orderPaymentViewModel.setPaymentGatewayName(orderPayment.getPaymentGatewayName());
+        return orderPaymentViewModel;
+    }
+
+    private OrderCustomerViewModel getOrderCustomerViewModel(OrderCustomer orderCustomer) {
+        OrderCustomerViewModel orderCustomerViewModel = new OrderCustomerViewModel();
+        orderCustomerViewModel.setCustomerId(orderCustomer.getCustomerId());
+        orderCustomerViewModel.setCustomerImage(orderCustomer.getCustomerImage());
+        orderCustomerViewModel.setCustomerName(orderCustomer.getCustomerName());
+        orderCustomerViewModel.setCustomerUrl(orderCustomer.getCustomerUrl());
+        return orderCustomerViewModel;
+    }
+
     private Observable<OpportunityCategoryModel> getOpportunityFilterObservable(RequestParams requestParams) {
-        return getOpportunityFilterUseCase.createObservable(getOpportunityFilterParam(requestParams))
-                .onErrorReturn(new Func1<Throwable, OpportunityCategoryModel>() {
-            @Override
-            public OpportunityCategoryModel call(Throwable throwable) {
-                throwable.printStackTrace();
-                return OpportunityCategoryModel.createEmptyModel();
-            }
-        });
+//        return getOpportunityFilterUseCase.createObservable(
+//                getOpportunityFilterParam(requestParams));
+        return Observable.just(new OpportunityCategoryModel());
 
     }
 
@@ -192,14 +430,7 @@ public class OpportunityListUseCase extends UseCase<OpportunityListPageViewModel
     private Observable<OpportunityModel> getOpportunityListObservable(RequestParams requestParams) {
 
         return getOpportunityUseCase
-                .createObservable(getOpportunityListParam(requestParams))
-                .onErrorReturn(new Func1<Throwable, OpportunityModel>() {
-                    @Override
-                    public OpportunityModel call(Throwable throwable) {
-                        throwable.printStackTrace();
-                        return OpportunityModel.createEmptyModel();
-                    }
-                });
+                .createObservable(getOpportunityListParam(requestParams));
     }
 
     private RequestParams getOpportunityListParam(RequestParams requestParams) {
