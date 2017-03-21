@@ -539,7 +539,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         String source = ((BrowseProductActivity) activity).getBrowseProductActivityModel().getSource();
         if (BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP.equals(source)) {
             mSuggestionFragment.setCurrentTab(SearchMainFragment.PAGER_POSITION_SHOP);
-        } else if (BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT.equals(source)) {
+        } else {
             mSuggestionFragment.setCurrentTab(SearchMainFragment.PAGER_POSITION_PRODUCT);
         }
         mIsSearchOpen = true;
