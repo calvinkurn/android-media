@@ -82,5 +82,4 @@ public interface IDigitalCartView extends IBaseView {
 
     String getIdemPotencyKey();
 
-
 }

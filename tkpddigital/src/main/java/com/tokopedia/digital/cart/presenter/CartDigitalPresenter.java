@@ -65,6 +65,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         );
     }
 
+
     @Override
     public void processCheckVoucher() {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
@@ -250,6 +251,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
             }
         };
     }
+
 
     @NonNull
     private Subscriber<CartDigitalInfoData> getSubscriberCartInfo() {

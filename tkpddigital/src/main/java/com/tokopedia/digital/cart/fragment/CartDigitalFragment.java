@@ -274,6 +274,13 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 cartDigitalInfoData.getAttributes().getPrice(),
                 cartDigitalInfoData.getAttributes().getPrice()
         );
+        buildCheckoutData(cartDigitalInfoData);
+        if (passData.getInstantCheckout().equals("1")) {
+            presenter.processToCheckout();
+        }
+    }
+
+    private void buildCheckoutData(CartDigitalInfoData cartDigitalInfoData) {
         checkoutDataBuilder.accessToken(getAccountToken());
         checkoutDataBuilder.walletRefreshToken(getWalletRefreshToken());
         checkoutDataBuilder.ipAddress(DeviceUtil.getLocalIpAddress());
