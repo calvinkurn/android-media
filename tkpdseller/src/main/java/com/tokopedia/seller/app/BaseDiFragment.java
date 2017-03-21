@@ -6,13 +6,17 @@ import android.os.Bundle;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.HasComponent;
 
+import javax.inject.Inject;
+
 /**
  * Created by sebastianuskh on 3/17/17.
  */
 
-public abstract class BaseDiFragment<C, P extends BaseDiPresenter> extends BasePresenterFragment<P> {
+public abstract class BaseDiFragment<C extends BaseFragmentComponent, P extends BaseDiPresenter> extends BasePresenterFragment<P> {
 
     protected C component;
+    @Inject
+    protected P diPresenter;
 
     @SuppressWarnings("unchecked")
     protected <CA> CA getComponent(Class<CA> componentType) {
@@ -22,7 +26,8 @@ public abstract class BaseDiFragment<C, P extends BaseDiPresenter> extends BaseP
     @Override
     protected void initialPresenter() {
         component = initInjection();
-        presenter = getPresenter();
+        component.inject(this);
+        presenter = diPresenter;
     }
 
     @Override
@@ -78,7 +83,5 @@ public abstract class BaseDiFragment<C, P extends BaseDiPresenter> extends BaseP
     }
 
     protected abstract C initInjection();
-
-    protected abstract P getPresenter();
 
 }

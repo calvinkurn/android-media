@@ -4,6 +4,8 @@ import com.tokopedia.core.network.apiservices.shop.apis.model.openshopdistrict.O
 import com.tokopedia.seller.shop.setting.data.source.cache.DistrictDataCache;
 import com.tokopedia.seller.shop.setting.data.source.cloud.DistrictDataCloud;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -15,6 +17,7 @@ public class DistrictDataSource {
     private final DistrictDataCache districtDataCache;
     private final DistrictDataCloud districtDataCloud;
 
+    @Inject
     public DistrictDataSource(DistrictDataCache districtDataCache, DistrictDataCloud districtDataCloud) {
         this.districtDataCache = districtDataCache;
         this.districtDataCloud = districtDataCloud;

@@ -46,12 +46,6 @@ public class ShopSettingModule extends BaseActivityModule {
 
     @Provides
     @ShopSettingScope
-    public DistrictDataSource getDistrictDataSource(DistrictDataCache districtDataCache, DistrictDataCloud districtDataCloud) {
-        return new DistrictDataSource(districtDataCache, districtDataCloud);
-    }
-
-    @Provides
-    @ShopSettingScope
     public DistrictDataCache provideDistrictDataCache() {
         return new DistrictDataCache();
     }
