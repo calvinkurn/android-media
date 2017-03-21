@@ -121,6 +121,13 @@
         <activity
             android:name=".shop.ShopEditorActivity"
             android:label="@string/shop_setting"
+            android:exported="true"
+            android:theme="@style/ShopAppTheme" />
+
+        <activity
+            android:name=".shop.open.view.activity.ShopOpenDomainActivity"
+            android:label="@string/title_open_shop"
+            android:exported="true"
             android:theme="@style/ShopAppTheme" />
 
         <activity
