@@ -150,8 +150,8 @@ public class InboxReputationFormFragmentPresenterImpl
                     postReview(getActReviewPass());
                     break;
             }
-            Integer accuracy = Integer.valueOf(viewListener.getAccuracyRating());
-            Integer quality = Integer.valueOf(viewListener.getQualityRating());
+            int accuracy = (int) Float.parseFloat(viewListener.getAccuracyRating());
+            int quality = (int) Float.parseFloat(viewListener.getQualityRating());
             UnifyTracking.eventLocaGoodReview(accuracy, quality);
         }
     }
