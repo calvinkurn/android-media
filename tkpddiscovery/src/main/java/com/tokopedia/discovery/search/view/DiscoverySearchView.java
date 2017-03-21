@@ -80,6 +80,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private Drawable suggestionIcon;
     private boolean copyText = false;
     private Context mContext;
+    private String lastQuery;
 
     public DiscoverySearchView(Context context) {
         this(context, null);
@@ -521,7 +522,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         }
 
         //Request Focus
-        mSearchSrcTextView.setText(null);
+        mSearchSrcTextView.setText(lastQuery);
         mSearchSrcTextView.requestFocus();
         bringToFront();
         if (animate) {
@@ -595,6 +596,10 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             mSearchViewListener.onSearchViewClosed();
         }
         mIsSearchOpen = false;
+    }
+
+    public void setLastQuery(String lastQuery) {
+        this.lastQuery = lastQuery;
     }
 
     /**

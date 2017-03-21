@@ -16,8 +16,8 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
  * Created by alvarisi on 1/16/17.
  */
 
-public class ResCenterBuyerReplyNotification extends BaseNotification {
-    public ResCenterBuyerReplyNotification(Context context) {
+public class ResCenterSellerReplyNotification extends BaseNotification {
+    public ResCenterSellerReplyNotification(Context context) {
         super(context);
     }
 
@@ -32,8 +32,7 @@ public class ResCenterBuyerReplyNotification extends BaseNotification {
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         Bundle bundle = new Bundle();
         bundle.putInt(InboxRouter.EXTRA_STATE_TAB_POSITION,
-                TkpdState.InboxResCenter.RESO_ALL);
-        mNotificationPass.extraData = bundle;
+                TkpdState.InboxResCenter.RESO_MINE);
         mNotificationPass.mIntent.putExtras(bundle);
     }
 }

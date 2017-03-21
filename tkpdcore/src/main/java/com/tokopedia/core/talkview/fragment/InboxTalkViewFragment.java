@@ -96,16 +96,4 @@ public class InboxTalkViewFragment extends TalkViewFragment{
         detail.setCommentShopName(SessionHandler.getShopDomain(context));
         items.add(detail);
     }
-
-    @Override
-    protected void showMainLoading() {
-        progressBar.setVisibility(View.VISIBLE);
-        contentLv.setVisibility(View.GONE);
-    }
-
-    @Override
-    protected void hideMainLoading() {
-        progressBar.setVisibility(View.GONE);
-        contentLv.setVisibility(View.VISIBLE);
-    }
 }

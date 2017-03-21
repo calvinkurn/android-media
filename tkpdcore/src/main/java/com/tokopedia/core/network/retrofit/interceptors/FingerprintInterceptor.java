@@ -1,6 +1,7 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -26,14 +27,10 @@ public class FingerprintInterceptor implements Interceptor {
 
     private Request.Builder addFingerPrint(Request.Builder newRequest) {
         SessionHandler session = new SessionHandler(MainApplication.getAppContext());
-
+        newRequest.addHeader("Tkpd-SessionId", FCMCacheManager.getRegistrationIdWithTemp(MainApplication.getAppContext()));
         if (session.isV4Login()) {
-            String fingerprint = GCMHandler.getRegistrationId(MainApplication.getAppContext()) + "~"
-                    + session.getLoginID();
-
-            newRequest.addHeader("fingerprint", fingerprint);
+            newRequest.addHeader("Tkpd-UserId", session.getLoginID());
         }
-
         return newRequest;
     }
 }

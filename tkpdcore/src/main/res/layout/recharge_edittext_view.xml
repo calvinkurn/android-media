@@ -17,7 +17,7 @@
             android:id="@+id/pulsa_frameLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.94"
+            android:layout_weight="0.92"
             android:visibility="visible">
 
             <AutoCompleteTextView
@@ -27,6 +27,7 @@
                 android:focusableInTouchMode="true"
                 android:inputType="numberDecimal"
                 android:maxLength="14"
+                android:textSize="@dimen/fonts"
                 android:popupBackground="@color/white"
                 android:textColorHint="@color/grey_400"
                 android:maxLines="1" />
@@ -36,7 +37,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginBottom="@dimen/margin_vs">
 
                 <ImageView
                     android:id="@+id/imgOperator"
@@ -45,7 +47,7 @@
                     android:layout_gravity="end|center_vertical"
                     android:layout_marginRight="@dimen/margin_vs"
                     android:contentDescription="@string/app_name"
-                    tools:src="@drawable/ic_launcher" />
+                    tools:src="@drawable/ic_close_24dp" />
 
                 <Button
                     android:id="@+id/btnClear"
@@ -64,7 +66,7 @@
             android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="2dp"
             android:layout_marginRight="2dp"
-            android:layout_weight="0.06" />
+            android:layout_weight="0.08" />
 
     </LinearLayout>
 </merge>

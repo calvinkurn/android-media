@@ -65,6 +65,9 @@
             android:name="GTM_ID"
             android:value="@string/key_gtm" />
         <meta-data
+            android:name="GA_ID"
+            android:value="@string/key_ga" />
+        <meta-data
             android:name="APPSFLYER_KEY"
             android:value="@string/key_appsflyer" />
 
@@ -84,13 +87,6 @@
             android:authorities="com.facebook.app.FacebookContentProvider411083689235522"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true"/>
-
-        <service
-            android:name=".fcm.SellerMessagingService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
 
     </application>
 

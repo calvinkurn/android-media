@@ -25,6 +25,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author by Herdi_WORK on 13.12.16.
@@ -256,6 +257,17 @@ public class FCMCacheManager {
         return cache.getString("gcm_id", "");
     }
 
+    public static String getRegistrationIdWithTemp(Context context) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
+        if (cache.getString("gcm_id", "").equals("")) {
+            String tempID = getTempFcmId();
+            cache.putString("gcm_id", tempID);
+            cache.applyEditor();
+            return tempID;
+        }
+        return cache.getString("gcm_id", "");
+    }
+
     static void clearRegistrationId(Context context) {
         LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         cache.putString("gcm_id", null);
@@ -330,5 +342,9 @@ public class FCMCacheManager {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private static String getTempFcmId() {
+        return UUID.randomUUID().toString();
     }
 }
