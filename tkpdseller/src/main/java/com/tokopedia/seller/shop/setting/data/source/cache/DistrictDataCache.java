@@ -1,5 +1,7 @@
 package com.tokopedia.seller.shop.setting.data.source.cache;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -7,6 +9,11 @@ import rx.Observable;
  */
 
 public class DistrictDataCache {
+
+    @Inject
+    public DistrictDataCache() {
+    }
+
     public Observable<Boolean> fetchDistrictData() {
         return null;
     }
