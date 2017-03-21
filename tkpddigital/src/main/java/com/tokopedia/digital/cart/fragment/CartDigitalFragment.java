@@ -50,6 +50,7 @@ import com.tokopedia.payment.model.PaymentPassData;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 2/21/17.
@@ -92,6 +93,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     private DigitalCheckoutPassData passData;
     private CartDigitalInfoData cartDigitalInfoDataState;
     private VoucherDigital voucherDigitalState;
+    private CompositeSubscription compositeSubscription;
 
     public static Fragment newInstance(Parcelable passData) {
         CartDigitalFragment cartDigitalFragment = new CartDigitalFragment();
@@ -145,8 +147,9 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     protected void initialPresenter() {
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
         ICartMapperData cartMapperData = new CartMapperData();
+        if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
         presenter = new CartDigitalPresenter(this, new CartDigitalInteractor(
-                new CartDigitalRepository(digitalEndpointService, cartMapperData),
+                compositeSubscription, new CartDigitalRepository(digitalEndpointService, cartMapperData),
                 new VoucherDigitalRepository(digitalEndpointService, cartMapperData),
                 new CheckoutRepository(digitalEndpointService, cartMapperData)
         ));
@@ -550,6 +553,13 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     break;
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
+            compositeSubscription.unsubscribe();
     }
 
     public interface ActionListener {
