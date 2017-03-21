@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.tkpd.library.utils.AnalyticsLog;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.MethodChecker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,6 +29,8 @@ import okio.Buffer;
  */
 public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String TAG = TkpdAuthInterceptor.class.getSimpleName();
+    private static final int ERROR_FORBIDDEN_REQUEST = 403;
+    private static final String ACTION_TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
     private final String authKey;
 
     public TkpdAuthInterceptor(String authKey) {
@@ -56,11 +60,27 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
             showServerErrorSnackbar();
             sendErrorNetworkAnalytics(response);
+        } else if (isForbiddenRequest(response)
+                && isTimezoneNotAutomatic()) {
+            showTimezoneErrorSnackbar();
         }
 
         return createNewResponse(response, bodyResponse);
     }
 
+    private void showTimezoneErrorSnackbar() {
+        Intent intent = new Intent();
+        intent.setAction(ACTION_TIMEZONE_ERROR);
+        MainApplication.getAppContext().sendBroadcast(intent);
+    }
+
+    private boolean isTimezoneNotAutomatic() {
+        return MethodChecker.isTimezoneNotAutomatic();
+    }
+
+    private boolean isForbiddenRequest(Response response) {
+        return response.code() == ERROR_FORBIDDEN_REQUEST;
+    }
 
     protected void generateHmacAuthRequest(Request originRequest, Request.Builder newRequest)
             throws IOException {

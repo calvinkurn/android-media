@@ -225,7 +225,7 @@
         <item name="android:layout_marginBottom">@dimen/top_ads_textinput_margin_offset</item>
         <item name="android:theme">@style/TextInputLayoutColorLine</item>
     </style>
-    
+
     <style name="TextInputLayoutColorLine">
         <item name="colorControlNormal">@color/colorGray</item>
         <item name="colorControlActivated">@color/font_top_ads_green</item>
@@ -276,4 +276,34 @@
     </style>
 
 
+
+    <style name="ShopOpenStepperBottomHiddenStyle" parent="MSBottomNavigation">
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="ShopOpenStepperTabContainerStyle" parent="MSStepTabContainer">
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="ShopOpenTabsContainerStyle" parent="MSStepTabsContainer">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="ShopOpenStepTabTitleStyle" parent="MSStepTabTitle">
+        <item name="android:layout_marginLeft">0dp</item>
+        <item name="android:layout_marginStart">0dp</item>
+    </style>
+
+    <style name="ShopOpenStepperStyle" parent="MSDefaultStepperLayoutTheme">
+        <item name="ms_bottomNavigationStyle">@style/ShopOpenStepperBottomHiddenStyle</item>
+        <item name="ms_stepTabContainerStyle">@style/ShopOpenStepperTabContainerStyle</item>
+        <item name="ms_tabsContainerStyle">@style/ShopOpenTabsContainerStyle</item>
+        <item name="ms_stepTabTitleStyle">@style/ShopOpenStepTabTitleStyle</item>
+    </style>
+
+    <style name="ShopOpenCounterTextInputStyle" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/black_thirty_eight_percent</item>
+        <item name="android:textSize">12sp</item>
+        <!--other parameters that you want to change -->
+    </style>
 </resources>

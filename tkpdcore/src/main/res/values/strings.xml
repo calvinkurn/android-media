@@ -22,10 +22,15 @@
     <string name="title_share">Bagikan</string>
     <string name="title_new_talk">Diskusi Produk baru</string>
     <string name="title_new_review">Ulasan baru</string>
+    <string name="title_review_edited">Ulasan diperbarui</string>
     <string name="title_new_ticket">Tiket Anda telah dibalas</string>
     <string name="title_new_rescenter">Notifikasi Pusat Resolusi</string>
     <string name="title_new_order">Pesanan baru</string>
     <string name="title_new_notif_general">Notifikasi baru dari Tokopedia</string>
+    <string name="title_transaction_cancel">Transaksi Dibatalkan</string>
+    <string name="title_transaction_update_resi">Perbarui Resi</string>
+    <string name="title_transaction_order_delivered">Produk Terkirim</string>
+    <string name="title_transaction_order_finished">Transaksi Selesai</string>
     <string name="msg_new_order">Toko Anda mendapat pesanan baru, mohon diproses</string>
     <string name="reorder">Transaksi dibatalkan</string>
     <string name="title_sales">Penjualan</string>
@@ -313,20 +318,24 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_sold_out">Gudangkan</string>
     <string name="message_share_category">Klik link ini untuk menemukan produk yang baru saya temukan di Tokopedia \n</string>
     <string name="title_to_etalase">Ke etalase</string>
-    <string name="toast_promo_error">        Anda belum dapat menggunakan fitur Promo pada saat ini.\n
+    <string name="toast_promo_error1">        Anda belum dapat menggunakan fitur Promo pada saat ini.\n
 		Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\n
 		Promo masih aktif untuk produk:\n</string>
+    <string name="toast_promo_error2">Ingin bebas promosikan produk Anda ? Yuk, pakai TopAds sekarang juga!</string>
     <string name="toast_promo_error_cache">        Anda belum dapat menggunakan fitur Promo pada saat ini.\n
 		Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\n
         Silahkan coba kembali dalam
 		</string>
     <string name="toast_success_promo1">Promo pada produk</string>
     <string name="toast_success_promo2">telah berhasil.
-Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
+Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi belum maksimal? Yuk,pakai TopAds untuk tingkatkan penjualan Anda!</string>
     <string name="tx_success_from">Transaksi Sukses dari </string>
     <string name="tx_title">Transaksi</string>
     <string name="title_product_video">Video Produk</string>
     <string name="success_share_product">Sukses membagikan produk</string>
+    <string name="error_share_product">Gagal membagikan produk</string>
+    <string name="success_share_review">Sukses membagikan ulasan</string>
+    <string name="error_share_review">Gagal membagikan ulasan</string>
     <!-- Strings related product info -->
 
 
@@ -340,7 +349,6 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="title_ship_speed">Kecepatan</string>
     <string name="prompt_new_comment">Tulis Komentar Anda</string>
     <string name="title_seller">Penjual</string>
-    <string name="title_cancel">Batal</string>
     <string name="title_reason_report">Alasan</string>
     <string name="action_report">Laporkan</string>
     <string name="action_follow">Ikuti</string>
@@ -408,12 +416,12 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <!-- Strings related manage prod -->
     <string name="title_edit_prod">Ubah</string>
     <string name="title_copy_prod">Salin</string>
-    <string name="title_edit_price">Ubah Harga</string>
+    <string name="title_edit_price">Ganti Harga</string>
     <string name="title_sort_but">Urutkan</string>
     <string name="title_filter_but">Filter</string>
-    <string name="title_update_etalase">Ubah Etalase</string>
-    <string name="title_update_categories">Ubah Kategori</string>
-    <string name="title_update_insurance">Ubah Asuransi</string>
+    <string name="title_update_etalase">Ganti Etalase</string>
+    <string name="title_update_categories">Ganti Kategori</string>
+    <string name="title_update_insurance">Ganti Asuransi</string>
     <string name="title_delete">Hapus</string>
     <string name="action_edit">Ubah</string>
     <string name="title_confirm">Konfirmasi</string>
@@ -584,6 +592,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.</string>
     <string name="title_post_code">Kode Pos</string>
     <string name="title_receiver_phone_no">Nomor Telepon Penerima</string>
     <string name="title_save">Simpan</string>
+    <string name="title_cancel">Batal</string>
     <string name="title_province">Provinsi</string>
     <string name="title_regency">Kabupaten</string>
     <string name="title_sub_district">Kecamatan</string>
@@ -1003,6 +1012,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="dialog_save_preview_product_image">Simpan gambar ?</string>
     <string name="title_follow">mengikuti</string>
     <string name="title_unfollow">berhenti mengikuti</string>
+    <string name="title_tokopedia_hashtag">#DimulaiDariTokopedia</string>
 
 
     <!-- error string -->
@@ -1113,7 +1123,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_sender_name">Nama Pengirim (Dropshipper)</string>
     <string name="title_sender_phone">No. Telp pengirim (Dropshipper)</string>
     <string name="msg_under_maintenance">Tokopedia sedang maintenance, silahkan coba beberapa saat lagi</string>
-    <string name="title_otp">Masukkan Kode Verifikasi</string>
+    <string name="title_otp">Masukkan Kode Verifikasi :</string>
     <string name="title_otp_email">Kirim Email Verifikasi</string>
     <string name="title_otp_phone">Kirim SMS Verifikasi</string>
     <string name="send_otp">Kirim Kode Verifikasi</string>
@@ -1413,6 +1423,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_loyalty_points">TopPoints terpakai</string>
     <string name="loyalty_points_info">TopPoints</string>
     <string name="toko_cash_info">TokoCash</string>
+    <string name="toko_cash_activation">Aktivasi</string>
     <string name="msg_lucky_merchant">Anda berhasil menjadi Lucky Merchant</string>
     <string name="msg_lucky_merchant_detail">Kesempatan mendapatkan pesanan lebih banyak setiap harinya</string>
     <string name="msg_lucky_valid">Berlaku sampai 30 hari kedepan</string>
@@ -1873,6 +1884,7 @@ di Tokopedia Sekarang!</string>
     <string name="title_phone_optional">Nomor Telepon (Opsional)</string>
     <string name="error_attachment">Mohon tambahkan lampiran.</string>
     <string name="action_send_otp_with_call">Atau kirim Kode Verifikasi melalui telepon</string>
+    <string name="action_send_otp_with_call_2">Atau lewat telepon</string>
     <string name="content_change_number">Jika nomor Anda sudah tidak aktif, silahkan Klik disini</string>
     <string name="title_resend_otp">Kirim ulang Kode Verifikasi</string>
 
@@ -1891,8 +1903,11 @@ di Tokopedia Sekarang!</string>
     <string name="_2">2</string>
     <string name="_1">1</string>
     <string name="see_all">Lihat Semua</string>
-
+    <string name="search_hint">Cari produk atau Toko</string>
     <string name="title_ask_buyer_selling">Tanya Pembeli</string>
     <string name="minute">" menit"</string>
+    <string name="check_timezone">Kami mendeteksi perangkat anda tidak menggunakan waktu yang sesuai dengan zona waktu anda. Silahkan periksa pengaturan waktu anda.</string>
+    <string name="action_check">Periksa</string>
+    <string name="action_remember_account">Ingat saya</string>
 
 </resources>

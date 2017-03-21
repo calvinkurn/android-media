@@ -2,9 +2,12 @@ package com.tokopedia.core.talkview.fragment;
 
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.view.View;
 
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.R;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.talk.model.model.InboxTalk;
 import com.tokopedia.core.talkview.adapter.InboxTalkViewAdapter;
 import com.tokopedia.core.talkview.adapter.TalkViewAdapter;
@@ -39,6 +42,9 @@ public class InboxTalkViewFragment extends TalkViewFragment{
     protected void getResultType(JSONObject result) {
         TalkDetailModel model = new GsonBuilder().create()
                 .fromJson(result.toString(), TalkDetailModel.class);
+        talk = model.getTalk();
+        getFromBundle(talk);
+        parseHeader();
         items.addAll(0, model.getTalkDetail());
     }
 
@@ -51,27 +57,34 @@ public class InboxTalkViewFragment extends TalkViewFragment{
 
     @Override
     protected void getFromBundle(Parcelable parcelable) {
-        InboxTalk bundle = (InboxTalk) parcelable;
-        talkID = bundle.getTalkId();
-        message = bundle.getTalkMessageSpanned();
-        productName = String.valueOf(bundle.getTalkProductName());
-        prodImgUri = String.valueOf(bundle.getTalkProductImage());
-        userName = bundle.getTalkUserName();
-        reputationHeader = bundle.getTalkUserReputation().getPositivePercentage();
-        positiveHeader = bundle.getTalkUserReputation().getPositive();
-        negativeHeader = bundle.getTalkUserReputation().getNegative();
-        neutralHeader = bundle.getTalkUserReputation().getNeutral();
-        noReputationHeader = bundle.getTalkUserReputation().getNoReputation();
-        createTime = bundle.getTalkCreateTime();
-        userImgUri = bundle.getTalkUserImage();
-        userIDTalk = bundle.getTalkUserId();
-        productID = String.valueOf(bundle.getTalkProductId());
-        shopID = bundle.getTalkShopId();
-        headUserLabel = bundle.getTalkUserLabel();
-        isOwner = bundle.getTalkOwn();
-        isFollow = bundle.getTalkFollowStatus();
-        totalComment = Integer.parseInt(bundle.getTalkTotalComment());
-        readStatus = bundle.getTalkReadStatus();
+        if (parcelable != null) {
+            InboxTalk bundle = (InboxTalk) parcelable;
+            talkID = bundle.getTalkId();
+            message = bundle.getTalkMessageSpanned();
+            productName = String.valueOf(bundle.getTalkProductName());
+            prodImgUri = String.valueOf(bundle.getTalkProductImage());
+            userName = bundle.getTalkUserName();
+            reputationHeader = bundle.getTalkUserReputation().getPositivePercentage();
+            positiveHeader = bundle.getTalkUserReputation().getPositive();
+            negativeHeader = bundle.getTalkUserReputation().getNegative();
+            neutralHeader = bundle.getTalkUserReputation().getNeutral();
+            noReputationHeader = bundle.getTalkUserReputation().getNoReputation();
+            createTime = bundle.getTalkCreateTime();
+            userImgUri = bundle.getTalkUserImage();
+            userIDTalk = bundle.getTalkUserId();
+            productID = String.valueOf(bundle.getTalkProductId());
+            shopID = bundle.getTalkShopId();
+            headUserLabel = bundle.getTalkUserLabel();
+            isOwner = bundle.getTalkOwn();
+            isFollow = bundle.getTalkFollowStatus();
+            totalComment = Integer.parseInt(bundle.getTalkTotalComment());
+            readStatus = bundle.getTalkReadStatus();
+
+            NotificationModHandler.clearCacheIfFromNotification(
+                    Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION,
+                    talkID
+            );
+        }
     }
 
     @Override
@@ -82,5 +95,17 @@ public class InboxTalkViewFragment extends TalkViewFragment{
         detail.setCommentUserName(SessionHandler.getLoginName(context));
         detail.setCommentShopName(SessionHandler.getShopDomain(context));
         items.add(detail);
+    }
+
+    @Override
+    protected void showMainLoading() {
+        progressBar.setVisibility(View.VISIBLE);
+        contentLv.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void hideMainLoading() {
+        progressBar.setVisibility(View.GONE);
+        contentLv.setVisibility(View.VISIBLE);
     }
 }

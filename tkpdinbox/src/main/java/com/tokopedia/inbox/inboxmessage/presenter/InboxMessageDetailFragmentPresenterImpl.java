@@ -8,6 +8,8 @@ import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.activity.InboxMessageDetailActivity;
 import com.tokopedia.inbox.inboxmessage.fragment.InboxMessageDetailFragment;
@@ -69,6 +71,10 @@ public class InboxMessageDetailFragmentPresenterImpl implements InboxMessageDeta
                         getMessageDetail();
                     }
                 });
+        NotificationModHandler.clearCacheIfFromNotification(
+                Constants.ARG_NOTIFICATION_APPLINK_MESSAGE,
+                viewListener.getArguments().getString(PARAM_MESSAGE_ID)
+        );
     }
 
     @Override

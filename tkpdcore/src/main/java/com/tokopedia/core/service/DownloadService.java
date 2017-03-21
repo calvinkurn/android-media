@@ -16,6 +16,7 @@ import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tkpd.library.utils.data.DataReceiver;
 import com.tokopedia.core.R;
 import com.tokopedia.core.SplashScreen;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.City;
@@ -77,34 +78,36 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class DownloadService extends IntentService implements DownloadServiceConstant, DataReceiver {
     public static final String TAG = "DownloadService";
+    private static final String IS_LOGIN = "is_login";
     public static final String messageTAG = DownloadService.class.getSimpleName() + " ";
-
-    private AuthService service;
-    private Gson gson;
-    private ResultReceiver receiver;
-    private LocalCacheHandler cache;
-    SessionHandler sessionHandler;
-    CompositeSubscription compositeSubscription = new CompositeSubscription();
-
     public static final int STATUS_RUNNING = 0;
     public static final int STATUS_FINISHED = 1;
     public static final int STATUS_ERROR = 2;
-
-    int EmailType = 0;
-    int FacebookType = 1;
-    int GooglePlusType = 2;
-    int WebViewType = 3;
-
     static String emailV2;
     static String passwordV2;
     static int loginType;
     static LoginGoogleModel loginGoogleModel;
     static LoginFacebookViewModel loginFacebookViewModel;
     static int loginVia;
+    SessionHandler sessionHandler;
+    CompositeSubscription compositeSubscription = new CompositeSubscription();
+    int EmailType = 0;
+    int FacebookType = 1;
+    int GooglePlusType = 2;
+    int WebViewType = 3;
+    private AuthService service;
+    private Gson gson;
+    private ResultReceiver receiver;
+    private LocalCacheHandler cache;
+
+    public DownloadService() {
+        super("DownloadService");
+    }
 
     public static void setLoginGoogleModel(LoginGoogleModel googleModel){
         loginGoogleModel = googleModel;
     }
+
     public static void setLoginFacebookViewModel(LoginFacebookViewModel facebookViewModel){
         loginFacebookViewModel = facebookViewModel;
     }
@@ -163,10 +166,6 @@ public class DownloadService extends IntentService implements DownloadServiceCon
         context.startService(intent);
     }
 
-    public DownloadService() {
-        super("DownloadService");
-    }
-
     @Override
     protected void onHandleIntent(Intent intent) {
         Log.d(TAG, messageTAG + " Service Started!");
@@ -184,7 +183,7 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                 receiver.send(STATUS_RUNNING, running);
                 DataManagerImpl.getDataManager()
                         .getListDepartment2(this.getApplication(),
-                                this, 0, true);
+                                this, 0);
                 break;
             case HOTLIST:
                 /* Update UI: Download Service is Running */
@@ -459,7 +458,8 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                         case ANSWER_SECURITY_QUESTION:
                             result = new Bundle();
                             result.putInt(TYPE, ANSWER_SECURITY_QUESTION);
-                            if (jsonObject.optBoolean("is_login", false) == true) {
+                            if (jsonObject.optBoolean(IS_LOGIN, false) == true) {
+                                UnifyTracking.eventOTPSuccess();
                                 final LoginInterruptModel loginInterruptModel = (LoginInterruptModel) parseJSON(ANSWER_SECURITY_QUESTION, jsonObject);
                                 sessionHandler.setLoginSession(loginInterruptModel.isLogin(),
                                         loginInterruptModel.getUserId(), loginInterruptModel.getFullName(), loginInterruptModel.getShopId() + "",
@@ -498,89 +498,6 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                 }
             } else {
                 new ErrorHandler(listener, responseData.code());
-            }
-        }
-
-        /**
-         * No connection still not known
-         */
-        public class ErrorListener implements com.tokopedia.core.network.retrofit.response.ErrorListener {
-            int errorCode;
-            String error;
-
-            public ErrorListener(int errorCode) {
-                this.errorCode = errorCode;
-                switch (errorCode) {
-                    case ResponseStatus.SC_REQUEST_TIMEOUT:
-                        error = NetworkConfig.TIMEOUT_TEXT;
-                        break;
-                    case ResponseStatus.SC_GATEWAY_TIMEOUT:
-                        error = NetworkConfig.TIMEOUT_TEXT;
-                        break;
-                    case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
-                        error = "SERVER ERROR";
-                        break;
-                    case ResponseStatus.SC_FORBIDDEN:
-                        error = "FORBIDDEN ACCESS";
-                        break;
-                    case ResponseStatus.SC_BAD_GATEWAY:
-                        error = "INVALID INPUT";
-                        break;
-                    case ResponseStatus.SC_BAD_REQUEST:
-                        error = "INVALID INPUT";
-                        break;
-                }
-            }
-
-            public void onResponse() {
-                Bundle resultData = new Bundle();
-                switch (type) {
-                    case SECURITY_QUESTION_GET:
-                    case REQUEST_OTP:
-                    case ANSWER_SECURITY_QUESTION:
-                    case HOTLIST:
-                    case REGISTER:
-                        resultData.putInt(TYPE, type);
-                        resultData.putInt(NETWORK_ERROR_FLAG, errorCode);
-                        resultData.putString(MESSAGE_ERROR_FLAG, error.toString());
-                        receiver.send(STATUS_ERROR, resultData);
-                        break;
-                }
-            }
-
-            public void noConnection() {
-                error = DownloadServiceConstant.noNetworkConnection;
-                onResponse();
-            }
-
-            @Override
-            public void onUnknown() {
-                error = getString(R.string.default_request_error_unknown);
-                onResponse();
-            }
-
-            @Override
-            public void onTimeout() {
-                error = getString(R.string.default_request_error_timeout);
-                onResponse();
-            }
-
-            @Override
-            public void onServerError() {
-                error = getString(R.string.default_request_error_internal_server);
-                onResponse();
-            }
-
-            @Override
-            public void onBadRequest() {
-                error = getString(R.string.default_request_error_bad_request);
-                onResponse();
-            }
-
-            @Override
-            public void onForbidden() {
-                error = getString(R.string.msg_connection_timeout);
-                onResponse();
             }
         }
 
@@ -670,6 +587,89 @@ public class DownloadService extends IntentService implements DownloadServiceCon
                         cache.applyEditor();
                     }
                     break;
+            }
+        }
+
+        /**
+         * No connection still not known
+         */
+        public class ErrorListener implements com.tokopedia.core.network.retrofit.response.ErrorListener {
+            int errorCode;
+            String error;
+
+            public ErrorListener(int errorCode) {
+                this.errorCode = errorCode;
+                switch (errorCode) {
+                    case ResponseStatus.SC_REQUEST_TIMEOUT:
+                        error = NetworkConfig.TIMEOUT_TEXT;
+                        break;
+                    case ResponseStatus.SC_GATEWAY_TIMEOUT:
+                        error = NetworkConfig.TIMEOUT_TEXT;
+                        break;
+                    case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
+                        error = "SERVER ERROR";
+                        break;
+                    case ResponseStatus.SC_FORBIDDEN:
+                        error = "FORBIDDEN ACCESS";
+                        break;
+                    case ResponseStatus.SC_BAD_GATEWAY:
+                        error = "INVALID INPUT";
+                        break;
+                    case ResponseStatus.SC_BAD_REQUEST:
+                        error = "INVALID INPUT";
+                        break;
+                }
+            }
+
+            public void onResponse() {
+                Bundle resultData = new Bundle();
+                switch (type) {
+                    case SECURITY_QUESTION_GET:
+                    case REQUEST_OTP:
+                    case ANSWER_SECURITY_QUESTION:
+                    case HOTLIST:
+                    case REGISTER:
+                        resultData.putInt(TYPE, type);
+                        resultData.putInt(NETWORK_ERROR_FLAG, errorCode);
+                        resultData.putString(MESSAGE_ERROR_FLAG, error.toString());
+                        receiver.send(STATUS_ERROR, resultData);
+                        break;
+                }
+            }
+
+            public void noConnection() {
+                error = DownloadServiceConstant.noNetworkConnection;
+                onResponse();
+            }
+
+            @Override
+            public void onUnknown() {
+                error = getString(R.string.default_request_error_unknown);
+                onResponse();
+            }
+
+            @Override
+            public void onTimeout() {
+                error = getString(R.string.default_request_error_timeout);
+                onResponse();
+            }
+
+            @Override
+            public void onServerError() {
+                error = getString(R.string.default_request_error_internal_server);
+                onResponse();
+            }
+
+            @Override
+            public void onBadRequest() {
+                error = getString(R.string.default_request_error_bad_request);
+                onResponse();
+            }
+
+            @Override
+            public void onForbidden() {
+                error = getString(R.string.msg_connection_timeout);
+                onResponse();
             }
         }
     }
