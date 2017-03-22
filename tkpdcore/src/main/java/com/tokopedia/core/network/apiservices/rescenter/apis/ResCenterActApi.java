@@ -97,4 +97,9 @@ public interface ResCenterActApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.ResCenter.PATH_REPORT_REOLUTION)
     Observable<Response<TkpdResponse>> reportResolution2(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_FINISH_RES_RETURN)
+    Observable<Response<TkpdResponse>> finishResolutionReturn2(@FieldMap Map<String, Object> params);
+
 }

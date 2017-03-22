@@ -60,4 +60,10 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
         return resCenterDataSourceFactory.createCloudActionResCenterDataStore()
                 .reportResolution(parameters);
     }
+
+    @Override
+    public Observable<ResolutionActionDomainData> finishReturSolution(TKPDMapParam<String, Object> parameters) {
+        return resCenterDataSourceFactory.createCloudActionResCenterDataStore()
+                .finishReturSolution(parameters);
+    }
 }

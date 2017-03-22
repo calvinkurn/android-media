@@ -38,4 +38,10 @@ public class CloudActionResCenterDataStore {
                 .reportResolution2(AuthUtil.generateParamsNetwork2(context, parameters))
                 .map(resolutionCenterActionMapper);
     }
+
+    public Observable<ResolutionActionDomainData> finishReturSolution(TKPDMapParam<String, Object> parameters) {
+        return resCenterActService.getApi()
+                .finishResolutionReturn2(AuthUtil.generateParamsNetwork2(context, parameters))
+                .map(resolutionCenterActionMapper);
+    }
 }
