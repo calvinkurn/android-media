@@ -34,7 +34,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.rxjava.RxUtils;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AnimationUtil;
 
@@ -578,6 +580,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         //Request Focus
         mSearchSrcTextView.setText(lastQuery);
         mSearchSrcTextView.requestFocus();
+        mSearchSrcTextView.setSelection(mSearchSrcTextView.getText().length());
         if (animate) {
             setVisibleWithAnimation();
 
@@ -586,6 +589,13 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             if (mSearchViewListener != null) {
                 mSearchViewListener.onSearchViewShown();
             }
+        }
+
+        String source = ((BrowseProductActivity) activity).getBrowseProductActivityModel().getSource();
+        if (BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP.equals(source)) {
+            mSuggestionFragment.setCurrentTab(SearchMainFragment.PAGER_POSITION_SHOP);
+        } else {
+            mSuggestionFragment.setCurrentTab(SearchMainFragment.PAGER_POSITION_PRODUCT);
         }
         mIsSearchOpen = true;
     }

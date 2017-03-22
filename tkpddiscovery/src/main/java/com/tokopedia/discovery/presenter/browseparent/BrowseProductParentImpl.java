@@ -38,6 +38,10 @@ import java.util.Map;
  */
 public class BrowseProductParentImpl extends BrowseProductParent implements DiscoveryListener {
 
+    private static final int PAGER_THREE_TAB_SHOP_POSITION = 2;
+    private static final int PAGER_THREE_TAB_CATALOG_POSITION = 1;
+    private static final int PAGER_THREE_TAB_PRODUCT_POSITION = 0;
+
     private DiscoveryInteractor discoveryInteractor;
     private static final String TAG = BrowseProductParentImpl.class.getSimpleName();
     // this will get for product only
@@ -238,7 +242,13 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                         } else {
                             view.setupWithTabViewPager();
                         }
-                        view.setCurrentTabs(browseProductActivityModel.getActiveTab());
+                        if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP)) {
+                            view.setCurrentTabs(PAGER_THREE_TAB_SHOP_POSITION);
+                        } else if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG)) {
+                            view.setCurrentTabs(PAGER_THREE_TAB_CATALOG_POSITION);
+                        } else {
+                            view.setCurrentTabs(PAGER_THREE_TAB_PRODUCT_POSITION);
+                        }
                         if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
                             view.setupCategory(browseProductModel);
                         }
