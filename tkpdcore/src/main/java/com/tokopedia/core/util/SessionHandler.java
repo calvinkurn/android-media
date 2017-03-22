@@ -165,7 +165,15 @@ public class SessionHandler {
         messageCacheInteractor.deleteCache();
         new ProductDetailCacheManager().deleteAll();
         new ProductOtherCacheManager().deleteAll();
-        LocalCacheHandler.clearCache(context, LOGIN_SESSION);
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        Editor editor = sharedPrefs.edit();
+        editor.putString(LOGIN_ID, null);
+        editor.putString(FULL_NAME, null);
+        editor.putString(SHOP_ID, null);
+        editor.putBoolean(IS_LOGIN, false);
+        editor.putBoolean(IS_MSISDN_VERIFIED, false);
+        editor.putString(PHONE_NUMBER, null);
+        editor.commit();
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_USER);
         LocalCacheHandler.clearCache(context, TkpdCache.NOTIFICATION_DATA);
         LocalCacheHandler.clearCache(context, "ETALASE_ADD_PROD");
