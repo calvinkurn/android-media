@@ -22,8 +22,6 @@ import com.tokopedia.seller.shop.setting.view.model.RecommendationDistrictViewMo
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationPresenter;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationView;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 /**
@@ -106,7 +104,7 @@ public class ShopSettingLocationFragment
     }
 
     @Override
-    public void renderRecomendationDistrictModel(List<RecommendationDistrictViewModel> viewModels) {
+    public void renderRecomendationDistrictModel(RecommendationDistrictViewModel viewModels) {
         locationDistrictAdapter.addDistrictModel(viewModels);
     }
 

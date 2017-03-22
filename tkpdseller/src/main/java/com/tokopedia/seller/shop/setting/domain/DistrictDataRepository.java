@@ -13,5 +13,5 @@ import rx.Observable;
 public interface DistrictDataRepository {
     Observable<Boolean> fetchDistrictData();
 
-    Observable<List<RecomendationDistrictDomainModel>> getRecommendationLocationDistrict(String stringTyped);
+    Observable<RecomendationDistrictDomainModel> getRecommendationLocationDistrict(String stringTyped);
 }

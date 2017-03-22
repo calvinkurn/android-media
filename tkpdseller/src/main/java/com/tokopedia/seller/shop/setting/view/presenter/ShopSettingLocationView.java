@@ -1,6 +1,7 @@
 package com.tokopedia.seller.shop.setting.view.presenter;
 
 import com.tokopedia.seller.app.BaseDiView;
+import com.tokopedia.seller.shop.setting.view.model.RecommendationDistrictItemViewModel;
 import com.tokopedia.seller.shop.setting.view.model.RecommendationDistrictViewModel;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public interface ShopSettingLocationView extends BaseDiView {
 
-    void renderRecomendationDistrictModel(List<RecommendationDistrictViewModel> viewModels);
+    void renderRecomendationDistrictModel(RecommendationDistrictViewModel viewModels);
 
     void showGenericError();
 

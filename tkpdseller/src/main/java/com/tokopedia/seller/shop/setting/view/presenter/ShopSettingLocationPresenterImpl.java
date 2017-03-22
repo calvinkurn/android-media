@@ -5,6 +5,7 @@ import com.tokopedia.seller.shop.setting.domain.interactor.FetchDistrictDataUseC
 import com.tokopedia.seller.shop.setting.domain.interactor.GetRecomendationLocationDistrictUseCase;
 import com.tokopedia.seller.shop.setting.domain.model.RecomendationDistrictDomainModel;
 import com.tokopedia.seller.shop.setting.view.mapper.RecommendationDistrictViewMapper;
+import com.tokopedia.seller.shop.setting.view.model.RecommendationDistrictItemViewModel;
 import com.tokopedia.seller.shop.setting.view.model.RecommendationDistrictViewModel;
 
 import java.util.List;
@@ -73,7 +74,7 @@ public class ShopSettingLocationPresenterImpl extends ShopSettingLocationPresent
     }
 
     private class GetRecomendationLocationDistrictSubscriber
-            extends Subscriber<List<RecomendationDistrictDomainModel>> {
+            extends Subscriber<RecomendationDistrictDomainModel> {
         @Override
         public void onCompleted() {
 
@@ -87,11 +88,11 @@ public class ShopSettingLocationPresenterImpl extends ShopSettingLocationPresent
         }
 
         @Override
-        public void onNext(List<RecomendationDistrictDomainModel> domainModels) {
+        public void onNext(RecomendationDistrictDomainModel domainModels) {
 
-            List<RecommendationDistrictViewModel> viewModels
+            RecommendationDistrictViewModel viewModel
                     = RecommendationDistrictViewMapper.map(domainModels);
-            view.renderRecomendationDistrictModel(viewModels);
+            view.renderRecomendationDistrictModel(viewModel);
 
         }
     }

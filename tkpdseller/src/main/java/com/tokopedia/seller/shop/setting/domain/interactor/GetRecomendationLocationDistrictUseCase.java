@@ -7,7 +7,6 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.shop.setting.domain.DistrictDataRepository;
 import com.tokopedia.seller.shop.setting.domain.model.RecomendationDistrictDomainModel;
 
-import java.util.List;
 
 import rx.Observable;
 
@@ -15,7 +14,7 @@ import rx.Observable;
  * Created by sebastianuskh on 3/22/17.
  */
 
-public class GetRecomendationLocationDistrictUseCase extends UseCase<List<RecomendationDistrictDomainModel>>{
+public class GetRecomendationLocationDistrictUseCase extends UseCase<RecomendationDistrictDomainModel>{
     public static final String STRING_TYPED = "STRING_TYPED";
     private final DistrictDataRepository districtDataRepository;
 
@@ -25,7 +24,7 @@ public class GetRecomendationLocationDistrictUseCase extends UseCase<List<Recome
     }
 
     @Override
-    public Observable<List<RecomendationDistrictDomainModel>> createObservable(RequestParams requestParams) {
+    public Observable<RecomendationDistrictDomainModel> createObservable(RequestParams requestParams) {
         String stringTyped = requestParams.getString(STRING_TYPED, "");
         if (stringTyped.isEmpty()){
             throw new RuntimeException("String typed cannot be empty");

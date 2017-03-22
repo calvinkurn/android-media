@@ -53,10 +53,12 @@ public class DistrictDataSource {
         }
     }
 
-    public Observable<List<RecomendationDistrictDomainModel>> getRecommendationLocationDistrict(String stringTyped) {
+    public Observable<RecomendationDistrictDomainModel> getRecommendationLocationDistrict(
+            String stringTyped
+    ) {
         return districtDataCache
                 .getRecommendationLocationDistrict(stringTyped)
-                .map(new DistrictDataDomainMapper());
+                .map(new DistrictDataDomainMapper(stringTyped));
     }
 
 

@@ -1,26 +1,28 @@
 package com.tokopedia.seller.shop.setting.domain.model;
 
+import java.util.List;
+
 /**
  * Created by sebastianuskh on 3/22/17.
  */
 
 public class RecomendationDistrictDomainModel {
-    private int districtId;
-    private String districtString;
+    private List<RecommendationDistrictItemDomainModel> items;
+    private String stringTyped;
 
-    public void setDistrictId(int districtId) {
-        this.districtId = districtId;
+    public List<RecommendationDistrictItemDomainModel> getItems() {
+        return items;
     }
 
-    public void setDistrictString(String districtString) {
-        this.districtString = districtString;
+    public void setItems(List<RecommendationDistrictItemDomainModel> items) {
+        this.items = items;
     }
 
-    public int getDistrictId() {
-        return districtId;
+    public String getStringTyped() {
+        return stringTyped;
     }
 
-    public String getDistrictString() {
-        return districtString;
+    public void setStringTyped(String stringTyped) {
+        this.stringTyped = stringTyped;
     }
 }

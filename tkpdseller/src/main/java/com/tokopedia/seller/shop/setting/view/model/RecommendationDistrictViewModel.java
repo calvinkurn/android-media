@@ -1,22 +1,28 @@
 package com.tokopedia.seller.shop.setting.view.model;
 
+import java.util.List;
+
 /**
  * Created by sebastianuskh on 3/22/17.
  */
 
 public class RecommendationDistrictViewModel {
-    private int districtId;
-    private String districtString;
+    private List<RecommendationDistrictItemViewModel> items;
+    private String stringTyped;
 
-    public void setDistrictId(int districtId) {
-        this.districtId = districtId;
+    public void setItems(List<RecommendationDistrictItemViewModel> items) {
+        this.items = items;
     }
 
-    public void setDistrictString(String districtString) {
-        this.districtString = districtString;
+    public void setStringTyped(String stringTyped) {
+        this.stringTyped = stringTyped;
     }
 
-    public String getDistrictString() {
-        return districtString;
+    public List<RecommendationDistrictItemViewModel> getItems() {
+        return items;
+    }
+
+    public String getStringTyped() {
+        return stringTyped;
     }
 }

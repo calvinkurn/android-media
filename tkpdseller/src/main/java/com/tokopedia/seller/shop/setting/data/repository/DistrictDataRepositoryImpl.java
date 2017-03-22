@@ -25,7 +25,7 @@ public class DistrictDataRepositoryImpl implements DistrictDataRepository {
     }
 
     @Override
-    public Observable<List<RecomendationDistrictDomainModel>>
+    public Observable<RecomendationDistrictDomainModel>
     getRecommendationLocationDistrict(String stringTyped) {
         return districtDataSource.getRecommendationLocationDistrict(stringTyped);
     }

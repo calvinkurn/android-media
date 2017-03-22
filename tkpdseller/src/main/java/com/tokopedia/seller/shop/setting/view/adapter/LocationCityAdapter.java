@@ -8,12 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Filter;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.shop.setting.view.model.RecommendationDistrictItemViewModel;
 import com.tokopedia.seller.shop.setting.view.model.RecommendationDistrictViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +21,7 @@ import java.util.List;
 
 public class LocationCityAdapter extends ArrayAdapter<String> {
 
-    private List<RecommendationDistrictViewModel> datas;
+    private RecommendationDistrictViewModel datas;
     private int selected = -1;
 
     public LocationCityAdapter(@NonNull Context context, @LayoutRes int resource) {
@@ -42,22 +41,22 @@ public class LocationCityAdapter extends ArrayAdapter<String> {
         } else {
             viewHolder = (LocationDistrictViewHolder) convertView.getTag();
         }
-        viewHolder.bindData(datas.get(position));
+        viewHolder.bindData(datas.getItems().get(position), datas.getStringTyped());
         return convertView;
     }
 
     @Override
     public int getCount() {
-        return datas.size();
+        return datas.getItems().size();
     }
 
     @Nullable
     @Override
     public String getItem(int position) {
-        return datas.get(position).getDistrictString();
+        return datas.getItems().get(position).getDistrictString();
     }
 
-    public void addDistrictModel(List<RecommendationDistrictViewModel> viewModels) {
+    public void addDistrictModel(RecommendationDistrictViewModel viewModels) {
         datas = viewModels;
         notifyDataSetChanged();
     }
@@ -66,7 +65,7 @@ public class LocationCityAdapter extends ArrayAdapter<String> {
         this.selected = selected;
     }
 
-    public RecommendationDistrictViewModel getSelected() throws Exception {
-        return datas.get(selected);
+    public RecommendationDistrictItemViewModel getSelected() throws Exception {
+        return datas.getItems().get(selected);
     }
 }
