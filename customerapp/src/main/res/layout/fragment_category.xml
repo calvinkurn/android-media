@@ -129,6 +129,20 @@
                 android:gravity="center_horizontal"
                 android:nestedScrollingEnabled="false"
                 android:scrollbars="none" />
+            <TextView
+                android:id="@+id/text_view_all_brands"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_gravity="end"
+                android:clickable="true"
+                android:text="@string/see_all"
+                android:drawableRight="@drawable/ic_chevron_right"
+                android:drawableEnd="@drawable/ic_chevron_right"
+                android:textColor="@color/green_400"
+                android:textSize="15sp" />
         </LinearLayout>
 
     </LinearLayout>
