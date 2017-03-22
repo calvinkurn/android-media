@@ -320,7 +320,7 @@ public class WishListImpl implements WishList {
     public void fetchDataAfterClearSearch(Context context) {
         mPaging.resetPage();
         params = RequestParams.create();
-        Observable<Response<WishlistData>> observable = mojitoService.getApi().getWishlist(
+        Observable<Response<WishlistData>> observable = mojitoAuthService.getApi().getWishlist(
                 SessionHandler.getLoginID(context),
                 10,
                 mPaging.getPage()
