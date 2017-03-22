@@ -86,4 +86,10 @@ public interface WishList {
     boolean isLoadedFirstPage();
 
     void searchWishlist(String query);
+
+    void searchWishlistLoadMore();
+
+    void fetchDataAfterClearSearch(Context context);
+
+    void refreshDataOnSearch(CharSequence query);
 }
