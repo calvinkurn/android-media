@@ -230,7 +230,6 @@ public class SessionHandler {
                 "User Id: " + getLoginID(context) +
                         " Device Id: " + GCMHandler.getRegistrationId(context));
         PasswordGenerator.clearTokenStorage(context);
-        GCMHandler.clearRegistrationId(context);
         clearUserData();
     }
 
