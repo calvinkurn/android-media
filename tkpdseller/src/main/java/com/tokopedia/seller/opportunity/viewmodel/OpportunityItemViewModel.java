@@ -1,7 +1,8 @@
 package com.tokopedia.seller.opportunity.viewmodel;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.core.util.MethodChecker;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
  * Created by nisie on 3/1/17.
  */
 
-public class OpportunityItemViewModel {
+public class OpportunityItemViewModel implements Parcelable {
 
     private int orderJOBStatus;
     private int orderIsPickup;
@@ -41,6 +42,30 @@ public class OpportunityItemViewModel {
         this.deadline = "24 jam lagi";
         this.productImage = "https://pbs.twimg.com/media/C51fHIHVAAQH2WZ.jpg";
     }
+
+    protected OpportunityItemViewModel(Parcel in) {
+        orderJOBStatus = in.readInt();
+        orderIsPickup = in.readInt();
+        orderShippingRetry = in.readInt();
+        orderAutoResi = in.readString();
+        orderAutoAwb = in.readInt();
+        productName = in.readString();
+        productPrice = in.readString();
+        productImage = in.readString();
+        deadline = in.readString();
+    }
+
+    public static final Creator<OpportunityItemViewModel> CREATOR = new Creator<OpportunityItemViewModel>() {
+        @Override
+        public OpportunityItemViewModel createFromParcel(Parcel in) {
+            return new OpportunityItemViewModel(in);
+        }
+
+        @Override
+        public OpportunityItemViewModel[] newArray(int size) {
+            return new OpportunityItemViewModel[size];
+        }
+    };
 
     public String getProductName() {
         return MethodChecker.fromHtml(productName).toString();
@@ -74,5 +99,22 @@ public class OpportunityItemViewModel {
         this.deadline = deadline;
     }
 
-    //End of TODO
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(orderJOBStatus);
+        parcel.writeInt(orderIsPickup);
+        parcel.writeInt(orderShippingRetry);
+        parcel.writeString(orderAutoResi);
+        parcel.writeInt(orderAutoAwb);
+        parcel.writeString(productName);
+        parcel.writeString(productPrice);
+        parcel.writeString(productImage);
+        parcel.writeString(deadline);
+    }
+
 }

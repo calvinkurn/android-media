@@ -15,6 +15,7 @@ import rx.Observable;
 
 public class AcceptReplacementUseCase extends UseCase<AcceptReplacementModel> {
 
+    public static final String PARAMS_ID = "id";
 
     private final ReplacementRepository replacementRepository;
 

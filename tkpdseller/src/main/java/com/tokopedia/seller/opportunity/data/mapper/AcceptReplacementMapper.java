@@ -23,8 +23,7 @@ public class AcceptReplacementMapper
         if (response.isSuccessful()) {
             if (!response.body().isError()) {
                 AcceptReplacementData data = response.body().convertDataObj(AcceptReplacementData.class);
-                model.setSuccess(true);
-                model.setAcceptReplacementData(data);
+                model.setSuccess(data != null && data.isSuccess());
             } else {
                 if (response.body().getErrorMessages() == null
                         && response.body().getErrorMessages().isEmpty()) {
