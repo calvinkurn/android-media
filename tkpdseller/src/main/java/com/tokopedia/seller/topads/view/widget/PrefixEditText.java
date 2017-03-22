@@ -151,4 +151,16 @@ public class PrefixEditText extends AppCompatEditText
         return nonNullA.concat(nonNullB);
     }
 
+    @Override
+    protected void onSelectionChanged(int selStart, int selEnd) {
+        // if select on the prefix text, move selection to the end
+        int prefixLength = mPrefix == null? 0: mPrefix.length();
+        if (selStart < prefixLength
+                &&
+            selEnd < prefixLength ) {
+            Selection.setSelection(PrefixEditText.super.getText(),
+                    PrefixEditText.super.getText().length());
+        }
+        super.onSelectionChanged(selStart, selEnd);
+    }
 }

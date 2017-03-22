@@ -2,15 +2,12 @@ package com.tokopedia.seller.shop.open.view.activity;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.deposit.fragment.DepositFragment;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.shop.fragment.ShopOpenDomainFragment;
+import com.tokopedia.seller.shop.open.view.fragment.ShopOpenDomainFragment;
 
 /**
  * Created by Nathaniel on 3/16/2017.

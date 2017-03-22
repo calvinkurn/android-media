@@ -278,7 +278,7 @@ public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher 
         String text = editText == null?"": editText.getText().toString();
         mCounterView.setText(
                 (text.length() - mPrefixLength)
-                + "/" +
+                + " / " +
                 (getCounterMaxLength() - mPrefixLength) );
         mCounterView.addTextChangedListener(this);
     }
