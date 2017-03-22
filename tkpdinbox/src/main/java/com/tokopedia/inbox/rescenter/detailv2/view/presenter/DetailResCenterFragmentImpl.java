@@ -69,12 +69,17 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     }
 
     @Override
-    public void finishReturProduct(String resolutionID) {
+    public void finishReturProduct() {
 
     }
 
     @Override
-    public void acceptSolution(String resolutionID) {
+    public void acceptSolution() {
+
+    }
+
+    @Override
+    public void cancelResolution() {
 
     }
 

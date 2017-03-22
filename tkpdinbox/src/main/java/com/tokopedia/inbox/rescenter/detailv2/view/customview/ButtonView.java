@@ -19,10 +19,12 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
 
     private ButtonData buttonData;
     private View actionAcceptProduct;
-    private View actionAcceptSolution;
     private View actionEdit;
     private View actionHelp;
-    private View actionAppeal;
+    private View actionAcceptSolutionVertical;
+    private View actionAcceptSolutionHorizontal;
+    private View actionCancelResolutionHorizontal;
+    private View actionCancelResolutionVertical;
 
     public ButtonView(Context context) {
         super(context);
@@ -53,10 +55,12 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(getLayoutView(), this, true);
         actionEdit = view.findViewById(R.id.action_edit_solution);
-        actionAcceptSolution = view.findViewById(R.id.action_accept_solution);
+        actionAcceptSolutionVertical = view.findViewById(R.id.action_accept_solution);
+        actionAcceptSolutionHorizontal = view.findViewById(R.id.action_accept_solution_double);
         actionAcceptProduct = view.findViewById(R.id.action_accept_product);
         actionHelp = view.findViewById(R.id.action_help);
-        actionAppeal = view.findViewById(R.id.action_appeal_solution);
+        actionCancelResolutionVertical = view.findViewById(R.id.action_cancel_resolution);
+        actionCancelResolutionHorizontal = view.findViewById(R.id.action_cancel_resolution_double);
     }
 
     @Override
@@ -67,27 +71,52 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
     @Override
     public void renderData(@NonNull ButtonData data) {
         setButtonData(data);
-        actionEdit.setOnClickListener(new ButtonViewOnClickListener());
-        actionAcceptSolution.setOnClickListener(new ButtonViewOnClickListener());
-        actionAcceptProduct.setOnClickListener(new ButtonViewOnClickListener());
-        actionHelp.setOnClickListener(new ButtonViewOnClickListener());
-        actionAppeal.setOnClickListener(new ButtonViewOnClickListener());
-
-        actionEdit.setVisibility(canEdit() ? VISIBLE : GONE);
-        actionAcceptProduct.setVisibility(canAcceptProduct() ? VISIBLE : GONE);
-        actionAcceptSolution.setVisibility(canAcceptSolution() ? VISIBLE : GONE);
-        actionHelp.setVisibility(canAskHelp() ? VISIBLE : GONE);
-        actionAppeal.setVisibility(canAppealSolution() ? VISIBLE : GONE);
-
+        setClickListener();
+        setActionVisibility();
         setVisibility(isAnyButtonVisible() ? VISIBLE : GONE);
+    }
+
+    private void setActionVisibility() {
+        actionEdit.setVisibility(canEdit() || canAppealSolution() ? VISIBLE : GONE);
+        actionAcceptProduct.setVisibility(canAcceptProduct() ? VISIBLE : GONE);
+        actionHelp.setVisibility(canAskHelp() ? VISIBLE : GONE);
+
+        actionAcceptSolutionHorizontal.setVisibility(
+                canAcceptSolution() &&  validToHorizontalView() ? VISIBLE : GONE);
+        actionAcceptSolutionVertical.setVisibility(canAcceptSolution()
+                && actionAcceptSolutionHorizontal.getVisibility() != VISIBLE ? VISIBLE : GONE);
+
+        actionCancelResolutionHorizontal.setVisibility(
+                canAcceptSolution() &&  validToHorizontalView()? VISIBLE : GONE);
+        actionCancelResolutionVertical.setVisibility(canAcceptSolution()
+                && actionCancelResolutionHorizontal.getVisibility() != VISIBLE ? VISIBLE : GONE);
+
+    }
+
+    private boolean validToHorizontalView() {
+        return actionEdit.getVisibility() == VISIBLE && actionHelp.getVisibility() == VISIBLE;
+    }
+
+    private void setClickListener() {
+        actionEdit.setOnClickListener(new ActionEditSolutionClickListener());
+        actionAcceptProduct.setOnClickListener(new ActionAcceptProductClickListener());
+        actionHelp.setOnClickListener(new ActionHelpClickListener());
+
+        actionAcceptSolutionVertical.setOnClickListener(new ActionAcceptSolutionClickListener());
+        actionAcceptSolutionHorizontal.setOnClickListener(new ActionAcceptSolutionClickListener());
+
+        actionCancelResolutionVertical.setOnClickListener(new ActionCancelResolutionClickListener());
+        actionCancelResolutionHorizontal.setOnClickListener(new ActionCancelResolutionClickListener());
     }
 
     private boolean isAnyButtonVisible() {
         return actionEdit.getVisibility() == VISIBLE ||
                 actionAcceptProduct.getVisibility() == VISIBLE ||
-                actionAcceptSolution.getVisibility() == VISIBLE ||
-                actionHelp.getVisibility() == VISIBLE ||
-                actionAppeal.getVisibility() == VISIBLE;
+                actionAcceptSolutionVertical.getVisibility() == VISIBLE ||
+                actionAcceptSolutionHorizontal.getVisibility() == VISIBLE ||
+                actionCancelResolutionHorizontal.getVisibility() == VISIBLE ||
+                actionCancelResolutionVertical.getVisibility() == VISIBLE ||
+                actionHelp.getVisibility() == VISIBLE;
     }
 
     public void setButtonData(ButtonData buttonData) {
@@ -118,20 +147,43 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         return getButtonData().isShowAppealSolution();
     }
 
-    private class ButtonViewOnClickListener implements OnClickListener {
+
+    private class ActionAcceptSolutionClickListener implements OnClickListener {
         @Override
         public void onClick(View view) {
-            if (view.getId() == R.id.action_accept_product) {
-                listener.setOnActionAcceptProductClick();
-            } else if (view.getId() == R.id.action_accept_solution) {
-                listener.setOnActionAcceptSolutionClick();
-            } else if (view.getId() == R.id.action_edit) {
+            listener.setOnActionAcceptSolutionClick();
+        }
+    }
+
+    private class ActionEditSolutionClickListener implements OnClickListener {
+        @Override
+        public void onClick(View view) {
+            if (canEdit() && !canAppealSolution()) {
                 listener.setOnActionEditSolutionClick();
-            } else if (view.getId() == R.id.action_help) {
-                listener.setOnActionHelpClick();
-            } else if (view.getId() == R.id.action_appeal_solution) {
+            } else if (canAppealSolution() && !canEdit()) {
                 listener.setOnActionAppealClick();
             }
+        }
+    }
+
+    private class ActionAcceptProductClickListener implements OnClickListener {
+        @Override
+        public void onClick(View view) {
+            listener.setOnActionAcceptProductClick();
+        }
+    }
+
+    private class ActionHelpClickListener implements OnClickListener {
+        @Override
+        public void onClick(View view) {
+            listener.setOnActionHelpClick();
+        }
+    }
+
+    private class ActionCancelResolutionClickListener implements OnClickListener {
+        @Override
+        public void onClick(View view) {
+            listener.setOnActionCancelResolutionClick();
         }
     }
 }

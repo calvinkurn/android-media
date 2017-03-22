@@ -1,5 +1,8 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.subscriber;
 
+import android.util.Log;
+
+import com.tkpd.library.utils.Logger;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.AddressDomainModel;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.AwbAttachmentDomainModel;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ButtonDomainModel;
@@ -48,6 +51,11 @@ public class GetResCenterDetailSubscriber extends rx.Subscriber<DetailResCenter>
 
     @Override
     public void onError(Throwable e) {
+        Log.d(this.getClass().getSimpleName(), e.getMessage());
+        for (int i = 0; i < e.getStackTrace().length; i++) {
+            StackTraceElement element = e.getStackTrace()[i];
+            Logger.dump(this.getClass().getSimpleName(), element.toString());
+        }
         if (e instanceof IOException) {
             fragmentView.setViewData(mappingTimeOutViewModel());
             fragmentView.doOnInitTimeOut();
@@ -112,11 +120,11 @@ public class GetResCenterDetailSubscriber extends rx.Subscriber<DetailResCenter>
 
     private AddressReturData mappingAddressReturData(AddressDomainModel domainModel) {
         AddressReturData data = new AddressReturData();
-        data.setAddressText("<b>" + domainModel.getReceiver()+ "</b>" + "\n" +
-                domainModel.getStreet() + "\n" +
-                domainModel.getDistrict() + ", " + domainModel.getCity() + "\n" +
-                domainModel.getProvince() + "\n" +
-                domainModel.getPostalCode() + "\n" +
+        data.setAddressText("<b>" + domainModel.getReceiver()+ "</b>" + "<br>" +
+                domainModel.getStreet() + "<br>" +
+                domainModel.getDistrict() + ", " + domainModel.getCity() + "<br>" +
+                domainModel.getProvince() + "<br>" +
+                domainModel.getPostalCode() + "<br>" +
                 domainModel.getPhoneReceiver()
         );
         data.setAddressReturDate("NOT SET OR ASK BACKEND");

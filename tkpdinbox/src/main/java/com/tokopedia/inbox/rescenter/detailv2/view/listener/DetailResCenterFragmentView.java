@@ -36,6 +36,8 @@ public interface DetailResCenterFragmentView {
 
     void showConfirmationDialog(String messageDialog, ConfirmationDialog.Listener listener);
 
+    void setOnActionCancelResolutionClick();
+
     void setOnActionAcceptProductClick();
 
     void setOnActionAcceptSolutionClick();
