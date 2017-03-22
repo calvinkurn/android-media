@@ -22,7 +22,7 @@ public class ShareData implements Parcelable {
     private static final String ARG_UTM_MEDIUM = "Android%20Share%20Button";
     private static final String DEFAULT_EMPTY_FIELD = "";
 
-    private String type;
+    private String type = "";
     private String name;
     private String price;
     private String uri;
