@@ -245,6 +245,7 @@ public final class AppScreen {
     public static final String EVENT_ADDED_PRODUCT = "event : Add Product";
     public static final String EVENT_ADDED_WISHLIST = "event : Add to wishlist";
     public static final String EVENT_CLICKED_HOTLIST= "event : Clicked Hot List";
+    public static final String EVENT_GOOD_REVIEW = "event: Good Review";
     public static final String SCREEN_VIEWED_WISHLIST_PAGE = "event : Viewed Wishlist Page";
     public static final String SCREEN_VIDEO_PLAYER = "Video player page";
 }
