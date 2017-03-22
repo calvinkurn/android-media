@@ -9,7 +9,7 @@ import android.view.View;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.adapter.TopAdsShopAdapter;
-import com.tokopedia.tkpd.home.favorite.view.viewListener.FavoriteClickListener;
+import com.tokopedia.tkpd.home.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopViewModel;
 
 import butterknife.BindView;

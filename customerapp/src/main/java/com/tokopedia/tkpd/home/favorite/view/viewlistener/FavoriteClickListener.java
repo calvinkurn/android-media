@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.home.favorite.view.viewListener;
+package com.tokopedia.tkpd.home.favorite.view.viewlistener;
 
 import android.view.View;
 

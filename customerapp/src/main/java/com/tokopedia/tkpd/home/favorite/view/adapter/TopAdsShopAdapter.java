@@ -19,7 +19,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.TopAdsUtil;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.favorite.view.viewListener.FavoriteClickListener;
+import com.tokopedia.tkpd.home.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopItem;
 
 import java.util.ArrayList;

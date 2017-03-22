@@ -19,12 +19,12 @@ import rx.functions.Func2;
 public class GetFavoriteAndWishlistUsecase extends UseCase<DataFavorite> {
 
     private GetFavoriteShopUsecase mGetFavoriteShopUsecase;
-    private GetWishlistUseCase mGetWishlistUseCase;
+    private GetWishlistUsecase mGetWishlistUseCase;
 
     public GetFavoriteAndWishlistUsecase(ThreadExecutor threadExecutor,
                                          PostExecutionThread postExecutionThread,
                                          GetFavoriteShopUsecase getFavoriteShopUsecase,
-                                         GetWishlistUseCase getWishlistUseCase) {
+                                         GetWishlistUsecase getWishlistUseCase) {
         super(threadExecutor, postExecutionThread);
         mGetFavoriteShopUsecase = getFavoriteShopUsecase;
         mGetWishlistUseCase = getWishlistUseCase;
@@ -50,7 +50,7 @@ public class GetFavoriteAndWishlistUsecase extends UseCase<DataFavorite> {
     }
 
     private Observable<DomainWishlist> getWishlist() {
-        return mGetWishlistUseCase.createObservable(GetWishlistUseCase.getDefaultParams());
+        return mGetWishlistUseCase.createObservable(GetWishlistUsecase.getDefaultParams());
     }
 
 }

@@ -1,12 +1,15 @@
 package com.tokopedia.core.gcm;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.localytics.android.Localytics;
 import com.tkpd.library.utils.CommonUtils;
@@ -67,6 +70,30 @@ public class GCMHandler {
             registerGCM();
         } else {
             Localytics.setPushRegistrationId(gcmRegid);
+        }
+    }
+
+    // ini titipan pak norman
+    public void commitGCMProcess (@Nullable GCMHandlerListener listener) {
+        if(listener!=null)
+            gcmlistener = listener;
+        Integer resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(context);
+        if (resultCode == ConnectionResult.SUCCESS) {
+            mGoogleCloudMessaging = GoogleCloudMessaging.getInstance(context);
+            regid = getRegistrationId(context);
+            CommonUtils.dumper("start gcm get");
+            if (regid.isEmpty()) {
+                registerGCM();
+            } else {
+                if(listener!=null)
+                    gcmlistener.onGCMSuccess(regid);
+            }
+        } else {
+            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(resultCode, (Activity)context, 0);
+            if (dialog != null) {
+                //This dialog will help the user update to the latest GooglePlayServices
+                dialog.show();
+            }
         }
     }
 

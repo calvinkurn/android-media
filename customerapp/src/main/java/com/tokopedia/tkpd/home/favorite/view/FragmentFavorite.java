@@ -14,24 +14,24 @@ import android.widget.RelativeLayout;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.base.di.component.DaggerAppComponent;
+import com.tokopedia.core.base.di.module.ActivityModule;
+import com.tokopedia.core.base.di.module.AppModule;
+import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.base.adapter.Visitable;
-import com.tokopedia.tkpd.home.base.di.component.DaggerAppComponent;
-import com.tokopedia.tkpd.home.base.di.module.ActivityModule;
-import com.tokopedia.tkpd.home.base.di.module.AppModule;
-import com.tokopedia.tkpd.home.base.presentation.BaseFragment;
 import com.tokopedia.tkpd.home.favorite.di.component.DaggerFavoriteComponent;
-import com.tokopedia.tkpd.home.favorite.listener.FavoriteClickListener;
 import com.tokopedia.tkpd.home.favorite.view.adapter.FavoriteAdapter;
 import com.tokopedia.tkpd.home.favorite.view.adapter.FavoriteAdapterTypeFactory;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopItem;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopViewModel;
+import com.tokopedia.tkpd.home.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.tkpd.home.util.DefaultRetryListener;
-import com.tokopedia.tkpd.home.util.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +48,7 @@ import static com.tokopedia.tkpd.home.favorite.view.FavoriteView.DURATION_ANIMAT
  * @author Kulomady on 1/20/17.
  */
 
-public class FragmentFavorite extends BaseFragment
+public class FragmentFavorite extends BaseDaggerFragment
         implements FavoriteContract.View, DefaultRetryListener.OnClickRetry, FavoriteClickListener {
 
     @BindView(R.id.index_favorite_recycler_view)
@@ -69,7 +69,7 @@ public class FragmentFavorite extends BaseFragment
     public static final String WISHLISH_EXTRA_KEY = "DomainWishlist";
     private Unbinder unbinder;
     private FavoriteAdapter favoriteAdapter;
-    private EndlessRecyclerViewScrollListener scrollListener;
+    private EndlessRecyclerviewListener scrollListener;
 
     @Override
     protected String getScreenName() {
@@ -92,6 +92,7 @@ public class FragmentFavorite extends BaseFragment
             favoriteAdapter.setElement(1, shopViewModel);
         }
     }
+
 
     @Override
     public void addAllDataFavorite(List<Visitable> elementList, boolean clearData) {
@@ -247,7 +248,7 @@ public class FragmentFavorite extends BaseFragment
         favoriteAdapter = new FavoriteAdapter(typeFactoryForList, new ArrayList<Visitable>());
         animator = new DefaultItemAnimator();
         animator.setAddDuration(DURATION_ANIMATOR);
-        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+        scrollListener = new EndlessRecyclerviewListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 mFavoritePresenter.loadOnMore();

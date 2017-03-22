@@ -16,10 +16,12 @@ import com.tokopedia.tkpd.home.favorite.data.FavoriteDataRepository;
 import com.tokopedia.tkpd.home.favorite.data.FavoriteFactory;
 import com.tokopedia.tkpd.home.favorite.di.scope.FavoriteScope;
 import com.tokopedia.tkpd.home.favorite.domain.FavoriteRepository;
+import com.tokopedia.tkpd.home.favorite.domain.interactor.GetAllDataFavoriteUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteAndWishlistUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteShopUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetTopAdsShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUsecase;
+import com.tokopedia.tkpd.home.favorite.domain.interactor.PostFavoriteShopUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -34,11 +36,9 @@ public class FavoriteModule {
 
     @FavoriteScope
     @Provides
-    FavoriteFactory provideFavoriteFactory(@ActivityContext Context context,
-                                           Gson gson,
+    FavoriteFactory provideFavoriteFactory(@ActivityContext Context context, Gson gson,
                                            ServiceV4 serviceVersion4,
-                                           TopAdsService topAdsService,
-                                           MojitoService mojitoService) {
+                                           TopAdsService topAdsService, MojitoService mojitoService) {
 
         return new FavoriteFactory(context, gson, serviceVersion4, topAdsService, mojitoService);
     }
@@ -56,6 +56,29 @@ public class FavoriteModule {
                                                       FavoriteRepository favoriteRepository) {
 
         return new GetFavoriteShopUsecase(threadExecutor, postExecutor, favoriteRepository);
+    }
+
+    @FavoriteScope
+    @Provides
+    PostFavoriteShopUseCase providePostFavoriteUsecase(ThreadExecutor threadExecutor,
+                                                       PostExecutionThread postExecutor,
+                                                       FavoriteRepository favorite) {
+
+        return new PostFavoriteShopUseCase(threadExecutor, postExecutor, favorite);
+    }
+
+    @FavoriteScope
+    @Provides
+    GetAllDataFavoriteUseCase provideAllDataFavoriteUsecase(ThreadExecutor threadExecutor,
+                                                            PostExecutionThread postExecutor,
+                                                            GetFavoriteShopUsecase favUseCase,
+                                                            GetWishlistUsecase wishlistUseCase,
+                                                            GetTopAdsShopUseCase topAdsShopUseCase){
+        return new GetAllDataFavoriteUseCase(threadExecutor,
+                postExecutor,
+                favUseCase,
+                wishlistUseCase,
+                topAdsShopUseCase);
     }
 
     @FavoriteScope

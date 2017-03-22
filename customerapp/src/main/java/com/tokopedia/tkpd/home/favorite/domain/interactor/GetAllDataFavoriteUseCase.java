@@ -19,13 +19,13 @@ import rx.functions.Func3;
 public class GetAllDataFavoriteUseCase extends UseCase<DataFavorite> {
 
     private GetFavoriteShopUsecase mGetFavoriteShopUsecase;
-    private GetWishlistUseCase mGetWishlistUseCase;
+    private GetWishlistUsecase mGetWishlistUseCase;
     private GetTopAdsShopUseCase mGetTopAdsShopUseCase;
 
     public GetAllDataFavoriteUseCase(ThreadExecutor threadExecutor,
                                      PostExecutionThread postExecutionThread,
                                      GetFavoriteShopUsecase mGetFavoriteShopUsecase,
-                                     GetWishlistUseCase mGetWishlistUseCase,
+                                     GetWishlistUsecase mGetWishlistUseCase,
                                      GetTopAdsShopUseCase mGetTopAdsShopUseCase) {
         super(threadExecutor, postExecutionThread);
         this.mGetFavoriteShopUsecase = mGetFavoriteShopUsecase;
@@ -58,7 +58,7 @@ public class GetAllDataFavoriteUseCase extends UseCase<DataFavorite> {
     }
 
     private Observable<DomainWishlist> getWishlist() {
-        return mGetWishlistUseCase.createObservable(GetWishlistUseCase.getDefaultParams());
+        return mGetWishlistUseCase.createObservable(GetWishlistUsecase.getDefaultParams());
     }
 
     private Observable<FavoriteShop> getFavoriteShopList() {

@@ -15,7 +15,7 @@ import rx.Observable;
  * @author Kulomady on 1/18/17.
  */
 
-public class GetWishlistUseCase extends UseCase<DomainWishlist> {
+public class GetWishlistUsecase extends UseCase<DomainWishlist> {
 
     public static final String KEY_COUNT = "count";
     public static final String KEY_PAGE = "page";
@@ -25,7 +25,7 @@ public class GetWishlistUseCase extends UseCase<DomainWishlist> {
     private final FavoriteRepository mFavoriteRepository;
 
     @Inject
-    public GetWishlistUseCase(ThreadExecutor threadExecutor,
+    public GetWishlistUsecase(ThreadExecutor threadExecutor,
                               PostExecutionThread postExecutionThread,
                               FavoriteRepository favoriteRepository) {
 

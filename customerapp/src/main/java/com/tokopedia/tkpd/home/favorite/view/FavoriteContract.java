@@ -3,9 +3,9 @@ package com.tokopedia.tkpd.home.favorite.view;
 
 import android.os.Bundle;
 
-import com.tokopedia.tkpd.home.base.adapter.Visitable;
-import com.tokopedia.tkpd.home.base.presentation.CustomerPresenter;
-import com.tokopedia.tkpd.home.base.presentation.CustomerView;
+import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.base.presentation.CustomerPresenter;
+import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopItem;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopViewModel;

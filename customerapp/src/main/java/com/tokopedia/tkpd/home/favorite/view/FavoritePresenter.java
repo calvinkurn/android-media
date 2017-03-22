@@ -4,17 +4,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.tkpd.home.base.adapter.Visitable;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetAllDataFavoriteUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteAndWishlistUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteShopUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetTopAdsShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.PostFavoriteShopUseCase;
-import com.tokopedia.tkpd.home.favorite.domain.interactor.param.FavoriteParam;
-import com.tokopedia.tkpd.home.favorite.domain.interactor.param.SetFavoriteShopParam;
-import com.tokopedia.tkpd.home.favorite.domain.interactor.param.TopAdsShopParams;
 import com.tokopedia.tkpd.home.favorite.domain.model.DataFavorite;
 import com.tokopedia.tkpd.home.favorite.domain.model.DataWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
@@ -44,24 +42,26 @@ public class FavoritePresenter
         extends BaseDaggerPresenter<FavoriteContract.View> implements FavoriteContract.Presenter {
     private static final String TAG = "FavoritePresenter";
 
-    private final GetFavoriteAndWishlistUsecase mFavoriteAndWishlistUsecase;
-    private GetTopAdsShopUseCase mGetTopAdsShopUseCase;
-    private PostFavoriteShopUseCase mPostFavoriteShopUseCase;
-    private GetAllDataFavoriteUseCase mGetAllDataFavoriteUseCase;
-    private PagingHandler mPagingHandler;
-    private GetFavoriteShopUsecase mGetFavoriteShopUsecase;
+    private final GetFavoriteAndWishlistUsecase favoriteAndWishlistUsecase;
+    private GetTopAdsShopUseCase getTopAdsShopUseCase;
+    private PostFavoriteShopUseCase postFavoriteShopUseCase;
+    private GetAllDataFavoriteUseCase getAllDataFavoriteUseCase;
+    private PagingHandler pagingHandler;
+    private GetFavoriteShopUsecase getFavoriteShopUsecase;
 
     @Inject
     public FavoritePresenter(GetFavoriteAndWishlistUsecase favoriteAndWishlistUsecase,
                              GetTopAdsShopUseCase getTopAdsShopUseCase,
                              PostFavoriteShopUseCase postFavoriteShopUseCase,
-                             GetAllDataFavoriteUseCase getAllDataFavoriteUseCase, GetFavoriteShopUsecase favoriteShopUsecase) {
-        mFavoriteAndWishlistUsecase = favoriteAndWishlistUsecase;
-        mGetTopAdsShopUseCase = getTopAdsShopUseCase;
-        mPostFavoriteShopUseCase = postFavoriteShopUseCase;
-        mGetAllDataFavoriteUseCase = getAllDataFavoriteUseCase;
-        mGetFavoriteShopUsecase = favoriteShopUsecase;
-        mPagingHandler = new PagingHandler();
+                             GetAllDataFavoriteUseCase getAllDataFavoriteUseCase,
+                             GetFavoriteShopUsecase favoriteShopUsecase) {
+
+        this.favoriteAndWishlistUsecase = favoriteAndWishlistUsecase;
+        this.getTopAdsShopUseCase = getTopAdsShopUseCase;
+        this.postFavoriteShopUseCase = postFavoriteShopUseCase;
+        this.getAllDataFavoriteUseCase = getAllDataFavoriteUseCase;
+        getFavoriteShopUsecase = favoriteShopUsecase;
+        pagingHandler = new PagingHandler();
     }
 
     @Override
@@ -72,38 +72,44 @@ public class FavoritePresenter
     @Override
     public void detachView() {
         super.detachView();
-        mFavoriteAndWishlistUsecase.unsubcribe();
+        favoriteAndWishlistUsecase.unsubscribe();
     }
 
     @Override
     public void loadDataWishlistAndFavorite() {
-        mFavoriteAndWishlistUsecase.execute(new FavoriteANdWishlistSubscriber());
+
+        favoriteAndWishlistUsecase.execute(
+                RequestParams.EMPTY,new FavoriteAndWishlistSubscriber());
     }
 
     @Override
     public void loadDataTopAdsShop() {
-        TopAdsShopParams topAdsParams = new TopAdsShopParams();
-        mGetTopAdsShopUseCase.execute(topAdsParams, new TopAdsShopSubscriber());
+        getTopAdsShopUseCase.execute(
+                GetTopAdsShopUseCase.getDefaultParams(), new TopAdsShopSubscriber());
     }
 
     @Override
     public void setFavoriteShop(View view, TopAdsShopItem shopItem) {
-        mPostFavoriteShopUseCase.execute(new SetFavoriteShopParam(shopItem), new SetFavoriteSubscriber(view));
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(PostFavoriteShopUseCase.KEY_SHOP_ITEM, shopItem);
+        postFavoriteShopUseCase.execute(requestParams, new SetFavoriteSubscriber(view));
     }
 
     @Override
     public void loadOnRefresh() {
-        mGetAllDataFavoriteUseCase.execute(new DataFavoriteSubscriber());
+        getAllDataFavoriteUseCase.execute(RequestParams.EMPTY, new DataFavoriteSubscriber());
     }
 
     @Override
     public void loadOnMore() {
-        if (mPagingHandler.CheckNextPage() && !getView().isLoading()) {
-            mPagingHandler.nextPage();
+        if (pagingHandler.CheckNextPage() && !getView().isLoading()) {
+            pagingHandler.nextPage();
             getView().showLoading();
-            FavoriteParam favoriteParam = new FavoriteParam();
-            favoriteParam.getValues().put(FavoriteParam.KEY_PAGE, String.valueOf(mPagingHandler.getPage()));
-            mGetFavoriteShopUsecase.execute(favoriteParam, new LoadMoreSubscriber());
+            RequestParams params = GetFavoriteShopUsecase.getDefaultParams();
+            params.putString(
+                    GetFavoriteShopUsecase.KEY_PAGE,String.valueOf(pagingHandler.getPage()));
+
+            getFavoriteShopUsecase.execute(params, new LoadMoreSubscriber());
         }
     }
 
@@ -114,17 +120,17 @@ public class FavoritePresenter
 
     @Override
     public void onSaveDataBeforeRotate(Bundle outState) {
-        mPagingHandler.onSavedInstanceState(outState);
+        pagingHandler.onSavedInstanceState(outState);
     }
 
     @Override
     public void onViewStateRestored(Bundle outState) {
         if (outState != null) {
-            mPagingHandler.onCreate(outState);
+            pagingHandler.onCreate(outState);
         }
     }
 
-    private class FavoriteANdWishlistSubscriber extends Subscriber<DataFavorite> {
+    private class FavoriteAndWishlistSubscriber extends Subscriber<DataFavorite> {
         @Override
         public void onCompleted() {
 
@@ -145,7 +151,9 @@ public class FavoritePresenter
             if (dataFavorite != null
                     && dataFavorite.getFavoriteShop() != null
                     && dataFavorite.getFavoriteShop().getData() != null) {
+
                 setPagingHandler(dataFavorite.getFavoriteShop().getPagingModel());
+
                 for (FavoriteShopItem favoriteShopItem : dataFavorite.getFavoriteShop().getData()) {
                     favoriteShopItem.setIsFav(true);
                     elementList.add(prepareDataFavoriteShop(favoriteShopItem));
@@ -157,7 +165,7 @@ public class FavoritePresenter
     }
 
     private void setPagingHandler(PagingHandler.PagingHandlerModel pagingModel) {
-        mPagingHandler.setHasNext(PagingHandler.CheckHasNext(pagingModel));
+        pagingHandler.setHasNext(PagingHandler.CheckHasNext(pagingModel));
     }
 
 
@@ -299,7 +307,7 @@ public class FavoritePresenter
             }
             getView().addAllDataFavorite(elementList, true);
             getView().setRefreshing(false);
-            mPagingHandler.resetPage();
+            pagingHandler.resetPage();
         }
     }
 
