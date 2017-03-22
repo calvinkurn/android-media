@@ -15,4 +15,8 @@ public class RecommendationDistrictViewModel {
     public void setDistrictString(String districtString) {
         this.districtString = districtString;
     }
+
+    public String getDistrictString() {
+        return districtString;
+    }
 }

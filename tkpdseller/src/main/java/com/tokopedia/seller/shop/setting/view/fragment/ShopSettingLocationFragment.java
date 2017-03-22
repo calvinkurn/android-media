@@ -106,8 +106,7 @@ public class ShopSettingLocationFragment
 
     @Override
     public void renderRecomendationDistrictModel(List<RecommendationDistrictViewModel> viewModels) {
-        locationDistrictAdapter.addAll(viewModels);
-
+        locationDistrictAdapter.addDistrictModel(viewModels);
     }
 
     @Override
