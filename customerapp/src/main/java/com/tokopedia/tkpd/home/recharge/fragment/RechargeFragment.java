@@ -45,6 +45,7 @@ import com.tokopedia.core.database.recharge.product.Product;
 import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -897,7 +898,10 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     }
 
     private String generateATokenRechargeCheckout() {
-        return SessionHandler.getLoginID(getActivity()) + "_" + System.currentTimeMillis();
+        String timeMillis = String.valueOf(System.currentTimeMillis());
+        String token = AuthUtil.md5(timeMillis);
+        return SessionHandler.getLoginID(getActivity()) + "_"
+                + (token.isEmpty() ? timeMillis : token);
     }
 
     @Override
