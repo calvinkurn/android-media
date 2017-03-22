@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 
 import com.stepstone.stepper.Step;
 import com.stepstone.stepper.viewmodel.StepViewModel;
+import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLocationFragment;
 
 /**
  * Created by zulfikarrahman on 3/16/17.
@@ -35,6 +36,10 @@ public class ShopOpenStepperViewAdapter extends AbstractNativeFragmentStepAdapte
     @Override
     public Step createStep(@IntRange(from = 0L) int position) {
         switch (position){
+            case 0:
+            case 1:
+            case 2:
+                return ShopSettingLocationFragment.getInstance();
             default:
                 return null;
         }

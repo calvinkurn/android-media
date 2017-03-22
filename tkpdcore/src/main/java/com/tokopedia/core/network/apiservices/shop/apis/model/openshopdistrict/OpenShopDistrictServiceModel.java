@@ -4,7 +4,7 @@ package com.tokopedia.core.network.apiservices.shop.apis.model.openshopdistrict;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class OpenShopDistrictModel {
+public class OpenShopDistrictServiceModel {
 
     @SerializedName("status")
     @Expose
