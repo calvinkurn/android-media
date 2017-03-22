@@ -1,10 +1,15 @@
 package com.tokopedia.seller.shop.setting.data.source.cloud;
 
+import android.content.Context;
+
+import com.tokopedia.core.base.common.util.GetData;
+import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.network.apiservices.shop.apis.MyShopApi;
-import com.tokopedia.core.network.apiservices.shop.apis.model.OpenShopDistrictModel;
+import com.tokopedia.core.network.apiservices.shop.apis.model.openshopdistrict.OpenShopDistrictServiceModel;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
-import java.util.Map;
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -16,17 +21,26 @@ public class DistrictDataCloud {
     public static final String DISTRICT = "district";
     public static final String YES = "1";
     private final MyShopApi api;
+    private final Context context;
 
-    public DistrictDataCloud(MyShopApi api) {
+    @Inject
+    public DistrictDataCloud(MyShopApi api, @ActivityContext Context context) {
         this.api = api;
+        this.context = context;
     }
 
-    public Observable<OpenShopDistrictModel> fetchDistrictData() {
-        return api.fetchDistrictData(getFetchDistrictDataParams());
+    public Observable<OpenShopDistrictServiceModel> fetchDistrictData() {
+        return api
+                .fetchDistrictData(
+                        AuthUtil.generateParamsNetwork(
+                                context, getFetchDistrictDataParams()
+                        )
+                )
+                .map(new GetData<OpenShopDistrictServiceModel>());
     }
 
-    private Map<String, String> getFetchDistrictDataParams() {
-        Map<String, String> param = new TKPDMapParam<>();
+    private TKPDMapParam<String, String> getFetchDistrictDataParams() {
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put(DISTRICT, YES);
         return param;
     }

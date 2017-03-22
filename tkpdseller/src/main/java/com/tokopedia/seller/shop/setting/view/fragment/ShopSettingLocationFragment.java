@@ -1,8 +1,11 @@
 package com.tokopedia.seller.shop.setting.view.fragment;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 
+import com.stepstone.stepper.Step;
+import com.stepstone.stepper.VerificationError;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.app.BaseDiFragment;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingLocationComponent;
@@ -12,11 +15,17 @@ import com.tokopedia.seller.shop.setting.di.module.ShopSettingLocationModule;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationPresenter;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationView;
 
+import javax.inject.Inject;
+
 /**
  * Created by Nathaniel on 3/16/2017.
  */
-public class ShopSettingLocationFragment extends BaseDiFragment<ShopSettingLocationComponent, ShopSettingLocationPresenter> implements ShopSettingLocationView {
+public class ShopSettingLocationFragment
+        extends BaseDiFragment<ShopSettingLocationComponent, ShopSettingLocationPresenter>
+        implements ShopSettingLocationView, Step {
     public static final String TAG = "ShopSettingLocation";
+    @Inject
+    public ShopSettingLocationPresenter shopSettingLocationPresenter;
     private TextView textViewShopSettingLocationPickup;
 
     public static ShopSettingLocationFragment getInstance() {
@@ -30,11 +39,6 @@ public class ShopSettingLocationFragment extends BaseDiFragment<ShopSettingLocat
                 .shopSettingLocationModule(new ShopSettingLocationModule(this))
                 .shopSettingComponent(getComponent(ShopSettingComponent.class))
                 .build();
-    }
-
-    @Override
-    protected ShopSettingLocationPresenter getPresenter() {
-        return component.getPresenter();
     }
 
     @Override
@@ -63,5 +67,20 @@ public class ShopSettingLocationFragment extends BaseDiFragment<ShopSettingLocat
 
             }
         };
+    }
+
+    @Override
+    public VerificationError verifyStep() {
+        return null;
+    }
+
+    @Override
+    public void onSelected() {
+
+    }
+
+    @Override
+    public void onError(@NonNull VerificationError error) {
+
     }
 }
