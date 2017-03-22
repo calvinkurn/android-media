@@ -176,6 +176,7 @@ public class BuildAndShowNotification {
         } else {
             homeIntent = HomeRouter.getHomeActivity(mContext);
         }
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
         stackBuilder.addNextIntent(homeIntent);
 
         if (notificationPass.isAllowedBigStyle || isSingleNotification()) {
@@ -184,13 +185,7 @@ public class BuildAndShowNotification {
             bigStyle.bigText(notificationPass.description);
             mBuilder.setStyle(bigStyle);
             mBuilder.setTicker(notificationPass.ticker);
-            if (notificationPass.classParentStack != null) {
-                stackBuilder.addParentStack(notificationPass.classParentStack);
-            }
         } else {
-            if (notificationPass.classParentStack != null) {
-                stackBuilder.addParentStack(notificationPass.classParentStack);
-            }
             inboxStyle.setBigContentTitle(mContext.getString(R.string.title_new_notif_general));
             if (getUnOpenedNotification() != null) {
                 for (NotificationEntity entity : getUnOpenedNotification()) {
