@@ -68,11 +68,6 @@ public abstract class BaseDiFragment<C extends BaseFragmentComponent, P extends 
     }
 
     @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
     protected boolean isRetainInstance() {
         return false;
     }

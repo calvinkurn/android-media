@@ -1,16 +1,16 @@
 package com.tokopedia.seller.shop.setting.view.fragment;
 
-import android.support.annotation.NonNull;
+import android.app.Activity;
 import android.support.design.widget.Snackbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
-import android.widget.TextView;
 
-import com.stepstone.stepper.Step;
-import com.stepstone.stepper.VerificationError;
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.app.BaseDiFragment;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingLocationComponent;
@@ -31,13 +31,14 @@ import javax.inject.Inject;
  */
 public class ShopSettingLocationFragment
         extends BaseDiFragment<ShopSettingLocationComponent, ShopSettingLocationPresenter>
-        implements ShopSettingLocationView, Step {
+        implements ShopSettingLocationView {
     public static final String TAG = "ShopSettingLocation";
+
     @Inject
     public ShopSettingLocationPresenter shopSettingLocationPresenter;
-    private TextView textViewShopSettingLocationPickup;
-    private AutoCompleteTextView locationDistrictTextView;
     private LocationCityAdapter locationDistrictAdapter;
+    private TkpdProgressDialog tkpdProgressDialog;
+    private ShopSettingLocationListener listener;
 
     public static ShopSettingLocationFragment getInstance() {
         return new ShopSettingLocationFragment();
@@ -53,6 +54,15 @@ public class ShopSettingLocationFragment
     }
 
     @Override
+    protected void initialListener(Activity activity) {
+        if (activity instanceof ShopSettingLocationListener) {
+            this.listener = ((ShopSettingLocationListener)activity);
+        } else {
+            throw new RuntimeException("Please implement ShopSettingLocationListener to the activity");
+        }
+    }
+
+    @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_shop_setting_location;
     }
@@ -60,15 +70,10 @@ public class ShopSettingLocationFragment
     @Override
     protected void initView(View view) {
         setupTextLocationDistrict(view);
-
-        view.findViewById(R.id.verify_button)
-                .setOnClickListener(getVerifyButton());
-        textViewShopSettingLocationPickup =
-                (TextView) view.findViewById(R.id.text_view_shop_setting_location_pickup);
     }
 
     private void setupTextLocationDistrict(View view) {
-        locationDistrictTextView = (AutoCompleteTextView) view.findViewById(R.id.edit_text_shop_setting_location_district);
+        AutoCompleteTextView locationDistrictTextView = (AutoCompleteTextView) view.findViewById(R.id.edit_text_shop_setting_location_district);
         locationDistrictAdapter = new LocationCityAdapter(getActivity(), android.R.layout.simple_dropdown_item_1line);
         locationDistrictTextView.setAdapter(locationDistrictAdapter);
         locationDistrictTextView.addTextChangedListener(new TextWatcher() {
@@ -87,21 +92,17 @@ public class ShopSettingLocationFragment
                 presenter.getRecomendationLocationDistrict(s.toString());
             }
         });
+        locationDistrictTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                locationDistrictAdapter.setSelected(position);
+            }
+        });
     }
 
     @Override
     protected void setActionVar() {
         presenter.getDistrictData();
-    }
-
-
-    public View.OnClickListener getVerifyButton() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        };
     }
 
     @Override
@@ -115,18 +116,28 @@ public class ShopSettingLocationFragment
     }
 
     @Override
-    public VerificationError verifyStep() {
-        return null;
+    public void showProgressDialog() {
+        if (tkpdProgressDialog == null) {
+            tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        }
+        tkpdProgressDialog.showDialog();
     }
 
     @Override
-    public void onSelected() {
-
+    public void dismissProgressDialog() {
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
     }
 
     @Override
-    public void onError(@NonNull VerificationError error) {
-
+    public void showRetryGetDistrictData() {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.getDistrictData();
+            }
+        });
     }
 
 

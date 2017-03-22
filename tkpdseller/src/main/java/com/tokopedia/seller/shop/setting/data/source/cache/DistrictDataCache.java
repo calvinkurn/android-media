@@ -38,18 +38,26 @@ public class DistrictDataCache {
 
     public Boolean storeDistrictData(OpenShopDistrictServiceModel serviceModel) {
 
-        dataManager.clearData();
-        dataManager.storeDistrictData(serviceModel);
-        localCacheHandler.setExpire(CACHE_DURATION);
+        storeToDb(serviceModel);
+        setCacheTimer();
         return true;
 
+    }
+
+    private void storeToDb(OpenShopDistrictServiceModel serviceModel) {
+        dataManager.clearData();
+        dataManager.storeDistrictData(serviceModel);
+    }
+
+    private void setCacheTimer() {
+        localCacheHandler.setExpire(CACHE_DURATION);
     }
 
     public Observable<Boolean> checkDistrictCache() {
         if (localCacheHandler.isExpired()) {
             throw new RuntimeException("Cache is expired");
         }
-        if (dataManager.checkDataIsPresent()) {
+        if (dataManager.checkDataIsEmpty()) {
             throw new RuntimeException("Cache is empty");
         }
         return Observable.just(true);

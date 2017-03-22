@@ -33,9 +33,10 @@ public class DistrictDataManager {
         try {
             processServiceModel(serviceModel);
             database.setTransactionSuccessful();
-        } finally {
-            database.endTransaction();
+        } catch (Exception e){
             throw new DistrictDataManagerException();
+        } finally{
+            database.endTransaction();
         }
 
     }
@@ -68,8 +69,8 @@ public class DistrictDataManager {
         dataDb.save();
     }
 
-    public boolean checkDataIsPresent() {
-        if (new Select().from(DistrictDataDb.class).count() != 0) {
+    public boolean checkDataIsEmpty() {
+        if (new Select().from(DistrictDataDb.class).count() == 0) {
             return true;
         } else {
             return false;

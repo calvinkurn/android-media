@@ -11,12 +11,15 @@ import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingComponent
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingModule;
 import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLocationFragment;
+import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLocationListener;
 
 /**
  * Created by Nathaniel on 3/16/2017.
  */
 
-public class ShopOpenMandatoryActivity extends BaseDiActivity<ShopOpenMandatoryPresenter, ShopSettingComponent> {
+public class ShopOpenMandatoryActivity
+        extends BaseDiActivity<ShopOpenMandatoryPresenter, ShopSettingComponent>
+        implements ShopSettingLocationListener{
 
     //    StepperLayout stepperLayout;
     private FragmentManager fragmentManager;

@@ -39,7 +39,6 @@ public class ShopOpenStepperViewAdapter extends AbstractNativeFragmentStepAdapte
             case 0:
             case 1:
             case 2:
-                return ShopSettingLocationFragment.getInstance();
             default:
                 return null;
         }

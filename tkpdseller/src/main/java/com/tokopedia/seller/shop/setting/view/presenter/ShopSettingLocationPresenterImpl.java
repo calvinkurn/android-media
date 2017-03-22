@@ -31,17 +31,20 @@ public class ShopSettingLocationPresenterImpl extends ShopSettingLocationPresent
 
     @Override
     public void getDistrictData() {
+        view.showProgressDialog();
         fetchDistrictDataUseCase.execute(RequestParams.EMPTY, new GetDistrictDataSubscriber());
     }
 
     @Override
     public void getRecomendationLocationDistrict(String stringTyped) {
-        RequestParams recomendationLocationDistrictParam =
-                GetRecomendationLocationDistrictUseCase.generateParams(stringTyped);
-        getRecomendationLocationDistrictUseCase.execute(
-                recomendationLocationDistrictParam,
-                new GetRecomendationLocationDistrictSubscriber()
-        );
+        if (!stringTyped.isEmpty()) {
+            RequestParams recomendationLocationDistrictParam =
+                    GetRecomendationLocationDistrictUseCase.generateParams(stringTyped);
+            getRecomendationLocationDistrictUseCase.execute(
+                    recomendationLocationDistrictParam,
+                    new GetRecomendationLocationDistrictSubscriber()
+            );
+        }
     }
 
     @Override
@@ -58,11 +61,13 @@ public class ShopSettingLocationPresenterImpl extends ShopSettingLocationPresent
 
         @Override
         public void onError(Throwable e) {
-
+            view.dismissProgressDialog();
+            view.showRetryGetDistrictData();
         }
 
         @Override
         public void onNext(Boolean aBoolean) {
+            view.dismissProgressDialog();
 
         }
     }

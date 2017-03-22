@@ -18,9 +18,10 @@ import java.util.List;
  * Created by sebastianuskh on 3/22/17.
  */
 
-public class LocationCityAdapter extends ArrayAdapter<String>{
+public class LocationCityAdapter extends ArrayAdapter<String> {
 
     private List<RecommendationDistrictViewModel> datas;
+    private int selected = -1;
 
     public LocationCityAdapter(@NonNull Context context, @LayoutRes int resource) {
         super(context, resource);
@@ -37,16 +38,16 @@ public class LocationCityAdapter extends ArrayAdapter<String>{
         return datas.get(position).getDistrictString();
     }
 
-    private List<String> getStringList(List<RecommendationDistrictViewModel> datas) {
-        List<String> strings = new ArrayList<>();
-        for(RecommendationDistrictViewModel viewModel : datas){
-            strings.add(viewModel.getDistrictString());
-        }
-        return strings;
-    }
-
     public void addDistrictModel(List<RecommendationDistrictViewModel> viewModels) {
         datas = viewModels;
         notifyDataSetChanged();
+    }
+
+    public void setSelected(int selected) {
+        this.selected = selected;
+    }
+
+    public RecommendationDistrictViewModel getSelected() throws Exception {
+        return datas.get(selected);
     }
 }

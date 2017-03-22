@@ -14,4 +14,10 @@ public interface ShopSettingLocationView extends BaseDiView {
     void renderRecomendationDistrictModel(List<RecommendationDistrictViewModel> viewModels);
 
     void showGenericError();
+
+    void showProgressDialog();
+
+    void dismissProgressDialog();
+
+    void showRetryGetDistrictData();
 }
