@@ -2,10 +2,13 @@ package com.tokopedia.core.network.core;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.core.base.di.qualifier.NoAuthInterceptor;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -31,5 +34,21 @@ public class RetrofitFactory {
                         .addConverterFactory(new StringResponseConverter())
                         .addConverterFactory(GsonConverterFactory.create(gson))
                         .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+    }
+
+    public static Retrofit.Builder createDaggerRetrofitDefaultConfig(
+            String baseUrl,
+            Gson gson,
+            GeneratedHostConverter hostConverter,
+            TkpdResponseConverter tkpdConverter,
+            StringResponseConverter stringConverter) {
+
+        return new Retrofit.Builder()
+                .addConverterFactory(stringConverter)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(hostConverter)
+                .addConverterFactory(tkpdConverter)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .baseUrl(baseUrl);
     }
 }

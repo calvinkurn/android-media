@@ -9,6 +9,7 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.qualifier.BaseDomainQualifier;
 import com.tokopedia.core.base.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.base.di.qualifier.NoAuthInterceptor;
+import com.tokopedia.core.base.di.qualifier.NoAuthInterceptorTopAds;
 import com.tokopedia.core.base.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.base.di.qualifier.WithAuthInterceptor;
 import com.tokopedia.core.base.di.qualifier.WithGlobalAuthInterceptor;
@@ -33,8 +34,6 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author kulomady on 1/9/17.
@@ -52,12 +51,22 @@ public class NetModule {
                 .build();
     }
 
+
     @TopAdsQualifier
     @ApplicationScope
     @Provides
-    public Retrofit provideTopAdsRetrofit(@NoAuthInterceptor OkHttpClient okHttpClient) {
+    public Retrofit provideTopAdsRetrofit(Gson gson,
+                                          @NoAuthInterceptorTopAds OkHttpClient okHttpClient,
+                                          GeneratedHostConverter generatedHostConverter,
+                                          TkpdResponseConverter tkpdResponseConverter,
+                                          StringResponseConverter stringResponseConverter) {
 
-        return RetrofitFactory.createRetrofitDefaultConfig(TkpdBaseURL.TOPADS_DOMAIN)
+        return RetrofitFactory
+                .createDaggerRetrofitDefaultConfig(TkpdBaseURL.TOPADS_DOMAIN,
+                        gson,
+                        generatedHostConverter,
+                        tkpdResponseConverter,
+                        stringResponseConverter)
                 .client(okHttpClient)
                 .build();
     }
@@ -123,6 +132,21 @@ public class NetModule {
         return OkHttpFactory.create()
                 .addOkHttpRetryPolicy(okHttpRetryPolicy)
                 .buildClientNoAuth();
+    }
+
+    @NoAuthInterceptorTopAds
+    @ApplicationScope
+    @Provides
+    public OkHttpClient provideOkhttpClientNoAuthTopAds(Cache cache,
+                                                  HttpLoggingInterceptor httpLoggingInterceptor) {
+        OkHttpClient.Builder client = new OkHttpClient.Builder();
+
+        client.connectTimeout(45, TimeUnit.SECONDS);
+        client.readTimeout(45, TimeUnit.SECONDS);
+        client.writeTimeout(45, TimeUnit.SECONDS);
+        client.addInterceptor(httpLoggingInterceptor);
+        client.cache(cache);
+        return client.build();
     }
 
     @ApplicationScope
