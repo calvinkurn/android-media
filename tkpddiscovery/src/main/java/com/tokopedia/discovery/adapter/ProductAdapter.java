@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tkpd.library.ui.view.CategoryHeaderTransformation;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
@@ -517,7 +518,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                             GridLayoutManager.VERTICAL, false));
             categoryAdapter = new RevampCategoryAdapter(categoryHeaderModel.categoryWidth,categoryHeaderModel.activeChildren,categoryHeaderModel.listener);
             revampCategoriesRecyclerView.setAdapter(categoryAdapter);
-            ImageHandler.loadImageFit2(imageHeader.getContext(),imageHeader,categoryHeaderModel.categoryHeader.getHeaderImage());
+            ImageHandler.loadImageFitTransformation(imageHeader.getContext(),imageHeader,
+                    categoryHeaderModel.categoryHeader.getHeaderImage(), new CategoryHeaderTransformation(imageHeader.getContext()));
             titleHeader.setText(categoryHeaderModel.categoryHeader.getName().toUpperCase());
             if (categoryHeaderModel.isUsedUnactiveChildren) {
                 expandLayout.setVisibility(View.VISIBLE);
