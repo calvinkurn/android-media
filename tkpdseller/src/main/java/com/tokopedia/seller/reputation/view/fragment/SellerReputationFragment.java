@@ -173,8 +173,6 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
             gmNetworkErrorHelper = new TopAdsNetworkErrorHelper(null, rootView);
             reputationViewHelper = new ReputationViewHelper(topSlideOffBar);
             setupRecyclerView();
-
-            isFirstTime = false;
         }
         fetchData();
     }
@@ -191,6 +189,8 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
                 adapter.showLoadingFull(true);
                 swipeToRefresh.setEnabled(false);
                 firstTimeNetworkCall();
+
+                isFirstTime = false;
             }
         }
     }
