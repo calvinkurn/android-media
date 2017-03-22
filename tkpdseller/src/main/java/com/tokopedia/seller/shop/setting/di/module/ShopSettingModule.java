@@ -9,8 +9,6 @@ import com.tokopedia.core.network.apiservices.shop.apis.MyShopApi;
 import com.tokopedia.seller.app.BaseActivityModule;
 import com.tokopedia.seller.shop.setting.data.repository.DistrictDataRepositoryImpl;
 import com.tokopedia.seller.shop.setting.data.source.DistrictDataSource;
-import com.tokopedia.seller.shop.setting.data.source.cache.DistrictDataCache;
-import com.tokopedia.seller.shop.setting.data.source.cloud.DistrictDataCloud;
 import com.tokopedia.seller.shop.setting.di.scope.ShopSettingScope;
 import com.tokopedia.seller.shop.setting.domain.DistrictDataRepository;
 import com.tokopedia.seller.shop.setting.domain.interactor.FetchDistrictDataUseCase;
@@ -42,18 +40,6 @@ public class ShopSettingModule extends BaseActivityModule {
     @ShopSettingScope
     public DistrictDataRepository provideDistrictDataRepository(DistrictDataSource districtDataSource) {
         return new DistrictDataRepositoryImpl(districtDataSource);
-    }
-
-    @Provides
-    @ShopSettingScope
-    public DistrictDataCache provideDistrictDataCache() {
-        return new DistrictDataCache();
-    }
-
-    @Provides
-    @ShopSettingScope
-    public DistrictDataCloud provideDistrictDataCloud(MyShopApi api, Activity activity) {
-        return new DistrictDataCloud(api, activity);
     }
 
     @Provides

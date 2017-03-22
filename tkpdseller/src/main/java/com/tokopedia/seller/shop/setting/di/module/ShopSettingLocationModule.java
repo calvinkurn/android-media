@@ -1,5 +1,6 @@
 package com.tokopedia.seller.shop.setting.di.module;
 
+import com.tokopedia.seller.app.BaseFragmentModule;
 import com.tokopedia.seller.shop.setting.di.scope.ShopSettingLocationScope;
 import com.tokopedia.seller.shop.setting.domain.interactor.FetchDistrictDataUseCase;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationPresenter;
@@ -15,17 +16,14 @@ import dagger.Provides;
 
 @ShopSettingLocationScope
 @Module
-public class ShopSettingLocationModule {
-
-    private final ShopSettingLocationView view;
+public class ShopSettingLocationModule extends BaseFragmentModule<ShopSettingLocationView> {
 
     public ShopSettingLocationModule(ShopSettingLocationView view) {
-        this.view = view;
+        super(view);
     }
 
-    @ShopSettingLocationScope
     @Provides
-    ShopSettingLocationPresenter providePresenter(FetchDistrictDataUseCase fetchDistrictDataUseCase) {
+    ShopSettingLocationPresenter providePresenter(ShopSettingLocationView view, FetchDistrictDataUseCase fetchDistrictDataUseCase) {
         return new ShopSettingLocationPresenterImpl(view, fetchDistrictDataUseCase);
     }
 
