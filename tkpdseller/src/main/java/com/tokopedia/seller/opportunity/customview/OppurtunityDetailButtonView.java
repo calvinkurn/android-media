@@ -50,11 +50,14 @@ public class OppurtunityDetailButtonView extends BaseView<Object, OppurtunityVie
 
     @Override
     protected void setViewListener() {
-
+        setVisibility(GONE);
     }
 
     @Override
     public void renderData(@NonNull Object data) {
+        actionDelete.setVisibility(GONE);
+        actionSubmit.setVisibility(VISIBLE);
+
         actionDelete.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {

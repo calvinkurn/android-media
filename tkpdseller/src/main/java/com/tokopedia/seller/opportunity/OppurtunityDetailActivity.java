@@ -21,6 +21,14 @@ public class OppurtunityDetailActivity extends BasePresenterActivity<Oppurtunity
         implements OppurtunityDetailView {
 
     private static final String OPPURTUNITY_FRAGMENT_TAG = OppurtunityDetailFragment.class.getSimpleName();
+    private static final String OPPURTUNITY_EXTRA_PARAM = "extra_param";
+
+    public static Intent createIntent(Context context, OpportunityItemViewModel opportunityItemViewModel) {
+        Intent intent = new Intent(context, OppurtunityDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(OPPURTUNITY_EXTRA_PARAM, opportunityItemViewModel);
+        return intent;
+    }
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -66,9 +74,4 @@ public class OppurtunityDetailActivity extends BasePresenterActivity<Oppurtunity
 
     }
 
-    public static Intent getDetailIntent(Context context, OpportunityItemViewModel opportunityItemViewModel) {
-        Intent intent = new Intent(context, OppurtunityDetailActivity.class);
-//        intent.putExtra(ARGS_OPPORTUNITY, opportunity);
-        return intent;
-    }
 }

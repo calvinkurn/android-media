@@ -19,6 +19,7 @@ import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.OpportunityFilterActivity;
 import com.tokopedia.seller.opportunity.OpportunitySortActivity;
+import com.tokopedia.seller.opportunity.OppurtunityDetailActivity;
 import com.tokopedia.seller.opportunity.adapter.OpportunityListAdapter;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenter;
@@ -43,6 +44,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     private static final String CACHE_SEEN_OPPORTUNITY = "CACHE_SEEN_OPPORTUNITY";
     private static final java.lang.String HAS_SEEN_OPPORTUNITY = "HAS_SEEN_OPPORTUNITY";
+    private static final int REQUEST_CODE_OPPURTUNITY_DETAIL = 2017;
+
     private static final int DEFAULT_CATEGORY_SELECTED = 1;
     RecyclerView opportunityList;
     TextView headerInfo;
@@ -147,8 +150,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         return new OpportunityListAdapter.OpportunityListener() {
             @Override
             public void goToDetail(OpportunityItemViewModel opportunityItemViewModel) {
-//                startActivityForResult(OppurtunityDetailActivity.getDetailIntent(getActivity(), opportunity),
-//                        REQUEST_OPEN_DETAIL);
+                Intent intent = OppurtunityDetailActivity.createIntent(getActivity(), opportunityItemViewModel);
+                startActivityForResult(intent, REQUEST_CODE_OPPURTUNITY_DETAIL);
             }
         };
     }
@@ -315,6 +318,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_OPEN_DETAIL && resultCode == Activity.RESULT_OK) {
+            // refresh the list
 
         } else if (requestCode == REQUEST_SORT && resultCode == Activity.RESULT_OK) {
             CommonUtils.dumper("NISNIS Sort" + data.getExtras().getInt(OpportunitySortFragment.SELECTED_POSITION));
