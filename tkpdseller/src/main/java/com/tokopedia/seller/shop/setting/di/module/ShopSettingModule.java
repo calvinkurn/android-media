@@ -12,6 +12,7 @@ import com.tokopedia.seller.shop.setting.data.source.DistrictDataSource;
 import com.tokopedia.seller.shop.setting.di.scope.ShopSettingScope;
 import com.tokopedia.seller.shop.setting.domain.DistrictDataRepository;
 import com.tokopedia.seller.shop.setting.domain.interactor.FetchDistrictDataUseCase;
+import com.tokopedia.seller.shop.setting.domain.interactor.GetRecomendationLocationDistrictUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -34,6 +35,20 @@ public class ShopSettingModule extends BaseActivityModule {
             DistrictDataRepository districtDataRepository
     ) {
         return new FetchDistrictDataUseCase(threadExecutor, postExecutionThread, districtDataRepository);
+    }
+
+    @Provides
+    @ShopSettingScope
+    public GetRecomendationLocationDistrictUseCase provideGetRecomendationLocationDistrictUseCase(
+            ThreadExecutor threadExecutor,
+            PostExecutionThread postExecutionThread,
+            DistrictDataRepository districtDataRepository
+    ){
+        return new GetRecomendationLocationDistrictUseCase(
+                threadExecutor,
+                postExecutionThread,
+                districtDataRepository
+        );
     }
 
     @Provides

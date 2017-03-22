@@ -45,8 +45,8 @@
             android:layout_marginTop="63dp"
             android:hint="@string/hint_shop_setting_location_city">
 
-            <EditText
-                android:id="@+id/edit_text_shop_setting_location_city"
+            <AutoCompleteTextView
+                android:id="@+id/edit_text_shop_setting_location_district"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16sp" />

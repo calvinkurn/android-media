@@ -1,13 +1,20 @@
 package com.tokopedia.seller.shop.setting.data.source.cache.db;
 
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.core.database.model.DistrictDataDb;
+import com.tokopedia.core.database.model.DistrictDataDb_Table;
 import com.tokopedia.core.network.apiservices.shop.apis.model.openshopdistrict.DistrictModel;
 import com.tokopedia.core.network.apiservices.shop.apis.model.openshopdistrict.OpenShopDistrictServiceModel;
 
+import java.util.List;
+
 import javax.inject.Inject;
+
+import rx.Observable;
 
 /**
  * Created by sebastianuskh on 3/21/17.
@@ -59,5 +66,29 @@ public class DistrictDataManager {
         dataDb.setDistrictId(id);
         dataDb.setDistrictString(name);
         dataDb.save();
+    }
+
+    public boolean checkDataIsPresent() {
+        if (new Select().from(DistrictDataDb.class).count() != 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void clearData() {
+        Delete.table(DistrictDataDb.class);
+    }
+
+    public Observable<List<DistrictDataDb>> getRecommendationDistrict(String typedString) {
+        return Observable.just(new Select()
+                .from(DistrictDataDb.class)
+                .where(
+                        DistrictDataDb_Table
+                                .districtString
+                                .like("%" + typedString + "%")
+                )
+                .limit(15)
+                .queryList());
     }
 }

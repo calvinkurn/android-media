@@ -1,5 +1,7 @@
 package com.tokopedia.seller.shop.setting.view.presenter;
 
+import android.text.Editable;
+
 import com.tokopedia.seller.app.BaseDiPresenter;
 
 /**
@@ -13,4 +15,6 @@ public abstract class ShopSettingLocationPresenter extends BaseDiPresenter<ShopS
     }
 
     public abstract void getDistrictData();
+
+    public abstract void getRecomendationLocationDistrict(String stringTyped);
 }

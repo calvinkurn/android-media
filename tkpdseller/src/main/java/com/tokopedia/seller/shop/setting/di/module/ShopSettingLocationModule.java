@@ -3,6 +3,7 @@ package com.tokopedia.seller.shop.setting.di.module;
 import com.tokopedia.seller.app.BaseFragmentModule;
 import com.tokopedia.seller.shop.setting.di.scope.ShopSettingLocationScope;
 import com.tokopedia.seller.shop.setting.domain.interactor.FetchDistrictDataUseCase;
+import com.tokopedia.seller.shop.setting.domain.interactor.GetRecomendationLocationDistrictUseCase;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationPresenter;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationPresenterImpl;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationView;
@@ -23,8 +24,15 @@ public class ShopSettingLocationModule extends BaseFragmentModule<ShopSettingLoc
     }
 
     @Provides
-    ShopSettingLocationPresenter providePresenter(ShopSettingLocationView view, FetchDistrictDataUseCase fetchDistrictDataUseCase) {
-        return new ShopSettingLocationPresenterImpl(view, fetchDistrictDataUseCase);
+    ShopSettingLocationPresenter providePresenter(
+            ShopSettingLocationView view,
+            FetchDistrictDataUseCase fetchDistrictDataUseCase,
+            GetRecomendationLocationDistrictUseCase getRecomendationLocationDistrictUseCase) {
+        return new ShopSettingLocationPresenterImpl(
+                view,
+                fetchDistrictDataUseCase,
+                getRecomendationLocationDistrictUseCase
+        );
     }
 
 }
