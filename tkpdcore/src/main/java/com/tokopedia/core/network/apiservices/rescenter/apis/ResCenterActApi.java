@@ -94,4 +94,7 @@ public interface ResCenterActApi {
     @POST(TkpdBaseURL.ResCenter.PATH_CANCEL_RESOLUTION)
     Observable<Response<TkpdResponse>> cancelResolution2(@FieldMap Map<String, Object> params);
 
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_REPORT_REOLUTION)
+    Observable<Response<TkpdResponse>> reportResolution2(@FieldMap Map<String, Object> params);
 }

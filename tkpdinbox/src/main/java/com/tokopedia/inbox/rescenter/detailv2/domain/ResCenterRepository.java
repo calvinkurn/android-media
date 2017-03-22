@@ -22,4 +22,6 @@ public interface ResCenterRepository {
     Observable<TrackingAwbReturProduct> getTrackingAwbReturProduct(TKPDMapParam<String, Object> parameters);
 
     Observable<ResolutionActionDomainData> cancelResolution(TKPDMapParam<String, Object> parameters);
+
+    Observable<ResolutionActionDomainData> askHelpResolution(TKPDMapParam<String, Object> parameters);
 }
