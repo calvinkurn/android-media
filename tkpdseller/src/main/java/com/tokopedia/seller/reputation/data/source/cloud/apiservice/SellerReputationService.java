@@ -1,8 +1,8 @@
-package com.tokopedia.seller.reputation.network.apiservice;
+package com.tokopedia.seller.reputation.data.source.cloud.apiservice;
 
 import com.tokopedia.core.network.retrofit.services.AuthService;
 import com.tokopedia.seller.reputation.constant.ReputationConstant;
-import com.tokopedia.seller.reputation.network.apiservice.api.SellerReputationApi;
+import com.tokopedia.seller.reputation.data.source.cloud.apiservice.api.SellerReputationApi;
 
 import retrofit2.Retrofit;
 

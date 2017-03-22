@@ -1,4 +1,4 @@
-package com.tokopedia.seller.reputation.presenter;
+package com.tokopedia.seller.reputation.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -7,10 +7,10 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
+import com.tokopedia.seller.reputation.data.model.request.SellerReputationRequest;
 import com.tokopedia.seller.reputation.domain.interactor.ReviewReputationMergeUseCase;
 import com.tokopedia.seller.reputation.domain.interactor.ReviewReputationUseCase;
 import com.tokopedia.seller.reputation.domain.model.SellerReputationDomain;
-import com.tokopedia.seller.reputation.model.request.SellerReputationRequest;
 import com.tokopedia.seller.reputation.util.ReputationDateUtils;
 import com.tokopedia.seller.reputation.view.SellerReputationView;
 import com.tokopedia.seller.reputation.view.model.ReputationReviewModel;

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.reputation.model.request;
+package com.tokopedia.seller.reputation.data.model.request;
 
 import android.util.Log;
 

@@ -1,7 +1,7 @@
-package com.tokopedia.seller.reputation.network.apiservice.api;
+package com.tokopedia.seller.reputation.data.source.cloud.apiservice.api;
 
 import com.tokopedia.seller.reputation.constant.ReputationNetworkConstant;
-import com.tokopedia.seller.reputation.model.response.SellerReputationResponse;
+import com.tokopedia.seller.reputation.data.model.response.SellerReputationResponse;
 
 import java.util.Map;
 

@@ -2,8 +2,8 @@ package com.tokopedia.seller.reputation.data.mapper;
 
 import android.support.annotation.NonNull;
 
+import com.tokopedia.seller.reputation.data.model.response.SellerReputationResponse;
 import com.tokopedia.seller.reputation.domain.model.SellerReputationDomain;
-import com.tokopedia.seller.reputation.model.response.SellerReputationResponse;
 
 import java.util.ArrayList;
 import java.util.List;

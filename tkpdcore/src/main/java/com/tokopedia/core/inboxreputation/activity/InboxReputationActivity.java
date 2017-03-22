@@ -19,6 +19,7 @@ import com.tokopedia.core.inboxreputation.listener.InboxReputationView;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
@@ -38,7 +39,7 @@ public class InboxReputationActivity extends DrawerPresenterActivity
     public static final String REVIEW_PRODUCT = "inbox-reputation-my-product";
     public static final String REVIEW_USER = "inbox-reputation-my-review";
     private static final int OFFSCREEN_PAGE_LIMIT = 2;
-    List<SellerFragmentReputation.SellerReputationModel> fragments;
+    TkpdFragmentWrapper sellerReputationFragment;
 
     @BindView(R2.id.pager)
     ViewPager viewPager;
@@ -78,7 +79,7 @@ public class InboxReputationActivity extends DrawerPresenterActivity
         super.initView();
         if (getApplicationContext() != null && getApplicationContext() instanceof SellerFragmentReputation) {
             SellerFragmentReputation applicationContext = (SellerFragmentReputation) getApplicationContext();
-            fragments = applicationContext.getFragments(this);
+            sellerReputationFragment = applicationContext.getSellerReputationFragment(this);
         }
         drawer.setDrawerPosition(TkpdState.DrawerPosition.INBOX_REVIEW);
         viewPager.setAdapter(getViewPagerAdapter());
@@ -89,10 +90,8 @@ public class InboxReputationActivity extends DrawerPresenterActivity
 
         if (GlobalConfig.isSellerApp()) {
             indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_product)));
-            if (fragments != null && !fragments.isEmpty()) {
-                for (SellerFragmentReputation.SellerReputationModel fragment : fragments) {
-                    indicator.addTab(indicator.newTab().setText(fragment.getHeader()));
-                }
+            if (sellerReputationFragment != null) {
+                indicator.addTab(indicator.newTab().setText(sellerReputationFragment.getHeader()));
             }
         } else {
             indicator.addTab(indicator.newTab().setText(getString(R.string.title_menu_all)));
@@ -112,11 +111,7 @@ public class InboxReputationActivity extends DrawerPresenterActivity
         List<Fragment> fragmentList = new ArrayList<>();
         if (GlobalConfig.isSellerApp()) {
             fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
-            if (fragments != null && !fragments.isEmpty()) {
-                for (SellerFragmentReputation.SellerReputationModel fragment : fragments) {
-                    fragmentList.add(fragment.getTkpdFragment());
-                }
-            }
+            fragmentList.add(sellerReputationFragment.getTkpdFragment());
         } else {
             fragmentList.add(InboxReputationFragment.createInstance(REVIEW_ALL));
             fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));

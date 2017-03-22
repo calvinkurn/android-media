@@ -1,5 +1,5 @@
 
-package com.tokopedia.seller.reputation.model.response;
+package com.tokopedia.seller.reputation.data.model.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

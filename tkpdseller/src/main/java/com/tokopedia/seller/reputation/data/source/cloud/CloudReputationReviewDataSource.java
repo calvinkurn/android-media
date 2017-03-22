@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.tokopedia.seller.reputation.data.mapper.ReputationReviewMapper;
 import com.tokopedia.seller.reputation.data.source.ReputationReviewDataSource;
+import com.tokopedia.seller.reputation.data.source.cloud.apiservice.api.SellerReputationApi;
 import com.tokopedia.seller.reputation.domain.model.SellerReputationDomain;
-import com.tokopedia.seller.reputation.network.apiservice.api.SellerReputationApi;
 
 import java.util.Map;
 
