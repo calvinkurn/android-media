@@ -123,7 +123,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
         fragment.setAllowEnterTransitionOverlap(true);
         fragment.setAllowReturnTransitionOverlap(true);
         fragment.setSharedElementEnterTransition(changeBoundsTransition);
-        addFragment(R.id.bottom_container, fragment);
+        replaceFragment(R.id.bottom_container, fragment);
     }
 
     private void onBottomContainerChangeToBookingScreen() {
