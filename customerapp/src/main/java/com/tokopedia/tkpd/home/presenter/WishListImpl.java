@@ -168,7 +168,7 @@ public class WishListImpl implements WishList {
 
     @Override
     public void fetchDataFromInternet(final Context context) {
-        Observable<Response<WishlistData>> observable = mojitoService.getApi().getWishlist(
+        Observable<Response<WishlistData>> observable = mojitoAuthService.getApi().getWishlist(
                 SessionHandler.getLoginID(context),
                 10,
                 mPaging.getPage()
