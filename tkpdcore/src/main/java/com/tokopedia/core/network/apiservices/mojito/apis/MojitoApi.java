@@ -34,5 +34,8 @@ public interface MojitoApi {
 
     @GET(TkpdBaseURL.Mojito.PATH_SEARCH_WISHLIST)
     Observable<Response<WishlistData>> searchWishlist(
-            @Path("userId") String userId, @Query("q") String query);
+            @Path("userId") String userId,
+            @Query("q") String query,
+            @Query("page") int page,
+            @Query("count") int count);
 }
