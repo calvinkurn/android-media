@@ -1369,6 +1369,14 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventClickAutoCompleteCategory(String catId, String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_AUTOCOMPLETE_CAT,
+                catId+" | "+label
+        ).getEvent());
+    }
 
     public static void eventClickGMSwitcher(String label) {
         sendGTMEvent(new EventTracking(

@@ -100,8 +100,8 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
     @Override
     public void onItemClicked(SearchItem item) {
 
-        CommonUtils.dumper("GAv4 search clicked "+item.getEventAction());
-        probeAnalytics(item.getEventAction(), item.getKeyword());
+        CommonUtils.dumper("GAv4 search clicked "+item.getEventAction()+" "+item.getSc());
+        probeAnalytics(item);
         if (item.getSc() != null && !item.getSc().isEmpty()) {
             ((BrowseProductActivity) getActivity()).sendQuery(item.getKeyword(), item.getSc());
         } else {
@@ -110,20 +110,23 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
     }
 
 
-    private void probeAnalytics(String searchType, String label){
-        switch (searchType)
+    private void probeAnalytics(SearchItem item){
+        switch (item.getEventAction())
         {
             case AppEventTracking.GTM.SEARCH_AUTOCOMPLETE :
-                UnifyTracking.eventClickAutoCompleteSearch(label);
+                UnifyTracking.eventClickAutoCompleteSearch(item.getKeyword());
                 break;
             case AppEventTracking.GTM.SEARCH_HOTLIST :
-                UnifyTracking.eventClickHotListSearch(label);
+                UnifyTracking.eventClickHotListSearch(item.getKeyword());
                 break;
             case AppEventTracking.GTM.SEARCH_RECENT :
-                UnifyTracking.eventClickRecentSearch(label);
+                UnifyTracking.eventClickRecentSearch(item.getKeyword());
                 break;
             case AppEventTracking.GTM.SEARCH_POPULAR :
-                UnifyTracking.eventClickPopularSearch(label);
+                UnifyTracking.eventClickPopularSearch(item.getKeyword());
+                break;
+            case AppEventTracking.GTM.SEARCH_AUTOCOMPLETE_IN_CAT :
+                UnifyTracking.eventClickAutoCompleteCategory(item.getSc(), item.getKeyword());
                 break;
         }
     }

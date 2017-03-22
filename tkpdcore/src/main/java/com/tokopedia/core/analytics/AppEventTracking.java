@@ -203,6 +203,7 @@ public interface AppEventTracking {
         String SEARCH_HOTLIST = "Search HotList";
         String SEARCH_AUTOCOMPLETE = "Search Autocomplete";
         String SEARCH_AUTOCOMPLETE_SHOP = "Search Autocomplete Shop";
+        String SEARCH_AUTOCOMPLETE_CAT = "Search Autocomplete Category";
 
         String PRODUCT_CATEGORY = "Click Product";
         String CATEGORY_LEVEL = "Category";
@@ -404,8 +405,6 @@ public interface AppEventTracking {
         String SEARCH_POPULAR               = "popular_search";
         String SEARCH_AUTOCOMPLETE          = "autocomplete";
         String SEARCH_HOTLIST               = "hotlist";
-        String SEARCH_AUTOCOMPLETE_SHOP     = "shop";
-        String SEARCH_AUTOCOMPLETE_CAT      = "category";
         String SEARCH_AUTOCOMPLETE_IN_CAT   = "in_category";
     }
 
