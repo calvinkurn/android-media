@@ -8,24 +8,20 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.TextAppearanceSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.router.CustomerRouter;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -134,6 +130,8 @@ public class ShopSearchResultAdapter extends RecyclerView.Adapter<ShopSearchResu
         void onItemClicked(){
             SearchItem searchItem = items.get(getAdapterPosition());
             searchItem.setEventAction(eventAction);
+            CommonUtils.dumper("GAv4 search "+eventAction+" "+searchItem.getKeyword());
+            UnifyTracking.eventClickAutoCompleteShopSearch(searchItem.getKeyword());
             if(searchItem.getApplink()!=null) {
                 List<String> segments = Uri.parse(searchItem.getApplink()).getPathSegments();
                 if(segments!=null && segments.size()>0) {

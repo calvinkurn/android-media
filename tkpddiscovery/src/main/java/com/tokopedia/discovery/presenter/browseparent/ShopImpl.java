@@ -54,7 +54,6 @@ public class ShopImpl extends Shop implements DiscoveryListener {
             shop.start = 0;
             shop.extraFilter = discoveryActivityPresenter.getProductParam().extraFilter;
             discoveryInteractor.getShops(NetworkParam.generateShopQuery(shop));
-            UnifyTracking.eventClickAutoCompleteShopSearch(shop.q);
             view.setLoading(true);
         }
     }
