@@ -54,4 +54,10 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
         return resCenterDataSourceFactory.createCloudActionResCenterDataStore()
                 .cancelResolution(parameters);
     }
+
+    @Override
+    public Observable<ResolutionActionDomainData> askHelpResolution(TKPDMapParam<String, Object> parameters) {
+        return resCenterDataSourceFactory.createCloudActionResCenterDataStore()
+                .reportResolution(parameters);
+    }
 }

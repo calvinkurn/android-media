@@ -13,6 +13,7 @@ import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFa
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AskHelpResolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.CancelResolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.TrackAwbReturProductUseCase;
@@ -31,6 +32,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     private final GetResCenterDetailUseCase getResCenterDetailUseCase;
     private final TrackAwbReturProductUseCase trackAwbReturProductUseCase;
     private final CancelResolutionUseCase cancelResolutionUseCase;
+    private final AskHelpResolutionUseCase askHelpResolutionUseCase;
 
     public DetailResCenterFragmentImpl(Context context, DetailResCenterFragmentView fragmentView) {
         this.fragmentView = fragmentView;
@@ -61,6 +63,9 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
 
         this.cancelResolutionUseCase
                 = new CancelResolutionUseCase(jobExecutor, uiThread, resCenterRepository);
+
+        this.askHelpResolutionUseCase
+                = new AskHelpResolutionUseCase(jobExecutor, uiThread, resCenterRepository);
     }
 
     @Override
@@ -104,7 +109,15 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
 
     @Override
     public void askHelpResolution() {
+        fragmentView.showLoadingDialog(true);
+        askHelpResolutionUseCase.execute(getAskHelpResolutionParam(),
+                new ResolutionActionSubscriber(fragmentView));
+    }
 
+    private RequestParams getAskHelpResolutionParam() {
+        RequestParams params = RequestParams.create();
+        params.putString(AskHelpResolutionUseCase.PARAM_RESOLUTION_ID, fragmentView.getResolutionID());
+        return params;
     }
 
     @Override
