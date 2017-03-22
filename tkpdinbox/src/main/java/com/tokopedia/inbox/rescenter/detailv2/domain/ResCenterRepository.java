@@ -24,4 +24,6 @@ public interface ResCenterRepository {
     Observable<ResolutionActionDomainData> cancelResolution(TKPDMapParam<String, Object> parameters);
 
     Observable<ResolutionActionDomainData> askHelpResolution(TKPDMapParam<String, Object> parameters);
+
+    Observable<ResolutionActionDomainData> finishReturSolution(TKPDMapParam<String, Object> parameters);
 }

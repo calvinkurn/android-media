@@ -15,6 +15,7 @@ import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositor
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AskHelpResolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.CancelResolutionUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.FinishReturSolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.TrackAwbReturProductUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
@@ -33,6 +34,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     private final TrackAwbReturProductUseCase trackAwbReturProductUseCase;
     private final CancelResolutionUseCase cancelResolutionUseCase;
     private final AskHelpResolutionUseCase askHelpResolutionUseCase;
+    private final FinishReturSolutionUseCase finishReturSolutionUseCase;
 
     public DetailResCenterFragmentImpl(Context context, DetailResCenterFragmentView fragmentView) {
         this.fragmentView = fragmentView;
@@ -66,6 +68,9 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
 
         this.askHelpResolutionUseCase
                 = new AskHelpResolutionUseCase(jobExecutor, uiThread, resCenterRepository);
+
+        this.finishReturSolutionUseCase
+                = new FinishReturSolutionUseCase(jobExecutor, uiThread, resCenterRepository);
     }
 
     @Override
@@ -86,7 +91,15 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
 
     @Override
     public void finishReturProduct() {
+        fragmentView.showLoadingDialog(true);
+        askHelpResolutionUseCase.execute(getFinishReturSolutionParam(),
+                new ResolutionActionSubscriber(fragmentView));
+    }
 
+    private RequestParams getFinishReturSolutionParam() {
+        RequestParams params = RequestParams.create();
+        params.putString(CancelResolutionUseCase.PARAM_RESOLUTION_ID, fragmentView.getResolutionID());
+        return params;
     }
 
     @Override
