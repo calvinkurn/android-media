@@ -7,7 +7,7 @@
         android:id="@id/linWrapper"
         android:layout_width="match_parent"
         android:layout_height="140dp"
-        android:background="@color/white"
+        android:background="@color/white_grey"
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:layout_marginRight="@dimen/margin_vs"
