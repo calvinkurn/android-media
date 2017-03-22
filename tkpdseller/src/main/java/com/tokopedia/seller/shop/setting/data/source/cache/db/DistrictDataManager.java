@@ -1,7 +1,9 @@
 package com.tokopedia.seller.shop.setting.data.source.cache.db;
 
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.sql.language.SQLCondition;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.tokopedia.core.database.DbFlowDatabase;
@@ -82,14 +84,21 @@ public class DistrictDataManager {
     }
 
     public Observable<List<DistrictDataDb>> getRecommendationDistrict(String typedString) {
+        ConditionGroup conditionalGroup = generateConditionGroup(typedString);
         return Observable.just(new Select()
                 .from(DistrictDataDb.class)
-                .where(
-                        DistrictDataDb_Table
-                                .districtString
-                                .like("%" + typedString + "%")
-                )
+                .where(conditionalGroup)
                 .limit(15)
                 .queryList());
+    }
+
+    private ConditionGroup generateConditionGroup(String typedString) {
+        ConditionGroup conditionGroup = ConditionGroup.clause();
+        String[] words = typedString.split("\\W+");
+        for (String word : words){
+            conditionGroup.and(DistrictDataDb_Table
+                    .districtString.like("%" + word + "%"));
+        }
+        return conditionGroup;
     }
 }
