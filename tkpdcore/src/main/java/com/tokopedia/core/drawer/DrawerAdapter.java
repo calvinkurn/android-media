@@ -473,21 +473,33 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if(isTokoCashDisabled(headerValue) || isTokoNoAction(headerValue)) {
            holder.topCashLayout.setVisibility(View.GONE);
         } else if(isUnregistered(headerValue)) {
-            holder.topCashLayout.setVisibility(View.VISIBLE);
-            holder.tokoCashRedirectArrow.setVisibility(View.GONE);
-            holder.tokoCashActivationButton.setVisibility(View.VISIBLE);
+            showTokoCashActivateView(holder, headerValue);
             holder.tokoCashActivationButton.setText(headerValue.tokoCashText);
             holder.topCashLayout
                     .setOnClickListener(onLayoutTopCashSelected(headerValue.tokoCashURL));
             holder.loadingTopCash.setVisibility(View.GONE);
         } else {
+            showTokoCashBalanceView(holder);
             holder.tokoCashLabel.setText(headerValue.tokoCashText);
+            holder.tokoCashValueView.setText(headerValue.tokoCashValue);
             holder.topCashLayout
                     .setOnClickListener(onLayoutTopCashSelected(headerValue.tokoCashURL));
-            holder.tokoCashValueView.setText(headerValue.tokoCashValue);
-            holder.topCashLayout.setVisibility(View.VISIBLE);
             holder.loadingTopCash.setVisibility(View.GONE);
         }
+    }
+
+    private void showTokoCashBalanceView(HeaderViewHolder holder) {
+        holder.topCashLayout.setVisibility(View.VISIBLE);
+        holder.tokoCashActivationButton.setVisibility(View.GONE);
+        holder.tokoCashValueView.setVisibility(View.VISIBLE);
+        holder.tokoCashRedirectArrow.setVisibility(View.VISIBLE);
+    }
+
+    private void showTokoCashActivateView(HeaderViewHolder holder, DrawerHeader headerValue) {
+        holder.topCashLayout.setVisibility(View.VISIBLE);
+        holder.tokoCashRedirectArrow.setVisibility(View.GONE);
+        holder.tokoCashActivationButton.setVisibility(View.VISIBLE);
+        holder.tokoCashValueView.setVisibility(View.GONE);
     }
 
     private boolean isTokoNoAction(DrawerHeader headerValue) {
