@@ -16,6 +16,7 @@ import com.tokopedia.seller.R;
  */
 
 public class ShopOpenDomainFragment extends BasePresenterFragment {
+    public static final String TAG = "ShopOpenDomain";
 
     private View buttonSubmit;
     private TkpdTextInputLayout textInputShopName;

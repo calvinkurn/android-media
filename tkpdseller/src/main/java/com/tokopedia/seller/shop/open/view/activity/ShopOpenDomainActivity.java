@@ -14,12 +14,6 @@ import com.tokopedia.seller.shop.open.view.fragment.ShopOpenDomainFragment;
  */
 
 public class ShopOpenDomainActivity extends BasePresenterActivity {
-    public static String TAG = "ShopOpenDomain";
-
-    @Override
-    public String getScreenName() {
-        return TAG;
-    }
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -44,11 +38,11 @@ public class ShopOpenDomainActivity extends BasePresenterActivity {
     @Override
     protected void initView() {
         FragmentManager fm = getFragmentManager();
-        if (fm.findFragmentByTag(TAG) == null) {
+        if (fm.findFragmentByTag(ShopOpenDomainFragment.TAG) == null) {
             FragmentTransaction fragmentTransaction = fm.beginTransaction();
             fragmentTransaction.add(
                     com.tokopedia.core.R.id.container,
-                    ShopOpenDomainFragment.newInstance(), TAG);
+                    ShopOpenDomainFragment.newInstance(), ShopOpenDomainFragment.TAG);
             fragmentTransaction.commit();
         }
     }
