@@ -537,16 +537,15 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {// ini request code payment. bisa diganti
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:
-                    //TODO On Success
-                    getActivity().finish();
+                    closeView();
                     break;
                 case TopPayActivity.PAYMENT_FAILED:
-                    //TODO On Failed
-                    getActivity().finish();
+                    showToastMessage("Pembayaran tidak berhasil atau dibatalkan");
+                    presenter.processGetCartData();
                     break;
                 case TopPayActivity.PAYMENT_CANCELLED:
-                    //TODO On Cancelled
-                    getActivity().finish();
+                    showToastMessage("Pembayaran dibatalkan");
+                    presenter.processGetCartData();
                     break;
                 default:
                     presenter.processGetCartData();

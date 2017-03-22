@@ -2,6 +2,8 @@ package com.tokopedia.payment.cart.listener;
 
 import android.support.annotation.StringRes;
 
+import com.tokopedia.payment.model.PaymentPassData;
+
 /**
  * @author anggaprasetiyo on 12/8/16.
  */
@@ -11,8 +13,23 @@ public interface ITopPayView {
 
     void showToastMessageWithForceCloseView(String message);
 
-    void setPaymentId(String paymentId);
+    void callbackPaymentCanceled();
+
+    void callbackPaymentFailed();
+
+    void callbackPaymentSucceed();
+
+    void hideProgressBar();
+
+    void showProgressBar();
+
+    void showTimeoutErrorOnUiThread();
+
+    void setWebPageTitle(String title);
+
+    void backStackAction();
 
     String getStringFromResource(@StringRes int resId);
 
+    PaymentPassData getPaymentPassData();
 }

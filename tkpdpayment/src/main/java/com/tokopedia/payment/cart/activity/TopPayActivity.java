@@ -12,9 +12,9 @@ import android.view.WindowManager;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.payment.R;
-import com.tokopedia.payment.cart.listener.CartActivityListener;
 import com.tokopedia.payment.cart.listener.ITopPayView;
 import com.tokopedia.payment.cart.presenter.TopPayPresenter;
 import com.tokopedia.payment.model.PaymentPassData;
@@ -27,8 +27,6 @@ import com.tokopedia.payment.webview.ScroogeWebView;
 public class TopPayActivity extends Activity implements ITopPayView {
 
     private static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
-    public static final String EXTRA_RESULT_MESSAGE = "EXTRA_RESULT_MESSAGE";
-    public static final String EXTRA_PARAMETER_TOP_PAY_RESULT = "EXTRA_PARAMETER_TOP_PAY_RESULT";
     public static final int PAYMENT_SUCCESS = 5;
     public static final int PAYMENT_CANCELLED = 6;
     public static final int PAYMENT_FAILED = 7;
@@ -36,6 +34,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
     private TopPayPresenter presenter;
     private ScroogeWebView scroogeWebView;
     private ProgressBar progressBar;
+    private PaymentPassData paymentPassData;
 
     private View btnBack;
     private View btnClose;
@@ -58,36 +57,36 @@ public class TopPayActivity extends Activity implements ITopPayView {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 window.setStatusBarColor(getResources().getColor(
-                        R.color.tkpd_main_green_payment_module, null
+                        R.color.tkpd_status_green_payment_module, null
                 ));
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     window.setStatusBarColor(getResources().getColor(
-                            R.color.tkpd_main_green_payment_module
+                            R.color.tkpd_status_green_payment_module
                     ));
                 }
             }
         }
-        initialPresenter();
-        initView();
         if (getIntent().getExtras() != null) {
             setupBundlePass(getIntent().getExtras());
         }
         if (getIntent().getData() != null) {
             setupURIPass(getIntent().getData());
         }
+        initialPresenter();
+        initView();
         initVar();
         setViewListener();
         setActionVar();
     }
 
     private void setActionVar() {
-        presenter.proccessUriPayment(presenter.getPaymentPassData());
+        presenter.proccessUriPayment();
     }
 
     private void setViewListener() {
         progressBar.setIndeterminate(true);
-        scroogeWebView.setScroogeListener(cartActivityListener());
+        scroogeWebView.setupAllSettings(this);
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,7 +96,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
         btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                callbackPaymentCanceled();
             }
         });
     }
@@ -123,9 +122,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
     }
 
     private void setupBundlePass(Bundle extras) {
-        presenter.setPaymentPassData((PaymentPassData) extras
-                .getParcelable(EXTRA_PARAMETER_TOP_PAY_DATA));
-        scroogeWebView.initiateScroogeData(presenter.getPaymentPassData());
+        this.paymentPassData = extras.getParcelable(EXTRA_PARAMETER_TOP_PAY_DATA);
     }
 
     @Override
@@ -135,15 +132,8 @@ public class TopPayActivity extends Activity implements ITopPayView {
 
     @Override
     public void showToastMessageWithForceCloseView(String message) {
-        Intent intent = new Intent();
-        intent.putExtra(EXTRA_RESULT_MESSAGE, message);
-        setResult(PAYMENT_CANCELLED, intent);
-        closeView();
-    }
-
-    @Override
-    public void setPaymentId(String paymentId) {
-
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        callbackPaymentCanceled();
     }
 
     @Override
@@ -151,54 +141,39 @@ public class TopPayActivity extends Activity implements ITopPayView {
         return null;
     }
 
-    private CartActivityListener cartActivityListener() {
-        return new CartActivityListener() {
-            @Override
-            public void onBackKeyPressed(String stringId) {
-                presenter.processVerifyPaymentIdByCancelTopPay(stringId);
-                onBackPressed();
-            }
+    @Override
+    public PaymentPassData getPaymentPassData() {
+        return paymentPassData;
+    }
 
-            @Override
-            public void processVerifyPaymentId(Bundle bundle) {
-                processPaymentSuccess(bundle);
-            }
+    @Override
+    public void hideProgressBar() {
+        hideProgressLoading();
+    }
 
-            @Override
-            public void processPaymentFailed(Bundle bundle) {
-                processPaymentFailure(bundle);
-            }
+    @Override
+    public void showProgressBar() {
+        showProgressLoading();
+    }
 
+    @Override
+    public void showTimeoutErrorOnUiThread() {
+        runOnUiThread(new Runnable() {
             @Override
-            public void showMessageWithForceCloseView(String errorMessage) {
-                showToastMessageWithForceCloseView(errorMessage);
+            public void run() {
+                scroogeWebView.showError(WebViewClient.ERROR_TIMEOUT);
             }
+        });
+    }
 
-            @Override
-            public void hideProgressBar() {
-                hideProgressLoading();
-            }
+    @Override
+    public void setWebPageTitle(String title) {
+        tvTitle.setText(title);
+    }
 
-            @Override
-            public void showProgressBar() {
-                showProgressLoading();
-            }
-
-            @Override
-            public void showTimeoutErrorOnUiThread() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        scroogeWebView.showError(WebViewClient.ERROR_TIMEOUT);
-                    }
-                });
-            }
-
-            @Override
-            public void setWebPageTitle(String title) {
-                tvTitle.setText(title);
-            }
-        };
+    @Override
+    public void backStackAction() {
+        onBackPressed();
     }
 
     public void closeView() {
@@ -207,11 +182,15 @@ public class TopPayActivity extends Activity implements ITopPayView {
 
     @Override
     public void onBackPressed() {
-        Bundle bundle = new Bundle();
-        bundle.putInt(ScroogeWebView.EXTRA_ACTION,
-                ScroogeWebView.SERVICE_ACTION_GET_THANKS_TOP_PAY);
-        bundle.putString(ScroogeWebView.EXTRA_PAYMENT_ID, presenter.getCurrentPaymentId());
-        cancelPayment(bundle);
+        if (scroogeWebView.canGoBack()) {
+            scroogeWebView.goBack();
+        } else {
+            if (scroogeWebView.getPaymentId() == null) {
+                callbackPaymentCanceled();
+            } else {
+                callbackPaymentSucceed();
+            }
+        }
     }
 
     @Override
@@ -219,26 +198,26 @@ public class TopPayActivity extends Activity implements ITopPayView {
         super.onDestroy();
     }
 
-    private void cancelPayment(Bundle bundle) {
+    public void callbackPaymentCanceled() {
         hideProgressLoading();
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_PARAMETER_TOP_PAY_RESULT, bundle);
+        intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData);
         setResult(PAYMENT_CANCELLED, intent);
         finish();
     }
 
-    private void processPaymentSuccess(Bundle bundle) {
+    public void callbackPaymentSucceed() {
         hideProgressLoading();
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_PARAMETER_TOP_PAY_RESULT, bundle);
+        intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData);
         setResult(PAYMENT_SUCCESS, intent);
         finish();
     }
 
-    private void processPaymentFailure(Bundle bundle) {
+    public void callbackPaymentFailed() {
         hideProgressLoading();
         Intent intent = new Intent();
-        intent.putExtra(EXTRA_PARAMETER_TOP_PAY_RESULT, bundle);
+        intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData);
         setResult(PAYMENT_FAILED, intent);
         finish();
     }

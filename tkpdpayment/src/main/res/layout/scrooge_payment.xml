@@ -28,9 +28,9 @@
             android:layout_toStartOf="@+id/btn_close"
             android:gravity="center"
             android:maxLines="1"
+            android:text="Tokopedia"
             android:textColor="@android:color/white"
-            android:textSize="20sp"
-            tools:text="Tokopedia"/>
+            android:textSize="18sp"/>
 
         <ImageView
             android:id="@+id/btn_close"
@@ -40,7 +40,8 @@
             android:layout_alignParentRight="true"
             android:padding="12dp"
             android:src="@drawable/ic_close_white"
-            android:visibility="invisible"/>
+            android:visibility="invisible"
+            tools:ignore="ContentDescription"/>
     </RelativeLayout>
 
     <RelativeLayout

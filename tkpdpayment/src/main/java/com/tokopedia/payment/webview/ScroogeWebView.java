@@ -1,16 +1,11 @@
 package com.tokopedia.payment.webview;
 
-/**
- * Created by kris on 3/14/17. Tokopedia
- */
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
-import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -24,7 +19,7 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.tokopedia.payment.cart.listener.CartActivityListener;
+import com.tokopedia.payment.cart.listener.ITopPayView;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 
@@ -37,42 +32,28 @@ public class ScroogeWebView extends WebView {
     private static final String LOGIN_URL = "login.pl";
     private static final String ACCOUNTS_URL = "accounts.tokopedia.com";
     public static final String KEY_QUERY_PAYMENT_ID = "id";
-    public static final int SERVICE_ACTION_GET_THANKS_TOP_PAY = 2;
-    public static final String EXTRA_ACTION = "EXTRA_ACTION";
-    public static final String EXTRA_PAYMENT_ID = "EXTRA_PAYMENT_ID";
     public static final String KEY_QUERY_LD = "ld";
     public static final String CHARSET_UTF_8 = "UTF-8";
     public static final long FORCE_TIMEOUT = 60000L;
 
-    private PaymentPassData paymentPassData;
-    private CartActivityListener cartActivityListener;
+    private ITopPayView topPayView;
     private String paymentId;
 
     public ScroogeWebView(Context context) {
         super(context);
-        initWebViewSettings();
     }
 
     public ScroogeWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initWebViewSettings();
     }
 
     public ScroogeWebView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    public void setupAllSettings(ITopPayView view) {
+        topPayView = view;
         initWebViewSettings();
-    }
-
-    public void initiateScroogeData(PaymentPassData paymentPassData) {
-        this.paymentPassData = paymentPassData;
-    }
-
-    public void setScroogeListener(CartActivityListener listener) {
-        cartActivityListener = listener;
-    }
-
-    public String getPaymentId() {
-        return paymentId;
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -87,8 +68,17 @@ public class ScroogeWebView extends WebView {
         setOnKeyListener(getWebViewOnKeyListener());
     }
 
+    public String getPaymentId() {
+        return paymentId;
+    }
+
     private class TopPayWebViewClient extends WebViewClient {
         private boolean timeout = true;
+        private final PaymentPassData paymentPassData;
+
+        TopPayWebViewClient() {
+            paymentPassData = topPayView.getPaymentPassData();
+        }
 
         @SuppressWarnings("deprecation")
         @Override
@@ -109,8 +99,7 @@ public class ScroogeWebView extends WebView {
                 return true;
             } else if (url.contains(LOGIN_URL)) {
                 view.stopLoading();
-                cartActivityListener
-                        .showMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TOPPAY);
+                topPayView.showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TOPPAY);
                 return true;
             } else {
                 return super.shouldOverrideUrlLoading(view, url);
@@ -125,8 +114,8 @@ public class ScroogeWebView extends WebView {
         @Override
         public void onPageFinished(WebView view, String url) {
             timeout = false;
-            cartActivityListener.hideProgressBar();
-            cartActivityListener.setWebPageTitle(view.getTitle());
+            topPayView.hideProgressBar();
+            topPayView.setWebPageTitle(view.getTitle());
             view.stopLoading();
         }
 
@@ -134,7 +123,7 @@ public class ScroogeWebView extends WebView {
         public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
             super.onReceivedSslError(view, handler, error);
             handler.cancel();
-            cartActivityListener.hideProgressBar();
+            topPayView.hideProgressBar();
         }
 
         @Override
@@ -156,12 +145,11 @@ public class ScroogeWebView extends WebView {
                         e.printStackTrace();
                     }
                     if (timeout) {
-                        cartActivityListener.showTimeoutErrorOnUiThread();
+                        topPayView.showTimeoutErrorOnUiThread();
                     }
                 }
             }).start();
-            cartActivityListener.showProgressBar();
-            cartActivityListener.setWebPageTitle(view.getTitle());
+            topPayView.showProgressBar();
         }
     }
 
@@ -176,7 +164,7 @@ public class ScroogeWebView extends WebView {
                 break;
         }
         stopLoading();
-        cartActivityListener.showMessageWithForceCloseView(message);
+        topPayView.showToastMessageWithForceCloseView(message);
     }
 
     private void processRedirectUrlContaintsAccountsUrl(String url) {
@@ -190,39 +178,30 @@ public class ScroogeWebView extends WebView {
             urlThanks = "";
         }
         Uri uri = Uri.parse(urlThanks);
-        String paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
-        this.paymentId = paymentId;
-        Bundle bundle = new Bundle();
-        bundle.putInt(EXTRA_ACTION, SERVICE_ACTION_GET_THANKS_TOP_PAY);
-        bundle.putString(EXTRA_PAYMENT_ID, paymentId);
-        cartActivityListener.processVerifyPaymentId(bundle);
+        this.paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
+        if (paymentId != null)
+            topPayView.callbackPaymentSucceed();
+        else
+            topPayView.callbackPaymentFailed();
     }
 
     private void processRedirectUrlContainsSuccessCallbackUrl(String url) {
         Uri uri = Uri.parse(url);
-        String paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
-        this.paymentId = paymentId;
-        Bundle bundle = new Bundle();
-        bundle.putInt(EXTRA_ACTION, SERVICE_ACTION_GET_THANKS_TOP_PAY);
-        bundle.putString(EXTRA_PAYMENT_ID, setPaymentIdExtras(paymentId));
-        cartActivityListener.processVerifyPaymentId(bundle);
+        this.paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
+        topPayView.callbackPaymentSucceed();
     }
 
     private void processRedirectUrlContainsFailedCallbackUrl(String url) {
         Uri uri = Uri.parse(url);
-        String paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
-        this.paymentId = paymentId;
-        Bundle bundle = new Bundle();
-        bundle.putInt(EXTRA_ACTION, SERVICE_ACTION_GET_THANKS_TOP_PAY);
-        bundle.putString(EXTRA_PAYMENT_ID, setPaymentIdExtras(paymentId));
-        cartActivityListener.processPaymentFailed(bundle);
+        this.paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
+        topPayView.callbackPaymentFailed();
     }
 
     private class TopPayWebViewChromeClient extends WebChromeClient {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             if (newProgress == 100) {
-                cartActivityListener.hideProgressBar();
+                topPayView.hideProgressBar();
             }
             super.onProgressChanged(view, newProgress);
         }
@@ -250,7 +229,7 @@ public class ScroogeWebView extends WebView {
                 if (event.getAction() == KeyEvent.ACTION_DOWN) {
                     switch (keyCode) {
                         case KeyEvent.KEYCODE_BACK:
-                            cartActivityListener.onBackKeyPressed(setPaymentIdExtras(paymentId));
+                            topPayView.backStackAction();
                             return true;
                     }
                 }
@@ -259,9 +238,4 @@ public class ScroogeWebView extends WebView {
         };
     }
 
-    private String setPaymentIdExtras(String paymentId) {
-        if (paymentId != null && !paymentId.isEmpty()) {
-            return paymentId;
-        } else return paymentPassData.getTransactionId();
-    }
 }
