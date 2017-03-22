@@ -8,8 +8,6 @@ import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.inboxreputation.InboxReputationConstant;
 import com.tokopedia.core.inboxreputation.interactor.ActReputationRetrofitInteractor;
 import com.tokopedia.core.inboxreputation.interactor.ActReputationRetrofitInteractorImpl;
@@ -136,7 +134,7 @@ public class InboxReviewIntentService extends IntentService
     }
 
     private void handleEditReview(Bundle bundle, final ResultReceiver receiver) {
-        final ActReviewPass param = bundle.getParcelable(PARAM_EDIT_REVIEW);
+        ActReviewPass param = bundle.getParcelable(PARAM_EDIT_REVIEW);
 
         final Bundle resultData = new Bundle();
         resultData.putInt(EXTRA_TYPE, ACTION_EDIT_REVIEW);
