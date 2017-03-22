@@ -24,10 +24,6 @@ public interface DetailResCenterFragmentView {
 
     void showSnackBar(String messageError);
 
-    TrackingDialogViewModel getTrackingData();
-
-    void setTrackingData(TrackingDialogViewModel trackingData);
-
     void showLoading(boolean isShow);
 
     boolean isSeller();
@@ -70,9 +66,24 @@ public interface DetailResCenterFragmentView {
 
     void setOnActionAppealClick();
 
-    void setOnRequestTrackingComplete();
-
     void doOnInitTimeOut();
 
     void doOnInitSuccess();
+
+    void doOnTrackingTimeOut();
+
+    void doOnTrackingSuccess(TrackingDialogViewModel trackingDialogViewModel);
+
+    void doOnTrackingError(String messageError);
+
+    void doOnTrackingFailed();
+
+    void doOnActionSucess();
+
+    void doOnActionError(String messageError);
+
+    void doOnActionError();
+
+    void doOnActionTimeOut();
+
 }

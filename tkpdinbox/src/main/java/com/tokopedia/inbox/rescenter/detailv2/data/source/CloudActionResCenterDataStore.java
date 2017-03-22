@@ -1,0 +1,35 @@
+package com.tokopedia.inbox.rescenter.detailv2.data.source;
+
+import android.content.Context;
+
+import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.inbox.rescenter.detailv2.data.mapper.ResolutionCenterActionMapper;
+import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
+
+import rx.Observable;
+
+/**
+ * Created by hangnadi on 3/22/17.
+ */
+
+public class CloudActionResCenterDataStore {
+
+    private final Context context;
+    private final ResCenterActService resCenterActService;
+    private final ResolutionCenterActionMapper resolutionCenterActionMapper;
+
+    public CloudActionResCenterDataStore(Context context, ResCenterActService resCenterActService) {
+        super();
+        this.context = context;
+        this.resCenterActService = resCenterActService;
+        this.resolutionCenterActionMapper = new ResolutionCenterActionMapper();
+    }
+
+    public Observable<ResolutionActionDomainData> cancelResolution(TKPDMapParam<String, Object> parameters) {
+        return resCenterActService.getApi()
+                .cancelResolution2(AuthUtil.generateParamsNetwork2(context, parameters))
+                .map(resolutionCenterActionMapper);
+    }
+}

@@ -24,32 +24,25 @@ public class TrackAwbReturProductSubscriber extends rx.Subscriber<TrackingAwbRet
 
     @Override
     public void onCompleted() {
-        fragmentView.setOnRequestTrackingComplete();
+
     }
 
     @Override
     public void onError(Throwable e) {
         if (e instanceof IOException) {
-            fragmentView.setTrackingData(mappingTimeOutViewModel());
+            fragmentView.doOnTrackingTimeOut();
         } else {
-            fragmentView.setTrackingData(mappingDefaultErrorViewModel());
+            fragmentView.doOnTrackingFailed();
         }
-    }
-
-    private TrackingDialogViewModel mappingTimeOutViewModel() {
-        TrackingDialogViewModel model = new TrackingDialogViewModel();
-        model.setSuccess(false);
-        model.setTimeOut(true);
-        return model;
-    }
-
-    private TrackingDialogViewModel mappingDefaultErrorViewModel() {
-        return mappingTimeOutViewModel();
     }
 
     @Override
     public void onNext(TrackingAwbReturProduct object) {
-        fragmentView.setTrackingData(mappingViewModel(object));
+        if (object.isSuccess()) {
+            fragmentView.doOnTrackingSuccess(mappingViewModel(object));
+        } else {
+            fragmentView.doOnTrackingError(object.getMessageError());
+        }
     }
 
     private TrackingDialogViewModel mappingViewModel(TrackingAwbReturProduct domainData) {

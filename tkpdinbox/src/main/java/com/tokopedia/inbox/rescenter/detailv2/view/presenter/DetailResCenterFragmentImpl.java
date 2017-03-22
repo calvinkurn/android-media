@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
 import com.tokopedia.core.network.apiservices.rescenter.ResolutionService;
 import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
 import com.tokopedia.core.util.SessionHandler;
@@ -12,10 +13,12 @@ import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFa
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.CancelResolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.TrackAwbReturProductUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.GetResCenterDetailSubscriber;
+import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.ResolutionActionSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.TrackAwbReturProductSubscriber;
 
 /**
@@ -27,6 +30,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     private final DetailResCenterFragmentView fragmentView;
     private final GetResCenterDetailUseCase getResCenterDetailUseCase;
     private final TrackAwbReturProductUseCase trackAwbReturProductUseCase;
+    private final CancelResolutionUseCase cancelResolutionUseCase;
 
     public DetailResCenterFragmentImpl(Context context, DetailResCenterFragmentView fragmentView) {
         this.fragmentView = fragmentView;
@@ -36,12 +40,16 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
         JobExecutor jobExecutor = new JobExecutor();
         UIThread uiThread = new UIThread();
         InboxResCenterService inboxResCenterService = new InboxResCenterService();
+        ResCenterActService resCenterActService = new ResCenterActService();
         ResolutionService resolutionService = new ResolutionService();
         resolutionService.setToken(accessToken);
         DetailResCenterMapper detailResCenterMapper = new DetailResCenterMapper();
 
-        ResCenterDataSourceFactory dataSourceFactory
-                = new ResCenterDataSourceFactory(context, resolutionService, inboxResCenterService, detailResCenterMapper);
+        ResCenterDataSourceFactory dataSourceFactory = new ResCenterDataSourceFactory(context,
+                resolutionService,
+                inboxResCenterService,
+                resCenterActService,
+                detailResCenterMapper);
         ResCenterRepository resCenterRepository
                 = new ResCenterRepositoryImpl(resolutionID, dataSourceFactory);
 
@@ -50,6 +58,9 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
 
         this.trackAwbReturProductUseCase
                 = new TrackAwbReturProductUseCase(jobExecutor, uiThread, resCenterRepository);
+
+        this.cancelResolutionUseCase
+                = new CancelResolutionUseCase(jobExecutor, uiThread, resCenterRepository);
     }
 
     @Override
@@ -65,7 +76,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
 
     @Override
     public void refreshPage() {
-
+        setOnFirstTimeLaunch();
     }
 
     @Override
@@ -80,7 +91,15 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
 
     @Override
     public void cancelResolution() {
+        fragmentView.showLoadingDialog(true);
+        cancelResolutionUseCase.execute(getCancelResolutionParam(),
+                new ResolutionActionSubscriber(fragmentView));
+    }
 
+    private RequestParams getCancelResolutionParam() {
+        RequestParams params = RequestParams.create();
+        params.putString(CancelResolutionUseCase.PARAM_RESOLUTION_ID, fragmentView.getResolutionID());
+        return params;
     }
 
     @Override

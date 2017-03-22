@@ -64,7 +64,6 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     private String resolutionID;
     private DetailViewModel viewData;
-    private TrackingDialogViewModel trackingData;
 
     public static DetailResCenterFragment createInstance(String resolutionID) {
         DetailResCenterFragment fragment = new DetailResCenterFragment();
@@ -96,16 +95,6 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     public void setViewData(DetailViewModel model) {
         this.viewData = model;
-    }
-
-    @Override
-    public TrackingDialogViewModel getTrackingData() {
-        return trackingData;
-    }
-
-    @Override
-    public void setTrackingData(TrackingDialogViewModel trackingData) {
-        this.trackingData = trackingData;
     }
 
     @Override
@@ -212,7 +201,11 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     public void showSnackBar(String messageError) {
-        NetworkErrorHelper.showSnackbar(getActivity(), messageError);
+        if (messageError == null) {
+            showTimeOutMessage();
+        } else {
+            NetworkErrorHelper.showSnackbar(getActivity(), messageError);
+        }
     }
 
     private void showEmptyState(String message, NetworkErrorHelper.RetryClickedListener listener) {
@@ -463,33 +456,53 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     }
 
     @Override
-    public void setOnRequestTrackingComplete() {
-        if (trackingData.isTimeOut()) {
-            doOnTrackingTimeOut();
-        } else {
-            if (trackingData.isSuccess()) {
-                doOnTrackingSuccess();
-            } else {
-                doOnTrackingFailed();
-            }
-        }
-    }
-
-    private void doOnTrackingTimeOut() {
+    public void doOnTrackingTimeOut() {
         showLoadingDialog(false);
         showTimeOutMessage();
     }
 
-    private void doOnTrackingSuccess() {
+    @Override
+    public void doOnTrackingSuccess(TrackingDialogViewModel model) {
+        showLoadingDialog(false);
         TrackShippingDialog.Builder(getActivity())
                 .initView()
-                .initValue(getTrackingData())
+                .initValue(model)
                 .show();
     }
 
-    private void doOnTrackingFailed() {
+    @Override
+    public void doOnTrackingFailed() {
         showLoadingDialog(false);
-        showSnackBar(trackingData.getMessageError());
+        showSnackBar(null);
     }
 
+    @Override
+    public void doOnTrackingError(String messageError) {
+        showLoadingDialog(false);
+        showSnackBar(messageError);
+    }
+
+    @Override
+    public void doOnActionSucess() {
+        showLoadingDialog(false);
+        presenter.refreshPage();
+    }
+
+    @Override
+    public void doOnActionError(String messageError) {
+        showLoadingDialog(false);
+        showTimeOutMessage();
+    }
+
+    @Override
+    public void doOnActionError() {
+        showLoadingDialog(false);
+        showSnackBar(null);
+    }
+
+    @Override
+    public void doOnActionTimeOut() {
+        showLoadingDialog(false);
+        showTimeOutMessage();
+    }
 }
