@@ -28,7 +28,8 @@
     <string name="action_see_more_product_complaint">Lihat Semua Produk Yang Dikomplain</string>
     <string name="action_discuss">Diskusi Dengan Pembeli</string>
     <string name="detail_rescenter_customer">Nama Pembeli :</string>
-    <string name="action_ask_help">Bantuan</string>
+    <string name="action_ask_help">Minta Bantuan</string>
     <string name="action_appeal_solution">Naik Banding</string>
+    <string name="action_cancel_resolution">Batalkan Komplain</string>
 
 </resources>

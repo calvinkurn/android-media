@@ -1,7 +1,9 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.customview;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +20,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.AddressReturData;
 
 public class AddressReturView extends BaseView<AddressReturData, DetailResCenterFragmentView> {
 
-    private TextView awbText;
+    private TextView addressText;
     private TextView addressReturDate;
     private View actionMoreAddress;
     private View actionEdit;
@@ -49,7 +51,7 @@ public class AddressReturView extends BaseView<AddressReturData, DetailResCenter
         actionEdit = view.findViewById(R.id.action_edit);
         actionMoreAddress = view.findViewById(R.id.action_address_more);
         addressReturDate = (TextView) view.findViewById(R.id.tv_address_retur_date);
-        awbText = (TextView) view.findViewById(R.id.tv_address);
+        addressText = (TextView) view.findViewById(R.id.tv_address);
     }
 
     @Override
@@ -66,7 +68,11 @@ public class AddressReturView extends BaseView<AddressReturData, DetailResCenter
     public void renderData(@NonNull AddressReturData data) {
         setVisibility(VISIBLE);
         addressReturDate.setText(generateInformationText(data));
-        awbText.setText(data.getAddressText());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            addressText.setText(Html.fromHtml(data.getAddressText(), Html.FROM_HTML_MODE_COMPACT));
+        } else {
+            addressText.setText(Html.fromHtml(data.getAddressText()));
+        }
         actionEdit.setOnClickListener(new AddressReturViewOnClickListener());
         actionMoreAddress.setOnClickListener(new AddressReturViewOnClickListener());
     }

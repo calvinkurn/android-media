@@ -77,7 +77,6 @@
             android:layout_height="wrap_content"
             android:text="CGK1234567890"
             android:textSize="@dimen/font_small"
-            android:textStyle="bold"
             />
     </LinearLayout>
 

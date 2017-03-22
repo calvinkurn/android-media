@@ -10,11 +10,14 @@ public interface DetailResCenterFragmentPresenter {
 
     void refreshPage();
 
-    void finishReturProduct(String resolutionID);
+    void finishReturProduct();
 
-    void acceptSolution(String resolutionID);
+    void acceptSolution();
+
+    void cancelResolution();
 
     void askHelpResolution();
 
     void trackReturProduck(String shipmentID, String shipmentRef);
+
 }

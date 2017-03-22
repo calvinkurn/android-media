@@ -17,13 +17,13 @@ public class DetailResCenterLastAddress {
     private String postalCode;
     @SerializedName("country")
     private String country;
-    @SerializedName("Receiver")
+    @SerializedName("receiver")
     private Receiver Receiver;
-    @SerializedName("Province")
+    @SerializedName("province")
     private Province Province;
-    @SerializedName("City")
+    @SerializedName("city")
     private City City;
-    @SerializedName("District")
+    @SerializedName("district")
     private District District;
 
     public String getId() {

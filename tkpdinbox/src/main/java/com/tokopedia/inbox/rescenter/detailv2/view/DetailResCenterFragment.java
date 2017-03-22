@@ -325,12 +325,23 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     }
 
     @Override
+    public void setOnActionCancelResolutionClick() {
+        showConfirmationDialog(getActivity().getString(R.string.msg_rescen_cancel),
+                new ConfirmationDialog.Listener() {
+                    @Override
+                    public void onSubmitButtonClick() {
+                        presenter.cancelResolution();
+                    }
+                });
+    }
+
+    @Override
     public void setOnActionAcceptProductClick() {
         showConfirmationDialog(getActivity().getString(R.string.msg_rescen_finish),
                 new ConfirmationDialog.Listener() {
                     @Override
                     public void onSubmitButtonClick() {
-                        presenter.finishReturProduct(resolutionID);
+                        presenter.finishReturProduct();
                     }
                 });
     }
@@ -346,7 +357,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
                             intent.putExtra("resolution_center", true);
                             startActivityForResult(intent, REQUEST_CHOOSE_ADDRESS);
                         } else {
-                            presenter.acceptSolution(resolutionID);
+                            presenter.acceptSolution();
                         }
                     }
                 });
