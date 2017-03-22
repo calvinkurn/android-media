@@ -38,6 +38,7 @@ import com.tokopedia.seller.reputation.domain.interactor.ShopInfoUseCase;
 import com.tokopedia.seller.reputation.network.apiservice.SellerReputationService;
 import com.tokopedia.seller.reputation.presenter.SellerReputationFragmentPresenter;
 import com.tokopedia.seller.reputation.view.SellerReputationView;
+import com.tokopedia.seller.reputation.view.activity.SellerReputationInfoActivity;
 import com.tokopedia.seller.reputation.view.adapter.SellerReputationAdapter;
 import com.tokopedia.seller.reputation.view.helper.ReputationViewHelper;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
@@ -82,6 +83,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
     private boolean isEndOfFile = true;
     private RecyclerView.OnScrollListener onScrollListener;
     private DatePickerResultListener datePickerResultListener;
+    private RelativeLayout rlReputationPointCalculation;
 
     public static SellerReputationFragment createInstance() {
         SellerReputationFragment fragment = new SellerReputationFragment();
@@ -155,6 +157,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
         this.rootView = view;
         this.refreshHandler = new RefreshHandler(swipeToRefresh, onRefresh());
+        rlReputationPointCalculation = (RelativeLayout) view.findViewById(R.id.rl_reputation_point_calculation);
     }
 
     @Override
@@ -182,7 +185,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
             refreshHandler.setRefreshing(true);
             firstTimeNetworkCall();
         } else {
-            if (presenter.isFirstTime()) {
+            if (isFirstTime) {
                 presenter.setNetworkStatus(
                         TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
                 adapter.showLoadingFull(true);
@@ -301,6 +304,17 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
 
     @Override
     protected void setViewListener() {
+        rlReputationPointCalculation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SellerReputationFragment.this.startActivity(
+                        new Intent(
+                                SellerReputationFragment.this.getActivity(),
+                                SellerReputationInfoActivity.class
+                        )
+                );
+            }
+        });
     }
 
     @Override

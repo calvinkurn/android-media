@@ -271,5 +271,6 @@
     <string name="next">Selanjutnya</string>
 
     <string name="your_shop_reputation">REPUTASI TOKO ANDA</string>
+    <string name="reputation_point_calculation">Perhitungan Poin Reputasi</string>
 
 </resources>
