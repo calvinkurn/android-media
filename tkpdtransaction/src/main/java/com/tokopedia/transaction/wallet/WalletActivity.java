@@ -40,7 +40,6 @@ public class WalletActivity extends TActivity implements BaseWebViewClient.WebVi
         initiateView();
         setWebView();
         showFragmentWebView();
-        drawer.clearTokoCashData();
     }
 
     @SuppressLint("SetJavaScriptEnabled")
