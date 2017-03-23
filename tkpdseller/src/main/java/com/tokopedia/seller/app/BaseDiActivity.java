@@ -46,6 +46,13 @@ public abstract class BaseDiActivity<P, C> extends BasePresenterActivity<P> impl
 
     }
 
+    @Override
+    protected void initVar() {
+
+    }
+
+
+
     protected abstract C initComponent();
 
     protected abstract P getPresenter();

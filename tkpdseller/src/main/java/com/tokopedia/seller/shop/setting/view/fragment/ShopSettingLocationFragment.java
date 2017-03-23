@@ -15,6 +15,7 @@ import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingLocationComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingLocationModule;
 import com.tokopedia.seller.shop.setting.view.model.RecommendationDistrictViewModel;
+import com.tokopedia.seller.shop.setting.view.model.ShopSettingLocationModel;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationPresenter;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationView;
 import com.tokopedia.seller.shop.setting.view.viewholder.DistrictViewHolder;
@@ -58,7 +59,7 @@ public class ShopSettingLocationFragment
     @Override
     protected void initialListener(Activity activity) {
         if (activity instanceof ShopSettingLocationListener) {
-            this.listener = ((ShopSettingLocationListener)activity);
+            this.listener = ((ShopSettingLocationListener) activity);
         } else {
             throw new RuntimeException("Please implement ShopSettingLocationListener to the activity");
         }
@@ -72,7 +73,31 @@ public class ShopSettingLocationFragment
     @Override
     protected void initView(View view) {
         districtViewHolder = new DistrictViewHolder(getActivity(), view, this);
-        locationPickupViewHolder = new LocationPickupViewHolder(view, this);
+        locationPickupViewHolder = new LocationPickupViewHolder(getActivity(), view, this);
+        view
+                .findViewById(R.id.continue_button)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        continueToNextStep();
+                    }
+                });
+    }
+
+    private void continueToNextStep() {
+        try {
+            ShopSettingLocationModel model = getDataModel();
+            listener.goToShopSettingLogisticFragment(model);
+        } catch (Exception e) {
+
+        }
+    }
+
+    private ShopSettingLocationModel getDataModel() throws RuntimeException {
+        ShopSettingLocationModel model = new ShopSettingLocationModel();
+        model.setDistrictCode(districtViewHolder.getDistrictCode());
+        model.setPostalCode(locationPickupViewHolder.getPostalCode());
+        return model;
     }
 
     @Override
@@ -114,7 +139,6 @@ public class ShopSettingLocationFragment
     public void showGenericError() {
         SnackbarManager.make(getActivity(), "Terjadi Kesalahan", Snackbar.LENGTH_SHORT);
     }
-
 
     @Override
     public void showProgressDialog() {

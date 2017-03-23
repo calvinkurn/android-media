@@ -19,4 +19,8 @@ public class RecommendationDistrictItemViewModel {
     public String getDistrictString() {
         return districtString;
     }
+
+    public int getDistrictId() {
+        return districtId;
+    }
 }

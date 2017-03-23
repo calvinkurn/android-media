@@ -20,6 +20,8 @@ import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingModule;
 import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLocationFragment;
 import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLocationListener;
+import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLogisticFragment;
+import com.tokopedia.seller.shop.setting.view.model.ShopSettingLocationModel;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationView;
 
 
@@ -46,14 +48,18 @@ public class ShopOpenMandatoryActivity
         Fragment fragment = fragmentManager.findFragmentByTag(ShopSettingLocationFragment.TAG);
         if (fragment == null) {
             fragment = ShopSettingLocationFragment.getInstance();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.container, fragment, ShopSettingLocationFragment.TAG);
-            fragmentTransaction.commit();
+            inflateFragment(fragment);
         }
 
 
 //        stepperLayout = (StepperLayout) findViewById(R.id.stepper_view);
 //        stepperLayout.setAdapter(new ShopOpenStepperViewAdapter(getFragmentManager(), this));
+    }
+
+    private void inflateFragment(Fragment fragment) {
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.container, fragment, ShopSettingLocationFragment.TAG);
+        fragmentTransaction.commit();
     }
 
     @Override
@@ -87,6 +93,15 @@ public class ShopOpenMandatoryActivity
     }
 
     @Override
+    public void goToShopSettingLogisticFragment(ShopSettingLocationModel model) {
+        Fragment fragment = fragmentManager.findFragmentByTag(ShopSettingLogisticFragment.TAG);
+        if (fragment == null){
+            fragment = ShopSettingLogisticFragment.getInstance(model.getDistrictCode());
+            inflateFragment(fragment);
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
@@ -108,13 +123,6 @@ public class ShopOpenMandatoryActivity
         }
     }
 
-    @Override
-    protected void initVar() {
-    }
 
-    @Override
-    protected void setActionVar() {
-
-    }
 
 }

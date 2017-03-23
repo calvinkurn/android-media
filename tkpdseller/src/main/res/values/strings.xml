@@ -276,5 +276,7 @@
     <string name="top_ads_promoted_message">Produk yang sudah dipromo  tidak \ndapat dipilih</string>
     <string name="promoted">Promoted</string>
     <string name="next">Selanjutnya</string>
+    <string name="shop_setting_city_not_filled">Kota harus diisi</string>
+    <string name="postal_code_not_filled">Kode pos harus diisi</string>
 
 </resources>

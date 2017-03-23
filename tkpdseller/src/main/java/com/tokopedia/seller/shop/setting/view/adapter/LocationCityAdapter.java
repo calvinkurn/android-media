@@ -66,7 +66,7 @@ public class LocationCityAdapter extends ArrayAdapter<String> {
         this.selected = selected;
     }
 
-    public RecommendationDistrictItemViewModel getSelected() throws Exception {
+    public RecommendationDistrictItemViewModel getSelected() throws RuntimeException {
         return datas.getItems().get(selected);
     }
 
