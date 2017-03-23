@@ -45,7 +45,7 @@ public class ShopSettingInfoFragment extends BaseDiFragment<ShopSettingInfoCompo
 
     Button buttonNext;
 
-    String uriPathImage;
+    String uriPathImage = "";
 
     public static ShopSettingInfoFragment createInstance() {
         return new ShopSettingInfoFragment();

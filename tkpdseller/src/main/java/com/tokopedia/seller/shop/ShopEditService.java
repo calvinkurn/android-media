@@ -17,7 +17,7 @@ import com.tokopedia.core.network.apiservices.shop.MyShopInfoActService;
 import com.tokopedia.core.network.apiservices.shop.MyShopInfoService;
 import com.tokopedia.core.network.apiservices.shop.apis.UploadShopLogo;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
-import com.tokopedia.core.network.apiservices.upload.apis.ShopSettingApi;
+import com.tokopedia.core.network.apiservices.upload.apis.GeneratedHostActApi;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -153,7 +153,7 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
 
                 Map<String, Object> datasPassingAround = new HashMap<>();
                 datasPassingAround.put(INPUT_IMAGE, intent.getStringExtra(INPUT_IMAGE));
-                datasPassingAround.put(GENERATED_RETROFIR_INSTANCE_API, RetrofitUtils.createRetrofit().create(ShopSettingApi.class));
+                datasPassingAround.put(GENERATED_RETROFIR_INSTANCE_API, RetrofitUtils.createRetrofit().create(GeneratedHostActApi.class));
                 datasPassingAround.put(OPEN_SHOP_VALIDATION_PARAM, openShopValidationParam);
                 datasPassingAround.put(SERVICE_TYPE, type);
                 createShop(datasPassingAround, type);
@@ -191,7 +191,7 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
 
                 datasPassingAround = new HashMap<>();
                 datasPassingAround.put(INPUT_IMAGE, intent.getStringExtra(INPUT_IMAGE));
-                datasPassingAround.put(GENERATED_RETROFIR_INSTANCE_API, RetrofitUtils.createRetrofit().create(ShopSettingApi.class));
+                datasPassingAround.put(GENERATED_RETROFIR_INSTANCE_API, RetrofitUtils.createRetrofit().create(GeneratedHostActApi.class));
                 postUpdateShopImage(datasPassingAround, type);
                 break;
             case UPDATE_SHOP_SCHEDULE:
@@ -216,7 +216,7 @@ public class ShopEditService extends IntentService implements ShopEditServiceCon
                 HashMap<String, String> openShopValidationParamWithoutImg = Parcels.unwrap(intent.getParcelableExtra(OPEN_SHOP_VALIDATION_PARAM));
 
                 datasPassingAround = new HashMap<>();
-                datasPassingAround.put(GENERATED_RETROFIR_INSTANCE_API, RetrofitUtils.createRetrofit().create(ShopSettingApi.class));
+                datasPassingAround.put(GENERATED_RETROFIR_INSTANCE_API, RetrofitUtils.createRetrofit().create(GeneratedHostActApi.class));
                 datasPassingAround.put(OPEN_SHOP_VALIDATION_PARAM, openShopValidationParamWithoutImg);
                 datasPassingAround.put(SERVICE_TYPE, type);
                 createShopWithoutImage(datasPassingAround, type);

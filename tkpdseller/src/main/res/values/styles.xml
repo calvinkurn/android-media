@@ -337,8 +337,12 @@
         <item name="counterTextAppearance">@style/ShopOpenCounterTextInputStyle</item>
     </style>
 
+    <style name="TextInputLayout.ShopSetting.DescShop">
+        <item name="counterMaxLength">140</item>
+    </style>
+
     <style name="TextView.ShopSettingHint">
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">11sp</item>
         <item name="android:textColor">@color/black_thirty_eight_percent</item>
     </style>
 
