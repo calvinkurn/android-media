@@ -18,6 +18,8 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
     private boolean surgePrice;
     private String productPrice;
     private String baseFare;
+    private String fareId;
+    private int capacity;
 
     public RideProductViewModel() {
     }
@@ -30,6 +32,8 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         surgePrice = in.readByte() != 0;
         productPrice = in.readString();
         baseFare = in.readString();
+        fareId = in.readString();
+        capacity = in.readInt();
     }
 
     public static final Creator<RideProductViewModel> CREATOR = new Creator<RideProductViewModel>() {
@@ -105,19 +109,37 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         this.baseFare = baseFare;
     }
 
+    public String getFareId() {
+        return fareId;
+    }
+
+    public void setFareId(String fareId) {
+        this.fareId = fareId;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(productId);
-        dest.writeString(productImage);
-        dest.writeString(productName);
-        dest.writeString(timeEstimate);
-        dest.writeByte((byte) (surgePrice ? 1 : 0));
-        dest.writeString(productPrice);
-        dest.writeString(baseFare);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(productId);
+        parcel.writeString(productImage);
+        parcel.writeString(productName);
+        parcel.writeString(timeEstimate);
+        parcel.writeByte((byte) (surgePrice ? 1 : 0));
+        parcel.writeString(productPrice);
+        parcel.writeString(baseFare);
+        parcel.writeString(fareId);
+        parcel.writeInt(capacity);
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 }

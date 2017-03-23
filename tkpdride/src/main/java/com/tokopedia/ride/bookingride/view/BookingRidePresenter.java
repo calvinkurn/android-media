@@ -10,10 +10,17 @@ import android.support.v4.app.ActivityCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Result;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceFilter;
+import com.google.android.gms.location.places.PlaceLikelihood;
+import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -27,11 +34,18 @@ import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.google.maps.android.PolyUtil;
+import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
+import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by alvarisi on 3/13/17.
@@ -97,12 +111,9 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
                         @Override
                         public void onConnected(@Nullable Bundle bundle) {
                             if (getFuzedLocation() != null) {
-                                Location location = getFuzedLocation();
-                                mCurrentLocation = location;
+                                mCurrentLocation = getFuzedLocation();
                                 startLocationUpdates();
-                                getView().moveToCurrentLocation(location.getLatitude(), location.getLongitude());
-                                getView().renderDefaultPickupLocation(location.getLatitude(), location.getLongitude());
-                                getView().setSourceLocation(location);
+                                getCurrentPlace();
                             } else {
                                 getView().showMessage(getView().getActivity().getString(R.string.location_permission_required));
                             }
@@ -125,6 +136,52 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
         }
 
         mGoogleApiClient.connect();
+    }
+
+    private void getCurrentPlace() {
+        getCurrentPlace(new PlaceFilter())
+                .map(new Func1<PlaceLikelihoodBuffer, Place>() {
+                    @Override
+                    public Place call(PlaceLikelihoodBuffer buffer) {
+                        if (buffer != null) {
+                            PlaceLikelihood likelihood = buffer.get(0);
+                            if (likelihood != null) {
+                                return likelihood.getPlace();
+                            }
+                            buffer.release();
+                            return null;
+                        } else {
+                            return null;
+                        }
+                    }
+                }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Place>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Place place) {
+                        if (place != null) {
+                            getView().moveToCurrentLocation(place.getLatLng().latitude, place.getLatLng().longitude);
+                            PlacePassViewModel placeVm = new PlacePassViewModel();
+                            placeVm.setAddress(String.valueOf(place.getAddress()));
+                            placeVm.setLatitude(place.getLatLng().latitude);
+                            placeVm.setLongitude(place.getLatLng().longitude);
+                            placeVm.setPlaceId(place.getId());
+                            placeVm.setTitle(String.valueOf(place.getName()));
+                            placeVm.setType(PlacePassViewModel.TYPE.OTHER);
+                            getView().setSourceLocation(placeVm);
+                        }
+                    }
+                });
     }
 
     public Location getFuzedLocation() {
@@ -229,5 +286,26 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
     @Override
     public void actionMyLocation() {
         getView().moveToCurrentLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+    }
+
+
+    public Observable<PlaceLikelihoodBuffer> getCurrentPlace(@javax.annotation.Nullable final PlaceFilter placeFilter) {
+        return getGoogleApiClientObservable(Places.PLACE_DETECTION_API, Places.GEO_DATA_API)
+                .flatMap(new Func1<GoogleApiClient, Observable<PlaceLikelihoodBuffer>>() {
+                    @Override
+                    public Observable<PlaceLikelihoodBuffer> call(GoogleApiClient api) {
+                        return fromPendingResult(Places.PlaceDetectionApi.getCurrentPlace(api, placeFilter));
+                    }
+                });
+    }
+
+    public Observable<GoogleApiClient> getGoogleApiClientObservable(Api... apis) {
+        //noinspection unchecked
+        return GoogleAPIClientObservable.create(getView().getActivity(), apis);
+    }
+
+
+    public <T extends Result> Observable<T> fromPendingResult(PendingResult<T> result) {
+        return Observable.create(new PendingResultObservable<>(result));
     }
 }

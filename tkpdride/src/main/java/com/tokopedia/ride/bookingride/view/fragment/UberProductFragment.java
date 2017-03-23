@@ -27,6 +27,7 @@ import com.tokopedia.ride.bookingride.view.adapter.RideProductItemClickListener;
 import com.tokopedia.ride.bookingride.view.adapter.factory.RideProductAdapterTypeFactory;
 import com.tokopedia.ride.bookingride.view.adapter.factory.RideProductTypeFactory;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewModel;
+import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
@@ -61,12 +62,17 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @BindView(R2.id.layout_progress_and_error_view)
     View mProgreessAndErrorView;
 
+    boolean isCompleteLocations;
+
     List<RideProductViewModel> rideProductViewModels;
+    private PlacePassViewModel source, destination;
 
     RideProductAdapter mAdapter;
 
     public interface OnFragmentInteractionListener {
-        void onProductClicked(RideProductViewModel rideProductViewModel);
+        void onProductClicked(ConfirmBookingViewModel rideProductViewModel);
+
+        void onMinimumTimeEstCalculated(String timeEst);
     }
 
     public static UberProductFragment newInstance() {
@@ -130,11 +136,35 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
 
     @Override
     public void onProductSelected(RideProductViewModel rideProductViewModel) {
-        mInteractionListener.onProductClicked(rideProductViewModel);
+        if (isCompleteLocations) {
+            ConfirmBookingViewModel confirmBookingViewModel = ConfirmBookingViewModel.createInitial();
+            confirmBookingViewModel.setFareId(rideProductViewModel.getFareId());
+            confirmBookingViewModel.setStartLatitude(source.getLatitude());
+            confirmBookingViewModel.setStartLongitude(source.getLongitude());
+            confirmBookingViewModel.setEndLatitude(destination.getLatitude());
+            confirmBookingViewModel.setProductId(rideProductViewModel.getProductId());
+            confirmBookingViewModel.setPrice(rideProductViewModel.getProductPrice());
+            confirmBookingViewModel.setProductImage(rideProductViewModel.getProductImage());
+            confirmBookingViewModel.setHeaderTitle(
+                    String.format(
+                            "%s - Pickup in %s s",
+                            rideProductViewModel.getProductName(),
+                            rideProductViewModel.getTimeEstimate())
+            );
+            confirmBookingViewModel.setMaxCapacity(rideProductViewModel.getCapacity());
+            mInteractionListener.onProductClicked(confirmBookingViewModel);
+        }
     }
 
 
     public void updateProductList(PlacePassViewModel source, PlacePassViewModel destination) {
+        this.destination = destination;
+        this.source = source;
+        if (source != null && destination != null) {
+            isCompleteLocations = true;
+        } else {
+            isCompleteLocations = false;
+        }
         showProgress();
         mPresenter.actionGetRideProducts(source, destination);
     }
@@ -197,5 +227,10 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
                                   int position,
                                   FareEstimate fareEstimate) {
         mAdapter.setChangedItem(position, productEstimate);
+    }
+
+    @Override
+    public void actionMinimumTimeEstResult(String timeEst) {
+        mInteractionListener.onMinimumTimeEstCalculated(timeEst);
     }
 }

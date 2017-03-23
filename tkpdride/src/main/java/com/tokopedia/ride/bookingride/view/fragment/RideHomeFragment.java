@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Animatable;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -254,7 +253,10 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         //set address based on current address and refresh the product list
         //add validation if user already pick destination
         if (!isAlreadySelectDestination) {
-            renderDefaultPickupLocation(mGoogleMap.getCameraPosition().target.latitude, mGoogleMap.getCameraPosition().target.longitude);
+            double latitude = mGoogleMap.getCameraPosition().target.latitude;
+            double longitude = mGoogleMap.getCameraPosition().target.longitude;
+            String sourceAddress = GeoLocationUtils.reverseGeoCodeToShortAdd(getActivity(), latitude, longitude);
+            renderDefaultPickupLocation(latitude, longitude, sourceAddress);
         }
         //animate marker to lift down
         AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
@@ -301,23 +303,18 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
                     break;
                 case PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE:
                     mSource = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
-                    setSourceLocationText(String.valueOf(mSource.getAddress()));
-                    proccessToRenderInitialRideProduct();
+                    setSourceLocationText(String.valueOf(mSource.getTitle()));
                     proccessToRenderRideProduct();
                     break;
                 case PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE:
                     mDestination = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
-                    setDestinationLocationText(String.valueOf(mDestination.getAddress()));
+                    setDestinationLocationText(String.valueOf(mDestination.getTitle()));
                     proccessToRenderRideProduct();
                     isAlreadySelectDestination = true;
                     hideMarkerCenter();
                     break;
             }
         }
-
-    }
-
-    private void proccessToRenderInitialRideProduct() {
 
     }
 
@@ -343,21 +340,21 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     }
 
     @Override
-    public void renderDefaultPickupLocation(double latitude, double longitude) {
-        String sourceAddress = GeoLocationUtils.reverseGeoCodeToShortAdd(getActivity(), latitude, longitude);
+    public void renderDefaultPickupLocation(double latitude, double longitude, String sourceAddress) {
         mSource = new PlacePassViewModel();
         mSource.setAddress(sourceAddress);
         mSource.setTitle(sourceAddress);
         mSource.setLatitude(latitude);
         mSource.setLongitude(longitude);
         proccessToRenderRideProduct();
-
         setSourceLocationText(sourceAddress);
     }
 
     @Override
-    public void setSourceLocation(Location location) {
-
+    public void setSourceLocation(PlacePassViewModel location) {
+        mSource = location;
+        proccessToRenderRideProduct();
+        setSourceLocationText(location.getTitle());
     }
 
     @Override
@@ -441,5 +438,9 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         mMarkerTimeLayout.setVisibility(View.GONE);
         mMarkerImageView.setVisibility(View.GONE);
         mMarkerCenterCrossImage.setVisibility(View.GONE);
+    }
+
+    public void setMarkerText(String timeEst) {
+        mMarkerTimeTextView.setText(timeEst);
     }
 }

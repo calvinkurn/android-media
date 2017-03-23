@@ -40,7 +40,7 @@ public interface BookingRideContract {
 
         void moveToCurrentLocation(double latitude, double longitude);
 
-        void renderDefaultPickupLocation(double latitude, double longitude);
+        void renderDefaultPickupLocation(double latitude, double longitude, String sourceAddress);
 
         void onMapDragStarted();
 
@@ -48,7 +48,7 @@ public interface BookingRideContract {
 
         void renderTripRoute(List<List<LatLng>> routes);
 
-        void setSourceLocation(Location location);
+        void setSourceLocation(PlacePassViewModel location);
 
         void hideMarkerCenter();
     }

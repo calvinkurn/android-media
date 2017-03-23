@@ -1,27 +1,40 @@
 package com.tokopedia.ride.bookingride.view.activity;
 
 import android.Manifest;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.transition.ChangeBounds;
 import android.transition.Slide;
 import android.view.Gravity;
+import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
-import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewModel;
+import com.tokopedia.ride.bookingride.view.adapter.SeatAdapter;
+import com.tokopedia.ride.bookingride.view.adapter.viewmodel.SeatViewModel;
 import com.tokopedia.ride.bookingride.view.fragment.ConfirmBookingRideFragment;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeFragment;
 import com.tokopedia.ride.bookingride.view.fragment.UberProductFragment;
+import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,7 +46,7 @@ import static com.tokopedia.ride.bookingride.view.fragment.ConfirmBookingRideFra
 
 @RuntimePermissions
 public class RideHomeActivity extends BaseActivity implements RideHomeFragment.OnFragmentInteractionListener,
-        UberProductFragment.OnFragmentInteractionListener {
+        UberProductFragment.OnFragmentInteractionListener, ConfirmBookingRideFragment.OnFragmentInteractionListener, SeatAdapter.OnItemClickListener {
 
     private Unbinder unbinder;
 
@@ -41,6 +54,12 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
     SlidingUpPanelLayout mSlidingUpPanelLayout;
     @BindView(R2.id.bottom_container)
     FrameLayout mBottomContainer;
+    @BindView(R2.id.rv_list_seats)
+    RecyclerView seatListRecyclerView;
+    @BindView(R2.id.block_translucent_view)
+    FrameLayout blockTranslucentFrameLayout;
+    @BindView(R2.id.seat_pannel)
+    RelativeLayout seatPanelLayout;
 
     private int mSlidingPanelMinHeightInPx, mToolBarHeightinPx;
 
@@ -86,7 +105,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
 
     @Override
     public void onSourceAndDestinationChanged(PlacePassViewModel source, PlacePassViewModel destination) {
-        UberProductFragment productFragment = (UberProductFragment) getFragmenKtManager().findFragmentById(R.id.bottom_container);
+        UberProductFragment productFragment = (UberProductFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
         if (productFragment != null) {
             productFragment.updateProductList(source, destination);
         } else {
@@ -108,9 +127,24 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
         mBottomContainer.animate().setInterpolator(new AccelerateDecelerateInterpolator()).translationY(0).setDuration(300);
     }
 
+
     @Override
-    public void onProductClicked(RideProductViewModel rideProductViewModel) {
+    public void onMinimumTimeEstCalculated(String timeEst) {
+        RideHomeFragment fragment = (RideHomeFragment) getFragmentManager().findFragmentById(R.id.top_container);
+        if (fragment != null) {
+            fragment.setMarkerText(timeEst);
+        } else {
+            fragment = RideHomeFragment.newInstance();
+            addFragment(R.id.top_container, fragment);
+            fragment.setMarkerText(timeEst);
+        }
+    }
+
+    @Override
+    public void onProductClicked(ConfirmBookingViewModel rideProductViewModel) {
         onBottomContainerChangeToBookingScreen();
+        mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
+
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_PRODUCT, rideProductViewModel);
         ConfirmBookingRideFragment fragment = ConfirmBookingRideFragment.newInstance(bundle);
@@ -146,5 +180,71 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    @Override
+    public void actionChangeSeatCount(List<SeatViewModel> seatViewModels) {
+        showBlockTranslucentLayout();
+        showSeatPanelLayout();
+
+        SeatAdapter adapter = new SeatAdapter(this);
+        adapter.setOnItemClickListener(this);
+        seatListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        seatListRecyclerView.setAdapter(adapter);
+        adapter.setSeatViewModels(seatViewModels);
+    }
+
+    private void showSeatPanelLayout() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Animation bottomUp = AnimationUtils.loadAnimation(RideHomeActivity.this,
+                        R.anim.bottom_up);
+
+                seatPanelLayout.startAnimation(bottomUp);
+                seatPanelLayout.setVisibility(View.VISIBLE);
+            }
+        } , 500);
+    }
+
+    private void showBlockTranslucentLayout() {
+        blockTranslucentFrameLayout.setVisibility(View.VISIBLE);
+        final ObjectAnimator backgroundColorAnimator = ObjectAnimator.ofObject(blockTranslucentFrameLayout,
+                "backgroundColor",
+                new ArgbEvaluator(),
+                0x00000000,
+                0xBB000000);
+        backgroundColorAnimator.setDuration(500);
+        backgroundColorAnimator.start();
+    }
+
+    private void hideBlockTranslucentLayout(){
+        blockTranslucentFrameLayout.setVisibility(View.GONE);
+    }
+
+    private void hideSeatPanelLayout(){
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Animation bottomDown = AnimationUtils.loadAnimation(RideHomeActivity.this,
+                        R.anim.bottom_down);
+
+                seatPanelLayout.startAnimation(bottomDown);
+                seatPanelLayout.setVisibility(View.INVISIBLE);
+            }
+        } , 200);
+    }
+
+    @Override
+    public void onItemClicked(SeatViewModel seatViewModel) {
+        hideBlockTranslucentLayout();
+        hideSeatPanelLayout();
+        seatPanelLayout.setVisibility(View.GONE);
+        ConfirmBookingRideFragment productFragment = (ConfirmBookingRideFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
+        if (productFragment != null) {
+            productFragment.updateSeatCount(seatViewModel.getSeat());
+        } else {
+            throw new RuntimeException("ConfirmBookingRideFragment view is gone");
+        }
     }
 }

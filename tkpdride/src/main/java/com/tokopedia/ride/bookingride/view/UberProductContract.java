@@ -1,5 +1,7 @@
 package com.tokopedia.ride.bookingride.view;
 
+import android.content.Context;
+
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
@@ -34,6 +36,10 @@ public interface UberProductContract {
         void hideErrorMessage(String message);
 
         void renderFareProduct(Visitable productEstimate, String productId, int position, FareEstimate fareEstimate);
+
+        void actionMinimumTimeEstResult(String timeEst);
+
+        Context getActivity();
     }
 
     interface Presenter extends CustomerPresenter<View> {

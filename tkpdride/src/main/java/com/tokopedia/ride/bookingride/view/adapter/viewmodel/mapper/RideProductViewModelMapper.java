@@ -50,14 +50,15 @@ public class RideProductViewModelMapper {
         return rideProductViewModels;
     }
 
-    public Visitable transform(ProductEstimate product) {
+    private Visitable transform(ProductEstimate product) {
         RideProductViewModel rideProductViewModel = null;
         if (product != null) {
             rideProductViewModel = new RideProductViewModel();
             rideProductViewModel.setProductName(product.getProduct().getDisplayName());
             rideProductViewModel.setProductId(product.getProduct().getProductId());
             rideProductViewModel.setProductImage(product.getProduct().getImage());
-            rideProductViewModel.setTimeEstimate(product.getTimesEstimate().getEstimate());
+            rideProductViewModel.setTimeEstimate(String.valueOf(product.getTimesEstimate().getEstimate()));
+            rideProductViewModel.setCapacity(product.getProduct().getCapacity());
         }
         return rideProductViewModel;
     }
@@ -71,7 +72,9 @@ public class RideProductViewModelMapper {
             rideProductViewModel.setProductImage(product.getProduct().getImage());
             rideProductViewModel.setProductPrice(fareEstimate.getFare().getDisplay());
             rideProductViewModel.setBaseFare(fareEstimate.getFare().getDisplay());
-            rideProductViewModel.setTimeEstimate(fareEstimate.getPickupEstimate());
+            rideProductViewModel.setTimeEstimate(String.valueOf(product.getTimesEstimate().getEstimate()));
+            rideProductViewModel.setFareId(fareEstimate.getFare().getFareId());
+            rideProductViewModel.setCapacity(product.getProduct().getCapacity());
         }
         return rideProductViewModel;
 

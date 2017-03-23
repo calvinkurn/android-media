@@ -38,6 +38,7 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PlaceAutoCompeleteViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
+import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -375,35 +376,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
     public <T extends Result> Observable<T> fromPendingResult(PendingResult<T> result) {
         return Observable.create(new PendingResultObservable<>(result));
-    }
-
-    public class PendingResultObservable<T extends Result> implements Observable.OnSubscribe<T> {
-        private final PendingResult<T> result;
-        private boolean complete = false;
-
-        public PendingResultObservable(PendingResult<T> result) {
-            this.result = result;
-        }
-
-        @Override
-        public void call(final Subscriber<? super T> subscriber) {
-            result.setResultCallback(new ResultCallback<T>() {
-                @Override
-                public void onResult(T t) {
-                    subscriber.onNext(t);
-                    complete = true;
-                    subscriber.onCompleted();
-                }
-            });
-            subscriber.add(Subscriptions.create(new Action0() {
-                @Override
-                public void call() {
-                    if (!complete) {
-                        result.cancel();
-                    }
-                }
-            }));
-        }
     }
 
     @Override
