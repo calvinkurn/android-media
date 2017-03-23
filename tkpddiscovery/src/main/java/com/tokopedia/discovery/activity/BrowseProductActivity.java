@@ -40,6 +40,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
@@ -1095,7 +1096,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         void onQueryChanged(String query);
     }
 
-    public void renderNewCategoryLevel(String departementId, String name) {
+    public void renderNewCategoryLevel(String departementId, String name, boolean isBack) {
         if (departementId!=null && name!=null) {
             browseProductActivityModel.setDepartmentId(departementId);
             toolbar.setTitle(name);
@@ -1105,14 +1106,17 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
             ArrayMap<String, String> visibleTab = new ArrayMap<>();
             visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, parentFragment.VISIBLE_ON);
             parentFragment.initSectionAdapter(visibleTab);
-            parentFragment.setupWithTabViewPager();
+            if (isBack && parentFragment!=null) {
+                parentFragment.renderCategories(discoveryInteractor.
+                        getCategoryHeaderCache(categoryLevel.size()+1).getData());
+            }
         }
     }
 
     public void renderLowerCategoryLevel(Child child) {
         categoryLevel.push(new SimpleCategory(browseProductActivityModel.getDepartmentId(),getIntent().getStringExtra(EXTRA_TITLE)));
         getIntent().putExtra(EXTRA_TITLE,child.getName());
-        renderNewCategoryLevel(child.getId(),child.getName());
+        renderNewCategoryLevel(child.getId(),child.getName(),false);
 
     }
 
@@ -1127,7 +1131,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         } else if (categoryLevel.size()>0) {
             SimpleCategory simpleCategory = categoryLevel.pop();
             getIntent().putExtra(EXTRA_TITLE,simpleCategory.getName());
-            renderNewCategoryLevel(simpleCategory.getId(),simpleCategory.getName());
+            renderNewCategoryLevel(simpleCategory.getId(),simpleCategory.getName(),true);
         } else {
             finish();
         }

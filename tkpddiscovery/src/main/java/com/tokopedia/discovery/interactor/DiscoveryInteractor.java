@@ -20,6 +20,7 @@ public interface DiscoveryInteractor {
     void getHotListBanner(HashMap<String, String> data);
     void getCategoryHeader(String categoryId, int level);
     void storeCacheCategoryHeader(int level, CategoriesHadesModel categoriesHadesModel);
+    CategoriesHadesModel getCategoryHeaderCache(int level);
     void getTopAds(HashMap<String, String> data);
     void loadSearchSuggestion(String querySearch, String unique_id, int count);
     void deleteSearchHistory(String unique_id, String keyword, boolean clear_all);

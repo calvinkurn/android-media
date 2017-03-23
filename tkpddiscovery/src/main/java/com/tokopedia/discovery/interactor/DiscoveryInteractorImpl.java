@@ -57,6 +57,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
     SearchSuggestionService searchSuggestionService;
     CompositeSubscription compositeSubscription;
     Gson gson = new GsonBuilder().create();
+    GlobalCacheManager cacheManager;
 
     public CompositeSubscription getCompositeSubscription() {
         return RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
@@ -72,6 +73,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
         topAdsService = new TopAdsService();
         hadesService = new HadesService();
         searchSuggestionService = new SearchSuggestionService();
+        cacheManager = new GlobalCacheManager();
     }
 
     public DiscoveryListener getDiscoveryListener() {
@@ -166,6 +168,11 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
                 .setKey(TkpdCache.Key.CATEOGRY_HEADER_LEVEL+level)
                 .setValue(gson.toJson(categoriesHadesModel))
                 .store();
+    }
+
+    @Override
+    public CategoriesHadesModel getCategoryHeaderCache(int level) {
+        return cacheManager.getConvertObjData(TkpdCache.Key.CATEOGRY_HEADER_LEVEL+level, CategoriesHadesModel.class);
     }
 
     @Override
