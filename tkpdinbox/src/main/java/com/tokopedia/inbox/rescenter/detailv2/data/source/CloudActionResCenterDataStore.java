@@ -56,4 +56,10 @@ public class CloudActionResCenterDataStore {
                 .acceptResolution2(AuthUtil.generateParamsNetwork2(context, parameters))
                 .map(resolutionCenterActionMapper);
     }
+
+    public Observable<ResolutionActionDomainData> inputAddress(TKPDMapParam<String, Object> parameters) {
+        return resCenterActService.getApi()
+                .inputAddressResolution2(AuthUtil.generateParamsNetwork2(context, parameters))
+                .map(resolutionCenterActionMapper);
+    }
 }

@@ -288,13 +288,13 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
             case REQUEST_CHOOSE_ADDRESS:
                 if (resultCode == Activity.RESULT_OK) {
                     Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
-//                    presenter.actionInputAddress(getActivity(), destination.getAddressId());
+                    presenter.inputAddressAcceptSolution(destination != null ? destination.getAddressId() : null);
                 }
                 break;
             case REQUEST_CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION:
                 if (resultCode == Activity.RESULT_OK) {
                     Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
-//                    presenter.actionInputAddressAcceptAdminSolution(getActivity(), destination.getAddressId());
+                    presenter.inputAddressAcceptAdminSolution(destination != null ? destination.getAddressId() : null);
                 }
                 break;
             case REQUEST_EDIT_ADDRESS:
