@@ -30,4 +30,6 @@ public interface ResCenterRepository {
     Observable<ResolutionActionDomainData> acceptAdminSolution(TKPDMapParam<String, Object> parameters);
 
     Observable<ResolutionActionDomainData> acceptSolution(TKPDMapParam<String, Object> parameters);
+
+    Observable<ResolutionActionDomainData> inputAddress(TKPDMapParam<String, Object> parameters);
 }

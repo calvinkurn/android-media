@@ -78,4 +78,10 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
         return resCenterDataSourceFactory.createCloudActionResCenterDataStore()
                 .acceptSolution(parameters);
     }
+
+    @Override
+    public Observable<ResolutionActionDomainData> inputAddress(TKPDMapParam<String, Object> parameters) {
+        return resCenterDataSourceFactory.createCloudActionResCenterDataStore()
+                .inputAddress(parameters);
+    }
 }

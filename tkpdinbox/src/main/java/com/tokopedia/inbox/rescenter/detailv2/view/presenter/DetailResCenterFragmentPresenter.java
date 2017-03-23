@@ -22,4 +22,7 @@ public interface DetailResCenterFragmentPresenter {
 
     void trackReturProduck(String shipmentID, String shipmentRef);
 
+    void inputAddressAcceptSolution(String addressId);
+
+    void inputAddressAcceptAdminSolution(String addressId);
 }

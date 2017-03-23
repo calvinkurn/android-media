@@ -19,6 +19,7 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AskHelpResolutio
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.CancelResolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.FinishReturSolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.InputAddressUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.TrackAwbReturProductUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.GetResCenterDetailSubscriber;
@@ -39,6 +40,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     private final FinishReturSolutionUseCase finishReturSolutionUseCase;
     private final AcceptAdminSolutionUseCase acceptAdminSolutionUseCase;
     private final AcceptSolutionUseCase acceptSolutionUseCase;
+    private final InputAddressUseCase inputAddressUseCase;
 
     public DetailResCenterFragmentImpl(Context context, DetailResCenterFragmentView fragmentView) {
         this.fragmentView = fragmentView;
@@ -81,6 +83,9 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
 
         this.acceptSolutionUseCase
                 = new AcceptSolutionUseCase(jobExecutor, uiThread, resCenterRepository);
+
+        this.inputAddressUseCase
+                = new InputAddressUseCase(jobExecutor, uiThread, resCenterRepository);
     }
 
     @Override
@@ -173,6 +178,29 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
         RequestParams params = RequestParams.create();
         params.putString(TrackAwbReturProductUseCase.PARAM_SHIPMENT_ID, shipmentID);
         params.putString(TrackAwbReturProductUseCase.PARAM_SHIPPING_REFENCE, shipmentRef);
+        return params;
+    }
+
+    @Override
+    public void inputAddressAcceptSolution(String addressId) {
+        fragmentView.showLoadingDialog(true);
+        inputAddressUseCase.execute(getInputAddressParam(addressId, InputAddressUseCase.DEFAULT_BY_PASS),
+                new ResolutionActionSubscriber(fragmentView));
+    }
+
+    @Override
+    public void inputAddressAcceptAdminSolution(String addressId) {
+        fragmentView.showLoadingDialog(true);
+        inputAddressUseCase.execute(getInputAddressParam(addressId, InputAddressUseCase.ADMIN_BY_PASS),
+                new ResolutionActionSubscriber(fragmentView));
+    }
+
+    private RequestParams getInputAddressParam(String addressId, int paramByPass) {
+        RequestParams params = RequestParams.create();
+        params.putString(InputAddressUseCase.PARAM_ADDRESS_ID, addressId);
+        params.putInt(InputAddressUseCase.PARAM_BYPASS, paramByPass);
+        params.putString(InputAddressUseCase.PARAM_RESOLUTION_ID, fragmentView.getResolutionID());
+        params.putInt(InputAddressUseCase.PARAM_NEW_ADDRESS, 1);
         return params;
     }
 
