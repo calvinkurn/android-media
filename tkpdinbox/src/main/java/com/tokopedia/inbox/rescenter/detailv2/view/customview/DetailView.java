@@ -104,7 +104,7 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
                 listener.setOnActionPeopleDetailClick(data.getBuyerID());
             }
         });
-        textCustomerName.setOnClickListener(new OnClickListener() {
+        textShopName.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 listener.setOnActionShopDetailClick(data.getShopID());
