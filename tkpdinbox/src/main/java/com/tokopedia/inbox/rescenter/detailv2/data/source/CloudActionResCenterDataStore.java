@@ -44,4 +44,16 @@ public class CloudActionResCenterDataStore {
                 .finishResolutionReturn2(AuthUtil.generateParamsNetwork2(context, parameters))
                 .map(resolutionCenterActionMapper);
     }
+
+    public Observable<ResolutionActionDomainData> acceptAdminSolution(TKPDMapParam<String, Object> parameters) {
+        return resCenterActService.getApi()
+                .acceptAdminResolution2(AuthUtil.generateParamsNetwork2(context, parameters))
+                .map(resolutionCenterActionMapper);
+    }
+
+    public Observable<ResolutionActionDomainData> acceptSolution(TKPDMapParam<String, Object> parameters) {
+        return resCenterActService.getApi()
+                .acceptResolution2(AuthUtil.generateParamsNetwork2(context, parameters))
+                .map(resolutionCenterActionMapper);
+    }
 }

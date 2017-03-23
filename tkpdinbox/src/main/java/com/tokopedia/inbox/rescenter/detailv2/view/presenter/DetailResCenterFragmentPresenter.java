@@ -14,6 +14,8 @@ public interface DetailResCenterFragmentPresenter {
 
     void acceptSolution();
 
+    void acceptAdminSolution();
+
     void cancelResolution();
 
     void askHelpResolution();

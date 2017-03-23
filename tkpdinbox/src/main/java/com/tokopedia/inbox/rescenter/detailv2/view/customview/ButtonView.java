@@ -82,13 +82,13 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         actionHelp.setVisibility(canAskHelp() ? VISIBLE : GONE);
 
         actionAcceptSolutionHorizontal.setVisibility(
-                canAcceptSolution() &&  validToHorizontalView() ? VISIBLE : GONE);
-        actionAcceptSolutionVertical.setVisibility(canAcceptSolution()
+                isShowAcceptSolutionButton() &&  validToHorizontalView() ? VISIBLE : GONE);
+        actionAcceptSolutionVertical.setVisibility(isShowAcceptSolutionButton()
                 && actionAcceptSolutionHorizontal.getVisibility() != VISIBLE ? VISIBLE : GONE);
 
         actionCancelResolutionHorizontal.setVisibility(
-                canAcceptSolution() &&  validToHorizontalView()? VISIBLE : GONE);
-        actionCancelResolutionVertical.setVisibility(canAcceptSolution()
+                isShowCancelResolutionButton() &&  validToHorizontalView() ? VISIBLE : GONE);
+        actionCancelResolutionVertical.setVisibility(isShowCancelResolutionButton()
                 && actionCancelResolutionHorizontal.getVisibility() != VISIBLE ? VISIBLE : GONE);
 
     }
@@ -135,8 +135,24 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         return getButtonData().isShowEdit();
     }
 
+    private boolean isShowCancelResolutionButton() {
+        return canCancelSolution();
+    }
+
+    private boolean canCancelSolution() {
+        return getButtonData().isShowCancel();
+    }
+
+    private boolean isShowAcceptSolutionButton() {
+        return canAcceptSolution() || canAcceptAdminSolution();
+    }
+
     private boolean canAcceptSolution() {
         return getButtonData().isShowAcceptSolution();
+    }
+
+    private boolean canAcceptAdminSolution() {
+        return getButtonData().isShowAcceptAdminSolution();
     }
 
     private boolean canAskHelp() {
@@ -151,7 +167,11 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
     private class ActionAcceptSolutionClickListener implements OnClickListener {
         @Override
         public void onClick(View view) {
-            listener.setOnActionAcceptSolutionClick();
+            if (canAcceptSolution() && !canAcceptAdminSolution()) {
+                listener.setOnActionAcceptSolutionClick();
+            } else if (canAcceptAdminSolution() && !canAcceptSolution()){
+                listener.setOnActionAcceptAdminSolutionClick();
+            }
         }
     }
 

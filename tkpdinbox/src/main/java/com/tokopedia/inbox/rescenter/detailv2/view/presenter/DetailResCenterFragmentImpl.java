@@ -13,6 +13,8 @@ import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFa
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AcceptAdminSolutionUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AcceptSolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AskHelpResolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.CancelResolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.FinishReturSolutionUseCase;
@@ -35,6 +37,8 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     private final CancelResolutionUseCase cancelResolutionUseCase;
     private final AskHelpResolutionUseCase askHelpResolutionUseCase;
     private final FinishReturSolutionUseCase finishReturSolutionUseCase;
+    private final AcceptAdminSolutionUseCase acceptAdminSolutionUseCase;
+    private final AcceptSolutionUseCase acceptSolutionUseCase;
 
     public DetailResCenterFragmentImpl(Context context, DetailResCenterFragmentView fragmentView) {
         this.fragmentView = fragmentView;
@@ -71,6 +75,12 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
 
         this.finishReturSolutionUseCase
                 = new FinishReturSolutionUseCase(jobExecutor, uiThread, resCenterRepository);
+
+        this.acceptAdminSolutionUseCase
+                = new AcceptAdminSolutionUseCase(jobExecutor, uiThread, resCenterRepository);
+
+        this.acceptSolutionUseCase
+                = new AcceptSolutionUseCase(jobExecutor, uiThread, resCenterRepository);
     }
 
     @Override
@@ -104,7 +114,26 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
 
     @Override
     public void acceptSolution() {
+        acceptSolutionUseCase.execute(getAcceptSolutionParam(),
+                new ResolutionActionSubscriber(fragmentView));
+    }
 
+    private RequestParams getAcceptSolutionParam() {
+        RequestParams params = RequestParams.create();
+        params.putString(AcceptSolutionUseCase.PARAM_RESOLUTION_ID, fragmentView.getResolutionID());
+        return params;
+    }
+
+    @Override
+    public void acceptAdminSolution() {
+        acceptAdminSolutionUseCase.execute(getAcceptAdminSolutionParam(),
+                new ResolutionActionSubscriber(fragmentView));
+    }
+
+    private RequestParams getAcceptAdminSolutionParam() {
+        RequestParams params = RequestParams.create();
+        params.putString(AcceptAdminSolutionUseCase.PARAM_RESOLUTION_ID, fragmentView.getResolutionID());
+        return params;
     }
 
     @Override

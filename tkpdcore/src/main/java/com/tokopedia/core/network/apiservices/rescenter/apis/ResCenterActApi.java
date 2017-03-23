@@ -2,6 +2,7 @@ package com.tokopedia.core.network.apiservices.rescenter.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.Map;
 
@@ -102,4 +103,11 @@ public interface ResCenterActApi {
     @POST(TkpdBaseURL.ResCenter.PATH_FINISH_RES_RETURN)
     Observable<Response<TkpdResponse>> finishResolutionReturn2(@FieldMap Map<String, Object> params);
 
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_ACCEPT_ADMIN_RESOLUTION)
+    Observable<Response<TkpdResponse>> acceptAdminResolution2(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_ACCEPT_RESOLUTION)
+    Observable<Response<TkpdResponse>> acceptResolution2(@FieldMap Map<String, Object> params);
 }

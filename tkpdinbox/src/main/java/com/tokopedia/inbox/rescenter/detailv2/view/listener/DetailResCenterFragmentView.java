@@ -38,6 +38,8 @@ public interface DetailResCenterFragmentView {
 
     void setOnActionAcceptSolutionClick();
 
+    void setOnActionAcceptAdminSolutionClick();
+
     void setOnActionEditSolutionClick();
 
     void setOnActionMoreProductClick();
