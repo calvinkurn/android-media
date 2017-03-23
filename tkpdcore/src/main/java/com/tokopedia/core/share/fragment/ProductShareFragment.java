@@ -259,6 +259,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
                 if (ProductDB!= null && ProductDB.getWholeSales() != null)
                     ProductDB.setWholesalePriceDBs(ProductDB.getWholeSales());
                 shareData = new ShareData();
+                shareData.setType(ShareData.PRODUCT_TYPE);
                 if (ProductDB!= null && ProductDB.getNameProd() != null)
                     shareData.setName(ProductDB.getNameProd());
 

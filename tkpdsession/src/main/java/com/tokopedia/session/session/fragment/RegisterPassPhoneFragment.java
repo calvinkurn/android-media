@@ -201,6 +201,7 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
                 showProgress(false);
                 if (new SessionHandler(getActivity()).isV4Login()) {// go back to home
                     if (getActivity() != null && getActivity() instanceof SessionView) {
+                        SessionHandler.setPhoneNumber(vPhoneNumber.getText().toString());
                         ((SessionView) getActivity()).destroy();
                     }
                 }

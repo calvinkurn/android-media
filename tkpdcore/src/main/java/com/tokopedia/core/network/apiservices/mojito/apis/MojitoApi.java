@@ -21,11 +21,6 @@ public interface MojitoApi {
 
     String DEVICE = "device";
 
-    @GET(TkpdBaseURL.Mojito.PATH_WISHLIST_PRODUCT)
-    Observable<Response<WishlistData>> getWishlist(@Path("userId") String UserId,
-                                                   @Query("count") int Count,
-                                                   @Query("page") int Page);
-
     //api requirement add static header
     @Headers({
             "X-Device: android"})
@@ -39,5 +34,8 @@ public interface MojitoApi {
 
     @GET(TkpdBaseURL.Mojito.PATH_SEARCH_WISHLIST)
     Observable<Response<WishlistData>> searchWishlist(
-            @Path("userId") String userId, @Query("q") String query);
+            @Path("userId") String userId,
+            @Query("q") String query,
+            @Query("page") int page,
+            @Query("count") int count);
 }

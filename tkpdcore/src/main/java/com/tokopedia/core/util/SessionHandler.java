@@ -63,7 +63,6 @@ public class SessionHandler {
     public static final String PHONE_NUMBER = "PHONE_NUMBER";
     public static final String TEMP_PHONE_NUMBER = "TEMP_PHONE_NUMBER";
     public static final String TEMP_NAME = "TEMP_NAME";
-    private static final String MSISDN_SESSION = "MSISDN_SESSION";
 
     private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     private static final String REFRESH_TOKEN = "REFRESH_TOKEN";
@@ -173,8 +172,8 @@ public class SessionHandler {
         editor.putString(SHOP_ID, null);
         editor.putBoolean(IS_LOGIN, false);
         editor.putBoolean(IS_MSISDN_VERIFIED, false);
+        editor.putString(PHONE_NUMBER, null);
         editor.commit();
-        LocalCacheHandler.clearCache(context, MSISDN_SESSION);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_USER);
         LocalCacheHandler.clearCache(context, TkpdCache.NOTIFICATION_DATA);
         LocalCacheHandler.clearCache(context, "ETALASE_ADD_PROD");
@@ -239,7 +238,6 @@ public class SessionHandler {
                 "User Id: " + getLoginID(context) +
                         " Device Id: " + GCMHandler.getRegistrationId(context));
         PasswordGenerator.clearTokenStorage(context);
-        GCMHandler.clearRegistrationId(context);
         clearUserData();
     }
 
@@ -481,18 +479,6 @@ public class SessionHandler {
         LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), LOGIN_SESSION);
         cache.putBoolean(IS_MSISDN_VERIFIED, verified);
         cache.applyEditor();
-    }
-
-    public static void setDontRemindLater(boolean isChecked) {
-        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), MSISDN_SESSION);
-        cache.putBoolean(DONT_REMIND_LATER, isChecked);
-        cache.setExpire(86400);
-        cache.applyEditor();
-    }
-
-    public static boolean canRemind() {
-        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), MSISDN_SESSION);
-        return !cache.getBoolean(DONT_REMIND_LATER, false) || cache.isExpired();
     }
 
     public static void setPhoneNumber(String userPhone) {
