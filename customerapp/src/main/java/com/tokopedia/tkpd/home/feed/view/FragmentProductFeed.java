@@ -76,6 +76,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Inject
     FeedPresenter feedPresenter;
+    View parentView;
 
     private GridLayoutManager gridLayoutManager;
     private DataFeedAdapter adapter;
@@ -95,7 +96,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View parentView = inflater.inflate(R.layout.fragment_feed, container, false);
+        parentView = inflater.inflate(R.layout.fragment_feed, container, false);
         unbinder = ButterKnife.bind(this, parentView);
         prepareView(parentView);
         feedPresenter.attachView(this);
@@ -110,8 +111,11 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         super.onResume();
         String shopID = SessionHandler.getShopID(getActivity());
         String invalidShopId = "0";
-        if (shopID == null || invalidShopId.equals(shopID) || shopID.length() == 0) {
+        if (shopID == null || shopID.equals("0") || shopID.length() == 0) {
             fabAddProduct.setVisibility(View.GONE);
+            fabAddProduct.setVisibility(View.GONE);
+        } else {
+            fabAddProduct.setVisibility(View.VISIBLE);
         }
     }
 
@@ -323,10 +327,19 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         return !adapter.getData().isEmpty();
     }
 
+
     @Override
-    public void forceShowEmptyHistory() {
-         emptyHistoryView.setVisibility(View.VISIBLE);
+    public void showErrorFeed() {
+        NetworkErrorHelper.showEmptyState(getContext(), parentView,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        feedPresenter.refreshDataFeed();
+                    }
+                });
     }
+
+
 
     @Override
     public HistoryProductListItem getViewmodelHistory() {

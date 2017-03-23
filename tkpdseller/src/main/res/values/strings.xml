@@ -64,7 +64,8 @@
     <string name="title_top_ads_store">Toko</string>
     <string name="title_top_ads_promo_group">Grup</string>
     <string name="title_top_ads_add_credit">Tambah Kredit TopAds</string>
-    <string name="title_top_ads_new_promo">Pilih Atau Buat Promo</string>
+    <string name="title_top_ads_new_promo_shop">Pilih Atau Buat Promo</string>
+    <string name="title_top_ads_new_promo_product">Tambah Promo Produk</string>
     <string name="title_top_ads_filter">Filter</string>
     <string name="title_date_picker">Atur Tanggal</string>
     <string name="title_top_ads_manage_promo_product">Atur Grup</string>
@@ -106,6 +107,7 @@
     <string name="title_group_ad_edit">Ubah Promo Grup</string>
     <string name="title_delete_promo">Hapus promo</string>
     <string name="title_delete_group">Hapus grup</string>
+    <string name="title_edit_shop_ad">Ubah Promo Toko</string>
 
     <!-- Top Ads ad list -->
     <string name="label_top_ads_daily_spend">Anggaran Harian</string>
@@ -134,7 +136,7 @@
 
     <!-- Top Ads Edit Promo Budget-->
     <string name="label_top_ads_budget">Anggaran</string>
-    <string name="label_top_ads_budget_lifetime">Anggaran Tidak Dibatasi</string>
+    <string name="label_top_ads_budget_lifetime">Anggaran tidak dibatasi</string>
     <string name="label_top_ads_budget_per_day">Per Hari</string>
     <string name="label_top_ads_budget_cost_per_day">Biaya per hari</string>
 
@@ -197,15 +199,41 @@
 
     <string name="positive_button_dialog">Ya</string>
     <string name="negative_button_dialog">Tidak</string>
+    <string name="title_shop_score">Performa Toko</string>
+    <string name="description_shop_score_percent"> / 100</string>
+    <string name="subtitle_first_shop_score_detail_summary">Perfoma Toko Anda</string>
+    <string name="subtitle_second_shop_score_detail_summary">dengan nilai rata-rata</string>
+    <string name="title_shop_score_detail_gold_badge_info">Gold Badge</string>
+
+    <string name="desc_shop_score_gold_merchant_qualified_badge_before_rule">Nilai performa toko Anda sudah cukup untuk mendapatkan Gold Badge. Mulai tanggal 27 Maret 2017, Gold Badge hanya akan diberikan untuk toko Gold Merchant dengan skor minimal 75.</string>
+    <string name="desc_shop_score_gold_merchant_not_qualified_badge_before_rule">Tingkatkan nilai performa Toko Anda.  Mulai tanggal 27 Maret 2017, Gold Badge hanya akan diberikan untuk toko Gold Merchant dengan skor minimal 75.</string>
+    <string name="desc_shop_score_not_gold_merchant_qualified_badge_before_rule">Nilai performa toko Anda baik. Upgrade toko Anda ke Gold Merchant untuk mendapatkan Gold Badge dan terus meningkatkan performa toko Anda. Mulai tanggal 27 Maret 2017, Gold Badge hanya akan diberikan untuk toko Gold Merchant dengan skor minimal 75.</string>
+    <string name="desc_shop_score_not_gold_merchant_not_qualified_badge_before_rule">Upgrade toko Anda ke Gold Merchant untuk membantu meningkatkan nilai performa toko Anda. Mulai tanggal 27 Maret 2017, Gold Badge hanya akan diberikan untuk toko Gold Merchant dengan skor minimal 75.</string>
+
+    <string name="desc_shop_score_gold_merchant_qualified_badge_after_rule">Nilai performa toko Anda sudah cukup untuk mendapatkan Gold Badge.  Mulai tanggal 27 Maret 2017, Gold Badge hanya akan diberikan untuk toko Gold Merchant dengan skor minimal 75.</string>
+    <string name="desc_shop_score_gold_merchant_not_qualified_badge_after_rule">Tingkatkan nilai performa toko Anda untuk mendapatkan Gold Badge. Mulai tanggal 27 Maret 2017, Gold Badge hanya akan diberikan untuk toko Gold Merchant dengan skor minimal 75.</string>
+    <string name="desc_shop_score_not_gold_merchant_qualified_badge_after_rule">Nilai performa toko Anda sudah cukup untuk mendapatkan Gold Badge. Upgrade toko Anda ke Gold Merchant sekarang dan dapatkan Gold Badge untuk toko Anda.  Mulai tanggal 27 Maret 2017, Gold Badge hanya akan diberikan untuk toko Gold Merchant dengan skor minimal 75.</string>
+    <string name="desc_shop_score_not_gold_merchant_not_qualified_badge_after_rule">Upgrade toko Anda ke Gold Merchant untuk membantu meningkatkan nilai performa toko Anda. Mulai tanggal 27 Maret 2017, Gold Badge hanya akan diberikan untuk toko Gold Merchant dengan skor minimal 75.</string>
+
+    <string name="button_go_to_seller_tokopedia_web"><![CDATA[Tips & Trick meningkatkan Performa Toko]]></string>
+    <string name="button_go_to_gm_subscribe">Berlangganan Gold Merchant</string>
+    <string name="error_title_shop_score_failed">Data Gagal Ditampilkan</string>
+    <string name="error_subtitle_shop_score_failed">Periksa koneksi internet Anda dan coba lagi</string>
+    <string name="retry_shop_score">Coba Lagi</string>
+    <string name="button_shop_score_go_to_complete_information">Info Selengkapnya</string>
+    <string name="subtitle_shop_score_detail_summary_description">Nilai dihitung berdasarkan rata-rata nilai indikator performa toko anda dalam 30 hari terakhir</string>
+    <string name="title_shop_score_indicator">Indikator Performa Toko</string>
+    <string name="subtitle_shop_score_indicator_thirtydays">30 hari terakhir</string>
+    <string name="description_shop_score_gold_badge_state">Mulai tanggal 27 Maret 2017, ikon Gold Badge hanya akan diberikan kepada seller dengan skor minimal 75 poin.</string>
 
     <!-- Top Ads New Promo -->
     <string name="label_top_ads_shop_name">Nama Toko</string>
     <string name="label_top_ads_group_name">Nama Grup</string>
     <string name="label_top_ads_product_name">Nama Product</string>
     <string name="label_top_ads_choose_group">Pilih Grup</string>
-    <string name="label_top_ads_create_promo_new_group">Buat grup promo baru</string>
-    <string name="label_top_ads_create_promo_from_exist_group">Grup promo yang ada</string>
-    <string name="label_top_ads_create_promo_not_in_group">Tidak masuk ke grup promo</string>
+    <string name="label_top_ads_create_promo_new_group">Grup Baru</string>
+    <string name="label_top_ads_create_promo_from_exist_group">Grup yang Ada</string>
+    <string name="label_top_ads_create_promo_not_in_group">Tanpa Grup</string>
     <string name="label_top_ads_error_choose_one_group">Pilih salah satu grup</string>
     <string name="label_top_ads_error_choose_one_option">Silahkan pilih salah satu opsi</string>
     <string name="label_top_ads_error_empty_group_name">Silahkan isi nama grup</string>

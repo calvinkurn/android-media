@@ -111,6 +111,16 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
                     adapter.showLoading(true);
                 }
             }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    if (fabFilter.isShown()) fabFilter.hide();
+                }
+                else if (dy < 0){
+                    if (! fabFilter.isShown()) fabFilter.show();
+                }
+            }
         };
         swipeToRefresh.setEnabled(false);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);

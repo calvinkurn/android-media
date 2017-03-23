@@ -19,17 +19,19 @@ import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
-import com.tokopedia.transaction.webview.WalletWebView;
+import com.tokopedia.transaction.wallet.WalletActivity;
 
 /**
  * Created by normansyahputa on 12/15/16.
  */
 
 public class ConsumerRouterApplication extends MainApplication implements TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter {
+
+    public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
+
     @Override
     public void goToHome(Context context) {
-        Intent intent = new Intent(context,
-                ParentIndexHome.class);
+        Intent intent = getHomeIntent(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
@@ -94,7 +96,7 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
 
     @Override
     public void goToWallet(Context context, Bundle bundle) {
-        Intent intent = new Intent(context, WalletWebView.class);
+        Intent intent = new Intent(context, WalletActivity.class);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
@@ -103,5 +105,15 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
     public void goToMerchantRedirect(Context context) {
         Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
         context.startActivity(intent);
+    }
+
+    @Override
+    public Intent getHomeIntent(Context context) {
+        return new Intent(context, ParentIndexHome.class);
+    }
+
+    @Override
+    public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
+        return Class.forName(COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME);
     }
 }

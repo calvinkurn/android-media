@@ -15,14 +15,26 @@ import com.tokopedia.core.drawer.DrawerVariable;
  */
 public interface TkpdCoreRouter {
     DrawerVariable getDrawer(AppCompatActivity activity);
+
     void startInstopedActivity(Context context);
+
     void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult);
+
     void removeInstopedToken();
+
     void goToManageProduct(Context context);
+
     void clearEtalaseCache();
+
     Intent goToEditProduct(Context context, boolean isEdit, String productId);
+
     void resetAddProductCache(Context context);
+
     void goToWallet(Context context, Bundle bundle);
 
     void goToMerchantRedirect(Context context);
+
+    Intent getHomeIntent(Context context);
+
+    Class<?> getHomeClass(Context context) throws ClassNotFoundException;
 }

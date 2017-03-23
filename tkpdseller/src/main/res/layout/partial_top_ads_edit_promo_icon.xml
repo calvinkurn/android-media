@@ -24,14 +24,12 @@
         <RadioButton
             android:id="@+id/radio_button_icon_thumbs_up"
             style="@style/TopAdsRadioButton"
-            android:checked="true"
             android:drawablePadding="@dimen/margin_vs"
             android:drawableEnd="@drawable/ic_top_ads_sticker_thumbs_up"
             android:drawableRight="@drawable/ic_top_ads_sticker_thumbs_up"/>
         <RadioButton
             android:id="@+id/radio_button_icon_fire"
             style="@style/TopAdsRadioButton"
-            android:checked="true"
             android:drawablePadding="@dimen/margin_vs"
             android:drawableEnd="@drawable/ic_top_ads_sticker_fire"
             android:drawableRight="@drawable/ic_top_ads_sticker_fire"/>

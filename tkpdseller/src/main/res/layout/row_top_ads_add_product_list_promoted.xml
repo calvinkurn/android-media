@@ -8,10 +8,10 @@
 
     <CheckBox
         android:id="@+id/checkbox_top_ads_add_product_list_promoted"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="19dp"
+        android:layout_marginRight="19dp"
         android:layout_marginTop="20dp"
         android:button="@drawable/selector_unable_selection" />
 

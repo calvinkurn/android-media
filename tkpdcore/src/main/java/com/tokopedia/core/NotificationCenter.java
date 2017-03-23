@@ -15,10 +15,10 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.MultiPaneActivity;
-import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.inboxreputation.fragment.InboxReputationFragment;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
@@ -38,7 +38,7 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NotificationCenter extends MultiPaneActivity implements NotificationListener {
+public class NotificationCenter extends MultiPaneActivity implements NotificationReceivedListener {
 
     private PagerAdapter adapter;
     private ViewPager mViewPager;

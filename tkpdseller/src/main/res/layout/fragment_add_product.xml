@@ -391,7 +391,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/prompt_etalase_name"
-                            android:inputType="textMultiLine"
+                            android:inputType="text"
                             android:maxLines="1"
                             android:textSize="@dimen/new_text_size_input" />
                     </android.support.design.widget.TextInputLayout>

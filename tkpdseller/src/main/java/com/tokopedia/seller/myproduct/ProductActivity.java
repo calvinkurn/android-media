@@ -549,8 +549,7 @@ public class ProductActivity extends BaseProductActivity implements
             return true;
         } else if (item.getItemId() == android.R.id.home) {
             Log.d(TAG, messageTAG + " android.R.id.home !!!");
-            getSupportFragmentManager().popBackStack();
-            onBackPressed();
+            showExitDialog();
             return true;
         }
 
@@ -862,29 +861,33 @@ public class ProductActivity extends BaseProductActivity implements
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK) {
             //Ask the user if they want to quit
-                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
-                myAlertDialog.setMessage(getString(R.string.dialog_cancel_add_product));
-
-                myAlertDialog.setPositiveButton(getString(R.string.positive_button_dialog), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                });
-
-                myAlertDialog.setNegativeButton(getString(R.string.negative_button_dialog), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface arg0, int arg1) {
-
-                    }
-                });
-                Dialog dialog = myAlertDialog.create();
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.show();
+            showExitDialog();
 
             return true;
         }
         else {
             return super.onKeyDown(keyCode, event);
         }
+    }
+
+    private void showExitDialog() {
+        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
+        myAlertDialog.setMessage(getString(R.string.dialog_cancel_add_product));
+
+        myAlertDialog.setPositiveButton(getString(R.string.positive_button_dialog), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+
+        myAlertDialog.setNegativeButton(getString(R.string.negative_button_dialog), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+
+            }
+        });
+        Dialog dialog = myAlertDialog.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.show();
     }
 }

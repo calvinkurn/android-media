@@ -83,6 +83,9 @@ public class TopAdsDatePickerPresenterImpl implements TopAdsDatePickerPresenter 
 
     @Override
     public String getRangeDateFormat(Date startDate, Date endDate) {
+        if (startDate == null || endDate == null) {
+            return "";
+        }
         Calendar startCalendar = Calendar.getInstance();
         startCalendar.setTime(startDate);
         Calendar endCalendar = Calendar.getInstance();

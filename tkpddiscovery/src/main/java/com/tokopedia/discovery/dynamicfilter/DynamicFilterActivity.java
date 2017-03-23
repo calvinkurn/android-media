@@ -119,7 +119,6 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
 
     @Override
     public void setFragmentForFirstTime3(List<Filter> data) {
-        setFragmentBasedOnData(Filter.createCategory());
         Fragment dynamicFilterListFragment = DynamicFilterListFragment.newInstance2(data);
         setFragment(dynamicFilterListFragment, DynamicFilterListView.FRAGMENT_TAG, R.id.dynamic_filter_list);
     }
@@ -127,7 +126,8 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
     @Override
     public void setFragmentBasedOnData(Filter data) {
         if (data.getTitle().equals(Filter.TITLE_CATEGORY)) {
-            if (dynamicFilterPresenter.getCurrentCategory().equals("0") || dynamicFilterPresenter.getCurrentCategory().equals("")) {
+            if (dynamicFilterPresenter.getCurrentCategory()!=null && dynamicFilterPresenter.getCurrentCategory().equals("0") ||
+                    dynamicFilterPresenter.getCurrentCategory()!=null && dynamicFilterPresenter.getCurrentCategory().equals("")) {
                 DynamicFilterCategoryFragment categoryFragment =
                         DynamicFilterCategoryFragment.newInstance(
                                 dynamicFilterPresenter.getBreadCrumb(), dynamicFilterPresenter.getFilterCategory(),

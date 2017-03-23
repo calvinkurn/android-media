@@ -17,14 +17,26 @@ import rx.Observable;
  */
 public interface MojitoAuthApi {
 
-    @DELETE(TkpdBaseURL.Mojito.PATH_PRODUCT+"{productId}/"+TkpdBaseURL.Mojito.PATH_WISHLIST)
-    Observable<Response<Void>> deleteWishlist(@Path("productId") String productId);
+    @DELETE(TkpdBaseURL.Mojito.PATH_PRODUCT + "{userId}/"
+            + TkpdBaseURL.Mojito.PATH_WISHLIST + "{productId}/"
+            + TkpdBaseURL.Mojito.PATH_WISH_LIST_V_1_1)
+    Observable<Response<Void>> deleteWishlist(
+            @Path("productId") String productId, @Path("userId") String userId
+    );
 
-    @DELETE(TkpdBaseURL.Mojito.PATH_PRODUCT+"{productId}/"+TkpdBaseURL.Mojito.PATH_WISHLIST)
-    Observable<Response<TkpdResponse>> removeWishlist(@Path("productId") String productId);
+    @DELETE(TkpdBaseURL.Mojito.PATH_PRODUCT + "{userId}/"
+            + TkpdBaseURL.Mojito.PATH_WISHLIST + "{productId}/"
+            + TkpdBaseURL.Mojito.PATH_WISH_LIST_V_1_1)
+    Observable<Response<TkpdResponse>> removeWishlist(
+            @Path("productId") String productId, @Path("userId") String userId
+    );
 
-    @POST(TkpdBaseURL.Mojito.PATH_PRODUCT+"{productId}/"+TkpdBaseURL.Mojito.PATH_WISHLIST)
-    Observable<Response<TkpdResponse>> addWishlist(@Path("productId") String productId);
+    @POST(TkpdBaseURL.Mojito.PATH_PRODUCT + "{userId}/"
+            + TkpdBaseURL.Mojito.PATH_WISHLIST + "{productId}/"
+            + TkpdBaseURL.Mojito.PATH_WISH_LIST_V_1_1)
+    Observable<Response<TkpdResponse>> addWishlist(
+            @Path("productId") String productId, @Path("userId") String userId
+    );
 
     @GET(TkpdBaseURL.Mojito.PATH_USER_RECENT_VIEW + "{userId}" + TkpdBaseURL.Mojito.PATH_RECENT_VIEW)
     Observable<Response<RecentViewData>> getRecentViews(@Path("userId") String UserId);

@@ -34,4 +34,8 @@ public interface AddProductListInterface extends ActivityItemSelection {
     boolean isExistingGroup();
 
     boolean isSelectionViewShown();
+
+    void showNextButton();
+
+    void dismissNextButton();
 }

@@ -18,16 +18,11 @@ import com.tokopedia.seller.myproduct.utils.PriceUtils;
 public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements WholesaleViewHolder {
 
     private static final String TAG = "Wholesale View Holder";
-    private int position;
-    private WholesaleAdapter listener;
-    private final int currency;
-
     EditText qtyOne;
     EditText qtyTwo;
     EditText qtyPrice;
-
-    private boolean onPriceEdit = false;
-
+    private int position;
+    private WholesaleAdapter listener;
     TextWatcher qtyOneTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -41,10 +36,13 @@ public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements 
 
         @Override
         public void afterTextChanged(Editable s) {
-            listener.onUpdateData(WholesaleAdapterImpl.QTY_ONE, position, String.valueOf(s), true);
+            try {
+                listener.onUpdateData(WholesaleAdapterImpl.QTY_ONE, position, String.valueOf(s), true);
+            } catch (NumberFormatException e) {
+                onQtyOneError("Masukan format angka dengan benar");
+            }
         }
     };
-
     TextWatcher qtyTwoTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -58,10 +56,15 @@ public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements 
 
         @Override
         public void afterTextChanged(Editable s) {
-            listener.onUpdateData(WholesaleAdapterImpl.QTY_TWO, position, String.valueOf(s), true);
+            try {
+                listener.onUpdateData(WholesaleAdapterImpl.QTY_TWO, position, String.valueOf(s), true);
+            } catch (NumberFormatException e) {
+                onQtyTwoError("Masukan format angka dengan benar");
+            }
         }
     };
-
+    private int currency;
+    private boolean onPriceEdit = false;
     TextWatcher qtyPriceTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -75,20 +78,20 @@ public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements 
 
         @Override
         public void afterTextChanged(Editable s) {
-            if(onPriceEdit)
-                return;
-            onPriceEdit = true;
-            String rawString = setPriceCurrency(s.toString());
-            listener.onUpdateData(WholesaleAdapterImpl.QTY_PRICE, position, rawString, true);
-            onPriceEdit = false;
+            try {
+                if (onPriceEdit)
+                    return;
+                onPriceEdit = true;
+                String rawString = setPriceCurrency(s.toString());
+                listener.onUpdateData(WholesaleAdapterImpl.QTY_PRICE, position, rawString, true);
+                onPriceEdit = false;
+            } catch (NumberFormatException e) {
+                onQtyPriceError("Masukan format angka dengan benar");
+            }
         }
     };
 
-    void deleteWholesale(){
-        listener.removeWholesaleItem(position);
-    }
-
-    public WholesaleViewHolderImpl(View itemView, int currency) {
+    public WholesaleViewHolderImpl(View itemView) {
         super(itemView);
         qtyOne = (EditText) itemView.findViewById(R.id.wholesale_item_qty_one);
         qtyTwo = (EditText) itemView.findViewById(R.id.wholesale_item_qty_two);
@@ -99,13 +102,17 @@ public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements 
                 deleteWholesale();
             }
         });
-        this.currency = currency;
+    }
+
+    void deleteWholesale() {
+        listener.removeWholesaleItem(position);
     }
 
     @Override
-    public void bindView(WholesaleAdapter listener, int position, WholesaleModel wholesaleModel) {
+    public void bindView(WholesaleAdapter listener, int position, WholesaleModel wholesaleModel, int currency) {
         this.listener = listener;
         this.position = position;
+        this.currency = currency;
         if(wholesaleModel != null) {
             this.qtyOne.setText(String.format("%d", wholesaleModel.getQtyOne()));
             this.qtyTwo.setText(String.format("%d", wholesaleModel.getQtyTwo()));
@@ -174,11 +181,11 @@ public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements 
         switch (currency) {
             case PriceUtils.CURRENCY_RUPIAH:
                 CurrencyFormatHelper.SetToRupiah(qtyPrice);
-                rawString = CurrencyFormatter.getRawString(s.toString());
+                rawString = CurrencyFormatter.getRawString(s);
                 break;
             case PriceUtils.CURRENCY_DOLLAR:
                 CurrencyFormatHelper.SetToDollar(qtyPrice);
-                rawString = CurrencyFormatter.getRawString(s.toString());
+                rawString = CurrencyFormatter.getRawString(s);
                 break;
         }
         return rawString;

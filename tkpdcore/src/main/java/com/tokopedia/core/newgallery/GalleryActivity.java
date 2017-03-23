@@ -97,16 +97,18 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     public static final String FRAGMENT_TO_SHOW = "FRAGMENT_TO_SHOW";
     public static final String PRODUCT_SOC_MED_DATA = "PRODUCT_SOC_MED_DATA";
     public static final String IMAGE_URL = "image_url";
+    public static final String IMAGE_PATH_CAMERA = "IMAGE_PATH_CAMERA";
+    public static final String IS_CAMERA_OPEN = "IS_CAMERA_OPEN";
+    public static final String TOKOPEDIA = "Tokopedia";
 
     String FRAGMENT;
     int position;
 
     ImageGallery imageGallery;
-    private FragmentManager supportFragmentManager;
-    private Unbinder unbinder;
-
     @BindView(R2.id.toolbar)
     Toolbar toolbar;
+    private FragmentManager supportFragmentManager;
+    private Unbinder unbinder;
 
 //    @BindView(R2.id.fab)
 //    FloatingActionButton fab;
@@ -115,6 +117,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     private int maxSelection;
     private Fragment galeryActivityFragment;
     private String imagePathCamera;
+    private boolean isCameraOpen = false;
 
     private FabSpeedDial fabSpeedDial;
 
@@ -160,9 +163,25 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         context.startActivityForResult(imageGallery, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
     }
 
+    public static File getOutputMediaFile() {
+        File mediaStorageDir = new File(
+                Environment.getExternalStorageDirectory() + File.separator
+                        + TOKOPEDIA + File.separator);
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                return null;
+            }
+        }
+        File mediaFile = new File(mediaStorageDir.getPath() + File.separator
+                + "IMG_" + System.currentTimeMillis() / 1000L + ".jpg");
+        return mediaFile;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        onRestoreSavedState(savedInstanceState);
 
         fetchExtras(getIntent());
         setContentView(R.layout.activity_gallery);
@@ -225,6 +244,13 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
 
     private void onCameraClicked() {
         GalleryActivityPermissionsDispatcher.onFabClickedWithCheck(this);
+    }
+
+    private void onRestoreSavedState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            imagePathCamera = savedInstanceState.getString(IMAGE_PATH_CAMERA);
+            isCameraOpen = savedInstanceState.getBoolean(IS_CAMERA_OPEN, false);
+        }
     }
 
     @Override
@@ -313,7 +339,6 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         }
     }
 
-
     @Override
     public void moveToFragment(Fragment fragment, boolean isAddtoBackStack, String TAG) {
         FragmentTransaction fragmentTransaction = supportFragmentManager.beginTransaction();
@@ -377,17 +402,27 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                         File outputMediaFile = getOutputMediaFile();
-                        imagePathCamera = outputMediaFile.getAbsolutePath();
-                        Uri fileuri = MethodChecker.getUri(GalleryActivity.this, outputMediaFile);
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileuri);
-                        startActivityForResult(takePictureIntent,
-                                CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+                        if (!isCameraOpen) {
+                            isCameraOpen = true;
+                            imagePathCamera = outputMediaFile.getAbsolutePath();
+                            Uri fileuri = MethodChecker.getUri(GalleryActivity.this, outputMediaFile);
+                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileuri);
+                            startActivityForResult(takePictureIntent,
+                                    CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+                        }
                     }
                 } else {
                     WarningDialog();
                 }
                 break;
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(IMAGE_PATH_CAMERA, imagePathCamera);
+        outState.putBoolean(IS_CAMERA_OPEN, isCameraOpen);
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -572,20 +607,6 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         return modelList;
     }
 
-    public static File getOutputMediaFile(){
-        File mediaStorageDir = new File(
-                Environment.getExternalStorageDirectory() + File.separator
-                        + "Tokopedia" + File.separator);
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                Log.d("MyCameraApp", "failed to create directory");
-                return null;
-            }
-        }
-        File mediaFile = new File(mediaStorageDir.getPath() + File.separator
-                + "IMG_" + System.currentTimeMillis()/1000L + ".jpg");
-        return mediaFile;
-    }
     @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showRationaleForStorageAndCamera(final PermissionRequest request) {
         List<String> listPermission = new ArrayList<>();
