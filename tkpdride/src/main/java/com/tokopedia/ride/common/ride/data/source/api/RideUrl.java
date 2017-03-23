@@ -10,4 +10,6 @@ public interface RideUrl {
     String PRODUCTS = "/uber/products";
     String ESTIMATED_TIME = "/uber/estimates/time";
     String ESTIMATED_FARE = "/uber/estimates/fare";
+    String REQUEST_CREATE = "/uber/request";
+    String REQUEST_DETAIL = "/uber/request/details";
 }

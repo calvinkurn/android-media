@@ -7,7 +7,10 @@ import com.tokopedia.ride.common.ride.data.entity.TimesEstimateResponseEntity;
 
 import java.util.Map;
 
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
@@ -24,4 +27,12 @@ public interface RideApi {
 
     @GET(RideUrl.ESTIMATED_FARE)
     Observable<FareEstimateEntity> getFareEstimateds(@QueryMap Map<String, Object> param);
+
+    @POST(RideUrl.REQUEST_CREATE)
+    @FormUrlEncoded
+    Observable<String> createRequestRide(@FieldMap Map<String, Object> param);
+
+    @POST(RideUrl.REQUEST_DETAIL)
+    @FormUrlEncoded
+    Observable<String> getDetailRequestRide(@FieldMap Map<String, Object> param);
 }

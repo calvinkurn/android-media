@@ -13,7 +13,7 @@ public class TimesEstimateEntity {
     private String displayName;
     @SerializedName("estimate")
     @Expose
-    private String estimate;
+    private int estimate;
     @SerializedName("localized_display_name")
     @Expose
     private String localizedDisplayName;
@@ -28,7 +28,7 @@ public class TimesEstimateEntity {
         return displayName;
     }
 
-    public String getEstimate() {
+    public int getEstimate() {
         return estimate;
     }
 

@@ -6,7 +6,7 @@ package com.tokopedia.ride.common.ride.domain.model;
 
 public class TimesEstimate {
     private String displayName;
-    private String estimate;
+    private int estimate;
     private String localizedDisplayName;
     private String productId;
 
@@ -21,11 +21,11 @@ public class TimesEstimate {
         this.displayName = displayName;
     }
 
-    public String getEstimate() {
+    public int getEstimate() {
         return estimate;
     }
 
-    public void setEstimate(String estimate) {
+    public void setEstimate(int estimate) {
         this.estimate = estimate;
     }
 
