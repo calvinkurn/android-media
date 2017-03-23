@@ -154,6 +154,19 @@ public class ManageProduct extends TkpdActivity implements
     ImageView blurImage;
 
     ManageProductPresenterImpl manageProductPresenter;
+    public static final String ACTION_ADD_PRODUCT = BuildConfig.APPLICATION_ID + ".ADD_PRODUCT";
+    public CompositeSubscription compositeSubscription = new CompositeSubscription();
+    SimpleListView lvListProd;
+    TextView eAddTo;
+    TextView eEtalase;
+    Spinner SpinnerAddTo;
+    Spinner SpinnerOption;
+    Spinner spinnerInsurance;
+    EditText EtalaseName;
+    View footerLV;
+    ImageView blurImage;
+
+    ManageProductPresenterImpl manageProductPresenter;
     private ArrayList<String> menuName = new ArrayList<String>();
     private ArrayList<String> EtalaseFilters = new ArrayList<String>();
     private ArrayList<String> EtalaseIdFilters = new ArrayList<String>();

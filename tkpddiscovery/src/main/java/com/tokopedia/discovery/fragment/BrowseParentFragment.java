@@ -378,6 +378,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         }
         Log.d(TAG, "source " + source);
         BrowseProductActivity productActivity = (BrowseProductActivity) getActivity();
+        productActivity.getBrowseProductActivityModel().setActiveTab(position);
         productActivity.changeBottomBar(source);
     }
 

@@ -32,7 +32,7 @@ public class ResCenterSellerReplyNotification extends BaseNotification {
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         Bundle bundle = new Bundle();
         bundle.putInt(InboxRouter.EXTRA_STATE_TAB_POSITION,
-                TkpdState.InboxResCenter.RESO_MINE);
+                TkpdState.InboxResCenter.RESO_ALL);
         mNotificationPass.mIntent.putExtras(bundle);
     }
 }

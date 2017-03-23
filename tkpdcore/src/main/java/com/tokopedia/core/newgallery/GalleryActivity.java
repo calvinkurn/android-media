@@ -123,7 +123,6 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
 
     private TkpdProgressDialog progressDialog;
 
-
     /**
      * Call this to get image from image gallery
      *

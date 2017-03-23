@@ -210,12 +210,12 @@ public class LocalCacheHandler {
 
     public static void clearCache(Context context, String name) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(name, Context.MODE_PRIVATE);
-        sharedPrefs.edit().clear().commit();
+        sharedPrefs.edit().clear().apply();
     }
 
     public static void clearSingleCacheKey(Context context, String prefName, String keyName) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        sharedPrefs.edit().remove(keyName).commit();
+        sharedPrefs.edit().remove(keyName).apply();
     }
 
     public int getSingleArrayListInteger(String key, int index) {
