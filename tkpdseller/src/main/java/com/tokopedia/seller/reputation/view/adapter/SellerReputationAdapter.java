@@ -1,6 +1,5 @@
 package com.tokopedia.seller.reputation.view.adapter;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
@@ -28,8 +27,6 @@ import com.tokopedia.seller.topads.view.model.TypeBasedModel;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.ButterKnife;
 
 /**
  * @author vishal.gupta on 20/02/2017.
@@ -64,8 +61,8 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
                 return new ViewHolder(itemLayoutView);
             case SetDateHeaderModel.TYPE:
                 itemLayoutView = LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.widget_header_gmstat, null);
-                ViewHolder2 viewHolder2 = new ViewHolder2(itemLayoutView);
+                        .inflate(R.layout.widget_header_reputation, null);
+                SellerDateHeaderViewHolder viewHolder2 = new SellerDateHeaderViewHolder(itemLayoutView);
                 viewHolder2.setFragment(fragment);
                 return viewHolder2;
             default:
@@ -81,7 +78,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
                 bindDeposit((ViewHolder) holder, position);
                 break;
             case SetDateHeaderModel.TYPE:
-                ((ViewHolder2) holder).bindData((SetDateHeaderModel) list.get(position));
+                ((SellerDateHeaderViewHolder) holder).bindData((SetDateHeaderModel) list.get(position));
                 break;
             default:
                 super.onBindViewHolder(holder, position);
@@ -98,14 +95,12 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
                 Log.d(TAG, String.format("bindDeposit %d %s", position, reputationReviewModel.getData().toString()));
                 ReputationReviewModel.Data data = reputationReviewModel.getData();
                 holder.date.setText(data.getDate());
-                holder.description.setText(data.getInformation());
-                holder.penaltyScore.setText(decimalFormat.format(data.getPenaltyScore()));
+                String information = data.getInformation();
+                int i = information.indexOf("I");
 
-                if (data.getPenaltyScore() > 0) {
-                    holder.penaltyScore.setTextColor(context.getResources().getColor(R.color.tkpd_light_green));
-                } else {
-                    holder.penaltyScore.setTextColor(context.getResources().getColor(R.color.tkpd_prod_price));
-                }
+                holder.description.setText(information.substring(0, i));
+                holder.tvInvoice.setText(information.substring(i));
+                holder.penaltyScore.setText(decimalFormat.format(data.getPenaltyScore()));
             }
         }
 
@@ -200,24 +195,26 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
         TextView penaltyScore;
 
+        TextView tvInvoice;
+
         public ViewHolder(View itemView) {
             super(itemView);
 
             date = (TextView) itemView.findViewById(R.id.tv_date);
             description = (TextView) itemView.findViewById(R.id.tv_note);
             penaltyScore = (TextView) itemView.findViewById(R.id.tv_score);
+            tvInvoice = (TextView) itemView.findViewById(R.id.tv_invoice);
 
-            ButterKnife.bind(this, itemView);
         }
     }
 
-    public class ViewHolder2 extends RecyclerView.ViewHolder {
+    public class SellerDateHeaderViewHolder extends RecyclerView.ViewHolder {
 
         private final ReputationHeaderViewHelper reputationViewHelper;
         private SetDateHeaderModel setDateHeaderModel;
         private Fragment fragment;
 
-        public ViewHolder2(View itemView) {
+        public SellerDateHeaderViewHolder(View itemView) {
             super(itemView);
             reputationViewHelper = new ReputationHeaderViewHelper(itemView);
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -238,15 +235,8 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
         public void onClickHeader() {
             if (fragment != null) {
-                reputationViewHelper.onClick(fragment);
+                reputationViewHelper.onClick(fragment, true);
                 return;
-            }
-
-            if (reputationViewHelper != null) {
-                if (itemView.getContext() != null
-                        && itemView.getContext() instanceof Activity) {
-                    reputationViewHelper.onClick((Activity) itemView.getContext());
-                }
             }
         }
 

@@ -27,16 +27,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/deposit_header"
+        android:background="@color/greyEditText"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/balance_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="32dp"
             android:divider="@android:color/transparent"
-            android:dividerHeight="@dimen/margin_vs"
             android:longClickable="false"
-            android:padding="@dimen/padding_small"
             android:scrollbars="vertical" />
 
     </com.tokopedia.core.customwidget.SwipeToRefresh>

@@ -218,7 +218,7 @@ public class GMStatHeaderViewHelper {
         activity.startActivityForResult(intent, MOVE_TO_SET_DATE);
     }
 
-    public void onClick(Fragment fragment) {
+    public void onClick(Fragment fragment, boolean isForceSelection) {
         if (!isLoading || !isGmStat) {
             return;
         }
@@ -255,6 +255,7 @@ public class GMStatHeaderViewHelper {
         intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, selectionType);
 
         intent.putExtra(DatePickerConstant.EXTRA_PAGE_TITLE, fragment.getString(R.string.set_date));
+        intent.putExtra(DatePickerConstant.EXTRA_FORCE_DISPLAY_SELECTION, isForceSelection);
         fragment.startActivityForResult(intent, MOVE_TO_SET_DATE);
     }
 

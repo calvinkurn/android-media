@@ -25,22 +25,29 @@
                 android:id="@+id/tv_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
                 android:text=""
-                android:textColor="@color/time_color"
+                android:textColor="@color/thirty_eight_percent_black"
                 android:textSize="@dimen/fontvs" />
 
             <TextView
                 android:id="@+id/tv_note"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_date"
                 android:layout_marginTop="@dimen/margin_small"
                 android:background="@android:drawable/list_selector_background"
                 android:text=""
+                android:textColor="@color/black_seventy_percent"
                 android:textSize="@dimen/fonts" />
+
+            <TextView
+                android:id="@+id/tv_invoice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="@android:drawable/list_selector_background"
+                android:text=""
+                android:textColor="@color/thirty_eight_percent_black"
+                android:textSize="@dimen/fontvs" />
 
         </LinearLayout>
 
@@ -52,6 +59,7 @@
             android:background="@android:drawable/list_selector_background"
             android:gravity="right|center_vertical"
             android:text="0"
+            android:textColor="@color/black_seventy_percent"
             android:textSize="@dimen/fontl" />
 
 
@@ -59,7 +67,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="10dp"
+        android:layout_height="1dp"
         android:layout_below="@id/header"
-        android:background="@color/greyish_bg" />
+        android:background="@color/greyEditText" />
 </RelativeLayout>

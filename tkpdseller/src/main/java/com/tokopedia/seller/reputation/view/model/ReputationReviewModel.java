@@ -115,7 +115,9 @@ public class ReputationReviewModel extends TypeBasedModel implements Parcelable 
         @Override
         public String toString() {
             return "Data{" +
-                    "penaltyScore=" + penaltyScore +
+                    "date='" + date + '\'' +
+                    ", information='" + information + '\'' +
+                    ", penaltyScore=" + penaltyScore +
                     '}';
         }
     }
