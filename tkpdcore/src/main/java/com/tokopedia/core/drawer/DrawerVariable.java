@@ -586,6 +586,10 @@ public class DrawerVariable {
     }
 
 
+    public void clearTokoCashData() {
+        networkInteractor.clearWalletCache();
+    }
+
     public void updateData() {
         clearData();
         hasUpdated = true;

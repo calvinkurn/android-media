@@ -40,6 +40,7 @@ public class WalletActivity extends TActivity implements BaseWebViewClient.WebVi
         initiateView();
         setWebView();
         showFragmentWebView();
+        drawer.clearTokoCashData();
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -79,6 +80,7 @@ public class WalletActivity extends TActivity implements BaseWebViewClient.WebVi
     public void onProgressResult(String progressResult) {
         Uri uri = Uri.parse(progressResult);
         if(uri.getPath().contains("thanks_wallet")) {
+            drawer.clearTokoCashData();
             finish();
         }
     }
@@ -88,9 +90,19 @@ public class WalletActivity extends TActivity implements BaseWebViewClient.WebVi
 
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
 
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        drawer.clearTokoCashData();
+        super.onBackPressed();
     }
 }
