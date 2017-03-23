@@ -20,4 +20,7 @@ public interface DiscoveryInteractor {
     void getTopAds(HashMap<String, String> data);
     void loadSearchSuggestion(String querySearch, String unique_id, int count);
     void deleteSearchHistory(String unique_id, String keyword, boolean clear_all);
+    void getLastGridConfig(String rootDepartmentId,
+                           DiscoveryInteractorImpl.GetGridConfigCallback callback);
+    void saveLastGridConfig(String departmentId, String gridType);
 }

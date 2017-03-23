@@ -16,10 +16,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,8 +36,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
@@ -60,8 +57,8 @@ import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
 import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterView;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
@@ -70,6 +67,8 @@ import com.tokopedia.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.discovery.model.NetworkParam;
+import com.tokopedia.discovery.presenter.BrowseProductPresenter;
+import com.tokopedia.discovery.presenter.BrowseProductPresenterImpl;
 import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
@@ -83,7 +82,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -114,6 +112,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     private SharedPreferences preferences;
     private List<Breadcrumb> breadcrumbs;
     private boolean afterRestoreSavedInstance;
+    private BrowseProductPresenter browseProductPresenter;
 
     Stack<SimpleCategory> categoryLevel = new Stack<>();
 
@@ -189,7 +188,8 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_category_new);
         ButterKnife.bind(this);
-
+        browseProductPresenter = new BrowseProductPresenterImpl();
+        retrieveLastGridConfig();
         discoveryInteractor = new DiscoveryInteractorImpl();
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         keepActivitySettings = Settings.System.getInt(getContentResolver(), Settings.Global.ALWAYS_FINISH_ACTIVITIES, 0);
@@ -274,6 +274,18 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                     break;
             }
         }
+    }
+
+    private void retrieveLastGridConfig() {
+        browseProductPresenter.retrieveLastGridConfig(browseProductActivityModel.getParentDepartement(),
+                new DiscoveryInteractorImpl.GetGridConfigCallback() {
+                    @Override
+                    public void onSuccess(String gridConfig) {
+                        if (StringUtils.isNotBlank(gridConfig)) {
+                            gridType = BrowseProductRouter.GridType.valueOf(gridConfig);
+                        }
+                    }
+                });
     }
 
     @Override
@@ -613,6 +625,12 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                                 gridIcon = R.drawable.ic_grid_default;
                                 bottomNavigation.getItem(2).setTitle(getString(R.string.grid));
                         }
+
+                        browseProductPresenter.onGridTypeChanged(
+                                browseProductActivityModel.getParentDepartement(),
+                                gridType.toString()
+                        );
+
                         intent.putExtra(GRID_TYPE_EXTRA, gridType);
                         sendBroadcast(intent);
                         bottomNavigation.getItem(position).setDrawable(gridIcon);

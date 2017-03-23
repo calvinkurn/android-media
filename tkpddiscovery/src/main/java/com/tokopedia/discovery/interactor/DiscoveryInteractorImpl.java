@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
@@ -26,6 +27,7 @@ import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterFactory;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.discovery.model.ErrorContainer;
@@ -34,7 +36,9 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
+import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -53,6 +57,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
     HadesService hadesService;
     SearchSuggestionService searchSuggestionService;
     CompositeSubscription compositeSubscription;
+    GlobalCacheManager globalCacheManager;
 
     public CompositeSubscription getCompositeSubscription() {
         return RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
@@ -68,6 +73,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
         topAdsService = new TopAdsService();
         hadesService = new HadesService();
         searchSuggestionService = new SearchSuggestionService();
+        globalCacheManager = new GlobalCacheManager();
     }
 
     public DiscoveryListener getDiscoveryListener() {
@@ -280,6 +286,46 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
     }
 
     @Override
+    public void getLastGridConfig(final String rootDepartmentId, final GetGridConfigCallback callback) {
+        Subscription subscription = Observable
+                .create(new Observable.OnSubscribe<String>() {
+                    @Override
+                    public void call(Subscriber<? super String> subscriber) {
+                        String config = globalCacheManager.getValueString(TkpdCache.Key.GRID_CONFIG_PREFIX + rootDepartmentId);
+                        subscriber.onNext(config);
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(String config) {
+                        callback.onSuccess(config);
+                    }
+                });
+
+        getCompositeSubscription().add(subscription);
+    }
+
+    @Override
+    public void saveLastGridConfig(String departmentId, String gridType) {
+        new GlobalCacheManager()
+                .setKey(TkpdCache.Key.GRID_CONFIG_PREFIX + departmentId)
+                .setValue(gridType)
+                .store();
+    }
+
+    @Override
     public void getProducts(HashMap<String, String> data) {
         Log.d(TAG, "getProduct2 data " + data.toString());
         if (discoveryListener == null)
@@ -424,4 +470,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
                 }));
     }
 
+    public interface GetGridConfigCallback {
+        void onSuccess(String gridConfig);
+    }
 }

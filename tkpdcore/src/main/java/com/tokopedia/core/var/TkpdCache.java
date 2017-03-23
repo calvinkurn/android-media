@@ -179,6 +179,7 @@ public class TkpdCache {
         public static final String SHOP_SCORE_DETAIL = "SHOP_SCORE_DETAIL";
 
         public static final String WIDGET_RECHARGE_TAB_LAST_SELECTED = "WIDGET_RECHARGE_TAB_LAST_SELECTED";
+        public static final String GRID_CONFIG_PREFIX = "GRID_CONFIG_";
     }
 
 }
