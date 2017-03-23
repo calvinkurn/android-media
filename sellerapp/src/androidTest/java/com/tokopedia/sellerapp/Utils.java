@@ -114,7 +114,7 @@ public class Utils {
                 gcmHandlerListener.onGCMSuccess("123456");
                 return null;
             }
-        }).when(gcmHandler).commitGCMProcess(any(GCMHandlerListener.class));
+        }).when(gcmHandler).commitGCMProcess();
     }
 
     public static Matcher<View> childAtPosition(
