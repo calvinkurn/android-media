@@ -357,6 +357,23 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     }
 
     @Override
+    public void setOnActionAcceptAdminSolutionClick() {
+        showConfirmationDialog(getActivity().getString(R.string.msg_accept_admin),
+                new ConfirmationDialog.Listener() {
+                    @Override
+                    public void onSubmitButtonClick() {
+                        if (getViewData().getButtonData().isAcceptReturSolution()) {
+                            Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+                            intent.putExtra("resolution_center", true);
+                            startActivityForResult(intent, REQUEST_CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION);
+                        } else {
+                            presenter.acceptAdminSolution();
+                        }
+                    }
+                });
+    }
+
+    @Override
     public void setOnActionHelpClick() {
         showConfirmationDialog(getActivity().getString(R.string.msg_rescen_help),
                 new ConfirmationDialog.Listener() {
