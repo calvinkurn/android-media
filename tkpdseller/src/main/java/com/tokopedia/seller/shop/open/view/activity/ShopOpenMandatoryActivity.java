@@ -1,16 +1,13 @@
 package com.tokopedia.seller.shop.open.view.activity;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-
+import com.stepstone.stepper.StepperLayout;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.app.BaseDiActivity;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenMandatoryPresenter;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingModule;
-import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLocationFragment;
+import com.tokopedia.seller.shop.open.view.adapter.ShopOpenStepperViewAdapter;
 
 /**
  * Created by Nathaniel on 3/16/2017.
@@ -18,28 +15,17 @@ import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLocationFragme
 
 public class ShopOpenMandatoryActivity extends BaseDiActivity<ShopOpenMandatoryPresenter, ShopSettingComponent> {
 
-    //    StepperLayout stepperLayout;
-    private FragmentManager fragmentManager;
+    StepperLayout stepperLayout;
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_simple_fragment;
+        return R.layout.activity_shop_open_mandatory;
     }
 
     @Override
     protected void initView() {
-        fragmentManager = getFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentByTag(ShopSettingLocationFragment.TAG);
-        if (fragment == null) {
-            fragment = ShopSettingLocationFragment.getInstance();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.container, fragment, ShopSettingLocationFragment.TAG);
-            fragmentTransaction.commit();
-        }
-
-
-//        stepperLayout = (StepperLayout) findViewById(R.id.stepper_view);
-//        stepperLayout.setAdapter(new ShopOpenStepperViewAdapter(getFragmentManager(), this));
+        stepperLayout = (StepperLayout) findViewById(R.id.stepper_view);
+        stepperLayout.setAdapter(new ShopOpenStepperViewAdapter(getFragmentManager(), this));
     }
 
     @Override

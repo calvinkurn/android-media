@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 
 import com.stepstone.stepper.Step;
 import com.stepstone.stepper.viewmodel.StepViewModel;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLocationFragment;
 
 /**
@@ -24,11 +25,11 @@ public class ShopOpenStepperViewAdapter extends AbstractNativeFragmentStepAdapte
     public StepViewModel getViewModel(@IntRange(from = 0) int position) {
         switch (position){
             case 0:
-                return new StepViewModel.Builder(context).setTitle("1").create();
+                return new StepViewModel.Builder(context).setTitle(context.getString(R.string.open_shop_title_shop_information)).create();
             case 1:
-                return new StepViewModel.Builder(context).setTitle("2").create();
+                return new StepViewModel.Builder(context).setTitle(context.getString(R.string.open_shop_title_shop_location)).create();
             case 2:
-                return new StepViewModel.Builder(context).setTitle("3").create();
+                return new StepViewModel.Builder(context).setTitle(context.getString(R.string.open_shop_title_shop_shipping)).create();
         }
         return super.getViewModel(position);
     }

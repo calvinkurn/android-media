@@ -50,4 +50,6 @@
     <dimen name="topads_dashboard_size_image_plus">30dp</dimen>
 
     <dimen name="item_space">10dp</dimen>
+
+    <dimen name="ms_step_tab_divider_length">50dp</dimen>
 </resources>
