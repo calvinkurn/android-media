@@ -773,6 +773,9 @@ public class ShopInfoActivity extends BaseActivity
         if (!productParam.getEtalaseId().equalsIgnoreCase("all")) {
             ProductList productListFragment = (ProductList) adapter.getItem(1);
             productListFragment.refreshProductList(productParam);
+        } else {
+            ProductList productListFragment = (ProductList) adapter.getItem(1);
+            productListFragment.refreshProductListFromOffStore();
         }
         holder.pager.setCurrentItem(1, true);
     }
