@@ -463,6 +463,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
 
     @Override
     public void showErrorMessage(final String errorMessage) {
+
         // disable pull to refresh + hide
         refreshHandler.setRefreshing(false);
         adapter.showLoading(false);
@@ -477,7 +478,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
                         case ONACTIVITYFORRESULT:
                         case PULLTOREFRESH:
                             adapter.clear();
-                            adapter.showEmptyFull(true);
+                            adapter.showRetryFull(true);
                             break;
                         default:
                             gmNetworkErrorHelper.showSnackbar(errorMessage, "COBA KEMBALI", new ActionClickListener() {
