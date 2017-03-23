@@ -18,7 +18,7 @@ import rx.Observable;
  *         Added by m.normansyah on 22/12/2015, for manual purpose
  */
 @Deprecated
-public interface ShopSettingApi {
+public interface GeneratedHostActApi {
 
     @FormUrlEncoded
     @POST("/v4/action/generate-host/generate_host.pl")
