@@ -4,6 +4,6 @@
              android:layout_height="match_parent"
              tools:context="com.tokopedia.ride.bookingride.view.fragment.ConfirmBookingRideFragment">
 
-    <include layout="@layout/layout_cabs_confirm_booking"/>
+    <include layout="@layout/layout_cabs_confirm_booking" />
 
 </FrameLayout>
