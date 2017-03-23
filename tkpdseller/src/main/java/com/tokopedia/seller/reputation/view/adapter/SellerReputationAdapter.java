@@ -246,7 +246,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
             reputationViewHelper.bindDate(
                     setDateHeaderModel.getsDate(),
                     setDateHeaderModel.geteDate(),
-                    0,
+                    DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE,
                     DatePickerConstant.SELECTION_TYPE_PERIOD_DATE
             );
         }
