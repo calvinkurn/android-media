@@ -304,6 +304,14 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
 
     @Override
     protected void setViewListener() {
+        discardOnClickInfo();
+    }
+
+    private void discardOnClickInfo() {
+        rlReputationPointCalculation.setOnClickListener(null);
+    }
+
+    private void setOnClickInfo() {
         rlReputationPointCalculation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -391,6 +399,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
     }
 
     private void renderDatas(List<TypeBasedModel> datas) {
+        setOnClickInfo();
         if (refreshHandler.isRefreshing()) {
             refreshHandler.finishRefresh();
         }
