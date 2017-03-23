@@ -655,4 +655,8 @@ public class TkpdBaseURL {
         public static final String URL_HADES = HADES_DOMAIN;
         public static final String PATH_CATEGORIES = "/v1/categories/{catId}/detail";
     }
+
+    public static class OfficialStore {
+        public static final String URL_WEBVIEW = MOBILE_DOMAIN + "official-store/";
+    }
 }
