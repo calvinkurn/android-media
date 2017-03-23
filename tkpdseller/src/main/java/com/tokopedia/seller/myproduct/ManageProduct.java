@@ -141,19 +141,7 @@ public class ManageProduct extends TkpdActivity implements
     public static final String SORT_MOST_BUY = "8";
     public static final String SORT_LOWEST_PRICE = "9";
     public static final String SORT_HIGHER_PRICE = "10";
-    public static final String ACTION_ADD_PRODUCT = BuildConfig.APPLICATION_ID + ".ADD_PRODUCT";
-    public CompositeSubscription compositeSubscription = new CompositeSubscription();
-    SimpleListView lvListProd;
-    TextView eAddTo;
-    TextView eEtalase;
-    Spinner SpinnerAddTo;
-    Spinner SpinnerOption;
-    Spinner spinnerInsurance;
-    EditText EtalaseName;
-    View footerLV;
-    ImageView blurImage;
 
-    ManageProductPresenterImpl manageProductPresenter;
     public static final String ACTION_ADD_PRODUCT = BuildConfig.APPLICATION_ID + ".ADD_PRODUCT";
     public CompositeSubscription compositeSubscription = new CompositeSubscription();
     SimpleListView lvListProd;
