@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.home.favorite.data;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.tkpd.home.favorite.domain.FavoriteRepository;
-import com.tokopedia.tkpd.home.favorite.domain.interactor.ShopItemParam;
 import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
@@ -15,29 +14,35 @@ import rx.Observable;
  */
 
 public class FavoriteDataRepository implements FavoriteRepository {
-    private final FavoriteFactory mFavoriteFactory;
+    private final FavoriteFactory favoriteFactory;
 
     public FavoriteDataRepository(FavoriteFactory favoriteFactory) {
-        mFavoriteFactory = favoriteFactory;
+        this.favoriteFactory = favoriteFactory;
+    }
+
+
+    @Override
+    public Observable<DomainWishlist> getWishlist(
+            TKPDMapParam<String, Object> params, boolean isForceRefresh) {
+
+        return favoriteFactory.getWishlist(params, isForceRefresh);
     }
 
     @Override
-    public Observable<DomainWishlist> getWishlist(TKPDMapParam<String, Object> param) {
-        return mFavoriteFactory.getWishlist(param);
+    public Observable<FavoriteShop> getFavoriteShop(
+            TKPDMapParam<String, String> param, boolean isFirstPage) {
+
+        return favoriteFactory.getFavoriteShop(param, isFirstPage);
     }
 
     @Override
-    public Observable<FavoriteShop> getFavoriteShop(TKPDMapParam<String, String> param) {
-        return mFavoriteFactory.getFavoriteShop(param);
+    public Observable<TopAdsShop> getTopAdsShop(
+            TKPDMapParam<String, Object> params, boolean isFreshData) {
+        return favoriteFactory.getTopAdsShop(params, isFreshData);
     }
 
     @Override
-    public Observable<TopAdsShop> getTopAdsShop(TKPDMapParam<String, Object> params) {
-        return mFavoriteFactory.getTopAdsShop(params);
-    }
-
-    @Override
-    public Observable<FavShop> postFavShop(TKPDMapParam<String, String> param, ShopItemParam shopItem) {
-        return mFavoriteFactory.postFavShop(param, shopItem);
+    public Observable<FavShop> addFavoriteShop(TKPDMapParam<String, String> param) {
+        return favoriteFactory.postFavShop(param);
     }
 }

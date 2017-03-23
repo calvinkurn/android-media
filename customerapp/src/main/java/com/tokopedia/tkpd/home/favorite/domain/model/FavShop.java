@@ -6,24 +6,24 @@ package com.tokopedia.tkpd.home.favorite.domain.model;
 
 public class FavShop {
 
-    private boolean mIsValid;
-    private String mMessage;
+    private boolean isValid;
+    private String message;
     private FavoriteShopItem favoriteShopItem;
 
-    public boolean ismIsValid() {
-        return mIsValid;
+    public boolean isValid() {
+        return isValid;
     }
 
-    public void setmIsValid(boolean mIsValid) {
-        this.mIsValid = mIsValid;
+    public void setValid(boolean valid) {
+        this.isValid = valid;
     }
 
-    public String getmMessage() {
-        return mMessage;
+    public String getMessage() {
+        return message;
     }
 
-    public void setmMessage(String mMessage) {
-        this.mMessage = mMessage;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public FavoriteShopItem getFavoriteShopItem() {

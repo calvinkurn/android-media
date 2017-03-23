@@ -8,35 +8,35 @@ import java.util.List;
 
 public class DomainWishlist {
 
-    private boolean mIsValid;
-    private String mMessage;
-    private List<DataWishlist> mData;
+    private boolean isValid;
+    private String message;
+    private List<DataWishlist> dataWishlists;
 
     public void setDataIsValid(boolean isValid) {
-        mIsValid = isValid;
+        this.isValid = isValid;
     }
 
     public boolean isValid() {
-        return mIsValid;
+        return isValid;
     }
 
     public void setMessage(String message) {
-        mMessage = message;
+        this.message = message;
     }
 
     public String getMessage() {
-        return mMessage;
+        return message;
     }
 
     public void setValid(boolean valid) {
-        mIsValid = valid;
+        isValid = valid;
     }
 
     public List<DataWishlist> getData() {
-        return mData;
+        return dataWishlists;
     }
 
     public void setData(List<DataWishlist> data) {
-        mData = data;
+        dataWishlists = data;
     }
 }

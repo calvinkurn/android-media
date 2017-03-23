@@ -23,14 +23,14 @@ public class TopAdsShopViewHolder extends AbstractViewHolder<TopAdsShopViewModel
     public static final int LAYOUT = R.layout.child_favorite_rec_shop;
     @BindView(R.id.rec_shop_recycler_view)
     RecyclerView recShopRecyclerView;
-    private Context mContext;
+    private Context context;
     private TopAdsShopAdapter topAdsShopAdapter;
 
     public TopAdsShopViewHolder(View itemView, FavoriteClickListener favoriteClickListener) {
         super(itemView);
-        mContext = itemView.getContext();
+        context = itemView.getContext();
         LinearLayoutManager linearLayoutManager
-                = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+                = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
         recShopRecyclerView.setLayoutManager(linearLayoutManager);
         recShopRecyclerView.setHasFixedSize(true);
         topAdsShopAdapter = new TopAdsShopAdapter(favoriteClickListener);

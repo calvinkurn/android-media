@@ -18,16 +18,16 @@ import rx.functions.Func2;
 
 public class GetFavoriteAndWishlistUsecase extends UseCase<DataFavorite> {
 
-    private GetFavoriteShopUsecase mGetFavoriteShopUsecase;
-    private GetWishlistUsecase mGetWishlistUseCase;
+    private GetFavoriteShopUsecase getFavoriteShopUsecase;
+    private GetWishlistUsecase getWishlistUsecase;
 
     public GetFavoriteAndWishlistUsecase(ThreadExecutor threadExecutor,
                                          PostExecutionThread postExecutionThread,
                                          GetFavoriteShopUsecase getFavoriteShopUsecase,
-                                         GetWishlistUsecase getWishlistUseCase) {
+                                         GetWishlistUsecase getWishlistUsecase) {
         super(threadExecutor, postExecutionThread);
-        mGetFavoriteShopUsecase = getFavoriteShopUsecase;
-        mGetWishlistUseCase = getWishlistUseCase;
+        this.getFavoriteShopUsecase = getFavoriteShopUsecase;
+        this.getWishlistUsecase = getWishlistUsecase;
     }
 
     @Override
@@ -46,11 +46,16 @@ public class GetFavoriteAndWishlistUsecase extends UseCase<DataFavorite> {
     }
 
     private Observable<FavoriteShop> getFavoriteShop() {
-        return mGetFavoriteShopUsecase.createObservable(GetFavoriteShopUsecase.getDefaultParams());
+        RequestParams defaultParams = GetFavoriteShopUsecase.getDefaultParams();
+        defaultParams.putBoolean(GetFavoriteShopUsecase.KEY_IS_FIRST_PAGE, true);
+        return getFavoriteShopUsecase.createObservable(defaultParams);
     }
 
     private Observable<DomainWishlist> getWishlist() {
-        return mGetWishlistUseCase.createObservable(GetWishlistUsecase.getDefaultParams());
+        RequestParams params = GetWishlistUsecase.getDefaultParams();
+        params.putBoolean(GetWishlistUsecase.KEY_IS_FORCE_REFRESH, false);
+        return getWishlistUsecase.createObservable(params);
     }
+
 
 }

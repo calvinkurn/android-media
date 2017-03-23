@@ -44,7 +44,8 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
     }
 
     public void setData(List<TopAdsShopItem> data) {
-        this.data = data;
+        this.data.clear();
+        this.data.addAll(data);
         notifyDataSetChanged();
     }
 
@@ -95,7 +96,10 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
     }
 
     private void createScaleAnimation() {
-        anim = new ScaleAnimation(1, 1.25f, 1, 1.25f, Animation.RELATIVE_TO_SELF, (float) 0.2, Animation.RELATIVE_TO_SELF, (float) 0.2);
+        anim = new ScaleAnimation(1, 1.25f, 1, 1.25f,
+                Animation.RELATIVE_TO_SELF,
+                (float) 0.2, Animation.RELATIVE_TO_SELF, (float) 0.2);
+
         anim.setDuration(250);
         anim.setRepeatCount(Animation.INFINITE);
         anim.setRepeatMode(Animation.REVERSE);
@@ -110,7 +114,13 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
                 TopAdsUtil.clickTopAdsAction(context, item.getShopClickUrl());
                 UnifyTracking.eventFavoriteViewRecommendation(item.getShopName());
                 Intent intent = new Intent(context, ShopInfoActivity.class);
-                Bundle bundle = ShopInfoActivity.createBundle(item.getShopId(), item.getShopDomain(), item.getShopName(), item.getShopImageUrl(), item.getShopCoverUrl(), (item.isFav() ? 1 : 0));
+                Bundle bundle = ShopInfoActivity.createBundle(
+                        item.getShopId(),
+                        item.getShopDomain(),
+                        item.getShopName(),
+                        item.getShopImageUrl(),
+                        item.getShopCoverUrl(),
+                        (item.isFav() ? 1 : 0));
                 bundle.putString(ShopInfoActivity.SHOP_AD_KEY, item.getAdKey());
                 intent.putExtras(bundle);
                 context.startActivity(intent);
@@ -128,7 +138,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
                     holder.favButton.setImageResource(R.drawable.ic_faved);
                 }
                 if (favoriteClickListener != null) {
-                    favoriteClickListener.onFavClicked(view, item);
+                    favoriteClickListener.onFavoriteShopClicked(view, item);
                 }
             }
         };
@@ -160,6 +170,5 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
         }
 
     }
-
 
 }

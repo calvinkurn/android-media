@@ -79,6 +79,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
     }
 
     public void setData(List<WishlistItem> data) {
+        this.data.clear();
         this.data.addAll(data);
         notifyDataSetChanged();
     }

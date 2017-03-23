@@ -13,56 +13,62 @@ import rx.Observable;
 import rx.functions.Func3;
 
 /**
- * @author by erry on 01/02/17.
+ * @author Kulomady on 2/9/17.
  */
 
 public class GetAllDataFavoriteUseCase extends UseCase<DataFavorite> {
 
-    private GetFavoriteShopUsecase mGetFavoriteShopUsecase;
-    private GetWishlistUsecase mGetWishlistUseCase;
-    private GetTopAdsShopUseCase mGetTopAdsShopUseCase;
+    private final GetFavoriteShopUsecase getFavoriteShopUsecase;
+    private final GetWishlistUsecase getWishlistUsecase;
+    private final GetTopAdsShopUseCase getTopAdsShopUseCase;
 
     public GetAllDataFavoriteUseCase(ThreadExecutor threadExecutor,
                                      PostExecutionThread postExecutionThread,
-                                     GetFavoriteShopUsecase mGetFavoriteShopUsecase,
-                                     GetWishlistUsecase mGetWishlistUseCase,
-                                     GetTopAdsShopUseCase mGetTopAdsShopUseCase) {
+                                     GetFavoriteShopUsecase getFavoriteShopUsecase,
+                                     GetWishlistUsecase getWishlistUsecase,
+                                     GetTopAdsShopUseCase GetTopAdsShopUseCase) {
+
         super(threadExecutor, postExecutionThread);
-        this.mGetFavoriteShopUsecase = mGetFavoriteShopUsecase;
-        this.mGetWishlistUseCase = mGetWishlistUseCase;
-        this.mGetTopAdsShopUseCase = mGetTopAdsShopUseCase;
+        this.getFavoriteShopUsecase = getFavoriteShopUsecase;
+        this.getWishlistUsecase = getWishlistUsecase;
+        this.getTopAdsShopUseCase = GetTopAdsShopUseCase;
+
     }
 
     @Override
     public Observable<DataFavorite> createObservable(RequestParams requestParams) {
-        return Observable.zip(getWishlist(),
-                getTopAdsShop(),
-                getFavoriteShopList(),
+        return Observable.zip(getWishlist(), getTopAdsShop(), getFavoriteShopList(),
                 new Func3<DomainWishlist, TopAdsShop, FavoriteShop, DataFavorite>() {
-                    @Override
-                    public DataFavorite call(DomainWishlist domainWishlist,
-                                             TopAdsShop adsShop,
-                                             FavoriteShop favoriteShop) {
 
-                        DataFavorite dataFavorite = new DataFavorite();
-                        dataFavorite.setWishListData(domainWishlist);
-                        dataFavorite.setTopAdsShop(adsShop);
-                        dataFavorite.setFavoriteShop(favoriteShop);
-                        return dataFavorite;
-                    }
-                });
+            @Override
+            public DataFavorite call(DomainWishlist domainWishlist,
+                                     TopAdsShop adsShop, FavoriteShop favoriteShop) {
+
+                DataFavorite dataFavorite = new DataFavorite();
+                dataFavorite.setWishListData(domainWishlist);
+                dataFavorite.setTopAdsShop(adsShop);
+                dataFavorite.setFavoriteShop(favoriteShop);
+                return dataFavorite;
+            }
+        });
     }
 
+
     private Observable<TopAdsShop> getTopAdsShop() {
-        return mGetTopAdsShopUseCase.createObservable(GetTopAdsShopUseCase.getDefaultParams());
+        RequestParams requestParams = GetTopAdsShopUseCase.DefaultParams();
+        requestParams.putBoolean(GetTopAdsShopUseCase.KEY_IS_FORCE_REFRESH, true);
+        return getTopAdsShopUseCase.createObservable(requestParams);
     }
 
     private Observable<DomainWishlist> getWishlist() {
-        return mGetWishlistUseCase.createObservable(GetWishlistUsecase.getDefaultParams());
+        RequestParams defaultParams = GetWishlistUsecase.getDefaultParams();
+        defaultParams.putBoolean(GetWishlistUsecase.KEY_IS_FORCE_REFRESH, true);
+        return getWishlistUsecase.createObservable(defaultParams);
     }
 
-    private Observable<FavoriteShop> getFavoriteShopList() {
-        return mGetFavoriteShopUsecase.createObservable(GetFavoriteShopUsecase.getDefaultParams());
+    private Observable<FavoriteShop> getFavoriteShopList(){
+        RequestParams defaultParams = GetFavoriteShopUsecase.getDefaultParams();
+        defaultParams.putBoolean(GetFavoriteShopUsecase.KEY_IS_FIRST_PAGE, true);
+        return getFavoriteShopUsecase.createObservable(defaultParams);
     }
-
 }

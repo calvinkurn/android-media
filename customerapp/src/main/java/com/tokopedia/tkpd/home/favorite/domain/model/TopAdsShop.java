@@ -9,7 +9,7 @@ import java.util.List;
 public class TopAdsShop {
     private String message;
     private boolean isDataValid;
-    private List<TopAdsShopItem> mTopAdsShopItemList;
+    private List<TopAdsShopItem> topAdsShopItemList;
 
     public String getMessage() {
         return message;
@@ -28,10 +28,10 @@ public class TopAdsShop {
     }
 
     public List<TopAdsShopItem> getTopAdsShopItemList() {
-        return mTopAdsShopItemList;
+        return topAdsShopItemList;
     }
 
     public void setTopAdsShopItemList(List<TopAdsShopItem> topAdsShopItemList) {
-        mTopAdsShopItemList = topAdsShopItemList;
+        this.topAdsShopItemList = topAdsShopItemList;
     }
 }

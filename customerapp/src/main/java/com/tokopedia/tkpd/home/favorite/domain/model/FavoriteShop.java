@@ -10,39 +10,39 @@ import java.util.List;
 
 public class FavoriteShop {
 
-    private boolean mIsDataValid;
-    private String mMessage;
-    private List<FavoriteShopItem> mData;
+    private boolean isDataValid;
+    private String message;
+    private List<FavoriteShopItem> data;
     private PagingHandler.PagingHandlerModel pagingModel;
 
     public void setDataIsValid(boolean isDataValid) {
 
-        mIsDataValid = isDataValid;
+        this.isDataValid = isDataValid;
     }
 
     public void setMessage(String message) {
 
-        mMessage = message;
+        this.message = message;
     }
 
     public boolean isDataValid() {
-        return mIsDataValid;
+        return isDataValid;
     }
 
     public String getMessage() {
-        return mMessage;
+        return message;
     }
 
     public void setDataValid(boolean dataValid) {
-        mIsDataValid = dataValid;
+        isDataValid = dataValid;
     }
 
     public List<FavoriteShopItem> getData() {
-        return mData;
+        return data;
     }
 
     public void setData(List<FavoriteShopItem> data) {
-        mData = data;
+        this.data = data;
     }
 
     public PagingHandler.PagingHandlerModel getPagingModel() {

@@ -29,25 +29,31 @@ public class WishlistViewHolder extends AbstractViewHolder<WishlistViewModel> {
     public static final int LAYOUT = R.layout.child_favorite_wishlist;
 
     private final WishlistAdapter wishlistAdapter;
-    private Context mContext;
+    private Context context;
+    @SuppressWarnings("WeakerAccess")
     @BindView(R.id.title)
     TextView titleTextView;
+    @SuppressWarnings("WeakerAccess")
     @BindView(R.id.textview_see_all)
     TextView seeAllTextView;
+    @SuppressWarnings("WeakerAccess")
     @BindView(R.id.empty_wishlist)
     RelativeLayout emptyWishlistLayout;
+    @SuppressWarnings("WeakerAccess")
     @BindView(R.id.main_content)
     LinearLayout mainContentLayout;
+    @SuppressWarnings("WeakerAccess")
     @BindView(R.id.wishlist_recycler_view)
     RecyclerView wishlistRecyclerView;
+    @SuppressWarnings("WeakerAccess")
     @BindView(R.id.find_now)
     TextView findNowTextview;
 
     public WishlistViewHolder(View itemView) {
         super(itemView);
-        mContext = itemView.getContext();
+        context = itemView.getContext();
         LinearLayoutManager linearLayoutManager
-                = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
+                = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         wishlistRecyclerView.setLayoutManager(linearLayoutManager);
         wishlistRecyclerView.setHasFixedSize(true);
         wishlistAdapter = new WishlistAdapter();
@@ -74,8 +80,8 @@ public class WishlistViewHolder extends AbstractViewHolder<WishlistViewModel> {
     @OnClick(R.id.textview_see_all)
     public void onClick() {
         UnifyTracking.eventWishlistAll();
-        Intent intent = new Intent(mContext, SimpleHomeActivity.class);
+        Intent intent = new Intent(context, SimpleHomeActivity.class);
         intent.putExtra(SimpleHomeActivity.FRAGMENT_TYPE, SimpleHomeActivity.WISHLIST_FRAGMENT);
-        mContext.startActivity(intent);
+        context.startActivity(intent);
     }
 }

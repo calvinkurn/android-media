@@ -17,18 +17,18 @@ import java.util.List;
  */
 
 public class FavoriteAdapter extends BaseAdapter {
-    private final FavoriteTypeFactory mFavoriteTypeFactory;
+    private final FavoriteTypeFactory favoriteTypeFactory;
 
     public FavoriteAdapter(BaseAdapterTypeFactory adapterTypeFactory, List<Visitable> data) {
         super(adapterTypeFactory, data);
-        this.mFavoriteTypeFactory = (FavoriteTypeFactory) adapterTypeFactory;
+        this.favoriteTypeFactory = (FavoriteTypeFactory) adapterTypeFactory;
     }
 
     @Override
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         View view = LayoutInflater.from(context).inflate(viewType, parent, false);
-        return mFavoriteTypeFactory.createViewHolder(view, viewType);
+        return favoriteTypeFactory.createViewHolder(view, viewType);
     }
 
     @SuppressWarnings("unchecked")
@@ -40,25 +40,27 @@ public class FavoriteAdapter extends BaseAdapter {
     @SuppressWarnings("unchecked")
     @Override
     public int getItemViewType(int position) {
-        return visitables.get(position).type(mFavoriteTypeFactory);
-    }
-
-    public void addElement(List<Visitable> data, boolean clearData) {
-        hideLoading();
-        if (clearData) {
-            visitables.clear();
-            visitables.addAll(data);
-            notifyDataSetChanged();
-        } else {
-            final int positionStart = visitables.size() + 1;
-            visitables.addAll(data);
-            notifyItemRangeInserted(positionStart, data.size());
-        }
+        return visitables.get(position).type(favoriteTypeFactory);
     }
 
     public void setElement(int position, Visitable element) {
         visitables.set(position, element);
         notifyItemInserted(position);
+    }
+
+    public void setElement(List<Visitable> data) {
+        visitables.addAll(data);
+        notifyDataSetChanged();
+    }
+
+    public void clearData() {
+        visitables.clear();
+    }
+
+    public void addMoreData(List<Visitable> data) {
+        final int positionStart = visitables.size() + 1;
+        visitables.addAll(data);
+        notifyItemRangeInserted(positionStart, data.size());
     }
 
 }

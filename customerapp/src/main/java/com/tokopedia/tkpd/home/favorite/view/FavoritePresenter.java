@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.home.favorite.view;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 
@@ -8,11 +9,11 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.tkpd.home.favorite.domain.interactor.AddFavoriteShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetAllDataFavoriteUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteAndWishlistUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteShopUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetTopAdsShopUseCase;
-import com.tokopedia.tkpd.home.favorite.domain.interactor.PostFavoriteShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.model.DataFavorite;
 import com.tokopedia.tkpd.home.favorite.domain.model.DataWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
@@ -40,27 +41,29 @@ import rx.Subscriber;
 
 public class FavoritePresenter
         extends BaseDaggerPresenter<FavoriteContract.View> implements FavoriteContract.Presenter {
+
     private static final String TAG = "FavoritePresenter";
 
-    private final GetFavoriteAndWishlistUsecase favoriteAndWishlistUsecase;
-    private GetTopAdsShopUseCase getTopAdsShopUseCase;
-    private PostFavoriteShopUseCase postFavoriteShopUseCase;
-    private GetAllDataFavoriteUseCase getAllDataFavoriteUseCase;
+    private final GetFavoriteAndWishlistUsecase getFavoriteAndWishlistUsecase;
+    private final GetTopAdsShopUseCase getTopAdsShopUseCase;
+    private final AddFavoriteShopUseCase addFavoriteShopUseCase;
+    private final GetAllDataFavoriteUseCase getAllDataFavoriteUseCase;
+    private final GetFavoriteShopUsecase getFavoriteShopUsecase;
     private PagingHandler pagingHandler;
-    private GetFavoriteShopUsecase getFavoriteShopUsecase;
 
     @Inject
-    public FavoritePresenter(GetFavoriteAndWishlistUsecase favoriteAndWishlistUsecase,
-                             GetTopAdsShopUseCase getTopAdsShopUseCase,
-                             PostFavoriteShopUseCase postFavoriteShopUseCase,
-                             GetAllDataFavoriteUseCase getAllDataFavoriteUseCase,
-                             GetFavoriteShopUsecase favoriteShopUsecase) {
+    FavoritePresenter(GetFavoriteAndWishlistUsecase getFavoriteAndWishlistUsecase,
+                      GetTopAdsShopUseCase getTopAdsShopUseCase,
+                      AddFavoriteShopUseCase addFavoriteShopUseCase,
+                      GetAllDataFavoriteUseCase getAllDataFavoriteUseCase,
+                      GetFavoriteShopUsecase getFavoriteShopUsecase) {
 
-        this.favoriteAndWishlistUsecase = favoriteAndWishlistUsecase;
+        this.getFavoriteAndWishlistUsecase = getFavoriteAndWishlistUsecase;
         this.getTopAdsShopUseCase = getTopAdsShopUseCase;
-        this.postFavoriteShopUseCase = postFavoriteShopUseCase;
+        this.addFavoriteShopUseCase = addFavoriteShopUseCase;
         this.getAllDataFavoriteUseCase = getAllDataFavoriteUseCase;
-        getFavoriteShopUsecase = favoriteShopUsecase;
+        this.getFavoriteShopUsecase = getFavoriteShopUsecase;
+
         pagingHandler = new PagingHandler();
     }
 
@@ -72,27 +75,33 @@ public class FavoritePresenter
     @Override
     public void detachView() {
         super.detachView();
-        favoriteAndWishlistUsecase.unsubscribe();
+        getFavoriteAndWishlistUsecase.unsubscribe();
+        getTopAdsShopUseCase.unsubscribe();
+        getAllDataFavoriteUseCase.unsubscribe();
+        getFavoriteShopUsecase.unsubscribe();
+        addFavoriteShopUseCase.unsubscribe();
     }
 
     @Override
     public void loadDataWishlistAndFavorite() {
-
-        favoriteAndWishlistUsecase.execute(
-                RequestParams.EMPTY,new FavoriteAndWishlistSubscriber());
+        getFavoriteAndWishlistUsecase.execute(
+                RequestParams.EMPTY, new FavoriteAndWishlistSubscriber());
     }
 
     @Override
     public void loadDataTopAdsShop() {
-        getTopAdsShopUseCase.execute(
-                GetTopAdsShopUseCase.getDefaultParams(), new TopAdsShopSubscriber());
+        RequestParams defaultParams = GetTopAdsShopUseCase.DefaultParams();
+        defaultParams.putBoolean(GetTopAdsShopUseCase.KEY_IS_FORCE_REFRESH, false);
+        getTopAdsShopUseCase.execute(defaultParams, new TopAdsShopSubscriber());
     }
 
     @Override
-    public void setFavoriteShop(View view, TopAdsShopItem shopItem) {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(PostFavoriteShopUseCase.KEY_SHOP_ITEM, shopItem);
-        postFavoriteShopUseCase.execute(requestParams, new SetFavoriteSubscriber(view));
+    public void addFavoriteShop(View view, TopAdsShopItem shopItem) {
+        RequestParams params = RequestParams.create();
+        params.putString(AddFavoriteShopUseCase.KEY_AD, shopItem.getAdKey());
+        params.putString(AddFavoriteShopUseCase.KEY_SHOP_ID, shopItem.getShopId());
+        params.putString(AddFavoriteShopUseCase.KEY_SRC, AddFavoriteShopUseCase.DEFAULT_VALUE_SRC);
+        addFavoriteShopUseCase.execute(params, new AddFavoriteShopSubscriber(view, shopItem));
     }
 
     @Override
@@ -104,18 +113,12 @@ public class FavoritePresenter
     public void loadOnMore() {
         if (pagingHandler.CheckNextPage() && !getView().isLoading()) {
             pagingHandler.nextPage();
-            getView().showLoading();
+            getView().showLoadMoreLoading();
             RequestParams params = GetFavoriteShopUsecase.getDefaultParams();
-            params.putString(
-                    GetFavoriteShopUsecase.KEY_PAGE,String.valueOf(pagingHandler.getPage()));
-
+            String currentPage = String.valueOf(pagingHandler.getPage());
+            params.putString(GetFavoriteShopUsecase.KEY_PAGE, currentPage);
             getFavoriteShopUsecase.execute(params, new LoadMoreSubscriber());
         }
-    }
-
-    @Override
-    public void loadOnRetry() {
-
     }
 
     @Override
@@ -130,44 +133,9 @@ public class FavoritePresenter
         }
     }
 
-    private class FavoriteAndWishlistSubscriber extends Subscriber<DataFavorite> {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Log.e(TAG, "onError: ", e);
-            getView().showErrorLoadData();
-        }
-
-        @Override
-        public void onNext(DataFavorite dataFavorite) {
-            List<Visitable> elementList = new ArrayList<>();
-            if (dataFavorite != null && dataFavorite.getWishListData() != null) {
-                elementList.add(prepareDataWishlist(dataFavorite.getWishListData()));
-            }
-            if (dataFavorite != null
-                    && dataFavorite.getFavoriteShop() != null
-                    && dataFavorite.getFavoriteShop().getData() != null) {
-
-                setPagingHandler(dataFavorite.getFavoriteShop().getPagingModel());
-
-                for (FavoriteShopItem favoriteShopItem : dataFavorite.getFavoriteShop().getData()) {
-                    favoriteShopItem.setIsFav(true);
-                    elementList.add(prepareDataFavoriteShop(favoriteShopItem));
-                }
-            }
-
-            getView().addAllDataFavorite(elementList, true);
-        }
-    }
-
-    private void setPagingHandler(PagingHandler.PagingHandlerModel pagingModel) {
+    private void setNextPaging(PagingHandler.PagingHandlerModel pagingModel) {
         pagingHandler.setHasNext(PagingHandler.CheckHasNext(pagingModel));
     }
-
 
     private FavoriteShopViewModel prepareDataFavoriteShop(FavoriteShopItem favoriteShop) {
         FavoriteShopViewModel favoriteShopViewModel = new FavoriteShopViewModel();
@@ -200,61 +168,6 @@ public class FavoritePresenter
         return wishlistViewModel;
     }
 
-    private class SetFavoriteSubscriber extends Subscriber<FavShop> {
-
-        private final View view;
-
-        public SetFavoriteSubscriber(View view) {
-            this.view = view;
-        }
-
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            e.printStackTrace();
-        }
-
-        @Override
-        public void onNext(FavShop favShop) {
-            view.clearAnimation();
-            if (favShop.ismIsValid()) {
-                FavoriteShopItem favoriteShop = favShop.getFavoriteShopItem();
-                FavoriteShopViewModel favoriteShopViewModel = new FavoriteShopViewModel();
-                favoriteShopViewModel.setShopId(favoriteShop.getId());
-                favoriteShopViewModel.setShopName(favoriteShop.getName());
-                favoriteShopViewModel.setShopAvatarImageUrl(favoriteShop.getIconUri());
-                favoriteShopViewModel.setShopLocation(favoriteShop.getLocation());
-                favoriteShopViewModel.setFavoriteShop(favoriteShop.isFav());
-                getView().addFavoriteShop(favoriteShopViewModel);
-            }
-        }
-    }
-
-
-    private class TopAdsShopSubscriber extends Subscriber<TopAdsShop> {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Log.e(TAG, "onError: ", e);
-        }
-
-        @Override
-        public void onNext(TopAdsShop topAdsShop) {
-            if (topAdsShop.getTopAdsShopItemList() != null
-                    && topAdsShop.getTopAdsShopItemList().size() > 0) {
-                getView().addTopAdsShop(prepareDataTopAdsShop(topAdsShop));
-            }
-        }
-    }
-
     private TopAdsShopViewModel prepareDataTopAdsShop(TopAdsShop adsShop) {
         TopAdsShopViewModel shopViewModel = new TopAdsShopViewModel();
         ArrayList<TopAdsShopItem> shopItems = new ArrayList<>();
@@ -275,7 +188,7 @@ public class FavoritePresenter
         return shopViewModel;
     }
 
-    private class DataFavoriteSubscriber extends Subscriber<DataFavorite> {
+    private class FavoriteAndWishlistSubscriber extends Subscriber<DataFavorite> {
         @Override
         public void onCompleted() {
 
@@ -283,18 +196,123 @@ public class FavoritePresenter
 
         @Override
         public void onError(Throwable e) {
-            e.printStackTrace();
+            Log.e(TAG, "onError: ", e);
             getView().showErrorLoadData();
         }
 
         @Override
         public void onNext(DataFavorite dataFavorite) {
+            getView().showDataFavorite(getDataFavoriteViewModel(dataFavorite));
+        }
+
+        @NonNull
+        private List<Visitable> getDataFavoriteViewModel(DataFavorite dataFavorite) {
             List<Visitable> elementList = new ArrayList<>();
             if (dataFavorite != null && dataFavorite.getWishListData() != null) {
                 elementList.add(prepareDataWishlist(dataFavorite.getWishListData()));
             }
+            if (dataFavorite != null
+                    && dataFavorite.getFavoriteShop() != null
+                    && dataFavorite.getFavoriteShop().getData() != null) {
+
+                setNextPaging(dataFavorite.getFavoriteShop().getPagingModel());
+
+                for (FavoriteShopItem favoriteShopItem : dataFavorite.getFavoriteShop().getData()) {
+                    favoriteShopItem.setIsFav(true);
+                    elementList.add(prepareDataFavoriteShop(favoriteShopItem));
+                }
+            }
+            return elementList;
+        }
+    }
+
+    private class AddFavoriteShopSubscriber extends Subscriber<FavShop> {
+
+        private final View view;
+        private TopAdsShopItem shopItem;
+
+        AddFavoriteShopSubscriber(View view, TopAdsShopItem shopItem) {
+            this.view = view;
+            this.shopItem = shopItem;
+        }
+
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Log.e(TAG, "onError: ", e);
+        }
+
+        @Override
+        public void onNext(FavShop favShop) {
+            view.clearAnimation();
+            if (favShop.isValid()) {
+                FavoriteShopViewModel favoriteShopViewModel = new FavoriteShopViewModel();
+                favoriteShopViewModel.setShopId(shopItem.getShopId());
+                favoriteShopViewModel.setShopName(shopItem.getShopName());
+                favoriteShopViewModel.setShopAvatarImageUrl(shopItem.getShopImageUrl());
+                favoriteShopViewModel.setShopLocation(shopItem.getShopLocation());
+                favoriteShopViewModel.setFavoriteShop(shopItem.isFav());
+                getView().addFavoriteShop(favoriteShopViewModel);
+            }
+        }
+    }
+
+
+    private class TopAdsShopSubscriber extends Subscriber<TopAdsShop> {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Log.e(TAG, "onError: ", e);
+        }
+
+        @Override
+        public void onNext(TopAdsShop topAdsShop) {
+            if (isTopAdsShopListNotEmpty(topAdsShop)) {
+                getView().addTopAdsShop(prepareDataTopAdsShop(topAdsShop));
+            }
+        }
+
+        private boolean isTopAdsShopListNotEmpty(TopAdsShop topAdsShop) {
+            return topAdsShop.getTopAdsShopItemList() != null
+                    && topAdsShop.getTopAdsShopItemList().size() > 0;
+        }
+    }
+
+    private class DataFavoriteSubscriber extends Subscriber<DataFavorite> {
+        @Override
+        public void onStart() {
+            super.onStart();
+            getView().showRefreshLoading();
+        }
+
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Log.e(TAG, "onError: ", e);
+            getView().hideRefreshLoading();
+            getView().showErrorLoadData();
+        }
+
+        @Override
+        public void onNext(DataFavorite dataFavorite) {
+            List<Visitable> dataFavoriteItemList = new ArrayList<>();
+            if (dataFavorite != null && dataFavorite.getWishListData() != null) {
+                dataFavoriteItemList.add(prepareDataWishlist(dataFavorite.getWishListData()));
+            }
             if (dataFavorite != null && dataFavorite.getTopAdsShop() != null) {
-                elementList.add(prepareDataTopAdsShop(dataFavorite.getTopAdsShop()));
+                dataFavoriteItemList.add(prepareDataTopAdsShop(dataFavorite.getTopAdsShop()));
             }
             if (dataFavorite != null
                     && dataFavorite.getFavoriteShop() != null
@@ -302,11 +320,11 @@ public class FavoritePresenter
 
                 for (FavoriteShopItem favoriteShopItem : dataFavorite.getFavoriteShop().getData()) {
                     favoriteShopItem.setIsFav(true);
-                    elementList.add(prepareDataFavoriteShop(favoriteShopItem));
+                    dataFavoriteItemList.add(prepareDataFavoriteShop(favoriteShopItem));
                 }
             }
-            getView().addAllDataFavorite(elementList, true);
-            getView().setRefreshing(false);
+            getView().showDataFavorite(dataFavoriteItemList);
+            getView().hideRefreshLoading();
             pagingHandler.resetPage();
         }
     }
@@ -327,14 +345,21 @@ public class FavoritePresenter
         @Override
         public void onNext(FavoriteShop favoriteShop) {
             if (favoriteShop.isDataValid()) {
-                List<Visitable> elementList = new ArrayList<>();
-                setPagingHandler(favoriteShop.getPagingModel());
-                for (FavoriteShopItem favoriteShopItem : favoriteShop.getData()) {
-                    favoriteShopItem.setIsFav(true);
-                    elementList.add(prepareDataFavoriteShop(favoriteShopItem));
-                }
-                getView().addAllDataFavorite(elementList, false);
+                setNextPaging(favoriteShop.getPagingModel());
+
+                List<Visitable> elementList = prepareListFavoriteShop(favoriteShop);
+                getView().showMoreDataFavoriteShop(elementList);
             }
+        }
+
+        @NonNull
+        private List<Visitable> prepareListFavoriteShop(FavoriteShop favoriteShop) {
+            List<Visitable> elementList = new ArrayList<>();
+            for (FavoriteShopItem favoriteShopItem : favoriteShop.getData()) {
+                favoriteShopItem.setIsFav(true);
+                elementList.add(prepareDataFavoriteShop(favoriteShopItem));
+            }
+            return elementList;
         }
     }
 }

@@ -17,16 +17,16 @@ import retrofit2.Response;
  * @author Kulomady on 1/19/17.
  */
 public class TopAdsShopMapper implements rx.functions.Func1<Response<String>, TopAdsShop> {
-    private final String mDefaultErrorMessage;
-    private final String mEmptyErrorMessage;
-    private final String mSuccessMessage;
-    private Gson mGson;
+    private final String defaultErrorMessage;
+    private final String emptyErrorMessage;
+    private final String successMessage;
+    private Gson gson;
 
     public TopAdsShopMapper(Context context, Gson gson) {
-        mGson = gson;
-        mDefaultErrorMessage = context.getString(R.string.msg_network_error);
-        mEmptyErrorMessage = context.getString(R.string.msg_empty_wishlist);
-        mSuccessMessage = "success get get topads shop";
+        this.gson = gson;
+        defaultErrorMessage = context.getString(R.string.msg_network_error);
+        emptyErrorMessage = context.getString(R.string.msg_empty_wishlist);
+        successMessage = "success get get topads shop";
     }
 
     @Override
@@ -34,20 +34,20 @@ public class TopAdsShopMapper implements rx.functions.Func1<Response<String>, To
         if (response != null && response.isSuccessful() && response.body() != null) {
             return ValidateResponse(response.body());
         }
-        return invalidResponse(mDefaultErrorMessage);
+        return invalidResponse(defaultErrorMessage);
     }
 
     private TopAdsShop ValidateResponse(String responseBody) {
-        TopAdsHome topAdsResponse = mGson.fromJson(responseBody, TopAdsHome.class);
+        TopAdsHome topAdsResponse = gson.fromJson(responseBody, TopAdsHome.class);
         if (topAdsResponse != null) {
             if (topAdsResponse.getData() != null) {
                 return mappingValidResponse(topAdsResponse.getData());
             } else {
-                return invalidResponse(mDefaultErrorMessage);
+                return invalidResponse(defaultErrorMessage);
             }
 
         } else {
-            return invalidResponse(mDefaultErrorMessage);
+            return invalidResponse(defaultErrorMessage);
         }
     }
 
@@ -55,11 +55,11 @@ public class TopAdsShopMapper implements rx.functions.Func1<Response<String>, To
         if (topAdsDataResponse != null && topAdsDataResponse.length > 0) {
             TopAdsShop favoriteShop = new TopAdsShop();
             favoriteShop.setDataValid(true);
-            favoriteShop.setMessage(mSuccessMessage);
+            favoriteShop.setMessage(successMessage);
             favoriteShop.setTopAdsShopItemList(mappingDataShopItem(topAdsDataResponse));
             return favoriteShop;
         } else {
-            return invalidResponse(mEmptyErrorMessage);
+            return invalidResponse(emptyErrorMessage);
         }
     }
 
@@ -88,7 +88,7 @@ public class TopAdsShopMapper implements rx.functions.Func1<Response<String>, To
     private void mappingShopResponse(TopAdsShopItem topAdsShopItem, TopAdsHome.Shop shopResponse) {
         topAdsShopItem.setLuckyShop(shopResponse.luckyShop);
         topAdsShopItem.setShopId(shopResponse.id);
-        topAdsShopItem.setShopDomain(shopResponse.domain);
+//        topAdsShopItem.setShopDomain(shopResponse.domain);
         topAdsShopItem.setGoldShop(shopResponse.goldShop);
         topAdsShopItem.setShopLocation(shopResponse.location);
         topAdsShopItem.setShopName(shopResponse.name);

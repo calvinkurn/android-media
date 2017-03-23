@@ -10,6 +10,6 @@ import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopItem;
  */
 public interface FavoriteClickListener {
 
-    void onFavClicked(View view, TopAdsShopItem shopItem);
+    void onFavoriteShopClicked(View view, TopAdsShopItem shopItem);
 
 }

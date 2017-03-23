@@ -8,9 +8,8 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.tkpd.home.favorite.data.AddFavoriteShopMapper;
 import com.tokopedia.tkpd.home.favorite.data.FavoriteShopMapper;
-import com.tokopedia.tkpd.home.favorite.data.SetFavoriteShopMapper;
-import com.tokopedia.tkpd.home.favorite.domain.interactor.ShopItemParam;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 
@@ -22,27 +21,34 @@ import rx.functions.Action1;
  * @author Kulomady on 1/19/17.
  */
 public class CloudFavoriteShopDataSource {
-    private Context mContext;
-    private Gson mGson;
-    private ServiceV4 mServiceVersion4;
+    private Context context;
+    private Gson gson;
+    private ServiceV4 serviceV4;
 
-    public CloudFavoriteShopDataSource(Context context, Gson gson, ServiceV4 serviceVersion4) {
-        mContext = context;
-        mGson = gson;
-        mServiceVersion4 = serviceVersion4;
+    public CloudFavoriteShopDataSource(Context context, Gson gson, ServiceV4 serviceV4) {
+        this.context = context;
+        this.gson = gson;
+        this.serviceV4 = serviceV4;
     }
 
-    public Observable<FavoriteShop> getFavorite(TKPDMapParam<String, String> param) {
-        TKPDMapParam<String, String> paramWithAuth = AuthUtil.generateParamsNetwork(mContext, param);
-        return mServiceVersion4.getFavoriteShop(paramWithAuth)
-                .doOnNext(saveToCache())
-                .map(new FavoriteShopMapper(mContext, mGson));
+    public Observable<FavoriteShop> getFavorite(
+            TKPDMapParam<String, String> param, boolean isMustSaveToCache) {
+
+        TKPDMapParam<String, String> paramWithAuth = AuthUtil.generateParamsNetwork(context, param);
+        if (isMustSaveToCache) {
+            return serviceV4.getFavoriteShop(paramWithAuth)
+                    .doOnNext(saveToCache())
+                    .map(new FavoriteShopMapper(context, gson));
+        } else {
+            return serviceV4.getFavoriteShop(paramWithAuth)
+                    .map(new FavoriteShopMapper(context, gson));
+        }
     }
 
-    public Observable<FavShop> postFavoriteShop(TKPDMapParam<String, String> param, ShopItemParam shopItem) {
-        TKPDMapParam<String, String> paramWithAuth = AuthUtil.generateParamsNetwork(mContext, param);
-        return mServiceVersion4.postFavoriteShop(paramWithAuth)
-                .map(new SetFavoriteShopMapper(mContext, mGson, shopItem));
+    public Observable<FavShop> postFavoriteShop(TKPDMapParam<String, String> param) {
+        TKPDMapParam<String, String> paramWithAuth = AuthUtil.generateParamsNetwork(context, param);
+        return serviceV4.postFavoriteShop(paramWithAuth)
+                .map(new AddFavoriteShopMapper(context, gson));
     }
 
     private Action1<Response<String>> saveToCache() {
@@ -58,4 +64,5 @@ public class CloudFavoriteShopDataSource {
             }
         };
     }
+
 }

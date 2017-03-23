@@ -22,12 +22,12 @@ import retrofit2.Response;
  * @author Kulomady on 1/18/17.
  */
 public class WishlistMapper implements rx.functions.Func1<Response<String>, DomainWishlist> {
-    private final String mDefaultErrorMessage;
-    private Gson mGson;
+    private final String defaultErrorMessage;
+    private Gson gson;
 
     public WishlistMapper(Context context, Gson gson) {
-        mGson = gson;
-        mDefaultErrorMessage = context.getString(R.string.msg_network_error);
+        this.gson = gson;
+        defaultErrorMessage = context.getString(R.string.msg_network_error);
     }
 
     @Override
@@ -35,20 +35,20 @@ public class WishlistMapper implements rx.functions.Func1<Response<String>, Doma
         if (response != null && response.isSuccessful() && response.body() != null) {
             return ValidateResponse(response.body());
         }
-        return invalidResponse(mDefaultErrorMessage);
+        return invalidResponse(defaultErrorMessage);
     }
 
     private DomainWishlist ValidateResponse(String repsonseBody) {
-        WishlistData wishlistResponse = mGson.fromJson(repsonseBody, WishlistData.class);
+        WishlistData wishlistResponse = gson.fromJson(repsonseBody, WishlistData.class);
         if (wishlistResponse != null) {
             if (wishlistResponse.getWishlist() != null && wishlistResponse.getWishlist().size() > 0) {
                 return mappingValidResponse(wishlistResponse.getWishlist());
             } else {
-                return invalidResponse(mDefaultErrorMessage);
+                return invalidResponse(defaultErrorMessage);
             }
 
         } else {
-            return invalidResponse(mDefaultErrorMessage);
+            return invalidResponse(defaultErrorMessage);
         }
 
     }

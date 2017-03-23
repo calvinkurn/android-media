@@ -4,25 +4,25 @@ package com.tokopedia.tkpd.home.favorite.domain.model;
  * @author Kulomady on 1/19/17.
  */
 public class DataFavorite {
-    private DomainWishlist mWishListData;
-    private FavoriteShop mFavoriteShop;
+    private DomainWishlist domainWishlist;
+    private FavoriteShop favoriteShop;
     private TopAdsShop topAdsShop;
 
     public DomainWishlist getWishListData() {
-        return mWishListData;
+        return domainWishlist;
     }
 
     public void setWishListData(DomainWishlist wishListData) {
-        this.mWishListData = wishListData;
+        this.domainWishlist = wishListData;
     }
 
     public void setFavoriteShop(FavoriteShop favoriteShop) {
 
-        mFavoriteShop = favoriteShop;
+        this.favoriteShop = favoriteShop;
     }
 
     public FavoriteShop getFavoriteShop() {
-        return mFavoriteShop;
+        return favoriteShop;
     }
 
     public TopAdsShop getTopAdsShop() {

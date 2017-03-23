@@ -18,20 +18,20 @@ import rx.functions.Action1;
  * @author Kulomady on 1/19/17.
  */
 public class CloudTopAdsShopDataSource {
-    private Context mContext;
-    private Gson mGson;
-    private TopAdsService mTopAdsService;
+    private Context context;
+    private Gson gson;
+    private TopAdsService topAdsService;
 
     public CloudTopAdsShopDataSource(Context context, Gson gson, TopAdsService topAdsService) {
-        mContext = context;
-        mGson = gson;
-        mTopAdsService = topAdsService;
+        this.context = context;
+        this.gson = gson;
+        this.topAdsService = topAdsService;
     }
 
     public Observable<TopAdsShop> getTopAdsShop(TKPDMapParam<String, Object> param) {
-        return mTopAdsService.getShopTopAds(param)
+        return topAdsService.getShopTopAds(param)
                 .doOnNext(saveToCache())
-                .map(new TopAdsShopMapper(mContext, mGson));
+                .map(new TopAdsShopMapper(context, gson));
     }
 
     private Action1<? super Response<String>> saveToCache() {

@@ -19,16 +19,16 @@ import retrofit2.Response;
  * @author Kulomady on 1/19/17.
  */
 public class FavoriteShopMapper implements rx.functions.Func1<Response<String>, FavoriteShop> {
-    private final String mDefaultErrorMessage;
-    private final String mEmptyErrorMessage;
-    private final String mSuccessMessage;
-    private Gson mGson;
+    private final String defaultErrorMessage;
+    private final String emptyErrorMessage;
+    private final String successMessage;
+    private Gson gson;
 
     public FavoriteShopMapper(Context context, Gson gson) {
-        mGson = gson;
-        mDefaultErrorMessage = context.getString(R.string.msg_network_error);
-        mEmptyErrorMessage = context.getString(R.string.msg_empty_wishlist);
-        mSuccessMessage = "success get get favorite shop";
+        this.gson = gson;
+        defaultErrorMessage = context.getString(R.string.msg_network_error);
+        emptyErrorMessage = context.getString(R.string.msg_empty_wishlist);
+        successMessage = "success get get favorite shop";
     }
 
     @Override
@@ -36,11 +36,11 @@ public class FavoriteShopMapper implements rx.functions.Func1<Response<String>, 
         if (response != null && response.isSuccessful() && response.body() != null) {
             return ValidateResponse(response.body());
         }
-        return invalidResponse(mDefaultErrorMessage);
+        return invalidResponse(defaultErrorMessage);
     }
 
     private FavoriteShop ValidateResponse(String responseBody) {
-        TopAdsData favoriteShopsResponse = mGson.fromJson(responseBody, TopAdsData.class);
+        TopAdsData favoriteShopsResponse = gson.fromJson(responseBody, TopAdsData.class);
         if (favoriteShopsResponse != null) {
             if (favoriteShopsResponse.getMessageError() != null
                     && favoriteShopsResponse.getMessageError().size() > 0) {
@@ -49,11 +49,11 @@ public class FavoriteShopMapper implements rx.functions.Func1<Response<String>, 
             } else if (favoriteShopsResponse.getData() != null) {
                 return mappingValidResponse(favoriteShopsResponse.getData());
             } else {
-                return invalidResponse(mDefaultErrorMessage);
+                return invalidResponse(defaultErrorMessage);
             }
 
         } else {
-            return invalidResponse(mDefaultErrorMessage);
+            return invalidResponse(defaultErrorMessage);
         }
     }
 
@@ -62,12 +62,12 @@ public class FavoriteShopMapper implements rx.functions.Func1<Response<String>, 
                 && shopItemDataResponse.getList().size() > 0) {
             FavoriteShop favoriteShop = new FavoriteShop();
             favoriteShop.setDataIsValid(true);
-            favoriteShop.setMessage(mSuccessMessage);
+            favoriteShop.setMessage(successMessage);
             favoriteShop.setData(mappingDataShopItem(shopItemDataResponse.getList()));
             favoriteShop.setPagingModel(shopItemDataResponse.getPagingHandlerModel());
             return favoriteShop;
         } else {
-            return invalidResponse(mEmptyErrorMessage);
+            return invalidResponse(emptyErrorMessage);
         }
     }
 

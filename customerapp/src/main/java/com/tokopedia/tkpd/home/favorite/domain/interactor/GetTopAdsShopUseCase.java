@@ -4,26 +4,28 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.tkpd.home.favorite.domain.FavoriteRepository;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
 
 import rx.Observable;
 
 /**
- * @author Kulomady on 1/19/17.
+ * @author Kulomady on 2/9/17.
  */
 
 public class GetTopAdsShopUseCase extends UseCase<TopAdsShop> {
 
-    public static final String TOPADS_PAGE_DEFAULT_VALUE = "1";
-    public static final String TOPADS_ITEM_DEFAULT_VALUE = "4";
-    public static final String SRC_FAV_SHOP_VALUE = "fav_shop";
+    public static final String KEY_IS_FORCE_REFRESH = "isForceRefresh";
+    private static final String KEY_ITEM = "item";
+    private static final String KEY_SRC = "src";
+    private static final String KEY_PAGE = "page";
 
-    public static final String KEY_ITEM = "item";
-    public static final String KEY_SRC = "src";
-    public static final String KEY_PAGE = "page";
+    private static final String TOPADS_PAGE_DEFAULT_VALUE = "1";
+    private static final String TOPADS_ITEM_DEFAULT_VALUE = "4";
+    private static final String SRC_FAV_SHOP_VALUE = "fav_shop";
 
-    private final FavoriteRepository favoriteRepository;
+    private FavoriteRepository favoriteRepository;
 
     public GetTopAdsShopUseCase(ThreadExecutor threadExecutor,
                                 PostExecutionThread postExecutionThread,
@@ -33,17 +35,27 @@ public class GetTopAdsShopUseCase extends UseCase<TopAdsShop> {
         this.favoriteRepository = favoriteRepository;
     }
 
-
     @Override
     public Observable<TopAdsShop> createObservable(RequestParams requestParams) {
-        return favoriteRepository.getTopAdsShop(requestParams.getParameters());
+        boolean isFreshData = isForceRefresh(requestParams);
+        TKPDMapParam<String, Object> param = requestParams.getParameters();
+        return this.favoriteRepository.getTopAdsShop(param,isFreshData);
     }
 
-    public static RequestParams getDefaultParams() {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(KEY_PAGE, TOPADS_PAGE_DEFAULT_VALUE);
-        requestParams.putString(KEY_ITEM, TOPADS_ITEM_DEFAULT_VALUE);
-        requestParams.putString(KEY_SRC, SRC_FAV_SHOP_VALUE);
-        return requestParams;
+    private boolean isForceRefresh(RequestParams requestParams) {
+        boolean isForceRefresh = requestParams.getBoolean(KEY_IS_FORCE_REFRESH, false);
+        requestParams.clearValue(KEY_IS_FORCE_REFRESH);
+        return isForceRefresh;
+    }
+
+    public static RequestParams DefaultParams() {
+        RequestParams params = RequestParams.create();
+        params.putString(GetTopAdsShopUseCase.KEY_PAGE,
+                GetTopAdsShopUseCase.TOPADS_PAGE_DEFAULT_VALUE);
+        params.putString(GetTopAdsShopUseCase.KEY_ITEM,
+                GetTopAdsShopUseCase.TOPADS_ITEM_DEFAULT_VALUE);
+        params.putString(KEY_SRC,SRC_FAV_SHOP_VALUE);
+
+        return params;
     }
 }

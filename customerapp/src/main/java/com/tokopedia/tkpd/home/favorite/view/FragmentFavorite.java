@@ -22,16 +22,14 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.di.component.DaggerFavoriteComponent;
 import com.tokopedia.tkpd.home.favorite.view.adapter.FavoriteAdapter;
 import com.tokopedia.tkpd.home.favorite.view.adapter.FavoriteAdapterTypeFactory;
+import com.tokopedia.tkpd.home.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopItem;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopViewModel;
-import com.tokopedia.tkpd.home.favorite.view.viewlistener.FavoriteClickListener;
-import com.tokopedia.tkpd.home.util.DefaultRetryListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,14 +40,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-import static com.tokopedia.tkpd.home.favorite.view.FavoriteView.DURATION_ANIMATOR;
-
 /**
  * @author Kulomady on 1/20/17.
  */
 
 public class FragmentFavorite extends BaseDaggerFragment
-        implements FavoriteContract.View, DefaultRetryListener.OnClickRetry, FavoriteClickListener {
+        implements FavoriteContract.View, FavoriteClickListener,
+        SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.index_favorite_recycler_view)
     RecyclerView recyclerView;
@@ -61,121 +58,33 @@ public class FragmentFavorite extends BaseDaggerFragment
     RelativeLayout mainContent;
     LinearLayoutManager layoutManager;
     DefaultItemAnimator animator;
-    RetryHandler retryHandlerFull;
 
     @Inject
-    FavoritePresenter mFavoritePresenter;
+    FavoritePresenter favoritePresenter;
 
-    public static final String WISHLISH_EXTRA_KEY = "DomainWishlist";
+    private static final long DURATION_ANIMATOR = 1000;
     private Unbinder unbinder;
     private FavoriteAdapter favoriteAdapter;
     private EndlessRecyclerviewListener scrollListener;
 
-    @Override
-    protected String getScreenName() {
-        return AppScreen.SCREEN_HOME_FAVORITE_SHOP;
-    }
-
-    @Override
-    public void onRetryFull() {
-
-    }
-
-    @Override
-    public void onRetryFooter() {
-
-    }
-
-    @Override
-    public void addTopAdsShop(TopAdsShopViewModel shopViewModel) {
-        if (favoriteAdapter.getItemCount() > 0) {
-            favoriteAdapter.setElement(1, shopViewModel);
-        }
-    }
-
-
-    @Override
-    public void addAllDataFavorite(List<Visitable> elementList, boolean clearData) {
-        favoriteAdapter.addElement(elementList, clearData);
-    }
-
-    @Override
-    public void setRefreshing(boolean refreshing) {
-        swipeToRefresh.setRefreshing(refreshing);
-        if (!refreshing) {
-            scrollListener.resetState();
-        }
-    }
-
-    @Override
-    public void showErrorLoadMore() {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                favoriteAdapter.hideLoading();
-                mFavoritePresenter.loadOnMore();
-            }
-        }).showRetrySnackbar();
-    }
-
-    @Override
-    public void showErrorLoadData() {
-        NetworkErrorHelper.showEmptyState(getContext(), mainContent, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                mFavoritePresenter.loadOnRefresh();
-            }
-        });
-    }
-
-    @Override
-    public boolean isLoading() {
-        return favoriteAdapter.isLoading();
-    }
-
-
-    @Override
-    public void showLoading() {
-        favoriteAdapter.showLoading();
-    }
-
-    @Override
-    public void addFavoriteShop(FavoriteShopViewModel shopViewModel) {
-        favoriteAdapter.setElement(2, shopViewModel);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initIntentExtra();
-    }
-
-    @Override
-    protected void initInjector() {
-        DaggerAppComponent daggerAppComponent = (DaggerAppComponent) DaggerAppComponent.builder()
-                .appModule(new AppModule(getContext()))
-                .activityModule(new ActivityModule(getActivity()))
-                .build();
-        DaggerFavoriteComponent daggerFavoriteComponent
-                = (DaggerFavoriteComponent) DaggerFavoriteComponent.builder()
-                .appComponent(daggerAppComponent)
-                .build();
-        daggerFavoriteComponent.inject(this);
-    }
-
-    private void initIntentExtra() {
 
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View parentView = inflater.inflate(R.layout.fragment_index_favorite_v2, container, false);
         unbinder = ButterKnife.bind(this, parentView);
-        prepareView(parentView);
+        prepareView();
         setListener();
-        mFavoritePresenter.attachView(this);
-        mFavoritePresenter.loadDataWishlistAndFavorite();
+        favoritePresenter.attachView(this);
+        favoritePresenter.loadDataWishlistAndFavorite();
         return parentView;
     }
 
@@ -189,13 +98,13 @@ public class FragmentFavorite extends BaseDaggerFragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mFavoritePresenter.onSaveDataBeforeRotate(outState);
+        favoritePresenter.onSaveDataBeforeRotate(outState);
     }
 
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        mFavoritePresenter.onViewStateRestored(savedInstanceState);
+        favoritePresenter.onViewStateRestored(savedInstanceState);
     }
 
     @Override
@@ -213,7 +122,7 @@ public class FragmentFavorite extends BaseDaggerFragment
         try {
             if (isVisibleToUser && isAdded() && getActivity() != null) {
                 ScreenTracking.screen(getScreenName());
-                mFavoritePresenter.loadDataTopAdsShop();
+                favoritePresenter.loadDataTopAdsShop();
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
@@ -222,26 +131,115 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     }
 
-    protected void setListener() {
-        retryHandlerFull.setOnRetryListener(
-                new DefaultRetryListener(DefaultRetryListener.RETRY_FULL, this));
-
-        recyclerView.addOnScrollListener(scrollListener);
-        swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mFavoritePresenter.loadOnRefresh();
-            }
-        });
+    @Override
+    protected void initInjector() {
+        DaggerAppComponent daggerAppComponent = (DaggerAppComponent) DaggerAppComponent.builder()
+                .appModule(new AppModule(getContext()))
+                .activityModule(new ActivityModule(getActivity()))
+                .build();
+        DaggerFavoriteComponent daggerFavoriteComponent
+                = (DaggerFavoriteComponent) DaggerFavoriteComponent.builder()
+                .appComponent(daggerAppComponent)
+                .build();
+        daggerFavoriteComponent.inject(this);
     }
 
     @Override
-    public void onFavClicked(View view, TopAdsShopItem shopItem) {
-        mFavoritePresenter.setFavoriteShop(view, shopItem);
+    protected String getScreenName() {
+        return AppScreen.SCREEN_HOME_FAVORITE_SHOP;
+    }
+
+    @Override
+    public void addTopAdsShop(TopAdsShopViewModel shopViewModel) {
+        if (favoriteAdapter.getItemCount() > 0) {
+            favoriteAdapter.setElement(1, shopViewModel);
+        } else {
+            favoriteAdapter.setElement(0, shopViewModel);
+        }
     }
 
 
-    private void prepareView(View parentView) {
+    @Override
+    public void showDataFavorite(List<Visitable> elementList) {
+        favoriteAdapter.hideLoading();
+        favoriteAdapter.clearData();
+        favoriteAdapter.setElement(elementList);
+    }
+
+    @Override
+    public void showMoreDataFavoriteShop(List<Visitable> elementList) {
+        favoriteAdapter.hideLoading();
+        favoriteAdapter.addMoreData(elementList);
+    }
+
+
+    @Override
+    public void showRefreshLoading() {
+        swipeToRefresh.setRefreshing(true);
+    }
+
+    @Override
+    public void hideRefreshLoading() {
+        swipeToRefresh.setRefreshing(false);
+        scrollListener.resetState();
+    }
+
+
+    @Override
+    public void showErrorLoadMore() {
+        NetworkErrorHelper.createSnackbarWithAction(
+                getActivity(),
+                new NetworkErrorHelper.RetryClickedListener() {
+
+                    @Override
+                    public void onRetryClicked() {
+                        favoriteAdapter.hideLoading();
+                        favoritePresenter.loadOnMore();
+                    }
+                }).showRetrySnackbar();
+    }
+
+    @Override
+    public void showErrorLoadData() {
+        NetworkErrorHelper.showEmptyState(getContext(),
+                mainContent,
+                new NetworkErrorHelper.RetryClickedListener() {
+
+                    @Override
+                    public void onRetryClicked() {
+                        favoritePresenter.loadOnRefresh();
+                    }
+                });
+    }
+
+    @Override
+    public boolean isLoading() {
+        return favoriteAdapter.isLoading();
+    }
+
+
+    @Override
+    public void showLoadMoreLoading() {
+        favoriteAdapter.showLoading();
+    }
+
+    @Override
+    public void addFavoriteShop(FavoriteShopViewModel shopViewModel) {
+        int favoriteShopPosition = 2;
+        favoriteAdapter.setElement(favoriteShopPosition, shopViewModel);
+    }
+
+    @Override
+    public void onRefresh() {
+        favoritePresenter.loadOnRefresh();
+    }
+
+    @Override
+    public void onFavoriteShopClicked(View view, TopAdsShopItem shopItem) {
+        favoritePresenter.addFavoriteShop(view, shopItem);
+    }
+
+    private void prepareView() {
 
         FavoriteAdapterTypeFactory typeFactoryForList = new FavoriteAdapterTypeFactory(this);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -251,14 +249,18 @@ public class FragmentFavorite extends BaseDaggerFragment
         scrollListener = new EndlessRecyclerviewListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                mFavoritePresenter.loadOnMore();
+                favoritePresenter.loadOnMore();
             }
         };
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(animator);
         recyclerView.setAdapter(favoriteAdapter);
-        retryHandlerFull = new RetryHandler(getActivity(), parentView);
-        retryHandlerFull.setRetryView();
+
+    }
+
+    private void setListener() {
+        recyclerView.addOnScrollListener(scrollListener);
+        swipeToRefresh.setOnRefreshListener(this);
     }
 
 
