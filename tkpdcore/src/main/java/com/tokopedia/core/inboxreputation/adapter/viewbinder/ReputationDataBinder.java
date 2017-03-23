@@ -225,14 +225,10 @@ public class ReputationDataBinder extends DataBinder<ReputationDataBinder.ViewHo
             setSellerResponse(holder, position);
         } else if (!isHasResponse(position) && !roleIsBuyer()) {
             holder.viewGiveReply.setVisibility(View.VISIBLE);
-            holder.shareButton.setVisibility(View.GONE);
             holder.viewSellerReply.setVisibility(View.GONE);
         } else {
             holder.viewGiveReply.setVisibility(View.GONE);
             holder.viewSellerReply.setVisibility(View.GONE);
-        }
-        if(!roleIsBuyer()){
-            holder.shareButton.setVisibility(View.GONE);
         }
     }
 
