@@ -1,5 +1,6 @@
 package com.tokopedia.seller.shop.setting.view.presenter;
 
+import com.tokopedia.core.geolocation.model.LocationPass;
 import com.tokopedia.seller.app.BaseDiView;
 import com.tokopedia.seller.shop.setting.view.model.RecommendationDistrictItemViewModel;
 import com.tokopedia.seller.shop.setting.view.model.RecommendationDistrictViewModel;
@@ -21,4 +22,6 @@ public interface ShopSettingLocationView extends BaseDiView {
     void dismissProgressDialog();
 
     void showRetryGetDistrictData();
+
+    void changeGoogleMapData(LocationPass locationPass);
 }

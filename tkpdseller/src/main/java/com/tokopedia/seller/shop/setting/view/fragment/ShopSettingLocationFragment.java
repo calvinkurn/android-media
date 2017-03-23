@@ -7,9 +7,11 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.core.geolocation.model.LocationPass;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.app.BaseDiFragment;
@@ -37,6 +39,8 @@ public class ShopSettingLocationFragment
     private LocationCityAdapter locationDistrictAdapter;
     private TkpdProgressDialog tkpdProgressDialog;
     private ShopSettingLocationListener listener;
+    private LocationPass locationPass;
+    private TextView locationPickupTextView;
 
     public static ShopSettingLocationFragment getInstance() {
         return new ShopSettingLocationFragment();
@@ -68,11 +72,42 @@ public class ShopSettingLocationFragment
     @Override
     protected void initView(View view) {
         setupTextLocationDistrict(view);
+        setupLocationPickup(view);
+    }
+
+    private void setupLocationPickup(View view) {
+        view
+                .findViewById(R.id.action_shop_setting_location_pickup_button)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(locationPass == null){
+                            locationPass = generateEmptyLocationPass();
+                        }
+                        listener.goToPickupLocationPicker(locationPass);
+                    }
+                });
+        locationPickupTextView = (TextView) view.findViewById(R.id.text_view_shop_setting_location_pickup);
+    }
+
+    private LocationPass generateEmptyLocationPass() {
+        LocationPass newLocationPass = new LocationPass();
+        newLocationPass.setGeneratedAddress("");
+        newLocationPass.setLatitude("0");
+        newLocationPass.setLongitude("0");
+        newLocationPass.setManualAddress("");
+        return newLocationPass;
     }
 
     private void setupTextLocationDistrict(View view) {
-        AutoCompleteTextView locationDistrictTextView = (AutoCompleteTextView) view.findViewById(R.id.edit_text_shop_setting_location_district);
-        locationDistrictAdapter = new LocationCityAdapter(getActivity(), android.R.layout.simple_dropdown_item_1line);
+        AutoCompleteTextView locationDistrictTextView =
+                (AutoCompleteTextView) view
+                        .findViewById(R.id.edit_text_shop_setting_location_district);
+        locationDistrictAdapter =
+                new LocationCityAdapter(
+                        getActivity(),
+                        android.R.layout.simple_dropdown_item_1line
+                );
         locationDistrictTextView.setAdapter(locationDistrictAdapter);
         locationDistrictTextView.addTextChangedListener(new TextWatcher() {
             @Override
@@ -87,6 +122,7 @@ public class ShopSettingLocationFragment
 
             @Override
             public void afterTextChanged(Editable s) {
+                locationDistrictAdapter.clearSelectedDistrict();
                 presenter.getRecomendationLocationDistrict(s.toString());
             }
         });
@@ -136,6 +172,12 @@ public class ShopSettingLocationFragment
                 presenter.getDistrictData();
             }
         });
+    }
+
+    @Override
+    public void changeGoogleMapData(LocationPass locationPass) {
+        this.locationPass = locationPass;
+        locationPickupTextView.setText(locationPass.getGeneratedAddress());
     }
 
 

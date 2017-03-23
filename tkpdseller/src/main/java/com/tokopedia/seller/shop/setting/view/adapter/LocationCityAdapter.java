@@ -21,8 +21,9 @@ import java.util.List;
 
 public class LocationCityAdapter extends ArrayAdapter<String> {
 
+    public static final int UNSELECTED_DISTRICT = -1;
     private RecommendationDistrictViewModel datas;
-    private int selected = -1;
+    private int selected = UNSELECTED_DISTRICT;
 
     public LocationCityAdapter(@NonNull Context context, @LayoutRes int resource) {
         super(context, resource);
@@ -67,5 +68,9 @@ public class LocationCityAdapter extends ArrayAdapter<String> {
 
     public RecommendationDistrictItemViewModel getSelected() throws Exception {
         return datas.getItems().get(selected);
+    }
+
+    public void clearSelectedDistrict() {
+        selected = UNSELECTED_DISTRICT;
     }
 }

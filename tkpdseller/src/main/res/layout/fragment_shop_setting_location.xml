@@ -99,6 +99,7 @@
             android:background="@color/tkpd_grey" />
 
         <RelativeLayout
+            android:id="@+id/action_shop_setting_location_pickup_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -138,7 +139,6 @@
                 android:ellipsize="end"
                 android:gravity="end"
                 android:maxLines="1"
-                android:text="Wisma 77, Jl. Letjen S. Parman, Slipi, West Jakarta City, Special Capital Region of Jakarta, Indonesia"
                 android:textAlignment="viewEnd"
                 android:textColor="@color/tkpd_main_green"
                 android:textSize="14sp" />
