@@ -82,19 +82,23 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         actionHelp.setVisibility(canAskHelp() ? VISIBLE : GONE);
 
         actionAcceptSolutionHorizontal.setVisibility(
-                isShowAcceptSolutionButton() &&  validToHorizontalView() ? VISIBLE : GONE);
+                isShowAcceptSolutionButton() &&  validToActionAcceptSolutionHorizontalView() ? VISIBLE : GONE);
         actionAcceptSolutionVertical.setVisibility(isShowAcceptSolutionButton()
                 && actionAcceptSolutionHorizontal.getVisibility() != VISIBLE ? VISIBLE : GONE);
 
         actionCancelResolutionHorizontal.setVisibility(
-                isShowCancelResolutionButton() &&  validToHorizontalView() ? VISIBLE : GONE);
+                isShowCancelResolutionButton() &&  validToActionCancelHorizontalView() ? VISIBLE : GONE);
         actionCancelResolutionVertical.setVisibility(isShowCancelResolutionButton()
                 && actionCancelResolutionHorizontal.getVisibility() != VISIBLE ? VISIBLE : GONE);
 
     }
 
-    private boolean validToHorizontalView() {
-        return actionEdit.getVisibility() == VISIBLE && actionHelp.getVisibility() == VISIBLE;
+    private boolean validToActionCancelHorizontalView() {
+        return !(actionEdit.getVisibility() == VISIBLE && actionHelp.getVisibility() == VISIBLE);
+    }
+
+    private boolean validToActionAcceptSolutionHorizontalView() {
+        return !(actionEdit.getVisibility() == VISIBLE && actionHelp.getVisibility() == VISIBLE);
     }
 
     private void setClickListener() {
