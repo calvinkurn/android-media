@@ -235,7 +235,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
         public void onClickHeader() {
             if (fragment != null) {
-                reputationViewHelper.setLastSelection(DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE);
+                reputationViewHelper.setSelectionType(DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE);
                 reputationViewHelper.onClick(fragment, true);
                 return;
             }

@@ -77,8 +77,8 @@ public class GMStatHeaderViewHelper {
         return dates;
     }
 
-    public void setLastSelection(int lastSelection) {
-        this.lastSelection = lastSelection;
+    public void setSelectionType(int selectionType) {
+        this.selectionType = selectionType;
     }
 
     private void initView(View itemView) {
