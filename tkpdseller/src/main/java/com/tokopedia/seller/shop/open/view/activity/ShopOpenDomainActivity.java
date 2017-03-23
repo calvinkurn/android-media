@@ -1,7 +1,9 @@
 package com.tokopedia.seller.shop.open.view.activity;
 
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -14,6 +16,11 @@ import com.tokopedia.seller.shop.open.view.fragment.ShopOpenDomainFragment;
  */
 
 public class ShopOpenDomainActivity extends BasePresenterActivity {
+
+    public static void start(Activity activity){
+        Intent intent = new Intent(activity, ShopOpenDomainActivity.class);
+        activity.startActivity(intent);
+    }
 
     @Override
     protected void setupURIPass(Uri data) {

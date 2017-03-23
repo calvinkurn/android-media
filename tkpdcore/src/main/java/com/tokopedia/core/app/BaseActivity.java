@@ -369,7 +369,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         return null;
     }
 
-    protected AppComponent getApplicationComponent() {
+    public AppComponent getApplicationComponent() {
         return ((MainApplication) getApplication())
                 .getApplicationComponent(getActivityModule());
     }
