@@ -102,7 +102,7 @@ public class ShopOpenMandatoryActivity
     private void changeGoogleMapDataInLocationFragment(LocationPass locationPass) {
         Fragment fragment = fragmentManager.findFragmentByTag(ShopSettingLocationFragment.TAG);
         if (fragment instanceof ShopSettingLocationView) {
-            ((ShopSettingLocationView)fragment).changeGoogleMapData(locationPass);
+            ((ShopSettingLocationView)fragment).changePickupLocation(locationPass);
         } else {
             throw new RuntimeException("Fragment must implement ShopSettingLocationView");
         }

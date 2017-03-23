@@ -2,12 +2,7 @@ package com.tokopedia.seller.shop.setting.view.fragment;
 
 import android.app.Activity;
 import android.support.design.widget.Snackbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
-import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
@@ -19,10 +14,13 @@ import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingLocationC
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingLocationComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingLocationModule;
-import com.tokopedia.seller.shop.setting.view.adapter.LocationCityAdapter;
 import com.tokopedia.seller.shop.setting.view.model.RecommendationDistrictViewModel;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationPresenter;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationView;
+import com.tokopedia.seller.shop.setting.view.viewholder.DistrictViewHolder;
+import com.tokopedia.seller.shop.setting.view.viewholder.DistrictViewHolderListener;
+import com.tokopedia.seller.shop.setting.view.viewholder.LocationPickupViewHolder;
+import com.tokopedia.seller.shop.setting.view.viewholder.LocationPickupViewHolderListener;
 
 import javax.inject.Inject;
 
@@ -31,16 +29,18 @@ import javax.inject.Inject;
  */
 public class ShopSettingLocationFragment
         extends BaseDiFragment<ShopSettingLocationComponent, ShopSettingLocationPresenter>
-        implements ShopSettingLocationView {
+        implements ShopSettingLocationView,
+        DistrictViewHolderListener,
+        LocationPickupViewHolderListener {
     public static final String TAG = "ShopSettingLocation";
 
     @Inject
     public ShopSettingLocationPresenter shopSettingLocationPresenter;
-    private LocationCityAdapter locationDistrictAdapter;
+
     private TkpdProgressDialog tkpdProgressDialog;
     private ShopSettingLocationListener listener;
-    private LocationPass locationPass;
-    private TextView locationPickupTextView;
+    private DistrictViewHolder districtViewHolder;
+    private LocationPickupViewHolder locationPickupViewHolder;
 
     public static ShopSettingLocationFragment getInstance() {
         return new ShopSettingLocationFragment();
@@ -71,67 +71,8 @@ public class ShopSettingLocationFragment
 
     @Override
     protected void initView(View view) {
-        setupTextLocationDistrict(view);
-        setupLocationPickup(view);
-    }
-
-    private void setupLocationPickup(View view) {
-        view
-                .findViewById(R.id.action_shop_setting_location_pickup_button)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(locationPass == null){
-                            locationPass = generateEmptyLocationPass();
-                        }
-                        listener.goToPickupLocationPicker(locationPass);
-                    }
-                });
-        locationPickupTextView = (TextView) view.findViewById(R.id.text_view_shop_setting_location_pickup);
-    }
-
-    private LocationPass generateEmptyLocationPass() {
-        LocationPass newLocationPass = new LocationPass();
-        newLocationPass.setGeneratedAddress("");
-        newLocationPass.setLatitude("0");
-        newLocationPass.setLongitude("0");
-        newLocationPass.setManualAddress("");
-        return newLocationPass;
-    }
-
-    private void setupTextLocationDistrict(View view) {
-        AutoCompleteTextView locationDistrictTextView =
-                (AutoCompleteTextView) view
-                        .findViewById(R.id.edit_text_shop_setting_location_district);
-        locationDistrictAdapter =
-                new LocationCityAdapter(
-                        getActivity(),
-                        android.R.layout.simple_dropdown_item_1line
-                );
-        locationDistrictTextView.setAdapter(locationDistrictAdapter);
-        locationDistrictTextView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                locationDistrictAdapter.clearSelectedDistrict();
-                presenter.getRecomendationLocationDistrict(s.toString());
-            }
-        });
-        locationDistrictTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                locationDistrictAdapter.setSelected(position);
-            }
-        });
+        districtViewHolder = new DistrictViewHolder(getActivity(), view, this);
+        locationPickupViewHolder = new LocationPickupViewHolder(view, this);
     }
 
     @Override
@@ -140,14 +81,40 @@ public class ShopSettingLocationFragment
     }
 
     @Override
+    public void showRetryGetDistrictData() {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.getDistrictData();
+            }
+        });
+    }
+
+    @Override
     public void renderRecomendationDistrictModel(RecommendationDistrictViewModel viewModels) {
-        locationDistrictAdapter.addDistrictModel(viewModels);
+        districtViewHolder.renderRecomendationDistrictModel(viewModels);
+    }
+
+    @Override
+    public void getRecomendationLocationDistrict(String stringTyped) {
+        presenter.getRecomendationLocationDistrict(stringTyped);
+    }
+
+    @Override
+    public void goToPickupLocationPicker(LocationPass locationPass) {
+        listener.goToPickupLocationPicker(locationPass);
+    }
+
+    @Override
+    public void changePickupLocation(LocationPass locationPass) {
+        locationPickupViewHolder.changePickupLocation(locationPass);
     }
 
     @Override
     public void showGenericError() {
         SnackbarManager.make(getActivity(), "Terjadi Kesalahan", Snackbar.LENGTH_SHORT);
     }
+
 
     @Override
     public void showProgressDialog() {
@@ -163,22 +130,4 @@ public class ShopSettingLocationFragment
             tkpdProgressDialog.dismiss();
         }
     }
-
-    @Override
-    public void showRetryGetDistrictData() {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.getDistrictData();
-            }
-        });
-    }
-
-    @Override
-    public void changeGoogleMapData(LocationPass locationPass) {
-        this.locationPass = locationPass;
-        locationPickupTextView.setText(locationPass.getGeneratedAddress());
-    }
-
-
 }

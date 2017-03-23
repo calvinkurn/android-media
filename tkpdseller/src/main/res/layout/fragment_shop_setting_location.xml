@@ -67,6 +67,7 @@
                 android:id="@+id/edit_text_shop_setting_location_zip_code"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="number"
                 android:textSize="16sp" />
 
         </android.support.design.widget.TextInputLayout>

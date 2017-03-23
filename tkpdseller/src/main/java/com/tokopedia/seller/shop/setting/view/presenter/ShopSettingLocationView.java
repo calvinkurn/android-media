@@ -23,5 +23,5 @@ public interface ShopSettingLocationView extends BaseDiView {
 
     void showRetryGetDistrictData();
 
-    void changeGoogleMapData(LocationPass locationPass);
+    void changePickupLocation(LocationPass locationPass);
 }
