@@ -17,6 +17,7 @@ import java.util.List;
  */
 
 interface FavoriteContract {
+
     interface View extends CustomerView {
 
         void addTopAdsShop(TopAdsShopViewModel shopViewModel);
@@ -50,9 +51,9 @@ interface FavoriteContract {
 
         void addFavoriteShop(android.view.View view, TopAdsShopItem shopItem);
 
-        void loadOnRefresh();
+        void refreshAllDataFavoritePage();
 
-        void loadOnMore();
+        void loadMoreFavoriteShop();
 
         void onSaveDataBeforeRotate(Bundle outState);
 

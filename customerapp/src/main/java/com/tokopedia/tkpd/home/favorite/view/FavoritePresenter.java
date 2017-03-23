@@ -105,12 +105,12 @@ public class FavoritePresenter
     }
 
     @Override
-    public void loadOnRefresh() {
+    public void refreshAllDataFavoritePage() {
         getAllDataFavoriteUseCase.execute(RequestParams.EMPTY, new DataFavoriteSubscriber());
     }
 
     @Override
-    public void loadOnMore() {
+    public void loadMoreFavoriteShop() {
         if (pagingHandler.CheckNextPage() && !getView().isLoading()) {
             pagingHandler.nextPage();
             getView().showLoadMoreLoading();
@@ -317,6 +317,8 @@ public class FavoritePresenter
             if (dataFavorite != null
                     && dataFavorite.getFavoriteShop() != null
                     && dataFavorite.getFavoriteShop().getData() != null) {
+
+                setNextPaging(dataFavorite.getFavoriteShop().getPagingModel());
 
                 for (FavoriteShopItem favoriteShopItem : dataFavorite.getFavoriteShop().getData()) {
                     favoriteShopItem.setIsFav(true);

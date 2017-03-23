@@ -65,7 +65,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     private static final long DURATION_ANIMATOR = 1000;
     private Unbinder unbinder;
     private FavoriteAdapter favoriteAdapter;
-    private EndlessRecyclerviewListener scrollListener;
+    private EndlessRecyclerviewListener recylerviewScrollListener;
 
 
     @Override
@@ -82,7 +82,6 @@ public class FragmentFavorite extends BaseDaggerFragment
         View parentView = inflater.inflate(R.layout.fragment_index_favorite_v2, container, false);
         unbinder = ButterKnife.bind(this, parentView);
         prepareView();
-        setListener();
         favoritePresenter.attachView(this);
         favoritePresenter.loadDataWishlistAndFavorite();
         return parentView;
@@ -181,7 +180,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     @Override
     public void hideRefreshLoading() {
         swipeToRefresh.setRefreshing(false);
-        scrollListener.resetState();
+        recylerviewScrollListener.resetState();
     }
 
 
@@ -194,7 +193,7 @@ public class FragmentFavorite extends BaseDaggerFragment
                     @Override
                     public void onRetryClicked() {
                         favoriteAdapter.hideLoading();
-                        favoritePresenter.loadOnMore();
+                        favoritePresenter.loadMoreFavoriteShop();
                     }
                 }).showRetrySnackbar();
     }
@@ -207,7 +206,7 @@ public class FragmentFavorite extends BaseDaggerFragment
 
                     @Override
                     public void onRetryClicked() {
-                        favoritePresenter.loadOnRefresh();
+                        favoritePresenter.refreshAllDataFavoritePage();
                     }
                 });
     }
@@ -231,7 +230,7 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     @Override
     public void onRefresh() {
-        favoritePresenter.loadOnRefresh();
+        favoritePresenter.refreshAllDataFavoritePage();
     }
 
     @Override
@@ -246,21 +245,19 @@ public class FragmentFavorite extends BaseDaggerFragment
         favoriteAdapter = new FavoriteAdapter(typeFactoryForList, new ArrayList<Visitable>());
         animator = new DefaultItemAnimator();
         animator.setAddDuration(DURATION_ANIMATOR);
-        scrollListener = new EndlessRecyclerviewListener(layoutManager) {
+        recylerviewScrollListener = new EndlessRecyclerviewListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                favoritePresenter.loadOnMore();
+                favoritePresenter.loadMoreFavoriteShop();
             }
         };
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(animator);
         recyclerView.setAdapter(favoriteAdapter);
 
-    }
-
-    private void setListener() {
-        recyclerView.addOnScrollListener(scrollListener);
+        recyclerView.addOnScrollListener(recylerviewScrollListener);
         swipeToRefresh.setOnRefreshListener(this);
+
     }
 
 
