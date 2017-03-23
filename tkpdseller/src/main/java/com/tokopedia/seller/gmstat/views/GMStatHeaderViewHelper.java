@@ -77,6 +77,10 @@ public class GMStatHeaderViewHelper {
         return dates;
     }
 
+    public void setLastSelection(int lastSelection) {
+        this.lastSelection = lastSelection;
+    }
+
     private void initView(View itemView) {
         monthNamesAbrev = itemView.getResources().getStringArray(R.array.month_names_abrev);
 
