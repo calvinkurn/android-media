@@ -537,6 +537,25 @@ public class ProductList extends V2BaseFragment {
         facadeShopProd.getShopProduct(productShopParam);
     }
 
+    public void refreshProductListFromOffStore() {
+        productModel.list.clear();
+        GetShopProductParam newProductParam = new GetShopProductParam();
+        if (etalaseNameList.size() > 1) {
+            int selectedEtalase = etalaseNameList.indexOf(getString(R.string.title_all_etalase));
+            newProductParam.setSelectedEtalase(selectedEtalase == -1 ? 0 : selectedEtalase);
+        }else{
+            newProductParam.setSelectedEtalase(0);
+        }
+        newProductParam.setListState(productShopParam.getListState());
+        productShopParam = newProductParam;
+        adapter.setListType(productShopParam.getListState());
+        adapter.setSelectedEtalasePos(productShopParam.getSelectedEtalase());
+        adapter.notifyDataSetChanged();
+        adapter.addLoading();
+        facadeShopProd.unsubscribeGetShopProduct();
+        facadeShopProd.getShopProduct(productShopParam);
+    }
+
     public void refreshProductList(GetShopProductParam getShopProductParam) {
         if (adapter != null) {
             int etalaseIndex = etalaseIdList.indexOf(getShopProductParam.getEtalaseId());
