@@ -47,6 +47,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.categoriesHades.CategoriesHadesModel;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
+import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.categoriesHades.SimpleCategory;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
@@ -101,6 +102,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_INV
 public class BrowseProductActivity extends TActivity implements DiscoverySearchView.SearchViewListener,
         DiscoveryActivityPresenter, MenuItemCompat.OnActionExpandListener, DiscoverySearchView.OnQueryTextListener {
 
+    private static final int BOTTOM_BAR_GRID_TYPE_ITEM_POSITION = 2;
     private static final String TAG = BrowseProductActivity.class.getSimpleName();
     private static final String KEY_GTM = "GTMFilterData";
     private static final String EXTRA_BROWSE_ATRIBUT = "EXTRA_BROWSE_ATRIBUT";
@@ -115,6 +117,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     private BrowseProductPresenter browseProductPresenter;
 
     Stack<SimpleCategory> categoryLevel = new Stack<>();
+    private boolean isCustomGridType = false;
 
     @Override
     public String getScreenName() {
@@ -161,6 +164,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     public static String browseType;
     private int gridIcon = R.drawable.ic_grid_default;
+    private int gridTitleRes = R.string.grid;
     private BrowseProductRouter.GridType gridType = BrowseProductRouter.GridType.GRID_2;
     private int keepActivitySettings;
     private boolean firstTime = true;
@@ -286,14 +290,18 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                             switch (gridType) {
                                 case GRID_1:
                                     gridIcon = R.drawable.ic_list;
+                                    gridTitleRes = R.string.list;
                                     break;
                                 case GRID_2:
                                     gridIcon = R.drawable.ic_grid_default;
+                                    gridTitleRes = R.string.grid;
                                     break;
                                 case GRID_3:
                                     gridIcon = R.drawable.ic_grid_box;
+                                    gridTitleRes = R.string.grid;
                                     break;
                             }
+                            isCustomGridType = true;
                         }
                     }
                 });
@@ -597,7 +605,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
             public boolean onTabSelected(final int position, boolean wasSelected) {
                 BrowseParentFragment parentFragment = (BrowseParentFragment)
                         fragmentManager.findFragmentById(R.id.container);
-                Intent intent;
+
                 DataValue filterAttribute
                         = mBrowseProductAtribut.getFilterAttributMap().get(parentFragment.getActiveTab());
                 switch (position) {
@@ -612,29 +620,28 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                         openFilter(filterAttribute, source, parentFragment.getActiveTab(), FDest.FILTER);
                         break;
                     case 2:
-                        intent = new Intent(CHANGE_GRID_ACTION_INTENT);
                         switch (gridType) {
                             case GRID_1:
                                 gridType = BrowseProductRouter.GridType.GRID_2;
                                 gridIcon = R.drawable.ic_grid_default;
-                                bottomNavigation.getItem(2).setTitle(getString(R.string.grid));
+                                gridTitleRes = R.string.grid;
                                 UnifyTracking.eventDisplayCategory(LAYOUT_GRID_DEFAULT);
                                 break;
                             case GRID_2:
                                 gridType = BrowseProductRouter.GridType.GRID_3;
                                 gridIcon = R.drawable.ic_grid_box;
-                                bottomNavigation.getItem(2).setTitle(getString(R.string.grid));
+                                gridTitleRes = R.string.grid;
                                 UnifyTracking.eventDisplayCategory(LAYOUT_GRID_BOX);
                                 break;
                             case GRID_3:
                                 gridType = BrowseProductRouter.GridType.GRID_1;
                                 gridIcon = R.drawable.ic_list;
-                                bottomNavigation.getItem(2).setTitle(getString(R.string.list));
+                                gridTitleRes = R.string.list;
                                 UnifyTracking.eventDisplayCategory(LAYOUT_LIST);
                                 break;
                             default:
                                 gridIcon = R.drawable.ic_grid_default;
-                                bottomNavigation.getItem(2).setTitle(getString(R.string.grid));
+                                gridTitleRes = R.string.grid;
                         }
 
                         browseProductPresenter.onGridTypeChanged(
@@ -642,8 +649,11 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                                 gridType.toString()
                         );
 
+                        Intent intent = new Intent(CHANGE_GRID_ACTION_INTENT);;
                         intent.putExtra(GRID_TYPE_EXTRA, gridType);
                         sendBroadcast(intent);
+
+                        bottomNavigation.getItem(position).setTitle(getString(gridTitleRes));
                         bottomNavigation.getItem(position).setDrawable(gridIcon);
                         bottomNavigation.refresh();
                         break;
@@ -786,7 +796,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         List<AHBottomNavigationItem> items = new ArrayList<>();
         items.add(new AHBottomNavigationItem(getString(R.string.sort), R.drawable.ic_sort_black));
         items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
-        items.add(new AHBottomNavigationItem(getString(R.string.grid), gridIcon));
+        items.add(new AHBottomNavigationItem(getString(gridTitleRes), gridIcon));
         items.add(new AHBottomNavigationItem(getString(R.string.share), R.drawable.ic_share_black));
         return items;
     }
@@ -1013,8 +1023,9 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                             CategoriesHadesModel.CategoriesHadesContainer categoriesHadesContainer = (CategoriesHadesModel.CategoriesHadesContainer) objContainer;
                             CategoriesHadesModel body = categoriesHadesContainer.body();
                             if (browseProductActivityModel !=null && body !=null && body.getData() !=null) {
-                                browseProductActivityModel.categotyHeader = body.getData();
-                                parentFragment.renderCategories(browseProductActivityModel.categotyHeader);
+                                browseProductActivityModel.categoryHeader = body.getData();
+                                parentFragment.renderCategories(browseProductActivityModel.categoryHeader);
+                                changeGridTypeIfNeeded(browseProductActivityModel.categoryHeader.getView());
                             }
                         }
                         break;
@@ -1023,6 +1034,38 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         });
         ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
         discoveryInteractor.getCategoryHeader(departementId);
+    }
+
+    private void changeGridTypeIfNeeded(Integer gridType) {
+        if (isCustomGridType) {
+            return;
+        }
+
+        switch (gridType) {
+            case Data.GRID_2_VIEW_TYPE:
+                this.gridType = BrowseProductRouter.GridType.GRID_2;
+                gridIcon = R.drawable.ic_grid_default;
+                gridTitleRes = R.string.grid;
+                break;
+            case Data.GRID_1_VIEW_TYPE:
+                this.gridType = BrowseProductRouter.GridType.GRID_3;
+                gridIcon = R.drawable.ic_grid_box;
+                gridTitleRes = R.string.grid;
+                break;
+            case Data.LIST_VIEW_TYPE:
+                this.gridType = BrowseProductRouter.GridType.GRID_1;
+                gridIcon = R.drawable.ic_list;
+                gridTitleRes = R.string.list;
+                break;
+        }
+
+        Intent intent = new Intent(CHANGE_GRID_ACTION_INTENT);
+        intent.putExtra(GRID_TYPE_EXTRA, this.gridType);
+        sendBroadcast(intent);
+
+        bottomNavigation.getItem(BOTTOM_BAR_GRID_TYPE_ITEM_POSITION).setTitle(getString(gridTitleRes));
+        bottomNavigation.getItem(BOTTOM_BAR_GRID_TYPE_ITEM_POSITION).setDrawable(gridIcon);
+        bottomNavigation.refresh();
     }
 
 

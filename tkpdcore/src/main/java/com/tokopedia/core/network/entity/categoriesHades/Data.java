@@ -11,6 +11,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class Data implements Parcelable{
 
+    public static final int GRID_2_VIEW_TYPE = 1;
+    public static final int GRID_1_VIEW_TYPE = 2;
+    public static final int LIST_VIEW_TYPE = 3;
+
     @SerializedName("id")
     @Expose
     private String id;
@@ -38,7 +42,7 @@ public class Data implements Parcelable{
     @SerializedName("hidden")
     @Expose
     private Integer hidden;
-    @SerializedName("View")
+    @SerializedName("view")
     @Expose
     private Integer view;
     @SerializedName("child")
