@@ -47,39 +47,44 @@ public class FavoriteFactory {
         this.cacheManager = cacheManager;
     }
 
-    Observable<DomainWishlist> getWishlist(
-            TKPDMapParam<String, Object> param, boolean isForceRefresh) {
-        if (isForceRefresh) {
-            return cloudWishlistObservable(param);
-        } else {
-            return Observable.concat(localWishlistObservable(), cloudWishlistObservable(param))
-                    .first(isLocalWishlistValid());
-        }
+    Observable<DomainWishlist> getWishlist(TKPDMapParam<String, Object> param) {
+
+        return Observable.concat(localWishlistObservable(), cloudWishlistObservable(param))
+                .first(isLocalWishlistValid());
+
+    }
+
+
+    Observable<DomainWishlist> getFreshWishlist(TKPDMapParam<String, Object> param) {
+        return cloudWishlistObservable(param);
     }
 
     Observable<FavoriteShop> getFavoriteShop(
-            TKPDMapParam<String, String> param, boolean isFirstPage) {
-        if (isFirstPage) {
-            return Observable.concat(getLocalFavoriteObservable(), getCloudFavoriteObservable(param))
-                    .first(isLocalFavoriteValid());
-        } else {
-            return new CloudFavoriteShopDataSource(
-                    context, gson, serviceV4).getFavorite(param, false);
-        }
+            TKPDMapParam<String, String> param) {
+
+        return new CloudFavoriteShopDataSource(
+                context, gson, serviceV4).getFavorite(param, false);
     }
 
-    Observable<TopAdsShop> getTopAdsShop(
-            TKPDMapParam<String, Object> params, boolean isRequestFreshData) {
 
-        if (isRequestFreshData) {
-            CloudTopAdsShopDataSource topAdsShopDataSource
-                    = new CloudTopAdsShopDataSource(context, gson, topAdsService);
-            return topAdsShopDataSource.getTopAdsShop(params);
-        } else {
-            return Observable.concat(
-                    getLocalTopAdsShopObservable(), getCloudTopAdsShopObservable(params))
-                    .first(isLocalTopAdsShopValid());
-        }
+    Observable<FavoriteShop> getFavoriteShopFirstPage(TKPDMapParam<String, String> params) {
+        return Observable.concat(getLocalFavoriteObservable(), getCloudFavoriteObservable(params))
+                .first(isLocalFavoriteValid());
+    }
+
+
+    Observable<TopAdsShop> getTopAdsShop(TKPDMapParam<String, Object> params) {
+        return Observable.concat(
+                getLocalTopAdsShopObservable(),
+                getCloudTopAdsShopObservable(params))
+                .first(isLocalTopAdsShopValid());
+
+    }
+
+    Observable<TopAdsShop> getFreshTopAdsShop(TKPDMapParam<String, Object> params) {
+        CloudTopAdsShopDataSource topAdsShopDataSource
+                = new CloudTopAdsShopDataSource(context, gson, topAdsService);
+        return topAdsShopDataSource.getTopAdsShop(params);
     }
 
     Observable<FavShop> postFavShop(TKPDMapParam<String, String> param) {
@@ -148,4 +153,6 @@ public class FavoriteFactory {
             }
         };
     }
+
+
 }

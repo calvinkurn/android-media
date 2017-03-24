@@ -41,7 +41,12 @@ public class GetWishlistUsecase extends UseCase<DomainWishlist> {
         boolean isForceRefresh = requestParams.getBoolean(KEY_IS_FORCE_REFRESH, false);
         requestParams.clearValue(KEY_IS_FORCE_REFRESH);
         TKPDMapParam<String, Object> parameters = requestParams.getParameters();
-        return favoriteRepository.getWishlist(parameters,isForceRefresh);
+        if(isForceRefresh) {
+            return favoriteRepository.getFreshWishlist(parameters);
+        }
+        else {
+            return favoriteRepository.getWishlist(parameters);
+        }
     }
 
     public static RequestParams getDefaultParams() {

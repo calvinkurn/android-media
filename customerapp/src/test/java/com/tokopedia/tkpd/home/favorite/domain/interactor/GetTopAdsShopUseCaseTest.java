@@ -42,7 +42,7 @@ public class GetTopAdsShopUseCaseTest {
     @Test
     public void testCreateObservable() throws Exception {
         getTopAdsShopUseCase.createObservable(mockRequestParams);
-        verify(favoriteRepository).getTopAdsShop(mockRequestParams.getParameters(), false);
+        verify(favoriteRepository).getTopAdsShop(mockRequestParams.getParameters());
         verifyNoMoreInteractions(favoriteRepository);
         verifyZeroInteractions(threadExecutor);
         verifyZeroInteractions(postExecutionThread);

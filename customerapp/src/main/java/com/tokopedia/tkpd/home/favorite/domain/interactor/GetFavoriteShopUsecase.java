@@ -43,8 +43,15 @@ public class GetFavoriteShopUsecase extends UseCase<FavoriteShop> {
     public Observable<FavoriteShop> createObservable(RequestParams requestParams) {
         boolean isFirstPage = requestParams.getBoolean(KEY_IS_FIRST_PAGE, false);
         requestParams.clearValue(KEY_IS_FIRST_PAGE);
-        TKPDMapParam<String, String> paramsAllInString = requestParams.getParamsAllValueInString();
-        return favoriteRepository.getFavoriteShop(paramsAllInString, isFirstPage);
+
+        TKPDMapParam<String, String> paramsAllInString
+                = requestParams.getParamsAllValueInString();
+
+        if(isFirstPage){
+            return favoriteRepository.getFirstPageFavoriteShop(paramsAllInString);
+        }else {
+            return favoriteRepository.getFavoriteShop(paramsAllInString);
+        }
     }
 
     public static RequestParams getDefaultParams() {
@@ -53,7 +60,6 @@ public class GetFavoriteShopUsecase extends UseCase<FavoriteShop> {
         params.putString(KEY_OPTION_NAME,DEFAULT_OPTION_NAME);
         params.putString(KEY_PER_PAGE, DEFAULT_PER_PAGE);
         params.putString(KEY_PAGE, INITIAL_VALUE);
-
         return params;
     }
 }

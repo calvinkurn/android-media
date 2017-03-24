@@ -40,7 +40,11 @@ public class GetTopAdsShopUseCase extends UseCase<TopAdsShop> {
     public Observable<TopAdsShop> createObservable(RequestParams requestParams) {
         boolean isFreshData = isForceRefresh(requestParams);
         TKPDMapParam<String, Object> param = requestParams.getParameters();
-        return this.favoriteRepository.getTopAdsShop(param,isFreshData);
+        if (isFreshData) {
+            return this.favoriteRepository.getFreshTopAdsShop(requestParams.getParameters());
+        } else {
+            return this.favoriteRepository.getTopAdsShop(param);
+        }
     }
 
     private boolean isForceRefresh(RequestParams requestParams) {

@@ -14,13 +14,18 @@ import rx.Observable;
 
 public interface FavoriteRepository {
 
-    Observable<DomainWishlist> getWishlist(
-            TKPDMapParam<String, Object> params, boolean isForceRefresh);
+    Observable<DomainWishlist> getWishlist(TKPDMapParam<String, Object> params);
+
+    Observable<DomainWishlist> getFreshWishlist(TKPDMapParam<String, Object> params);
+
+    Observable<FavoriteShop> getFirstPageFavoriteShop(TKPDMapParam<String,String> params);
 
     Observable<FavoriteShop> getFavoriteShop(
-            TKPDMapParam<String, String> param, boolean isFirstPage);
+            TKPDMapParam<String, String> param);
 
-    Observable<TopAdsShop> getTopAdsShop(TKPDMapParam<String, Object> params, boolean isFreshData);
+    Observable<TopAdsShop> getFreshTopAdsShop(TKPDMapParam<String, Object> params);
+
+    Observable<TopAdsShop> getTopAdsShop(TKPDMapParam<String, Object> params);
 
     Observable<FavShop> addFavoriteShop(TKPDMapParam<String, String> param);
 }

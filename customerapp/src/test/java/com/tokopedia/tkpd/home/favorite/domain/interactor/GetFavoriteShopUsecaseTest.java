@@ -46,7 +46,7 @@ public class GetFavoriteShopUsecaseTest {
         getFavoriteShopUsecase.createObservable(mockRequestParams);
 
         verify(favoriteRepository)
-                .getFavoriteShop(mockRequestParams.getParamsAllValueInString(), false);
+                .getFavoriteShop(mockRequestParams.getParamsAllValueInString());
 
         verifyNoMoreInteractions(favoriteRepository);
         verifyZeroInteractions(threadExecutor);

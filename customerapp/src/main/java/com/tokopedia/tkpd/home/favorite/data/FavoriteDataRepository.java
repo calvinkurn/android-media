@@ -22,23 +22,36 @@ public class FavoriteDataRepository implements FavoriteRepository {
 
 
     @Override
-    public Observable<DomainWishlist> getWishlist(
-            TKPDMapParam<String, Object> params, boolean isForceRefresh) {
+    public Observable<DomainWishlist> getWishlist(TKPDMapParam<String, Object> params) {
 
-        return favoriteFactory.getWishlist(params, isForceRefresh);
+        return favoriteFactory.getWishlist(params);
+    }
+
+    @Override
+    public Observable<DomainWishlist> getFreshWishlist(TKPDMapParam<String, Object> params) {
+        return favoriteFactory.getFreshWishlist(params);
+    }
+
+    @Override
+    public Observable<FavoriteShop> getFirstPageFavoriteShop(TKPDMapParam<String, String> params) {
+        return favoriteFactory.getFavoriteShopFirstPage(params);
     }
 
     @Override
     public Observable<FavoriteShop> getFavoriteShop(
-            TKPDMapParam<String, String> param, boolean isFirstPage) {
+            TKPDMapParam<String, String> param) {
 
-        return favoriteFactory.getFavoriteShop(param, isFirstPage);
+        return favoriteFactory.getFavoriteShop(param);
     }
 
     @Override
-    public Observable<TopAdsShop> getTopAdsShop(
-            TKPDMapParam<String, Object> params, boolean isFreshData) {
-        return favoriteFactory.getTopAdsShop(params, isFreshData);
+    public Observable<TopAdsShop> getFreshTopAdsShop(TKPDMapParam<String, Object> params) {
+        return favoriteFactory.getFreshTopAdsShop(params);
+    }
+
+    @Override
+    public Observable<TopAdsShop> getTopAdsShop(TKPDMapParam<String, Object> params) {
+        return favoriteFactory.getTopAdsShop(params);
     }
 
     @Override

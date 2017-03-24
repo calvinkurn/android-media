@@ -44,7 +44,7 @@ public class GetWishlistUsecaseTest {
     @Test
     public void testCreateObservable() throws Exception {
         getWishlistUsecase.createObservable(mockRequestParams);
-        verify(favoriteRepository).getWishlist(mockRequestParams.getParameters(), false);
+        verify(favoriteRepository).getWishlist(mockRequestParams.getParameters());
 
         verifyNoMoreInteractions(favoriteRepository);
         verifyZeroInteractions(threadExecutor);
