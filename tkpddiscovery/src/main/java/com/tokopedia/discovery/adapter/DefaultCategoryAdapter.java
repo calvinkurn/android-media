@@ -72,9 +72,6 @@ public class DefaultCategoryAdapter extends
         @BindView(R2.id.linWrapper)
         LinearLayout container;
 
-        @BindView(R2.id.separator)
-        ImageView separator;
-
         ItemRowHolder(View view) {
             super(view);
             ButterKnife.bind(this,view);
