@@ -30,5 +30,6 @@
     <string name="action_ask_help">Minta Bantuan</string>
     <string name="action_appeal_solution">Naik Banding</string>
     <string name="action_cancel_resolution">Batalkan Komplain</string>
+    <string name="action_input_shipping_ref_number">Tambah Nomor Resi</string>
 
 </resources>

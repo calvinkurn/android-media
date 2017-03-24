@@ -8,9 +8,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.customdialog.TrackShippingDialog;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
 import com.tokopedia.inbox.rescenter.history.customadapter.HistoryShippingAdapter;
 import com.tokopedia.inbox.rescenter.history.view.model.HistoryAwbViewItem;
 import com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity;
@@ -33,6 +36,7 @@ public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippi
     private HistoryShippingAdapter adapter;
     private String resolutionID;
     private ArrayList<HistoryAwbViewItem> viewData;
+    private TkpdProgressDialog normalLoading;
 
     public static Fragment createInstance(String resolutionID) {
         HistoryShippingFragment fragment = new HistoryShippingFragment();
@@ -164,7 +168,7 @@ public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippi
     @Override
     protected void initView(View view) {
         recyclerview = (RecyclerView) view.findViewById(R.id.recycler_view);
-        actionAddShippig = view.findViewById(R.id.action_add);
+        actionAddShippig = view.findViewById(R.id.action_input_shipping_ref_number);
     }
 
     @Override
@@ -182,6 +186,7 @@ public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippi
 
     @Override
     protected void initialVar() {
+        normalLoading = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         viewData = new ArrayList<>();
         adapter = new HistoryShippingAdapter(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -241,5 +246,55 @@ public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippi
     private void setResultSuccessForDetailResCenter() {
         Intent returnIntent = new Intent();
         getActivity().setResult(Activity.RESULT_OK, returnIntent);
+    }
+
+    @Override
+    public void showLoadingDialog(boolean show) {
+        if (show) {
+            normalLoading.showDialog();
+        } else {
+            normalLoading.dismiss();
+        }
+    }
+
+    @Override
+    public void showSnackBar(String messageError) {
+        if (messageError == null) {
+            showTimeOutMessage();
+        } else {
+            NetworkErrorHelper.showSnackbar(getActivity(), messageError);
+        }
+    }
+
+    @Override
+    public void showTimeOutMessage() {
+        NetworkErrorHelper.showSnackbar(getActivity());
+    }
+
+    @Override
+    public void doOnTrackingTimeOut() {
+        showLoadingDialog(false);
+        showTimeOutMessage();
+    }
+
+    @Override
+    public void doOnTrackingSuccess(TrackingDialogViewModel model) {
+        showLoadingDialog(false);
+        TrackShippingDialog.Builder(getActivity())
+                .initView()
+                .initValue(model)
+                .show();
+    }
+
+    @Override
+    public void doOnTrackingFailed() {
+        showLoadingDialog(false);
+        showSnackBar(null);
+    }
+
+    @Override
+    public void doOnTrackingError(String messageError) {
+        showLoadingDialog(false);
+        showSnackBar(messageError);
     }
 }

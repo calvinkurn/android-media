@@ -17,7 +17,14 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.HistoryAwbUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.TrackAwbReturProductUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
+import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProductHistory;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingHistoryDialogViewModel;
 import com.tokopedia.inbox.rescenter.history.view.subscriber.HistoryAwbSubsriber;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Subscriber;
 
@@ -80,6 +87,7 @@ public class HistoryShippingFragmentImpl implements HistoryShippingFragmentPrese
 
     @Override
     public void doActionTrack(String shippingRefNumber, String shipmentID) {
+        fragmentView.showLoadingDialog(true);
         trackAwbReturProductUseCase.execute(
                 getTrackAwbParam(shippingRefNumber, shipmentID),
                 new TrackAwbSubscriber(fragmentView)
@@ -104,12 +112,47 @@ public class HistoryShippingFragmentImpl implements HistoryShippingFragmentPrese
 
         @Override
         public void onError(Throwable e) {
-
+            if (e instanceof IOException) {
+                fragmentView.doOnTrackingTimeOut();
+            } else {
+                fragmentView.doOnTrackingFailed();
+            }
         }
 
         @Override
-        public void onNext(TrackingAwbReturProduct trackingAwbReturProduct) {
+        public void onNext(TrackingAwbReturProduct object) {
+            if (object.isSuccess()) {
+                fragmentView.doOnTrackingSuccess(mappingViewModel(object));
+            } else {
+                fragmentView.doOnTrackingError(object.getMessageError());
+            }
+        }
 
+        private TrackingDialogViewModel mappingViewModel(TrackingAwbReturProduct domainData) {
+            TrackingDialogViewModel model = new TrackingDialogViewModel();
+            if (domainData != null && domainData.isSuccess()) {
+                model.setSuccess(true);
+                model.setDelivered(domainData.isDelivered());
+                model.setReceiverName(domainData.getReceiverName());
+                model.setShippingRefNum(domainData.getShippingRefNum());
+                model.setTrackHistory(mappingTrackHistory(domainData.getTrackingHistory()));
+            } else {
+                model.setSuccess(false);
+                model.setMessageError(domainData != null ? domainData.getMessageError() : null);
+            }
+            return model;
+        }
+
+        private List<TrackingHistoryDialogViewModel> mappingTrackHistory(List<TrackingAwbReturProductHistory> domainModels) {
+            List<TrackingHistoryDialogViewModel> viewModels = new ArrayList<>();
+            for (TrackingAwbReturProductHistory items : domainModels) {
+                TrackingHistoryDialogViewModel model = new TrackingHistoryDialogViewModel();
+                model.setCity(items.getCity());
+                model.setDate(items.getDate());
+                model.setStatus(items.getStatus());
+                viewModels.add(model);
+            }
+            return viewModels;
         }
     }
 }
