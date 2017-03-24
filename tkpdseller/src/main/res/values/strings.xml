@@ -277,6 +277,11 @@
     <string name="promoted">Promoted</string>
     <string name="next">Selanjutnya</string>
 
+    <!-- Open Shop -->
+    <string name="shop_name">Nama Toko</string>
+    <string name="domain_name">Nama Domain</string>
+    <string name="fill_domain_and_shop">Isi nama domain dan toko</string>
+
     <!-- Shop Setting -->
     <string name="label_shop_open_welcome">Halo,</string>
     <string name="label_shop_open_info_title_shop">Lengkapi informasi toko. Tampilan toko yang menarik buat pembeli tertarik</string>

@@ -60,7 +60,7 @@ public class PrefixEditText extends AppCompatEditText
         String text = a.getString(0);
         a.recycle();
 
-        setText(mPrefix+text);
+        setText( concat(mPrefix, text));
         addTextChangedListener(this);
     }
 
@@ -112,7 +112,7 @@ public class PrefixEditText extends AppCompatEditText
     public void setPrefix(String prefix) {
         String previousText = getTextWithoutPrefix();
         mPrefix = prefix;
-        setText(prefix+previousText);
+        setText( concat(prefix, previousText));
     }
 
     public void setPrefixTextColor(int color) {
@@ -145,4 +145,22 @@ public class PrefixEditText extends AppCompatEditText
         }
     }
 
+    private String concat(String a, String b){
+        String nonNullA = a==null?"":a;
+        String nonNullB = b==null?"":b;
+        return nonNullA.concat(nonNullB);
+    }
+
+    @Override
+    protected void onSelectionChanged(int selStart, int selEnd) {
+        // if select on the prefix text, move selection to the end
+        int prefixLength = mPrefix == null? 0: mPrefix.length();
+        if (selStart < prefixLength
+                &&
+            selEnd == selStart ) {
+            Selection.setSelection(PrefixEditText.super.getText(),
+                    PrefixEditText.super.getText().length());
+        }
+        super.onSelectionChanged(selStart, selEnd);
+    }
 }
