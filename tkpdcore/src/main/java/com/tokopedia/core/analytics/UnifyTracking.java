@@ -1348,4 +1348,22 @@ public class UnifyTracking extends TrackingUtils {
                 label
         ).getEvent());
     }
+
+    public static void eventViewAllOSNonLogin() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_VIEW_ALL_OS,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.OS_MICROSITE_NON_LOGIN
+        ).getEvent());
+    }
+
+    public static void eventViewAllOSLogin() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_VIEW_ALL_OS,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.OS_MICROSITE_LOGIN
+        ).getEvent());
+    }
 }

@@ -107,6 +107,7 @@ public interface AppEventTracking {
         String CATEGORY_PAGE = "clickKategori";
         String OPEN_PUSH_NOTIFICATION = "openPushNotification";
         String EVENT_OTP = "OTPSuccess";
+        String CLICK_VIEW_ALL_OS = "clickOS";
     }
 
     interface Category {
@@ -352,6 +353,9 @@ public interface AppEventTracking {
         String DELETE_PRODUCT_GEAR = "Hapus - Gear Menu";
         String DELETE_PRODUCT_TOPMENU = "Hapus - Top Menu";
         String CATEGORY_SHOW_MORE = "Lihat Lainnya";
+
+        String OS_MICROSITE_NON_LOGIN = "Official Store Visit Microsite - Non Login";
+        String OS_MICROSITE_LOGIN = "Official Store Visit Microsite - Login";
     }
 
     interface SOCIAL_MEDIA {

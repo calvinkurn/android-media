@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -121,7 +120,7 @@ public class BrandsWebViewFragment extends Fragment {
         } else {
             webview.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
-//        getActivity().setProgressBarIndeterminateVisibility(true);
+
         WebSettings webSettings = webview.getSettings();
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);

@@ -517,6 +517,12 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (SessionHandler.isV4Login(getContext())) {
+                    UnifyTracking.eventViewAllOSLogin();
+                } else {
+                    UnifyTracking.eventViewAllOSNonLogin();
+                }
+
                 openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
             }
         };
