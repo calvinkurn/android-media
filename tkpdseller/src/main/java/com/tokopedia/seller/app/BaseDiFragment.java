@@ -26,7 +26,7 @@ public abstract class BaseDiFragment<C extends BaseFragmentComponent, P extends 
     }
 
     @Override
-    protected final void initialPresenter() {
+    protected void initialPresenter() {
         component = initInjection();
         component.inject(this);
         presenter = diPresenter;
