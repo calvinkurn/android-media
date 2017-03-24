@@ -665,7 +665,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 rechargeEditText.setText(lastOrder.getData().getAttributes().getClient_number());
                 showFormAndImageOperator();
             } else {
-                if (!rechargeEditText.getText().toString().equals("")) {
+                if (!rechargeEditText.getText().toString().trim().equals("")) {
                     showFormAndImageOperator();
                 } else {
                     hideFormAndImageOperator();
