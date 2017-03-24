@@ -4,13 +4,13 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/action_add"
+        android:id="@+id/action_input_shipping_ref_number"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/tkpd_main_green"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/action_accept_solution"
+        android:text="@string/action_input_shipping_ref_number"
         android:textColor="@color/white"
         android:textSize="@dimen/font_medium"
         android:textStyle="bold"
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_above="@id/action_add">
+        android:layout_above="@id/action_input_shipping_ref_number">
 
     </android.support.v7.widget.RecyclerView>
 </RelativeLayout>

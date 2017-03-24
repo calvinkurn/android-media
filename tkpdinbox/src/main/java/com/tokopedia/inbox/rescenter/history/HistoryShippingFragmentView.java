@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.rescenter.history;
 
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
 import com.tokopedia.inbox.rescenter.history.view.model.HistoryAwbViewItem;
 
 import java.util.ArrayList;
@@ -33,4 +34,19 @@ public interface HistoryShippingFragmentView {
     void renderData();
 
     void setViewData(ArrayList<HistoryAwbViewItem> viewData);
+
+    void doOnTrackingError(String messageError);
+
+    void doOnTrackingSuccess(TrackingDialogViewModel model);
+
+    void doOnTrackingFailed();
+
+    void showLoadingDialog(boolean show);
+
+    void showSnackBar(String messageError);
+
+    void showTimeOutMessage();
+
+    void doOnTrackingTimeOut();
+
 }
