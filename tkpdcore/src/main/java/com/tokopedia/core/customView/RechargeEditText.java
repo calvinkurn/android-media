@@ -157,6 +157,7 @@ public class RechargeEditText extends LinearLayout {
             public void onClick(View v) {
                 autoCompleteTextView.setText("");
                 setImgOperatorInvisible();
+                rechargeEditTextListener.onRechargeTextClear();
             }
         };
     }
@@ -242,6 +243,7 @@ public class RechargeEditText extends LinearLayout {
                                    final int start,
                                    final int before,
                                    final int count);
+        void onRechargeTextClear();
     }
 
     public interface OnButtonPickerListener {
