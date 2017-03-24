@@ -2,6 +2,7 @@ package com.tokopedia.ride.common.ride.data.source.api;
 
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductResponseEntity;
+import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateResponseEntity;
 
@@ -30,7 +31,7 @@ public interface RideApi {
 
     @POST(RideUrl.REQUEST_CREATE)
     @FormUrlEncoded
-    Observable<String> createRequestRide(@FieldMap Map<String, Object> param);
+    Observable<RideRequestEntity> createRequestRide(@FieldMap Map<String, Object> param);
 
     @POST(RideUrl.REQUEST_DETAIL)
     @FormUrlEncoded

@@ -3,6 +3,7 @@ package com.tokopedia.ride.common.ride.domain;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
+import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.TimesEstimate;
 
 import java.util.List;
@@ -19,4 +20,6 @@ public interface BookingRideRepository {
     Observable<List<TimesEstimate>> getEstimatedTimes(TKPDMapParam<String, Object> productParams);
 
     Observable<FareEstimate> getEstimatedFare(TKPDMapParam<String, Object> productParams);
+
+    Observable<RideRequest> createRideRequest(TKPDMapParam<String, Object> productParams);
 }

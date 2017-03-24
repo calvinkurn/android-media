@@ -10,6 +10,7 @@ import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.common.place.data.DirectionEntityMapper;
 import com.tokopedia.ride.common.place.data.PlaceDataRepository;
@@ -78,8 +79,8 @@ public class BookingRideDependencyInjection {
         return RxJavaCallAdapterFactory.create();
     }
 
-    private RideInterceptor provideRideInterceptor(String token) {
-        return new RideInterceptor(token);
+    private RideInterceptor provideRideInterceptor(String token, String userId) {
+        return new RideInterceptor(token, userId);
     }
 
     private HttpLoggingInterceptor provideLoggingInterceptory() {
@@ -160,7 +161,7 @@ public class BookingRideDependencyInjection {
         return new PlaceDataRepository(placeDataStoreFactory, mapper);
     }
 
-    private GetUberProductsUseCase getUberProductsUseCase(String token) {
+    private GetUberProductsUseCase getUberProductsUseCase(String token, String userId) {
 
         return new GetUberProductsUseCase(
                 provideThreadExecutor(),
@@ -169,7 +170,7 @@ public class BookingRideDependencyInjection {
                         provideBookingRideDataStoreFactory(
                                 provideRideApi(
                                         provideRideRetrofit(
-                                                provideRideOkHttpClient(provideRideInterceptor(token),
+                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
                                                         provideLoggingInterceptory()),
                                                 provideGeneratedHostConverter(),
                                                 provideTkpdResponseConverter(),
@@ -201,9 +202,12 @@ public class BookingRideDependencyInjection {
         );
     }
 
-    public static BookingRidePresenter createPresenter(Context context, String token) {
+    public static BookingRidePresenter createPresenter(Context context) {
+        SessionHandler sessionHandler = new SessionHandler(context);
+        String token = String.format("Bearer %s", sessionHandler.getAccessToken(context));
+        String userId = sessionHandler.getLoginID();
         BookingRideDependencyInjection injection = new BookingRideDependencyInjection();
-        return new BookingRidePresenter(injection.getUberProductsUseCase(token),
+        return new BookingRidePresenter(injection.getUberProductsUseCase(token, userId),
                 injection.getOverviewPolylineUseCase(context)
         );
     }

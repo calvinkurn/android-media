@@ -12,8 +12,11 @@ import com.tokopedia.ride.common.ride.domain.model.Product;
 public class ConfirmBookingViewModel implements Parcelable{
     private String fareId;
     private String productId;
+
+    private String startAddress;
     private double startLatitude;
     private double startLongitude;
+    private String endAddress;
     private double endLatitude;
     private double endLongitude;
     private int seatCount;
@@ -29,8 +32,10 @@ public class ConfirmBookingViewModel implements Parcelable{
     protected ConfirmBookingViewModel(Parcel in) {
         fareId = in.readString();
         productId = in.readString();
+        startAddress = in.readString();
         startLatitude = in.readDouble();
         startLongitude = in.readDouble();
+        endAddress = in.readString();
         endLatitude = in.readDouble();
         endLongitude = in.readDouble();
         seatCount = in.readInt();
@@ -148,6 +153,30 @@ public class ConfirmBookingViewModel implements Parcelable{
         this.headerTitle = headerTitle;
     }
 
+    public int getMaxCapacity() {
+        return maxCapacity;
+    }
+
+    public void setMaxCapacity(int maxCapacity) {
+        this.maxCapacity = maxCapacity;
+    }
+
+    public String getStartAddress() {
+        return startAddress;
+    }
+
+    public void setStartAddress(String startAddress) {
+        this.startAddress = startAddress;
+    }
+
+    public String getEndAddress() {
+        return endAddress;
+    }
+
+    public void setEndAddress(String endAddress) {
+        this.endAddress = endAddress;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -157,8 +186,10 @@ public class ConfirmBookingViewModel implements Parcelable{
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(fareId);
         parcel.writeString(productId);
+        parcel.writeString(startAddress);
         parcel.writeDouble(startLatitude);
         parcel.writeDouble(startLongitude);
+        parcel.writeString(endAddress);
         parcel.writeDouble(endLatitude);
         parcel.writeDouble(endLongitude);
         parcel.writeInt(seatCount);
@@ -167,13 +198,5 @@ public class ConfirmBookingViewModel implements Parcelable{
         parcel.writeString(price);
         parcel.writeString(headerTitle);
         parcel.writeInt(maxCapacity);
-    }
-
-    public int getMaxCapacity() {
-        return maxCapacity;
-    }
-
-    public void setMaxCapacity(int maxCapacity) {
-        this.maxCapacity = maxCapacity;
     }
 }

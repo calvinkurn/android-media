@@ -285,8 +285,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
 
     private void setInitialVariable() {
         mPresenter = BookingRideDependencyInjection.createPresenter(
-                getActivity().getApplicationContext(),
-                "TOKEN"
+                getActivity().getApplicationContext()
         );
 
         mToolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);

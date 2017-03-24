@@ -86,8 +86,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mPresenter = RideProductDependencyInjection.createPresenter(getActivity().getApplicationContext(),
-                "X9hkRQ6OjJHrZNcfQKT5dbdZC28zJLjQcM31xTP8");
+        mPresenter = RideProductDependencyInjection.createPresenter(getActivity().getApplicationContext());
         mPresenter.attachView(this);
         mPresenter.initialize();
         setViewListener();
@@ -142,6 +141,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
             confirmBookingViewModel.setStartLatitude(source.getLatitude());
             confirmBookingViewModel.setStartLongitude(source.getLongitude());
             confirmBookingViewModel.setEndLatitude(destination.getLatitude());
+            confirmBookingViewModel.setEndLongitude(destination.getLongitude());
             confirmBookingViewModel.setProductId(rideProductViewModel.getProductId());
             confirmBookingViewModel.setPrice(rideProductViewModel.getProductPrice());
             confirmBookingViewModel.setProductImage(rideProductViewModel.getProductImage());
@@ -152,6 +152,8 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
                             rideProductViewModel.getTimeEstimate())
             );
             confirmBookingViewModel.setMaxCapacity(rideProductViewModel.getCapacity());
+            confirmBookingViewModel.setStartAddress(source.getTitle());
+            confirmBookingViewModel.setEndAddress(destination.getTitle());
             mInteractionListener.onProductClicked(confirmBookingViewModel);
         }
     }

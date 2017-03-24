@@ -3,10 +3,12 @@ package com.tokopedia.ride.common.ride.data;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
+import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
+import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.TimesEstimate;
 
 import java.util.List;
@@ -23,6 +25,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     private final ProductEntityMapper mProductEntityMapper;
     private final TimeEstimateEntityMapper mTimeEstimateEntityMapper;
     private final FareEstimateMapper estimateMapper;
+    private final RideRequestEntityMapper rideRequestEntityMapper;
 
     public BookingRideRepositoryData(BookingRideDataStoreFactory bookingRideDataStoreFactory,
                                      ProductEntityMapper productEntityMapper,
@@ -31,6 +34,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
         mProductEntityMapper = productEntityMapper;
         mTimeEstimateEntityMapper = timeEstimateEntityMapper;
         estimateMapper = new FareEstimateMapper();
+        rideRequestEntityMapper = new RideRequestEntityMapper();
     }
 
     @Override
@@ -63,6 +67,18 @@ public class BookingRideRepositoryData implements BookingRideRepository {
                     @Override
                     public FareEstimate call(FareEstimateEntity fareEstimateEntity) {
                         return estimateMapper.transform(fareEstimateEntity);
+                    }
+                });
+    }
+
+    @Override
+    public Observable<RideRequest> createRideRequest(TKPDMapParam<String, Object> productParams) {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .createRideRequest(productParams)
+                .map(new Func1<RideRequestEntity, RideRequest>() {
+                    @Override
+                    public RideRequest call(RideRequestEntity rideRequestEntity) {
+                        return rideRequestEntityMapper.transform(rideRequestEntity);
                     }
                 });
     }

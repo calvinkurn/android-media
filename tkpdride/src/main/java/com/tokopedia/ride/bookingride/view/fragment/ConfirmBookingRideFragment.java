@@ -55,6 +55,8 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     public interface OnFragmentInteractionListener {
         void actionChangeSeatCount(List<SeatViewModel> seatViewModels);
+
+        void actionRequestRide(ConfirmBookingViewModel confirmBookingViewModel);
     }
 
     public ConfirmBookingRideFragment() {
@@ -136,5 +138,10 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     public void updateSeatCount(int seat) {
         seatsTextView.setText(String.valueOf(seat));
+    }
+
+    @OnClick(R2.id.cab_confirmation)
+    public void actionConfirmButtonClicked(){
+        mListener.actionRequestRide(confirmBookingViewModel);
     }
 }

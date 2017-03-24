@@ -1,4 +1,4 @@
-package com.tokopedia.ride.bookingride.di;
+package com.tokopedia.ride.ontrip.di;
 
 import android.content.Context;
 
@@ -11,8 +11,7 @@ import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
-import com.tokopedia.ride.bookingride.domain.GetProductAndEstimatedUseCase;
+import com.tokopedia.ride.common.network.RideInterceptor;
 import com.tokopedia.ride.common.ride.data.BookingRideDataStoreFactory;
 import com.tokopedia.ride.common.ride.data.BookingRideRepositoryData;
 import com.tokopedia.ride.common.ride.data.ProductEntityMapper;
@@ -20,10 +19,8 @@ import com.tokopedia.ride.common.ride.data.TimeEstimateEntityMapper;
 import com.tokopedia.ride.common.ride.data.source.api.RideApi;
 import com.tokopedia.ride.common.ride.data.source.api.RideUrl;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
-import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
-import com.tokopedia.ride.bookingride.view.UberProductContract;
-import com.tokopedia.ride.bookingride.view.UberProductPresenter;
-import com.tokopedia.ride.common.network.RideInterceptor;
+import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
+import com.tokopedia.ride.ontrip.view.OnTripMapPresenter;
 
 import java.util.concurrent.TimeUnit;
 
@@ -35,10 +32,10 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by alvarisi on 3/16/17.
+ * Created by alvarisi on 3/24/17.
  */
 
-public class RideProductDependencyInjection {
+public class OnTripDependencyInjection {
     private Gson provideGson() {
         return new Gson();
     }
@@ -119,72 +116,6 @@ public class RideProductDependencyInjection {
         return new BookingRideRepositoryData(factory, mapper, estimateEntityMapper);
     }
 
-    private OkHttpClient providePlaceOkHttpClient(Cache cache, HttpLoggingInterceptor loggingInterceptor) {
-        OkHttpClient.Builder client = new OkHttpClient.Builder()
-                .addInterceptor(loggingInterceptor)
-                .cache(cache);
-        return client.build();
-    }
-
-    private GetProductAndEstimatedUseCase provideGetProductAndEstimatedUseCase(String token, String userId){
-        return new GetProductAndEstimatedUseCase(
-                provideThreadExecutor(),
-                providePostExecutionThread(),
-                provideBookingRideRepository(
-                        provideBookingRideDataStoreFactory(
-                                provideRideApi(
-                                        provideRideRetrofit(
-                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory()),
-                                                provideGeneratedHostConverter(),
-                                                provideTkpdResponseConverter(),
-                                                provideResponseConverter(),
-                                                provideGsonConverterFactory(provideGson()),
-                                                provideRxJavaCallAdapterFactory()
-                                        )
-                                )
-                        ),
-                        new ProductEntityMapper(),
-                        new TimeEstimateEntityMapper()
-                )
-        );
-    }
-
-    private GetFareEstimateUseCase provideGetFareEstimateUseCase(String token, String userId){
-        return new GetFareEstimateUseCase(
-                provideThreadExecutor(),
-                providePostExecutionThread(),
-                provideBookingRideRepository(
-                        provideBookingRideDataStoreFactory(
-                                provideRideApi(
-                                        provideRideRetrofit(
-                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory()),
-                                                provideGeneratedHostConverter(),
-                                                provideTkpdResponseConverter(),
-                                                provideResponseConverter(),
-                                                provideGsonConverterFactory(provideGson()),
-                                                provideRxJavaCallAdapterFactory()
-                                        )
-                                )
-                        ),
-                        new ProductEntityMapper(),
-                        new TimeEstimateEntityMapper()
-                )
-        );
-    }
-
-
-    public static UberProductContract.Presenter createPresenter(Context context) {
-        SessionHandler sessionHandler = new SessionHandler(context);
-        String token = String.format("Bearer %s", sessionHandler.getAccessToken(context));
-        String userId= sessionHandler.getLoginID();
-        RideProductDependencyInjection injection = new RideProductDependencyInjection();
-        GetProductAndEstimatedUseCase getUberProductsUseCase = injection.provideGetProductAndEstimatedUseCase(token, userId);
-        GetFareEstimateUseCase getFareEstimateUseCase = injection.provideGetFareEstimateUseCase(token, userId);
-        return new UberProductPresenter(getUberProductsUseCase, getFareEstimateUseCase);
-    }
-
     private static Retrofit createRetrofit(String baseUrl,
                                            OkHttpClient client,
                                            GeneratedHostConverter hostConverter,
@@ -201,5 +132,39 @@ public class RideProductDependencyInjection {
                 .addConverterFactory(gsonConverterFactory)
                 .addCallAdapterFactory(rxJavaCallAdapterFactory)
                 .build();
+    }
+
+    private CreateRideRequestUseCase provideGetProductAndEstimatedUseCase(String token, String userId) {
+        return new CreateRideRequestUseCase(
+                provideThreadExecutor(),
+                providePostExecutionThread(),
+                provideBookingRideRepository(
+                        provideBookingRideDataStoreFactory(
+                                provideRideApi(
+                                        provideRideRetrofit(
+                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
+                                                        provideLoggingInterceptory()),
+                                                provideGeneratedHostConverter(),
+                                                provideTkpdResponseConverter(),
+                                                provideResponseConverter(),
+                                                provideGsonConverterFactory(provideGson()),
+                                                provideRxJavaCallAdapterFactory()
+                                        )
+                                )
+                        ),
+                        new ProductEntityMapper(),
+                        new TimeEstimateEntityMapper()
+                )
+        );
+    }
+
+    public static OnTripMapPresenter createOnTripMapPresenter(Context context) {
+        SessionHandler sessionHandler = new SessionHandler(context);
+        String token = String.format("Bearer %s", sessionHandler.getAccessToken(context));
+        OnTripDependencyInjection injection = new OnTripDependencyInjection();
+        String userId = sessionHandler.getLoginID();
+
+        CreateRideRequestUseCase createRideRequestUseCase = injection.provideGetProductAndEstimatedUseCase(token, userId);
+        return new OnTripMapPresenter(createRideRequestUseCase);
     }
 }

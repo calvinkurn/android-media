@@ -33,6 +33,7 @@ import com.tokopedia.ride.bookingride.view.fragment.RideHomeFragment;
 import com.tokopedia.ride.bookingride.view.fragment.UberProductFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.ontrip.view.OnTripActivity;
 
 import java.util.List;
 
@@ -204,7 +205,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
                 seatPanelLayout.startAnimation(bottomUp);
                 seatPanelLayout.setVisibility(View.VISIBLE);
             }
-        } , 500);
+        }, 500);
     }
 
     private void showBlockTranslucentLayout() {
@@ -218,11 +219,11 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
         backgroundColorAnimator.start();
     }
 
-    private void hideBlockTranslucentLayout(){
+    private void hideBlockTranslucentLayout() {
         blockTranslucentFrameLayout.setVisibility(View.GONE);
     }
 
-    private void hideSeatPanelLayout(){
+    private void hideSeatPanelLayout() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -232,7 +233,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
                 seatPanelLayout.startAnimation(bottomDown);
                 seatPanelLayout.setVisibility(View.INVISIBLE);
             }
-        } , 200);
+        }, 200);
     }
 
     @Override
@@ -246,5 +247,11 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
         } else {
             throw new RuntimeException("ConfirmBookingRideFragment view is gone");
         }
+    }
+
+    @Override
+    public void actionRequestRide(ConfirmBookingViewModel confirmBookingViewModel) {
+        Intent intent = OnTripActivity.getCallingIntent(this, confirmBookingViewModel);
+        startActivity(intent);
     }
 }

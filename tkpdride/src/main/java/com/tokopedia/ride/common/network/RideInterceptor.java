@@ -25,14 +25,16 @@ import okhttp3.ResponseBody;
 public class RideInterceptor extends TkpdAuthInterceptor {
     private static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
     private String authorizationString;
+    private String userId;
 
-    public RideInterceptor(String authorizationString) {
+    public RideInterceptor(String authorizationString, String userId) {
         this.authorizationString = authorizationString;
+        this.userId = userId;
     }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
-        Request.Builder newRequest = getBearerHeaderBuilder(chain.request(), authorizationString);
+        Request.Builder newRequest = getBearerHeaderBuilder(chain.request(), authorizationString, userId);
 
         final Request finalRequest = newRequest.build();
         Response response = getResponse(chain, finalRequest);
@@ -91,8 +93,9 @@ public class RideInterceptor extends TkpdAuthInterceptor {
         return builder.build();
     }
 
-    private Request.Builder getBearerHeaderBuilder(Request request, String oAuth) {
+    private Request.Builder getBearerHeaderBuilder(Request request, String oAuth, String userId) {
         return request.newBuilder()
+                .header("Tkpd-UserId", userId)
                 .header("Authorization", oAuth)
                 .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
                 .header("Content-Type", "application/x-www-form-urlencoded")
