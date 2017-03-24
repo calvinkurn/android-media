@@ -73,5 +73,6 @@
     <color name="text_error">#FFFF6E6E</color>
 
     <color name="checkbox_text">#61000000</color>
+    <color name="white_grey">#fbfbfb</color>
 
 </resources>
