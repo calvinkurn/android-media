@@ -36,7 +36,7 @@ public class CheckDomainNameUseCase extends UseCase<Boolean> {
 
     public static RequestParams createRequestParams(String domainName){
         RequestParams params = RequestParams.create();
-        params.putString(ShopExtraConstant.EXTRA_DOMAIN_NAME, params.getString(domainName,""));
+        params.putString(ShopExtraConstant.EXTRA_DOMAIN_NAME, domainName);
         return params;
     }
 }

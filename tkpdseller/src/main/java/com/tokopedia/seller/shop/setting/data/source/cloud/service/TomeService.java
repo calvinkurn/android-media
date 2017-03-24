@@ -7,6 +7,8 @@ import com.tokopedia.core.network.retrofit.services.AuthService;
 import com.tokopedia.core.network.retrofit.services.BearerService;
 import com.tokopedia.seller.shop.setting.data.source.cloud.api.TomeApi;
 
+import javax.inject.Inject;
+
 import retrofit2.Retrofit;
 
 /**
@@ -15,6 +17,7 @@ import retrofit2.Retrofit;
 
 public class TomeService extends BearerService<TomeApi> {
 
+    @Inject
     public TomeService(String mToken) {
         super(mToken);
     }

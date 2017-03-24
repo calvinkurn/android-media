@@ -1,15 +1,11 @@
 package com.tokopedia.seller.shop.setting.data.source;
 
-import com.tokopedia.core.network.apiservices.shop.apis.model.openshopdistrict.OpenShopDistrictServiceModel;
-import com.tokopedia.seller.shop.setting.data.source.cache.DistrictDataCache;
-import com.tokopedia.seller.shop.setting.data.source.cache.db.ShopOpenDataCache;
-import com.tokopedia.seller.shop.setting.data.source.cloud.DistrictDataCloud;
+import com.tokopedia.seller.shop.setting.data.source.cache.ShopOpenDataCache;
 import com.tokopedia.seller.shop.setting.data.source.cloud.ShopOpenDataCloud;
 
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by sebastianuskh on 3/20/17.

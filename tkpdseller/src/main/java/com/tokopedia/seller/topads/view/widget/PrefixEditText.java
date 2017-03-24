@@ -157,7 +157,7 @@ public class PrefixEditText extends AppCompatEditText
         int prefixLength = mPrefix == null? 0: mPrefix.length();
         if (selStart < prefixLength
                 &&
-            selEnd < prefixLength ) {
+            selEnd == selStart ) {
             Selection.setSelection(PrefixEditText.super.getText(),
                     PrefixEditText.super.getText().length());
         }

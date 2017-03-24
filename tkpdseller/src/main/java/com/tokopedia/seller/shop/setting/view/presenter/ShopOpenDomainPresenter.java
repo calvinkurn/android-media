@@ -1,16 +1,12 @@
 package com.tokopedia.seller.shop.setting.view.presenter;
 
-import com.tokopedia.seller.app.BaseDiPresenter;
+import com.tokopedia.core.base.presentation.CustomerPresenter;
 
 /**
  * Created by sebastianuskh on 3/17/17.
  */
 
-public abstract class ShopOpenDomainPresenter extends BaseDiPresenter<ShopOpenDomainView> {
-
-    public ShopOpenDomainPresenter(ShopOpenDomainView view) {
-        super(view);
-    }
-
-
+public interface ShopOpenDomainPresenter extends CustomerPresenter<ShopOpenDomainView> {
+    void checkShop(String shopName);
+    void checkDomain(String domainName);
 }

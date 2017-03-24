@@ -242,6 +242,10 @@ public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher 
         refreshDrawableState();
     }
 
+    public boolean isSuccess(){
+        return mSuccessShown;
+    }
+
     @Override
     public void setError(@Nullable CharSequence error) {
         // if success is shown, hide success to show error

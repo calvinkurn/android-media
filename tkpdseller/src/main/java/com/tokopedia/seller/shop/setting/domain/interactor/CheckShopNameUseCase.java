@@ -35,7 +35,7 @@ public class CheckShopNameUseCase extends UseCase<Boolean> {
 
     public static RequestParams createRequestParams(String shopName){
         RequestParams params = RequestParams.create();
-        params.putString(ShopExtraConstant.EXTRA_SHOP_NAME, params.getString(shopName,""));
+        params.putString(ShopExtraConstant.EXTRA_SHOP_NAME, shopName);
         return params;
     }
 }

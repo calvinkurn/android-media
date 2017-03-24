@@ -27,38 +27,18 @@ import dagger.Provides;
  */
 @ActivityScope
 @Module
-public class ShopOpenDomainModule extends BaseFragmentModule<ShopOpenDomainView> {
-
-    public ShopOpenDomainModule(ShopOpenDomainView view) {
-        super(view);
-    }
+public class ShopOpenDomainModule {
 
     @Provides
-    ShopOpenDomainPresenter providePresenter(ShopOpenDomainView view,
-                                             CheckDomainNameUseCase checkDomainNameUseCase,
+    ShopOpenDomainPresenter providePresenter(CheckDomainNameUseCase checkDomainNameUseCase,
                                              CheckShopNameUseCase checkShopNameUseCase) {
-        return new ShopOpenDomainPresenterImpl(view,
+        return new ShopOpenDomainPresenterImpl(
                 checkDomainNameUseCase, checkShopNameUseCase) {
         };
     }
 
-    @Provides
-    public CheckDomainNameUseCase provideCheckDomainNameUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            ShopOpenRepository shopOpenRepository
-    ) {
-        return new CheckDomainNameUseCase(threadExecutor, postExecutionThread, shopOpenRepository);
-    }
-
-    @Provides
-    public CheckShopNameUseCase provideCheckShopNameUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            ShopOpenRepository shopOpenRepository
-    ) {
-        return new CheckShopNameUseCase(threadExecutor, postExecutionThread, shopOpenRepository);
-    }
+    // Provide CheckDomainNameUseCase
+    // Provide CheckShopNameUseCase
 
     @Provides
     public ShopOpenRepository provideShopOpenRepository(ShopOpenDataSource shopOpenDataSource) {

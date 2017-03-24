@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.setting.data.source.cache.db;
+package com.tokopedia.seller.shop.setting.data.source.cache;
 
 import com.tokopedia.core.network.apiservices.shop.apis.model.openshopdistrict.OpenShopDistrictServiceModel;
 

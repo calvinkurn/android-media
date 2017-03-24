@@ -1,6 +1,6 @@
 package com.tokopedia.seller.shop.setting.data.source.cloud.api;
 
-import com.tokopedia.seller.shop.constant.ShopNetworkConstant;
+import com.tokopedia.seller.shop.constant.ShopOpenNetworkConstant;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseCheckDomain;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseCheckShop;
 import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
@@ -9,9 +9,11 @@ import com.tokopedia.seller.shop.setting.data.model.response.ResponseReserveDoma
 import java.util.Map;
 
 import retrofit2.Response;
+import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.QueryMap;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -20,16 +22,20 @@ import rx.Observable;
 
 public interface TomeApi {
 
-    @GET(ShopNetworkConstant.PATH_DOMAIN_CHECK)
-    Observable<Response<ResponseCheckDomain>> getDomainCheck(@QueryMap Map<String, String> params);
+    @GET(ShopOpenNetworkConstant.PATH_DOMAIN_CHECK)
+    Observable<Response<ResponseCheckDomain>> getDomainCheck(
+            @Query(ShopOpenNetworkConstant.PARAM_SHOP_DOMAIN) String domainName);
 
-    @GET(ShopNetworkConstant.PATH_SHOP_CHECK)
-    Observable<Response<ResponseCheckShop>> getShopCheck(@QueryMap Map<String, String> params);
+    @GET(ShopOpenNetworkConstant.PATH_SHOP_CHECK)
+    Observable<Response<ResponseCheckShop>> getShopCheck(
+            @Query(ShopOpenNetworkConstant.PARAM_SHOP_NAME) String shopName);
 
-    @POST(ShopNetworkConstant.PATH_RESERVE_DOMAIN)
-    Observable<Response<ResponseReserveDomain>> reserveDomain(@QueryMap Map<String, String> params);
+    @POST(ShopOpenNetworkConstant.PATH_RESERVE_DOMAIN)
+    Observable<Response<ResponseReserveDomain>> reserveDomain(
+            @Field(ShopOpenNetworkConstant.PARAM_SHOP_NAME) String shopName,
+            @Field(ShopOpenNetworkConstant.PARAM_SHOP_DOMAIN) String shopDomain);
 
-    @GET(ShopNetworkConstant.PATH_IS_RESERVE_DOMAIN)
-    Observable<Response<ResponseIsReserveDomain>> isReserveDomain(@QueryMap Map<String, String> params);
+    @GET(ShopOpenNetworkConstant.PATH_IS_RESERVE_DOMAIN)
+    Observable<Response<ResponseIsReserveDomain>> isReserveDomain();
 
 }

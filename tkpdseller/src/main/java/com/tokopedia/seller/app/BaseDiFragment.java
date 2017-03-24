@@ -86,8 +86,4 @@ public abstract class BaseDiFragment<C extends BaseFragmentComponent, P extends 
 
     protected abstract C initInjection();
 
-    protected AppComponent getApplicationComponent(){
-        return ((BaseActivity) getActivity()).getApplicationComponent();
-    }
-
 }

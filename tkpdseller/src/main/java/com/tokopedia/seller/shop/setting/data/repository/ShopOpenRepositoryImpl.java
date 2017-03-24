@@ -18,13 +18,11 @@ public class ShopOpenRepositoryImpl implements ShopOpenRepository {
 
     @Override
     public Observable<Boolean> checkDomain(String domainName) {
-        // TODO stub
         return shopOpenDataSource.checkDomainName(domainName);
     }
 
     @Override
     public Observable<Boolean> checkShop(String shopName) {
-        // TODO stub
         return shopOpenDataSource.checkShopName(shopName);
     }
 }
