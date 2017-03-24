@@ -1,7 +1,14 @@
 package com.tokopedia.inbox.rescenter.detailv2.data.mapper;
 
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.inbox.rescenter.history.data.pojo.HistoryAwbEntity;
+import com.tokopedia.inbox.rescenter.history.data.pojo.ListHistoryAwb;
+import com.tokopedia.inbox.rescenter.history.domain.model.AttachmentAwbDomainData;
 import com.tokopedia.inbox.rescenter.history.domain.model.HistoryAwbData;
+import com.tokopedia.inbox.rescenter.history.domain.model.HistoryAwbItemDomainData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -17,9 +24,9 @@ public class HistoryAwbMapper implements Func1<Response<TkpdResponse>, HistoryAw
         HistoryAwbData domainData = new HistoryAwbData();
         if (response.isSuccessful()) {
             if (!response.body().isError()) {
-//                DetailResCenterEntity entity
-//                        = response.body().convertDataObj(DetailResCenterEntity.class);
+                HistoryAwbEntity entity = response.body().convertDataObj(HistoryAwbEntity.class);
                 domainData.setSuccess(true);
+                domainData.setListHistoryAwb(mappingEntityDomain(entity.getListHistoryAwb()));
             } else {
                 domainData.setSuccess(false);
                 domainData.setMessageError(generateMessageError(response));
@@ -29,6 +36,35 @@ public class HistoryAwbMapper implements Func1<Response<TkpdResponse>, HistoryAw
             domainData.setErrorCode(response.code());
         }
         return domainData;
+    }
+
+    private List<HistoryAwbItemDomainData> mappingEntityDomain(List<ListHistoryAwb> listHistoryAwb) {
+        List<HistoryAwbItemDomainData> list = new ArrayList<>();
+        for (ListHistoryAwb item : listHistoryAwb) {
+            HistoryAwbItemDomainData data = new HistoryAwbItemDomainData();
+            data.setActionBy(item.getActionBy());
+            data.setActionByText(item.getActionByStr());
+            data.setAttachmentList(item.getAttachments() != null && !item.getAttachments().isEmpty() ?
+                    mappingAttachment(item.getAttachments()) : null);
+            data.setDate(item.getCreateTimeStr());
+            data.setRemark(item.getRemark());
+            data.setConversationID(item.getResConvId());
+            data.setShipmentID(item.getShippingId());
+            data.setShippingRefNumber(item.getShippingRefNum());
+            list.add(data);
+        }
+        return list;
+    }
+
+    private List<AttachmentAwbDomainData> mappingAttachment(List<ListHistoryAwb.Attachments> attachments) {
+        List<AttachmentAwbDomainData> list = new ArrayList<>();
+        for (ListHistoryAwb.Attachments item : attachments) {
+            AttachmentAwbDomainData data = new AttachmentAwbDomainData();
+            data.setThumbnailUrl(item.getImageThumb());
+            data.setUrl(item.getUrl());
+            list.add(data);
+        }
+        return list;
     }
 
     private String generateMessageError(Response<TkpdResponse> response) {

@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.history.HistoryShippingFragmentView;
-import com.tokopedia.inbox.rescenter.history.viewmodel.ItemViewModel;
+import com.tokopedia.inbox.rescenter.history.view.model.HistoryAwbViewItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,18 +27,19 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
     private static final int VIEW_SHIPPING_ITEM = 100;
 
     private final HistoryShippingFragmentView fragmentView;
-    private List<ItemViewModel> arraylist;
+    private List<HistoryAwbViewItem> arraylist;
 
     public HistoryShippingAdapter(HistoryShippingFragmentView fragmentView) {
         this.fragmentView = fragmentView;
         this.arraylist = new ArrayList<>();
     }
 
-    public void setArraylist(List<ItemViewModel> arraylist) {
+    public void setArraylist(List<HistoryAwbViewItem> arraylist) {
         this.arraylist = arraylist;
     }
 
-    class ShippingViewHolder extends RecyclerView.ViewHolder {
+    @SuppressWarnings("WeakerAccess")
+    public class ShippingViewHolder extends RecyclerView.ViewHolder {
 
         TextView date;
         TextView history;
@@ -83,10 +84,12 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     private void bindShippingViewHolder(ShippingViewHolder holder, int position) {
-        final ItemViewModel item = arraylist.get(position);
+        final HistoryAwbViewItem item = arraylist.get(position);
         renderData(holder, item);
         renderView(holder, item);
-        renderAttachment(holder, item);
+        if (item.getAttachment() != null && !item.getAttachment().isEmpty()) {
+            renderAttachment(holder, item);
+        }
         holder.actionTrack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,7 +108,7 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
         });
     }
 
-    private void renderAttachment(ShippingViewHolder holder, ItemViewModel item) {
+    private void renderAttachment(ShippingViewHolder holder, HistoryAwbViewItem item) {
         Context context = holder.itemView.getContext();
         AttachmentAdapter attachmentAdapter = new AttachmentAdapter(item.getAttachment());
         LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
@@ -113,18 +116,18 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
         holder.attachment.setAdapter(attachmentAdapter);
     }
 
-    private void renderData(ShippingViewHolder holder, ItemViewModel item) {
+    private void renderData(ShippingViewHolder holder, HistoryAwbViewItem item) {
         Context context = holder.itemView.getContext();
         String additionalText = context.getString(R.string.template_history_additional_information);
         holder.date.setText(
                 additionalText
-                        .replace("X123", item.getProvider())
+                        .replace("X123", item.getActionByText())
                         .replace("Y123", item.getDate())
         );
-        holder.history.setText(item.getHistoryText());
+        holder.history.setText(item.getRemark().concat(": ").concat(item.getShippingRefNumber()));
     }
 
-    private void renderView(ShippingViewHolder holder, ItemViewModel item) {
+    private void renderView(ShippingViewHolder holder, HistoryAwbViewItem item) {
         holder.indicator.setImageResource(
                 item.isLatest() ? R.drawable.ic_check_circle_48dp : R.drawable.ic_dot_grey_24dp
         );
