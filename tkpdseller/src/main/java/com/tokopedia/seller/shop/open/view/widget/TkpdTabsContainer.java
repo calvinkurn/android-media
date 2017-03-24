@@ -2,11 +2,8 @@ package com.tokopedia.seller.shop.open.view.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.SparseBooleanArray;
-import android.view.View;
 import android.widget.LinearLayout;
 
-import com.stepstone.stepper.internal.widget.StepTab;
 import com.stepstone.stepper.internal.widget.TabsContainer;
 import com.tokopedia.seller.R;
 
@@ -18,7 +15,6 @@ import java.util.List;
 
 public class TkpdTabsContainer extends TabsContainer {
 
-    private List<CharSequence> mStepTitles;
     private LinearLayout mTabsInnerContainer;
 
     public TkpdTabsContainer(Context context) {
@@ -37,7 +33,7 @@ public class TkpdTabsContainer extends TabsContainer {
     }
 
     private void initializeView() {
-        mTabsInnerContainer = (LinearLayout) findViewById(com.stepstone.stepper.R.id.ms_stepTabsInnerContainer);
+        mTabsInnerContainer = (LinearLayout) findViewById(R.id.ms_stepTabsInnerContainer);
     }
 
     @Override
