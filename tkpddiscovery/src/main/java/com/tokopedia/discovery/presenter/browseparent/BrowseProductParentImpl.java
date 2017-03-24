@@ -38,6 +38,10 @@ import java.util.Map;
  */
 public class BrowseProductParentImpl extends BrowseProductParent implements DiscoveryListener {
 
+    private static final int PAGER_THREE_TAB_SHOP_POSITION = 2;
+    private static final int PAGER_THREE_TAB_CATALOG_POSITION = 1;
+    private static final int PAGER_THREE_TAB_PRODUCT_POSITION = 0;
+
     private DiscoveryInteractor discoveryInteractor;
     private static final String TAG = BrowseProductParentImpl.class.getSimpleName();
     // this will get for product only
@@ -238,7 +242,16 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                         } else {
                             view.setupWithTabViewPager();
                         }
-                        view.setCurrentTabs(browseProductActivityModel.getActiveTab());
+                        if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP)) {
+                            view.setCurrentTabs(PAGER_THREE_TAB_SHOP_POSITION);
+                        } else if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG)) {
+                            view.setCurrentTabs(PAGER_THREE_TAB_CATALOG_POSITION);
+                        } else {
+                            view.setCurrentTabs(PAGER_THREE_TAB_PRODUCT_POSITION);
+                        }
+                        if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+                            view.setupCategory(browseProductModel);
+                        }
                     } else if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT)) {
                         visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, view.VISIBLE_ON);
                         view.initSectionAdapter(visibleTab);
@@ -247,6 +260,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                         visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, view.VISIBLE_ON);
                         view.initSectionAdapter(visibleTab);
                         view.setupWithTabViewPager();
+                        view.setupCategory(browseProductModel);
                     } else {
                         visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, view.VISIBLE_ON);
                         visibleTab.put(BrowserSectionsPagerAdapter.TOKO, view.VISIBLE_ON);
@@ -259,7 +273,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                         }
                     }
                     if(view.getActivityPresenter().checkHasFilterAttrIsNull(index)) {
-                        discoveryInteractor.getDynamicAttribute(view.getContext(), BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT, browseProductActivityModel.getDepartmentId());
+                        discoveryInteractor.getDynamicAttribute(view.getContext(), source, browseProductActivityModel.getDepartmentId());
                     }
                     view.setLoadingProgress(false);
                 } else {

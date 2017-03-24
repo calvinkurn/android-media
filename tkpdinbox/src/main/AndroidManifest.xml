@@ -66,6 +66,10 @@
             android:name="com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity"
             android:label="@string/title_activity_inbox_talk"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tokopedia.inbox.rescenter.player.VideoPlayerActivity"
+            android:label="@string/title_video_player"
+            android:screenOrientation="portrait" />
 
         <!-- ======================================================= -->
         <!-- SERVICES REGISTRY -->

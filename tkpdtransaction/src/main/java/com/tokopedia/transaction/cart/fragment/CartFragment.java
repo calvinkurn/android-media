@@ -208,6 +208,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     protected void setViewListener() {
+        rvCart.setLayoutManager(new LinearLayoutManagerNonScroll(getActivity()));
         cbUseVoucher.setOnCheckedChangeListener(getOnCheckedUseVoucherOptionListener());
         cbUseVoucher.setChecked(false);
     }
@@ -321,7 +322,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderCartListData(final List<CartItem> cartList) {
-        rvCart.setLayoutManager(new LinearLayoutManagerNonScroll(getActivity()));
         cartItemAdapter = new CartItemAdapter(this, this);
         cartItemAdapter.fillDataList(cartList);
         rvCart.setAdapter(cartItemAdapter);
@@ -503,6 +503,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderCheckboxDonasi(CartDonation donation) {
+        setDonationValue("0");
         donasiTitle.setText(donation.getDonationNoteTitle());
         donasiCheckbox.setText(donation.getDonationNoteInfo());
         donasiCheckbox.setOnCheckedChangeListener(getOnCheckedDonasiListener(donation.getDonationValue()));

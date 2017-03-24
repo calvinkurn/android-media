@@ -44,6 +44,7 @@ public class ShopSearchResultAdapter extends RecyclerView.Adapter<ShopSearchResu
     private Context context;
     private String searchTerm;
     private final ItemClickListener clickListener;
+    private String eventAction;
 
     public ShopSearchResultAdapter(Context context, ItemClickListener clickListener) {
         items = new ArrayList<>();
@@ -54,6 +55,10 @@ public class ShopSearchResultAdapter extends RecyclerView.Adapter<ShopSearchResu
     public void setItems(List<SearchItem> items) {
         this.items = items;
         notifyDataSetChanged();
+    }
+
+    public void setEventAction(String eventAction) {
+        this.eventAction = eventAction;
     }
 
     @Override
@@ -128,15 +133,8 @@ public class ShopSearchResultAdapter extends RecyclerView.Adapter<ShopSearchResu
         @OnClick(R2.id.title)
         void onItemClicked(){
             SearchItem searchItem = items.get(getAdapterPosition());
-            if(searchItem.getApplink()!=null) {
-                List<String> segments = Uri.parse(searchItem.getApplink()).getPathSegments();
-                if(segments!=null && segments.size()>0) {
-                    Intent intent = new Intent(context, ShopInfoActivity.class);
-                    intent.putExtras(ShopInfoActivity.createBundle(segments.get(0), ""));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
-                }
-            }
+            searchItem.setEventAction(eventAction);
+            clickListener.onItemClicked(searchItem);
         }
 
     }

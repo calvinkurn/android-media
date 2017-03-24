@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -26,7 +27,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -207,7 +207,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         homeCatMenuPresenter.fetchHomeCategoryMenu(false);
         topPicksPresenter.fetchTopPicks();
         brandsPresenter.fetchBrands();
-
     }
 
     private void getAnnouncement() {
@@ -451,7 +450,7 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
         String redirectUrl = categoryItemModel.getRedirectValue();
         if (redirectUrl != null && redirectUrl.length() > 0) {
             String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
-                    categoryItemModel.getRedirectValue(), MainApplication.getAppContext());
+                    Uri.encode(redirectUrl), MainApplication.getAppContext());
 
             navigateToGimmicWebview(resultGenerateUrl, categoryItemModel.getRedirectValue());
         }
@@ -764,7 +763,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
             public void onTabSelected(TabLayout.Tab tab) {
                 holder.viewpagerRecharge.setCurrentItem(tab.getPosition(), false);
                 rechargeViewPagerAdapter.notifyDataSetChanged();
-                CommonUtils.dumper("GAv4 " + tab.getPosition() + " " + tab.getText());
                 if (tab.getText() != null) {
                     UnifyTracking.eventHomeRechargeTab(tab.getText().toString());
                 }
@@ -797,7 +795,6 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     private void setLocalyticFlow() {
         try {
-            CommonUtils.dumper("LocalTag : CategoryApi");
             String screenName = AppScreen.SCREEN_HOME_CATEGORY;
             ScreenTracking.screenLoca(screenName);
             ScreenTracking.eventLoca(screenName);

@@ -11,6 +11,21 @@ import android.util.AttributeSet;
 public class CollapsingToolbarLayoutCust extends CollapsingToolbarLayout {
     public boolean isScrimsShown = false;
 
+    OnScrimChangeListener onScrimChangeListener;
+    public interface OnScrimChangeListener{
+        void onScrimChange(boolean isScrimShown);
+    }
+
+    public void setOnScrimChangeListener(OnScrimChangeListener onScrimChangeListener) {
+        this.onScrimChangeListener = onScrimChangeListener;
+    }
+    
+    public void notifyScrimChange(){
+        if (onScrimChangeListener!= null) {
+            onScrimChangeListener.onScrimChange(isScrimsShown);
+        }
+    }
+
     public CollapsingToolbarLayoutCust(Context context) {
         super(context);
     }
@@ -25,7 +40,12 @@ public class CollapsingToolbarLayoutCust extends CollapsingToolbarLayout {
 
     @Override
     public void setScrimsShown(boolean shown) {
-        isScrimsShown = shown;
+        if (isScrimsShown != shown) {
+            isScrimsShown = shown;
+            if (onScrimChangeListener!= null) {
+                onScrimChangeListener.onScrimChange(isScrimsShown);
+            }
+        }
         super.setScrimsShown(shown);
     }
 }

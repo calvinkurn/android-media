@@ -59,8 +59,7 @@ interface FeedContract {
 
         boolean isViewNotEmpty();
 
-        void forceShowEmptyHistory();
-
+        void showErrorFeed();
 
         HistoryProductListItem getViewmodelHistory();
 

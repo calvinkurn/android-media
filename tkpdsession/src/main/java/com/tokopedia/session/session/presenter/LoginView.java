@@ -50,4 +50,6 @@ public interface LoginView extends BaseView {
     boolean checkHasNoProvider();
 
     void showError(String string);
+
+    void triggerSaveAccount();
 }

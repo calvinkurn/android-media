@@ -9,11 +9,15 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.qualifier.BaseDomainQualifier;
 import com.tokopedia.core.base.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.base.di.qualifier.NoAuthInterceptor;
+import com.tokopedia.core.base.di.qualifier.NoAuthInterceptorTopAds;
 import com.tokopedia.core.base.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.base.di.qualifier.WithAuthInterceptor;
 import com.tokopedia.core.base.di.qualifier.WithGlobalAuthInterceptor;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.core.OkHttpFactory;
+import com.tokopedia.core.network.core.OkHttpRetryPolicy;
+import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
@@ -30,8 +34,6 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * @author kulomady on 1/9/17.
@@ -42,37 +44,29 @@ public class NetModule {
     @AceQualifier
     @ApplicationScope
     @Provides
-    public Retrofit provideAceRetrofit(Gson gson,
-                                       @WithAuthInterceptor OkHttpClient okHttpClient,
-                                       GeneratedHostConverter generatedHostConverter,
-                                       TkpdResponseConverter tkpdResponseConverter,
-                                       StringResponseConverter stringResponseConverter) {
-        return new Retrofit.Builder()
-                .addConverterFactory(stringResponseConverter)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addConverterFactory(generatedHostConverter)
-                .addConverterFactory(tkpdResponseConverter)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .baseUrl(TkpdBaseURL.ACE_DOMAIN)
+    public Retrofit provideAceRetrofit(@NoAuthInterceptor OkHttpClient okHttpClient) {
+
+        return RetrofitFactory.createRetrofitDefaultConfig(TkpdBaseURL.ACE_DOMAIN)
                 .client(okHttpClient)
                 .build();
     }
+
 
     @TopAdsQualifier
     @ApplicationScope
     @Provides
     public Retrofit provideTopAdsRetrofit(Gson gson,
-                                          @NoAuthInterceptor OkHttpClient okHttpClient,
+                                          @NoAuthInterceptorTopAds OkHttpClient okHttpClient,
                                           GeneratedHostConverter generatedHostConverter,
                                           TkpdResponseConverter tkpdResponseConverter,
                                           StringResponseConverter stringResponseConverter) {
-        return new Retrofit.Builder()
-                .addConverterFactory(stringResponseConverter)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addConverterFactory(generatedHostConverter)
-                .addConverterFactory(tkpdResponseConverter)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .baseUrl(TkpdBaseURL.TOPADS_DOMAIN)
+
+        return RetrofitFactory
+                .createDaggerRetrofitDefaultConfig(TkpdBaseURL.TOPADS_DOMAIN,
+                        gson,
+                        generatedHostConverter,
+                        tkpdResponseConverter,
+                        stringResponseConverter)
                 .client(okHttpClient)
                 .build();
     }
@@ -80,18 +74,9 @@ public class NetModule {
     @BaseDomainQualifier
     @ApplicationScope
     @Provides
-    public Retrofit provideBaseDomainRetrofit(Gson gson,
-                                              @WithAuthInterceptor OkHttpClient okHttpClient,
-                                              GeneratedHostConverter generatedHostConverter,
-                                              TkpdResponseConverter tkpdResponseConverter,
-                                              StringResponseConverter stringResponseConverter) {
-        return new Retrofit.Builder()
-                .addConverterFactory(stringResponseConverter)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addConverterFactory(generatedHostConverter)
-                .addConverterFactory(tkpdResponseConverter)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .baseUrl(TkpdBaseURL.BASE_DOMAIN)
+    public Retrofit provideBaseDomainRetrofit(@WithAuthInterceptor OkHttpClient okHttpClient) {
+
+        return RetrofitFactory.createRetrofitDefaultConfig(TkpdBaseURL.BASE_DOMAIN)
                 .client(okHttpClient)
                 .build();
     }
@@ -99,18 +84,9 @@ public class NetModule {
     @MojitoQualifier
     @ApplicationScope
     @Provides
-    public Retrofit provideMojitoRetrofit(Gson gson,
-                                          @WithGlobalAuthInterceptor OkHttpClient okHttpClient,
-                                          GeneratedHostConverter generatedHostConverter,
-                                          TkpdResponseConverter tkpdResponseConverter,
-                                          StringResponseConverter stringResponseConverter) {
-        return new Retrofit.Builder()
-                .addConverterFactory(stringResponseConverter)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addConverterFactory(generatedHostConverter)
-                .addConverterFactory(tkpdResponseConverter)
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .baseUrl(TkpdBaseURL.MOJITO_DOMAIN)
+    public Retrofit provideMojitoRetrofit(@WithGlobalAuthInterceptor OkHttpClient okHttpClient) {
+
+        return RetrofitFactory.createRetrofitDefaultConfig(TkpdBaseURL.MOJITO_DOMAIN)
                 .client(okHttpClient)
                 .build();
     }
@@ -129,40 +105,39 @@ public class NetModule {
     @ApplicationScope
     @Provides
     public OkHttpClient provideOkhttpClient(Cache cache,
-                                            HttpLoggingInterceptor httpLoggingInterceptor,
-                                            Interceptor authInterceptor) {
-        OkHttpClient.Builder client = new OkHttpClient.Builder();
+                                            OkHttpRetryPolicy okHttpRetryPolicy) {
 
-        client.connectTimeout(45, TimeUnit.SECONDS);
-        client.readTimeout(45, TimeUnit.SECONDS);
-        client.writeTimeout(45, TimeUnit.SECONDS);
-        client.addInterceptor(authInterceptor);
-        client.addInterceptor(httpLoggingInterceptor);
-        client.cache(cache);
-        return client.build();
+        return OkHttpFactory.create()
+                .addOkHttpRetryPolicy(okHttpRetryPolicy)
+                .buildClientDefaultAuth();
     }
 
     @WithGlobalAuthInterceptor
     @ApplicationScope
     @Provides
     public OkHttpClient provideOkhttpClientGlobalAuth(Cache cache,
-                                                      HttpLoggingInterceptor httpLoggingInterceptor,
-                                                      GlobalTkpdAuthInterceptor globalTkpdAuthInterceptor) {
-        OkHttpClient.Builder client = new OkHttpClient.Builder();
+                                                      OkHttpRetryPolicy okHttpRetryPolicy) {
 
-        client.connectTimeout(45, TimeUnit.SECONDS);
-        client.readTimeout(45, TimeUnit.SECONDS);
-        client.writeTimeout(45, TimeUnit.SECONDS);
-        client.addInterceptor(globalTkpdAuthInterceptor);
-        client.addInterceptor(httpLoggingInterceptor);
-        client.cache(cache);
-        return client.build();
+        return OkHttpFactory.create()
+                .addOkHttpRetryPolicy(okHttpRetryPolicy)
+                .buildClientAuth(AuthUtil.KEY.KEY_MOJITO);
     }
 
     @NoAuthInterceptor
     @ApplicationScope
     @Provides
     public OkHttpClient provideOkhttpClientNoAuth(Cache cache,
+                                                  OkHttpRetryPolicy okHttpRetryPolicy) {
+
+        return OkHttpFactory.create()
+                .addOkHttpRetryPolicy(okHttpRetryPolicy)
+                .buildClientNoAuth();
+    }
+
+    @NoAuthInterceptorTopAds
+    @ApplicationScope
+    @Provides
+    public OkHttpClient provideOkhttpClientNoAuthTopAds(Cache cache,
                                                   HttpLoggingInterceptor httpLoggingInterceptor) {
         OkHttpClient.Builder client = new OkHttpClient.Builder();
 
@@ -218,6 +193,12 @@ public class NetModule {
     @Provides
     public GlobalTkpdAuthInterceptor provideGlobalAuthInterceptor() {
         return new GlobalTkpdAuthInterceptor(AuthUtil.KEY.KEY_MOJITO);
+    }
+
+    @ApplicationScope
+    @Provides
+    public OkHttpRetryPolicy provideOkHttpRetryPolicy() {
+        return OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
     }
 
 

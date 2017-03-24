@@ -171,6 +171,11 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
     }
 
     @Override
+    public void getCategoryHeader(String categoryId) {
+
+    }
+
+    @Override
     public String getMessageTAG() {
         return FragmentDiscoveryPresenterImpl.class.getSimpleName();
     }
@@ -201,8 +206,11 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                         if (hotListBannerModel != null) {
                             view.addHotListHeader(new ProductAdapter.HotListBannerModel(hotListBannerModel, browseProductModel.result.hashtag));
                             processBrowseProductLoadMore(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
-                        } else {
-                            processBrowseProduct(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                        } else if(browseProductModel!=null
+                                && browseProductModel.header != null
+                                && listPagingHandlerModelPair.getModel1() !=null
+                                && listPagingHandlerModelPair.getModel2() !=null){
+                            processBrowseProduct(browseProductModel.header.getTotalData(),listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
                         }
                         sendGTMNoResult(context);
                     }
@@ -246,8 +254,8 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
         return pagingHandlerModel;
     }
 
-    public void processBrowseProduct(List<ProductItem> productItems, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        view.onCallProductServiceResult2(productItems, pagingHandlerModel);
+    public void processBrowseProduct(Long totalProduct, List<ProductItem> productItems, PagingHandler.PagingHandlerModel pagingHandlerModel) {
+        view.onCallProductServiceResult2(totalProduct, productItems, pagingHandlerModel);
     }
 
     public void processBrowseProductLoadMore(List<ProductItem> productItems, PagingHandler.PagingHandlerModel pagingHandlerModel) {

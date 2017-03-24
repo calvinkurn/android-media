@@ -21,6 +21,7 @@ import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationDetailActivity;
 import com.tokopedia.core.inboxreputation.fragment.ImageUploadPreviewFragment;
 import com.tokopedia.core.inboxreputation.fragment.InboxReputationFormFragment;
@@ -164,6 +165,9 @@ public class InboxReputationFormFragmentPresenterImpl
                     postReview(getActReviewPass());
                     break;
             }
+            int accuracy = (int) Float.parseFloat(viewListener.getAccuracyRating());
+            int quality = (int) Float.parseFloat(viewListener.getQualityRating());
+            UnifyTracking.eventLocaGoodReview(accuracy, quality);
         }
     }
 
@@ -209,11 +213,13 @@ public class InboxReputationFormFragmentPresenterImpl
 
             @Override
             public void onCancel() {
+                viewListener.unTickCheckBox();
                 LoginManager.getInstance().logOut();
             }
 
             @Override
             public void onError(FacebookException e) {
+                viewListener.unTickCheckBox();
                 if(e instanceof FacebookAuthorizationException){
                     LoginManager.getInstance().logOut();
                 }
@@ -232,6 +238,8 @@ public class InboxReputationFormFragmentPresenterImpl
                 .setContentDescription(contentDescription)
                 .setShareHashtag(new ShareHashtag.Builder().setHashtag(fragment.getActivity().getString(R.string.title_tokopedia_hashtag)).build())
                 .build();
+
+        LoginManager.getInstance().logInWithPublishPermissions(fragment, FacebookContainer.writePermissions);
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(final LoginResult loginResult) {

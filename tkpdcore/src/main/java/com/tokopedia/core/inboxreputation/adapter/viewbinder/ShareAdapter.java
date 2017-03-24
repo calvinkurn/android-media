@@ -1,15 +1,14 @@
 package com.tokopedia.core.inboxreputation.adapter.viewbinder;
 
 import android.content.Context;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.tokopedia.core.R;
 
+import com.tokopedia.core.R;
 import com.tokopedia.core.inboxreputation.model.ShareItem;
 
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ public class ShareAdapter extends BaseAdapter {
         shareItems = new ArrayList<>();
     }
 
-    public void addItem(ShareItem item){
+    public void addItem(ShareItem item) {
         shareItems.add(item);
     }
 
