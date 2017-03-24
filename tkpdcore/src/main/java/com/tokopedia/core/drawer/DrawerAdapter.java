@@ -520,15 +520,6 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 String seamlessURL;
                 seamlessURL = URLGenerator.generateURLSessionLogin((Uri.encode(redirectURL)), context);
                 openTokoCashWebView(seamlessURL);
-                Bundle bundle = new Bundle();
-                bundle.putString("url", URLGenerator
-                        .generateURLSessionLogin(Uri.encode(redirectURL), context));
-                if(context instanceof Activity){
-                    if(((Activity) context).getApplication() instanceof TkpdCoreRouter) {
-                        ((TkpdCoreRouter)((Activity) context).getApplication())
-                                .goToWallet(context, bundle);
-                    }
-                }
                 finishActivity();
             }
         };
