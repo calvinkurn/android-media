@@ -437,7 +437,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         isHasCategoryHeader = true;
         if (getActivity()!=null && getActivity() instanceof  BrowseProductActivity) {
             BrowseProductActivityModel browseModel = ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel();
-            if (categoryHeader.getRevamp() !=null && categoryHeader.getRevamp()) {
+            if (categoryHeader.getIsRevamp() !=null && categoryHeader.getIsRevamp()) {
                 productAdapter.addCategoryRevampHeader(
                         new ProductAdapter.CategoryHeaderRevampModel(categoryHeader,getActivity(),getCategoryWidth(),
                                 this,browseModel.getTotalDataCategory(), this));

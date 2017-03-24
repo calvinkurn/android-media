@@ -16,7 +16,7 @@ import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.apiservices.search.SearchSuggestionService;
 import com.tokopedia.core.network.apiservices.topads.TopAdsService;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.entity.categoriesHades.CategoriesHadesModel;
+import com.tokopedia.core.network.entity.categoriesHades.CategoryHadesModel;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
@@ -125,7 +125,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(
-                        new Subscriber<Response<CategoriesHadesModel>>() {
+                        new Subscriber<Response<CategoryHadesModel>>() {
                             @Override
                             public void onCompleted() {
 
@@ -141,11 +141,11 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
                             }
 
                             @Override
-                            public void onNext(Response<CategoriesHadesModel> categoriesHadesModel) {
-                                Pair<String, CategoriesHadesModel.CategoriesHadesContainer> pair =
+                            public void onNext(Response<CategoryHadesModel> categoriesHadesModel) {
+                                Pair<String, CategoryHadesModel.CategoriesHadesContainer> pair =
                                         new Pair<>(
                                                 DiscoveryListener.CATEGORYHEADER,
-                                                new CategoriesHadesModel.CategoriesHadesContainer(
+                                                new CategoryHadesModel.CategoriesHadesContainer(
                                                         categoriesHadesModel.body()
                                                 )
                                         );

@@ -1,4 +1,3 @@
-
 package com.tokopedia.core.network.entity.categoriesHades;
 
 import android.os.Parcel;
@@ -18,18 +17,18 @@ public class Child implements Parcelable {
     @SerializedName("url")
     @Expose
     private String url;
-    @SerializedName("is_revamp")
-    @Expose
-    private Boolean isRevamp;
-    @SerializedName("hidden")
-    @Expose
-    private Integer hidden;
-    @SerializedName("View")
-    @Expose
-    private Integer view;
     @SerializedName("thumbnail_image")
     @Expose
     private String thumbnailImage;
+    @SerializedName("hidden")
+    @Expose
+    private Integer hidden;
+    @SerializedName("is_revamp")
+    @Expose
+    private Boolean isRevamp;
+    @SerializedName("is_intermediary")
+    @Expose
+    private Boolean isIntermediary;
 
     public String getId() {
         return id;
@@ -55,12 +54,12 @@ public class Child implements Parcelable {
         this.url = url;
     }
 
-    public Boolean getRevamp() {
-        return isRevamp;
+    public String getThumbnailImage() {
+        return thumbnailImage;
     }
 
-    public void setRevamp(Boolean revamp) {
-        isRevamp = revamp;
+    public void setThumbnailImage(String thumbnailImage) {
+        this.thumbnailImage = thumbnailImage;
     }
 
     public Integer getHidden() {
@@ -71,20 +70,20 @@ public class Child implements Parcelable {
         this.hidden = hidden;
     }
 
-    public Integer getView() {
-        return view;
+    public Boolean getIsRevamp() {
+        return isRevamp;
     }
 
-    public void setView(Integer view) {
-        this.view = view;
+    public void setIsRevamp(Boolean isRevamp) {
+        this.isRevamp = isRevamp;
     }
 
-    public String getThumbnailImage() {
-        return thumbnailImage;
+    public Boolean getIsIntermediary() {
+        return isIntermediary;
     }
 
-    public void setThumbnailImage(String thumbnailImage) {
-        this.thumbnailImage = thumbnailImage;
+    public void setIsIntermediary(Boolean isIntermediary) {
+        this.isIntermediary = isIntermediary;
     }
 
 
@@ -92,11 +91,12 @@ public class Child implements Parcelable {
         id = in.readString();
         name = in.readString();
         url = in.readString();
+        thumbnailImage = in.readString();
+        hidden = in.readByte() == 0x00 ? null : in.readInt();
         byte isRevampVal = in.readByte();
         isRevamp = isRevampVal == 0x02 ? null : isRevampVal != 0x00;
-        hidden = in.readByte() == 0x00 ? null : in.readInt();
-        view = in.readByte() == 0x00 ? null : in.readInt();
-        thumbnailImage = in.readString();
+        byte isIntermediaryVal = in.readByte();
+        isIntermediary = isIntermediaryVal == 0x02 ? null : isIntermediaryVal != 0x00;
     }
 
     @Override
@@ -109,24 +109,23 @@ public class Child implements Parcelable {
         dest.writeString(id);
         dest.writeString(name);
         dest.writeString(url);
-        if (isRevamp == null) {
-            dest.writeByte((byte) (0x02));
-        } else {
-            dest.writeByte((byte) (isRevamp ? 0x01 : 0x00));
-        }
+        dest.writeString(thumbnailImage);
         if (hidden == null) {
             dest.writeByte((byte) (0x00));
         } else {
             dest.writeByte((byte) (0x01));
             dest.writeInt(hidden);
         }
-        if (view == null) {
-            dest.writeByte((byte) (0x00));
+        if (isRevamp == null) {
+            dest.writeByte((byte) (0x02));
         } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeInt(view);
+            dest.writeByte((byte) (isRevamp ? 0x01 : 0x00));
         }
-        dest.writeString(thumbnailImage);
+        if (isIntermediary == null) {
+            dest.writeByte((byte) (0x02));
+        } else {
+            dest.writeByte((byte) (isIntermediary ? 0x01 : 0x00));
+        }
     }
 
     @SuppressWarnings("unused")

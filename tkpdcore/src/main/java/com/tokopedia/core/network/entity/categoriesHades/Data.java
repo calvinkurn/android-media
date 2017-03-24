@@ -9,8 +9,14 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Data implements Parcelable{
+public class Data implements Parcelable {
 
+    @SerializedName("child")
+    @Expose
+    private List<Child> child = null;
+    @SerializedName("curated_product")
+    @Expose
+    private CuratedProduct curatedProduct;
     @SerializedName("id")
     @Expose
     private String id;
@@ -23,12 +29,6 @@ public class Data implements Parcelable{
     @SerializedName("title_tag")
     @Expose
     private String titleTag;
-    @SerializedName("is_revamp")
-    @Expose
-    private Boolean isRevamp;
-    @SerializedName("is_intermediary")
-    @Expose
-    private Boolean isInterMediary;
     @SerializedName("meta_description")
     @Expose
     private String metaDescription;
@@ -38,12 +38,31 @@ public class Data implements Parcelable{
     @SerializedName("hidden")
     @Expose
     private Integer hidden;
-    @SerializedName("View")
+    @SerializedName("view")
     @Expose
     private Integer view;
-    @SerializedName("child")
+    @SerializedName("is_revamp")
     @Expose
-    private List<Child> child = null;
+    private Boolean isRevamp;
+    @SerializedName("is_intermediary")
+    @Expose
+    private Boolean isIntermediary;
+
+    public List<Child> getChild() {
+        return child;
+    }
+
+    public void setChild(List<Child> child) {
+        this.child = child;
+    }
+
+    public CuratedProduct getCuratedProduct() {
+        return curatedProduct;
+    }
+
+    public void setCuratedProduct(CuratedProduct curatedProduct) {
+        this.curatedProduct = curatedProduct;
+    }
 
     public String getId() {
         return id;
@@ -85,22 +104,6 @@ public class Data implements Parcelable{
         this.metaDescription = metaDescription;
     }
 
-    public Boolean getIsInterMediary() {
-        return isInterMediary;
-    }
-
-    public void setIsInterMediary(Boolean interMediary) {
-        isInterMediary = interMediary;
-    }
-
-    public Boolean getRevamp() {
-        return isRevamp;
-    }
-
-    public void setRevamp(Boolean revamp) {
-        isRevamp = revamp;
-    }
-
     public String getHeaderImage() {
         return headerImage;
     }
@@ -125,34 +128,43 @@ public class Data implements Parcelable{
         this.view = view;
     }
 
-    public List<Child> getChild() {
-        return child;
+    public Boolean getIsRevamp() {
+        return isRevamp;
     }
 
-    public void setChild(List<Child> child) {
-        this.child = child;
+    public void setIsRevamp(Boolean isRevamp) {
+        this.isRevamp = isRevamp;
+    }
+
+    public Boolean getIsIntermediary() {
+        return isIntermediary;
+    }
+
+    public void setIsIntermediary(Boolean isIntermediary) {
+        this.isIntermediary = isIntermediary;
     }
 
 
     protected Data(Parcel in) {
-        id = in.readString();
-        name = in.readString();
-        description = in.readString();
-        titleTag = in.readString();
-        byte isRevampVal = in.readByte();
-        isRevamp = isRevampVal == 0x02 ? null : isRevampVal != 0x00;
-        byte isInterMediaryVal = in.readByte();
-        isInterMediary = isInterMediaryVal == 0x02 ? null : isInterMediaryVal != 0x00;
-        metaDescription = in.readString();
-        headerImage = in.readString();
-        hidden = in.readByte() == 0x00 ? null : in.readInt();
-        view = in.readByte() == 0x00 ? null : in.readInt();
         if (in.readByte() == 0x01) {
             child = new ArrayList<Child>();
             in.readList(child, Child.class.getClassLoader());
         } else {
             child = null;
         }
+        curatedProduct = (CuratedProduct) in.readValue(CuratedProduct.class.getClassLoader());
+        id = in.readString();
+        name = in.readString();
+        description = in.readString();
+        titleTag = in.readString();
+        metaDescription = in.readString();
+        headerImage = in.readString();
+        hidden = in.readByte() == 0x00 ? null : in.readInt();
+        view = in.readByte() == 0x00 ? null : in.readInt();
+        byte isRevampVal = in.readByte();
+        isRevamp = isRevampVal == 0x02 ? null : isRevampVal != 0x00;
+        byte isIntermediaryVal = in.readByte();
+        isIntermediary = isIntermediaryVal == 0x02 ? null : isIntermediaryVal != 0x00;
     }
 
     @Override
@@ -162,20 +174,17 @@ public class Data implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        if (child == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(child);
+        }
+        dest.writeValue(curatedProduct);
         dest.writeString(id);
         dest.writeString(name);
         dest.writeString(description);
         dest.writeString(titleTag);
-        if (isRevamp == null) {
-            dest.writeByte((byte) (0x02));
-        } else {
-            dest.writeByte((byte) (isRevamp ? 0x01 : 0x00));
-        }
-        if (isInterMediary == null) {
-            dest.writeByte((byte) (0x02));
-        } else {
-            dest.writeByte((byte) (isInterMediary ? 0x01 : 0x00));
-        }
         dest.writeString(metaDescription);
         dest.writeString(headerImage);
         if (hidden == null) {
@@ -190,11 +199,15 @@ public class Data implements Parcelable{
             dest.writeByte((byte) (0x01));
             dest.writeInt(view);
         }
-        if (child == null) {
-            dest.writeByte((byte) (0x00));
+        if (isRevamp == null) {
+            dest.writeByte((byte) (0x02));
         } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(child);
+            dest.writeByte((byte) (isRevamp ? 0x01 : 0x00));
+        }
+        if (isIntermediary == null) {
+            dest.writeByte((byte) (0x02));
+        } else {
+            dest.writeByte((byte) (isIntermediary ? 0x01 : 0x00));
         }
     }
 
@@ -210,5 +223,4 @@ public class Data implements Parcelable{
             return new Data[size];
         }
     };
-
 }

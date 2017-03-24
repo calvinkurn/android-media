@@ -16,10 +16,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,8 +36,6 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
@@ -48,7 +44,7 @@ import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.entity.categoriesHades.CategoriesHadesModel;
+import com.tokopedia.core.network.entity.categoriesHades.CategoryHadesModel;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
 import com.tokopedia.core.network.entity.categoriesHades.SimpleCategory;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
@@ -83,7 +79,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -981,8 +976,8 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                                 fragmentManager.findFragmentById(R.id.container);
                         if (parentFragment!=null) {
                             ObjContainer objContainer = data.getModel2();
-                            CategoriesHadesModel.CategoriesHadesContainer categoriesHadesContainer = (CategoriesHadesModel.CategoriesHadesContainer) objContainer;
-                            CategoriesHadesModel body = categoriesHadesContainer.body();
+                            CategoryHadesModel.CategoriesHadesContainer categoriesHadesContainer = (CategoryHadesModel.CategoriesHadesContainer) objContainer;
+                            CategoryHadesModel body = categoriesHadesContainer.body();
                             if (browseProductActivityModel !=null && body !=null && body.getData() !=null) {
                                 browseProductActivityModel.categotyHeader = body.getData();
                                 parentFragment.renderCategories(browseProductActivityModel.categotyHeader);
