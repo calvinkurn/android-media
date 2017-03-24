@@ -3,9 +3,7 @@ package com.tokopedia.seller.app;
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 
 import javax.inject.Inject;
