@@ -1,6 +1,7 @@
 package com.tokopedia.seller.shop.setting.view.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.stepstone.stepper.Step;
 import com.stepstone.stepper.VerificationError;
+import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.app.BaseDiFragment;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingInfoComponent;
@@ -44,6 +46,7 @@ public class ShopSettingInfoFragment extends BaseDiFragment<ShopSettingInfoCompo
     TextView errorImageEmpty;
 
     Button buttonNext;
+    ProgressDialog progressDialog;
 
     String uriPathImage = "";
 
@@ -75,6 +78,8 @@ public class ShopSettingInfoFragment extends BaseDiFragment<ShopSettingInfoCompo
         imagePicker = (ImageView) view.findViewById(R.id.image_picker);
         buttonNext = (Button) view.findViewById(R.id.button_next);
         errorImageEmpty = (TextView) view.findViewById(R.id.error_image_empty);
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.title_loading));
     }
 
     @Override
@@ -138,6 +143,26 @@ public class ShopSettingInfoFragment extends BaseDiFragment<ShopSettingInfoCompo
     @Override
     public void onErrorDescriptionEmptyFalse() {
         shopDescInputLayout.setError(null);
+    }
+
+    @Override
+    public void showProgressDialog() {
+        progressDialog.show();
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        progressDialog.dismiss();
+    }
+
+    @Override
+    public void onSuccessSaveInfoShop() {
+
+    }
+
+    @Override
+    public void onFailedSaveInfoShop() {
+
     }
 
     @Override

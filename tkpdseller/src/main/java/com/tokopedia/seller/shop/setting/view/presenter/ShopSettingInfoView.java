@@ -17,4 +17,12 @@ public interface ShopSettingInfoView extends BaseDiView {
     void onErrorDescriptionEmpty();
 
     void onErrorDescriptionEmptyFalse();
+
+    void showProgressDialog();
+
+    void dismissProgressDialog();
+
+    void onSuccessSaveInfoShop();
+
+    void onFailedSaveInfoShop();
 }

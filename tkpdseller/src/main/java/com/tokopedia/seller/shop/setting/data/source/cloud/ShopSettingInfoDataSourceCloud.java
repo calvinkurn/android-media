@@ -74,7 +74,7 @@ public class ShopSettingInfoDataSourceCloud {
         Map<String, RequestBody> paramsUploadImage = new TKPDMapParam<>();
 
         NetworkCalculator networkCalculator = new NetworkCalculator(NetworkConfig.POST, context,
-                urlUploadImage);
+                urlUploadImage).setIdentity().compileAllParam().finish();
 
         File file = new File(pathFile);
 

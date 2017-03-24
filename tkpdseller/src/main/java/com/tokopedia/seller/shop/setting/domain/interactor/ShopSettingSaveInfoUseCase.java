@@ -53,6 +53,6 @@ public class ShopSettingSaveInfoUseCase extends UseCase<Boolean> {
         params.putString(PATH_FILE_IMAGE, pathFileImage);
         params.putString(SHOP_DESCRIPTION, shopDescription);
         params.putString(TAG_LINE, tagLine);
-        return RequestParams.create();
+        return params;
     }
 }

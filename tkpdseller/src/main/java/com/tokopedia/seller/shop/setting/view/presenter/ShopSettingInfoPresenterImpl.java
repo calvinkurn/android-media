@@ -20,6 +20,7 @@ public class ShopSettingInfoPresenterImpl extends ShopSettingInfoPresenter {
     @Override
     public void submitShopInfo(String uriPathImage, String shopSlogan, String shopDescription) {
         if(validateForm(uriPathImage, shopSlogan, shopDescription)) {
+            view.showProgressDialog();
             shopSettingSaveInfoUseCase.execute(ShopSettingSaveInfoUseCase.createRequestParams(uriPathImage,
                     shopDescription, shopSlogan), getSubscriberSaveInfo());
         }
@@ -39,18 +40,26 @@ public class ShopSettingInfoPresenterImpl extends ShopSettingInfoPresenter {
 
             @Override
             public void onError(Throwable e) {
-
+                view.dismissProgressDialog();
+                view.onFailedSaveInfoShop();
             }
 
             @Override
-            public void onNext(Boolean aBoolean) {
-
+            public void onNext(Boolean isSuccess) {
+                if(isSuccess){
+                    view.onSuccessSaveInfoShop();
+                }else{
+                    view.onFailedSaveInfoShop();
+                }
             }
         };
     }
 
-    private boolean validateForm(String uriPathImage, String shopSlogan, String shopDescription) {
+    private boolean  validateForm(String uriPathImage, String shopSlogan, String shopDescription) {
         if(!uriPathImage.isEmpty() && !shopSlogan.isEmpty() && !shopDescription.isEmpty()){
+            view.onErrorDescriptionEmptyFalse();
+            view.onErrorEmptyImageFalse();
+            view.onErrorSloganEmptyFalse();
             return true;
         }else{
             if(uriPathImage.isEmpty()){
