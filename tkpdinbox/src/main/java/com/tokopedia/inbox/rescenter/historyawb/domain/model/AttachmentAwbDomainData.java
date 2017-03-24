@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.rescenter.history.domain.model;
+package com.tokopedia.inbox.rescenter.historyawb.domain.model;
 
 /**
  * Created by hangnadi on 3/24/17.

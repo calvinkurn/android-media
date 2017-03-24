@@ -6,7 +6,7 @@ import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
 import com.tokopedia.core.network.apiservices.rescenter.ResolutionService;
 import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
-import com.tokopedia.inbox.rescenter.detailv2.data.mapper.HistoryAwbMapper;
+import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.source.CloudActionResCenterDataStore;
 import com.tokopedia.inbox.rescenter.detailv2.data.source.CloudInboxResCenterDataSource;
 import com.tokopedia.inbox.rescenter.detailv2.data.source.CloudResCenterDataSource;

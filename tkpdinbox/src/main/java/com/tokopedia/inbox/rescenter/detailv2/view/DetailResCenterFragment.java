@@ -32,7 +32,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFrag
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
 import com.tokopedia.inbox.rescenter.edit.activity.EditResCenterActivity;
-import com.tokopedia.inbox.rescenter.history.HistoryShippingActivity;
+import com.tokopedia.inbox.rescenter.historyawb.HistoryShippingActivity;
 
 /**
  * Created by hangnadi on 3/8/17.

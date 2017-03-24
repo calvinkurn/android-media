@@ -4,7 +4,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
-import com.tokopedia.inbox.rescenter.history.domain.model.HistoryAwbData;
+import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
 
 import rx.Observable;
 

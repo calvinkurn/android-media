@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.rescenter.history.view.model;
+package com.tokopedia.inbox.rescenter.historyawb.view.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

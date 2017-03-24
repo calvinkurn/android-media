@@ -6,9 +6,9 @@ import com.tokopedia.core.network.apiservices.rescenter.ResolutionService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
-import com.tokopedia.inbox.rescenter.detailv2.data.mapper.HistoryAwbMapper;
+import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
-import com.tokopedia.inbox.rescenter.history.domain.model.HistoryAwbData;
+import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
 
 import rx.Observable;
 

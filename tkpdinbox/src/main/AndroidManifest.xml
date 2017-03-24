@@ -72,7 +72,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.tokopedia.inbox.rescenter.history.HistoryShippingActivity"
+            android:name="com.tokopedia.inbox.rescenter.historyawb.HistoryShippingActivity"
             android:label="@string/title_activity_res_center"
             android:screenOrientation="portrait" />
 
