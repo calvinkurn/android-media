@@ -37,6 +37,7 @@ public class TkpdBaseURL {
     public static String MOBILE_DOMAIN = "https://m.tokopedia.com/";
     public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
+    public static String TOME_DOMAIN = "https://tome.tokopedia.com/";
 
     public static class Product {
         public static final String URL_PRODUCT = BASE_DOMAIN + "v4/product/";
@@ -353,6 +354,10 @@ public class TkpdBaseURL {
 
         public static final String PATH_GET_DATA_SOURCE_TICKER = "get_data_source_ticker.pl";
         public static final String PATH_GET_LIST_FAVE_SHOP_ID = "/v4/home/get_list_fave_shop_id.pl";
+    }
+
+    public static final class Tome {
+        public static final String URL_ADDRESS = TOME_DOMAIN + "v1/web-service/apps/";
     }
 
     public static class ResCenter {

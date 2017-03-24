@@ -544,7 +544,7 @@ public class SessionHandler {
         }
     }
 
-    public String getAccessToken(Context context) {
+    public static String getAccessToken(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(ACCESS_TOKEN, "");
     }
