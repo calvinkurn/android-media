@@ -8,8 +8,8 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.tkpd.home.favorite.data.AddFavoriteShopMapper;
-import com.tokopedia.tkpd.home.favorite.data.FavoriteShopMapper;
+import com.tokopedia.tkpd.home.favorite.data.mapper.AddFavoriteShopMapper;
+import com.tokopedia.tkpd.home.favorite.data.mapper.FavoriteShopMapper;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 

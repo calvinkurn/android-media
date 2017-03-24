@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.home.favorite.data;
+package com.tokopedia.tkpd.home.favorite.data.mapper;
 
 import android.content.Context;
 

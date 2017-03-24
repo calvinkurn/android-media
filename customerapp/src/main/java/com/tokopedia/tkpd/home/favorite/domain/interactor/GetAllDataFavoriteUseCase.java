@@ -55,7 +55,7 @@ public class GetAllDataFavoriteUseCase extends UseCase<DataFavorite> {
 
 
     private Observable<TopAdsShop> getTopAdsShop() {
-        RequestParams requestParams = GetTopAdsShopUseCase.DefaultParams();
+        RequestParams requestParams = GetTopAdsShopUseCase.defaultParams();
         requestParams.putBoolean(GetTopAdsShopUseCase.KEY_IS_FORCE_REFRESH, true);
         return getTopAdsShopUseCase.createObservable(requestParams);
     }

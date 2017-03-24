@@ -17,13 +17,14 @@ import rx.Observable;
 public class GetTopAdsShopUseCase extends UseCase<TopAdsShop> {
 
     public static final String KEY_IS_FORCE_REFRESH = "isForceRefresh";
-    private static final String KEY_ITEM = "item";
-    private static final String KEY_SRC = "src";
-    private static final String KEY_PAGE = "page";
 
-    private static final String TOPADS_PAGE_DEFAULT_VALUE = "1";
-    private static final String TOPADS_ITEM_DEFAULT_VALUE = "4";
-    private static final String SRC_FAV_SHOP_VALUE = "fav_shop";
+    static final String KEY_ITEM = "item";
+    static final String KEY_SRC = "src";
+    static final String KEY_PAGE = "page";
+
+    static final String TOPADS_PAGE_DEFAULT_VALUE = "1";
+    static final String TOPADS_ITEM_DEFAULT_VALUE = "4";
+    static final String SRC_FAV_SHOP_VALUE = "fav_shop";
 
     private FavoriteRepository favoriteRepository;
 
@@ -48,7 +49,7 @@ public class GetTopAdsShopUseCase extends UseCase<TopAdsShop> {
         return isForceRefresh;
     }
 
-    public static RequestParams DefaultParams() {
+    public static RequestParams defaultParams() {
         RequestParams params = RequestParams.create();
         params.putString(GetTopAdsShopUseCase.KEY_PAGE,
                 GetTopAdsShopUseCase.TOPADS_PAGE_DEFAULT_VALUE);

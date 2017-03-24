@@ -90,7 +90,7 @@ public class FavoritePresenter
 
     @Override
     public void loadDataTopAdsShop() {
-        RequestParams defaultParams = GetTopAdsShopUseCase.DefaultParams();
+        RequestParams defaultParams = GetTopAdsShopUseCase.defaultParams();
         defaultParams.putBoolean(GetTopAdsShopUseCase.KEY_IS_FORCE_REFRESH, false);
         getTopAdsShopUseCase.execute(defaultParams, new TopAdsShopSubscriber());
     }

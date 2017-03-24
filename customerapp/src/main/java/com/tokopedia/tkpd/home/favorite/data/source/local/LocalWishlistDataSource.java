@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.tkpd.home.favorite.data.WishlistMapper;
+import com.tokopedia.tkpd.home.favorite.data.mapper.WishlistMapper;
 import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
 
 import retrofit2.Response;

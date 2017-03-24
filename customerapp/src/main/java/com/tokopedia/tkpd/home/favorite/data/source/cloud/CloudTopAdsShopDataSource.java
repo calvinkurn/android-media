@@ -7,7 +7,7 @@ import com.tokopedia.core.base.common.service.TopAdsService;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.tkpd.home.favorite.data.TopAdsShopMapper;
+import com.tokopedia.tkpd.home.favorite.data.mapper.TopAdsShopMapper;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
 
 import retrofit2.Response;

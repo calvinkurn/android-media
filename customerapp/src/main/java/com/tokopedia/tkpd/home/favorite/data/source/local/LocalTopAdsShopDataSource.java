@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.tkpd.home.favorite.data.TopAdsShopMapper;
+import com.tokopedia.tkpd.home.favorite.data.mapper.TopAdsShopMapper;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
 
 import retrofit2.Response;
