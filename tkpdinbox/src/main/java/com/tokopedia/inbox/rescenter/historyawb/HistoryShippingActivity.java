@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.rescenter.history;
+package com.tokopedia.inbox.rescenter.historyawb;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -8,6 +8,9 @@ import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.historyawb.view.listener.HistoryShipping;
+import com.tokopedia.inbox.rescenter.historyawb.view.presenter.HistoryShippingImpl;
+import com.tokopedia.inbox.rescenter.historyawb.view.listener.HistoryShippingViewListener;
 
 /**
  * Created by hangnadi on 3/23/17.

@@ -1,11 +1,11 @@
-package com.tokopedia.inbox.rescenter.history.view.subscriber;
+package com.tokopedia.inbox.rescenter.historyawb.view.subscriber;
 
-import com.tokopedia.inbox.rescenter.history.HistoryShippingFragmentView;
-import com.tokopedia.inbox.rescenter.history.domain.model.AttachmentAwbDomainData;
-import com.tokopedia.inbox.rescenter.history.domain.model.HistoryAwbData;
-import com.tokopedia.inbox.rescenter.history.domain.model.HistoryAwbItemDomainData;
-import com.tokopedia.inbox.rescenter.history.view.model.Attachment;
-import com.tokopedia.inbox.rescenter.history.view.model.HistoryAwbViewItem;
+import com.tokopedia.inbox.rescenter.historyawb.view.presenter.HistoryShippingFragmentView;
+import com.tokopedia.inbox.rescenter.historyawb.domain.model.AttachmentAwbDomainData;
+import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
+import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbItemDomainData;
+import com.tokopedia.inbox.rescenter.historyawb.view.model.Attachment;
+import com.tokopedia.inbox.rescenter.historyawb.view.model.HistoryAwbViewItem;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.rescenter.history.data.pojo;
+package com.tokopedia.inbox.rescenter.historyawb.data.pojo;
 
 import com.google.gson.annotations.SerializedName;
 

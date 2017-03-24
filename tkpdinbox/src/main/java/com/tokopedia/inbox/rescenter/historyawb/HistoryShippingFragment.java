@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.rescenter.history;
+package com.tokopedia.inbox.rescenter.historyawb;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -14,8 +14,11 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.customdialog.TrackShippingDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
-import com.tokopedia.inbox.rescenter.history.customadapter.HistoryShippingAdapter;
-import com.tokopedia.inbox.rescenter.history.view.model.HistoryAwbViewItem;
+import com.tokopedia.inbox.rescenter.historyawb.view.customadapter.HistoryShippingAdapter;
+import com.tokopedia.inbox.rescenter.historyawb.view.model.HistoryAwbViewItem;
+import com.tokopedia.inbox.rescenter.historyawb.view.presenter.HistoryShippingFragmentImpl;
+import com.tokopedia.inbox.rescenter.historyawb.view.presenter.HistoryShippingFragmentPresenter;
+import com.tokopedia.inbox.rescenter.historyawb.view.presenter.HistoryShippingFragmentView;
 import com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity;
 
 import java.util.ArrayList;

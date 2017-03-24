@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.inbox.rescenter.detailv2.data.mapper.TrackAwbReturProductMapper;
+import com.tokopedia.inbox.rescenter.historyawb.data.mapper.TrackAwbReturProductMapper;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
 
 import rx.Observable;
