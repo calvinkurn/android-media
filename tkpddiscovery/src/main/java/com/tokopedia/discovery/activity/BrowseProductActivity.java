@@ -188,8 +188,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse_category_new);
         ButterKnife.bind(this);
-        browseProductPresenter = new BrowseProductPresenterImpl();
-        retrieveLastGridConfig();
         discoveryInteractor = new DiscoveryInteractorImpl();
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         keepActivitySettings = Settings.System.getInt(getContentResolver(), Settings.Global.ALWAYS_FINISH_ACTIVITIES, 0);
@@ -218,6 +216,8 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                 }
             }
         }
+        browseProductPresenter = new BrowseProductPresenterImpl();
+        retrieveLastGridConfig();
         if (SessionHandler.isV4Login(this)) {
             String userId = SessionHandler.getLoginID(this);
             browseProductActivityModel.setUnique_id(AuthUtil.md5(userId));
