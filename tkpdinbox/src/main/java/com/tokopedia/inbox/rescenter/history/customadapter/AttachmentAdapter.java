@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.rescenter.history.customadapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +12,7 @@ import android.widget.ImageView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.history.viewmodel.ShippingAttachment;
+import com.tokopedia.inbox.rescenter.history.view.model.Attachment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +23,9 @@ import java.util.List;
 
 public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.ViewHolder> {
 
-    private final List<ShippingAttachment> attachment;
+    private final List<Attachment> attachment;
 
-    public AttachmentAdapter(List<ShippingAttachment> attachment) {
+    public AttachmentAdapter(List<Attachment> attachment) {
         this.attachment = attachment;
     }
 
@@ -49,13 +48,13 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        ImageHandler.loadImage2(holder.placeHolder, getAttachmentItem(position).getUrlThumbnail(), R.drawable.ic_action_attachment);
+        ImageHandler.loadImage2(holder.placeHolder, getAttachmentItem(position).getThumbnailUrl(), R.drawable.ic_action_attachment);
         holder.placeHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Context context = view.getContext();
                 ArrayList<String> imageUrls = new ArrayList<>();
-                for (ShippingAttachment attachment : getAttachment()) {
+                for (Attachment attachment : getAttachment()) {
                     imageUrls.add(attachment.getUrl());
                 }
                 Intent intent = new Intent(context, PreviewProductImage.class);
@@ -68,11 +67,11 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         });
     }
 
-    public List<ShippingAttachment> getAttachment() {
+    public List<Attachment> getAttachment() {
         return attachment;
     }
 
-    public ShippingAttachment getAttachmentItem(int position) {
+    public Attachment getAttachmentItem(int position) {
         return getAttachment().get(position);
     }
 

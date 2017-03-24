@@ -1,5 +1,7 @@
 package com.tokopedia.inbox.rescenter.history.domain.model;
 
+import java.util.List;
+
 /**
  * Created by hangnadi on 3/23/17.
  */
@@ -8,6 +10,7 @@ public class HistoryAwbData {
     private boolean success;
     private int errorCode;
     private String messageError;
+    private List<HistoryAwbItemDomainData> listHistoryAwb;
 
     public void setSuccess(boolean success) {
         this.success = success;
@@ -31,5 +34,13 @@ public class HistoryAwbData {
 
     public String getMessageError() {
         return messageError;
+    }
+
+    public void setListHistoryAwb(List<HistoryAwbItemDomainData> listHistoryAwb) {
+        this.listHistoryAwb = listHistoryAwb;
+    }
+
+    public List<HistoryAwbItemDomainData> getListHistoryAwb() {
+        return listHistoryAwb;
     }
 }

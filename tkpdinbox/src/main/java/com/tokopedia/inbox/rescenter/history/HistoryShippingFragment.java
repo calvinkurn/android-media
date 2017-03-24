@@ -12,11 +12,10 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.history.customadapter.HistoryShippingAdapter;
-import com.tokopedia.inbox.rescenter.history.viewmodel.HistoryShippingData;
+import com.tokopedia.inbox.rescenter.history.view.model.HistoryAwbViewItem;
 import com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by hangnadi on 3/23/17.
@@ -26,13 +25,14 @@ public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippi
     implements HistoryShippingFragmentView {
 
     private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
+    private static final String EXTRA_PARAM_VIEW_DATA = "extra_view_data";
     private static final int REQUEST_EDIT_SHIPPING = 12345;
     private static final int REQUEST_INPUT_SHIPPING = 54321;
     private RecyclerView recyclerview;
     private View actionAddShippig;
-    private List<HistoryShippingData> arraylist;
     private HistoryShippingAdapter adapter;
     private String resolutionID;
+    private ArrayList<HistoryAwbViewItem> viewData;
 
     public static Fragment createInstance(String resolutionID) {
         HistoryShippingFragment fragment = new HistoryShippingFragment();
@@ -68,7 +68,7 @@ public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippi
     @Override
     public void setLoadingView(boolean param) {
         if (param) {
-            if (arraylist.isEmpty()) {
+            if (getViewData() == null || getViewData().isEmpty()) {
                 adapter.showLoadingFull(true);
             } else {
                 adapter.showLoading(true);
@@ -77,6 +77,26 @@ public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippi
             adapter.showLoadingFull(false);
             adapter.showLoading(false);
         }
+    }
+
+    @Override
+    public void onGetHistoryAwbTimeOut() {
+        setLoadingView(false);
+        NetworkErrorHelper.showEmptyState(
+                getActivity(),
+                getView(),
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.onFirstTimeLaunch();
+                    }
+                });
+    }
+
+    @Override
+    public void onGetHistoryAwbFailed(String messageError) {
+        setLoadingView(false);
+        setErrorMessage(messageError);
     }
 
     @Override
@@ -89,13 +109,31 @@ public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippi
     }
 
     @Override
-    public void onSaveState(Bundle state) {
+    public void setViewData(ArrayList<HistoryAwbViewItem> viewData) {
+        this.viewData = viewData;
+    }
 
+    @Override
+    public ArrayList<HistoryAwbViewItem> getViewData() {
+        return viewData;
+    }
+
+    @Override
+    public void renderData() {
+        adapter.setArraylist(getViewData());
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onSaveState(Bundle state) {
+        state.putString(EXTRA_PARAM_RESOLUTION_ID, getResolutionID());
+        state.putParcelableArrayList(EXTRA_PARAM_VIEW_DATA, getViewData());
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-
+        setResolutionID(savedState.getString(EXTRA_PARAM_RESOLUTION_ID));
+        setViewData(savedState.<HistoryAwbViewItem>getParcelableArrayList(EXTRA_PARAM_VIEW_DATA));
     }
 
     @Override
@@ -144,7 +182,7 @@ public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippi
 
     @Override
     protected void initialVar() {
-        arraylist = new ArrayList<>();
+        viewData = new ArrayList<>();
         adapter = new HistoryShippingAdapter(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerview.setLayoutManager(layoutManager);
