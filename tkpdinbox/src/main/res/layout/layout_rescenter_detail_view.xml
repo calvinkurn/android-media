@@ -10,13 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:paddingBottom="@dimen/padding_small"
-        android:orientation="vertical">
+        android:layout_marginBottom="@dimen/margin_small"
+        android:orientation="horizontal">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/margin_small"
             android:text="@string/detail_rescenter_date"
             android:textColor="#868686"
             android:textSize="@dimen/fontvs" />
@@ -25,6 +25,7 @@
             android:id="@+id/tv_complaint_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="right"
             android:textColor="#464646"
             android:textSize="@dimen/fonts" />
 
@@ -35,13 +36,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:paddingBottom="@dimen/padding_small"
-        android:orientation="vertical">
+        android:layout_marginBottom="@dimen/padding_small"
+        android:orientation="horizontal">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/margin_small"
             android:text="@string/detail_rescenter_customer"
             android:textColor="#868686"
             android:textSize="@dimen/fontvs" />
@@ -52,6 +53,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
+            android:gravity="right"
             android:textColor="@color/tkpd_main_green"
             android:textSize="@dimen/fonts" />
 
@@ -62,13 +64,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:paddingBottom="@dimen/padding_small"
-        android:orientation="vertical">
+        android:layout_marginBottom="@dimen/margin_small"
+        android:orientation="horizontal">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/margin_small"
             android:text="@string/detail_rescenter_shop"
             android:textColor="#868686"
             android:textSize="@dimen/fontvs" />
@@ -79,6 +81,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
+            android:gravity="right"
             android:textColor="@color/tkpd_main_green"
             android:textSize="@dimen/fonts" />
 
@@ -88,13 +91,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:paddingBottom="@dimen/padding_small"
-        android:orientation="vertical">
+        android:layout_marginBottom="@dimen/margin_small"
+        android:orientation="horizontal">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/margin_small"
             android:text="@string/detail_rescenter_awb_selling"
             android:textColor="#868686"
             android:textSize="@dimen/fontvs" />
@@ -103,21 +106,23 @@
             android:id="@+id/tv_awb_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="right"
             android:textColor="@color/tkpd_main_green"
             android:textSize="@dimen/fonts" />
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:paddingBottom="@dimen/padding_small"
-        android:orientation="vertical">
+        android:layout_marginBottom="@dimen/margin_small"
+        android:orientation="horizontal">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/margin_small"
             android:text="@string/detail_rescenter_invoice_selling"
             android:textColor="#868686"
             android:textSize="@dimen/fontvs" />
@@ -128,59 +133,66 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
+            android:gravity="right"
             android:textColor="@color/tkpd_main_green"
             android:textSize="@dimen/fonts"
             />
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/view_buyer_response_deadline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/padding_small"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vs"
-            android:text="@string/detail_rescenter_deadline_for_buyer"
-            android:textColor="#868686"
-            android:textSize="@dimen/fontvs" />
+        android:layout_marginBottom="@dimen/padding_small">
 
         <TextView
             android:id="@+id/tv_buyer_response_deadline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:padding="@dimen/padding_vs"
             android:textColor="@color/white"
             android:textSize="@dimen/fonts" />
 
-    </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/tv_buyer_response_deadline"
+            android:layout_marginRight="@dimen/margin_small"
+            android:text="@string/detail_rescenter_deadline_for_buyer"
+            android:textColor="#868686"
+            android:textSize="@dimen/fontvs" />
 
-    <LinearLayout
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/view_seller_response_deadline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/padding_small"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vs"
-            android:text="@string/detail_rescenter_deadline_for_seller"
-            android:textColor="#868686"
-            android:textSize="@dimen/fontvs" />
+        android:layout_marginBottom="@dimen/padding_small">
 
         <TextView
             android:id="@+id/tv_seller_response_deadline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:padding="@dimen/padding_vs"
             android:textColor="@color/white"
             android:textSize="@dimen/fonts" />
 
-    </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/tv_seller_response_deadline"
+            android:layout_marginRight="@dimen/margin_small"
+            android:text="@string/detail_rescenter_deadline_for_seller"
+            android:textColor="#868686"
+            android:textSize="@dimen/fontvs" />
+
+    </RelativeLayout>
 
 </LinearLayout>
