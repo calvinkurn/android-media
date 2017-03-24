@@ -6,6 +6,7 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
+import com.tokopedia.inbox.rescenter.history.domain.model.HistoryAwbData;
 
 import rx.Observable;
 
@@ -32,15 +33,24 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
     }
 
     @Override
-    public Observable<DetailResCenter> getConversation() {
+    public Observable<HistoryAwbData> getHistoryAwb(TKPDMapParam<String, Object> parameters) {
         return resCenterDataSourceFactory
                 .createCloudResCenterDataSource()
-                .getResCenterConversation(resolutionID);
+                .getHistoryAwb(resolutionID, parameters);
     }
 
     @Override
-    public Observable<Object> getConversationMore() {
-        return null;
+    public Observable<DetailResCenter> getConversation(TKPDMapParam<String, Object> parameters) {
+        return resCenterDataSourceFactory
+                .createCloudResCenterDataSource()
+                .getResCenterConversation(resolutionID, parameters);
+    }
+
+    @Override
+    public Observable<DetailResCenter> getConversationMore(String conversationID, TKPDMapParam<String, Object> parameters) {
+        return resCenterDataSourceFactory
+                .createCloudResCenterDataSource()
+                .getResCenterConversationMore(resolutionID, conversationID, parameters);
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
 import com.tokopedia.core.network.apiservices.rescenter.ResolutionService;
 import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
+import com.tokopedia.inbox.rescenter.detailv2.data.mapper.HistoryAwbMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.source.CloudActionResCenterDataStore;
 import com.tokopedia.inbox.rescenter.detailv2.data.source.CloudInboxResCenterDataSource;
 import com.tokopedia.inbox.rescenter.detailv2.data.source.CloudResCenterDataSource;
@@ -21,21 +22,24 @@ public class ResCenterDataSourceFactory {
     private InboxResCenterService inboxResCenterService;
     private DetailResCenterMapper detailResCenterMapper;
     private ResCenterActService resCenterActService;
+    private HistoryAwbMapper historyAwbMapper;
 
     public ResCenterDataSourceFactory(Context context,
                                       ResolutionService resCenterService,
                                       InboxResCenterService inboxResCenterService,
                                       ResCenterActService resCenterActService,
-                                      DetailResCenterMapper detailResCenterMapper) {
+                                      DetailResCenterMapper detailResCenterMapper,
+                                      HistoryAwbMapper historyAwbMapper) {
         this.context = context;
         this.resCenterService = resCenterService;
         this.inboxResCenterService = inboxResCenterService;
         this.detailResCenterMapper = detailResCenterMapper;
         this.resCenterActService = resCenterActService;
+        this.historyAwbMapper = historyAwbMapper;
     }
 
     public CloudResCenterDataSource createCloudResCenterDataSource() {
-        return new CloudResCenterDataSource(context, resCenterService, detailResCenterMapper);
+        return new CloudResCenterDataSource(context, resCenterService, detailResCenterMapper, historyAwbMapper);
     }
 
     public CloudInboxResCenterDataSource createCloudInboxResCenterDataSource() {
