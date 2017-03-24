@@ -92,7 +92,7 @@ public class TkpdStepTab extends StepTab {
         mTitleColor = mStepTitle.getCurrentTextColor();
 
         Typeface typeface = mStepTitle.getTypeface();
-        Drawable avd = createCircleToWarningDrawable();
+        Drawable avd = getCircleDrawable();
         mStepIconBackground.setImageDrawable(avd);
 
         mStepDivider = findViewById(R.id.ms_stepDivider);
@@ -136,12 +136,16 @@ public class TkpdStepTab extends StepTab {
         mErrorColor = errorColor;
     }
 
-    private Drawable createCircleToWarningDrawable() {
-        return createAnimatedVectorDrawable(R.drawable.ms_animated_vector_circle_to_warning_24dp);
+    private Drawable getCircleDrawable() {
+        return getContext().getResources().getDrawable(R.drawable.ms_vector_circle_24dp);
     }
 
-    private Drawable createWarningToCircleDrawable() {
-        return createAnimatedVectorDrawable(R.drawable.ms_animated_vector_warning_to_circle_24dp);
+    private Drawable getCircleSelectedDrawable() {
+        return getContext().getResources().getDrawable(R.drawable.ic_stepper_circle_selected);
+    }
+
+    private Drawable getWarningDrawable() {
+        return getContext().getResources().getDrawable(R.drawable.ms_vector_warning_24dp);
     }
 
     @Override
@@ -159,16 +163,19 @@ public class TkpdStepTab extends StepTab {
 
         @CallSuper
         protected void changeToInactiveNumber() {
+            mStepIconBackground.setImageDrawable(getCircleDrawable());
             mCurrentState = new InactiveNumberState();
         }
 
         @CallSuper
         protected void changeToActiveNumber() {
+            mStepIconBackground.setImageDrawable(getCircleSelectedDrawable());
             mCurrentState = new ActiveNumberState();
         }
 
         @CallSuper
         protected void changeToDone() {
+            mStepIconBackground.setImageDrawable(getCircleDrawable());
             mCurrentState = new DoneState();
         }
 
@@ -187,7 +194,7 @@ public class TkpdStepTab extends StepTab {
         @Override
         @CallSuper
         protected void changeToWarning() {
-            Drawable avd = createCircleToWarningDrawable();
+            Drawable avd = getWarningDrawable();
             mStepIconBackground.setImageDrawable(avd);
             ((Animatable) avd).start();
             super.changeToWarning();
@@ -258,7 +265,7 @@ public class TkpdStepTab extends StepTab {
 
         @Override
         protected void changeToWarning() {
-            Drawable avd = createCircleToWarningDrawable();
+            Drawable avd = getWarningDrawable();
             mStepIconBackground.setImageDrawable(avd);
             ((Animatable) avd).start();
             super.changeToWarning();
@@ -297,7 +304,7 @@ public class TkpdStepTab extends StepTab {
         }
 
         private void animateViewIn(final View view) {
-            Drawable avd = createWarningToCircleDrawable();
+            Drawable avd = getWarningDrawable();
             mStepIconBackground.setImageDrawable(avd);
             ((Animatable) avd).start();
 
