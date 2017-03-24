@@ -283,6 +283,17 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                     public void onSuccess(String gridConfig) {
                         if (StringUtils.isNotBlank(gridConfig)) {
                             gridType = BrowseProductRouter.GridType.valueOf(gridConfig);
+                            switch (gridType) {
+                                case GRID_1:
+                                    gridIcon = R.drawable.ic_list;
+                                    break;
+                                case GRID_2:
+                                    gridIcon = R.drawable.ic_grid_default;
+                                    break;
+                                case GRID_3:
+                                    gridIcon = R.drawable.ic_grid_box;
+                                    break;
+                            }
                         }
                     }
                 });
