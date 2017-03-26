@@ -330,6 +330,11 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         }
     }
 
+    @Override
+    public void onRechargeTextClear() {
+        hideFormAndImageOperator();
+    }
+
     private boolean isValidatePrefix() {
         return category.getAttributes().getValidatePrefix();
     }
@@ -636,6 +641,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             rechargeEditText.setText(
                     rechargePresenter.getLastInputFromCache(LAST_INPUT_KEY + category.getId())
             );
+            showFormAndImageOperator();
         } else if (!TextUtils.isEmpty(
                 cacheHandlerPhoneBook.getString(KEY_PHONEBOOK + category.getId()))
                 ) {
@@ -643,6 +649,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                     cacheHandlerPhoneBook.getString(KEY_PHONEBOOK + category.getId())
             );
             LocalCacheHandler.clearCache(getActivity(), KEY_PHONEBOOK);
+            showFormAndImageOperator();
         } else if (SessionHandler.isV4Login(getActivity())
                 && rechargePresenter.isAlreadyHaveLastOrderDataOnCache()) {
             renderLastOrder();
@@ -656,6 +663,13 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         if (lastOrder != null && lastOrder.getData() != null && category != null) {
             if (lastOrder.getData().getAttributes().getCategory_id() == category.getId()) {
                 rechargeEditText.setText(lastOrder.getData().getAttributes().getClient_number());
+                showFormAndImageOperator();
+            } else {
+                if (!rechargeEditText.getText().toString().trim().equals("")) {
+                    showFormAndImageOperator();
+                } else {
+                    hideFormAndImageOperator();
+                }
             }
         }
     }
@@ -689,7 +703,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         if (isVisibleToUser) {
             if (isAlreadyHavePhonePrefixInView) {
                 setTextToEditTextOrSetVisibilityForm();
-                showFormAndImageOperator();
             } else {
                 hideFormAndImageOperator();
             }
