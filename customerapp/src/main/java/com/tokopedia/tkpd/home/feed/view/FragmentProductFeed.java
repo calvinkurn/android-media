@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
 import com.tkpd.library.utils.CommonUtils;
@@ -66,7 +67,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     @BindView(R.id.swipe_refresh_layout)
     SwipeToRefresh swipeRefreshLayout;
     @BindView(R.id.fab_speed_dial)
-    FloatingActionButton fabAddProduct;
+    FabSpeedDial fabAddProduct;
     @BindView(R.id.main_content)
     LinearLayout mainContentLinearLayout;
     @BindView(R.id.empty_wishlist)
@@ -177,9 +178,9 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     public void onFabClick() {
-//        if (!fabAddProduct.isShown()) {
-//            fabAddProduct.setVisibility(View.VISIBLE);
-//        }
+        if (!fabAddProduct.isShown()) {
+            fabAddProduct.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -452,32 +453,32 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     }
 
     private void setFabListener() {
-        fabAddProduct.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ProductActivity.moveToAddProduct(getActivity());
-            }
-        });
-//        fabAddProduct.setListenerFabClick(this);
-//        fabAddProduct.setMenuListener(new SimpleMenuListenerAdapter() {
+//        fabAddProduct.setOnClickListener(new View.OnClickListener() {
 //            @Override
-//            public boolean onMenuItemSelected(MenuItem menuItem) {
-//                int id = menuItem.getItemId();
-//
-//                switch (id) {
-//                    case R.id.action_instagram:
-//                        onAddInstagram();
-//                        break;
-//                    case R.id.action_gallery:
-//                        GalleryActivity.moveToImageGalleryCamera(getActivity(), 0, false, 5);
-//                        break;
-//                    case R.id.action_camera:
-//                        onAddGallery();
-//                        break;
-//                }
-//                return false;
+//            public void onClick(View v) {
+//                ProductActivity.moveToAddProduct(getActivity());
 //            }
 //        });
+        fabAddProduct.setListenerFabClick(this);
+        fabAddProduct.setMenuListener(new SimpleMenuListenerAdapter() {
+            @Override
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+                int id = menuItem.getItemId();
+
+                switch (id) {
+                    case R.id.action_instagram:
+                        onAddInstagram();
+                        break;
+                    case R.id.action_gallery:
+                        GalleryActivity.moveToImageGalleryCamera(getActivity(), 0, false, 5);
+                        break;
+                    case R.id.action_camera:
+                        onAddGallery();
+                        break;
+                }
+                return false;
+            }
+        });
     }
 
     private void onAddGallery() {

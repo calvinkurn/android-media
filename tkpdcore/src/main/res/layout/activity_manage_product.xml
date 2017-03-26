@@ -38,32 +38,32 @@
             android:divider="@android:color/transparent"
             android:dividerHeight="0dp" />
 
-        <!--<com.tkpd.library.ui.floatbutton.FabSpeedDial-->
-            <!--android:id="@+id/fab_speed_dial"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--app:touchGuardDrawable="@drawable/background_blur"-->
-            <!--app:fabGravity="bottom_end"-->
-            <!--app:fabMenu="@menu/menu_add_product_instoped"-->
-            <!--app:fabBackgroundTint="@color/green_500"-->
-            <!--app:miniFabBackgroundTint="@color/mini_fab_title_background_tint"-->
-            <!--app:miniFabDrawableTint="@android:color/white"-->
-            <!--app:miniFabTitleTextColor="@android:color/white" />-->
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:src="@drawable/ic_add_black_48dp_00"
-            app:fabSize="normal"
-            app:backgroundTint="@color/tkpd_main_green"
+        <com.tkpd.library.ui.floatbutton.FabSpeedDial
+            android:id="@+id/fab_speed_dial"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_horizontal_margin"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            app:layout_anchorGravity="bottom|right|end"/>
+            android:layout_alignParentBottom="true"
+            app:touchGuardDrawable="@drawable/background_blur"
+            app:fabGravity="bottom_end"
+            app:fabMenu="@menu/menu_add_product_instoped"
+            app:fabBackgroundTint="@color/green_500"
+            app:miniFabBackgroundTint="@color/mini_fab_title_background_tint"
+            app:miniFabDrawableTint="@android:color/white"
+            app:miniFabTitleTextColor="@android:color/white" />
+
+        <!--<android.support.design.widget.FloatingActionButton-->
+            <!--android:id="@+id/fab"-->
+            <!--android:src="@drawable/ic_add_black_48dp_00"-->
+            <!--app:fabSize="normal"-->
+            <!--app:backgroundTint="@color/tkpd_main_green"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_margin="@dimen/activity_horizontal_margin"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_alignParentEnd="true"-->
+            <!--app:layout_anchorGravity="bottom|right|end"/>-->
 
     <!--<include layout="@layout/fab_button" />-->
 
