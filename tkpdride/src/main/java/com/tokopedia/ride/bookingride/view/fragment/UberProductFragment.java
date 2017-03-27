@@ -138,10 +138,8 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
         if (isCompleteLocations) {
             ConfirmBookingViewModel confirmBookingViewModel = ConfirmBookingViewModel.createInitial();
             confirmBookingViewModel.setFareId(rideProductViewModel.getFareId());
-            confirmBookingViewModel.setStartLatitude(source.getLatitude());
-            confirmBookingViewModel.setStartLongitude(source.getLongitude());
-            confirmBookingViewModel.setEndLatitude(destination.getLatitude());
-            confirmBookingViewModel.setEndLongitude(destination.getLongitude());
+            confirmBookingViewModel.setSource(source);
+            confirmBookingViewModel.setDestination(destination);
             confirmBookingViewModel.setProductId(rideProductViewModel.getProductId());
             confirmBookingViewModel.setPrice(rideProductViewModel.getProductPrice());
             confirmBookingViewModel.setProductImage(rideProductViewModel.getProductImage());
@@ -152,8 +150,6 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
                             rideProductViewModel.getTimeEstimate())
             );
             confirmBookingViewModel.setMaxCapacity(rideProductViewModel.getCapacity());
-            confirmBookingViewModel.setStartAddress(source.getTitle());
-            confirmBookingViewModel.setEndAddress(destination.getTitle());
             mInteractionListener.onProductClicked(confirmBookingViewModel);
         }
     }

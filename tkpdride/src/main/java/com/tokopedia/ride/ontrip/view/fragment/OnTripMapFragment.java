@@ -115,8 +115,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     private void setViewListener() {
-        tvSource.setText(confirmBookingViewModel.getStartAddress());
-        tvDestination.setText(confirmBookingViewModel.getEndAddress());
+        tvSource.setText(confirmBookingViewModel.getSource().getTitle());
+        tvDestination.setText(confirmBookingViewModel.getDestination().getTitle());
     }
 
     @Override
@@ -126,10 +126,10 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         String hash = md5(userId + "~" + deviceId);
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(CreateRideRequestUseCase.PARAM_FARE_ID, confirmBookingViewModel.getFareId());
-        requestParams.putString(CreateRideRequestUseCase.PARAM_START_LATITUDE, String.valueOf(confirmBookingViewModel.getStartLatitude()));
-        requestParams.putString(CreateRideRequestUseCase.PARAM_START_LONGITUDE, String.valueOf(confirmBookingViewModel.getStartLongitude()));
-        requestParams.putString(CreateRideRequestUseCase.PARAM_END_LATITUDE, String.valueOf(confirmBookingViewModel.getEndLatitude()));
-        requestParams.putString(CreateRideRequestUseCase.PARAM_END_LONGITUDE, String.valueOf(confirmBookingViewModel.getEndLongitude()));
+        requestParams.putString(CreateRideRequestUseCase.PARAM_START_LATITUDE, String.valueOf(confirmBookingViewModel.getSource().getLatitude()));
+        requestParams.putString(CreateRideRequestUseCase.PARAM_START_LONGITUDE, String.valueOf(confirmBookingViewModel.getSource().getLongitude()));
+        requestParams.putString(CreateRideRequestUseCase.PARAM_END_LATITUDE, String.valueOf(confirmBookingViewModel.getDestination().getLatitude()));
+        requestParams.putString(CreateRideRequestUseCase.PARAM_END_LONGITUDE, String.valueOf(confirmBookingViewModel.getDestination().getLongitude()));
         requestParams.putString(CreateRideRequestUseCase.PARAM_USER_ID, userId);
         requestParams.putString(CreateRideRequestUseCase.PARAM_DEVICE_ID, deviceId);
         requestParams.putString(CreateRideRequestUseCase.PARAM_HASH, hash);
@@ -195,7 +195,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     private void setMapViewListener() {
         MapsInitializer.initialize(this.getActivity());
-
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)

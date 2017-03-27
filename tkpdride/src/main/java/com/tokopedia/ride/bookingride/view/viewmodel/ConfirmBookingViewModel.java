@@ -9,16 +9,12 @@ import com.tokopedia.ride.common.ride.domain.model.Product;
  * Created by alvarisi on 3/23/17.
  */
 
-public class ConfirmBookingViewModel implements Parcelable{
+public class ConfirmBookingViewModel implements Parcelable {
     private String fareId;
     private String productId;
 
-    private String startAddress;
-    private double startLatitude;
-    private double startLongitude;
-    private String endAddress;
-    private double endLatitude;
-    private double endLongitude;
+    private PlacePassViewModel source;
+    private PlacePassViewModel destination;
     private int seatCount;
     private String paymentMethod;
     private String productImage;
@@ -29,21 +25,36 @@ public class ConfirmBookingViewModel implements Parcelable{
     public ConfirmBookingViewModel() {
     }
 
-    protected ConfirmBookingViewModel(Parcel in) {
+    private ConfirmBookingViewModel(Parcel in) {
         fareId = in.readString();
         productId = in.readString();
-        startAddress = in.readString();
-        startLatitude = in.readDouble();
-        startLongitude = in.readDouble();
-        endAddress = in.readString();
-        endLatitude = in.readDouble();
-        endLongitude = in.readDouble();
+        source = in.readParcelable(PlacePassViewModel.class.getClassLoader());
+        destination = in.readParcelable(PlacePassViewModel.class.getClassLoader());
         seatCount = in.readInt();
         paymentMethod = in.readString();
         productImage = in.readString();
         price = in.readString();
         headerTitle = in.readString();
         maxCapacity = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(fareId);
+        dest.writeString(productId);
+        dest.writeParcelable(source, flags);
+        dest.writeParcelable(destination, flags);
+        dest.writeInt(seatCount);
+        dest.writeString(paymentMethod);
+        dest.writeString(productImage);
+        dest.writeString(price);
+        dest.writeString(headerTitle);
+        dest.writeInt(maxCapacity);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<ConfirmBookingViewModel> CREATOR = new Creator<ConfirmBookingViewModel>() {
@@ -58,7 +69,7 @@ public class ConfirmBookingViewModel implements Parcelable{
         }
     };
 
-    public static ConfirmBookingViewModel createInitial(){
+    public static ConfirmBookingViewModel createInitial() {
         ConfirmBookingViewModel confirmBookingViewModel = new ConfirmBookingViewModel();
         confirmBookingViewModel.setSeatCount(1);
         confirmBookingViewModel.setPaymentMethod(String.valueOf(1));
@@ -79,38 +90,6 @@ public class ConfirmBookingViewModel implements Parcelable{
 
     public void setProductId(String productId) {
         this.productId = productId;
-    }
-
-    public double getStartLatitude() {
-        return startLatitude;
-    }
-
-    public void setStartLatitude(double startLatitude) {
-        this.startLatitude = startLatitude;
-    }
-
-    public double getStartLongitude() {
-        return startLongitude;
-    }
-
-    public void setStartLongitude(double startLongitude) {
-        this.startLongitude = startLongitude;
-    }
-
-    public double getEndLatitude() {
-        return endLatitude;
-    }
-
-    public void setEndLatitude(double endLatitude) {
-        this.endLatitude = endLatitude;
-    }
-
-    public double getEndLongitude() {
-        return endLongitude;
-    }
-
-    public void setEndLongitude(double endLongitude) {
-        this.endLongitude = endLongitude;
     }
 
     public int getSeatCount() {
@@ -161,42 +140,19 @@ public class ConfirmBookingViewModel implements Parcelable{
         this.maxCapacity = maxCapacity;
     }
 
-    public String getStartAddress() {
-        return startAddress;
+    public PlacePassViewModel getSource() {
+        return source;
     }
 
-    public void setStartAddress(String startAddress) {
-        this.startAddress = startAddress;
+    public void setSource(PlacePassViewModel source) {
+        this.source = source;
     }
 
-    public String getEndAddress() {
-        return endAddress;
+    public PlacePassViewModel getDestination() {
+        return destination;
     }
 
-    public void setEndAddress(String endAddress) {
-        this.endAddress = endAddress;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(fareId);
-        parcel.writeString(productId);
-        parcel.writeString(startAddress);
-        parcel.writeDouble(startLatitude);
-        parcel.writeDouble(startLongitude);
-        parcel.writeString(endAddress);
-        parcel.writeDouble(endLatitude);
-        parcel.writeDouble(endLongitude);
-        parcel.writeInt(seatCount);
-        parcel.writeString(paymentMethod);
-        parcel.writeString(productImage);
-        parcel.writeString(price);
-        parcel.writeString(headerTitle);
-        parcel.writeInt(maxCapacity);
+    public void setDestination(PlacePassViewModel destination) {
+        this.destination = destination;
     }
 }

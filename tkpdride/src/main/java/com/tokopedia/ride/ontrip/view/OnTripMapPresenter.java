@@ -72,7 +72,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         createRideRequestUseCase.execute(requestParams, new Subscriber<RideRequest>() {
             @Override
             public void onCompleted() {
-                getView().hideLoadingWaitingResponse();
+
             }
 
             @Override

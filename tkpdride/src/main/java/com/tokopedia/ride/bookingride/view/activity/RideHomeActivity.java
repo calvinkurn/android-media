@@ -7,14 +7,17 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NavUtils;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.ChangeBounds;
 import android.transition.Slide;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
@@ -182,7 +185,17 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof ConfirmBookingRideFragment) {
+            ConfirmBookingRideFragment fragment = (ConfirmBookingRideFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
+            ConfirmBookingViewModel viewModel = fragment.getActiveConfirmBooking();
+            UberProductFragment productFragment = UberProductFragment.newInstance();
+            replaceFragment(R.id.bottom_container, productFragment);
+            productFragment.updateProductList(viewModel.getSource(), viewModel.getDestination());
+            mSlidingUpPanelLayout.setPanelHeight(Float.floatToIntBits(getResources().getDimension(R.dimen.sliding_panel_min_height)));
+            mSlidingUpPanelLayout.setParallaxOffset(Float.floatToIntBits(getResources().getDimension(R.dimen.tooler_height)));
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -255,5 +268,20 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
     public void actionRequestRide(ConfirmBookingViewModel confirmBookingViewModel) {
         Intent intent = OnTripActivity.getCallingIntent(this, confirmBookingViewModel);
         startActivity(intent);
+    }
+
+    public int dpToPx(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
