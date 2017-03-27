@@ -529,7 +529,7 @@ public class TkpdBaseURL {
     }
 
     public static class Mojito {
-        public static final String PATH_USER = "v1.0.2/users/";
+        public static final String PATH_USER = "v1.0.3/users/";
         public static final String PATH_PRODUCT = "users/";
         public static final String PATH_CATALOG = "v1/catalogs/";
 

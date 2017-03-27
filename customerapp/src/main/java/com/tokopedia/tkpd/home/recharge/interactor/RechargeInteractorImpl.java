@@ -165,7 +165,7 @@ public class RechargeInteractorImpl implements RechargeInteractor {
                         return Observable.from(products);
                     }
                 })
-                .filter(isOperatorExist(categoryId, Integer.parseInt(operatorId)))
+                .filter(isProductValidToOperator(categoryId, Integer.parseInt(operatorId)))
                 .toList()
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
@@ -809,9 +809,7 @@ public class RechargeInteractorImpl implements RechargeInteractor {
                                 .getData()
                                 .getId() == operatorId
                         &&
-                        product
-                                .getAttributes()
-                                .getStatus() != STATE_CATEGORY_NON_ACTIVE;
+                        product.getAttributes().getStatus() != STATE_CATEGORY_NON_ACTIVE;
             }
         };
     }
@@ -833,26 +831,9 @@ public class RechargeInteractorImpl implements RechargeInteractor {
                                 .getId() == operatorId
                         &&
                         product
-                                .getId() == productId;
-            }
-        };
-    }
-
-    private Func1<Product, Boolean> isOperatorExist(final int categoryId, final int operatorId) {
-        return new Func1<Product, Boolean>() {
-            @Override
-            public Boolean call(Product product) {
-                return product
-                        .getRelationships()
-                        .getCategory()
-                        .getData()
-                        .getId() == categoryId
+                                .getId() == productId
                         &&
-                        product
-                                .getRelationships()
-                                .getOperator()
-                                .getData()
-                                .getId() == operatorId;
+                        product.getAttributes().getStatus() != STATE_CATEGORY_NON_ACTIVE;
             }
         };
     }

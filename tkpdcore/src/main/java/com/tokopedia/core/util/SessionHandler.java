@@ -57,14 +57,13 @@ public class SessionHandler {
     private static final String USER_AVATAR_URI = "USER_AVATAR_URI";
     private static final String SHOP_DOMAIN = "SHOP_DOMAIN";
     private static final String IS_FIRST_TIME_USER = "IS_FIRST_TIME";
-    private static final String SAVE_REAL = "SAVE_REAL";
-    private static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
-    private static final String DONT_REMIND_LATER = "DONT_REMIND_LATER";
-    private static final String PHONE_NUMBER = "PHONE_NUMBER";
-    private static final String TEMP_PHONE_NUMBER = "TEMP_PHONE_NUMBER";
-    private static final String TEMP_NAME = "TEMP_NAME";
+    public static final String SAVE_REAL = "SAVE_REAL";
+    public static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
+    public static final String DONT_REMIND_LATER = "DONT_REMIND_LATER";
+    public static final String PHONE_NUMBER = "PHONE_NUMBER";
+    public static final String TEMP_PHONE_NUMBER = "TEMP_PHONE_NUMBER";
+    public static final String TEMP_NAME = "TEMP_NAME";
     private static final String MSISDN_SESSION = "MSISDN_SESSION";
-
     private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     private static final String REFRESH_TOKEN = "REFRESH_TOKEN";
     private static final String WALLET_REFRESH_TOKEN = "WALLET_REFRESH_TOKEN";
@@ -175,6 +174,7 @@ public class SessionHandler {
         editor.putString(SHOP_ID, null);
         editor.putBoolean(IS_LOGIN, false);
         editor.putBoolean(IS_MSISDN_VERIFIED, false);
+        editor.putString(PHONE_NUMBER, null);
         editor.apply();
         LocalCacheHandler.clearCache(context, MSISDN_SESSION);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_USER);
@@ -241,7 +241,6 @@ public class SessionHandler {
                 "User Id: " + getLoginID(context) +
                         " Device Id: " + GCMHandler.getRegistrationId(context));
         PasswordGenerator.clearTokenStorage(context);
-        GCMHandler.clearRegistrationId(context);
         clearUserData();
     }
 
@@ -485,18 +484,6 @@ public class SessionHandler {
         LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), LOGIN_SESSION);
         cache.putBoolean(IS_MSISDN_VERIFIED, verified);
         cache.applyEditor();
-    }
-
-    public static void setDontRemindLater(boolean isChecked) {
-        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), MSISDN_SESSION);
-        cache.putBoolean(DONT_REMIND_LATER, isChecked);
-        cache.setExpire(86400);
-        cache.applyEditor();
-    }
-
-    public static boolean canRemind() {
-        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), MSISDN_SESSION);
-        return !cache.getBoolean(DONT_REMIND_LATER, false) || cache.isExpired();
     }
 
     public static void setPhoneNumber(String userPhone) {

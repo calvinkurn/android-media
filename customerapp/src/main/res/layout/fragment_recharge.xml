@@ -82,7 +82,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingTop="@dimen/padding_small"
-        android:visibility="visible"
+        android:visibility="gone"
         android:weightSum="1">
         <CheckBox
             android:id="@+id/buy_with_credit_checkbox"

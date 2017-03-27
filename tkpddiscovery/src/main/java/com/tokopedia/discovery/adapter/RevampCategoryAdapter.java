@@ -91,7 +91,7 @@ public class RevampCategoryAdapter extends
     }
 
     public void hideExpandable() {
-        categories.subList(6,categories.size()).clear();
+        categories.subList(9,categories.size()).clear();
         notifyDataSetChanged();
     }
 }
