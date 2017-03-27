@@ -284,4 +284,19 @@
     <string name="domain_name">Nama Domain</string>
     <string name="fill_domain_and_shop">Isi nama domain dan toko</string>
 
+    <!-- Shop Setting -->
+    <string name="label_shop_open_welcome">Halo,</string>
+    <string name="label_shop_open_info_title_shop">Lengkapi informasi toko. Tampilan toko yang menarik buat pembeli tertarik</string>
+    <string name="label_shop_setting_slogan">Slogan Toko</string>
+    <string name="label_shop_setting_desc_shop">Deskripsi Toko</string>
+    <string name="label_shop_setting_logo">Logo</string>
+    <string name="label_shop_setting_error_should_pick_image">Logo harus diisi</string>
+    <string name="label_shop_setting_info_max_file_size">Besar file maksimum:</string>
+    <string name="label_shop_setting_info_size_image">10 Megabytes (10 MB)</string>
+    <string name="label_shop_setting_info_allowed_file">File yang diperbolehkan:</string>
+    <string name="label_shop_setting_type_file_image">.JPG .JPEG .PNG</string>
+    <string name="label_shop_setting_browse_file">Browse File</string>
+    <string name="label_shop_setting_error_slogan_should_fill">Slogan toko harus diisi</string>
+    <string name="label_shop_setting_error_desc_should_fill">Deskripsi toko harus diisi</string>
+
 </resources>

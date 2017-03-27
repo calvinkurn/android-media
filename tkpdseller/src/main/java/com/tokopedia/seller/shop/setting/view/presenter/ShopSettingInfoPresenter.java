@@ -10,4 +10,6 @@ public abstract class ShopSettingInfoPresenter extends BaseDiPresenter<ShopSetti
     public ShopSettingInfoPresenter(ShopSettingInfoView view) {
         super(view);
     }
+
+    public abstract void submitShopInfo(String uriPathImage, String shopSlogan, String shopDescription);
 }

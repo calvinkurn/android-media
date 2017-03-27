@@ -7,7 +7,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.Intent;
 
+import com.stepstone.stepper.StepperLayout;
+import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.utils.CommonUtils;
@@ -16,6 +24,10 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.LocationPass;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.app.BaseDiActivity;
+import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
+import com.tokopedia.seller.shop.open.view.adapter.ShopOpenStepperViewAdapter;
+import com.tokopedia.seller.shop.open.view.presenter.ShopOpenMandatoryPresenter;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingModule;
@@ -25,6 +37,11 @@ import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLogisticFragme
 import com.tokopedia.seller.shop.setting.view.model.ShopSettingLocationModel;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationView;
 
+import com.tokopedia.seller.shop.setting.view.listener.ListenerShopSettingInfo;
+import com.tokopedia.seller.shop.utils.UploadPhotoShopTask;
+
+import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Created by Nathaniel on 3/16/2017.
@@ -32,17 +49,24 @@ import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationView;
 
 public class ShopOpenMandatoryActivity
         extends TActivity
-        implements ShopSettingLocationListener, HasComponent<ShopSettingComponent> {
+        implements
+        ShopSettingLocationListener,
+        HasComponent<ShopSettingComponent>,
+        ListenerShopSettingInfo{
 
     private static final int OPEN_MAP_CODE = 1000;
     //    StepperLayout stepperLayout;
+    public static final int MAX_SELECTION_PICK_IMAGE = 1;
+
+    StepperLayout stepperLayout;
     private FragmentManager fragmentManager;
+    private ListenerShopSettingInfo.ListenerOnImagePickerReady listenerOnImagePickerReady;
     private ShopSettingComponent component;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_simple_fragment);
+        inflateView(R.layout.activity_shop_open_mandatory);
 
         initView();
         initComponent();
@@ -58,9 +82,10 @@ public class ShopOpenMandatoryActivity
         }
 
 
-//        stepperLayout = (StepperLayout) findViewById(R.id.stepper_view);
-//        stepperLayout.setAdapter(new ShopOpenStepperViewAdapter(getFragmentManager(), this));
+        stepperLayout = (StepperLayout) findViewById(R.id.stepper_view);
+        stepperLayout.setAdapter(new ShopOpenStepperViewAdapter(getFragmentManager(), this));
     }
+
 
     private void inflateFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -68,6 +93,7 @@ public class ShopOpenMandatoryActivity
         fragmentTransaction.commit();
     }
 
+    @Override
     protected void initComponent() {
         component = DaggerShopSettingComponent
                 .builder()
@@ -112,6 +138,33 @@ public class ShopOpenMandatoryActivity
                     break;
             }
         }
+        ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
+            @Override
+            public void onSuccess(ArrayList<String> imageUrls) {
+                File file = UploadPhotoShopTask.writeImageToTkpdPath(AddProductFragment.compressImage(imageUrls.get(0)));
+                if (listenerOnImagePickerReady != null) {
+                    listenerOnImagePickerReady.onImageReady(file.getPath());
+                }
+            }
+
+            @Override
+            public void onSuccess(String path, int position) {
+                File file = UploadPhotoShopTask.writeImageToTkpdPath(AddProductFragment.compressImage(path));
+                if (listenerOnImagePickerReady != null) {
+                    listenerOnImagePickerReady.onImageReady(file.getPath());
+                }
+            }
+
+            @Override
+            public void onFailed(String message) {
+
+            }
+
+            @Override
+            public Context getContext() {
+                return ShopOpenMandatoryActivity.this;
+            }
+        }, requestCode, resultCode, data);
     }
 
     private void changeGoogleMapDataInLocationFragment(LocationPass locationPass) {

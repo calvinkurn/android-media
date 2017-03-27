@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 
 import com.stepstone.stepper.Step;
 import com.stepstone.stepper.viewmodel.StepViewModel;
+import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingInfoFragment;
 import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLocationFragment;
 
 /**
@@ -39,6 +40,7 @@ public class ShopOpenStepperViewAdapter extends AbstractNativeFragmentStepAdapte
             case 0:
             case 1:
             case 2:
+                return ShopSettingInfoFragment.createInstance();
             default:
                 return null;
         }
