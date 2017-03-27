@@ -44,6 +44,7 @@ import com.tokopedia.core.database.model.category.ClientNumber;
 import com.tokopedia.core.database.recharge.product.Product;
 import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.SessionRouter;
@@ -180,6 +181,14 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                         getPhoneNumberAndDisplayIt(contact);
                     } catch (Exception e) {
                         e.printStackTrace();
+                    }
+                    break;
+                case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
+                    if (intent.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
+                        String message = intent.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
+                        if (message != null && !message.isEmpty()) {
+                            NetworkErrorHelper.showSnackbar(getActivity(), message);
+                        }
                     }
                     break;
             }
@@ -892,8 +901,11 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 .utmMedium(bundle.getString(ARG_UTM_MEDIUM, "widget"))
                 .build();
         if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-            startActivity(((IDigitalModuleRouter) getActivity().getApplication())
-                    .instanceIntentCartDigitalProduct(digitalCheckoutPassData));
+            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) getActivity().getApplication();
+            startActivityForResult(
+                    digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
+                    IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
+            );
         }
     }
 

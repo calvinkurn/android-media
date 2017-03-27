@@ -10,5 +10,9 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 
 public interface IDigitalModuleRouter {
 
+    int REQUEST_CODE_CART_DIGITAL = 216;
+    String EXTRA_MESSAGE = "EXTRA_MESSAGE";
+
     Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData);
+
 }
