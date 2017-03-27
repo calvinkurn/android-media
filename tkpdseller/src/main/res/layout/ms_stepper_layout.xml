@@ -11,6 +11,8 @@
         android:id="@+id/ms_stepTabsContainer"
         style="?attr/ms_tabsContainerStyle"
         android:layout_width="match_parent"
+        android:layout_marginLeft="-20dp"
+        android:layout_marginRight="-20dp"
         tools:style="@style/MSStepTabsContainer"/>
 
     <FrameLayout

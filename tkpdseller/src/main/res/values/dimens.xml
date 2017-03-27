@@ -52,4 +52,7 @@
     <dimen name="item_space">10dp</dimen>
 
     <dimen name="ms_step_tab_divider_length">50dp</dimen>
+    <dimen name="ms_tabs_container_lateral_padding">0dp</dimen>
+    <dimen name="ms_step_tab_counter_size">30dp</dimen>
+
 </resources>
