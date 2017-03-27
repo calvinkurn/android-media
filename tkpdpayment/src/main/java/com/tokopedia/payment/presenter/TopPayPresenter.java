@@ -1,6 +1,6 @@
-package com.tokopedia.payment.cart.presenter;
+package com.tokopedia.payment.presenter;
 
-import com.tokopedia.payment.cart.listener.ITopPayView;
+import com.tokopedia.payment.listener.ITopPayView;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 

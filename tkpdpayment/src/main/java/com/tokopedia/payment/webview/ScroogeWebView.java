@@ -19,7 +19,7 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.tokopedia.payment.cart.listener.ITopPayView;
+import com.tokopedia.payment.listener.ITopPayView;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.payment.cart.activity;
+package com.tokopedia.payment.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,9 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.payment.R;
-import com.tokopedia.payment.cart.listener.ITopPayView;
-import com.tokopedia.payment.cart.presenter.TopPayPresenter;
+import com.tokopedia.payment.listener.ITopPayView;
 import com.tokopedia.payment.model.PaymentPassData;
+import com.tokopedia.payment.presenter.TopPayPresenter;
 import com.tokopedia.payment.webview.ScroogeWebView;
 
 /**
