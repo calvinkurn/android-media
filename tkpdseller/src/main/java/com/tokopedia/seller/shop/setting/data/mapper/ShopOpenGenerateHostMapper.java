@@ -24,7 +24,7 @@ public class ShopOpenGenerateHostMapper implements Func1<Response<GenerateHostMo
                 && generateHostModelResponse.body().getData() != null
                 && generateHostModelResponse.body().getData().getGenerateHost() != null) {
             return Observable.just(generateHostModelResponse.body().getData().getGenerateHost());
-        }else{
+        } else {
             return null;
         }
     }

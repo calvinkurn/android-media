@@ -64,13 +64,13 @@ public class ShopSettingModule {
 
     @Provides
     @ShopSettingScope
-    public ShopSettingSaveInfoRepository provideSaveInfoRepository(ShopSettingInfoDataSource shopSettingInfoDataSource){
+    public ShopSettingSaveInfoRepository provideSaveInfoRepository(ShopSettingInfoDataSource shopSettingInfoDataSource) {
         return new ShopSettingSaveInfoRepositoryImpl(shopSettingInfoDataSource);
     }
 
     @Provides
     @ShopSettingScope
-    public GenerateHostApi provideGenerateHostApi(){
+    public GenerateHostApi provideGenerateHostApi() {
         return new GenerateHostService().getApi();
     }
 }

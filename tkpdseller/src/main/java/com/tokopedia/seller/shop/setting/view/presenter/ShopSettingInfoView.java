@@ -1,11 +1,11 @@
 package com.tokopedia.seller.shop.setting.view.presenter;
 
-import com.tokopedia.seller.app.BaseDiView;
+import com.tokopedia.core.base.presentation.CustomerView;
 
 /**
  * Created by zulfikarrahman on 3/16/17.
  */
-public interface ShopSettingInfoView extends BaseDiView {
+public interface ShopSettingInfoView extends CustomerView {
     void onErrorEmptyImage();
 
     void onErrorEmptyImageFalse();

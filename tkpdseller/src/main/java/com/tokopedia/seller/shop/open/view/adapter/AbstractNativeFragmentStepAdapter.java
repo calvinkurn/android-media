@@ -4,12 +4,12 @@ package com.tokopedia.seller.shop.open.view.adapter;
  * Created by zulfikarrahman on 3/17/17.
  */
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
-import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 
 import com.stepstone.stepper.Step;
@@ -25,10 +25,9 @@ public abstract class AbstractNativeFragmentStepAdapter
         implements StepAdapter {
 
     @NonNull
-    private final FragmentManager mFragmentManager;
-
-    @NonNull
     protected final Context context;
+    @NonNull
+    private final FragmentManager mFragmentManager;
 
     public AbstractNativeFragmentStepAdapter(@NonNull FragmentManager fm, @NonNull Context context) {
         super(fm);

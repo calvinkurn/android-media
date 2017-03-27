@@ -2,12 +2,15 @@ package com.tokopedia.seller.shop.setting.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.stepstone.stepper.Step;
+import com.stepstone.stepper.VerificationError;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -36,7 +39,7 @@ public class ShopSettingLocationFragment
         extends BaseDaggerFragment
         implements ShopSettingLocationView,
         DistrictViewHolderListener,
-        LocationPickupViewHolderListener {
+        LocationPickupViewHolderListener, Step {
     public static final String TAG = "ShopSettingLocation";
     @Inject
     public ShopSettingLocationPresenter presenter;
@@ -159,5 +162,20 @@ public class ShopSettingLocationFragment
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public VerificationError verifyStep() {
+        return null;
+    }
+
+    @Override
+    public void onSelected() {
+
+    }
+
+    @Override
+    public void onError(@NonNull VerificationError error) {
+
     }
 }
