@@ -144,7 +144,9 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
     @Override
     public void onProductClicked(ConfirmBookingViewModel rideProductViewModel) {
         onBottomContainerChangeToBookingScreen();
-        mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
+//        mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
+        mSlidingUpPanelLayout.setPanelHeight(50);
+        mSlidingUpPanelLayout.setParallaxOffset(5);
 
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_PRODUCT, rideProductViewModel);

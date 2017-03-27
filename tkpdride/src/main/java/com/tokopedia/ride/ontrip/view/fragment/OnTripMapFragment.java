@@ -194,7 +194,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     private void setMapViewListener() {
-        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
         MapsInitializer.initialize(this.getActivity());
 
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -204,8 +203,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
             return;
         }
-        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
-        mGoogleMap.setMyLocationEnabled(true);
+        mGoogleMap.setMyLocationEnabled(false);
+        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
     }
 
     @OnClick(R2.id.iv_my_location_button)

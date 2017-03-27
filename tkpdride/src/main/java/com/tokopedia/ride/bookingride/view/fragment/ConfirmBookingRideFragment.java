@@ -15,9 +15,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
+import com.tokopedia.ride.bookingride.di.ConfirmBooingDependencyInjection;
+import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.view.ConfirmBookingContract;
 import com.tokopedia.ride.bookingride.view.ConfirmBookingPresenter;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.SeatViewModel;
@@ -52,7 +55,6 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     OnFragmentInteractionListener mListener;
     ConfirmBookingViewModel confirmBookingViewModel;
 
-
     public interface OnFragmentInteractionListener {
         void actionChangeSeatCount(List<SeatViewModel> seatViewModels);
 
@@ -77,7 +79,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter = new ConfirmBookingPresenter();
+        presenter = ConfirmBooingDependencyInjection.createPresenter(getActivity());
         presenter.attachView(this);
         confirmBookingViewModel = getArguments().getParcelable(EXTRA_PRODUCT);
         setViewListener();
@@ -137,11 +139,37 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     }
 
     public void updateSeatCount(int seat) {
-        seatsTextView.setText(String.valueOf(seat));
+        confirmBookingViewModel.setSeatCount(seat);
+        presenter.actionChangeSeatCount();
+    }
+
+    @Override
+    public RequestParams getParam() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetFareEstimateUseCase.PARAM_START_LATITUDE, String.valueOf(confirmBookingViewModel.getStartLatitude()));
+        requestParams.putString(GetFareEstimateUseCase.PARAM_START_LONGITUDE, String.valueOf(confirmBookingViewModel.getStartLongitude()));
+        requestParams.putString(GetFareEstimateUseCase.PARAM_END_LATITUDE, String.valueOf(confirmBookingViewModel.getEndLatitude()));
+        requestParams.putString(GetFareEstimateUseCase.PARAM_END_LONGITUDE, String.valueOf(confirmBookingViewModel.getEndLongitude()));
+        requestParams.putString(GetFareEstimateUseCase.PARAM_PRODUCT_ID, String.valueOf(confirmBookingViewModel.getProductId()));
+        requestParams.putString(GetFareEstimateUseCase.PARAM_SEAT_COUNT, String.valueOf(confirmBookingViewModel.getSeatCount()));
+        return requestParams;
     }
 
     @OnClick(R2.id.cab_confirmation)
-    public void actionConfirmButtonClicked(){
+    public void actionConfirmButtonClicked() {
         mListener.actionRequestRide(confirmBookingViewModel);
+    }
+
+    @Override
+    public void showErrorChangeSeat(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void renderFareEstimate(String fareId, String display) {
+        confirmBookingViewModel.setFareId(fareId);
+        confirmBookingViewModel.setProductId(display);
+        priceTextView.setText(display);
+        seatsTextView.setText(confirmBookingViewModel.getSeatCount());
     }
 }

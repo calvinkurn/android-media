@@ -196,7 +196,6 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     }
 
     private void setMapViewListener() {
-        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
         MapsInitializer.initialize(this.getActivity());
 
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -206,8 +205,8 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
 
             return;
         }
-        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
-        mGoogleMap.setMyLocationEnabled(true);
+        mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        mGoogleMap.setMyLocationEnabled(false);
 
         mGoogleMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
             @Override

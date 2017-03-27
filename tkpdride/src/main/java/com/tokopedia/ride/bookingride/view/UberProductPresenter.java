@@ -113,10 +113,10 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
 
     private void getMinimalProductEstimateAndRender(List<ProductEstimate> productEstimates) {
         int minTime = 0;
-        for (ProductEstimate estimate : productEstimates){
+        for (ProductEstimate estimate : productEstimates) {
             if (minTime == 0 && estimate.getTimesEstimate().getEstimate() > 0)
                 minTime = estimate.getTimesEstimate().getEstimate();
-            else if (minTime > estimate.getTimesEstimate().getEstimate()){
+            else if (minTime > estimate.getTimesEstimate().getEstimate()) {
                 minTime = estimate.getTimesEstimate().getEstimate();
             }
         }
@@ -143,6 +143,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
         requestParams.putString(GetFareEstimateUseCase.PARAM_END_LATITUDE, String.valueOf(destination.getLatitude()));
         requestParams.putString(GetFareEstimateUseCase.PARAM_END_LONGITUDE, String.valueOf(destination.getLongitude()));
         requestParams.putString(GetFareEstimateUseCase.PARAM_PRODUCT_ID, String.valueOf(productId));
+        requestParams.putString(GetFareEstimateUseCase.PARAM_SEAT_COUNT, String.valueOf(1));
         getFareEstimateUseCase.execute(requestParams, new Subscriber<FareEstimate>() {
             @Override
             public void onCompleted() {
