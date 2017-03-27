@@ -81,6 +81,11 @@
             android:label="@string/title_activity_history_awb"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name="com.tokopedia.inbox.rescenter.historyaddress.HistoryAddressActivity"
+            android:label="@string/title_activity_history_address"
+            android:screenOrientation="portrait" />
+
         <!-- ======================================================= -->
         <!-- SERVICES REGISTRY -->
         <!-- ======================================================= -->
