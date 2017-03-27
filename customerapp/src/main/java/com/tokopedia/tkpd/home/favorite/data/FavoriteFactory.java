@@ -59,8 +59,7 @@ public class FavoriteFactory {
         return cloudWishlistObservable(param);
     }
 
-    Observable<FavoriteShop> getFavoriteShop(
-            TKPDMapParam<String, String> param) {
+    Observable<FavoriteShop> getFavoriteShop(TKPDMapParam<String, String> param) {
 
         return new CloudFavoriteShopDataSource(
                 context, gson, serviceV4).getFavorite(param, false);
