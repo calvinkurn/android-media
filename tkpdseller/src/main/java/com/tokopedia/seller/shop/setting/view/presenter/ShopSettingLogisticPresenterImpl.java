@@ -10,4 +10,9 @@ public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresent
     protected void unsubscribeOnDestroy() {
 
     }
+
+    @Override
+    public void updateLogistic(int districtCode) {
+
+    }
 }

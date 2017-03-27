@@ -17,6 +17,9 @@ import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLogisticFragme
 
 public class ShopOpenStepperViewAdapter extends AbstractNativeFragmentStepAdapter {
 
+    public static final int SHOP_SETTING_INFO_POSITION = 0;
+    public static final int SHOP_SETTING_LOCATION_POSITION = 1;
+    public static final int SHOP_SETTING_LOGICTIC_POSITION = 2;
     private int districtId = 0;
 
     public ShopOpenStepperViewAdapter(@NonNull FragmentManager fm, @NonNull Context context) {
@@ -40,12 +43,12 @@ public class ShopOpenStepperViewAdapter extends AbstractNativeFragmentStepAdapte
     @Override
     public Step createStep(@IntRange(from = 0L) int position) {
         switch (position){
-            case 0:
+            case SHOP_SETTING_INFO_POSITION:
                 return ShopSettingInfoFragment.createInstance();
-            case 1:
+            case SHOP_SETTING_LOCATION_POSITION:
                 return ShopSettingLocationFragment.getInstance();
-            case 2:
-                return ShopSettingLogisticFragment.getInstance(districtId);
+            case SHOP_SETTING_LOGICTIC_POSITION:
+                return ShopSettingLogisticFragment.getInstance();
             default:
                 return null;
         }

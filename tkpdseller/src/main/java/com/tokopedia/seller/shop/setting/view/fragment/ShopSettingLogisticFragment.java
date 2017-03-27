@@ -1,5 +1,6 @@
 package com.tokopedia.seller.shop.setting.view.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import com.stepstone.stepper.Step;
 import com.stepstone.stepper.VerificationError;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSetingLogisticComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSetingLogisticComponent;
@@ -28,25 +30,15 @@ public class ShopSettingLogisticFragment
         extends BaseDaggerFragment
         implements ShopSettingLogisticView, Step {
     public static final String TAG = "ShopSettingLogistic";
-    public static final String DISTRICT_CODE = "DISTRICT_CODE";
     public static final int UNSELECTED_DISTRICT_VIEW = -1;
     @Inject
     public ShopSettingLogisticPresenter presenter;
     private ShopSetingLogisticComponent component;
-    private int districtCode;
+    private int districtCode = UNSELECTED_DISTRICT_VIEW;
+    private ShopSettingLogisticListener listener;
 
-    public static ShopSettingLogisticFragment getInstance(int districtCode) {
-        ShopSettingLogisticFragment fragment = new ShopSettingLogisticFragment();
-        Bundle args = new Bundle();
-        args.putInt(DISTRICT_CODE, districtCode);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setupArguments(getArguments());
+    public static ShopSettingLogisticFragment getInstance() {
+        return new ShopSettingLogisticFragment();
     }
 
     @Override
@@ -59,6 +51,16 @@ public class ShopSettingLogisticFragment
         component.inject(this);
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof ShopSettingLogisticListener) {
+            listener = ((ShopSettingLogisticListener) context);
+        } else {
+            throw new RuntimeException("Activity must implement ShopSettingLogisticListener");
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -66,14 +68,22 @@ public class ShopSettingLogisticFragment
         return view;
     }
 
-
-    protected void setupArguments(Bundle arguments) {
-        districtCode = arguments.getInt(DISTRICT_CODE, UNSELECTED_DISTRICT_VIEW);
+    @Override
+    public void changeDistrictCode(int districtCode) {
+        this.districtCode = districtCode;
     }
 
-    @Override
-    protected String getScreenName() {
-        return null;
+
+    private void updateLogistic() throws RuntimeException {
+        if (districtCode != UNSELECTED_DISTRICT_VIEW) {
+            presenter.updateLogistic(districtCode);
+        } else {
+            throw new RuntimeException("District code must be selected");
+        }
+    }
+
+    private void showMessageError(String string) {
+        NetworkErrorHelper.showSnackbar(getActivity(), string);
     }
 
     @Override
@@ -83,11 +93,21 @@ public class ShopSettingLogisticFragment
 
     @Override
     public void onSelected() {
-
+        try {
+            updateLogistic();
+        } catch (Exception e) {
+            showMessageError(getString(R.string.shop_setting_city_not_filled));
+            listener.goBackToLocation();
+        }
     }
 
     @Override
     public void onError(@NonNull VerificationError error) {
 
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 }
