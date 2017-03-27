@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.rescenter.historyaddress.view.presenter;
+package com.tokopedia.inbox.rescenter.historyaction.view.presenter;
 
 import android.content.Context;
 
@@ -13,35 +13,23 @@ import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFa
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
-import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
-import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProductHistory;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingHistoryDialogViewModel;
 import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
+import com.tokopedia.inbox.rescenter.historyaction.domain.interactor.GetHistoryActionUseCase;
+import com.tokopedia.inbox.rescenter.historyaction.view.subscriber.HistoryActionSubsriber;
 import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
-import com.tokopedia.inbox.rescenter.historyaddress.domain.interactor.GetHistoryAddressUseCase;
-import com.tokopedia.inbox.rescenter.historyaddress.view.subscriber.HistoryAddressSubsriber;
 import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
-import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.HistoryAwbUseCase;
-import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.TrackAwbReturProductUseCase;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import rx.Subscriber;
 
 /**
  * Created by hangnadi on 3/23/17.
  */
 
 @SuppressWarnings("ALL")
-public class HistoryAddressFragmentImpl implements HistoryAddressFragmentPresenter {
+public class HistoryActionFragmentImpl implements HistoryActionFragmentPresenter {
 
-    private final HistoryAddressFragmentView fragmentView;
-    private final GetHistoryAddressUseCase historyAddressUseCase;
+    private final HistoryActionFragmentView fragmentView;
+    private final GetHistoryActionUseCase historyActionUseCase;
 
-    public HistoryAddressFragmentImpl(Context context, HistoryAddressFragmentView fragmentView) {
+    public HistoryActionFragmentImpl(Context context, HistoryActionFragmentView fragmentView) {
         this.fragmentView = fragmentView;
         String resolutionID = fragmentView.getResolutionID();
         String accessToken = new SessionHandler(context).getAccessToken(context);
@@ -72,15 +60,15 @@ public class HistoryAddressFragmentImpl implements HistoryAddressFragmentPresent
         ResCenterRepository resCenterRepository
                 = new ResCenterRepositoryImpl(resolutionID, dataSourceFactory);
 
-        this.historyAddressUseCase
-                = new GetHistoryAddressUseCase(jobExecutor, uiThread, resCenterRepository);
+        this.historyActionUseCase
+                = new GetHistoryActionUseCase(jobExecutor, uiThread, resCenterRepository);
 
     }
 
     @Override
     public void onFirstTimeLaunch() {
         fragmentView.setLoadingView(true);
-        historyAddressUseCase.execute(RequestParams.EMPTY, new HistoryAddressSubsriber(fragmentView));
+        historyActionUseCase.execute(RequestParams.EMPTY, new HistoryActionSubsriber(fragmentView));
     }
 
     @Override

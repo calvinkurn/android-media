@@ -6,6 +6,7 @@ import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
 import com.tokopedia.core.network.apiservices.rescenter.ResolutionService;
 import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
+import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
 import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
 import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.source.CloudActionResCenterDataStore;
@@ -25,6 +26,7 @@ public class ResCenterDataSourceFactory {
     private ResCenterActService resCenterActService;
     private HistoryAwbMapper historyAwbMapper;
     private HistoryAddressMapper historyAddressMapper;
+    private HistoryActionMapper historyActionMapper;
 
     public ResCenterDataSourceFactory(Context context,
                                       ResolutionService resCenterService,
@@ -32,7 +34,8 @@ public class ResCenterDataSourceFactory {
                                       ResCenterActService resCenterActService,
                                       DetailResCenterMapper detailResCenterMapper,
                                       HistoryAwbMapper historyAwbMapper,
-                                      HistoryAddressMapper historyAddressMapper) {
+                                      HistoryAddressMapper historyAddressMapper,
+                                      HistoryActionMapper historyActionMapper) {
         this.context = context;
         this.resCenterService = resCenterService;
         this.inboxResCenterService = inboxResCenterService;
@@ -40,13 +43,15 @@ public class ResCenterDataSourceFactory {
         this.resCenterActService = resCenterActService;
         this.historyAwbMapper = historyAwbMapper;
         this.historyAddressMapper = historyAddressMapper;
+        this.historyActionMapper = historyActionMapper;
     }
 
     public CloudResCenterDataSource createCloudResCenterDataSource() {
         return new CloudResCenterDataSource(context, resCenterService,
                 detailResCenterMapper,
                 historyAwbMapper,
-                historyAddressMapper);
+                historyAddressMapper,
+                historyActionMapper);
     }
 
     public CloudInboxResCenterDataSource createCloudInboxResCenterDataSource() {

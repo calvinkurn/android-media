@@ -4,6 +4,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
+import com.tokopedia.inbox.rescenter.historyaction.domain.model.HistoryActionData;
 import com.tokopedia.inbox.rescenter.historyaddress.domain.model.HistoryAddressData;
 import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
 
@@ -25,7 +26,7 @@ public interface ResCenterRepository {
 
     Observable<HistoryAddressData> getHistoryAddress(TKPDMapParam<String, Object> parameters);
 
-    Observable<HistoryAddressData> getHistoryAction(TKPDMapParam<String, Object> parameters);
+    Observable<HistoryActionData> getHistoryAction(TKPDMapParam<String, Object> parameters);
 
     Observable<TrackingAwbReturProduct> getTrackingAwbReturProduct(TKPDMapParam<String, Object> parameters);
 
