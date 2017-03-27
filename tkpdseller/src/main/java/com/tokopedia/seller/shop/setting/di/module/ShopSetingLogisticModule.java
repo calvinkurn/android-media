@@ -1,10 +1,8 @@
 package com.tokopedia.seller.shop.setting.di.module;
 
-import com.tokopedia.seller.app.BaseFragmentModule;
 import com.tokopedia.seller.shop.setting.di.scope.ShopSettingLogisticScope;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLogisticPresenter;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLogisticPresenterImpl;
-import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLogisticView;
 
 import dagger.Module;
 import dagger.Provides;
@@ -14,15 +12,12 @@ import dagger.Provides;
  */
 @ShopSettingLogisticScope
 @Module
-public class ShopSetingLogisticModule extends BaseFragmentModule<ShopSettingLogisticView>{
-    public ShopSetingLogisticModule(ShopSettingLogisticView view) {
-        super(view);
-    }
+public class ShopSetingLogisticModule {
 
     @ShopSettingLogisticScope
     @Provides
-    ShopSettingLogisticPresenter provideShopSettingLogisticPresenter(ShopSettingLogisticView view){
-        return new ShopSettingLogisticPresenterImpl(view);
+    ShopSettingLogisticPresenter provideShopSettingLogisticPresenter() {
+        return new ShopSettingLogisticPresenterImpl();
     }
 
 

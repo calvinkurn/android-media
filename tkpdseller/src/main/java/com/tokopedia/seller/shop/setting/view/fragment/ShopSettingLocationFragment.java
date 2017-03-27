@@ -1,15 +1,19 @@
 package com.tokopedia.seller.shop.setting.view.fragment;
 
-import android.app.Activity;
+import android.content.Context;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.geolocation.model.LocationPass;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.app.BaseDiFragment;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingLocationComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingLocationComponent;
@@ -29,49 +33,48 @@ import javax.inject.Inject;
  * Created by Nathaniel on 3/16/2017.
  */
 public class ShopSettingLocationFragment
-        extends BaseDiFragment<ShopSettingLocationComponent, ShopSettingLocationPresenter>
+        extends BaseDaggerFragment
         implements ShopSettingLocationView,
         DistrictViewHolderListener,
         LocationPickupViewHolderListener {
     public static final String TAG = "ShopSettingLocation";
-
     @Inject
-    public ShopSettingLocationPresenter shopSettingLocationPresenter;
-
+    public ShopSettingLocationPresenter presenter;
+    private ShopSettingLocationComponent component;
     private TkpdProgressDialog tkpdProgressDialog;
     private ShopSettingLocationListener listener;
     private DistrictViewHolder districtViewHolder;
     private LocationPickupViewHolder locationPickupViewHolder;
+
 
     public static ShopSettingLocationFragment getInstance() {
         return new ShopSettingLocationFragment();
     }
 
     @Override
-    protected ShopSettingLocationComponent initInjection() {
-        return DaggerShopSettingLocationComponent
+    protected void initInjector() {
+        component = DaggerShopSettingLocationComponent
                 .builder()
-                .shopSettingLocationModule(new ShopSettingLocationModule(this))
+                .shopSettingLocationModule(new ShopSettingLocationModule())
                 .shopSettingComponent(getComponent(ShopSettingComponent.class))
                 .build();
+        component.inject(this);
     }
 
     @Override
-    protected void initialListener(Activity activity) {
-        if (activity instanceof ShopSettingLocationListener) {
-            this.listener = ((ShopSettingLocationListener) activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof ShopSettingLocationListener) {
+            this.listener = ((ShopSettingLocationListener) context);
         } else {
             throw new RuntimeException("Please implement ShopSettingLocationListener to the activity");
         }
     }
 
+    @Nullable
     @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_shop_setting_location;
-    }
-
-    @Override
-    protected void initView(View view) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_shop_setting_location, container, false);
         districtViewHolder = new DistrictViewHolder(getActivity(), view, this);
         locationPickupViewHolder = new LocationPickupViewHolder(getActivity(), view, this);
         view
@@ -82,6 +85,9 @@ public class ShopSettingLocationFragment
                         continueToNextStep();
                     }
                 });
+        presenter.attachView(this);
+        presenter.getDistrictData();
+        return view;
     }
 
     private void continueToNextStep() {
@@ -98,11 +104,6 @@ public class ShopSettingLocationFragment
         model.setDistrictCode(districtViewHolder.getDistrictCode());
         model.setPostalCode(locationPickupViewHolder.getPostalCode());
         return model;
-    }
-
-    @Override
-    protected void setActionVar() {
-        presenter.getDistrictData();
     }
 
     @Override
@@ -153,5 +154,10 @@ public class ShopSettingLocationFragment
         if (tkpdProgressDialog != null) {
             tkpdProgressDialog.dismiss();
         }
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 }

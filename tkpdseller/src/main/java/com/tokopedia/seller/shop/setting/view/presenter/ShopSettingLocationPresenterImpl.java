@@ -5,10 +5,7 @@ import com.tokopedia.seller.shop.setting.domain.interactor.FetchDistrictDataUseC
 import com.tokopedia.seller.shop.setting.domain.interactor.GetRecomendationLocationDistrictUseCase;
 import com.tokopedia.seller.shop.setting.domain.model.RecomendationDistrictDomainModel;
 import com.tokopedia.seller.shop.setting.view.mapper.RecommendationDistrictViewMapper;
-import com.tokopedia.seller.shop.setting.view.model.RecommendationDistrictItemViewModel;
 import com.tokopedia.seller.shop.setting.view.model.RecommendationDistrictViewModel;
-
-import java.util.List;
 
 import rx.Subscriber;
 
@@ -22,17 +19,16 @@ public class ShopSettingLocationPresenterImpl extends ShopSettingLocationPresent
     private final GetRecomendationLocationDistrictUseCase getRecomendationLocationDistrictUseCase;
 
     public ShopSettingLocationPresenterImpl(
-            ShopSettingLocationView view,
             FetchDistrictDataUseCase fetchDistrictDataUseCase,
             GetRecomendationLocationDistrictUseCase getRecomendationLocationDistrictUseCase) {
-        super(view);
         this.fetchDistrictDataUseCase = fetchDistrictDataUseCase;
         this.getRecomendationLocationDistrictUseCase = getRecomendationLocationDistrictUseCase;
     }
 
     @Override
     public void getDistrictData() {
-        view.showProgressDialog();
+        checkViewAttached();
+        getView().showProgressDialog();
         fetchDistrictDataUseCase.execute(RequestParams.EMPTY, new GetDistrictDataSubscriber());
     }
 
@@ -62,13 +58,15 @@ public class ShopSettingLocationPresenterImpl extends ShopSettingLocationPresent
 
         @Override
         public void onError(Throwable e) {
-            view.dismissProgressDialog();
-            view.showRetryGetDistrictData();
+            checkViewAttached();
+            getView().dismissProgressDialog();
+            getView().showRetryGetDistrictData();
         }
 
         @Override
         public void onNext(Boolean aBoolean) {
-            view.dismissProgressDialog();
+            checkViewAttached();
+            getView().dismissProgressDialog();
 
         }
     }
@@ -82,8 +80,8 @@ public class ShopSettingLocationPresenterImpl extends ShopSettingLocationPresent
 
         @Override
         public void onError(Throwable e) {
-
-            view.showGenericError();
+            checkViewAttached();
+            getView().showGenericError();
 
         }
 
@@ -92,7 +90,8 @@ public class ShopSettingLocationPresenterImpl extends ShopSettingLocationPresent
 
             RecommendationDistrictViewModel viewModel
                     = RecommendationDistrictViewMapper.map(domainModels);
-            view.renderRecomendationDistrictModel(viewModel);
+            checkViewAttached();
+            getView().renderRecomendationDistrictModel(viewModel);
 
         }
     }

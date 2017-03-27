@@ -1,7 +1,6 @@
 package com.tokopedia.seller.shop.setting.di.component;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.seller.app.BaseActivityComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingModule;
 import com.tokopedia.seller.shop.setting.di.scope.ShopSettingScope;
 import com.tokopedia.seller.shop.setting.domain.interactor.FetchDistrictDataUseCase;
@@ -14,7 +13,7 @@ import dagger.Component;
  */
 @ShopSettingScope
 @Component(modules = ShopSettingModule.class, dependencies = AppComponent.class)
-public interface ShopSettingComponent extends BaseActivityComponent {
+public interface ShopSettingComponent {
 
     FetchDistrictDataUseCase getFetchDistrictDataUseCase();
 

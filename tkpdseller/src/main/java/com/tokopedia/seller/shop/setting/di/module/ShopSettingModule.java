@@ -1,12 +1,9 @@
 package com.tokopedia.seller.shop.setting.di.module;
 
-import android.app.Activity;
-
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.shop.MyShopService;
 import com.tokopedia.core.network.apiservices.shop.apis.MyShopApi;
-import com.tokopedia.seller.app.BaseActivityModule;
 import com.tokopedia.seller.shop.setting.data.repository.DistrictDataRepositoryImpl;
 import com.tokopedia.seller.shop.setting.data.source.DistrictDataSource;
 import com.tokopedia.seller.shop.setting.di.scope.ShopSettingScope;
@@ -22,10 +19,7 @@ import dagger.Provides;
  */
 @ShopSettingScope
 @Module
-public class ShopSettingModule extends BaseActivityModule {
-    public ShopSettingModule(Activity activity) {
-        super(activity);
-    }
+public class ShopSettingModule {
 
     @Provides
     @ShopSettingScope

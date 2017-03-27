@@ -1,10 +1,13 @@
 package com.tokopedia.seller.shop.setting.view.fragment;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
+import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.app.BaseDiFragment;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSetingLogisticComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSetingLogisticComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
@@ -12,19 +15,24 @@ import com.tokopedia.seller.shop.setting.di.module.ShopSetingLogisticModule;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLogisticPresenter;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLogisticView;
 
+import javax.inject.Inject;
+
 /**
  * Created by Nathaniel on 3/16/2017.
  */
 
 public class ShopSettingLogisticFragment
-        extends BaseDiFragment<ShopSetingLogisticComponent, ShopSettingLogisticPresenter>
+        extends BaseDaggerFragment
         implements ShopSettingLogisticView {
     public static final String TAG = "ShopSettingLogistic";
     public static final String DISTRICT_CODE = "DISTRICT_CODE";
     public static final int UNSELECTED_DISTRICT_VIEW = -1;
+    @Inject
+    public ShopSettingLogisticPresenter presenter;
+    private ShopSetingLogisticComponent component;
     private int districtCode;
 
-    public static Fragment getInstance(int districtCode) {
+    public static ShopSettingLogisticFragment getInstance(int districtCode) {
         ShopSettingLogisticFragment fragment = new ShopSettingLogisticFragment();
         Bundle args = new Bundle();
         args.putInt(DISTRICT_CODE, districtCode);
@@ -33,28 +41,35 @@ public class ShopSettingLogisticFragment
     }
 
     @Override
-    protected ShopSetingLogisticComponent initInjection() {
-        return DaggerShopSetingLogisticComponent
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setupArguments(getArguments());
+    }
+
+    @Override
+    protected void initInjector() {
+        component = DaggerShopSetingLogisticComponent
                 .builder()
-                .shopSetingLogisticModule(new ShopSetingLogisticModule(this))
+                .shopSetingLogisticModule(new ShopSetingLogisticModule())
                 .shopSettingComponent(getComponent(ShopSettingComponent.class))
                 .build();
+        component.inject(this);
     }
 
+    @Nullable
     @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_shop_setting_logistic;
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_shop_setting_logistic, container, false);
+        return view;
     }
 
-    @Override
-    protected void setActionVar() {
-        super.setActionVar();
-    }
 
-    @Override
     protected void setupArguments(Bundle arguments) {
-        super.setupArguments(arguments);
         districtCode = arguments.getInt(DISTRICT_CODE, UNSELECTED_DISTRICT_VIEW);
     }
 
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
 }

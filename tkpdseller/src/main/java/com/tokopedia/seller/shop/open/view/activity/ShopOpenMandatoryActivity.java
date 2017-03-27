@@ -2,19 +2,20 @@ package com.tokopedia.seller.shop.open.view.activity;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.LocationPass;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.app.BaseDiActivity;
-import com.tokopedia.seller.shop.open.view.presenter.ShopOpenMandatoryPresenter;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopSettingComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingModule;
@@ -30,21 +31,26 @@ import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLocationView;
  */
 
 public class ShopOpenMandatoryActivity
-        extends BaseDiActivity<ShopOpenMandatoryPresenter, ShopSettingComponent>
-        implements ShopSettingLocationListener {
+        extends TActivity
+        implements ShopSettingLocationListener, HasComponent<ShopSettingComponent> {
 
     private static final int OPEN_MAP_CODE = 1000;
     //    StepperLayout stepperLayout;
     private FragmentManager fragmentManager;
+    private ShopSettingComponent component;
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_simple_fragment;
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        inflateView(R.layout.activity_simple_fragment);
+
+        initView();
+        initComponent();
+
     }
 
-    @Override
     protected void initView() {
-        fragmentManager = getFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag(ShopSettingLocationFragment.TAG);
         if (fragment == null) {
             fragment = ShopSettingLocationFragment.getInstance();
@@ -62,18 +68,12 @@ public class ShopOpenMandatoryActivity
         fragmentTransaction.commit();
     }
 
-    @Override
-    protected ShopSettingComponent initComponent() {
-        return DaggerShopSettingComponent
+    protected void initComponent() {
+        component = DaggerShopSettingComponent
                 .builder()
-                .shopSettingModule(new ShopSettingModule(this))
+                .shopSettingModule(new ShopSettingModule())
                 .appComponent(getApplicationComponent())
                 .build();
-    }
-
-    @Override
-    protected ShopOpenMandatoryPresenter getPresenter() {
-        return null;
     }
 
     @Override
@@ -124,5 +124,8 @@ public class ShopOpenMandatoryActivity
     }
 
 
-
+    @Override
+    public ShopSettingComponent getComponent() {
+        return component;
+    }
 }

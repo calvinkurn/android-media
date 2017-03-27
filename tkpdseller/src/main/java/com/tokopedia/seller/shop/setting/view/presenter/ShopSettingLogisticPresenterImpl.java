@@ -6,10 +6,6 @@ package com.tokopedia.seller.shop.setting.view.presenter;
 
 public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresenter {
 
-    public ShopSettingLogisticPresenterImpl(ShopSettingLogisticView view) {
-        super(view);
-    }
-
     @Override
     protected void unsubscribeOnDestroy() {
 
