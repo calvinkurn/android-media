@@ -5,7 +5,6 @@ import javax.inject.Qualifier;
 /**
  * @author ricoharisin .
  */
-
 @Qualifier
-public @interface AccountsService {
+public @interface NoAuthNoFingerprint {
 }

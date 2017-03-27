@@ -6,9 +6,9 @@ import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.di.qualifier.BearerAuth;
 import com.tokopedia.core.network.di.qualifier.DefaultAuth;
-import com.tokopedia.core.network.di.qualifier.GlobalAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoAuth;
 import com.tokopedia.core.network.di.qualifier.NoAuth;
+import com.tokopedia.core.network.di.qualifier.NoAuthNoFingerprint;
 import com.tokopedia.core.network.di.qualifier.WsV4Auth;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
@@ -116,6 +116,20 @@ public class OkHttpClientModule {
     @Provides
     public OkHttpRetryPolicy provideOkHttpRetryPolicy() {
         return OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
+    }
+
+    @NoAuthNoFingerprint
+    @ApplicationScope
+    @Provides
+    public OkHttpClient provideOkHttpClientNoAuthNoFingerprint(TkpdBaseInterceptor tkpdBaseInterceptor,
+                                                  OkHttpRetryPolicy okHttpRetryPolicy,
+                                                  ChuckInterceptor chuckInterceptor,
+                                                  DebugInterceptor debugInterceptor) {
+
+        return OkHttpFactory.create().buildDaggerClientNoAuthNoFingerPrint(tkpdBaseInterceptor,
+                okHttpRetryPolicy,
+                chuckInterceptor,
+                debugInterceptor);
     }
 
 }

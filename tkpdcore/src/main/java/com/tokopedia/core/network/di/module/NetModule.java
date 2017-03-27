@@ -2,7 +2,7 @@ package com.tokopedia.core.network.di.module;
 
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.di.qualifier.AccountsService;
+import com.tokopedia.core.network.di.qualifier.AccountsQualifier;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.BearerAuth;
 import com.tokopedia.core.network.di.qualifier.DefaultAuth;
@@ -10,6 +10,7 @@ import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.NoAuth;
+import com.tokopedia.core.network.di.qualifier.NoAuthNoFingerprint;
 import com.tokopedia.core.network.di.qualifier.RechargeQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
@@ -45,7 +46,7 @@ public class NetModule {
     @TopAdsQualifier
     @ApplicationScope
     @Provides
-    public Retrofit provideTopAdsRetrofit(@DefaultAuth OkHttpClient okHttpClient,
+    public Retrofit provideTopAdsRetrofit(@NoAuthNoFingerprint OkHttpClient okHttpClient,
                                        Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.TOPADS_DOMAIN).client(okHttpClient).build();
     }
@@ -66,7 +67,7 @@ public class NetModule {
         return retrofitBuilder.baseUrl(TkpdBaseURL.HADES_DOMAIN).client(okHttpClient).build();
     }
 
-    @AccountsService
+    @AccountsQualifier
     @ApplicationScope
     @Provides
     public Retrofit provideAccountsRetrofit(@BearerAuth OkHttpClient okHttpClient,

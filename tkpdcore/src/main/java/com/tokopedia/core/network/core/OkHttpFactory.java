@@ -176,10 +176,10 @@ public class OkHttpFactory {
     }
 
     public OkHttpClient buildDaggerClientNoAuth(FingerprintInterceptor fingerprintInterceptor,
-                                                     TkpdBaseInterceptor tkpdBaseInterceptor,
-                                                     OkHttpRetryPolicy okHttpRetryPolicy,
-                                                     ChuckInterceptor chuckInterceptor,
-                                                     DebugInterceptor debugInterceptor) {
+                                                TkpdBaseInterceptor tkpdBaseInterceptor,
+                                                OkHttpRetryPolicy okHttpRetryPolicy,
+                                                ChuckInterceptor chuckInterceptor,
+                                                DebugInterceptor debugInterceptor) {
 
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(fingerprintInterceptor)
@@ -192,6 +192,23 @@ public class OkHttpFactory {
         }
         return tkpdbBuilder.build();
     }
+
+    public OkHttpClient buildDaggerClientNoAuthNoFingerPrint(TkpdBaseInterceptor tkpdBaseInterceptor,
+                                                OkHttpRetryPolicy okHttpRetryPolicy,
+                                                ChuckInterceptor chuckInterceptor,
+                                                DebugInterceptor debugInterceptor) {
+
+        TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
+                .addInterceptor(tkpdBaseInterceptor)
+                .setOkHttpRetryPolicy(okHttpRetryPolicy);
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            tkpdbBuilder.addInterceptor(debugInterceptor);
+            tkpdbBuilder.addInterceptor(chuckInterceptor);
+        }
+        return tkpdbBuilder.build();
+    }
+
 
 
 
