@@ -8,12 +8,14 @@ import com.tokopedia.digital.cart.data.entity.response.MainInfo;
 import com.tokopedia.digital.cart.data.entity.response.RelationshipsCart;
 import com.tokopedia.digital.cart.data.entity.response.ResponseCartData;
 import com.tokopedia.digital.cart.data.entity.response.ResponseCheckoutData;
+import com.tokopedia.digital.cart.data.entity.response.ResponseInstantCheckoutData;
 import com.tokopedia.digital.cart.data.entity.response.ResponseVoucherData;
 import com.tokopedia.digital.cart.model.AttributesDigital;
 import com.tokopedia.digital.cart.model.CartAdditionalInfo;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 import com.tokopedia.digital.cart.model.CartItemDigital;
 import com.tokopedia.digital.cart.model.CheckoutDigitalData;
+import com.tokopedia.digital.cart.model.InstantCheckoutData;
 import com.tokopedia.digital.cart.model.OtpData;
 import com.tokopedia.digital.cart.model.Relation;
 import com.tokopedia.digital.cart.model.RelationData;
@@ -23,6 +25,7 @@ import com.tokopedia.digital.cart.model.VoucherAttributeDigital;
 import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.exception.MapperDataException;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -181,6 +184,29 @@ public class CartMapperData implements ICartMapperData {
             return checkoutDigitalData;
         } catch (Exception e) {
             throw new MapperDataException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public InstantCheckoutData transformInstantCheckoutData(ResponseInstantCheckoutData responseCheckoutData)
+            throws MapperDataException {
+        try {
+            InstantCheckoutData instantCheckoutData = new InstantCheckoutData();
+            instantCheckoutData.setRedirectUrl(
+                    responseCheckoutData.getAttributes().getThanksUrl()
+            );
+            instantCheckoutData.setFailedCallbackUrl(
+                    responseCheckoutData.getAttributes().getCallbackUrlFailed()
+            );
+            instantCheckoutData.setSuccessCallbackUrl(
+                    responseCheckoutData.getAttributes().getCallbackUrlSuccess()
+            );
+            instantCheckoutData.setTransactionId(
+                    MessageFormat.format("{0}", responseCheckoutData.getId())
+            );
+            return instantCheckoutData;
+        } catch (Exception e) {
+            throw new MapperDataException(e.getMessage(), e.getCause());
         }
     }
 

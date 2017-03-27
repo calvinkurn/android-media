@@ -18,6 +18,12 @@ public interface IBaseView {
 
     void navigateToActivity(Intent intent);
 
+    void showInitialProgressLoading();
+
+    void hideInitialProgressLoading();
+
+    void clearContentRendered();
+
     void showProgressLoading();
 
     void hideProgressLoading();
@@ -37,4 +43,6 @@ public interface IBaseView {
     );
 
     void closeView();
+
+
 }

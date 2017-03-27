@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.util.Log;
 import android.view.View;
@@ -21,10 +20,12 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.cart.activity.InstantCheckoutActivity;
 import com.tokopedia.digital.cart.activity.OtpVerificationActivity;
 import com.tokopedia.digital.cart.compoundview.CheckoutHolderView;
 import com.tokopedia.digital.cart.compoundview.InputPriceHolderView;
@@ -40,6 +41,7 @@ import com.tokopedia.digital.cart.listener.IDigitalCartView;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 import com.tokopedia.digital.cart.model.CheckoutDataParameter;
 import com.tokopedia.digital.cart.model.CheckoutDigitalData;
+import com.tokopedia.digital.cart.model.InstantCheckoutData;
 import com.tokopedia.digital.cart.model.UserInputPriceDigital;
 import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
@@ -207,6 +209,18 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
+    public void showInitialProgressLoading() {
+        pbMainLoading.setVisibility(View.VISIBLE);
+        mainContainer.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideInitialProgressLoading() {
+        pbMainLoading.setVisibility(View.GONE);
+        mainContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void showProgressLoading() {
         progressDialogNormal.showDialog();
     }
@@ -262,8 +276,10 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void renderCartDigitalInfoData(CartDigitalInfoData cartDigitalInfoData) {
         this.cartDigitalInfoDataState = cartDigitalInfoData;
-        pbMainLoading.setVisibility(View.GONE);
-        mainContainer.setVisibility(View.VISIBLE);
+        renderCartInfo(cartDigitalInfoData);
+    }
+
+    private void renderCartInfo(CartDigitalInfoData cartDigitalInfoData) {
         actionListener.setTitleCart(cartDigitalInfoData.getTitle());
         itemCartHolderView.renderAdditionalInfo(cartDigitalInfoData.getAdditionalInfos());
         itemCartHolderView.renderDataMainInfo(cartDigitalInfoData.getMainInfo());
@@ -279,7 +295,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         );
         buildCheckoutData(cartDigitalInfoData);
         if (passData.getInstantCheckout().equals("1")) {
-            presenter.processToCheckout();
+            pbMainLoading.setVisibility(View.VISIBLE);
+            mainContainer.setVisibility(View.GONE);
+            presenter.processToInstantCheckout();
+        } else {
+            pbMainLoading.setVisibility(View.GONE);
+            mainContainer.setVisibility(View.VISIBLE);
         }
     }
 
@@ -333,6 +354,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
+    public void renderAddToCartData(CartDigitalInfoData cartDigitalInfoData) {
+        this.cartDigitalInfoDataState = cartDigitalInfoData;
+        renderCartInfo(cartDigitalInfoData);
+    }
+
+    @Override
     public void renderErrorAddToCart(String message) {
         closeViewWithMessageAlert(message);
     }
@@ -370,20 +397,10 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     public void closeViewWithMessageAlert(String message) {
         pbMainLoading.setVisibility(View.GONE);
         mainContainer.setVisibility(View.GONE);
-        View view = getView();
-        if (view != null) {
-            Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_SHORT);
-            snackbar.setCallback(new Snackbar.Callback() {
-                @Override
-                public void onDismissed(Snackbar snackbar, int event) {
-                    getActivity().finish();
-                }
-            });
-            snackbar.show();
-        } else {
-            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-            getActivity().finish();
-        }
+        Intent intent = new Intent();
+        intent.putExtra(IDigitalModuleRouter.EXTRA_MESSAGE, message);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
     }
 
     @Override
@@ -464,6 +481,34 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
+    public void renderToInstantCheckoutPage(InstantCheckoutData instantCheckoutData) {
+        navigateToActivityRequest(
+                InstantCheckoutActivity.newInstance(getActivity(), instantCheckoutData),
+                InstantCheckoutActivity.REQUEST_CODE
+        );
+    }
+
+    @Override
+    public void renderErrorInstantCheckout(String message) {
+
+    }
+
+    @Override
+    public void renderErrorHttpInstantCheckout(String message) {
+
+    }
+
+    @Override
+    public void renderErrorNoConnectionInstantCheckout(String message) {
+
+    }
+
+    @Override
+    public void renderErrorTimeoutConnectionInstantCheckout(String message) {
+
+    }
+
+    @Override
     public String getDigitalCategoryId() {
         return passData.getCategoryId();
     }
@@ -500,8 +545,13 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
+    public void clearContentRendered() {
+        pbMainLoading.setVisibility(View.GONE);
+        mainContainer.setVisibility(View.GONE);
+    }
+
+    @Override
     public void interruptRequestTokenVerification() {
-        // showToastMessage("Module OTP belum siap. Bal yaw... eaaa eaaaa");
         navigateToActivityRequest(
                 OtpVerificationActivity.newInstance(getActivity()),
                 OtpVerificationActivity.REQUEST_CODE
@@ -516,6 +566,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void onInputPriceByUserFilled(long paymentAmount) {
         Log.d(TAG, "userInputPayment: " + paymentAmount);
+        checkoutDataBuilder.transactionAmount(paymentAmount);
     }
 
     @Override
@@ -527,14 +578,19 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == OtpVerificationActivity.REQUEST_CODE) {
-            switch (requestCode) {
+            String message = data.getStringExtra(OtpVerificationActivity.EXTRA_MESSAGE);
+            switch (resultCode) {
                 case OtpVerificationActivity.RESULT_OTP_VERIFIED:
                     presenter.processPatchOtpCart();
+                    if (message != null) showToastMessage(message);
                     break;
                 default:
+                    if (message != null) closeViewWithMessageAlert(message);
+                    else closeView();
                     break;
             }
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {// ini request code payment. bisa diganti
+            closeView();
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:
                     closeView();
@@ -551,6 +607,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     presenter.processGetCartData();
                     break;
             }
+        } else if (requestCode == InstantCheckoutActivity.REQUEST_CODE) {
+            closeView();
         }
     }
 

@@ -7,7 +7,11 @@ package com.tokopedia.digital.cart.presenter;
 public interface IOtpVerificationPresenter {
     String TAG = IOtpVerificationPresenter.class.getSimpleName();
 
-    void processRequestOtp();
+    void processFirstRequestSmsOtp();
+
+    void processReRequestSmsOtp();
+
+    void processRequestCallOtp();
 
     void processVerifyOtp();
 }

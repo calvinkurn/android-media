@@ -6,13 +6,37 @@ package com.tokopedia.digital.cart.listener;
 
 public interface IOtpVerificationView extends IBaseView {
 
-    void renderSuccessRequestOtp(String message);
+    void renderSuccessReRequestSmsOtp(String message);
 
-    void renderErrorTimeoutRequestOtp(String messageErrorTimeout);
+    void renderErrorTimeoutReRequestSmsOtp(String messageErrorTimeout);
 
-    void renderErrorNoConnectionRequestOtp(String messageErrorNoConnection);
+    void renderErrorNoConnectionReRequestSmsOtp(String messageErrorNoConnection);
 
-    void renderErrorRequestOtp(String message);
+    void renderErrorReRequestSmsOtp(String message);
+
+    void renderErrorResponseReRequestSmsOtp(String message);
+
+
+    void renderSuccessFirstRequestSmsOtp(String message);
+
+    void renderErrorTimeoutFirstRequestSmsOtp(String messageErrorTimeout);
+
+    void renderErrorNoConnectionFirstRequestSmsOtp(String messageErrorNoConnection);
+
+    void renderErrorFirstRequestSmsOtp(String message);
+
+    void renderErrorResponseFirstRequestSmsOtp(String message);
+
+
+    void renderSuccessRequestCallOtp(String message);
+
+    void renderErrorTimeoutRequestCallOtp(String messageErrorTimeout);
+
+    void renderErrorNoConnectionRequestCallOtp(String messageErrorNoConnection);
+
+    void renderErrorRequestCallOtp(String message);
+
+    void renderErrorResponseRequestCallOtp(String message);
 
 
     void renderSuccessVerifyOtp(String message);
@@ -23,6 +47,7 @@ public interface IOtpVerificationView extends IBaseView {
 
     void renderErrorVerifyOtp(String message);
 
+    void renderErrorResponseVerifyOtp(String message);
 
 
     String getUserId();

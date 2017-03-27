@@ -8,8 +8,10 @@ import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.digital.cart.data.entity.response.ResponseCheckoutData;
+import com.tokopedia.digital.cart.data.entity.response.ResponseInstantCheckoutData;
 import com.tokopedia.digital.cart.data.mapper.ICartMapperData;
 import com.tokopedia.digital.cart.model.CheckoutDigitalData;
+import com.tokopedia.digital.cart.model.InstantCheckoutData;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -42,6 +44,24 @@ public class CheckoutRepository implements ICheckoutRepository {
                         return cartMapperData.transformCheckoutData(
                                 tkpdDigitalResponseResponse.body()
                                         .convertDataObj(ResponseCheckoutData.class)
+                        );
+                    }
+                });
+    }
+
+    @Override
+    public Observable<InstantCheckoutData> instantCheckoutCart(RequestBodyCheckout requestBodyCheckout) {
+        JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(requestBodyCheckout));
+        JsonObject requestBody = new JsonObject();
+        requestBody.add("data", jsonElement);
+        return digitalEndpointService.getApi().checkout(requestBody)
+                .map(new Func1<Response<TkpdDigitalResponse>, InstantCheckoutData>() {
+                    @Override
+                    public InstantCheckoutData call(
+                            Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
+                        return cartMapperData.transformInstantCheckoutData(
+                                tkpdDigitalResponseResponse.body()
+                                        .convertDataObj(ResponseInstantCheckoutData.class)
                         );
                     }
                 });

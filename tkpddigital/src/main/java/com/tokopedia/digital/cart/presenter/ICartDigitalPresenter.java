@@ -14,6 +14,8 @@ public interface ICartDigitalPresenter {
 
     void processToCheckout();
 
+    void processToInstantCheckout();
+
     void processPatchOtpCart();
 
 }

@@ -3,6 +3,7 @@ package com.tokopedia.digital.cart.listener;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 import com.tokopedia.digital.cart.model.CheckoutDataParameter;
 import com.tokopedia.digital.cart.model.CheckoutDigitalData;
+import com.tokopedia.digital.cart.model.InstantCheckoutData;
 import com.tokopedia.digital.cart.model.VoucherDigital;
 
 /**
@@ -12,6 +13,8 @@ import com.tokopedia.digital.cart.model.VoucherDigital;
 public interface IDigitalCartView extends IBaseView {
 
     void renderLoadingAddToCart();
+
+    void renderAddToCartData(CartDigitalInfoData cartDigitalInfoData);
 
     void renderErrorAddToCart(String message);
 
@@ -57,6 +60,17 @@ public interface IDigitalCartView extends IBaseView {
     void renderErrorTimeoutConnectionCheckout(String message);
 
 
+    void renderToInstantCheckoutPage(InstantCheckoutData instantCheckoutData);
+
+    void renderErrorInstantCheckout(String message);
+
+    void renderErrorHttpInstantCheckout(String message);
+
+    void renderErrorNoConnectionInstantCheckout(String message);
+
+    void renderErrorTimeoutConnectionInstantCheckout(String message);
+
+
     void closeViewWithMessageAlert(String message);
 
     void interruptRequestTokenVerification();
@@ -81,5 +95,4 @@ public interface IDigitalCartView extends IBaseView {
     int getProductId();
 
     String getIdemPotencyKey();
-
 }

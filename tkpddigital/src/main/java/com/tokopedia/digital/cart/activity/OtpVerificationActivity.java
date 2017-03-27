@@ -8,7 +8,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,20 +45,27 @@ import rx.subscriptions.CompositeSubscription;
 public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificationPresenter>
         implements IOtpVerificationView, IncomingSmsReceiver.ReceiveSMSListener {
     public static final int REQUEST_CODE = OtpVerificationActivity.class.hashCode();
+    public static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     public static final int RESULT_OTP_VERIFIED = 4;
     public static final int RESULT_OTP_UNVERIFIED = 5;
     public static final int RESULT_OTP_CANCELED = 3;
 
+    @BindView(R2.id.pb_main_loading)
+    ProgressBar pbMainLoading;
     @BindView(R2.id.et_input_otp)
     PinEntryEditText etOtp;
     @BindView(R2.id.btn_verify_otp)
     TextView btnValidateOtp;
+    @BindView(R2.id.tv_pin_error)
+    TextView tvPinError;
     @BindView(R2.id.btn_request_otp)
     TextView btnRequestOtp;
     @BindView(R2.id.tv_message)
     TextView tvMessage;
     @BindView(R2.id.btn_request_otp_call)
     TextView btnRequestOtpCall;
+    @BindView(R2.id.main_container)
+    RelativeLayout mainContainer;
 
     private TkpdProgressDialog progressDialog;
     private CompositeSubscription compositeSubscription;
@@ -94,6 +105,22 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
 
     @Override
     protected void setViewListener() {
+        etOtp.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                tvPinError.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
         btnValidateOtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,7 +138,7 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
 
     @Override
     protected void setActionVar() {
-
+        presenter.processFirstRequestSmsOtp();
     }
 
     public static Intent newInstance(Context context) {
@@ -126,6 +153,24 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
     @Override
     public void navigateToActivity(Intent intent) {
 
+    }
+
+    @Override
+    public void showInitialProgressLoading() {
+        mainContainer.setVisibility(View.GONE);
+        pbMainLoading.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideInitialProgressLoading() {
+        mainContainer.setVisibility(View.VISIBLE);
+        pbMainLoading.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void clearContentRendered() {
+        pbMainLoading.setVisibility(View.GONE);
+        mainContainer.setVisibility(View.GONE);
     }
 
     @Override
@@ -166,7 +211,8 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
     }
 
     @Override
-    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
+    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            TKPDMapParam<String, String> originParams) {
         return null;
     }
 
@@ -176,24 +222,28 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
     }
 
     @Override
-    public void renderSuccessRequestOtp(String message) {
+    public void renderSuccessReRequestSmsOtp(String message) {
         tvMessage.setText(message);
+        tvPinError.setText("");
+        tvPinError.setVisibility(View.GONE);
+        mainContainer.setVisibility(View.VISIBLE);
+        pbMainLoading.setVisibility(View.GONE);
     }
 
     @Override
-    public void renderErrorTimeoutRequestOtp(String messageErrorTimeout) {
+    public void renderErrorTimeoutReRequestSmsOtp(String messageErrorTimeout) {
         showToastMessage(messageErrorTimeout);
     }
 
     @Override
-    public void renderErrorNoConnectionRequestOtp(String messageErrorNoConnection) {
+    public void renderErrorNoConnectionReRequestSmsOtp(String messageErrorNoConnection) {
         View view = findViewById(android.R.id.content);
         if (view != null)
             NetworkErrorHelper.showEmptyState(
                     this, view, new NetworkErrorHelper.RetryClickedListener() {
                         @Override
                         public void onRetryClicked() {
-                            presenter.processRequestOtp();
+                            presenter.processReRequestSmsOtp();
                         }
                     }
             );
@@ -201,14 +251,108 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
     }
 
     @Override
-    public void renderErrorRequestOtp(String message) {
+    public void renderErrorReRequestSmsOtp(String message) {
         showToastMessage(message);
     }
 
     @Override
+    public void renderErrorResponseReRequestSmsOtp(String message) {
+        tvMessage.setText(message);
+        tvPinError.setText("");
+        tvPinError.setVisibility(View.GONE);
+        mainContainer.setVisibility(View.VISIBLE);
+        pbMainLoading.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderSuccessFirstRequestSmsOtp(String message) {
+        tvMessage.setText(message);
+        tvPinError.setText("");
+        tvPinError.setVisibility(View.GONE);
+        mainContainer.setVisibility(View.VISIBLE);
+        pbMainLoading.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderErrorTimeoutFirstRequestSmsOtp(String messageErrorTimeout) {
+        closeWithResultOtpCanceled(messageErrorTimeout);
+    }
+
+    @Override
+    public void renderErrorNoConnectionFirstRequestSmsOtp(String messageErrorNoConnection) {
+        View view = findViewById(android.R.id.content);
+        if (view != null)
+            NetworkErrorHelper.showEmptyState(
+                    this, view, new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            presenter.processFirstRequestSmsOtp();
+                        }
+                    }
+            );
+        else showToastMessage(messageErrorNoConnection);
+    }
+
+    @Override
+    public void renderErrorFirstRequestSmsOtp(String message) {
+        closeWithResultOtpCanceled(message);
+    }
+
+    @Override
+    public void renderErrorResponseFirstRequestSmsOtp(String message) {
+        tvMessage.setText(message);
+        tvPinError.setText("");
+        tvPinError.setVisibility(View.GONE);
+        mainContainer.setVisibility(View.VISIBLE);
+        pbMainLoading.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderSuccessRequestCallOtp(String message) {
+        tvMessage.setText(message);
+        tvPinError.setText("");
+        tvPinError.setVisibility(View.GONE);
+        mainContainer.setVisibility(View.VISIBLE);
+        pbMainLoading.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderErrorTimeoutRequestCallOtp(String messageErrorTimeout) {
+        showToastMessage(messageErrorTimeout);
+    }
+
+    @Override
+    public void renderErrorNoConnectionRequestCallOtp(String messageErrorNoConnection) {
+        View view = findViewById(android.R.id.content);
+        if (view != null)
+            NetworkErrorHelper.showEmptyState(
+                    this, view, new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            presenter.processRequestCallOtp();
+                        }
+                    }
+            );
+        else showToastMessage(messageErrorNoConnection);
+    }
+
+    @Override
+    public void renderErrorRequestCallOtp(String message) {
+        showToastMessage(message);
+    }
+
+    @Override
+    public void renderErrorResponseRequestCallOtp(String message) {
+        tvMessage.setText(message);
+        tvPinError.setText("");
+        tvPinError.setVisibility(View.GONE);
+        mainContainer.setVisibility(View.VISIBLE);
+        pbMainLoading.setVisibility(View.GONE);
+    }
+
+    @Override
     public void renderSuccessVerifyOtp(String message) {
-        setResult(RESULT_OTP_VERIFIED);
-        closeView();
+        closeWithResultOtpVerified(message);
     }
 
     @Override
@@ -237,6 +381,12 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
     }
 
     @Override
+    public void renderErrorResponseVerifyOtp(String message) {
+        tvPinError.setVisibility(View.VISIBLE);
+        tvPinError.setText(message);
+    }
+
+    @Override
     public String getUserId() {
         return SessionHandler.getLoginID(this);
     }
@@ -248,8 +398,7 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
 
     @Override
     public void onBackPressed() {
-        setResult(RESULT_OTP_CANCELED);
-        closeView();
+        closeWithResultOtpCanceled("Verifikasi kode keamanan dibatalkan");
     }
 
     @Override
@@ -262,7 +411,12 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
 
     @OnClick(R2.id.btn_request_otp)
     void actionRequestOtp() {
-        presenter.processRequestOtp();
+        presenter.processReRequestSmsOtp();
+    }
+
+    @OnClick(R2.id.btn_request_otp_call)
+    void actionRequestCallOtp() {
+        presenter.processRequestCallOtp();
     }
 
     @OnClick(R2.id.btn_verify_otp)
@@ -273,5 +427,23 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
     @Override
     public void onReceiveOTP(String otpCode) {
         etOtp.setText(otpCode);
+    }
+
+    private void closeWithResultOtpVerified(String message) {
+        Intent intent = new Intent().putExtra(EXTRA_MESSAGE, message);
+        setResult(RESULT_OTP_VERIFIED, intent);
+        finish();
+    }
+
+    private void closeWithResultOtpUnVerified(String message) {
+        Intent intent = new Intent().putExtra(EXTRA_MESSAGE, message);
+        setResult(RESULT_OTP_UNVERIFIED, intent);
+        finish();
+    }
+
+    private void closeWithResultOtpCanceled(String message) {
+        Intent intent = new Intent().putExtra(EXTRA_MESSAGE, message);
+        setResult(RESULT_OTP_CANCELED, intent);
+        finish();
     }
 }

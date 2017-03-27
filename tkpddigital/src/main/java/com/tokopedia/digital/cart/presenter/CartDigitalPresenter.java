@@ -21,6 +21,7 @@ import com.tokopedia.digital.cart.listener.IDigitalCartView;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 import com.tokopedia.digital.cart.model.CheckoutDataParameter;
 import com.tokopedia.digital.cart.model.CheckoutDigitalData;
+import com.tokopedia.digital.cart.model.InstantCheckoutData;
 import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.utils.DeviceUtil;
 
@@ -59,7 +60,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 
     @Override
     public void processAddToCart() {
-        view.renderLoadingGetCartInfo();
+        view.renderLoadingAddToCart();
         cartDigitalInteractor.addToCart(
                 getRequestBodyAtcDigital(), view.getIdemPotencyKey(), getSubscriberAddToCart()
         );
@@ -92,6 +93,21 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     }
 
     @Override
+    public void processToInstantCheckout() {
+        CheckoutDataParameter checkoutData = view.getCheckoutData();
+        if (checkoutData.isNeedOtp()) {
+            view.interruptRequestTokenVerification();
+            return;
+        }
+        view.showProgressLoading();
+        cartDigitalInteractor.instantCheckout(
+                getRequestBodyCheckout(checkoutData),
+                getSubscriberInstantCheckout()
+        );
+    }
+
+
+    @Override
     public void processPatchOtpCart() {
         CheckoutDataParameter checkoutDataParameter = view.getCheckoutData();
         RequestBodyOtpSuccess requestBodyOtpSuccess = new RequestBodyOtpSuccess();
@@ -105,6 +121,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 
         TKPDMapParam<String, String> paramGetCart = new TKPDMapParam<>();
         paramGetCart.put("category_id", view.getDigitalCategoryId());
+        view.renderLoadingGetCartInfo();
         cartDigitalInteractor.patchCartOtp(
                 requestBodyOtpSuccess,
                 view.getGeneratedAuthParamNetwork(paramGetCart),
@@ -156,7 +173,26 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 view.hideProgressLoading();
                 Log.d(TAG, checkoutDigitalData.toString());
                 view.renderToTopPay(checkoutDigitalData);
-                view.showToastMessage("Nunggu module payment siap, Bal yaw.. eaa eaa..");
+            }
+        };
+    }
+
+    private Subscriber<InstantCheckoutData> getSubscriberInstantCheckout() {
+        return new Subscriber<InstantCheckoutData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+
+            }
+
+            @Override
+            public void onNext(InstantCheckoutData instantCheckoutData) {
+                view.renderToInstantCheckoutPage(instantCheckoutData);
             }
         };
     }
@@ -247,7 +283,13 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 
             @Override
             public void onNext(CartDigitalInfoData cartDigitalInfoData) {
-                view.renderCartDigitalInfoData(cartDigitalInfoData);
+                if (cartDigitalInfoData.getAttributes().isNeedOtp()) {
+                    view.clearContentRendered();
+                    view.interruptRequestTokenVerification();
+                } else {
+                    view.renderCartDigitalInfoData(cartDigitalInfoData);
+                }
+
             }
         };
     }

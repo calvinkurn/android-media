@@ -31,13 +31,34 @@ public class OtpVerificationPresenter implements IOtpVerificationPresenter {
     }
 
     @Override
-    public void processRequestOtp() {
+    public void processFirstRequestSmsOtp() {
+        view.showInitialProgressLoading();
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString("otp_type", "16");
+        requestParams.putString("mode", "sms");
+        otpVerificationInteractor.requestOtp(requestParams.getParameters(),
+                getSubscriberFirstRequestSmsOtp());
+    }
+
+
+    @Override
+    public void processReRequestSmsOtp() {
         view.showProgressLoading();
         RequestParams requestParams = RequestParams.create();
         requestParams.putString("otp_type", "16");
         requestParams.putString("mode", "sms");
         otpVerificationInteractor.requestOtp(requestParams.getParameters(),
-                getSubscriberRequestOtp());
+                getSubscriberReRequestSmsOtp());
+    }
+
+    @Override
+    public void processRequestCallOtp() {
+        view.showProgressLoading();
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString("otp_type", "16");
+        requestParams.putString("mode", "call");
+        otpVerificationInteractor.requestOtp(requestParams.getParameters(),
+                getSubscriberRequestCallOtp());
     }
 
     @Override
@@ -52,7 +73,7 @@ public class OtpVerificationPresenter implements IOtpVerificationPresenter {
 
 
     @NonNull
-    private Subscriber<OtpData> getSubscriberRequestOtp() {
+    private Subscriber<OtpData> getSubscriberReRequestSmsOtp() {
         return new Subscriber<OtpData>() {
             @Override
             public void onCompleted() {
@@ -64,13 +85,13 @@ public class OtpVerificationPresenter implements IOtpVerificationPresenter {
                 e.printStackTrace();
                 view.hideProgressLoading();
                 if (e instanceof SocketTimeoutException) {
-                    view.renderErrorTimeoutRequestOtp(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                    view.renderErrorTimeoutReRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else if (e instanceof UnknownHostException) {
-                    view.renderErrorNoConnectionRequestOtp(
+                    view.renderErrorNoConnectionReRequestSmsOtp(
                             ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
                     );
                 } else {
-                    view.renderErrorRequestOtp(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    view.renderErrorReRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
 
@@ -78,12 +99,77 @@ public class OtpVerificationPresenter implements IOtpVerificationPresenter {
             public void onNext(OtpData otpData) {
                 view.hideProgressLoading();
                 Log.d(TAG, otpData.getMessage());
-                if (otpData.isSuccess()) view.renderSuccessRequestOtp(otpData.getMessage());
-                else view.renderErrorRequestOtp(otpData.getMessage());
+                if (otpData.isSuccess()) view.renderSuccessReRequestSmsOtp(otpData.getMessage());
+                else view.renderErrorResponseReRequestSmsOtp(otpData.getMessage());
             }
         };
     }
 
+    private Subscriber<OtpData> getSubscriberFirstRequestSmsOtp() {
+        return new Subscriber<OtpData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                view.clearContentRendered();
+                view.hideProgressLoading();
+                if (e instanceof SocketTimeoutException) {
+                    view.renderErrorTimeoutFirstRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                } else if (e instanceof UnknownHostException) {
+                    view.renderErrorNoConnectionFirstRequestSmsOtp(
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                    );
+                } else {
+                    view.renderErrorFirstRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+            }
+
+            @Override
+            public void onNext(OtpData otpData) {
+                view.hideProgressLoading();
+                if (otpData.isSuccess()) view.renderSuccessFirstRequestSmsOtp(otpData.getMessage());
+                else view.renderErrorResponseFirstRequestSmsOtp(otpData.getMessage());
+            }
+        };
+    }
+
+
+    @NonNull
+    private Subscriber<OtpData> getSubscriberRequestCallOtp() {
+        return new Subscriber<OtpData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                view.hideProgressLoading();
+                if (e instanceof SocketTimeoutException) {
+                    view.renderErrorTimeoutRequestCallOtp(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                } else if (e instanceof UnknownHostException) {
+                    view.renderErrorNoConnectionRequestCallOtp(
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                    );
+                } else {
+                    view.renderErrorRequestCallOtp(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+            }
+
+            @Override
+            public void onNext(OtpData otpData) {
+                view.hideProgressLoading();
+                Log.d(TAG, otpData.getMessage());
+                if (otpData.isSuccess()) view.renderSuccessRequestCallOtp(otpData.getMessage());
+                else view.renderErrorResponseRequestCallOtp(otpData.getMessage());
+            }
+        };
+    }
 
     @NonNull
     private Subscriber<OtpData> getSubscriberVerifyOtp() {
@@ -113,7 +199,7 @@ public class OtpVerificationPresenter implements IOtpVerificationPresenter {
                 view.hideProgressLoading();
                 Log.d(TAG, otpData.getMessage());
                 if (otpData.isSuccess()) view.renderSuccessVerifyOtp(otpData.getMessage());
-                else view.renderErrorVerifyOtp(otpData.getMessage());
+                else view.renderErrorResponseVerifyOtp(otpData.getMessage());
             }
         };
     }
