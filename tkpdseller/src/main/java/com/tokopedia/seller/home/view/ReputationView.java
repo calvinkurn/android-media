@@ -1,6 +1,8 @@
 package com.tokopedia.seller.home.view;
 
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.support.annotation.LayoutRes;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
@@ -11,27 +13,47 @@ import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
 import com.tokopedia.core.shopinfo.models.shopmodel.Stats;
 import com.tokopedia.seller.R;
 
-import butterknife.ButterKnife;
-
 /**
- * Created by normansyahputa on 3/20/17.
+ * @author normansyahputa on 3/20/17.
  */
 
 public class ReputationView extends FrameLayout implements BaseView<ReputationView.ReputationViewModel> {
 
+    private final String defaultLayout;
     LinearLayout reputationBadgeListener;
-
     TextView reputationPoints;
+    @LayoutRes
+    private int defaultLayoutId;
 
     public ReputationView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        LayoutInflater.from(context).inflate(R.layout.reputation_item_view, this);
+        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.ReputationView);
+        try {
+            defaultLayout = styledAttributes.getString(R.styleable.ReputationView_default_layout);
+            if (defaultLayout != null) {
+                defaultLayoutId = getLayoutByName(separate(defaultLayout));
+            } else {
+                defaultLayoutId = R.layout.reputation_item_view;
+            }
+        } finally {
+            styledAttributes.recycle();
+        }
+
+        LayoutInflater.from(context).inflate(defaultLayoutId, this);
 
         reputationBadgeListener = (LinearLayout) findViewById(R.id.reputation_badge_listener);
         reputationPoints = (TextView) findViewById(R.id.reputation_points);
+    }
 
-        ButterKnife.bind(this);
+    private String separate(String layoutName) {
+        return layoutName.split("/")[2].replace(".xml", "");
+    }
+
+    private int getLayoutByName(String layoutName) {
+        String packageName = getContext().getPackageName();
+        int resId = getResources().getIdentifier(layoutName, "layout", packageName);
+        return resId;
     }
 
     @Override
@@ -39,7 +61,7 @@ public class ReputationView extends FrameLayout implements BaseView<ReputationVi
 
         ReputationLevelUtils.setReputationMedals(getContext(), reputationBadgeListener, data.typeMedal, data.levelMedal, data.reputationPoints);
 
-        reputationPoints.setText("Reputasi : " + data.stats.shopReputationScore + " Poin");
+        reputationPoints.setText(data.stats.shopReputationScore + " Poin");
     }
 
     public static class ReputationViewModel {

@@ -203,6 +203,7 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
                                     } else {
                                         typeBasedModels.add(0, headerModel);
                                     }
+//                                    typeBasedModels.add(0, new EmptySeparatorModel());
                                     getView().loadMore(typeBasedModels);
                                 }
                             }

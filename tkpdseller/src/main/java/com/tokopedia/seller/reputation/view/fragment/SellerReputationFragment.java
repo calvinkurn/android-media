@@ -39,6 +39,7 @@ import com.tokopedia.seller.reputation.domain.interactor.ShopInfoUseCase;
 import com.tokopedia.seller.reputation.view.SellerReputationView;
 import com.tokopedia.seller.reputation.view.activity.SellerReputationInfoActivity;
 import com.tokopedia.seller.reputation.view.adapter.SellerReputationAdapter;
+import com.tokopedia.seller.reputation.view.adapter.SimpleDividerItemDecoration;
 import com.tokopedia.seller.reputation.view.helper.ReputationViewHelper;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
 import com.tokopedia.seller.reputation.view.presenter.SellerReputationFragmentPresenter;
@@ -355,6 +356,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
         adapter.setOnRetryListenerRV(this);
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         listViewBalance.setLayoutManager(linearLayoutManager);
+        listViewBalance.addItemDecoration(new SimpleDividerItemDecoration(getActivity()));
         listViewBalance.setAdapter(adapter);
         datePickerResultListener = new DatePickerResultListener(this);
     }
@@ -536,7 +538,6 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
 
     @Override
     public void refresh() {
-//        presenter.onRefresh();
     }
 
     @Override
@@ -547,46 +548,14 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
 
     @Override
     public void showEmptyState() {
-//        NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
-//            @Override
-//            public void onRetryClicked() {
-//                presenter.getSummaryReputation();
-//            }
-//        });
-//        try {
-//            View retryLoad = getView().findViewById(R.id.main_retry);
-//            retryLoad.setTranslationY(topSlideOffBar.getHeight() / 2);
-//        } catch (NullPointerException e) {
-//            e.printStackTrace();
-//        }
     }
 
     @Override
     public void setRetry() {
-//        setActionsEnabled(false);
-//        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-//            @Override
-//            public void onRetryClicked() {
-//                presenter.getSummaryReputation();
-//            }
-//        }).showRetrySnackbar();
     }
 
     @Override
     public void showEmptyState(String error) {
-//        setActionsEnabled(false);
-//        NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, new NetworkErrorHelper.RetryClickedListener() {
-//            @Override
-//            public void onRetryClicked() {
-//                presenter.getSummaryReputation();
-//            }
-//        });
-//        try {
-//            View retryLoad = getView().findViewById(R.id.main_retry);
-//            retryLoad.setTranslationY(topSlideOffBar.getHeight() / 2);
-//        } catch (NullPointerException e) {
-//            e.printStackTrace();
-//        }
     }
 
     @Override

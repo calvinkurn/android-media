@@ -146,4 +146,8 @@
         <attr name="default_limit" format="float" />
     </declare-styleable>
 
+    <declare-styleable name="ReputationView">
+        <attr name="default_layout" format="integer" />
+    </declare-styleable>
+
 </resources>

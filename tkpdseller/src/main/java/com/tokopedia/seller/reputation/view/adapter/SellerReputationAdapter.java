@@ -20,6 +20,7 @@ import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
 import com.tokopedia.seller.reputation.view.helper.ReputationHeaderViewHelper;
+import com.tokopedia.seller.reputation.view.model.EmptySeparatorModel;
 import com.tokopedia.seller.reputation.view.model.ReputationReviewModel;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
 import com.tokopedia.seller.topads.view.model.TypeBasedModel;
@@ -33,6 +34,7 @@ import java.util.List;
  *         modify by normansyahputra 16-03-2017
  */
 public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
+    public static final int SET_DATE_MODEL_POSITION = 0;
     private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
     private static final String TAG = "SellerReputationAdapter";
     private final Context context;
@@ -57,14 +59,18 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
         switch (viewType) {
             case ReputationReviewModel.VIEW_DEPOSIT:
                 View itemLayoutView = LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.listview_seller_reputation, null);
+                        .inflate(R.layout.listview_seller_reputation, viewGroup, false);
                 return new ViewHolder(itemLayoutView);
             case SetDateHeaderModel.TYPE:
                 itemLayoutView = LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.widget_header_reputation, null);
+                        .inflate(R.layout.widget_header_reputation, viewGroup, false);
                 SellerDateHeaderViewHolder viewHolder2 = new SellerDateHeaderViewHolder(itemLayoutView);
                 viewHolder2.setFragment(fragment);
                 return viewHolder2;
+            case EmptySeparatorModel.TYPE:
+                itemLayoutView = LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.empty_separator_model, viewGroup, false);
+                return new EmptySeparatorViewHolder(itemLayoutView);
             default:
                 return super.onCreateViewHolder(viewGroup, viewType);
         }
@@ -79,6 +85,8 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
                 break;
             case SetDateHeaderModel.TYPE:
                 ((SellerDateHeaderViewHolder) holder).bindData((SetDateHeaderModel) list.get(position));
+                break;
+            case EmptySeparatorModel.TYPE:
                 break;
             default:
                 super.onBindViewHolder(holder, position);
@@ -178,7 +186,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
     public SetDateHeaderModel getHeaderModel() {
         if (getDataSize() > 0) {
-            TypeBasedModel typeBasedModel = list.get(0);
+            TypeBasedModel typeBasedModel = list.get(SET_DATE_MODEL_POSITION);
             if (typeBasedModel != null && typeBasedModel instanceof SetDateHeaderModel) {
                 SetDateHeaderModel setDateHeaderModel = (SetDateHeaderModel) typeBasedModel;
                 return setDateHeaderModel;
@@ -250,6 +258,13 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
                     DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE,
                     DatePickerConstant.SELECTION_TYPE_PERIOD_DATE
             );
+        }
+    }
+
+    public class EmptySeparatorViewHolder extends RecyclerView.ViewHolder {
+
+        public EmptySeparatorViewHolder(View itemView) {
+            super(itemView);
         }
     }
 

@@ -50,7 +50,7 @@
         <item>Wanita</item>
     </string-array>
 
-    <string name="title_activity_reputation">Reputasi Toko</string>
+    <string name="title_activity_reputation_">Reputasi Toko</string>
 
     <string name="try_again">COBA KEMBALI</string>
     <string name="unknown_exception_description">Tidak ada koneksi.\nSilahkan coba kembali</string>
@@ -270,7 +270,7 @@
     <string name="promoted">Promoted</string>
     <string name="next">Selanjutnya</string>
 
-    <string name="your_shop_reputation">REPUTASI TOKO ANDA</string>
+    <string name="your_shop_reputation">Reputasi Toko Anda</string>
     <string name="reputation_point_calculation">Perhitungan Poin Reputasi</string>
     <string name="perhitungan_poin_reputasi">Perhitungan Poin Reputasi</string>
 

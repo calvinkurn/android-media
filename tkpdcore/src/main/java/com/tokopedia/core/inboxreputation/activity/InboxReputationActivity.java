@@ -89,7 +89,7 @@ public class InboxReputationActivity extends DrawerPresenterActivity
 
 
         if (GlobalConfig.isSellerApp()) {
-            indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_product)));
+            indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_product_seller)));
             if (sellerReputationFragment != null) {
                 indicator.addTab(indicator.newTab().setText(sellerReputationFragment.getHeader()));
             }
