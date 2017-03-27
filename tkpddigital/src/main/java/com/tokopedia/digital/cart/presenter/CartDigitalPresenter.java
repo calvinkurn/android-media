@@ -99,7 +99,6 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
             view.interruptRequestTokenVerification();
             return;
         }
-        view.showProgressLoading();
         cartDigitalInteractor.instantCheckout(
                 getRequestBodyCheckout(checkoutData),
                 getSubscriberInstantCheckout()
