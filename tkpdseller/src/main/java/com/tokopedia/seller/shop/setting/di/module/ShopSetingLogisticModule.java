@@ -1,6 +1,7 @@
 package com.tokopedia.seller.shop.setting.di.module;
 
 import com.tokopedia.seller.shop.setting.di.scope.ShopSettingLogisticScope;
+import com.tokopedia.seller.shop.setting.domain.interactor.GetLogisticAvailableUseCase;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLogisticPresenter;
 import com.tokopedia.seller.shop.setting.view.presenter.ShopSettingLogisticPresenterImpl;
 
@@ -16,8 +17,8 @@ public class ShopSetingLogisticModule {
 
     @ShopSettingLogisticScope
     @Provides
-    ShopSettingLogisticPresenter provideShopSettingLogisticPresenter() {
-        return new ShopSettingLogisticPresenterImpl();
+    ShopSettingLogisticPresenter provideShopSettingLogisticPresenter(GetLogisticAvailableUseCase getLogisticAvailableUseCase) {
+        return new ShopSettingLogisticPresenterImpl(getLogisticAvailableUseCase);
     }
 
 

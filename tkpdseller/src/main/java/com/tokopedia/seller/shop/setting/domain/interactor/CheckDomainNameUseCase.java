@@ -6,7 +6,6 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.shop.constant.ShopExtraConstant;
-import com.tokopedia.seller.shop.setting.domain.DistrictDataRepository;
 import com.tokopedia.seller.shop.setting.domain.ShopOpenRepository;
 
 import javax.inject.Inject;
@@ -28,15 +27,15 @@ public class CheckDomainNameUseCase extends UseCase<Boolean> {
         this.shopOpenRepository = shopOpenRepository;
     }
 
-    @Override
-    public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return shopOpenRepository.checkDomain(
-                requestParams.getString(ShopExtraConstant.EXTRA_DOMAIN_NAME, ""));
-    }
-
     public static RequestParams createRequestParams(String domainName){
         RequestParams params = RequestParams.create();
         params.putString(ShopExtraConstant.EXTRA_DOMAIN_NAME, domainName);
         return params;
+    }
+
+    @Override
+    public Observable<Boolean> createObservable(RequestParams requestParams) {
+        return shopOpenRepository.checkDomain(
+                requestParams.getString(ShopExtraConstant.EXTRA_DOMAIN_NAME, ""));
     }
 }

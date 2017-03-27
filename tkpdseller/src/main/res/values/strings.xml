@@ -298,5 +298,7 @@
     <string name="label_shop_setting_browse_file">Browse File</string>
     <string name="label_shop_setting_error_slogan_should_fill">Slogan toko harus diisi</string>
     <string name="label_shop_setting_error_desc_should_fill">Deskripsi toko harus diisi</string>
+    <string name="title_shop_setting_logistic">Layanan Jasa Pengiriman</string>
+    <string name="description_shop_setting_logistic">Aktifkan pilihan kurir yang tersedia</string>
 
 </resources>
