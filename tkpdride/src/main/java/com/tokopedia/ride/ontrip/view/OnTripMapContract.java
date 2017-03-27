@@ -29,6 +29,14 @@ public interface OnTripMapContract {
         void showMessage(String message);
 
         void moveToCurrentLocation(double latitude, double longitude);
+
+        RequestParams getCancelParams();
+
+        void hideCancelRequestButton();
+
+        void showCancelRequestButton();
+
+        void navigateToBack();
     }
 
     interface Presenter extends CustomerPresenter<View>{
@@ -36,5 +44,7 @@ public interface OnTripMapContract {
         void initialize();
 
         void goToMyLocation();
+
+        void actionCancelRide();
     }
 }

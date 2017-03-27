@@ -22,4 +22,6 @@ public interface BookingRideRepository {
     Observable<FareEstimate> getEstimatedFare(TKPDMapParam<String, Object> productParams);
 
     Observable<RideRequest> createRideRequest(TKPDMapParam<String, Object> productParams);
+
+    Observable<String> cancelRequest(TKPDMapParam<String, Object> productParams);
 }

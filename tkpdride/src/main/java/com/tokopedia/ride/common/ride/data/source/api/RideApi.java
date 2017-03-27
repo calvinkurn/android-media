@@ -33,6 +33,10 @@ public interface RideApi {
     @FormUrlEncoded
     Observable<RideRequestEntity> createRequestRide(@FieldMap Map<String, Object> param);
 
+    @POST(RideUrl.REQUEST_CANCEL)
+    @FormUrlEncoded
+    Observable<String> cancelRequest(@FieldMap Map<String, Object> param);
+
     @POST(RideUrl.REQUEST_DETAIL)
     @FormUrlEncoded
     Observable<String> getDetailRequestRide(@FieldMap Map<String, Object> param);

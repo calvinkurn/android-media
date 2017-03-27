@@ -29,6 +29,7 @@ import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
 import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
+import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
 
 import rx.Observable;
@@ -45,12 +46,15 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         implements OnTripMapContract.Presenter {
 
     private CreateRideRequestUseCase createRideRequestUseCase;
+    private CancelRideRequestUseCase cancelRideRequestUseCase;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private Location mCurrentLocation;
 
-    public OnTripMapPresenter(CreateRideRequestUseCase createRideRequestUseCase) {
+    public OnTripMapPresenter(CreateRideRequestUseCase createRideRequestUseCase,
+                              CancelRideRequestUseCase cancelRideRequestUseCase) {
         this.createRideRequestUseCase = createRideRequestUseCase;
+        this.cancelRideRequestUseCase = cancelRideRequestUseCase;
     }
 
     @Override
@@ -60,8 +64,10 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             initializeLocationService();
             if (getView().isWaitingResponse()) {
                 getView().showLoadingWaitingResponse();
+                getView().showCancelRequestButton();
             } else {
                 getView().showLoadingWaitingResponse();
+                getView().hideCancelRequestButton();
                 actionRideRequest(getView().getParam());
             }
         }
@@ -79,11 +85,12 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             public void onError(Throwable e) {
                 getView().hideLoadingWaitingResponse();
                 getView().showFailedRideRequestMessage(e.getMessage());
+                getView().navigateToBack();
             }
 
             @Override
             public void onNext(RideRequest rideRequest) {
-
+                getView().showCancelRequestButton();
             }
         });
     }
@@ -173,5 +180,26 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     @Override
     public void goToMyLocation() {
         getView().moveToCurrentLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+    }
+
+    @Override
+    public void actionCancelRide() {
+        cancelRideRequestUseCase.execute(getView().getCancelParams(), new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().showMessage(e.getMessage());
+            }
+
+            @Override
+            public void onNext(String s) {
+                getView().showMessage(s);
+            }
+        });
+
     }
 }

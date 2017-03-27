@@ -113,9 +113,8 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
         if (productFragment != null) {
             productFragment.updateProductList(source, destination);
         } else {
-            productFragment = UberProductFragment.newInstance();
+            productFragment = UberProductFragment.newInstance(source, destination);
             addFragment(R.id.bottom_container, productFragment);
-            productFragment.updateProductList(source, destination);
         }
     }
 
@@ -188,9 +187,9 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
         if (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof ConfirmBookingRideFragment) {
             ConfirmBookingRideFragment fragment = (ConfirmBookingRideFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
             ConfirmBookingViewModel viewModel = fragment.getActiveConfirmBooking();
-            UberProductFragment productFragment = UberProductFragment.newInstance();
+            UberProductFragment productFragment = UberProductFragment.newInstance(viewModel.getSource(),
+                    viewModel.getDestination());
             replaceFragment(R.id.bottom_container, productFragment);
-            productFragment.updateProductList(viewModel.getSource(), viewModel.getDestination());
             mSlidingUpPanelLayout.setPanelHeight(Float.floatToIntBits(getResources().getDimension(R.dimen.sliding_panel_min_height)));
             mSlidingUpPanelLayout.setParallaxOffset(Float.floatToIntBits(getResources().getDimension(R.dimen.tooler_height)));
         } else {
@@ -268,10 +267,6 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
     public void actionRequestRide(ConfirmBookingViewModel confirmBookingViewModel) {
         Intent intent = OnTripActivity.getCallingIntent(this, confirmBookingViewModel);
         startActivity(intent);
-    }
-
-    public int dpToPx(int dp) {
-        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
     @Override

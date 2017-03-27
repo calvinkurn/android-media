@@ -23,7 +23,8 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
     public static String EXTRA_CONFIRM_BOOKING = "EXTRA_CONFIRM_BOOKING";
     ConfirmBookingViewModel confirmBookingViewModel;
     Toolbar mToolbar;
-    public static Intent getCallingIntent(Activity activity, ConfirmBookingViewModel confirmBookingViewModel){
+
+    public static Intent getCallingIntent(Activity activity, ConfirmBookingViewModel confirmBookingViewModel) {
         Intent intent = new Intent(activity, OnTripActivity.class);
         intent.putExtra(EXTRA_CONFIRM_BOOKING, confirmBookingViewModel);
         return intent;
@@ -40,7 +41,7 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
 
 
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
-    public void initFragment(){
+    public void initFragment() {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_CONFIRM_BOOKING, confirmBookingViewModel);
         addFragment(R.id.container, OnTripMapFragment.newInstance(bundle));
@@ -74,6 +75,6 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
 
     @Override
     public void actionCancelBooking() {
-
+        finish();
     }
 }

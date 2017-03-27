@@ -14,11 +14,11 @@
             android:theme="@style/AppTheme.Ride.NoActionBar" />
         <activity
             android:name=".bookingride.view.activity.GooglePlacePickerActivity"
-            android:theme="@style/AppTheme.Ride.NoActionBar"></activity>
-
+            android:theme="@style/AppTheme.Ride.NoActionBar" />
         <activity
             android:name=".ontrip.view.OnTripActivity"
-            android:theme="@style/AppTheme.Ride.NoActionBar"></activity>
+            android:theme="@style/AppTheme.Ride.NoActionBar" />
+        <activity android:name=".completetrip.CompleteTripActivity"></activity>
     </application>
 
 </manifest>

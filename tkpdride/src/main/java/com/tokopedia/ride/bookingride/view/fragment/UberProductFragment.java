@@ -42,6 +42,8 @@ import butterknife.OnClick;
 public class UberProductFragment extends BaseFragment implements UberProductContract.View, RideProductItemClickListener {
     OnFragmentInteractionListener mInteractionListener;
     UberProductContract.Presenter mPresenter;
+    private static final String EXTRA_SOURCE = "EXTRA_SOURCE";
+    private static final String EXTRA_DESTINATION = "EXTRA_DESTINATION";
 
     @BindView(R2.id.ride_product_list)
     RecyclerView mRideProductsRecyclerView;
@@ -79,6 +81,15 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
         return new UberProductFragment();
     }
 
+    public static UberProductFragment newInstance(PlacePassViewModel source, PlacePassViewModel destination) {
+        UberProductFragment fragment = new UberProductFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_SOURCE, source);
+        bundle.putParcelable(EXTRA_DESTINATION, destination);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     public UberProductFragment() {
         // Required empty public constructor
     }
@@ -90,6 +101,11 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
         mPresenter.attachView(this);
         mPresenter.initialize();
         setViewListener();
+        if (getArguments() != null) {
+            source = getArguments().getParcelable(EXTRA_SOURCE);
+            destination = getArguments().getParcelable(EXTRA_DESTINATION);
+            updateProductList(source, destination);
+        }
     }
 
     private void setViewListener() {

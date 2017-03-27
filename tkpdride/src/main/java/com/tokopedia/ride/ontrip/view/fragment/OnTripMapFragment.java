@@ -33,7 +33,9 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
+import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.ontrip.di.OnTripDependencyInjection;
+import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
 import com.tokopedia.ride.ontrip.view.OnTripMapContract;
@@ -53,6 +55,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     OnTripMapContract.Presenter presenter;
     ConfirmBookingViewModel confirmBookingViewModel;
     GoogleMap mGoogleMap;
+    RideConfiguration rideConfiguration;
 
     @BindView(R2.id.mapview)
     MapView mapView;
@@ -103,6 +106,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        rideConfiguration = new RideConfiguration();
 
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
@@ -140,7 +144,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public boolean isWaitingResponse() {
-        return false;
+        return rideConfiguration.isWaitingDriverState();
     }
 
     @Override
@@ -158,7 +162,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void showFailedRideRequestMessage(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-        getActivity().finish();
     }
 
     @Override
@@ -209,5 +212,33 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @OnClick(R2.id.iv_my_location_button)
     public void actionMyLocationButtonClicked() {
         presenter.goToMyLocation();
+    }
+
+    @OnClick(R2.id.cabs_processing_cancel_button)
+    public void actionCancelButtonClicked() {
+        presenter.actionCancelRide();
+    }
+
+
+    @Override
+    public RequestParams getCancelParams() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(CancelRideRequestUseCase.PARAM_REQUEST_ID, rideConfiguration.getActiveRequest());
+        return requestParams;
+    }
+
+    @Override
+    public void hideCancelRequestButton() {
+        cancelButton.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showCancelRequestButton() {
+        cancelButton.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void navigateToBack() {
+        onFragmentInteractionListener.actionCancelBooking();
     }
 }
