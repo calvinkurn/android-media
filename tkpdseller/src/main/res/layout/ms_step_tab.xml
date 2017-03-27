@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     tools:layout_height="wrap_content"
@@ -8,59 +9,64 @@
     tools:theme="@style/MSDefaultStepperLayoutTheme">
 
     <LinearLayout
-        android:id="@+id/container_step_tab"
-        android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
+            <View
+                android:id="@+id/ms_left_stepDivider"
+                style="?attr/ms_stepTabDividerStyle"
+                android:background="@drawable/ms_vertical_tab_divider_left"
+                tools:style="@style/MSStepTabDivider"/>
 
             <FrameLayout
-                android:layout_centerVertical="true"
                 android:id="@+id/ms_iconContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:src="@drawable/icon_bca"
                     android:id="@+id/ms_stepIconBackground"
                     style="?attr/ms_stepTabIconBackgroundStyle"
-                    tools:style="@style/MSStepTabIconBackground" />
+                    tools:src="@drawable/icon_bca"
+                    tools:style="@style/MSStepTabIconBackground"/>
 
                 <TextView
                     android:id="@+id/ms_stepNumber"
                     style="?attr/ms_stepTabNumberStyle"
-                    tools:style="@style/MSStepTabNumber" />
+                    tools:style="@style/MSStepTabNumber"
+                    tools:text="@string/app_name"/>
 
                 <ImageView
                     android:id="@+id/ms_stepDoneIndicator"
                     style="?attr/ms_stepTabDoneIndicatorStyle"
                     android:visibility="gone"
-                    tools:style="@style/MSStepTabDoneIndicator" />
-
+                    tools:style="@style/MSStepTabDoneIndicator"/>
             </FrameLayout>
 
-            <TextView
-                android:gravity="center"
-                android:layout_below="@+id/container_step_tab"
-                android:id="@+id/ms_stepTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="?attr/ms_stepTabTitleStyle"
-                tools:style="@style/MSStepTabTitle" />
+            <View
+                android:id="@+id/ms_stepDivider"
+                style="?attr/ms_stepTabDividerStyle"
+                android:background="@drawable/ms_vertical_tab_divider_right"
+                tools:style="@style/MSStepTabDivider"/>
         </LinearLayout>
 
-
-        <View
-            android:layout_marginTop="12dp"
-            android:id="@+id/ms_stepDivider"
-            style="?attr/ms_stepTabDividerStyle"
-            tools:style="@style/MSStepTabDivider" />
+        <TextView
+            android:id="@+id/ms_stepTitle"
+            style="?attr/ms_stepTabTitleStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:lines="2"
+            android:maxWidth="80dp"
+            tools:style="@style/MSStepTabTitle"
+            tools:text="@string/app_name"/>
     </LinearLayout>
-
 </merge>
