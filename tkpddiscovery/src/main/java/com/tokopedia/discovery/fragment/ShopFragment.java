@@ -24,7 +24,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.browseparent.BrowseShopAdapter;
 import com.tokopedia.discovery.interfaces.FetchNetwork;
-import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
+import com.tokopedia.discovery.presenter.BrowseView;
 import com.tokopedia.discovery.presenter.browseparent.Shop;
 import com.tokopedia.discovery.presenter.browseparent.ShopImpl;
 import com.tokopedia.discovery.view.ShopView;
@@ -237,9 +237,9 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
     @Override
     public void onCallNetwork() {
         Log.d(TAG, "onCallNetwork");
-        if (getActivity() != null && getActivity() instanceof DiscoveryActivityPresenter) {
-            DiscoveryActivityPresenter discoveryActivityPresenter = (DiscoveryActivityPresenter) getActivity();
-            presenter.callNetwork(discoveryActivityPresenter);
+        if (getActivity() != null && getActivity() instanceof BrowseView) {
+            BrowseView browseView = (BrowseView) getActivity();
+            presenter.callNetwork(browseView);
         }
     }
 

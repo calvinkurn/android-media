@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
@@ -16,10 +15,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,8 +35,6 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
@@ -70,9 +65,10 @@ import com.tokopedia.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.discovery.model.NetworkParam;
-import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
+import com.tokopedia.discovery.presenter.BrowseView;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
+import com.tokopedia.discovery.view.BrowseProductParentView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -83,7 +79,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -91,7 +86,6 @@ import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.core.router.CustomerRouter.IS_DEEP_LINK_SEARCH;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.AD_SRC;
-import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEARCH_TERM;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRA_SOURCE;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.FRAGMENT_ID;
@@ -101,7 +95,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_INV
  * Created by Erry on 6/30/2016.
  */
 public class BrowseProductActivity extends TActivity implements DiscoverySearchView.SearchViewListener,
-        DiscoveryActivityPresenter, MenuItemCompat.OnActionExpandListener, DiscoverySearchView.OnQueryTextListener {
+        BrowseView, MenuItemCompat.OnActionExpandListener, DiscoverySearchView.OnQueryTextListener {
 
     private static final String TAG = BrowseProductActivity.class.getSimpleName();
     private static final String KEY_GTM = "GTMFilterData";
@@ -349,11 +343,10 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         toolbar.requestLayout();
         String backStateName = fragment.getClass().getName();
 
-        FragmentManager manager = getSupportFragmentManager();
-        boolean fragmentPopped = manager.popBackStackImmediate(backStateName, 0);
+        boolean fragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
 
         if (!fragmentPopped) {
-            FragmentTransaction ft = manager.beginTransaction();
+            FragmentTransaction ft = fragmentManager.beginTransaction();
             ft.replace(R.id.container, fragment, TAG);
             ft.addToBackStack(backStateName);
             ft.commit();
@@ -470,13 +463,11 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
      * @param TAG
      * @return true means fragment was already created
      */
-    @Override
-    public boolean isFragmentCreated(String TAG) {
+    private boolean isFragmentCreated(String TAG) {
         return fragmentManager.findFragmentByTag(TAG) != null;
     }
 
-    @Override
-    public void fetchIntent() {
+    private void fetchIntent() {
         Intent intent = getIntent();
         if (intent != null) {
             //[START] check hot list param
@@ -515,8 +506,8 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     @Override
     public BrowseProductModel getDataForBrowseProduct(boolean firstTimeOnly) {
         Fragment fragment = fragmentManager.findFragmentByTag(BrowseParentFragment.FRAGMENT_TAG);
-        if (fragment != null && fragment instanceof BrowseParentFragment) {
-            return ((BrowseParentFragment) fragment).discoveryActivityPresenter.getDataForBrowseProduct(firstTimeOnly);
+        if (fragment != null && fragment instanceof BrowseProductParentView) {
+            return ((BrowseProductParentView) fragment).getDataForBrowseProduct(firstTimeOnly);
         } else {
             return null;
         }
@@ -525,26 +516,20 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     @Override
     public NetworkParam.Product getProductParam() {
         Fragment fragment = fragmentManager.findFragmentByTag(BrowseParentFragment.FRAGMENT_TAG);
-        if (fragment != null && fragment instanceof BrowseParentFragment) {
-            return ((BrowseParentFragment) fragment).discoveryActivityPresenter.getProductParam();
+        if (fragment != null && fragment instanceof BrowseProductParentView) {
+            return ((BrowseProductParentView) fragment).getProductParam();
         } else {
             return null;
         }
     }
 
-    @Override
-    public List<Breadcrumb> getProductBreadCrumb() {
+    private List<Breadcrumb> getProductBreadCrumb() {
         Fragment fragment = fragmentManager.findFragmentByTag(BrowseParentFragment.FRAGMENT_TAG);
-        if (fragment != null && fragment instanceof BrowseParentFragment) {
-            return ((BrowseParentFragment) fragment).discoveryActivityPresenter.getProductBreadCrumb();
+        if (fragment != null && fragment instanceof BrowseProductParentView) {
+            return ((BrowseProductParentView) fragment).getProductBreadCrumb();
         } else {
             return null;
         }
-    }
-
-
-    public void clearQuery() {
-        discoverySearchView.setQuery("", false);
     }
 
     public void changeBottomBar(String source) {
@@ -794,33 +779,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
             }
             setFragment(BrowseParentFragment.newInstance(browseProductActivityModel, parentFragment.getActiveTab()), BrowseParentFragment.FRAGMENT_TAG);
         }
-    }
-
-    public static Intent getDefaultMoveToIntent(Context context) {
-        return getDefaultMoveToIntent(context, TopAdsApi.SRC_BROWSE_PRODUCT);
-    }
-
-    @NonNull
-    public static Intent getDefaultMoveToIntent(Context context, String ad_src) {
-        Intent intent = new Intent(context, BrowseProductActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, "0");
-        bundle.putInt(FRAGMENT_ID, BrowseProductRouter.VALUES_HISTORY_FRAGMENT_ID);
-        bundle.putString(AD_SRC, ad_src);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-
-    public static void moveTo(Context context, String alias) {
-        if (context == null)
-            return;
-
-        Intent intent = new Intent(context, BrowseProductActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(EXTRAS_DISCOVERY_ALIAS, alias);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
     }
 
     /**

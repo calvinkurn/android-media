@@ -30,7 +30,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.browseparent.BrowseCatalogAdapter;
 import com.tokopedia.discovery.interfaces.FetchNetwork;
-import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
+import com.tokopedia.discovery.presenter.BrowseView;
 import com.tokopedia.discovery.presenter.browseparent.Catalog;
 import com.tokopedia.discovery.presenter.browseparent.CatalogImpl;
 import com.tokopedia.discovery.view.CatalogView;
@@ -188,9 +188,9 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     @Override
     public void onCallNetwork() {
-        if (getActivity() != null && getActivity() instanceof DiscoveryActivityPresenter) {
-            DiscoveryActivityPresenter discoveryActivityPresenter = (DiscoveryActivityPresenter) getActivity();
-            presenter.callNetwork(discoveryActivityPresenter);
+        if (getActivity() != null && getActivity() instanceof BrowseView) {
+            BrowseView browseView = (BrowseView) getActivity();
+            presenter.callNetwork(browseView);
         }
     }
 
