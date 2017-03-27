@@ -3,16 +3,21 @@ package com.tokopedia.inbox.rescenter.detailv2.data.source;
 import android.content.Context;
 
 import com.tokopedia.core.network.apiservices.rescenter.ResolutionService;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
+import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
+import com.tokopedia.inbox.rescenter.historyaction.domain.model.HistoryActionData;
 import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
 import com.tokopedia.inbox.rescenter.historyaddress.domain.model.HistoryAddressData;
 import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
 import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
 
+import retrofit2.Response;
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by hangnadi on 3/9/17.
@@ -25,18 +30,21 @@ public class CloudResCenterDataSource {
     private DetailResCenterMapper detailResCenterMapper;
     private HistoryAwbMapper historyAwbMapper;
     private HistoryAddressMapper historyAddressMapper;
+    private HistoryActionMapper historyActionMapper;
 
     public CloudResCenterDataSource(Context context,
                                     ResolutionService resolutionService,
                                     DetailResCenterMapper detailResCenterMapper,
                                     HistoryAwbMapper historyAwbMapper,
-                                    HistoryAddressMapper historyAddressMapper) {
+                                    HistoryAddressMapper historyAddressMapper,
+                                    HistoryActionMapper historyActionMapper) {
         super();
         this.context = context;
         this.resolutionService = resolutionService;
         this.detailResCenterMapper = detailResCenterMapper;
         this.historyAwbMapper = historyAwbMapper;
         this.historyAddressMapper = historyAddressMapper;
+        this.historyActionMapper = historyActionMapper;
     }
 
     public Observable<DetailResCenter> getResCenterDetail(String resolutionID, TKPDMapParam<String, Object> parameters) {
@@ -80,11 +88,11 @@ public class CloudResCenterDataSource {
                 .map(historyAwbMapper);
     }
 
-    public Observable<HistoryAwbData> getHistoryAction(String resolutionID,
-                                                       TKPDMapParam<String, Object> parameters) {
+    public Observable<HistoryActionData> getHistoryAction(String resolutionID,
+                                                          TKPDMapParam<String, Object> parameters) {
         return resolutionService.getApi()
                 .getHistoryAction(resolutionID, AuthUtil.generateParamsNetwork2(context, parameters))
-                .map(historyAwbMapper);
+                .map(historyActionMapper);
     }
 
     public Observable<HistoryAddressData> getHistoryAddress(String resolutionID,
