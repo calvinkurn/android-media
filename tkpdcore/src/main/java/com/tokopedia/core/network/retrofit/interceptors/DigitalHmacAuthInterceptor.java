@@ -23,6 +23,11 @@ public class DigitalHmacAuthInterceptor extends AuthHmacInterceptor {
     }
 
     @Override
+    protected boolean isAutoRetry() {
+        return false;
+    }
+
+    @Override
     protected void throwChainProcessCauseHttpError(Response response) throws IOException {
         String errorBody = response.body().string();
         response.body().close();

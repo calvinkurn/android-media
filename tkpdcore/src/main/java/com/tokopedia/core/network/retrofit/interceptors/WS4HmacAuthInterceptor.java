@@ -19,6 +19,11 @@ public class WS4HmacAuthInterceptor extends AuthHmacInterceptor {
     }
 
     @Override
+    protected boolean isAutoRetry() {
+        return true;
+    }
+
+    @Override
     protected void throwChainProcessCauseHttpError(Response response) throws IOException {
 
     }

@@ -49,12 +49,13 @@ abstract class AuthHmacInterceptor implements Interceptor {
         final Request finalRequest = newRequest.build();
         Response response = chain.proceed(finalRequest);
         int count = 0;
-        while (!response.isSuccessful() && count < 3) {
+        if (isAutoRetry()) while (!response.isSuccessful() && count < 3) {
             Log.d(TAG, "Request is not successful - " + count + " Error code : " + response.code());
             count++;
             response.close();
             response = chain.proceed(finalRequest);
         }
+
         if (!response.isSuccessful()) {
             throwChainProcessCauseHttpError(response);
         }
@@ -71,6 +72,8 @@ abstract class AuthHmacInterceptor implements Interceptor {
         }
         return createNewResponse(response, bodyResponse);
     }
+
+    protected abstract boolean isAutoRetry();
 
     protected abstract void throwChainProcessCauseHttpError(Response response) throws IOException;
 
