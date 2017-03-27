@@ -6,6 +6,8 @@ import com.tokopedia.core.network.apiservices.rescenter.ResolutionService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
+import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
+import com.tokopedia.inbox.rescenter.historyaddress.domain.model.HistoryAddressData;
 import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
 import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
@@ -22,16 +24,19 @@ public class CloudResCenterDataSource {
     private ResolutionService resolutionService;
     private DetailResCenterMapper detailResCenterMapper;
     private HistoryAwbMapper historyAwbMapper;
+    private HistoryAddressMapper historyAddressMapper;
 
     public CloudResCenterDataSource(Context context,
                                     ResolutionService resolutionService,
                                     DetailResCenterMapper detailResCenterMapper,
-                                    HistoryAwbMapper historyAwbMapper) {
+                                    HistoryAwbMapper historyAwbMapper,
+                                    HistoryAddressMapper historyAddressMapper) {
         super();
         this.context = context;
         this.resolutionService = resolutionService;
         this.detailResCenterMapper = detailResCenterMapper;
         this.historyAwbMapper = historyAwbMapper;
+        this.historyAddressMapper = historyAddressMapper;
     }
 
     public Observable<DetailResCenter> getResCenterDetail(String resolutionID, TKPDMapParam<String, Object> parameters) {
@@ -82,14 +87,14 @@ public class CloudResCenterDataSource {
                 .map(historyAwbMapper);
     }
 
-    public Observable<HistoryAwbData> getHistoryAddress(String resolutionID,
-                                                        TKPDMapParam<String, Object> parameters) {
+    public Observable<HistoryAddressData> getHistoryAddress(String resolutionID,
+                                                            TKPDMapParam<String, Object> parameters) {
         return resolutionService.getApi()
                 .getHistoryAddress(
                         resolutionID,
                         AuthUtil.generateParamsNetwork2(context, parameters)
                 )
-                .map(historyAwbMapper);
+                .map(historyAddressMapper);
     }
 
     public Observable<HistoryAwbData> getListProduct(String resolutionID,
