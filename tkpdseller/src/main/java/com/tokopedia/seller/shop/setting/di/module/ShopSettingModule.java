@@ -8,9 +8,14 @@ import com.tokopedia.core.network.apiservices.shop.MyShopService;
 import com.tokopedia.core.network.apiservices.shop.apis.MyShopApi;
 import com.tokopedia.seller.app.BaseActivityModule;
 import com.tokopedia.seller.shop.setting.data.repository.DistrictDataRepositoryImpl;
+import com.tokopedia.seller.shop.setting.data.repository.ShopSettingSaveInfoRepositoryImpl;
 import com.tokopedia.seller.shop.setting.data.source.DistrictDataSource;
+import com.tokopedia.seller.shop.setting.data.source.ShopSettingInfoDataSource;
+import com.tokopedia.seller.shop.setting.data.source.cloud.apiservice.GenerateHostApi;
+import com.tokopedia.seller.shop.setting.data.source.cloud.apiservice.GenerateHostService;
 import com.tokopedia.seller.shop.setting.di.scope.ShopSettingScope;
 import com.tokopedia.seller.shop.setting.domain.DistrictDataRepository;
+import com.tokopedia.seller.shop.setting.domain.ShopSettingSaveInfoRepository;
 import com.tokopedia.seller.shop.setting.domain.interactor.FetchDistrictDataUseCase;
 
 import dagger.Module;
@@ -46,5 +51,17 @@ public class ShopSettingModule extends BaseActivityModule {
     @ShopSettingScope
     public MyShopApi provideMyShopApi() {
         return new MyShopService().getApi();
+    }
+
+    @Provides
+    @ShopSettingScope
+    public ShopSettingSaveInfoRepository provideSaveInfoRepository(ShopSettingInfoDataSource shopSettingInfoDataSource){
+        return new ShopSettingSaveInfoRepositoryImpl(shopSettingInfoDataSource);
+    }
+
+    @Provides
+    @ShopSettingScope
+    public GenerateHostApi provideGenerateHostApi(){
+        return new GenerateHostService().getApi();
     }
 }

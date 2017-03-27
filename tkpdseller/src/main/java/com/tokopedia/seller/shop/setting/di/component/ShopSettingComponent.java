@@ -1,9 +1,12 @@
 package com.tokopedia.seller.shop.setting.di.component;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.app.BaseActivityComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopSettingModule;
 import com.tokopedia.seller.shop.setting.di.scope.ShopSettingScope;
+import com.tokopedia.seller.shop.setting.domain.ShopSettingSaveInfoRepository;
 import com.tokopedia.seller.shop.setting.domain.interactor.FetchDistrictDataUseCase;
 
 import dagger.Component;
@@ -17,4 +20,9 @@ public interface ShopSettingComponent extends BaseActivityComponent {
 
     FetchDistrictDataUseCase getFetchDistrictDataUseCase();
 
+    ThreadExecutor getThreadExecutor();
+
+    PostExecutionThread getPostExecutionThread();
+
+    ShopSettingSaveInfoRepository getSaveInfoRepository();
 }

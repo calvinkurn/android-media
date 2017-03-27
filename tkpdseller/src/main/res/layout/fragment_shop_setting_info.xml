@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    >
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -13,137 +13,107 @@
         android:padding="16dp">
 
         <ImageView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginBottom="24dp"
-            android:layout_marginTop="20dp"
+            style="@style/ImageView.ShopSettingTitleImage"
             android:src="@drawable/ic_icon_toko" />
 
         <TextView
             android:id="@+id/welcome_shop_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:gravity="center"
-            android:text="Halo,"
-            android:textColor="@color/black_seventy_percent"
-            android:textSize="18sp" />
+            style="@style/TextView.ShopSettingTitleShop"
+            android:text="@string/label_shop_open_welcome" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:gravity="center"
-            android:text="Lengkapi informasi toko. Tampilan toko yang menarik buat pembeli tertarik "
-            android:textColor="@color/black_seventy_percent"
-            android:textSize="16sp" />
+            style="@style/TextView.ShopSettingTitleShop.Content"
+            android:text="@string/label_shop_open_info_title_shop" />
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/shop_slogan_input_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="22dp"
-            app:counterEnabled="true"
-            app:counterMaxLength="48"
-            app:counterTextAppearance="@style/ShopOpenCounterTextInputStyle">
+            style="@style/TextInputLayout.ShopSetting"
+            android:layout_marginBottom="22dp">
 
             <EditText
                 android:id="@+id/shop_slogan_input_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Slogan Toko"
-                android:textSize="16sp"
-                android:textColor="@color/black_seventy_percent"
-                android:textColorHint="@color/black_thirty_eight_percent" />
+                style="@style/EditText.ShopSetting"
+                android:hint="@string/label_shop_setting_slogan" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/shop_desc_input_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:counterEnabled="true"
-            app:counterMaxLength="140"
-            app:counterTextAppearance="@style/ShopOpenCounterTextInputStyle">
+            style="@style/TextInputLayout.ShopSetting.DescShop"
+            android:layout_marginBottom="16dp">
 
             <EditText
                 android:id="@+id/shop_desc_input_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Deskripsi Toko"
-                android:textSize="16sp"
-                android:textColor="@color/black_seventy_percent"
-                android:textColorHint="@color/black_thirty_eight_percent" />
+                style="@style/EditText.ShopSetting"
+                android:hint="@string/label_shop_setting_desc_shop" />
         </android.support.design.widget.TextInputLayout>
 
         <TextView
-            android:layout_marginBottom="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Logo"
-            android:textSize="12sp"
-            android:textColor="@color/black_thirty_eight_percent"
-            android:layout_gravity="left" />
+            style="@style/TextView.ShopSettingHint.Logo"
+            android:text="@string/label_shop_setting_logo" />
 
         <RelativeLayout
-            android:layout_marginBottom="32dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp">
 
             <FrameLayout
                 android:id="@+id/image_picker_container"
-                android:background="@drawable/rounded_corner_black_shop_open"
-                android:layout_width="126dp"
-                android:layout_height="126dp">
+                style="@style/View.ShopSetting.ImagePicker">
 
                 <ImageView
+                    android:id="@+id/image_picker"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_add_photo_box" />
             </FrameLayout>
 
+            <TextView
+                android:id="@+id/error_image_empty"
+                style="@style/TextView.ShopSettingHint.ErrorImagePicker"
+                android:layout_below="@+id/image_picker_container"
+                android:text="@string/label_shop_setting_error_should_pick_image"
+                android:visibility="gone" />
+
             <LinearLayout
-                android:background="@drawable/rounded_corner_black_shop_open"
                 android:id="@+id/container_info_picker_image"
-                android:layout_marginLeft="10dp"
-                android:layout_toRightOf="@id/image_picker_container"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                style="@style/View.ShopSetting.InfoImagePicker"
+                android:layout_toRightOf="@+id/image_picker_container">
+
+                <TextView
+                    style="@style/TextView.ShopSettingHint.InfoPickImageTitle"
+                    android:text="@string/label_shop_setting_info_max_file_size" />
+
+                <TextView
+                    style="@style/TextView.ShopSettingHint.InfoPickImageContent"
+                    android:text="@string/label_shop_setting_info_size_image" />
+
+                <TextView
+                    style="@style/TextView.ShopSettingHint.InfoPickImageTitle"
+                    android:text="@string/label_shop_setting_info_allowed_file" />
+
+                <TextView
+                    style="@style/TextView.ShopSettingHint.InfoPickImageContent"
+                    android:text="@string/label_shop_setting_type_file_image" />
 
             </LinearLayout>
 
             <FrameLayout
-                android:background="@drawable/rounded_corner_black_shop_open"
-                android:layout_alignParentBottom="true"
-                android:layout_alignLeft="@id/container_info_picker_image"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:id="@+id/container_browse_file"
+                style="@style/View.ShopSetting.BrowseImage"
+                android:layout_alignBottom="@+id/image_picker_container"
+                android:layout_alignLeft="@id/container_info_picker_image">
 
                 <TextView
-                    android:textStyle="bold"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="Browse File"
-                    android:textSize="11sp"
-                    android:textColor="@color/black_seventy_percent"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    style="@style/TextView.ShopSettingHint.LabelBrowseImage"
+                    android:text="@string/label_shop_setting_browse_file" />
             </FrameLayout>
 
         </RelativeLayout>
 
-
         <Button
             android:id="@+id/button_next"
-            android:text="@string/title_next"
-            android:padding="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:background="@drawable/bg_button_green"
-            android:buttonStyle="?android:attr/borderlessButtonStyle"
-            />
+            style="@style/Button.TopAds.ShopSetting"
+            android:text="@string/title_next" />
 
     </LinearLayout>
 </ScrollView>

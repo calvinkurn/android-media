@@ -17,6 +17,7 @@ import rx.Observable;
  * @author Angga.Prasetiyo on 10/12/2015.
  *         Added by m.normansyah on 22/12/2015, for manual purpose
  */
+@Deprecated
 public interface GeneratedHostActApi {
 
     @FormUrlEncoded
