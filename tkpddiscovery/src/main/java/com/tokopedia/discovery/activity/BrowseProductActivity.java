@@ -69,6 +69,7 @@ import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
+import com.tokopedia.discovery.view.BrowseProductParentView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -672,7 +673,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     private void openFilter(DataValue filterAttribute, String source, int activeTab, FDest dest) {
         breadcrumbs = getProductBreadCrumb();
-        if (filterAttribute != null ) {
+        if (filterAttribute != null) {
             Map<String, String> filters;
             if (mFilterMapAtribut != null && mFilterMapAtribut.getFiltersMap() != null) {
                 if (mFilterMapAtribut.getFiltersMap().get(source) != null) {
@@ -974,11 +975,11 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                     case DiscoveryListener.CATEGORY_HEADER:
                         BrowseParentFragment parentFragment = (BrowseParentFragment)
                                 fragmentManager.findFragmentById(R.id.container);
-                        if (parentFragment!=null) {
+                        if (parentFragment != null) {
                             ObjContainer objContainer = data.getModel2();
                             CategoriesHadesModel.CategoriesHadesContainer categoriesHadesContainer = (CategoriesHadesModel.CategoriesHadesContainer) objContainer;
                             CategoriesHadesModel body = categoriesHadesContainer.body();
-                            if (browseProductActivityModel !=null && body !=null && body.getData() !=null) {
+                            if (browseProductActivityModel != null && body != null && body.getData() != null) {
                                 browseProductActivityModel.categotyHeader = body.getData();
                                 parentFragment.renderCategories(browseProductActivityModel.categotyHeader);
                             }
@@ -1091,7 +1092,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     public void renderNewCategoryLevel(String departementId, String name) {
-        if (departementId!=null && name!=null) {
+        if (departementId != null && name != null) {
             browseProductActivityModel.setDepartmentId(departementId);
             toolbar.setTitle(name);
             setFragment(BrowseParentFragment.newInstance(browseProductActivityModel), BrowseParentFragment.FRAGMENT_TAG);
@@ -1105,24 +1106,24 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     public void renderLowerCategoryLevel(Child child) {
-        categoryLevel.push(new SimpleCategory(browseProductActivityModel.getDepartmentId(),getIntent().getStringExtra(EXTRA_TITLE)));
-        getIntent().putExtra(EXTRA_TITLE,child.getName());
-        renderNewCategoryLevel(child.getId(),child.getName());
+        categoryLevel.push(new SimpleCategory(browseProductActivityModel.getDepartmentId(), getIntent().getStringExtra(EXTRA_TITLE)));
+        getIntent().putExtra(EXTRA_TITLE, child.getName());
+        renderNewCategoryLevel(child.getId(), child.getName());
 
     }
 
     @Override
     public void onBackPressed() {
         if (discoverySearchView.isSearchOpen()) {
-            if(discoverySearchView.isFinishOnClose()){
+            if (discoverySearchView.isFinishOnClose()) {
                 finish();
             } else {
                 discoverySearchView.closeSearch();
             }
-        } else if (categoryLevel.size()>0) {
+        } else if (categoryLevel.size() > 0) {
             SimpleCategory simpleCategory = categoryLevel.pop();
-            getIntent().putExtra(EXTRA_TITLE,simpleCategory.getName());
-            renderNewCategoryLevel(simpleCategory.getId(),simpleCategory.getName());
+            getIntent().putExtra(EXTRA_TITLE, simpleCategory.getName());
+            renderNewCategoryLevel(simpleCategory.getId(), simpleCategory.getName());
         } else {
             finish();
         }

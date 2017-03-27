@@ -25,6 +25,8 @@ import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthIntercepto
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
+import java.util.concurrent.TimeUnit;
+
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.Cache;
