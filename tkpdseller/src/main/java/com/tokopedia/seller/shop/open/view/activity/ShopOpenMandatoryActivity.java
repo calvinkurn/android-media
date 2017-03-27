@@ -100,7 +100,7 @@ public class ShopOpenMandatoryActivity
     }
 
     private void updateFragmentLogistic(int districtCode) {
-        Fragment fragment = stepAdapter.getItem(ShopOpenStepperViewAdapter.SHOP_SETTING_LOGICTIC_POSITION);
+        Fragment fragment = stepAdapter.getItemFragment(ShopOpenStepperViewAdapter.SHOP_SETTING_LOGICTIC_POSITION);
         if (fragment instanceof ShopSettingLogisticView) {
             ((ShopSettingLogisticView) fragment).changeDistrictCode(districtCode);
         } else {
@@ -151,7 +151,7 @@ public class ShopOpenMandatoryActivity
 
     private void changeGoogleMapDataInLocationFragment(LocationPass locationPass) {
         Fragment fragment =
-                stepAdapter.getItem(
+                stepAdapter.getItemFragment(
                         ShopOpenStepperViewAdapter.SHOP_SETTING_LOCATION_POSITION
                 );
         if (fragment instanceof ShopSettingLocationView) {
