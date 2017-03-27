@@ -47,7 +47,7 @@ import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.payment.cart.activity.TopPayActivity;
+import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 
 import butterknife.BindView;
@@ -280,6 +280,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     private void renderCartInfo(CartDigitalInfoData cartDigitalInfoData) {
+        buildCheckoutData(cartDigitalInfoData);
         actionListener.setTitleCart(cartDigitalInfoData.getTitle());
         itemCartHolderView.renderAdditionalInfo(cartDigitalInfoData.getAdditionalInfos());
         itemCartHolderView.renderDataMainInfo(cartDigitalInfoData.getMainInfo());
@@ -293,7 +294,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 cartDigitalInfoData.getAttributes().getPrice(),
                 cartDigitalInfoData.getAttributes().getPrice()
         );
-        buildCheckoutData(cartDigitalInfoData);
         if (passData.getInstantCheckout().equals("1")) {
             pbMainLoading.setVisibility(View.VISIBLE);
             mainContainer.setVisibility(View.GONE);
@@ -337,6 +337,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     private void renderDataInputPrice(String total, UserInputPriceDigital userInputPriceDigital) {
         if (userInputPriceDigital != null) {
+            checkoutDataBuilder.transactionAmount(0);
             inputPriceHolderView.setVisibility(View.VISIBLE);
             inputPriceHolderView.setInputPriceInfo(total, userInputPriceDigital.getMinPaymentPlain(),
                     userInputPriceDigital.getMaxPaymentPlain());
@@ -447,12 +448,10 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderToTopPay(CheckoutDigitalData checkoutDigitalData) {
-        //TODO ke payment module
         PaymentPassData paymentPassData = new PaymentPassData();
         paymentPassData.convertToPaymenPassData(checkoutDigitalData);
         navigateToActivityRequest(TopPayActivity.createInstance(getActivity(), paymentPassData),
                 TopPayActivity.REQUEST_CODE);
-        // navigateToActivityRequest();
     }
 
     @Override
@@ -486,26 +485,32 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 InstantCheckoutActivity.newInstance(getActivity(), instantCheckoutData),
                 InstantCheckoutActivity.REQUEST_CODE
         );
+        closeView();
     }
 
     @Override
     public void renderErrorInstantCheckout(String message) {
-
+        closeViewWithMessageAlert(message);
     }
 
     @Override
     public void renderErrorHttpInstantCheckout(String message) {
-
+        closeViewWithMessageAlert(message);
     }
 
     @Override
     public void renderErrorNoConnectionInstantCheckout(String message) {
-
+        NetworkErrorHelper.showDialog(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.processToInstantCheckout();
+            }
+        });
     }
 
     @Override
     public void renderErrorTimeoutConnectionInstantCheckout(String message) {
-
+        closeViewWithMessageAlert(message);
     }
 
     @Override
@@ -589,18 +594,20 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     else closeView();
                     break;
             }
-        } else if (requestCode == TopPayActivity.REQUEST_CODE) {// ini request code payment. bisa diganti
+        } else if (requestCode == TopPayActivity.REQUEST_CODE) {
             closeView();
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:
                     closeView();
                     break;
                 case TopPayActivity.PAYMENT_FAILED:
-                    showToastMessage("Pembayaran tidak berhasil atau dibatalkan");
+                    showToastMessage(
+                            getString(R.string.alert_payment_canceled_or_failed_digital_module)
+                    );
                     presenter.processGetCartData();
                     break;
                 case TopPayActivity.PAYMENT_CANCELLED:
-                    showToastMessage("Pembayaran dibatalkan");
+                    showToastMessage(getString(R.string.alert_payment_canceled_digital_module));
                     presenter.processGetCartData();
                     break;
                 default:

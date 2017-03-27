@@ -93,7 +93,7 @@ public class InputPriceHolderView extends LinearLayout {
     private boolean isUserInputValid(String userInput, long minPayment, long maxPayment) {
         long priceInput = 0;
         if (!userInput.equals("")) {
-            priceInput = Long.parseLong(userInput.toString());
+            priceInput = Long.parseLong(userInput);
         }
         return (priceInput > minPayment && priceInput < maxPayment);
     }

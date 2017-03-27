@@ -16,4 +16,6 @@
     <string name="hint_input_price">Contoh: 422500</string>
     <string name="lihat_detail">Lihat Detail</string>
     <string name="title_activity_cart_digital_module">Keranjang</string>
+    <string name="alert_payment_canceled_or_failed_digital_module">Pembayaran tidak berhasil atau dibatalkan</string>
+    <string name="alert_payment_canceled_digital_module">Pembayaran dibatalkan</string>
 </resources>
