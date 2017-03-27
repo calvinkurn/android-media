@@ -1,20 +1,23 @@
 package com.tokopedia.seller.shop.open.view.adapter;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 
 import com.stepstone.stepper.Step;
 import com.stepstone.stepper.viewmodel.StepViewModel;
 import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingInfoFragment;
 import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLocationFragment;
+import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingLogisticFragment;
 
 /**
  * Created by zulfikarrahman on 3/16/17.
  */
 
 public class ShopOpenStepperViewAdapter extends AbstractNativeFragmentStepAdapter {
+
+    private int districtId = 0;
 
     public ShopOpenStepperViewAdapter(@NonNull FragmentManager fm, @NonNull Context context) {
         super(fm, context);
@@ -38,9 +41,11 @@ public class ShopOpenStepperViewAdapter extends AbstractNativeFragmentStepAdapte
     public Step createStep(@IntRange(from = 0L) int position) {
         switch (position){
             case 0:
-            case 1:
-            case 2:
                 return ShopSettingInfoFragment.createInstance();
+            case 1:
+                return ShopSettingLocationFragment.getInstance();
+            case 2:
+                return ShopSettingLogisticFragment.getInstance(districtId);
             default:
                 return null;
         }

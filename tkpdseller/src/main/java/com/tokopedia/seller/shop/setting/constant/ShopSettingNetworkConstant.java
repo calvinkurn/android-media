@@ -19,7 +19,7 @@ public class ShopSettingNetworkConstant {
     public static final String RESOLUTION = "resolution";
     public static final String SERVER_ID = "server_id";
 
-    public static String getUploadImageUrl(String uploadHostUrl){
+    public static String getUploadImageUrl(String uploadHostUrl) {
         return HTTPS + uploadHostUrl + UPLOAD_SHOP_IMAGE;
     }
 }

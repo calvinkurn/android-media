@@ -7,7 +7,7 @@ package com.tokopedia.seller.shop.setting.view.listener;
 public interface ListenerShopSettingInfo {
     void onBrowseImageAction(ListenerOnImagePickerReady listenerOnImagePickerReady);
 
-    interface ListenerOnImagePickerReady{
+    interface ListenerOnImagePickerReady {
         void onImageReady(String uriPathImage);
     }
 }

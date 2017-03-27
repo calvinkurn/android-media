@@ -15,7 +15,6 @@ import com.tokopedia.seller.shop.setting.data.model.GenerateHostModel;
 import com.tokopedia.seller.shop.setting.data.model.UploadShopImageModel;
 import com.tokopedia.seller.shop.setting.data.source.cloud.apiservice.GenerateHostApi;
 import com.tokopedia.seller.shop.setting.data.source.cloud.apiservice.ShopImageUploadApi;
-import com.tokopedia.seller.shop.utils.UploadPhotoShopTask;
 
 import java.io.File;
 import java.util.Map;
@@ -64,13 +63,13 @@ public class ShopSettingInfoDataSourceCloud {
                 .map(shopOpenUploadImageMapper);
     }
 
-    public TKPDMapParam<String,String> getParamsGenerateHost() {
+    public TKPDMapParam<String, String> getParamsGenerateHost() {
         TKPDMapParam<String, String> paramsGenerateHost = new TKPDMapParam<>();
         paramsGenerateHost.put(ShopSettingNetworkConstant.SERVER_LANGUAGE, ShopSettingNetworkConstant.GOLANG_VALUE);
         return paramsGenerateHost;
     }
 
-    public Map<String,RequestBody> getParamsUploadImage(String urlUploadImage, String pathFile, String serverIdUpload) {
+    public Map<String, RequestBody> getParamsUploadImage(String urlUploadImage, String pathFile, String serverIdUpload) {
         Map<String, RequestBody> paramsUploadImage = new TKPDMapParam<>();
 
         NetworkCalculator networkCalculator = new NetworkCalculator(NetworkConfig.POST, context,
@@ -87,7 +86,7 @@ public class ShopSettingInfoDataSourceCloud {
         RequestBody resolution = RequestBody.create(MediaType.parse("text/plain"), ShopSettingNetworkConstant.RESOLUTION_DEFAULT_VALUE);
         RequestBody serverId = RequestBody.create(MediaType.parse("text/plain"), serverIdUpload);
 
-        paramsUploadImage.put(NetworkCalculator.USER_ID,userId);
+        paramsUploadImage.put(NetworkCalculator.USER_ID, userId);
         paramsUploadImage.put(NetworkCalculator.DEVICE_ID, deviceId);
         paramsUploadImage.put(NetworkCalculator.HASH, hash);
         paramsUploadImage.put(NetworkCalculator.DEVICE_TIME, deviceTime);

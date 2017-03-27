@@ -29,6 +29,15 @@ public class ShopSettingSaveInfoUseCase extends UseCase<Boolean> {
         this.shopSettingSaveInfoRepository = shopSettingSaveInfoRepository;
     }
 
+    public static RequestParams createRequestParams(String pathFileImage, String shopDescription,
+                                                    String tagLine) {
+        RequestParams params = RequestParams.create();
+        params.putString(PATH_FILE_IMAGE, pathFileImage);
+        params.putString(SHOP_DESCRIPTION, shopDescription);
+        params.putString(TAG_LINE, tagLine);
+        return params;
+    }
+
     @Override
     public Observable<Boolean> createObservable(final RequestParams requestParams) {
         return shopSettingSaveInfoRepository.generateHost()
@@ -45,14 +54,5 @@ public class ShopSettingSaveInfoUseCase extends UseCase<Boolean> {
                                 requestParams.getString(SHOP_DESCRIPTION, ""), requestParams.getString(TAG_LINE, ""));
                     }
                 });
-    }
-
-    public static RequestParams createRequestParams(String pathFileImage, String shopDescription,
-                                                    String tagLine) {
-        RequestParams params = RequestParams.create();
-        params.putString(PATH_FILE_IMAGE, pathFileImage);
-        params.putString(SHOP_DESCRIPTION, shopDescription);
-        params.putString(TAG_LINE, tagLine);
-        return params;
     }
 }

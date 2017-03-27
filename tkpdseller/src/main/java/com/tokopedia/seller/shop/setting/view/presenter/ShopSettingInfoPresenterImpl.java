@@ -12,23 +12,18 @@ public class ShopSettingInfoPresenterImpl extends ShopSettingInfoPresenter {
 
     ShopSettingSaveInfoUseCase shopSettingSaveInfoUseCase;
 
-    public ShopSettingInfoPresenterImpl(ShopSettingInfoView view, ShopSettingSaveInfoUseCase shopSettingSaveInfoUseCase) {
-        super(view);
+    public ShopSettingInfoPresenterImpl(ShopSettingSaveInfoUseCase shopSettingSaveInfoUseCase) {
         this.shopSettingSaveInfoUseCase = shopSettingSaveInfoUseCase;
     }
 
     @Override
     public void submitShopInfo(String uriPathImage, String shopSlogan, String shopDescription) {
-        if(validateForm(uriPathImage, shopSlogan, shopDescription)) {
-            view.showProgressDialog();
+        if (validateForm(uriPathImage, shopSlogan, shopDescription)) {
+            checkViewAttached();
+            getView().showProgressDialog();
             shopSettingSaveInfoUseCase.execute(ShopSettingSaveInfoUseCase.createRequestParams(uriPathImage,
                     shopDescription, shopSlogan), getSubscriberSaveInfo());
         }
-    }
-
-    @Override
-    protected void unsubscribeOnDestroy() {
-
     }
 
     public Subscriber<Boolean> getSubscriberSaveInfo() {
@@ -40,44 +35,47 @@ public class ShopSettingInfoPresenterImpl extends ShopSettingInfoPresenter {
 
             @Override
             public void onError(Throwable e) {
-                view.dismissProgressDialog();
-                view.onFailedSaveInfoShop();
+                checkViewAttached();
+                getView().dismissProgressDialog();
+                getView().onFailedSaveInfoShop();
             }
 
             @Override
             public void onNext(Boolean isSuccess) {
-                if(isSuccess){
-                    view.onSuccessSaveInfoShop();
-                }else{
-                    view.onFailedSaveInfoShop();
+                checkViewAttached();
+                if (isSuccess) {
+                    getView().onSuccessSaveInfoShop();
+                } else {
+                    getView().onFailedSaveInfoShop();
                 }
             }
         };
     }
 
-    private boolean  validateForm(String uriPathImage, String shopSlogan, String shopDescription) {
-        if(!uriPathImage.isEmpty() && !shopSlogan.isEmpty() && !shopDescription.isEmpty()){
-            view.onErrorDescriptionEmptyFalse();
-            view.onErrorEmptyImageFalse();
-            view.onErrorSloganEmptyFalse();
+    private boolean validateForm(String uriPathImage, String shopSlogan, String shopDescription) {
+        checkViewAttached();
+        if (!uriPathImage.isEmpty() && !shopSlogan.isEmpty() && !shopDescription.isEmpty()) {
+            getView().onErrorDescriptionEmptyFalse();
+            getView().onErrorEmptyImageFalse();
+            getView().onErrorSloganEmptyFalse();
             return true;
-        }else{
-            if(uriPathImage.isEmpty()){
-                view.onErrorEmptyImage();
-            }else{
-                view.onErrorEmptyImageFalse();
+        } else {
+            if (uriPathImage.isEmpty()) {
+                getView().onErrorEmptyImage();
+            } else {
+                getView().onErrorEmptyImageFalse();
             }
 
-            if(shopSlogan.isEmpty()){
-                view.onErrorSloganEmpty();
-            }else{
-                view.onErrorSloganEmptyFalse();
+            if (shopSlogan.isEmpty()) {
+                getView().onErrorSloganEmpty();
+            } else {
+                getView().onErrorSloganEmptyFalse();
             }
 
-            if(shopDescription.isEmpty()){
-                view.onErrorDescriptionEmpty();
-            }else{
-                view.onErrorDescriptionEmptyFalse();
+            if (shopDescription.isEmpty()) {
+                getView().onErrorDescriptionEmpty();
+            } else {
+                getView().onErrorDescriptionEmptyFalse();
             }
             return false;
         }

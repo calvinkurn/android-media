@@ -5,7 +5,6 @@ import com.tokopedia.seller.shop.setting.data.model.GenerateHostModel;
 import com.tokopedia.seller.shop.setting.data.model.UploadShopImageModel;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by zulfikarrahman on 3/21/17.

@@ -8,12 +8,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.lib.widget.TkpdTextInputLayout;
-
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.widget.TkpdTextInputLayout;
 import com.tokopedia.seller.shop.setting.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.seller.shop.setting.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.setting.di.module.ShopOpenDomainModule;
@@ -31,15 +31,12 @@ public class ShopOpenDomainFragment
         extends BasePresenterFragment<ShopOpenDomainPresenter>
         implements ShopOpenDomainView {
     public static final String TAG = "ShopOpenDomain";
-
+    ShopOpenDomainComponent component;
     private View buttonSubmit;
     private TkpdTextInputLayout textInputShopName;
     private EditText editTextInputShopName;
     private TkpdTextInputLayout textInputDomainName;
     private PrefixEditText editTextInputDomainName;
-
-    ShopOpenDomainComponent component;
-
     // untuk test
     private Subscription subscription;
 
@@ -66,7 +63,7 @@ public class ShopOpenDomainFragment
         component = DaggerShopOpenDomainComponent
                 .builder()
                 .shopOpenDomainModule(new ShopOpenDomainModule())
-                .appComponent( ((BaseActivity) getActivity()).getApplicationComponent())
+                .appComponent(((HasComponent<AppComponent>) getActivity()).getComponent())
                 .build();
         presenter = component.getPresenter();
         presenter.attachView(this);

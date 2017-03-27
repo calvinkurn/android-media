@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenDomainFragment;
 
@@ -15,7 +17,7 @@ import com.tokopedia.seller.shop.open.view.fragment.ShopOpenDomainFragment;
  * Created by Nathaniel on 3/16/2017.
  */
 
-public class ShopOpenDomainActivity extends BasePresenterActivity {
+public class ShopOpenDomainActivity extends BasePresenterActivity implements HasComponent<AppComponent> {
 
     public static void start(Activity activity){
         Intent intent = new Intent(activity, ShopOpenDomainActivity.class);
@@ -67,6 +69,11 @@ public class ShopOpenDomainActivity extends BasePresenterActivity {
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }
 

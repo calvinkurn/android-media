@@ -36,6 +36,7 @@
             android:textSize="16sp" />
 
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_shop_setting_location_district"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
@@ -45,8 +46,8 @@
             android:layout_marginTop="63dp"
             android:hint="@string/hint_shop_setting_location_city">
 
-            <EditText
-                android:id="@+id/edit_text_shop_setting_location_city"
+            <AutoCompleteTextView
+                android:id="@+id/edit_text_shop_setting_location_district"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16sp" />
@@ -54,6 +55,7 @@
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_layout_shop_setting_location_zip_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
@@ -64,9 +66,10 @@
             android:hint="@string/hint_shop_setting_location_zip_code">
 
             <EditText
-                android:id="@+id/edit_text_shop_setting_location_zip_code"
+                android:id="@+id/edit_text_shop_setting_location_postal_code"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="number"
                 android:textSize="16sp" />
 
         </android.support.design.widget.TextInputLayout>
@@ -99,6 +102,7 @@
             android:background="@color/tkpd_grey" />
 
         <RelativeLayout
+            android:id="@+id/action_shop_setting_location_pickup_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -138,7 +142,6 @@
                 android:ellipsize="end"
                 android:gravity="end"
                 android:maxLines="1"
-                android:text="Wisma 77, Jl. Letjen S. Parman, Slipi, West Jakarta City, Special Capital Region of Jakarta, Indonesia"
                 android:textAlignment="viewEnd"
                 android:textColor="@color/tkpd_main_green"
                 android:textSize="14sp" />
@@ -172,7 +175,7 @@
             android:textSize="16sp" />
 
         <Button
-            android:id="@+id/verify_button"
+            android:id="@+id/continue_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
@@ -182,7 +185,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="40dp"
             android:padding="16dp"
-            android:text="@string/button_verify"
+            android:text="@string/title_next"
             android:theme="@style/AppTheme.Button.BukaToko" />
 
 

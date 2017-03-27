@@ -97,36 +97,28 @@ public class UploadShopImageModel {
         Image image;
 
         /**
-         *
-         * @return
-         * The image
+         * @return The image
          */
         public Image getImage() {
             return image;
         }
 
         /**
-         *
-         * @param image
-         * The image
+         * @param image The image
          */
         public void setImage(Image image) {
             this.image = image;
         }
 
         /**
-         *
-         * @return
-         *     The upload
+         * @return The upload
          */
         public Upload getUpload() {
             return upload;
         }
 
         /**
-         *
-         * @param upload
-         *     The upload
+         * @param upload The upload
          */
         public void setUpload(Upload upload) {
             this.upload = upload;
@@ -147,54 +139,42 @@ public class UploadShopImageModel {
         String success;
 
         /**
-         *
-         * @return
-         *     The messageStatus
+         * @return The messageStatus
          */
         public String getMessageStatus() {
             return messageStatus;
         }
 
         /**
-         *
-         * @param messageStatus
-         *     The message_status
+         * @param messageStatus The message_status
          */
         public void setMessageStatus(String messageStatus) {
             this.messageStatus = messageStatus;
         }
 
         /**
-         *
-         * @return
-         *     The src
+         * @return The src
          */
         public String getSrc() {
             return src;
         }
 
         /**
-         *
-         * @param src
-         *     The src
+         * @param src The src
          */
         public void setSrc(String src) {
             this.src = src;
         }
 
         /**
-         *
-         * @return
-         *     The success
+         * @return The success
          */
         public String getSuccess() {
             return success;
         }
 
         /**
-         *
-         * @param success
-         *     The success
+         * @param success The success
          */
         public void setSuccess(String success) {
             this.success = success;
@@ -218,72 +198,56 @@ public class UploadShopImageModel {
         String success;
 
         /**
-         *
-         * @return
-         * The messageStatus
+         * @return The messageStatus
          */
         public String getMessageStatus() {
             return messageStatus;
         }
 
         /**
-         *
-         * @param messageStatus
-         * The message_status
+         * @param messageStatus The message_status
          */
         public void setMessageStatus(String messageStatus) {
             this.messageStatus = messageStatus;
         }
 
         /**
-         *
-         * @return
-         * The picCode
+         * @return The picCode
          */
         public String getPicCode() {
             return picCode;
         }
 
         /**
-         *
-         * @param picCode
-         * The pic_code
+         * @param picCode The pic_code
          */
         public void setPicCode(String picCode) {
             this.picCode = picCode;
         }
 
         /**
-         *
-         * @return
-         * The picSrc
+         * @return The picSrc
          */
         public String getPicSrc() {
             return picSrc;
         }
 
         /**
-         *
-         * @param picSrc
-         * The pic_src
+         * @param picSrc The pic_src
          */
         public void setPicSrc(String picSrc) {
             this.picSrc = picSrc;
         }
 
         /**
-         *
-         * @return
-         * The success
+         * @return The success
          */
         public String getSuccess() {
             return success;
         }
 
         /**
-         *
-         * @param success
-         * The success
+         * @param success The success
          */
         public void setSuccess(String success) {
             this.success = success;

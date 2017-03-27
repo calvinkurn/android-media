@@ -2,6 +2,7 @@ package com.tokopedia.seller.app;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -47,6 +48,11 @@ public abstract class BaseDiFragment<C extends BaseFragmentComponent, P extends 
     }
 
     @Override
+    protected void initialListener(Activity activity) {
+
+    }
+
+    @Override
     protected void setViewListener() {
 
     }
@@ -68,7 +74,12 @@ public abstract class BaseDiFragment<C extends BaseFragmentComponent, P extends 
     }
 
     @Override
-    protected void initialListener(Activity activity) {
+    protected void initView(View view) {
+
+    }
+
+    @Override
+    protected void setActionVar() {
 
     }
 
