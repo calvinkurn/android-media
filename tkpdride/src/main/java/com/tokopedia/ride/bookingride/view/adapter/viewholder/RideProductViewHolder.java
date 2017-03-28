@@ -1,19 +1,14 @@
 package com.tokopedia.ride.bookingride.view.adapter.viewholder;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.bookingride.view.adapter.RideProductItemClickListener;
@@ -65,6 +60,7 @@ public class RideProductViewHolder extends AbstractViewHolder<RideProductViewMod
         } else {
             surgePriceImageView.setVisibility(View.GONE);
         }
+        productPriceTextView.setVisibility(element.getProductPrice() == null ? View.GONE : View.VISIBLE);
         productPriceTextView.setText(String.valueOf(element.getProductPrice()));
         baseFareTextView.setText(String.valueOf(element.getBaseFare()));
         Glide.with(mContext).load(element.getProductImage())

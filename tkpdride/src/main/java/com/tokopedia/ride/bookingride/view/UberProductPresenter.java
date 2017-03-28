@@ -1,33 +1,20 @@
 package com.tokopedia.ride.bookingride.view;
 
-import com.google.android.gms.common.api.Api;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Result;
-import com.google.android.gms.location.places.PlaceFilter;
-import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
-import com.google.android.gms.location.places.Places;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetProductAndEstimatedUseCase;
-import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
-import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
+import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.mapper.RideProductViewModelMapper;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
-import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
-import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
-import rx.Observable;
 import rx.Subscriber;
-import rx.functions.Func1;
 
 /**
  * Created by alvarisi on 3/14/17.
@@ -114,13 +101,19 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
     private void getMinimalProductEstimateAndRender(List<ProductEstimate> productEstimates) {
         int minTime = 0;
         for (ProductEstimate estimate : productEstimates) {
+            if (estimate.getTimesEstimate() == null) {
+                continue;
+            }
+
             if (minTime == 0 && estimate.getTimesEstimate().getEstimate() > 0)
                 minTime = estimate.getTimesEstimate().getEstimate();
             else if (minTime > estimate.getTimesEstimate().getEstimate()) {
                 minTime = estimate.getTimesEstimate().getEstimate();
             }
         }
-        getView().actionMinimumTimeEstResult(String.valueOf(minTime));
+
+
+        getView().actionMinimumTimeEstResult(minTime / 60 + "\nmin");
     }
 
     private void actionGetFareProduct(PlacePassViewModel source, PlacePassViewModel destination, List<ProductEstimate> productEstimates) {

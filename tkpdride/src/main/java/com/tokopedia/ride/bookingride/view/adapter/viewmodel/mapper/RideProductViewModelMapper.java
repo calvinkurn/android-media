@@ -2,9 +2,9 @@ package com.tokopedia.ride.bookingride.view.adapter.viewmodel.mapper;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
-import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
-import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewModel;
+import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
+import com.tokopedia.ride.common.ride.domain.model.PriceDetail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,31 +52,59 @@ public class RideProductViewModelMapper {
 
     private Visitable transform(ProductEstimate product) {
         RideProductViewModel rideProductViewModel = null;
-        if (product != null) {
+        if (product != null && product.getTimesEstimate() != null) {
             rideProductViewModel = new RideProductViewModel();
             rideProductViewModel.setProductName(product.getProduct().getDisplayName());
             rideProductViewModel.setProductId(product.getProduct().getProductId());
             rideProductViewModel.setProductImage(product.getProduct().getImage());
-            rideProductViewModel.setTimeEstimate(String.valueOf(product.getTimesEstimate().getEstimate()));
             rideProductViewModel.setCapacity(product.getProduct().getCapacity());
+            rideProductViewModel.setBaseFare(getBaseFare(product.getProduct().getPriceDetail()));
+            rideProductViewModel.setProductPrice(getPricePerDistance(product.getProduct().getPriceDetail()));
+            rideProductViewModel.setTimeEstimate(product.getTimesEstimate().getEstimate() / 60 + " min");
         }
         return rideProductViewModel;
     }
 
-    public Visitable transform(ProductEstimate product, FareEstimate fareEstimate){
+    public Visitable transform(ProductEstimate product, FareEstimate fareEstimate) {
         RideProductViewModel rideProductViewModel = null;
-        if (product != null) {
+        if (product != null && product.getTimesEstimate() != null) {
             rideProductViewModel = new RideProductViewModel();
             rideProductViewModel.setProductName(product.getProduct().getDisplayName());
             rideProductViewModel.setProductId(product.getProduct().getProductId());
             rideProductViewModel.setProductImage(product.getProduct().getImage());
             rideProductViewModel.setProductPrice(fareEstimate.getFare().getDisplay());
-            rideProductViewModel.setBaseFare(fareEstimate.getFare().getDisplay());
-            rideProductViewModel.setTimeEstimate(String.valueOf(product.getTimesEstimate().getEstimate()));
             rideProductViewModel.setFareId(fareEstimate.getFare().getFareId());
             rideProductViewModel.setCapacity(product.getProduct().getCapacity());
+            rideProductViewModel.setTimeEstimate(product.getTimesEstimate().getEstimate() / 60 + " min");
+            rideProductViewModel.setBaseFare(getBaseFare(product.getProduct().getPriceDetail()));
         }
         return rideProductViewModel;
+    }
 
+    /**
+     * This is the helper function to get base fare
+     *
+     * @param priceDetail
+     * @return
+     */
+    private String getBaseFare(PriceDetail priceDetail) {
+        //set base fare
+        String baseFare = "--";
+        if (priceDetail != null) {
+            baseFare = "Base Fare: " + " " + priceDetail.getCurrencyCode() + " " + priceDetail.getBase();
+        }
+
+        return baseFare;
+    }
+
+
+    private String getPricePerDistance(PriceDetail priceDetail) {
+        //set base fare
+        String productPrice = "--";
+        if (priceDetail != null) {
+            productPrice = priceDetail.getCurrencyCode() + " " + priceDetail.getCostPerDistance() + "/" + priceDetail.getDistanceUnit();
+        }
+
+        return productPrice;
     }
 }
