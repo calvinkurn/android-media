@@ -51,6 +51,8 @@ public interface BookingRideContract {
         void setSourceLocation(PlacePassViewModel location);
 
         void hideMarkerCenter();
+
+        void showEnterDestError();
     }
 
     interface Presenter extends CustomerPresenter<View> {

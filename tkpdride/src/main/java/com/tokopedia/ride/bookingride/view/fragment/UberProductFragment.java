@@ -20,7 +20,6 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.RideProductDependencyInjection;
-import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
 import com.tokopedia.ride.bookingride.view.UberProductContract;
 import com.tokopedia.ride.bookingride.view.adapter.RideProductAdapter;
 import com.tokopedia.ride.bookingride.view.adapter.RideProductItemClickListener;
@@ -75,6 +74,8 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
         void onProductClicked(ConfirmBookingViewModel rideProductViewModel);
 
         void onMinimumTimeEstCalculated(String timeEst);
+
+        void showEnterDestError();
     }
 
     public static UberProductFragment newInstance() {
@@ -167,6 +168,9 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
             );
             confirmBookingViewModel.setMaxCapacity(rideProductViewModel.getCapacity());
             mInteractionListener.onProductClicked(confirmBookingViewModel);
+        } else {
+            //show message to enter destianation
+            mInteractionListener.showEnterDestError();
         }
     }
 
@@ -214,12 +218,16 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
 
     @Override
     public void showProgress() {
-        mProgressBar.setVisibility(View.VISIBLE);
+        if (mProgressBar != null) {
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public void hideProgress() {
-        mProgressBar.setVisibility(View.GONE);
+        if (mProgressBar != null) {
+            mProgressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override

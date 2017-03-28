@@ -7,11 +7,9 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v4.app.NavUtils;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.ChangeBounds;
@@ -140,6 +138,14 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
             fragment = RideHomeFragment.newInstance();
             addFragment(R.id.top_container, fragment);
             fragment.setMarkerText(timeEst);
+        }
+    }
+
+    @Override
+    public void showEnterDestError() {
+        RideHomeFragment fragment = (RideHomeFragment) getFragmentManager().findFragmentById(R.id.top_container);
+        if (fragment != null) {
+            fragment.showEnterDestError();
         }
     }
 

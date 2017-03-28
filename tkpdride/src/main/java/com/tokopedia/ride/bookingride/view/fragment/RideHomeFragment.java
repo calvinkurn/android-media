@@ -11,10 +11,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -436,6 +439,32 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         mMarkerTimeLayout.setVisibility(View.GONE);
         mMarkerImageView.setVisibility(View.GONE);
         mMarkerCenterCrossImage.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showEnterDestError() {
+        Animation shake = AnimationUtils.loadAnimation(getActivityContext(), R.anim.shake);
+        shake.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                tvDestination.setHintTextColor(ContextCompat.getColor(getActivityContext(), R.color.red_500));
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                tvDestination.setHintTextColor(ContextCompat.getColor(getActivityContext(), R.color.pdp_rating_color_new));
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        tvDestination.startAnimation(shake);
+
+
+        //tvDestination.setHintTextColor(ContextCompat.getColor(getActivityContext(), R.color.red_500));
     }
 
     public void setMarkerText(String timeEst) {
