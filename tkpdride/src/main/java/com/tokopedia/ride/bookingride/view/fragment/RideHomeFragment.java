@@ -23,13 +23,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.router.SessionRouter;
@@ -209,7 +211,8 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
             return;
         }
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
-        mGoogleMap.setMyLocationEnabled(false);
+        mGoogleMap.setMyLocationEnabled(true);
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(-6.21462d, 106.84513d)));
 
         mGoogleMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
             @Override
@@ -335,9 +338,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
 
     @Override
     public void moveToCurrentLocation(double latitude, double longitude) {
-        LatLng currentLocation = new LatLng(latitude, longitude);
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(currentLocation, 18);
-        mGoogleMap.animateCamera(cameraUpdate);
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 18));
     }
 
     @Override
@@ -418,13 +419,31 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     @Override
     public void renderTripRoute(List<List<LatLng>> routes) {
         mGoogleMap.clear();
+
         for (List<LatLng> route : routes) {
             mGoogleMap.addPolyline(new PolylineOptions()
                     .addAll(route)
                     .width(10)
-                    .color(Color.BLUE)
+                    .color(Color.BLACK)
                     .geodesic(true));
         }
+
+        //add markers on source and destination
+        mGoogleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(mSource.getLatitude(), mSource.getLongitude()))
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                .title(mSource.getAddress()));
+
+        mGoogleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(mDestination.getLatitude(), mDestination.getLongitude()))
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                .title(mSource.getAddress()));
+
+        //zoom map to fit both source and dest
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(new LatLng(mSource.getLatitude(), mSource.getLongitude()));
+        builder.include(new LatLng(mDestination.getLatitude(), mDestination.getLongitude()));
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
     }
 
     @OnClick(R2.id.iv_my_location_button)
@@ -462,9 +481,11 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         });
 
         tvDestination.startAnimation(shake);
+    }
 
-
-        //tvDestination.setHintTextColor(ContextCompat.getColor(getActivityContext(), R.color.red_500));
+    @Override
+    public boolean isAlreadySelectDestination() {
+        return isAlreadySelectDestination;
     }
 
     public void setMarkerText(String timeEst) {

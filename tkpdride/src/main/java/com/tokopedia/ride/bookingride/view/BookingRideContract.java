@@ -53,6 +53,8 @@ public interface BookingRideContract {
         void hideMarkerCenter();
 
         void showEnterDestError();
+
+        boolean isAlreadySelectDestination();
     }
 
     interface Presenter extends CustomerPresenter<View> {
