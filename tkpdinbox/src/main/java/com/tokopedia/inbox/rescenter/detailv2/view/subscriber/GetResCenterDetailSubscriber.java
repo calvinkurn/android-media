@@ -127,7 +127,7 @@ public class GetResCenterDetailSubscriber extends rx.Subscriber<DetailResCenter>
                 domainModel.getPostalCode() + "<br>" +
                 domainModel.getPhoneReceiver()
         );
-        data.setAddressReturDate("NOT SET OR ASK BACKEND");
+        data.setAddressReturDate(domainModel.getDate());
         return data;
     }
 

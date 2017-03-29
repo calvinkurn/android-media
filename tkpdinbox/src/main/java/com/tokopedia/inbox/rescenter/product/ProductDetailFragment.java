@@ -146,8 +146,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailFr
     protected void initView(View view) {
         loading = view.findViewById(R.id.loading);
         mainView = view.findViewById(R.id.main_view);
-        productName = (TextView) view.findViewById(R.id.product_name);
-        productPrice = (TextView) view.findViewById(R.id.product_price);
+        productName = (TextView) view.findViewById(R.id.tv_product_name);
+        productPrice = (TextView) view.findViewById(R.id.tv_product_price);
         productImage = (ImageView) view.findViewById(R.id.iv_product_image);
         troubleName = (TextView) view.findViewById(R.id.complaint_name);
         troubleReason = (TextView) view.findViewById(R.id.complaint_reason);
@@ -189,13 +189,15 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailFr
 
     private void renderAttachment() {
         AttachmentAdapter attachmentAdapter = new AttachmentAdapter(getViewData().getAttachment());
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewAttachment.setLayoutManager(layoutManager);
         recyclerViewAttachment.setAdapter(attachmentAdapter);
     }
 
     @Override
     public void onGetProductDetailFailed(String messageError) {
+        setLoadingView(false);
+        setMainView(false);
         if (messageError == null) {
             NetworkErrorHelper.showEmptyState(getActivity(), getView(), null);
         } else {
@@ -205,6 +207,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailFr
 
     @Override
     public void onGetProductDetailTimeOut() {
+        setLoadingView(false);
+        setMainView(false);
         NetworkErrorHelper.showEmptyState(
                 getActivity(),
                 getView(),

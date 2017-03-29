@@ -60,7 +60,7 @@ public class ListProductAdapter extends BaseLinearRecyclerViewAdapter {
         switch (viewType) {
             case VIEW_SHIPPING_ITEM:
                 LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-                View view = inflater.inflate(R.layout.recyclerview_complaint_product_item, parent, false);
+                View view = inflater.inflate(R.layout.recyclerview_complaint_product_item_2, parent, false);
                 return new ListProductViewHolder(view);
             default:
                 return super.onCreateViewHolder(parent, viewType);

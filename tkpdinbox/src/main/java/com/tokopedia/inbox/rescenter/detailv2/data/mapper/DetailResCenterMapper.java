@@ -75,7 +75,7 @@ public class DetailResCenterMapper implements Func1<Response<TkpdResponse>, Deta
         }
         AddressDomainModel data = new AddressDomainModel();
         data.setCity(entity.getLast().getAddress().getCity().getName());
-        data.setDate("");
+        data.setDate("NOT SETTTTT");
         data.setDistrict(entity.getLast().getAddress().getDistrict().getName());
         data.setPhoneReceiver(entity.getLast().getAddress().getReceiver().getPhone());
         data.setPostalCode(entity.getLast().getAddress().getPostalCode());
