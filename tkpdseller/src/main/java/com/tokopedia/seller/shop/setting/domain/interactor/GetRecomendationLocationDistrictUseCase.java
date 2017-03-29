@@ -4,9 +4,10 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.shop.setting.domain.DistrictDataRepository;
+import com.tokopedia.seller.shop.setting.domain.DistrictLogisticDataRepository;
 import com.tokopedia.seller.shop.setting.domain.model.RecomendationDistrictDomainModel;
 
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -16,11 +17,18 @@ import rx.Observable;
 
 public class GetRecomendationLocationDistrictUseCase extends UseCase<RecomendationDistrictDomainModel>{
     public static final String STRING_TYPED = "STRING_TYPED";
-    private final DistrictDataRepository districtDataRepository;
+    private final DistrictLogisticDataRepository districtLogisticDataRepository;
 
-    public GetRecomendationLocationDistrictUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, DistrictDataRepository districtDataRepository) {
+    @Inject
+    public GetRecomendationLocationDistrictUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, DistrictLogisticDataRepository districtLogisticDataRepository) {
         super(threadExecutor, postExecutionThread);
-        this.districtDataRepository = districtDataRepository;
+        this.districtLogisticDataRepository = districtLogisticDataRepository;
+    }
+
+    public static RequestParams generateParams(String stringTyped) {
+        RequestParams requestParam = RequestParams.create();
+        requestParam.putString(STRING_TYPED, stringTyped);
+        return requestParam;
     }
 
     @Override
@@ -29,12 +37,6 @@ public class GetRecomendationLocationDistrictUseCase extends UseCase<Recomendati
         if (stringTyped.isEmpty()){
             throw new RuntimeException("String typed cannot be empty");
         }
-        return districtDataRepository.getRecommendationLocationDistrict(stringTyped);
-    }
-
-    public static RequestParams generateParams(String stringTyped) {
-        RequestParams requestParam = RequestParams.create();
-        requestParam.putString(STRING_TYPED, stringTyped);
-        return requestParam;
+        return districtLogisticDataRepository.getRecommendationLocationDistrict(stringTyped);
     }
 }

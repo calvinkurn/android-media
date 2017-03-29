@@ -7,4 +7,5 @@ import com.tokopedia.core.base.presentation.CustomerView;
  */
 
 public interface ShopSettingLogisticView extends CustomerView {
+    void changeDistrictCode(int districtCode);
 }

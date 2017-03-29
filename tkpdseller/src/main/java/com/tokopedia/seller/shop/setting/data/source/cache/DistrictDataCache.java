@@ -7,6 +7,7 @@ import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.database.model.DistrictDataDb;
 import com.tokopedia.core.network.apiservices.shop.apis.model.openshopdistrict.OpenShopDistrictServiceModel;
 import com.tokopedia.seller.shop.setting.data.source.cache.db.DistrictDataManager;
+import com.tokopedia.seller.shop.setting.di.scope.ShopSettingScope;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import rx.Observable;
  * Created by sebastianuskh on 3/20/17.
  */
 
+@ShopSettingScope
 public class DistrictDataCache {
 
     public static final String DISTRICT_DATA_CACHE = "DISTRICT_DATA_CACHE";

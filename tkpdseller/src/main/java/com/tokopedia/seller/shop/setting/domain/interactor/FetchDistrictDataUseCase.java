@@ -5,7 +5,9 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.shop.setting.domain.DistrictDataRepository;
+import com.tokopedia.seller.shop.setting.domain.DistrictLogisticDataRepository;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -14,15 +16,16 @@ import rx.Observable;
  */
 
 public class FetchDistrictDataUseCase extends UseCase<Boolean> {
-    private final DistrictDataRepository districtDataRepository;
+    private final DistrictLogisticDataRepository districtLogisticDataRepository;
 
-    public FetchDistrictDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, DistrictDataRepository districtDataRepository) {
+    @Inject
+    public FetchDistrictDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, DistrictLogisticDataRepository districtLogisticDataRepository) {
         super(threadExecutor, postExecutionThread);
-        this.districtDataRepository = districtDataRepository;
+        this.districtLogisticDataRepository = districtLogisticDataRepository;
     }
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return districtDataRepository.fetchDistrictData();
+        return districtLogisticDataRepository.fetchDistrictData();
     }
 }
