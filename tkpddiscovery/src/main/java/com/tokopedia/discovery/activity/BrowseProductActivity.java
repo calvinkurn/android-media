@@ -29,6 +29,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -99,8 +100,25 @@ import static com.tokopedia.discovery.activity.BrowseProductActivity.FDest.SORT;
 public class BrowseProductActivity extends TActivity implements DiscoverySearchView.SearchViewListener,
         BrowseView, MenuItemCompat.OnActionExpandListener, DiscoverySearchView.OnQueryTextListener {
 
+    public static final String EXTRA_DATA = "EXTRA_DATA";
+    public static final String EXTRA_TITLE = "EXTRA_TITLE";
+    public static final String CHANGE_GRID_ACTION_INTENT = BuildConfig.APPLICATION_ID+".LAYOUT";
+    public static final String GRID_TYPE_EXTRA = "GRID_TYPE_EXTRA";
+
+    private static final String EXTRA_BROWSE_MODEL = "EXTRA_BROWSE_MODEL";
+    private static final String EXTRA_FIRST_TIME = "EXTRA_FIRST_TIME";
+    private static final String EXTRA_FILTER_MAP = "EXTRA_FILTER_MAP";
+    private static final String LAYOUT_GRID_DEFAULT = "1";
+    private static final String LAYOUT_GRID_BOX = "2";
+    private static final String LAYOUT_LIST = "3";
+    private static final String SEARCH_ACTION_INTENT = BuildConfig.APPLICATION_ID+".SEARCH";
     private static final String KEY_GTM = "GTMFilterData";
     private static final String EXTRA_BROWSE_ATRIBUT = "EXTRA_BROWSE_ATRIBUT";
+    private static final int REQUEST_SORT = 121;
+
+    private int gridIcon = R.drawable.ic_grid_default;
+    private BrowseProductRouter.GridType gridType = BrowseProductRouter.GridType.GRID_2;
+    private boolean firstTime = true;
     private String searchQuery;
     private FragmentManager fragmentManager;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
@@ -108,52 +126,15 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     private FilterMapAtribut mFilterMapAtribut;
     private SharedPreferences preferences;
     private List<Breadcrumb> breadcrumbs;
-
+    private BrowseProductActivityModel browseProductActivityModel;
+    private DiscoveryInteractor discoveryInteractor;
+    private LocalCacheHandler cacheGTM;
+    private MenuItem searchItem;
     private Stack<SimpleCategory> categoryLevel = new Stack<>();
 
-    @Override
-    public String getScreenName() {
-        return AppScreen.SCREEN_BROWSE_PRODUCT_FROM_SEARCH;
-    }
-
-    public void sendHotlist(String selected, String keyword) {
-        fetchHotListHeader(selected);
-        browseProductActivityModel.setQ(keyword);
-        browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
-        browseProductActivityModel.alias = selected;
-    }
-
-    public void sendCategory(String departementId) {
-        browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
-        fetchCategoriesHeader(departementId);
-    }
-
-    @Override
-    public boolean onMenuItemActionExpand(MenuItem item) {
-        return false;
-    }
-
-    @Override
-    public boolean onMenuItemActionCollapse(MenuItem item) {
-        return false;
-    }
-
-    public enum FDest {
+    enum FDest {
         SORT, FILTER
     }
-
-    public static final String EXTRA_DATA = "EXTRA_DATA";
-    public static final String EXTRA_TITLE = "EXTRA_TITLE";
-    private static final String EXTRA_BROWSE_MODEL = "EXTRA_BROWSE_MODEL";
-    private static final String EXTRA_FIRST_TIME = "EXTRA_FIRST_TIME";
-    private static final String EXTRA_FILTER_MAP = "EXTRA_FILTER_MAP";
-    private static final String LAYOUT_GRID_DEFAULT = "1";
-    private static final String LAYOUT_GRID_BOX = "2";
-    private static final String LAYOUT_LIST = "3";
-
-    private int gridIcon = R.drawable.ic_grid_default;
-    private BrowseProductRouter.GridType gridType = BrowseProductRouter.GridType.GRID_2;
-    private boolean firstTime = true;
 
     @BindView(R2.id.progressBar)
     ProgressBar progressBar;
@@ -167,11 +148,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     FrameLayout container;
     @BindView(R2.id.search)
     DiscoverySearchView discoverySearchView;
-
-    private BrowseProductActivityModel browseProductActivityModel;
-    private DiscoveryInteractor discoveryInteractor;
-    private LocalCacheHandler cacheGTM;
-    private MenuItem searchItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -263,6 +239,33 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                     break;
             }
         }
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_BROWSE_PRODUCT_FROM_SEARCH;
+    }
+
+    public void sendHotlist(String selected, String keyword) {
+        fetchHotListHeader(selected);
+        browseProductActivityModel.setQ(keyword);
+        browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
+        browseProductActivityModel.alias = selected;
+    }
+
+    public void sendCategory(String departementId) {
+        browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
+        fetchCategoriesHeader(departementId);
+    }
+
+    @Override
+    public boolean onMenuItemActionExpand(MenuItem item) {
+        return false;
+    }
+
+    @Override
+    public boolean onMenuItemActionCollapse(MenuItem item) {
+        return false;
     }
 
     @Override
