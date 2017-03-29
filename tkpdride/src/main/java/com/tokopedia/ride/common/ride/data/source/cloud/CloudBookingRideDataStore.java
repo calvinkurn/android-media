@@ -68,4 +68,9 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
     public Observable<String> cancelRequest(TKPDMapParam<String, Object> params) {
         return mRideApi.cancelRequest(params);
     }
+
+    @Override
+    public Observable<String> getCurrentRequest(TKPDMapParam<String, Object> params) {
+        return mRideApi.getDetailRequestRide(params);
+    }
 }

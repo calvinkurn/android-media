@@ -18,7 +18,7 @@
         <activity
             android:name=".ontrip.view.OnTripActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
-        <activity android:name=".completetrip.CompleteTripActivity"></activity>
+        <activity android:name=".completetrip.CompleteTripActivity" />
     </application>
 
 </manifest>

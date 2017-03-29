@@ -94,4 +94,9 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     public Observable<String> cancelRequest(TKPDMapParam<String, Object> params) {
         return mBookingRideDataStoreFactory.createCloudDataStore().cancelRequest(params);
     }
+
+    @Override
+    public Observable<String> getCurrentRequest(TKPDMapParam<String, Object> parameters) {
+        return mBookingRideDataStoreFactory.createCloudDataStore().getCurrentRequest(parameters);
+    }
 }

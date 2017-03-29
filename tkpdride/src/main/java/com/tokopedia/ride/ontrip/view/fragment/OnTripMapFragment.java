@@ -3,16 +3,17 @@ package com.tokopedia.ride.ontrip.view.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.DialogFragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -39,7 +40,6 @@ import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
 import com.tokopedia.ride.ontrip.view.OnTripMapContract;
-import com.tokopedia.ride.ontrip.view.OnTripMapPresenter;
 
 import java.util.Date;
 
@@ -52,6 +52,7 @@ import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
  * A simple {@link Fragment} subclass.
  */
 public class OnTripMapFragment extends BaseFragment implements OnTripMapContract.View, OnMapReadyCallback {
+    private static final int REQUEST_CODE_TOS_CONFIRM_DIALOG = 1005;
     OnTripMapContract.Presenter presenter;
     ConfirmBookingViewModel confirmBookingViewModel;
     GoogleMap mGoogleMap;
@@ -240,5 +241,38 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void navigateToBack() {
         onFragmentInteractionListener.actionCancelBooking();
+    }
+
+    @Override
+    public void openTosConfirmationWebView(String tosUrl) {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("tos_dialog");
+        if (previousDialog != null) {
+            fragmentTransaction.remove(previousDialog);
+        }
+        fragmentTransaction.addToBackStack(null);
+        DialogFragment dialogFragment = TosConfirmationDialogFragment.newInstance(tosUrl);
+        dialogFragment.setTargetFragment(this, REQUEST_CODE_TOS_CONFIRM_DIALOG);
+        dialogFragment.show(getFragmentManager().beginTransaction(), "tos_dialog");
+    }
+
+    @Override
+    public void failedToRequestRide() {
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_CODE_TOS_CONFIRM_DIALOG:
+                if (resultCode == Activity.RESULT_OK) {
+                    String id = data.getStringExtra(TosConfirmationDialogFragment.EXTRA_ID);
+                    presenter.actionRetryRideRequest(id);
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                    Toast.makeText(getActivity(), "User doenst accept tos", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
     }
 }

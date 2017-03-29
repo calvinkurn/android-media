@@ -1,11 +1,14 @@
 package com.tokopedia.ride.common.network;
 
 import android.content.Intent;
+import android.util.Log;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.ride.common.exception.TosConfirmationHttpException;
 import com.tokopedia.ride.common.exception.UnprocessableEntityHttpException;
 
 import org.json.JSONException;
@@ -22,7 +25,8 @@ import okhttp3.ResponseBody;
  * Created by alvarisi on 3/14/17.
  */
 
-public class RideInterceptor extends TkpdAuthInterceptor {
+public class RideInterceptor extends TkpdBaseInterceptor {
+    private static final String TAG = RideInterceptor.class.getSimpleName();
     private static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
     private String authorizationString;
     private String userId;
@@ -101,5 +105,19 @@ public class RideInterceptor extends TkpdAuthInterceptor {
                 .header("Content-Type", "application/x-www-form-urlencoded")
                 .header(HEADER_X_APP_VERSION, "android-" + String.valueOf(GlobalConfig.VERSION_NAME))
                 .method(request.method(), request.body());
+    }
+
+    protected Response getResponse(Chain chain, Request request) throws IOException {
+        Response response = chain.proceed(request);
+        if (!response.isSuccessful()) {
+            switch (response.code()) {
+                case 409:
+                    String errorMessage = response.body().string();
+                    throw new TosConfirmationHttpException(errorMessage);
+                default:
+                    throw new RuntimeException("Terjadi kesalahan Server");
+            }
+        }
+        return response;
     }
 }

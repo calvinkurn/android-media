@@ -10,33 +10,21 @@ import android.support.v4.app.ActivityCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Result;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceFilter;
-import com.google.android.gms.location.places.PlaceLikelihood;
-import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
+import com.google.gson.JsonSyntaxException;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.ride.R;
-import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.exception.TosConfirmationHttpException;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
-import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
-import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
 
-import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by alvarisi on 3/24/17.
@@ -83,9 +71,17 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
             @Override
             public void onError(Throwable e) {
-                getView().hideLoadingWaitingResponse();
-                getView().showFailedRideRequestMessage(e.getMessage());
-                getView().navigateToBack();
+                if (e instanceof TosConfirmationHttpException) {
+                    if (!(e.getCause() instanceof JsonSyntaxException)) {
+                        getView().openTosConfirmationWebView(((TosConfirmationHttpException) e).getTosUrl());
+                    } else {
+                        getView().failedToRequestRide();
+                    }
+                    getView().hideLoadingWaitingResponse();
+                } else {
+                    getView().showFailedRideRequestMessage(e.getMessage());
+                    getView().navigateToBack();
+                }
             }
 
             @Override
@@ -201,5 +197,37 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             }
         });
 
+    }
+
+    @Override
+    public void actionRetryRideRequest(String id) {
+        RequestParams requestParams = getView().getParam();
+        requestParams.putString("tos_confirmation_id", id);
+        createRideRequestUseCase.execute(requestParams, new Subscriber<RideRequest>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (e instanceof TosConfirmationHttpException) {
+                    if (!(e.getCause() instanceof JsonSyntaxException)) {
+                        getView().openTosConfirmationWebView(((TosConfirmationHttpException) e).getTosUrl());
+                    } else {
+                        getView().failedToRequestRide();
+                    }
+                    getView().hideLoadingWaitingResponse();
+                } else {
+                    getView().showFailedRideRequestMessage(e.getMessage());
+                    getView().navigateToBack();
+                }
+            }
+
+            @Override
+            public void onNext(RideRequest rideRequest) {
+                getView().showCancelRequestButton();
+            }
+        });
     }
 }

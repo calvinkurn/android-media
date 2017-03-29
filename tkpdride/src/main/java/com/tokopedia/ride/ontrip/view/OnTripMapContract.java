@@ -5,7 +5,6 @@ import android.app.Activity;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 
 /**
  * Created by alvarisi on 3/24/17.
@@ -37,6 +36,10 @@ public interface OnTripMapContract {
         void showCancelRequestButton();
 
         void navigateToBack();
+
+        void openTosConfirmationWebView(String tosUrl);
+
+        void failedToRequestRide();
     }
 
     interface Presenter extends CustomerPresenter<View>{
@@ -46,5 +49,7 @@ public interface OnTripMapContract {
         void goToMyLocation();
 
         void actionCancelRide();
+
+        void actionRetryRideRequest(String id);
     }
 }
