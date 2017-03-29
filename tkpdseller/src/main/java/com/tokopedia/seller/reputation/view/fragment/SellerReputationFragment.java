@@ -173,8 +173,8 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
             presenter.setReviewReputationMergeUseCase(reviewReputationMergeUseCase);
             gmNetworkErrorHelper = new TopAdsNetworkErrorHelper(null, rootView);
             reputationViewHelper = new ReputationViewHelper(topSlideOffBar);
-            setupRecyclerView();
         }
+        setupRecyclerView();
         fetchData();
     }
 

@@ -49,6 +49,9 @@ public interface SellerReputationView extends CustomerView {
 
     void setStartDate(String date);
 
+    /**
+     * @param loadmoreflag true means there is no load more, false mean have load more.
+     */
     void setLoadMoreFlag(boolean loadmoreflag);
 
     void loadData(List<TypeBasedModel> datas);
