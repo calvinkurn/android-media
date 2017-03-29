@@ -1,10 +1,13 @@
 package com.tokopedia.ride.common.ride.domain.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by alvarisi on 3/24/17.
  */
 
-public class RideRequest {
+public class RideRequest implements Parcelable{
     String requestId;
     String productId;
     String status;
@@ -16,6 +19,29 @@ public class RideRequest {
 
     public RideRequest() {
     }
+
+    protected RideRequest(Parcel in) {
+        requestId = in.readString();
+        productId = in.readString();
+        status = in.readString();
+        vehicle = in.readParcelable(Vehicle.class.getClassLoader());
+        driver = in.readParcelable(Driver.class.getClassLoader());
+        location = in.readParcelable(Location.class.getClassLoader());
+        eta = in.readInt();
+        surgeMultiplier = in.readDouble();
+    }
+
+    public static final Creator<RideRequest> CREATOR = new Creator<RideRequest>() {
+        @Override
+        public RideRequest createFromParcel(Parcel in) {
+            return new RideRequest(in);
+        }
+
+        @Override
+        public RideRequest[] newArray(int size) {
+            return new RideRequest[size];
+        }
+    };
 
     public String getRequestId() {
         return requestId;
@@ -79,5 +105,22 @@ public class RideRequest {
 
     public void setSurgeMultiplier(double surgeMultiplier) {
         this.surgeMultiplier = surgeMultiplier;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(requestId);
+        parcel.writeString(productId);
+        parcel.writeString(status);
+        parcel.writeParcelable(vehicle, i);
+        parcel.writeParcelable(driver, i);
+        parcel.writeParcelable(location, i);
+        parcel.writeInt(eta);
+        parcel.writeDouble(surgeMultiplier);
     }
 }

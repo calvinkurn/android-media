@@ -5,21 +5,27 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.gcm.GcmNetworkManager;
+import com.google.android.gms.gcm.PeriodicTask;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,6 +33,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.pkmmte.view.CircularImageView;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
@@ -35,9 +42,12 @@ import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
+import com.tokopedia.ride.common.ride.domain.model.RideRequest;
+import com.tokopedia.ride.completetrip.CompleteTripActivity;
 import com.tokopedia.ride.ontrip.di.OnTripDependencyInjection;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
+import com.tokopedia.ride.ontrip.service.GetCurrentRideRequestService;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
 import com.tokopedia.ride.ontrip.view.OnTripMapContract;
 
@@ -47,16 +57,20 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
+import static com.tokopedia.ride.ontrip.view.OnTripActivity.TASK_TAG_PERIODIC;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class OnTripMapFragment extends BaseFragment implements OnTripMapContract.View, OnMapReadyCallback {
     private static final int REQUEST_CODE_TOS_CONFIRM_DIALOG = 1005;
+    public static final String EXTRA_RIDE_REQUEST_RESULT = "EXTRA_RIDE_REQUEST_RESULT";
     OnTripMapContract.Presenter presenter;
     ConfirmBookingViewModel confirmBookingViewModel;
     GoogleMap mGoogleMap;
     RideConfiguration rideConfiguration;
+    private GcmNetworkManager mGcmNetworkManager;
+    private BroadcastReceiver mReceiver;
 
     @BindView(R2.id.mapview)
     MapView mapView;
@@ -76,6 +90,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     TextView processingDescription;
     @BindView(R2.id.cabs_processing_cancel_button)
     LinearLayout cancelButton;
+    @BindView(R2.id.bottom_container)
+    LinearLayout bottomContainer;
 
     OnFragmentInteractionListener onFragmentInteractionListener;
 
@@ -89,6 +105,10 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
         setMapViewListener();
+    }
+
+    public static OnTripMapFragment newInstance() {
+        return new OnTripMapFragment();
     }
 
     public interface OnFragmentInteractionListener {
@@ -112,16 +132,53 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
+        mGcmNetworkManager = GcmNetworkManager.getInstance(getActivity());
+
+        mReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(GetCurrentRideRequestService.ACTION_DONE)) {
+                    RideRequest result = intent.getParcelableExtra(GetCurrentRideRequestService.EXTRA_RESULT);
+                    Toast.makeText(context, "get detail response", Toast.LENGTH_SHORT).show();
+                    presenter.proccessGetCurrentRideRequest(result);
+                }
+            }
+        };
+
         presenter = OnTripDependencyInjection.createOnTripMapPresenter(getActivity());
         presenter.attachView(this);
-        confirmBookingViewModel = getArguments().getParcelable(OnTripActivity.EXTRA_CONFIRM_BOOKING);
+        if (getArguments() != null) {
+            confirmBookingViewModel = getArguments().getParcelable(OnTripActivity.EXTRA_CONFIRM_BOOKING);
+        }
         presenter.initialize();
         setViewListener();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(GetCurrentRideRequestService.ACTION_DONE);
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
+        manager.registerReceiver(mReceiver, filter);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
+        manager.unregisterReceiver(mReceiver);
+        mGcmNetworkManager.cancelAllTasks(GetCurrentRideRequestService.class);
+    }
+
     private void setViewListener() {
-        tvSource.setText(confirmBookingViewModel.getSource().getTitle());
-        tvDestination.setText(confirmBookingViewModel.getDestination().getTitle());
+        if (confirmBookingViewModel != null) {
+            tvSource.setText(confirmBookingViewModel.getSource().getTitle());
+            tvDestination.setText(confirmBookingViewModel.getDestination().getTitle());
+        } else {
+            tvSource.setText(rideConfiguration.getActiveSource().getTitle());
+            tvDestination.setText(rideConfiguration.getActiveDestination().getTitle());
+        }
     }
 
     @Override
@@ -274,5 +331,58 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 }
                 break;
         }
+    }
+
+
+    @Override
+    public void startPeriodicService(String requestId) {
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_RIDE_REQUEST_RESULT, requestId);
+        PeriodicTask task = new PeriodicTask.Builder()
+                .setService(GetCurrentRideRequestService.class)
+                .setTag(TASK_TAG_PERIODIC)
+                .setExtras(bundle)
+                .setPeriod(5L)
+                .build();
+        mGcmNetworkManager.schedule(task);
+    }
+
+    @Override
+    public String getRequestId() {
+        return rideConfiguration.getActiveRequest();
+    }
+
+    @Override
+    public void onSuccessCreateRideRequest(RideRequest rideRequest) {
+        rideConfiguration.setActiveSource(confirmBookingViewModel.getSource());
+        rideConfiguration.setActiveDestination(confirmBookingViewModel.getDestination());
+    }
+
+    @Override
+    public void renderAcceptedRequest(RideRequest result) {
+        bottomContainer.setVisibility(View.VISIBLE);
+        addFragment(R.id.bottom_container, DriverDetailFragment.newInstance(result));
+    }
+
+    private void addFragment(int containerViewId, android.app.Fragment fragment) {
+        FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
+        fragmentTransaction.add(containerViewId, fragment);
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    public void renderInProgressRequest(RideRequest result) {
+
+    }
+
+    @Override
+    public void renderDriverCanceledRequest(RideRequest result) {
+
+    }
+
+    @Override
+    public void renderCompletedRequest(RideRequest result) {
+        Intent intent = CompleteTripActivity.getCallingIntent(getActivity());
+        startActivity(intent);
     }
 }

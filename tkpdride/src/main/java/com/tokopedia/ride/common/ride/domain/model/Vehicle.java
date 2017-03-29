@@ -1,10 +1,13 @@
 package com.tokopedia.ride.common.ride.domain.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by alvarisi on 3/24/17.
  */
 
-public class Vehicle {
+public class Vehicle implements Parcelable {
     private String make;
     String vehicleModel;
     private String licensePlate;
@@ -12,6 +15,25 @@ public class Vehicle {
 
     public Vehicle() {
     }
+
+    protected Vehicle(Parcel in) {
+        make = in.readString();
+        vehicleModel = in.readString();
+        licensePlate = in.readString();
+        pictureUrl = in.readString();
+    }
+
+    public static final Creator<Vehicle> CREATOR = new Creator<Vehicle>() {
+        @Override
+        public Vehicle createFromParcel(Parcel in) {
+            return new Vehicle(in);
+        }
+
+        @Override
+        public Vehicle[] newArray(int size) {
+            return new Vehicle[size];
+        }
+    };
 
     public String getMake() {
         return make;
@@ -43,5 +65,18 @@ public class Vehicle {
 
     public void setPictureUrl(String pictureUrl) {
         this.pictureUrl = pictureUrl;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(make);
+        parcel.writeString(vehicleModel);
+        parcel.writeString(licensePlate);
+        parcel.writeString(pictureUrl);
     }
 }

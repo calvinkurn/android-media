@@ -21,6 +21,7 @@ import com.tokopedia.ride.common.ride.data.source.api.RideUrl;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
+import com.tokopedia.ride.ontrip.domain.GetCurrentDetailRideRequestUseCase;
 import com.tokopedia.ride.ontrip.view.OnTripMapPresenter;
 
 import java.util.concurrent.TimeUnit;
@@ -182,6 +183,30 @@ public class OnTripDependencyInjection {
         );
     }
 
+    private GetCurrentDetailRideRequestUseCase provideGetCurrentDetailRideRequestUseCase(String token, String userId) {
+        return new GetCurrentDetailRideRequestUseCase(
+                provideThreadExecutor(),
+                providePostExecutionThread(),
+                provideBookingRideRepository(
+                        provideBookingRideDataStoreFactory(
+                                provideRideApi(
+                                        provideRideRetrofit(
+                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
+                                                        provideLoggingInterceptory()),
+                                                provideGeneratedHostConverter(),
+                                                provideTkpdResponseConverter(),
+                                                provideResponseConverter(),
+                                                provideGsonConverterFactory(provideGson()),
+                                                provideRxJavaCallAdapterFactory()
+                                        )
+                                )
+                        ),
+                        new ProductEntityMapper(),
+                        new TimeEstimateEntityMapper()
+                )
+        );
+    }
+
     public static OnTripMapPresenter createOnTripMapPresenter(Context context) {
         SessionHandler sessionHandler = new SessionHandler(context);
         String token = String.format("Bearer %s", sessionHandler.getAccessToken(context));
@@ -191,5 +216,13 @@ public class OnTripDependencyInjection {
         CreateRideRequestUseCase createRideRequestUseCase = injection.provideGetProductAndEstimatedUseCase(token, userId);
         CancelRideRequestUseCase cancelRideRequestUseCase = injection.provideCancelRideRequestUseCase(token, userId);
         return new OnTripMapPresenter(createRideRequestUseCase, cancelRideRequestUseCase);
+    }
+
+    public static GetCurrentDetailRideRequestUseCase createGetDetailUseCase(Context context){
+        SessionHandler sessionHandler = new SessionHandler(context);
+        String token = String.format("Bearer %s", sessionHandler.getAccessToken(context));
+        OnTripDependencyInjection injection = new OnTripDependencyInjection();
+        String userId = sessionHandler.getLoginID();
+        return injection.provideGetCurrentDetailRideRequestUseCase(token, userId);
     }
 }

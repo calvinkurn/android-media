@@ -82,11 +82,6 @@ public class BookingRideRepositoryData implements BookingRideRepository {
                     public RideRequest call(RideRequestEntity rideRequestEntity) {
                         return rideRequestEntityMapper.transform(rideRequestEntity);
                     }
-                }).doOnNext(new Action1<RideRequest>() {
-                    @Override
-                    public void call(RideRequest rideRequest) {
-
-                    }
                 });
     }
 
@@ -96,7 +91,15 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     }
 
     @Override
-    public Observable<String> getCurrentRequest(TKPDMapParam<String, Object> parameters) {
-        return mBookingRideDataStoreFactory.createCloudDataStore().getCurrentRequest(parameters);
+    public Observable<RideRequest> getCurrentRequest(TKPDMapParam<String, Object> parameters) {
+        return mBookingRideDataStoreFactory
+                .createCloudDataStore()
+                .getCurrentRequest(parameters)
+                .map(new Func1<RideRequestEntity, RideRequest>() {
+                    @Override
+                    public RideRequest call(RideRequestEntity entity) {
+                        return rideRequestEntityMapper.transform(entity);
+                    }
+                });
     }
 }

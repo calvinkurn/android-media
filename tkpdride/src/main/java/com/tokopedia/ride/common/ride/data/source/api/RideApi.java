@@ -39,5 +39,5 @@ public interface RideApi {
 
     @POST(RideUrl.REQUEST_DETAIL)
     @FormUrlEncoded
-    Observable<String> getDetailRequestRide(@FieldMap Map<String, Object> param);
+    Observable<RideRequestEntity> getDetailRequestRide(@FieldMap Map<String, Object> param);
 }

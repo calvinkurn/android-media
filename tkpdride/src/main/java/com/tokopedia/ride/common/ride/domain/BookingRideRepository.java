@@ -25,5 +25,5 @@ public interface BookingRideRepository {
 
     Observable<String> cancelRequest(TKPDMapParam<String, Object> productParams);
 
-    Observable<String> getCurrentRequest(TKPDMapParam<String, Object> parameters);
+    Observable<RideRequest> getCurrentRequest(TKPDMapParam<String, Object> parameters);
 }
