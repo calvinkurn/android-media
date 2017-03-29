@@ -226,6 +226,12 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
     }
 
     @Override
+    public void onDestroyView() {
+        checkStatusUseCase.unsubscribe();
+        uploadChangePhoneNumberRequestUseCase.unsubscribe();
+    }
+
+    @Override
     public void checkStatus() {
         viewListener.showLoading();
         checkStatusUseCase.execute(getCheckStatusParam(), new Subscriber<CheckStatusModel>() {

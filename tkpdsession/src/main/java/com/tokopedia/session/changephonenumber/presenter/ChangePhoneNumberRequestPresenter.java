@@ -19,4 +19,6 @@ public interface ChangePhoneNumberRequestPresenter {
 
     boolean isValidParam();
 
+    void onDestroyView();
+
 }

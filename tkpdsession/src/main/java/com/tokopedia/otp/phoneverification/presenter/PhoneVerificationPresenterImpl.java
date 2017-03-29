@@ -272,6 +272,7 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
     public void onDestroyView() {
         requestOtpUseCase.unsubscribe();
         validateOtpUseCase.unsubscribe();
+        verifyPhoneNumberUseCase.unsubscribe();
     }
 
     private RequestParams getRequestOTPParam() {

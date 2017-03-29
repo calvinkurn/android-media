@@ -360,6 +360,12 @@ public class ChangePhoneNumberRequestFragment
 
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.onDestroyView();
+    }
+
     @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showRationaleForStorageAndCamera(final PermissionRequest request) {
         List<String> listPermission = new ArrayList<>();
