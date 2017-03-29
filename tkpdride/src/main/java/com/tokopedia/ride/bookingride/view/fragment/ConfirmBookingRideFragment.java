@@ -25,6 +25,7 @@ import com.tokopedia.ride.bookingride.view.ConfirmBookingContract;
 import com.tokopedia.ride.bookingride.view.ConfirmBookingPresenter;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.SeatViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
+import com.tokopedia.ride.common.configuration.RideConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -157,7 +158,13 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     @OnClick(R2.id.cab_confirmation)
     public void actionConfirmButtonClicked() {
+        clearConfiguration();
         mListener.actionRequestRide(confirmBookingViewModel);
+    }
+
+    private void clearConfiguration() {
+        RideConfiguration rideConfiguration = new RideConfiguration();
+        rideConfiguration.clearActiveRequest();
     }
 
     @Override

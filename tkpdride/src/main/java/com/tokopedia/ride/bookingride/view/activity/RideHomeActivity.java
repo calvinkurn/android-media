@@ -34,6 +34,7 @@ import com.tokopedia.ride.bookingride.view.fragment.RideHomeFragment;
 import com.tokopedia.ride.bookingride.view.fragment.UberProductFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
 
 import java.util.List;
@@ -65,6 +66,8 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
 
     private int mSlidingPanelMinHeightInPx, mToolBarHeightinPx;
 
+    private RideConfiguration configuration;
+
     public static Intent getCallingIntent(Activity activity) {
         return new Intent(activity, RideHomeActivity.class);
     }
@@ -80,6 +83,12 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
         //mSlidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.cabs_sliding_layout);
         mSlidingPanelMinHeightInPx = (int) getResources().getDimension(R.dimen.sliding_panel_min_height);
         mToolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);
+
+        configuration = new RideConfiguration();
+        if (configuration.isWaitingDriverState()) {
+            Intent intent = OnTripActivity.getCallingIntent(this);
+            startActivity(intent);
+        }
     }
 
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})

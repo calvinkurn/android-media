@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.data.RideRequestEntityMapper;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
@@ -18,6 +19,8 @@ import java.lang.reflect.Type;
 
 public class RideConfiguration {
     private static final String RIDE_CONFIGURATION = "RIDE_CONFIGURATION";
+    private static final String RIDE_SOURCE = "RIDE_SOURCE";
+    private static final String RIDE_DESTINATION = "RIDE_DESTINATION";
     private static final String KEY_REQUEST_ID = "request_id";
     private static final String KEY_USER_STATE = "user_state";
 
@@ -59,5 +62,45 @@ public class RideConfiguration {
         RideRequestEntityMapper mapper = new RideRequestEntityMapper();
         RideRequest request = mapper.transform(entity);
         return request.getRequestId();
+    }
+
+    public void setActiveSource(PlacePassViewModel activeSource) {
+        Type type = new TypeToken<PlacePassViewModel>() {
+        }.getType();
+        // set value
+        cacheManager.setKey(RIDE_SOURCE);
+        cacheManager.setValue(CacheUtil.convertModelToString(activeSource, type));
+        cacheManager.setCacheDuration(5000);
+        cacheManager.store();
+    }
+
+    public void setActiveDestination(PlacePassViewModel activeDestination) {
+        Type type = new TypeToken<PlacePassViewModel>() {
+        }.getType();
+        // set value
+        cacheManager.setKey(RIDE_DESTINATION);
+        cacheManager.setValue(CacheUtil.convertModelToString(activeDestination, type));
+        cacheManager.setCacheDuration(5000);
+        cacheManager.store();
+    }
+
+    public PlacePassViewModel getActiveSource() {
+        PlacePassViewModel place = null;
+        try {
+            place = cacheManager.getConvertObjData(RIDE_SOURCE, PlacePassViewModel.class);
+        } catch (RuntimeException e) {
+            return null;
+        }
+        return place;
+    }
+
+    public PlacePassViewModel getActiveDestination() {
+        PlacePassViewModel place = null;
+        try {
+            place = cacheManager.getConvertObjData(RIDE_DESTINATION, PlacePassViewModel.class);
+        } catch (RuntimeException e) {
+            return null;
+        }
+        return place;
     }
 }
