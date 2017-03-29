@@ -237,7 +237,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         if (filterAtrribute.getSort() != null) {
             filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());
         }
-        ((BrowseProductActivity) getActivity()).setFilterAttribute(filterAtrribute, activeTab);
+        ((BrowseView) getActivity()).setFilterAttribute(filterAtrribute, activeTab);
     }
 
     @Override

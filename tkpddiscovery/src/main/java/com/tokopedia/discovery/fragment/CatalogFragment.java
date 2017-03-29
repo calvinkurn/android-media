@@ -327,7 +327,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
         if (filterAtrribute.getSort() != null) {
             filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());
         }
-        ((BrowseProductActivity) getActivity()).setFilterAttribute(filterAtrribute, activeTab);
+        ((BrowseView) getActivity()).setFilterAttribute(filterAtrribute, activeTab);
     }
 
     private int calcColumnSize(int orientation) {
