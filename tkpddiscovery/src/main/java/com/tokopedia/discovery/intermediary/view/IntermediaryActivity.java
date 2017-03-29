@@ -8,17 +8,22 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.network.entity.categoriesHades.Child;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
+import com.tokopedia.discovery.adapter.RevampCategoryAdapter;
+import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
+import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryCategoryAdapter;
 
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.AD_SRC;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRA_SOURCE;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.FRAGMENT_ID;
 
-public class IntermediaryActivity extends BasePresenterActivity{
+public class IntermediaryActivity extends BasePresenterActivity implements IntermediaryCategoryAdapter.CategoryListener{
 
     private FragmentManager fragmentManager;
     private String departmentId = "";
@@ -75,7 +80,7 @@ public class IntermediaryActivity extends BasePresenterActivity{
         Fragment fragment =
                 (fragmentManager.findFragmentByTag(IntermediaryFragment.TAG));
         if (fragment == null) {
-            fragment = IntermediaryFragment.createInstance();
+            fragment = IntermediaryFragment.createInstance(this);
         }
         inflateFragment(
                 fragment,
@@ -98,5 +103,11 @@ public class IntermediaryActivity extends BasePresenterActivity{
 
     public void setDepartmentId(String departmentId) {
         this.departmentId = departmentId;
+    }
+
+    @Override
+    public void onCategoryRevampClick(ChildCategoryModel child) {
+        Log.d("alifa", "onCategoryRevampClick: ");
+        //((BrowseProductActivity) getActivity()).renderLowerCategoryLevel(child);
     }
 }
