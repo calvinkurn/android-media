@@ -35,5 +35,10 @@
     <string name="title_activity_history_awb">Riwayat No. Resi</string>
     <string name="title_activity_history_address">Riwayat Alamat Pengembalian</string>
     <string name="title_activity_history_action">Riwayat Komplain</string>
+    <string name="label_buyer_complaint">Komplain Pembeli:</string>
+    <string name="label_reason_complaint">Alasan Komplain:</string>
+    <string name="label_complaint_attachment">Lampiran Bukti:</string>
+    <string name="title_activity_list_product_rescenter">Produk Yang Dikomplain</string>
+    <string name="title_activity_product_detail_rescenter">Komplain Produk</string>
 
 </resources>

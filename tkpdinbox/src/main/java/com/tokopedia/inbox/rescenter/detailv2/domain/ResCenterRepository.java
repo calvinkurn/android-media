@@ -7,6 +7,8 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProdu
 import com.tokopedia.inbox.rescenter.historyaction.domain.model.HistoryActionData;
 import com.tokopedia.inbox.rescenter.historyaddress.domain.model.HistoryAddressData;
 import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
+import com.tokopedia.inbox.rescenter.product.domain.model.ListProductDomainData;
+import com.tokopedia.inbox.rescenter.product.domain.model.ProductDetailData;
 
 import rx.Observable;
 
@@ -27,6 +29,10 @@ public interface ResCenterRepository {
     Observable<HistoryAddressData> getHistoryAddress(TKPDMapParam<String, Object> parameters);
 
     Observable<HistoryActionData> getHistoryAction(TKPDMapParam<String, Object> parameters);
+
+    Observable<ListProductDomainData> getListProduct(TKPDMapParam<String, Object> parameters);
+
+    Observable<ProductDetailData> getDetailProduct(String troubleID, TKPDMapParam<String, Object> parameters);
 
     Observable<TrackingAwbReturProduct> getTrackingAwbReturProduct(TKPDMapParam<String, Object> parameters);
 

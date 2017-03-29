@@ -22,6 +22,7 @@ public class ListProductView extends BaseView<ProductData, DetailResCenterFragme
 
     private RecyclerView listProduct;
     private View actionMore;
+    private ComplaintProductAdapter adapter;
 
     public ListProductView(Context context) {
         super(context);
@@ -64,6 +65,10 @@ public class ListProductView extends BaseView<ProductData, DetailResCenterFragme
     public void renderData(@NonNull ProductData data) {
         initRecyclerView(data);
         actionMore.setOnClickListener(new ListProductViewOnClickListener());
+        actionMore.setVisibility(
+                data.getProductList() != null && data.getProductList().size() > 2 ?
+                        VISIBLE : GONE
+        );
         setVisibility(VISIBLE);
 
     }
@@ -74,8 +79,7 @@ public class ListProductView extends BaseView<ProductData, DetailResCenterFragme
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         listProduct.setLayoutManager(mLayoutManager);
 
-        ComplaintProductAdapter adapter
-                = ComplaintProductAdapter.createLimitInstance(listener, data.getProductList());
+        adapter = ComplaintProductAdapter.createLimitInstance(listener, data.getProductList());
         listProduct.setAdapter(adapter);
     }
 

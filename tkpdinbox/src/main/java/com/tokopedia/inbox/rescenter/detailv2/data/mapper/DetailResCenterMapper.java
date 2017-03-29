@@ -150,7 +150,7 @@ public class DetailResCenterMapper implements Func1<Response<TkpdResponse>, Deta
 
         ResolutionDomainModel data = new ResolutionDomainModel();
         data.setOrderID(order.getId());
-        data.setOrderAwbNumber("NOT SET OR ASK BACKEND");
+        data.setOrderAwbNumber(order.getShippingRefNum());
         data.setBuyerID(customer.getId());
         data.setBuyerName(customer.getName());
         data.setComplaintDate(resolution.getCreateTimeStr());

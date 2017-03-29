@@ -12,6 +12,8 @@ import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.source.CloudActionResCenterDataStore;
 import com.tokopedia.inbox.rescenter.detailv2.data.source.CloudInboxResCenterDataSource;
 import com.tokopedia.inbox.rescenter.detailv2.data.source.CloudResCenterDataSource;
+import com.tokopedia.inbox.rescenter.product.data.mapper.ListProductMapper;
+import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
 
 /**
  * Created by hangnadi on 3/9/17.
@@ -27,6 +29,8 @@ public class ResCenterDataSourceFactory {
     private HistoryAwbMapper historyAwbMapper;
     private HistoryAddressMapper historyAddressMapper;
     private HistoryActionMapper historyActionMapper;
+    private ListProductMapper listProductMapper;
+    private ProductDetailMapper productDetailMapper;
 
     public ResCenterDataSourceFactory(Context context,
                                       ResolutionService resCenterService,
@@ -35,7 +39,9 @@ public class ResCenterDataSourceFactory {
                                       DetailResCenterMapper detailResCenterMapper,
                                       HistoryAwbMapper historyAwbMapper,
                                       HistoryAddressMapper historyAddressMapper,
-                                      HistoryActionMapper historyActionMapper) {
+                                      HistoryActionMapper historyActionMapper,
+                                      ListProductMapper listProductMapper,
+                                      ProductDetailMapper productDetailMapper) {
         this.context = context;
         this.resCenterService = resCenterService;
         this.inboxResCenterService = inboxResCenterService;
@@ -44,6 +50,8 @@ public class ResCenterDataSourceFactory {
         this.historyAwbMapper = historyAwbMapper;
         this.historyAddressMapper = historyAddressMapper;
         this.historyActionMapper = historyActionMapper;
+        this.listProductMapper = listProductMapper;
+        this.productDetailMapper = productDetailMapper;
     }
 
     public CloudResCenterDataSource createCloudResCenterDataSource() {
@@ -51,7 +59,9 @@ public class ResCenterDataSourceFactory {
                 detailResCenterMapper,
                 historyAwbMapper,
                 historyAddressMapper,
-                historyActionMapper);
+                historyActionMapper,
+                listProductMapper,
+                productDetailMapper);
     }
 
     public CloudInboxResCenterDataSource createCloudInboxResCenterDataSource() {

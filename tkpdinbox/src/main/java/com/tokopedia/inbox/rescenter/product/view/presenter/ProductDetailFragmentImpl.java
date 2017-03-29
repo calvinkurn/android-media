@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.rescenter.historyaction.view.presenter;
+package com.tokopedia.inbox.rescenter.product.view.presenter;
 
 import android.content.Context;
 
@@ -14,26 +14,25 @@ import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
-import com.tokopedia.inbox.rescenter.historyaction.domain.interactor.GetHistoryActionUseCase;
-import com.tokopedia.inbox.rescenter.historyaction.view.subscriber.HistoryActionSubsriber;
 import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
 import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
 import com.tokopedia.inbox.rescenter.product.data.mapper.ListProductMapper;
 import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
+import com.tokopedia.inbox.rescenter.product.domain.interactor.GetProductDetailUseCase;
+import com.tokopedia.inbox.rescenter.product.view.subscriber.GetProductDetailSubscriber;
 
 /**
- * Created by hangnadi on 3/23/17.
+ * Created by hangnadi on 3/28/17.
  */
 
-@SuppressWarnings("ALL")
-public class HistoryActionFragmentImpl implements HistoryActionFragmentPresenter {
+public class ProductDetailFragmentImpl implements ProductDetailFragmentContract.Presenter {
 
-    private final HistoryActionFragmentView fragmentView;
-    private final GetHistoryActionUseCase historyActionUseCase;
+    private final ProductDetailFragmentContract.ViewListener viewListener;
+    private final GetProductDetailUseCase getProductDetailUseCase;
 
-    public HistoryActionFragmentImpl(Context context, HistoryActionFragmentView fragmentView) {
-        this.fragmentView = fragmentView;
-        String resolutionID = fragmentView.getResolutionID();
+    public ProductDetailFragmentImpl(Context context, ProductDetailFragmentContract.ViewListener viewListener) {
+        this.viewListener = viewListener;
+        String resolutionID = viewListener.getResolutionID();
         String accessToken = new SessionHandler(context).getAccessToken(context);
 
         JobExecutor jobExecutor = new JobExecutor();
@@ -67,20 +66,21 @@ public class HistoryActionFragmentImpl implements HistoryActionFragmentPresenter
         ResCenterRepository resCenterRepository
                 = new ResCenterRepositoryImpl(resolutionID, dataSourceFactory);
 
-        this.historyActionUseCase
-                = new GetHistoryActionUseCase(jobExecutor, uiThread, resCenterRepository);
-
+        this.getProductDetailUseCase
+                = new GetProductDetailUseCase(jobExecutor, uiThread, resCenterRepository);
     }
 
     @Override
-    public void onFirstTimeLaunch() {
-        fragmentView.setLoadingView(true);
-        historyActionUseCase.execute(RequestParams.EMPTY, new HistoryActionSubsriber(fragmentView));
+    public void onFirstTimeLaunched() {
+        viewListener.setLoadingView(true);
+        viewListener.setMainView(false);
+        getProductDetailUseCase.execute(getProductDetailParams(),
+                new GetProductDetailSubscriber(viewListener));
     }
 
-    @Override
-    public void refreshPage() {
-        onFirstTimeLaunch();
+    private RequestParams getProductDetailParams() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetProductDetailUseCase.PARAM_TROUBLE_ID, viewListener.getTroubleID());
+        return requestParams;
     }
-
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.rescenter.historyaction.view.presenter;
+package com.tokopedia.inbox.rescenter.product.view.presenter;
 
 import android.content.Context;
 
@@ -14,24 +14,24 @@ import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
-import com.tokopedia.inbox.rescenter.historyaction.domain.interactor.GetHistoryActionUseCase;
-import com.tokopedia.inbox.rescenter.historyaction.view.subscriber.HistoryActionSubsriber;
 import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
 import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
 import com.tokopedia.inbox.rescenter.product.data.mapper.ListProductMapper;
 import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
+import com.tokopedia.inbox.rescenter.product.domain.interactor.GetListProductUseCase;
+import com.tokopedia.inbox.rescenter.product.view.subscriber.ListProductSubsriber;
 
 /**
  * Created by hangnadi on 3/23/17.
  */
 
 @SuppressWarnings("ALL")
-public class HistoryActionFragmentImpl implements HistoryActionFragmentPresenter {
+public class ListProductFragmentImpl implements ListProductFragmentPresenter {
 
-    private final HistoryActionFragmentView fragmentView;
-    private final GetHistoryActionUseCase historyActionUseCase;
+    private final ListProductFragmentView fragmentView;
+    private final GetListProductUseCase historyActionUseCase;
 
-    public HistoryActionFragmentImpl(Context context, HistoryActionFragmentView fragmentView) {
+    public ListProductFragmentImpl(Context context, ListProductFragmentView fragmentView) {
         this.fragmentView = fragmentView;
         String resolutionID = fragmentView.getResolutionID();
         String accessToken = new SessionHandler(context).getAccessToken(context);
@@ -68,14 +68,14 @@ public class HistoryActionFragmentImpl implements HistoryActionFragmentPresenter
                 = new ResCenterRepositoryImpl(resolutionID, dataSourceFactory);
 
         this.historyActionUseCase
-                = new GetHistoryActionUseCase(jobExecutor, uiThread, resCenterRepository);
+                = new GetListProductUseCase(jobExecutor, uiThread, resCenterRepository);
 
     }
 
     @Override
     public void onFirstTimeLaunch() {
         fragmentView.setLoadingView(true);
-        historyActionUseCase.execute(RequestParams.EMPTY, new HistoryActionSubsriber(fragmentView));
+        historyActionUseCase.execute(RequestParams.EMPTY, new ListProductSubsriber(fragmentView));
     }
 
     @Override
