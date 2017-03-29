@@ -131,7 +131,10 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 mFCMCacheManager.resetCache(data);
             }
         } else {
-            prepareAndExecuteApplinkNotification(data);
+            if(data.getString("origin", "").equals("moengage"))
+                prepareAndExecuteApplinkPromoNotification(data);
+            else
+                prepareAndExecuteApplinkNotification(data);
         }
     }
 
@@ -219,6 +222,12 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         if (visitable != null) {
             visitable.proccessReceivedNotification(data);
         }
+    }
+
+    private void prepareAndExecuteApplinkPromoNotification(Bundle data) {
+        ApplinkBuildAndShowNotification applinkBuildAndShowNotification =
+                new ApplinkBuildAndShowNotification(AppNotificationReceiverUIBackground.this.mContext);
+        applinkBuildAndShowNotification.showPromoNotification(data);
     }
 
     private void prepareAndExecuteDedicatedNotification(Bundle data) {
