@@ -51,6 +51,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static com.tokopedia.core.service.constant.DownloadServiceConstant.LOGIN_ACCOUNTS_TOKEN;
+
 /**
  * Created by m.normansyah on 04/11/2015.
  * Modified by m.normansyah on 17-11-2015, change to GSON
@@ -84,6 +86,7 @@ public class LoginImpl implements Login {
 
     LocalCacheHandler cacheState;
     LocalCacheHandler cacheInfo;
+    private int successLoginVia;
 
     public LoginImpl(LoginView view) {
         loginView = view;
@@ -469,7 +472,12 @@ public class LoginImpl implements Login {
                             loginSecurityModel.getUser_id());
                 } else if (sessionHandler.isV4Login()) {// go back to home
                     loginView.triggerSaveAccount();
-                    loginView.setSmartLock(SmartLockActivity.RC_SAVE);
+                    successLoginVia = (data.getInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE,LOGIN_ACCOUNTS_TOKEN));
+                    if(successLoginVia == LOGIN_ACCOUNTS_TOKEN) {
+                        loginView.setSmartLock(SmartLockActivity.RC_SAVE);
+                    }else {
+                        loginView.destroyActivity();
+                    }
                 } else if (data.getInt(DownloadService.VALIDATION_OF_DEVICE_ID, LoginEmailModel.INVALID_DEVICE_ID) == LoginEmailModel.INVALID_DEVICE_ID) {
 
                 }
@@ -516,6 +524,6 @@ public class LoginImpl implements Login {
         bundle.putParcelable(DownloadService.LOGIN_VIEW_MODEL_KEY, Parcels.wrap(loginViewModel));
         bundle.putBoolean(DownloadService.IS_NEED_LOGIN, isNeedLogin);
 
-        ((SessionView) mContext).sendDataFromInternet(DownloadService.LOGIN_ACCOUNTS_TOKEN, bundle);
+        ((SessionView) mContext).sendDataFromInternet(LOGIN_ACCOUNTS_TOKEN, bundle);
     }
 }
