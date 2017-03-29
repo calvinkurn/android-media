@@ -8,7 +8,7 @@ public class Fare {
     String fareId;
     int expiresAt;
     String currencyCode;
-    int value;
+    float value;
     String display;
 
     public Fare() {
@@ -38,11 +38,11 @@ public class Fare {
         this.currencyCode = currencyCode;
     }
 
-    public int getValue() {
+    public float getValue() {
         return value;
     }
 
-    public void setValue(int value) {
+    public void setValue(float value) {
         this.value = value;
     }
 

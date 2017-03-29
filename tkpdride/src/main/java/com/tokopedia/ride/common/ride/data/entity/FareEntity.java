@@ -19,7 +19,7 @@ public class FareEntity {
     String currencyCode;
     @SerializedName("value")
     @Expose
-    int value;
+    float value;
     @SerializedName("display")
     @Expose
     String display;
@@ -39,7 +39,7 @@ public class FareEntity {
         return currencyCode;
     }
 
-    public int getValue() {
+    public float getValue() {
         return value;
     }
 

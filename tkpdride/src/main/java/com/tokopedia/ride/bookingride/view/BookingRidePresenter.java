@@ -17,23 +17,17 @@ import com.google.android.gms.common.api.Result;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceFilter;
-import com.google.android.gms.location.places.PlaceLikelihood;
-import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.PolyUtil;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
-import com.tokopedia.ride.common.ride.data.BookingRideDataStoreFactory;
-import com.tokopedia.ride.common.ride.data.BookingRideRepositoryData;
-import com.tokopedia.ride.common.ride.data.ProductEntityMapper;
-import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
-import com.google.maps.android.PolyUtil;
+import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
 import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
 
@@ -42,10 +36,6 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by alvarisi on 3/13/17.
@@ -99,8 +89,8 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
 
     private void createLocationRequest() {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setInterval(20000);
+        mLocationRequest.setFastestInterval(10000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
@@ -113,7 +103,7 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
                             if (getFuzedLocation() != null) {
                                 mCurrentLocation = getFuzedLocation();
                                 startLocationUpdates();
-                                getCurrentPlace();
+                                setSourceAsCurrentLocation();
                             } else {
                                 getView().showMessage(getView().getActivity().getString(R.string.location_permission_required));
                             }
@@ -138,50 +128,66 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
         mGoogleApiClient.connect();
     }
 
-    private void getCurrentPlace() {
-        getCurrentPlace(new PlaceFilter())
-                .map(new Func1<PlaceLikelihoodBuffer, Place>() {
-                    @Override
-                    public Place call(PlaceLikelihoodBuffer buffer) {
-                        if (buffer != null) {
-                            PlaceLikelihood likelihood = buffer.get(0);
-                            if (likelihood != null) {
-                                return likelihood.getPlace();
-                            }
-                            buffer.release();
-                            return null;
-                        } else {
-                            return null;
-                        }
-                    }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Place>() {
-                    @Override
-                    public void onCompleted() {
+    private void setSourceAsCurrentLocation() {
+        getView().moveToCurrentLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
 
-                    }
+        //set source as current location
+        String sourceAddress = GeoLocationUtils.reverseGeoCodeToShortAdd(getView().getActivityContext(), mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+        PlacePassViewModel placeVm = new PlacePassViewModel();
+        placeVm.setAddress(sourceAddress);
+        placeVm.setLatitude(mCurrentLocation.getLatitude());
+        placeVm.setLongitude(mCurrentLocation.getLongitude());
+        placeVm.setTitle(sourceAddress);
+        placeVm.setType(PlacePassViewModel.TYPE.OTHER);
+        getView().setSourceLocation(placeVm);
 
-                    @Override
-                    public void onError(Throwable e) {
 
-                    }
-
-                    @Override
-                    public void onNext(Place place) {
-                        if (place != null) {
-                            getView().moveToCurrentLocation(place.getLatLng().latitude, place.getLatLng().longitude);
-                            PlacePassViewModel placeVm = new PlacePassViewModel();
-                            placeVm.setAddress(String.valueOf(place.getAddress()));
-                            placeVm.setLatitude(place.getLatLng().latitude);
-                            placeVm.setLongitude(place.getLatLng().longitude);
-                            placeVm.setPlaceId(place.getId());
-                            placeVm.setTitle(String.valueOf(place.getName()));
-                            placeVm.setType(PlacePassViewModel.TYPE.OTHER);
-                            getView().setSourceLocation(placeVm);
-                        }
-                    }
-                });
+//
+//
+//        setSourceAsCurrentLocation(new PlaceFilter())
+//                .map(new Func1<PlaceLikelihoodBuffer, Place>() {
+//                    @Override
+//                    public Place call(PlaceLikelihoodBuffer buffer) {
+//                        if (buffer != null) {
+//                            PlaceLikelihood likelihood = buffer.get(0);
+//                            if (likelihood != null) {
+//                                return likelihood.getPlace();
+//                            }
+//                            buffer.release();
+//                            return null;
+//                        } else {
+//                            return null;
+//                        }
+//                    }
+//                }).subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<Place>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(Place place) {
+//                        if (place != null) {
+//                            getView().moveToCurrentLocation(place.getLatLng().latitude, place.getLatLng().longitude);
+//
+//                            PlacePassViewModel placeVm = new PlacePassViewModel();
+//                            placeVm.setAddress(String.valueOf(place.getAddress()));
+//                            placeVm.setLatitude(place.getLatLng().latitude);
+//                            placeVm.setLongitude(place.getLatLng().longitude);
+//                            placeVm.setPlaceId(place.getId());
+//                            placeVm.setTitle(String.valueOf(place.getName()));
+//                            placeVm.setType(PlacePassViewModel.TYPE.OTHER);
+//                            getView().setSourceLocation(placeVm);
+//                        }
+//                    }
+//                });
     }
 
     public Location getFuzedLocation() {
@@ -285,19 +291,20 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
 
     @Override
     public void actionMyLocation() {
-        getView().moveToCurrentLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+        if (!getView().isAlreadySelectDestination()) {
+            setSourceAsCurrentLocation();
+        }
     }
 
-
-    public Observable<PlaceLikelihoodBuffer> getCurrentPlace(@javax.annotation.Nullable final PlaceFilter placeFilter) {
-        return getGoogleApiClientObservable(Places.PLACE_DETECTION_API, Places.GEO_DATA_API)
-                .flatMap(new Func1<GoogleApiClient, Observable<PlaceLikelihoodBuffer>>() {
-                    @Override
-                    public Observable<PlaceLikelihoodBuffer> call(GoogleApiClient api) {
-                        return fromPendingResult(Places.PlaceDetectionApi.getCurrentPlace(api, placeFilter));
-                    }
-                });
-    }
+//    public Observable<PlaceLikelihoodBuffer> setSourceAsCurrentLocation(@javax.annotation.Nullable final PlaceFilter placeFilter) {
+//        return getGoogleApiClientObservable(Places.PLACE_DETECTION_API, Places.GEO_DATA_API)
+//                .flatMap(new Func1<GoogleApiClient, Observable<PlaceLikelihoodBuffer>>() {
+//                    @Override
+//                    public Observable<PlaceLikelihoodBuffer> call(GoogleApiClient api) {
+//                        return fromPendingResult(Places.PlaceDetectionApi.getCurrentPlace(api, placeFilter));
+//                    }
+//                });
+//    }
 
     public Observable<GoogleApiClient> getGoogleApiClientObservable(Api... apis) {
         //noinspection unchecked
