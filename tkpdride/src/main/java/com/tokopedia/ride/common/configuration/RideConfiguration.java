@@ -34,7 +34,12 @@ public class RideConfiguration {
     }
 
     public boolean isWaitingDriverState() {
-        RideRequestEntity entity = cacheManager.getConvertObjData(RIDE_CONFIGURATION, RideRequestEntity.class);
+        RideRequestEntity entity = null;
+        try {
+            entity = cacheManager.getConvertObjData(RIDE_CONFIGURATION, RideRequestEntity.class);
+        } catch (RuntimeException e) {
+            return false;
+        }
         return entity != null;
     }
 
