@@ -6,7 +6,6 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
-import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
@@ -31,9 +30,7 @@ public interface UberProductContract {
 
         void hideProgress();
 
-        void showErrorMessage(int messageResourceId);
-
-        void hideErrorMessage(String message);
+        void showErrorMessage(String message, String btnText);
 
         void renderFareProduct(Visitable productEstimate, String productId, int position, FareEstimate fareEstimate);
 

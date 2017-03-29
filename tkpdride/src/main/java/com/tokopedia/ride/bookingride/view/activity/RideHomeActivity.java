@@ -117,17 +117,47 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RideHomeFragment.REQUEST_CHECK_LOCATION_SETTINGS) {
+            RideHomeFragment fragment = (RideHomeFragment) getFragmentManager().findFragmentById(R.id.top_container);
+            if (fragment != null) {
+                fragment.handleLocationAlertResult(resultCode);
+            }
+        }
+    }
+
+    @Override
     public void animateBottomPanelOnMapDragging() {
         mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
 
-        mBottomContainer.animate().setInterpolator(new AccelerateDecelerateInterpolator()).translationY(mSlidingPanelMinHeightInPx).setDuration(300);
+        //running after 100 ms to allow to panel get collapsed first
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mBottomContainer.animate().setInterpolator(new AccelerateDecelerateInterpolator()).translationY(mSlidingPanelMinHeightInPx).setDuration(300);
+            }
+        }, 100);
     }
 
     @Override
     public void animateBottomPanelOnMapStopped() {
-        mBottomContainer.animate().setInterpolator(new AccelerateDecelerateInterpolator()).translationY(0).setDuration(300);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mBottomContainer.animate().setInterpolator(new AccelerateDecelerateInterpolator()).translationY(0).setDuration(300);
+            }
+        }, 100);
     }
 
+    @Override
+    public void showMessageInBottomContainer(String message, String btnText) {
+        UberProductFragment fragment = (UberProductFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
+        if (fragment != null) {
+            fragment.showErrorMessage(message, btnText);
+        }
+    }
 
     @Override
     public void onMinimumTimeEstCalculated(String timeEst) {
@@ -146,6 +176,14 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
         RideHomeFragment fragment = (RideHomeFragment) getFragmentManager().findFragmentById(R.id.top_container);
         if (fragment != null) {
             fragment.showEnterDestError();
+        }
+    }
+
+    @Override
+    public void showEnterSourceLocationActiity() {
+        RideHomeFragment fragment = (RideHomeFragment) getFragmentManager().findFragmentById(R.id.top_container);
+        if (fragment != null) {
+            fragment.actionSourceButtonClicked();
         }
     }
 

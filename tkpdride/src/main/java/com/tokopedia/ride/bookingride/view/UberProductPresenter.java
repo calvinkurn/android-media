@@ -50,7 +50,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
 
             @Override
             public void onError(Throwable e) {
-                getView().showMessage(e.getMessage());
+                getView().showErrorMessage(e.getMessage(), getView().getActivity().getString(R.string.btn_text_retry));
             }
 
             @Override
@@ -60,15 +60,15 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                 getView().hideProgress();
 
                 if (productsList.size() == 0) {
-                    getView().showErrorMessage(R.string.no_rides_found);
+                    getView().showErrorMessage(getView().getActivity().getString(R.string.no_rides_found), getView().getActivity().getString(R.string.btn_text_retry));
+                } else {
+                    getView().renderProductList(productsList);
+                    if (source != null && destination != null)
+                        actionGetFareProduct(source, destination, productEstimates);
+                    mProductEstimates = productEstimates;
+
+                    getMinimalProductEstimateAndRender(productEstimates);
                 }
-
-                getView().renderProductList(productsList);
-                if (source != null && destination != null)
-                    actionGetFareProduct(source, destination, productEstimates);
-                mProductEstimates = productEstimates;
-
-                getMinimalProductEstimateAndRender(productEstimates);
             }
         });/*
         getProductAndEstimatedUseCase.execute(requestParams, new Subscriber<List<Product>>() {

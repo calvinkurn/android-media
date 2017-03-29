@@ -2,9 +2,7 @@ package com.tokopedia.ride.bookingride.view;
 
 import android.app.Activity;
 import android.content.Context;
-import android.location.Location;
 
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
@@ -32,7 +30,7 @@ public interface BookingRideContract {
 
         Activity getActivity();
 
-        void showMessage(String message);
+        void showMessage(String message, String btntext);
 
         void setSourceLocationText(String address);
 
@@ -70,5 +68,7 @@ public interface BookingRideContract {
                                  double destinationLat, double destinationLng);
 
         void actionMyLocation();
+
+        void handleEnableLocationDialogResult(int resultCode);
     }
 }

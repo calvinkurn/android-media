@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Animatable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -57,6 +56,11 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     public static final int LOGIN_REQUEST_CODE = 1005;
     private static final int PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE = 1006;
     private static final int PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE = 1007;
+    public static final int REQUEST_CHECK_LOCATION_SETTINGS = 1008;
+
+    private static final float DEFAUL_MAP_ZOOM = 16;
+    private static final float SELECT_SOURCE_MAP_ZOOM = 18;
+    private static final LatLng DEFAULT_LATLNG = new LatLng(-6.21462d, 106.84513d);
 
     BookingRideContract.Presenter mPresenter;
 
@@ -212,7 +216,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         }
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
         mGoogleMap.setMyLocationEnabled(true);
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(-6.21462d, 106.84513d)));
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LATLNG, DEFAUL_MAP_ZOOM));
 
         mGoogleMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
             @Override
@@ -280,12 +284,23 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         isDisableSelectLocation = true;
     }
 
+    /**
+     * This function handles location alert result, initiated from Activity class
+     *
+     * @param resultCode
+     */
+    public void handleLocationAlertResult(int resultCode) {
+        mPresenter.handleEnableLocationDialogResult(resultCode);
+    }
+
     public interface OnFragmentInteractionListener {
         void onSourceAndDestinationChanged(PlacePassViewModel source, PlacePassViewModel destination);
 
         void animateBottomPanelOnMapDragging();
 
         void animateBottomPanelOnMapStopped();
+
+        void showMessageInBottomContainer(String message, String btnText);
     }
 
     private void setInitialVariable() {
@@ -298,6 +313,9 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        System.out.println("Vishal RideHomeFragment onActivityResult");
+
+
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
@@ -319,7 +337,6 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
                     break;
             }
         }
-
     }
 
     private void proccessToRenderRideProduct() {
@@ -332,13 +349,13 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     }
 
     @Override
-    public void showMessage(String message) {
-        Snackbar.make(getView(), message, Snackbar.LENGTH_LONG).show();
+    public void showMessage(String message, String btnText) {
+        mListener.showMessageInBottomContainer(message, btnText);
     }
 
     @Override
     public void moveToCurrentLocation(double latitude, double longitude) {
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 18));
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), SELECT_SOURCE_MAP_ZOOM));
     }
 
     @Override

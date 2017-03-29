@@ -76,6 +76,8 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
         void onMinimumTimeEstCalculated(String timeEst);
 
         void showEnterDestError();
+
+        void showEnterSourceLocationActiity();
     }
 
     public static UberProductFragment newInstance() {
@@ -202,7 +204,13 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
 
     @OnClick(R2.id.empty_list_retry)
     public void actionRetry() {
-
+        if (source != null) {
+            showProgress();
+            mPresenter.actionGetRideProducts(source, destination);
+        } else {
+            //open a dialog to enter source location
+            mInteractionListener.showEnterSourceLocationActiity();
+        }
     }
 
     @Override
@@ -231,16 +239,18 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     }
 
     @Override
-    public void showErrorMessage(int messageResourceID) {
+    public void showErrorMessage(String message, String btnText) {
+        hideProgress();
+
         mProgreessAndErrorView.setVisibility(View.VISIBLE);
         mEmptyProductLinearLayout.setVisibility(View.VISIBLE);
-        mErrorDescriptionTextView.setText(messageResourceID);
-    }
-
-    @Override
-    public void hideErrorMessage(String message) {
-        mProgreessAndErrorView.setVisibility(View.GONE);
-        mEmptyProductLinearLayout.setVisibility(View.GONE);
+        mErrorDescriptionTextView.setText(message);
+        if (btnText != null && !btnText.isEmpty()) {
+            mRetryButtonTextView.setVisibility(View.VISIBLE);
+            mRetryButtonTextView.setText(btnText);
+        } else {
+            mRetryButtonTextView.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
