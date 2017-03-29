@@ -15,7 +15,6 @@ import rx.Observable;
 
 public class GetUploadHostUseCase extends UseCase<UploadHostModel> {
 
-    public static final String PARAM_USER_ID = "user_id";
     public static final String PARAM_NEW_ADD = "new_add";
     public static final String DEFAULT_NEW_ADD = "1";
 

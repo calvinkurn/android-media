@@ -15,7 +15,6 @@ import rx.Observable;
 
 public class ValidateImageUseCase extends UseCase<ValidateImageModel> {
 
-    public static final String PARAM_USER_ID = "user_id";
     public static final String PARAM_ID_WIDTH = "ktp_width";
     public static final String PARAM_ID_HEIGHT = "ktp_height";
     public static final String PARAM_BANKBOOK_WIDTH = "bankbook_width";

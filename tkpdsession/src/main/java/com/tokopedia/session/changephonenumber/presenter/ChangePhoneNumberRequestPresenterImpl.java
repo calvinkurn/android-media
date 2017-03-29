@@ -317,8 +317,6 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
 
     private RequestParams getCheckStatusParam() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(CheckStatusUseCase.PARAM_USER_ID,
-                SessionHandler.getTempLoginSession(viewListener.getActivity()));
         return requestParams;
     }
 }

@@ -205,9 +205,6 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
     private RequestParams getSubmitImageParam(RequestParams requestParams,
                                               ChangePhoneNumberModel changePhoneNumberModel) {
         RequestParams params = RequestParams.create();
-        params.putString(SubmitImageUseCase.PARAM_USER_ID,
-                requestParams.getString(PARAM_USER_ID,
-                        SessionHandler.getLoginID(MainApplication.getAppContext())));
         params.putString(SubmitImageUseCase.PARAM_FILE_UPLOADED,
                 generateFileUploaded(requestParams, changePhoneNumberModel));
         params.putString(SubmitImageUseCase.PARAM_OS_TYPE, SubmitImageUseCase.DEFAULT_OS_TYPE);
@@ -235,9 +232,6 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
 
     private RequestParams getValidateImageParam(RequestParams requestParams) {
         RequestParams params = RequestParams.create();
-        params.putString(ValidateImageUseCase.PARAM_USER_ID,
-                requestParams.getString(PARAM_USER_ID,
-                        ""));
         params.putString(ValidateImageUseCase.PARAM_ID_HEIGHT,
                 requestParams.getString(PARAM_ID_HEIGHT,
                         ""));
@@ -304,8 +298,6 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<ChangePhoneNu
 
     private RequestParams getUploadHostParam(RequestParams requestParams) {
         RequestParams params = RequestParams.create();
-        params.putString(GetUploadHostUseCase.PARAM_USER_ID, requestParams.getString(PARAM_USER_ID,
-                SessionHandler.getLoginID(MainApplication.getAppContext())));
         params.putString(GetUploadHostUseCase.PARAM_NEW_ADD, requestParams.getString(PARAM_NEW_ADD,
                 GetUploadHostUseCase.DEFAULT_NEW_ADD));
         return params;

@@ -15,7 +15,6 @@ import rx.Observable;
 
 public class CheckStatusUseCase extends UseCase<CheckStatusModel> {
 
-    public static final String PARAM_USER_ID = "user_id";
     private final KtpRepository ktpRepository;
 
     public CheckStatusUseCase(ThreadExecutor threadExecutor,

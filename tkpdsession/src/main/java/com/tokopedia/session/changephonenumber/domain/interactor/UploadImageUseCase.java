@@ -29,7 +29,6 @@ import rx.Observable;
 public class UploadImageUseCase extends UseCase<UploadImageModel> {
 
     public static final String PARAM_URL = "url";
-    public static final String PARAM_IMAGE_PATH = "image_path";
     public static final String PARAM_SERVER_ID = "server_id";
 
     public static final String PARAM_USER_ID = "user_id";
