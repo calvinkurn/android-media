@@ -43,6 +43,7 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
         @Override
         public void onNext(IntermediaryCategoryDomainModel domainModel) {
             if (isViewAttached()) {
+                getView().renderHeader(domainModel.getHeaderModel());
             }
         }
 

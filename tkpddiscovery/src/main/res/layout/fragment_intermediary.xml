@@ -4,15 +4,41 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/main_frame"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/tkpd_bg_color">
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_revamp_category">
+
+            <ImageView
+                android:id="@+id/image_header"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"/>
+
+            <TextView
+                android:id="@+id/title_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_item_revamp_category"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/margin_sm"
+                android:shadowColor="@color/checkbox_text"
+                android:shadowDx="3"
+                android:shadowDy="3"
+                android:shadowRadius="0.3"
+                />
+
+        </RelativeLayout>
 
 
 
-    </FrameLayout>
+    </LinearLayout>
 
 
 </android.support.v4.widget.NestedScrollView>
