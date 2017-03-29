@@ -308,8 +308,8 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     @Override
     public void showTrueCaller(boolean b) {
-//        verifyTrueCaller.setVisibility(b ? View.VISIBLE : View.GONE);
-        verifyTrueCaller.setVisibility(View.GONE);
+        verifyTrueCaller.setVisibility(b ? View.VISIBLE : View.GONE);
+//        verifyTrueCaller.setVisibility(View.GONE);
     }
 
     @Override
@@ -374,8 +374,9 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     public void showViewOtp() {
         vOtp.setVisibility(View.VISIBLE);
         vSecurity.setVisibility(View.GONE);
-        if (TrackingUtils.getGtmString(CAN_REQUEST_OTP_IMMEDIATELY).equals("true"))
-            presenter.doRequestOtp();
+//        if (TrackingUtils.getGtmString(CAN_REQUEST_OTP_IMMEDIATELY).equals("true")
+//                && !verifyTrueCaller.isShown())
+//            presenter.doRequestOtp();
         titleOTP.setText("Halo, " + SessionHandler.getTempLoginName(getActivity()));
 
 

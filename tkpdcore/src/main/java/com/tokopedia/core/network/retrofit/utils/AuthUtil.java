@@ -101,14 +101,39 @@ public class AuthUtil {
         String date = generateDate(dateFormat);
         String contentMD5 = generateContentMd5(strParam);
         String authString = method + "\n" + contentMD5 + "\n" + contentType + "\n" + date + "\n" + path;
-        String signature = calculateRFC2104HMAC(authString, authKey);
+        String signature = calculateRFC2104HMAC(authString, KEY.KEY_WSV4);
 
         Map<String, String> finalHeader = generateHeadersAccount(authKey);
         finalHeader.put(X_TKPD_HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
+        finalHeader.put(HEADER_REQUEST_METHOD, method);
+        finalHeader.put(HEADER_CONTENT_MD5, contentMD5);
+        finalHeader.put(HEADER_DATE, date);
+
         return finalHeader;
     }
 
-        public static Map<String, String> generateHeadersAccount(String authKey) {
+    /**
+     * This function generate the HMAC (Authorization value) using the path, message, method, date and authKey
+     *
+     * @param path     api path
+     * @param strParam message
+     * @param method   request method type e.g. POST
+     * @param date     date in format @param authKey
+     * @param authKey  secret key
+     * @return hmac value
+     */
+    public static String generateHmacForContentTypeJson(String path, String strParam, String method, String date, String authKey) {
+        String contentMD5 = generateContentMd5(strParam);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
+
+        String authString = method + "\n" + contentMD5 + "\n" + CONTENT_TYPE_JSON + "\n" + date + "\n" + path;
+        String signature = calculateRFC2104HMAC(authString, authKey);
+
+        return "TKPD Authorization:" + signature.trim();
+    }
+
+    public static Map<String, String> generateHeadersAccount(String authKey) {
         String clientID = "7ea919182ff";
         String clientSecret = "b36cbf904d14bbf90e7f25431595a364";
         String encodeString = clientID + ":" + clientSecret;
