@@ -17,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -91,7 +92,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @BindView(R2.id.cabs_processing_cancel_button)
     LinearLayout cancelButton;
     @BindView(R2.id.bottom_container)
-    LinearLayout bottomContainer;
+    FrameLayout bottomContainer;
 
     OnFragmentInteractionListener onFragmentInteractionListener;
 
@@ -125,6 +126,14 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            confirmBookingViewModel = getArguments().getParcelable(OnTripActivity.EXTRA_CONFIRM_BOOKING);
+        }
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rideConfiguration = new RideConfiguration();
@@ -147,9 +156,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
         presenter = OnTripDependencyInjection.createOnTripMapPresenter(getActivity());
         presenter.attachView(this);
-        if (getArguments() != null) {
-            confirmBookingViewModel = getArguments().getParcelable(OnTripActivity.EXTRA_CONFIRM_BOOKING);
-        }
         presenter.initialize();
         setViewListener();
     }
