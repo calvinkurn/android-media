@@ -23,6 +23,7 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
     @Override
     public void getIntermediaryCategory(String categoryId) {
         getIntermediaryCategoryUseCase.setCategoryId(categoryId);
+        getView().showLoading();
         getIntermediaryCategoryUseCase.execute( RequestParams.EMPTY,
                 new IntermediarySubscirber());
     }
@@ -30,19 +31,18 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
     private class IntermediarySubscirber extends DefaultSubscriber<IntermediaryCategoryDomainModel> {
         @Override
         public void onCompleted() {
-
+            getView().hideLoading();
         }
 
         @Override
         public void onError(Throwable e) {
-
+            getView().emptyState();
             e.printStackTrace();
         }
 
         @Override
         public void onNext(IntermediaryCategoryDomainModel domainModel) {
             if (isViewAttached()) {
-
             }
         }
 
