@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxmessage.adapter.databinder;
+package com.tokopedia.inbox.rescenter.discussion.adapter.databinder;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -11,13 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.inbox.inboxmessage.model.inboxmessagedetail.InboxMessageDetailItem;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
+import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.discussion.viewmodel.ResCenterDiscussionItemViewModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -30,9 +29,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by Nisie on 5/19/16.
+ * Created by nisie on 3/29/17.
  */
-public class MyMessageDataBinder extends DataBinder<MyMessageDataBinder.ViewHolder> {
+
+public class MyDiscussionDataBinder extends DataBinder<MyDiscussionDataBinder.ViewHolder>{
 
     public class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
@@ -74,30 +74,30 @@ public class MyMessageDataBinder extends DataBinder<MyMessageDataBinder.ViewHold
         }
     }
 
-    ArrayList<InboxMessageDetailItem> list;
+    ArrayList<ResCenterDiscussionItemViewModel> list;
     Context context;
     SimpleDateFormat sdf;
     Locale id;
     int canLoadMore = 0;
 
-    public MyMessageDataBinder(DataBindAdapter dataBindAdapter, Context context) {
+    public MyDiscussionDataBinder(DataBindAdapter dataBindAdapter, Context context) {
         super(dataBindAdapter);
         this.list = new ArrayList<>();
         this.context = context;
         this.id = new Locale("in", "ID");
-        this.sdf = new SimpleDateFormat("dd MMMM yyyy, HH:mm z", id);
+        this.sdf = new SimpleDateFormat("dd MMMM yyyy HH:mm z", id);
     }
 
 
     @Override
     public ViewHolder newViewHolder(ViewGroup parent) {
         return new ViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.listview_my_message_detail, parent, false));
+                .inflate(R.layout.listview_my_res_center_discussion, parent, false));
     }
 
     @Override
     public void bindViewHolder(ViewHolder holder, int position) {
-        holder.message.setText(list.get(position).getMessageReply());
+        holder.message.setText(list.get(position).getMessage());
         holder.message.setMovementMethod(new SelectableSpannedMovementMethod());
         if (list.get(position).getMessageReplyTimeFmt() == null) {
             holder.hour.setText(context.getString(R.string.title_sending));
@@ -106,8 +106,6 @@ public class MyMessageDataBinder extends DataBinder<MyMessageDataBinder.ViewHold
             try {
                 holder.date.setVisibility(View.VISIBLE);
                 holder.date.setText(list.get(position).getMessageReplyDateFmt());
-                CommonUtils.dumper("NISNIS Message " + position + " " + list.get(position).getMessageReply().toString() + " "
-                        + canLoadMore);
                 if (position != 0) {
                     Calendar cal = Calendar.getInstance();
                     cal.setTime(sdf.parse(list.get(position).getMessageReplyTimeFmt()));
@@ -132,12 +130,12 @@ public class MyMessageDataBinder extends DataBinder<MyMessageDataBinder.ViewHold
         return list.size();
     }
 
-    public void addReply(InboxMessageDetailItem list) {
+    public void addReply(ResCenterDiscussionItemViewModel list) {
         this.list.add(list);
         notifyDataSetChanged();
     }
 
-    public void addAll(List<InboxMessageDetailItem> list) {
+    public void addAll(List<ResCenterDiscussionItemViewModel> list) {
         this.list.addAll(0, list);
         notifyDataSetChanged();
     }
@@ -148,8 +146,8 @@ public class MyMessageDataBinder extends DataBinder<MyMessageDataBinder.ViewHold
     }
 
 
-    public void add(int position, InboxMessageDetailItem inboxMessageDetailItem) {
-        this.list.add(position, inboxMessageDetailItem);
+    public void add(int position, ResCenterDiscussionItemViewModel ResCenterDiscussionItemViewModel) {
+        this.list.add(position, ResCenterDiscussionItemViewModel);
         notifyDataSetChanged();
     }
 

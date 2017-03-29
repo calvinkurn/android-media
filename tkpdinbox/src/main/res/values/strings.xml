@@ -34,5 +34,8 @@
     <string name="title_activity_history_awb">Riwayat No. Resi</string>
     <string name="title_activity_history_address">Riwayat Alamat Pengembalian</string>
     <string name="title_activity_history_action">Riwayat Komplain</string>
+    <string name="hint_write_message">Tulis pesan</string>
+    <string name="dot">•</string>
+    <string name="title_activity_rescenter_discussion">Diskusi</string>
 
 </resources>
