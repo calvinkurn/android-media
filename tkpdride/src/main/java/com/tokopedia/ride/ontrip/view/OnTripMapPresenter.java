@@ -51,6 +51,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             createLocationRequest();
             initializeLocationService();
             if (getView().isWaitingResponse()) {
+                getView().startPeriodicService(getView().getRequestId());
                 getView().showLoadingWaitingResponse();
                 getView().showCancelRequestButton();
             } else {
@@ -86,6 +87,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
             @Override
             public void onNext(RideRequest rideRequest) {
+                getView().onSuccessCreateRideRequest(rideRequest);
+                getView().startPeriodicService(rideRequest.getRequestId());
                 getView().showCancelRequestButton();
             }
         });
@@ -229,5 +232,31 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().showCancelRequestButton();
             }
         });
+    }
+
+    @Override
+    public void proccessGetCurrentRideRequest(RideRequest result) {
+        //processing accepted arriving in_progress driver_canceled completed
+        switch (result.getStatus()){
+            case "processing":
+                break;
+            case "accepted":
+                getView().renderAcceptedRequest(result);
+                break;
+            case "arriving":
+                break;
+            case "in_progress":
+                getView().renderInProgressRequest(result);
+                break;
+            case "driver_canceled":
+                getView().renderDriverCanceledRequest(result);
+                break;
+            case "completed":
+                getView().renderCompletedRequest(result);
+                break;
+            default:
+
+
+        }
     }
 }

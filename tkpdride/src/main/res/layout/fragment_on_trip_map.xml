@@ -48,6 +48,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp" />
 
+            <FrameLayout
+                android:id="@+id/bottom_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
         </RelativeLayout>
     </LinearLayout>
 
@@ -146,6 +151,4 @@
             </LinearLayout>
         </RelativeLayout>
     </RelativeLayout>
-
-
 </FrameLayout>

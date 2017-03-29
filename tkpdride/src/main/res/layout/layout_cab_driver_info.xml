@@ -18,7 +18,7 @@
         android:paddingRight="15dp"
         android:paddingTop="15dp">
 
-        <com.pkmmte.view.CircularImageView
+        <ImageView
             android:id="@+id/cab_driver_image"
             android:layout_width="50dp"
             android:layout_height="50dp"

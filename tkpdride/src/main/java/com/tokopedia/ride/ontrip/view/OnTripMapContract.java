@@ -5,6 +5,7 @@ import android.app.Activity;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 
 /**
  * Created by alvarisi on 3/24/17.
@@ -40,6 +41,20 @@ public interface OnTripMapContract {
         void openTosConfirmationWebView(String tosUrl);
 
         void failedToRequestRide();
+
+        void startPeriodicService(String requestId);
+
+        String getRequestId();
+
+        void onSuccessCreateRideRequest(RideRequest rideRequest);
+
+        void renderAcceptedRequest(RideRequest result);
+
+        void renderInProgressRequest(RideRequest result);
+
+        void renderDriverCanceledRequest(RideRequest result);
+
+        void renderCompletedRequest(RideRequest result);
     }
 
     interface Presenter extends CustomerPresenter<View>{
@@ -51,5 +66,7 @@ public interface OnTripMapContract {
         void actionCancelRide();
 
         void actionRetryRideRequest(String id);
+
+        void proccessGetCurrentRideRequest(RideRequest result);
     }
 }
