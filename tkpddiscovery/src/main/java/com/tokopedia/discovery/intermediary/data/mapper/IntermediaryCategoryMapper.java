@@ -1,17 +1,17 @@
 package com.tokopedia.discovery.intermediary.data.mapper;
 
-import android.preference.PreferenceActivity;
-
 import com.tokopedia.core.network.entity.categoriesHades.Badge;
 import com.tokopedia.core.network.entity.categoriesHades.CategoryHadesModel;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
 import com.tokopedia.core.network.entity.categoriesHades.Label;
 import com.tokopedia.core.network.entity.categoriesHades.Product;
 import com.tokopedia.core.network.entity.categoriesHades.Section;
+import com.tokopedia.core.network.entity.hotlist.HotListResponse;
 import com.tokopedia.discovery.intermediary.domain.model.BadgeModel;
 import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
 import com.tokopedia.discovery.intermediary.domain.model.CuratedSectionModel;
 import com.tokopedia.discovery.intermediary.domain.model.HeaderModel;
+import com.tokopedia.discovery.intermediary.domain.model.HotListModel;
 import com.tokopedia.discovery.intermediary.domain.model.IntermediaryCategoryDomainModel;
 import com.tokopedia.discovery.intermediary.domain.model.LabelModel;
 import com.tokopedia.discovery.intermediary.domain.model.ProductModel;
@@ -20,21 +20,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Response;
-import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Created by alifa on 3/27/17.
  */
 
-public class IntermediaryCategoryMapper implements Func1<Response<CategoryHadesModel>,IntermediaryCategoryDomainModel> {
+public class IntermediaryCategoryMapper implements Func2<Response<CategoryHadesModel>,
+        Response<HotListResponse>,IntermediaryCategoryDomainModel> {
 
     @Override
-    public IntermediaryCategoryDomainModel call(Response<CategoryHadesModel> categoryHadesModelResponse) {
+    public IntermediaryCategoryDomainModel call(Response<CategoryHadesModel> categoryHadesModelResponse,
+                                                Response<HotListResponse> hotListResponseResponse) {
         IntermediaryCategoryDomainModel intermediaryCategoryDomainModel = new IntermediaryCategoryDomainModel();
 
         intermediaryCategoryDomainModel.setHeaderModel(mapHeaderModel(categoryHadesModelResponse.body()));
         intermediaryCategoryDomainModel.setChildCategoryModelList(mapCategoryChildren(categoryHadesModelResponse.body()));
         intermediaryCategoryDomainModel.setCuratedSectionModelList(mapCuration(categoryHadesModelResponse.body()));
+        intermediaryCategoryDomainModel.setHotListModelList(mapHotList(hotListResponseResponse.body()));
 
         return  intermediaryCategoryDomainModel;
     }
@@ -108,5 +111,22 @@ public class IntermediaryCategoryMapper implements Func1<Response<CategoryHadesM
         }
         return curatedSectionModels;
     }
+
+    private List<HotListModel> mapHotList(HotListResponse hotListResponse) {
+
+        List<HotListModel> hotListModels = new ArrayList<>();
+        for (com.tokopedia.core.network.entity.hotlist.List list: hotListResponse.getList()) {
+            HotListModel hotListModel = new HotListModel();
+            hotListModel.setId(list.getHotProductId());
+            hotListModel.setImageUrl(list.getImgPortrait().get280x418());
+            hotListModel.setTitle(list.getTitle());
+            hotListModel.setUrl(list.getUrl());
+            hotListModels.add(hotListModel);
+            if (hotListModels.size()==4)
+                break;
+        }
+        return  hotListModels;
+    }
+
 
 }

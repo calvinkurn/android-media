@@ -139,5 +139,10 @@
     <item name="title_header" type="id"/>
     <item name="expand_layout" type="id"/>
     <item name="hide_layout" type="id"/>
+    <item name="card_hoth_intermediary" type="id"/>
+    <item name="product_image_hoth" type="id"/>
+    <item name="title_header_hoth" type="id"/>
+    <item name="recycler_view_hot_list" type="id"/>
+
 
 </resources>

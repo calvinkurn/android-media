@@ -4,8 +4,11 @@ import android.content.Context;
 
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.network.apiservices.ace.AceSearchService;
+import com.tokopedia.core.network.apiservices.ace.apis.SearchApi;
 import com.tokopedia.core.network.apiservices.hades.HadesService;
 import com.tokopedia.core.network.apiservices.hades.apis.HadesApi;
+import com.tokopedia.core.network.apiservices.search.SearchService;
 import com.tokopedia.discovery.intermediary.data.mapper.IntermediaryCategoryMapper;
 import com.tokopedia.discovery.intermediary.data.repository.IntermediaryRepositoryImpl;
 import com.tokopedia.discovery.intermediary.data.source.IntermediaryDataSource;
@@ -23,10 +26,12 @@ public class IntermediaryDependencyInjector {
         JobExecutor threadExecutor = new JobExecutor();
         UIThread postExecutionThread = new UIThread();
 
-        HadesService service = new HadesService();
-        HadesApi api = service.getApi();
+        HadesService hadesService = new HadesService();
+        HadesApi hadesApi = hadesService.getApi();
+        AceSearchService aceSearchService = new AceSearchService();
+        SearchApi searchApi = aceSearchService.getApi();
         IntermediaryCategoryMapper mapper = new IntermediaryCategoryMapper();
-        IntermediaryDataSource dataSource = new IntermediaryDataSource(context,api,mapper);
+        IntermediaryDataSource dataSource = new IntermediaryDataSource(context,hadesApi,searchApi,mapper);
 
         IntermediaryRepository repository = new IntermediaryRepositoryImpl(dataSource);
 

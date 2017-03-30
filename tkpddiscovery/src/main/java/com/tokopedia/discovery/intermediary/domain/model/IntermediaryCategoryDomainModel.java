@@ -12,6 +12,7 @@ public class IntermediaryCategoryDomainModel {
     HeaderModel headerModel;
     List<ChildCategoryModel> childCategoryModelList = new ArrayList<>();
     List<CuratedSectionModel> curatedSectionModelList = new ArrayList<>();
+    List<HotListModel> hotListModelList = new ArrayList<>();
 
     public HeaderModel getHeaderModel() {
         return headerModel;
@@ -35,5 +36,13 @@ public class IntermediaryCategoryDomainModel {
 
     public void setCuratedSectionModelList(List<CuratedSectionModel> curatedSectionModelList) {
         this.curatedSectionModelList = curatedSectionModelList;
+    }
+
+    public List<HotListModel> getHotListModelList() {
+        return hotListModelList;
+    }
+
+    public void setHotListModelList(List<HotListModel> hotListModelList) {
+        this.hotListModelList = hotListModelList;
     }
 }

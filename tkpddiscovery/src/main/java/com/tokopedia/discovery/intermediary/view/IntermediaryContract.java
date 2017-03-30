@@ -5,6 +5,7 @@ import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
 import com.tokopedia.discovery.intermediary.domain.model.CuratedSectionModel;
 import com.tokopedia.discovery.intermediary.domain.model.HeaderModel;
+import com.tokopedia.discovery.intermediary.domain.model.HotListModel;
 
 import java.util.List;
 
@@ -22,8 +23,7 @@ public interface IntermediaryContract {
 
         void renderCuratedProducts(List<CuratedSectionModel> curatedSectionModelList);
 
-        //TODO
-        //void renderHotList
+        void renderHotList(List<HotListModel> hotListModelList);
 
         void showLoading();
 

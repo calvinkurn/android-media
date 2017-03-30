@@ -108,8 +108,6 @@ public class CuratedProductAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         LinearLayout badgesContainer;
 
         private Context context;
-        private String source="";
-        private String categoryId="";
         private ProductModel data;
 
 

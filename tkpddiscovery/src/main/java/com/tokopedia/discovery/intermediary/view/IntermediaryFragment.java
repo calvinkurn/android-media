@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,13 +27,17 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
+import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.intermediary.di.IntermediaryDependencyInjector;
 import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
 import com.tokopedia.discovery.intermediary.domain.model.CuratedSectionModel;
 import com.tokopedia.discovery.intermediary.domain.model.HeaderModel;
+import com.tokopedia.discovery.intermediary.domain.model.HotListModel;
+import com.tokopedia.discovery.intermediary.view.adapter.CuratedProductAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.CurationAdapter;
+import com.tokopedia.discovery.intermediary.view.adapter.HotListItemAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryCategoryAdapter;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
 
@@ -68,7 +73,11 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @BindView(R2.id.recycler_view_curation)
     RecyclerView curationRecyclerView;
 
+    @BindView(R2.id.card_hoth_intermediary)
+    CardView cardViewHotList;
 
+    @BindView(R2.id.recycler_view_hot_list)
+    RecyclerView hotListRecyclerView;
 
     private IntermediaryCategoryAdapter categoryAdapter;
     private IntermediaryCategoryAdapter.CategoryListener categoryListener;
@@ -181,6 +190,21 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         curationRecyclerView.setAdapter(curationAdapter);
         curationAdapter.setDataList(curatedSectionModelList);
         curationAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void renderHotList(List<HotListModel> hotListModelList) {
+        cardViewHotList.setVisibility(View.VISIBLE);
+
+        HotListItemAdapter hotListItemAdapter = new HotListItemAdapter(hotListModelList,getCategoryWidth());
+
+        hotListRecyclerView.setHasFixedSize(true);
+        hotListRecyclerView.setNestedScrollingEnabled(false);
+        hotListRecyclerView.setLayoutManager(
+                new NonScrollGridLayoutManager(getActivity(), 2,
+                        GridLayoutManager.VERTICAL, false));
+        hotListRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
+        hotListRecyclerView.setAdapter(hotListItemAdapter);
     }
 
     @Override
