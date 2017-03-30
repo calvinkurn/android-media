@@ -275,7 +275,7 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
 
     public void loadMoreNetworkCall() {
         if (isHitNetwork()) {
-            reviewReputationUseCase.execute(fillParamShopInfo2(),
+            reviewReputationUseCase.execute(fillParamReview(),
                     new DefaultErrorSubscriber<SellerReputationDomain>(errorNetworkListener) {
                         @Override
                         public void onCompleted() {

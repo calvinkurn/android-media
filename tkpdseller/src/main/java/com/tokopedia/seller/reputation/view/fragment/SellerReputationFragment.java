@@ -479,6 +479,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
         refreshHandler.setRefreshing(false);
         adapter.showLoading(false);
 
+        final String tryAgain = getString(R.string.try_again);
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -492,7 +493,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
                             adapter.showRetryFull(true);
                             break;
                         default:
-                            gmNetworkErrorHelper.showSnackbar(errorMessage, "COBA KEMBALI", new ActionClickListener() {
+                            gmNetworkErrorHelper.showSnackbar(errorMessage, tryAgain, new ActionClickListener() {
                                 @Override
                                 public void onActionClicked(com.nispok.snackbar.Snackbar snackbar) {
                                     Toast.makeText(

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.DateHeaderFormatter;
+import com.tokopedia.seller.gmstat.utils.DateUtilHelper;
 import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
 import com.tokopedia.seller.reputation.view.helper.ReputationHeaderViewHelper;
 import com.tokopedia.seller.reputation.view.model.EmptyListModel;
@@ -77,7 +78,9 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
             case EmptyListModel.TYPE:
                 itemLayoutView = LayoutInflater.from(viewGroup.getContext())
                         .inflate(R.layout.deisgn_retry_reputation, viewGroup, false);
-                return new EmptyListViewHolder(itemLayoutView);
+                EmptyListViewHolder emptyListViewHolder = new EmptyListViewHolder(itemLayoutView);
+                emptyListViewHolder.setFragment(fragment);
+                return emptyListViewHolder;
             default:
                 return super.onCreateViewHolder(viewGroup, viewType);
         }
@@ -290,22 +293,38 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
     public class EmptyListViewHolder extends RecyclerView.ViewHolder {
 
+        DateUtilHelper dateUtilHelper;
+        Fragment fragment;
         private LinearLayout containerClick;
 
         public EmptyListViewHolder(View itemView) {
             super(itemView);
 
+            dateUtilHelper = new DateUtilHelper(itemView.getContext());
             containerClick = (LinearLayout) itemView.findViewById(R.id.reputation_container_change_date);
-            containerClick.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        }
 
-                }
-            });
+        public Fragment getFragment() {
+            return fragment;
+        }
+
+        public void setFragment(Fragment fragment) {
+            this.fragment = fragment;
         }
 
         public void bindData(EmptyListModel emptyListModel) {
+            dateUtilHelper.setsDate(emptyListModel.getSetDateHeaderModel().getsDate());
+            dateUtilHelper.seteDate(emptyListModel.getSetDateHeaderModel().geteDate());
 
+            containerClick.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (getFragment() != null) {
+                        dateUtilHelper.setSelectionType(DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE);
+                        dateUtilHelper.onClick(fragment, true);
+                    }
+                }
+            });
         }
     }
 
