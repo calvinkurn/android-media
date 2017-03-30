@@ -487,7 +487,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     /**
      * Brands a.k.a. Official Store
      * Created by Hafizh Herdi 20173001
-     * Modified by Oka 20170315
+     * Modified by Oka 20170315 (add view all official store)
      */
     private void initBrands() {
         holder.brandsRecyclerView = (RecyclerView) holder.MainView.findViewById(R.id.rv_brands_list);

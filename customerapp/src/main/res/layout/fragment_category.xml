@@ -87,8 +87,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             app:cardCornerRadius="0dip"
-            app:cardElevation="3dip"
+            app:cardElevation="0dip"
             app:contentPadding="5dp">
 
             <RelativeLayout
