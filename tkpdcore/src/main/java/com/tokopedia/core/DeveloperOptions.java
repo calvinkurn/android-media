@@ -26,17 +26,13 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.PasswordGenerator;
-import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
-
-import static com.tokopedia.core.router.InboxRouter.EXTRA_RESOLUTION_ID;
 
 
 public class DeveloperOptions extends TActivity implements SessionHandler.onLogoutListener {
     public static final String CHUCK_ENABLED = "CHUCK_ENABLED";
     public static final String IS_CHUCK_ENABLED = "is_enable";
-    private static final String DETAIL_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.discussion.activity.ResCenterDiscussionActivity";
     //developer test
 
     private TextView vCustomIntent;
@@ -130,15 +126,6 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
             @Override
             public void oneOnClick(View view) {
                 startActivity(Chuck.getLaunchIntent(getApplicationContext()));
-            }
-        });
-        vCustomIntent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = RouterUtils.getActivityIntent(DeveloperOptions.this, DETAIL_RESCENTER_ACTIVITY);
-                Bundle bundle = new Bundle();
-                intent.putExtras(bundle);
-                startActivity(intent);
             }
         });
 

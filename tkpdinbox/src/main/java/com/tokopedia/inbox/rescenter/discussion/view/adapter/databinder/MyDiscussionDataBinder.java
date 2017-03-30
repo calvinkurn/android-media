@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.rescenter.discussion.adapter.databinder;
+package com.tokopedia.inbox.rescenter.discussion.view.adapter.databinder;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -16,7 +16,7 @@ import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.discussion.viewmodel.ResCenterDiscussionItemViewModel;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.ResCenterDiscussionItemViewModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -126,8 +126,8 @@ public class MyDiscussionDataBinder extends DataBinder<MyDiscussionDataBinder.Vi
                     Calendar calAfter = Calendar.getInstance();
                     calAfter.setTime(sdf.parse(list.get(position + 1).getMessageReplyTimeFmt()));
 
-                    if (cal.get(Calendar.DAY_OF_YEAR) == calAfter.get(Calendar.DAY_OF_YEAR)
-                            && cal.get(Calendar.YEAR) == calAfter.get(Calendar.YEAR)) {
+                    if (cal.get(Calendar.HOUR) == calAfter.get(Calendar.HOUR)
+                            && cal.get(Calendar.MINUTE) == calAfter.get(Calendar.MINUTE)) {
                         holder.date.setVisibility(View.GONE);
                     }
                 }

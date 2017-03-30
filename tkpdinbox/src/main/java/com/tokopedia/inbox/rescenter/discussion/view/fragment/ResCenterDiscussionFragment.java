@@ -1,29 +1,27 @@
-package com.tokopedia.inbox.rescenter.discussion.fragment;
+package com.tokopedia.inbox.rescenter.discussion.view.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxmessage.model.inboxmessagedetail.InboxMessageDetailItem;
-import com.tokopedia.inbox.rescenter.discussion.adapter.ResCenterDiscussionAdapter;
-import com.tokopedia.inbox.rescenter.discussion.listener.ResCenterDiscussionView;
-import com.tokopedia.inbox.rescenter.discussion.presenter.ResCenterDiscussionPresenter;
-import com.tokopedia.inbox.rescenter.discussion.presenter.ResCenterDiscussionPresenterImpl;
-import com.tokopedia.inbox.rescenter.discussion.viewmodel.ResCenterDiscussionItemViewModel;
+import com.tokopedia.inbox.rescenter.discussion.view.adapter.ResCenterDiscussionAdapter;
+import com.tokopedia.inbox.rescenter.discussion.view.listener.ResCenterDiscussionView;
+import com.tokopedia.inbox.rescenter.discussion.view.presenter.ResCenterDiscussionPresenter;
+import com.tokopedia.inbox.rescenter.discussion.view.presenter.ResCenterDiscussionPresenterImpl;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.ResCenterDiscussionItemViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.PARAM_SENT_MESSAGE;
 
 /**
  * Created by nisie on 3/29/17.
@@ -32,6 +30,7 @@ import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.PARAM_SENT_M
 public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenterDiscussionPresenter>
         implements ResCenterDiscussionView {
 
+    private static final String PARAM_RESOLUTION_ID = "PARAM_RESOLUTION_ID";
     ResCenterDiscussionAdapter adapter;
     RecyclerView discussionList;
     EditText replyEditText;
@@ -39,8 +38,12 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
     ImageView attachButton;
     LinearLayoutManager layoutManager;
 
-    public static Fragment createInstance() {
-        return new ResCenterDiscussionFragment();
+    public static Fragment createInstance(String resolutionID) {
+        Fragment fragment = new ResCenterDiscussionFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(PARAM_RESOLUTION_ID, resolutionID);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -70,7 +73,7 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
 
     @Override
     protected void initialPresenter() {
-        presenter = new ResCenterDiscussionPresenterImpl(this);
+        presenter = new ResCenterDiscussionPresenterImpl(getActivity(), this);
     }
 
     @Override
@@ -112,6 +115,23 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
                 presenter.sendDiscussion();
             }
         });
+
+        replyEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                replyEditText.setError(null);
+            }
+        });
     }
 
     private void addTemporaryMessage() {
@@ -136,19 +156,8 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
     }
 
     @Override
-    public void onSuccessGetDiscussion() {
-        List<ResCenterDiscussionItemViewModel> list = new ArrayList<>();
-
-        list.add(new ResCenterDiscussionItemViewModel("Message 1", "24 Jul 2016 11:45 WIB", "3045173"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 2", "24 Jul 2016 11:45 WIB"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 3", "24 Jul 2016 11:45 WIB", "3045173"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 4", "24 Jul 2016 11:45 WIB"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 5", "24 Jul 2016 11:45 WIB"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 6", "24 Jul 2016 11:45 WIB"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 7", "25 Jul 2016 11:45 WIB"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 8", "25 Jul 2016 11:45 WIB"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 3", "26 Jul 2016 11:45 WIB", "3045173"));
-
+    public void onSuccessGetDiscussion(List<ResCenterDiscussionItemViewModel> list) {
+        finishLoading();
         adapter.setList(list);
     }
 
@@ -172,14 +181,53 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
 //        getActivity().setResult(Activity.RESULT_OK, intent);
     }
 
-    private void finishLoading() {
-
+    @Override
+    public String getResolutionID() {
+        return getArguments().getString(PARAM_RESOLUTION_ID) != null ?
+                getArguments().getString(PARAM_RESOLUTION_ID) : "";
     }
 
-    private void setViewEnabled(boolean isEnabled) {
+    @Override
+    public void onErrorSendReply(String errorMessage) {
+        replyEditText.setError(errorMessage);
+        replyEditText.requestFocus();
+    }
+
+    @Override
+    public void finishLoading() {
+        if (adapter.isLoading()) {
+            adapter.showLoading(false);
+        }
+    }
+
+    @Override
+    public void showLoading() {
+        if (adapter.getData().size() == 0) {
+            adapter.showLoadingFull(true);
+        } else {
+            adapter.showLoading(true);
+        }
+    }
+
+    @Override
+    public void setViewEnabled(boolean isEnabled) {
         replyEditText.setEnabled(isEnabled);
         sendButton.setEnabled(isEnabled);
         attachButton.setEnabled(isEnabled);
+    }
+
+    @Override
+    public void onErrorGetDiscussion(String errorMessage) {
+        finishLoading();
+        if (adapter.getData().size() == 0)
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    presenter.initData();
+                }
+            });
+        else
+            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
 }

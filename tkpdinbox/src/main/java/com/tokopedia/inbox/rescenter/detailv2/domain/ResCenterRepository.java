@@ -4,6 +4,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionData;
 import com.tokopedia.inbox.rescenter.historyaction.domain.model.HistoryActionData;
 import com.tokopedia.inbox.rescenter.historyaddress.domain.model.HistoryAddressData;
 import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
@@ -18,7 +19,7 @@ public interface ResCenterRepository {
 
     Observable<DetailResCenter> getDetail(TKPDMapParam<String, Object> parameters);
 
-    Observable<DetailResCenter> getConversation(TKPDMapParam<String, Object> parameters);
+    Observable<DiscussionData> getConversation(TKPDMapParam<String, Object> parameters);
 
     Observable<DetailResCenter> getConversationMore(String conversationID, TKPDMapParam<String, Object> parameters);
 
@@ -42,3 +43,4 @@ public interface ResCenterRepository {
 
     Observable<ResolutionActionDomainData> inputAddress(TKPDMapParam<String, Object> parameters);
 }
+

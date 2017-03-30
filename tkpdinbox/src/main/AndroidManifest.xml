@@ -87,7 +87,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.tokopedia.inbox.rescenter.discussion.activity.ResCenterDiscussionActivity"
+            android:name=".rescenter.discussion.view.activity.ResCenterDiscussionActivity"
             android:label="@string/title_activity_rescenter_discussion"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"

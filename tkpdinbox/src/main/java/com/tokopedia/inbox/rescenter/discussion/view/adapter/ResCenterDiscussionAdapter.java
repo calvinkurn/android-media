@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.rescenter.discussion.adapter;
+package com.tokopedia.inbox.rescenter.discussion.view.adapter;
 
 import android.content.Context;
 
@@ -6,9 +6,9 @@ import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.inboxmessage.adapter.databinder.LoadMoreDataBinder;
-import com.tokopedia.inbox.rescenter.discussion.adapter.databinder.MyDiscussionDataBinder;
-import com.tokopedia.inbox.rescenter.discussion.adapter.databinder.TheirDiscussionDataBinder;
-import com.tokopedia.inbox.rescenter.discussion.viewmodel.ResCenterDiscussionItemViewModel;
+import com.tokopedia.inbox.rescenter.discussion.view.adapter.databinder.MyDiscussionDataBinder;
+import com.tokopedia.inbox.rescenter.discussion.view.adapter.databinder.TheirDiscussionDataBinder;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.ResCenterDiscussionItemViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;

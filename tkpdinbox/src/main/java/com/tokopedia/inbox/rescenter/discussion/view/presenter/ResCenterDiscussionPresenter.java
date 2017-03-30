@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.rescenter.discussion.presenter;
+package com.tokopedia.inbox.rescenter.discussion.view.presenter;
 
 /**
  * Created by nisie on 3/29/17.

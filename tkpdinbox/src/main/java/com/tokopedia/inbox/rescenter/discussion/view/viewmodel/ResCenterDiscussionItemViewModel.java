@@ -1,6 +1,5 @@
-package com.tokopedia.inbox.rescenter.discussion.viewmodel;
+package com.tokopedia.inbox.rescenter.discussion.view.viewmodel;
 
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
