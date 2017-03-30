@@ -72,6 +72,7 @@ import com.tokopedia.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
+import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -155,6 +156,10 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     public static final String EXTRA_FIRST_TIME = "EXTRA_FIRST_TIME";
     public static final String EXTRA_FILTER_MAP = "EXTRA_FILTER_MAP";
     public static final String EXTRA_FILTER_MAP_ATTR = "EXTRA_FILTER_MAP_ATTR";
+    public static final String LAYOUT_GRID_DEFAULT = "1";
+    public static final String LAYOUT_GRID_BOX = "2";
+    public static final String LAYOUT_LIST = "3";
+
     public static String browseType;
     private int gridIcon = R.drawable.ic_grid_default;
     private BrowseProductRouter.GridType gridType = BrowseProductRouter.GridType.GRID_2;
@@ -225,6 +230,13 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG:
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP:
                 toolbar.setTitle("");
+                toolbar.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        discoverySearchView.showSearch();
+                        discoverySearchView.setFinishOnClose(false);
+                    }
+                });
                 break;
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY:
                 toolbar.setTitle(getString(R.string.title_activity_browse_category));
@@ -280,6 +292,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     public void onSearchViewShown() {
         bottomNavigation.hideBottomNavigation();
         bottomNavigation.setBehaviorTranslationEnabled(false);
+        discoverySearchView.setQuery(searchQuery, false);
     }
 
     @Override
@@ -393,6 +406,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     public void sendQuery(String query, String depId) {
         breadcrumbs = null;
+        searchQuery = query;
         resetBrowseProductActivityModel();
         browseProductActivityModel.setQ(query);
         browseProductActivityModel.setDepartmentId(depId);
@@ -405,6 +419,15 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         deleteFilterCache();
         sendBroadCast(query);
         toolbar.setTitle(query);
+
+        int currentSuggestionTab = discoverySearchView.getSuggestionFragment().getCurrentTab();
+
+        if (currentSuggestionTab == SearchMainFragment.PAGER_POSITION_PRODUCT) {
+            browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT);
+        } else if (currentSuggestionTab == SearchMainFragment.PAGER_POSITION_SHOP) {
+            browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP);
+        }
+        discoverySearchView.setLastQuery(query);
         discoverySearchView.closeSearch();
     }
 
@@ -572,16 +595,19 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                                 gridType = BrowseProductRouter.GridType.GRID_2;
                                 gridIcon = R.drawable.ic_grid_default;
                                 bottomNavigation.getItem(2).setTitle(getString(R.string.grid));
+                                UnifyTracking.eventDisplayCategory(LAYOUT_GRID_DEFAULT);
                                 break;
                             case GRID_2:
                                 gridType = BrowseProductRouter.GridType.GRID_3;
                                 gridIcon = R.drawable.ic_grid_box;
                                 bottomNavigation.getItem(2).setTitle(getString(R.string.grid));
+                                UnifyTracking.eventDisplayCategory(LAYOUT_GRID_BOX);
                                 break;
                             case GRID_3:
                                 gridType = BrowseProductRouter.GridType.GRID_1;
                                 gridIcon = R.drawable.ic_list;
                                 bottomNavigation.getItem(2).setTitle(getString(R.string.list));
+                                UnifyTracking.eventDisplayCategory(LAYOUT_LIST);
                                 break;
                             default:
                                 gridIcon = R.drawable.ic_grid_default;
@@ -604,6 +630,10 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                                         .setTextContent(getString(R.string.message_share_category))
                                         .setUri(shareUrl)
                                         .build();
+                                if (browseProductActivityModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+                                    shareData.setType(ShareData.CATEGORY_TYPE);
+                                    shareData.setDescription(browseProductActivityModel.getDepartmentId());
+                                }
                                 sintent.putExtra(ShareData.TAG, shareData);
                                 startActivity(sintent);
                             }
@@ -992,6 +1022,9 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                             if (TextUtils.isEmpty(item.getString("value")) ||
                                     item.getString("value").equalsIgnoreCase(map.getValue())) {
                                 UnifyTracking.eventDiscoveryFilter(item.getString("label"));
+                                if (browseProductActivityModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+                                    UnifyTracking.eventFilterCategory(item.getString("label"));
+                                }
                             }
                             break;
                         }
@@ -1023,6 +1056,9 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                 JSONObject item = (JSONObject) dynamicSort.get(i);
                 if (item.getString("value").equalsIgnoreCase(valueSort)) {
                     UnifyTracking.eventDiscoverySort(item.getString("label"));
+                    if (browseProductActivityModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+                        UnifyTracking.eventSortCategory(item.getString("label"));
+                    }
                     break;
                 }
             }

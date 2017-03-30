@@ -38,6 +38,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/padding_vvs"
         android:text="@string/prompt_phone"
+        android:textSize="@dimen/fontvs"
         android:visibility="gone" />
 
     <com.tokopedia.core.customView.RechargeEditText
@@ -52,6 +53,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/padding_vvs"
         android:text="@string/title_nominal"
+        android:textSize="@dimen/fontvs"
         android:visibility="gone" />
 
     <Spinner
@@ -78,7 +80,7 @@
         android:id="@+id/buy_wrapper_linearlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:paddingTop="@dimen/padding_small"
         android:visibility="gone"
         android:weightSum="1">
@@ -86,19 +88,22 @@
             android:id="@+id/buy_with_credit_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_gravity="left"
             android:text="@string/instant_payment"
             android:layout_weight="0.60"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:visibility="invisible" />
+            android:textSize="@dimen/fontvs"
+            android:textColor="@color/checkbox_text"
+            android:visibility="gone" />
         <Button
             android:id="@+id/btn_buy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/btn_height"
             android:layout_weight="0.40"
             android:minHeight="0dp"
             android:background="@drawable/btn_buy"
             android:text="@string/title_buy"
+            android:layout_marginTop="@dimen/margin_small"
             android:layout_gravity="right"
             android:textColor="@color/white" />
     </LinearLayout>

@@ -16,7 +16,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
  */
 
 public class TopAdsTopupSuccessNotification extends BaseNotification {
-    protected TopAdsTopupSuccessNotification(Context context) {
+    public TopAdsTopupSuccessNotification(Context context) {
         super(context);
     }
 

@@ -27,6 +27,8 @@ public interface NetworkInteractor {
 
     void resetNotification(Context context, ResetNotificationListener listener);
 
+    void clearWalletCache();
+
     interface ProfileInfoListener {
 
         void onSuccess(DrawerHeader data);

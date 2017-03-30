@@ -1,10 +1,11 @@
-package com.tokopedia.core.base.di.qualifier;
+package com.tokopedia.core.network.di.qualifier;
 
 import javax.inject.Qualifier;
 
 /**
- * @author kulomady on 1/9/17.
+ * @author ricoharisin .
  */
+
 @Qualifier
 public @interface TopAdsQualifier {
 }

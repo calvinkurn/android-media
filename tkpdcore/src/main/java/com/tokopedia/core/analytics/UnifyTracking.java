@@ -51,6 +51,73 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    /* CATEGORY IMPROVEMENT*/
+
+    public static void eventProductOnCategory( String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PRODUCT,
+                AppEventTracking.Action.PRODUCT_CATEGORY,
+                label
+        ).getEvent());
+    }
+
+    public static void eventLevelCategory( String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE,
+                AppEventTracking.Action.CATEGORY_LEVEL,
+                label
+        ).getEvent());
+    }
+
+    public static void eventShowMoreCategory(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE,
+                AppEventTracking.Action.CATEGORY_MORE,
+                AppEventTracking.EventLabel.CATEGORY_SHOW_MORE
+        ).getEvent());
+    }
+
+    public static void eventSortCategory(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE,
+                AppEventTracking.Action.CATEGORY_SORT,
+                label
+        ).getEvent());
+    }
+
+    public static void eventFilterCategory(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE,
+                AppEventTracking.Action.CATEGORY_FILTER,
+                label
+        ).getEvent());
+    }
+
+    public static void eventDisplayCategory(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE,
+                AppEventTracking.Action.CATEGORY_DISLPAY,
+                label
+        ).getEvent());
+    }
+
+    public static void eventShareCategory(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE,
+                AppEventTracking.Action.CATEGORY_SHARE,
+                label
+        ).getEvent());
+    }
+
+     /* CATEGORY IMPROVEMENT*/
+
     public static void eventHomeTopPicksTitle( String label){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.TOP_PICKS,
@@ -989,6 +1056,12 @@ public class UnifyTracking extends TrackingUtils {
     public static void eventLogoutLoca(){
         Map<String, String> attrs = new HashMap<>();
         getLocaEngine().sendEventLoggedOut(attrs);
+    }
+
+    public static void eventLocaGoodReview(Integer accuracy, Integer quality) {
+        if (accuracy > 3 && quality > 3){
+            eventLoca(AppScreen.EVENT_GOOD_REVIEW);
+        }
     }
 
     public static void eventViewATC(){

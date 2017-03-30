@@ -33,19 +33,30 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.rxjava.RxUtils;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AnimationUtil;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author Erry Suprayogi
  */
 public class DiscoverySearchView extends FrameLayout implements Filter.FilterListener {
     public static final int REQUEST_VOICE = 9999;
-
+    private static final String TAG = DiscoverySearchView.class.getSimpleName();
     private MenuItem mMenuItem;
     private boolean mIsSearchOpen = false;
     private int mAnimationDuration;
@@ -78,6 +89,14 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private Drawable suggestionIcon;
     private boolean copyText = false;
     private Context mContext;
+    private CompositeSubscription compositeSubscription;
+    private Subscription querySubscription;
+    private QueryListener queryListener;
+
+    private interface QueryListener {
+        void onQueryChanged(String query);
+    }
+    private String lastQuery;
 
     public DiscoverySearchView(Context context) {
         this(context, null);
@@ -95,6 +114,46 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         initiateView();
 
         initStyle(attrs, defStyleAttr);
+
+        initCompositeSubscriber();
+    }
+
+    private void initCompositeSubscriber() {
+        compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
+        compositeSubscription.add(querySubscription = Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(final Subscriber<? super String> subscriber) {
+                queryListener = new QueryListener() {
+                    @Override
+                    public void onQueryChanged(String query) {
+                        subscriber.onNext(query);
+                    }
+                };
+            }
+        })
+                .debounce(200, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(TAG, e.getLocalizedMessage());
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        if (s != null) {
+                            Log.d(TAG, "Sending the text " + s);
+                            DiscoverySearchView.this.onTextChanged(s);
+                        }
+                    }
+                }));
     }
 
     public void setActivity(AppCompatActivity activity) {
@@ -210,7 +269,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
                     copyText = false;
                 }
                 mUserQuery = s;
-                DiscoverySearchView.this.onTextChanged(s);
+                queryListener.onQueryChanged(s.toString());
             }
 
             @Override
@@ -519,9 +578,9 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         }
 
         //Request Focus
-        mSearchSrcTextView.setText(null);
+        mSearchSrcTextView.setText(lastQuery);
         mSearchSrcTextView.requestFocus();
-        bringToFront();
+        mSearchSrcTextView.setSelection(mSearchSrcTextView.getText().length());
         if (animate) {
             setVisibleWithAnimation();
 
@@ -530,6 +589,13 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             if (mSearchViewListener != null) {
                 mSearchViewListener.onSearchViewShown();
             }
+        }
+
+        String source = ((BrowseProductActivity) activity).getBrowseProductActivityModel().getSource();
+        if (BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP.equals(source)) {
+            mSuggestionFragment.setCurrentTab(SearchMainFragment.PAGER_POSITION_SHOP);
+        } else {
+            mSuggestionFragment.setCurrentTab(SearchMainFragment.PAGER_POSITION_PRODUCT);
         }
         mIsSearchOpen = true;
     }
@@ -586,6 +652,10 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             mSearchViewListener.onSearchViewClosed();
         }
         mIsSearchOpen = false;
+    }
+
+    public void setLastQuery(String lastQuery) {
+        this.lastQuery = lastQuery;
     }
 
     /**

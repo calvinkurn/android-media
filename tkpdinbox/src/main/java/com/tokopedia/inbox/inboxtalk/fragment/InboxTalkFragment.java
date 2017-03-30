@@ -449,37 +449,29 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case GO_TO_DETAIL:
-                if(data == null){
+                if (data == null) {
                     return;
                 }
 
-                int position = data.getExtras().getInt("position", -1);
                 if (resultCode == RESULT_DELETE) {
-                   if (position != -1){
-                       items.remove(position);
-                       adapter.notifyDataSetChanged();
-                   }else {
-                       displayLoading(true);
-                       requestFromCache();
-                   }
+                    int position = data.getExtras().getInt("position");
+                    items.remove(position);
+                    adapter.notifyDataSetChanged();
                     SnackbarManager.make(getActivity(),
-                            getString(R.string.message_success_delete_talk),Snackbar.LENGTH_LONG).show();
-                }else if(resultCode == Activity.RESULT_OK){
-                    if (position != -1){
-                        items.remove(position);
-                        adapter.notifyDataSetChanged();
-                        int size = data.getExtras().getInt("total_comment");
-                        int followStatus = data.getExtras().getInt("is_follow");
-                        int readStatus = data.getExtras().getInt("read_status");
-                        ((InboxTalk) items.get(position)).setTalkTotalComment(String.valueOf(size));
-                        ((InboxTalk) items.get(position)).setTalkFollowStatus(followStatus);
-                        ((InboxTalk) items.get(position)).setTalkReadStatus(readStatus);
-                        adapter.notifyDataSetChanged();
-                    }else {
-                        displayLoading(true);
-                        requestFromCache();
-                    }
+                            getString(R.string.message_success_delete_talk), Snackbar.LENGTH_LONG).show();
+                } else if (resultCode == Activity.RESULT_OK) {
+                    int position = data.getExtras().getInt("position");
+                    int size = data.getExtras().getInt("total_comment");
+                    int followStatus = data.getExtras().getInt("is_follow");
+                    int readStatus = data.getExtras().getInt("read_status");
+                    ((InboxTalk) items.get(position)).setTalkTotalComment(String.valueOf(size));
+                    ((InboxTalk) items.get(position)).setTalkFollowStatus(followStatus);
+                    ((InboxTalk) items.get(position)).setTalkReadStatus(readStatus);
+                    adapter.notifyDataSetChanged();
                 }
+                break;
+            default:
+                doRefresh();
                 break;
         }
 

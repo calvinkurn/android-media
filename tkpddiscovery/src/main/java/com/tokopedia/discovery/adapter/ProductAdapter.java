@@ -28,12 +28,14 @@ import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tokopedia.discovery.view.CategoryHeaderTransformation;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.InfoTopAds;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.discovery.old.BucketListImageScroll;
@@ -73,6 +75,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.GridType.GRID_1;
+import static com.tokopedia.discovery.activity.BrowseProductActivity.EXTRA_TITLE;
 
 
 /**
@@ -89,6 +92,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     int page = 1;
     private int topAddsCounter = 0;
     private String source = "search";
+    private String category = "";
 
     public int getTopAddsCounter() {
         return topAddsCounter + 1; // + 1 because it will indexed as 0
@@ -97,13 +101,14 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     public ProductAdapter(Context context, List<RecyclerViewItem> data) {
         super(context, data);
         Log.d(TAG, "ProductAdapter data " + data.size());
-        if (context instanceof BrowseProductActivity) {
+        if (context !=null && context instanceof BrowseProductActivity) {
             BrowseProductActivity activity = (BrowseProductActivity) context;
             switch (activity.getBrowseProductActivityModel().getSource()) {
                 case BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT:
                     source = "hotlist";
                     break;
                 case BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY:
+                    category = activity.getIntent().getStringExtra(EXTRA_TITLE);
                     source = "directory";
                     break;
                 default:
@@ -116,10 +121,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case TkpdState.RecyclerView.VIEW_PRODUCT:
-                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_list, parent, false));
+                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_list, parent, false), source, category);
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
-                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_grid, parent, false));
+                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_grid, parent, false), source, category);
             case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
             case TkpdState.RecyclerView.VIEW_TOP_ADS:
                 return ProductFeedAdapter.createViewTopAds(parent);
@@ -439,6 +444,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 expandLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        UnifyTracking.eventShowMoreCategory();
                         categoryAdapter.addDataChild(categoryHeaderModel.categoryHeader.getChild()
                                 .subList(6,categoryHeaderModel.categoryHeader.getChild().size()));
                         expandLayout.setVisibility(View.GONE);
@@ -512,13 +518,15 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                             GridLayoutManager.VERTICAL, false));
             categoryAdapter = new RevampCategoryAdapter(categoryHeaderModel.categoryWidth,categoryHeaderModel.activeChildren,categoryHeaderModel.listener);
             revampCategoriesRecyclerView.setAdapter(categoryAdapter);
-            ImageHandler.loadImageFit2(imageHeader.getContext(),imageHeader,categoryHeaderModel.categoryHeader.getHeaderImage());
+            ImageHandler.loadImageFitTransformation(imageHeader.getContext(),imageHeader,
+                    categoryHeaderModel.categoryHeader.getHeaderImage(), new CategoryHeaderTransformation(imageHeader.getContext()));
             titleHeader.setText(categoryHeaderModel.categoryHeader.getName().toUpperCase());
             if (categoryHeaderModel.isUsedUnactiveChildren) {
                 expandLayout.setVisibility(View.VISIBLE);
                 expandLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        UnifyTracking.eventShowMoreCategory();
                         categoryAdapter.addDataChild(categoryHeaderModel.categoryHeader.getChild()
                                 .subList(9,categoryHeaderModel.categoryHeader.getChild().size()));
                         expandLayout.setVisibility(View.GONE);
@@ -877,7 +885,17 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         LinearLayout badgesContainer;
 
         private Context context;
+        private String source="";
+        private String categoryId="";
         private ProductItem data;
+
+        public ViewHolderProductitem(Context context, View itemView, String source, String categoryId) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+            this.context = context;
+            this.source = source;
+            this.categoryId = categoryId;
+        }
 
         public ViewHolderProductitem(Context context, View itemView) {
             super(itemView);
@@ -931,6 +949,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
         @OnClick(R2.id.container)
         public void onClick() {
+            if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+                UnifyTracking.eventProductOnCategory(categoryId);
+            }
             Bundle bundle = new Bundle();
             Intent intent = new Intent(context, ProductInfoActivity.class);
             bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
