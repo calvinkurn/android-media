@@ -8,7 +8,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.inboxmessage.adapter.databinder.LoadMoreDataBinder;
 import com.tokopedia.inbox.rescenter.discussion.view.adapter.databinder.MyDiscussionDataBinder;
 import com.tokopedia.inbox.rescenter.discussion.view.adapter.databinder.TheirDiscussionDataBinder;
-import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.ResCenterDiscussionItemViewModel;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +28,7 @@ public class ResCenterDiscussionAdapter extends BaseLinearRecyclerViewAdapter {
     private TheirDiscussionDataBinder theirDiscussionDataBinder;
     private LoadMoreDataBinder loadMoreDataBinder;
 
-    private ArrayList<ResCenterDiscussionItemViewModel> data;
+    private ArrayList<DiscussionItemViewModel> data;
     private Context context;
     private int canLoadMore = 0;
 
@@ -98,7 +98,7 @@ public class ResCenterDiscussionAdapter extends BaseLinearRecyclerViewAdapter {
 
     }
 
-    public void setList(List<ResCenterDiscussionItemViewModel> list) {
+    public void setList(List<DiscussionItemViewModel> list) {
         Collections.reverse(list);
         this.data.addAll(0, list);
         this.myDiscussionDataBinder.addAll(list);
@@ -108,14 +108,14 @@ public class ResCenterDiscussionAdapter extends BaseLinearRecyclerViewAdapter {
         notifyDataSetChanged();
     }
 
-    public void addReply(ResCenterDiscussionItemViewModel item) {
+    public void addReply(DiscussionItemViewModel item) {
         this.data.add(item);
         this.myDiscussionDataBinder.addReply(item);
         this.theirDiscussionDataBinder.addReply(item);
         notifyDataSetChanged();
     }
 
-    public ArrayList<ResCenterDiscussionItemViewModel> getData() {
+    public ArrayList<DiscussionItemViewModel> getData() {
         return data;
     }
 
@@ -153,10 +153,10 @@ public class ResCenterDiscussionAdapter extends BaseLinearRecyclerViewAdapter {
         notifyDataSetChanged();
     }
 
-    public void add(int position, ResCenterDiscussionItemViewModel resCenterDiscussionItemViewModel) {
-        this.data.add(position, resCenterDiscussionItemViewModel);
-        theirDiscussionDataBinder.add(position, resCenterDiscussionItemViewModel);
-        myDiscussionDataBinder.add(position, resCenterDiscussionItemViewModel);
+    public void add(int position, DiscussionItemViewModel discussionItemViewModel) {
+        this.data.add(position, discussionItemViewModel);
+        theirDiscussionDataBinder.add(position, discussionItemViewModel);
+        myDiscussionDataBinder.add(position, discussionItemViewModel);
         notifyDataSetChanged();
     }
 

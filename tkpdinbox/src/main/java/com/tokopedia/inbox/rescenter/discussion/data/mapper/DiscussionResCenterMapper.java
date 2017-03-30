@@ -46,7 +46,12 @@ public class DiscussionResCenterMapper implements Func1<Response<TkpdResponse>, 
         List<DiscussionItemData> list = new ArrayList<>();
         for (DiscussionItemEntity item : listDiscussions) {
             DiscussionItemData data = new DiscussionItemData();
-
+            data.setActionBy(item.getActionBy());
+            data.setAttachment(item.getAttachment());
+            data.setCreateTime(item.getCreateTime());
+            data.setCreateTimeStr(item.getCreateTimeStr());
+            data.setResConvId(item.getResConvId());
+            data.setSolutionRemark(item.getSolutionRemark());
             list.add(data);
         }
         return list;

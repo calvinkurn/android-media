@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.rescenter.discussion.view.listener;
 
-import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionData;
-import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.ResCenterDiscussionItemViewModel;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
 
 import java.util.List;
 
@@ -10,7 +9,7 @@ import java.util.List;
  */
 
 public interface ResCenterDiscussionView {
-    void onSuccessGetDiscussion(List<ResCenterDiscussionItemViewModel> discussionData);
+    void onSuccessGetDiscussion(List<DiscussionItemViewModel> discussionData);
 
     void onSuccessSendDiscussion();
 

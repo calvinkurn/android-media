@@ -17,7 +17,7 @@ import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.ResCenterDiscussionItemViewModel;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -85,7 +85,7 @@ public class TheirDiscussionDataBinder extends DataBinder<TheirDiscussionDataBin
         }
     }
 
-    private ArrayList<ResCenterDiscussionItemViewModel> list;
+    private ArrayList<DiscussionItemViewModel> list;
     private Context context;
     private SimpleDateFormat sdf;
     private Locale id;
@@ -96,7 +96,7 @@ public class TheirDiscussionDataBinder extends DataBinder<TheirDiscussionDataBin
         this.list = new ArrayList<>();
         this.context = context;
         this.id = new Locale("in", "ID");
-        this.sdf = new SimpleDateFormat("dd MMMM yyyy HH:mm z", id);
+        this.sdf = new SimpleDateFormat(DiscussionItemViewModel.DISCUSSION_DATE_TIME_FORMAT, id);
     }
 
 
@@ -160,18 +160,18 @@ public class TheirDiscussionDataBinder extends DataBinder<TheirDiscussionDataBin
         return list.size();
     }
 
-    public void addAll(List<ResCenterDiscussionItemViewModel> list) {
+    public void addAll(List<DiscussionItemViewModel> list) {
         this.list.addAll(0, list);
         notifyDataSetChanged();
     }
 
-    public void addReply(ResCenterDiscussionItemViewModel item) {
+    public void addReply(DiscussionItemViewModel item) {
         this.list.add(item);
         notifyDataSetChanged();
     }
 
-    public void add(int position, ResCenterDiscussionItemViewModel ResCenterDiscussionItemViewModel) {
-        this.list.add(position, ResCenterDiscussionItemViewModel);
+    public void add(int position, DiscussionItemViewModel DiscussionItemViewModel) {
+        this.list.add(position, DiscussionItemViewModel);
         notifyDataSetChanged();
     }
 

@@ -10,7 +10,7 @@ import java.util.List;
 
 public class DiscussionEntity {
 
-    @SerializedName("listdiscussion")
+    @SerializedName("listConversation")
     private List<DiscussionItemEntity> listDiscussion;
 
     public List<DiscussionItemEntity> getListDiscussion() {

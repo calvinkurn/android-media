@@ -5,8 +5,9 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionData;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionItemData;
 import com.tokopedia.inbox.rescenter.discussion.view.listener.ResCenterDiscussionView;
-import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.ResCenterDiscussionItemViewModel;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -85,18 +86,18 @@ public class GetDiscussionSubscriber extends Subscriber<DiscussionData> {
         viewListener.onSuccessGetDiscussion(mappingToViewModel(discussionData));
     }
 
-    private List<ResCenterDiscussionItemViewModel> mappingToViewModel(DiscussionData discussionData) {
-        List<ResCenterDiscussionItemViewModel> list = new ArrayList<>();
+    private List<DiscussionItemViewModel> mappingToViewModel(DiscussionData discussionData) {
+        List<DiscussionItemViewModel> list = new ArrayList<>();
 
-        list.add(new ResCenterDiscussionItemViewModel("Message 1", "24 Jul 2016 11:45 WIB", "3045173"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 2", "24 Jul 2016 11:45 WIB"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 3", "24 Jul 2016 11:45 WIB", "3045173"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 4", "24 Jul 2016 11:45 WIB"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 5", "24 Jul 2016 11:45 WIB"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 6", "24 Jul 2016 11:45 WIB"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 7", "25 Jul 2016 11:45 WIB"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 8", "25 Jul 2016 11:45 WIB"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 3", "26 Jul 2016 11:45 WIB", "3045173"));
+        for(DiscussionItemData item : discussionData.getListDiscussionData()){
+            DiscussionItemViewModel viewModel = new DiscussionItemViewModel();
+            viewModel.setMessage(item.getSolutionRemark());
+            viewModel.setMessageReplyTimeFmt(item.getCreateTimeStr());
+            viewModel.setUserName("ASDASD");
+            viewModel.setUserLabelId(1);
+            viewModel.setUserLabel("USERLABEL");
+            list.add(viewModel);
+        }
 
         return list;
     }

@@ -18,9 +18,8 @@ import com.tokopedia.inbox.rescenter.discussion.view.adapter.ResCenterDiscussion
 import com.tokopedia.inbox.rescenter.discussion.view.listener.ResCenterDiscussionView;
 import com.tokopedia.inbox.rescenter.discussion.view.presenter.ResCenterDiscussionPresenter;
 import com.tokopedia.inbox.rescenter.discussion.view.presenter.ResCenterDiscussionPresenterImpl;
-import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.ResCenterDiscussionItemViewModel;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -135,7 +134,7 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
     }
 
     private void addTemporaryMessage() {
-        ResCenterDiscussionItemViewModel tempMessage = new ResCenterDiscussionItemViewModel();
+        DiscussionItemViewModel tempMessage = new DiscussionItemViewModel();
         tempMessage.setMessage(replyEditText.getText().toString());
         adapter.addReply(tempMessage);
         scrollToBottom();
@@ -156,7 +155,7 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
     }
 
     @Override
-    public void onSuccessGetDiscussion(List<ResCenterDiscussionItemViewModel> list) {
+    public void onSuccessGetDiscussion(List<DiscussionItemViewModel> list) {
         finishLoading();
         adapter.setList(list);
     }
@@ -164,10 +163,10 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
     @Override
     public void onSuccessSendDiscussion() {
         replyEditText.setText("");
-        adapter.add(0, new ResCenterDiscussionItemViewModel("Message reply", "24 Jul 2016 11:45 WIB", "3045173"));
+        adapter.add(0, new DiscussionItemViewModel("Message reply", "24 Jul 2016 11:45 WIB", "3045173"));
         adapter.remove(adapter.getData().size() - 1);
         setViewEnabled(true);
-        adapter.addReply(new ResCenterDiscussionItemViewModel("Message reply success", "24 Jul 2016 11:45 WIB", "3045173"));
+        adapter.addReply(new DiscussionItemViewModel("Message reply success", "24 Jul 2016 11:45 WIB", "3045173"));
         adapter.notifyDataSetChanged();
         finishLoading();
         scrollToBottom();

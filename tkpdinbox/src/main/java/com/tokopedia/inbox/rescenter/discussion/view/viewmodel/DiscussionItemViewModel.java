@@ -10,8 +10,9 @@ import java.util.Locale;
  * Created by nisie on 3/29/17.
  */
 
-public class ResCenterDiscussionItemViewModel {
+public class DiscussionItemViewModel {
 
+    public static final java.lang.String DISCUSSION_DATE_TIME_FORMAT = "dd-MM-yyyy hh:mm:ss";
     private String message;
     private String userName;
     private String userLabel;
@@ -19,16 +20,7 @@ public class ResCenterDiscussionItemViewModel {
     private String messageReplyTimeFmt;
     private String messageCreateBy;
 
-    public ResCenterDiscussionItemViewModel(String message, String messageReplyTimeFmt) {
-        this.userName = "James";
-        this.message = message;
-        this.userLabel = "Pengguna";
-        this.userLabelId = 1;
-        this.messageReplyTimeFmt = messageReplyTimeFmt;
-        this.messageCreateBy = "1234";
-    }
-
-    public ResCenterDiscussionItemViewModel(String message, String messageReplyTimeFmt, String messageCreateBy) {
+    public DiscussionItemViewModel(String message, String messageReplyTimeFmt, String messageCreateBy) {
         this.userName = "James";
         this.message = message;
         this.userLabel = "Pengguna";
@@ -37,7 +29,7 @@ public class ResCenterDiscussionItemViewModel {
         this.messageCreateBy = messageCreateBy;
     }
 
-    public ResCenterDiscussionItemViewModel() {
+    public DiscussionItemViewModel() {
     }
 
     public String getMessage() {
@@ -91,7 +83,7 @@ public class ResCenterDiscussionItemViewModel {
     public String getMessageReplyDateFmt() {
         try {
             Locale id = new Locale("in", "ID");
-            SimpleDateFormat e = new SimpleDateFormat("dd MMMM yyyy HH:mm z", id);
+            SimpleDateFormat e = new SimpleDateFormat(DISCUSSION_DATE_TIME_FORMAT, id);
             SimpleDateFormat newSdf = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
             Calendar calNow = Calendar.getInstance();
             calNow.setTime(new Date());
@@ -109,8 +101,8 @@ public class ResCenterDiscussionItemViewModel {
     public String getMessageReplyHourFmt() {
         try {
             Locale id = new Locale("in", "ID");
-            SimpleDateFormat e = new SimpleDateFormat("dd MMMM yyyy HH:mm z", id);
-            SimpleDateFormat newSdf = new SimpleDateFormat("HH:mm z", Locale.ENGLISH);
+            SimpleDateFormat e = new SimpleDateFormat(DISCUSSION_DATE_TIME_FORMAT, id);
+            SimpleDateFormat newSdf = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
             String hour = newSdf.format(e.parse(this.getMessageReplyTimeFmt()));
             return hour;
         } catch (ParseException var5) {

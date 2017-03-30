@@ -16,7 +16,7 @@ import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.ResCenterDiscussionItemViewModel;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -74,7 +74,7 @@ public class MyDiscussionDataBinder extends DataBinder<MyDiscussionDataBinder.Vi
         }
     }
 
-    ArrayList<ResCenterDiscussionItemViewModel> list;
+    ArrayList<DiscussionItemViewModel> list;
     Context context;
     SimpleDateFormat sdf;
     Locale id;
@@ -85,7 +85,7 @@ public class MyDiscussionDataBinder extends DataBinder<MyDiscussionDataBinder.Vi
         this.list = new ArrayList<>();
         this.context = context;
         this.id = new Locale("in", "ID");
-        this.sdf = new SimpleDateFormat("dd MMMM yyyy HH:mm z", id);
+        this.sdf = new SimpleDateFormat(DiscussionItemViewModel.DISCUSSION_DATE_TIME_FORMAT, id);
     }
 
 
@@ -142,12 +142,12 @@ public class MyDiscussionDataBinder extends DataBinder<MyDiscussionDataBinder.Vi
         return list.size();
     }
 
-    public void addReply(ResCenterDiscussionItemViewModel list) {
+    public void addReply(DiscussionItemViewModel list) {
         this.list.add(list);
         notifyDataSetChanged();
     }
 
-    public void addAll(List<ResCenterDiscussionItemViewModel> list) {
+    public void addAll(List<DiscussionItemViewModel> list) {
         this.list.addAll(0, list);
         notifyDataSetChanged();
     }
@@ -158,8 +158,8 @@ public class MyDiscussionDataBinder extends DataBinder<MyDiscussionDataBinder.Vi
     }
 
 
-    public void add(int position, ResCenterDiscussionItemViewModel ResCenterDiscussionItemViewModel) {
-        this.list.add(position, ResCenterDiscussionItemViewModel);
+    public void add(int position, DiscussionItemViewModel DiscussionItemViewModel) {
+        this.list.add(position, DiscussionItemViewModel);
         notifyDataSetChanged();
     }
 

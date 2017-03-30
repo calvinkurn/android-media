@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.view.presenter;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsCheckExistGroupUseCase;
@@ -64,7 +65,6 @@ public class TopAdsManageGroupPromoPresenterImplTest {
         public void checkIsGroupExist(){
             topadsManagement.checkIsGroupExist("Alalalaa");
         }
-
 
 
         @Override
