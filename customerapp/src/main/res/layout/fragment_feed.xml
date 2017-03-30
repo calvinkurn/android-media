@@ -62,17 +62,6 @@
             app:miniFabDrawableTint="@android:color/white"
             app:miniFabTitleTextColor="@android:color/white"/>
 
-        <!--<android.support.design.widget.FloatingActionButton-->
-            <!--android:id="@+id/fab_speed_dial"-->
-            <!--android:src="@drawable/ic_add_black_48dp_00"-->
-            <!--app:fabSize="normal"-->
-            <!--app:backgroundTint="@color/tkpd_main_green"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_margin="@dimen/activity_horizontal_margin"-->
-            <!--android:layout_gravity="bottom|end"-->
-            <!--app:layout_anchorGravity="bottom|right|end"/>-->
-
     </FrameLayout>
 
 </RelativeLayout>

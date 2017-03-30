@@ -453,12 +453,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     }
 
     private void setFabListener() {
-//        fabAddProduct.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                ProductActivity.moveToAddProduct(getActivity());
-//            }
-//        });
         fabAddProduct.setListenerFabClick(this);
         fabAddProduct.setMenuListener(new SimpleMenuListenerAdapter() {
             @Override

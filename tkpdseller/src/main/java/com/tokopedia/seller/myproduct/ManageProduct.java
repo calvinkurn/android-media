@@ -264,25 +264,6 @@ public class ManageProduct extends TkpdActivity implements
 
         getOverflowMenu();
 
-//        fabAddProduct = (FloatingActionButton) findViewById(R.id.fab);
-//        fabAddProduct.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                lvadapter.clearCheckdData();
-//                lvListProd.clearChoices();
-//                lvListProd.setItemChecked(-1, false);
-//                if (isProdManager == 1) {
-//                    ProductActivity.moveToAddProduct(ManageProduct.this);
-//
-//                    // analytic below : https://phab.tokopedia.com/T18496
-//                    UnifyTracking.eventClickAPManageProductPlus();
-//                } else {
-//                    CommonUtils.UniversalToast(getBaseContext(),
-//                            getString(R.string.error_permission));
-//                }
-//            }
-//        });
-
         fabAddProduct = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
         fabAddProduct.setListenerFabClick(new ListenerFabClick() {
             @Override
