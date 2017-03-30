@@ -43,9 +43,11 @@ public interface BrowsePresenter {
 
     void onBackPressed();
 
-    void onRenderLowerCategoryLevel(String departementId, String name, String title);
+    void onRenderLowerCategoryLevel(String departmentId, String name, String title);
 
     String getSearchQuery();
 
     BrowseProductRouter.GridType getGridType();
+
+    void onRenderUpperCategoryLevel(String departmentId, String name);
 }

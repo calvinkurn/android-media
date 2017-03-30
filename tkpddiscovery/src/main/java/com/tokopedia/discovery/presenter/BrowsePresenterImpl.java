@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.Fragment;
 import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 
@@ -28,11 +27,9 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.activity.BrowseProductAtribut;
 import com.tokopedia.discovery.activity.FilterMapAtribut;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterActivity;
@@ -579,10 +576,10 @@ public class BrowsePresenterImpl implements BrowsePresenter {
     }
 
     @Override
-    public void onRenderLowerCategoryLevel(String departementId, String name, String title) {
+    public void onRenderLowerCategoryLevel(String departmentId, String name, String title) {
         categoryLevel.push(new SimpleCategory(browseModel.getDepartmentId(), title));
-        if (departementId != null && name != null) {
-            browseModel.setDepartmentId(departementId);
+        if (departmentId != null && name != null) {
+            browseModel.setDepartmentId(departmentId);
         }
     }
 
@@ -594,6 +591,13 @@ public class BrowsePresenterImpl implements BrowsePresenter {
     @Override
     public BrowseProductRouter.GridType getGridType() {
         return gridType;
+    }
+
+    @Override
+    public void onRenderUpperCategoryLevel(String departmentId, String name) {
+        if (departmentId != null && name != null) {
+            browseModel.setDepartmentId(departmentId);
+        }
     }
 
     private void openFilterPageIfNeeded(DataValue filterAttribute, String source, int activeTab) {

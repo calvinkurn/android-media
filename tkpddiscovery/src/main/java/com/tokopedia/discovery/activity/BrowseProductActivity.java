@@ -502,6 +502,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     @Override
     public void renderUpperCategoryLevel(SimpleCategory simpleCategory) {
+        browsePresenter.onRenderUpperCategoryLevel(simpleCategory.getId(), simpleCategory.getName());
         getIntent().putExtra(EXTRA_TITLE, simpleCategory.getName());
         renderNewCategoryLevel(simpleCategory.getId(), simpleCategory.getName());
     }
