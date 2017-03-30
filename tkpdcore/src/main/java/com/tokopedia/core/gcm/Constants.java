@@ -20,6 +20,8 @@ public interface Constants {
     String ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX = "sender_id";
     String ARG_NOTIFICATION_APPLINK_DISCUSSION = "talk";
     String ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX = "sender_id";
+    String ARG_NOTIFICATION_APPLINK_PROMO_LABEL = "promo";
+    String KEY_ORIGIN = "origin";
     int REGISTRATION_STATUS_OK = 1;
     int REGISTRATION_STATUS_ERROR = 2;
     String REGISTRATION_MESSAGE_OK = "FCM Sucessfully";

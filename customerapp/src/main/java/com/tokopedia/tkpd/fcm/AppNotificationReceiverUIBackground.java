@@ -131,7 +131,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 mFCMCacheManager.resetCache(data);
             }
         } else {
-            if(data.getString("origin", "").equals("moengage"))
+            if(data.getString(Constants.KEY_ORIGIN, "").equals(Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL))
                 prepareAndExecuteApplinkPromoNotification(data);
             else
                 prepareAndExecuteApplinkNotification(data);
