@@ -149,6 +149,8 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     public static final String PRODUCT_DB = "product_db";
     public static final String ADD_PRODUCT_MULTIPLE_IMAGE_PATH = "ADD_PRODUCT_MULTIPLE_IMAGE_PATH";
     public static final String NO_CATALOG_OPTION = "Tidak menggunakan katalog";
+    public static final int DEFAULT_MAX_IMAGE_WIDTH = 4096;
+    public static final int DEFAULT_MAX_IMAGE_HEIGHT = 2160;
     /**
      * if single add product or edit product alone then let it to "0"
      * else if multiple add products then position should be vary
@@ -1226,16 +1228,13 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                     public File call(String url) {
                         FutureTarget<File> future = Glide.with(getActivity())
                                 .load(url)
-                                .downloadOnly(4096, 2160);
+                                .downloadOnly(DEFAULT_MAX_IMAGE_WIDTH, DEFAULT_MAX_IMAGE_HEIGHT);
                         File photo = null;
                         try {
                             File cacheFile = future.get();
                             photo = UploadPhotoTask.writeImageToTkpdPath(cacheFile);
                             Log.d(TAG, messageTAG + "path -> " + (photo != null ? photo.getAbsolutePath() : "kosong"));
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                            throw new RuntimeException(e.getMessage());
-                        } catch (ExecutionException e) {
+                        } catch (InterruptedException | ExecutionException e) {
                             e.printStackTrace();
                             throw new RuntimeException(e.getMessage());
                         }
