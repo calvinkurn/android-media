@@ -393,5 +393,21 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void renderCompletedRequest(RideRequest result) {
         Intent intent = CompleteTripActivity.getCallingIntent(getActivity());
         startActivity(intent);
+        getActivity().finish();
+    }
+
+    @Override
+    public void clearRideConfiguration() {
+        rideConfiguration.clearActiveRequest();
+    }
+
+    @Override
+    public void renderArrivingDriverEvent(RideRequest result) {
+
+    }
+
+    @Override
+    public void onSuccessCancelRideRequest() {
+        rideConfiguration.clearActiveRequest();
     }
 }

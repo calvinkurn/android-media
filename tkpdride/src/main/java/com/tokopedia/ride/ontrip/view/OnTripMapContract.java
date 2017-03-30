@@ -55,6 +55,12 @@ public interface OnTripMapContract {
         void renderDriverCanceledRequest(RideRequest result);
 
         void renderCompletedRequest(RideRequest result);
+
+        void clearRideConfiguration();
+
+        void renderArrivingDriverEvent(RideRequest result);
+
+        void onSuccessCancelRideRequest();
     }
 
     interface Presenter extends CustomerPresenter<View>{

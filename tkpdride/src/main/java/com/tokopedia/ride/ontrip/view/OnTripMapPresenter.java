@@ -197,6 +197,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             @Override
             public void onNext(String s) {
                 getView().showMessage(s);
+                getView().onSuccessCancelRideRequest();
+                getView().navigateToBack();
             }
         });
 
@@ -246,15 +248,18 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().renderAcceptedRequest(result);
                 break;
             case "arriving":
+                getView().renderArrivingDriverEvent(result);
                 break;
             case "in_progress":
                 getView().renderInProgressRequest(result);
                 break;
             case "driver_canceled":
                 getView().renderDriverCanceledRequest(result);
+                getView().clearRideConfiguration();
                 break;
             case "completed":
                 getView().renderCompletedRequest(result);
+                getView().clearRideConfiguration();
                 break;
             default:
 

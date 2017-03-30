@@ -34,6 +34,8 @@ public class RideConfiguration {
 
     public void clearActiveRequest() {
         cacheManager.delete(RIDE_CONFIGURATION);
+        cacheManager.delete(RIDE_SOURCE);
+        cacheManager.delete(RIDE_DESTINATION);
     }
 
     public boolean isWaitingDriverState() {
