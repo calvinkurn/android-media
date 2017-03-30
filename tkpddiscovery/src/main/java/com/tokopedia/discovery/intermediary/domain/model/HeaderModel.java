@@ -9,6 +9,9 @@ public class HeaderModel {
     private String categoryName="";
     private String headerImageUrl="";
 
+    public HeaderModel() {
+    }
+
     public HeaderModel(String categoryName, String headerImageUrl) {
         this.categoryName = categoryName;
         this.headerImageUrl = headerImageUrl;

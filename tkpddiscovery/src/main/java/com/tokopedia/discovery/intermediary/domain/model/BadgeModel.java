@@ -9,6 +9,11 @@ public class BadgeModel {
     private String imageUrl = "";
     private String title = "";
 
+    public BadgeModel(String imageUrl, String title) {
+        this.imageUrl = imageUrl;
+        this.title = title;
+    }
+
     public String getImageUrl() {
         return imageUrl;
     }

@@ -133,4 +133,11 @@
     <item name="separator" type="id"/>
     <item name="thumbnail" type="id"/>
 
+    <item name="recycler_view_curation" type="id"/>
+    <item name="recycler_view_revamp_categories" type="id"/>
+    <item name="image_header" type="id"/>
+    <item name="title_header" type="id"/>
+    <item name="expand_layout" type="id"/>
+    <item name="hide_layout" type="id"/>
+
 </resources>

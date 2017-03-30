@@ -9,6 +9,11 @@ public class LabelModel {
     private String color = "";
     private String title = "";
 
+    public LabelModel(String color, String title) {
+        this.color = color;
+        this.title = title;
+    }
+
     public String getColor() {
         return color;
     }

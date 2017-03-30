@@ -5,6 +5,7 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -24,12 +25,14 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
+import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.intermediary.di.IntermediaryDependencyInjector;
 import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
 import com.tokopedia.discovery.intermediary.domain.model.CuratedSectionModel;
 import com.tokopedia.discovery.intermediary.domain.model.HeaderModel;
+import com.tokopedia.discovery.intermediary.view.adapter.CurationAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryCategoryAdapter;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
 
@@ -62,10 +65,18 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @BindView(R2.id.recycler_view_revamp_categories)
     RecyclerView revampCategoriesRecyclerView;
 
+    @BindView(R2.id.recycler_view_curation)
+    RecyclerView curationRecyclerView;
+
+
+
     private IntermediaryCategoryAdapter categoryAdapter;
     private IntermediaryCategoryAdapter.CategoryListener categoryListener;
     ArrayList<ChildCategoryModel> activeChildren = new ArrayList<>();
     boolean isUsedUnactiveChildren = false;
+
+    private CurationAdapter curationAdapter;
+
 
 
     private IntermediaryContract.Presenter presenter;
@@ -158,7 +169,18 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void renderCuratedProducts(List<CuratedSectionModel> curatedSectionModelList) {
-
+        curationRecyclerView.setHasFixedSize(true);
+        curationRecyclerView.setNestedScrollingEnabled(false);
+        curationAdapter = new CurationAdapter(getActivity());
+        curationAdapter.setHomeMenuWidth(getCategoryWidth());
+        curationRecyclerView.setLayoutManager(
+                new NonScrollLinearLayoutManager(getActivity(),
+                        LinearLayoutManager.VERTICAL,
+                        false)
+        );
+        curationRecyclerView.setAdapter(curationAdapter);
+        curationAdapter.setDataList(curatedSectionModelList);
+        curationAdapter.notifyDataSetChanged();
     }
 
     @Override

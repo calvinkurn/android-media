@@ -14,13 +14,13 @@
             android:layout_height="@dimen/item_revamp_category">
 
             <ImageView
-                android:id="@+id/image_header"
+                android:id="@id/image_header"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"/>
 
             <TextView
-                android:id="@+id/title_header"
+                android:id="@id/title_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
@@ -38,7 +38,7 @@
 
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view_revamp_categories"
+            android:id="@id/recycler_view_revamp_categories"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_vs"
@@ -49,7 +49,7 @@
             android:scrollbars="none" />
 
         <LinearLayout
-            android:id="@+id/expand_layout"
+            android:id="@id/expand_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
@@ -74,7 +74,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/hide_layout"
+            android:id="@id/hide_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
@@ -97,6 +97,13 @@
                 android:src="@drawable/ic_expand_less_grey_24dp"/>
 
         </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/recycler_view_curation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:scrollbars="none" />
 
 
 

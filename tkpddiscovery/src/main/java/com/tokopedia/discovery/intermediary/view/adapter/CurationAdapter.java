@@ -1,0 +1,92 @@
+package com.tokopedia.discovery.intermediary.view.adapter;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.tokopedia.core.network.entity.topPicks.Toppick;
+import com.tokopedia.core.util.NonScrollGridLayoutManager;
+import com.tokopedia.core.widgets.DividerItemDecoration;
+import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.intermediary.domain.model.CuratedSectionModel;
+
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Created by alifa on 3/29/17.
+ */
+
+public class CurationAdapter extends
+        RecyclerView.Adapter<CurationAdapter.ItemRowHolder> {
+
+    private final Context context;
+    private List<CuratedSectionModel> dataList;
+    private int homeMenuWidth;
+
+    public CurationAdapter(Context context) {
+
+        this.context = context;
+        this.dataList = Collections.emptyList();
+    }
+
+
+    @Override
+    public CurationAdapter.ItemRowHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        @SuppressLint("InflateParams") View v = LayoutInflater.from(
+                viewGroup.getContext()).inflate(R.layout.item_curation, null
+        );
+        return new CurationAdapter.ItemRowHolder(v);
+    }
+
+    @Override
+    public void onBindViewHolder(CurationAdapter.ItemRowHolder itemRowHolder, int i) {
+        final CuratedSectionModel curatedSectionModel = dataList.get(i);
+        CuratedProductAdapter itemAdapter = new CuratedProductAdapter(context,
+                curatedSectionModel.getProducts(),homeMenuWidth);
+
+        itemRowHolder.itemTitle.setText(curatedSectionModel.getTitle());
+        itemRowHolder.recycler_view_list.setHasFixedSize(true);
+        itemRowHolder.recycler_view_list.setNestedScrollingEnabled(false);
+        itemRowHolder.recycler_view_list.setLayoutManager(
+                new NonScrollGridLayoutManager(context, 2,
+                        GridLayoutManager.VERTICAL, false));
+        itemRowHolder.recycler_view_list.addItemDecoration(new DividerItemDecoration(context));
+        itemRowHolder.recycler_view_list.setAdapter(itemAdapter);
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return  dataList.size();
+    }
+
+    public void setDataList(List<CuratedSectionModel> dataList) {
+        this.dataList = dataList;
+    }
+
+    public void setHomeMenuWidth(int homeMenuWidth) {
+        this.homeMenuWidth = homeMenuWidth;
+    }
+
+    class ItemRowHolder extends RecyclerView.ViewHolder {
+
+        TextView itemTitle;
+        RecyclerView recycler_view_list;
+        TextView viewAll;
+
+        ItemRowHolder(View view) {
+            super(view);
+            this.itemTitle = (TextView) view.findViewById(R.id.itemTitle);
+            this.recycler_view_list = (RecyclerView) view.findViewById(R.id.recycler_view_list);
+            this.viewAll = (TextView) view.findViewById(R.id.view_all);
+        }
+
+    }
+
+}
