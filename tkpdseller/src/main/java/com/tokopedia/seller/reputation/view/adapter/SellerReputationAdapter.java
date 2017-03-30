@@ -14,12 +14,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.gmstat.utils.DateHeaderFormatter;
 import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
 import com.tokopedia.seller.reputation.view.helper.ReputationHeaderViewHelper;
+import com.tokopedia.seller.reputation.view.model.EmptyListModel;
 import com.tokopedia.seller.reputation.view.model.EmptySeparatorModel;
 import com.tokopedia.seller.reputation.view.model.ReputationReviewModel;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
@@ -71,6 +74,10 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
                 itemLayoutView = LayoutInflater.from(viewGroup.getContext())
                         .inflate(R.layout.empty_separator_model, viewGroup, false);
                 return new EmptySeparatorViewHolder(itemLayoutView);
+            case EmptyListModel.TYPE:
+                itemLayoutView = LayoutInflater.from(viewGroup.getContext())
+                        .inflate(R.layout.deisgn_retry_reputation, viewGroup, false);
+                return new EmptyListViewHolder(itemLayoutView);
             default:
                 return super.onCreateViewHolder(viewGroup, viewType);
         }
@@ -87,6 +94,9 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
                 ((SellerDateHeaderViewHolder) holder).bindData((SetDateHeaderModel) list.get(position));
                 break;
             case EmptySeparatorModel.TYPE:
+                break;
+            case EmptyListModel.TYPE:
+                ((EmptyListViewHolder) holder).bindData((EmptyListModel) list.get(position));
                 break;
             default:
                 super.onBindViewHolder(holder, position);
@@ -175,6 +185,11 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
         list.clear();
     }
 
+    public void insertHeader(SetDateHeaderModel headerModel) {
+        list.add(0, headerModel);
+        notifyItemInserted(0);
+    }
+
     public void addAllWithoutNotify(List<TypeBasedModel> datas) {
         list.addAll(datas);
     }
@@ -221,9 +236,13 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
         private final ReputationHeaderViewHelper reputationViewHelper;
         private SetDateHeaderModel setDateHeaderModel;
         private Fragment fragment;
+        private DateHeaderFormatter dateHeaderFormatter;
 
         public SellerDateHeaderViewHolder(View itemView) {
             super(itemView);
+            dateHeaderFormatter = new DateHeaderFormatter(
+                    itemView.getResources().getStringArray(R.array.month_names_abrev)
+            );
             reputationViewHelper = new ReputationHeaderViewHelper(itemView);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -253,6 +272,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
             this.setDateHeaderModel = setDateHeaderModel;
 
             reputationViewHelper.bindDate(
+                    dateHeaderFormatter,
                     setDateHeaderModel.getsDate(),
                     setDateHeaderModel.geteDate(),
                     DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE,
@@ -265,6 +285,27 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
         public EmptySeparatorViewHolder(View itemView) {
             super(itemView);
+        }
+    }
+
+    public class EmptyListViewHolder extends RecyclerView.ViewHolder {
+
+        private LinearLayout containerClick;
+
+        public EmptyListViewHolder(View itemView) {
+            super(itemView);
+
+            containerClick = (LinearLayout) itemView.findViewById(R.id.reputation_container_change_date);
+            containerClick.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+        }
+
+        public void bindData(EmptyListModel emptyListModel) {
+
         }
     }
 

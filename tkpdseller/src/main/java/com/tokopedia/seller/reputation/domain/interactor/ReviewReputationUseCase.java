@@ -14,6 +14,8 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.tokopedia.seller.util.ShopNetworkController.RequestParamFactory.KEY_SHOP_ID;
+
 /**
  * @author normansyahputa on 3/16/17.
  */
@@ -31,12 +33,16 @@ public class ReviewReputationUseCase extends UseCase<SellerReputationDomain> {
 
     @Override
     public Observable<SellerReputationDomain> createObservable(RequestParams requestParams) {
-        throw new RuntimeException("this is didn't use in here !!");
+        return reputationReviewRepository.getReputationHistory(requestParams);
     }
 
     @Override
     public void execute(RequestParams requestParams, Subscriber<SellerReputationDomain> subscriber) {
-        throw new RuntimeException("this is didn't use in here !!");
+        this.subscription = createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(subscriber);
     }
 
     public Observable<SellerReputationDomain> createObservable(String shopId, Map<String, String> param) {
@@ -49,5 +55,17 @@ public class ReviewReputationUseCase extends UseCase<SellerReputationDomain> {
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(subscriber);
+    }
+
+    public static class RequestParamFactory {
+        public static final String KEY_REVIEW_REPUTATION_PARAM = "review_reputation_param";
+
+        public static RequestParams generateRequestParam(String shopId,
+                                                         Map<String, String> param) {
+            RequestParams requestParams = RequestParams.create();
+            requestParams.putString(KEY_SHOP_ID, shopId);
+            requestParams.putObject(KEY_REVIEW_REPUTATION_PARAM, param);
+            return requestParams;
+        }
     }
 }

@@ -30,12 +30,16 @@ public class ShopInfoUseCase extends UseCase<ShopModel> {
 
     @Override
     public Observable<ShopModel> createObservable(RequestParams requestParams) {
-        throw new RuntimeException("this is didn't use in here !!");
+        return reputationReviewRepository.getShopInfo(requestParams);
     }
 
     @Override
     public void execute(RequestParams requestParams, Subscriber<ShopModel> subscriber) {
-        throw new RuntimeException("this is didn't use in here !!");
+        this.subscription = createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(subscriber);
     }
 
     public void execute(String userid, String deviceId,

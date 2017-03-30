@@ -1,5 +1,6 @@
 package com.tokopedia.seller.reputation.view.presenter;
 
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -13,6 +14,7 @@ import com.tokopedia.seller.reputation.domain.interactor.ReviewReputationUseCase
 import com.tokopedia.seller.reputation.domain.model.SellerReputationDomain;
 import com.tokopedia.seller.reputation.util.ReputationDateUtils;
 import com.tokopedia.seller.reputation.view.SellerReputationView;
+import com.tokopedia.seller.reputation.view.model.EmptyListModel;
 import com.tokopedia.seller.reputation.view.model.ReputationReviewModel;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
 import com.tokopedia.seller.topads.utils.DefaultErrorSubscriber;
@@ -119,6 +121,25 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
         return shopInfoParam;
     }
 
+    private RequestParams fillParamShopInfo2() {
+        return ShopNetworkController.RequestParamFactory.generateRequestParam(sessionHandler.getLoginID(),
+                gcmHandler.getRegistrationId(), fillParamShopInfo());
+    }
+
+    private RequestParams fillParamReview() {
+        TKPDMapParam<String, String> mapParam = fillParam();
+        String shopID = sessionHandler.getShopID();
+
+        return ReviewReputationUseCase.RequestParamFactory.generateRequestParam(shopID, mapParam);
+    }
+
+    private RequestParams mergeFillParam() {
+        return ReviewReputationMergeUseCase.RequestParamFactory.generateRequestParam(
+                fillParamReview(),
+                fillParamShopInfo2()
+        );
+    }
+
     public TopAdsAddProductListPresenter.NetworkStatus getNetworkStatus() {
         return networkStatus;
     }
@@ -154,10 +175,7 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
     public void firstTimeNetworkCall2() {
         if (isHitNetwork()) {
             reviewReputationMergeUseCase.execute(
-                    sessionHandler.getLoginID(),
-                    gcmHandler.getRegistrationId(),
-                    fillParamShopInfo(),
-                    sessionHandler.getShopID(), fillParam()
+                    mergeFillParam()
                     , new DefaultErrorSubscriber<List<Object>>(errorNetworkListener) {
                         @Override
                         public void onCompleted() {
@@ -189,6 +207,11 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
                                             sellerReputationDomain.getLinks().getNext() == null);
                                     List<TypeBasedModel> typeBasedModels = convertTo(sellerReputationDomain.getList());
 
+                                    EmptyListModel emptyListModel = null;
+                                    if (typeBasedModels.isEmpty()) {
+                                        typeBasedModels.add(emptyListModel = new EmptyListModel());
+                                    }
+
                                     SetDateHeaderModel headerModel = getView().getHeaderModel();
                                     if (headerModel == null) {
                                         SetDateHeaderModel setDateHeaderModel = new SetDateHeaderModel();
@@ -200,10 +223,13 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
                                         setDateHeaderModel.seteDate(sellerReputationRequest.geteDate());
 
                                         typeBasedModels.add(0, setDateHeaderModel);
+                                        if (emptyListModel != null)
+                                            emptyListModel.setSetDateHeaderModel(setDateHeaderModel);
                                     } else {
                                         typeBasedModels.add(0, headerModel);
+                                        if (emptyListModel != null)
+                                            emptyListModel.setSetDateHeaderModel(headerModel);
                                     }
-//                                    typeBasedModels.add(0, new EmptySeparatorModel());
                                     getView().loadMore(typeBasedModels);
                                 }
                             }
@@ -249,7 +275,7 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
 
     public void loadMoreNetworkCall() {
         if (isHitNetwork()) {
-            reviewReputationUseCase.execute(sessionHandler.getShopID(), fillParam(),
+            reviewReputationUseCase.execute(fillParamShopInfo2(),
                     new DefaultErrorSubscriber<SellerReputationDomain>(errorNetworkListener) {
                         @Override
                         public void onCompleted() {

@@ -14,6 +14,9 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.tokopedia.seller.reputation.domain.interactor.ReviewReputationMergeUseCase.RequestParamFactory.KEY_REVIEW_REPUTATION_CONTAINER_PARAM;
+import static com.tokopedia.seller.reputation.domain.interactor.ReviewReputationMergeUseCase.RequestParamFactory.KEY_SHOP_INFO__CONTAINER_PARAM;
+
 /**
  * @author normansyahputa on 3/17/17.
  */
@@ -21,6 +24,7 @@ import rx.schedulers.Schedulers;
 public class ReviewReputationMergeUseCase extends UseCase<List<Object>> {
     private final ReviewReputationUseCase reviewReputationUseCase;
     private final ShopInfoUseCase shopInfoUseCase;
+
 
     public ReviewReputationMergeUseCase(
             ThreadExecutor threadExecutor,
@@ -41,8 +45,6 @@ public class ReviewReputationMergeUseCase extends UseCase<List<Object>> {
                 shopInfoUseCase.createObservable(userid, deviceId, shopInfoParam),
                 reviewReputationUseCase.createObservable(shopId, param)
         ).toList();
-
-
     }
 
     public void execute(String userid, String deviceId,
@@ -58,11 +60,30 @@ public class ReviewReputationMergeUseCase extends UseCase<List<Object>> {
 
     @Override
     public Observable<List<Object>> createObservable(RequestParams requestParams) {
-        throw new RuntimeException("this is didn't use in here !!");
+        return Observable.concat(
+                shopInfoUseCase.createObservable((RequestParams) requestParams.getObject(KEY_SHOP_INFO__CONTAINER_PARAM)),
+                reviewReputationUseCase.createObservable((RequestParams) requestParams.getObject(KEY_REVIEW_REPUTATION_CONTAINER_PARAM))
+        ).toList();
     }
 
     @Override
     public void execute(RequestParams requestParams, Subscriber<List<Object>> subscriber) {
-        throw new RuntimeException("this is didn't use in here !!");
+        createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(subscriber);
+    }
+
+    public static class RequestParamFactory {
+        public static final String KEY_REVIEW_REPUTATION_CONTAINER_PARAM = "KEY_REVIEW_REPUTATION_CONTAINER_PARAM";
+        public static final String KEY_SHOP_INFO__CONTAINER_PARAM = "KEY_SHOP_INFO__CONTAINER_PARAM";
+
+        public static RequestParams generateRequestParam(RequestParams reviewParam, RequestParams shopInfoParam) {
+            RequestParams requestParams = RequestParams.create();
+            requestParams.putObject(KEY_REVIEW_REPUTATION_CONTAINER_PARAM, reviewParam);
+            requestParams.putObject(KEY_SHOP_INFO__CONTAINER_PARAM, shopInfoParam);
+            return requestParams;
+        }
     }
 }

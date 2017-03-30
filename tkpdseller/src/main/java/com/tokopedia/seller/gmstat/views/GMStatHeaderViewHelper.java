@@ -13,6 +13,7 @@ import android.view.View;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.library.LoaderImageView;
 import com.tokopedia.seller.gmstat.library.LoaderTextView;
+import com.tokopedia.seller.gmstat.utils.DateHeaderFormatter;
 import com.tokopedia.seller.lib.datepicker.DatePickerActivity;
 import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
 import com.tokopedia.seller.lib.datepicker.model.PeriodRangeModel;
@@ -35,17 +36,18 @@ import static com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils.getDateWit
 public class GMStatHeaderViewHelper {
 
     public static final int MOVE_TO_SET_DATE = 1;
+    public static final String YYYY_M_MDD = "yyyyMMdd";
     private static final int MAX_DATE_RANGE = 60;
     private static final String MIN_DATE = "25/07/2015";
     private static final String DATE_FORMAT = "dd/MM/yyyy";
     private static final Locale locale = new Locale("in", "ID");
     protected LoaderTextView calendarRange;
+    protected LoaderImageView calendarArrowIcon;
+    protected LoaderImageView calendarIcon;
+    protected View itemView;
     private String[] monthNamesAbrev;
-    private LoaderImageView calendarArrowIcon;
-    private LoaderImageView calendarIcon;
     private int gredyColor;
     private int greenColor;
-    private View itemView;
     private boolean isGmStat;
     private long sDate;
     private long eDate;
@@ -150,6 +152,38 @@ public class GMStatHeaderViewHelper {
         isLoading = true;
     }
 
+    /**
+     * this is for {@link com.tokopedia.seller.reputation.view.adapter.SellerReputationAdapter}
+     *
+     * @param dateHeaderFormatter
+     * @param sDate
+     * @param eDate
+     * @param lastSelectionPeriod
+     * @param selectionType
+     */
+    public void bindDate(DateHeaderFormatter dateHeaderFormatter, long sDate, long eDate,
+                         int lastSelectionPeriod, int selectionType) {
+        this.sDate = sDate;
+        this.eDate = eDate;
+        this.lastSelection = lastSelectionPeriod;
+        this.selectionType = selectionType;
+
+        String startDate = null;
+        if (sDate != -1) {
+            startDate = dateHeaderFormatter.getStartDateFormat(sDate);
+        }
+
+        String endDate = null;
+        if (eDate != -1) {
+            endDate = dateHeaderFormatter.getEndDateFormat(eDate);
+        }
+
+        calendarRange.setText(startDate + " - " + endDate);
+
+        setImageIcon();
+        stopLoading();
+    }
+
     public void bindDate(long sDate, long eDate, int lastSelectionPeriod, int selectionType) {
         this.sDate = sDate;
         this.eDate = eDate;
@@ -160,7 +194,7 @@ public class GMStatHeaderViewHelper {
         if (sDate != -1) {
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(sDate);
-            DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", locale);
+            DateFormat dateFormat = new SimpleDateFormat(YYYY_M_MDD, locale);
             startDate = dateFormat.format(cal.getTime());
             startDate = getDateWithYear(Integer.parseInt(startDate), monthNamesAbrev);
         }
@@ -169,7 +203,7 @@ public class GMStatHeaderViewHelper {
         if (eDate != -1) {
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(eDate);
-            DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", locale);
+            DateFormat dateFormat = new SimpleDateFormat(YYYY_M_MDD, locale);
             endDate = dateFormat.format(cal.getTime());
             int end = Integer.parseInt(endDate);
             Log.d("MNORMANSYAH", "endDate " + endDate + " int " + Integer.parseInt(endDate) + " end " + end);

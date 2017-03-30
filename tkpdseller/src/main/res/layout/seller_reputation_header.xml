@@ -28,9 +28,8 @@
     <RelativeLayout
         android:id="@+id/rl_reputation_point_calculation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="54dp"
         android:layout_below="@id/seller_reputation_header_view"
-        android:layout_marginBottom="17dp"
         android:layout_marginTop="17dp">
 
         <View
@@ -46,10 +45,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@id/separator_top"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="17dp"
             android:text="@string/perhitungan_poin_reputasi"
             android:textColor="@color/black_fifty_four_percent"
             android:textSize="16sp" />
@@ -61,10 +59,11 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignTop="@id/reputation_point_calculation"
+            android:layout_centerVertical="true"
             android:layout_marginEnd="17dp"
             android:layout_marginRight="17dp"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/ic_set_date_next" />
+            android:layout_marginTop="3dp"
+            app:srcCompat="@drawable/ic_arrow_right" />
 
 
     </RelativeLayout>

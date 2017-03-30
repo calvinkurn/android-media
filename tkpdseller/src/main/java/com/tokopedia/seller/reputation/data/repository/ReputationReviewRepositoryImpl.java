@@ -1,5 +1,6 @@
 package com.tokopedia.seller.reputation.data.repository;
 
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.reputation.data.source.cloud.CloudReputationReviewDataSource;
 import com.tokopedia.seller.reputation.domain.ReputationReviewRepository;
@@ -33,5 +34,15 @@ public class ReputationReviewRepositoryImpl implements ReputationReviewRepositor
     @Override
     public Observable<ShopModel> getShopInfo(String userid, String deviceId, ShopNetworkController.ShopInfoParam shopInfoParam) {
         return shopNetworkController.getShopInfo2(userid, deviceId, shopInfoParam);
+    }
+
+    @Override
+    public Observable<SellerReputationDomain> getReputationHistory(RequestParams requestParams) {
+        return cloudReputationReviewDataSource.getReputationHistory(requestParams);
+    }
+
+    @Override
+    public Observable<ShopModel> getShopInfo(RequestParams requestParams) {
+        return shopNetworkController.getShopInfo2(requestParams);
     }
 }

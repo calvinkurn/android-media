@@ -42,15 +42,15 @@
 
         <com.tokopedia.seller.gmstat.library.LoaderImageView
             android:id="@+id/calendar_arrow_icon"
-            android:layout_width="7dp"
-            android:layout_height="16dp"
+            android:layout_width="@dimen/topads_arrow_left_width"
+            android:layout_height="@dimen/topads_arrow_left_height"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="6dp"
             android:layout_marginLeft="6dp"
             android:layout_marginRight="6dp"
-            android:scaleType="fitXY"
             app:srcCompat="@drawable/ic_arrow_up"
             app:use_gradient="true" />
     </RelativeLayout>

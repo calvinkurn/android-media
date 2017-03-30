@@ -1,7 +1,10 @@
 package com.tokopedia.seller.reputation.view.helper;
 
+import android.graphics.drawable.Drawable;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.View;
 
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.views.GMStatHeaderViewHelper;
 
 /**
@@ -19,5 +22,13 @@ public class ReputationHeaderViewHelper extends GMStatHeaderViewHelper {
         calendarRange.setText(startDate + " - " + endDate);
         setImageIcon();
         stopLoading();
+    }
+
+    @Override
+    protected void setImageIcon() {
+        Drawable setDateNext = AppCompatDrawableManager.get().getDrawable(itemView.getContext()
+                , R.drawable.ic_arrow_right);
+        calendarArrowIcon.setImageDrawable(setDateNext);
+        calendarIcon.setImageResource(R.mipmap.ic_icon_calendar_02);
     }
 }
