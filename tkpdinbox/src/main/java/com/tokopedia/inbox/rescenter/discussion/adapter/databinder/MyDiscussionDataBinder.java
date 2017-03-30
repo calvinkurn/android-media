@@ -104,24 +104,36 @@ public class MyDiscussionDataBinder extends DataBinder<MyDiscussionDataBinder.Vi
             holder.date.setVisibility(View.GONE);
         } else {
             try {
+
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(sdf.parse(list.get(position).getMessageReplyTimeFmt()));
+
                 holder.date.setVisibility(View.VISIBLE);
-                holder.date.setText(list.get(position).getMessageReplyDateFmt());
+                holder.date.setText(list.get(position).getMessageReplyTimeFmt());
                 if (position != 0) {
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(sdf.parse(list.get(position).getMessageReplyTimeFmt()));
                     Calendar calBefore = Calendar.getInstance();
                     calBefore.setTime(sdf.parse(list.get(position - 1).getMessageReplyTimeFmt()));
+
                     if (cal.get(Calendar.DAY_OF_YEAR) == calBefore.get(Calendar.DAY_OF_YEAR)
                             && cal.get(Calendar.YEAR) == calBefore.get(Calendar.YEAR)) {
                         holder.date.setVisibility(View.GONE);
                     }
                 }
 
+
+                holder.hour.setText(list.get(position).getMessageReplyHourFmt());
+                if (position != list.size() - 1) {
+                    Calendar calAfter = Calendar.getInstance();
+                    calAfter.setTime(sdf.parse(list.get(position + 1).getMessageReplyTimeFmt()));
+
+                    if (cal.get(Calendar.DAY_OF_YEAR) == calAfter.get(Calendar.DAY_OF_YEAR)
+                            && cal.get(Calendar.YEAR) == calAfter.get(Calendar.YEAR)) {
+                        holder.date.setVisibility(View.GONE);
+                    }
+                }
             } catch (ParseException e) {
                 holder.date.setText("");
             }
-
-            holder.hour.setText(list.get(position).getMessageReplyHourFmt());
         }
     }
 

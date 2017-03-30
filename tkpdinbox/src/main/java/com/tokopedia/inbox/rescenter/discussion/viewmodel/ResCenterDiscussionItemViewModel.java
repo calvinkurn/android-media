@@ -38,6 +38,9 @@ public class ResCenterDiscussionItemViewModel {
         this.messageCreateBy = messageCreateBy;
     }
 
+    public ResCenterDiscussionItemViewModel() {
+    }
+
     public String getMessage() {
         return message;
     }
@@ -89,7 +92,7 @@ public class ResCenterDiscussionItemViewModel {
     public String getMessageReplyDateFmt() {
         try {
             Locale id = new Locale("in", "ID");
-            SimpleDateFormat e = new SimpleDateFormat("dd MMMM yyyy, HH:mm z", id);
+            SimpleDateFormat e = new SimpleDateFormat("dd MMMM yyyy HH:mm z", id);
             SimpleDateFormat newSdf = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
             Calendar calNow = Calendar.getInstance();
             calNow.setTime(new Date());
@@ -107,9 +110,9 @@ public class ResCenterDiscussionItemViewModel {
     public String getMessageReplyHourFmt() {
         try {
             Locale id = new Locale("in", "ID");
-            SimpleDateFormat e = new SimpleDateFormat("dd MMMM yyyy, HH:mm z", id);
-            SimpleDateFormat newSdf = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
-            String hour = newSdf.format(e.parse(this.getMessageReplyTimeFmt())) + " WIB";
+            SimpleDateFormat e = new SimpleDateFormat("dd MMMM yyyy HH:mm z", id);
+            SimpleDateFormat newSdf = new SimpleDateFormat("HH:mm z", Locale.ENGLISH);
+            String hour = newSdf.format(e.parse(this.getMessageReplyTimeFmt()));
             return hour;
         } catch (ParseException var5) {
             return "";

@@ -14,18 +14,21 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:id="@+id/attach_but"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
             android:padding="@dimen/padding_small"
             android:src="@drawable/ic_action_attachment" />
 
         <EditText
+            android:id="@+id/reply_box"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:hint="@string/hint_write_message" />
 
         <ImageView
+            android:id="@+id/send_button"
             android:layout_width="@dimen/icon_size"
             android:layout_height="@dimen/icon_size"
             android:padding="@dimen/padding_small"

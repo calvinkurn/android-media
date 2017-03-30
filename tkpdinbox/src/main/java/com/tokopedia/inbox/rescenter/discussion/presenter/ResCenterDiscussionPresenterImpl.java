@@ -19,4 +19,22 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
     public void initData() {
         viewListener.onSuccessGetDiscussion();
     }
+
+    @Override
+    public void sendDiscussion() {
+        if(isValid()){
+            viewListener.onSuccessSendDiscussion();
+        }
+    }
+
+    @Override
+    public void setDiscussionText(String discussionText) {
+
+    }
+
+    private boolean isValid() {
+        boolean isValid = true;
+
+        return isValid;
+    }
 }

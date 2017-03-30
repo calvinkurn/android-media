@@ -6,4 +6,6 @@ package com.tokopedia.inbox.rescenter.discussion.listener;
 
 public interface ResCenterDiscussionView {
     void onSuccessGetDiscussion();
+
+    void onSuccessSendDiscussion();
 }

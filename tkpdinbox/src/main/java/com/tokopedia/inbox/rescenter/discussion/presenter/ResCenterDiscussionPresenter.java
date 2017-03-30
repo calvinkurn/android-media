@@ -6,4 +6,8 @@ package com.tokopedia.inbox.rescenter.discussion.presenter;
 
 public interface ResCenterDiscussionPresenter {
     void initData();
+
+    void sendDiscussion();
+
+    void setDiscussionText(String discussionText);
 }
