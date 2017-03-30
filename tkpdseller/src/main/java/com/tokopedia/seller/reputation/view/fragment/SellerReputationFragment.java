@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -172,6 +173,8 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
             presenter.setErrorNetworkListener(this);
             presenter.setReviewReputationMergeUseCase(reviewReputationMergeUseCase);
             gmNetworkErrorHelper = new TopAdsNetworkErrorHelper(null, rootView);
+            gmNetworkErrorHelper.setActionColor(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
+            gmNetworkErrorHelper.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.black_seventy_percent));
             reputationViewHelper = new ReputationViewHelper(topSlideOffBar);
         }
         setupRecyclerView();
@@ -348,7 +351,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
 
                 presenter.resetPage();
                 presenter.setNetworkStatus(
-                        TopAdsAddProductListPresenter.NetworkStatus.RETRYNETWORKCALL);
+                        TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
                 firstTimeNetworkCall();
             }
         });
@@ -478,6 +481,9 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
         // disable pull to refresh + hide
         refreshHandler.setRefreshing(false);
         adapter.showLoading(false);
+
+        if (!isAdded())
+            return;
 
         final String tryAgain = getString(R.string.try_again);
         final Handler handler = new Handler();
