@@ -18,9 +18,9 @@ import rx.functions.Func1;
  */
 public class LocalFavoriteShopDataSource {
 
-    private final Context context;
-    private final Gson gson;
-    private final GlobalCacheManager cacheManager;
+    private Context context;
+    private Gson gson;
+    private GlobalCacheManager cacheManager;
 
     public LocalFavoriteShopDataSource(Context context, Gson gson, GlobalCacheManager cacheManager) {
         this.context = context;

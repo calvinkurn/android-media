@@ -21,7 +21,7 @@ import rx.functions.Action1;
 public class CloudWishlistDataStore {
 
     private Context context;
-    private final MojitoService mojitoService;
+    private MojitoService mojitoService;
     private Gson gson;
 
     public CloudWishlistDataStore(Context context, Gson gson, MojitoService mojitoService) {
@@ -30,13 +30,13 @@ public class CloudWishlistDataStore {
         this.mojitoService = mojitoService;
     }
 
-    public Observable<DomainWishlist> getWishlist(TKPDMapParam<String, Object> param) {
-        return mojitoService.getWishlist(SessionHandler.getLoginID(context), param)
+    public Observable<DomainWishlist> getWishlist(String userId, TKPDMapParam<String, Object> param) {
+        return mojitoService.getWishlist(userId, param)
                 .doOnNext(saveToCache())
                 .map(new WishlistMapper(context, gson));
     }
 
-    private Action1<Response<String>> saveToCache() {
+    public Action1<Response<String>> saveToCache() {
 
         return new Action1<Response<String>>() {
             @Override

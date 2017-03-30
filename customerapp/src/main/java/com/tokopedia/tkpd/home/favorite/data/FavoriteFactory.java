@@ -9,6 +9,7 @@ import com.tokopedia.core.base.common.service.ServiceV4;
 import com.tokopedia.core.base.common.service.TopAdsService;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.home.favorite.data.source.cloud.CloudFavoriteShopDataSource;
 import com.tokopedia.tkpd.home.favorite.data.source.cloud.CloudTopAdsShopDataSource;
 import com.tokopedia.tkpd.home.favorite.data.source.cloud.CloudWishlistDataStore;
@@ -30,10 +31,10 @@ import rx.functions.Func1;
 public class FavoriteFactory {
     private Context context;
     private Gson gson;
-    private final ServiceV4 serviceV4;
-    private final TopAdsService topAdsService;
-    private final MojitoService mojitoService;
-    private final GlobalCacheManager cacheManager;
+    private ServiceV4 serviceV4;
+    private TopAdsService topAdsService;
+    private MojitoService mojitoService;
+    private GlobalCacheManager cacheManager;
 
     public FavoriteFactory(Context context, Gson gson, ServiceV4 serviceVersion4,
                            TopAdsService topAdsService, MojitoService mojitoService,
@@ -123,7 +124,8 @@ public class FavoriteFactory {
     }
 
     private Observable<DomainWishlist> cloudWishlistObservable(TKPDMapParam<String, Object> param) {
-        return new CloudWishlistDataStore(context, gson, mojitoService).getWishlist(param);
+        String userId = SessionHandler.getLoginID(context);
+        return new CloudWishlistDataStore(context, gson, mojitoService).getWishlist(userId,param);
     }
 
     private Observable<DomainWishlist> localWishlistObservable() {
