@@ -48,6 +48,8 @@ public class ChangePhoneNumberRequestFragment
         extends BasePresenterFragment<ChangePhoneNumberRequestPresenter>
         implements ChangePhoneNumberRequestView {
 
+    private static final String PARAM_UPLOAD_TYPE = "PARAM_UPLOAD_TYPE";
+
     public interface ChangePhoneNumberRequestListener {
         void goToThanksPage();
     }
@@ -72,6 +74,20 @@ public class ChangePhoneNumberRequestFragment
         return fragment;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(savedInstanceState != null)
+        uploadType = savedInstanceState.getString(PARAM_UPLOAD_TYPE);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        super.onSaveInstanceState(outState);
+        outState.putString(PARAM_UPLOAD_TYPE, uploadType);
+    }
+
     public void setActionListener(ChangePhoneNumberRequestListener listener) {
         this.listener = listener;
     }
@@ -89,13 +105,15 @@ public class ChangePhoneNumberRequestFragment
 
     @Override
     public void onSaveState(Bundle state) {
-
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-
     }
+
+
+
+
 
     @Override
     protected boolean getOptionsMenuEnable() {
@@ -249,28 +267,32 @@ public class ChangePhoneNumberRequestFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == ImageUploadHandler.REQUEST_CODE
+        if (data != null
+                && requestCode == ImageUploadHandler.REQUEST_CODE
                 && (resultCode == Activity.RESULT_OK)
                 && uploadType.equals(UPLOAD_ID)) {
             buttonUploadId.setVisibility(View.GONE);
             idPhoto.setVisibility(View.VISIBLE);
             loadImageToImageView(idPhoto, imageUploadHandler.getCameraFileloc());
             presenter.setIdImage(imageUploadHandler.getCameraFileloc());
-        } else if (requestCode == ImageUploadHandler.REQUEST_CODE
+        } else if (data != null
+                && requestCode == ImageUploadHandler.REQUEST_CODE
                 && (resultCode == GalleryBrowser.RESULT_CODE)
                 && uploadType.equals(UPLOAD_ID)) {
             buttonUploadId.setVisibility(View.GONE);
             idPhoto.setVisibility(View.VISIBLE);
             loadImageToImageView(idPhoto, data.getStringExtra(ImageGallery.EXTRA_URL));
             presenter.setIdImage(data.getStringExtra(ImageGallery.EXTRA_URL));
-        } else if (requestCode == ImageUploadHandler.REQUEST_CODE
+        } else if (data != null
+                && requestCode == ImageUploadHandler.REQUEST_CODE
                 && (resultCode == Activity.RESULT_OK)
                 && uploadType.equals(UPLOAD_ACCOUNT_BOOK)) {
             buttonUploadAccountBook.setVisibility(View.GONE);
             accountBookPhoto.setVisibility(View.VISIBLE);
             loadImageToImageView(accountBookPhoto, imageUploadHandler.getCameraFileloc());
             presenter.setBankBookImage(imageUploadHandler.getCameraFileloc());
-        } else if (requestCode == ImageUploadHandler.REQUEST_CODE
+        } else if (data != null
+                && requestCode == ImageUploadHandler.REQUEST_CODE
                 && (resultCode == GalleryBrowser.RESULT_CODE)
                 && uploadType.equals(UPLOAD_ACCOUNT_BOOK)) {
             buttonUploadAccountBook.setVisibility(View.GONE);
