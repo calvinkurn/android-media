@@ -377,7 +377,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 .setService(GetCurrentRideRequestService.class)
                 .setTag(TASK_TAG_PERIODIC)
                 .setExtras(bundle)
-                .setPeriod(1L)
+                .setPeriod(2)
                 .build();
         mGcmNetworkManager.schedule(task);
     }
