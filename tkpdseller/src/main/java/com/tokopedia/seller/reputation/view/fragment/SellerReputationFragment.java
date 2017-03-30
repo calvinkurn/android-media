@@ -495,8 +495,10 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
                     switch (presenter.getNetworkStatus()) {
                         case ONACTIVITYFORRESULT:
                         case PULLTOREFRESH:
-                            adapter.clear();
-                            adapter.showRetryFull(true);
+                            if (adapter.getDataSize() <= 0) {
+                                adapter.clear();
+                                adapter.showRetryFull(true);
+                            }
                             break;
                         default:
                             gmNetworkErrorHelper.showSnackbar(errorMessage, tryAgain, new ActionClickListener() {
