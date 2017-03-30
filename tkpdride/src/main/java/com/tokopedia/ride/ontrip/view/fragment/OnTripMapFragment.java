@@ -215,12 +215,14 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void showLoadingWaitingResponse() {
         processingLayout.setVisibility(View.VISIBLE);
         processingDescription.setVisibility(View.VISIBLE);
+        loaderLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoadingWaitingResponse() {
         processingLayout.setVisibility(View.GONE);
         processingDescription.setVisibility(View.GONE);
+        loaderLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -348,7 +350,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 .setService(GetCurrentRideRequestService.class)
                 .setTag(TASK_TAG_PERIODIC)
                 .setExtras(bundle)
-                .setPeriod(5L)
+                .setPeriod(1L)
                 .build();
         mGcmNetworkManager.schedule(task);
     }
@@ -367,12 +369,12 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void renderAcceptedRequest(RideRequest result) {
         bottomContainer.setVisibility(View.VISIBLE);
-        addFragment(R.id.bottom_container, DriverDetailFragment.newInstance(result));
+        replaceFragment(R.id.bottom_container, DriverDetailFragment.newInstance(result));
     }
 
-    private void addFragment(int containerViewId, android.app.Fragment fragment) {
+    private void replaceFragment(int containerViewId, android.app.Fragment fragment) {
         FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
-        fragmentTransaction.add(containerViewId, fragment);
+        fragmentTransaction.replace(containerViewId, fragment);
         fragmentTransaction.commit();
     }
 
@@ -383,7 +385,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void renderDriverCanceledRequest(RideRequest result) {
-
+        Toast.makeText(getActivity(), "Driver Canceled Request", Toast.LENGTH_SHORT).show();
+        getActivity().finish();
     }
 
     @Override

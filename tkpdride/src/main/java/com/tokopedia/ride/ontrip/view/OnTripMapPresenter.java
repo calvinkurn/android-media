@@ -237,10 +237,12 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     @Override
     public void proccessGetCurrentRideRequest(RideRequest result) {
         //processing accepted arriving in_progress driver_canceled completed
-        switch (result.getStatus()){
+        switch (result.getStatus()) {
             case "processing":
                 break;
             case "accepted":
+                getView().hideCancelRequestButton();
+                getView().hideLoadingWaitingResponse();
                 getView().renderAcceptedRequest(result);
                 break;
             case "arriving":
