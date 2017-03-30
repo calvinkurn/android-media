@@ -42,6 +42,7 @@ public class VoucherCartHolderView extends RelativeLayout {
 
     private ActionListener actionListener;
     private String voucherCode = "";
+    private Context context;
 
     public VoucherCartHolderView(Context context) {
         super(context);
@@ -59,6 +60,7 @@ public class VoucherCartHolderView extends RelativeLayout {
     }
 
     private void init(Context context) {
+        this.context = context;
         LayoutInflater.from(context).inflate(R.layout.view_holder_checkout_voucher, this, true);
         ButterKnife.bind(this);
         actionVoucher();
@@ -103,6 +105,7 @@ public class VoucherCartHolderView extends RelativeLayout {
                     else throw new IllegalArgumentException("Action Listener null coy!!");
                 } else {
                     hideHolderVoucher();
+                    errorVoucher.setText(context.getString(R.string.empty_voucher));
                     errorVoucher.setVisibility(VISIBLE);
                 }
             }
