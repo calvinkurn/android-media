@@ -32,7 +32,7 @@ public class NetModule {
     @Provides
     public Retrofit provideWsV4Retrofit(@DefaultAuth OkHttpClient okHttpClient,
                                         Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.LIVE_DOMAIN).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN).client(okHttpClient).build();
     }
 
     @AceQualifier
