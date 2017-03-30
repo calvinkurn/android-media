@@ -26,6 +26,8 @@ import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.SendReplyDiscussi
 import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
 import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
 import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
+import com.tokopedia.inbox.rescenter.product.data.mapper.ListProductMapper;
+import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
 
 import java.net.UnknownHostException;
 
@@ -55,13 +57,14 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
         InboxResCenterService inboxResCenterService = new InboxResCenterService();
 
         ResCenterActService resCenterActService = new ResCenterActService();
-        ResolutionService resolutionService = new ResolutionService();
-        resolutionService.setToken(accessToken);
+        ResolutionService resolutionService = new ResolutionService(accessToken);
 
         DetailResCenterMapper detailResCenterMapper = new DetailResCenterMapper();
         HistoryAwbMapper historyAwbMapper = new HistoryAwbMapper();
         HistoryAddressMapper historyAddressMapper = new HistoryAddressMapper();
         HistoryActionMapper historyActionMapper = new HistoryActionMapper();
+        ListProductMapper listProductMapper = new ListProductMapper();
+        ProductDetailMapper productDetailMapper = new ProductDetailMapper();
         DiscussionResCenterMapper discussionResCenterMapper = new DiscussionResCenterMapper();
 
         ResCenterDataSourceFactory dataSourceFactory = new ResCenterDataSourceFactory(context,
@@ -72,6 +75,8 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
                 historyAwbMapper,
                 historyAddressMapper,
                 historyActionMapper,
+                listProductMapper,
+                productDetailMapper,
                 discussionResCenterMapper);
 
         ResCenterRepository resCenterRepository

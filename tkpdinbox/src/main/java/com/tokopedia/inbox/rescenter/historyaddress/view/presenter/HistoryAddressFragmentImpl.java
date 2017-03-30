@@ -55,8 +55,7 @@ public class HistoryAddressFragmentImpl implements HistoryAddressFragmentPresent
         InboxResCenterService inboxResCenterService = new InboxResCenterService();
 
         ResCenterActService resCenterActService = new ResCenterActService();
-        ResolutionService resolutionService = new ResolutionService();
-        resolutionService.setToken(accessToken);
+        ResolutionService resolutionService = new ResolutionService(accessToken);
 
         DetailResCenterMapper detailResCenterMapper = new DetailResCenterMapper();
         HistoryAwbMapper historyAwbMapper = new HistoryAwbMapper();

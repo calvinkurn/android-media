@@ -12,6 +12,10 @@ import retrofit2.Retrofit;
 
 public class ResolutionService extends BearerService<ResolutionApi> {
 
+    public ResolutionService(String mToken) {
+        super(mToken);
+    }
+
     @Override
     protected String getBaseUrl() {
         return TkpdBaseURL.ResCenterV2.BASE_RESOLUTION;
@@ -30,9 +34,5 @@ public class ResolutionService extends BearerService<ResolutionApi> {
     @Override
     public ResolutionApi getApi() {
         return this.mApi;
-    }
-
-    public void setToken(String accessToken) {
-        mToken = accessToken;
     }
 }

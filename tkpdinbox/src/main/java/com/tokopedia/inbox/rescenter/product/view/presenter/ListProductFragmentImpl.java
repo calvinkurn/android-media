@@ -13,6 +13,7 @@ import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFa
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
 import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
 import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
 import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
@@ -42,8 +43,7 @@ public class ListProductFragmentImpl implements ListProductFragmentPresenter {
         InboxResCenterService inboxResCenterService = new InboxResCenterService();
 
         ResCenterActService resCenterActService = new ResCenterActService();
-        ResolutionService resolutionService = new ResolutionService();
-        resolutionService.setToken(accessToken);
+        ResolutionService resolutionService = new ResolutionService(accessToken);
 
         DetailResCenterMapper detailResCenterMapper = new DetailResCenterMapper();
         HistoryAwbMapper historyAwbMapper = new HistoryAwbMapper();
@@ -51,6 +51,7 @@ public class ListProductFragmentImpl implements ListProductFragmentPresenter {
         HistoryActionMapper historyActionMapper = new HistoryActionMapper();
         ListProductMapper listProductMapper = new ListProductMapper();
         ProductDetailMapper productDetailMapper = new ProductDetailMapper();
+        DiscussionResCenterMapper discussionResCenterMapper = new DiscussionResCenterMapper();
 
         ResCenterDataSourceFactory dataSourceFactory = new ResCenterDataSourceFactory(context,
                 resolutionService,
@@ -61,8 +62,8 @@ public class ListProductFragmentImpl implements ListProductFragmentPresenter {
                 historyAddressMapper,
                 historyActionMapper,
                 listProductMapper,
-                productDetailMapper
-        );
+                productDetailMapper,
+                discussionResCenterMapper);
 
         ResCenterRepository resCenterRepository
                 = new ResCenterRepositoryImpl(resolutionID, dataSourceFactory);
