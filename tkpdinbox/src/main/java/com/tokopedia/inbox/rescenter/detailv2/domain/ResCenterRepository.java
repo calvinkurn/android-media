@@ -9,6 +9,7 @@ import com.tokopedia.inbox.rescenter.historyaddress.domain.model.HistoryAddressD
 import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
 import com.tokopedia.inbox.rescenter.product.domain.model.ListProductDomainData;
 import com.tokopedia.inbox.rescenter.product.domain.model.ProductDetailData;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionData;
 
 import rx.Observable;
 
@@ -20,7 +21,7 @@ public interface ResCenterRepository {
 
     Observable<DetailResCenter> getDetail(TKPDMapParam<String, Object> parameters);
 
-    Observable<DetailResCenter> getConversation(TKPDMapParam<String, Object> parameters);
+    Observable<DiscussionData> getConversation(TKPDMapParam<String, Object> parameters);
 
     Observable<DetailResCenter> getConversationMore(String conversationID, TKPDMapParam<String, Object> parameters);
 

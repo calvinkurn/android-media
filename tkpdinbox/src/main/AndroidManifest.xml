@@ -101,6 +101,13 @@
             android:label="@string/title_activity_product_detail_rescenter"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".rescenter.discussion.view.activity.ResCenterDiscussionActivity"
+            android:label="@string/title_activity_rescenter_discussion"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            />
+
         <!-- ======================================================= -->
         <!-- SERVICES REGISTRY -->
         <!-- ======================================================= -->

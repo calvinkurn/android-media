@@ -13,6 +13,7 @@ import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFa
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
 import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
 import com.tokopedia.inbox.rescenter.historyaction.domain.interactor.GetHistoryActionUseCase;
 import com.tokopedia.inbox.rescenter.historyaction.view.subscriber.HistoryActionSubsriber;
@@ -51,6 +52,7 @@ public class HistoryActionFragmentImpl implements HistoryActionFragmentPresenter
         HistoryActionMapper historyActionMapper = new HistoryActionMapper();
         ListProductMapper listProductMapper = new ListProductMapper();
         ProductDetailMapper productDetailMapper = new ProductDetailMapper();
+        DiscussionResCenterMapper discussionResCenterMapper = new DiscussionResCenterMapper();
 
         ResCenterDataSourceFactory dataSourceFactory = new ResCenterDataSourceFactory(context,
                 resolutionService,
@@ -61,7 +63,8 @@ public class HistoryActionFragmentImpl implements HistoryActionFragmentPresenter
                 historyAddressMapper,
                 historyActionMapper,
                 listProductMapper,
-                productDetailMapper
+                productDetailMapper,
+                discussionResCenterMapper
         );
 
         ResCenterRepository resCenterRepository

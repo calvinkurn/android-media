@@ -40,5 +40,8 @@
     <string name="label_complaint_attachment">Lampiran Bukti:</string>
     <string name="title_activity_list_product_rescenter">Produk Yang Dikomplain</string>
     <string name="title_activity_product_detail_rescenter">Komplain Produk</string>
+    <string name="hint_write_message">Tulis pesan</string>
+    <string name="dot">•</string>
+    <string name="title_activity_rescenter_discussion">Diskusi</string>
 
 </resources>

@@ -31,6 +31,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFrag
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFragmentPresenter;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
+import com.tokopedia.inbox.rescenter.discussion.view.activity.ResCenterDiscussionActivity;
 import com.tokopedia.inbox.rescenter.edit.activity.EditResCenterActivity;
 import com.tokopedia.inbox.rescenter.historyaction.HistoryActionActivity;
 import com.tokopedia.inbox.rescenter.historyaddress.HistoryAddressActivity;
@@ -424,7 +425,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     public void setOnActionDiscussClick() {
-
+        startActivity(ResCenterDiscussionActivity.createIntent(getActivity(), getResolutionID()));
     }
 
     @Override

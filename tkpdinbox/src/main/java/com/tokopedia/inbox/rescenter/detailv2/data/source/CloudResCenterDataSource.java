@@ -7,6 +7,8 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionData;
 import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
 import com.tokopedia.inbox.rescenter.historyaction.domain.model.HistoryActionData;
 import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
@@ -17,6 +19,8 @@ import com.tokopedia.inbox.rescenter.product.data.mapper.ListProductMapper;
 import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
 import com.tokopedia.inbox.rescenter.product.domain.model.ListProductDomainData;
 import com.tokopedia.inbox.rescenter.product.domain.model.ProductDetailData;
+import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
+import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
 
 import rx.Observable;
 
@@ -34,6 +38,7 @@ public class CloudResCenterDataSource {
     private HistoryActionMapper historyActionMapper;
     private ListProductMapper listProductMapper;
     private ProductDetailMapper productDetailMapper;
+    private DiscussionResCenterMapper discussionResCenterMapper;
 
     public CloudResCenterDataSource(Context context,
                                     ResolutionService resolutionService,
@@ -42,7 +47,8 @@ public class CloudResCenterDataSource {
                                     HistoryAddressMapper historyAddressMapper,
                                     HistoryActionMapper historyActionMapper,
                                     ListProductMapper listProductMapper,
-                                    ProductDetailMapper productDetailMapper) {
+                                    ProductDetailMapper productDetailMapper,
+                                    DiscussionResCenterMapper discussionResCenterMapper) {
         super();
         this.context = context;
         this.resolutionService = resolutionService;
@@ -52,6 +58,7 @@ public class CloudResCenterDataSource {
         this.historyActionMapper = historyActionMapper;
         this.listProductMapper = listProductMapper;
         this.productDetailMapper = productDetailMapper;
+        this.discussionResCenterMapper = discussionResCenterMapper;
     }
 
     public Observable<DetailResCenter> getResCenterDetail(String resolutionID, TKPDMapParam<String, Object> parameters) {
@@ -63,14 +70,14 @@ public class CloudResCenterDataSource {
                 .map(detailResCenterMapper);
     }
 
-    public Observable<DetailResCenter> getResCenterConversation(String resolutionID,
-                                                                TKPDMapParam<String, Object> parameters) {
+ public Observable<DiscussionData> getResCenterConversation(String resolutionID,
+                                                               TKPDMapParam<String, Object> parameters) {
         return resolutionService.getApi()
                 .getResCenterConversation(
                         resolutionID,
                         AuthUtil.generateParamsNetwork2(context, parameters)
                 )
-                .map(detailResCenterMapper);
+                .map(discussionResCenterMapper);
     }
 
     public Observable<DetailResCenter> getResCenterConversationMore(String resolutionID,

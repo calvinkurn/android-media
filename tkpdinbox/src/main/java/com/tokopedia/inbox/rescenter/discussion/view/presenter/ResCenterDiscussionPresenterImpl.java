@@ -1,52 +1,52 @@
-package com.tokopedia.inbox.rescenter.historyaddress.view.presenter;
+package com.tokopedia.inbox.rescenter.discussion.view.presenter;
 
 import android.content.Context;
 
+import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
 import com.tokopedia.core.network.apiservices.rescenter.ResolutionService;
 import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
-import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
-import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProductHistory;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingHistoryDialogViewModel;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
+import com.tokopedia.inbox.rescenter.discussion.domain.GetResCenterDiscussionUseCase;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionData;
+import com.tokopedia.inbox.rescenter.discussion.view.listener.ResCenterDiscussionView;
+import com.tokopedia.inbox.rescenter.discussion.view.subscriber.GetDiscussionSubscriber;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.SendReplyDiscussionParam;
 import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
 import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
-import com.tokopedia.inbox.rescenter.historyaddress.domain.interactor.GetHistoryAddressUseCase;
-import com.tokopedia.inbox.rescenter.historyaddress.view.subscriber.HistoryAddressSubsriber;
 import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
-import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.HistoryAwbUseCase;
-import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.TrackAwbReturProductUseCase;
-import com.tokopedia.inbox.rescenter.product.data.mapper.ListProductMapper;
-import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.UnknownHostException;
 
 import rx.Subscriber;
 
 /**
- * Created by hangnadi on 3/23/17.
+ * Created by nisie on 3/29/17.
  */
 
-@SuppressWarnings("ALL")
-public class HistoryAddressFragmentImpl implements HistoryAddressFragmentPresenter {
+public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPresenter {
 
-    private final HistoryAddressFragmentView fragmentView;
-    private final GetHistoryAddressUseCase historyAddressUseCase;
+    private final ResCenterDiscussionView viewListener;
+    private GetResCenterDiscussionUseCase getDiscussionUseCase;
+    private SendReplyDiscussionParam pass;
+    private Context context;
 
-    public HistoryAddressFragmentImpl(Context context, HistoryAddressFragmentView fragmentView) {
-        this.fragmentView = fragmentView;
-        String resolutionID = fragmentView.getResolutionID();
+    public ResCenterDiscussionPresenterImpl(Context context, ResCenterDiscussionView viewListener) {
+        this.viewListener = viewListener;
+        this.context = context;
+
+        String resolutionID = viewListener.getResolutionID();
         String accessToken = new SessionHandler(context).getAccessToken(context);
 
         JobExecutor jobExecutor = new JobExecutor();
@@ -62,8 +62,6 @@ public class HistoryAddressFragmentImpl implements HistoryAddressFragmentPresent
         HistoryAwbMapper historyAwbMapper = new HistoryAwbMapper();
         HistoryAddressMapper historyAddressMapper = new HistoryAddressMapper();
         HistoryActionMapper historyActionMapper = new HistoryActionMapper();
-        ListProductMapper listProductMapper = new ListProductMapper();
-        ProductDetailMapper productDetailMapper = new ProductDetailMapper();
         DiscussionResCenterMapper discussionResCenterMapper = new DiscussionResCenterMapper();
 
         ResCenterDataSourceFactory dataSourceFactory = new ResCenterDataSourceFactory(context,
@@ -74,28 +72,46 @@ public class HistoryAddressFragmentImpl implements HistoryAddressFragmentPresent
                 historyAwbMapper,
                 historyAddressMapper,
                 historyActionMapper,
-                listProductMapper,
-                productDetailMapper,
-                discussionResCenterMapper
-        );
+                discussionResCenterMapper);
 
         ResCenterRepository resCenterRepository
                 = new ResCenterRepositoryImpl(resolutionID, dataSourceFactory);
 
-        this.historyAddressUseCase
-                = new GetHistoryAddressUseCase(jobExecutor, uiThread, resCenterRepository);
+        getDiscussionUseCase = new GetResCenterDiscussionUseCase(
+                jobExecutor, uiThread, resCenterRepository);
+
+        pass = new SendReplyDiscussionParam();
+    }
+
+
+    @Override
+    public void initData() {
+        viewListener.showLoading();
+        viewListener.setViewEnabled(false);
+        getDiscussionUseCase.execute(RequestParams.EMPTY, new GetDiscussionSubscriber(viewListener));
 
     }
 
     @Override
-    public void onFirstTimeLaunch() {
-        fragmentView.setLoadingView(true);
-        historyAddressUseCase.execute(RequestParams.EMPTY, new HistoryAddressSubsriber(fragmentView));
+    public void sendDiscussion() {
+        if (isValid()) {
+            viewListener.onSuccessSendDiscussion();
+        }
     }
 
     @Override
-    public void refreshPage() {
-        onFirstTimeLaunch();
+    public void setDiscussionText(String discussionText) {
+        pass.setMessage(discussionText);
     }
 
+    private boolean isValid() {
+        boolean isValid = true;
+
+        if (pass.getMessage().trim().length() == 0) {
+            isValid = false;
+            viewListener.onErrorSendReply(context.getString(R.string.error_field_required));
+        }
+
+        return isValid;
+    }
 }

@@ -11,6 +11,7 @@ import com.tokopedia.inbox.rescenter.historyaddress.domain.model.HistoryAddressD
 import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
 import com.tokopedia.inbox.rescenter.product.domain.model.ListProductDomainData;
 import com.tokopedia.inbox.rescenter.product.domain.model.ProductDetailData;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionData;
 
 import rx.Observable;
 
@@ -72,7 +73,7 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
     }
 
     @Override
-    public Observable<DetailResCenter> getConversation(TKPDMapParam<String, Object> parameters) {
+    public Observable<DiscussionData> getConversation(TKPDMapParam<String, Object> parameters) {
         return resCenterDataSourceFactory
                 .createCloudResCenterDataSource()
                 .getResCenterConversation(resolutionID, parameters);

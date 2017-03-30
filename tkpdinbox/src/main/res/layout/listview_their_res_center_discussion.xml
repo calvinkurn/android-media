@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_vs">
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/margin_vs"
+        android:background="@color/grey_100"
+        android:padding="@dimen/padding_vs"
+        android:textColor="@color/grey_500"
+        android:textSize="@dimen/fontvs"
+        tools:text="13:16 wib" />
+
+    <TextView
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/date"
+        android:textSize="@dimen/fontvs"
+        android:textStyle="bold"
+        android:padding="2dp"
+        tools:text="Fahmi Fahreza" />
+
+    <TextView
+        android:id="@+id/dot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/date"
+        android:layout_toRightOf="@id/username"
+        android:text="@string/dot"
+        android:padding="2dp"
+        android:layout_marginLeft="@dimen/margin_vs"
+        android:layout_marginRight="@dimen/margin_vs"
+        android:textSize="@dimen/fontvs" />
+
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/date"
+        android:layout_toRightOf="@id/dot"
+        android:textSize="@dimen/fontvs"
+        android:padding="2dp"
+        android:textColor="@color/grey_500"
+        tools:text="Pengguna" />
+
+    <RelativeLayout
+        android:id="@+id/view_user_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/username"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:background="@drawable/left_bubble"
+        android:gravity="left"
+        android:maxWidth="@dimen/message_width"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_small">
+
+        <TextView
+            android:id="@+id/message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:textIsSelectable="true"
+            android:textSize="@dimen/fonts"
+            tools:text="Gukguk meong meongaksjdkajshdkajhsdkajhsdkajhsdaksdjhaksjhkahsdk" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/view_user_box"
+        android:layout_gravity="left"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:gravity="left"
+        android:textColor="@color/time_color"
+        android:textSize="@dimen/fontvvs"
+        tools:text="testtest" />
+
+</RelativeLayout>
