@@ -10,18 +10,18 @@ import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 
 /**
- * Created by nakama on 29/03/17.
+ * Created by HenryPri on 29/03/17.
  */
 
 public interface BrowsePresenter {
-    void onCreate(Bundle savedInstanceState, Intent intent);
-    void onResume();
-    void onDestroy();
+    void initPresenterData(Bundle savedInstanceState, Intent intent);
+    void restorePresenterData();
+    void disposePresenterData();
 
     void onSaveInstanceState(Bundle outState);
     void onRestoreInstanceState(Bundle savedInstanceState);
 
-    void onActivityResult(int requestCode, Intent data);
+    void handleResultData(int requestCode, Intent data);
 
     void onBottomBarChanged(String source);
     boolean onBottomBarTabSelected(String source, int position, int activeTab, boolean isShopFragment);

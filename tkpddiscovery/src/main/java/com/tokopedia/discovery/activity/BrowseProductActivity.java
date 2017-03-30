@@ -112,7 +112,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                 new DiscoveryInteractorImpl(),
                 PreferenceManager.getDefaultSharedPreferences(this)
         );
-        browsePresenter.onCreate(savedInstanceState, getIntent());
+        browsePresenter.initPresenterData(savedInstanceState, getIntent());
     }
 
     @Override
@@ -192,7 +192,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     @Override
     protected void onResume() {
         super.onResume();
-        browsePresenter.onResume();
+        browsePresenter.restorePresenterData();
     }
 
     @Override
@@ -209,7 +209,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     @Override
     protected void onDestroy() {
-        browsePresenter.onDestroy();
+        browsePresenter.disposePresenterData();
         super.onDestroy();
     }
 
@@ -267,7 +267,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     @Override
     public void showFailedFetchAttribute() {
-        Toast.makeText(BrowseProductActivity.this, getString(R.string.try_again), Toast.LENGTH_LONG).show();
+        CommonUtils.UniversalToast(BrowseProductActivity.this, getString(R.string.try_again));
     }
 
     @Override
@@ -411,7 +411,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            browsePresenter.onActivityResult(requestCode, data);
+            browsePresenter.handleResultData(requestCode, data);
             BrowseParentFragment parentFragment = (BrowseParentFragment) fragmentManager.findFragmentByTag(BrowseParentFragment.FRAGMENT_TAG);
             setFragment(BrowseParentFragment.newInstance(browsePresenter.getBrowseProductActivityModel(), parentFragment.getActiveTab()), BrowseParentFragment.FRAGMENT_TAG);
         }

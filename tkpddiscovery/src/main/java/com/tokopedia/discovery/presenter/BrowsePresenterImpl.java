@@ -66,7 +66,7 @@ import static com.tokopedia.discovery.presenter.BrowsePresenterImpl.FDest.FILTER
 import static com.tokopedia.discovery.presenter.BrowsePresenterImpl.FDest.SORT;
 
 /**
- * Created by nakama on 29/03/17.
+ * Created by HenryPri on 29/03/17.
  */
 
 public class BrowsePresenterImpl implements BrowsePresenter {
@@ -109,7 +109,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState, Intent intent) {
+    public void initPresenterData(Bundle savedInstanceState, Intent intent) {
         if (savedInstanceState == null) {
             browseModel = new BrowseProductActivityModel();
             mBrowseProductAtribut = new BrowseProductAtribut();
@@ -189,12 +189,12 @@ public class BrowsePresenterImpl implements BrowsePresenter {
     }
 
     @Override
-    public void onResume() {
+    public void restorePresenterData() {
         RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
     }
 
     @Override
-    public void onDestroy() {
+    public void disposePresenterData() {
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
     }
 
@@ -214,7 +214,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
     }
 
     @Override
-    public void onActivityResult(int requestCode, Intent data) {
+    public void handleResultData(int requestCode, Intent data) {
         switch (requestCode) {
             case REQUEST_SORT:
                 DataValue sortData = data.getParcelableExtra(BrowseParentFragment.SORT_EXTRA);
