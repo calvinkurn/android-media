@@ -4,7 +4,7 @@ import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.rescenter.discussion.data.pojo.DiscussionEntity;
 import com.tokopedia.inbox.rescenter.discussion.data.pojo.DiscussionItemEntity;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionData;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionItemData;
 
 import java.util.ArrayList;
@@ -17,11 +17,11 @@ import rx.functions.Func1;
  * Created by nisie on 3/30/17.
  */
 
-public class DiscussionResCenterMapper implements Func1<Response<TkpdResponse>, DiscussionData> {
+public class DiscussionResCenterMapper implements Func1<Response<TkpdResponse>, DiscussionModel> {
 
     @Override
-    public DiscussionData call(Response<TkpdResponse> response) {
-        DiscussionData domainData = new DiscussionData();
+    public DiscussionModel call(Response<TkpdResponse> response) {
+        DiscussionModel domainData = new DiscussionModel();
         if (response.isSuccessful()) {
             if (!response.body().isError()) {
                 DiscussionEntity entity = response.body().convertDataObj(DiscussionEntity.class);

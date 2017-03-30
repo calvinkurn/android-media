@@ -7,6 +7,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.ResolutionCenterActionMapper;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.ActionDiscussionModel;
 
 import rx.Observable;
 
@@ -60,6 +61,14 @@ public class CloudActionResCenterDataStore {
     public Observable<ResolutionActionDomainData> inputAddress(TKPDMapParam<String, Object> parameters) {
         return resCenterActService.getApi()
                 .inputAddressResolution2(AuthUtil.generateParamsNetwork2(context, parameters))
+                .map(resolutionCenterActionMapper);
+    }
+
+    public Observable<ActionDiscussionModel> replyConversationValidation(
+            TKPDMapParam<String, Object> parameters) {
+        return resCenterActService.getApi()
+                .replyConversationValidation(
+                        AuthUtil.generateParamsNetwork2(context, parameters))
                 .map(resolutionCenterActionMapper);
     }
 }

@@ -6,7 +6,7 @@ import java.util.List;
  * Created by nisie on 3/30/17.
  */
 
-public class DiscussionData {
+public class DiscussionModel {
 
     private boolean success;
     private String messageError;

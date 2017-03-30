@@ -5,7 +5,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionData;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionModel;
 
 import rx.Observable;
 
@@ -13,7 +13,7 @@ import rx.Observable;
  * Created by nisie on 3/30/17.
  */
 
-public class GetResCenterDiscussionUseCase extends UseCase<DiscussionData> {
+public class GetResCenterDiscussionUseCase extends UseCase<DiscussionModel> {
 
     private final ResCenterRepository resCenterRepository;
 
@@ -24,7 +24,7 @@ public class GetResCenterDiscussionUseCase extends UseCase<DiscussionData> {
     }
 
     @Override
-    public Observable<DiscussionData> createObservable(RequestParams requestParams) {
+    public Observable<DiscussionModel> createObservable(RequestParams requestParams) {
         return resCenterRepository.getConversation(requestParams.getParameters());
     }
 }

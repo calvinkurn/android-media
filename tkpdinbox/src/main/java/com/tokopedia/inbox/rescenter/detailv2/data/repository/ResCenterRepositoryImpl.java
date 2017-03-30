@@ -6,12 +6,13 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.ActionDiscussionModel;
 import com.tokopedia.inbox.rescenter.historyaction.domain.model.HistoryActionData;
 import com.tokopedia.inbox.rescenter.historyaddress.domain.model.HistoryAddressData;
 import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
 import com.tokopedia.inbox.rescenter.product.domain.model.ListProductDomainData;
 import com.tokopedia.inbox.rescenter.product.domain.model.ProductDetailData;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionData;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionModel;
 
 import rx.Observable;
 
@@ -73,7 +74,7 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
     }
 
     @Override
-    public Observable<DiscussionData> getConversation(TKPDMapParam<String, Object> parameters) {
+    public Observable<DiscussionModel> getConversation(TKPDMapParam<String, Object> parameters) {
         return resCenterDataSourceFactory
                 .createCloudResCenterDataSource()
                 .getResCenterConversation(resolutionID, parameters);
@@ -126,5 +127,11 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
     public Observable<ResolutionActionDomainData> inputAddress(TKPDMapParam<String, Object> parameters) {
         return resCenterDataSourceFactory.createCloudActionResCenterDataStore()
                 .inputAddress(parameters);
+    }
+
+    @Override
+    public Observable<ActionDiscussionModel> replyConversationValidation(TKPDMapParam<String, Object> parameters) {
+        return resCenterDataSourceFactory.createCloudActionResCenterDataStore()
+                .replyConversationValidation(parameters);
     }
 }

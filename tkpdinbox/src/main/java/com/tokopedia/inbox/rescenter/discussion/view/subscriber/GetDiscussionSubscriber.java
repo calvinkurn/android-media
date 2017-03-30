@@ -4,7 +4,7 @@ import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionData;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionItemData;
 import com.tokopedia.inbox.rescenter.discussion.view.listener.ResCenterDiscussionView;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
@@ -19,7 +19,7 @@ import rx.Subscriber;
  * Created by nisie on 3/30/17.
  */
 
-public class GetDiscussionSubscriber extends Subscriber<DiscussionData> {
+public class GetDiscussionSubscriber extends Subscriber<DiscussionModel> {
 
     private ResCenterDiscussionView viewListener;
 
@@ -81,15 +81,15 @@ public class GetDiscussionSubscriber extends Subscriber<DiscussionData> {
     }
 
     @Override
-    public void onNext(DiscussionData discussionData) {
+    public void onNext(DiscussionModel discussionModel) {
         viewListener.finishLoading();
-        viewListener.onSuccessGetDiscussion(mappingToViewModel(discussionData));
+        viewListener.onSuccessGetDiscussion(mappingToViewModel(discussionModel));
     }
 
-    private List<DiscussionItemViewModel> mappingToViewModel(DiscussionData discussionData) {
+    private List<DiscussionItemViewModel> mappingToViewModel(DiscussionModel discussionModel) {
         List<DiscussionItemViewModel> list = new ArrayList<>();
 
-        for(DiscussionItemData item : discussionData.getListDiscussionData()){
+        for(DiscussionItemData item : discussionModel.getListDiscussionData()){
             DiscussionItemViewModel viewModel = new DiscussionItemViewModel();
             viewModel.setMessage(item.getSolutionRemark());
             viewModel.setMessageReplyTimeFmt(item.getCreateTimeStr());

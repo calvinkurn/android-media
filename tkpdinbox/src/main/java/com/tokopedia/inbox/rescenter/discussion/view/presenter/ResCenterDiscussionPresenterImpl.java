@@ -2,15 +2,12 @@ package com.tokopedia.inbox.rescenter.discussion.view.presenter;
 
 import android.content.Context;
 
-import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
 import com.tokopedia.core.network.apiservices.rescenter.ResolutionService;
 import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
@@ -19,7 +16,6 @@ import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositor
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
 import com.tokopedia.inbox.rescenter.discussion.domain.GetResCenterDiscussionUseCase;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionData;
 import com.tokopedia.inbox.rescenter.discussion.view.listener.ResCenterDiscussionView;
 import com.tokopedia.inbox.rescenter.discussion.view.subscriber.GetDiscussionSubscriber;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.SendReplyDiscussionParam;
@@ -28,10 +24,6 @@ import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMa
 import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
 import com.tokopedia.inbox.rescenter.product.data.mapper.ListProductMapper;
 import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
-
-import java.net.UnknownHostException;
-
-import rx.Subscriber;
 
 /**
  * Created by nisie on 3/29/17.
