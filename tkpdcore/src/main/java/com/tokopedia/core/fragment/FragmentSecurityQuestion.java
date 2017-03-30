@@ -309,7 +309,6 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     @Override
     public void showTrueCaller(boolean b) {
         verifyTrueCaller.setVisibility(b ? View.VISIBLE : View.GONE);
-//        verifyTrueCaller.setVisibility(View.GONE);
     }
 
     @Override
@@ -374,9 +373,6 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     public void showViewOtp() {
         vOtp.setVisibility(View.VISIBLE);
         vSecurity.setVisibility(View.GONE);
-//        if (TrackingUtils.getGtmString(CAN_REQUEST_OTP_IMMEDIATELY).equals("true")
-//                && !verifyTrueCaller.isShown())
-//            presenter.doRequestOtp();
         titleOTP.setText("Halo, " + SessionHandler.getTempLoginName(getActivity()));
 
 
@@ -436,6 +432,9 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                 changeNumber.setVisibility(View.VISIBLE);
                 vSendOtpCall.setVisibility(View.VISIBLE);
                 presenter.showTrueCaller(getActivity());
+                if (TrackingUtils.getGtmString(CAN_REQUEST_OTP_IMMEDIATELY).equals("true") && !verifyTrueCaller.isShown()) {
+                    presenter.doRequestOtp();
+                }
                 break;
             case QuestionFormModel.OTP_Email_TYPE:
                 vSendOtp.setText(presenter.getOtpSendString());
