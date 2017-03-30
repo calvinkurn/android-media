@@ -28,10 +28,11 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.di.module.AppModule;
-import com.tokopedia.core.base.di.module.NetModule;
+import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.NotificationVariable;
+import com.tokopedia.core.network.di.module.*;
 
 import java.util.List;
 

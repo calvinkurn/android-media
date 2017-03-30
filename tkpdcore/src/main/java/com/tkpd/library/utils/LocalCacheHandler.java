@@ -11,6 +11,11 @@ public class LocalCacheHandler {
     private Editor editor;
     private SharedPreferences sharedPrefs;
 
+    public LocalCacheHandler(SharedPreferences sharedPreferences) {
+        sharedPrefs = sharedPreferences;
+        editor = sharedPrefs.edit();
+    }
+
     public LocalCacheHandler(Context context, String name) {
         sharedPrefs = context.getSharedPreferences(name, Context.MODE_PRIVATE);
         editor = sharedPrefs.edit();
