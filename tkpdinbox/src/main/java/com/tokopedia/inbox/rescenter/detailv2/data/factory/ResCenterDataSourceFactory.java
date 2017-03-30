@@ -13,6 +13,8 @@ import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.source.CloudActionResCenterDataStore;
 import com.tokopedia.inbox.rescenter.detailv2.data.source.CloudInboxResCenterDataSource;
 import com.tokopedia.inbox.rescenter.detailv2.data.source.CloudResCenterDataSource;
+import com.tokopedia.inbox.rescenter.product.data.mapper.ListProductMapper;
+import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
 
 /**
  * Created by hangnadi on 3/9/17.
@@ -28,6 +30,8 @@ public class ResCenterDataSourceFactory {
     private HistoryAwbMapper historyAwbMapper;
     private HistoryAddressMapper historyAddressMapper;
     private HistoryActionMapper historyActionMapper;
+    private ListProductMapper listProductMapper;
+    private ProductDetailMapper productDetailMapper;
     private DiscussionResCenterMapper discussionResCenterMapper;
 
     public ResCenterDataSourceFactory(Context context,
@@ -38,6 +42,8 @@ public class ResCenterDataSourceFactory {
                                       HistoryAwbMapper historyAwbMapper,
                                       HistoryAddressMapper historyAddressMapper,
                                       HistoryActionMapper historyActionMapper,
+                                      ListProductMapper listProductMapper,
+                                      ProductDetailMapper productDetailMapper,
                                       DiscussionResCenterMapper discussionResCenterMapper) {
         this.context = context;
         this.resCenterService = resCenterService;
@@ -47,6 +53,8 @@ public class ResCenterDataSourceFactory {
         this.historyAwbMapper = historyAwbMapper;
         this.historyAddressMapper = historyAddressMapper;
         this.historyActionMapper = historyActionMapper;
+        this.listProductMapper = listProductMapper;
+        this.productDetailMapper = productDetailMapper;
         this.discussionResCenterMapper = discussionResCenterMapper;
     }
 
@@ -56,6 +64,8 @@ public class ResCenterDataSourceFactory {
                 historyAwbMapper,
                 historyAddressMapper,
                 historyActionMapper,
+                listProductMapper,
+                productDetailMapper,
                 discussionResCenterMapper);
     }
 

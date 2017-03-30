@@ -29,6 +29,8 @@ import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragm
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.GetResCenterDetailSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.ResolutionActionSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.TrackAwbReturProductSubscriber;
+import com.tokopedia.inbox.rescenter.product.data.mapper.ListProductMapper;
+import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
 
 /**
  * Created by hangnadi on 3/9/17.
@@ -64,6 +66,8 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
         HistoryAwbMapper historyAwbMapper = new HistoryAwbMapper();
         HistoryAddressMapper historyAddressMapper = new HistoryAddressMapper();
         HistoryActionMapper historyActionMapper = new HistoryActionMapper();
+        ListProductMapper listProductMapper = new ListProductMapper();
+        ProductDetailMapper productDetailMapper = new ProductDetailMapper();
         DiscussionResCenterMapper discussionResCenterMapper = new DiscussionResCenterMapper();
 
         ResCenterDataSourceFactory dataSourceFactory = new ResCenterDataSourceFactory(context,
@@ -74,6 +78,8 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
                 historyAwbMapper,
                 historyAddressMapper,
                 historyActionMapper,
+                listProductMapper,
+                productDetailMapper,
                 discussionResCenterMapper);
 
         ResCenterRepository resCenterRepository

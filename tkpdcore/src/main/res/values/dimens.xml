@@ -20,10 +20,12 @@
     <dimen name="margin_vvs">3.3dp</dimen>
     <dimen name="margin_vvvs">2dp</dimen>
     <dimen name="margin_small">10dp</dimen>
+    <dimen name="margin_sm">15dp</dimen>
     <dimen name="margin_med">20dp</dimen>
     <dimen name="margin_large">30dp</dimen>
     <dimen name="margin_vl">40dp</dimen>
     <dimen name="padding_vs">5dp</dimen>
+    <dimen name="padding_vvs">3dp</dimen>
     <dimen name="padding_small">10dp</dimen>
     <dimen name="med_dp">20dp</dimen>
     <dimen name="large_dp">30dp</dimen>
@@ -98,6 +100,8 @@
     <dimen name="shop_ava">50dp</dimen>
     <dimen name="medal_size">20dp</dimen>
     <dimen name="icon_size">48dp</dimen>
+    <dimen name="item_revamp_category">175dp</dimen>
+    <dimen name="text_item_revamp_category">28sp</dimen>
 
     <!-- youtube thumbnail dimens -->
     <dimen name="youtube_video_thumbnail_overlay_size">48dp</dimen>
@@ -129,6 +133,7 @@
     <dimen name="size_pie">96dp</dimen>
 
     <dimen name="text_size_xxxxsmall">6sp</dimen>
+    <dimen name="text_size_xxxsmall">7sp</dimen>
     <dimen name="text_size_xxsmall">10sp</dimen>
     <dimen name="text_size_xsmall">11sp</dimen>
     <dimen name="text_size_small">12sp</dimen>

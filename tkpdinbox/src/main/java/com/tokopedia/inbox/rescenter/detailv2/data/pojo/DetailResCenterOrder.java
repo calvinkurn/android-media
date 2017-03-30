@@ -11,6 +11,8 @@ public class DetailResCenterOrder  {
     private String id;
     @SerializedName("invoice")
     private Invoice invoice;
+    @SerializedName("shippingRefNum")
+    private String shippingRefNum;
 
     public String getId() {
         return id;
@@ -26,6 +28,14 @@ public class DetailResCenterOrder  {
 
     public void setInvoice(Invoice invoice) {
         this.invoice = invoice;
+    }
+
+    public String getShippingRefNum() {
+        return shippingRefNum;
+    }
+
+    public void setShippingRefNum(String shippingRefNum) {
+        this.shippingRefNum = shippingRefNum;
     }
 
     public static class Invoice {

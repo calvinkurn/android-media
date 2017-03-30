@@ -11,6 +11,8 @@ public class DataFeed {
     private Feed mFeed;
     private List<TopAds> mTopAds;
     private boolean isValid;
+    private boolean isRecentProductError = false;
+    private boolean isFeedError = false;
 
     public boolean isValid() {
         return isValid;
@@ -43,5 +45,21 @@ public class DataFeed {
 
     public void setTopAds(List<TopAds> topAds) {
         mTopAds = topAds;
+    }
+
+    public boolean isRecentProductError() {
+        return isRecentProductError;
+    }
+
+    public void setRecentProductError(boolean recentProductError) {
+        isRecentProductError = recentProductError;
+    }
+
+    public boolean isFeedError() {
+        return isFeedError;
+    }
+
+    public void setFeedError(boolean feedError) {
+        isFeedError = feedError;
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.view.activity;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,7 +17,8 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenterImpl;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsDashboardPagerAdapter;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardProductFragment;
@@ -25,8 +27,6 @@ import com.tokopedia.seller.topads.view.listener.TopAdsDashboardTabListener;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.tokopedia.seller.topads.view.fragment.TopAdsDashboardShopFragment.showCreateAdsAlert;
 
 /**
  * Created by Nathaniel on 11/22/2016.
@@ -109,9 +109,16 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
         fabSpeedDial.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showCreateAdsAlert(TopAdsDashboardActivity.this);
+                if(getCurrentFragment()!= null && getCurrentFragment() instanceof TopAdsDashboardProductFragment){
+                    Intent intent = new Intent(TopAdsDashboardActivity.this, TopAdsGroupNewPromoActivity.class);
+                    getCurrentFragment().startActivityForResult(intent, TopAdsDashboardProductFragment.REQUEST_CODE_AD_STATUS);
+                }
             }
         });
+    }
+
+    Fragment getCurrentFragment() {
+        return (Fragment) viewPager.getAdapter().instantiateItem(viewPager,viewPager.getCurrentItem());
     }
 
     @Override

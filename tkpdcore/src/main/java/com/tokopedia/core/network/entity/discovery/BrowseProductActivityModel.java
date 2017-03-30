@@ -6,9 +6,11 @@ import android.os.Parcelable;
 import com.google.gson.Gson;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BrowseProductActivityModel implements Parcelable {
@@ -26,6 +28,8 @@ public class BrowseProductActivityModel implements Parcelable {
     public int activeTab;
     public String unique_id;
     public Map<String, String> filterOptions;
+    public Data categotyHeader;
+    public String totalDataCategory ="";
 
     public HotListBannerModel getHotListBannerModel() {
         return hotListBannerModel;
@@ -33,9 +37,10 @@ public class BrowseProductActivityModel implements Parcelable {
 
     public void setHotListBannerModel(HotListBannerModel hotListBannerModel) {
         this.hotListBannerModel = hotListBannerModel;
-
-        fragmentId = BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID;
-        adSrc = TopAdsApi.SRC_HOTLIST;
+        if(hotListBannerModel!=null) {
+            fragmentId = BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID;
+            adSrc = TopAdsApi.SRC_HOTLIST;
+        }
     }
 
     public void removeBannerModel() {
@@ -139,6 +144,22 @@ public class BrowseProductActivityModel implements Parcelable {
         this.filterOptions = filterOptions;
     }
 
+    public Data getCategotyHeader() {
+        return categotyHeader;
+    }
+
+    public void setCategotyHeader(Data categotyHeader) {
+        this.categotyHeader = categotyHeader;
+    }
+
+    public String getTotalDataCategory() {
+        return totalDataCategory;
+    }
+
+    public void setTotalDataCategory(String totalDataCategory) {
+        this.totalDataCategory = totalDataCategory;
+    }
+
     @Override
     public String toString() {
         return new Gson().toJson(this);
@@ -172,6 +193,8 @@ public class BrowseProductActivityModel implements Parcelable {
                 dest.writeString(entry.getValue());
             }
         }
+        dest.writeParcelable(categotyHeader,flags);
+        dest.writeString(this.totalDataCategory);
     }
 
     public BrowseProductActivityModel() {
@@ -198,6 +221,8 @@ public class BrowseProductActivityModel implements Parcelable {
             String value = in.readString();
             this.filterOptions.put(key, value);
         }
+        this.categotyHeader = in.readParcelable(Data.class.getClassLoader());
+        this.totalDataCategory = in.readString();
     }
 
     public static final Parcelable.Creator<BrowseProductActivityModel> CREATOR

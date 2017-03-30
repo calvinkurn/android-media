@@ -36,6 +36,8 @@ import com.tokopedia.inbox.rescenter.edit.activity.EditResCenterActivity;
 import com.tokopedia.inbox.rescenter.historyaction.HistoryActionActivity;
 import com.tokopedia.inbox.rescenter.historyaddress.HistoryAddressActivity;
 import com.tokopedia.inbox.rescenter.historyawb.HistoryShippingActivity;
+import com.tokopedia.inbox.rescenter.product.ListProductActivity;
+import com.tokopedia.inbox.rescenter.product.ProductDetailActivity;
 
 /**
  * Created by hangnadi on 3/8/17.
@@ -418,7 +420,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     public void setOnActionMoreProductClick() {
-
+        startActivity(ListProductActivity.newInstance(getActivity(), getResolutionID()));
     }
 
     @Override
@@ -455,12 +457,12 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     public void setOnActionProductClick(String productID) {
-
+        startActivity(ProductDetailActivity.newInstance(getActivity(), getResolutionID(), productID));
     }
 
     @Override
     public void setOnActionPeopleDetailClick(String buyerID) {
-        startActivity(PeopleInfoNoDrawerActivity.createInstance(context, buyerID));
+        startActivity(PeopleInfoNoDrawerActivity.createInstance(getActivity(), buyerID));
     }
 
     @Override

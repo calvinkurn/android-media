@@ -28,7 +28,6 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.inboxreputation.interactor.CacheInboxReputationInteractorImpl;
 import com.tokopedia.core.inboxreputation.interactor.InboxReputationCacheManager;
 import com.tokopedia.core.message.interactor.CacheInteractorImpl;
-import com.tokopedia.core.msisdn.fragment.MsisdnVerificationFragment;
 import com.tokopedia.core.product.presenter.ProductDetailPresenterImpl;
 import com.tokopedia.core.prototype.InboxCache;
 import com.tokopedia.core.prototype.ManageProductCache;
@@ -64,7 +63,6 @@ public class SessionHandler {
     public static final String PHONE_NUMBER = "PHONE_NUMBER";
     public static final String TEMP_PHONE_NUMBER = "TEMP_PHONE_NUMBER";
     public static final String TEMP_NAME = "TEMP_NAME";
-    private static final String MSISDN_SESSION = "MSISDN_SESSION";
 
     private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     private static final String REFRESH_TOKEN = "REFRESH_TOKEN";
@@ -73,6 +71,8 @@ public class SessionHandler {
     private static final String LOGIN_UUID_KEY = "LOGIN_UUID";
     private static final String UUID_KEY = "uuid";
     private static final String DEFAULT_UUID_VALUE = "";
+    private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
+    private static final String KEY_LAST_ORDER = "RECHARGE_LAST_ORDER";
 
     private Context context;
 
@@ -172,15 +172,16 @@ public class SessionHandler {
         editor.putString(SHOP_ID, null);
         editor.putBoolean(IS_LOGIN, false);
         editor.putBoolean(IS_MSISDN_VERIFIED, false);
+        editor.putString(PHONE_NUMBER, null);
         editor.commit();
-        LocalCacheHandler.clearCache(context, MSISDN_SESSION);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_USER);
         LocalCacheHandler.clearCache(context, TkpdCache.NOTIFICATION_DATA);
         LocalCacheHandler.clearCache(context, "ETALASE_ADD_PROD");
         LocalCacheHandler.clearCache(context, "REGISTERED");
+        LocalCacheHandler.clearCache(context, KEY_LAST_ORDER);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_MAIN);
-        LocalCacheHandler.clearCache(context, MsisdnVerificationFragment.PHONE_VERIFICATION);
         LocalCacheHandler.clearCache(context, ProductDetailPresenterImpl.CACHE_PROMOTION_PRODUCT);
+        LocalCacheHandler.clearCache(context, CACHE_PHONE_VERIF_TIMER);
         CacheInboxReputationInteractorImpl reputationCache = new CacheInboxReputationInteractorImpl();
         reputationCache.deleteCache();
         InboxReputationCacheManager reputationDetailCache = new InboxReputationCacheManager();
@@ -191,8 +192,6 @@ public class SessionHandler {
         clearFeedCache();
 
     }
-
-
 
     private static void logoutInstagram(Context context) {
         if (isV4Login(context) && context instanceof AppCompatActivity) {
@@ -225,8 +224,8 @@ public class SessionHandler {
             webView.loadUrl("https://instagram.com/accounts/logout/");
             webView.setVisibility(View.GONE);
         }
-        if(context.getApplicationContext() instanceof TkpdCoreRouter){
-            ((TkpdCoreRouter)context.getApplicationContext()).removeInstopedToken();
+        if (context.getApplicationContext() instanceof TkpdCoreRouter) {
+            ((TkpdCoreRouter) context.getApplicationContext()).removeInstopedToken();
         }
     }
 
@@ -239,7 +238,6 @@ public class SessionHandler {
                 "User Id: " + getLoginID(context) +
                         " Device Id: " + GCMHandler.getRegistrationId(context));
         PasswordGenerator.clearTokenStorage(context);
-        GCMHandler.clearRegistrationId(context);
         clearUserData();
     }
 
@@ -262,15 +260,15 @@ public class SessionHandler {
         String u_id;
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         u_id = sharedPrefs.getString(GTM_LOGIN_ID, "");
-        if(TextUtils.isEmpty(u_id)){
-            if(!TextUtils.isEmpty(SessionHandler.getLoginID(context))){
-                SessionHandler.setGTMLoginID(context,SessionHandler.getLoginID(context));
+        if (TextUtils.isEmpty(u_id)) {
+            if (!TextUtils.isEmpty(SessionHandler.getLoginID(context))) {
+                SessionHandler.setGTMLoginID(context, SessionHandler.getLoginID(context));
                 return SessionHandler.getLoginID(context);
-            }else{
+            } else {
                 return "";
             }
 
-        }else{
+        } else {
             return u_id;
         }
     }
@@ -483,18 +481,6 @@ public class SessionHandler {
         cache.applyEditor();
     }
 
-    public static void setDontRemindLater(boolean isChecked) {
-        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), MSISDN_SESSION);
-        cache.putBoolean(DONT_REMIND_LATER, isChecked);
-        cache.setExpire(86400);
-        cache.applyEditor();
-    }
-
-    public static boolean canRemind() {
-        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), MSISDN_SESSION);
-        return !cache.getBoolean(DONT_REMIND_LATER, false) || cache.isExpired();
-    }
-
     public static void setPhoneNumber(String userPhone) {
         LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), LOGIN_SESSION);
         cache.putString(PHONE_NUMBER, userPhone);
@@ -548,6 +534,11 @@ public class SessionHandler {
 
     public String getAccessToken(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(ACCESS_TOKEN, "");
+    }
+
+    public static String getAccessToken() {
+        SharedPreferences sharedPrefs = MainApplication.getAppContext().getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(ACCESS_TOKEN, "");
     }
 

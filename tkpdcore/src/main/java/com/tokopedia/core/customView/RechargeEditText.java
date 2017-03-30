@@ -20,24 +20,34 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.core.R;
+import com.tokopedia.core.R2;
 
 import java.util.Arrays;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * @author kulomady on 7/12/2016.
  */
-public class RechargeEditText extends LinearLayout implements
-        View.OnFocusChangeListener, TextWatcher, View.OnClickListener {
+public class RechargeEditText extends LinearLayout {
 
-    private static final String TAG = "RechargeEditText";
+    private static final String TAG = RechargeEditText.class.getSimpleName();
+
     private RechargeEditTextListener rechargeEditTextListener;
     private OnButtonPickerListener buttonPickerListener;
-    private AutoCompleteTextView autoCompleteTextView;
-    private Button btnClear;
-    private ImageView imgOperator;
-    private Button btnContactPicker;
-    private FrameLayout pulsaFramelayout;
+
+    @BindView(R2.id.pulsa_autocompleteview)
+    AutoCompleteTextView autoCompleteTextView;
+    @BindView(R2.id.btnClear)
+    Button btnClear;
+    @BindView(R2.id.imgOperator)
+    ImageView imgOperator;
+    @BindView(R2.id.btnPhoneBook)
+    Button btnContactPicker;
+    @BindView(R2.id.pulsa_frameLayout)
+    FrameLayout pulsaFramelayout;
 
     public RechargeEditText(Context context) {
         super(context);
@@ -59,25 +69,17 @@ public class RechargeEditText extends LinearLayout implements
 
     private void init() {
         inflate(getContext(), R.layout.recharge_edittext_view, this);
-        this.autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.pulsa_autocompleteview);
-        this.btnClear = (Button) findViewById(R.id.btnClear);
-        this.imgOperator = (ImageView) findViewById(R.id.imgOperator);
-        this.btnContactPicker = (Button) findViewById(R.id.btnPhoneBook);
-        this.pulsaFramelayout = (FrameLayout) findViewById(R.id.pulsa_frameLayout);
+        ButterKnife.bind(this);
 
         initBackgroundContactButtonAndClearButton();
-
-        this.autoCompleteTextView.setOnFocusChangeListener(this);
-        this.autoCompleteTextView.addTextChangedListener(this);
-        this.btnClear.setOnClickListener(this);
-        this.btnContactPicker.setOnClickListener(this);
-
         setImgOperatorInvisible();
         setBtnClearInvisible();
+
+        actionView();
     }
 
     private void initBackgroundContactButtonAndClearButton() {
-        Glide.with(getContext()).load(R.drawable.ic_clear).asBitmap().into(
+        Glide.with(getContext()).load(R.drawable.ic_clear_widget).asBitmap().into(
                 new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource,
@@ -87,7 +89,7 @@ public class RechargeEditText extends LinearLayout implements
                     }
                 });
 
-        Glide.with(getContext()).load(R.drawable.ic_phonebook).asBitmap().into(
+        Glide.with(getContext()).load(R.drawable.ic_phonebook_widget).asBitmap().into(
                 new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource,
@@ -100,50 +102,75 @@ public class RechargeEditText extends LinearLayout implements
         );
     }
 
-
-    @Override
-    public void onFocusChange(View view, boolean hasfocus) {
-
-        if (hasfocus) {
-            if (this.autoCompleteTextView.getText().length() > 0) setBtnClearVisible();
-            else setBtnClearInvisible();
-        }
+    private void actionView() {
+        this.autoCompleteTextView.setOnFocusChangeListener(getFocusChangeListener());
+        this.autoCompleteTextView.addTextChangedListener(getTextChangedListener());
+        this.btnClear.setOnClickListener(getClickClearButtonListener());
+        this.btnContactPicker.setOnClickListener(getClickPhonebookListener());
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
-
-    }
-
-    @Override
-    public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
-        if (rechargeEditTextListener != null && s.length()>0) {
-            rechargeEditTextListener.onRechargeTextChanged(s, start, before, count);
-        }
-        if (s.length() > 0) {
-//            this.btnContactPicker.setVisibility(GONE);
-            setBtnClearVisible();
-        } else {
-            setBtnClearInvisible();
-        }
-    }
-
-    @Override
-    public void afterTextChanged(Editable editable) {
-
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (view.getId() == R.id.btnClear) {
-            this.autoCompleteTextView.setText("");
-            setImgOperatorInvisible();
-        }
-        if (view.getId() == R.id.btnPhoneBook) {
-            if (buttonPickerListener != null) {
-                buttonPickerListener.onButtonContactClicked();
+    private OnFocusChangeListener getFocusChangeListener() {
+        return new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    if (autoCompleteTextView.getText().length() > 0) {
+                        setBtnClearVisible();
+                    } else {
+                        setBtnClearInvisible();
+                    }
+                }
             }
-        }
+        };
+    }
+
+    private TextWatcher getTextChangedListener() {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (rechargeEditTextListener != null && s.length()>0) {
+                    rechargeEditTextListener.onRechargeTextChanged(s, start, before, count);
+                }
+                if (s.length() > 0) {
+                    //this.btnContactPicker.setVisibility(GONE);
+                    setBtnClearVisible();
+                } else {
+                    setBtnClearInvisible();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+    }
+
+    private OnClickListener getClickClearButtonListener() {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                autoCompleteTextView.setText("");
+                setImgOperatorInvisible();
+                rechargeEditTextListener.onRechargeTextClear();
+            }
+        };
+    }
+
+    private OnClickListener getClickPhonebookListener() {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (buttonPickerListener != null) {
+                    buttonPickerListener.onButtonContactClicked();
+                }
+            }
+        };
     }
 
     public Button getBtnContactPicker() {
@@ -156,6 +183,14 @@ public class RechargeEditText extends LinearLayout implements
 
     public void setText(String text) {
         this.autoCompleteTextView.setText(text);
+    }
+
+    public void setEmptyString() {
+        this.autoCompleteTextView.setText("");
+    }
+
+    public void setHint(String hint) {
+        this.autoCompleteTextView.setHint(hint);
     }
 
     public void setRechargeEditTextListener(RechargeEditTextListener rechargeEditTextListener) {
@@ -208,6 +243,7 @@ public class RechargeEditText extends LinearLayout implements
                                    final int start,
                                    final int before,
                                    final int count);
+        void onRechargeTextClear();
     }
 
     public interface OnButtonPickerListener {

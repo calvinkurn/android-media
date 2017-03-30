@@ -36,20 +36,16 @@ public class HadesService extends IntentService implements DataReceiver {
     public static final String STATUS = "status";
 
     public static final String ACTION_FETCH_DEPARTMENT = "fetch_department";
-
-    public static Boolean getIsHadesRunning() {
-        return IS_HADES_RUNNING;
-    }
-
-
     private static Boolean IS_HADES_RUNNING = false;
-
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
-
     protected int State = 0;
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     public HadesService() {
         super("hades service");
+    }
+
+    public static Boolean getIsHadesRunning() {
+        return IS_HADES_RUNNING;
     }
 
     public static void startDownload(Context context, int state) {
@@ -72,7 +68,7 @@ public class HadesService extends IntentService implements DataReceiver {
                 LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
                 DataManagerImpl.getDataManager()
                         .getListDepartment2(this.getApplication(),
-                                this, 0, true);
+                                this, 0);
                 break;
 
         }

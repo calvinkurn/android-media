@@ -6,6 +6,7 @@ import com.tokopedia.core.network.apiservices.rescenter.ResolutionService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
+import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionData;
 import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
@@ -13,6 +14,11 @@ import com.tokopedia.inbox.rescenter.historyaction.domain.model.HistoryActionDat
 import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
 import com.tokopedia.inbox.rescenter.historyaddress.domain.model.HistoryAddressData;
 import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
+import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
+import com.tokopedia.inbox.rescenter.product.data.mapper.ListProductMapper;
+import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
+import com.tokopedia.inbox.rescenter.product.domain.model.ListProductDomainData;
+import com.tokopedia.inbox.rescenter.product.domain.model.ProductDetailData;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
 import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
 
@@ -30,6 +36,8 @@ public class CloudResCenterDataSource {
     private HistoryAwbMapper historyAwbMapper;
     private HistoryAddressMapper historyAddressMapper;
     private HistoryActionMapper historyActionMapper;
+    private ListProductMapper listProductMapper;
+    private ProductDetailMapper productDetailMapper;
     private DiscussionResCenterMapper discussionResCenterMapper;
 
     public CloudResCenterDataSource(Context context,
@@ -38,6 +46,8 @@ public class CloudResCenterDataSource {
                                     HistoryAwbMapper historyAwbMapper,
                                     HistoryAddressMapper historyAddressMapper,
                                     HistoryActionMapper historyActionMapper,
+                                    ListProductMapper listProductMapper,
+                                    ProductDetailMapper productDetailMapper,
                                     DiscussionResCenterMapper discussionResCenterMapper) {
         super();
         this.context = context;
@@ -46,6 +56,8 @@ public class CloudResCenterDataSource {
         this.historyAwbMapper = historyAwbMapper;
         this.historyAddressMapper = historyAddressMapper;
         this.historyActionMapper = historyActionMapper;
+        this.listProductMapper = listProductMapper;
+        this.productDetailMapper = productDetailMapper;
         this.discussionResCenterMapper = discussionResCenterMapper;
     }
 
@@ -58,7 +70,7 @@ public class CloudResCenterDataSource {
                 .map(detailResCenterMapper);
     }
 
-    public Observable<DiscussionData> getResCenterConversation(String resolutionID,
+ public Observable<DiscussionData> getResCenterConversation(String resolutionID,
                                                                TKPDMapParam<String, Object> parameters) {
         return resolutionService.getApi()
                 .getResCenterConversation(
@@ -107,25 +119,25 @@ public class CloudResCenterDataSource {
                 .map(historyAddressMapper);
     }
 
-    public Observable<HistoryAwbData> getListProduct(String resolutionID,
-                                                     TKPDMapParam<String, Object> parameters) {
+    public Observable<ListProductDomainData> getListProduct(String resolutionID,
+                                                            TKPDMapParam<String, Object> parameters) {
         return resolutionService.getApi()
                 .getListProduct(
                         resolutionID,
                         AuthUtil.generateParamsNetwork2(context, parameters)
                 )
-                .map(historyAwbMapper);
+                .map(listProductMapper);
     }
 
-    public Observable<HistoryAwbData> getProductDetail(String resolutionID,
-                                                       String troubleID,
-                                                       TKPDMapParam<String, Object> parameters) {
+    public Observable<ProductDetailData> getProductDetail(String resolutionID,
+                                                          String troubleID,
+                                                          TKPDMapParam<String, Object> parameters) {
         return resolutionService.getApi()
                 .getProductDetail(
                         resolutionID,
                         troubleID,
                         AuthUtil.generateParamsNetwork2(context, parameters)
                 )
-                .map(historyAwbMapper);
+                .map(productDetailMapper);
     }
 }

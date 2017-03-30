@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">tkpdinbox</string>
+    <string name="title_video_player">Video Player</string>
     <string name="detail_rescenter_date">Tanggal Buka Komplain :</string>
     <string name="detail_rescenter_shop">Beli dari Toko :</string>
     <string name="detail_rescenter_awb_selling">No. Resi Pembelian :</string>
@@ -34,6 +35,11 @@
     <string name="title_activity_history_awb">Riwayat No. Resi</string>
     <string name="title_activity_history_address">Riwayat Alamat Pengembalian</string>
     <string name="title_activity_history_action">Riwayat Komplain</string>
+    <string name="label_buyer_complaint">Komplain Pembeli:</string>
+    <string name="label_reason_complaint">Alasan Komplain:</string>
+    <string name="label_complaint_attachment">Lampiran Bukti:</string>
+    <string name="title_activity_list_product_rescenter">Produk Yang Dikomplain</string>
+    <string name="title_activity_product_detail_rescenter">Komplain Produk</string>
     <string name="hint_write_message">Tulis pesan</string>
     <string name="dot">•</string>
     <string name="title_activity_rescenter_discussion">Diskusi</string>

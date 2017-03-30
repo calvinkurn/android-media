@@ -14,7 +14,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
@@ -25,7 +24,6 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -56,19 +54,8 @@ import com.tkpd.library.utils.TwitterHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.app.TkpdBaseV4Fragment;
-import com.tokopedia.core.etalase.EtalaseVariable;
-import com.tokopedia.core.myproduct.model.CatalogDataModel;
-import com.tokopedia.core.myproduct.model.DepartmentParentModel;
-import com.tokopedia.core.myproduct.model.ImageModel;
-import com.tokopedia.core.myproduct.model.TextDeleteModel;
-import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
-import com.tokopedia.core.myproduct.utils.MetadataUtil;
-import com.tokopedia.core.myproduct.utils.VerificationUtils;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
-import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.CategoryDB_Table;
@@ -82,7 +69,24 @@ import com.tokopedia.core.database.model.ProductDB;
 import com.tokopedia.core.database.model.ProductDB_Table;
 import com.tokopedia.core.database.model.WeightUnitDB;
 import com.tokopedia.core.database.model.WeightUnitDB_Table;
+import com.tokopedia.core.etalase.EtalaseVariable;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
+import com.tokopedia.core.myproduct.model.CatalogDataModel;
+import com.tokopedia.core.myproduct.model.DepartmentParentModel;
+import com.tokopedia.core.myproduct.model.ImageModel;
+import com.tokopedia.core.myproduct.model.TextDeleteModel;
+import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
+import com.tokopedia.core.myproduct.utils.MetadataUtil;
+import com.tokopedia.core.myproduct.utils.VerificationUtils;
+import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
+import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.util.Pair;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.util.ShareSocmedHandler;
+import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.R2;
+import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.seller.myproduct.ProductSocMedActivity;
 import com.tokopedia.seller.myproduct.adapter.ClickToSelectWithImage;
@@ -97,9 +101,9 @@ import com.tokopedia.seller.myproduct.model.editProductForm.EditProductForm;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenter;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.myproduct.presenter.AddProductView;
-import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
 import com.tokopedia.seller.myproduct.presenter.ProductSocMedPresenter;
 import com.tokopedia.seller.myproduct.presenter.ProductView;
+import com.tokopedia.seller.myproduct.service.ProductService;
 import com.tokopedia.seller.myproduct.utils.AddProductType;
 import com.tokopedia.seller.myproduct.utils.CurrencyFormatter;
 import com.tokopedia.seller.myproduct.utils.DelegateOnClick;
@@ -109,12 +113,6 @@ import com.tokopedia.seller.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.seller.myproduct.view.AddProductShare;
 import com.tokopedia.seller.myproduct.view.AddProductSocMedSubmit;
 import com.tokopedia.seller.myproduct.view.AddProductSubmit;
-import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.util.Pair;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.util.ShareSocmedHandler;
-import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.seller.myproduct.service.ProductService;
 
 import org.parceler.Parcels;
 
@@ -151,99 +149,14 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     public static final String PRODUCT_DB = "product_db";
     public static final String ADD_PRODUCT_MULTIPLE_IMAGE_PATH = "ADD_PRODUCT_MULTIPLE_IMAGE_PATH";
     public static final String NO_CATALOG_OPTION = "Tidak menggunakan katalog";
-
-    @Override
-    protected String getScreenName() {
-        String screenName = null;
-        switch (addProductType){
-            case COPY:
-                screenName = AppScreen.SCREEN_COPY_PRODUCT;
-                break;
-            case ADD_FROM_SOCIAL_MEDIA:
-            case ADD:
-            case ADD_MULTIPLE_FROM_GALERY:
-            case EDIT:
-            case MODIFY:
-            case ADD_FROM_GALLERY:
-            default:
-                screenName = AppScreen.SCREEN_ADD_PRODUCT;
-                break;
-        }
-
-        return screenName;
-    }
-
-    public void removeImageSelected(int i) {
-        ImageModel imageModel = photos.get(i);
-        if (imageModel.getPath() != null) {
-            // if edit then dont delete the image product.
-            if (addProductType == AddProductType.EDIT) {
-                producteditHelper.deleteImage(imageModel, i);
-            } else {
-                DbManagerImpl.getInstance().removePictureWithId(imageModel.getDbId());
-            }
-
-            imageModel.setPath(null);
-            imageModel.setResId(R.drawable.addproduct);
-            imageModel.setDbId(0);
-            photos.set(i, imageModel);
-
-            setSelectedImageAsPrimary(0);
-        } else {
-            // do nothing
-            Log.e(TAG, messageTAG + "failed removing images :" + (i + 1));
-        }
-    }
+    /**
+     * if single add product or edit product alone then let it to "0"
+     * else if multiple add products then position should be vary
+     */
+    public int positionAtSocMed;
+    public AddProductType addProductType;
     //[END] this is deletion of images
-
-    public void setSelectedImageAsPrimary(int i) {
-        ImageModel imageModel = photos.get(i);
-        if (getActivity() instanceof ProductSocMedActivity) {
-            ((ProductSocMedActivity) getActivity()).changePicture(positionAtSocMed, imageModel);
-        }
-        List<ImageModel> newPhotos = new ArrayList<>();
-        if (imageModel.getPath() != null) newPhotos.add(imageModel);
-        for (int index = 0; index < photos.size(); index++) {
-            imageModel = photos.get(index);
-            if (i == index) {
-                if (imageModel.getPath() != null) {
-                    PictureDB pictureDB = DbManagerImpl.getInstance().getGambarById(imageModel.getDbId());
-                    Log.i(TAG, "Picture before (new primary): " + pictureDB.toString());
-                    if (pictureDB != null) {
-                        pictureDB.setPicturePrimary(PictureDB.PRIMARY_IMAGE);
-                        pictureDB.save();
-                        Log.i(TAG, "Picture after (new primary): " + pictureDB.toString());
-                    }
-                }
-                continue;
-            }
-
-            if (imageModel.getPath() != null) {
-                PictureDB pictureDB = new Select().from(PictureDB.class).where(
-                        PictureDB_Table.Id.is(imageModel.getDbId()))
-                        .querySingle();
-                Log.i(TAG, "Picture before (not primary): " + pictureDB.toString());
-                if (pictureDB != null) {
-                    pictureDB.setPicturePrimary(PictureDB.NOT_PRIMARY_IMAGE);
-                    pictureDB.save();
-                    Log.i(TAG, "Picture after (not primary): " + pictureDB.toString());
-                }
-                newPhotos.add(imageModel);
-            }
-
-        }
-        for (int j = newPhotos.size(); j < 5; j++) {
-            imageModel = new ImageModel();
-            imageModel.setPath(null);
-            imageModel.setResId(R.drawable.addproduct);
-            imageModel.setDbId(0);
-            photos.set(j, imageModel);
-            newPhotos.add(imageModel);
-        }
-
-        initPhotoAdapter(newPhotos);
-    }
-
+    public TwitterHandler th;
     ViewStub addProductCopy;
     ViewStub addProductSubmit;
     AddProductSubmit addProductSubmitContainer;
@@ -251,46 +164,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     AddProductSocMedSubmit addProductSocMedSubmitContainer;
     ViewStub addProductShare;
     AddProductShare addProductShareContainer;
-    private AddProductPresenter addProduct;
-    private ProductEditHelper producteditHelper = new ProductEditHelper();
-
-    public void showImageDescDialog(int pos) {
-        ImageModel imageModel = photos.get(pos);
-        if (imageModel.getPath() != null) {
-            // start dialog for description here
-            PictureDB pictureDB = DbManagerImpl.getInstance().getGambarById(imageModel.getDbId());
-            if (checkNotNull(pictureDB)) {// &&gambar.getPicturePrimary()==Gambar.PRIMARY_IMAGE
-                ImageDescriptionDialog fragment = ImageDescriptionDialog.newInstance(imageModel.getDbId());
-                fragment.show(getActivity().getSupportFragmentManager(), ImageDescriptionDialog.FRAGMENT_TAG);
-            }
-        } else {
-            Log.e(TAG, messageTAG + "failed adding description for image");
-        }
-    }
-
-
-    /**
-     * upload to the ws just for this
-     */
-    public void pushProduct() {
-        isCreateNewActivity = false;
-        saveProduct(true);
-    }
-
-    /**
-     * upload to ws then create new fragment
-     */
-    public void pushAndCreateNewProduct() {
-        isCreateNewActivity = true;
-        saveProduct(true);
-    }
-
-    /**
-     * if single add product or edit product alone then let it to "0"
-     * else if multiple add products then position should be vary
-     */
-    public int positionAtSocMed;
-
     ExpandableRelativeLayout addProductAddToNewEtalaseLayout;
     TextInputLayout addProductAddToNewEtalaseAlert;
     EditText addProductAddToNewEtalase;
@@ -330,13 +203,9 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     LinearLayout addProductCatalogLayout;
     ClickToSelectWithImage addProductCatalog;
     ArrayList<CatalogDataModel.Catalog> catalogs;
-
     TkpdProgressDialog tkpdProgressDialog;
-
     View parentView;
-
     ProductDB ProductDb;
-
     KeyboardHandler keyboardHandler;
     boolean alreadyLoad;
     String prodName;
@@ -357,34 +226,23 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     String productId;
     List<List<SimpleTextModel>> etalaseOwned;
     List<List<SimpleTextModel>> categoryOwned;
-    public AddProductType addProductType;
     List<String> textToDisplay;
     List<String> conditions;
     List<String> insurances;
     InstagramMediaModel instagramMediaModel;
     String errorMessageTemp; // use this if want to show at onCreateView
-    private long productDb = -1; // for modify product
-
     /**
      * this flag define after submit the data to the ws.
      * for example, if user tap save and add then it will move to new fresh add product
      * for example, if user tap save then it will move to manage product
      */
     boolean isCreateNewActivity = false;
-    public TwitterHandler th;
+    boolean isWithoutImage = false;
+    private AddProductPresenter addProduct;
+    private ProductEditHelper producteditHelper = new ProductEditHelper();
+    private long productDb = -1; // for modify product
     private ShareSocmedHandler shareSocmed;
-
-    public void onTextChangedEtalase(CharSequence s, int start, int before,
-                                     int count) {
-        Pair<Boolean, String> validate = VerificationUtils.validateNewEtalaseName(getActivity(), s.toString());
-        if (validate.getModel1()) {
-            addProductAddToNewEtalase.setError(null);
-            addProductAddToNewEtalaseAlert.setError(null);
-        } else {
-            addProductAddToNewEtalase.setError(validate.getModel2());
-            addProductAddToNewEtalaseAlert.setError(validate.getModel2());
-        }
-    }
+    private String dollarCurrency;
 
     @Deprecated
     public static Fragment newInstance() {
@@ -588,6 +446,260 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         return adf;
     }
 
+    private static boolean checkFileSize(File imagePath) {
+        int fileSize = Integer.parseInt(String.valueOf(imagePath.length() / 1024));
+        Log.d(TAG, "File size" + fileSize);
+        if (fileSize < 10000) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @NonNull
+    public static ImageModel getImageModel(String path, File photo) throws MetadataUtil.UnSupportedimageFormatException {
+        Pair<Integer, Integer> resolution = null;
+        resolution = MetadataUtil.getWidthFromImage(photo.getAbsolutePath());
+        int width = resolution.getModel1();
+        int height = resolution.getModel2();
+        PictureDB pictureDB = new PictureDB(photo.getAbsolutePath(), width, height);
+        pictureDB.save();
+        Long saveGambar = pictureDB.getId();
+        Log.d(TAG, messageTAG + " hasil save ke db : " + saveGambar);
+        //[END] save to db for images
+        ImageModel imageModel = new ImageModel();
+        imageModel.setPath(path);
+        imageModel.setDbId(saveGambar);
+        return imageModel;
+    }
+
+    @NonNull
+    public static ImageModel getImageModelPrimary(String path, File photo) throws MetadataUtil.UnSupportedimageFormatException {
+        Pair<Integer, Integer> resolution = null;
+        resolution = MetadataUtil.getWidthFromImage(photo.getAbsolutePath());
+        int width = resolution.getModel1();
+        int height = resolution.getModel2();
+        PictureDB pictureDB = new PictureDB(photo.getAbsolutePath(), width, height);
+        pictureDB.setPicturePrimary(PictureDB.PRIMARY_IMAGE);
+        pictureDB.save();
+        Long saveGambar = pictureDB.getId();
+        Log.d(TAG, messageTAG + " hasil save ke db : " + saveGambar);
+        //[END] save to db for images
+        ImageModel imageModel = new ImageModel();
+        imageModel.setPath(path);
+        imageModel.setDbId(saveGambar);
+        return imageModel;
+    }
+
+    @NonNull
+    public static ImageModel getImageModel(String path, File photo, EditProductForm.ProductImage productImage) {
+        try {
+            Pair<Integer, Integer> resolution = MetadataUtil.getWidthFromImage(photo.getAbsolutePath());
+            int width = resolution.getModel1();
+            int height = resolution.getModel2();
+            PictureDB savePictureDB = new PictureDB(photo.getAbsolutePath(), width, height,
+                    productImage.getImageId(), productImage.getImagePrimary(),
+                    productImage.getImageSrc(), productImage.getImageSrc300(),
+                    productImage.getImageDescription());
+            savePictureDB.save();
+            Long saveGambarLong = savePictureDB.getId();
+            Log.d(TAG, messageTAG + " hasil save ke db : " + saveGambarLong);
+            //[END] save to db for images
+            ImageModel imageModel = new ImageModel();
+            imageModel.setPath(path);
+            imageModel.setDbId(saveGambarLong);
+            return imageModel;
+        } catch (MetadataUtil.UnSupportedimageFormatException e) {
+            return null;
+        }
+    }
+
+    public static byte[] compressImage(String path) {
+        Log.d(TAG, "lokasi yang mau diupload " + path);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        BitmapFactory.Options checksize = new BitmapFactory.Options();
+        checksize.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        checksize.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, checksize);
+        options.inSampleSize = ImageHandler.calculateInSampleSize(checksize);
+        Bitmap tempPic = BitmapFactory.decodeFile(path, options);
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        Bitmap tempPicToUpload = null;
+        if (tempPic != null) {
+            try {
+                tempPic = new ImageHandler().RotatedBitmap(tempPic, path);
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            if (tempPic.getWidth() > 2048 || tempPic.getHeight() > 2048) {
+                tempPicToUpload = new ImageHandler().ResizeBitmap(tempPic, 2048);
+            } else {
+                tempPicToUpload = tempPic;
+            }
+            tempPicToUpload.compress(Bitmap.CompressFormat.JPEG, 70, bao);
+            return bao.toByteArray();
+        }
+        return null;
+    }
+
+    public static List<SimpleTextModel> toSimpleText(int level, int depId) {
+        List<SimpleTextModel> simpleTextModels = new ArrayList<>();
+        List<CategoryDB> categoryDBs = null;
+        if (level == 1) {
+            categoryDBs = new Select().from(CategoryDB.class).where(CategoryDB_Table.levelId.is(level)).queryList();
+        } else {
+            categoryDBs = new Select().from(CategoryDB.class).where(CategoryDB_Table.levelId.is(level))
+                    .and(CategoryDB_Table.parentId.is(depId)).queryList();
+        }
+        if (categoryDBs == null)
+            return null;
+
+        for (int i = 0; i < categoryDBs.size(); i++) {
+            CategoryDB categoryDB = categoryDBs.get(i);
+            SimpleTextModel simpleTextModel = new SimpleTextModel(categoryDB.getNameCategory());
+            //[START] set department id sebagai posisi karena ini berguna untuk query
+            simpleTextModel.setPosition(categoryDB.getDepartmentId());
+            //[END] set department id sebagai posisi karena ini berguna untuk query
+            simpleTextModel.setLevel(level);
+            simpleTextModels.add(simpleTextModel);
+        }
+        return simpleTextModels;
+    }
+
+    @Override
+    protected String getScreenName() {
+        String screenName = null;
+        switch (addProductType) {
+            case COPY:
+                screenName = AppScreen.SCREEN_COPY_PRODUCT;
+                break;
+            case ADD_FROM_SOCIAL_MEDIA:
+            case ADD:
+            case ADD_MULTIPLE_FROM_GALERY:
+            case EDIT:
+            case MODIFY:
+            case ADD_FROM_GALLERY:
+            default:
+                screenName = AppScreen.SCREEN_ADD_PRODUCT;
+                break;
+        }
+
+        return screenName;
+    }
+
+    public void removeImageSelected(int i) {
+        ImageModel imageModel = photos.get(i);
+        if (imageModel.getPath() != null) {
+            // if edit then dont delete the image product.
+            if (addProductType == AddProductType.EDIT) {
+                producteditHelper.deleteImage(imageModel, i);
+            } else {
+                DbManagerImpl.getInstance().removePictureWithId(imageModel.getDbId());
+            }
+
+            imageModel.setPath(null);
+            imageModel.setResId(R.drawable.addproduct);
+            imageModel.setDbId(0);
+            photos.remove(i);
+            photos.add(imageModel);
+            setSelectedImageAsPrimary(0);
+        } else {
+            // do nothing
+            Log.e(TAG, messageTAG + "failed removing images :" + (i + 1));
+        }
+    }
+
+    public void setSelectedImageAsPrimary(int i) {
+        ImageModel imageModel = photos.get(i);
+        if (getActivity() instanceof ProductSocMedActivity) {
+            ((ProductSocMedActivity) getActivity()).changePicture(positionAtSocMed, imageModel);
+        }
+        List<ImageModel> newPhotos = new ArrayList<>();
+        if (imageModel.getPath() != null) newPhotos.add(imageModel);
+        for (int index = 0; index < photos.size(); index++) {
+            imageModel = photos.get(index);
+            if (i == index) {
+                if (imageModel.getPath() != null) {
+                    PictureDB pictureDB = DbManagerImpl.getInstance().getGambarById(imageModel.getDbId());
+                    Log.i(TAG, "Picture before (new primary): " + pictureDB.toString());
+                    if (pictureDB != null) {
+                        pictureDB.setPicturePrimary(PictureDB.PRIMARY_IMAGE);
+                        pictureDB.save();
+                        Log.i(TAG, "Picture after (new primary): " + pictureDB.toString());
+                    }
+                }
+                continue;
+            }
+
+            if (imageModel.getPath() != null) {
+                PictureDB pictureDB = new Select().from(PictureDB.class).where(
+                        PictureDB_Table.Id.is(imageModel.getDbId()))
+                        .querySingle();
+                Log.i(TAG, "Picture before (not primary): " + pictureDB.toString());
+                if (pictureDB != null) {
+                    pictureDB.setPicturePrimary(PictureDB.NOT_PRIMARY_IMAGE);
+                    pictureDB.save();
+                    Log.i(TAG, "Picture after (not primary): " + pictureDB.toString());
+                }
+                newPhotos.add(imageModel);
+            }
+
+        }
+        for (int j = newPhotos.size(); j < 5; j++) {
+            imageModel = new ImageModel();
+            imageModel.setPath(null);
+            imageModel.setResId(R.drawable.addproduct);
+            imageModel.setDbId(0);
+            photos.set(j, imageModel);
+            newPhotos.add(imageModel);
+        }
+
+        initPhotoAdapter(newPhotos);
+    }
+
+    public void showImageDescDialog(int pos) {
+        ImageModel imageModel = photos.get(pos);
+        if (imageModel.getPath() != null) {
+            // start dialog for description here
+            PictureDB pictureDB = DbManagerImpl.getInstance().getGambarById(imageModel.getDbId());
+            if (checkNotNull(pictureDB)) {// &&gambar.getPicturePrimary()==Gambar.PRIMARY_IMAGE
+                ImageDescriptionDialog fragment = ImageDescriptionDialog.newInstance(imageModel.getDbId());
+                fragment.show(getActivity().getSupportFragmentManager(), ImageDescriptionDialog.FRAGMENT_TAG);
+            }
+        } else {
+            Log.e(TAG, messageTAG + "failed adding description for image");
+        }
+    }
+
+    /**
+     * upload to the ws just for this
+     */
+    public void pushProduct() {
+        isCreateNewActivity = false;
+        saveProduct(true);
+    }
+
+    /**
+     * upload to ws then create new fragment
+     */
+    public void pushAndCreateNewProduct() {
+        isCreateNewActivity = true;
+        saveProduct(true);
+    }
+
+    public void onTextChangedEtalase(CharSequence s, int start, int before,
+                                     int count) {
+        Pair<Boolean, String> validate = VerificationUtils.validateNewEtalaseName(getActivity(), s.toString());
+        if (validate.getModel1()) {
+            addProductAddToNewEtalase.setError(null);
+            addProductAddToNewEtalaseAlert.setError(null);
+        } else {
+            addProductAddToNewEtalase.setError(validate.getModel2());
+            addProductAddToNewEtalaseAlert.setError(validate.getModel2());
+        }
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -714,7 +826,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         //[END] currently disable rotateion
         th = new TwitterHandler(getActivity());
     }
-
 
     @Nullable
     @Override
@@ -1040,16 +1151,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         addProductShare = (ViewStub) view.findViewById(R.id.add_product_share);
     }
 
-    private static boolean checkFileSize(File imagePath) {
-        int fileSize = Integer.parseInt(String.valueOf(imagePath.length() / 1024));
-        Log.d(TAG, "File size" + fileSize);
-        if (fileSize < 10000) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     @Override
     public void dismissDialog() {
         if (checkNotNull(tkpdProgressDialog) && tkpdProgressDialog.isProgress()) {
@@ -1197,38 +1298,10 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         fetchDepartmentChild(model.getPosition(), ++level);
     }
 
-    private TextDeleteModel saveCategory(SimpleTextModel model) {
-        //[START] query based on name
-        CategoryDB categoryDB = new Select().from(CategoryDB.class).where(
-                CategoryDB_Table.nameCategory.eq(model.getText())
-        ).querySingle();
-        String d_id = categoryDB.getDepartmentId() + "";
-        String parent = categoryDB.getParentId() + "";
-        Log.d(TAG, messageTAG + "kategori : " + model.getText() + " d_id : " + d_id + " parent " + parent);
-        //[END] query based on name
-
-        TextDeleteModel textDeleteModel = new TextDeleteModel(model.getText());
-        textDeleteModel.setDataPosition(model.getPosition());
-        CategoryDB existingCategoryDB = new Select().from(CategoryDB.class).where(
-                CategoryDB_Table.nameCategory.eq(model.getText())
-        ).querySingle();
-        if (existingCategoryDB == null) {
-            CategoryDB categoryDB1 = new CategoryDB(model.getText(), model.getLevel(), -1, Integer.parseInt(parent), Integer.parseInt(d_id), "");
-            categoryDB1.save();
-            long id = categoryDB1.Id;
-            existingCategoryDB = new Select().from(CategoryDB.class).where(
-                    CategoryDB_Table.nameCategory.eq(model.getText())
-            ).querySingle();
-        }
-        textDeleteModel.setDepartmentId(existingCategoryDB.departmentId);
-        return textDeleteModel;
-    }
-
     @Override
     public void setProductPreOrder(String preOrderDay) {
         addProductEdittextPreorder.setText(preOrderDay);
     }
-
 
     public void addImageAfterSelect(ArrayList<String> path) {
         List<Pair<Integer, String>> result = new ArrayList<>();
@@ -1293,10 +1366,12 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                     ImageModel oldPhoto = photos.get(position);
 
                     int positionToFillImage = position;
-                    for(int i=photos.size()-1; i>=0; i--){
-                        ImageModel imageModel = photos.get(i);
-                        if(imageModel.getPath() == null){
-                            positionToFillImage = i;
+                    if (photos.get(position).getPath() == null) {
+                        for (int i = photos.size() - 1; i >= 0; i--) {
+                            ImageModel imageModel = photos.get(i);
+                            if (imageModel.getPath() == null) {
+                                positionToFillImage = i;
+                            }
                         }
                     }
                     photos.set(positionToFillImage, newPhoto);
@@ -1324,94 +1399,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         } else {
             Log.e(TAG, messageTAG + "unable to save to tkpd path !!!");
         }
-    }
-
-    @NonNull
-    public static ImageModel getImageModel(String path, File photo) throws MetadataUtil.UnSupportedimageFormatException {
-        Pair<Integer, Integer> resolution = null;
-        resolution = MetadataUtil.getWidthFromImage(photo.getAbsolutePath());
-        int width = resolution.getModel1();
-        int height = resolution.getModel2();
-        PictureDB pictureDB = new PictureDB(photo.getAbsolutePath(), width, height);
-        pictureDB.save();
-        Long saveGambar = pictureDB.getId();
-        Log.d(TAG, messageTAG + " hasil save ke db : " + saveGambar);
-        //[END] save to db for images
-        ImageModel imageModel = new ImageModel();
-        imageModel.setPath(path);
-        imageModel.setDbId(saveGambar);
-        return imageModel;
-    }
-
-    @NonNull
-    public static ImageModel getImageModelPrimary(String path, File photo) throws MetadataUtil.UnSupportedimageFormatException {
-        Pair<Integer, Integer> resolution = null;
-        resolution = MetadataUtil.getWidthFromImage(photo.getAbsolutePath());
-        int width = resolution.getModel1();
-        int height = resolution.getModel2();
-        PictureDB pictureDB = new PictureDB(photo.getAbsolutePath(), width, height);
-        pictureDB.setPicturePrimary(PictureDB.PRIMARY_IMAGE);
-        pictureDB.save();
-        Long saveGambar = pictureDB.getId();
-        Log.d(TAG, messageTAG + " hasil save ke db : " + saveGambar);
-        //[END] save to db for images
-        ImageModel imageModel = new ImageModel();
-        imageModel.setPath(path);
-        imageModel.setDbId(saveGambar);
-        return imageModel;
-    }
-
-    @NonNull
-    public static ImageModel getImageModel(String path, File photo, EditProductForm.ProductImage productImage) {
-        try {
-            Pair<Integer, Integer> resolution = MetadataUtil.getWidthFromImage(photo.getAbsolutePath());
-            int width = resolution.getModel1();
-            int height = resolution.getModel2();
-            PictureDB savePictureDB = new PictureDB(photo.getAbsolutePath(), width, height,
-                    productImage.getImageId(), productImage.getImagePrimary(),
-                    productImage.getImageSrc(), productImage.getImageSrc300(),
-                    productImage.getImageDescription());
-            savePictureDB.save();
-            Long saveGambarLong = savePictureDB.getId();
-            Log.d(TAG, messageTAG + " hasil save ke db : " + saveGambarLong);
-            //[END] save to db for images
-            ImageModel imageModel = new ImageModel();
-            imageModel.setPath(path);
-            imageModel.setDbId(saveGambarLong);
-            return imageModel;
-        } catch (MetadataUtil.UnSupportedimageFormatException e) {
-            return null;
-        }
-    }
-
-    public static byte[] compressImage(String path) {
-        Log.d(TAG, "lokasi yang mau diupload " + path);
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        BitmapFactory.Options checksize = new BitmapFactory.Options();
-        checksize.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        checksize.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(path, checksize);
-        options.inSampleSize = ImageHandler.calculateInSampleSize(checksize);
-        Bitmap tempPic = BitmapFactory.decodeFile(path, options);
-        ByteArrayOutputStream bao = new ByteArrayOutputStream();
-        Bitmap tempPicToUpload = null;
-        if (tempPic != null) {
-            try {
-                tempPic = new ImageHandler().RotatedBitmap(tempPic, path);
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-            if (tempPic.getWidth() > 2048 || tempPic.getHeight() > 2048) {
-                tempPicToUpload = new ImageHandler().ResizeBitmap(tempPic, 2048);
-            }
-            else {
-                tempPicToUpload = tempPic;
-            }
-            tempPicToUpload.compress(Bitmap.CompressFormat.JPEG, 70, bao);
-            return bao.toByteArray();
-        }
-        return null;
     }
 
     @Override
@@ -1758,6 +1745,11 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     }
 
     @Override
+    public String getProductCurrencyUnit() {
+        return selectedCurrencyDesc;
+    }
+
+    @Override
     public void setProductCurrencyUnit(String productCurrencyUnit) {
         if (productCurrencyUnit.equals("Rp")) {
             selectedCurrency = 0;
@@ -1767,11 +1759,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             selectedCurrencyDesc = "US$";
         }
         addProductCurrency.setText(selectedCurrencyDesc);
-    }
-
-    @Override
-    public String getProductCurrencyUnit() {
-        return selectedCurrencyDesc;
     }
 
     @Override
@@ -1856,8 +1843,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         initCurrencyUnit(currencyUnit);
     }
 
-    private String dollarCurrency;
-
     private void initCurrencyUnit(String[] currencyUnit) {
 
         List<SimpleTextModel> simpleTextModels = new ArrayList<>();
@@ -1883,12 +1868,14 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
                     addProductCurrency.setText(selectedCurrencyDesc);
                     return;
                 }
-                if (selectedCurrencyDesc != null && !item.getLabel().equals(selectedCurrencyDesc)) {
-                    wholesaleLayout.removeAllWholesale();
-                }
                 selectedCurrency = selectedIndex;
+                String selectedCurrencyDescOld = selectedCurrencyDesc;
                 selectedCurrencyDesc = item.getLabel();
                 reformatPrice();
+                if (selectedCurrencyDescOld != null && !item.getLabel().equals(selectedCurrencyDescOld)) {
+                    wholesaleLayout.removeAllWholesale();
+                    initWholeSaleAdapter();
+                }
             }
         });
         addProductCurrency.setLongClickable(false);
@@ -2300,30 +2287,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
         return simpleTextModels;
     }
 
-    public static List<SimpleTextModel> toSimpleText(int level, int depId) {
-        List<SimpleTextModel> simpleTextModels = new ArrayList<>();
-        List<CategoryDB> categoryDBs = null;
-        if (level == 1) {
-            categoryDBs = new Select().from(CategoryDB.class).where(CategoryDB_Table.levelId.is(level)).queryList();
-        } else {
-            categoryDBs = new Select().from(CategoryDB.class).where(CategoryDB_Table.levelId.is(level))
-                    .and(CategoryDB_Table.parentId.is(depId)).queryList();
-        }
-        if (categoryDBs == null)
-            return null;
-
-        for (int i = 0; i < categoryDBs.size(); i++) {
-            CategoryDB categoryDB = categoryDBs.get(i);
-            SimpleTextModel simpleTextModel = new SimpleTextModel(categoryDB.getNameCategory());
-            //[START] set department id sebagai posisi karena ini berguna untuk query
-            simpleTextModel.setPosition(categoryDB.getDepartmentId());
-            //[END] set department id sebagai posisi karena ini berguna untuk query
-            simpleTextModel.setLevel(level);
-            simpleTextModels.add(simpleTextModel);
-        }
-        return simpleTextModels;
-    }
-
     @Override
     public void constructOriginalEditData() {
         producteditHelper.constructOriginalEditData(addProduct.getOriginalEditData());
@@ -2371,8 +2334,6 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
             //[END] send data to internet
         }
     }
-
-    boolean isWithoutImage = false;
 
     public Pair<InputAddProductModel, TextDeleteModel> verifProduct() {
         InputAddProductModel inputAddProductModel = new InputAddProductModel();

@@ -6,10 +6,12 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionData;
 import com.tokopedia.inbox.rescenter.historyaction.domain.model.HistoryActionData;
 import com.tokopedia.inbox.rescenter.historyaddress.domain.model.HistoryAddressData;
 import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
+import com.tokopedia.inbox.rescenter.product.domain.model.ListProductDomainData;
+import com.tokopedia.inbox.rescenter.product.domain.model.ProductDetailData;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionData;
 
 import rx.Observable;
 
@@ -54,6 +56,20 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
         return resCenterDataSourceFactory
                 .createCloudResCenterDataSource()
                 .getHistoryAction(resolutionID, parameters);
+    }
+
+    @Override
+    public Observable<ListProductDomainData> getListProduct(TKPDMapParam<String, Object> parameters) {
+        return resCenterDataSourceFactory
+                .createCloudResCenterDataSource()
+                .getListProduct(resolutionID, parameters);
+    }
+
+    @Override
+    public Observable<ProductDetailData> getDetailProduct(String troubleID, TKPDMapParam<String, Object> parameters) {
+        return resCenterDataSourceFactory
+                .createCloudResCenterDataSource()
+                .getProductDetail(resolutionID, troubleID, parameters);
     }
 
     @Override

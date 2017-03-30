@@ -13,4 +13,6 @@ public interface RechargeCategoryView {
     void failedRenderDataRechargeCategory();
 
     void renderErrorNetwork();
+
+    void hideRechargeWidget();
 }

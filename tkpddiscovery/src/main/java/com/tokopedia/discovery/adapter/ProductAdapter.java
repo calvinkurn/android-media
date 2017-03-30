@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,15 +26,16 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tokopedia.discovery.view.CategoryHeaderTransformation;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.InfoTopAds;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.discovery.old.BucketListImageScroll;
@@ -43,17 +45,21 @@ import com.tokopedia.core.home.model.HorizontalProductList;
 import com.tokopedia.core.home.model.ViewHolderProductTopAds;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.entity.categoriesHades.Child;
+import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.custom.TopAdsListRecyclerViewAdapter;
 import com.tokopedia.discovery.adapter.custom.TopAdsRecyclerViewAdapter;
@@ -61,6 +67,7 @@ import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -68,6 +75,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.GridType.GRID_1;
+import static com.tokopedia.discovery.activity.BrowseProductActivity.EXTRA_TITLE;
 
 
 /**
@@ -84,6 +92,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     int page = 1;
     private int topAddsCounter = 0;
     private String source = "search";
+    private String category = "";
 
     public int getTopAddsCounter() {
         return topAddsCounter + 1; // + 1 because it will indexed as 0
@@ -92,13 +101,14 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     public ProductAdapter(Context context, List<RecyclerViewItem> data) {
         super(context, data);
         Log.d(TAG, "ProductAdapter data " + data.size());
-        if (context instanceof BrowseProductActivity) {
+        if (context !=null && context instanceof BrowseProductActivity) {
             BrowseProductActivity activity = (BrowseProductActivity) context;
             switch (activity.getBrowseProductActivityModel().getSource()) {
                 case BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT:
                     source = "hotlist";
                     break;
                 case BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY:
+                    category = activity.getIntent().getStringExtra(EXTRA_TITLE);
                     source = "directory";
                     break;
                 default:
@@ -111,10 +121,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case TkpdState.RecyclerView.VIEW_PRODUCT:
-                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_list, parent, false));
+                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_list, parent, false), source, category);
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
-                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_grid, parent, false));
+                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_grid, parent, false), source, category);
             case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
             case TkpdState.RecyclerView.VIEW_TOP_ADS:
                 return ProductFeedAdapter.createViewTopAds(parent);
@@ -122,6 +132,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 return onCreateTopAds4ViewHolder(parent);
             case TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST:
                 return onCreateBannerHotList(parent);
+            case TkpdState.RecyclerView.VIEW_CATEGORY_HEADER:
+                return onCreateDefaultCategoryHeader(parent);
+            case TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER:
+                return onCreateRevampCategoryHeader(parent);
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
                 return createEmptySearch(parent);
             default:
@@ -153,6 +167,12 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 break;
             case TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST:
                 ((BannerHotListViewHolder) holder).bind((HotListBannerModel) data.get(position));
+                break;
+            case TkpdState.RecyclerView.VIEW_CATEGORY_HEADER:
+                ((DefaultCategoryHeaderViewHolder) holder).bind((CategoryHeaderModel) data.get(position));
+                break;
+            case TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER:
+                ((RevampCategoryHeaderViewHolder) holder).bind((CategoryHeaderRevampModel) data.get(position));
                 break;
             default:
                 super.onBindViewHolder(holder, position);
@@ -381,6 +401,163 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         }
     }
 
+    private DefaultCategoryHeaderViewHolder onCreateDefaultCategoryHeader(ViewGroup parent) {
+        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.default_category_header, parent, false);
+        return new DefaultCategoryHeaderViewHolder(inflate);
+    }
+
+    public static class DefaultCategoryHeaderViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R2.id.recycler_view_default_categories)
+        RecyclerView defaultCategoriesRecyclerView;
+
+        @BindView(R2.id.expand_layout)
+        LinearLayout expandLayout;
+
+        @BindView(R2.id.hide_layout)
+        LinearLayout hideLayout;
+
+        @BindView(R2.id.card_category)
+        CardView cardViewCategory;
+
+        @BindView(R2.id.total_product)
+        TextView totalProduct;
+
+        private DefaultCategoryAdapter categoryAdapter;
+
+        public DefaultCategoryHeaderViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+
+        public void bind(final CategoryHeaderModel categoryHeaderModel) {
+            defaultCategoriesRecyclerView.setVisibility(View.VISIBLE);
+            defaultCategoriesRecyclerView.setHasFixedSize(true);
+            defaultCategoriesRecyclerView.setLayoutManager(
+                    new NonScrollGridLayoutManager(categoryHeaderModel.context, 2,
+                            GridLayoutManager.VERTICAL, false));
+            defaultCategoriesRecyclerView.addItemDecoration(new DividerItemDecoration(categoryHeaderModel.context));
+            categoryAdapter = new DefaultCategoryAdapter(categoryHeaderModel.categoryWidth,categoryHeaderModel.activeChildren,categoryHeaderModel.listener);
+            defaultCategoriesRecyclerView.setAdapter(categoryAdapter);
+            if (categoryHeaderModel.isUsedUnactiveChildren) {
+                expandLayout.setVisibility(View.VISIBLE);
+                expandLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        UnifyTracking.eventShowMoreCategory();
+                        categoryAdapter.addDataChild(categoryHeaderModel.categoryHeader.getChild()
+                                .subList(6,categoryHeaderModel.categoryHeader.getChild().size()));
+                        expandLayout.setVisibility(View.GONE);
+                        categoryHeaderModel.isUsedUnactiveChildren = false;
+                        hideLayout.setVisibility(View.VISIBLE);
+                    }
+                });
+                hideLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        categoryAdapter.hideExpandable();
+                        expandLayout.setVisibility(View.VISIBLE);
+                        categoryHeaderModel.isUsedUnactiveChildren = true;
+                        hideLayout.setVisibility(View.GONE);
+                        categoryHeaderModel.scrollListener.backToTop();
+                    }
+                });
+            }
+            if (categoryHeaderModel.categoryHeader.getChild() == null || categoryHeaderModel.categoryHeader.getChild().isEmpty()) {
+                cardViewCategory.setVisibility(View.GONE);
+            }
+            if (!categoryHeaderModel.totalProduct.equals("")) {
+                totalProduct.setText(categoryHeaderModel.totalProduct + " Produk");
+                totalProduct.setVisibility(View.VISIBLE);
+            }
+
+        }
+
+        public interface CategoryHeaderListener {
+            void onExpandClick();
+        }
+    }
+
+    private RevampCategoryHeaderViewHolder onCreateRevampCategoryHeader(ViewGroup parent) {
+        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.revamp_category_header, parent, false);
+        return new RevampCategoryHeaderViewHolder(inflate);
+    }
+
+    public static class RevampCategoryHeaderViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R2.id.image_header)
+        ImageView imageHeader;
+
+        @BindView(R2.id.title_header)
+        TextView titleHeader;
+
+        @BindView(R2.id.expand_layout)
+        LinearLayout expandLayout;
+
+        @BindView(R2.id.hide_layout)
+        LinearLayout hideLayout;
+
+        @BindView(R2.id.recycler_view_revamp_categories)
+        RecyclerView revampCategoriesRecyclerView;
+
+        @BindView(R2.id.total_product)
+        TextView totalProduct;
+
+        private RevampCategoryAdapter categoryAdapter;
+
+        public RevampCategoryHeaderViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+
+        public void bind(final CategoryHeaderRevampModel categoryHeaderModel) {
+            revampCategoriesRecyclerView.setVisibility(View.VISIBLE);
+            revampCategoriesRecyclerView.setHasFixedSize(true);
+            revampCategoriesRecyclerView.setLayoutManager(
+                    new NonScrollGridLayoutManager(categoryHeaderModel.context, 3,
+                            GridLayoutManager.VERTICAL, false));
+            categoryAdapter = new RevampCategoryAdapter(categoryHeaderModel.categoryWidth,categoryHeaderModel.activeChildren,categoryHeaderModel.listener);
+            revampCategoriesRecyclerView.setAdapter(categoryAdapter);
+            ImageHandler.loadImageFitTransformation(imageHeader.getContext(),imageHeader,
+                    categoryHeaderModel.categoryHeader.getHeaderImage(), new CategoryHeaderTransformation(imageHeader.getContext()));
+            titleHeader.setText(categoryHeaderModel.categoryHeader.getName().toUpperCase());
+            if (categoryHeaderModel.isUsedUnactiveChildren) {
+                expandLayout.setVisibility(View.VISIBLE);
+                expandLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        UnifyTracking.eventShowMoreCategory();
+                        categoryAdapter.addDataChild(categoryHeaderModel.categoryHeader.getChild()
+                                .subList(9,categoryHeaderModel.categoryHeader.getChild().size()));
+                        expandLayout.setVisibility(View.GONE);
+                        categoryHeaderModel.isUsedUnactiveChildren = false;
+                        hideLayout.setVisibility(View.VISIBLE);
+
+                    }
+                });
+                hideLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        categoryAdapter.hideExpandable();
+                        expandLayout.setVisibility(View.VISIBLE);
+                        categoryHeaderModel.isUsedUnactiveChildren = true;
+                        hideLayout.setVisibility(View.GONE);
+                        categoryHeaderModel.scrollListener.backToTop();
+                    }
+                });
+            }
+            if (!categoryHeaderModel.totalProduct.equals("")) {
+                totalProduct.setText(categoryHeaderModel.totalProduct + " Produk");
+                totalProduct.setVisibility(View.VISIBLE);
+            }
+        }
+
+        public interface CategoryHeaderListener {
+            void onExpandClick();
+        }
+
+    }
+
     /**
      * Much better if we check
      * is data zize is less than index position
@@ -416,6 +593,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             case TkpdState.RecyclerView.VIEW_TOP_ADS:
             case TkpdState.RecyclerView.VIEW_TOP_ADS_4:
             case TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST:
+            case TkpdState.RecyclerView.VIEW_CATEGORY_HEADER:
+            case TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER:
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
             case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
                 return recyclerViewItem.getType();
@@ -436,6 +615,11 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     public boolean isHotListBanner(int position) {
         return data.get(position).getType() == TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST;
+    }
+
+    public boolean isCategoryHeader(int position) {
+        return (data.get(position).getType() == TkpdState.RecyclerView.VIEW_CATEGORY_HEADER
+                || data.get(position).getType() == TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER);
     }
 
     public boolean isEmptySearch(int position) {
@@ -506,10 +690,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             notifyDataSetChanged();
             productIsEmpty = true;
         }
-        boolean isHotListBanner = checkIfOffset();
+        boolean isHeader = checkIfOffset();
         if (listProduct != null && listProduct.size() > 0) {
             int i = page - 1;
-            int posTop = (i * 12) + topAddsCounter + (isHotListBanner ? 1 : 0);
+            int posTop = (i * 12) + topAddsCounter + (isHeader ? 1 : 0);
             topAddsCounter++;
             Log.d(TAG, "ukuran data : " + data.size() + " : posTop " + posTop);
             HorizontalProductList horizontalProductListTop = new HorizontalProductList(listProduct);
@@ -546,7 +730,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     protected boolean checkIfOffset() {
-        return data != null && data.size() > 1 && data.get(0).getType() == TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST;
+        return data != null && data.size() > 1 && (data.get(0).getType() == (TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST)
+        || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_CATEGORY_HEADER)
+                || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER));
     }
 
     public void setSearchNotFound() {
@@ -556,6 +742,14 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     public void addHotListHeader(HotListBannerModel hotListBannerModel) {
         data.add(0, hotListBannerModel);
+    }
+
+    public void addCategoryHeader(CategoryHeaderModel categoryHeaderModel) {
+        data.add(0, categoryHeaderModel);
+    }
+
+    public void addCategoryRevampHeader(CategoryHeaderRevampModel categoryHeaderModel) {
+        data.add(0, categoryHeaderModel);
     }
 
     public static class EmptySearchItem extends RecyclerViewItem {
@@ -577,6 +771,78 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             this();
             this.hotList = hotList;
             this.hashtags = hashtags;
+        }
+    }
+
+
+    public static class CategoryHeaderModel extends RecyclerViewItem {
+
+        private Data categoryHeader;
+        private ArrayList<Child> activeChildren = new ArrayList<>();
+        private boolean isUsedUnactiveChildren = false;
+        private Context context;
+        private int categoryWidth;
+        DefaultCategoryAdapter.CategoryListener listener;
+        ScrollListener scrollListener;
+        private String totalProduct;
+
+        private CategoryHeaderModel() {
+            setType(TkpdState.RecyclerView.VIEW_CATEGORY_HEADER);
+
+        }
+
+        public CategoryHeaderModel(Data categoryHeader, Context context, int categoryWidth,
+                                   DefaultCategoryAdapter.CategoryListener listener, String totalProduct,
+                                   ScrollListener scrollListener) {
+            this();
+            this.categoryHeader = categoryHeader;
+            this.context = context;
+            this.categoryWidth = categoryWidth;
+            this.listener = listener;
+            this.scrollListener = scrollListener;
+            if (categoryHeader.getChild()!=null && categoryHeader.getChild().size()>6) {
+                activeChildren.addAll(categoryHeader.getChild()
+                        .subList(0,6));
+                isUsedUnactiveChildren = true;
+            } else if (categoryHeader.getChild()!=null) {
+                activeChildren.addAll(categoryHeader.getChild());
+            }
+            this.totalProduct = totalProduct;
+        }
+    }
+
+    public static class CategoryHeaderRevampModel extends RecyclerViewItem {
+
+        private Data categoryHeader;
+        private ArrayList<Child> activeChildren = new ArrayList<>();
+        private boolean isUsedUnactiveChildren = false;
+        private Context context;
+        private int categoryWidth;
+        RevampCategoryAdapter.CategoryListener listener;
+        ScrollListener scrollListener;
+        private String totalProduct;
+
+        private CategoryHeaderRevampModel() {
+            setType(TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER);
+        }
+
+        public CategoryHeaderRevampModel(Data categoryHeader, Context context, int categoryWidth,
+                                         RevampCategoryAdapter.CategoryListener listener,
+                                         String totalProduct, ScrollListener scrollListener) {
+            this();
+            this.categoryHeader = categoryHeader;
+            this.context = context;
+            this.categoryWidth = categoryWidth;
+            this.listener = listener;
+            this.scrollListener = scrollListener;
+            if (categoryHeader.getChild()!=null && categoryHeader.getChild().size()>9) {
+                activeChildren.addAll(categoryHeader.getChild()
+                        .subList(0,9));
+                isUsedUnactiveChildren = true;
+            } else if (categoryHeader.getChild()!=null){
+                activeChildren.addAll(categoryHeader.getChild());
+            }
+            this.totalProduct = totalProduct;
         }
     }
 
@@ -619,7 +885,17 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         LinearLayout badgesContainer;
 
         private Context context;
+        private String source="";
+        private String categoryId="";
         private ProductItem data;
+
+        public ViewHolderProductitem(Context context, View itemView, String source, String categoryId) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+            this.context = context;
+            this.source = source;
+            this.categoryId = categoryId;
+        }
 
         public ViewHolderProductitem(Context context, View itemView) {
             super(itemView);
@@ -673,6 +949,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
         @OnClick(R2.id.container)
         public void onClick() {
+            if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+                UnifyTracking.eventProductOnCategory(categoryId);
+            }
             Bundle bundle = new Bundle();
             Intent intent = new Intent(context, ProductInfoActivity.class);
             bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
@@ -700,5 +979,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             return new ViewHolderProductGrid(itemLayoutView);
         }
 
+    }
+
+    public interface ScrollListener {
+        void backToTop();
     }
 }

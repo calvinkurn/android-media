@@ -34,7 +34,7 @@
 
         <TextView
             android:id="@+id/text_view_range_date"
-            style="@style/TextView.TopAds.Title.Two"
+            style="@style/TextView.TopAds.Title.Green"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/topads_arrow_left_margin"
             android:layout_marginRight="@dimen/topads_arrow_left_margin"

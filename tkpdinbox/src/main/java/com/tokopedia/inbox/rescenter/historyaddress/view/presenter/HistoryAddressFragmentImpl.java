@@ -25,6 +25,8 @@ import com.tokopedia.inbox.rescenter.historyaddress.view.subscriber.HistoryAddre
 import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
 import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.HistoryAwbUseCase;
 import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.TrackAwbReturProductUseCase;
+import com.tokopedia.inbox.rescenter.product.data.mapper.ListProductMapper;
+import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -60,6 +62,8 @@ public class HistoryAddressFragmentImpl implements HistoryAddressFragmentPresent
         HistoryAwbMapper historyAwbMapper = new HistoryAwbMapper();
         HistoryAddressMapper historyAddressMapper = new HistoryAddressMapper();
         HistoryActionMapper historyActionMapper = new HistoryActionMapper();
+        ListProductMapper listProductMapper = new ListProductMapper();
+        ProductDetailMapper productDetailMapper = new ProductDetailMapper();
         DiscussionResCenterMapper discussionResCenterMapper = new DiscussionResCenterMapper();
 
         ResCenterDataSourceFactory dataSourceFactory = new ResCenterDataSourceFactory(context,
@@ -70,7 +74,10 @@ public class HistoryAddressFragmentImpl implements HistoryAddressFragmentPresent
                 historyAwbMapper,
                 historyAddressMapper,
                 historyActionMapper,
-                discussionResCenterMapper);
+                listProductMapper,
+                productDetailMapper,
+                discussionResCenterMapper
+        );
 
         ResCenterRepository resCenterRepository
                 = new ResCenterRepositoryImpl(resolutionID, dataSourceFactory);
