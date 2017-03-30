@@ -4,8 +4,10 @@ import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.Spannable;
@@ -14,6 +16,7 @@ import android.text.TextPaint;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -25,6 +28,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
@@ -37,6 +41,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
+import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.register.data.model.RegisterViewModel;
 import com.tokopedia.session.register.view.adapter.AutoCompleteTextAdapter;
@@ -62,6 +67,9 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
+import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
+
 /**
  * Created by nisie on 1/27/17.
  */
@@ -74,7 +82,7 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
     AutoCompleteTextView email;
 
     @BindView(R2.id.register_password)
-    PasswordView registerPassword;
+    TextInputEditText registerPassword;
 
     @BindView(R2.id.register_button)
     TextView registerButton;
@@ -116,7 +124,8 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
 
     @Override
     protected void onFirstTimeLaunched() {
-
+        Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
+        startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
     }
 
     @Override
@@ -581,5 +590,21 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
         outState.putString(PHONE, phone.getText().toString());
         outState.putString(EMAIL, email.getText().toString());
         outState.putString(PASSWORD, registerPassword.getText().toString());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case RC_SIGN_IN_GOOGLE:
+                if (data != null) {
+                    GoogleSignInAccount googleSignInAccount = data.getParcelableExtra(KEY_GOOGLE_ACCOUNT);
+                    email.setText(googleSignInAccount.getEmail());
+                    if(googleSignInAccount.getDisplayName() != null
+                            && !googleSignInAccount.getDisplayName().equals(googleSignInAccount.getEmail()))
+                        name.setText(googleSignInAccount.getDisplayName());
+                }
+                break;
+        }
     }
 }
