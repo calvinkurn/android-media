@@ -18,6 +18,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ButtonData;
 public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView> {
 
     private ButtonData buttonData;
+    private View horizontalButtonView;
     private View actionAcceptProduct;
     private View actionEdit;
     private View actionHelp;
@@ -61,6 +62,7 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         actionHelp = view.findViewById(R.id.action_help);
         actionCancelResolutionVertical = view.findViewById(R.id.action_cancel_resolution);
         actionCancelResolutionHorizontal = view.findViewById(R.id.action_cancel_resolution_double);
+        horizontalButtonView = view.findViewById(R.id.view_double_button_seller);
     }
 
     @Override
@@ -91,6 +93,17 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         actionCancelResolutionVertical.setVisibility(isShowCancelResolutionButton()
                 && actionCancelResolutionHorizontal.getVisibility() != VISIBLE ? VISIBLE : GONE);
 
+        horizontalButtonView.setVisibility(
+                isAnyButtonHorizontalVisible() ? VISIBLE : GONE
+        );
+
+    }
+
+    private boolean isAnyButtonHorizontalVisible() {
+        return actionEdit.getVisibility() == VISIBLE ||
+                actionAcceptSolutionHorizontal.getVisibility() == VISIBLE ||
+                actionCancelResolutionHorizontal.getVisibility() == VISIBLE ||
+                actionHelp.getVisibility() == VISIBLE;
     }
 
     private boolean validToActionCancelHorizontalView() {
