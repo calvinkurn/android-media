@@ -2,10 +2,13 @@ package com.tokopedia.ride.ontrip.view;
 
 import android.app.Activity;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
+
+import java.util.List;
 
 /**
  * Created by alvarisi on 3/24/17.
@@ -61,6 +64,8 @@ public interface OnTripMapContract {
         void renderArrivingDriverEvent(RideRequest result);
 
         void onSuccessCancelRideRequest();
+
+        void renderTripRoute(List<List<LatLng>> routes);
     }
 
     interface Presenter extends CustomerPresenter<View>{
@@ -74,5 +79,7 @@ public interface OnTripMapContract {
         void actionRetryRideRequest(String id);
 
         void proccessGetCurrentRideRequest(RideRequest result);
+
+        void getOverViewPolyLine(double startLat, double startLng, double destLat, double destLng);
     }
 }

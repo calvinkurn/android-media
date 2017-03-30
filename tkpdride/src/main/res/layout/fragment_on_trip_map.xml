@@ -53,8 +53,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginLeft="@dimen/eight_dp"
-                android:layout_marginRight="@dimen/eight_dp"
+                android:background="@drawable/rounded_corner"
+                android:layout_marginBottom="@dimen/twelve_dp"
+                android:layout_marginLeft="@dimen/twelve_dp"
+                android:layout_marginRight="@dimen/twelve_dp"
                 android:visibility="gone" />
 
         </RelativeLayout>

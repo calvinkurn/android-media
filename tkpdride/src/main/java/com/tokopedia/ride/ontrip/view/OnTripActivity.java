@@ -15,6 +15,7 @@ import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
+import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.ontrip.service.GetCurrentRideRequestService;
 import com.tokopedia.ride.ontrip.view.fragment.OnTripMapFragment;
 
@@ -24,6 +25,9 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class OnTripActivity extends BaseActivity implements OnTripMapFragment.OnFragmentInteractionListener {
     public static String EXTRA_CONFIRM_BOOKING = "EXTRA_CONFIRM_BOOKING";
+    public static final int RIDE_HOME_RESULT_CODE = 11;
+    public static final int RIDE_BOOKING_RESULT_CODE = 12;
+    public static final int APP_HOME_RESULT_CODE = 13;
 
     public static final String TASK_TAG_PERIODIC = "periodic_task";
 
@@ -95,9 +99,18 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent intent = HomeRouter.getHomeActivityInterfaceRouter(this);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        RideConfiguration rideConfiguration = new RideConfiguration();
+        if (rideConfiguration.isWaitingDriverState()) {
+            Intent intent = getIntent();
+            setResult(APP_HOME_RESULT_CODE, intent);
+            finish();
+//            Intent intent = HomeRouter.getHomeActivityInterfaceRouter(this);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//            startActivity(intent);
+//            finish();
+        } else {
+            finish();
+        }
     }
 
     @Override

@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -33,7 +34,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.pkmmte.view.CircularImageView;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -42,6 +48,7 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
+import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.completetrip.CompleteTripActivity;
@@ -53,6 +60,7 @@ import com.tokopedia.ride.ontrip.view.OnTripActivity;
 import com.tokopedia.ride.ontrip.view.OnTripMapContract;
 
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -69,6 +77,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     OnTripMapContract.Presenter presenter;
     ConfirmBookingViewModel confirmBookingViewModel;
     GoogleMap mGoogleMap;
+    private Marker mDriverMarker;
     RideConfiguration rideConfiguration;
     private GcmNetworkManager mGcmNetworkManager;
     private BroadcastReceiver mReceiver;
@@ -273,6 +282,23 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         }
         mGoogleMap.setMyLocationEnabled(false);
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
+
+        if (confirmBookingViewModel != null) {
+            presenter.getOverViewPolyLine(
+                    confirmBookingViewModel.getSource().getLatitude(),
+                    confirmBookingViewModel.getSource().getLongitude(),
+                    confirmBookingViewModel.getDestination().getLatitude(),
+                    confirmBookingViewModel.getDestination().getLongitude()
+            );
+        } else {
+            presenter.getOverViewPolyLine(
+                    rideConfiguration.getActiveSource().getLatitude(),
+                    rideConfiguration.getActiveSource().getLongitude(),
+                    rideConfiguration.getActiveDestination().getLatitude(),
+                    rideConfiguration.getActiveDestination().getLongitude()
+            );
+        }
+
     }
 
     @OnClick(R2.id.iv_my_location_button)
@@ -323,7 +349,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void failedToRequestRide() {
-
+        getActivity().setResult(OnTripActivity.RIDE_BOOKING_RESULT_CODE);
+        getActivity().finish();
     }
 
     @Override
@@ -370,6 +397,9 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void renderAcceptedRequest(RideRequest result) {
         bottomContainer.setVisibility(View.VISIBLE);
         replaceFragment(R.id.bottom_container, DriverDetailFragment.newInstance(result));
+        if (result.getLocation() != null) {
+            reDrawDriverMarker(result.getLocation().getLatitude(), result.getLocation().getLongitude());
+        }
     }
 
     private void replaceFragment(int containerViewId, android.app.Fragment fragment) {
@@ -380,12 +410,15 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void renderInProgressRequest(RideRequest result) {
-
+        if (result.getLocation() != null) {
+            reDrawDriverMarker(result.getLocation().getLatitude(), result.getLocation().getLongitude());
+        }
     }
 
     @Override
     public void renderDriverCanceledRequest(RideRequest result) {
         Toast.makeText(getActivity(), "Driver Canceled Request", Toast.LENGTH_SHORT).show();
+        getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
         getActivity().finish();
     }
 
@@ -403,11 +436,85 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void renderArrivingDriverEvent(RideRequest result) {
-
+        if (result.getLocation() != null) {
+            reDrawDriverMarker(result.getLocation().getLatitude(), result.getLocation().getLongitude());
+        }
     }
 
     @Override
     public void onSuccessCancelRideRequest() {
         rideConfiguration.clearActiveRequest();
+        getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
+        getActivity().finish();
+    }
+
+    @Override
+    public void onResume() {
+        mapView.onResume();
+        super.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mapView != null)
+            mapView.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        if (mapView != null)
+            mapView.onLowMemory();
+    }
+
+    @Override
+    public void renderTripRoute(List<List<LatLng>> routes) {
+        mGoogleMap.clear();
+
+        for (List<LatLng> route : routes) {
+            mGoogleMap.addPolyline(new PolylineOptions()
+                    .addAll(route)
+                    .width(10)
+                    .color(Color.BLACK)
+                    .geodesic(true));
+        }
+
+        //add markers on source and destination
+        PlacePassViewModel source, destination;
+        if (confirmBookingViewModel != null) {
+            source = confirmBookingViewModel.getSource();
+            destination = confirmBookingViewModel.getDestination();
+        } else {
+            source = rideConfiguration.getActiveSource();
+            destination = rideConfiguration.getActiveDestination();
+        }
+        mGoogleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(source.getLatitude(), source.getLongitude()))
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                .title(source.getAddress()));
+
+        mGoogleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(destination.getLatitude(), destination.getLongitude()))
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                .title(destination.getAddress()));
+
+        //zoom map to fit both source and dest
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(new LatLng(source.getLatitude(), source.getLongitude()));
+        builder.include(new LatLng(destination.getLatitude(), destination.getLongitude()));
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
+    }
+
+    private void reDrawDriverMarker(double latitude, double longitude) {
+        if (mDriverMarker != null) {
+            mDriverMarker.remove();
+        }
+        MarkerOptions options = new MarkerOptions()
+                .position(new LatLng(latitude, longitude))
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
+                .title("Your Driver");
+
+        mDriverMarker = mGoogleMap.addMarker(options);
     }
 }

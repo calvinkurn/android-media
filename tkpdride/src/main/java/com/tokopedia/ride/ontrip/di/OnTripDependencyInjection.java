@@ -11,7 +11,14 @@ import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.common.network.RideInterceptor;
+import com.tokopedia.ride.common.place.data.DirectionEntityMapper;
+import com.tokopedia.ride.common.place.data.PlaceDataRepository;
+import com.tokopedia.ride.common.place.data.PlaceDataStoreFactory;
+import com.tokopedia.ride.common.place.data.source.api.PlaceApi;
+import com.tokopedia.ride.common.place.data.source.api.PlaceUrl;
+import com.tokopedia.ride.common.place.domain.PlaceRepository;
 import com.tokopedia.ride.common.ride.data.BookingRideDataStoreFactory;
 import com.tokopedia.ride.common.ride.data.BookingRideRepositoryData;
 import com.tokopedia.ride.common.ride.data.ProductEntityMapper;
@@ -26,6 +33,7 @@ import com.tokopedia.ride.ontrip.view.OnTripMapPresenter;
 
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -215,14 +223,71 @@ public class OnTripDependencyInjection {
 
         CreateRideRequestUseCase createRideRequestUseCase = injection.provideGetProductAndEstimatedUseCase(token, userId);
         CancelRideRequestUseCase cancelRideRequestUseCase = injection.provideCancelRideRequestUseCase(token, userId);
-        return new OnTripMapPresenter(createRideRequestUseCase, cancelRideRequestUseCase);
+        GetOverviewPolylineUseCase getOverviewPolylineUseCase = injection.getOverviewPolylineUseCase(context);
+        return new OnTripMapPresenter(createRideRequestUseCase, cancelRideRequestUseCase, getOverviewPolylineUseCase);
     }
 
-    public static GetCurrentDetailRideRequestUseCase createGetDetailUseCase(Context context){
+    public static GetCurrentDetailRideRequestUseCase createGetDetailUseCase(Context context) {
         SessionHandler sessionHandler = new SessionHandler(context);
         String token = String.format("Bearer %s", sessionHandler.getAccessToken(context));
         OnTripDependencyInjection injection = new OnTripDependencyInjection();
         String userId = sessionHandler.getLoginID();
         return injection.provideGetCurrentDetailRideRequestUseCase(token, userId);
+    }
+
+
+    private OkHttpClient providePlaceOkHttpClient(Cache cache, HttpLoggingInterceptor loggingInterceptor) {
+        OkHttpClient.Builder client = new OkHttpClient.Builder()
+                .addInterceptor(loggingInterceptor)
+                .cache(cache);
+        return client.build();
+    }
+
+    private Retrofit providePlaceRetrofit(OkHttpClient client,
+                                          GeneratedHostConverter hostConverter,
+                                          TkpdResponseConverter tkpdResponseConverter,
+                                          StringResponseConverter stringResponseConverter,
+                                          GsonConverterFactory gsonConverterFactory,
+                                          RxJavaCallAdapterFactory rxJavaCallAdapterFactory) {
+        return createRetrofit(PlaceUrl.BASE_URL,
+                client,
+                hostConverter,
+                tkpdResponseConverter,
+                stringResponseConverter,
+                gsonConverterFactory,
+                rxJavaCallAdapterFactory);
+    }
+
+    private PlaceApi providePlaceApi(Retrofit retrofit) {
+        return retrofit.create(PlaceApi.class);
+    }
+
+    private PlaceDataStoreFactory providePlaceDataStoreFactory(PlaceApi placeApi) {
+        return new PlaceDataStoreFactory(placeApi);
+    }
+
+    private PlaceRepository providePlaceRepository(PlaceDataStoreFactory placeDataStoreFactory, DirectionEntityMapper mapper) {
+        return new PlaceDataRepository(placeDataStoreFactory, mapper);
+    }
+
+    private Cache provideHttpCacheCache(Context context) {
+        int cacheSize = 10 * 1024 * 1024;
+        return new Cache(context.getCacheDir(), cacheSize);
+    }
+
+    private GetOverviewPolylineUseCase getOverviewPolylineUseCase(Context context) {
+        return new GetOverviewPolylineUseCase(
+                provideThreadExecutor(),
+                providePostExecutionThread(),
+                providePlaceRepository(providePlaceDataStoreFactory(providePlaceApi(providePlaceRetrofit(
+                        providePlaceOkHttpClient(provideHttpCacheCache(context),
+                                provideLoggingInterceptory()),
+                        provideGeneratedHostConverter(),
+                        provideTkpdResponseConverter(),
+                        provideResponseConverter(),
+                        provideGsonConverterFactory(provideGson()),
+                        provideRxJavaCallAdapterFactory()
+                ))), new DirectionEntityMapper())
+        );
     }
 }

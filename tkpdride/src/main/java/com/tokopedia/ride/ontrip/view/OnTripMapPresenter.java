@@ -15,14 +15,20 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.JsonSyntaxException;
+import com.google.maps.android.PolyUtil;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.common.exception.TosConfirmationHttpException;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Subscriber;
 
@@ -35,14 +41,17 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     private CreateRideRequestUseCase createRideRequestUseCase;
     private CancelRideRequestUseCase cancelRideRequestUseCase;
+    private GetOverviewPolylineUseCase getOverviewPolylineUseCase;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private Location mCurrentLocation;
 
     public OnTripMapPresenter(CreateRideRequestUseCase createRideRequestUseCase,
-                              CancelRideRequestUseCase cancelRideRequestUseCase) {
+                              CancelRideRequestUseCase cancelRideRequestUseCase,
+                              GetOverviewPolylineUseCase getOverviewPolylineUseCase) {
         this.createRideRequestUseCase = createRideRequestUseCase;
         this.cancelRideRequestUseCase = cancelRideRequestUseCase;
+        this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
     }
 
     @Override
@@ -81,7 +90,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     getView().hideLoadingWaitingResponse();
                 } else {
                     getView().showFailedRideRequestMessage(e.getMessage());
-                    getView().navigateToBack();
+                    getView().failedToRequestRide();
                 }
             }
 
@@ -198,7 +207,6 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             public void onNext(String s) {
                 getView().showMessage(s);
                 getView().onSuccessCancelRideRequest();
-                getView().navigateToBack();
             }
         });
 
@@ -225,7 +233,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     getView().hideLoadingWaitingResponse();
                 } else {
                     getView().showFailedRideRequestMessage(e.getMessage());
-                    getView().navigateToBack();
+                    getView().failedToRequestRide();
                 }
             }
 
@@ -263,7 +271,40 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 break;
             default:
 
-
         }
+    }
+
+    @Override
+    public void getOverViewPolyLine(double startLat, double startLng, double destLat, double destLng) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString("origin", String.format("%s,%s",
+                startLat,
+                startLng
+        ));
+        requestParams.putString("destination", String.format("%s,%s",
+                destLat,
+                destLng
+        ));
+        requestParams.putString("sensor", "false");
+        getOverviewPolylineUseCase.execute(requestParams, new Subscriber<List<String>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(List<String> strings) {
+                List<List<LatLng>> routes = new ArrayList<>();
+                for (String route : strings) {
+                    routes.add(PolyUtil.decode(route));
+                }
+                getView().renderTripRoute(routes);
+            }
+        });
     }
 }

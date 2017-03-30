@@ -3,7 +3,6 @@
     android:id="@+id/cab_on_trip_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/rounded_corner"
     android:clickable="true"
     android:orientation="vertical"
     android:visibility="visible">

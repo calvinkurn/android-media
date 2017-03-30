@@ -51,6 +51,7 @@ import static com.tokopedia.ride.bookingride.view.fragment.ConfirmBookingRideFra
 public class RideHomeActivity extends BaseActivity implements RideHomeFragment.OnFragmentInteractionListener,
         UberProductFragment.OnFragmentInteractionListener, ConfirmBookingRideFragment.OnFragmentInteractionListener, SeatAdapter.OnItemClickListener {
 
+    public static int REQUEST_GO_TO_ONTRIP_CODE = 1009;
     private Unbinder unbinder;
 
     @BindView(R2.id.cabs_sliding_layout)
@@ -67,6 +68,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
     private int mSlidingPanelMinHeightInPx, mToolBarHeightinPx;
 
     private RideConfiguration configuration;
+    private boolean isSeatPanelShowed;
 
     public static Intent getCallingIntent(Activity activity) {
         return new Intent(activity, RideHomeActivity.class);
@@ -80,14 +82,13 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
 
         RideHomeActivityPermissionsDispatcher.initFragmentWithCheck(this);
 
-        //mSlidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.cabs_sliding_layout);
         mSlidingPanelMinHeightInPx = (int) getResources().getDimension(R.dimen.sliding_panel_min_height);
         mToolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);
 
         configuration = new RideConfiguration();
         if (configuration.isWaitingDriverState()) {
             Intent intent = OnTripActivity.getCallingIntent(this);
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_GO_TO_ONTRIP_CODE);
         }
     }
 
@@ -133,6 +134,17 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
             RideHomeFragment fragment = (RideHomeFragment) getFragmentManager().findFragmentById(R.id.top_container);
             if (fragment != null) {
                 fragment.handleLocationAlertResult(resultCode);
+            }
+        } else if (requestCode == REQUEST_GO_TO_ONTRIP_CODE) {
+            switch (resultCode) {
+                case OnTripActivity.APP_HOME_RESULT_CODE:
+                    finish();
+                    break;
+                case OnTripActivity.RIDE_HOME_RESULT_CODE:
+                    RideHomeActivityPermissionsDispatcher.initFragmentWithCheck(this);
+                    break;
+                case OnTripActivity.RIDE_BOOKING_RESULT_CODE:
+                    break;
             }
         }
     }
@@ -237,14 +249,20 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof ConfirmBookingRideFragment) {
+        if (isSeatPanelShowed) {
+            hideBlockTranslucentLayout();
+            hideSeatPanelLayout();
+        } else if (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof ConfirmBookingRideFragment) {
+            hideBlockTranslucentLayout();
+            hideSeatPanelLayout();
+
             ConfirmBookingRideFragment fragment = (ConfirmBookingRideFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
             ConfirmBookingViewModel viewModel = fragment.getActiveConfirmBooking();
             UberProductFragment productFragment = UberProductFragment.newInstance(viewModel.getSource(),
                     viewModel.getDestination());
             replaceFragment(R.id.bottom_container, productFragment);
-            mSlidingUpPanelLayout.setPanelHeight(Float.floatToIntBits(getResources().getDimension(R.dimen.sliding_panel_min_height)));
-            mSlidingUpPanelLayout.setParallaxOffset(Float.floatToIntBits(getResources().getDimension(R.dimen.tooler_height)));
+//            mSlidingUpPanelLayout.setPanelHeight(Float.floatToIntBits(getResources().getDimension(R.dimen.sliding_panel_min_height)));
+//            mSlidingUpPanelLayout.setParallaxOffset(Float.floatToIntBits(getResources().getDimension(R.dimen.tooler_height)));
         } else {
             super.onBackPressed();
         }
@@ -266,6 +284,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                isSeatPanelShowed = true;
                 Animation bottomUp = AnimationUtils.loadAnimation(RideHomeActivity.this,
                         R.anim.bottom_up);
 
@@ -294,6 +313,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                isSeatPanelShowed = false;
                 Animation bottomDown = AnimationUtils.loadAnimation(RideHomeActivity.this,
                         R.anim.bottom_down);
 
@@ -319,7 +339,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
     @Override
     public void actionRequestRide(ConfirmBookingViewModel confirmBookingViewModel) {
         Intent intent = OnTripActivity.getCallingIntent(this, confirmBookingViewModel);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_GO_TO_ONTRIP_CODE);
     }
 
     @Override

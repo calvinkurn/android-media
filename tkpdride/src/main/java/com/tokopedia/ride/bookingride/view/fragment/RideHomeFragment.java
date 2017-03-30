@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -53,6 +54,10 @@ import butterknife.OnClick;
 import static android.app.Activity.RESULT_OK;
 
 public class RideHomeFragment extends BaseFragment implements BookingRideContract.View, OnMapReadyCallback {
+    public static final String EXTRA_IS_ALREADY_HAVE_LOC = "EXTRA_IS_ALREADY_HAVE_LOC";
+    private static final String EXTRA_SOURCE = "EXTRA_SOURCE";
+    private static final String EXTRA_DESTINATION = "EXTRA_DESTINATION";
+
     public static final int LOGIN_REQUEST_CODE = 1005;
     private static final int PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE = 1006;
     private static final int PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE = 1007;
@@ -100,20 +105,37 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     public RideHomeFragment() {
     }
 
-    public static RideHomeFragment newInstance() {
+    /**
+     * This singleton instance used if apps got pressed back when in confirm booking
+     * or on trip screen
+     *
+     * @param source
+     * @param destination
+     * @return
+     */
+    public static RideHomeFragment newInstance(PlacePassViewModel source, PlacePassViewModel destination) {
         RideHomeFragment fragment = new RideHomeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(EXTRA_IS_ALREADY_HAVE_LOC, true);
+        bundle.putParcelable(EXTRA_SOURCE, source);
+        bundle.putParcelable(EXTRA_DESTINATION, destination);
+        fragment.setArguments(bundle);
         return fragment;
+    }
+
+    public static RideHomeFragment newInstance() {
+        return new RideHomeFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setInitialVariable();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setInitialVariable();
         setViewListener();
         setupToolbar();
         mapView.onCreate(savedInstanceState);
@@ -130,6 +152,13 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     }
 
     private void setViewListener() {
+        if (getArguments() != null)
+            if (getArguments().getBoolean(EXTRA_IS_ALREADY_HAVE_LOC, false)) {
+                if (mSource != null && mDestination != null) {
+                    setSourceLocationText(mSource.getTitle());
+                    setDestinationLocationText(mDestination.getTitle());
+                }
+            }
     }
 
     @Override
@@ -233,6 +262,11 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
                 mPresenter.onMapMoveCameraIdle();
             }
         });
+
+        if (mSource != null && mDestination != null) {
+            mPresenter.getOverviewPolyline(mSource.getLatitude(), mSource.getLongitude(),
+                    mDestination.getLatitude(), mDestination.getLongitude());
+        }
     }
 
     @Override
@@ -309,13 +343,18 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         );
 
         mToolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);
+
+        if (getArguments() != null) {
+            if (getArguments().getBoolean(EXTRA_IS_ALREADY_HAVE_LOC, false)) {
+                mSource = getArguments().getParcelable(EXTRA_SOURCE);
+                mDestination = getArguments().getParcelable(EXTRA_DESTINATION);
+            }
+        }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         System.out.println("Vishal RideHomeFragment onActivityResult");
-
-
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
@@ -454,13 +493,14 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         mGoogleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(mDestination.getLatitude(), mDestination.getLongitude()))
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                .title(mSource.getAddress()));
+                .title(mDestination.getAddress()));
 
         //zoom map to fit both source and dest
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(new LatLng(mSource.getLatitude(), mSource.getLongitude()));
         builder.include(new LatLng(mDestination.getLatitude(), mDestination.getLongitude()));
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
+
     }
 
     @OnClick(R2.id.iv_my_location_button)
