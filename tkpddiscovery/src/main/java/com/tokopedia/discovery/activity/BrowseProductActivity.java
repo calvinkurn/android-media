@@ -285,7 +285,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                 new DiscoveryInteractorImpl.GetGridConfigCallback() {
                     @Override
                     public void onSuccess(String gridConfig) {
-                        if (StringUtils.isNotBlank(gridConfig)) {
+                        if (!TextUtils.isEmpty(gridConfig)) {
                             gridType = BrowseProductRouter.GridType.valueOf(gridConfig);
                             switch (gridType) {
                                 case GRID_1:

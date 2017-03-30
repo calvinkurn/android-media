@@ -20,8 +20,4 @@ public class StringUtils {
         }
         return builder.toString();
     }
-
-    public static boolean isNotBlank(String s) {
-        return s != null && s.length() > 0;
-    }
 }
