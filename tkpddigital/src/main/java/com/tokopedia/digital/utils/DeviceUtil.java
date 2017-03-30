@@ -35,7 +35,7 @@ public class DeviceUtil {
         return "";
     }
 
-    public static String getDeviceName() {
+    private static String getDeviceName() {
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
         if (model.startsWith(manufacturer)) {

@@ -314,7 +314,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 } else {
                     view.renderCartDigitalInfoData(cartDigitalInfoData);
                 }
-
+                //  view.renderCartDigitalInfoData(cartDigitalInfoData);
             }
         };
     }
