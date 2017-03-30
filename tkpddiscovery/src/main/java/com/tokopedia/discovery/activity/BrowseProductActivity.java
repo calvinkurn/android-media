@@ -644,6 +644,8 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                                 gridTitleRes = R.string.grid;
                         }
 
+                        isCustomGridType = true;
+
                         browseProductPresenter.onGridTypeChanged(
                                 browseProductActivityModel.getParentDepartement(),
                                 gridType.toString()
