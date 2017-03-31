@@ -242,10 +242,8 @@ public class ListHistoryAddress {
             private int by;
             @SerializedName("createTimeStr")
             private String createTimeStr;
-            @SerializedName("actionByStr")
-            private String actionByStr;
-            @SerializedName("actionBy")
-            private int actionBy;
+            @SerializedName("byStr")
+            private String byStr;
 
             public String getName() {
                 return name;
@@ -271,21 +269,14 @@ public class ListHistoryAddress {
                 this.createTimeStr = createTimeStr;
             }
 
-            public String getActionByStr() {
-                return actionByStr;
+            public String getByStr() {
+                return byStr;
             }
 
-            public void setActionByStr(String actionByStr) {
-                this.actionByStr = actionByStr;
+            public void setByStr(String byStr) {
+                this.byStr = byStr;
             }
 
-            public int getActionBy() {
-                return actionBy;
-            }
-
-            public void setActionBy(int actionBy) {
-                this.actionBy = actionBy;
-            }
         }
     }
 }

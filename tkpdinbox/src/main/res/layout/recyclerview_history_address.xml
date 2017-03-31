@@ -5,7 +5,6 @@
     android:paddingLeft="@dimen/padding_small"
     android:paddingRight="@dimen/padding_small"
     android:paddingTop="@dimen/padding_small"
-    android:paddingBottom="@dimen/padding_small"
     android:background="@color/white">
 
     <TextView
@@ -26,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_date"
         android:layout_toRightOf="@id/indicator_container"
+        android:paddingBottom="@dimen/padding_small"
         android:gravity="center_vertical"
         android:maxLines="2"
         android:ellipsize="end"
@@ -52,6 +52,7 @@
             />
 
         <View
+            android:id="@+id/line_indicator"
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
