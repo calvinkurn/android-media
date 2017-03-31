@@ -58,10 +58,10 @@ public class AuthUtil {
      * default key is KEY_WSV$
      */
     public static class KEY {
-        public static String KEY_WSV4 = "web_service_v4";
-        public static String KEY_MOJITO = "mojito_api_v1";
-        public static String KEY_KEROPPI = "Keroppi";
-        public final String KEY_HMAC_DIGITAL = "KEY_HMAC_DIGITAL";
+        public static final String KEY_WSV4 = "web_service_v4";
+        public static final String KEY_MOJITO = "mojito_api_v1";
+        public static final String KEY_KEROPPI = "Keroppi";
+        public static final String KEY_HMAC_DIGITAL = "KEY_HMAC_DIGITAL";
     }
 
     public static Map<String, String> generateHeaders(String path, String strParam, String method, String authKey) {
