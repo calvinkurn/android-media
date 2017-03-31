@@ -17,6 +17,10 @@ import com.tokopedia.seller.gmstat.utils.GMNetworkErrorHelper;
 
 public class TopAdsNetworkErrorHelper extends GMNetworkErrorHelper {
 
+    private int textDescriptionColor = Color.WHITE;
+    private int actionColor = Color.GREEN;
+    private int backgroundColor = Color.BLACK;
+
     public TopAdsNetworkErrorHelper(NetworkErrorHelper.RetryClickedListener listener, View rootView) {
         super(listener, rootView);
     }
@@ -27,9 +31,9 @@ public class TopAdsNetworkErrorHelper extends GMNetworkErrorHelper {
                 Snackbar.with(activity.getApplicationContext()) // context
                         .type(SnackbarType.MULTI_LINE)
                         .duration(Snackbar.SnackbarDuration.LENGTH_INDEFINITE)
-                        .textColor(Color.WHITE)
-                        .actionColor(Color.GREEN)
-                        .color(Color.BLACK)
+                        .textColor(textDescriptionColor)
+                        .actionColor(actionColor)
+                        .color(backgroundColor)
                         .text(titleText) // text to display
                         .actionLabel(actionText) // action button label
                         .actionListener(onActionClickListener) // action button's ActionClickListener
@@ -39,5 +43,13 @@ public class TopAdsNetworkErrorHelper extends GMNetworkErrorHelper {
     public void dismissSnackbar() {
         if (SnackbarManager.getCurrentSnackbar() != null)
             SnackbarManager.dismiss();
+    }
+
+    public void setBackgroundColor(int backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public void setActionColor(int actionColor) {
+        this.actionColor = actionColor;
     }
 }

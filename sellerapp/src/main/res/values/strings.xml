@@ -15,5 +15,6 @@
     <string name="decription_shop_score_summary_30days_info">Skor dihitung berdasarkan performa toko dalam 30 hari terakhir.</string>
 
     <string name="title_push_notif_general">Notifikasi baru dari Tokopedia</string>
+    <string name="header_review_reputation">penalti reputasi</string>
 
 </resources>

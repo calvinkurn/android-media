@@ -98,9 +98,13 @@ public class GoldMerchantDateUtils {
     }
 
     public static String getDateFormatForInput(long timeInMillis) {
+        return getDateFormatForInput(timeInMillis, "yyyyMMdd");
+    }
+
+    public static String getDateFormatForInput(long timeInMillis, String format) {
         Calendar instance = Calendar.getInstance();
         instance.setTimeInMillis(timeInMillis);
-        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", locale);
+        DateFormat dateFormat = new SimpleDateFormat(format, locale);
         return dateFormat.format(instance.getTime());
     }
 
@@ -120,6 +124,18 @@ public class GoldMerchantDateUtils {
         }
         Log.d(TAG, "generateDateRanges ["+result+"]");
         return result;
+    }
+
+    public static String getPreviousDate(long currentDay, int previousDayCount, String format) {
+        return getDateFormatForInput(getPreviousDate(currentDay, previousDayCount), format);
+    }
+
+    public static long getPreviousDate(long currentDay, int previousDayCount) {
+        // calculate range
+        Calendar sCDate = Calendar.getInstance();
+        sCDate.setTimeInMillis(currentDay);
+        sCDate.add(Calendar.DATE, -1 * (previousDayCount));
+        return sCDate.getTimeInMillis();
     }
 
     public static int daysBetween(Calendar day1, Calendar day2){

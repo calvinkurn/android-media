@@ -13,9 +13,9 @@ import android.widget.TextView;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.ShopStatisticDetail;
 import com.tokopedia.core.database.CacheUtil;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopTxStats;
 import com.tokopedia.sellerapp.R;
-import com.tokopedia.sellerapp.home.model.shopmodel.ShopModel;
-import com.tokopedia.sellerapp.home.model.shopmodel.ShopTxStats;
 
 import java.util.HashMap;
 
@@ -37,6 +37,15 @@ public class TransactionView3 extends FrameLayout implements BaseView<ShopModel>
     @BindView(R.id.arc_view_container)
     LinearLayout arcViewContainer;
     private ShopModel shopModel;
+    private HashMap<Integer, ShopStatisticTransactionView.TypeTransaction> typeTransactions;
+    private boolean hasTransaction;
+    private ShopStatisticTransactionView.TypeTransaction currentTypeTransaction;
+
+    public TransactionView3(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        LayoutInflater.from(context).inflate(R.layout.container_transaction, this);
+        ButterKnife.bind(this);
+    }
 
     @OnClick(R.id.transaction_view_container)
     public void seeDetail(){
@@ -48,16 +57,6 @@ public class TransactionView3 extends FrameLayout implements BaseView<ShopModel>
             intent.putExtra(ShopStatisticDetail.EXTRA_SHOP_INFO, shopInfo);
             getContext().startActivity(intent);
         }
-    }
-
-    private HashMap<Integer, ShopStatisticTransactionView.TypeTransaction> typeTransactions;
-    private boolean hasTransaction;
-    private ShopStatisticTransactionView.TypeTransaction currentTypeTransaction;
-
-    public TransactionView3(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        LayoutInflater.from(context).inflate(R.layout.container_transaction, this);
-        ButterKnife.bind(this);
     }
 
     @Override
