@@ -101,6 +101,11 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
         fragmentManager = getSupportFragmentManager();
         dynamicFilterPresenter = new DynamicFilterPresenterImpl(this);
         dynamicFilterPresenter.fetchExtras(getIntent());
+        setCurrentSelectedCategoryAsChecked();
+    }
+
+    private void setCurrentSelectedCategoryAsChecked() {
+        selectedPositions.put(dynamicFilterPresenter.getCurrentCategory(), true);
     }
 
     @Override
