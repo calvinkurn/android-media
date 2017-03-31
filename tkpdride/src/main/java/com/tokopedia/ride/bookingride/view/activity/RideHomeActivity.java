@@ -216,9 +216,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
         mSlidingUpPanelLayout.setPanelHeight(50);
         mSlidingUpPanelLayout.setParallaxOffset(5);
 
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_PRODUCT, rideProductViewModel);
-        ConfirmBookingRideFragment fragment = ConfirmBookingRideFragment.newInstance(bundle);
+        ConfirmBookingRideFragment fragment = ConfirmBookingRideFragment.newInstance(rideProductViewModel);
         Slide slideTransition = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             slideTransition = new Slide(Gravity.END);
@@ -273,8 +271,8 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
             UberProductFragment productFragment = UberProductFragment.newInstance(viewModel.getSource(),
                     viewModel.getDestination());
             replaceFragment(R.id.bottom_container, productFragment);
-            mSlidingUpPanelLayout.setPanelHeight(Float.floatToIntBits(getResources().getDimension(R.dimen.sliding_panel_min_height)));
-            mSlidingUpPanelLayout.setParallaxOffset(Float.floatToIntBits(getResources().getDimension(R.dimen.tooler_height)));
+//            mSlidingUpPanelLayout.setPanelHeight(Float.floatToIntBits(getResources().getDimension(R.dimen.sliding_panel_min_height)));
+//            mSlidingUpPanelLayout.setParallaxOffset(Float.floatToIntBits(getResources().getDimension(R.dimen.tooler_height)));
         } else {
             super.onBackPressed();
         }

@@ -3,8 +3,6 @@ package com.tokopedia.ride.bookingride.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.ride.common.ride.domain.model.Product;
-
 /**
  * Created by alvarisi on 3/23/17.
  */
@@ -18,14 +16,15 @@ public class ConfirmBookingViewModel implements Parcelable {
     private int seatCount;
     private String paymentMethod;
     private String productImage;
-    private String price;
+    private String priceFmt;
+    private float price;
     private String headerTitle;
     private int maxCapacity;
 
     public ConfirmBookingViewModel() {
     }
 
-    private ConfirmBookingViewModel(Parcel in) {
+    protected ConfirmBookingViewModel(Parcel in) {
         fareId = in.readString();
         productId = in.readString();
         source = in.readParcelable(PlacePassViewModel.class.getClassLoader());
@@ -33,28 +32,10 @@ public class ConfirmBookingViewModel implements Parcelable {
         seatCount = in.readInt();
         paymentMethod = in.readString();
         productImage = in.readString();
-        price = in.readString();
+        priceFmt = in.readString();
+        price = in.readFloat();
         headerTitle = in.readString();
         maxCapacity = in.readInt();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(fareId);
-        dest.writeString(productId);
-        dest.writeParcelable(source, flags);
-        dest.writeParcelable(destination, flags);
-        dest.writeInt(seatCount);
-        dest.writeString(paymentMethod);
-        dest.writeString(productImage);
-        dest.writeString(price);
-        dest.writeString(headerTitle);
-        dest.writeInt(maxCapacity);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     public static final Creator<ConfirmBookingViewModel> CREATOR = new Creator<ConfirmBookingViewModel>() {
@@ -116,12 +97,12 @@ public class ConfirmBookingViewModel implements Parcelable {
         this.productImage = productImage;
     }
 
-    public String getPrice() {
-        return price;
+    public String getPriceFmt() {
+        return priceFmt;
     }
 
-    public void setPrice(String price) {
-        this.price = price;
+    public void setPriceFmt(String priceFmt) {
+        this.priceFmt = priceFmt;
     }
 
     public String getHeaderTitle() {
@@ -154,5 +135,33 @@ public class ConfirmBookingViewModel implements Parcelable {
 
     public void setDestination(PlacePassViewModel destination) {
         this.destination = destination;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(fareId);
+        parcel.writeString(productId);
+        parcel.writeParcelable(source, i);
+        parcel.writeParcelable(destination, i);
+        parcel.writeInt(seatCount);
+        parcel.writeString(paymentMethod);
+        parcel.writeString(productImage);
+        parcel.writeString(priceFmt);
+        parcel.writeFloat(price);
+        parcel.writeString(headerTitle);
+        parcel.writeInt(maxCapacity);
     }
 }

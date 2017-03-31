@@ -59,7 +59,7 @@ public class RideProductViewModelMapper {
             rideProductViewModel.setProductImage(product.getProduct().getImage());
             rideProductViewModel.setCapacity(product.getProduct().getCapacity());
             rideProductViewModel.setBaseFare(getBaseFare(product.getProduct().getPriceDetail()));
-            rideProductViewModel.setProductPrice(getPricePerDistance(product.getProduct().getPriceDetail()));
+            rideProductViewModel.setProductPriceFmt(getPricePerDistance(product.getProduct().getPriceDetail()));
             rideProductViewModel.setTimeEstimate(product.getTimesEstimate().getEstimate() / 60 + " min");
         }
         return rideProductViewModel;
@@ -72,7 +72,8 @@ public class RideProductViewModelMapper {
             rideProductViewModel.setProductName(product.getProduct().getDisplayName());
             rideProductViewModel.setProductId(product.getProduct().getProductId());
             rideProductViewModel.setProductImage(product.getProduct().getImage());
-            rideProductViewModel.setProductPrice(fareEstimate.getFare().getDisplay());
+            rideProductViewModel.setProductPriceFmt(fareEstimate.getFare().getDisplay());
+            rideProductViewModel.setProductPrice(fareEstimate.getFare().getValue());
             rideProductViewModel.setFareId(fareEstimate.getFare().getFareId());
             rideProductViewModel.setCapacity(product.getProduct().getCapacity());
             rideProductViewModel.setTimeEstimate(product.getTimesEstimate().getEstimate() / 60 + " min");

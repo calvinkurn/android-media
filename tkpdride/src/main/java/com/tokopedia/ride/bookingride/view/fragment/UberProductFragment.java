@@ -160,6 +160,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
             confirmBookingViewModel.setSource(source);
             confirmBookingViewModel.setDestination(destination);
             confirmBookingViewModel.setProductId(rideProductViewModel.getProductId());
+            confirmBookingViewModel.setPriceFmt(rideProductViewModel.getProductPriceFmt());
             confirmBookingViewModel.setPrice(rideProductViewModel.getProductPrice());
             confirmBookingViewModel.setProductImage(rideProductViewModel.getProductImage());
             confirmBookingViewModel.setHeaderTitle(

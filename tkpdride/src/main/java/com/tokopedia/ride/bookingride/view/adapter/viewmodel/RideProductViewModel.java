@@ -16,7 +16,8 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
     private String productName;
     private String timeEstimate;
     private boolean surgePrice;
-    private String productPrice;
+    private float productPrice;
+    private String productPriceFmt;
     private String baseFare;
     private String fareId;
     private int capacity;
@@ -30,7 +31,8 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         productName = in.readString();
         timeEstimate = in.readString();
         surgePrice = in.readByte() != 0;
-        productPrice = in.readString();
+        productPrice = in.readFloat();
+        productPriceFmt = in.readString();
         baseFare = in.readString();
         fareId = in.readString();
         capacity = in.readInt();
@@ -93,12 +95,12 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         this.surgePrice = surgePrice;
     }
 
-    public String getProductPrice() {
-        return productPrice;
+    public String getProductPriceFmt() {
+        return productPriceFmt;
     }
 
-    public void setProductPrice(String productPrice) {
-        this.productPrice = productPrice;
+    public void setProductPriceFmt(String productPriceFmt) {
+        this.productPriceFmt = productPriceFmt;
     }
 
     public String getBaseFare() {
@@ -117,6 +119,22 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         this.fareId = fareId;
     }
 
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public float getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(float productPrice) {
+        this.productPrice = productPrice;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -129,17 +147,10 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         parcel.writeString(productName);
         parcel.writeString(timeEstimate);
         parcel.writeByte((byte) (surgePrice ? 1 : 0));
-        parcel.writeString(productPrice);
+        parcel.writeFloat(productPrice);
+        parcel.writeString(productPriceFmt);
         parcel.writeString(baseFare);
         parcel.writeString(fareId);
         parcel.writeInt(capacity);
-    }
-
-    public int getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
     }
 }

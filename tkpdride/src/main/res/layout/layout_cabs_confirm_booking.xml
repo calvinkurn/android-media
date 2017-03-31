@@ -64,7 +64,9 @@
         android:background="#e3e3e3"
         android:visibility="visible" />
 
-    <include android:visibility="gone" layout="@layout/crux_cabs_confirm_buttons_layout" />
+    <include
+        layout="@layout/crux_cabs_confirm_buttons_layout"
+        android:visibility="gone" />
 
     <include layout="@layout/crux_cabs_confirm_buttons_pool_layout" />
 
@@ -111,4 +113,34 @@
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="15sp" />
+
+    <LinearLayout
+        android:id="@+id/toko_cash_topup_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_tokocash_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Insufficient Balance. Your Balance is "
+            android:textColor="@color/red_600" />
+
+        <TextView
+            android:id="@+id/tv_topup_tokocash"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@color/red_600"
+            android:gravity="center"
+            android:text="Topup Toko Cash"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+    </LinearLayout>
+
 </LinearLayout>

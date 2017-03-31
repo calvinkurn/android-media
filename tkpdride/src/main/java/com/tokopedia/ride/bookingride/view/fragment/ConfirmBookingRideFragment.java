@@ -49,6 +49,11 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     TextView bookingConfirmationTextView;
     @BindView(R2.id.cab_select_seat)
     LinearLayout selectSeatContainer;
+    @BindView(R2.id.toko_cash_topup_layout)
+    LinearLayout tokoCashTopupLayout;
+    @BindView(R2.id.tv_tokocash_label)
+    TextView tokoCashLabelTextView;
+
     ConfirmBookingContract.Presenter presenter;
     OnFragmentInteractionListener mListener;
     ConfirmBookingViewModel confirmBookingViewModel;
@@ -63,7 +68,9 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     }
 
-    public static ConfirmBookingRideFragment newInstance(Bundle bundle) {
+    public static ConfirmBookingRideFragment newInstance(ConfirmBookingViewModel confirmBookingViewModel) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_PRODUCT, confirmBookingViewModel);
         ConfirmBookingRideFragment fragment = new ConfirmBookingRideFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -77,9 +84,10 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        confirmBookingViewModel = getArguments().getParcelable(EXTRA_PRODUCT);
         presenter = ConfirmBookingDependencyInjection.createPresenter(getActivity());
         presenter.attachView(this);
-        confirmBookingViewModel = getArguments().getParcelable(EXTRA_PRODUCT);
+        presenter.initialize();
         setViewListener();
     }
 
@@ -91,7 +99,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
                 .error(R.mipmap.ic_launcher)
                 .into(productIconImageView);
         headerTextView.setText(confirmBookingViewModel.getHeaderTitle());
-        priceTextView.setText(confirmBookingViewModel.getPrice());
+        priceTextView.setText(confirmBookingViewModel.getPriceFmt());
 //        seatsTextView.setText(confirmBookingViewModel.getSeatCount());
     }
 
@@ -170,14 +178,55 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     }
 
     @Override
-    public void renderFareEstimate(String fareId, String display) {
+    public void renderFareEstimate(String fareId, String display, float price) {
         confirmBookingViewModel.setFareId(fareId);
-        confirmBookingViewModel.setPrice(display);
+        confirmBookingViewModel.setPriceFmt(display);
+        confirmBookingViewModel.setPrice(price);
         priceTextView.setText(display);
         seatsTextView.setText(String.valueOf(confirmBookingViewModel.getSeatCount()));
     }
 
     public ConfirmBookingViewModel getActiveConfirmBooking() {
         return confirmBookingViewModel;
+    }
+
+    @Override
+    public void hideConfirmButton() {
+        bookingConfirmationTextView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public float getFarePrice() {
+        return confirmBookingViewModel.getPrice();
+    }
+
+    @Override
+    public void showTopupTokoCashButton() {
+        tokoCashTopupLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideTopupTokoCashButton() {
+        tokoCashTopupLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showConfirmButton() {
+        bookingConfirmationTextView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R2.id.tv_topup_tokocash)
+    public void actionTopupButtonClicked() {
+        Toast.makeText(getActivity(), "Go to Top Up ", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setBalanceText(String balance) {
+        tokoCashLabelTextView.setText("Insufficient Balance. Your Balance is " + balance);
     }
 }

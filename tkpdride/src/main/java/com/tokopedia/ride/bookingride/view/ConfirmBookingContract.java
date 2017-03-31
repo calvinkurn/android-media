@@ -1,5 +1,8 @@
 package com.tokopedia.ride.bookingride.view;
 
+import android.app.Activity;
+import android.content.Context;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
@@ -14,11 +17,31 @@ public interface ConfirmBookingContract {
 
         void showErrorChangeSeat(String message);
 
-        void renderFareEstimate(String fareId, String display);
+        void renderFareEstimate(String fareId, String display, float value);
+
+        void hideConfirmButton();
+
+        Activity getActivity();
+
+        float getFarePrice();
+
+        void showTopupTokoCashButton();
+
+        void hideTopupTokoCashButton();
+
+        void showConfirmButton();
+
+        void showMessage(String message);
+
+        void setBalanceText(String balance);
     }
 
     interface Presenter extends CustomerPresenter<View>{
 
+        void actionCheckBalance();
+
         void actionChangeSeatCount();
+
+        void initialize();
     }
 }
