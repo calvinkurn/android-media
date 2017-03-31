@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
@@ -63,6 +64,7 @@ public class ChangePhoneNumberRequestFragment
     ImageUploadHandler imageUploadHandler;
     Button buttonSubmit;
     View mainView;
+    View contentView;
 
     TkpdProgressDialog progressDialog;
 
@@ -102,6 +104,7 @@ public class ChangePhoneNumberRequestFragment
     protected void onFirstTimeLaunched() {
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         presenter.checkStatus();
+        contentView.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -149,6 +152,7 @@ public class ChangePhoneNumberRequestFragment
         accountBookPhoto = (ImageView) view.findViewById(R.id.photo_account_book);
         buttonSubmit = (Button) view.findViewById(R.id.button_submit);
         mainView = view.findViewById(R.id.main_view);
+        contentView = view.findViewById(R.id.content_view);
 
         imageUploadHandler = ImageUploadHandler.createInstance(this);
     }
@@ -333,6 +337,7 @@ public class ChangePhoneNumberRequestFragment
     public void showLoading() {
         if (getActivity() != null && progressDialog == null) {
             progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+            progressDialog.showDialog();
         } else if (getActivity() != null) {
             progressDialog.showDialog();
         }
@@ -345,6 +350,7 @@ public class ChangePhoneNumberRequestFragment
 
     @Override
     public void onSuccessCheckStatus(CheckStatusData checkStatusData) {
+        contentView.setVisibility(View.VISIBLE);
         finishLoading();
         if (checkStatusData.isPending()) {
             onGoToWaitPage();

@@ -6,8 +6,10 @@
     android:layout_height="match_parent">
 
     <ScrollView
+        android:id="@+id/content_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="invisible"
         android:background="@color/tkpd_bg_color"
         android:focusableInTouchMode="true">
 
