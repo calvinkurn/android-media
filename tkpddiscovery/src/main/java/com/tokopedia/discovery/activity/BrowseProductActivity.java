@@ -689,14 +689,12 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
             } else {
                 filters = new HashMap<>();
             }
-            String currentCategory = browseProductActivityModel.getParentDepartement();
-            if (EMPTY_CATEGORY.equals(currentCategory)) {
-                currentCategory = browseProductActivityModel.getDepartmentId();
-            }
+
             DynamicFilterActivity.moveTo(BrowseProductActivity.this,
                     filters, breadcrumbs,
                     filterAttribute.getFilter(),
-                    currentCategory, source);
+                    browseProductActivityModel.getParentDepartement(), source,
+                    browseProductActivityModel.getDepartmentId());
 
         } else {
             fetchDynamicAttribute(activeTab, source, dest);
