@@ -91,6 +91,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
     private RelativeLayout rlReputationPointCalculation;
     private AppBarLayout appBarLayout;
     private int appBarLayoutHeight;
+    private CoordinatorLayout.LayoutParams orignalLp;
 
     public static SellerReputationFragment createInstance() {
         SellerReputationFragment fragment = new SellerReputationFragment();
@@ -174,6 +175,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
                 appBarLayoutHeight = appBarLayout.getHeight();
             }
         });
+        orignalLp = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
         this.rootView = view;
         this.refreshHandler = new RefreshHandler(swipeToRefresh, onRefresh());
         rlReputationPointCalculation = (RelativeLayout) view.findViewById(R.id.rl_reputation_point_calculation);
@@ -494,9 +496,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
     }
 
     private void showAppBarLayout() {
-        CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
-        lp.height = appBarLayoutHeight;
-        appBarLayout.setLayoutParams(lp);
+        appBarLayout.setLayoutParams(orignalLp);
     }
 
     private void hideAppBarLayout() {

@@ -12,7 +12,6 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="28dp"
-        android:scaleType="fitXY"
         app:srcCompat="@drawable/ic_empty_penalti_reputasi" />
 
     <TextView
@@ -23,7 +22,7 @@
         android:layout_centerHorizontal="true"
         android:text="Sangat Baik!"
         android:textColor="@color/thirty_eight_percent_black"
-        android:textSize="18sp"
+        android:textSize="14sp"
         android:textStyle="bold" />
 
     <TextView
@@ -36,7 +35,7 @@
         android:text="Tidak ada penalti pada periode ini.\nUbah tanggal untuk melihat penalti pada periode sebelumnya."
         android:textAlignment="gravity"
         android:textColor="@color/thirty_eight_percent_black"
-        android:textSize="16sp" />
+        android:textSize="12sp" />
 
     <LinearLayout
         android:id="@+id/reputation_container_change_date"

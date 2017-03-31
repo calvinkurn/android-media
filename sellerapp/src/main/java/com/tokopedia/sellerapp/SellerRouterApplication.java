@@ -31,7 +31,8 @@ import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 public class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation {
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.home.view.SellerHomeActivity";
-    public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY
+    public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
+
     @Override
     public DrawerVariable getDrawer(AppCompatActivity activity) {
         return new DrawerVariableSeller(activity);
