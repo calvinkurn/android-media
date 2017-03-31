@@ -302,6 +302,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
             dateUtilHelper = new DateUtilHelper(itemView.getContext());
             containerClick = (LinearLayout) itemView.findViewById(R.id.reputation_container_change_date);
+            containerClick.setVisibility(View.INVISIBLE);
         }
 
         public Fragment getFragment() {
@@ -313,6 +314,9 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
         }
 
         public void bindData(EmptyListModel emptyListModel) {
+            if (containerClick.getVisibility() != View.VISIBLE)
+                return;
+
             dateUtilHelper.setsDate(emptyListModel.getSetDateHeaderModel().getsDate());
             dateUtilHelper.seteDate(emptyListModel.getSetDateHeaderModel().geteDate());
 
