@@ -229,7 +229,12 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT:
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG:
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP:
-                toolbar.setTitle("");
+                String searchTitle = browseProductActivityModel.getQ();
+                if (searchTitle != null) {
+                    toolbar.setTitle(searchTitle);
+                } else {
+                    toolbar.setTitle("");
+                }
                 toolbar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
