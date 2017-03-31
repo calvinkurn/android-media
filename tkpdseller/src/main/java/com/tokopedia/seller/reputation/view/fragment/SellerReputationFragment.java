@@ -55,6 +55,11 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsAddProductListPresenter;
 import com.tokopedia.seller.util.ShopNetworkController;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author normansyahputa
@@ -175,7 +180,6 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
                 appBarLayoutHeight = appBarLayout.getHeight();
             }
         });
-        orignalLp = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
         this.rootView = view;
         this.refreshHandler = new RefreshHandler(swipeToRefresh, onRefresh());
         rlReputationPointCalculation = (RelativeLayout) view.findViewById(R.id.rl_reputation_point_calculation);
@@ -207,13 +211,23 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
             firstTimeNetworkCall();
         } else {
             if (isFirstTime) {
-                presenter.setNetworkStatus(
-                        TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
-                adapter.showLoadingFull(true);
-                swipeToRefresh.setEnabled(false);
-                firstTimeNetworkCall();
+                Observable
+                        .just(true)
+                        .delay(100, TimeUnit.MILLISECONDS)
+                        .subscribeOn(Schedulers.immediate())
+                        .doOnNext(new Action1<Boolean>() {
+                            @Override
+                            public void call(Boolean aBoolean) {
+                                presenter.setNetworkStatus(
+                                        TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
+                                adapter.showLoadingFull(true);
+                                swipeToRefresh.setEnabled(false);
+                                firstTimeNetworkCall();
 
-                isFirstTime = false;
+                                isFirstTime = false;
+                            }
+                        }).toBlocking().first();
+
             }
         }
     }
@@ -496,11 +510,20 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
     }
 
     private void showAppBarLayout() {
+        CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+        if (orignalLp == null) {
+            orignalLp = new CoordinatorLayout.LayoutParams(lp);
+        }
         appBarLayout.setLayoutParams(orignalLp);
+        appBarLayout.requestLayout();
     }
 
     private void hideAppBarLayout() {
         CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+
+        if (orignalLp == null) {
+            orignalLp = new CoordinatorLayout.LayoutParams(lp);
+        }
         lp.height = 0;
         appBarLayout.setLayoutParams(lp);
     }
@@ -514,6 +537,8 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
 
         if (!isAdded())
             return;
+
+        setOnClickInfo();
 
         final String tryAgain = getString(R.string.try_again);
         final Handler handler = new Handler();
