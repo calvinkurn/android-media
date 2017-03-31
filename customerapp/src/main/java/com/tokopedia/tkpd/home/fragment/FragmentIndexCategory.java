@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.home.fragment;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +26,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -87,6 +89,7 @@ import com.tokopedia.tkpd.home.recharge.adapter.RechargeViewPagerAdapter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
+import com.tokopedia.tkpd.ride.RidePhoneNumberVerificationActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -835,6 +838,26 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onApplinkClicked(CategoryItemModel categoryItemModel) {
         // TODO : change to Deeplink Handler for annotate the applink
-        startActivity(RideHomeActivity.getCallingIntent(getActivity()));
+        if (SessionHandler.isMsisdnVerified()) {
+            startActivity(RideHomeActivity.getCallingIntent(getActivity()));
+        } else {
+            startActivityForResult(RidePhoneNumberVerificationActivity.getCallingIntent(getActivity()),
+                    RidePhoneNumberVerificationActivity.RIDE_PHONE_VERIFY_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RidePhoneNumberVerificationActivity.RIDE_PHONE_VERIFY_REQUEST_CODE){
+            switch (resultCode){
+                case Activity.RESULT_OK:
+                    startActivity(RideHomeActivity.getCallingIntent(getActivity()));
+                    break;
+                case Activity.RESULT_CANCELED:
+                    Toast.makeText(getActivity(), "Cant cont., must verify your phone number.", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
     }
 }

@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -218,15 +219,25 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_PRODUCT, rideProductViewModel);
         ConfirmBookingRideFragment fragment = ConfirmBookingRideFragment.newInstance(bundle);
-        Slide slideTransition = new Slide(Gravity.RIGHT);
-        slideTransition.setDuration(getResources().getInteger(R.integer.anim_duration_medium));
+        Slide slideTransition = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            slideTransition = new Slide(Gravity.END);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            slideTransition.setDuration(getResources().getInteger(R.integer.anim_duration_medium));
+        }
 
-        ChangeBounds changeBoundsTransition = new ChangeBounds();
-        changeBoundsTransition.setDuration(getResources().getInteger(R.integer.anim_duration_medium));
-        fragment.setEnterTransition(slideTransition);
-        fragment.setAllowEnterTransitionOverlap(true);
-        fragment.setAllowReturnTransitionOverlap(true);
-        fragment.setSharedElementEnterTransition(changeBoundsTransition);
+        ChangeBounds changeBoundsTransition = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            changeBoundsTransition = new ChangeBounds();
+            changeBoundsTransition.setDuration(getResources().getInteger(R.integer.anim_duration_medium));
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            fragment.setEnterTransition(slideTransition);
+            fragment.setAllowEnterTransitionOverlap(true);
+            fragment.setAllowReturnTransitionOverlap(true);
+            fragment.setSharedElementEnterTransition(changeBoundsTransition);
+        }
         replaceFragment(R.id.bottom_container, fragment);
     }
 
@@ -255,14 +266,15 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
         } else if (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof ConfirmBookingRideFragment) {
             hideBlockTranslucentLayout();
             hideSeatPanelLayout();
+            getFragmentManager().popBackStack();
 
             ConfirmBookingRideFragment fragment = (ConfirmBookingRideFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
             ConfirmBookingViewModel viewModel = fragment.getActiveConfirmBooking();
             UberProductFragment productFragment = UberProductFragment.newInstance(viewModel.getSource(),
                     viewModel.getDestination());
             replaceFragment(R.id.bottom_container, productFragment);
-//            mSlidingUpPanelLayout.setPanelHeight(Float.floatToIntBits(getResources().getDimension(R.dimen.sliding_panel_min_height)));
-//            mSlidingUpPanelLayout.setParallaxOffset(Float.floatToIntBits(getResources().getDimension(R.dimen.tooler_height)));
+            mSlidingUpPanelLayout.setPanelHeight(Float.floatToIntBits(getResources().getDimension(R.dimen.sliding_panel_min_height)));
+            mSlidingUpPanelLayout.setParallaxOffset(Float.floatToIntBits(getResources().getDimension(R.dimen.tooler_height)));
         } else {
             super.onBackPressed();
         }
