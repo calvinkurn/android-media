@@ -24,5 +24,6 @@
     <color name="tkpd_grey">#E0E0E0</color>
     <color name="tkpd_grey_text">#60000000</color>
     <color name="greyEditText">#e0e0e0</color>
+    <color name="white_fifty_percent">#F8F8F8</color>
 
 </resources>

@@ -2,14 +2,17 @@ package com.tokopedia.seller.reputation.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -86,6 +89,8 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
     private RecyclerView.OnScrollListener onScrollListener;
     private DatePickerResultListener datePickerResultListener;
     private RelativeLayout rlReputationPointCalculation;
+    private AppBarLayout appBarLayout;
+    private int appBarLayoutHeight;
 
     public static SellerReputationFragment createInstance() {
         SellerReputationFragment fragment = new SellerReputationFragment();
@@ -157,6 +162,18 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
         mainView = view.findViewById(R.id.main_view);
         topSlideOffBar = (RelativeLayout) view.findViewById(R.id.seller_reputation_header);
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+        appBarLayout = (AppBarLayout) view.findViewById(R.id.seller_reputation_app_bar_layout);
+        appBarLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (Build.VERSION.SDK_INT < 16) {
+                    appBarLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                } else {
+                    appBarLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+                appBarLayoutHeight = appBarLayout.getHeight();
+            }
+        });
         this.rootView = view;
         this.refreshHandler = new RefreshHandler(swipeToRefresh, onRefresh());
         rlReputationPointCalculation = (RelativeLayout) view.findViewById(R.id.rl_reputation_point_calculation);
@@ -404,6 +421,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
     }
 
     private void renderDatas(List<TypeBasedModel> datas) {
+        showAppBarLayout();
         setOnClickInfo();
         if (refreshHandler.isRefreshing()) {
             refreshHandler.finishRefresh();
@@ -475,6 +493,18 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
         adapter.showLoading(true);
     }
 
+    private void showAppBarLayout() {
+        CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+        lp.height = appBarLayoutHeight;
+        appBarLayout.setLayoutParams(lp);
+    }
+
+    private void hideAppBarLayout() {
+        CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+        lp.height = 0;
+        appBarLayout.setLayoutParams(lp);
+    }
+
     @Override
     public void showErrorMessage(final String errorMessage) {
 
@@ -491,35 +521,30 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
             @Override
             public void run() {
                 if (getActivity() != null && rootView != null) {
-
-                    switch (presenter.getNetworkStatus()) {
-                        case ONACTIVITYFORRESULT:
-                        case PULLTOREFRESH:
-                            if (adapter.getDataSize() <= 0) {
-                                adapter.clear();
-                                adapter.showRetryFull(true);
-                            }
-                            break;
-                        default:
-                            gmNetworkErrorHelper.showSnackbar(errorMessage, tryAgain, new ActionClickListener() {
-                                @Override
-                                public void onActionClicked(com.nispok.snackbar.Snackbar snackbar) {
-                                    Toast.makeText(
-                                            SellerReputationFragment.this.getActivity(),
-                                            errorMessage,
-                                            Toast.LENGTH_SHORT
-                                    ).show();
-
-                                    dismissSnackbar();
-
-                                    refreshHandler.setRefreshing(true);
-
-                                    presenter.setNetworkStatus(
-                                            TopAdsAddProductListPresenter.NetworkStatus.RETRYNETWORKCALL);
-                                    loadMoreCall();
+                    if (adapter.getDataSize() <= 0) {
+                        adapter.clear();
+                        adapter.showRetryFull(true);
+                        hideAppBarLayout();
+                    } else {
+                        gmNetworkErrorHelper.showSnackbar(errorMessage, tryAgain, new ActionClickListener() {
+                            @Override
+                            public void onActionClicked(com.nispok.snackbar.Snackbar snackbar) {
+                                dismissSnackbar();
+                                refreshHandler.setRefreshing(true);
+                                switch (presenter.getNetworkStatus()) {
+                                    case ONACTIVITYFORRESULT:
+                                    case PULLTOREFRESH:
+                                        presenter.setNetworkStatus(TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
+                                        firstTimeNetworkCall();
+                                        break;
+                                    default:
+                                        presenter.setNetworkStatus(
+                                                TopAdsAddProductListPresenter.NetworkStatus.RETRYNETWORKCALL);
+                                        loadMoreCall();
+                                        break;
                                 }
-                            }, getActivity());
-                            break;
+                            }
+                        }, getActivity());
                     }
 
                 }

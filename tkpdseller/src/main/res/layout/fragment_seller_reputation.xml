@@ -10,6 +10,7 @@
     tools:context=".reputation.view.activity.SellerReputationActivity">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/seller_reputation_app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:elevation="0dp">
@@ -28,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/deposit_header"
-        android:background="@color/greyEditText"
+        android:background="@color/white_fifty_percent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.v7.widget.RecyclerView
