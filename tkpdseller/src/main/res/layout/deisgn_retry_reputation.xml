@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/img_reputation_retry"
         android:layout_centerHorizontal="true"
-        android:text="Sangat Baik!"
+        android:text="@string/very_good_text"
         android:textColor="@color/thirty_eight_percent_black"
         android:textSize="14sp"
         android:textStyle="bold" />
@@ -32,7 +32,7 @@
         android:layout_below="@id/good_job_reputation_retry"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:text="Tidak ada penalti pada periode ini.\nUbah tanggal untuk melihat penalti pada periode sebelumnya."
+        android:text="@string/no_penalty_description"
         android:textAlignment="gravity"
         android:textColor="@color/thirty_eight_percent_black"
         android:textSize="12sp" />

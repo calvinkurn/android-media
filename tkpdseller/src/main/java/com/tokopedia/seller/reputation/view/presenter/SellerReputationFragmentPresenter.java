@@ -1,5 +1,7 @@
 package com.tokopedia.seller.reputation.view.presenter;
 
+import android.content.Context;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -7,6 +9,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.reputation.data.model.request.SellerReputationRequest;
 import com.tokopedia.seller.reputation.domain.interactor.ReviewReputationMergeUseCase;
@@ -40,6 +43,7 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
     private DefaultErrorSubscriber.ErrorNetworkListener errorNetworkListener;
     private ReviewReputationMergeUseCase reviewReputationMergeUseCase;
     private ShopNetworkController.ShopInfoParam shopInfoParam;
+    private String messageExceptionDesc;
 
     public SellerReputationFragmentPresenter() {
         sellerReputationRequest = new SellerReputationRequest();
@@ -172,11 +176,15 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
         }
     }
 
+    public void fillMessages(Context context) {
+        messageExceptionDesc = context.getString(R.string.message_exception_description);
+    }
+
     public void firstTimeNetworkCall2() {
         if (isHitNetwork()) {
             reviewReputationMergeUseCase.execute(
                     mergeFillParam()
-                    , new DefaultErrorSubscriber<List<Object>>(errorNetworkListener) {
+                    , new DefaultErrorSubscriber<List<Object>>(errorNetworkListener, messageExceptionDesc) {
                         @Override
                         public void onCompleted() {
                             resetHitNetwork();
@@ -276,7 +284,7 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
     public void loadMoreNetworkCall() {
         if (isHitNetwork()) {
             reviewReputationUseCase.execute(fillParamReview(),
-                    new DefaultErrorSubscriber<SellerReputationDomain>(errorNetworkListener) {
+                    new DefaultErrorSubscriber<SellerReputationDomain>(errorNetworkListener, messageExceptionDesc) {
                         @Override
                         public void onCompleted() {
                             resetHitNetwork();

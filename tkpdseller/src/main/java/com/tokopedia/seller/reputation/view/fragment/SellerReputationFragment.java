@@ -195,6 +195,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
             presenter.setGcmHandler(gcmHandler);
             presenter.setErrorNetworkListener(this);
             presenter.setReviewReputationMergeUseCase(reviewReputationMergeUseCase);
+            presenter.fillMessages(getActivity());
             gmNetworkErrorHelper = new TopAdsNetworkErrorHelper(null, rootView);
             gmNetworkErrorHelper.setActionColor(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
             gmNetworkErrorHelper.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.black_seventy_percent));
