@@ -6,9 +6,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,10 +17,9 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
-import com.tokopedia.ride.bookingride.di.ConfirmBooingDependencyInjection;
+import com.tokopedia.ride.bookingride.di.ConfirmBookingDependencyInjection;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.view.ConfirmBookingContract;
-import com.tokopedia.ride.bookingride.view.ConfirmBookingPresenter;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.SeatViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
@@ -80,7 +77,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter = ConfirmBooingDependencyInjection.createPresenter(getActivity());
+        presenter = ConfirmBookingDependencyInjection.createPresenter(getActivity());
         presenter.attachView(this);
         confirmBookingViewModel = getArguments().getParcelable(EXTRA_PRODUCT);
         setViewListener();

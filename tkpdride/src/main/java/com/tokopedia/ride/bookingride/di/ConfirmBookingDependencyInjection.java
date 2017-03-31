@@ -36,10 +36,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by alvarisi on 3/27/17.
  */
 
-public class ConfirmBooingDependencyInjection {
-    public ConfirmBooingDependencyInjection() {
+public class ConfirmBookingDependencyInjection {
+    public ConfirmBookingDependencyInjection() {
     }
-
 
     private Gson provideGson() {
         return new Gson();
@@ -178,7 +177,7 @@ public class ConfirmBooingDependencyInjection {
         SessionHandler sessionHandler = new SessionHandler(context);
         String token = String.format("Bearer %s", sessionHandler.getAccessToken(context));
         String userId = sessionHandler.getLoginID();
-        ConfirmBooingDependencyInjection injection = new ConfirmBooingDependencyInjection();
+        ConfirmBookingDependencyInjection injection = new ConfirmBookingDependencyInjection();
         GetFareEstimateUseCase provideGetFareEstimateUseCase = injection.provideGetFareEstimateUseCase(token, userId);
         return new ConfirmBookingPresenter(provideGetFareEstimateUseCase);
     }
