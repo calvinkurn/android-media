@@ -7,12 +7,12 @@ import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.base.common.service.ServiceV4;
 import com.tokopedia.core.base.common.service.TopAdsService;
 import com.tokopedia.core.base.di.qualifier.ActivityContext;
-import com.tokopedia.core.base.di.qualifier.BaseDomainQualifier;
-import com.tokopedia.core.base.di.qualifier.MojitoQualifier;
-import com.tokopedia.core.base.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
+import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
+import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.tkpd.home.favorite.data.FavoriteDataRepository;
 import com.tokopedia.tkpd.home.favorite.data.FavoriteFactory;
 import com.tokopedia.tkpd.home.favorite.di.scope.FavoriteScope;
@@ -103,7 +103,7 @@ public class FavoriteModule {
 
     @FavoriteScope
     @Provides
-    ServiceV4 provideHomeService(@BaseDomainQualifier Retrofit retrofit) {
+    ServiceV4 provideHomeService(@WsV4Qualifier Retrofit retrofit) {
         return retrofit.create(ServiceV4.class);
     }
 

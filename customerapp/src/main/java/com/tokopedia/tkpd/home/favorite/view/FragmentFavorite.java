@@ -151,6 +151,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     @Override
     public void addTopAdsShop(TopAdsShopViewModel shopViewModel) {
         if (favoriteAdapter.getItemCount() > 0) {
+
             favoriteAdapter.setElement(1, shopViewModel);
         } else {
             favoriteAdapter.setElement(0, shopViewModel);
