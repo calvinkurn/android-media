@@ -170,7 +170,6 @@ LoginFragment extends Fragment implements LoginView {
 
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
-        setSmartLock(SmartLockActivity.RC_READ);
     }
 
     @Override
@@ -193,6 +192,8 @@ LoginFragment extends Fragment implements LoginView {
                 String name = getArguments().getString("name");
                 loginProvideOnClick(url, name);
             }
+        }else {
+            setSmartLock(SmartLockActivity.RC_READ);
         }
         accountSignIn.setBackgroundResource(R.drawable.bg_rounded_corners);
         return rootView;
