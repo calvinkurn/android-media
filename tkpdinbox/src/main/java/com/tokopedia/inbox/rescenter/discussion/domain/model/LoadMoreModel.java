@@ -1,15 +1,17 @@
 package com.tokopedia.inbox.rescenter.discussion.domain.model;
 
+import java.util.List;
+
 /**
- * Created by nisie on 3/30/17.
+ * Created by nisie on 3/31/17.
  */
 
-public class ActionDiscussionModel {
-
+public class LoadMoreModel {
 
     private boolean success;
     private String messageError;
-    private ActionDiscussionData listDiscussionData;
+    private List<LoadMoreItemData> listDiscussionData;
+    private boolean canLoadMore;
     private int responseCode;
 
     public boolean isSuccess() {
@@ -28,11 +30,11 @@ public class ActionDiscussionModel {
         this.messageError = messageError;
     }
 
-    public ActionDiscussionData getListDiscussionData() {
+    public List<LoadMoreItemData> getListDiscussionData() {
         return listDiscussionData;
     }
 
-    public void setListDiscussionData(ActionDiscussionData listDiscussionData) {
+    public void setListDiscussionData(List<LoadMoreItemData> listDiscussionData) {
         this.listDiscussionData = listDiscussionData;
     }
 
@@ -44,5 +46,11 @@ public class ActionDiscussionModel {
         return responseCode;
     }
 
+    public boolean canLoadMore() {
+        return canLoadMore;
+    }
 
+    public void setCanLoadMore(boolean canLoadMore) {
+        this.canLoadMore = canLoadMore;
+    }
 }

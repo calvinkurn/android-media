@@ -1,35 +1,22 @@
-package com.tokopedia.inbox.rescenter.discussion.data.pojo;
+package com.tokopedia.inbox.rescenter.discussion.domain.model;
 
-import com.google.gson.annotations.SerializedName;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.LoadMoreAttachmentEntity;
 
 import java.util.List;
 
 /**
- * Created by nisie on 3/30/17.
+ * Created by nisie on 3/31/17.
  */
 
-public class DiscussionItemEntity {
+public class LoadMoreItemData {
 
-    @SerializedName("resConvId")
     private int resConvId;
-
-    @SerializedName("solutionRemark")
     private String solutionRemark;
-
-    @SerializedName("actionBy")
     private int actionBy;
-
-    @SerializedName("actionByStr")
-    private String actionByStr;
-
-    @SerializedName("createTime")
     private String createTime;
-
-    @SerializedName("createTimeStr")
     private String createTimeStr;
-
-    @SerializedName("attachment")
-    private List<DiscussionAttachmentEntity> attachment;
+    private List<LoadMoreAttachment> attachment;
+    private String actionByStr;
 
     public int getResConvId() {
         return resConvId;
@@ -71,19 +58,19 @@ public class DiscussionItemEntity {
         this.createTimeStr = createTimeStr;
     }
 
-    public List<DiscussionAttachmentEntity> getAttachment() {
+    public List<LoadMoreAttachment> getAttachment() {
         return attachment;
     }
 
-    public void setAttachment(List<DiscussionAttachmentEntity> attachment) {
+    public void setAttachment(List<LoadMoreAttachment> attachment) {
         this.attachment = attachment;
-    }
-
-    public String getActionByStr() {
-        return actionByStr;
     }
 
     public void setActionByStr(String actionByStr) {
         this.actionByStr = actionByStr;
+    }
+
+    public String getActionByStr() {
+        return actionByStr;
     }
 }

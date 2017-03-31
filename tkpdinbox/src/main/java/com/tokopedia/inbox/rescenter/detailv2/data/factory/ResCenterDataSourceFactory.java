@@ -6,6 +6,7 @@ import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
 import com.tokopedia.core.network.apiservices.rescenter.ResolutionService;
 import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
+import com.tokopedia.inbox.rescenter.detailv2.data.mapper.LoadMoreMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
 import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
 import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
@@ -33,6 +34,7 @@ public class ResCenterDataSourceFactory {
     private ListProductMapper listProductMapper;
     private ProductDetailMapper productDetailMapper;
     private DiscussionResCenterMapper discussionResCenterMapper;
+    private LoadMoreMapper loadMoreMapper;
 
     public ResCenterDataSourceFactory(Context context,
                                       ResolutionService resCenterService,
@@ -44,7 +46,8 @@ public class ResCenterDataSourceFactory {
                                       HistoryActionMapper historyActionMapper,
                                       ListProductMapper listProductMapper,
                                       ProductDetailMapper productDetailMapper,
-                                      DiscussionResCenterMapper discussionResCenterMapper) {
+                                      DiscussionResCenterMapper discussionResCenterMapper,
+                                      LoadMoreMapper loadMoreMapper) {
         this.context = context;
         this.resCenterService = resCenterService;
         this.inboxResCenterService = inboxResCenterService;
@@ -56,6 +59,7 @@ public class ResCenterDataSourceFactory {
         this.listProductMapper = listProductMapper;
         this.productDetailMapper = productDetailMapper;
         this.discussionResCenterMapper = discussionResCenterMapper;
+        this.loadMoreMapper = loadMoreMapper;
     }
 
     public CloudResCenterDataSource createCloudResCenterDataSource() {
@@ -66,7 +70,8 @@ public class ResCenterDataSourceFactory {
                 historyActionMapper,
                 listProductMapper,
                 productDetailMapper,
-                discussionResCenterMapper);
+                discussionResCenterMapper,
+                loadMoreMapper);
     }
 
     public CloudInboxResCenterDataSource createCloudInboxResCenterDataSource() {

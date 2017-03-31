@@ -12,12 +12,15 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
+import com.tokopedia.inbox.rescenter.detailv2.data.mapper.LoadMoreMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
 import com.tokopedia.inbox.rescenter.discussion.domain.GetResCenterDiscussionUseCase;
+import com.tokopedia.inbox.rescenter.discussion.domain.LoadMoreDiscussionUseCase;
 import com.tokopedia.inbox.rescenter.discussion.view.listener.ResCenterDiscussionView;
 import com.tokopedia.inbox.rescenter.discussion.view.subscriber.GetDiscussionSubscriber;
+import com.tokopedia.inbox.rescenter.discussion.view.subscriber.LoadMoreSubscriber;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.SendReplyDiscussionParam;
 import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
 import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
@@ -33,6 +36,8 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
 
     private final ResCenterDiscussionView viewListener;
     private GetResCenterDiscussionUseCase getDiscussionUseCase;
+    private LoadMoreDiscussionUseCase loadMoreUseCase;
+
     private SendReplyDiscussionParam pass;
     private Context context;
 
@@ -58,6 +63,7 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
         ListProductMapper listProductMapper = new ListProductMapper();
         ProductDetailMapper productDetailMapper = new ProductDetailMapper();
         DiscussionResCenterMapper discussionResCenterMapper = new DiscussionResCenterMapper();
+        LoadMoreMapper loadMoreMapper = new LoadMoreMapper();
 
         ResCenterDataSourceFactory dataSourceFactory = new ResCenterDataSourceFactory(context,
                 resolutionService,
@@ -69,13 +75,19 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
                 historyActionMapper,
                 listProductMapper,
                 productDetailMapper,
-                discussionResCenterMapper);
+                discussionResCenterMapper,
+                loadMoreMapper
+        );
 
         ResCenterRepository resCenterRepository
                 = new ResCenterRepositoryImpl(resolutionID, dataSourceFactory);
 
         getDiscussionUseCase = new GetResCenterDiscussionUseCase(
                 jobExecutor, uiThread, resCenterRepository);
+
+        loadMoreUseCase = new LoadMoreDiscussionUseCase(
+                jobExecutor, uiThread, resCenterRepository
+        );
 
         pass = new SendReplyDiscussionParam();
     }
@@ -99,6 +111,25 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
     @Override
     public void setDiscussionText(String discussionText) {
         pass.setMessage(discussionText);
+    }
+
+    @Override
+    public void loadMore() {
+        viewListener.showLoading();
+        viewListener.setViewEnabled(false);
+        loadMoreUseCase.execute(getLoadMoreParam(), new LoadMoreSubscriber(viewListener));
+    }
+
+    private RequestParams getLoadMoreParam() {
+        RequestParams params = RequestParams.create();
+        params.putString(LoadMoreDiscussionUseCase.PARAM_LAST_CONVERSATION_ID, viewListener.getLastConversationId());
+        return params;
+    }
+
+    @Override
+    public void unsubscribeObservable() {
+        loadMoreUseCase.unsubscribe();
+        getDiscussionUseCase.unsubscribe();
     }
 
     private boolean isValid() {

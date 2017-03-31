@@ -1,26 +1,26 @@
-package com.tokopedia.inbox.rescenter.discussion.data.pojo;
+package com.tokopedia.inbox.rescenter.detailv2.data.pojo;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 /**
- * Created by nisie on 3/30/17.
+ * Created by nisie on 3/31/17.
  */
 
-public class DiscussionEntity {
+public class LoadMoreEntity {
 
     @SerializedName("listConversation")
-    private List<DiscussionItemEntity> listDiscussion;
+    private List<LoadMoreItemEntity> listDiscussion;
 
     @SerializedName("canLoadMore")
     private int canLoadMore;
 
-    public List<DiscussionItemEntity> getListDiscussion() {
+    public List<LoadMoreItemEntity> getListDiscussion() {
         return listDiscussion;
     }
 
-    public void setListDiscussion(List<DiscussionItemEntity> listDiscussion) {
+    public void setListDiscussion(List<LoadMoreItemEntity> listDiscussion) {
         this.listDiscussion = listDiscussion;
     }
 

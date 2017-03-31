@@ -9,7 +9,8 @@ import java.util.List;
  */
 
 public interface ResCenterDiscussionView {
-    void onSuccessGetDiscussion(List<DiscussionItemViewModel> discussionData);
+    void onSuccessGetDiscussion(List<DiscussionItemViewModel> discussionData,
+                                boolean canLoadMore);
 
     void onSuccessSendDiscussion();
 
@@ -26,4 +27,8 @@ public interface ResCenterDiscussionView {
     void onErrorGetDiscussion(String errorMessage);
 
     String getString(int resId);
+
+    void onSuccessLoadMore(List<DiscussionItemViewModel> discussionItemViewModels, boolean canLoadMore);
+
+    String getLastConversationId();
 }

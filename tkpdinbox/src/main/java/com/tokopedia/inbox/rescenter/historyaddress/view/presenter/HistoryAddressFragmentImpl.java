@@ -11,6 +11,7 @@ import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
+import com.tokopedia.inbox.rescenter.detailv2.data.mapper.LoadMoreMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
@@ -64,6 +65,7 @@ public class HistoryAddressFragmentImpl implements HistoryAddressFragmentPresent
         ListProductMapper listProductMapper = new ListProductMapper();
         ProductDetailMapper productDetailMapper = new ProductDetailMapper();
         DiscussionResCenterMapper discussionResCenterMapper = new DiscussionResCenterMapper();
+        LoadMoreMapper loadMoreMapper = new LoadMoreMapper();
 
         ResCenterDataSourceFactory dataSourceFactory = new ResCenterDataSourceFactory(context,
                 resolutionService,
@@ -75,7 +77,8 @@ public class HistoryAddressFragmentImpl implements HistoryAddressFragmentPresent
                 historyActionMapper,
                 listProductMapper,
                 productDetailMapper,
-                discussionResCenterMapper
+                discussionResCenterMapper,
+                loadMoreMapper
         );
 
         ResCenterRepository resCenterRepository

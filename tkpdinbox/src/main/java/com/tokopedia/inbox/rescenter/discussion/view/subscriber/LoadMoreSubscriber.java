@@ -4,10 +4,12 @@ import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.discussion.data.pojo.Attachment;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionModel;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.LoadMoreAttachmentEntity;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionItemData;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.LoadMoreAttachment;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.LoadMoreItemData;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.LoadMoreModel;
 import com.tokopedia.inbox.rescenter.discussion.view.listener.ResCenterDiscussionView;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
@@ -19,14 +21,14 @@ import java.util.List;
 import rx.Subscriber;
 
 /**
- * Created by nisie on 3/30/17.
+ * Created by nisie on 3/31/17.
  */
 
-public class GetDiscussionSubscriber extends Subscriber<DiscussionModel> {
+public class LoadMoreSubscriber extends Subscriber<LoadMoreModel> {
 
     private ResCenterDiscussionView viewListener;
 
-    public GetDiscussionSubscriber(ResCenterDiscussionView viewListener) {
+    public LoadMoreSubscriber(ResCenterDiscussionView viewListener) {
         this.viewListener = viewListener;
     }
 
@@ -84,15 +86,15 @@ public class GetDiscussionSubscriber extends Subscriber<DiscussionModel> {
     }
 
     @Override
-    public void onNext(DiscussionModel discussionModel) {
+    public void onNext(LoadMoreModel loadMoreModel) {
         viewListener.finishLoading();
-        viewListener.onSuccessGetDiscussion(mappingToViewModel(discussionModel), discussionModel.canLoadMore());
+        viewListener.onSuccessLoadMore(mappingToViewModel(loadMoreModel), loadMoreModel.canLoadMore());
     }
 
-    private List<DiscussionItemViewModel> mappingToViewModel(DiscussionModel discussionModel) {
+    private List<DiscussionItemViewModel> mappingToViewModel(LoadMoreModel loadMoreModel) {
         List<DiscussionItemViewModel> list = new ArrayList<>();
 
-        for(DiscussionItemData item : discussionModel.getListDiscussionData()){
+        for(LoadMoreItemData item : loadMoreModel.getListDiscussionData()){
             DiscussionItemViewModel viewModel = new DiscussionItemViewModel();
             viewModel.setMessage(item.getSolutionRemark());
             viewModel.setMessageReplyTimeFmt(item.getCreateTimeStr());
@@ -103,12 +105,13 @@ public class GetDiscussionSubscriber extends Subscriber<DiscussionModel> {
             viewModel.setConversationId(String.valueOf(item.getResConvId()));
             list.add(viewModel);
         }
+
         return list;
     }
 
-    private List<AttachmentViewModel>  mappingAttachment(List<Attachment> listAttachments) {
+    private List<AttachmentViewModel>  mappingAttachment(List<LoadMoreAttachment> listAttachments) {
         List<AttachmentViewModel> list = new ArrayList<>();
-        for (Attachment item : listAttachments) {
+        for (LoadMoreAttachment item : listAttachments) {
             AttachmentViewModel attachment = new AttachmentViewModel();
             attachment.setUrl(item.getUrl());
             attachment.setImgThumb(item.getImageThumb());
@@ -116,4 +119,7 @@ public class GetDiscussionSubscriber extends Subscriber<DiscussionModel> {
         }
         return list;
     }
+
+
 }
+

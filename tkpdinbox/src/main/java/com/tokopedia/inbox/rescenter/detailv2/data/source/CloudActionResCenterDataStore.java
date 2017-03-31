@@ -66,9 +66,10 @@ public class CloudActionResCenterDataStore {
 
     public Observable<ActionDiscussionModel> replyConversationValidation(
             TKPDMapParam<String, Object> parameters) {
-        return resCenterActService.getApi()
-                .replyConversationValidation(
-                        AuthUtil.generateParamsNetwork2(context, parameters))
-                .map(resolutionCenterActionMapper);
+//        return resCenterActService.getApi()
+//                .replyConversationValidation2(
+//                        AuthUtil.generateParamsNetwork2(context, parameters))
+//                .map(discussionActionMapper);
+        return null;
     }
 }

@@ -26,7 +26,6 @@ public interface ResolutionApi {
 
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_CONVERSATION_MORE)
     Observable<Response<TkpdResponse>> getResCenterConversationMore(@Path("resolution_id") String resolutionID,
-                                                                    @Path("res_conv_id") String conversationID,
                                                                     @QueryMap TKPDMapParam<String, Object> params);
 
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_HISTORY_AWB)

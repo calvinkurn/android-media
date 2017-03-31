@@ -17,6 +17,7 @@ public class DiscussionItemData {
     private String createTime;
     private String createTimeStr;
     private List<Attachment> attachment;
+    private String actionByStr;
 
     public int getResConvId() {
         return resConvId;
@@ -64,5 +65,13 @@ public class DiscussionItemData {
 
     public void setAttachment(List<Attachment> attachment) {
         this.attachment = attachment;
+    }
+
+    public void setActionByStr(String actionByStr) {
+        this.actionByStr = actionByStr;
+    }
+
+    public String getActionByStr() {
+        return actionByStr;
     }
 }

@@ -1,14 +1,14 @@
-package com.tokopedia.inbox.rescenter.discussion.data.pojo;
+package com.tokopedia.inbox.rescenter.detailv2.data.pojo;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 /**
- * Created by nisie on 3/30/17.
+ * Created by nisie on 3/31/17.
  */
 
-public class DiscussionItemEntity {
+public class LoadMoreItemEntity {
 
     @SerializedName("resConvId")
     private int resConvId;
@@ -29,7 +29,7 @@ public class DiscussionItemEntity {
     private String createTimeStr;
 
     @SerializedName("attachment")
-    private List<DiscussionAttachmentEntity> attachment;
+    private List<LoadMoreAttachmentEntity> attachment;
 
     public int getResConvId() {
         return resConvId;
@@ -71,11 +71,11 @@ public class DiscussionItemEntity {
         this.createTimeStr = createTimeStr;
     }
 
-    public List<DiscussionAttachmentEntity> getAttachment() {
+    public List<LoadMoreAttachmentEntity> getAttachment() {
         return attachment;
     }
 
-    public void setAttachment(List<DiscussionAttachmentEntity> attachment) {
+    public void setAttachment(List<LoadMoreAttachmentEntity> attachment) {
         this.attachment = attachment;
     }
 

@@ -1,10 +1,11 @@
-package com.tokopedia.inbox.rescenter.discussion.data.pojo;
+package com.tokopedia.inbox.rescenter.discussion.domain.model;
 
 /**
- * Created by nisie on 3/30/17.
+ * Created by nisie on 3/31/17.
  */
 
-public class Attachment {
+public class LoadMoreAttachment {
+
     private String url;
     private String imageThumb;
 

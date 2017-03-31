@@ -1,13 +1,17 @@
-package com.tokopedia.inbox.rescenter.discussion.data.mapper;
+package com.tokopedia.inbox.rescenter.detailv2.data.mapper;
 
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.inbox.rescenter.discussion.data.pojo.Attachment;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.LoadMoreAttachmentEntity;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.LoadMoreEntity;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.LoadMoreItemEntity;
 import com.tokopedia.inbox.rescenter.discussion.data.pojo.DiscussionAttachmentEntity;
 import com.tokopedia.inbox.rescenter.discussion.data.pojo.DiscussionEntity;
 import com.tokopedia.inbox.rescenter.discussion.data.pojo.DiscussionItemEntity;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionItemData;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.LoadMoreAttachment;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.LoadMoreItemData;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.LoadMoreModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,17 +20,17 @@ import retrofit2.Response;
 import rx.functions.Func1;
 
 /**
- * Created by nisie on 3/30/17.
+ * Created by nisie on 3/31/17.
  */
 
-public class DiscussionResCenterMapper implements Func1<Response<TkpdResponse>, DiscussionModel> {
+public class LoadMoreMapper implements Func1<Response<TkpdResponse>, LoadMoreModel> {
 
     @Override
-    public DiscussionModel call(Response<TkpdResponse> response) {
-        DiscussionModel domainData = new DiscussionModel();
+    public LoadMoreModel call(Response<TkpdResponse> response) {
+        LoadMoreModel domainData = new LoadMoreModel();
         if (response.isSuccessful()) {
             if (!response.body().isError()) {
-                DiscussionEntity entity = response.body().convertDataObj(DiscussionEntity.class);
+                LoadMoreEntity entity = response.body().convertDataObj(LoadMoreEntity.class);
                 domainData.setSuccess(true);
                 domainData.setListDiscussionData(mappingEntityDomain(entity.getListDiscussion()));
                 domainData.setCanLoadMore(entity.canLoadMore() == 1);
@@ -45,31 +49,30 @@ public class DiscussionResCenterMapper implements Func1<Response<TkpdResponse>, 
         return domainData;
     }
 
-    private List<DiscussionItemData> mappingEntityDomain(List<DiscussionItemEntity> listDiscussions) {
-        List<DiscussionItemData> list = new ArrayList<>();
-        for (DiscussionItemEntity item : listDiscussions) {
-            DiscussionItemData data = new DiscussionItemData();
+    private List<LoadMoreItemData> mappingEntityDomain(List<LoadMoreItemEntity> listDiscussions) {
+        List<LoadMoreItemData> list = new ArrayList<>();
+        for (LoadMoreItemEntity item : listDiscussions) {
+            LoadMoreItemData data = new LoadMoreItemData();
             data.setActionBy(item.getActionBy());
-            data.setActionByStr(item.getActionByStr());
             data.setAttachment(mappingAttachment(item.getAttachment()));
             data.setCreateTime(item.getCreateTime());
             data.setCreateTimeStr(item.getCreateTimeStr());
             data.setResConvId(item.getResConvId());
             data.setSolutionRemark(item.getSolutionRemark());
+            data.setActionByStr(item.getActionByStr());
             list.add(data);
         }
         return list;
     }
 
-    private List<Attachment> mappingAttachment(List<DiscussionAttachmentEntity> listAttachments) {
-        List<Attachment> list = new ArrayList<>();
-        for (DiscussionAttachmentEntity item : listAttachments) {
-            Attachment attachment = new Attachment();
+    private List<LoadMoreAttachment> mappingAttachment(List<LoadMoreAttachmentEntity> listAttachments) {
+        List<LoadMoreAttachment> list = new ArrayList<>();
+        for (LoadMoreAttachmentEntity item : listAttachments) {
+            LoadMoreAttachment attachment = new LoadMoreAttachment();
             attachment.setUrl(item.getUrl());
             attachment.setImageThumb(item.getImageThumb());
             list.add(attachment);
         }
         return list;
     }
-
 }

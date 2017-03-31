@@ -43,5 +43,7 @@
     <string name="hint_write_message">Tulis pesan</string>
     <string name="dot">•</string>
     <string name="title_activity_rescenter_discussion">Diskusi</string>
+    <string name="attachment">Lampiran</string>
+    <string name="no_result_res_center_discussion">Tidak ada pesan di diskusi</string>
 
 </resources>

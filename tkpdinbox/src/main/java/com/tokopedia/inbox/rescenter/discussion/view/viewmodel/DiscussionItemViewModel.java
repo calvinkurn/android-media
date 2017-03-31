@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -19,6 +20,8 @@ public class DiscussionItemViewModel {
     private int userLabelId;
     private String messageReplyTimeFmt;
     private String messageCreateBy;
+    private List<AttachmentViewModel> listAttachment;
+    private String conversationId;
 
     public DiscussionItemViewModel(String message, String messageReplyTimeFmt, String messageCreateBy) {
         this.userName = "James";
@@ -108,6 +111,22 @@ public class DiscussionItemViewModel {
         } catch (ParseException var5) {
             return "";
         }
+    }
+
+    public void setAttachment(List<AttachmentViewModel> listAttachment) {
+        this.listAttachment = listAttachment;
+    }
+
+    public List<AttachmentViewModel> getAttachment() {
+        return listAttachment;
+    }
+
+    public String getConversationId() {
+        return conversationId;
+    }
+
+    public void setConversationId(String conversationId) {
+        this.conversationId = conversationId;
     }
 }
 

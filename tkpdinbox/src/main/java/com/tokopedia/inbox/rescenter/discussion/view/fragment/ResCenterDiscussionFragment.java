@@ -15,6 +15,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.discussion.view.adapter.ResCenterDiscussionAdapter;
+import com.tokopedia.inbox.rescenter.discussion.view.adapter.databinder.LoadMoreDataBinder;
 import com.tokopedia.inbox.rescenter.discussion.view.listener.ResCenterDiscussionView;
 import com.tokopedia.inbox.rescenter.discussion.view.presenter.ResCenterDiscussionPresenter;
 import com.tokopedia.inbox.rescenter.discussion.view.presenter.ResCenterDiscussionPresenterImpl;
@@ -96,10 +97,19 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
         sendButton = (ImageView) view.findViewById(R.id.send_button);
         attachButton = (ImageView) view.findViewById(R.id.attach_but);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        adapter = ResCenterDiscussionAdapter.createAdapter(getActivity());
+        adapter = ResCenterDiscussionAdapter.createAdapter(getActivity(), onLoadMore());
         discussionList = (RecyclerView) view.findViewById(R.id.discussion_list);
         discussionList.setLayoutManager(layoutManager);
         discussionList.setAdapter(adapter);
+    }
+
+    private LoadMoreDataBinder.LoadMoreListener onLoadMore() {
+        return new LoadMoreDataBinder.LoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                presenter.loadMore();
+            }
+        };
     }
 
     @Override
@@ -155,9 +165,14 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
     }
 
     @Override
-    public void onSuccessGetDiscussion(List<DiscussionItemViewModel> list) {
+    public void onSuccessGetDiscussion(List<DiscussionItemViewModel> list,
+                                       boolean canLoadMore) {
         finishLoading();
-        adapter.setList(list);
+        adapter.setCanLoadMore(canLoadMore);
+        if (list.size() > 0)
+            adapter.setList(list);
+        else
+            adapter.showEmptyFull(true);
     }
 
     @Override
@@ -229,4 +244,22 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
+    @Override
+    public void onSuccessLoadMore(List<DiscussionItemViewModel> discussionItemViewModels,
+                                  boolean canLoadMore) {
+        finishLoading();
+        adapter.setCanLoadMore(canLoadMore);
+        adapter.setList(discussionItemViewModels);
+    }
+
+    @Override
+    public String getLastConversationId() {
+        return adapter.getData().get(adapter.getData().size() - 1).getConversationId();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.unsubscribeObservable();
+    }
 }

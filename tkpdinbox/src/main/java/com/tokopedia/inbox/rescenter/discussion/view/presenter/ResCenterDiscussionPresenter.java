@@ -10,4 +10,8 @@ public interface ResCenterDiscussionPresenter {
     void sendDiscussion();
 
     void setDiscussionText(String discussionText);
+
+    void loadMore();
+
+    void unsubscribeObservable();
 }

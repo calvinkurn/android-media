@@ -11,6 +11,7 @@ public class DiscussionModel {
     private boolean success;
     private String messageError;
     private List<DiscussionItemData> listDiscussionData;
+    private boolean canLoadMore;
     private int responseCode;
 
     public boolean isSuccess() {
@@ -45,4 +46,11 @@ public class DiscussionModel {
         return responseCode;
     }
 
+    public boolean canLoadMore() {
+        return canLoadMore;
+    }
+
+    public void setCanLoadMore(boolean canLoadMore) {
+        this.canLoadMore = canLoadMore;
+    }
 }
