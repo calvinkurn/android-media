@@ -64,12 +64,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         TextView date;
         TextView history;
         ImageView indicator;
+        View lineIndicator;
 
         public HistoryViewHolder(View itemView) {
             super(itemView);
             date = (TextView) itemView.findViewById(R.id.tv_date);
             history = (TextView) itemView.findViewById(R.id.tv_history_text);
             indicator = (ImageView) itemView.findViewById(R.id.indicator);
+            lineIndicator = itemView.findViewById(R.id.line_indicator);
         }
     }
 
@@ -94,6 +96,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         holder.indicator.setImageResource(
                 item.isLatest() ? R.drawable.ic_check_circle_48dp : R.drawable.ic_dot_grey_24dp
         );
+        holder.lineIndicator.setVisibility(position == getHistoryItems().size() - 1 ? View.GONE : View.VISIBLE);
     }
 
     @Override
