@@ -66,6 +66,8 @@ public interface OnTripMapContract {
         void onSuccessCancelRideRequest();
 
         void renderTripRoute(List<List<LatLng>> routes);
+
+        void renderRiderCanceledRequest(RideRequest result);
     }
 
     interface Presenter extends CustomerPresenter<View>{

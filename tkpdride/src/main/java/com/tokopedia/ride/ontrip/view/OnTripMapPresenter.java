@@ -265,6 +265,10 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().renderDriverCanceledRequest(result);
                 getView().clearRideConfiguration();
                 break;
+            case "rider_canceled":
+                getView().renderRiderCanceledRequest(result);
+                getView().clearRideConfiguration();
+                break;
             case "completed":
                 getView().renderCompletedRequest(result);
                 getView().clearRideConfiguration();

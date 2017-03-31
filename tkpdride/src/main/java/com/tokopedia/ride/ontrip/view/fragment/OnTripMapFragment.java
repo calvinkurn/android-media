@@ -421,6 +421,13 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
+    public void renderRiderCanceledRequest(RideRequest result) {
+        Toast.makeText(getActivity(), "Rider Canceled Request", Toast.LENGTH_SHORT).show();
+        getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
+        getActivity().finish();
+    }
+
+    @Override
     public void renderCompletedRequest(RideRequest result) {
         Intent intent = CompleteTripActivity.getCallingIntent(getActivity());
         startActivity(intent);
