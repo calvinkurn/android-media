@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class DetailResCenterLastAddress {
     @SerializedName("id")
-    private String id;
+    private String addressId;
     @SerializedName("name")
     private String name;
     @SerializedName("street")
@@ -18,20 +18,22 @@ public class DetailResCenterLastAddress {
     @SerializedName("country")
     private String country;
     @SerializedName("receiver")
-    private Receiver Receiver;
+    private Receiver receiver;
     @SerializedName("province")
-    private Province Province;
+    private Province province;
     @SerializedName("city")
-    private City City;
+    private City city;
     @SerializedName("district")
-    private District District;
+    private District district;
+    @SerializedName("detail")
+    private Detail detail;
 
-    public String getId() {
-        return id;
+    public String getAddressId() {
+        return addressId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setAddressId(String addressId) {
+        this.addressId = addressId;
     }
 
     public String getName() {
@@ -67,35 +69,43 @@ public class DetailResCenterLastAddress {
     }
 
     public Receiver getReceiver() {
-        return Receiver;
+        return receiver;
     }
 
-    public void setReceiver(Receiver Receiver) {
-        this.Receiver = Receiver;
+    public void setReceiver(Receiver receiver) {
+        this.receiver = receiver;
     }
 
     public Province getProvince() {
-        return Province;
+        return province;
     }
 
-    public void setProvince(Province Province) {
-        this.Province = Province;
+    public void setProvince(Province province) {
+        this.province = province;
     }
 
     public City getCity() {
-        return City;
+        return city;
     }
 
-    public void setCity(City City) {
-        this.City = City;
+    public void setCity(City city) {
+        this.city = city;
     }
 
     public District getDistrict() {
-        return District;
+        return district;
     }
 
-    public void setDistrict(District District) {
-        this.District = District;
+    public void setDistrict(District district) {
+        this.district = district;
+    }
+
+    public Detail getDetail() {
+        return detail;
+    }
+
+    public void setDetail(Detail detail) {
+        this.detail = detail;
     }
 
     public static class Receiver {
@@ -187,6 +197,72 @@ public class DetailResCenterLastAddress {
 
         public void setName(String name) {
             this.name = name;
+        }
+    }
+
+    public static class Detail {
+        @SerializedName("id")
+        private String conversationId;
+        @SerializedName("action")
+        private Action action;
+
+        public String getConversationId() {
+            return conversationId;
+        }
+
+        public void setConversationId(String conversationId) {
+            this.conversationId = conversationId;
+        }
+
+        public Action getAction() {
+            return action;
+        }
+
+        public void setAction(Action action) {
+            this.action = action;
+        }
+
+        public static class Action {
+            @SerializedName("name")
+            private String name;
+            @SerializedName("by")
+            private int by;
+            @SerializedName("byStr")
+            private String byStr;
+            @SerializedName("createTimeStr")
+            private String createTimeStr;
+
+            public String getName() {
+                return name;
+            }
+
+            public void setName(String name) {
+                this.name = name;
+            }
+
+            public int getBy() {
+                return by;
+            }
+
+            public void setBy(int by) {
+                this.by = by;
+            }
+
+            public String getByStr() {
+                return byStr;
+            }
+
+            public void setByStr(String byStr) {
+                this.byStr = byStr;
+            }
+
+            public String getCreateTimeStr() {
+                return createTimeStr;
+            }
+
+            public void setCreateTimeStr(String createTimeStr) {
+                this.createTimeStr = createTimeStr;
+            }
         }
     }
 }

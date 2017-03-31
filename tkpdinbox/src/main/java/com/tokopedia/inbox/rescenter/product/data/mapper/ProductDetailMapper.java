@@ -25,7 +25,7 @@ public class ProductDetailMapper implements Func1<Response<TkpdResponse>, Produc
                 ProductDetailEntity entity = response.body().convertDataObj(ProductDetailEntity.class);
                 domainData.setSuccess(true);
                 domainData.setProductName(entity.getProduct().getName());
-                domainData.setProductPrice("NOT SET");
+                domainData.setProductPrice(entity.getProduct().getPriceStr());
                 domainData.setProductThumbUrl(entity.getProduct().getPhoto().getImageThumb());
                 domainData.setTrouble(entity.getTrouble().getName());
                 domainData.setTroubleReason(entity.getRemark());

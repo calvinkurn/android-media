@@ -5,8 +5,7 @@
     <string name="detail_rescenter_shop">Beli dari Toko :</string>
     <string name="detail_rescenter_awb_selling">No. Resi Pembelian :</string>
     <string name="detail_rescenter_invoice_selling">No. Invoice :</string>
-    <string name="detail_rescenter_deadline_for_buyer">Batas Waktu Respon Pembeli :</string>
-    <string name="detail_rescenter_deadline_for_seller">Batas Waktu Respon Penjual :</string>
+    <string name="detail_rescenter_deadline">Tombol Bantuan Akan Muncul Pada:</string>
 
     <string name="template_last_solution_provider">Solusi dari X123 - Y123</string>
     <string name="template_history_additional_information">X123 - Y123</string>

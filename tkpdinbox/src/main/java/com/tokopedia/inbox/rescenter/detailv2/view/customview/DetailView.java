@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailData;
  * Created by hangnadi on 3/8/17.
  */
 
+@SuppressWarnings({"unused", "FieldCanBeLocal", "deprecation"})
 public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView> {
 
     private TextView textComplaintDate;
@@ -27,10 +29,8 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
     private TextView textShopName;
     private TextView textAwbNumber;
     private TextView textInvoice;
-    private View viewBuyerResponseDeadline;
-    private TextView textBuyerResponseDeadline;
-    private View viewSellerResponseDeadline;
-    private TextView textSellerResponseDeadline;
+    private View viewResponseDeadline;
+    private TextView textResponseDeadline;
 
     public DetailView(Context context) {
         super(context);
@@ -67,10 +67,8 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
         textShopName = (TextView) view.findViewById(R.id.tv_shop_name);
         textAwbNumber = (TextView) view.findViewById(R.id.tv_awb_number);
         textInvoice = (TextView) view.findViewById(R.id.tv_invoice);
-        viewBuyerResponseDeadline = view.findViewById(R.id.view_buyer_response_deadline);
-        textBuyerResponseDeadline = (TextView) view.findViewById(R.id.tv_buyer_response_deadline);
-        viewSellerResponseDeadline = view.findViewById(R.id.view_seller_response_deadline);
-        textSellerResponseDeadline = (TextView) view.findViewById(R.id.tv_seller_response_deadline);
+        viewResponseDeadline = view.findViewById(R.id.view_response_deadline);
+        textResponseDeadline = (TextView) view.findViewById(R.id.tv_response_deadline);
     }
 
     @Override
@@ -86,18 +84,13 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
         textCustomerName.setText(data.getBuyerName());
         textInvoice.setText(data.getInvoice());
         textShopName.setText(data.getShopName());
-        viewBuyerResponseDeadline.setVisibility(
-                data.isBuyerDeadlineVisibility() && data.getResponseDeadline() != null ?
+        viewResponseDeadline.setVisibility(
+                data.isDeadlineVisibility() && data.getResponseDeadline() != null ?
                         VISIBLE : GONE
         );
-        textBuyerResponseDeadline.setText(data.getResponseDeadline());
-        generateDeadlineBackgroundView(textBuyerResponseDeadline, getBackgroundColor(data.getResponseDeadlineUrgency()));
-        viewSellerResponseDeadline.setVisibility(
-                data.isSellerDeadlineVisibility() && data.getResponseDeadline() != null ?
-                        VISIBLE : GONE
-        );
-        textSellerResponseDeadline.setText(data.getResponseDeadline());
-        generateDeadlineBackgroundView(textSellerResponseDeadline, getBackgroundColor(data.getResponseDeadlineUrgency()));
+        textResponseDeadline.setText(data.getResponseDeadline());
+        generateDeadlineBackgroundView(textResponseDeadline);
+
         textCustomerName.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -118,19 +111,11 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
         });
     }
 
-    private int getBackgroundColor(int responseDeadlineUrgency) {
-        switch (responseDeadlineUrgency) {
-            case 1: return R.color.red_a700;
-            case 2: return R.color.colorBlue;
-            default: return R.color.black;
-        }
-    }
-
-    public static void generateDeadlineBackgroundView(View v, int backgroundColor) {
+    public void generateDeadlineBackgroundView(View v) {
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadii(new float[] { 8, 8, 8, 8, 8, 8, 8, 8 });
-        shape.setColor(backgroundColor);
+        shape.setColor(ContextCompat.getColor(getContext(), R.color.colorBlue));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             v.setBackground(shape);
         } else {

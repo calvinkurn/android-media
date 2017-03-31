@@ -17,8 +17,7 @@ public class ResolutionDomainModel {
     private int receivedFlag;
     private String status;
     private String responseDeadline;
-    private boolean sellerDeadlineVisibility;
-    private boolean buyerDeadlineVisibility;
+    private boolean deadlineVisibility;
 
     public String getOrderID() {
         return orderID;
@@ -116,19 +115,11 @@ public class ResolutionDomainModel {
         return responseDeadline;
     }
 
-    public void setSellerDeadlineVisibility(boolean sellerDeadlineVisibility) {
-        this.sellerDeadlineVisibility = sellerDeadlineVisibility;
+    public void setDeadlineVisibility(boolean deadlineVisibility) {
+        this.deadlineVisibility = deadlineVisibility;
     }
 
-    public boolean isSellerDeadlineVisibility() {
-        return sellerDeadlineVisibility;
-    }
-
-    public void setBuyerDeadlineVisibility(boolean buyerDeadlineVisibility) {
-        this.buyerDeadlineVisibility = buyerDeadlineVisibility;
-    }
-
-    public boolean isBuyerDeadlineVisibility() {
-        return buyerDeadlineVisibility;
+    public boolean isDeadlineVisibility() {
+        return deadlineVisibility;
     }
 }

@@ -140,13 +140,13 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/view_buyer_response_deadline"
+        android:id="@+id/view_response_deadline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/padding_small">
 
         <TextView
-            android:id="@+id/tv_buyer_response_deadline"
+            android:id="@+id/tv_response_deadline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -159,37 +159,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/tv_buyer_response_deadline"
+            android:layout_toLeftOf="@id/tv_response_deadline"
             android:layout_marginRight="@dimen/margin_small"
-            android:text="@string/detail_rescenter_deadline_for_buyer"
-            android:textColor="#868686"
-            android:textSize="@dimen/fontvs" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/view_seller_response_deadline"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_small">
-
-        <TextView
-            android:id="@+id/tv_seller_response_deadline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:padding="@dimen/padding_vs"
-            android:textColor="@color/white"
-            android:textSize="@dimen/fonts" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/tv_seller_response_deadline"
-            android:layout_marginRight="@dimen/margin_small"
-            android:text="@string/detail_rescenter_deadline_for_seller"
+            android:text="@string/detail_rescenter_deadline"
             android:textColor="#868686"
             android:textSize="@dimen/fontvs" />
 
