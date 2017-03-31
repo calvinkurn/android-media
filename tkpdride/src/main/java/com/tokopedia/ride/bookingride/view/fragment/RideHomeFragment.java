@@ -22,7 +22,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -33,6 +32,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.Session;
@@ -285,8 +285,10 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         mMarkerCenterCrossImage.animate().setInterpolator(interpolator).scaleX(1).scaleY(1).setDuration(300);
 
         //animate toolbar and source destination layout
-        mToolbar.animate().translationY(-mToolBarHeightinPx).setDuration(300);
-        mSrcDestLayout.animate().translationY(-mToolBarHeightinPx).setDuration(300);
+        if (mListener.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+            mToolbar.animate().translationY(-mToolBarHeightinPx).setDuration(300);
+            mSrcDestLayout.animate().translationY(-mToolBarHeightinPx).setDuration(300);
+        }
 
         mListener.animateBottomPanelOnMapDragging();
     }
@@ -335,6 +337,8 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         void animateBottomPanelOnMapStopped();
 
         void showMessageInBottomContainer(String message, String btnText);
+
+        SlidingUpPanelLayout.PanelState getPanelState();
     }
 
     private void setInitialVariable() {
@@ -499,8 +503,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(new LatLng(mSource.getLatitude(), mSource.getLongitude()));
         builder.include(new LatLng(mDestination.getLatitude(), mDestination.getLongitude()));
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
-
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), getResources().getDimensionPixelSize(R.dimen.map_polyline_padding)));
     }
 
     @OnClick(R2.id.iv_my_location_button)
