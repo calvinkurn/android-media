@@ -62,6 +62,7 @@ public class ChangePhoneNumberRequestFragment
     ImageView accountBookPhoto;
     ImageUploadHandler imageUploadHandler;
     Button buttonSubmit;
+    View mainView;
 
     TkpdProgressDialog progressDialog;
 
@@ -146,8 +147,8 @@ public class ChangePhoneNumberRequestFragment
         buttonUploadId = (ImageView) view.findViewById(R.id.upload_id_photo_button);
         idPhoto = (ImageView) view.findViewById(R.id.photo_id);
         accountBookPhoto = (ImageView) view.findViewById(R.id.photo_account_book);
-
         buttonSubmit = (Button) view.findViewById(R.id.button_submit);
+        mainView = view.findViewById(R.id.main_view);
 
         imageUploadHandler = ImageUploadHandler.createInstance(this);
     }
@@ -354,9 +355,19 @@ public class ChangePhoneNumberRequestFragment
     public void onErrorcheckStatus(String errorMessage) {
         finishLoading();
         if (errorMessage.equals(""))
-            NetworkErrorHelper.showSnackbar(getActivity());
+            NetworkErrorHelper.showEmptyState(getActivity(), mainView, new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    presenter.checkStatus();
+                }
+            });
         else
-            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+            NetworkErrorHelper.showEmptyState(getActivity(), mainView, errorMessage, new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    presenter.checkStatus();
+                }
+            });
     }
 
     @Override

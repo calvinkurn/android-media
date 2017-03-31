@@ -242,7 +242,50 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
 
             @Override
             public void onError(Throwable e) {
-                viewListener.onErrorcheckStatus(e.toString());
+                if (e instanceof UnknownHostException) {
+                    viewListener.onErrorcheckStatus(
+                            viewListener.getString(R.string.msg_no_connection));
+                } else if (e instanceof RuntimeException &&
+                        e.getLocalizedMessage() != null &&
+                        e.getLocalizedMessage().length() <= 3) {
+                    new ErrorHandler(new ErrorListener() {
+                        @Override
+                        public void onUnknown() {
+                            viewListener.onErrorcheckStatus(
+                                    viewListener.getString(R.string.default_request_error_unknown));
+                        }
+
+                        @Override
+                        public void onTimeout() {
+                            viewListener.onErrorcheckStatus(
+                                    viewListener.getString(R.string.default_request_error_timeout));
+                        }
+
+                        @Override
+                        public void onServerError() {
+                            viewListener.onErrorcheckStatus(
+                                    viewListener.getString(R.string.default_request_error_internal_server));
+                        }
+
+                        @Override
+                        public void onBadRequest() {
+                            viewListener.onErrorcheckStatus(
+                                    viewListener.getString(R.string.default_request_error_bad_request));
+                        }
+
+                        @Override
+                        public void onForbidden() {
+                            viewListener.onErrorcheckStatus(
+                                    viewListener.getString(R.string.default_request_error_forbidden_auth));
+                        }
+                    }, Integer.parseInt(e.getLocalizedMessage()));
+                } else if (e instanceof ErrorMessageException &&
+                        e.getLocalizedMessage() != null) {
+                    viewListener.onErrorcheckStatus(e.getLocalizedMessage());
+                } else {
+                    viewListener.onErrorcheckStatus(
+                            viewListener.getString(R.string.default_request_error_unknown));
+                }
 
             }
 
@@ -253,35 +296,6 @@ public class ChangePhoneNumberRequestPresenterImpl implements ChangePhoneNumberR
                         && checkStatusModel.getErrorMessage() == null
                         && checkStatusModel.getStatusMessage() != null) {
                     viewListener.onSuccessCheckStatus(checkStatusModel.getCheckStatusData());
-                } else if (checkStatusModel.getErrorMessage() != null) {
-                    viewListener.onErrorcheckStatus(checkStatusModel.getErrorMessage());
-                } else {
-                    new ErrorHandler(new ErrorListener() {
-                        @Override
-                        public void onUnknown() {
-                            viewListener.onErrorcheckStatus(viewListener.getString(R.string.default_request_error_unknown));
-                        }
-
-                        @Override
-                        public void onTimeout() {
-                            viewListener.onErrorcheckStatus(viewListener.getString(R.string.default_request_error_timeout));
-                        }
-
-                        @Override
-                        public void onServerError() {
-                            viewListener.onErrorcheckStatus(viewListener.getString(R.string.default_request_error_internal_server));
-                        }
-
-                        @Override
-                        public void onBadRequest() {
-                            viewListener.onErrorcheckStatus(viewListener.getString(R.string.default_request_error_bad_request));
-                        }
-
-                        @Override
-                        public void onForbidden() {
-                            viewListener.onErrorcheckStatus(viewListener.getString(R.string.default_request_error_forbidden_auth));
-                        }
-                    }, checkStatusModel.getResponseCode());
                 }
             }
         });
