@@ -8,6 +8,8 @@ public interface ICartDigitalPresenter {
 
     void processGetCartData();
 
+    void processGetCartDataAfterCheckout();
+
     void processAddToCart();
 
     void processCheckVoucher();

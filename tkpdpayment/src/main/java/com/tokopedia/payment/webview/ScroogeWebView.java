@@ -1,6 +1,7 @@
 package com.tokopedia.payment.webview;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -106,6 +107,14 @@ public class ScroogeWebView extends WebView {
             }
         }
 
+
+        @SuppressWarnings("deprecation")
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+            return super.shouldInterceptRequest(view, url);
+        }
+
+        @TargetApi(android.os.Build.VERSION_CODES.M)
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
             return super.shouldInterceptRequest(view, request);
@@ -126,11 +135,21 @@ public class ScroogeWebView extends WebView {
             topPayView.hideProgressBar();
         }
 
+        @SuppressWarnings("deprecation")
+        @Override
+        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            Log.d(TAG, "onReceivedError 1 : " + errorCode + " " + description);
+            showError(errorCode, description);
+            super.onReceivedError(view, errorCode, description, failingUrl);
+        }
+
+        @TargetApi(android.os.Build.VERSION_CODES.M)
         @Override
         public void onReceivedError(WebView view, WebResourceRequest request,
                                     WebResourceError error) {
+            Log.d(TAG, "onReceivedError 2 : " + error.getErrorCode() + " " + error.getDescription().toString());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                showError(error.getErrorCode());
+                showError(error.getErrorCode(), error.getDescription().toString());
             super.onReceivedError(view, request, error);
         }
 
@@ -153,18 +172,19 @@ public class ScroogeWebView extends WebView {
         }
     }
 
-    public void showError(int errorCode) {
-        String message;
+    public void showError(int errorCode, String description) {
         switch (errorCode) {
             case WebViewClient.ERROR_TIMEOUT:
-                message = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
+                description = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
                 break;
             default:
-                message = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
+                if (description == null)
+                    description = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
                 break;
         }
         stopLoading();
-        topPayView.showToastMessageWithForceCloseView(message);
+//        topPayView.showToastMessage(description);
+        topPayView.showToastMessageWithForceCloseView(description);
     }
 
     private void processRedirectUrlContaintsAccountsUrl(String url) {

@@ -59,6 +59,18 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     }
 
     @Override
+    public void processGetCartDataAfterCheckout() {
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("category_id", view.getDigitalCategoryId());
+        view.showInitialProgressLoading();
+        cartDigitalInteractor.getCartInfoData(
+                view.getGeneratedAuthParamNetwork(param),
+                getSubscriberCartInfoAfterCheckout()
+        );
+    }
+
+
+    @Override
     public void processAddToCart() {
         view.renderLoadingAddToCart();
         cartDigitalInteractor.addToCart(
@@ -366,6 +378,51 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     }
 
     @NonNull
+    private Subscriber<CartDigitalInfoData> getSubscriberCartInfoAfterCheckout() {
+        return new Subscriber<CartDigitalInfoData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                if (e instanceof UnknownHostException) {
+                    /* Ini kalau ga ada internet */
+                    view.renderErrorNoConnectionGetCartData(
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                    );
+                } else if (e instanceof SocketTimeoutException) {
+                    /* Ini kalau timeout */
+                    view.renderErrorTimeoutConnectionGetCartData(
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                    );
+                } else if (e instanceof ResponseErrorException) {
+                     /* Ini kalau error dari API kasih message error */
+                    view.renderErrorGetCartData(e.getMessage());
+                } else if (e instanceof ResponseDataNullException) {
+                    /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+                    view.closeView();
+                } else if (e instanceof HttpErrorException) {
+                    /* Ini Http error, misal 403, 500, 404,
+                     code http errornya bisa diambil
+                     e.getErrorCode */
+                    view.renderErrorHttpGetCartData(e.getMessage());
+                } else {
+                    /* Ini diluar dari segalanya hahahaha */
+                    view.renderErrorHttpGetCartData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+            }
+
+            @Override
+            public void onNext(CartDigitalInfoData cartDigitalInfoData) {
+                view.renderCartDigitalInfoData(cartDigitalInfoData);
+            }
+        };
+    }
+
+    @NonNull
     private RequestBodyAtcDigital getRequestBodyAtcDigital() {
         RequestBodyAtcDigital requestBodyAtcDigital = new RequestBodyAtcDigital();
         List<Field> fieldList = new ArrayList<>();
@@ -401,8 +458,8 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         attributes.setTransactionAmount(checkoutData.getTransactionAmount());
         attributes.setIpAddress(checkoutData.getIpAddress());
         attributes.setUserAgent(checkoutData.getUserAgent());
-        attributes.setAccessToken(checkoutData.getAccessToken());
-        attributes.setWalletRefreshToken(checkoutData.getWalletRefreshToken());
+//        attributes.setAccessToken(checkoutData.getAccessToken());
+//        attributes.setWalletRefreshToken(checkoutData.getWalletRefreshToken());
         requestBodyCheckout.setAttributes(attributes);
         requestBodyCheckout.setRelationships(
                 new Relationships(new Cart(new Data(

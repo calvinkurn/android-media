@@ -13,6 +13,8 @@ public interface ITopPayView {
 
     void showToastMessageWithForceCloseView(String message);
 
+    void showToastMessage(String message);
+
     void callbackPaymentCanceled();
 
     void callbackPaymentFailed();

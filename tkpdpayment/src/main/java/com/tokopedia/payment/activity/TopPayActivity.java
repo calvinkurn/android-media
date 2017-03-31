@@ -137,6 +137,11 @@ public class TopPayActivity extends Activity implements ITopPayView {
     }
 
     @Override
+    public void showToastMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public String getStringFromResource(int resId) {
         return null;
     }
@@ -161,7 +166,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                scroogeWebView.showError(WebViewClient.ERROR_TIMEOUT);
+                scroogeWebView.showError(WebViewClient.ERROR_TIMEOUT, null);
             }
         });
     }

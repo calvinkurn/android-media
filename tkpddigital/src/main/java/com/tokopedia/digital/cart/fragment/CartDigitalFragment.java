@@ -608,7 +608,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     break;
                 case TopPayActivity.PAYMENT_CANCELLED:
                     showToastMessage(getString(R.string.alert_payment_canceled_digital_module));
-                    presenter.processGetCartData();
+                    presenter.processGetCartDataAfterCheckout();
                     break;
                 default:
                     presenter.processGetCartData();
