@@ -13,6 +13,7 @@ import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetProductAndEstimatedUseCase;
+import com.tokopedia.ride.bookingride.domain.GetPromoUseCase;
 import com.tokopedia.ride.common.ride.data.BookingRideDataStoreFactory;
 import com.tokopedia.ride.common.ride.data.BookingRideRepositoryData;
 import com.tokopedia.ride.common.ride.data.ProductEntityMapper;
@@ -173,6 +174,30 @@ public class RideProductDependencyInjection {
         );
     }
 
+    private GetPromoUseCase getPromoUseCase(String token, String userId){
+        return new GetPromoUseCase(
+                provideThreadExecutor(),
+                providePostExecutionThread(),
+                provideBookingRideRepository(
+                        provideBookingRideDataStoreFactory(
+                                provideRideApi(
+                                        provideRideRetrofit(
+                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
+                                                        provideLoggingInterceptory()),
+                                                provideGeneratedHostConverter(),
+                                                provideTkpdResponseConverter(),
+                                                provideResponseConverter(),
+                                                provideGsonConverterFactory(provideGson()),
+                                                provideRxJavaCallAdapterFactory()
+                                        )
+                                )
+                        ),
+                        new ProductEntityMapper(),
+                        new TimeEstimateEntityMapper()
+                )
+        );
+    }
+
 
     public static UberProductContract.Presenter createPresenter(Context context) {
         SessionHandler sessionHandler = new SessionHandler(context);
@@ -181,7 +206,8 @@ public class RideProductDependencyInjection {
         RideProductDependencyInjection injection = new RideProductDependencyInjection();
         GetProductAndEstimatedUseCase getUberProductsUseCase = injection.provideGetProductAndEstimatedUseCase(token, userId);
         GetFareEstimateUseCase getFareEstimateUseCase = injection.provideGetFareEstimateUseCase(token, userId);
-        return new UberProductPresenter(getUberProductsUseCase, getFareEstimateUseCase);
+        GetPromoUseCase getPromoUseCase = injection.getPromoUseCase(token, userId);
+        return new UberProductPresenter(getUberProductsUseCase, getFareEstimateUseCase, getPromoUseCase);
     }
 
     private static Retrofit createRetrofit(String baseUrl,

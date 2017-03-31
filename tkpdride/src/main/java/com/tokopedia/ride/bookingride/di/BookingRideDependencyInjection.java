@@ -12,6 +12,7 @@ import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
+import com.tokopedia.ride.bookingride.domain.GetPromoUseCase;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.place.data.DirectionEntityMapper;
 import com.tokopedia.ride.common.place.data.PlaceDataRepository;

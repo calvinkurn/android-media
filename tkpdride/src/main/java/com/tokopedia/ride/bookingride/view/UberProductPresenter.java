@@ -6,8 +6,10 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetProductAndEstimatedUseCase;
+import com.tokopedia.ride.bookingride.domain.GetPromoUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
 import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
+import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.mapper.RideProductViewModelMapper;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
@@ -24,17 +26,40 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
     private RideProductViewModelMapper mProductViewModelMapper;
     private GetProductAndEstimatedUseCase getProductAndEstimatedUseCase;
     private GetFareEstimateUseCase getFareEstimateUseCase;
+    private GetPromoUseCase getPromoUseCase;
     private List<ProductEstimate> mProductEstimates;
 
-    public UberProductPresenter(GetProductAndEstimatedUseCase getUberProductsUseCase, GetFareEstimateUseCase getFareEstimateUseCase) {
+    public UberProductPresenter(GetProductAndEstimatedUseCase getUberProductsUseCase,
+                                GetFareEstimateUseCase getFareEstimateUseCase,
+                                GetPromoUseCase getPromoUseCase) {
         getProductAndEstimatedUseCase = getUberProductsUseCase;
         mProductViewModelMapper = new RideProductViewModelMapper();
         this.getFareEstimateUseCase = getFareEstimateUseCase;
+        this.getPromoUseCase = getPromoUseCase;
     }
 
     @Override
     public void initialize() {
+//        actionGetPromo();
+    }
 
+    private void actionGetPromo() {
+        getPromoUseCase.execute(RequestParams.EMPTY, new Subscriber<Promo>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().hideAdsBadges();
+            }
+
+            @Override
+            public void onNext(Promo promo) {
+                getView().showAdsBadges("");
+            }
+        });
     }
 
     @Override

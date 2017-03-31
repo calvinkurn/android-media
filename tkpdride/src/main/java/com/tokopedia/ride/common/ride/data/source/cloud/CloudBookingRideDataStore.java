@@ -1,11 +1,13 @@
 package com.tokopedia.ride.common.ride.data.source.cloud;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.ride.data.BookingRideDataStore;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductResponseEntity;
+import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
@@ -78,5 +80,10 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
     @Override
     public Observable<RideRequestEntity> getCurrentRequest(TKPDMapParam<String, Object> params) {
         return mRideApi.getDetailRequestRide(params);
+    }
+
+    @Override
+    public Observable<PromoEntity> getPromo(TKPDMapParam<String, Object> param) {
+        return mRideApi.getPromo(param);
     }
 }

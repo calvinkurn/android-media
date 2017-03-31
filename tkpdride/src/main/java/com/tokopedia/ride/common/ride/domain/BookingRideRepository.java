@@ -1,6 +1,7 @@
 package com.tokopedia.ride.common.ride.domain;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
@@ -29,4 +30,6 @@ public interface BookingRideRepository {
     Observable<RideRequest> getCurrentRequest(TKPDMapParam<String, Object> parameters);
 
     Observable<Receipt> getReceipt(TKPDMapParam<String, Object> param);
+
+    Observable<Promo> getPromo(TKPDMapParam<String, Object> parameters);
 }

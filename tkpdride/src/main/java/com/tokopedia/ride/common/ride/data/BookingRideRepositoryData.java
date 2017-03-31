@@ -1,9 +1,11 @@
 package com.tokopedia.ride.common.ride.data;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
+import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
@@ -31,6 +33,8 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     private final FareEstimateMapper estimateMapper;
     private final RideRequestEntityMapper rideRequestEntityMapper;
     private final ReceiptEntityMapper receiptEntityMapper;
+    private final PromoEntityMapper promoEntityMapper;
+
 
     public BookingRideRepositoryData(BookingRideDataStoreFactory bookingRideDataStoreFactory,
                                      ProductEntityMapper productEntityMapper,
@@ -41,6 +45,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
         estimateMapper = new FareEstimateMapper();
         rideRequestEntityMapper = new RideRequestEntityMapper();
         receiptEntityMapper = new ReceiptEntityMapper();
+        promoEntityMapper = new PromoEntityMapper();
     }
 
     @Override
@@ -115,6 +120,18 @@ public class BookingRideRepositoryData implements BookingRideRepository {
                     @Override
                     public Receipt call(ReceiptEntity entity) {
                         return receiptEntityMapper.transform(entity);
+                    }
+                });
+    }
+
+    @Override
+    public Observable<Promo> getPromo(TKPDMapParam<String, Object> parameters) {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .getPromo(parameters)
+                .map(new Func1<PromoEntity, Promo>() {
+                    @Override
+                    public Promo call(PromoEntity promoEntity) {
+                        return promoEntityMapper.transform(promoEntity);
                     }
                 });
     }
