@@ -106,7 +106,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     private static final String TAG = BrowseProductActivity.class.getSimpleName();
     private static final String KEY_GTM = "GTMFilterData";
     private static final String EXTRA_BROWSE_ATRIBUT = "EXTRA_BROWSE_ATRIBUT";
-    private static final String EMPTY_CATEGORY = "0";
     private String searchQuery;
     private FragmentManager fragmentManager;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
