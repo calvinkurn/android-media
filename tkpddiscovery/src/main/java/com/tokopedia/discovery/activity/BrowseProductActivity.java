@@ -229,14 +229,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT:
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG:
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP:
-                String searchTitle = browseProductActivityModel.getQ();
-                if (searchTitle != null) {
-                    toolbar.setTitle(searchTitle);
-                    discoverySearchView.setLastQuery(searchTitle);
-                    searchQuery = searchTitle;
-                } else {
-                    toolbar.setTitle("");
-                }
+                adjustToolbarTitleAndLastQuery();
                 toolbar.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -280,6 +273,17 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                     discoverySearchView.showSearch(true, false);
                     break;
             }
+        }
+    }
+
+    private void adjustToolbarTitleAndLastQuery() {
+        String searchTitle = browseProductActivityModel.getQ();
+        if (searchTitle != null) {
+            toolbar.setTitle(searchTitle);
+            discoverySearchView.setLastQuery(searchTitle);
+            searchQuery = searchTitle;
+        } else {
+            toolbar.setTitle("");
         }
     }
 
