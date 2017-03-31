@@ -152,15 +152,9 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
 
     @Override
     public void animateBottomPanelOnMapDragging() {
-        mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-
-        //running after 100 ms to allow to panel get collapsed first
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mBottomContainer.animate().setInterpolator(new AccelerateDecelerateInterpolator()).translationY(mSlidingPanelMinHeightInPx).setDuration(300);
-            }
-        }, 100);
+        if (mSlidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+            mBottomContainer.animate().setInterpolator(new AccelerateDecelerateInterpolator()).translationY(mSlidingPanelMinHeightInPx).setDuration(300);
+        }
     }
 
     @Override
@@ -179,6 +173,15 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
         if (fragment != null) {
             fragment.showErrorMessage(message, btnText);
         }
+    }
+
+    @Override
+    public SlidingUpPanelLayout.PanelState getPanelState() {
+        if (mSlidingUpPanelLayout == null) {
+            return null;
+        }
+
+        return mSlidingUpPanelLayout.getPanelState();
     }
 
     @Override
@@ -212,9 +215,9 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
     @Override
     public void onProductClicked(ConfirmBookingViewModel rideProductViewModel) {
         onBottomContainerChangeToBookingScreen();
-//        mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
-        mSlidingUpPanelLayout.setPanelHeight(50);
-        mSlidingUpPanelLayout.setParallaxOffset(5);
+        //mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
+        //mSlidingUpPanelLayout.setPanelHeight(50);
+        //mSlidingUpPanelLayout.setParallaxOffset(5);
 
         ConfirmBookingRideFragment fragment = ConfirmBookingRideFragment.newInstance(rideProductViewModel);
         Slide slideTransition = null;
@@ -316,7 +319,20 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
     }
 
     private void hideBlockTranslucentLayout() {
-        blockTranslucentFrameLayout.setVisibility(View.GONE);
+        final ObjectAnimator backgroundColorAnimator = ObjectAnimator.ofObject(blockTranslucentFrameLayout,
+                "backgroundColor",
+                new ArgbEvaluator(),
+                0xBB000000,
+                0x00000000);
+        backgroundColorAnimator.setDuration(500);
+        backgroundColorAnimator.start();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                blockTranslucentFrameLayout.setVisibility(View.GONE);
+            }
+        }, 500);
     }
 
     private void hideSeatPanelLayout() {
