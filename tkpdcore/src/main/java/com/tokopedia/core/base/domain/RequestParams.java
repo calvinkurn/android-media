@@ -2,6 +2,8 @@ package com.tokopedia.core.base.domain;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
+import java.util.Map;
+
 /**
  * @author kulomady on 12/24/16.
  */
@@ -79,5 +81,19 @@ public class RequestParams {
 
     public TKPDMapParam<String, Object> getParameters() {
         return parameters;
+    }
+
+    public TKPDMapParam<String, String> getParamsAllValueInString() {
+        return convertMapObjectToString(parameters);
+    }
+
+    private TKPDMapParam<String, String> convertMapObjectToString(TKPDMapParam<String,Object> map) {
+        TKPDMapParam<String,String> newMap =new TKPDMapParam<>();
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            if(entry.getValue() instanceof String){
+                newMap.put(entry.getKey(), String.valueOf(entry.getValue()));
+            }
+        }
+        return newMap;
     }
 }
