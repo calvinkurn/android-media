@@ -1,6 +1,5 @@
 package com.tokopedia.session.changephonenumber.data.mapper;
 
-import com.tokopedia.core.network.entity.changephonenumberrequest.SubmitImageData;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.session.changephonenumber.data.SubmitImageModel;
 
@@ -23,9 +22,7 @@ public class SubmitImageMapper implements Func1<Response<TkpdResponse>, SubmitIm
 
         if (response.isSuccessful()) {
             if (!response.body().isError()) {
-                SubmitImageData data = response.body().convertDataObj(SubmitImageData.class);
                 model.setSuccess(true);
-                model.setSubmitImageData(data);
             } else {
                 if (response.body().getErrorMessages() == null
                         && response.body().getErrorMessages().isEmpty()) {

@@ -1,14 +1,11 @@
 package com.tokopedia.session.changephonenumber.data;
 
-import com.tokopedia.core.network.entity.changephonenumberrequest.SubmitImageData;
-
 /**
  * Created by nisie on 3/13/17.
  */
 
 public class SubmitImageModel {
     private boolean success;
-    private SubmitImageData submitImageData;
     private String errorMessage;
     private String statusMessage;
     private int responseCode;
@@ -49,12 +46,5 @@ public class SubmitImageModel {
         return responseCode == 200;
     }
 
-    public SubmitImageData getSubmitImageData() {
-        return submitImageData;
-    }
-
-    public void setSubmitImageData(SubmitImageData submitImageData) {
-        this.submitImageData = submitImageData;
-    }
 }
 
