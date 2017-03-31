@@ -1910,4 +1910,11 @@ di Tokopedia Sekarang!</string>
     <string name="action_check">Periksa</string>
     <string name="action_remember_account">Ingat saya</string>
 
+    <!--START : Marketing Campaign Official Store -->
+    <string name="title_discount_timer">Promo berakhir dalam:</string>
+    <string name="label_discount_timer">%1$02dd : %2$02dh : %3$02dm : %4$02ds</string>
+    <string name="label_discount">%1$d%%OFF</string>
+    <string name="label_original_price"><![CDATA[<strike>%1$s</strike>]]></string>
+    <!--END : Marketin Campaign Official Store -->
+
 </resources>

@@ -40,6 +40,14 @@
                 android:textColor="@color/tkpd_main_green"
                 android:textSize="15sp" />
 
+            <TextView
+                android:id="@+id/text_original_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/warm_grey"
+                android:textSize="@dimen/fontvvvs"
+                android:visibility="gone"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -56,6 +64,23 @@
                     android:text="Rp 3.121.500"
                     android:textColor="@color/orange_red"
                     android:textSize="12sp" />
+
+                <FrameLayout
+                    android:id="@+id/frame_discount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_vs"
+                    android:layout_marginStart="@dimen/margin_vs"
+                    android:background="@drawable/bg_rounded_corners_red"
+                    android:padding="@dimen/margin_vvvs"
+                    android:visibility="gone">
+                    <TextView
+                        android:id="@+id/text_discount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/fontvvvs" />
+                </FrameLayout>
 
                 <com.tokopedia.core.customwidget.FlowLayout
                     android:id="@+id/label_container"

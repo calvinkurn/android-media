@@ -74,4 +74,6 @@
 
     <color name="checkbox_text">#61000000</color>
 
+    <color name="bright_red">#eb3c0d</color>
+
 </resources>

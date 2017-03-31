@@ -1,12 +1,13 @@
 package com.tokopedia.core.product.customview;
 
 import android.content.Context;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
-import android.text.Html;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.gson.internal.LinkedTreeMap;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.product.listener.ProductDetailView;
@@ -14,6 +15,11 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.concurrent.TimeUnit;
+
+import butterknife.BindString;
 import butterknife.BindView;
 
 
@@ -39,6 +45,15 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     TextView titleViewed;
     @BindView(R2.id.title_sold)
     TextView titleSold;
+    @BindView(R2.id.text_discount)
+    TextView textDiscount;
+    @BindView(R2.id.linear_discount_timer_holder)
+    LinearLayout linearDiscountTimerHolder;
+    @BindView(R2.id.text_discount_timer)
+    TextView textDiscountTimer;
+    @BindString(R2.string.label_discount_timer)
+    String labelPromotionTimer;
+
 
     public HeaderInfoView(Context context) {
         super(context);
@@ -84,6 +99,40 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             cashbackHolder.setVisibility(VISIBLE);
             cashbackTextView.setText(getContext().getString(R.string.value_cashback)
                     .replace("X", data.getCashBack().getProductCashback()));
+        }
+
+        if(data.getProductCampaign() != null && data.getProductCampaign().getOriginalPrice() != null) {
+            cashbackHolder.setVisibility(VISIBLE);
+            textDiscount.setVisibility(VISIBLE);
+            textDiscount.setText(data.getProductCampaign().getPercentageAmount());
+
+            try {
+                SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                long endTime = sf.parse(data.getProductCampaign().getEndDate()).getTime();
+
+                linearDiscountTimerHolder.setVisibility(VISIBLE);
+                new CountDownTimer(endTime, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        textDiscountTimer.setText(
+                                String.format(
+                                        labelPromotionTimer,
+                                        TimeUnit.MILLISECONDS.toDays(millisUntilFinished),
+                                        (millisUntilFinished / (1000 * 60 * 60)) % 24,
+                                        (millisUntilFinished / (1000 * 60)) % 60,
+                                        (millisUntilFinished / (1000)) % 60
+                                )
+                        );
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        linearDiscountTimerHolder.setVisibility(GONE);
+                    }
+                }.start();
+            } catch (ParseException ex) {
+                ex.printStackTrace();
+            }
         }
 
     }

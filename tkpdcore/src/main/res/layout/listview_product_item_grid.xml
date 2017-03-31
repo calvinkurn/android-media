@@ -31,10 +31,19 @@
         android:textSize="15sp" />
 
     <TextView
+        android:id="@+id/text_original_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:textColor="@color/warm_grey"
+        android:textSize="@dimen/fontvvvs"
+        android:visibility="gone"/>
+
+    <TextView
         android:id="@+id/price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title"
+        android:layout_below="@+id/text_original_price"
         android:layout_marginBottom="5dp"
         android:layout_weight="1"
         android:gravity="center_vertical"
@@ -42,6 +51,27 @@
         android:textColor="@color/orange_red"
         android:textSize="12sp" />
 
+    <FrameLayout
+        android:id="@+id/frame_discount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_vs"
+        android:layout_marginStart="@dimen/margin_vs"
+        android:layout_toEndOf="@id/price"
+        android:layout_toRightOf="@id/price"
+        android:layout_below="@id/text_original_price"
+        android:background="@drawable/bg_rounded_corners_red"
+        android:padding="@dimen/margin_vvvs"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/text_discount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="@dimen/fontvvvs"/>
+
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -41,6 +41,18 @@
             android:visibility="gone">
 
             <TextView
+                android:id="@+id/text_discount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginStart="@dimen/margin_small"
+                android:background="@drawable/label_dark_green"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/fontvs"
+                android:visibility="gone"/>
+
+            <TextView
                 android:id="@+id/label_cashback"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -105,4 +117,38 @@
                 android:textSize="@dimen/fonts"
                 tools:ignore="HardcodedText" />
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linear_discount_timer_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/text_title_discount_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_discount_timer" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_vvs"
+            android:background="@drawable/bg_stroke_rounded_corners"
+            android:paddingBottom="@dimen/margin_vs"
+            android:paddingLeft="@dimen/margin_ms"
+            android:paddingRight="@dimen/margin_ms"
+            android:paddingTop="@dimen/margin_vs">
+
+            <TextView
+                android:id="@+id/text_discount_timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
 </LinearLayout>
