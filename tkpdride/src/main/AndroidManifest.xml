@@ -19,7 +19,7 @@
             android:name=".ontrip.view.OnTripActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
         <activity
-            android:name=".completetrip.CompleteTripActivity"
+            android:name=".completetrip.view.CompleteTripActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
 
         <service

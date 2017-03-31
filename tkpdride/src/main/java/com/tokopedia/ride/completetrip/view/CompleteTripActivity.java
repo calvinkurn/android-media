@@ -1,4 +1,4 @@
-package com.tokopedia.ride.completetrip;
+package com.tokopedia.ride.completetrip.view;
 
 import android.app.Activity;
 import android.app.Fragment;

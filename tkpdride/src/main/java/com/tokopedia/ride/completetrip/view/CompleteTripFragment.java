@@ -1,27 +1,29 @@
-package com.tokopedia.ride.completetrip;
+package com.tokopedia.ride.completetrip.view;
 
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
+import com.tokopedia.ride.completetrip.di.CompleteTripDependencyInjection;
+import com.tokopedia.ride.completetrip.domain.model.Receipt;
 
 import butterknife.BindView;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CompleteTripFragment extends BaseFragment {
+public class CompleteTripFragment extends BaseFragment implements CompleteTripContract.View {
 
     @BindView(R2.id.on_trip_complete_layout)
     RelativeLayout onTripCompleteLayout;
@@ -58,6 +60,7 @@ public class CompleteTripFragment extends BaseFragment {
     @BindView(R2.id.tv_sign_up_uber)
     TextView signUpUberTextView;
 
+    CompleteTripContract.Presenter presenter;
 
     public CompleteTripFragment() {
         // Required empty public constructor
@@ -74,7 +77,44 @@ public class CompleteTripFragment extends BaseFragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setInitialVariable();
+    }
+
+    private void setInitialVariable() {
+        presenter = CompleteTripDependencyInjection.createPresenter(getActivity());
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void showGetReceiptLoading() {
+
+    }
+
+    @Override
+    public void hideGetReceiptLoading() {
+
+    }
+
+    @Override
+    public RequestParams getReceiptParam() {
+        RequestParams requestParams = RequestParams.create();
+
+        return requestParams;
+    }
+
+    @Override
+    public void renderReceipt(Receipt receipt) {
+
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 }

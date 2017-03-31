@@ -4,6 +4,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
+import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
@@ -11,6 +12,7 @@ import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.TimesEstimate;
+import com.tokopedia.ride.completetrip.domain.model.Receipt;
 
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     private final TimeEstimateEntityMapper mTimeEstimateEntityMapper;
     private final FareEstimateMapper estimateMapper;
     private final RideRequestEntityMapper rideRequestEntityMapper;
+    private final ReceiptEntityMapper receiptEntityMapper;
 
     public BookingRideRepositoryData(BookingRideDataStoreFactory bookingRideDataStoreFactory,
                                      ProductEntityMapper productEntityMapper,
@@ -37,6 +40,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
         mTimeEstimateEntityMapper = timeEstimateEntityMapper;
         estimateMapper = new FareEstimateMapper();
         rideRequestEntityMapper = new RideRequestEntityMapper();
+        receiptEntityMapper = new ReceiptEntityMapper();
     }
 
     @Override
@@ -99,6 +103,18 @@ public class BookingRideRepositoryData implements BookingRideRepository {
                     @Override
                     public RideRequest call(RideRequestEntity entity) {
                         return rideRequestEntityMapper.transform(entity);
+                    }
+                });
+    }
+
+    @Override
+    public Observable<Receipt> getReceipt(TKPDMapParam<String, Object> param) {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .getReceipt(param)
+                .map(new Func1<ReceiptEntity, Receipt>() {
+                    @Override
+                    public Receipt call(ReceiptEntity entity) {
+                        return receiptEntityMapper.transform(entity);
                     }
                 });
     }

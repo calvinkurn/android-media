@@ -1,7 +1,9 @@
 package com.tokopedia.ride.common.ride.data.source.api;
 
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductResponseEntity;
+import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateResponseEntity;
@@ -40,4 +42,8 @@ public interface RideApi {
     @POST(RideUrl.REQUEST_DETAIL)
     @FormUrlEncoded
     Observable<RideRequestEntity> getDetailRequestRide(@FieldMap Map<String, Object> param);
+
+    @POST(RideUrl.RECEIPT_DETAIL)
+    @FormUrlEncoded
+    Observable<ReceiptEntity> getReceipt(TKPDMapParam<String, Object> param);
 }
