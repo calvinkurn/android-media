@@ -233,6 +233,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                 if (searchTitle != null) {
                     toolbar.setTitle(searchTitle);
                     discoverySearchView.setLastQuery(searchTitle);
+                    searchQuery = searchTitle;
                 } else {
                     toolbar.setTitle("");
                 }
