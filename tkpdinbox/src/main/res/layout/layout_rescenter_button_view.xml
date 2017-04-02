@@ -90,6 +90,18 @@
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/action_input_awb_number"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/tkpd_main_green"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/action_input_shipping_ref_number"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_medium"
+        android:textStyle="bold" />
+
+    <TextView
         android:id="@+id/action_cancel_resolution"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"

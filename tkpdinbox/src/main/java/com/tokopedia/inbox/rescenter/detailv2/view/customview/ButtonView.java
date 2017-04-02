@@ -26,6 +26,7 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
     private View actionAcceptSolutionHorizontal;
     private View actionCancelResolutionHorizontal;
     private View actionCancelResolutionVertical;
+    private View actionInputAwbNumber;
 
     public ButtonView(Context context) {
         super(context);
@@ -97,6 +98,9 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
                 isAnyButtonHorizontalVisible() ? VISIBLE : GONE
         );
 
+        actionInputAwbNumber.setVisibility(
+            isShowInputAwbNumber() ? VISIBLE : GONE
+        );
     }
 
     private boolean isAnyButtonHorizontalVisible() {
@@ -124,6 +128,7 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
 
         actionCancelResolutionVertical.setOnClickListener(new ActionCancelResolutionClickListener(listener));
         actionCancelResolutionHorizontal.setOnClickListener(new ActionCancelResolutionClickListener(listener));
+        actionInputAwbNumber.setOnClickListener(new ActionInputAwbNumberClickListener());
     }
 
     private boolean isAnyButtonVisible() {
@@ -180,6 +185,13 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         return getButtonData().isShowAppealSolution();
     }
 
+    private boolean isShowInputAwbNumber() {
+        return canInputAwbNumber();
+    }
+
+    private boolean canInputAwbNumber() {
+        return getButtonData().isShowInputAwb();
+    }
 
     private class ActionAcceptSolutionClickListener implements OnClickListener {
         @Override
@@ -217,6 +229,12 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         }
     }
 
+    private class ActionInputAwbNumberClickListener implements OnClickListener {
+        @Override
+        public void onClick(View view) {
+            listener.setOnActionInputAwbNumberClick();
+        }
+    }
     public static class ActionCancelResolutionClickListener implements OnClickListener {
         private final DetailResCenterFragmentView listener;
 

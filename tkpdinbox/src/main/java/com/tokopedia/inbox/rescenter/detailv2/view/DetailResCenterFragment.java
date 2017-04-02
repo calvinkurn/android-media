@@ -38,6 +38,7 @@ import com.tokopedia.inbox.rescenter.historyaddress.HistoryAddressActivity;
 import com.tokopedia.inbox.rescenter.historyawb.HistoryShippingActivity;
 import com.tokopedia.inbox.rescenter.product.ListProductActivity;
 import com.tokopedia.inbox.rescenter.product.ProductDetailActivity;
+import com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity;
 
 /**
  * Created by hangnadi on 3/8/17.
@@ -401,6 +402,14 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         startActivityForResult(
                 EditResCenterActivity.newAppealInstance(getActivity(), resolutionID, orderID, isSeller(), isReceived),
                 REQUEST_APPEAL_SOLUTION);
+    }
+
+    @Override
+    public void setOnActionInputAwbNumberClick() {
+        startActivityForResult(
+                InputShippingActivity.createNewPageIntent(getActivity(), getResolutionID()),
+                REQUEST_INPUT_SHIPPING
+        );
     }
 
     @Override
