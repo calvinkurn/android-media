@@ -41,9 +41,6 @@ public class Product implements Parcelable {
     @SerializedName("url")
     @Expose
     private String url;
-    @SerializedName("wholesale_price")
-    @Expose
-    private String wholesalePrice;
     @SerializedName("labels")
     @Expose
     private List<Label> labels = null;
@@ -131,14 +128,6 @@ public class Product implements Parcelable {
         this.url = url;
     }
 
-    public Object getWholesalePrice() {
-        return wholesalePrice;
-    }
-
-    public void setWholesalePrice(String wholesalePrice) {
-        this.wholesalePrice = wholesalePrice;
-    }
-
     public List<Label> getLabels() {
         return labels;
     }
@@ -173,7 +162,6 @@ public class Product implements Parcelable {
         price = in.readString();
         rating = in.readByte() == 0x00 ? null : in.readDouble();
         url = in.readString();
-        wholesalePrice = in.readString();
         if (in.readByte() == 0x01) {
             labels = new ArrayList<Label>();
             in.readList(labels, Label.class.getClassLoader());
@@ -225,7 +213,6 @@ public class Product implements Parcelable {
             dest.writeDouble(rating);
         }
         dest.writeString(url);
-        dest.writeString(wholesalePrice);
         if (labels == null) {
             dest.writeByte((byte) (0x00));
         } else {

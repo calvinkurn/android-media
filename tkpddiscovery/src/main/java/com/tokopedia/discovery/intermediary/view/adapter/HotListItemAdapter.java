@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by alifa on 3/30/17.
@@ -59,7 +60,7 @@ public class HotListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         HotListModel hotListModel = hotListModelList.get(i);
         ImageHandler.LoadImage(hotListItemRowHolder.itemImage,hotListModel.getImageUrl());
-        hotListItemRowHolder.view.setOnClickListener(new View.OnClickListener() {
+        hotListItemRowHolder.itemImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO
@@ -78,15 +79,14 @@ public class HotListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     class HotListItemRowHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.product_image_hoth)
-        com.tokopedia.core.customwidget.SquareImageView itemImage;
+        ImageView itemImage;
 
         @BindView(R2.id.title_header_hoth)
         TextView titleHot;
 
-        protected View view;
         HotListItemRowHolder(View view) {
             super(view);
-            this.view = view;
+            ButterKnife.bind(this,view);
 
         }
     }

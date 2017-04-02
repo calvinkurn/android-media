@@ -157,14 +157,9 @@ public class CuratedProductAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         @OnClick(R2.id.container)
         public void onClick() {
-//            if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
-//                UnifyTracking.eventProductOnCategory(categoryId);
-//            }
-//            Bundle bundle = new Bundle();
-//            Intent intent = new Intent(context, ProductInfoActivity.class);
-//            bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-//            intent.putExtras(bundle);
-//            context.startActivity(intent);
+            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context,
+                    Integer.toString(data.getId()));
+            context.startActivity(intent);
         }
 
     }

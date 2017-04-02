@@ -2,34 +2,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@id/container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="250dp"
     android:background="@drawable/bg_product_list"
     android:clickable="true"
     android:orientation="vertical"
-    android:padding="5dp">
+    android:padding="@dimen/padding_small">
 
-    <com.tokopedia.core.customwidget.SquareImageView
+    <ImageView
         android:id="@id/product_image_hoth"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:adjustViewBounds="true"
         android:contentDescription="@string/image_product_desc"
         android:gravity="center"
         android:scaleType="centerCrop" />
-
-    <TextView
-        android:id="@id/title_header_hoth"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_item_revamp_category"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/margin_sm"
-        android:shadowColor="@color/checkbox_text"
-        android:shadowDx="3"
-        android:shadowDy="3"
-        android:shadowRadius="0.3"/>
-
 
 </RelativeLayout>
