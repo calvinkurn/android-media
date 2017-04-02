@@ -196,7 +196,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     public void renderHotList(List<HotListModel> hotListModelList) {
         cardViewHotList.setVisibility(View.VISIBLE);
 
-        HotListItemAdapter hotListItemAdapter = new HotListItemAdapter(hotListModelList,getCategoryWidth());
+        HotListItemAdapter hotListItemAdapter = new HotListItemAdapter(hotListModelList,getCategoryWidth(),getActivity());
 
         hotListRecyclerView.setHasFixedSize(true);
         hotListRecyclerView.setNestedScrollingEnabled(false);

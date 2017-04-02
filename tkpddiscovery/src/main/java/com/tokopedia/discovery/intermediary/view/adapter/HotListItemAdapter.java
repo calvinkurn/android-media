@@ -1,6 +1,9 @@
 package com.tokopedia.discovery.intermediary.view.adapter;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +13,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.intermediary.domain.model.HotListModel;
 
@@ -21,6 +26,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by alifa on 3/30/17.
@@ -32,10 +38,12 @@ public class HotListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private List<HotListModel> hotListModelList = new ArrayList<>();
     private final int homeMenuWidth;
+    private final Context context;
 
-    public HotListItemAdapter(List<HotListModel> hotListModelList, int homeMenuWidth) {
+    public HotListItemAdapter(List<HotListModel> hotListModelList, int homeMenuWidth, Context context) {
         this.hotListModelList = hotListModelList;
         this.homeMenuWidth = homeMenuWidth;
+        this.context = context;
     }
 
     @Override
@@ -58,7 +66,7 @@ public class HotListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int i) {
         HotListItemRowHolder hotListItemRowHolder = (HotListItemRowHolder) holder;
 
-        HotListModel hotListModel = hotListModelList.get(i);
+        final HotListModel hotListModel = hotListModelList.get(i);
         ImageHandler.LoadImage(hotListItemRowHolder.itemImage,hotListModel.getImageUrl());
         hotListItemRowHolder.itemImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +74,19 @@ public class HotListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 //TODO
             }
         });
-        hotListItemRowHolder.titleHot.setText(hotListModel.getTitle());
+        hotListItemRowHolder.itemImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS,
+                        URLParser.getPathSegment(1,hotListModel.getUrl()));
+                bundle.putString(BrowseProductRouter.EXTRA_SOURCE,
+                        BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
+                Intent intent = BrowseProductRouter.getDefaultBrowseIntent(context);
+                intent.putExtras(bundle);
+                context.startActivity(intent);
+            }
+        });
 
     }
 
@@ -81,9 +101,6 @@ public class HotListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         @BindView(R2.id.product_image_hoth)
         ImageView itemImage;
 
-        @BindView(R2.id.title_header_hoth)
-        TextView titleHot;
-
         HotListItemRowHolder(View view) {
             super(view);
             ButterKnife.bind(this,view);
@@ -91,8 +108,5 @@ public class HotListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    public interface OnHotListListener {
-        void onTitleClicked(HotListModel toppick);
-    }
 
 }

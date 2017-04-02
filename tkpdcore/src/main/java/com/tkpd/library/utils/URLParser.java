@@ -81,4 +81,12 @@ public class URLParser {
 		return Path.get(1);
 	}
 
+	public static String getPathSegment(int i, String url) {
+		List<String> path = Uri.parse(url).getPathSegments();
+		if (path.size()>i)
+			return path.get(i);
+		else
+			return "";
+	}
+
 }
