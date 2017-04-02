@@ -122,8 +122,8 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         actionAcceptSolutionVertical.setOnClickListener(new ActionAcceptSolutionClickListener());
         actionAcceptSolutionHorizontal.setOnClickListener(new ActionAcceptSolutionClickListener());
 
-        actionCancelResolutionVertical.setOnClickListener(new ActionCancelResolutionClickListener());
-        actionCancelResolutionHorizontal.setOnClickListener(new ActionCancelResolutionClickListener());
+        actionCancelResolutionVertical.setOnClickListener(new ActionCancelResolutionClickListener(listener));
+        actionCancelResolutionHorizontal.setOnClickListener(new ActionCancelResolutionClickListener(listener));
     }
 
     private boolean isAnyButtonVisible() {
@@ -217,7 +217,13 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         }
     }
 
-    private class ActionCancelResolutionClickListener implements OnClickListener {
+    public static class ActionCancelResolutionClickListener implements OnClickListener {
+        private final DetailResCenterFragmentView listener;
+
+        public ActionCancelResolutionClickListener(DetailResCenterFragmentView listener) {
+            this.listener = listener;
+        }
+
         @Override
         public void onClick(View view) {
             listener.setOnActionCancelResolutionClick();

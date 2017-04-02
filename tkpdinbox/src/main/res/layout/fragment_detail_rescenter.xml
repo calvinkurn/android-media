@@ -80,6 +80,22 @@
                 android:layout_marginBottom="@dimen/margin_small"
                 />
 
+            <TextView
+                android:id="@+id/action_cancel_resolution_2"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/margin_large"
+                android:visibility="gone"
+                android:background="@drawable/btn_transparent_disable"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/action_cancel_resolution"
+                android:textColor="@color/tkpd_main_green"
+                android:textSize="@dimen/font_medium"
+                android:textStyle="bold" />
+
         </LinearLayout>
     </ScrollView>
 
