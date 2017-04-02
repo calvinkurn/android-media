@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
@@ -107,7 +108,12 @@ public class IntermediaryActivity extends BasePresenterActivity implements Inter
 
     @Override
     public void onCategoryRevampClick(ChildCategoryModel child) {
-        Log.d("alifa", "onCategoryRevampClick: ");
-        //((BrowseProductActivity) getActivity()).renderLowerCategoryLevel(child);
+        BrowseProductActivity.moveTo(
+                IntermediaryActivity.this,
+                child.getCategoryId(),
+                TopAdsApi.SRC_DIRECTORY,
+                BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
+                child.getCategoryName()
+        );
     }
 }
