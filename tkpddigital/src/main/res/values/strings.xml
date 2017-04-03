@@ -5,6 +5,7 @@
         melewati masa kadaluarsa."</string>
     <string name="kode_voucher">Kode Voucher</string>
     <string name="error_voucher">Kode voucher tidak ditemukan</string>
+    <string name="empty_voucher">Masukkan kode voucher terlebih dahulu</string>
     <string name="cancel_voucher">Batalkan</string>
     <string name="use_voucher">Gunakan</string>
     <string name="title_detail_voucher">Anda mendapatkan voucher:</string>
