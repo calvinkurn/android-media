@@ -127,6 +127,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     RecyclerView rvCart;
     @BindView(R2.id.tv_loyalty_balance)
     TextView tvLoyaltyBalance;
+    @BindView(R2.id.cart_loyalty_point_balance)
+    TextView LoyaltyPoint;
     @BindView(R2.id.holder_loyalty_balance)
     LinearLayout holderLoyaltyBalance;
     @BindView(R2.id.et_use_deposit)
@@ -150,6 +152,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     private String totalPaymentWithLoyaltyIdr;
     private String totalPaymentWithoutLoyaltyIdr;
     private String totalLoyaltyBalance;
+    private String totalLoyaltyPoint;
     private String donationValue;
 
     public static Fragment newInstance() {
@@ -309,9 +312,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderVisibleLoyaltyBalance(String loyaltyAmountIDR) {
+    public void renderVisibleLoyaltyBalance(String loyaltyAmountIDR, String loyaltyPoint) {
         this.totalLoyaltyBalance = loyaltyAmountIDR;
+        this.totalLoyaltyPoint = loyaltyPoint;
         tvLoyaltyBalance.setText("(" + loyaltyAmountIDR + ")");
+        LoyaltyPoint.setText(": " + loyaltyPoint + " points");
         holderLoyaltyBalance.setVisibility(View.VISIBLE);
     }
 
@@ -740,7 +745,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     etVoucherCode.setText("");
                     tvTotalPayment.setText(totalPaymentWithLoyaltyIdr);
                     if (totalLoyaltyBalance != null)
-                        renderVisibleLoyaltyBalance(totalLoyaltyBalance);
+                        renderVisibleLoyaltyBalance(totalLoyaltyBalance, totalLoyaltyPoint);
                 }
             }
         };

@@ -140,16 +140,24 @@
                         android:id="@+id/holder_loyalty_balance"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_vs"
+                        android:layout_marginRight="@dimen/margin_vs"
                         android:orientation="horizontal"
                         android:paddingBottom="@dimen/margin_vs">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/margin_small"
-                            android:layout_marginRight="@dimen/margin_small"
                             android:text="@string/title_loyalty_points"
                             android:textColor="@color/label_color"
+                            android:textSize="@dimen/fontvs"/>
+
+                        <TextView
+                            android:id="@+id/cart_loyalty_point_balance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/margin_small"
+                            android:layout_marginRight="@dimen/margin_small"
                             android:textSize="@dimen/fontvs"/>
 
                         <TextView
