@@ -42,5 +42,6 @@
     <string name="hint_write_message">Tulis pesan</string>
     <string name="dot">•</string>
     <string name="title_activity_rescenter_discussion">Diskusi</string>
+    <string name="action_response">Respon</string>
 
 </resources>

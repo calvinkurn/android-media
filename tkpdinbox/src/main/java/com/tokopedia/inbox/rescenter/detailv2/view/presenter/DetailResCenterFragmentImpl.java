@@ -128,7 +128,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     @Override
     public void finishReturProduct() {
         fragmentView.showLoadingDialog(true);
-        askHelpResolutionUseCase.execute(getFinishReturSolutionParam(),
+        finishReturSolutionUseCase.execute(getFinishReturSolutionParam(),
                 new ResolutionActionSubscriber(fragmentView));
     }
 

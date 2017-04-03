@@ -29,17 +29,42 @@
         android:textSize="@dimen/font_small"
         />
 
-    <TextView
-        android:id="@+id/action_discuss"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_vs"
         android:layout_marginRight="@dimen/margin_small"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:text="Lihat diskusi terakhir"
-        android:textColor="@color/tkpd_main_green"
-        android:textSize="@dimen/font_small"
-        />
+        android:layout_marginLeft="@dimen/margin_small">
+
+        <TextView
+            android:id="@+id/action_discuss"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lihat diskusi terakhir"
+            android:textColor="@color/tkpd_main_green"
+            android:textSize="@dimen/font_small"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:id="@+id/action_response"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:paddingTop="@dimen/padding_vs"
+            android:paddingBottom="@dimen/padding_vs"
+            android:paddingLeft="@dimen/padding_med"
+            android:paddingRight="@dimen/padding_med"
+            android:background="@color/tkpd_main_green"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/action_response"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_medium"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
 
     <View
         android:id="@+id/drawer_footer_shadow"
