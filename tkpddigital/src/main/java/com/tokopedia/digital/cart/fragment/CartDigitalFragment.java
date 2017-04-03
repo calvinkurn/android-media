@@ -595,7 +595,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     break;
             }
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {
-            closeView();
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:
                     closeView();
@@ -604,7 +603,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                     showToastMessage(
                             getString(R.string.alert_payment_canceled_or_failed_digital_module)
                     );
-                    presenter.processGetCartData();
+                    presenter.processGetCartDataAfterCheckout();
                     break;
                 case TopPayActivity.PAYMENT_CANCELLED:
                     showToastMessage(getString(R.string.alert_payment_canceled_digital_module));

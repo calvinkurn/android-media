@@ -106,6 +106,7 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
 
     @Override
     protected void setViewListener() {
+        btnValidateOtp.setEnabled(false);
         etOtp.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -131,6 +132,7 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
                         );
                     }
                     btnValidateOtp.setTextColor(getResources().getColor(R.color.body_text_5_inverse));
+                    btnValidateOtp.setEnabled(false);
                 } else {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         btnValidateOtp.setBackground(
@@ -146,6 +148,7 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
                         );
                     }
                     btnValidateOtp.setTextColor(getResources().getColor(R.color.white));
+                    btnValidateOtp.setEnabled(true);
                 }
             }
 

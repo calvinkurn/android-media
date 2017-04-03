@@ -181,6 +181,7 @@ public class ScroogeWebView extends WebView {
     }
 
     public void showError(int errorCode, String description) {
+        Log.e(TAG, "ERROR WEBVIEW : " + errorCode + " => " + description);
         switch (errorCode) {
             case WebViewClient.ERROR_TIMEOUT:
                 description = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
@@ -190,9 +191,9 @@ public class ScroogeWebView extends WebView {
                     description = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
                 break;
         }
-        stopLoading();
-//        topPayView.showToastMessage(description);
-        topPayView.showToastMessageWithForceCloseView(description);
+        topPayView.hideProgressBar();
+        topPayView.showToastMessage(description);
+//        topPayView.showToastMessageWithForceCloseView(description);
     }
 
     private void processRedirectUrlContaintsAccountsUrl(String url) {
