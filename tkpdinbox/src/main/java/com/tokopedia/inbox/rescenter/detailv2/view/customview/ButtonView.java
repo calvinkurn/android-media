@@ -63,6 +63,7 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         actionHelp = view.findViewById(R.id.action_help);
         actionCancelResolutionVertical = view.findViewById(R.id.action_cancel_resolution);
         actionCancelResolutionHorizontal = view.findViewById(R.id.action_cancel_resolution_double);
+        actionInputAwbNumber = view.findViewById(R.id.action_input_awb_number);
         horizontalButtonView = view.findViewById(R.id.view_double_button_seller);
     }
 
