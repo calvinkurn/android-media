@@ -132,15 +132,6 @@ public class ShopSearchResultAdapter extends RecyclerView.Adapter<ShopSearchResu
             searchItem.setEventAction(eventAction);
             CommonUtils.dumper("GAv4 search "+eventAction+" "+searchItem.getKeyword());
             UnifyTracking.eventClickAutoCompleteShopSearch(searchItem.getKeyword());
-            if(searchItem.getApplink()!=null) {
-                List<String> segments = Uri.parse(searchItem.getApplink()).getPathSegments();
-                if(segments!=null && segments.size()>0) {
-                    Intent intent = new Intent(context, ShopInfoActivity.class);
-                    intent.putExtras(ShopInfoActivity.createBundle(segments.get(0), ""));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
-                }
-            }
             clickListener.onItemClicked(searchItem);
         }
 
