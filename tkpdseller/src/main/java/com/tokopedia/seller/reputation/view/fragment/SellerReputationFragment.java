@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
@@ -16,7 +17,6 @@ import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.nispok.snackbar.listeners.ActionClickListener;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -26,6 +26,8 @@ import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.apiservices.shop.ShopService;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.RefreshHandler;
@@ -48,7 +50,6 @@ import com.tokopedia.seller.reputation.view.helper.ReputationViewHelper;
 import com.tokopedia.seller.reputation.view.model.SetDateHeaderModel;
 import com.tokopedia.seller.reputation.view.presenter.SellerReputationFragmentPresenter;
 import com.tokopedia.seller.topads.utils.DefaultErrorSubscriber;
-import com.tokopedia.seller.topads.utils.TopAdsNetworkErrorHelper;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsWhiteRetryDataBinder;
 import com.tokopedia.seller.topads.view.model.TypeBasedModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsAddProductListPresenter;
@@ -85,7 +86,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
     GCMHandler gcmHandler;
     ReviewReputationMergeUseCase reviewReputationMergeUseCase;
 
-    private TopAdsNetworkErrorHelper gmNetworkErrorHelper;
+    private SnackbarRetry snackbarRetry;
     private View rootView;
     private AppComponent baseApplication;
     private ReputationViewHelper reputationViewHelper;
@@ -196,9 +197,6 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
             presenter.setErrorNetworkListener(this);
             presenter.setReviewReputationMergeUseCase(reviewReputationMergeUseCase);
             presenter.fillMessages(getActivity());
-            gmNetworkErrorHelper = new TopAdsNetworkErrorHelper(null, rootView);
-            gmNetworkErrorHelper.setActionColor(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
-            gmNetworkErrorHelper.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.black_seventy_percent));
             reputationViewHelper = new ReputationViewHelper(topSlideOffBar);
         }
         setupRecyclerView();
@@ -300,13 +298,14 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
     @Override
     public void onPause() {
         super.onPause();
-        gmNetworkErrorHelper.onPause();
         listViewBalance.removeOnScrollListener(onScrollListener);
     }
 
     @Override
     public void dismissSnackbar() {
-        gmNetworkErrorHelper.dismissSnackbar();
+        if(snackbarRetry != null) {
+            snackbarRetry.hideRetrySnackbar();
+        }
     }
 
     private RefreshHandler.OnRefreshHandlerListener onRefresh() {
@@ -552,31 +551,42 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
                         adapter.showRetryFull(true);
                         hideAppBarLayout();
                     } else {
-                        gmNetworkErrorHelper.showSnackbar(errorMessage, tryAgain, new ActionClickListener() {
-                            @Override
-                            public void onActionClicked(com.nispok.snackbar.Snackbar snackbar) {
-                                dismissSnackbar();
-                                refreshHandler.setRefreshing(true);
-                                switch (presenter.getNetworkStatus()) {
-                                    case ONACTIVITYFORRESULT:
-                                    case PULLTOREFRESH:
-                                        presenter.setNetworkStatus(TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
-                                        firstTimeNetworkCall();
-                                        break;
-                                    default:
-                                        presenter.setNetworkStatus(
-                                                TopAdsAddProductListPresenter.NetworkStatus.RETRYNETWORKCALL);
-                                        loadMoreCall();
-                                        break;
-                                }
-                            }
-                        }, getActivity());
+                        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, getListenerOnRetryErrorSnackbar());
+                        snackbarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
+                        snackbarRetry.showRetrySnackbar();
                     }
 
                 }
             }
         }, 100);
+    }
 
+
+    @NonNull
+    private NetworkErrorHelper.RetryClickedListener getListenerOnRetryErrorSnackbar() {
+        return new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                onRetryConnectionSnackBar();
+            }
+        };
+    }
+
+    private void onRetryConnectionSnackBar(){
+        dismissSnackbar();
+        refreshHandler.setRefreshing(true);
+        switch (presenter.getNetworkStatus()) {
+            case ONACTIVITYFORRESULT:
+            case PULLTOREFRESH:
+                presenter.setNetworkStatus(TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
+                firstTimeNetworkCall();
+                break;
+            default:
+                presenter.setNetworkStatus(
+                        TopAdsAddProductListPresenter.NetworkStatus.RETRYNETWORKCALL);
+                loadMoreCall();
+                break;
+        }
     }
 
     @Override

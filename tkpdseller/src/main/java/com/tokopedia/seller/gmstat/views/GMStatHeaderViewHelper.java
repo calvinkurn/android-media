@@ -293,7 +293,6 @@ public class GMStatHeaderViewHelper {
     @NonNull
     protected Calendar getMaxDateCalendar() {
         Calendar maxCalendar = Calendar.getInstance();
-        maxCalendar.add(Calendar.DATE, -1);
         maxCalendar.set(Calendar.HOUR_OF_DAY, 23);
         maxCalendar.set(Calendar.MINUTE, 59);
         maxCalendar.set(Calendar.SECOND, 59);
