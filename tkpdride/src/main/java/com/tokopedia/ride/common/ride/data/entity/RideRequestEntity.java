@@ -53,9 +53,6 @@ public class RideRequestEntity {
     @SerializedName("location")
     @Expose
     LocationEntity location;
-    @SerializedName("eta")
-    @Expose
-    int eta;
     @SerializedName("surge_multiplier")
     @Expose
     double surgeMultiplier;
@@ -67,10 +64,10 @@ public class RideRequestEntity {
     GuestEntity guest;
     @SerializedName("pickup")
     @Expose
-    LocationLatLng pickupd;
+    LocationLatLngEntity pickupd;
     @SerializedName("destination")
     @Expose
-    LocationLatLng destination;
+    LocationLatLngEntity destination;
 
     public RideRequestEntity() {
     }
@@ -99,10 +96,6 @@ public class RideRequestEntity {
         return location;
     }
 
-    public int getEta() {
-        return eta;
-    }
-
     public double getSurgeMultiplier() {
         return surgeMultiplier;
     }
@@ -115,11 +108,11 @@ public class RideRequestEntity {
         return guest;
     }
 
-    public LocationLatLng getPickupd() {
+    public LocationLatLngEntity getPickupd() {
         return pickupd;
     }
 
-    public LocationLatLng getDestination() {
+    public LocationLatLngEntity getDestination() {
         return destination;
     }
 }

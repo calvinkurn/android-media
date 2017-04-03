@@ -7,14 +7,15 @@ import android.os.Parcelable;
  * Created by alvarisi on 3/24/17.
  */
 
-public class RideRequest implements Parcelable{
+public class RideRequest implements Parcelable {
     String requestId;
     String productId;
     String status;
     Vehicle vehicle;
     Driver driver;
     Location location;
-    int eta;
+    LocationLatLng pickup;
+    LocationLatLng destination;
     double surgeMultiplier;
 
     public RideRequest() {
@@ -27,7 +28,8 @@ public class RideRequest implements Parcelable{
         vehicle = in.readParcelable(Vehicle.class.getClassLoader());
         driver = in.readParcelable(Driver.class.getClassLoader());
         location = in.readParcelable(Location.class.getClassLoader());
-        eta = in.readInt();
+        pickup = in.readParcelable(LocationLatLng.class.getClassLoader());
+        destination = in.readParcelable(LocationLatLng.class.getClassLoader());
         surgeMultiplier = in.readDouble();
     }
 
@@ -91,13 +93,6 @@ public class RideRequest implements Parcelable{
         this.location = location;
     }
 
-    public int getEta() {
-        return eta;
-    }
-
-    public void setEta(int eta) {
-        this.eta = eta;
-    }
 
     public double getSurgeMultiplier() {
         return surgeMultiplier;
@@ -105,6 +100,22 @@ public class RideRequest implements Parcelable{
 
     public void setSurgeMultiplier(double surgeMultiplier) {
         this.surgeMultiplier = surgeMultiplier;
+    }
+
+    public LocationLatLng getPickup() {
+        return pickup;
+    }
+
+    public void setPickup(LocationLatLng pickup) {
+        this.pickup = pickup;
+    }
+
+    public LocationLatLng getDestination() {
+        return destination;
+    }
+
+    public void setDestination(LocationLatLng destination) {
+        this.destination = destination;
     }
 
     @Override
@@ -120,7 +131,8 @@ public class RideRequest implements Parcelable{
         parcel.writeParcelable(vehicle, i);
         parcel.writeParcelable(driver, i);
         parcel.writeParcelable(location, i);
-        parcel.writeInt(eta);
         parcel.writeDouble(surgeMultiplier);
+        parcel.writeParcelable(pickup, i);
+        parcel.writeParcelable(destination, i);
     }
 }

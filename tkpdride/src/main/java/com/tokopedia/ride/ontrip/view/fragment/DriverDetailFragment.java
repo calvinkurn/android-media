@@ -1,6 +1,7 @@
 package com.tokopedia.ride.ontrip.view.fragment;
 
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -9,9 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -20,7 +19,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.pkmmte.view.CircularImageView;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
@@ -30,6 +28,7 @@ import com.tokopedia.ride.common.ride.domain.model.Vehicle;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,6 +37,7 @@ public class DriverDetailFragment extends BaseFragment {
     private static final String EXTRA_DRIVER = "EXTRA_DRIVER";
     private static final String EXTRA_VEHICLE = "EXTRA_VEHICLE";
     private static final String EXTRA_TIME_EST = "EXTRA_TIME_EST";
+    private static final String EXTRA_STATUS = "EXTRA_STATUS";
 
     @BindView(R2.id.cab_on_trip_container)
     LinearLayout driverDetailLayoutLinearLayout;
@@ -63,6 +63,7 @@ public class DriverDetailFragment extends BaseFragment {
     private Driver driver;
     private Vehicle vehicle;
     private int eta;
+    private String status;
 
     public DriverDetailFragment() {
         // Required empty public constructor
@@ -73,7 +74,8 @@ public class DriverDetailFragment extends BaseFragment {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_DRIVER, rideRequest.getDriver());
         bundle.putParcelable(EXTRA_VEHICLE, rideRequest.getVehicle());
-        bundle.putInt(EXTRA_TIME_EST, rideRequest.getEta());
+        bundle.putFloat(EXTRA_TIME_EST, rideRequest.getPickup().getEta());
+        bundle.putString(EXTRA_STATUS, rideRequest.getStatus());
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -88,15 +90,30 @@ public class DriverDetailFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         driver = getArguments().getParcelable(EXTRA_DRIVER);
         vehicle = getArguments().getParcelable(EXTRA_VEHICLE);
-        eta = getArguments().getInt(EXTRA_TIME_EST);
-        setViewListener();
+        eta = (int) getArguments().getFloat(EXTRA_TIME_EST);
+        status = getArguments().getString(EXTRA_STATUS);
+        renderUi();
     }
 
-    private void setViewListener() {
+    private void renderUi() {
         driverDetailLayoutLinearLayout.setVisibility(View.VISIBLE);
         driverNameTextView.setText(driver.getName());
         driverRatingTextView.setText(driver.getRating());
-        driverEtaTextView.setText(String.valueOf(eta));
+
+        if (status != null && (status.equalsIgnoreCase("accepted") || status.equalsIgnoreCase("arriving"))) {
+            cancelRideLayout.setVisibility(View.VISIBLE);
+            driverEtaTextView.setVisibility(View.VISIBLE);
+            driverEtaTextView.setText(String.valueOf(eta) + " " + getResources().getString(R.string.minute) + " away");
+        } else if (status != null && status.equalsIgnoreCase("in_progress")) {
+            cancelRideLayout.setVisibility(View.GONE);
+            driverEtaTextView.setVisibility(View.VISIBLE);
+            driverEtaTextView.setText(getResources().getString(R.string.en_route));
+        } else {
+            cancelRideLayout.setVisibility(View.GONE);
+            driverEtaTextView.setVisibility(View.GONE);
+        }
+
+
         Glide.with(getActivity()).load(driver.getPictureUrl())
                 .asBitmap()
                 .centerCrop()
@@ -114,6 +131,7 @@ public class DriverDetailFragment extends BaseFragment {
         vehicleDetailTextView.setText(String.format("%s %s %s", vehicle.getMake(), vehicle.getVehicleModel(), vehicle.getLicensePlate()));
     }
 
+    @NeedsPermission({Manifest.permission.CALL_PHONE})
     @OnClick(R2.id.call_driver_layout)
     public void actionCallDriver() {
         Intent callIntent = new Intent(Intent.ACTION_CALL);

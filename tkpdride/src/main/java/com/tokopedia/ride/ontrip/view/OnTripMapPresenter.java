@@ -59,13 +59,12 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         if (checkPlayServices()) {
             createLocationRequest();
             initializeLocationService();
+            getView().showLoadingWaitingResponse();
+            getView().hideCancelRequestButton();
+
             if (getView().isWaitingResponse()) {
                 getView().startPeriodicService(getView().getRequestId());
-                getView().showLoadingWaitingResponse();
-                getView().showCancelRequestButton();
             } else {
-                getView().showLoadingWaitingResponse();
-                getView().hideCancelRequestButton();
                 actionRideRequest(getView().getParam());
             }
         }
@@ -98,7 +97,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             public void onNext(RideRequest rideRequest) {
                 getView().onSuccessCreateRideRequest(rideRequest);
                 getView().startPeriodicService(rideRequest.getRequestId());
-                getView().showCancelRequestButton();
+                //getView().showCancelRequestButton();
+                proccessGetCurrentRideRequest(rideRequest);
             }
         });
     }
@@ -239,7 +239,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
             @Override
             public void onNext(RideRequest rideRequest) {
-                getView().showCancelRequestButton();
+                proccessGetCurrentRideRequest(rideRequest);
+                //getView().showCancelRequestButton();
             }
         });
     }
@@ -249,6 +250,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         //processing accepted arriving in_progress driver_canceled completed
         switch (result.getStatus()) {
             case "processing":
+                getView().showLoadingWaitingResponse();
+                getView().showCancelRequestButton();
                 break;
             case "accepted":
                 getView().hideCancelRequestButton();
@@ -256,9 +259,15 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().renderAcceptedRequest(result);
                 break;
             case "arriving":
+                getView().hideCancelRequestButton();
+                getView().hideLoadingWaitingResponse();
+                getView().renderAcceptedRequest(result);
                 getView().renderArrivingDriverEvent(result);
                 break;
             case "in_progress":
+                getView().hideCancelRequestButton();
+                getView().hideLoadingWaitingResponse();
+                getView().renderAcceptedRequest(result);
                 getView().renderInProgressRequest(result);
                 break;
             case "driver_canceled":

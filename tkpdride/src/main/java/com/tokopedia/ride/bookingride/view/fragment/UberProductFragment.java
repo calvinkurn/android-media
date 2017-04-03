@@ -249,7 +249,9 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
 
     @Override
     public void showProductList() {
-        mRideProductsRecyclerView.setVisibility(View.VISIBLE);
+        if (mRideProductsRecyclerView != null) {
+            mRideProductsRecyclerView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

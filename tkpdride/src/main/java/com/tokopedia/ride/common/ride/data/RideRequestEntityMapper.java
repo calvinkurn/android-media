@@ -2,10 +2,12 @@ package com.tokopedia.ride.common.ride.data;
 
 import com.tokopedia.ride.common.ride.data.entity.DriverEntity;
 import com.tokopedia.ride.common.ride.data.entity.LocationEntity;
+import com.tokopedia.ride.common.ride.data.entity.LocationLatLngEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.VehicleEntity;
 import com.tokopedia.ride.common.ride.domain.model.Driver;
 import com.tokopedia.ride.common.ride.domain.model.Location;
+import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.Vehicle;
 
@@ -22,15 +24,28 @@ public class RideRequestEntityMapper {
         if (entity != null) {
             rideRequest = new RideRequest();
             rideRequest.setProductId(entity.getProductId());
-            rideRequest.setEta(entity.getEta());
             rideRequest.setSurgeMultiplier(entity.getSurgeMultiplier());
             rideRequest.setDriver(transform(entity.getDriver()));
             rideRequest.setLocation(transform(entity.getLocation()));
             rideRequest.setStatus(entity.getStatus());
             rideRequest.setVehicle(transform(entity.getVehicle()));
             rideRequest.setRequestId(entity.getRequestId());
+            rideRequest.setPickup(transform(entity.getPickupd()));
+            rideRequest.setDestination(transform(entity.getDestination()));
+
         }
         return rideRequest;
+    }
+
+    private LocationLatLng transform(LocationLatLngEntity entity) {
+        LocationLatLng location = null;
+        if (entity != null) {
+            location = new LocationLatLng();
+            location.setEta(entity.getEta());
+            location.setLongitude(entity.getLongitude());
+            location.setLatitude(entity.getLatitude());
+        }
+        return location;
     }
 
     private Vehicle transform(VehicleEntity entity) {

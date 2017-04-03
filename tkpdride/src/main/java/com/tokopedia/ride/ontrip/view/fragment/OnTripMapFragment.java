@@ -3,10 +3,12 @@ package com.tokopedia.ride.ontrip.view.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -18,6 +20,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
+import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -178,6 +181,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void onStop() {
+        System.out.println("Vishal OnStop");
         super.onStop();
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
         manager.unregisterReceiver(mReceiver);
@@ -369,6 +373,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void startPeriodicService(String requestId) {
+        System.out.println("Vishal startPeriodicService");
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_RIDE_REQUEST_RESULT, requestId);
         PeriodicTask task = new PeriodicTask.Builder()
@@ -415,9 +420,21 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void renderDriverCanceledRequest(RideRequest result) {
-        Toast.makeText(getActivity(), "Driver Canceled Request", Toast.LENGTH_SHORT).show();
-        getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
-        getActivity().finish();
+        //Toast.makeText(getActivity(), "Driver Canceled Request", Toast.LENGTH_SHORT).show();
+        //Show a modal dialog
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity())
+                .setMessage(getResources().getString(R.string.driver_cancelled_ride_message))
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
+                        getActivity().finish();
+                    }
+                });
+
+        AlertDialog dialog = dialogBuilder.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.show();
     }
 
     @Override
@@ -518,7 +535,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         MarkerOptions options = new MarkerOptions()
                 .position(new LatLng(latitude, longitude))
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
-                .title("Your Driver");
+                .title("Driver");
 
         mDriverMarker = mGoogleMap.addMarker(options);
     }
