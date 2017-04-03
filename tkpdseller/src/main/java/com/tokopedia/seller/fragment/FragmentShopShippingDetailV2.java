@@ -207,13 +207,6 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            isConfirmDone = savedInstanceState.getBoolean(DATAPROCESSORDER, false);
-            if (isConfirmDone) {
-                finishShipping(true);
-            }
-        }
         initVar(savedInstanceState);
         getOrderData();
     }
