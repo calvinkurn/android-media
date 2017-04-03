@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.util.Log;
@@ -221,11 +222,7 @@ public class GMStatHeaderViewHelper {
             return;
         }
         Intent intent = new Intent(activity, DatePickerActivity.class);
-        Calendar maxCalendar = Calendar.getInstance();
-        maxCalendar.add(Calendar.DATE, -1);
-        maxCalendar.set(Calendar.HOUR_OF_DAY, 23);
-        maxCalendar.set(Calendar.MINUTE, 59);
-        maxCalendar.set(Calendar.SECOND, 59);
+        Calendar maxCalendar = getMaxDateCalendar();
 
         DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
         Date minDate = new Date();
@@ -261,11 +258,7 @@ public class GMStatHeaderViewHelper {
             return;
         }
         Intent intent = new Intent(fragment.getActivity(), DatePickerActivity.class);
-        Calendar maxCalendar = Calendar.getInstance();
-        maxCalendar.add(Calendar.DATE, -1);
-        maxCalendar.set(Calendar.HOUR_OF_DAY, 23);
-        maxCalendar.set(Calendar.MINUTE, 59);
-        maxCalendar.set(Calendar.SECOND, 59);
+        Calendar maxCalendar = getMaxDateCalendar();
 
         DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
         Date minDate = new Date();
@@ -295,6 +288,16 @@ public class GMStatHeaderViewHelper {
         intent.putExtra(DatePickerConstant.EXTRA_PAGE_TITLE, fragment.getString(R.string.set_date));
         intent.putExtra(DatePickerConstant.EXTRA_FORCE_DISPLAY_SELECTION, isForceSelection);
         fragment.startActivityForResult(intent, MOVE_TO_SET_DATE);
+    }
+
+    @NonNull
+    protected Calendar getMaxDateCalendar() {
+        Calendar maxCalendar = Calendar.getInstance();
+        maxCalendar.add(Calendar.DATE, -1);
+        maxCalendar.set(Calendar.HOUR_OF_DAY, 23);
+        maxCalendar.set(Calendar.MINUTE, 59);
+        maxCalendar.set(Calendar.SECOND, 59);
+        return maxCalendar;
     }
 
     public void onClick(GMStatActivityFragment gmStatActivityFragment) {
