@@ -39,6 +39,7 @@ public class ScroogeWebView extends WebView {
 
     private ITopPayView topPayView;
     private String paymentId;
+    private boolean isEndThanksPage;
 
     public ScroogeWebView(Context context) {
         super(context);
@@ -73,6 +74,10 @@ public class ScroogeWebView extends WebView {
         return paymentId;
     }
 
+    public boolean isEndThanksPage() {
+        return isEndThanksPage;
+    }
+
     private class TopPayWebViewClient extends WebViewClient {
         private boolean timeout = true;
         private final PaymentPassData paymentPassData;
@@ -86,6 +91,9 @@ public class ScroogeWebView extends WebView {
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.invalidate();
             Log.d(TAG, "URL payment " + url);
+            Uri uri = Uri.parse(url);
+            paymentId = uri.getQueryParameter(KEY_QUERY_PAYMENT_ID);
+            isEndThanksPage = url.contains("thanks") || url.contains("thank");
             if (url.contains(paymentPassData.getCallbackSuccessUrl())) {
                 view.stopLoading();
                 processRedirectUrlContainsSuccessCallbackUrl(url);
