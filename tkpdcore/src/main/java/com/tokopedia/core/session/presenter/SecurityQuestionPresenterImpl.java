@@ -358,15 +358,29 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
 
             @Override
             public void onNext(RequestOtpModel requestOtpModel) {
-                if (requestOtpModel.isSuccess() &&
-                        requestOtpModel.getRequestOtpData().isSuccess()
-                        && requestOtpModel.getErrorMessage() == null
-                        && requestOtpModel.getStatusMessage() != null) {
-                    view.onSuccessRequestOTP(requestOtpModel.getStatusMessage());
-                } else if (requestOtpModel.getErrorMessage() != null) {
-                    view.showError(requestOtpModel.getErrorMessage());
-                } else {
-                    new ErrorHandler(errorListener, requestOtpModel.getResponseCode());
+//                if (requestOtpModel.isSuccess() &&
+//                        requestOtpModel.getRequestOtpData().isSuccess()
+//                        && requestOtpModel.getErrorMessage() == null
+//                        && requestOtpModel.getStatusMessage() != null) {
+//                    view.onSuccessRequestOTP(requestOtpModel.getStatusMessage());
+//                } else if (requestOtpModel.getErrorMessage() != null) {
+//                    view.showError(requestOtpModel.getErrorMessage());
+//                } else {
+//                    new ErrorHandler(errorListener, requestOtpModel.getResponseCode());
+//                }
+
+                if(requestOtpModel.isSuccess()){
+                    if(requestOtpModel.getStatusMessage() != null) {
+                        view.onSuccessRequestOTP(requestOtpModel.getStatusMessage());
+                    }else {
+                        view.onSuccessRequestOTP(requestOtpModel.getErrorMessage());
+                    }
+                }else {
+                    if(requestOtpModel.getErrorMessage() != null) {
+                        view.showError(requestOtpModel.getErrorMessage());
+                    }else {
+                        new ErrorHandler(errorListener, requestOtpModel.getResponseCode());
+                    }
                 }
             }
         });
