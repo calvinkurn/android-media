@@ -403,12 +403,12 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                     view.renderErrorGetCartData(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                    view.closeView();
+                    view.closeViewWithMessageAlert(e.getMessage());
                 } else if (e instanceof HttpErrorException) {
                     /* Ini Http error, misal 403, 500, 404,
                      code http errornya bisa diambil
                      e.getErrorCode */
-                    view.renderErrorHttpGetCartData(e.getMessage());
+                    view.closeViewWithMessageAlert(e.getMessage());
                 } else {
                     /* Ini diluar dari segalanya hahahaha */
                     view.renderErrorHttpGetCartData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);

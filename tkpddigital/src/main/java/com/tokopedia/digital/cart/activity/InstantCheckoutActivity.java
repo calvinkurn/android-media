@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.ConsoleMessage;
 import android.webkit.SslErrorHandler;
@@ -114,6 +115,16 @@ public class InstantCheckoutActivity extends BasePresenterActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    @Override
     protected void setActionVar() {
         webView.loadUrl(instantCheckoutData.getRedirectUrl());
     }
@@ -145,7 +156,7 @@ public class InstantCheckoutActivity extends BasePresenterActivity {
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            //view.invalidate();
+            view.invalidate();
             Log.d(TAG, "redirect url instant checkout = " + url);
             if ((!instantCheckoutData.getFailedCallbackUrl().isEmpty()
                     && url.contains(instantCheckoutData.getFailedCallbackUrl()))
@@ -155,29 +166,8 @@ public class InstantCheckoutActivity extends BasePresenterActivity {
                 view.stopLoading();
                 finish();
                 return false;
-            } else {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-                return true;
             }
-
-//            return false;
-//            if (url.contains(topPayParameterData.getCallbackUrlPath())) {
-//                view.stopLoading();
-//                presenter.processRedirectUrlContainsTopPayCallbackUrl(url);
-//                return true;
-//            } else if (url.contains(CONTAINS_ACCOUNT_URL)) {
-//                view.stopLoading();
-//                presenter.processRedirectUrlContainsAccountUrl(url);
-//                return true;
-//            } else if (url.contains(CONTAINS_LOGIN_URL)) {
-//                view.stopLoading();
-//                presenter.processRedirectUrlContainsLoginUrl();
-//                return true;
-//            } else {
-//                return super.shouldOverrideUrlLoading(view, url);
-//            }
+            return super.shouldOverrideUrlLoading(view, url);
         }
 
         @Override

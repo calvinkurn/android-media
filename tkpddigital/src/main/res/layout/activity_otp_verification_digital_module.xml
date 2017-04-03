@@ -103,11 +103,11 @@
                 android:layout_marginLeft="@dimen/margin_large"
                 android:layout_marginRight="@dimen/margin_large"
                 android:layout_marginTop="@dimen/margin_small"
-                android:background="@drawable/green_button"
+                android:background="@drawable/bg_grey_border_black"
                 android:gravity="center"
                 android:text="@string/title_confirm_otp"
                 android:textAllCaps="true"
-                android:textColor="@color/white"
+                android:textColor="@color/body_text_5_inverse"
                 android:textSize="@dimen/fontvs"
                 android:textStyle="bold"/>
 

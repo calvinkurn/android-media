@@ -5,6 +5,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
@@ -111,9 +112,41 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
 
             }
 
+            @SuppressWarnings("deprecation")
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 tvPinError.setVisibility(View.GONE);
+                if (s.toString().length() != etOtp.getmMaxLength()) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        btnValidateOtp.setBackground(
+                                getResources().getDrawable(
+                                        com.tokopedia.core.R.drawable.bg_grey_border_black
+                                )
+                        );
+                    } else {
+                        btnValidateOtp.setBackgroundDrawable(
+                                getResources().getDrawable(
+                                        com.tokopedia.core.R.drawable.bg_grey_border_black
+                                )
+                        );
+                    }
+                    btnValidateOtp.setTextColor(getResources().getColor(R.color.body_text_5_inverse));
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        btnValidateOtp.setBackground(
+                                getResources().getDrawable(
+                                        com.tokopedia.core.R.drawable.green_button
+                                )
+                        );
+                    } else {
+                        btnValidateOtp.setBackgroundDrawable(
+                                getResources().getDrawable(
+                                        com.tokopedia.core.R.drawable.green_button
+                                )
+                        );
+                    }
+                    btnValidateOtp.setTextColor(getResources().getColor(R.color.white));
+                }
             }
 
             @Override

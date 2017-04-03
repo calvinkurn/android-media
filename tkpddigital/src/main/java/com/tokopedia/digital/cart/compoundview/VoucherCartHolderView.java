@@ -39,6 +39,8 @@ public class VoucherCartHolderView extends RelativeLayout {
     TextView errorVoucher;
     @BindView(R2.id.textview_voucher)
     TextView usedVoucher;
+    @BindView(R2.id.text_checkedbox)
+    TextView labelUsedVoucher;
 
     private ActionListener actionListener;
     private String voucherCode = "";
@@ -71,7 +73,14 @@ public class VoucherCartHolderView extends RelativeLayout {
     }
 
     private void actionVoucher() {
+
         checkBoxVoucher.setOnCheckedChangeListener(getCheckboxVoucherListener());
+        labelUsedVoucher.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkBoxVoucher.setChecked(!(checkBoxVoucher.isChecked()));
+            }
+        });
         buttonVoucher.setOnClickListener(getVoucherListener());
         buttonCancel.setOnClickListener(getCancelVoucherListener());
     }
@@ -101,8 +110,7 @@ public class VoucherCartHolderView extends RelativeLayout {
                     if (actionListener != null) {
                         voucherCode = editTextVoucher.getText().toString().trim();
                         actionListener.onVoucherCheckButtonClicked();
-                    }
-                    else throw new IllegalArgumentException("Action Listener null coy!!");
+                    } else throw new IllegalArgumentException("Action Listener null coy!!");
                 } else {
                     hideHolderVoucher();
                     errorVoucher.setText(context.getString(R.string.empty_voucher));
