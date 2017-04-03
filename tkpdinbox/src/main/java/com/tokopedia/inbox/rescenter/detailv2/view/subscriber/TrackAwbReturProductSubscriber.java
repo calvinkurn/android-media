@@ -1,5 +1,8 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.subscriber;
 
+import android.util.Log;
+
+import com.tkpd.library.utils.Logger;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProductHistory;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
@@ -29,6 +32,11 @@ public class TrackAwbReturProductSubscriber extends rx.Subscriber<TrackingAwbRet
 
     @Override
     public void onError(Throwable e) {
+        Log.d(this.getClass().getSimpleName(), e.getMessage());
+        for (int i = 0; i < e.getStackTrace().length; i++) {
+            StackTraceElement element = e.getStackTrace()[i];
+            Logger.dump(this.getClass().getSimpleName(), element.toString());
+        }
         if (e instanceof IOException) {
             fragmentView.doOnTrackingTimeOut();
         } else {
