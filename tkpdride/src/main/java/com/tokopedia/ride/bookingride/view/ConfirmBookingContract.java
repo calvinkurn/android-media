@@ -34,6 +34,10 @@ public interface ConfirmBookingContract {
         void showMessage(String message);
 
         void setBalanceText(String balance);
+
+        void showProgress();
+
+        void hideProgress();
     }
 
     interface Presenter extends CustomerPresenter<View>{

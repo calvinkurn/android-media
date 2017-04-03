@@ -35,12 +35,21 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
 
     @Override
     public void actionCheckBalance() {
+        getView().showProgress();
         getView().hideConfirmButton();
         getView().hideTopupTokoCashButton();
         networkInteractor.getTokoCash(getView().getActivity(), new NetworkInteractor.TopCashListener() {
             @Override
             public void onSuccess(TopCashItem topCashItem) {
-                int balance = CurrencyFormatHelper.convertRupiahToInt(topCashItem.getData().getBalance());
+                //get balance int value
+                String balanceStr = topCashItem.getData().getBalance();
+                int balance = 1000000;
+                if (balanceStr != null && !balanceStr.isEmpty()) {
+                    balance = CurrencyFormatHelper.convertRupiahToInt(topCashItem.getData().getBalance());
+                }
+
+                getView().hideProgress();
+
                 if (balance < getView().getFarePrice()) {
                     getView().showTopupTokoCashButton();
                     getView().hideConfirmButton();
@@ -53,6 +62,7 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
 
             @Override
             public void onError(String message) {
+                getView().hideProgress();
                 getView().showMessage(message);
                 getView().showTopupTokoCashButton();
                 getView().hideConfirmButton();

@@ -54,7 +54,7 @@
             android:text="1.2x"
             android:textColor="#25a8ed"
             android:textSize="13sp"
-            android:visibility="visible" />
+            android:visibility="gone" />
     </RelativeLayout>
 
     <View
@@ -99,6 +99,13 @@
         android:layout_height="0.5dp"
         android:layout_marginBottom="6dp"
         android:background="#e3e3e3" />
+
+    <ProgressBar
+        android:id="@+id/confirm_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="16dp" />
 
     <TextView
         android:id="@+id/cab_confirmation"

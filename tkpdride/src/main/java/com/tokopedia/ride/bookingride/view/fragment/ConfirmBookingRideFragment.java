@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,8 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     LinearLayout tokoCashTopupLayout;
     @BindView(R2.id.tv_tokocash_label)
     TextView tokoCashLabelTextView;
+    @BindView(R2.id.confirm_progress_bar)
+    ProgressBar progressBar;
 
     ConfirmBookingContract.Presenter presenter;
     OnFragmentInteractionListener mListener;
@@ -228,5 +231,15 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     @Override
     public void setBalanceText(String balance) {
         tokoCashLabelTextView.setText("Insufficient Balance. Your Balance is " + balance);
+    }
+
+    @Override
+    public void showProgress() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        progressBar.setVisibility(View.GONE);
     }
 }
