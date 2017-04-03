@@ -1,0 +1,43 @@
+package com.tokopedia.discovery.view;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+
+/**
+ * Created by alifa on 3/22/17.
+ */
+
+public class CategoryHeaderTransformation extends BitmapTransformation {
+
+    public CategoryHeaderTransformation(Context context) {
+        super(context);
+    }
+
+    @Override
+    protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
+        return bitmapChanger(toTransform, outWidth, outHeight);
+    }
+
+    private static Bitmap bitmapChanger(Bitmap bitmap, int desiredWidth, int desiredHeight) {
+        float originalWidth = bitmap.getWidth();
+        float originalHeight = bitmap.getHeight();
+
+        float scaleX = desiredWidth / originalWidth;
+        float scaleY = desiredHeight / originalHeight;
+
+        float scale = Math.max(scaleX, scaleY);
+
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale, scale);
+        return Bitmap.createBitmap(bitmap, 400, 0, (int) originalWidth-400, (int) originalHeight, matrix, true);
+    }
+
+    @Override
+    public String getId() {
+        return getClass().toString();
+    }
+}

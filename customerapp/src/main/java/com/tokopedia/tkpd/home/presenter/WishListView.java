@@ -93,7 +93,7 @@ public interface WishListView {
 
     void dismissProgressDialog();
 
-    void onSuccessDeleteWishlist();
+    void onSuccessDeleteWishlist(String searchTerm);
 
     void displayErrorNetwork(Boolean isAction);
 

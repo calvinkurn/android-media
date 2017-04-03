@@ -260,12 +260,11 @@ public class InboxReputationDetailFragmentPresenterImpl implements
 
     private void setData(InboxReputationDetail response) {
 
-        viewListener.clearData();
-        viewListener.getAdapter().setInboxReputationDetail(response);
 
         if (response.getInboxReputationDetailItemList().size() == 0) {
             viewListener.showNoResult();
         }
+        viewListener.onSuccessGetDetail(response);
 
     }
 

@@ -347,6 +347,12 @@ public class NetworkInteractorImpl implements NetworkInteractor {
         };
     }
 
+    @Override
+    public void clearWalletCache() {
+        GlobalCacheManager cacheManager = new GlobalCacheManager();
+        cacheManager.delete(KEY_TOKOCASH_DATA);
+    }
+
     private Subscriber<TopCashItem> fetchTokoCashSubscriber(final Context context,
                                                             final TopCashListener listener) {
         return new Subscriber<TopCashItem>() {

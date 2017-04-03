@@ -68,19 +68,20 @@ public class CartPresenter implements ICartPresenter {
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
                 handleThrowableCartInfo(e);
             }
 
             @Override
             public void onNext(ResponseTransform<CartData> responseTransform) {
                 CartData cartData = responseTransform.getData();
-                view.renderVisibleMainCartContainer();
                 try {
                     processCartAnalytics(cartData);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 processRenderViewCartData(cartData);
+                view.renderVisibleMainCartContainer();
             }
         });
     }
@@ -160,7 +161,8 @@ public class CartPresenter implements ICartPresenter {
                 new TypeToken<ArrayList<com.tokopedia.core.analytics.model.Product>>() {
                 }.getType()
         );
-        String checkout = afGSON.toJson(checkoutAnalytics, new TypeToken<Checkout>(){}.getType());
+        String checkout = afGSON.toJson(checkoutAnalytics, new TypeToken<Checkout>() {
+        }.getType());
 
         LocalCacheHandler cache = view.getLocalCacheHandlerNotificationData();
 

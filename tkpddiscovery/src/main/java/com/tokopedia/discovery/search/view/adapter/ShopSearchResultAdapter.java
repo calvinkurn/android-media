@@ -141,6 +141,7 @@ public class ShopSearchResultAdapter extends RecyclerView.Adapter<ShopSearchResu
                     context.startActivity(intent);
                 }
             }
+            clickListener.onItemClicked(searchItem);
         }
 
     }

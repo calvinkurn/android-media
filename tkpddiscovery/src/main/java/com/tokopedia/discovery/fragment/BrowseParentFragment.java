@@ -290,6 +290,9 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
             if (browserSectionsPagerAdapter.getItem(i) instanceof ProductFragment) {
                 ProductFragment productFragment = (ProductFragment) browserSectionsPagerAdapter.getItem(i);
                 productFragment.addCategoryHeader(categoryHeader);
+                if (categoryHeader.getRevamp()) {
+                    tabLayout.setVisibility(View.GONE);
+                }
             }
         }
     }
@@ -378,6 +381,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         }
         Log.d(TAG, "source " + source);
         BrowseProductActivity productActivity = (BrowseProductActivity) getActivity();
+        productActivity.getBrowseProductActivityModel().setActiveTab(position);
         productActivity.changeBottomBar(source);
     }
 

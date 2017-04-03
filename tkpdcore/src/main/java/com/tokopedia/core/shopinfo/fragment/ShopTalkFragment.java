@@ -31,6 +31,8 @@ import com.tokopedia.core.talkview.activity.TalkViewActivity;
 
 import butterknife.BindView;
 
+import static com.tokopedia.core.talk.talkproduct.fragment.TalkProductFragment.RESULT_DELETE;
+
 /**
  * Created by nisie on 11/18/16.
  */
@@ -170,7 +172,7 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
                 bundle.putInt(PARAM_POSITION, shopTalk.getPosition());
                 intent.putExtras(bundle);
 
-                getActivity().startActivityForResult(intent, GO_TO_DETAIL);
+                startActivityForResult(intent, GO_TO_DETAIL);
             }
 
             @Override
@@ -363,5 +365,38 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
         super.onDestroyView();
         if (adapter != null)
             adapter.getList().clear();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case GO_TO_DETAIL:
+                if (data == null) {
+                    return;
+                }
+
+                if (resultCode == RESULT_DELETE) {
+                    int position = data.getExtras().getInt("position");
+                    adapter.getList().remove(position);
+                    adapter.notifyDataSetChanged();
+                    SnackbarManager.make(getActivity(),
+                            getString(R.string.message_success_delete_talk), Snackbar.LENGTH_LONG).show();
+                } else if (resultCode == Activity.RESULT_OK) {
+                    int position = data.getExtras().getInt("position");
+                    int size = data.getExtras().getInt("total_comment");
+                    int followStatus = data.getExtras().getInt("is_follow");
+                    int readStatus = data.getExtras().getInt("read_status");
+                    (adapter.getList().get(position)).setTalkTotalComment(String.valueOf(size));
+                    (adapter.getList().get(position)).setTalkFollowStatus(followStatus);
+                    (adapter.getList().get(position)).setTalkReadStatus(readStatus);
+                    adapter.notifyDataSetChanged();
+                }
+                break;
+            default:
+                break;
+        }
+
     }
 }

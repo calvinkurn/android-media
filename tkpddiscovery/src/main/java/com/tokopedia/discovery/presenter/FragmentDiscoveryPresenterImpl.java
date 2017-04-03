@@ -206,8 +206,11 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                         if (hotListBannerModel != null) {
                             view.addHotListHeader(new ProductAdapter.HotListBannerModel(hotListBannerModel, browseProductModel.result.hashtag));
                             processBrowseProductLoadMore(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
-                        } else {
-                             processBrowseProduct(browseProductModel.header.getTotalData(),listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                        } else if(browseProductModel!=null
+                                && browseProductModel.header != null
+                                && listPagingHandlerModelPair.getModel1() !=null
+                                && listPagingHandlerModelPair.getModel2() !=null){
+                            processBrowseProduct(browseProductModel.header.getTotalData(),listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
                         }
                         sendGTMNoResult(context);
                     }

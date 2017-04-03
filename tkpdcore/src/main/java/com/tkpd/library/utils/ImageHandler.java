@@ -25,6 +25,8 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestListener;
@@ -375,6 +377,19 @@ public class ImageHandler {
                 .into(imageView);
     }
 
+    public static void loadImageFitTransformation(Context context, ImageView imageView, String url,
+        BitmapTransformation transformation){
+        Glide.with(context)
+                .load(url)
+                .dontAnimate()
+                .placeholder(R.drawable.loading_page)
+                .error(R.drawable.error_drawable)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .centerCrop()
+                .transform(transformation)
+                .into(imageView);
+    }
+
     public static void loadImageFitCenter(Context context, ImageView imageView, String url) {
         Glide.with(context)
                 .load(url)
@@ -466,5 +481,4 @@ public class ImageHandler {
                 .fitCenter()
                 .into(imageView);
     }
-
 }

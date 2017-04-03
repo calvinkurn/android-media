@@ -11,7 +11,6 @@ import com.tokopedia.core.session.presenter.SessionView;
 
 public class NotificationUtils {
     public static Intent configureGeneralIntent(Intent intent) {
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("from_notif", true);
         intent.putExtra("unread", false);
         return intent;
