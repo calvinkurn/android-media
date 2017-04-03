@@ -161,7 +161,8 @@ public class BrandsWebViewFragment extends Fragment {
     private boolean overrideUrl(String url) {
         if (((Uri.parse(url).getHost().contains(BASE_URL))
                 || Uri.parse(url).getHost().contains(BASE_MOBILE_URL))
-                && !url.endsWith(".pl")) {
+                && !url.endsWith(".pl")
+                && !url.contains("login")) {
             switch ((DeepLinkChecker.getDeepLinkType(url))) {
                 case DeepLinkChecker.BROWSE:
                     DeepLinkChecker.openBrowse(url, getActivity());
