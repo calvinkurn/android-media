@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,12 +32,12 @@ public class StatusView extends BaseView<StatusData, DetailResCenterFragmentView
 
     private BottomSheetDialog dialog;
     private View separator;
-    private View actionEdit;
-    private View actionAcceptProduct;
-    private View actionAcceptSolutionVertical;
-    private View actionHelp;
-    private View actionCancelResolutionVertical;
-    private View actionInputAwbNumber;
+    private TextView actionEdit;
+    private TextView actionAcceptProduct;
+    private TextView actionAcceptSolutionVertical;
+    private TextView actionHelp;
+    private TextView actionCancelResolutionVertical;
+    private TextView actionInputAwbNumber;
 
     public StatusView(Context context) {
         super(context);
@@ -111,12 +112,12 @@ public class StatusView extends BaseView<StatusData, DetailResCenterFragmentView
         dialog = new BottomSheetDialog(getContext());
         View bottomSheetView = ((Activity) getContext()).getLayoutInflater().inflate(R.layout.layout_rescenter_button_view, null);
 
-        actionEdit = bottomSheetView.findViewById(R.id.action_edit_solution);
-        actionAcceptSolutionVertical = bottomSheetView.findViewById(R.id.action_accept_solution);
-        actionAcceptProduct = bottomSheetView.findViewById(R.id.action_accept_product);
-        actionHelp = bottomSheetView.findViewById(R.id.action_help);
-        actionCancelResolutionVertical = bottomSheetView.findViewById(R.id.action_cancel_resolution);
-        actionInputAwbNumber = bottomSheetView.findViewById(R.id.action_input_awb_number);
+        actionEdit = (TextView) bottomSheetView.findViewById(R.id.action_edit_solution);
+        actionAcceptSolutionVertical = (TextView) bottomSheetView.findViewById(R.id.action_accept_solution);
+        actionAcceptProduct = (TextView) bottomSheetView.findViewById(R.id.action_accept_product);
+        actionHelp = (TextView) bottomSheetView.findViewById(R.id.action_help);
+        actionCancelResolutionVertical = (TextView) bottomSheetView.findViewById(R.id.action_cancel_resolution);
+        actionInputAwbNumber = (TextView) bottomSheetView.findViewById(R.id.action_input_awb_number);
         separator = bottomSheetView.findViewById(R.id.separator);
 
         actionEdit.setOnClickListener(new ActionEditSolutionClickListener());
@@ -160,6 +161,25 @@ public class StatusView extends BaseView<StatusData, DetailResCenterFragmentView
                 actionEdit.getVisibility() == VISIBLE && actionHelp.getVisibility() == VISIBLE ?
                         VISIBLE : GONE
         );
+
+        if (actionInputAwbNumber.getVisibility() == VISIBLE ||
+                actionAcceptProduct.getVisibility() == VISIBLE ||
+                actionAcceptSolutionVertical.getVisibility() == VISIBLE) {
+            actionCancelResolutionVertical.setBackgroundResource(R.drawable.btn_transparent_disable);
+            actionCancelResolutionVertical.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+        } else {
+            actionCancelResolutionVertical.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+            actionCancelResolutionVertical.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+        }
+
+        if (actionAcceptProduct.getVisibility() == VISIBLE ||
+                actionAcceptSolutionVertical.getVisibility() == VISIBLE) {
+            actionInputAwbNumber.setBackgroundResource(R.drawable.btn_transparent_disable);
+            actionInputAwbNumber.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+        } else {
+            actionInputAwbNumber.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+            actionInputAwbNumber.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+        }
 
         dialog.setContentView(bottomSheetView);
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
