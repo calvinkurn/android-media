@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.network.entity.discovery.BrowseShopModel;

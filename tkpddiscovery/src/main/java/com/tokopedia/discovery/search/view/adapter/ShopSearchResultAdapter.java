@@ -1,8 +1,6 @@
 package com.tokopedia.discovery.search.view.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -15,10 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.search.domain.model.SearchItem;
 

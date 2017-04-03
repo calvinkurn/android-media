@@ -203,7 +203,7 @@ public interface AppEventTracking {
         String SEARCH_HOTLIST = "Search HotList";
         String SEARCH_AUTOCOMPLETE = "Search Autocomplete";
         String SEARCH_AUTOCOMPLETE_SHOP = "Search Autocomplete Shop";
-        String SEARCH_AUTOCOMPLETE_CAT = "Search Autocomplete Category";
+        String SEARCH_AUTOCOMPLETE_CATEGORY = "Search Autocomplete Category";
 
         String PRODUCT_CATEGORY = "Click Product";
         String CATEGORY_LEVEL = "Category";
