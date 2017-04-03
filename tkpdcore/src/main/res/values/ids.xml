@@ -143,6 +143,7 @@
     <item name="product_image_hoth" type="id"/>
     <item name="title_header_hoth" type="id"/>
     <item name="recycler_view_hot_list" type="id"/>
+    <item name="category_view_all" type="id"/>
 
 
 </resources>

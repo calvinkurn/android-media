@@ -9,6 +9,7 @@ import java.util.List;
 
 public class IntermediaryCategoryDomainModel {
 
+    boolean isIntermediary = false;
     HeaderModel headerModel;
     List<ChildCategoryModel> childCategoryModelList = new ArrayList<>();
     List<CuratedSectionModel> curatedSectionModelList = new ArrayList<>();
@@ -44,5 +45,13 @@ public class IntermediaryCategoryDomainModel {
 
     public void setHotListModelList(List<HotListModel> hotListModelList) {
         this.hotListModelList = hotListModelList;
+    }
+
+    public boolean isIntermediary() {
+        return isIntermediary;
+    }
+
+    public void setIntermediary(boolean intermediary) {
+        isIntermediary = intermediary;
     }
 }

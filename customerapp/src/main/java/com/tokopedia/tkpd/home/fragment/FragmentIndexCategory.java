@@ -467,17 +467,10 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void navigateToNextActivity(String depID, String title) {
-      /*  BrowseProductActivity.moveTo(
-                getActivity(),
-                depID,
-                TopAdsApi.SRC_DIRECTORY,
-                BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
-                title
-        );*/
-
         IntermediaryActivity.moveTo(
                 getActivity(),
-                depID
+                depID,
+                title
         );
 
         Map<String, String> values = new HashMap<>();

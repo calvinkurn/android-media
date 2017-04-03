@@ -39,6 +39,9 @@ public class IntermediaryCategoryMapper implements Func2<Response<CategoryHadesM
         intermediaryCategoryDomainModel.setCuratedSectionModelList(mapCuration(categoryHadesModelResponse.body()));
         intermediaryCategoryDomainModel.setHotListModelList(mapHotList(hotListResponseResponse.body()));
 
+        if (categoryHadesModelResponse.body().getData().getIsIntermediary())
+            intermediaryCategoryDomainModel.setIntermediary(true);
+
         return  intermediaryCategoryDomainModel;
     }
 

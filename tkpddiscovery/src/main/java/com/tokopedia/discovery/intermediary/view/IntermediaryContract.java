@@ -31,6 +31,8 @@ public interface IntermediaryContract {
 
         void emptyState();
 
+        void skipIntermediaryPage();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {

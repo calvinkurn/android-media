@@ -24,11 +24,14 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.intermediary.di.IntermediaryDependencyInjector;
 import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
@@ -46,6 +49,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by alifa on 3/24/17.
@@ -79,6 +83,9 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @BindView(R2.id.recycler_view_hot_list)
     RecyclerView hotListRecyclerView;
 
+    @BindView(R2.id.category_view_all)
+    TextView viewAllCategory;
+
     private IntermediaryCategoryAdapter categoryAdapter;
     private IntermediaryCategoryAdapter.CategoryListener categoryListener;
     ArrayList<ChildCategoryModel> activeChildren = new ArrayList<>();
@@ -93,7 +100,6 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
 
     public static IntermediaryFragment createInstance(IntermediaryCategoryAdapter.CategoryListener listener) {
-
         IntermediaryFragment intermediaryFragment = new IntermediaryFragment();
         intermediaryFragment.categoryListener = listener;
         return intermediaryFragment;
@@ -129,6 +135,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         ImageHandler.loadImageFitTransformation(imageHeader.getContext(),imageHeader,
                 headerModel.getHeaderImageUrl(), new CategoryHeaderTransformation(imageHeader.getContext()));
         titleHeader.setText(headerModel.getCategoryName().toUpperCase());
+        viewAllCategory.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -222,6 +229,18 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         showErrorEmptyState();
     }
 
+    @Override
+    public void skipIntermediaryPage() {
+        BrowseProductActivity.moveTo(
+            getActivity(),
+                ((IntermediaryActivity) getActivity()).getDepartmentId(),
+            TopAdsApi.SRC_DIRECTORY,
+            BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
+                ((IntermediaryActivity) getActivity()).getCategoryName()
+        );
+        getActivity().finish();
+    }
+
     private void showErrorEmptyState() {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
@@ -239,4 +258,16 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         int width = size.x;
         return (int) (width / 2);
     }
+
+    @OnClick(R2.id.category_view_all)
+    public void viewAllCategory() {
+        BrowseProductActivity.moveTo(
+                getActivity(),
+                ((IntermediaryActivity) getActivity()).getDepartmentId(),
+                TopAdsApi.SRC_DIRECTORY,
+                BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
+                ((IntermediaryActivity) getActivity()).getCategoryName()
+        );
+    }
+
 }

@@ -28,15 +28,17 @@ public class IntermediaryActivity extends BasePresenterActivity implements Inter
 
     private FragmentManager fragmentManager;
     private String departmentId = "";
+    private String categoryName = "";
 
 
-    public static void moveTo(Context context, String depId) {
+    public static void moveTo(Context context, String depId, String categoryName) {
         if (context == null)
             return;
 
         Intent intent = new Intent(context, IntermediaryActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(BrowseProductRouter.DEPARTMENT_ID, depId);
+        bundle.putString(BrowseProductRouter.DEPARTMENT_NAME, categoryName);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
@@ -49,6 +51,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements Inter
     @Override
     protected void setupBundlePass(Bundle extras) {
         departmentId = extras.getString(BrowseProductRouter.DEPARTMENT_ID);
+        categoryName = extras.getString(BrowseProductRouter.DEPARTMENT_NAME);
     }
 
     @Override
@@ -104,6 +107,14 @@ public class IntermediaryActivity extends BasePresenterActivity implements Inter
 
     public void setDepartmentId(String departmentId) {
         this.departmentId = departmentId;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     @Override
