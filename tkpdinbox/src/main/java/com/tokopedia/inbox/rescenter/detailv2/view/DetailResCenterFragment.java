@@ -66,7 +66,6 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     ListProductView listProductView;
     SolutionView solutionView;
     HistoryView historyView;
-    View actionCancel;
 
     private TkpdProgressDialog normalLoading;
 
@@ -176,7 +175,6 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         listProductView = (ListProductView) view.findViewById(R.id.product_view);
         solutionView = (SolutionView) view.findViewById(R.id.solution_view);
         historyView = (HistoryView) view.findViewById(R.id.history_view);
-        actionCancel = view.findViewById(R.id.action_cancel_resolution_2);
 
         normalLoading = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
     }
@@ -191,7 +189,6 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         listProductView.setListener(this);
         solutionView.setListener(this);
         historyView.setListener(this);
-        actionCancel.setOnClickListener(new ButtonView.ActionCancelResolutionClickListener(this));
     }
 
     @Override

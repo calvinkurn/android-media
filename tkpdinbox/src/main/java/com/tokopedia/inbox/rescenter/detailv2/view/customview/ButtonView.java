@@ -18,13 +18,10 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.ButtonData;
 public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView> {
 
     private ButtonData buttonData;
-    private View horizontalButtonView;
     private View actionAcceptProduct;
     private View actionEdit;
     private View actionHelp;
     private View actionAcceptSolutionVertical;
-    private View actionAcceptSolutionHorizontal;
-    private View actionCancelResolutionHorizontal;
     private View actionCancelResolutionVertical;
     private View actionInputAwbNumber;
 
@@ -58,13 +55,10 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         View view = inflater.inflate(getLayoutView(), this, true);
         actionEdit = view.findViewById(R.id.action_edit_solution);
         actionAcceptSolutionVertical = view.findViewById(R.id.action_accept_solution);
-        actionAcceptSolutionHorizontal = view.findViewById(R.id.action_accept_solution_double);
         actionAcceptProduct = view.findViewById(R.id.action_accept_product);
         actionHelp = view.findViewById(R.id.action_help);
         actionCancelResolutionVertical = view.findViewById(R.id.action_cancel_resolution);
-        actionCancelResolutionHorizontal = view.findViewById(R.id.action_cancel_resolution_double);
         actionInputAwbNumber = view.findViewById(R.id.action_input_awb_number);
-        horizontalButtonView = view.findViewById(R.id.view_double_button_seller);
     }
 
     @Override
@@ -85,38 +79,17 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         actionAcceptProduct.setVisibility(canAcceptProduct() ? VISIBLE : GONE);
         actionHelp.setVisibility(canAskHelp() ? VISIBLE : GONE);
 
-        actionAcceptSolutionHorizontal.setVisibility(
-                isShowAcceptSolutionButton() &&  validToActionAcceptSolutionHorizontalView() ? VISIBLE : GONE);
-        actionAcceptSolutionVertical.setVisibility(isShowAcceptSolutionButton()
-                && actionAcceptSolutionHorizontal.getVisibility() != VISIBLE ? VISIBLE : GONE);
+        actionAcceptSolutionVertical.setVisibility(
+                isShowAcceptSolutionButton() ? VISIBLE : GONE
+        );
 
-        actionCancelResolutionHorizontal.setVisibility(
-                isShowCancelResolutionButton() &&  validToActionCancelHorizontalView() ? VISIBLE : GONE);
-        actionCancelResolutionVertical.setVisibility(isShowCancelResolutionButton()
-                && actionCancelResolutionHorizontal.getVisibility() != VISIBLE ? VISIBLE : GONE);
-
-        horizontalButtonView.setVisibility(
-                isAnyButtonHorizontalVisible() ? VISIBLE : GONE
+        actionCancelResolutionVertical.setVisibility(
+                isShowCancelResolutionButton() ? VISIBLE : GONE
         );
 
         actionInputAwbNumber.setVisibility(
             isShowInputAwbNumber() ? VISIBLE : GONE
         );
-    }
-
-    private boolean isAnyButtonHorizontalVisible() {
-        return actionEdit.getVisibility() == VISIBLE ||
-                actionAcceptSolutionHorizontal.getVisibility() == VISIBLE ||
-                actionCancelResolutionHorizontal.getVisibility() == VISIBLE ||
-                actionHelp.getVisibility() == VISIBLE;
-    }
-
-    private boolean validToActionCancelHorizontalView() {
-        return !(actionEdit.getVisibility() == VISIBLE && actionHelp.getVisibility() == VISIBLE);
-    }
-
-    private boolean validToActionAcceptSolutionHorizontalView() {
-        return !(actionEdit.getVisibility() == VISIBLE && actionHelp.getVisibility() == VISIBLE);
     }
 
     private void setClickListener() {
@@ -125,10 +98,9 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         actionHelp.setOnClickListener(new ActionHelpClickListener());
 
         actionAcceptSolutionVertical.setOnClickListener(new ActionAcceptSolutionClickListener());
-        actionAcceptSolutionHorizontal.setOnClickListener(new ActionAcceptSolutionClickListener());
 
         actionCancelResolutionVertical.setOnClickListener(new ActionCancelResolutionClickListener(listener));
-        actionCancelResolutionHorizontal.setOnClickListener(new ActionCancelResolutionClickListener(listener));
+
         actionInputAwbNumber.setOnClickListener(new ActionInputAwbNumberClickListener());
     }
 
@@ -136,8 +108,6 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         return actionEdit.getVisibility() == VISIBLE ||
                 actionAcceptProduct.getVisibility() == VISIBLE ||
                 actionAcceptSolutionVertical.getVisibility() == VISIBLE ||
-                actionAcceptSolutionHorizontal.getVisibility() == VISIBLE ||
-                actionCancelResolutionHorizontal.getVisibility() == VISIBLE ||
                 actionCancelResolutionVertical.getVisibility() == VISIBLE ||
                 actionHelp.getVisibility() == VISIBLE;
     }
@@ -236,6 +206,7 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
             listener.setOnActionInputAwbNumberClick();
         }
     }
+
     public static class ActionCancelResolutionClickListener implements OnClickListener {
         private final DetailResCenterFragmentView listener;
 
