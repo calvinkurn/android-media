@@ -130,7 +130,6 @@ public class ShopSearchResultAdapter extends RecyclerView.Adapter<ShopSearchResu
         void onItemClicked(){
             SearchItem searchItem = items.get(getAdapterPosition());
             searchItem.setEventAction(eventAction);
-            CommonUtils.dumper("GAv4 search "+eventAction+" "+searchItem.getKeyword());
             UnifyTracking.eventClickAutoCompleteShopSearch(searchItem.getKeyword());
             clickListener.onItemClicked(searchItem);
         }
