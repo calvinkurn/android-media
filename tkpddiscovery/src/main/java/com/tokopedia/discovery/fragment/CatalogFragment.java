@@ -313,6 +313,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     @Override
     public int getDataSize() {
+        if (browseCatalogAdapter == null) return -1;
         return browseCatalogAdapter.getData() != null ? browseCatalogAdapter.getData().size() : -1;
     }
 

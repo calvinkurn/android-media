@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -448,7 +449,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         String redirectUrl = categoryItemModel.getRedirectValue();
         if (redirectUrl != null && redirectUrl.length() > 0) {
             String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
-                    categoryItemModel.getRedirectValue(), MainApplication.getAppContext());
+                    Uri.encode(redirectUrl), MainApplication.getAppContext());
 
             navigateToGimmicWebview(resultGenerateUrl, categoryItemModel.getRedirectValue());
         }
