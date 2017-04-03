@@ -27,8 +27,9 @@
             android:label="@string/title_activity_shipping_confirmation_detail"
             android:screenOrientation="portrait" />
 
-        <activity android:name="com.tokopedia.seller.instoped.InstopedActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.tokopedia.seller.instoped.InstopedActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".topads.view.activity.TopAdsDashboardActivity"
@@ -81,7 +82,7 @@
         <activity
             android:name=".topads.view.activity.TopAdsDetailShopActivity"
             android:label="@string/title_shop_ad_detail"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsDetailProductActivity"
             android:label="@string/title_product_ad_detail"
@@ -188,14 +189,19 @@
         <activity
             android:name=".topads.view.activity.TopAdsAddProductListActivity"
             android:label="@string/title_activity_top_ads_list"
-            android:theme="@style/Theme.Tokopedia3"/>
+            android:theme="@style/Theme.Tokopedia3" />
+
+        <activity
+            android:name=".product.view.activity.CategoryPickerActivity"
+            android:label="title_activity_category_picker" />
 
         <service
             android:name="com.tokopedia.seller.selling.SellingService"
-            android:exported="false"/>
+            android:exported="false" />
 
-        <service android:name=".shop.ShopEditService"
-            android:exported="false"/>
+        <service
+            android:name=".shop.ShopEditService"
+            android:exported="false" />
     </application>
 
 </manifest>
