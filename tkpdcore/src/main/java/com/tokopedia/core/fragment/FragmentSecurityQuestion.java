@@ -129,12 +129,13 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     private SecurityQuestionListener Listener;
 
 
-    public static FragmentSecurityQuestion newInstance(int Security1, int Security2, String UserID, SecurityQuestionListener listener) {
+    public static FragmentSecurityQuestion newInstance(int Security1, int Security2, String UserID, String email, SecurityQuestionListener listener) {
         FragmentSecurityQuestion fragment = new FragmentSecurityQuestion();
         Bundle args = new Bundle();
         args.putInt(SECURITY_1_KEY, Security1);
         args.putInt(SECURITY_2_KEY, Security2);
         args.putString(USER_ID_KEY, UserID);
+        args.putString(EMAIL, email);
         fragment.setArguments(args);
         fragment.Listener = listener;
         return fragment;
@@ -326,12 +327,6 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                 }
             }
         });
-        vSendOtp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.doRequestOtp();
-            }
-        });
 
         vSendOtpCall.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -435,6 +430,12 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                 changeNumber.setVisibility(View.VISIBLE);
                 vSendOtpCall.setVisibility(View.VISIBLE);
                 presenter.showTrueCaller(getActivity());
+                vSendOtp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        presenter.doRequestOtp();
+                    }
+                });
                 break;
             case QuestionFormModel.OTP_Email_TYPE:
                 vSendOtp.setText(presenter.getOtpSendString());
@@ -443,9 +444,14 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                 changeNumber.setVisibility(View.GONE);
                 vSendOtpCall.setVisibility(View.GONE);
                 verifyTrueCaller.setVisibility(View.GONE);
+                vSendOtp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        presenter.doRequestOtpToEmail();
+                    }
+                });
                 break;
         }
-        ;
         vQuestion.setText(data.getTitle());
     }
 

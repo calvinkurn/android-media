@@ -507,9 +507,9 @@ public class LoginFragment extends Fragment implements LoginView {
     }
 
     @Override
-    public void moveToFragmentSecurityQuestion(int security1, int security2, int userId) {
+    public void moveToFragmentSecurityQuestion(int security1, int security2, int userId, String email) {
         if (mContext != null) {// && !((AppCompatActivity)mContext).isFinishing()
-            ((SessionView) mContext).moveToFragmentSecurityQuestion(security1, security2, userId);
+            ((SessionView) mContext).moveToFragmentSecurityQuestion(security1, security2, userId, email);
         }
     }
 

@@ -24,6 +24,7 @@ import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
+import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.CreatePasswordModel;
 import com.tokopedia.core.session.model.FacebookModel;
 import com.tokopedia.core.session.model.InfoModel;
@@ -410,11 +411,13 @@ public class LoginImpl implements Login {
             case DownloadServiceConstant.MAKE_LOGIN:
                 // if need to move to security
                 if (data.getBoolean(DownloadService.LOGIN_MOVE_SECURITY, false)) {// move to security
+                    AccountsParameter modelData = (AccountsParameter) data.getParcelable("accounts");
                     SecurityModel loginSecurityModel = data.getParcelable(DownloadService.LOGIN_SECURITY_QUESTION_DATA);
                     loginView.moveToFragmentSecurityQuestion(
                             loginSecurityModel.getSecurity().getUser_check_security_1(),
                             loginSecurityModel.getSecurity().getUser_check_security_2(),
-                            loginSecurityModel.getUser_id());
+                            loginSecurityModel.getUser_id(),
+                            modelData.getEmail());
                 } else if (sessionHandler.isV4Login()) {// go back to home
                     loginView.destroyActivity();
                 } else if (data.getInt(DownloadService.VALIDATION_OF_DEVICE_ID, LoginEmailModel.INVALID_DEVICE_ID) == LoginEmailModel.INVALID_DEVICE_ID) {

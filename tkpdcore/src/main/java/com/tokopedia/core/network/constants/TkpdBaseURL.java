@@ -613,6 +613,7 @@ public class TkpdBaseURL {
             private static final String BASE_OTP = "/otp";
             public static final String REQUEST_OTP = BASE_OTP + "/request";
             public static final String VALIDATE_OTP = BASE_OTP + "/validate";
+            public static final String REQUEST_OTP_EMAIL = BASE_OTP + "/email/request";
         }
     }
 
