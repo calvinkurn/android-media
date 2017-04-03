@@ -26,6 +26,7 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.di.component.DaggerFavoriteComponent;
 import com.tokopedia.tkpd.home.favorite.view.adapter.FavoriteAdapter;
 import com.tokopedia.tkpd.home.favorite.view.adapter.FavoriteAdapterTypeFactory;
+import com.tokopedia.tkpd.home.favorite.view.adapter.viewholders.WishlistViewHolder;
 import com.tokopedia.tkpd.home.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopItem;
@@ -150,11 +151,16 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     @Override
     public void addTopAdsShop(TopAdsShopViewModel shopViewModel) {
-        if (favoriteAdapter.getItemCount() > 0) {
-
-            favoriteAdapter.setElement(1, shopViewModel);
+        final int indexFirstAdapter = 0;
+        final int indexSecondAdapater = 1;
+        if (isAdapterNotEmpty()) {
+            if (isFirstPositonWishlist(indexFirstAdapter)) {
+                favoriteAdapter.setElement(indexSecondAdapater, shopViewModel);
+            } else {
+                favoriteAdapter.setElement(indexFirstAdapter, shopViewModel);
+            }
         } else {
-            favoriteAdapter.setElement(0, shopViewModel);
+            favoriteAdapter.setElement(indexFirstAdapter, shopViewModel);
         }
     }
 
@@ -259,6 +265,14 @@ public class FragmentFavorite extends BaseDaggerFragment
         recyclerView.addOnScrollListener(recylerviewScrollListener);
         swipeToRefresh.setOnRefreshListener(this);
 
+    }
+
+    private boolean isFirstPositonWishlist(int indexFirstAdapter) {
+        return favoriteAdapter.getItemViewType(indexFirstAdapter) == WishlistViewHolder.LAYOUT;
+    }
+
+    private boolean isAdapterNotEmpty() {
+        return favoriteAdapter.getItemCount() > 0;
     }
 
 

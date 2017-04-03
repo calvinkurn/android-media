@@ -150,19 +150,21 @@ public class FavoritePresenter
     private WishlistViewModel prepareDataWishlist(DomainWishlist wishListData) {
         WishlistViewModel wishlistViewModel = new WishlistViewModel();
         ArrayList<WishlistItem> wishlistItems = new ArrayList<>();
-        for (DataWishlist dataWishlist : wishListData.getData()) {
-            WishlistItem wishlistItem = new WishlistItem();
-            wishlistItem.setName(dataWishlist.getName());
-            wishlistItem.setPrice(dataWishlist.getPrice());
-            wishlistItem.setShopName(dataWishlist.getShop_name());
-            wishlistItem.setProductId(dataWishlist.getId());
-            wishlistItem.setProductImage(dataWishlist.getProductImageUrl());
-            ArrayList<String> badges = new ArrayList<>();
-            for (WishListBadge badge : dataWishlist.getBadges()) {
-                badges.add(badge.getImgUrl());
+        if (wishListData != null && wishListData.getData() != null) {
+            for (DataWishlist dataWishlist : wishListData.getData()) {
+                WishlistItem wishlistItem = new WishlistItem();
+                wishlistItem.setName(dataWishlist.getName());
+                wishlistItem.setPrice(dataWishlist.getPrice());
+                wishlistItem.setShopName(dataWishlist.getShop_name());
+                wishlistItem.setProductId(dataWishlist.getId());
+                wishlistItem.setProductImage(dataWishlist.getProductImageUrl());
+                ArrayList<String> badges = new ArrayList<>();
+                for (WishListBadge badge : dataWishlist.getBadges()) {
+                    badges.add(badge.getImgUrl());
+                }
+                wishlistItem.setBadgeImageUrl(badges);
+                wishlistItems.add(wishlistItem);
             }
-            wishlistItem.setBadgeImageUrl(badges);
-            wishlistItems.add(wishlistItem);
         }
         wishlistViewModel.setWishlistItems(wishlistItems);
         return wishlistViewModel;
@@ -197,7 +199,9 @@ public class FavoritePresenter
         @Override
         public void onError(Throwable e) {
             Log.e(TAG, "onError: ", e);
-            getView().showErrorLoadData();
+            if (isViewAttached()) {
+                getView().showErrorLoadData();
+            }
         }
 
         @Override
@@ -208,7 +212,10 @@ public class FavoritePresenter
         @NonNull
         private List<Visitable> getDataFavoriteViewModel(DataFavorite dataFavorite) {
             List<Visitable> elementList = new ArrayList<>();
-            if (dataFavorite != null && dataFavorite.getWishListData() != null) {
+            if (dataFavorite != null
+                    && dataFavorite.getWishListData() != null
+                    && dataFavorite.getWishListData().getData() != null) {
+
                 elementList.add(prepareDataWishlist(dataFavorite.getWishListData()));
             }
             if (dataFavorite != null
@@ -308,10 +315,14 @@ public class FavoritePresenter
         @Override
         public void onNext(DataFavorite dataFavorite) {
             List<Visitable> dataFavoriteItemList = new ArrayList<>();
-            if (dataFavorite != null && dataFavorite.getWishListData() != null) {
+            if (dataFavorite != null && dataFavorite.getWishListData() != null
+                    && dataFavorite.getWishListData().getData() != null) {
+
                 dataFavoriteItemList.add(prepareDataWishlist(dataFavorite.getWishListData()));
             }
-            if (dataFavorite != null && dataFavorite.getTopAdsShop() != null) {
+            if (dataFavorite != null
+                    && dataFavorite.getTopAdsShop() != null
+                    && dataFavorite.getFavoriteShop().getData() != null) {
                 dataFavoriteItemList.add(prepareDataTopAdsShop(dataFavorite.getTopAdsShop()));
             }
             if (dataFavorite != null

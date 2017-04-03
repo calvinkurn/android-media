@@ -41,7 +41,9 @@ public class LocalFavoriteShopDataSource {
         return new Func1<Throwable, FavoriteShop>() {
             @Override
             public FavoriteShop call(Throwable throwable) {
-                return null;
+                FavoriteShop favoriteShop = new FavoriteShop();
+                favoriteShop.setDataIsValid(false);
+                return favoriteShop;
             }
         };
     }

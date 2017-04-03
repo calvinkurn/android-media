@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.tkpd.home.favorite.data.mapper.WishlistMapper;
 import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
@@ -32,6 +31,7 @@ public class CloudWishlistDataStore {
 
     public Observable<DomainWishlist> getWishlist(String userId, TKPDMapParam<String, Object> param) {
         return mojitoService.getWishlist(userId, param)
+                .doOnNext(validateError())
                 .doOnNext(saveToCache())
                 .map(new WishlistMapper(context, gson));
     }
@@ -47,6 +47,21 @@ public class CloudWishlistDataStore {
                         .setCacheDuration(tenMinute)
                         .setValue(response.body())
                         .store();
+            }
+        };
+    }
+
+    private Action1<Response<String>> validateError() {
+        return new Action1<Response<String>>() {
+            @Override
+            public void call(Response<String> stringResponse) {
+                if (stringResponse.code() >= 500 && stringResponse.code() < 600) {
+                    throw new RuntimeException("Server Error!");
+//                    Observable.error(new RuntimeException("Server Error!"));
+                } else if (stringResponse.code() >= 400 && stringResponse.code() < 500) {
+                    throw new RuntimeException("Client Error!");
+//                    Observable.error(new RuntimeException("Server Error!"));
+                }
             }
         };
     }

@@ -9,6 +9,7 @@ import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 
 import rx.Observable;
+import rx.functions.Func1;
 import rx.functions.Func2;
 
 
@@ -54,7 +55,13 @@ public class GetFavoriteAndWishlistUsecase extends UseCase<DataFavorite> {
     private Observable<DomainWishlist> getWishlist() {
         RequestParams params = GetWishlistUsecase.getDefaultParams();
         params.putBoolean(GetWishlistUsecase.KEY_IS_FORCE_REFRESH, false);
-        return getWishlistUsecase.createObservable(params);
+        return getWishlistUsecase.createObservable(params)
+                .onErrorReturn(new Func1<Throwable, DomainWishlist>() {
+                    @Override
+                    public DomainWishlist call(Throwable throwable) {
+                        return new DomainWishlist();
+                    }
+                });
     }
 
 

@@ -37,6 +37,7 @@ public class CloudFavoriteShopDataSource {
         TKPDMapParam<String, String> paramWithAuth = AuthUtil.generateParamsNetwork(context, param);
         if (isMustSaveToCache) {
             return serviceV4.getFavoriteShop(paramWithAuth)
+                    .doOnNext(validateError())
                     .doOnNext(saveToCache())
                     .map(new FavoriteShopMapper(context, gson));
         } else {
@@ -61,6 +62,21 @@ public class CloudFavoriteShopDataSource {
                         .setCacheDuration(tenMinute)
                         .setValue(response.body())
                         .store();
+            }
+        };
+    }
+
+    private Action1<Response<String>> validateError() {
+        return new Action1<Response<String>>() {
+            @Override
+            public void call(Response<String> stringResponse) {
+                if (stringResponse.code() >= 500 && stringResponse.code() < 600) {
+//                    throw new RuntimeException("Server Error!");
+                    Observable.error(new RuntimeException("Server Error!"));
+                } else if (stringResponse.code() >= 400 && stringResponse.code() < 500) {
+//                    throw new RuntimeException("Client Error!");
+                    Observable.error(new RuntimeException("Server Error!"));
+                }
             }
         };
     }
