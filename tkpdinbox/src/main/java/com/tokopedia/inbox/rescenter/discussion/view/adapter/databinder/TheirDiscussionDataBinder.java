@@ -14,7 +14,7 @@ import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.discussion.view.adapter.ImageAdapter;
+import com.tokopedia.inbox.rescenter.discussion.view.adapter.AttachmentAdapter;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
 
@@ -60,7 +60,7 @@ public class TheirDiscussionDataBinder extends DataBinder<TheirDiscussionDataBin
         @BindView(R2.id.image_holder)
         RecyclerView imageHolder;
 
-        ImageAdapter adapter;
+        AttachmentAdapter adapter;
 
 
         public ViewHolder(View itemView) {
@@ -88,7 +88,7 @@ public class TheirDiscussionDataBinder extends DataBinder<TheirDiscussionDataBin
     public ViewHolder newViewHolder(ViewGroup parent) {
         ViewHolder holder = new ViewHolder(LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.listview_their_res_center_discussion, parent, false));
-        holder.adapter = ImageAdapter.createAdapter(context);
+        holder.adapter = AttachmentAdapter.createAdapter(context, false);
         holder.adapter.setListener(onProductImageActionListener(holder.adapter.getList()));
         LinearLayoutManager layoutManager = new LinearLayoutManager(context,
                 LinearLayoutManager.HORIZONTAL, false);
@@ -97,8 +97,8 @@ public class TheirDiscussionDataBinder extends DataBinder<TheirDiscussionDataBin
         return holder;
     }
 
-    private ImageAdapter.ProductImageListener onProductImageActionListener(ArrayList<AttachmentViewModel> list) {
-        return new ImageAdapter.ProductImageListener() {
+    private AttachmentAdapter.ProductImageListener onProductImageActionListener(ArrayList<AttachmentViewModel> list) {
+        return new AttachmentAdapter.ProductImageListener() {
 
             @Override
             public View.OnClickListener onImageClicked(int position, AttachmentViewModel imageUpload) {
@@ -108,6 +108,11 @@ public class TheirDiscussionDataBinder extends DataBinder<TheirDiscussionDataBin
                         //GoToPreviewImage
                     }
                 };
+            }
+
+            @Override
+            public View.OnClickListener onDeleteImage(int position, AttachmentViewModel imageUpload) {
+                return null;
             }
         };
     }

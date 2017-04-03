@@ -16,6 +16,8 @@ import rx.functions.Func1;
 
 public class SendResCenterDiscussionUseCase extends UseCase<ActionDiscussionModel> {
 
+    public static final String PARAM_MESSAGE = "PARAM_MESSAGE";
+    public static final String PARAM_ATTACHMENT = "PARAM_ATTACHMENT";
     private final ResCenterRepository resCenterRepository;
 
     public SendResCenterDiscussionUseCase(JobExecutor jobExecutor,

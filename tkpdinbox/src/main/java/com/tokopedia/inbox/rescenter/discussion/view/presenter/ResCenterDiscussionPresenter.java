@@ -1,5 +1,9 @@
 package com.tokopedia.inbox.rescenter.discussion.view.presenter;
 
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
+
+import java.util.ArrayList;
+
 /**
  * Created by nisie on 3/29/17.
  */
@@ -7,11 +11,13 @@ package com.tokopedia.inbox.rescenter.discussion.view.presenter;
 public interface ResCenterDiscussionPresenter {
     void initData();
 
-    void sendDiscussion();
+    void sendReply();
 
     void setDiscussionText(String discussionText);
 
     void loadMore();
 
     void unsubscribeObservable();
+
+    void setAttachment(ArrayList<AttachmentViewModel> attachmentList);
 }

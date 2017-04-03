@@ -18,15 +18,23 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
 import com.tokopedia.inbox.rescenter.discussion.domain.GetResCenterDiscussionUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.LoadMoreDiscussionUseCase;
+import com.tokopedia.inbox.rescenter.discussion.domain.SendResCenterDiscussionUseCase;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.ActionDiscussionModel;
 import com.tokopedia.inbox.rescenter.discussion.view.listener.ResCenterDiscussionView;
 import com.tokopedia.inbox.rescenter.discussion.view.subscriber.GetDiscussionSubscriber;
 import com.tokopedia.inbox.rescenter.discussion.view.subscriber.LoadMoreSubscriber;
+import com.tokopedia.inbox.rescenter.discussion.view.subscriber.ReplyDiscussionSubscriber;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.SendReplyDiscussionParam;
 import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
 import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
 import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
 import com.tokopedia.inbox.rescenter.product.data.mapper.ListProductMapper;
 import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
+
+import java.util.ArrayList;
+
+import rx.Subscriber;
 
 /**
  * Created by nisie on 3/29/17.
@@ -37,6 +45,7 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
     private final ResCenterDiscussionView viewListener;
     private GetResCenterDiscussionUseCase getDiscussionUseCase;
     private LoadMoreDiscussionUseCase loadMoreUseCase;
+    private SendResCenterDiscussionUseCase sendResCenterDiscussionUseCase;
 
     private SendReplyDiscussionParam pass;
     private Context context;
@@ -89,6 +98,9 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
                 jobExecutor, uiThread, resCenterRepository
         );
 
+        sendResCenterDiscussionUseCase = new SendResCenterDiscussionUseCase(
+                jobExecutor, uiThread, resCenterRepository);
+
         pass = new SendReplyDiscussionParam();
     }
 
@@ -97,15 +109,25 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
     public void initData() {
         viewListener.showLoading();
         viewListener.setViewEnabled(false);
-        getDiscussionUseCase.execute(RequestParams.EMPTY, new GetDiscussionSubscriber(viewListener));
+        getDiscussionUseCase.execute(RequestParams.EMPTY,
+                new GetDiscussionSubscriber(viewListener));
 
     }
 
     @Override
-    public void sendDiscussion() {
+    public void sendReply() {
         if (isValid()) {
+            sendResCenterDiscussionUseCase.execute(getSendReplyRequestParams(),
+                    new ReplyDiscussionSubscriber(viewListener));
             viewListener.onSuccessSendDiscussion();
         }
+    }
+
+    private RequestParams getSendReplyRequestParams() {
+        RequestParams params = RequestParams.create();
+        params.putString(SendResCenterDiscussionUseCase.PARAM_MESSAGE, pass.getMessage());
+        params.putObject(SendResCenterDiscussionUseCase.PARAM_ATTACHMENT, pass.getAttachment());
+        return params;
     }
 
     @Override
@@ -130,6 +152,11 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
     public void unsubscribeObservable() {
         loadMoreUseCase.unsubscribe();
         getDiscussionUseCase.unsubscribe();
+    }
+
+    @Override
+    public void setAttachment(ArrayList<AttachmentViewModel> attachmentList) {
+        pass.setAttachment(attachmentList);
     }
 
     private boolean isValid() {

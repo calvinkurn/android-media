@@ -23,13 +23,17 @@ import butterknife.ButterKnife;
  * Created by nisie on 3/31/17.
  */
 
-public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
+public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.ViewHolder> {
 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.image_upload)
         ImageView image;
+
+        @BindView(R2.id.delete_but)
+        ImageView deleteButton;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -39,27 +43,38 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
     public interface ProductImageListener {
         View.OnClickListener onImageClicked(int position, AttachmentViewModel imageUpload);
+        View.OnClickListener onDeleteImage(int position, AttachmentViewModel imageUpload);
+
     }
 
 
     private ProductImageListener listener;
     private ArrayList<AttachmentViewModel> data;
+    private boolean canDelete;
 
-    public ImageAdapter(Context context) {
+    public AttachmentAdapter(Context context, boolean canDelete) {
         this.context = context;
         this.data = new ArrayList<>();
+        this.canDelete = canDelete;
     }
 
     public Context context;
 
-    public static ImageAdapter createAdapter(Context context) {
-        return new ImageAdapter(context);
+    public static AttachmentAdapter createAdapter(Context context, boolean canDelete) {
+        return new AttachmentAdapter(context, canDelete);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        return new ViewHolder(LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.listview_image_upload, viewGroup, false));
+        ViewHolder holder = new ViewHolder(LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.listview_image_upload_delete, viewGroup, false));
+
+        if (canDelete)
+            holder.deleteButton.setVisibility(View.VISIBLE);
+        else
+            holder.deleteButton.setVisibility(View.GONE);
+
+        return holder;
     }
 
     @Override
@@ -87,6 +102,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         }
 
         holder.image.setOnClickListener(listener.onImageClicked(position, data.get(position)));
+        holder.deleteButton.setOnClickListener(listener.onDeleteImage(position,data.get(position)));
 
     }
 
