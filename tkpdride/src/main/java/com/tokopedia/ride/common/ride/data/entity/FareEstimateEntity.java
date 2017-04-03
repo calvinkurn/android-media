@@ -15,6 +15,10 @@ public class FareEstimateEntity {
     @Expose
     private TripEntity trip;
 
+    @SerializedName("estimate")
+    @Expose
+    private EstimateEntity estimate;
+
     @SerializedName("pickup_estimate")
     @Expose
     private String pickupEstimate;
@@ -40,6 +44,14 @@ public class FareEstimateEntity {
 
     public String getPickupEstimate() {
         return pickupEstimate;
+    }
+
+    public EstimateEntity getEstimate() {
+        return estimate;
+    }
+
+    public void setEstimate(EstimateEntity estimate) {
+        this.estimate = estimate;
     }
 
     public void setPickupEstimate(String pickupEstimate) {

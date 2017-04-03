@@ -55,13 +55,21 @@ public class RideProductAdapter extends RecyclerView.Adapter<AbstractViewHolder>
         notifyDataSetChanged();
     }
 
+    public List<Visitable> getElements() {
+        return mVisitables;
+    }
+
     public void setChangedItem(int position, Visitable visitable) {
         if (position < mVisitables.size()) {
             mVisitables.remove(position);
             mVisitables.add(position, visitable);
             notifyDataSetChanged();
         }
+    }
 
+    public void removeItem(Visitable visitable) {
+        mVisitables.remove(visitable);
+        notifyDataSetChanged();
     }
 
     public void clearData() {

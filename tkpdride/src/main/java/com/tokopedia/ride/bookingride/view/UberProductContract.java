@@ -30,7 +30,13 @@ public interface UberProductContract {
 
         void hideProgress();
 
+        void hideProductList();
+
+        void showProductList();
+
         void showErrorMessage(String message, String btnText);
+
+        void hideErrorMessage();
 
         void renderFareProduct(Visitable productEstimate, String productId, int position, FareEstimate fareEstimate);
 

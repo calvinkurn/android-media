@@ -21,6 +21,7 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
     private String baseFare;
     private String fareId;
     private int capacity;
+    private boolean enabled;
 
     public RideProductViewModel() {
     }
@@ -36,6 +37,7 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         baseFare = in.readString();
         fareId = in.readString();
         capacity = in.readInt();
+        enabled = in.readByte() != 0;
     }
 
     public static final Creator<RideProductViewModel> CREATOR = new Creator<RideProductViewModel>() {
@@ -135,6 +137,14 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         this.productPrice = productPrice;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -152,5 +162,21 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         parcel.writeString(baseFare);
         parcel.writeString(fareId);
         parcel.writeInt(capacity);
+        parcel.writeByte((byte) (enabled ? 1 : 0));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RideProductViewModel that = (RideProductViewModel) o;
+
+        return productId != null ? productId.equals(that.productId) : that.productId == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return productId != null ? productId.hashCode() : 0;
     }
 }

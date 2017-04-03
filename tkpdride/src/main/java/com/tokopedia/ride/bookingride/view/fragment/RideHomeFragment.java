@@ -370,6 +370,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
                     mSource = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
                     setSourceLocationText(String.valueOf(mSource.getTitle()));
                     proccessToRenderRideProduct();
+                    moveMapToLocation(mSource.getLatitude(), mSource.getLongitude());
                     break;
                 case PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE:
                     mDestination = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
@@ -397,7 +398,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     }
 
     @Override
-    public void moveToCurrentLocation(double latitude, double longitude) {
+    public void moveMapToLocation(double latitude, double longitude) {
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), SELECT_SOURCE_MAP_ZOOM));
     }
 

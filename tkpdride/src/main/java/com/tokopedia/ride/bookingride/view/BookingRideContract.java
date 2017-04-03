@@ -36,7 +36,7 @@ public interface BookingRideContract {
 
         void setDestinationLocationText(String address);
 
-        void moveToCurrentLocation(double latitude, double longitude);
+        void moveMapToLocation(double latitude, double longitude);
 
         void renderDefaultPickupLocation(double latitude, double longitude, String sourceAddress);
 

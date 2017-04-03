@@ -155,6 +155,11 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @Override
     public void onProductSelected(RideProductViewModel rideProductViewModel) {
         if (isCompleteLocations) {
+            //if fare is not find and product is not estimated, do not handle click event
+            if (!rideProductViewModel.isEnabled()) {
+                return;
+            }
+
             ConfirmBookingViewModel confirmBookingViewModel = ConfirmBookingViewModel.createInitial();
             confirmBookingViewModel.setFareId(rideProductViewModel.getFareId());
             confirmBookingViewModel.setSource(source);
@@ -192,8 +197,6 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
 
     @Override
     public void renderProductList(List<Visitable> datas) {
-        mProgreessAndErrorView.setVisibility(View.GONE);
-        mRideProductsRecyclerView.setVisibility(View.VISIBLE);
         mAdapter.clearData();
         mAdapter.setElement(datas);
     }
@@ -240,6 +243,16 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     }
 
     @Override
+    public void hideProductList() {
+        mRideProductsRecyclerView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showProductList() {
+        mRideProductsRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void showErrorMessage(String message, String btnText) {
         hideProgress();
 
@@ -252,6 +265,11 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
         } else {
             mRetryButtonTextView.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Override
+    public void hideErrorMessage() {
+        mProgreessAndErrorView.setVisibility(View.GONE);
     }
 
     @Override

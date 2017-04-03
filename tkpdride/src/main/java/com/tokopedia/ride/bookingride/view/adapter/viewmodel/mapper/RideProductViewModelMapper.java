@@ -78,6 +78,7 @@ public class RideProductViewModelMapper {
             rideProductViewModel.setCapacity(product.getProduct().getCapacity());
             rideProductViewModel.setTimeEstimate(product.getTimesEstimate().getEstimate() / 60 + " min");
             rideProductViewModel.setBaseFare(getBaseFare(product.getProduct().getPriceDetail()));
+            rideProductViewModel.setEnabled(true);
         }
         return rideProductViewModel;
     }

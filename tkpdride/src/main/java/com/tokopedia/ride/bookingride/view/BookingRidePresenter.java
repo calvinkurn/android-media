@@ -114,6 +114,8 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
                         public void onConnected(@Nullable Bundle bundle) {
                             if (getFuzedLocation() != null) {
                                 mCurrentLocation = getFuzedLocation();
+                                //enable boolean to update prodct list based on actual location
+                                mRenderProductListBasedOnLocationUpdates = true;
                                 startLocationUpdates();
                                 setSourceAsCurrentLocation();
                             } else {
@@ -192,7 +194,7 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
     private void setSourceAsCurrentLocation() {
         if (mCurrentLocation == null) return;
 
-        getView().moveToCurrentLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+        getView().moveMapToLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
 
         //set source as current location
         String sourceAddress = GeoLocationUtils.reverseGeoCodeToShortAdd(getView().getActivityContext(), mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
@@ -203,54 +205,6 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
         placeVm.setTitle(sourceAddress);
         placeVm.setType(PlacePassViewModel.TYPE.OTHER);
         getView().setSourceLocation(placeVm);
-
-
-//
-//
-//        setSourceAsCurrentLocation(new PlaceFilter())
-//                .map(new Func1<PlaceLikelihoodBuffer, Place>() {
-//                    @Override
-//                    public Place call(PlaceLikelihoodBuffer buffer) {
-//                        if (buffer != null) {
-//                            PlaceLikelihood likelihood = buffer.get(0);
-//                            if (likelihood != null) {
-//                                return likelihood.getPlace();
-//                            }
-//                            buffer.release();
-//                            return null;
-//                        } else {
-//                            return null;
-//                        }
-//                    }
-//                }).subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Subscriber<Place>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(Place place) {
-//                        if (place != null) {
-//                            getView().moveToCurrentLocation(place.getLatLng().latitude, place.getLatLng().longitude);
-//
-//                            PlacePassViewModel placeVm = new PlacePassViewModel();
-//                            placeVm.setAddress(String.valueOf(place.getAddress()));
-//                            placeVm.setLatitude(place.getLatLng().latitude);
-//                            placeVm.setLongitude(place.getLatLng().longitude);
-//                            placeVm.setPlaceId(place.getId());
-//                            placeVm.setTitle(String.valueOf(place.getName()));
-//                            placeVm.setType(PlacePassViewModel.TYPE.OTHER);
-//                            getView().setSourceLocation(placeVm);
-//                        }
-//                    }
-//                });
     }
 
     public Location getFuzedLocation() {

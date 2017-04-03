@@ -46,8 +46,6 @@ import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
-import static com.tokopedia.ride.bookingride.view.fragment.ConfirmBookingRideFragment.EXTRA_PRODUCT;
-
 @RuntimePermissions
 public class RideHomeActivity extends BaseActivity implements RideHomeFragment.OnFragmentInteractionListener,
         UberProductFragment.OnFragmentInteractionListener, ConfirmBookingRideFragment.OnFragmentInteractionListener, SeatAdapter.OnItemClickListener {
@@ -265,8 +263,8 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
             hideBlockTranslucentLayout();
             hideSeatPanelLayout();
         } else if (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof ConfirmBookingRideFragment) {
-            hideBlockTranslucentLayout();
-            hideSeatPanelLayout();
+            //hideBlockTranslucentLayout();
+            //hideSeatPanelLayout();
             getFragmentManager().popBackStack();
 
             ConfirmBookingRideFragment fragment = (ConfirmBookingRideFragment) getFragmentManager().findFragmentById(R.id.bottom_container);

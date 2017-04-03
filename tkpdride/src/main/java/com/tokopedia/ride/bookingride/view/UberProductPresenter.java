@@ -12,6 +12,7 @@ import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.mapper.RideProductViewModelMapper;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.exception.TosConfirmationHttpException;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
 import java.util.List;
@@ -87,6 +88,8 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                 if (productsList.size() == 0) {
                     getView().showErrorMessage(getView().getActivity().getString(R.string.no_rides_found), getView().getActivity().getString(R.string.btn_text_retry));
                 } else {
+                    getView().hideErrorMessage();
+                    getView().showProductList();
                     getView().renderProductList(productsList);
                     if (source != null && destination != null)
                         actionGetFareProduct(source, destination, productEstimates);
@@ -171,10 +174,20 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
+
+                if (e instanceof TosConfirmationHttpException) {
+                    //show TOS Confirmation Dialog
+                } else {
+                    //show error message
+                    getView().hideProductList();
+                    getView().showErrorMessage(e.getMessage(), getView().getActivity().getString(R.string.btn_text_retry));
+                }
             }
 
             @Override
             public void onNext(FareEstimate fareEstimate) {
+                getView().hideErrorMessage();
+                getView().showProductList();
                 getView().renderFareProduct(mProductViewModelMapper.transform(productEstimate, fareEstimate), productId, position, fareEstimate);
             }
         });
