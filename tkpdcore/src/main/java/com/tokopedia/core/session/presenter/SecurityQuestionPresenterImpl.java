@@ -278,7 +278,6 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
     public void doRequestOtp() {
         view.displayProgress(true);
         view.disableOtpButton();
-
         doRequestOtpToDevice(getRequestOTPParam());
     }
 
@@ -294,7 +293,6 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
     public void doRequestOtpWithCall() {
         view.displayProgress(true);
         view.disableOtpButton();
-
         doRequestOtpToDevice(getRequestOTPWithCallParam());
     }
 
@@ -370,7 +368,7 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
 //                }
 
                 if(requestOtpModel.isSuccess()){
-                    if(requestOtpModel.getStatusMessage() != null) {
+                    if(requestOtpModel.getStatusMessage() != null && !requestOtpModel.getStatusMessage().isEmpty()) {
                         view.onSuccessRequestOTP(requestOtpModel.getStatusMessage());
                     }else {
                         view.onSuccessRequestOTP(requestOtpModel.getErrorMessage());

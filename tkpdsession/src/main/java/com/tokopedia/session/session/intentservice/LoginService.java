@@ -427,6 +427,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                 params.put(Login.SOCIAL_TYPE, String.valueOf(accountsParameter.getSocialType()));
                 if(Parcels.unwrap(parcelable) instanceof LoginFacebookViewModel){
                     LoginFacebookViewModel loginFacebookViewModel = Parcels.unwrap(parcelable);
+                    accountsParameter.setEmail(loginFacebookViewModel.getEmail());
                     params.put(Login.SOCIAL_ID, loginFacebookViewModel.getFbId());
                     params.put(Login.EMAIL_ACCOUNTS, loginFacebookViewModel.getEmail());
                     params.put(Login.FULL_NAME, loginFacebookViewModel.getFullName());
@@ -434,6 +435,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                     params.put(Login.GENDER_ACCOUNTS, loginFacebookViewModel.getGender());
                 }else if (Parcels.unwrap(parcelable) instanceof LoginGoogleModel) {
                     LoginGoogleModel loginGoogleModel = Parcels.unwrap(parcelable);
+                    accountsParameter.setEmail(loginGoogleModel.getEmail());
                     params.put(Login.SOCIAL_ID, loginGoogleModel.getGoogleId());
                     params.put(Login.EMAIL_ACCOUNTS, loginGoogleModel.getEmail());
                     params.put(Login.PICTURE_ACCOUNTS, loginGoogleModel.getImageUrl());

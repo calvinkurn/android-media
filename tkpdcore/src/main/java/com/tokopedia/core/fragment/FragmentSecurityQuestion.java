@@ -441,7 +441,6 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                 vSendOtp.setText(presenter.getOtpSendString());
                 vInputOtp.setEnabled(true);
                 titleSecurity.setText(getResources().getString(R.string.content_security_question_email));
-                presenter.doRequestOtpToEmail();
                 changeNumber.setVisibility(View.GONE);
                 vSendOtpCall.setVisibility(View.GONE);
                 verifyTrueCaller.setVisibility(View.GONE);
@@ -451,6 +450,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                         presenter.doRequestOtpToEmail();
                     }
                 });
+                presenter.doRequestOtpToEmail();
                 break;
         }
         vQuestion.setText(data.getTitle());

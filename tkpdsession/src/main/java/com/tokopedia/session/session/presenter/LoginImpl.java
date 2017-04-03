@@ -411,7 +411,7 @@ public class LoginImpl implements Login {
             case DownloadServiceConstant.MAKE_LOGIN:
                 // if need to move to security
                 if (data.getBoolean(DownloadService.LOGIN_MOVE_SECURITY, false)) {// move to security
-                    AccountsParameter modelData = (AccountsParameter) data.getParcelable("accounts");
+                    AccountsParameter modelData = data.getParcelable("accounts");
                     SecurityModel loginSecurityModel = data.getParcelable(DownloadService.LOGIN_SECURITY_QUESTION_DATA);
                     loginView.moveToFragmentSecurityQuestion(
                             loginSecurityModel.getSecurity().getUser_check_security_1(),
