@@ -508,7 +508,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(new LatLng(source.getLatitude(), source.getLongitude()));
         builder.include(new LatLng(destination.getLatitude(), destination.getLongitude()));
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 50));
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), getResources().getDimensionPixelSize(R.dimen.map_polyline_padding)));
     }
 
     private void reDrawDriverMarker(double latitude, double longitude) {

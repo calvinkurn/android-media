@@ -269,7 +269,9 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
 
     @Override
     public void hideErrorMessage() {
-        mProgreessAndErrorView.setVisibility(View.GONE);
+        if (mProgreessAndErrorView != null) {
+            mProgreessAndErrorView.setVisibility(View.GONE);
+        }
     }
 
     @Override
