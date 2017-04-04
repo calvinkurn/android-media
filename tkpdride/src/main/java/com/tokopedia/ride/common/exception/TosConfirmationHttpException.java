@@ -5,6 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.ride.common.exception.model.TosConfirmationExceptionEntity;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 /**
@@ -26,10 +29,20 @@ public class TosConfirmationHttpException extends IOException {
 
     public TosConfirmationHttpException(String errorMessage) {
         super(errorMessage);
+        String newResponseString = null;
+        try {
+            JSONObject jsonObject = new JSONObject(errorMessage);
+            if (jsonObject.has("data")) {
+                newResponseString = jsonObject.getString("data");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            newResponseString = null;
+        }
         Gson gson = new GsonBuilder().create();
         try {
 
-            TosConfirmationExceptionEntity entity = gson.fromJson(errorMessage, TosConfirmationExceptionEntity.class);
+            TosConfirmationExceptionEntity entity = gson.fromJson(newResponseString, TosConfirmationExceptionEntity.class);
             tosId = entity.getMeta().getTosAcceptConfirmationEntity().getTosId();
             tosUrl = entity.getMeta().getTosAcceptConfirmationEntity().getHref();
             if (entity.getErrors().size() > 0)

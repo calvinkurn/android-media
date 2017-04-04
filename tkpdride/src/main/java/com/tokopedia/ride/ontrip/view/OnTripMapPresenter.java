@@ -240,6 +240,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             @Override
             public void onNext(RideRequest rideRequest) {
                 proccessGetCurrentRideRequest(rideRequest);
+                getView().onSuccessCreateRideRequest(rideRequest);
                 //getView().showCancelRequestButton();
             }
         });

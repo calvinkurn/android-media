@@ -78,8 +78,8 @@ public class TosConfirmationDialogFragment extends DialogFragment {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String urlString) {
-            if (URLUtil.isValidUrl(urlString)) {
-                Uri uri = Uri.parse(urlString);
+            Uri uri = Uri.parse(urlString);
+            if (uri.getScheme().equals("toko")){
                 String id = uri.getQueryParameter("tos_confirmation_id");
                 Intent intent = getActivity().getIntent();
                 intent.putExtra(EXTRA_ID, id);

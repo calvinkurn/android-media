@@ -170,7 +170,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
             confirmBookingViewModel.setProductImage(rideProductViewModel.getProductImage());
             confirmBookingViewModel.setHeaderTitle(
                     String.format(
-                            "%s - Pickup in %s s",
+                            "%s - Pickup in %s",
                             rideProductViewModel.getProductName(),
                             rideProductViewModel.getTimeEstimate())
             );
