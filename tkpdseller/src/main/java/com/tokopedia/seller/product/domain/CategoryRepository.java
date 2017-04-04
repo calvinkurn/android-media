@@ -2,6 +2,8 @@ package com.tokopedia.seller.product.domain;
 
 import com.tokopedia.seller.product.domain.model.CategoryGroupDomainModel;
 
+import java.util.List;
+
 import rx.Observable;
 
 /**
@@ -11,5 +13,5 @@ import rx.Observable;
 public interface CategoryRepository {
     Observable<Boolean> checkVersion();
 
-    Observable<CategoryGroupDomainModel> fetchCategory();
+    Observable<List<CategoryGroupDomainModel>> fetchCategory();
 }

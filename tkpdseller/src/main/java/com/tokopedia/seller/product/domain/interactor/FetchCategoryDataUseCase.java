@@ -8,6 +8,8 @@ import com.tokopedia.seller.product.di.scope.CategoryPickerViewScope;
 import com.tokopedia.seller.product.domain.CategoryRepository;
 import com.tokopedia.seller.product.domain.model.CategoryGroupDomainModel;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import rx.Observable;
@@ -16,7 +18,7 @@ import rx.Observable;
  * @author sebastianuskh on 4/3/17.
  */
 @CategoryPickerViewScope
-public class FetchCategoryDataUseCase extends UseCase<CategoryGroupDomainModel>{
+public class FetchCategoryDataUseCase extends UseCase<List<CategoryGroupDomainModel>>{
 
     private final CategoryRepository categoryRepository;
 
@@ -27,7 +29,7 @@ public class FetchCategoryDataUseCase extends UseCase<CategoryGroupDomainModel>{
     }
 
     @Override
-    public Observable<CategoryGroupDomainModel> createObservable(RequestParams requestParams) {
+    public Observable<List<CategoryGroupDomainModel>> createObservable(RequestParams requestParams) {
         categoryRepository.checkVersion();
         return categoryRepository.fetchCategory();
     }

@@ -32,7 +32,7 @@ public class CategoryDataSource {
         this.categoryCloud = categoryCloud;
     }
 
-    public Observable<CategoryGroupDomainModel> fetchCategory() {
+    public Observable<List<CategoryGroupDomainModel>> fetchCategory() {
         return categoryDataManager.fetchFromDatabase()
                 .map(new CheckDatabaseNotNull())
                 .onErrorResumeNext(fetchDataFromNetwork())

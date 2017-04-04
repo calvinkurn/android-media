@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.data.mapper;
 import com.tokopedia.seller.product.data.source.db.model.CategoryDataBase;
 import com.tokopedia.seller.product.domain.model.CategoryGroupDomainModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.functions.Func1;
@@ -11,9 +12,27 @@ import rx.functions.Func1;
  * @author sebastianuskh on 4/4/17.
  */
 
-public class CategoryDataToDomainMapper implements Func1<List<CategoryDataBase>, CategoryGroupDomainModel> {
+public class CategoryDataToDomainMapper implements Func1<List<CategoryDataBase>, List<CategoryGroupDomainModel>> {
     @Override
-    public CategoryGroupDomainModel call(List<CategoryDataBase> categoryDataBases) {
-        return null;
+    public List<CategoryGroupDomainModel> call(List<CategoryDataBase> categoryDataBases) {
+
+        return mapDomainModels(categoryDataBases, -1);
     }
+
+    private List<CategoryGroupDomainModel> mapDomainModels(List<CategoryDataBase> categoryDataBases, int parent) {
+        List<CategoryGroupDomainModel> domainModels = new ArrayList<>();
+        for (CategoryDataBase categoryDataBase : categoryDataBases) {
+            if (categoryDataBase.getId() == parent){
+                CategoryGroupDomainModel domainModel = new CategoryGroupDomainModel();
+                domainModel.setName(categoryDataBase.getName());
+                domainModel.setId(categoryDataBase.getId());
+                domainModel.setIdentifier(categoryDataBase.getIdentifier());
+                domainModel.setChild(mapDomainModels(categoryDataBases, categoryDataBase.getId()));
+                domainModels.add(domainModel);
+            }
+
+        }
+        return domainModels;
+    }
+
 }
