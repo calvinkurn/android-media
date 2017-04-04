@@ -82,7 +82,7 @@ public class HistoryView extends BaseView<HistoryData, DetailResCenterFragmentVi
         listHistory.setLayoutManager(mLayoutManager);
 
         HistoryAdapter adapter
-                = HistoryAdapter.createLimitInstance(data.getHistoryList());
+                = HistoryAdapter.createLimitInstance(data.getHistoryList(), listener);
         listHistory.setAdapter(adapter);
     }
 }
