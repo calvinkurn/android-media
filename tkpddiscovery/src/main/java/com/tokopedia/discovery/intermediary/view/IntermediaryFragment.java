@@ -210,7 +210,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         hotListRecyclerView.setLayoutManager(
                 new NonScrollGridLayoutManager(getActivity(), 2,
                         GridLayoutManager.VERTICAL, false));
-        hotListRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
+        hotListRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),R.drawable.divider300));
         hotListRecyclerView.setAdapter(hotListItemAdapter);
     }
 
@@ -231,14 +231,16 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void skipIntermediaryPage() {
-        BrowseProductActivity.moveTo(
+        BrowseProductActivity.moveToWithoutAnimation(
             getActivity(),
                 ((IntermediaryActivity) getActivity()).getDepartmentId(),
             TopAdsApi.SRC_DIRECTORY,
             BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
                 ((IntermediaryActivity) getActivity()).getCategoryName()
         );
+        getActivity().overridePendingTransition(0,0);
         getActivity().finish();
+
     }
 
     private void showErrorEmptyState() {

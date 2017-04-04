@@ -34,13 +34,13 @@ public class IntermediaryCategoryMapper implements Func2<Response<CategoryHadesM
                                                 Response<HotListResponse> hotListResponseResponse) {
         IntermediaryCategoryDomainModel intermediaryCategoryDomainModel = new IntermediaryCategoryDomainModel();
 
-        intermediaryCategoryDomainModel.setHeaderModel(mapHeaderModel(categoryHadesModelResponse.body()));
-        intermediaryCategoryDomainModel.setChildCategoryModelList(mapCategoryChildren(categoryHadesModelResponse.body()));
-        intermediaryCategoryDomainModel.setCuratedSectionModelList(mapCuration(categoryHadesModelResponse.body()));
-        intermediaryCategoryDomainModel.setHotListModelList(mapHotList(hotListResponseResponse.body()));
-
-        if (categoryHadesModelResponse.body().getData().getIsIntermediary())
+        if (categoryHadesModelResponse.body().getData().getIsIntermediary()) {
             intermediaryCategoryDomainModel.setIntermediary(true);
+            intermediaryCategoryDomainModel.setHeaderModel(mapHeaderModel(categoryHadesModelResponse.body()));
+            intermediaryCategoryDomainModel.setChildCategoryModelList(mapCategoryChildren(categoryHadesModelResponse.body()));
+            intermediaryCategoryDomainModel.setCuratedSectionModelList(mapCuration(categoryHadesModelResponse.body()));
+            intermediaryCategoryDomainModel.setHotListModelList(mapHotList(hotListResponseResponse.body()));
+        }
 
         return  intermediaryCategoryDomainModel;
     }
@@ -121,7 +121,7 @@ public class IntermediaryCategoryMapper implements Func2<Response<CategoryHadesM
         for (com.tokopedia.core.network.entity.hotlist.List list: hotListResponse.getList()) {
             HotListModel hotListModel = new HotListModel();
             hotListModel.setId(list.getHotProductId());
-            hotListModel.setImageUrl(list.getImgPortrait().get280x418());
+            hotListModel.setImageUrl(list.getImgPortrait()==null ? "" :list.getImgPortrait().get280x418());
             hotListModel.setTitle(list.getTitle());
             hotListModel.setUrl(list.getUrl());
             hotListModels.add(hotListModel);

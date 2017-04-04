@@ -436,8 +436,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             defaultCategoriesRecyclerView.setLayoutManager(
                     new NonScrollGridLayoutManager(categoryHeaderModel.context, 2,
                             GridLayoutManager.VERTICAL, false));
-            defaultCategoriesRecyclerView.addItemDecoration(new DividerItemDecoration(categoryHeaderModel.context));
-            categoryAdapter = new DefaultCategoryAdapter(categoryHeaderModel.categoryWidth,categoryHeaderModel.activeChildren,categoryHeaderModel.listener);
+            defaultCategoriesRecyclerView.addItemDecoration(new DividerItemDecoration(
+                    categoryHeaderModel.context,R.drawable.divider300));
+            categoryAdapter = new DefaultCategoryAdapter(categoryHeaderModel.categoryWidth,
+                    categoryHeaderModel.activeChildren, categoryHeaderModel.listener);
             defaultCategoriesRecyclerView.setAdapter(categoryAdapter);
             if (categoryHeaderModel.isUsedUnactiveChildren) {
                 expandLayout.setVisibility(View.VISIBLE);

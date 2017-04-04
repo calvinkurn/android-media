@@ -56,7 +56,7 @@ public class CurationAdapter extends
         itemRowHolder.recycler_view_list.setLayoutManager(
                 new NonScrollGridLayoutManager(context, 2,
                         GridLayoutManager.VERTICAL, false));
-        itemRowHolder.recycler_view_list.addItemDecoration(new DividerItemDecoration(context));
+        itemRowHolder.recycler_view_list.addItemDecoration(new DividerItemDecoration(context,R.drawable.divider300));
         itemRowHolder.recycler_view_list.setAdapter(itemAdapter);
 
     }

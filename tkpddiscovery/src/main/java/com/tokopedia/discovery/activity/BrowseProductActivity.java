@@ -844,6 +844,25 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         context.startActivity(intent);
     }
 
+    public static void moveToWithoutAnimation(Context context, String depId, String ad_src, String source, String title) {
+        if (context == null)
+            return;
+
+        Intent intent = new Intent(context, BrowseProductActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, depId);
+        bundle.putInt(FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+        bundle.putString(AD_SRC, ad_src);
+        bundle.putString(EXTRA_SOURCE, source);
+        if (title != null) {
+            bundle.putString(EXTRA_TITLE, title);
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+
     public void showLoading(boolean isLoading) {
         progressBar.setIndeterminate(isLoading);
         if (isLoading) {
