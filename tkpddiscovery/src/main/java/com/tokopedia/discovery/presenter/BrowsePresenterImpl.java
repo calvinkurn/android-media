@@ -145,6 +145,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                 }
             }
         }
+        cacheGridType = new LocalCacheHandler(context, TkpdCache.DEFAULT_GRID_SETTINGS);
         retrieveLastGridConfig(browseModel.getParentDepartement());
         if (SessionHandler.isV4Login(context)) {
             String userId = SessionHandler.getLoginID(context);
@@ -179,7 +180,6 @@ public class BrowsePresenterImpl implements BrowsePresenter {
         browseView.initDiscoverySearchView();
 
         cacheGTM = new LocalCacheHandler(context, KEY_GTM);
-        cacheGridType = new LocalCacheHandler(context, TkpdCache.DEFAULT_GRID_SETTINGS);
 
         if (browseModel.alias != null && browseModel.getHotListBannerModel() == null) {
             fetchHotListHeader(browseModel.alias);
