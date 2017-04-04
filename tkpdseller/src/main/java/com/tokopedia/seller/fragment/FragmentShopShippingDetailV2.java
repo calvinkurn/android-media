@@ -208,12 +208,6 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState != null) {
-            isConfirmDone = savedInstanceState.getBoolean(DATAPROCESSORDER, false);
-            if (isConfirmDone) {
-                finishShipping(true);
-            }
-        }
         initVar(savedInstanceState);
         getOrderData();
     }
@@ -271,6 +265,12 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         initCreateView(inflater, container);
+        if (savedInstanceState != null) {
+            isConfirmDone = savedInstanceState.getBoolean(DATAPROCESSORDER, false);
+            if (isConfirmDone) {
+                finishShipping(true);
+            }
+        }
         _subscriptions = RxUtils.getNewCompositeSubIfUnsubscribed(_subscriptions);
         return rootView;
     }
