@@ -220,7 +220,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
         ConfirmBookingRideFragment fragment = ConfirmBookingRideFragment.newInstance(rideProductViewModel);
         Slide slideTransition = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            slideTransition = new Slide(Gravity.END);
+            slideTransition = new Slide(Gravity.RIGHT);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             slideTransition.setDuration(getResources().getInteger(R.integer.anim_duration_medium));
