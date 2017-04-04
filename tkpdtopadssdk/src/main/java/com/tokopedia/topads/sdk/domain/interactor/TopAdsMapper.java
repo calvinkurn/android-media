@@ -8,7 +8,7 @@ import com.tokopedia.topads.sdk.domain.model.Status;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.topads.sdk.network.JsonResponseConverter;
 import com.tokopedia.topads.sdk.network.RawHttpRequestExecutor;
-import com.tokopedia.topads.sdk.base.Constant;
+import com.tokopedia.topads.sdk.base.Config;
 
 import org.json.JSONObject;
 
@@ -44,7 +44,7 @@ public class TopAdsMapper extends Mapper<TopAdsModel> {
 
     private TopAdsModel mappingInvalidResponse() {
         TopAdsModel model = new TopAdsModel();
-        model.setStatus(new Status(Constant.ERROR_CODE_INVALID_RESPONSE, errorMessage));
+        model.setStatus(new Status(Config.ERROR_CODE_INVALID_RESPONSE, errorMessage));
         return model;
     }
 

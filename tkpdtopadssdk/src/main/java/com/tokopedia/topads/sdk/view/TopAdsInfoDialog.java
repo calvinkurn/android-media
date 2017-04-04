@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
+import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 
 /**
@@ -63,7 +64,7 @@ public class TopAdsInfoDialog extends DialogFragment implements View.OnClickList
     public void onClick(View v) {
         if(v.getId()==R.id.readMore) {
             dismiss();
-            String url = "https://www.tokopedia.com/iklan?source=tooltip&medium=android";
+            String url = Config.TOP_ADS_INFO_URL;
             if (infoClickListener != null) {
                 infoClickListener.onInfoClicked();
             } else {
