@@ -60,7 +60,10 @@ public class TrackAwbReturProductSubscriber extends rx.Subscriber<TrackingAwbRet
             model.setDelivered(domainData.isDelivered());
             model.setReceiverName(domainData.getReceiverName());
             model.setShippingRefNum(domainData.getShippingRefNum());
-            model.setTrackHistory(mappingTrackHistory(domainData.getTrackingHistory()));
+            model.setTrackHistory(
+                    domainData.getTrackingHistory() != null ?
+                            mappingTrackHistory(domainData.getTrackingHistory()) : null
+            );
         } else {
             model.setSuccess(false);
             model.setMessageError(domainData != null ? domainData.getMessageError() : null);

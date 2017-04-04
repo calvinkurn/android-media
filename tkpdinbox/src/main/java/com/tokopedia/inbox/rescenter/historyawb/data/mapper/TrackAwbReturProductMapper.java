@@ -30,8 +30,11 @@ public class TrackAwbReturProductMapper implements Func1<Response<TkpdResponse>,
                 domainModel.setSuccess(true);
                 domainModel.setShippingRefNum(trackShipping.getShippingRefNum());
                 domainModel.setReceiverName(trackShipping.getReceiverName());
-                domainModel.setDelivered(trackShipping.getDelivered() == 1);
-                domainModel.setTrackingHistory(mappingTrackingHistory(trackShipping.getTrackHistory()));
+                domainModel.setDelivered(trackShipping.getDelivered() != null && trackShipping.getDelivered() == 1);
+                domainModel.setTrackingHistory(
+                        trackShipping.getTrackHistory() != null && !trackShipping.getTrackHistory().isEmpty() ?
+                                mappingTrackingHistory(trackShipping.getTrackHistory()) : null
+                );
             } else {
                 domainModel.setSuccess(false);
                 domainModel.setMessageError(generateMessageError(response));
