@@ -20,9 +20,13 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.TkpdWebView;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * Created by brilliant.oka on 15/03/17.
@@ -32,6 +36,7 @@ public class BrandsWebViewFragment extends Fragment {
     private static final String EXTRA_URL = "url";
     private static final String BASE_URL = "www.tokopedia.com";
     private static final String BASE_MOBILE_URL = "m.tokopedia.com";
+    private static final String FORMAT_UTF_8 = "UTF-8";
 
     private TkpdWebView webview;
     private ProgressBar progressBar;
@@ -111,7 +116,6 @@ public class BrandsWebViewFragment extends Fragment {
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
         progressBar.setIndeterminate(true);
         clearCache(webview);
-        webview.loadAuthUrlWithFlags(url);
         webview.setWebViewClient(new BrandsWebViewFragment.MyWebClient());
         webview.setWebChromeClient(new BrandsWebViewFragment.MyWebViewClient());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -127,6 +131,11 @@ public class BrandsWebViewFragment extends Fragment {
         webSettings.setBuiltInZoomControls(true);
         optimizeWebView();
         CookieManager.getInstance().setAcceptCookie(true);
+        webview.loadAuthUrlWithFlags(
+                URLGenerator.generateURLSessionLoginV4(
+                        encodeUrl(url), getActivity()
+                )
+        );
         return view;
     }
 
@@ -162,7 +171,9 @@ public class BrandsWebViewFragment extends Fragment {
         if (((Uri.parse(url).getHost().contains(BASE_URL))
                 || Uri.parse(url).getHost().contains(BASE_MOBILE_URL))
                 && !url.endsWith(".pl")
-                && !url.contains("login")) {
+                && !url.contains("login")
+                && !url.contains("official-store")
+                && !url.contains("appauth")) {
             switch ((DeepLinkChecker.getDeepLinkType(url))) {
                 case DeepLinkChecker.BROWSE:
                     DeepLinkChecker.openBrowse(url, getActivity());
@@ -188,5 +199,16 @@ public class BrandsWebViewFragment extends Fragment {
         } else {
             return false;
         }
+    }
+
+    private String encodeUrl(String url) {
+        String encodedUrl;
+        try {
+            encodedUrl = URLEncoder.encode(url, FORMAT_UTF_8);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return encodedUrl;
     }
 }
