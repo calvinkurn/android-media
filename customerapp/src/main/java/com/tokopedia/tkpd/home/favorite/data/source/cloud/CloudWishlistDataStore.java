@@ -35,16 +35,6 @@ public class CloudWishlistDataStore {
                 .map(new WishlistMapper(context, gson));
     }
 
-    public Action1<Response<String>> saveToCache() {
-
-        return new Action1<Response<String>>() {
-            @Override
-            public void call(Response<String> response) {
-                saveResponseToCache(response);
-            }
-        };
-    }
-
 
     private Action1<Response<String>> validateError() {
         return new Action1<Response<String>>() {

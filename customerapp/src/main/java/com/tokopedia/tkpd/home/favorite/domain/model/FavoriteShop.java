@@ -13,6 +13,7 @@ public class FavoriteShop {
     private boolean isDataValid;
     private String message;
     private List<FavoriteShopItem> data;
+    private boolean isNetworkError;
     private PagingHandler.PagingHandlerModel pagingModel;
 
     public void setDataIsValid(boolean isDataValid) {
@@ -51,5 +52,13 @@ public class FavoriteShop {
 
     public void setPagingModel(PagingHandler.PagingHandlerModel pagingModel) {
         this.pagingModel = pagingModel;
+    }
+
+    public boolean isNetworkError() {
+        return isNetworkError;
+    }
+
+    public void setNetworkError(boolean networkError) {
+        isNetworkError = networkError;
     }
 }

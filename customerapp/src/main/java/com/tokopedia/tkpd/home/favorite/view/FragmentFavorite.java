@@ -71,7 +71,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     private EndlessRecyclerviewListener recylerviewScrollListener;
 
     private SnackbarRetry messageSnackbar;
-    private boolean isWishlistHasToShowMessageFailed;
+    private boolean isHasToShowMessageFailed;
 
 
     @Override
@@ -126,7 +126,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     public void setUserVisibleHint(boolean isVisibleToUser) {
         try {
             if (isVisibleToUser && isAdded() && getActivity() != null) {
-                if (messageSnackbar != null && isWishlistHasToShowMessageFailed) {
+                if (messageSnackbar != null && isHasToShowMessageFailed) {
                     messageSnackbar.showRetrySnackbar();
                 }
                 ScreenTracking.screen(getScreenName());
@@ -167,7 +167,11 @@ public class FragmentFavorite extends BaseDaggerFragment
         final int indexSecondAdapater = 1;
         if (isAdapterNotEmpty()) {
             if (isFirstPositonWishlist(indexFirstAdapter)) {
-                favoriteAdapter.setElement(indexSecondAdapater, shopViewModel);
+                if (favoriteAdapter.getItemCount() >= 2) {
+                    favoriteAdapter.setElement(indexSecondAdapater, shopViewModel);
+                } else {
+                    favoriteAdapter.addElement(shopViewModel);
+                }
             } else {
                 favoriteAdapter.setElement(indexFirstAdapter, shopViewModel);
             }
@@ -232,12 +236,12 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     @Override
     public void hasToShowWishlistFailedMessage() {
-        isWishlistHasToShowMessageFailed = true;
+        isHasToShowMessageFailed = true;
     }
 
     @Override
     public void hasToDismissWishlistFailedMessage() {
-        isWishlistHasToShowMessageFailed = false;
+        isHasToShowMessageFailed = false;
     }
 
     @Override

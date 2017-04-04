@@ -233,15 +233,27 @@ public class FavoritePresenter
             }
 
             if (dataFavorite != null
-                    && dataFavorite.getFavoriteShop() != null
-                    && dataFavorite.getFavoriteShop().getData() != null) {
+                    && dataFavorite.getFavoriteShop() != null) {
+//                && dataFavorite.getFavoriteShop().getData() != null
 
-                setNextPaging(dataFavorite.getFavoriteShop().getPagingModel());
 
-                for (FavoriteShopItem favoriteShopItem : dataFavorite.getFavoriteShop().getData()) {
-                    favoriteShopItem.setIsFav(true);
-                    elementList.add(prepareDataFavoriteShop(favoriteShopItem));
+                if (dataFavorite.getFavoriteShop().isNetworkError()) {
+                    getView().hasToShowWishlistFailedMessage();
+                } else {
+                    getView().hasToDismissWishlistFailedMessage();
                 }
+                if (dataFavorite.getFavoriteShop().getData() != null) {
+                    setNextPaging(dataFavorite.getFavoriteShop().getPagingModel());
+                    if (dataFavorite.getFavoriteShop().getData().size() > 0) {
+                        for (FavoriteShopItem favoriteShopItem
+                                : dataFavorite.getFavoriteShop().getData()) {
+
+                            favoriteShopItem.setIsFav(true);
+                            elementList.add(prepareDataFavoriteShop(favoriteShopItem));
+                        }
+                    }
+                }
+
             }
             return elementList;
         }

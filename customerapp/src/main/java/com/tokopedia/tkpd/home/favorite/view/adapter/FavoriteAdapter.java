@@ -46,7 +46,6 @@ public class FavoriteAdapter extends BaseAdapter {
     public void setElement(int position, Visitable element) {
         visitables.set(position, element);
         notifyDataSetChanged();
-//        notifyItemInserted(position);
     }
 
     public void setElements(int position, List<Visitable> data) {
@@ -56,6 +55,7 @@ public class FavoriteAdapter extends BaseAdapter {
 
     public void addElement(Visitable element) {
         visitables.add(element);
+        notifyDataSetChanged();
     }
 
     public void setElement(List<Visitable> data) {

@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.home.favorite.data;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.base.common.service.MojitoService;
@@ -52,19 +51,11 @@ public class FavoriteFactory {
     Observable<DomainWishlist> getWishlist(TKPDMapParam<String, Object> param) {
 
         return cloudWishlistObservable(param)
-                .onExceptionResumeNext(localWishlistObservable()
-                        .doOnNext(addWishlistNetworkError()));
+                .onExceptionResumeNext(
+                        localWishlistObservable().doOnNext(setWishlistNetworkError()));
 
     }
 
-    private Action1<DomainWishlist> addWishlistNetworkError() {
-        return new Action1<DomainWishlist>() {
-            @Override
-            public void call(DomainWishlist domainWishlist) {
-                domainWishlist.setNetworkError(true);
-            }
-        };
-    }
 
 
     Observable<DomainWishlist> getFreshWishlist(TKPDMapParam<String, Object> param) {
@@ -79,8 +70,9 @@ public class FavoriteFactory {
 
 
     Observable<FavoriteShop> getFavoriteShopFirstPage(TKPDMapParam<String, String> params) {
-        return Observable.concat(getLocalFavoriteObservable(), getCloudFavoriteObservable(params))
-                .first(isLocalFavoriteValid());
+        return getCloudFavoriteObservable(params)
+                .onExceptionResumeNext(
+                        getLocalFavoriteObservable().doOnNext(setFavoriteNetworkError()));
     }
 
 
@@ -143,25 +135,20 @@ public class FavoriteFactory {
         return new LocalWishlistDataSource(context, gson, cacheManager).getWishlist();
     }
 
-    private Func1<DomainWishlist, Boolean> isLocalWishlistValid() {
-        return new Func1<DomainWishlist, Boolean>() {
+    private Action1<DomainWishlist> setWishlistNetworkError() {
+        return new Action1<DomainWishlist>() {
             @Override
-            public Boolean call(DomainWishlist domainWishlist) {
-                return domainWishlist != null
-                        && domainWishlist.isValid()
-                        && domainWishlist.getData() != null;
+            public void call(DomainWishlist domainWishlist) {
+                domainWishlist.setNetworkError(true);
             }
         };
     }
 
-    @NonNull
-    private Func1<FavoriteShop, Boolean> isLocalFavoriteValid() {
-        return new Func1<FavoriteShop, Boolean>() {
+    private Action1<FavoriteShop> setFavoriteNetworkError() {
+        return new Action1<FavoriteShop>() {
             @Override
-            public Boolean call(FavoriteShop favoriteShop) {
-                return favoriteShop != null
-                        && favoriteShop.isDataValid()
-                        && favoriteShop.getData() != null;
+            public void call(FavoriteShop favoriteShop) {
+                favoriteShop.setNetworkError(true);
             }
         };
     }

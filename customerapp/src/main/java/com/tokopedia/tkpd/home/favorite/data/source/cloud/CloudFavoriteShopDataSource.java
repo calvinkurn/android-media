@@ -38,7 +38,6 @@ public class CloudFavoriteShopDataSource {
         if (isMustSaveToCache) {
             return serviceV4.getFavoriteShop(paramWithAuth)
                     .doOnNext(validateError())
-                    .doOnNext(saveToCache())
                     .map(new FavoriteShopMapper(context, gson));
         } else {
             return serviceV4.getFavoriteShop(paramWithAuth)
@@ -52,18 +51,14 @@ public class CloudFavoriteShopDataSource {
                 .map(new AddFavoriteShopMapper(context, gson));
     }
 
-    private Action1<Response<String>> saveToCache() {
-        return new Action1<Response<String>>() {
-            @Override
-            public void call(Response<String> response) {
-                int tenMinute = 600000;
-                new GlobalCacheManager()
-                        .setKey(TkpdCache.Key.FAVORITE_SHOP)
-                        .setCacheDuration(tenMinute)
-                        .setValue(response.body())
-                        .store();
-            }
-        };
+
+    private void saveResponseToCache(Response<String> response) {
+        int tenMinute = 600000;
+        new GlobalCacheManager()
+                .setKey(TkpdCache.Key.FAVORITE_SHOP)
+                .setCacheDuration(tenMinute)
+                .setValue(response.body())
+                .store();
     }
 
     private Action1<Response<String>> validateError() {
@@ -71,11 +66,11 @@ public class CloudFavoriteShopDataSource {
             @Override
             public void call(Response<String> stringResponse) {
                 if (stringResponse.code() >= 500 && stringResponse.code() < 600) {
-//                    throw new RuntimeException("Server Error!");
-                    Observable.error(new RuntimeException("Server Error!"));
+                    throw new RuntimeException("Server Error!");
                 } else if (stringResponse.code() >= 400 && stringResponse.code() < 500) {
-//                    throw new RuntimeException("Client Error!");
-                    Observable.error(new RuntimeException("Server Error!"));
+                    throw new RuntimeException("Client Error!");
+                } else {
+                    saveResponseToCache(stringResponse);
                 }
             }
         };
