@@ -1,5 +1,6 @@
 package com.tokopedia.digital.cart.listener;
 
+import com.android.annotations.Nullable;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 import com.tokopedia.digital.cart.model.CheckoutDataParameter;
 import com.tokopedia.digital.cart.model.CheckoutDigitalData;
@@ -73,7 +74,7 @@ public interface IDigitalCartView extends IBaseView {
 
     void closeViewWithMessageAlert(String message);
 
-    void interruptRequestTokenVerification();
+    void interruptRequestTokenVerification(@Nullable CartDigitalInfoData cartDigitalInfoData);
 
 
     String getUserId();
@@ -95,4 +96,6 @@ public interface IDigitalCartView extends IBaseView {
     int getProductId();
 
     String getIdemPotencyKey();
+
+
 }

@@ -11,6 +11,7 @@ import android.os.Parcelable;
 public class CheckoutDataParameter implements Parcelable {
 
     private String voucherCode;
+    private String cartId;
     private long transactionAmount;
     private String ipAddress;
     private String userAgent;
@@ -22,6 +23,7 @@ public class CheckoutDataParameter implements Parcelable {
 
     private CheckoutDataParameter(Builder builder) {
         setVoucherCode(builder.voucherCode);
+        setCartId(builder.cartId);
         setTransactionAmount(builder.transactionAmount);
         setIpAddress(builder.ipAddress);
         setUserAgent(builder.userAgent);
@@ -34,6 +36,14 @@ public class CheckoutDataParameter implements Parcelable {
 
     public String getVoucherCode() {
         return voucherCode;
+    }
+
+    public String getCartId() {
+        return cartId;
+    }
+
+    public void setCartId(String cartId) {
+        this.cartId = cartId;
     }
 
     public void setVoucherCode(String voucherCode) {
@@ -107,6 +117,7 @@ public class CheckoutDataParameter implements Parcelable {
 
     public static final class Builder {
         private String voucherCode;
+        private String cartId;
         private long transactionAmount;
         private String ipAddress;
         private String userAgent;
@@ -133,6 +144,11 @@ public class CheckoutDataParameter implements Parcelable {
 
         public Builder voucherCode(String val) {
             voucherCode = val;
+            return this;
+        }
+
+        public Builder cartId(String val) {
+            cartId = val;
             return this;
         }
 
@@ -194,6 +210,7 @@ public class CheckoutDataParameter implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.voucherCode);
+        dest.writeString(this.cartId);
         dest.writeLong(this.transactionAmount);
         dest.writeString(this.ipAddress);
         dest.writeString(this.userAgent);
@@ -206,6 +223,7 @@ public class CheckoutDataParameter implements Parcelable {
 
     protected CheckoutDataParameter(Parcel in) {
         this.voucherCode = in.readString();
+        this.cartId = in.readString();
         this.transactionAmount = in.readLong();
         this.ipAddress = in.readString();
         this.userAgent = in.readString();
@@ -227,4 +245,5 @@ public class CheckoutDataParameter implements Parcelable {
             return new CheckoutDataParameter[size];
         }
     };
+
 }

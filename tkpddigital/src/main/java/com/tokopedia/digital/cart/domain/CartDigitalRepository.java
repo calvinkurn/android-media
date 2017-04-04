@@ -10,6 +10,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
 import com.tokopedia.digital.cart.data.entity.requestbody.topcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.cart.data.entity.response.ResponseCartData;
+import com.tokopedia.digital.cart.data.entity.response.ResponsePatchOtpSuccess;
 import com.tokopedia.digital.cart.data.mapper.ICartMapperData;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 
@@ -60,23 +61,32 @@ public class CartDigitalRepository implements ICartDigitalRepository {
                     public Observable<CartDigitalInfoData> call(
                             Response<TkpdDigitalResponse> tkpdDigitalResponseResponse
                     ) {
-                        if (tkpdDigitalResponseResponse.isSuccessful()) {
-                            return digitalEndpointService.getApi().getCart(paramGetCart)
-                                    .map(new Func1<Response<TkpdDigitalResponse>, CartDigitalInfoData>() {
-                                        @Override
-                                        public CartDigitalInfoData call(
-                                                Response<TkpdDigitalResponse> tkpdDigitalResponseResponse
-                                        ) {
-                                            return cartMapperData.transformCartInfoData(
-                                                    tkpdDigitalResponseResponse.body().convertDataObj(
-                                                            ResponseCartData.class
-                                                    )
-                                            );
-                                        }
-                                    });
-                        } else {
-                            throw new RuntimeException("Gagal COY!!!!!!");
+                        if (tkpdDigitalResponseResponse.code() == 200) {
+                            ResponsePatchOtpSuccess responsePatchOtpSuccess =
+                                    tkpdDigitalResponseResponse.body().convertDataObj(
+                                            ResponsePatchOtpSuccess.class
+                                    );
+                            if (responsePatchOtpSuccess.isSuccess()) {
+                                TKPDMapParam<String, String> newParam = new TKPDMapParam<>();
+                                newParam.put("category_id", paramGetCart.get("category_id"));
+                                return digitalEndpointService.getApi().getCart(
+                                        paramGetCart
+                                )
+                                        .map(new Func1<Response<TkpdDigitalResponse>, CartDigitalInfoData>() {
+                                            @Override
+                                            public CartDigitalInfoData call(
+                                                    Response<TkpdDigitalResponse> tkpdDigitalResponseResponse
+                                            ) {
+                                                return cartMapperData.transformCartInfoData(
+                                                        tkpdDigitalResponseResponse.body().convertDataObj(
+                                                                ResponseCartData.class
+                                                        )
+                                                );
+                                            }
+                                        });
+                            }
                         }
+                        throw new RuntimeException("Gagal COY!!!!!!");
                     }
                 });
     }

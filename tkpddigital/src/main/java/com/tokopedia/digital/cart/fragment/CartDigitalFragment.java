@@ -7,6 +7,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.widget.NestedScrollView;
 import android.util.Log;
@@ -305,6 +306,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     private void buildCheckoutData(CartDigitalInfoData cartDigitalInfoData) {
+        checkoutDataBuilder.cartId(cartDigitalInfoData.getId());
         checkoutDataBuilder.accessToken(getAccountToken());
         checkoutDataBuilder.walletRefreshToken(getWalletRefreshToken());
         checkoutDataBuilder.ipAddress(DeviceUtil.getLocalIpAddress());
@@ -556,7 +558,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
-    public void interruptRequestTokenVerification() {
+    public void interruptRequestTokenVerification(@Nullable CartDigitalInfoData cartDigitalInfoData) {
+        if (cartDigitalInfoData != null) {
+            this.cartDigitalInfoDataState = cartDigitalInfoData;
+            buildCheckoutData(cartDigitalInfoData);
+        }
         navigateToActivityRequest(
                 OtpVerificationActivity.newInstance(getActivity()),
                 OtpVerificationActivity.REQUEST_CODE

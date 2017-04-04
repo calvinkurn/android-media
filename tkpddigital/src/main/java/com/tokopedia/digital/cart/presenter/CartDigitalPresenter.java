@@ -94,7 +94,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     public void processToCheckout() {
         CheckoutDataParameter checkoutData = view.getCheckoutData();
         if (checkoutData.isNeedOtp()) {
-            view.interruptRequestTokenVerification();
+            view.interruptRequestTokenVerification(null);
             return;
         }
         view.showProgressLoading();
@@ -108,7 +108,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     public void processToInstantCheckout() {
         CheckoutDataParameter checkoutData = view.getCheckoutData();
         if (checkoutData.isNeedOtp()) {
-            view.interruptRequestTokenVerification();
+            view.interruptRequestTokenVerification(null);
             return;
         }
         cartDigitalInteractor.instantCheckout(
@@ -123,7 +123,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         CheckoutDataParameter checkoutDataParameter = view.getCheckoutData();
         RequestBodyOtpSuccess requestBodyOtpSuccess = new RequestBodyOtpSuccess();
         requestBodyOtpSuccess.setType("cart");
-        requestBodyOtpSuccess.setId(checkoutDataParameter.getRelationId());
+        requestBodyOtpSuccess.setId(checkoutDataParameter.getCartId());
         com.tokopedia.digital.cart.data.entity.requestbody.topcart.Attributes attributes =
                 new com.tokopedia.digital.cart.data.entity.requestbody.topcart.Attributes();
         attributes.setIpAddress(DeviceUtil.getLocalIpAddress());
@@ -322,7 +322,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
             public void onNext(CartDigitalInfoData cartDigitalInfoData) {
                 if (cartDigitalInfoData.getAttributes().isNeedOtp()) {
                     view.clearContentRendered();
-                    view.interruptRequestTokenVerification();
+                    view.interruptRequestTokenVerification(cartDigitalInfoData);
                 } else {
                     view.renderCartDigitalInfoData(cartDigitalInfoData);
                 }
