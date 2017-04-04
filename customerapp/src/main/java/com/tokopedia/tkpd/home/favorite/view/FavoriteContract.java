@@ -40,7 +40,9 @@ interface FavoriteContract {
 
         void showErrorLoadData();
 
+        void hasToShowWishlistFailedMessage();
 
+        void hasToDismissWishlistFailedMessage();
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -49,10 +49,20 @@ public class FavoriteAdapter extends BaseAdapter {
 //        notifyItemInserted(position);
     }
 
+    public void setElements(int position, List<Visitable> data) {
+        visitables.addAll(position, data);
+        notifyDataSetChanged();
+    }
+
+    public void addElement(Visitable element) {
+        visitables.add(element);
+    }
+
     public void setElement(List<Visitable> data) {
         visitables.addAll(data);
         notifyDataSetChanged();
     }
+
 
     public void clearData() {
         visitables.clear();

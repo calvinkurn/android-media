@@ -22,6 +22,7 @@ import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShopItem;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.WishListBadge;
+import com.tokopedia.tkpd.home.favorite.view.viewmodel.EmptyWishlistViewModel;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopItem;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopViewModel;
@@ -212,12 +213,25 @@ public class FavoritePresenter
         @NonNull
         private List<Visitable> getDataFavoriteViewModel(DataFavorite dataFavorite) {
             List<Visitable> elementList = new ArrayList<>();
-            if (dataFavorite != null
-                    && dataFavorite.getWishListData() != null
-                    && dataFavorite.getWishListData().getData() != null) {
 
-                elementList.add(prepareDataWishlist(dataFavorite.getWishListData()));
+            if (dataFavorite != null
+                    && dataFavorite.getWishListData() != null) {
+
+                if (dataFavorite.getWishListData().isNetworkError()) {
+                    getView().hasToShowWishlistFailedMessage();
+                } else {
+                    getView().hasToDismissWishlistFailedMessage();
+                }
+
+                if (dataFavorite.getWishListData().getData() != null) {
+                    if (dataFavorite.getWishListData().getData().size() > 0) {
+                        elementList.add(prepareDataWishlist(dataFavorite.getWishListData()));
+                    } else {
+                        elementList.add(new EmptyWishlistViewModel());
+                    }
+                }
             }
+
             if (dataFavorite != null
                     && dataFavorite.getFavoriteShop() != null
                     && dataFavorite.getFavoriteShop().getData() != null) {

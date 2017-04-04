@@ -22,6 +22,7 @@ import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -50,9 +51,19 @@ public class FavoriteFactory {
 
     Observable<DomainWishlist> getWishlist(TKPDMapParam<String, Object> param) {
 
-        return Observable.concat(localWishlistObservable(), cloudWishlistObservable(param))
-                .first(isLocalWishlistValid());
+        return cloudWishlistObservable(param)
+                .onExceptionResumeNext(localWishlistObservable()
+                        .doOnNext(addWishlistNetworkError()));
 
+    }
+
+    private Action1<DomainWishlist> addWishlistNetworkError() {
+        return new Action1<DomainWishlist>() {
+            @Override
+            public void call(DomainWishlist domainWishlist) {
+                domainWishlist.setNetworkError(true);
+            }
+        };
     }
 
 

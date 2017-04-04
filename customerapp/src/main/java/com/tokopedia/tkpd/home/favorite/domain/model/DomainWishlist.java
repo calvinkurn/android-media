@@ -11,6 +11,7 @@ public class DomainWishlist {
     private boolean isValid;
     private String message;
     private List<DataWishlist> dataWishlists;
+    private boolean isNetworkError;
 
     public void setDataIsValid(boolean isValid) {
         this.isValid = isValid;
@@ -28,10 +29,6 @@ public class DomainWishlist {
         return message;
     }
 
-    public void setValid(boolean valid) {
-        isValid = valid;
-    }
-
     public List<DataWishlist> getData() {
         return dataWishlists;
     }
@@ -39,4 +36,21 @@ public class DomainWishlist {
     public void setData(List<DataWishlist> data) {
         dataWishlists = data;
     }
+
+    public List<DataWishlist> getDataWishlists() {
+        return dataWishlists;
+    }
+
+    public void setDataWishlists(List<DataWishlist> dataWishlists) {
+        this.dataWishlists = dataWishlists;
+    }
+
+    public boolean isNetworkError() {
+        return isNetworkError;
+    }
+
+    public void setNetworkError(boolean networkError) {
+        isNetworkError = networkError;
+    }
+
 }

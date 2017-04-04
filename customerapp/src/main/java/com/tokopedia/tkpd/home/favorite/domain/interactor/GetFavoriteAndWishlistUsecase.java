@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.home.favorite.domain.interactor;
 
+import android.support.annotation.NonNull;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -9,7 +11,6 @@ import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 
 import rx.Observable;
-import rx.functions.Func1;
 import rx.functions.Func2;
 
 
@@ -38,12 +39,19 @@ public class GetFavoriteAndWishlistUsecase extends UseCase<DataFavorite> {
 
                     @Override
                     public DataFavorite call(DomainWishlist domainWishlist, FavoriteShop favoriteShop) {
-                        DataFavorite dataFavorite = new DataFavorite();
-                        dataFavorite.setWishListData(domainWishlist);
-                        dataFavorite.setFavoriteShop(favoriteShop);
-                        return dataFavorite;
+                        return validateDataFavorite(domainWishlist, favoriteShop);
                     }
                 });
+    }
+
+    @NonNull
+    private DataFavorite validateDataFavorite(DomainWishlist domainWishlist,
+                                              FavoriteShop favoriteShop) {
+
+        DataFavorite dataFavorite = new DataFavorite();
+        dataFavorite.setWishListData(domainWishlist);
+        dataFavorite.setFavoriteShop(favoriteShop);
+        return dataFavorite;
     }
 
     private Observable<FavoriteShop> getFavoriteShop() {
@@ -55,13 +63,7 @@ public class GetFavoriteAndWishlistUsecase extends UseCase<DataFavorite> {
     private Observable<DomainWishlist> getWishlist() {
         RequestParams params = GetWishlistUsecase.getDefaultParams();
         params.putBoolean(GetWishlistUsecase.KEY_IS_FORCE_REFRESH, false);
-        return getWishlistUsecase.createObservable(params)
-                .onErrorReturn(new Func1<Throwable, DomainWishlist>() {
-                    @Override
-                    public DomainWishlist call(Throwable throwable) {
-                        return new DomainWishlist();
-                    }
-                });
+        return getWishlistUsecase.createObservable(params);
     }
 
 

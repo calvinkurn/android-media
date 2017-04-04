@@ -22,10 +22,12 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.di.component.DaggerFavoriteComponent;
 import com.tokopedia.tkpd.home.favorite.view.adapter.FavoriteAdapter;
 import com.tokopedia.tkpd.home.favorite.view.adapter.FavoriteAdapterTypeFactory;
+import com.tokopedia.tkpd.home.favorite.view.adapter.viewholders.EmptyWishslistHolder;
 import com.tokopedia.tkpd.home.favorite.view.adapter.viewholders.WishlistViewHolder;
 import com.tokopedia.tkpd.home.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
@@ -67,6 +69,9 @@ public class FragmentFavorite extends BaseDaggerFragment
     private Unbinder unbinder;
     private FavoriteAdapter favoriteAdapter;
     private EndlessRecyclerviewListener recylerviewScrollListener;
+
+    private SnackbarRetry messageSnackbar;
+    private boolean isWishlistHasToShowMessageFailed;
 
 
     @Override
@@ -121,8 +126,15 @@ public class FragmentFavorite extends BaseDaggerFragment
     public void setUserVisibleHint(boolean isVisibleToUser) {
         try {
             if (isVisibleToUser && isAdded() && getActivity() != null) {
+                if (messageSnackbar != null && isWishlistHasToShowMessageFailed) {
+                    messageSnackbar.showRetrySnackbar();
+                }
                 ScreenTracking.screen(getScreenName());
                 favoritePresenter.loadDataTopAdsShop();
+            } else {
+                if (messageSnackbar != null) {
+                    messageSnackbar.hideRetrySnackbar();
+                }
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
@@ -219,6 +231,16 @@ public class FragmentFavorite extends BaseDaggerFragment
     }
 
     @Override
+    public void hasToShowWishlistFailedMessage() {
+        isWishlistHasToShowMessageFailed = true;
+    }
+
+    @Override
+    public void hasToDismissWishlistFailedMessage() {
+        isWishlistHasToShowMessageFailed = false;
+    }
+
+    @Override
     public boolean isLoading() {
         return favoriteAdapter.isLoading();
     }
@@ -265,10 +287,19 @@ public class FragmentFavorite extends BaseDaggerFragment
         recyclerView.addOnScrollListener(recylerviewScrollListener);
         swipeToRefresh.setOnRefreshListener(this);
 
+        messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        favoritePresenter.refreshAllDataFavoritePage();
+                    }
+                });
+
     }
 
     private boolean isFirstPositonWishlist(int indexFirstAdapter) {
-        return favoriteAdapter.getItemViewType(indexFirstAdapter) == WishlistViewHolder.LAYOUT;
+        return favoriteAdapter.getItemViewType(indexFirstAdapter) == WishlistViewHolder.LAYOUT
+                || favoriteAdapter.getItemViewType(indexFirstAdapter) == EmptyWishslistHolder.LAYOUT;
     }
 
     private boolean isAdapterNotEmpty() {
