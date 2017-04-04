@@ -657,8 +657,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
     }
 
     private void retrieveLastGridConfig(final String rootDepartmentId) {
-        Subscription subscription = Observable
-                .create(new Observable.OnSubscribe<String>() {
+        Observable.create(new Observable.OnSubscribe<String>() {
                     @Override
                     public void call(Subscriber<? super String> subscriber) {
                         String config = cacheGridType.getString(rootDepartmentId);
@@ -707,12 +706,6 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                         }
                     }
                 });
-        getCompositeSubscription().add(subscription);
-    }
-
-    private CompositeSubscription getCompositeSubscription() {
-        compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
-        return compositeSubscription;
     }
 
     private void saveLastGridConfig(String departmentId, String gridType) {
