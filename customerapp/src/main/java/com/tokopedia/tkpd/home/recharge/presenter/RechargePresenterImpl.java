@@ -128,6 +128,8 @@ public class RechargePresenterImpl implements RechargePresenter,
         if (!listProduct.isEmpty()) {
             processOperatorById(listProduct);
             view.renderDataProducts(listProduct);
+        } else {
+            view.hideFormAndImageOperator();
         }
     }
 
