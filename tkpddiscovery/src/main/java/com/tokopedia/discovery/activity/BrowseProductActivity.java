@@ -192,12 +192,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        browsePresenter.restorePresenterData();
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         browsePresenter.onSaveInstanceState(outState);

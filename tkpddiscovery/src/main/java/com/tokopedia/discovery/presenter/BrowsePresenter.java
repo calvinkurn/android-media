@@ -13,7 +13,6 @@ import com.tokopedia.core.router.discovery.BrowseProductRouter;
 
 public interface BrowsePresenter {
     void initPresenterData(Bundle savedInstanceState, Intent intent);
-    void restorePresenterData();
     void disposePresenterData();
 
     void onSaveInstanceState(Bundle outState);

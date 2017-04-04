@@ -201,11 +201,6 @@ public class BrowsePresenterImpl implements BrowsePresenter {
     }
 
     @Override
-    public void restorePresenterData() {
-        RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
-    }
-
-    @Override
     public void disposePresenterData() {
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
     }
@@ -712,8 +707,12 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                         }
                     }
                 });
+        getCompositeSubscription().add(subscription);
+    }
 
-        compositeSubscription.add(subscription);
+    private CompositeSubscription getCompositeSubscription() {
+        compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
+        return compositeSubscription;
     }
 
     private void saveLastGridConfig(String departmentId, String gridType) {
