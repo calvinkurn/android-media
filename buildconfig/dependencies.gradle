@@ -54,7 +54,8 @@ ext {
             gcm : "com.google.android.gms:play-services-gcm:${playServiceVersion}",
             firebase : "com.google.firebase:firebase-messaging:${playServiceVersion}",
             location : "com.google.android.gms:play-services-location:${playServiceVersion}",
-            maps : "com.google.android.gms:play-services-maps:${playServiceVersion}"
+            maps : "com.google.android.gms:play-services-maps:${playServiceVersion}",
+            auth : "com.google.android.gms:play-services-auth:${playServiceVersion}"
     ]
 
     butterKnifeDependencies = [

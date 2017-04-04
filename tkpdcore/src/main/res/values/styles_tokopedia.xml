@@ -343,4 +343,12 @@
         <item name="android:minHeight">48dp</item>
         <item name="android:maxHeight">48dp</item>
     </style>
+
+    <style name="DialogTheme" parent="Theme.AppCompat.Dialog">
+
+        <!-- No backgrounds, titles or window float -->
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/transparent</item>
+
+    </style>
 </resources>
