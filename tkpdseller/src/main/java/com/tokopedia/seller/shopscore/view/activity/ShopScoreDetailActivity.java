@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -20,6 +21,12 @@ public class ShopScoreDetailActivity extends BasePresenterActivity implements Sh
     private static final String SELLER_CENTER_LINK = "https://seller.tokopedia.com/";
     private static final String SHOP_SCORE_INFORMATION = "https://help.tokopedia.com/hc/en-us/articles/115000854466-Performa-Toko";
     private FragmentManager fragmentManager;
+
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_SELLER_SHOP_SCORE;
+    }
 
     @Override
     protected void setupURIPass(Uri data) {

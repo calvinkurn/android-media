@@ -82,6 +82,7 @@ public interface AppEventTracking {
         String MESSAGE_SHOP = "clickMessageShop";
         String FAVORITE_SHOP = "clickFavoriteShop";
         String TOP_SELLER = "clickTopSeller";
+        String SLIDE_BANNER = "sliderBanner";
 
         String SHOP_MANAGE = "clickManageShop";
         String NOTES = "clickNotes";
@@ -166,6 +167,7 @@ public interface AppEventTracking {
         String CATEGORY_PRODUCT = "Kategori";
         String GM_SWITCHER = "GM Switcher";
         String PUSH_NOTIFICATION = "Push Notification";
+        String SLIDER = "Slider";
     }
 
     interface Action {

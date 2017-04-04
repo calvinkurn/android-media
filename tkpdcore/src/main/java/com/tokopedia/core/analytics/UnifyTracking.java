@@ -1402,4 +1402,13 @@ public class UnifyTracking extends TrackingUtils {
                 label
         ).getEvent());
     }
+
+    public static void eventSlideBannerClicked(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SLIDE_BANNER,
+                AppEventTracking.Category.SLIDER,
+                AppEventTracking.Action.CLICK,
+                label
+        ).getEvent());
+    }
 }
