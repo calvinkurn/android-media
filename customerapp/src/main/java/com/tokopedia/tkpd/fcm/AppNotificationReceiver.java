@@ -36,16 +36,6 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
         mNotificationAnalyticsReceiver = new NotificationAnalyticsReceiver();
     }
 
-    @Override
-    public void onMoengageNotificationReceived(RemoteMessage message) {
-        CommonUtils.dumper("FCM messaging moengage " + message.getData().toString());
-        if(message.getData().containsKey(Constants.ARG_NOTIFICATION_APPLINK)){
-            Map<String, String> appLinkData = message.getData();
-            appLinkData.put("origin","moengage");
-            mAppNotificationReceiverUIBackground.notifyReceiverBackgroundMessage(Observable.just(GCMUtils.convertMap(appLinkData)));
-        }
-    }
-
     public void onNotificationReceived(String from, Bundle bundle) {
         CommonUtils.dumper("FCM messaging " + bundle.toString());
         if(bundle.containsKey(Constants.ARG_NOTIFICATION_APPLINK)) {
