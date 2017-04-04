@@ -316,7 +316,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         this.totalLoyaltyBalance = loyaltyAmountIDR;
         this.totalLoyaltyPoint = loyaltyPoint;
         tvLoyaltyBalance.setText("(" + loyaltyAmountIDR + ")");
-        LoyaltyPoint.setText(": " + loyaltyPoint + " points");
+        LoyaltyPoint.setText(": " + loyaltyPoint + " " + pluralizeGrammar("point", loyaltyPoint));
         holderLoyaltyBalance.setVisibility(View.VISIBLE);
     }
 
@@ -881,5 +881,18 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 dialog.dismiss();
             }
         });
+    }
+
+    private String pluralizeGrammar(String noun, String amount) {
+        int convertedAmount;
+        try {
+            convertedAmount = Integer.parseInt(amount);
+        } catch (Exception e) {
+            convertedAmount = 0;
+        }
+        if (convertedAmount > 1) {
+            return noun+"s";
+        }
+        return noun;
     }
 }
