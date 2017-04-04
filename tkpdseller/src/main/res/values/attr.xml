@@ -21,6 +21,7 @@
         </attr>
         <attr name="content_small" format="boolean"/>
         <attr name="switch_enable" format="boolean"/>
+        <attr name="label_show_arrow" format="boolean"/>
     </declare-styleable>
     <declare-styleable name="loader_view">
         <attr name="width_weight" format="float" />

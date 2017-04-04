@@ -163,6 +163,13 @@
         </activity>
 
         <activity
+            android:name=".product.view.activity.ProductAddActivity"
+            android:label="@string/title_activity_add_product"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3">
+        </activity>
+
+        <activity
             android:name=".myproduct.ProductSocMedActivity"
             android:label="Add Product Social Media"
             android:screenOrientation="portrait"

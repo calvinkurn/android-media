@@ -29,6 +29,7 @@ public class TopAdsLabelView extends FrameLayout {
     private int contentTextStyleValue;
     private int titleTextStyleValue;
     private boolean contentSmall;
+    private boolean showArrow;
 
     public TopAdsLabelView(Context context) {
         super(context);
@@ -55,6 +56,7 @@ public class TopAdsLabelView extends FrameLayout {
             contentTextStyleValue = styledAttributes.getInt(R.styleable.TopAdsLabelView_content_textStyle, Typeface.NORMAL);
             titleTextStyleValue = styledAttributes.getInt(R.styleable.TopAdsLabelView_title_textStyle, Typeface.NORMAL);
             contentSmall = styledAttributes.getBoolean(R.styleable.TopAdsLabelView_content_small, false);
+            showArrow = styledAttributes.getBoolean(R.styleable.TopAdsLabelView_label_show_arrow, false);
         } finally {
             styledAttributes.recycle();
         }
@@ -71,6 +73,7 @@ public class TopAdsLabelView extends FrameLayout {
         if(contentSmall){
             setContentSmall();
         }
+        setVisibleArrow(showArrow);
         invalidate();
         requestLayout();
     }
