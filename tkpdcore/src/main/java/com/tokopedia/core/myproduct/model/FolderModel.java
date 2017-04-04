@@ -79,7 +79,7 @@ public class FolderModel {
 
     public static List<ImageModel> searchImageModels(List<FolderModel> folderModels, String bucketName){
         for(FolderModel folderModel : folderModels){
-            if(folderModel.getPath().contains(bucketName))
+            if(folderModel.getPath().equals(bucketName))
                 return folderModel.getImageModels();
         }
         return null;
