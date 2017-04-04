@@ -40,6 +40,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -57,7 +58,6 @@ import com.tokopedia.session.session.presenter.RegisterInitialPresenter;
 import com.tokopedia.session.session.presenter.RegisterInitialPresenterImpl;
 import com.tokopedia.session.session.presenter.RegisterInitialView;
 import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.util.AppEventTracking;
 import com.tokopedia.core.var.TkpdState;
 
 import org.json.JSONObject;
