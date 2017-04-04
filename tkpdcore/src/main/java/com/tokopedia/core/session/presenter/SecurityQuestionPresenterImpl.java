@@ -247,18 +247,22 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
 
             @Override
             public void onError(Throwable e) {
-                if (++errorCount == SWITCH_REQUEST_OTP) {
-                    viewModel.setIsErrorDisplay(false);
-                    view.displayError(false);
-                    questionFormModel = new QuestionFormModel();
-                    questionFormModel.setType(QuestionFormModel.OTP_Email_TYPE);
-                    questionFormModel.setTitle(" coba pakai OTP ");
-                    questionFormModel.setQuestion(2);
-                    viewModel.setSecurity2(2);
-                    view.setModel(questionFormModel);
-                } else {
-                    viewModel.setIsErrorDisplay(true);
-                    view.displayError(true);
+                if(e instanceof UnknownHostException){
+                    view.showError(view.getString(R.string.msg_no_connection));
+                }else {
+                    if (++errorCount == SWITCH_REQUEST_OTP) {
+                        viewModel.setIsErrorDisplay(false);
+                        view.displayError(false);
+                        questionFormModel = new QuestionFormModel();
+                        questionFormModel.setType(QuestionFormModel.OTP_Email_TYPE);
+                        questionFormModel.setTitle(" coba pakai OTP ");
+                        questionFormModel.setQuestion(2);
+                        viewModel.setSecurity2(2);
+                        view.setModel(questionFormModel);
+                    } else {
+                        viewModel.setIsErrorDisplay(true);
+                        view.displayError(true);
+                    }
                 }
             }
 
