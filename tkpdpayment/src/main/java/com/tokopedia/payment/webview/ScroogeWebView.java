@@ -1,12 +1,10 @@
 package com.tokopedia.payment.webview;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -14,8 +12,6 @@ import android.view.View;
 import android.webkit.ConsoleMessage;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -35,7 +31,7 @@ public class ScroogeWebView extends WebView {
     public static final String KEY_QUERY_PAYMENT_ID = "id";
     public static final String KEY_QUERY_LD = "ld";
     public static final String CHARSET_UTF_8 = "UTF-8";
-    public static final long FORCE_TIMEOUT = 60000L;
+    public static final long FORCE_TIMEOUT = 90000L;
 
     private ITopPayView topPayView;
     private String paymentId;
@@ -115,25 +111,17 @@ public class ScroogeWebView extends WebView {
             }
         }
 
-
-        @SuppressWarnings("deprecation")
-        @Override
-        public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-            return super.shouldInterceptRequest(view, url);
-        }
-
-        @TargetApi(android.os.Build.VERSION_CODES.M)
-        @Override
-        public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-            return super.shouldInterceptRequest(view, request);
-        }
-
         @Override
         public void onPageFinished(WebView view, String url) {
             timeout = false;
             topPayView.hideProgressBar();
             topPayView.setWebPageTitle(view.getTitle());
             view.stopLoading();
+        }
+
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+            return super.shouldInterceptRequest(view, url);
         }
 
         @Override
@@ -146,19 +134,9 @@ public class ScroogeWebView extends WebView {
         @SuppressWarnings("deprecation")
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-            Log.d(TAG, "onReceivedError 1 : " + errorCode + " " + description);
+            Log.d(TAG, "onReceivedError : " + errorCode + " " + description);
             showError(errorCode, description);
             super.onReceivedError(view, errorCode, description, failingUrl);
-        }
-
-        @TargetApi(android.os.Build.VERSION_CODES.M)
-        @Override
-        public void onReceivedError(WebView view, WebResourceRequest request,
-                                    WebResourceError error) {
-            Log.d(TAG, "onReceivedError 2 : " + error.getErrorCode() + " " + error.getDescription().toString());
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                showError(error.getErrorCode(), error.getDescription().toString());
-            super.onReceivedError(view, request, error);
         }
 
         @Override
@@ -193,7 +171,6 @@ public class ScroogeWebView extends WebView {
         }
         topPayView.hideProgressBar();
         topPayView.showToastMessage(description);
-//        topPayView.showToastMessageWithForceCloseView(description);
     }
 
     private void processRedirectUrlContaintsAccountsUrl(String url) {
