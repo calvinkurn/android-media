@@ -52,13 +52,16 @@ import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.tkpd.BuildConfig;
@@ -838,19 +841,37 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onApplinkClicked(CategoryItemModel categoryItemModel) {
         // TODO : change to Deeplink Handler for annotate the applink
-        if (SessionHandler.isMsisdnVerified()) {
+        openRidePage();
+    }
+
+    private void openRidePage() {
+        SessionHandler sessionHandler = new SessionHandler(getActivity());
+        if (sessionHandler.isV4Login() && SessionHandler.isMsisdnVerified()) {
             startActivity(RideHomeActivity.getCallingIntent(getActivity()));
-        } else {
+        } else if (sessionHandler.isV4Login() && !SessionHandler.isMsisdnVerified()) {
             startActivityForResult(RidePhoneNumberVerificationActivity.getCallingIntent(getActivity()),
                     RidePhoneNumberVerificationActivity.RIDE_PHONE_VERIFY_REQUEST_CODE);
+        } else {
+            Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
+            intent.putExtra(Session.WHICH_FRAGMENT_KEY,
+                    TkpdState.DrawerPosition.LOGIN);
+            startActivityForResult(intent, RideHomeActivity.LOGIN_REQUEST_CODE);
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RidePhoneNumberVerificationActivity.RIDE_PHONE_VERIFY_REQUEST_CODE){
-            switch (resultCode){
+        if (requestCode == RideHomeActivity.LOGIN_REQUEST_CODE) {
+            if (SessionHandler.isV4Login(getActivity())) {
+                openRidePage();
+            }else{
+                Toast.makeText(getActivity(), "Login Cancelled", Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+        if (requestCode == RidePhoneNumberVerificationActivity.RIDE_PHONE_VERIFY_REQUEST_CODE) {
+            switch (resultCode) {
                 case Activity.RESULT_OK:
                     startActivity(RideHomeActivity.getCallingIntent(getActivity()));
                     break;
