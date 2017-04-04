@@ -31,4 +31,6 @@ public interface ResCenterDiscussionView {
     void onSuccessLoadMore(List<DiscussionItemViewModel> discussionItemViewModels, boolean canLoadMore);
 
     String getLastConversationId();
+
+    void showLoadingProgress();
 }

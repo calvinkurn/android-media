@@ -97,11 +97,10 @@ public class MyDiscussionDataBinder extends DataBinder<MyDiscussionDataBinder.Vi
                 return new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(imageUpload.getUrl() != null && !imageUpload.getUrl().equals("")){
-                            openVideoPlayer(imageUpload.getUrl());
-
-                        }else if (imageUpload.getImgThumb()!= null && !imageUpload.getImgThumb().equals("")){
+                        if (imageUpload.getImgThumb() != null && !imageUpload.getImgThumb().equals("")) {
                             openProductPreview(list, position);
+                        } else if (imageUpload.getUrl() != null && !imageUpload.getUrl().equals("")) {
+                            openVideoPlayer(imageUpload.getUrl());
                         }
                     }
                 };
@@ -116,7 +115,7 @@ public class MyDiscussionDataBinder extends DataBinder<MyDiscussionDataBinder.Vi
 
     private void openProductPreview(ArrayList<AttachmentViewModel> list, int position) {
         ArrayList<String> imageUrls = new ArrayList<>();
-        for(AttachmentViewModel model : list) {
+        for (AttachmentViewModel model : list) {
             imageUrls.add(model.getImgThumb());
         }
         Intent intent = new Intent(context, PreviewProductImage.class);
@@ -180,7 +179,7 @@ public class MyDiscussionDataBinder extends DataBinder<MyDiscussionDataBinder.Vi
     }
 
     private boolean isHasAttachment(DiscussionItemViewModel discussionItemViewModel) {
-        return discussionItemViewModel.getAttachment()!= null
+        return discussionItemViewModel.getAttachment() != null
                 && discussionItemViewModel.getAttachment().size() > 0;
     }
 

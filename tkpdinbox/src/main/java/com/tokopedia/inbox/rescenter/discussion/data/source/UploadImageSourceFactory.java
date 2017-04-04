@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
-import com.tokopedia.core.network.apiservices.upload.UploadImageService;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.CreatePictureMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.GenerateHostMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.SubmitImageMapper;
@@ -20,14 +19,12 @@ public class UploadImageSourceFactory {
     private final GenerateHostActService generateHostActService;
     private final ResCenterActService resCenterActService;
     private final GenerateHostMapper generateHostMapper;
-    private final UploadImageService uploadImageService;
     private final UploadImageMapper uploadImageMapper;
     private final CreatePictureMapper createPictureMapper;
     private final SubmitImageMapper submitImageMapper;
 
     public UploadImageSourceFactory(Context context,
                                     GenerateHostActService generateHostActService,
-                                    UploadImageService uploadImageService,
                                     ResCenterActService resCenterActService,
                                     GenerateHostMapper generateHostMapper,
                                     UploadImageMapper uploadImageMapper,
@@ -35,7 +32,6 @@ public class UploadImageSourceFactory {
                                     SubmitImageMapper submitImageMapper) {
         this.context = context;
         this.generateHostActService = generateHostActService;
-        this.uploadImageService = uploadImageService;
         this.resCenterActService = resCenterActService;
 
         this.generateHostMapper = generateHostMapper;
@@ -49,11 +45,11 @@ public class UploadImageSourceFactory {
     }
 
     public CloudUploadImageDataSource createCloudUploadImageDataStore() {
-        return new CloudUploadImageDataSource(context, uploadImageService, uploadImageMapper);
+        return new CloudUploadImageDataSource(context, resCenterActService, uploadImageMapper);
     }
 
     public CloudCreatePictureDataSource createCloudCreatePictureDataStore() {
-        return new CloudCreatePictureDataSource(context, uploadImageService, createPictureMapper);
+        return new CloudCreatePictureDataSource(context, resCenterActService, createPictureMapper);
     }
 
     public CloudSubmitImageDataSource createCloudSubmitImageDataStore(){

@@ -18,8 +18,11 @@ import com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation.Rep
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -168,7 +171,7 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
 
     private DiscussionItemViewModel mappingSubmitViewModel(ReplySubmitData replySubmitData) {
         DiscussionItemViewModel viewModel = new DiscussionItemViewModel();
-        viewModel.setMessageReplyTimeFmt(replySubmitData.getCreateTimeWib());
+        viewModel.setMessageReplyTimeFmt(formatTime(replySubmitData.getCreateTimeWib()));
         viewModel.setMessage(replySubmitData.getRemarkStr());
         viewModel.setUserLabel(replySubmitData.getUserLabel());
         viewModel.setUserLabelId(replySubmitData.getUserLabelId());
@@ -285,13 +288,26 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
         DiscussionItemViewModel viewModel = new DiscussionItemViewModel();
         viewModel.setMessageCreateBy(SessionHandler.getLoginID(MainApplication.getAppContext()));
         viewModel.setMessage(replyDiscussionData.getRemarkStr());
-        viewModel.setMessageReplyTimeFmt(replyDiscussionData.getCreateTimeWib());
+        viewModel.setMessageReplyTimeFmt(formatTime(replyDiscussionData.getCreateTimeWib()));
         viewModel.setMessage(replyDiscussionData.getRemarkStr());
         viewModel.setUserLabel(replyDiscussionData.getUserLabel());
         viewModel.setUserLabelId(replyDiscussionData.getUserLabelId());
         viewModel.setUserName(replyDiscussionData.getUserName());
         viewModel.setConversationId(String.valueOf(replyDiscussionData.getConversationId()));
         return viewModel;
+    }
+
+    private String formatTime(String createTimeOld) {
+        Locale id = new Locale("in", "ID");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy hh:mm WIB", id);
+        SimpleDateFormat newSdf = new SimpleDateFormat(DiscussionItemViewModel.DISCUSSION_DATE_TIME_FORMAT, id);
+        String createTimeNew;
+        try {
+            createTimeNew = newSdf.format(sdf.parse(createTimeOld));
+        } catch (ParseException e) {
+            createTimeNew = createTimeOld;
+        }
+        return createTimeNew;
     }
 
     private RequestParams getReplyValidationParam(RequestParams requestParams) {

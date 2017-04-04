@@ -20,7 +20,7 @@ public class SolutionLast {
     private int lastShowInputResiButton;
     @SerializedName("last_show_button_string_text")
     @Expose
-    private int lastShowButtonStringText;
+    private String lastShowButtonStringText;
     @SerializedName("last_resolution_id")
     @Expose
     private int lastResolutionId;
@@ -96,11 +96,11 @@ public class SolutionLast {
         this.lastShowInputResiButton = lastShowInputResiButton;
     }
 
-    public int getLastShowButtonStringText() {
+    public String getLastShowButtonStringText() {
         return lastShowButtonStringText;
     }
 
-    public void setLastShowButtonStringText(int lastShowButtonStringText) {
+    public void setLastShowButtonStringText(String lastShowButtonStringText) {
         this.lastShowButtonStringText = lastShowButtonStringText;
     }
 

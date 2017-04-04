@@ -15,11 +15,15 @@ import org.json.JSONException;
 import retrofit2.Response;
 import rx.functions.Func1;
 
+import static android.R.attr.data;
+
 /**
  * Created by nisie on 4/3/17.
  */
 
 public class ReplyConversationValidationMapper implements Func1<Response<TkpdResponse>, ReplyDiscussionValidationModel> {
+    private boolean hasAttachment = false;
+
     @Override
     public ReplyDiscussionValidationModel call(Response<TkpdResponse> response) {
         ReplyDiscussionValidationModel domainData = new ReplyDiscussionValidationModel();
@@ -27,22 +31,16 @@ public class ReplyConversationValidationMapper implements Func1<Response<TkpdRes
             if (!response.body().isError()) {
                 domainData.setSuccess(true);
 
-                try {
-                    if(response.body().getJsonData().getString("post_key")!= null) {
-                        ReplyDiscussionValidationImageEntity entity = response.body()
-                                .convertDataObj(ReplyDiscussionValidationImageEntity.class);
-                        domainData.setReplyDiscussionData(mappingEntityImageDomain(entity));
-                    }else {
-                        ReplyDiscussionValidationEntity entity = response.body()
-                                .convertDataObj(ReplyDiscussionValidationEntity.class);
-                        domainData.setReplyDiscussionData(mappingEntityDomain(entity));
-                    }
-
-                } catch (JSONException e) {
+                if (hasAttachment) {
+                    ReplyDiscussionValidationImageEntity entity = response.body()
+                            .convertDataObj(ReplyDiscussionValidationImageEntity.class);
+                    domainData.setReplyDiscussionData(mappingImageEntityDomain(entity));
+                } else {
                     ReplyDiscussionValidationEntity entity = response.body()
                             .convertDataObj(ReplyDiscussionValidationEntity.class);
                     domainData.setReplyDiscussionData(mappingEntityDomain(entity));
                 }
+
             } else {
                 if (response.body().getErrorMessages() == null
                         && response.body().getErrorMessages().isEmpty()) {
@@ -58,7 +56,7 @@ public class ReplyConversationValidationMapper implements Func1<Response<TkpdRes
         return domainData;
     }
 
-    private ReplyDiscussionData mappingEntityImageDomain(ReplyDiscussionValidationImageEntity entity) {
+    private ReplyDiscussionData mappingImageEntityDomain(ReplyDiscussionValidationImageEntity entity) {
         ReplyDiscussionData data = new ReplyDiscussionData();
         data.setPostKey(entity.getPostKey());
         return data;
@@ -91,5 +89,13 @@ public class ReplyConversationValidationMapper implements Func1<Response<TkpdRes
         data.setIsReceiver(by.getIsReceiver());
         data.setIsSender(by.getIsSender());
         return data;
+    }
+
+    public void setHasAttachment(boolean hasAttachment) {
+        this.hasAttachment = hasAttachment;
+    }
+
+    public boolean isHasAttachment() {
+        return hasAttachment;
     }
 }

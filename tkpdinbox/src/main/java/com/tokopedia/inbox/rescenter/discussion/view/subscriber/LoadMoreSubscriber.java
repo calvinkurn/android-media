@@ -95,11 +95,11 @@ public class LoadMoreSubscriber extends Subscriber<LoadMoreModel> {
             DiscussionItemViewModel viewModel = new DiscussionItemViewModel();
             viewModel.setMessage(item.getSolutionRemark());
             viewModel.setMessageReplyTimeFmt(item.getCreateTimeStr());
-            viewModel.setUserName("ASDASD");
             viewModel.setUserLabelId(item.getActionBy());
             viewModel.setUserLabel(item.getActionByStr());
             viewModel.setAttachment(mappingAttachment(item.getAttachment()));
             viewModel.setConversationId(String.valueOf(item.getResConvId()));
+            viewModel.setMessageCreateBy(item.getCreateBy());
             list.add(viewModel);
         }
 

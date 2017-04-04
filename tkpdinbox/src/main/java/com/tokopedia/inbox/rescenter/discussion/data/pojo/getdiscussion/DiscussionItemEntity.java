@@ -31,6 +31,10 @@ public class DiscussionItemEntity {
     @SerializedName("attachment")
     private List<DiscussionAttachmentEntity> attachment;
 
+    @SerializedName("createBy")
+    private int createBy;
+
+
     public int getResConvId() {
         return resConvId;
     }
@@ -85,5 +89,13 @@ public class DiscussionItemEntity {
 
     public void setActionByStr(String actionByStr) {
         this.actionByStr = actionByStr;
+    }
+
+    public int getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(int createBy) {
+        this.createBy = createBy;
     }
 }

@@ -2,7 +2,6 @@ package com.tokopedia.core.network.apiservices.upload.apis;
 
 
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.Map;
 
@@ -27,17 +26,5 @@ public interface UploadImageApi {
     Observable<Response<TkpdResponse>> uploadImageProof(@Url String url,
                                                         @PartMap Map<String, RequestBody> params,
                                                         @Part("payment_image\"; filename=\"image.jpg") RequestBody imageFile);
-
-    @Multipart
-    @POST("")
-    Observable<Response<TkpdResponse>> uploadImage(@Url String url,
-                                                        @PartMap Map<String, RequestBody> params,
-                                                        @Part("fileToUpload\"; filename=\"image.jpg") RequestBody imageFile);
-
-    @Multipart
-    @POST("")
-    Observable<Response<TkpdResponse>> createImage(@Url String url,
-                                                   @PartMap Map<String, RequestBody> params);
-
 
 }

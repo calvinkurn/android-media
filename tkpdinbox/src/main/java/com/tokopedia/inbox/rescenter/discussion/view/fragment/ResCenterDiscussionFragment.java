@@ -17,6 +17,7 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -63,7 +64,7 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
     private ImageView attachButton;
     private LinearLayoutManager layoutManager;
     private ImageUploadHandler uploadImageDialog;
-
+    private TkpdProgressDialog progressDialog;
 
     public static Fragment createInstance(String resolutionID, boolean flagReceived) {
         Fragment fragment = new ResCenterDiscussionFragment();
@@ -246,6 +247,10 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
         adapter.showEmpty(false);
         DiscussionItemViewModel tempMessage = new DiscussionItemViewModel();
         tempMessage.setMessage(replyEditText.getText().toString());
+
+        if (attachmentAdapter.getList().size() > 0)
+            tempMessage.setAttachment(attachmentAdapter.getList());
+
         adapter.addReply(tempMessage);
         scrollToBottom();
     }
@@ -288,8 +293,13 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
         adapter.remove(adapter.getData().size() - 1);
         adapter.addReply(discussionItemViewModel);
         adapter.notifyDataSetChanged();
-        finishLoading();
+        finishLoadingProgress();
         scrollToBottom();
+    }
+
+    private void finishLoadingProgress() {
+        if (progressDialog != null)
+            progressDialog.dismiss();
     }
 
     @Override
@@ -300,12 +310,13 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
 
     @Override
     public void onErrorSendReply(String errorMessage) {
+        finishLoadingProgress();
         setViewEnabled(true);
-        replyEditText.setText("");
         adapter.remove(adapter.getData().size() - 1);
         adapter.notifyDataSetChanged();
-
-        replyEditText.setError(errorMessage);
+        if (adapter.getData().size() == 0)
+            adapter.showEmptyFull(true);
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
         replyEditText.requestFocus();
     }
 
@@ -349,6 +360,7 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
     @Override
     public void onSuccessLoadMore(List<DiscussionItemViewModel> discussionItemViewModels,
                                   boolean canLoadMore) {
+        setViewEnabled(true);
         finishLoading();
         adapter.setCanLoadMore(canLoadMore);
         adapter.setList(discussionItemViewModels);
@@ -356,7 +368,16 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
 
     @Override
     public String getLastConversationId() {
-        return adapter.getData().get(adapter.getData().size() - 1).getConversationId();
+        return adapter.getData().get(0).getConversationId();
+    }
+
+    @Override
+    public void showLoadingProgress() {
+        if (progressDialog == null && getActivity() != null)
+            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+
+        if (progressDialog != null && getActivity() != null)
+            progressDialog.showDialog();
     }
 
     @Override
@@ -396,12 +417,14 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
     public void onDestroyView() {
         super.onDestroyView();
         presenter.unsubscribeObservable();
+        progressDialog = null;
+
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        DetailResCenterFragmentPermissionsDispatcher.onRequestPermissionsResult(DetailResCenterFragment.this, requestCode, grantResults);
+        ResCenterDiscussionFragmentPermissionsDispatcher.onRequestPermissionsResult(ResCenterDiscussionFragment.this, requestCode, grantResults);
     }
 
     @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})

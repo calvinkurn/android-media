@@ -56,6 +56,7 @@ public class DiscussionResCenterMapper implements Func1<Response<TkpdResponse>, 
             data.setCreateTimeStr(item.getCreateTimeStr());
             data.setResConvId(item.getResConvId());
             data.setSolutionRemark(item.getSolutionRemark());
+            data.setCreateBy(String.valueOf(item.getCreateBy()));
             list.add(data);
         }
         return list;

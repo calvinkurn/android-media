@@ -15,6 +15,7 @@ public class LoadMoreItemData {
     private String createTimeStr;
     private List<LoadMoreAttachment> attachment;
     private String actionByStr;
+    private String createBy;
 
     public int getResConvId() {
         return resConvId;
@@ -70,5 +71,13 @@ public class LoadMoreItemData {
 
     public String getActionByStr() {
         return actionByStr;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
     }
 }

@@ -8,7 +8,6 @@ import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
 import com.tokopedia.core.network.apiservices.rescenter.ResolutionService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
-import com.tokopedia.core.network.apiservices.upload.UploadImageService;
 import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
@@ -29,9 +28,9 @@ import com.tokopedia.inbox.rescenter.discussion.domain.interactor.CreatePictureU
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.GenerateHostUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.GetResCenterDiscussionUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.LoadMoreDiscussionUseCase;
+import com.tokopedia.inbox.rescenter.discussion.domain.interactor.ReplyDiscussionSubmitUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.ReplyDiscussionValidationUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.SendDiscussionUseCase;
-import com.tokopedia.inbox.rescenter.discussion.domain.interactor.ReplyDiscussionSubmitUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.UploadImageUseCase;
 import com.tokopedia.inbox.rescenter.discussion.view.listener.ResCenterDiscussionView;
 import com.tokopedia.inbox.rescenter.discussion.view.subscriber.GetDiscussionSubscriber;
@@ -122,8 +121,6 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
 
         GenerateHostMapper generateHostMapper = new GenerateHostMapper();
 
-        UploadImageService uploadImageService = new UploadImageService();
-
         UploadImageMapper uploadImageMapper = new UploadImageMapper();
 
         CreatePictureMapper createPictureMapper = new CreatePictureMapper();
@@ -132,7 +129,6 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
 
         UploadImageSourceFactory uploadImageSourceFactory = new UploadImageSourceFactory(context,
                 generateHostActService,
-                uploadImageService,
                 resCenterActService,
                 generateHostMapper,
                 uploadImageMapper,
@@ -185,6 +181,8 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
 
     @Override
     public void sendReply() {
+        viewListener.setViewEnabled(false);
+        viewListener.showLoadingProgress();
         if (isValid()) {
             sendDiscussionUseCase.execute(getSendReplyRequestParams(),
                     new ReplyDiscussionSubscriber(viewListener));
@@ -193,18 +191,13 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
 
     private RequestParams getSendReplyRequestParams() {
         RequestParams params = RequestParams.create();
-        createReplyValidationParam(params);
-//        createGenerateHostParam(params);
-        return params;
-    }
-
-    private void createReplyValidationParam(RequestParams params) {
         params.putString(SendDiscussionUseCase.PARAM_MESSAGE, pass.getMessage());
         params.putObject(SendDiscussionUseCase.PARAM_RESOLUTION_ID, pass.getResolutionId());
         params.putInt(SendDiscussionUseCase.PARAM_FLAG_RECEIVED, pass.getFlagReceived());
 
         if (pass.getAttachment() != null && pass.getAttachment().size() > 0)
             params.putObject(SendDiscussionUseCase.PARAM_ATTACHMENT, pass.getAttachment());
+        return params;
     }
 
     @Override

@@ -11,7 +11,7 @@ public class SolutionLast {
     private String lastCreateTimeWib;
     @SerializedName("last_show_button_string_text")
     @Expose
-    private Integer lastShowButtonStringText;
+    private String lastShowButtonStringText;
     @SerializedName("last_show_appeal_button")
     @Expose
     private Integer lastShowAppealButton;
@@ -72,11 +72,11 @@ public class SolutionLast {
         this.lastCreateTimeWib = lastCreateTimeWib;
     }
 
-    public Integer getLastShowButtonStringText() {
+    public String getLastShowButtonStringText() {
         return lastShowButtonStringText;
     }
 
-    public void setLastShowButtonStringText(Integer lastShowButtonStringText) {
+    public void setLastShowButtonStringText(String lastShowButtonStringText) {
         this.lastShowButtonStringText = lastShowButtonStringText;
     }
 

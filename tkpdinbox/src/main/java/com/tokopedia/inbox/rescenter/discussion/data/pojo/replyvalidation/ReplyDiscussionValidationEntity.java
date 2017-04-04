@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.rescenter.discussion.data.pojo.replyvalidation;
 
-import android.widget.Button;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

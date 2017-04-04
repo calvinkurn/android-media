@@ -56,6 +56,7 @@ public class LoadMoreMapper implements Func1<Response<TkpdResponse>, LoadMoreMod
             data.setResConvId(item.getResConvId());
             data.setSolutionRemark(item.getSolutionRemark());
             data.setActionByStr(item.getActionByStr());
+            data.setCreateBy(String.valueOf(item.getCreateBy()));
             list.add(data);
         }
         return list;

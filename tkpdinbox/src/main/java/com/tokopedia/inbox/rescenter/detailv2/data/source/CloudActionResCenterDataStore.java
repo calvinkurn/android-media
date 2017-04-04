@@ -7,6 +7,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.ReplyConversationValidationMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.ResolutionCenterActionMapper;
+import com.tokopedia.inbox.rescenter.discussion.domain.interactor.ReplyDiscussionValidationUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation.ReplyDiscussionValidationModel;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
 
@@ -69,6 +70,7 @@ public class CloudActionResCenterDataStore {
 
     public Observable<ReplyDiscussionValidationModel> replyConversationValidation(
             TKPDMapParam<String, Object> parameters) {
+        replyConversationValidationMapper.setHasAttachment(parameters.containsKey(ReplyDiscussionValidationUseCase.PARAM_PHOTOS));
         return resCenterActService.getApi()
                 .replyConversationValidation2(
                         AuthUtil.generateParamsNetwork2(context, parameters))

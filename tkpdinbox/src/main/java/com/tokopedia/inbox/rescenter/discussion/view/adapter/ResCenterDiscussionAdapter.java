@@ -106,7 +106,6 @@ public class ResCenterDiscussionAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     public void setList(List<DiscussionItemViewModel> list) {
-        Collections.reverse(list);
         this.data.addAll(0, list);
         this.myDiscussionDataBinder.addAll(list);
         this.myDiscussionDataBinder.notifyDataSetChanged();

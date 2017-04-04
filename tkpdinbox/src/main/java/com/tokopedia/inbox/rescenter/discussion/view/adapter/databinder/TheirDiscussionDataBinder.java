@@ -110,11 +110,10 @@ public class TheirDiscussionDataBinder extends DataBinder<TheirDiscussionDataBin
                 return new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(imageUpload.getUrl() != null && !imageUpload.getUrl().equals("")){
-                            openVideoPlayer(imageUpload.getUrl());
-
-                        }else if (imageUpload.getImgThumb()!= null && !imageUpload.getImgThumb().equals("")){
+                        if (imageUpload.getImgThumb() != null && !imageUpload.getImgThumb().equals("")) {
                             openProductPreview(list, position);
+                        } else if (imageUpload.getUrl() != null && !imageUpload.getUrl().equals("")) {
+                            openVideoPlayer(imageUpload.getUrl());
                         }
                     }
                 };
@@ -129,7 +128,7 @@ public class TheirDiscussionDataBinder extends DataBinder<TheirDiscussionDataBin
 
     private void openProductPreview(ArrayList<AttachmentViewModel> list, int position) {
         ArrayList<String> imageUrls = new ArrayList<>();
-        for(AttachmentViewModel model : list) {
+        for (AttachmentViewModel model : list) {
             imageUrls.add(model.getImgThumb());
         }
         Intent intent = new Intent(context, PreviewProductImage.class);
@@ -160,7 +159,7 @@ public class TheirDiscussionDataBinder extends DataBinder<TheirDiscussionDataBin
             holder.userLabel.setTextColor(MethodChecker.getColor(context, R.color.white));
             holder.userLabel.setPadding(5, 5, 5, 5);
         } else {
-            MethodChecker.setBackground(holder.userLabel, context.getResources().getDrawable(R.drawable.btn_transparent_disable));
+            holder.userLabel.setBackgroundResource(0);
             holder.userLabel.setTextColor(MethodChecker.getColor(context, R.color.grey_500));
             holder.userLabel.setPadding(5, 5, 5, 5);
         }
@@ -202,7 +201,7 @@ public class TheirDiscussionDataBinder extends DataBinder<TheirDiscussionDataBin
     }
 
     private boolean isHasAttachment(DiscussionItemViewModel discussionItemViewModel) {
-        return discussionItemViewModel.getAttachment()!= null && discussionItemViewModel.getAttachment().size() > 0;
+        return discussionItemViewModel.getAttachment() != null && discussionItemViewModel.getAttachment().size() > 0;
     }
 
 
