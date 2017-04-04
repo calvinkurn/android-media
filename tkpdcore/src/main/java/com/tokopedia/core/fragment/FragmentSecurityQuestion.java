@@ -110,6 +110,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     CountDownTimer countDownTimer;
     private Unbinder unbinder;
     IncomingSmsReceiver smsReceiver;
+    boolean isRunningTimer;
 
     public interface SecurityQuestionListener {
         void onSuccess();
@@ -251,34 +252,37 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     @Override
     public void startTimer() {
+        if(!isRunningTimer){
+            countDownTimer = new CountDownTimer(90000, 1000) {
+                public void onTick(long millisUntilFinished) {
+                    try {
+                        isRunningTimer = true;
+                        MethodChecker.setBackground(vSendOtp, getResources().getDrawable(R.drawable.btn_transparent_disable));
+                        vSendOtp.setEnabled(false);
+                        vSendOtp.setText("" + String.format(FORMAT,
+                                TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
+                                        TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
+                                TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+                                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
 
-        countDownTimer = new CountDownTimer(90000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                try {
-                    MethodChecker.setBackground(vSendOtp, getResources().getDrawable(R.drawable.btn_transparent_disable));
-                    vSendOtp.setEnabled(false);
-                    vSendOtp.setText("" + String.format(FORMAT,
-                            TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
-                                    TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
-                            TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
-                                    TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+                        vSendOtpCall.setVisibility(View.GONE);
 
-                    vSendOtpCall.setVisibility(View.GONE);
-
-                } catch (Exception e) {
-                    cancel();
+                    } catch (Exception e) {
+                        cancel();
+                    }
                 }
-            }
 
-            public void onFinish() {
-                try {
-                    enableOtpButton();
-                } catch (Exception e) {
+                public void onFinish() {
+                    try {
+                        isRunningTimer = false;
+                        enableOtpButton();
+                    } catch (Exception e) {
 
+                    }
                 }
-            }
 
-        }.start();
+            }.start();
+        }
         vInputOtp.requestFocus();
     }
 
@@ -315,6 +319,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     @Override
     public void initListener() {
+        isRunningTimer = false;
         vSaveBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

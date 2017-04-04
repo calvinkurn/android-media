@@ -15,6 +15,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
+import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.otp.data.RequestOtpModel;
 import com.tokopedia.core.otp.data.ValidateOtpModel;
 import com.tokopedia.core.otp.data.factory.OtpSourceFactory;
@@ -239,31 +240,16 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
 
     @Override
     public void doAnswerQuestion(String answer) {
+        view.displayProgress(true);
         validateOtpUseCase.execute(getValidateOtpParam(answer), new Subscriber<ValidateOtpModel>() {
             @Override
             public void onCompleted() {
-
+                view.displayProgress(false);
             }
 
             @Override
             public void onError(Throwable e) {
-                if(e instanceof UnknownHostException){
-                    view.showError(view.getString(R.string.msg_no_connection));
-                }else {
-                    if (++errorCount == SWITCH_REQUEST_OTP) {
-                        viewModel.setIsErrorDisplay(false);
-                        view.displayError(false);
-                        questionFormModel = new QuestionFormModel();
-                        questionFormModel.setType(QuestionFormModel.OTP_Email_TYPE);
-                        questionFormModel.setTitle(" coba pakai OTP ");
-                        questionFormModel.setQuestion(2);
-                        viewModel.setSecurity2(2);
-                        view.setModel(questionFormModel);
-                    } else {
-                        viewModel.setIsErrorDisplay(true);
-                        view.displayError(true);
-                    }
-                }
+                view.showError(view.getString(R.string.default_request_error_unknown));
             }
 
             @Override
@@ -272,7 +258,48 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
                     storeUUID(mContext, validateOtpModel.getValidateOtpData().getUuid());
                     fetchDataFromInternet(SecurityQuestionPresenter.MAKE_LOGIN,null);
                 }else {
-                    onError(new Throwable());
+                    if(validateOtpModel.getResponseCode() == ResponseStatus.SC_OK){
+                        if (++errorCount == SWITCH_REQUEST_OTP && viewModel.getEmail() != null) {
+                            viewModel.setIsErrorDisplay(false);
+                            view.displayError(false);
+                            questionFormModel = new QuestionFormModel();
+                            questionFormModel.setType(QuestionFormModel.OTP_Email_TYPE);
+                            questionFormModel.setTitle(" coba pakai OTP ");
+                            questionFormModel.setQuestion(2);
+                            viewModel.setSecurity2(2);
+                            view.setModel(questionFormModel);
+                        } else {
+                            viewModel.setIsErrorDisplay(true);
+                            view.displayError(true);
+                        }
+                    }else {
+                        new ErrorHandler(new ErrorListener() {
+                            @Override
+                            public void onUnknown() {
+                                view.showError(view.getString(R.string.default_request_error_unknown));
+                            }
+
+                            @Override
+                            public void onTimeout() {
+                                view.showError(view.getString(R.string.default_request_error_timeout));
+                            }
+
+                            @Override
+                            public void onServerError() {
+                                view.showError(view.getString(R.string.default_request_error_internal_server));
+                            }
+
+                            @Override
+                            public void onBadRequest() {
+                                view.showError(view.getString(R.string.default_request_error_bad_request));
+                            }
+
+                            @Override
+                            public void onForbidden() {
+                                view.showError(view.getString(R.string.default_request_error_forbidden_auth));
+                            }
+                        }, validateOtpModel.getResponseCode());
+                    }
                 }
             }
         });
