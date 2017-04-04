@@ -66,4 +66,10 @@ public class TopAdsEtalaseListPresenterImpl extends BaseDaggerPresenter<TopAdsEt
             }
         };
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        topAdsEtalaseListUseCase.unsubscribe();
+    }
 }
