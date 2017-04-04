@@ -6,6 +6,7 @@ import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.categoriesHades.SimpleCategory;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
@@ -55,11 +56,10 @@ public interface BrowseView {
     void sendChangeGridBroadcast(BrowseProductRouter.GridType gridType);
     void renderUpperCategoryLevel(SimpleCategory simpleCategory);
 
-    void renderCategoriesHeader(BrowseProductActivityModel browseModel,
-                                Pair<String, ? extends ObjContainer> data);
+    void renderCategoriesHeader(Data categoryHeader);
 
     int getCurrentSuggestionTab();
-    void changeBottomBarGridIcon(int gridIconResId, String gridTitle);
+    void changeBottomBarGridIcon(int gridIconResId, int gridTitleResId);
 
     void showSearchPage();
 

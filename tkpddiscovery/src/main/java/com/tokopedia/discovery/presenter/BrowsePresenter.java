@@ -8,6 +8,7 @@ import com.tokopedia.core.network.entity.categoriesHades.SimpleCategory;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
+import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 
 /**
  * Created by HenryPri on 29/03/17.

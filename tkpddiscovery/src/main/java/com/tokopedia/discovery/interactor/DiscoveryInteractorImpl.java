@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
@@ -54,7 +53,6 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
     HadesService hadesService;
     SearchSuggestionService searchSuggestionService;
     CompositeSubscription compositeSubscription;
-    GlobalCacheManager globalCacheManager;
 
     public CompositeSubscription getCompositeSubscription() {
         return RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
@@ -70,7 +68,6 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
         topAdsService = new TopAdsService();
         hadesService = new HadesService();
         searchSuggestionService = new SearchSuggestionService();
-        globalCacheManager = new GlobalCacheManager();
     }
 
     public DiscoveryListener getDiscoveryListener() {
@@ -425,9 +422,5 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
                         discoveryListener.onSuccess(DiscoveryListener.DYNAMIC_ATTRIBUTE, pair);
                     }
                 }));
-    }
-
-    public interface GetGridConfigCallback {
-        void onSuccess(String gridConfig);
     }
 }
