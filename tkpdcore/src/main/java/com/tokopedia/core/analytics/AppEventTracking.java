@@ -427,6 +427,7 @@ public interface AppEventTracking {
         String EVENT_OPEN_PRODUCTPAGE = "Product_Page_Opened";
         String EVENT_CLICK_HOTLIST = "Clicked_HotList_Item";
         String EVENT_ADD_WISHLIST = "Product_Added_To_Wishlist";
+        String EVENT_CLICK_MAIN_CATEGORY_ICON = "MainCategory_Icon_Tapped";
 
 
         String REG_START = "Registration_Start";
