@@ -43,7 +43,8 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
             public void onSuccess(TopCashItem topCashItem) {
                 //get balance int value
                 String balanceStr = topCashItem.getData().getBalance();
-                int balance = 0;
+                int balance = 0
+                        ;
                 if (balanceStr != null && !balanceStr.isEmpty()) {
                     balance = CurrencyFormatHelper.convertRupiahToInt(topCashItem.getData().getBalance());
                 }

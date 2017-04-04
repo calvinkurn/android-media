@@ -14,6 +14,7 @@ import rx.Observable;
  */
 
 public class GetReceiptUseCase extends UseCase<Receipt> {
+    public static final String PARAM_REQUEST_ID = "request_id";
     private final BookingRideRepository mBookingRideRepository;
     public GetReceiptUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, BookingRideRepository mBookingRideRepository) {
         super(threadExecutor, postExecutionThread);

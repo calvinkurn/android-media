@@ -49,7 +49,7 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class RideHomeActivity extends BaseActivity implements RideHomeFragment.OnFragmentInteractionListener,
         UberProductFragment.OnFragmentInteractionListener, ConfirmBookingRideFragment.OnFragmentInteractionListener, SeatAdapter.OnItemClickListener {
-
+    public static final int LOGIN_REQUEST_CODE = 1005;
     public static int REQUEST_GO_TO_ONTRIP_CODE = 1009;
     private Unbinder unbinder;
 

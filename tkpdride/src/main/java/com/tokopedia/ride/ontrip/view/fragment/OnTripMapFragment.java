@@ -51,6 +51,7 @@ import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
+import com.tokopedia.ride.common.ride.domain.model.Driver;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.ontrip.di.OnTripDependencyInjection;
@@ -59,6 +60,7 @@ import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
 import com.tokopedia.ride.ontrip.service.GetCurrentRideRequestService;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
 import com.tokopedia.ride.ontrip.view.OnTripMapContract;
+import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleViewModel;
 
 import java.util.Date;
 import java.util.List;
@@ -446,7 +448,10 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void renderCompletedRequest(RideRequest result) {
-        Intent intent = CompleteTripActivity.getCallingIntent(getActivity());
+        DriverVehicleViewModel driverAndVehicle = new DriverVehicleViewModel();
+        driverAndVehicle.setDriver(rideConfiguration.getActiveRequestObj().getDriver());
+        driverAndVehicle.setVehicle(rideConfiguration.getActiveRequestObj().getVehicle());
+        Intent intent = CompleteTripActivity.getCallingIntent(getActivity(), result.getRequestId(), driverAndVehicle);
         startActivity(intent);
         getActivity().finish();
     }

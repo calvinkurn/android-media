@@ -66,6 +66,12 @@ public class RideConfiguration {
         return request.getRequestId();
     }
 
+    public RideRequest getActiveRequestObj(){
+        RideRequestEntity entity = cacheManager.getConvertObjData(RIDE_CONFIGURATION, RideRequestEntity.class);
+        RideRequestEntityMapper mapper = new RideRequestEntityMapper();
+        return mapper.transform(entity);
+    }
+
     public void setActiveSource(PlacePassViewModel activeSource) {
         Type type = new TypeToken<PlacePassViewModel>() {
         }.getType();

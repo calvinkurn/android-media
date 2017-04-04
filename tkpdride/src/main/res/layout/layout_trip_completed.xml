@@ -188,7 +188,10 @@
                     android:paddingTop="16dp"
                     android:text="33.375"
                     android:textColor="@color/black_400"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:layout_above="@+id/tv_time"
+                    android:layout_alignLeft="@+id/tv_time"
+                    android:layout_alignStart="@+id/tv_time" />
 
                 <TextView
                     android:id="@+id/label_time"

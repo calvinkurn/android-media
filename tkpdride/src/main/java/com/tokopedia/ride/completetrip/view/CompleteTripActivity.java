@@ -13,10 +13,17 @@ import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
+import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleViewModel;
 
 public class CompleteTripActivity extends BaseActivity {
-    public static Intent getCallingIntent(Activity activity) {
-        return new Intent(activity, CompleteTripActivity.class);
+    private static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
+    private static final String EXTRA_DRIVER_VEHICLE = "EXTRA_DRIVER_VEHICLE";
+
+    public static Intent getCallingIntent(Activity activity, String requestId, DriverVehicleViewModel driverAndVehicle) {
+        Intent intent = new Intent(activity, CompleteTripActivity.class);
+        intent.putExtra(EXTRA_REQUEST_ID, requestId);
+        intent.putExtra(EXTRA_DRIVER_VEHICLE, driverAndVehicle);
+        return intent;
     }
 
     Toolbar mToolbar;
@@ -26,7 +33,10 @@ public class CompleteTripActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_completed);
         setupToolbar();
-        addFragment(R.id.container, CompleteTripFragment.newInstance());
+
+        String requestId = getIntent().getStringExtra(EXTRA_REQUEST_ID);
+        DriverVehicleViewModel viewModel = getIntent().getParcelableExtra(EXTRA_DRIVER_VEHICLE);
+        addFragment(R.id.container, CompleteTripFragment.newInstance(requestId, viewModel));
     }
 
     private void addFragment(int containerViewId, Fragment fragment) {

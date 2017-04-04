@@ -29,6 +29,7 @@ import com.tokopedia.ride.common.ride.domain.model.Vehicle;
 import butterknife.BindView;
 import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -131,10 +132,13 @@ public class DriverDetailFragment extends BaseFragment {
         vehicleDetailTextView.setText(String.format("%s %s %s", vehicle.getMake(), vehicle.getVehicleModel(), vehicle.getLicensePlate()));
     }
 
-    @NeedsPermission({Manifest.permission.CALL_PHONE})
     @OnClick(R2.id.call_driver_layout)
     public void actionCallDriver() {
-        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        openCallIntent();
+    }
+
+    private void openCallIntent() {
+        Intent callIntent = new Intent(Intent.ACTION_DIAL);
         callIntent.setData(Uri.parse("tel:" + driver.getPhoneNumber()));
         startActivity(callIntent);
     }

@@ -45,9 +45,8 @@ public interface RideApi {
     @FormUrlEncoded
     Observable<RideRequestEntity> getDetailRequestRide(@FieldMap Map<String, Object> param);
 
-    @POST(RideUrl.RECEIPT_DETAIL)
-    @FormUrlEncoded
-    Observable<ReceiptEntity> getReceipt(TKPDMapParam<String, Object> param);
+    @GET(RideUrl.RECEIPT_DETAIL)
+    Observable<ReceiptEntity> getReceipt(@QueryMap TKPDMapParam<String, Object> param);
 
     @GET(RideUrl.PROMO)
     Observable<PromoEntity> getPromo(TKPDMapParam<String, Object> param);

@@ -1,10 +1,14 @@
 package com.tokopedia.ride.completetrip.view;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.completetrip.domain.GetReceiptUseCase;
 import com.tokopedia.ride.completetrip.domain.model.Receipt;
+import com.tokopedia.ride.ontrip.domain.GetCurrentDetailRideRequestUseCase;
 
+import rx.Observable;
 import rx.Subscriber;
+import rx.functions.Func2;
 
 /**
  * Created by alvarisi on 3/31/17.
@@ -13,11 +17,12 @@ import rx.Subscriber;
 public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContract.View>
         implements CompleteTripContract.Presenter {
     private GetReceiptUseCase getReceiptUseCase;
+    private GetCurrentDetailRideRequestUseCase getCurrentDetailRideRequestUseCase;
 
-    public CompleteTripPresenter(GetReceiptUseCase getReceiptUseCase) {
+    public CompleteTripPresenter(GetReceiptUseCase getReceiptUseCase, GetCurrentDetailRideRequestUseCase getCurrentDetailRideRequestUseCase) {
         this.getReceiptUseCase = getReceiptUseCase;
+        this.getCurrentDetailRideRequestUseCase = getCurrentDetailRideRequestUseCase;
     }
-
 
     @Override
     public void actionGetReceipt() {
