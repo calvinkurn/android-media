@@ -1330,6 +1330,60 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventClickPopularSearch(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_POPULAR,
+                label
+        ).getEvent());
+    }
+
+    public static void eventClickRecentSearch(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_RECENT,
+                label
+        ).getEvent());
+    }
+
+    public static void eventClickHotListSearch(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_HOTLIST,
+                label
+        ).getEvent());
+    }
+
+    public static void eventClickAutoCompleteSearch(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_AUTOCOMPLETE,
+                label
+        ).getEvent());
+    }
+
+    public static void eventClickAutoCompleteShopSearch(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_AUTOCOMPLETE_SHOP,
+                label
+        ).getEvent());
+    }
+
+    public static void eventClickAutoCompleteCategory(String catId, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_AUTOCOMPLETE_CATEGORY,
+                catId + " | " + label
+        ).getEvent());
+    }
+
     public static void eventClickGMSwitcher(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.TOP_SELLER,
