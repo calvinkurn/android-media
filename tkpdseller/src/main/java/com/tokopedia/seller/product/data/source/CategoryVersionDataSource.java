@@ -1,25 +1,31 @@
 package com.tokopedia.seller.product.data.source;
 
-import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.seller.product.data.exception.NeedCheckVersionCategoryException;
 import com.tokopedia.seller.product.data.source.cache.CategoryVersionCache;
 import com.tokopedia.seller.product.data.source.cloud.CategoryVersionCloud;
 import com.tokopedia.seller.product.data.source.cloud.model.CategoryVersionServiceModel;
+import com.tokopedia.seller.product.data.source.db.CategoryDataManager;
+import com.tokopedia.seller.product.di.scope.CategoryPickerScope;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
 
 /**
- * Created by sebastianuskh on 3/8/17.
+ * @author sebastianuskh on 3/8/17.
  */
-
+@CategoryPickerScope
 public class CategoryVersionDataSource {
     private final CategoryVersionCloud categoryVersionCloud;
     private final CategoryVersionCache categoryVersionCache;
+    private final CategoryDataManager categoryDataManager;
 
-    public CategoryVersionDataSource(CategoryVersionCloud categoryVersionCloud, CategoryVersionCache categoryVersionCache) {
+    @Inject
+    public CategoryVersionDataSource(CategoryVersionCloud categoryVersionCloud, CategoryVersionCache categoryVersionCache, CategoryDataManager categoryDataManager) {
         this.categoryVersionCloud = categoryVersionCloud;
         this.categoryVersionCache = categoryVersionCache;
+        this.categoryDataManager = categoryDataManager;
     }
 
     public Observable<Boolean> checkVersion() {
@@ -62,8 +68,7 @@ public class CategoryVersionDataSource {
             Boolean isNeedUpdate = apiVersion > cacheVersion;
 
             if (isNeedUpdate) {
-                CategoryDatabaseManager categoryDatabaseManager = new CategoryDatabaseManager();
-                categoryDatabaseManager.deleteAll();
+                categoryDataManager.clearDatabase();
                 categoryVersionCache.clearCategoryTimer();
                 categoryVersionCache.storeVersion(apiVersion);
             }

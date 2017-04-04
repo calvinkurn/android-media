@@ -10,9 +10,9 @@ import com.tokopedia.core.database.manager.CategoryDatabaseManager;
  */
 
 public class CategoryVersionCache {
-    public static final String STORED_CATEGORY_HADES_VERSION = "STORED_CATEGORY_HADES_VERSION";
-    public static final String VERSION_NUMBER = "VERSION_NUMBER";
-    public static final int MINUTES = 60;
+    private static final String CATEGORY_HADES_VERSION = "STORED_CATEGORY_HADES_VERSION";
+    private static final String VERSION_NUMBER = "VERSION_NUMBER";
+    private static final int MINUTES = 60;
     private final Context context;
 
     public CategoryVersionCache(Context context) {
@@ -20,21 +20,21 @@ public class CategoryVersionCache {
     }
 
     public Long getCategoryVersion() {
-        return new LocalCacheHandler(context, STORED_CATEGORY_HADES_VERSION).getLong(VERSION_NUMBER);
+        return new LocalCacheHandler(context, CATEGORY_HADES_VERSION).getLong(VERSION_NUMBER);
     }
 
     public void storeVersion(Long apiVersion) {
-        LocalCacheHandler localCache = new LocalCacheHandler(context, STORED_CATEGORY_HADES_VERSION);
+        LocalCacheHandler localCache = new LocalCacheHandler(context, CATEGORY_HADES_VERSION);
         localCache.putLong(VERSION_NUMBER, apiVersion);
         localCache.applyEditor();
     }
 
     public boolean isNeedCategoryVersionCheck() {
-        return new LocalCacheHandler(context, STORED_CATEGORY_HADES_VERSION).isExpired();
+        return new LocalCacheHandler(context, CATEGORY_HADES_VERSION).isExpired();
     }
 
     public void storeNeedCategoryVersionCheck(Integer interval) {
-        new LocalCacheHandler(context, STORED_CATEGORY_HADES_VERSION).setExpire(interval * MINUTES);
+        new LocalCacheHandler(context, CATEGORY_HADES_VERSION).setExpire(interval * MINUTES);
     }
 
     public void clearCategoryTimer() {

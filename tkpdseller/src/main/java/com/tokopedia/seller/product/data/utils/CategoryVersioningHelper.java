@@ -57,7 +57,7 @@ public class CategoryVersioningHelper {
     }
 
     private static Observable<Boolean> getVersioningCategoryObservable(Context context, HadesCategoryApi api) {
-        return new CategoryRepositoryImpl(new CategoryVersionDataSource(new CategoryVersionCloud(api), new CategoryVersionCache(context)))
+        return new CategoryRepositoryImpl(new CategoryVersionDataSource(new CategoryVersionCloud(api), new CategoryVersionCache(context), categoryDataManager))
                 .checkVersion();
     }
 
