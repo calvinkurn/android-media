@@ -97,6 +97,7 @@ public class HistoryShippingFragmentImpl implements HistoryShippingFragmentPrese
 
     @Override
     public void refreshPage() {
+        fragmentView.resetList();
         onFirstTimeLaunch();
     }
 

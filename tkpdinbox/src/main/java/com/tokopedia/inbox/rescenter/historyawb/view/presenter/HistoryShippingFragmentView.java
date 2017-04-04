@@ -49,4 +49,5 @@ public interface HistoryShippingFragmentView {
 
     void doOnTrackingTimeOut();
 
+    void resetList();
 }

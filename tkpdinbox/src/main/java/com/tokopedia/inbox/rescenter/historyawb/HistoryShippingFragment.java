@@ -300,4 +300,11 @@ public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippi
         showLoadingDialog(false);
         showSnackBar(messageError);
     }
+
+    @Override
+    public void resetList() {
+        adapter.setArraylist(new ArrayList<HistoryAwbViewItem>());
+        adapter.notifyDataSetChanged();
+    }
+
 }
