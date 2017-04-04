@@ -6,7 +6,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.di.scope.CategoryPickerViewScope;
 import com.tokopedia.seller.product.domain.CategoryRepository;
-import com.tokopedia.seller.product.domain.model.CategoryGroupDomainModel;
+import com.tokopedia.seller.product.domain.model.CategoryDomainModel;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import rx.functions.Func1;
  * @author sebastianuskh on 4/3/17.
  */
 @CategoryPickerViewScope
-public class FetchCategoryDataUseCase extends UseCase<List<CategoryGroupDomainModel>>{
+public class FetchCategoryDataUseCase extends UseCase<List<CategoryDomainModel>>{
 
     private final CategoryRepository categoryRepository;
 
@@ -30,7 +30,7 @@ public class FetchCategoryDataUseCase extends UseCase<List<CategoryGroupDomainMo
     }
 
     @Override
-    public Observable<List<CategoryGroupDomainModel>> createObservable(RequestParams requestParams) {
+    public Observable<List<CategoryDomainModel>> createObservable(RequestParams requestParams) {
 
         return Observable.just(true)
                 .flatMap(new CheckVersion())
@@ -44,9 +44,9 @@ public class FetchCategoryDataUseCase extends UseCase<List<CategoryGroupDomainMo
         }
     }
 
-    private class FetchCategory implements Func1<Boolean, Observable<List<CategoryGroupDomainModel>>> {
+    private class FetchCategory implements Func1<Boolean, Observable<List<CategoryDomainModel>>> {
         @Override
-        public Observable<List<CategoryGroupDomainModel>> call(Boolean aBoolean) {
+        public Observable<List<CategoryDomainModel>> call(Boolean aBoolean) {
             return categoryRepository.fetchCategory();
         }
     }
