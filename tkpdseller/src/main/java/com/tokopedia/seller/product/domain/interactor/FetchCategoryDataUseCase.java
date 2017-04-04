@@ -13,6 +13,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * @author sebastianuskh on 4/3/17.
@@ -30,7 +31,23 @@ public class FetchCategoryDataUseCase extends UseCase<List<CategoryGroupDomainMo
 
     @Override
     public Observable<List<CategoryGroupDomainModel>> createObservable(RequestParams requestParams) {
-        categoryRepository.checkVersion();
-        return categoryRepository.fetchCategory();
+
+        return Observable.just(true)
+                .flatMap(new CheckVersion())
+                .flatMap(new FetchCategory());
+    }
+
+    private class CheckVersion implements Func1<Boolean, Observable<Boolean>> {
+        @Override
+        public Observable<Boolean> call(Boolean aBoolean) {
+            return categoryRepository.checkVersion();
+        }
+    }
+
+    private class FetchCategory implements Func1<Boolean, Observable<List<CategoryGroupDomainModel>>> {
+        @Override
+        public Observable<List<CategoryGroupDomainModel>> call(Boolean aBoolean) {
+            return categoryRepository.fetchCategory();
+        }
     }
 }
