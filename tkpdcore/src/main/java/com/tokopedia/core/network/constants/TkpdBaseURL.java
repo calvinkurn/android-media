@@ -617,6 +617,16 @@ public class TkpdBaseURL {
             public static final String REQUEST_OTP = BASE_OTP + "/request";
             public static final String VALIDATE_OTP = BASE_OTP + "/validate";
         }
+
+        public class Image {
+            public static final String VALIDATE_SIZE = "/api/image/validate-size";
+            public static final String GET_UPLOAD_HOST = "/api/image/upload-host";
+            public static final String SUBMIT_DETAIL = "/api/image/submit-detail";
+        }
+
+        public class Ktp {
+            public static final String CHECK_STATUS = "/api/ktp/check-status";
+        }
     }
 
     public static class Home {
