@@ -8,6 +8,7 @@ public class SolutionData {
     private String solutionText;
     private String solutionDate;
     private String solutionProvider;
+    private boolean editAble;
 
     public String getSolutionText() {
         return solutionText;
@@ -31,5 +32,13 @@ public class SolutionData {
 
     public void setSolutionProvider(String solutionProvider) {
         this.solutionProvider = solutionProvider;
+    }
+
+    public boolean isEditAble() {
+        return editAble;
+    }
+
+    public void setEditAble(boolean editAble) {
+        this.editAble = editAble;
     }
 }

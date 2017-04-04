@@ -69,6 +69,7 @@ public class SolutionView extends BaseView<SolutionData, DetailResCenterFragment
         solutionText.setText(data.getSolutionText());
         actionEdit.setOnClickListener(new SolutionViewOnClickListener());
         actionDiscuss.setOnClickListener(new SolutionViewOnClickListener());
+        actionEdit.setVisibility(data.isEditAble() ? VISIBLE : GONE);
     }
 
     private String generateInformationText(SolutionData data) {

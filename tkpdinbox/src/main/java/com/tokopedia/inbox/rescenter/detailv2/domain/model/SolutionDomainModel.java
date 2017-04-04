@@ -8,6 +8,7 @@ public class SolutionDomainModel {
     private String solutionRemark;
     private String solutionDate;
     private String solutionActionBy;
+    private boolean solutionEditAble;
 
     public String getSolutionRemark() {
         return solutionRemark;
@@ -31,5 +32,13 @@ public class SolutionDomainModel {
 
     public void setSolutionActionBy(String solutionActionBy) {
         this.solutionActionBy = solutionActionBy;
+    }
+
+    public boolean isSolutionEditAble() {
+        return solutionEditAble;
+    }
+
+    public void setSolutionEditAble(boolean solutionEditAble) {
+        this.solutionEditAble = solutionEditAble;
     }
 }

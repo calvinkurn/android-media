@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.data.mapper;
 
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.inbox.rescenter.detailv2.data.pojo.DetailResCenterButton;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.DetailResCenterBy;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.DetailResCenterCustomer;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.DetailResCenterEntity;
@@ -53,7 +54,7 @@ public class DetailResCenterMapper implements Func1<Response<TkpdResponse>, Deta
                 domainModel.setResolution(mappingResolution(entity));
                 domainModel.setResolutionHistory(mappingHistoryData(entity.getHistory()));
                 domainModel.setShipping(mappingAwbReturData(entity.getLast().getShipping()));
-                domainModel.setSolutionData(mappingSolutionData(entity.getLast().getSolution()));
+                domainModel.setSolutionData(mappingSolutionData(entity.getLast().getSolution(), entity.getButton()));
             } else {
                 domainModel.setSuccess(false);
                 domainModel.setMessageError(generateMessageError(response));
@@ -204,11 +205,12 @@ public class DetailResCenterMapper implements Func1<Response<TkpdResponse>, Deta
         return data;
     }
 
-    private SolutionDomainModel mappingSolutionData(DetailResCenterLastSolution entity) {
+    private SolutionDomainModel mappingSolutionData(DetailResCenterLastSolution lastSolution, DetailResCenterButton button) {
         SolutionDomainModel data = new SolutionDomainModel();
-        data.setSolutionDate(entity.getCreateTimeStr());
-        data.setSolutionActionBy(entity.getActionByText());
-        data.setSolutionRemark(entity.getName());
+        data.setSolutionDate(lastSolution.getCreateTimeStr());
+        data.setSolutionActionBy(lastSolution.getActionByText());
+        data.setSolutionEditAble(button.getEdit() == 1);
+        data.setSolutionRemark(lastSolution.getName());
         return data;
     }
 

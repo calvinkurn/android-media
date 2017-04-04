@@ -222,6 +222,7 @@ public class GetResCenterDetailSubscriber extends rx.Subscriber<DetailResCenter>
         SolutionData data = new SolutionData();
         data.setSolutionDate(domainModel.getSolutionDate());
         data.setSolutionProvider(domainModel.getSolutionActionBy());
+        data.setEditAble(domainModel.isSolutionEditAble());
         data.setSolutionText(domainModel.getSolutionRemark());
         return data;
     }
