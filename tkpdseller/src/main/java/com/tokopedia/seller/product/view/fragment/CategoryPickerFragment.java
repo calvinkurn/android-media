@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.di.component.CategoryPickerComponent;
@@ -20,15 +21,24 @@ import javax.inject.Inject;
  * Created by sebastianuskh on 4/3/17.
  */
 
-public class CategoryPickerFragment extends BaseDaggerFragment{
+public class CategoryPickerFragment extends BaseDaggerFragment implements CategoryPickerView{
     public static final String TAG = "CategoryPickerFragment";
     private CategoryPickerViewComponent component;
 
     @Inject
     CategoryPickerPresenter presenter;
 
+    private TkpdProgressDialog loadingDialog;
+
     public static CategoryPickerFragment createInstance() {
         return new CategoryPickerFragment();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        loadingDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+
     }
 
     @Override
@@ -45,6 +55,7 @@ public class CategoryPickerFragment extends BaseDaggerFragment{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.category_picker_fragment_layout, container, false);
+        presenter.attachView(this);
         initVar();
         return view;
     }
@@ -56,5 +67,15 @@ public class CategoryPickerFragment extends BaseDaggerFragment{
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void showLoadingDialog() {
+        loadingDialog.showDialog();
+    }
+
+    @Override
+    public void dismissLoadingDialog() {
+        loadingDialog.dismiss();
     }
 }

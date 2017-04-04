@@ -22,7 +22,7 @@ public class CategoryDataToDomainMapper implements Func1<List<CategoryDataBase>,
     private List<CategoryGroupDomainModel> mapDomainModels(List<CategoryDataBase> categoryDataBases, int parent) {
         List<CategoryGroupDomainModel> domainModels = new ArrayList<>();
         for (CategoryDataBase categoryDataBase : categoryDataBases) {
-            if (categoryDataBase.getId() == parent){
+            if (categoryDataBase.getParentId() == parent){
                 CategoryGroupDomainModel domainModel = new CategoryGroupDomainModel();
                 domainModel.setName(categoryDataBase.getName());
                 domainModel.setId(categoryDataBase.getId());

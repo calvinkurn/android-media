@@ -12,7 +12,7 @@ import rx.Subscriber;
  * @author sebastianuskh on 4/3/17.
  */
 
-public class CategoryPickerPresenterImpl implements CategoryPickerPresenter {
+public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
     private final FetchCategoryDataUseCase fetchCategoryDataUseCase;
 
     public CategoryPickerPresenterImpl(FetchCategoryDataUseCase fetchCategoryDataUseCase) {
@@ -21,7 +21,8 @@ public class CategoryPickerPresenterImpl implements CategoryPickerPresenter {
 
     @Override
     public void fetchCategoryData() {
-
+        checkViewAttached();
+        getView().showLoadingDialog();
         fetchCategoryDataUseCase.execute(RequestParams.EMPTY, new FetchCategoryDataSubscriber());
 
     }
@@ -34,11 +35,15 @@ public class CategoryPickerPresenterImpl implements CategoryPickerPresenter {
 
         @Override
         public void onError(Throwable e) {
-
+            checkViewAttached();
+            getView().dismissLoadingDialog();
         }
 
         @Override
         public void onNext(List<CategoryGroupDomainModel> domainModel) {
+            checkViewAttached();
+            getView().dismissLoadingDialog();
+
 
         }
     }
