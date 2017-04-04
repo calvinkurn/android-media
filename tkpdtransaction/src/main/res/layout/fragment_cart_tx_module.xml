@@ -140,8 +140,6 @@
                         android:id="@+id/holder_loyalty_balance"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/margin_vs"
-                        android:layout_marginRight="@dimen/margin_vs"
                         android:orientation="horizontal"
                         android:paddingBottom="@dimen/margin_vs">
 
