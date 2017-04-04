@@ -108,6 +108,7 @@
             android:layout_height="wrap_content"
             android:gravity="right"
             android:textColor="@color/tkpd_main_green"
+            android:textIsSelectable="true"
             android:textSize="@dimen/fonts" />
 
     </LinearLayout>
