@@ -253,6 +253,7 @@
     <string name="error_top_ads_daily_budget_cannot_empyt">Anggaran tidak boleh kosong</string>
 
     <string name="title_activity_top_ads_list">Tambah Produk</string>
+    <string name="title_activity_category_picker">Pilih Kategori</string>
 
     <string name="delete">Delete</string>
     <string name="insert">Insert</string>
