@@ -28,6 +28,13 @@
         android:layout_above="@+id/bottom_navigation"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="false" />
+
 
     </FrameLayout>
 

@@ -51,6 +51,7 @@ public class RevampCategoryAdapter extends
         RevampCategoryAdapter.ItemRowHolder itemRowHolder = (RevampCategoryAdapter.ItemRowHolder) holder;
         itemRowHolder.container.getLayoutParams().width = categoryWidth;
         itemRowHolder.categoryTitle.setText(categories.get(position).getName().toUpperCase());
+        itemRowHolder.categoryTitle.setShadowLayer(30, 0, 0, R.color.checkbox_text);
         ImageHandler.LoadImage(itemRowHolder.thumbnail,categories.get(position).getThumbnailImage());
         itemRowHolder.container.setOnClickListener(new View.OnClickListener() {
             @Override

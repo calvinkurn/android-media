@@ -57,8 +57,6 @@ import butterknife.OnClick;
 
 public class IntermediaryFragment extends BaseDaggerFragment implements IntermediaryContract.View {
 
-    private TkpdProgressDialog progressDialog;
-
     @BindView(R2.id.image_header)
     ImageView imageHeader;
 
@@ -121,7 +119,6 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_intermediary, container, false);
 
-        progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.MAIN_PROGRESS);
         ButterKnife.bind(this, parentView);
 
         presenter.attachView(this);
@@ -216,12 +213,12 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void showLoading() {
-        progressDialog.showDialog();
+        ((IntermediaryActivity) getActivity()).getProgressBar().setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoading() {
-        progressDialog.dismiss();
+        ((IntermediaryActivity) getActivity()).getProgressBar().setVisibility(View.GONE);
     }
 
     @Override
