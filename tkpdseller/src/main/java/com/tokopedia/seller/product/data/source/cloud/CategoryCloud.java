@@ -1,10 +1,10 @@
 package com.tokopedia.seller.product.data.source.cloud;
 
 import com.tokopedia.seller.product.data.source.cloud.api.HadesCategoryApi;
-import com.tokopedia.seller.product.data.source.cloud.model.CategoryServiceModel;
+import com.tokopedia.seller.product.data.source.cloud.model.categorydata.CategoryServiceModel;
 import com.tokopedia.seller.product.di.scope.CategoryPickerScope;
+import com.tokopedia.seller.shopscore.data.common.GetData;
 
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -24,6 +24,7 @@ public class CategoryCloud {
     }
 
     public Observable<CategoryServiceModel> fetchDataFromNetwork() {
-        return api.fetchCategory();
+        return api.fetchCategory()
+                .map(new GetData<CategoryServiceModel>());
     }
 }

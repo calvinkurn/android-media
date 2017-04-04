@@ -1,10 +1,8 @@
 package com.tokopedia.seller.product.data.source.cloud.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.seller.product.data.source.cloud.model.CategoryServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.CategoryVersionServiceModel;
-
-import java.util.List;
+import com.tokopedia.seller.product.data.source.cloud.model.categorydata.CategoryServiceModel;
 
 import retrofit2.Response;
 import retrofit2.http.GET;
@@ -19,5 +17,5 @@ public interface HadesCategoryApi {
     Observable<Response<CategoryVersionServiceModel>> checkVersion();
 
     @GET(TkpdBaseURL.HadesCategory.FETCH_CATEGORIES)
-    Observable<CategoryServiceModel> fetchCategory();
+    Observable<Response<CategoryServiceModel>> fetchCategory();
 }
