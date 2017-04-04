@@ -12,7 +12,7 @@ public interface ResCenterDiscussionView {
     void onSuccessGetDiscussion(List<DiscussionItemViewModel> discussionData,
                                 boolean canLoadMore);
 
-    void onSuccessSendDiscussion();
+    void onSuccessSendReply(DiscussionItemViewModel discussionItemViewModel);
 
     String getResolutionID();
 

@@ -20,4 +20,8 @@ public interface ResCenterDiscussionPresenter {
     void unsubscribeObservable();
 
     void setAttachment(ArrayList<AttachmentViewModel> attachmentList);
+
+    void setResolutionId(String resolutionID);
+
+    void setFlagReceived(boolean flagReceived);
 }

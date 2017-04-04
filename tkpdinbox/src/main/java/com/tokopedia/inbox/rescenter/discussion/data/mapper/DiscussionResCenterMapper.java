@@ -2,12 +2,12 @@ package com.tokopedia.inbox.rescenter.discussion.data.mapper;
 
 import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.inbox.rescenter.discussion.data.pojo.Attachment;
-import com.tokopedia.inbox.rescenter.discussion.data.pojo.DiscussionAttachmentEntity;
-import com.tokopedia.inbox.rescenter.discussion.data.pojo.DiscussionEntity;
-import com.tokopedia.inbox.rescenter.discussion.data.pojo.DiscussionItemEntity;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionModel;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionItemData;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.getdiscussion.Attachment;
+import com.tokopedia.inbox.rescenter.discussion.data.pojo.getdiscussion.DiscussionAttachmentEntity;
+import com.tokopedia.inbox.rescenter.discussion.data.pojo.getdiscussion.DiscussionEntity;
+import com.tokopedia.inbox.rescenter.discussion.data.pojo.getdiscussion.DiscussionItemEntity;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.getdiscussion.DiscussionModel;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.getdiscussion.DiscussionItemData;
 
 import java.util.ArrayList;
 import java.util.List;

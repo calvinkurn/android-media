@@ -1,6 +1,8 @@
 package com.tokopedia.inbox.rescenter.discussion.view.adapter.databinder;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
@@ -16,6 +19,7 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.discussion.view.adapter.AttachmentAdapter;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
+import com.tokopedia.inbox.rescenter.player.VideoPlayerActivity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,8 +48,7 @@ public class MyDiscussionDataBinder extends DataBinder<MyDiscussionDataBinder.Vi
         @BindView(R2.id.date)
         TextView date;
 
-//        @BindView(R2.id.title_attachment)
-//        TextView titleAttachment;
+        TextView titleAttachment;
 
         @BindView(R2.id.image_holder)
         RecyclerView imageHolder;
@@ -55,6 +58,7 @@ public class MyDiscussionDataBinder extends DataBinder<MyDiscussionDataBinder.Vi
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            titleAttachment = (TextView) itemView.findViewById(R.id.title_attachment);
         }
     }
 
@@ -85,15 +89,20 @@ public class MyDiscussionDataBinder extends DataBinder<MyDiscussionDataBinder.Vi
         return holder;
     }
 
-    private AttachmentAdapter.ProductImageListener onProductImageActionListener(ArrayList<AttachmentViewModel> list) {
+    private AttachmentAdapter.ProductImageListener onProductImageActionListener(final ArrayList<AttachmentViewModel> list) {
         return new AttachmentAdapter.ProductImageListener() {
 
             @Override
-            public View.OnClickListener onImageClicked(int position, AttachmentViewModel imageUpload) {
+            public View.OnClickListener onImageClicked(final int position, final AttachmentViewModel imageUpload) {
                 return new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //GO To PReview Image
+                        if(imageUpload.getUrl() != null && !imageUpload.getUrl().equals("")){
+                            openVideoPlayer(imageUpload.getUrl());
+
+                        }else if (imageUpload.getImgThumb()!= null && !imageUpload.getImgThumb().equals("")){
+                            openProductPreview(list, position);
+                        }
                     }
                 };
             }
@@ -103,6 +112,27 @@ public class MyDiscussionDataBinder extends DataBinder<MyDiscussionDataBinder.Vi
                 return null;
             }
         };
+    }
+
+    private void openProductPreview(ArrayList<AttachmentViewModel> list, int position) {
+        ArrayList<String> imageUrls = new ArrayList<>();
+        for(AttachmentViewModel model : list) {
+            imageUrls.add(model.getImgThumb());
+        }
+        Intent intent = new Intent(context, PreviewProductImage.class);
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList("fileloc", imageUrls);
+        bundle.putInt("img_pos", position);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    private void openVideoPlayer(String urlVideo) {
+        Intent intent = new Intent(context, VideoPlayerActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(VideoPlayerActivity.PARAMS_URL_VIDEO, urlVideo);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
     @Override
@@ -131,17 +161,7 @@ public class MyDiscussionDataBinder extends DataBinder<MyDiscussionDataBinder.Vi
                     }
                 }
 
-
                 holder.hour.setText(list.get(position).getMessageReplyHourFmt());
-                if (position != list.size() - 1) {
-                    Calendar calAfter = Calendar.getInstance();
-                    calAfter.setTime(sdf.parse(list.get(position + 1).getMessageReplyTimeFmt()));
-
-                    if (cal.get(Calendar.HOUR) == calAfter.get(Calendar.HOUR)
-                            && cal.get(Calendar.MINUTE) == calAfter.get(Calendar.MINUTE)) {
-                        holder.date.setVisibility(View.GONE);
-                    }
-                }
             } catch (ParseException e) {
                 holder.date.setText("");
             }
@@ -152,15 +172,16 @@ public class MyDiscussionDataBinder extends DataBinder<MyDiscussionDataBinder.Vi
         if (isHasAttachment(discussionItemViewModel)) {
             holder.imageHolder.setVisibility(View.VISIBLE);
             holder.adapter.addList(discussionItemViewModel.getAttachment());
-//            holder.titleAttachment.setVisibility(View.VISIBLE);
+            holder.titleAttachment.setVisibility(View.VISIBLE);
         } else {
             holder.imageHolder.setVisibility(View.GONE);
-//            holder.titleAttachment.setVisibility(View.GONE);
+            holder.titleAttachment.setVisibility(View.GONE);
         }
     }
 
     private boolean isHasAttachment(DiscussionItemViewModel discussionItemViewModel) {
-        return discussionItemViewModel.getAttachment().size() > 0;
+        return discussionItemViewModel.getAttachment()!= null
+                && discussionItemViewModel.getAttachment().size() > 0;
     }
 
     @Override

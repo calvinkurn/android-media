@@ -23,15 +23,6 @@ public class DiscussionItemViewModel {
     private List<AttachmentViewModel> listAttachment;
     private String conversationId;
 
-    public DiscussionItemViewModel(String message, String messageReplyTimeFmt, String messageCreateBy) {
-        this.userName = "James";
-        this.message = message;
-        this.userLabel = "Pengguna";
-        this.userLabelId = 1;
-        this.messageReplyTimeFmt = messageReplyTimeFmt;
-        this.messageCreateBy = messageCreateBy;
-    }
-
     public DiscussionItemViewModel() {
     }
 

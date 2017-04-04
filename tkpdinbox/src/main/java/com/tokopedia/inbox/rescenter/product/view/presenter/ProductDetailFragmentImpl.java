@@ -11,7 +11,7 @@ import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
-import com.tokopedia.inbox.rescenter.detailv2.data.mapper.LoadMoreMapper;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.LoadMoreMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;

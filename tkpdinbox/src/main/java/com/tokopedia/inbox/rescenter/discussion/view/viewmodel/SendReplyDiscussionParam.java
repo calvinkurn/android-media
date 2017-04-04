@@ -9,6 +9,8 @@ import java.util.List;
 public class SendReplyDiscussionParam {
     String message;
     List<AttachmentViewModel> attachment;
+    private Object resolutionId;
+    private int flagReceived;
 
     public String getMessage() {
         return message;
@@ -24,5 +26,21 @@ public class SendReplyDiscussionParam {
 
     public void setAttachment(List<AttachmentViewModel> attachment) {
         this.attachment = attachment;
+    }
+
+    public Object getResolutionId() {
+        return resolutionId;
+    }
+
+    public void setResolutionId(Object resolutionId) {
+        this.resolutionId = resolutionId;
+    }
+
+    public void setFlagReceived(int flagReceived) {
+        this.flagReceived = flagReceived;
+    }
+
+    public int getFlagReceived() {
+        return flagReceived;
     }
 }

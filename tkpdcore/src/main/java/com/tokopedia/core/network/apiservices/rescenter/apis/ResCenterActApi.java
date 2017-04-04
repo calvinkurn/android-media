@@ -122,4 +122,7 @@ public interface ResCenterActApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.ResCenter.PATH_REPLY_CONVERSATION_VALIDATION)
     Observable<Response<TkpdResponse>> replyConversationValidation2(@FieldMap Map<String, Object> params);
+
+
 }
+

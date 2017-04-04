@@ -6,8 +6,6 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,19 +17,13 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.customadapter.ImageUpload;
-import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.detail.dialog.UploadImageDialog;
-import com.tokopedia.inbox.rescenter.detail.fragment.DetailResCenterFragment;
 import com.tokopedia.inbox.rescenter.discussion.view.adapter.AttachmentAdapter;
 import com.tokopedia.inbox.rescenter.discussion.view.adapter.ResCenterDiscussionAdapter;
 import com.tokopedia.inbox.rescenter.discussion.view.adapter.databinder.LoadMoreDataBinder;
@@ -40,7 +32,6 @@ import com.tokopedia.inbox.rescenter.discussion.view.presenter.ResCenterDiscussi
 import com.tokopedia.inbox.rescenter.discussion.view.presenter.ResCenterDiscussionPresenterImpl;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
-import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +42,8 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
+
+import static com.tokopedia.inbox.rescenter.discussion.domain.interactor.ReplyDiscussionValidationUseCase.PARAM_FLAG_RECEIVED;
 
 /**
  * Created by nisie on 3/29/17.
@@ -72,10 +65,12 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
     private ImageUploadHandler uploadImageDialog;
 
 
-    public static Fragment createInstance(String resolutionID) {
+    public static Fragment createInstance(String resolutionID, boolean flagReceived) {
         Fragment fragment = new ResCenterDiscussionFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_RESOLUTION_ID, resolutionID);
+        bundle.putBoolean(PARAM_FLAG_RECEIVED, flagReceived);
+
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -181,6 +176,8 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
 
                 presenter.setDiscussionText(replyEditText.getText().toString());
                 presenter.setAttachment(attachmentAdapter.getList());
+                presenter.setResolutionId(getResolutionID());
+                presenter.setFlagReceived(getFlagReceived());
                 presenter.sendReply();
             }
         });
@@ -231,6 +228,10 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
 
     }
 
+    private boolean getFlagReceived() {
+        return getArguments().getBoolean(PARAM_FLAG_RECEIVED);
+    }
+
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void actionCamera() {
         uploadImageDialog.actionCamera();
@@ -242,6 +243,7 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
     }
 
     private void addTemporaryMessage() {
+        adapter.showEmpty(false);
         DiscussionItemViewModel tempMessage = new DiscussionItemViewModel();
         tempMessage.setMessage(replyEditText.getText().toString());
         adapter.addReply(tempMessage);
@@ -276,12 +278,15 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
     }
 
     @Override
-    public void onSuccessSendDiscussion() {
-        replyEditText.setText("");
-        adapter.add(0, new DiscussionItemViewModel("Message reply", "24 Jul 2016 11:45 WIB", "3045173"));
-        adapter.remove(adapter.getData().size() - 1);
+    public void onSuccessSendReply(DiscussionItemViewModel discussionItemViewModel) {
+        attachmentAdapter.getList().clear();
+        attachmentAdapter.notifyDataSetChanged();
+        uploadList.setVisibility(View.GONE);
+        adapter.showEmpty(false);
         setViewEnabled(true);
-        adapter.addReply(new DiscussionItemViewModel("Message reply success", "24 Jul 2016 11:45 WIB", "3045173"));
+        replyEditText.setText("");
+        adapter.remove(adapter.getData().size() - 1);
+        adapter.addReply(discussionItemViewModel);
         adapter.notifyDataSetChanged();
         finishLoading();
         scrollToBottom();
@@ -295,6 +300,11 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
 
     @Override
     public void onErrorSendReply(String errorMessage) {
+        setViewEnabled(true);
+        replyEditText.setText("");
+        adapter.remove(adapter.getData().size() - 1);
+        adapter.notifyDataSetChanged();
+
         replyEditText.setError(errorMessage);
         replyEditText.requestFocus();
     }

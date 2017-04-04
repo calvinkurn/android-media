@@ -19,6 +19,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static android.view.View.Y;
+
 /**
  * Created by nisie on 3/31/17.
  */
@@ -43,6 +45,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
 
     public interface ProductImageListener {
         View.OnClickListener onImageClicked(int position, AttachmentViewModel imageUpload);
+
         View.OnClickListener onDeleteImage(int position, AttachmentViewModel imageUpload);
 
     }
@@ -89,20 +92,22 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
     private void bindImage(ViewHolder holder, final int position) {
 
         try {
-            if (data.get(position).getFileLoc() == null
-                    && data.get(position).getImgThumb() != null
+            if (data.get(position).getImgThumb() != null
                     && !data.get(position).getImgThumb().equals("")
                     ) {
                 ImageHandler.LoadImage(holder.image, data.get(position).getImgThumb());
-            } else {
+            } else if (data.get(position).getFileLoc() != null && !data.get(position).getFileLoc().equals("")) {
                 ImageHandler.loadImageFromFile(context, holder.image, new File(data.get(position).getFileLoc()));
+            } else if (data.get(position).getUrl() != null &&
+                    !data.get(position).getUrl().equals("")) {
+                ImageHandler.loadImageWithId(holder.image, R.drawable.ic_video_thumb);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         holder.image.setOnClickListener(listener.onImageClicked(position, data.get(position)));
-        holder.deleteButton.setOnClickListener(listener.onDeleteImage(position,data.get(position)));
+        holder.deleteButton.setOnClickListener(listener.onDeleteImage(position, data.get(position)));
 
     }
 

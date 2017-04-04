@@ -2,16 +2,16 @@ package com.tokopedia.inbox.rescenter.detailv2.domain;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation.ReplyDiscussionValidationModel;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.ActionDiscussionModel;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.LoadMoreModel;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.loadmore.LoadMoreModel;
 import com.tokopedia.inbox.rescenter.historyaction.domain.model.HistoryActionData;
 import com.tokopedia.inbox.rescenter.historyaddress.domain.model.HistoryAddressData;
 import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
 import com.tokopedia.inbox.rescenter.product.domain.model.ListProductDomainData;
 import com.tokopedia.inbox.rescenter.product.domain.model.ProductDetailData;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionModel;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.getdiscussion.DiscussionModel;
 
 import rx.Observable;
 
@@ -51,5 +51,5 @@ public interface ResCenterRepository {
 
     Observable<ResolutionActionDomainData> inputAddress(TKPDMapParam<String, Object> parameters);
 
-    Observable<ActionDiscussionModel> replyConversationValidation(TKPDMapParam<String, Object> parameters);
+    Observable<ReplyDiscussionValidationModel> replyConversationValidation(TKPDMapParam<String, Object> parameters);
 }

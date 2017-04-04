@@ -425,7 +425,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     public void setOnActionDiscussClick() {
-        startActivity(ResCenterDiscussionActivity.createIntent(getActivity(), getResolutionID()));
+        startActivity(ResCenterDiscussionActivity.createIntent(getActivity(), getResolutionID(), viewData.getDetailData().isReceived()));
     }
 
     @Override

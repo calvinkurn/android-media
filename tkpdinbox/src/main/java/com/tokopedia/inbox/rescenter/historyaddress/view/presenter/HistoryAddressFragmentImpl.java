@@ -11,29 +11,17 @@ import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
-import com.tokopedia.inbox.rescenter.detailv2.data.mapper.LoadMoreMapper;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.LoadMoreMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
-import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
-import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProductHistory;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingHistoryDialogViewModel;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
 import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
 import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
 import com.tokopedia.inbox.rescenter.historyaddress.domain.interactor.GetHistoryAddressUseCase;
 import com.tokopedia.inbox.rescenter.historyaddress.view.subscriber.HistoryAddressSubsriber;
 import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
-import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.HistoryAwbUseCase;
-import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.TrackAwbReturProductUseCase;
 import com.tokopedia.inbox.rescenter.product.data.mapper.ListProductMapper;
 import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import rx.Subscriber;
 
 /**
  * Created by hangnadi on 3/23/17.
