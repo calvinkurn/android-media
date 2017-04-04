@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="280dp"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <ImageView
@@ -12,6 +12,9 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="28dp"
+        android:layout_marginBottom="20dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_empty_penalti_reputasi"
         app:srcCompat="@drawable/ic_empty_penalti_reputasi" />
 
     <TextView
@@ -20,19 +23,22 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/img_reputation_retry"
         android:layout_centerHorizontal="true"
-        android:text="@string/very_good_text"
+        android:text="@string/reputation_history_label_good_job"
+        android:layout_marginBottom="2dp"
         android:textColor="@color/thirty_eight_percent_black"
         android:textSize="14sp"
         android:textStyle="bold" />
 
     <TextView
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:id="@+id/description_reputation_retry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/good_job_reputation_retry"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:text="@string/no_penalty_description"
+        android:text="@string/reputation_history_label_info_no_penalty"
         android:textAlignment="gravity"
         android:textColor="@color/thirty_eight_percent_black"
         android:textSize="12sp" />
@@ -44,6 +50,7 @@
         android:layout_below="@id/description_reputation_retry"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
+        android:visibility="gone"
         android:orientation="horizontal">
 
         <TextView
@@ -51,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Ubah Tanggal"
+            android:text="@string/reputation_history_label_change_date"
             android:textColor="@color/tkpd_main_green"
             android:textSize="14sp" />
 

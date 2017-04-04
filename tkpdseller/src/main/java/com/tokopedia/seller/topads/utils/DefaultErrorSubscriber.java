@@ -21,8 +21,8 @@ public class DefaultErrorSubscriber<T> extends Subscriber<T> {
 
     public DefaultErrorSubscriber(ErrorNetworkListener errorNetworkListener) {
         this.errorNetworkListener = errorNetworkListener;
-        defaultDataTypes.put(UnknownHostException.class, "Tidak ada koneksi. \nSilahkan coba kembali");
-        defaultDataTypes.put(MessageErrorException.class, "Terjadi kesalahan koneksi. \nSilahkan coba kembali");
+        defaultDataTypes.put(UnknownHostException.class, "Terjadi kesalahan koneksi. \nSilahkan coba lagi");
+        defaultDataTypes.put(MessageErrorException.class, "Terjadi kesalahan koneksi. \nSilahkan coba lagi");
         defaultErrorException = "Kesalahan tidak diketahui";
 
     }
