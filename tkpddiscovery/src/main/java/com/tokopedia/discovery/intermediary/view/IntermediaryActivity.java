@@ -3,33 +3,57 @@ package com.tokopedia.discovery.intermediary.view;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
 
+import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.entity.categoriesHades.Child;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
-import com.tokopedia.discovery.adapter.RevampCategoryAdapter;
+import com.tokopedia.discovery.fragment.BrowseParentFragment;
 import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
 import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryCategoryAdapter;
+import com.tokopedia.discovery.search.view.DiscoverySearchView;
 
-import static com.tokopedia.core.router.discovery.BrowseProductRouter.AD_SRC;
-import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRA_SOURCE;
-import static com.tokopedia.core.router.discovery.BrowseProductRouter.FRAGMENT_ID;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-public class IntermediaryActivity extends BasePresenterActivity implements IntermediaryCategoryAdapter.CategoryListener{
+
+public class IntermediaryActivity extends BasePresenterActivity implements IntermediaryCategoryAdapter.CategoryListener
+        , MenuItemCompat.OnActionExpandListener{
 
     private FragmentManager fragmentManager;
+    MenuItem searchItem;
+
     private String departmentId = "";
     private String categoryName = "";
 
+    @BindView(R2.id.toolbar)
+    Toolbar toolbar;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void inflateView(int layoutId) {
+        setContentView(layoutId);
+    }
 
     public static void moveTo(Context context, String depId, String categoryName) {
         if (context == null)
@@ -42,6 +66,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements Inter
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
+
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -66,12 +91,21 @@ public class IntermediaryActivity extends BasePresenterActivity implements Inter
 
     @Override
     protected void initView() {
-
+        ButterKnife.bind(this);
+        toolbar.setTitle(categoryName);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
     }
 
     @Override
     protected void setViewListener() {
-
+        toolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onSearchOptionSelected();
+            }
+        });
     }
 
     @Override
@@ -92,7 +126,25 @@ public class IntermediaryActivity extends BasePresenterActivity implements Inter
                 IntermediaryFragment.TAG);
     }
 
+    protected boolean onSearchOptionSelected() {
+        Intent intent = BrowseProductRouter
+                .getBrowseProductIntent(this, getDepartmentId(), TopAdsApi.SRC_DIRECTORY);
+        startActivity(intent);
+        return true;
+    }
+
     private void inflateFragment(Fragment fragment, boolean isAddToBackStack, String tag) {
+        if (isFinishing()) return;
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+        if (fragment instanceof BrowseParentFragment) {
+            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+            CommonUtils.hideKeyboard(this, getCurrentFocus());
+        } else {
+            params.setScrollFlags(0);
+        }
+        toolbar.setLayoutParams(params);
+        toolbar.requestLayout();
+
         FragmentTransaction ft = fragmentManager.beginTransaction();
         ft.replace(R.id.container, fragment, tag);
         if (isAddToBackStack) {
@@ -127,4 +179,23 @@ public class IntermediaryActivity extends BasePresenterActivity implements Inter
                 child.getCategoryName()
         );
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+        searchItem = menu.findItem(R.id.action_search);
+        return true;
+    }
+
+
+    @Override
+    public boolean onMenuItemActionExpand(MenuItem item) {
+        return false;
+    }
+
+    @Override
+    public boolean onMenuItemActionCollapse(MenuItem item) {
+        return false;
+    }
+
 }

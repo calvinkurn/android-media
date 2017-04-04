@@ -102,6 +102,12 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
 
     @Override
     public void onItemClicked(SearchItem item) {
+
+        if (getActivity() instanceof BrowseProductActivity) {
+
+        }
+
+
         if (item.getEventAction().equals("shop") && item.getApplink() != null) {
             List<String> segments = Uri.parse(item.getApplink()).getPathSegments();
             if (segments != null && segments.size() > 0) {
