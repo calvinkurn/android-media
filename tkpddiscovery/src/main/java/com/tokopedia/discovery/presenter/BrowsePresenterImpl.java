@@ -707,6 +707,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                                     gridTitleRes = R.string.grid;
                             }
                             isCustomGridType = true;
+                            browseView.sendChangeGridBroadcast(gridType);
                             browseView.changeBottomBarGridIcon(gridIcon, gridTitleRes);
                         }
                     }
