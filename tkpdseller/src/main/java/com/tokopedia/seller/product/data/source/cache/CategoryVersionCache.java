@@ -3,19 +3,24 @@ package com.tokopedia.seller.product.data.source.cache;
 import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
+import com.tokopedia.seller.product.di.scope.CategoryPickerScope;
+
+import javax.inject.Inject;
 
 /**
- * Created by sebastianuskh on 3/8/17.
+ * @author sebastianuskh on 3/8/17.
  */
-
+@CategoryPickerScope
 public class CategoryVersionCache {
     private static final String CATEGORY_HADES_VERSION = "STORED_CATEGORY_HADES_VERSION";
     private static final String VERSION_NUMBER = "VERSION_NUMBER";
     private static final int MINUTES = 60;
     private final Context context;
 
-    public CategoryVersionCache(Context context) {
+    @Inject
+    public CategoryVersionCache(@ActivityContext Context context) {
         this.context = context;
     }
 

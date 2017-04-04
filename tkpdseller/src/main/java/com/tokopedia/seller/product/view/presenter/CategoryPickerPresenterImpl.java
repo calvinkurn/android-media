@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.product.domain.interactor.FetchCategoryDataUseCase;
+import com.tokopedia.seller.product.domain.model.CategoryGroupDomainModel;
 
 import rx.Subscriber;
 
@@ -23,7 +24,7 @@ public class CategoryPickerPresenterImpl implements CategoryPickerPresenter {
 
     }
 
-    private class FetchCategoryDataSubscriber extends Subscriber<Boolean> {
+    private class FetchCategoryDataSubscriber extends Subscriber<CategoryGroupDomainModel> {
         @Override
         public void onCompleted() {
 
@@ -35,7 +36,7 @@ public class CategoryPickerPresenterImpl implements CategoryPickerPresenter {
         }
 
         @Override
-        public void onNext(Boolean aBoolean) {
+        public void onNext(CategoryGroupDomainModel domainModel) {
 
         }
     }

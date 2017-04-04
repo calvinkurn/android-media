@@ -5,12 +5,12 @@ import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
-import com.tokopedia.core.database.DbFlowDatabase;
+import com.tokopedia.seller.database.TkpdSellerDatabase;
 
 /**
  * @author sebastianuskh on 4/3/17.
  */
-@Table(database = DbFlowDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
+@Table(database = TkpdSellerDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
 public class CategoryDataBase extends BaseModel{
     @PrimaryKey
     @Column
