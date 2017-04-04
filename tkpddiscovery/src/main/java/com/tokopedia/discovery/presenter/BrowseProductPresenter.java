@@ -10,4 +10,6 @@ public interface BrowseProductPresenter {
                                 DiscoveryInteractorImpl.GetGridConfigCallback callback);
 
     void onGridTypeChanged(String departmentId, String gridType);
+
+    void finish();
 }

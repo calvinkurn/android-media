@@ -36,7 +36,6 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.discovery.model.Breadcrumb;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
@@ -220,7 +219,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                 }
             }
         }
-        browseProductPresenter = new BrowseProductPresenterImpl();
+        browseProductPresenter = new BrowseProductPresenterImpl(this);
         retrieveLastGridConfig();
         if (SessionHandler.isV4Login(this)) {
             String userId = SessionHandler.getLoginID(this);
@@ -363,8 +362,11 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        if (browseProductPresenter != null) {
+            browseProductPresenter.finish();
+        }
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
+        super.onDestroy();
     }
 
     public void setFragment(Fragment fragment, String TAG) {
