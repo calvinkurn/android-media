@@ -17,7 +17,12 @@ public class ResolutionCenterActionMapper implements Func1<Response<TkpdResponse
         ResolutionActionDomainData domainModel = new ResolutionActionDomainData();
         if (response.isSuccessful()) {
             if (!response.body().isError()) {
-                domainModel.setSuccess(true);
+                if (domainModel.isSuccess()) {
+                    domainModel.setSuccess(true);
+                } else {
+                    domainModel.setSuccess(false);
+                    domainModel.setMessageError(generateMessageError(response));
+                }
             } else {
                 domainModel.setSuccess(false);
                 domainModel.setMessageError(generateMessageError(response));
