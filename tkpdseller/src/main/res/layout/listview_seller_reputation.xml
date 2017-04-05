@@ -49,6 +49,8 @@
     </LinearLayout>
 
     <TextView
+        android:maxLines="1"
+        android:singleLine="true"
         android:layout_centerVertical="true"
         android:id="@+id/tv_score"
         android:layout_width="wrap_content"
