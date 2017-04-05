@@ -18,7 +18,7 @@ import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.discovery.model.ErrorContainer;
 import com.tokopedia.discovery.model.NetworkParam;
-import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
+import com.tokopedia.discovery.presenter.BrowseView;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenterImpl;
 import com.tokopedia.discovery.view.CatalogView;
 
@@ -33,7 +33,7 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
     private NetworkParam.Catalog catalog;
     private BrowseCatalogModel catalogModel;
 
-    private DiscoveryActivityPresenter activityPresenter;
+    private BrowseView browseView;
     private int index;
 
     public CatalogImpl(CatalogView view) {
@@ -41,22 +41,22 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
     }
 
     @Override
-    public void callNetwork(DiscoveryActivityPresenter discoveryActivityPresenter) {
+    public void callNetwork(BrowseView browseView) {
         // jika datanya kosong, maka itu dianggap first time.
-        this.activityPresenter = discoveryActivityPresenter;
+        this.browseView = browseView;
         if (view.getDataSize() <= 0) {
 
             catalog = new NetworkParam.Catalog();
             catalog.start = 0;
-            catalog.q = discoveryActivityPresenter.getProductParam().q;
-            catalog.sc = discoveryActivityPresenter.getProductParam().sc;
-            catalog.id = discoveryActivityPresenter.getProductParam().id;
-            catalog.ob = discoveryActivityPresenter.getProductParam().obCatalog;
-            catalog.pmin = discoveryActivityPresenter.getProductParam().pmin;
-            catalog.pmax = discoveryActivityPresenter.getProductParam().pmax;
-            catalog.terms = discoveryActivityPresenter.getProductParam().terms;// klo terms itu, filter kaya brand, screen dll. kepake d directory product
-            catalog.breadcrumb = discoveryActivityPresenter.getProductParam().breadcrumb;
-            catalog.extraFilter = discoveryActivityPresenter.getProductParam().extraFilter;
+            catalog.q = browseView.getProductParam().q;
+            catalog.sc = browseView.getProductParam().sc;
+            catalog.id = browseView.getProductParam().id;
+            catalog.ob = browseView.getProductParam().obCatalog;
+            catalog.pmin = browseView.getProductParam().pmin;
+            catalog.pmax = browseView.getProductParam().pmax;
+            catalog.terms = browseView.getProductParam().terms;// klo terms itu, filter kaya brand, screen dll. kepake d directory product
+            catalog.breadcrumb = browseView.getProductParam().breadcrumb;
+            catalog.extraFilter = browseView.getProductParam().extraFilter;
             discoveryInteractor.getCatalogs(NetworkParam.generateCatalogQuery(catalog));
         }
     }
@@ -163,8 +163,8 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
 
     @Override
     public void fetchDynamicAttribut() {
-        if (activityPresenter.checkHasFilterAttrIsNull(index)) {
-            discoveryInteractor.getDynamicAttribute(view.getContext(), BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG, activityPresenter.getBrowseProductActivityModel().getDepartmentId());
+        if (browseView.checkHasFilterAttrIsNull(index)) {
+            discoveryInteractor.getDynamicAttribute(view.getContext(), BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG, browseView.getBrowseProductActivityModel().getDepartmentId());
         }
     }
 }

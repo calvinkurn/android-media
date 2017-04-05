@@ -3,7 +3,7 @@ package com.tokopedia.discovery.presenter.browseparent;
 import android.content.Context;
 
 import com.tokopedia.core.session.base.BaseImpl;
-import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
+import com.tokopedia.discovery.presenter.BrowseView;
 import com.tokopedia.discovery.view.CatalogView;
 
 /**
@@ -25,7 +25,7 @@ public abstract class Catalog extends BaseImpl<CatalogView> {
         return null;
     }
 
-    public abstract void callNetwork(DiscoveryActivityPresenter discoveryActivityPresenter);
+    public abstract void callNetwork(BrowseView browseView);
 
     public abstract void loadMore(Context context);
 
