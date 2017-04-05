@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -463,7 +464,7 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
 
     @Override
     public boolean isValidForm(String text) {
-        return !(text == null && text.equals(""));
+        return !(TextUtils.isEmpty(text));
     }
 
     @Override

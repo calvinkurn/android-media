@@ -161,7 +161,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         // save last input by user
-        if (presenter.isSecurityQuestion() && presenter.isValidForm(vAnswer.getText().toString())) {
+        if (presenter.isSecurityQuestion() && presenter.isValidForm(vAnswer.getText())) {
             presenter.saveAnswer(vAnswer.getText().toString());// this is for rotation
         }
         if (presenter.isOtp() && presenter.isValidForm(vInputOtp.getText().toString())) {
@@ -260,7 +260,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                         isRunningTimer = true;
                         MethodChecker.setBackground(vSendOtp, getResources().getDrawable(R.drawable.btn_transparent_disable));
                         vSendOtp.setEnabled(false);
-                        vSendOtp.setText("" + String.format(FORMAT,
+                        vSendOtp.setText(String.format(FORMAT,
                                 TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
                                         TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
                                 TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
