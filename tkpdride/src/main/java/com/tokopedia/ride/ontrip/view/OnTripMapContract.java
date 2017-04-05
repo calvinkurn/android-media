@@ -21,6 +21,10 @@ public interface OnTripMapContract {
 
         boolean isWaitingResponse();
 
+        void hideRideRequestStatus();
+
+        void showRequestRideStatus(String message);
+
         void showLoadingWaitingResponse();
 
         void hideLoadingWaitingResponse();
@@ -51,6 +55,8 @@ public interface OnTripMapContract {
 
         void onSuccessCreateRideRequest(RideRequest rideRequest);
 
+        void showBottomSection();
+
         void renderAcceptedRequest(RideRequest result);
 
         void renderInProgressRequest(RideRequest result);
@@ -68,6 +74,8 @@ public interface OnTripMapContract {
         void renderTripRoute(List<List<LatLng>> routes);
 
         void renderRiderCanceledRequest(RideRequest result);
+
+        void showNoDriverAvailableDialog();
     }
 
     interface Presenter extends CustomerPresenter<View>{

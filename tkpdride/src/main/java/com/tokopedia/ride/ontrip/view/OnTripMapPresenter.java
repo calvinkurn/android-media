@@ -60,6 +60,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             createLocationRequest();
             initializeLocationService();
             getView().showLoadingWaitingResponse();
+            getView().hideRideRequestStatus();
             getView().hideCancelRequestButton();
 
             if (getView().isWaitingResponse()) {
@@ -87,6 +88,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                         getView().failedToRequestRide();
                     }
                     getView().hideLoadingWaitingResponse();
+                    getView().hideRideRequestStatus();
                 } else {
                     getView().showFailedRideRequestMessage(e.getMessage());
                     getView().failedToRequestRide();
@@ -231,6 +233,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                         getView().failedToRequestRide();
                     }
                     getView().hideLoadingWaitingResponse();
+                    getView().hideRideRequestStatus();
                 } else {
                     getView().showFailedRideRequestMessage(e.getMessage());
                     getView().failedToRequestRide();
@@ -250,6 +253,11 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     public void proccessGetCurrentRideRequest(RideRequest result) {
         //processing accepted arriving in_progress driver_canceled completed
         switch (result.getStatus()) {
+            case "no_drivers_available":
+                getView().showLoadingWaitingResponse();
+                getView().clearRideConfiguration();
+                getView().showNoDriverAvailableDialog();
+                break;
             case "processing":
                 getView().showLoadingWaitingResponse();
                 getView().showCancelRequestButton();
@@ -257,19 +265,23 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             case "accepted":
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
+                getView().showRequestRideStatus(String.format("Driver will pick in %s minutes", String.valueOf(result.getPickup().getEta())));
                 getView().renderAcceptedRequest(result);
+                getView().showBottomSection();
                 break;
             case "arriving":
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
-                getView().renderAcceptedRequest(result);
+                getView().showBottomSection();
+                getView().showRequestRideStatus(String.format("Driver will pick in %s minutes", String.valueOf(result.getPickup().getEta())));
                 getView().renderArrivingDriverEvent(result);
                 break;
             case "in_progress":
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
-                getView().renderAcceptedRequest(result);
+                getView().showBottomSection();
                 getView().renderInProgressRequest(result);
+                getView().showRequestRideStatus(String.format("Will arrive to destination in %s minutes", String.valueOf(result.getDestination().getEta())));
                 break;
             case "driver_canceled":
                 getView().renderDriverCanceledRequest(result);

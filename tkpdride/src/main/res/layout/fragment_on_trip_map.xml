@@ -122,7 +122,7 @@
                 android:text="Your driver will wait up to 2 minutes"
                 android:textColor="@color/black"
                 android:textSize="14sp"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <LinearLayout
                 android:id="@+id/cabs_processing_cancel_button"

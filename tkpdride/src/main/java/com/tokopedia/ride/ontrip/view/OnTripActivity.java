@@ -97,6 +97,11 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
     }
 
     @Override
+    public void actionNoDriverAvailable() {
+
+    }
+
+    @Override
     public void onBackPressed() {
         RideConfiguration rideConfiguration = new RideConfiguration();
         if (rideConfiguration.isWaitingDriverState()) {
