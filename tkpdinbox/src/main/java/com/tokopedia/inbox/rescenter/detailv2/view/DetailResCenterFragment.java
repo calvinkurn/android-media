@@ -524,7 +524,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     @Override
     public void doOnActionError(String messageError) {
         showLoadingDialog(false);
-        showTimeOutMessage();
+        showSnackBar(messageError);
     }
 
     @Override

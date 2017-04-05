@@ -1,5 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.data.mapper;
 
+import android.util.Log;
+
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
 
@@ -17,12 +19,7 @@ public class ResolutionCenterActionMapper implements Func1<Response<TkpdResponse
         ResolutionActionDomainData domainModel = new ResolutionActionDomainData();
         if (response.isSuccessful()) {
             if (!response.body().isError()) {
-                if (domainModel.isSuccess()) {
-                    domainModel.setSuccess(true);
-                } else {
-                    domainModel.setSuccess(false);
-                    domainModel.setMessageError(generateMessageError(response));
-                }
+                domainModel.setSuccess(true);
             } else {
                 domainModel.setSuccess(false);
                 domainModel.setMessageError(generateMessageError(response));
@@ -35,6 +32,8 @@ public class ResolutionCenterActionMapper implements Func1<Response<TkpdResponse
     }
 
     private String generateMessageError(Response<TkpdResponse> response) {
+        String hangnadi = response.body().getErrorMessageJoined();
+        Log.d("hangnadi.com", "generateMessageError: " + hangnadi);
         return response.body().getErrorMessageJoined();
     }
 }
