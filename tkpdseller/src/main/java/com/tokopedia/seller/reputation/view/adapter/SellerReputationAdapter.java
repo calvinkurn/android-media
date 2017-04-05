@@ -289,8 +289,6 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
         }
 
         public void bindData(EmptyListModel emptyListModel) {
-            if (containerClick.getVisibility() != View.VISIBLE)
-                return;
 
             dateUtilHelper.setsDate(emptyListModel.getSetDateHeaderModel().getsDate());
             dateUtilHelper.seteDate(emptyListModel.getSetDateHeaderModel().geteDate());

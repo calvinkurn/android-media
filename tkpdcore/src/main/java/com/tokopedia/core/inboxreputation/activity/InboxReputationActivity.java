@@ -52,9 +52,9 @@ public class InboxReputationActivity extends DrawerPresenterActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        goToReputationHistory = getIntent().getBooleanExtra(GO_TO_REPUTATION_HISTORY, false);
         super.onCreate(savedInstanceState);
         NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
-        goToReputationHistory = getIntent().getBooleanExtra(GO_TO_REPUTATION_HISTORY, false);
     }
 
     @Override

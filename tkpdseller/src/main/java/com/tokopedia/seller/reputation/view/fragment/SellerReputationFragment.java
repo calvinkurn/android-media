@@ -465,6 +465,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
             } else {
                 adapter.showEmptyFull(true);
             }
+            adapter.notifyDataSetChanged();
         } else {
             if (!isEndOfFile) {
                 adapter.showLoading(true);

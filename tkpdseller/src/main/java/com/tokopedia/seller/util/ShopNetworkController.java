@@ -29,6 +29,7 @@ import static com.tokopedia.seller.util.ShopNetworkController.RequestParamFactor
  * Created by normansyahputa on 3/20/17.
  */
 
+@Deprecated
 public class ShopNetworkController extends BaseNetworkController {
     public static final String SHOP_ID = "shop_id";
     public static final String SHOW_ALL = "show_all";
