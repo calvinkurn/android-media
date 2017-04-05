@@ -17,7 +17,8 @@ import java.util.List;
  */
 
 public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter {
-    private static final int VIEW_DATA = 1000;
+    private static final int CATEGORY_PARENT = 1000;
+    private static final int CATEGORY_ITEM = 2000;
     private List<CategoryViewModel> data;
 
     public CategoryPickerAdapter() {
@@ -27,25 +28,37 @@ public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType){
-            case VIEW_DATA:
-                return getViewHolder(parent);
+            case CATEGORY_PARENT:
+                return getParentViewHolder(parent);
+            case CATEGORY_ITEM:
+                return getItemViewHolder(parent);
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
     }
 
-    private RecyclerView.ViewHolder getViewHolder(ViewGroup parent) {
+    private RecyclerView.ViewHolder getItemViewHolder(ViewGroup parent) {
         View view = LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.category_picker_item_view_holder, parent, false);
-        return new CategoryPickerViewHolder(view);
+                .inflate(R.layout.category_item_view_holder, parent, false);
+        return new CategoryItemViewHolder(view);
+    }
+
+    private RecyclerView.ViewHolder getParentViewHolder(ViewGroup parent) {
+        View view = LayoutInflater
+                .from(parent.getContext())
+                .inflate(R.layout.category_parent_view_holder, parent, false);
+        return new CategoryParentViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)){
-            case VIEW_DATA:
-                ((CategoryPickerViewHolder)holder).renderData(data.get(position));
+            case CATEGORY_PARENT:
+                ((CategoryParentViewHolder)holder).renderData(data.get(position));
+                break;
+            case CATEGORY_ITEM:
+                ((CategoryItemViewHolder)holder).renderData(data.get(position));
                 break;
             default:
                 super.onBindViewHolder(holder, position);
@@ -56,8 +69,11 @@ public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter {
     public int getItemViewType(int position) {
         if (data.isEmpty() || isLoading() || isRetry()) {
             return super.getItemViewType(position);
+        } else if (data.get(position).getChild() != null
+                && !data.get(position).getChild().isEmpty()){
+            return CATEGORY_PARENT;
         } else {
-            return VIEW_DATA;
+            return CATEGORY_ITEM;
         }
     }
 

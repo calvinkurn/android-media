@@ -11,10 +11,10 @@ import com.tokopedia.seller.product.view.model.CategoryViewModel;
  * @author sebastianuskh on 4/4/17.
  */
 
-class CategoryPickerViewHolder extends RecyclerView.ViewHolder {
+class CategoryParentViewHolder extends RecyclerView.ViewHolder {
     private final TextView categoryName;
 
-    public CategoryPickerViewHolder(View view) {
+    public CategoryParentViewHolder(View view) {
         super(view);
         categoryName = (TextView) view.findViewById(R.id.category_name);
     }
