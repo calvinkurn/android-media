@@ -428,6 +428,7 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
     @Override
     public void onReceiveOTP(String otpCode) {
         etOtp.setText(otpCode);
+        btnValidateOtp.performClick();
     }
 
     @OnShowRationale(Manifest.permission.READ_SMS)
