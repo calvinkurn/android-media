@@ -155,9 +155,7 @@
             <TextView
                 android:id="@+id/text_checkedbox"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/checkbox_voucher"
-                android:layout_alignTop="@+id/checkbox_voucher"
+                android:layout_height="@dimen/btn_height"
                 android:layout_toEndOf="@+id/checkbox_voucher"
                 android:layout_toRightOf="@+id/checkbox_voucher"
                 android:gravity="center_vertical"
