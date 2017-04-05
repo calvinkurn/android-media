@@ -1,5 +1,8 @@
 package com.tokopedia.inbox.rescenter.discussion.view.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -11,7 +14,7 @@ import java.util.Locale;
  * Created by nisie on 3/29/17.
  */
 
-public class DiscussionItemViewModel {
+public class DiscussionItemViewModel implements Parcelable{
 
     public static final java.lang.String DISCUSSION_DATE_TIME_FORMAT = "dd-MM-yyyy hh:mm:ss";
     private String message;
@@ -25,6 +28,29 @@ public class DiscussionItemViewModel {
 
     public DiscussionItemViewModel() {
     }
+
+    protected DiscussionItemViewModel(Parcel in) {
+        message = in.readString();
+        userName = in.readString();
+        userLabel = in.readString();
+        userLabelId = in.readInt();
+        messageReplyTimeFmt = in.readString();
+        messageCreateBy = in.readString();
+        listAttachment = in.createTypedArrayList(AttachmentViewModel.CREATOR);
+        conversationId = in.readString();
+    }
+
+    public static final Creator<DiscussionItemViewModel> CREATOR = new Creator<DiscussionItemViewModel>() {
+        @Override
+        public DiscussionItemViewModel createFromParcel(Parcel in) {
+            return new DiscussionItemViewModel(in);
+        }
+
+        @Override
+        public DiscussionItemViewModel[] newArray(int size) {
+            return new DiscussionItemViewModel[size];
+        }
+    };
 
     public String getMessage() {
         return message;
@@ -118,6 +144,23 @@ public class DiscussionItemViewModel {
 
     public void setConversationId(String conversationId) {
         this.conversationId = conversationId;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(message);
+        dest.writeString(userName);
+        dest.writeString(userLabel);
+        dest.writeInt(userLabelId);
+        dest.writeString(messageReplyTimeFmt);
+        dest.writeString(messageCreateBy);
+        dest.writeTypedList(listAttachment);
+        dest.writeString(conversationId);
     }
 }
 

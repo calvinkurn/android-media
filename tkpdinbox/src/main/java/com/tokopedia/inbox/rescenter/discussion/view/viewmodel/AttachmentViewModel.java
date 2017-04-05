@@ -1,14 +1,38 @@
 package com.tokopedia.inbox.rescenter.discussion.view.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by nisie on 3/31/17.
  */
 
-public class AttachmentViewModel {
+public class AttachmentViewModel implements Parcelable{
 
     String imgThumb;
     String url;
     private String fileLoc;
+
+    public AttachmentViewModel() {
+    }
+
+    protected AttachmentViewModel(Parcel in) {
+        imgThumb = in.readString();
+        url = in.readString();
+        fileLoc = in.readString();
+    }
+
+    public static final Creator<AttachmentViewModel> CREATOR = new Creator<AttachmentViewModel>() {
+        @Override
+        public AttachmentViewModel createFromParcel(Parcel in) {
+            return new AttachmentViewModel(in);
+        }
+
+        @Override
+        public AttachmentViewModel[] newArray(int size) {
+            return new AttachmentViewModel[size];
+        }
+    };
 
     public String getImgThumb() {
         return imgThumb;
@@ -32,5 +56,17 @@ public class AttachmentViewModel {
 
     public void setFileLoc(String fileLoc) {
         this.fileLoc = fileLoc;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(imgThumb);
+        dest.writeString(url);
+        dest.writeString(fileLoc);
     }
 }

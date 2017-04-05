@@ -162,7 +162,7 @@ public class ResCenterDiscussionAdapter extends BaseLinearRecyclerViewAdapter {
         notifyDataSetChanged();
     }
 
-    public int canLoadMore() {
-        return this.canLoadMore;
+    public boolean canLoadMore() {
+        return this.canLoadMore == 1;
     }
 }

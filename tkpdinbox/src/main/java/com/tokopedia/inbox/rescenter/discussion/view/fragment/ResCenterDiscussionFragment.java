@@ -55,16 +55,21 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
         implements ResCenterDiscussionView {
 
     private static final String PARAM_RESOLUTION_ID = "PARAM_RESOLUTION_ID";
+    private static final String ARGS_DATA = "ARGS_DATA";
+    private static final String ARGS_ATTACHMENT = "ARGS_ATTACHMENT";
+    private static final String ARGS_CAN_LOAD_MORE = "ARGS_CAN_LOAD_MORE";
+    private static final String ARGS_REPLY = "ARGS_REPLY";
     private ResCenterDiscussionAdapter adapter;
     private AttachmentAdapter attachmentAdapter;
     private RecyclerView discussionList;
-    private RecyclerView uploadList;
+    private RecyclerView attachmentList;
     private EditText replyEditText;
     private ImageView sendButton;
     private ImageView attachButton;
     private LinearLayoutManager layoutManager;
     private ImageUploadHandler uploadImageDialog;
     private TkpdProgressDialog progressDialog;
+    private Bundle savedInstance;
 
     public static Fragment createInstance(String resolutionID, boolean flagReceived) {
         Fragment fragment = new ResCenterDiscussionFragment();
@@ -84,6 +89,15 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
     @Override
     protected void onFirstTimeLaunched() {
         presenter.initData();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        savedInstance = new Bundle();
+        if (savedInstanceState != null) {
+            savedInstance.putAll(savedInstanceState);
+        }
     }
 
     @Override
@@ -131,11 +145,36 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
         discussionList = (RecyclerView) view.findViewById(R.id.discussion_list);
         discussionList.setLayoutManager(layoutManager);
         discussionList.setAdapter(adapter);
-        uploadList = (RecyclerView) view.findViewById(R.id.list_image_upload);
+        attachmentList = (RecyclerView) view.findViewById(R.id.list_image_upload);
         attachmentAdapter = AttachmentAdapter.createAdapter(getActivity(), true);
         attachmentAdapter.setListener(getAttachmentAdapterListener());
-        uploadList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        uploadList.setAdapter(attachmentAdapter);
+        attachmentList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        attachmentList.setAdapter(attachmentAdapter);
+        restoreDataFromInstanceState(savedInstance);
+    }
+
+    private void restoreDataFromInstanceState(Bundle savedInstance) {
+        if (savedInstance != null) {
+            if (savedInstance.getParcelableArrayList(ARGS_DATA) != null) {
+                List<DiscussionItemViewModel> list = savedInstance.getParcelableArrayList(ARGS_DATA);
+                if (list == null || list.size() == 0)
+                    adapter.showEmptyFull(true);
+                else {
+                    adapter.setList(list);
+                    adapter.setCanLoadMore(savedInstance.getBoolean(ARGS_CAN_LOAD_MORE, false));
+                }
+            }
+            if (savedInstance.getParcelableArrayList(ARGS_ATTACHMENT) != null) {
+                List<AttachmentViewModel> list = savedInstance.getParcelableArrayList(ARGS_ATTACHMENT);
+                if (list == null || list.size() == 0)
+                    attachmentList.setVisibility(View.GONE);
+                else {
+                    attachmentList.setVisibility(View.VISIBLE);
+                    attachmentAdapter.addList(list);
+                }
+            }
+                replyEditText.setText(savedInstance.getString(ARGS_REPLY,""));
+        }
     }
 
     private AttachmentAdapter.ProductImageListener getAttachmentAdapterListener() {
@@ -286,7 +325,7 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
     public void onSuccessSendReply(DiscussionItemViewModel discussionItemViewModel) {
         attachmentAdapter.getList().clear();
         attachmentAdapter.notifyDataSetChanged();
-        uploadList.setVisibility(View.GONE);
+        attachmentList.setVisibility(View.GONE);
         adapter.showEmpty(false);
         setViewEnabled(true);
         replyEditText.setText("");
@@ -407,7 +446,7 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
     }
 
     private void onAddImageAttachment(String fileLoc) {
-        uploadList.setVisibility(View.VISIBLE);
+        attachmentList.setVisibility(View.VISIBLE);
         AttachmentViewModel attachment = new AttachmentViewModel();
         attachment.setFileLoc(fileLoc);
         attachmentAdapter.addImage(attachment);
@@ -479,4 +518,14 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
         RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(ARGS_DATA,
+                new ArrayList<DiscussionItemViewModel>(adapter.getData()));
+        outState.putParcelableArrayList(ARGS_ATTACHMENT,
+                new ArrayList<AttachmentViewModel>(attachmentAdapter.getList()));
+        outState.putString(ARGS_REPLY, replyEditText.getText().toString());
+        outState.putBoolean(ARGS_CAN_LOAD_MORE, adapter.canLoadMore());
+        super.onSaveInstanceState(outState);
+    }
 }
