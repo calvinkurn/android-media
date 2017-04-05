@@ -1,5 +1,6 @@
 package com.tokopedia.digital.cart.activity;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.app.IntentService;
 import android.content.Context;
@@ -7,6 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.text.Editable;
@@ -26,6 +28,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.otp.data.factory.OtpSourceFactory;
 import com.tokopedia.core.otp.data.repository.OtpRepositoryImpl;
 import com.tokopedia.core.otp.domain.OtpRepository;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
@@ -37,12 +40,18 @@ import com.tokopedia.digital.cart.presenter.OtpVerificationPresenter;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 3/9/17.
  */
-
+@RuntimePermissions
 public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificationPresenter>
         implements IOtpVerificationView, IncomingSmsReceiver.ReceiveSMSListener {
     public static final int REQUEST_CODE = OtpVerificationActivity.class.hashCode();
@@ -107,56 +116,7 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
     @Override
     protected void setViewListener() {
         btnValidateOtp.setEnabled(false);
-        etOtp.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @SuppressWarnings("deprecation")
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                tvPinError.setVisibility(View.GONE);
-                if (s.toString().length() != etOtp.getmMaxLength()) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        btnValidateOtp.setBackground(
-                                getResources().getDrawable(
-                                        com.tokopedia.core.R.drawable.bg_grey_border_black
-                                )
-                        );
-                    } else {
-                        btnValidateOtp.setBackgroundDrawable(
-                                getResources().getDrawable(
-                                        com.tokopedia.core.R.drawable.bg_grey_border_black
-                                )
-                        );
-                    }
-                    btnValidateOtp.setTextColor(getResources().getColor(R.color.body_text_5_inverse));
-                    btnValidateOtp.setEnabled(false);
-                } else {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        btnValidateOtp.setBackground(
-                                getResources().getDrawable(
-                                        com.tokopedia.core.R.drawable.green_button
-                                )
-                        );
-                    } else {
-                        btnValidateOtp.setBackgroundDrawable(
-                                getResources().getDrawable(
-                                        com.tokopedia.core.R.drawable.green_button
-                                )
-                        );
-                    }
-                    btnValidateOtp.setTextColor(getResources().getColor(R.color.white));
-                    btnValidateOtp.setEnabled(true);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
+        etOtp.addTextChangedListener(getWatcherOtpInput());
         btnValidateOtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -174,6 +134,11 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
 
     @Override
     protected void setActionVar() {
+        OtpVerificationActivityPermissionsDispatcher.requestOtpFirstWithPermissionWithCheck(this);
+    }
+
+    @NeedsPermission(Manifest.permission.READ_SMS)
+    void requestOtpFirstWithPermission() {
         presenter.processFirstRequestSmsOtp();
     }
 
@@ -463,6 +428,87 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
     @Override
     public void onReceiveOTP(String otpCode) {
         etOtp.setText(otpCode);
+    }
+
+    @OnShowRationale(Manifest.permission.READ_SMS)
+    void showRationaleForStorageAndCamera(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(this, request, Manifest.permission.READ_SMS);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_SMS)
+    void showDeniedForCamera() {
+        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.READ_SMS);
+        presenter.processFirstRequestSmsOtp();
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_SMS)
+    void showNeverAskForCamera() {
+        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_SMS);
+        presenter.processFirstRequestSmsOtp();
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        OtpVerificationActivityPermissionsDispatcher.onRequestPermissionsResult(
+                this, requestCode, grantResults
+        );
+    }
+
+    @NonNull
+    private TextWatcher getWatcherOtpInput() {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @SuppressWarnings("deprecation")
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                tvPinError.setVisibility(View.GONE);
+                if (s.toString().length() != etOtp.getmMaxLength()) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        btnValidateOtp.setBackground(
+                                getResources().getDrawable(
+                                        com.tokopedia.core.R.drawable.bg_grey_border_black
+                                )
+                        );
+                    } else {
+                        btnValidateOtp.setBackgroundDrawable(
+                                getResources().getDrawable(
+                                        com.tokopedia.core.R.drawable.bg_grey_border_black
+                                )
+                        );
+                    }
+                    btnValidateOtp.setTextColor(getResources().getColor(R.color.body_text_5_inverse));
+                    btnValidateOtp.setEnabled(false);
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        btnValidateOtp.setBackground(
+                                getResources().getDrawable(
+                                        com.tokopedia.core.R.drawable.green_button
+                                )
+                        );
+                    } else {
+                        btnValidateOtp.setBackgroundDrawable(
+                                getResources().getDrawable(
+                                        com.tokopedia.core.R.drawable.green_button
+                                )
+                        );
+                    }
+                    btnValidateOtp.setTextColor(getResources().getColor(R.color.white));
+                    btnValidateOtp.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
     }
 
     private void closeWithResultOtpVerified(String message) {
