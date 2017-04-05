@@ -43,6 +43,9 @@ public interface AppComponent {
     @HadesQualifier
     Retrofit hadesRetrofit();
 
+    @WsV4Qualifier
+    Retrofit wsV4Retrofit();
+
     Gson gson();
 
     @WsV4Qualifier
