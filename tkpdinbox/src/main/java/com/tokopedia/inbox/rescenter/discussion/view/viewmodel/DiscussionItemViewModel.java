@@ -1,44 +1,56 @@
 package com.tokopedia.inbox.rescenter.discussion.view.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
  * Created by nisie on 3/29/17.
  */
 
-public class ResCenterDiscussionItemViewModel {
+public class DiscussionItemViewModel implements Parcelable{
 
+    public static final java.lang.String DISCUSSION_DATE_TIME_FORMAT = "dd-MM-yyyy hh:mm:ss";
     private String message;
     private String userName;
     private String userLabel;
     private int userLabelId;
     private String messageReplyTimeFmt;
     private String messageCreateBy;
+    private List<AttachmentViewModel> listAttachment;
+    private String conversationId;
 
-    public ResCenterDiscussionItemViewModel(String message, String messageReplyTimeFmt) {
-        this.userName = "James";
-        this.message = message;
-        this.userLabel = "Pengguna";
-        this.userLabelId = 1;
-        this.messageReplyTimeFmt = messageReplyTimeFmt;
-        this.messageCreateBy = "1234";
+    public DiscussionItemViewModel() {
     }
 
-    public ResCenterDiscussionItemViewModel(String message, String messageReplyTimeFmt, String messageCreateBy) {
-        this.userName = "James";
-        this.message = message;
-        this.userLabel = "Pengguna";
-        this.userLabelId = 1;
-        this.messageReplyTimeFmt = messageReplyTimeFmt;
-        this.messageCreateBy = messageCreateBy;
+    protected DiscussionItemViewModel(Parcel in) {
+        message = in.readString();
+        userName = in.readString();
+        userLabel = in.readString();
+        userLabelId = in.readInt();
+        messageReplyTimeFmt = in.readString();
+        messageCreateBy = in.readString();
+        listAttachment = in.createTypedArrayList(AttachmentViewModel.CREATOR);
+        conversationId = in.readString();
     }
 
-    public ResCenterDiscussionItemViewModel() {
-    }
+    public static final Creator<DiscussionItemViewModel> CREATOR = new Creator<DiscussionItemViewModel>() {
+        @Override
+        public DiscussionItemViewModel createFromParcel(Parcel in) {
+            return new DiscussionItemViewModel(in);
+        }
+
+        @Override
+        public DiscussionItemViewModel[] newArray(int size) {
+            return new DiscussionItemViewModel[size];
+        }
+    };
 
     public String getMessage() {
         return message;
@@ -91,7 +103,7 @@ public class ResCenterDiscussionItemViewModel {
     public String getMessageReplyDateFmt() {
         try {
             Locale id = new Locale("in", "ID");
-            SimpleDateFormat e = new SimpleDateFormat("dd MMMM yyyy HH:mm z", id);
+            SimpleDateFormat e = new SimpleDateFormat(DISCUSSION_DATE_TIME_FORMAT, id);
             SimpleDateFormat newSdf = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
             Calendar calNow = Calendar.getInstance();
             calNow.setTime(new Date());
@@ -109,13 +121,46 @@ public class ResCenterDiscussionItemViewModel {
     public String getMessageReplyHourFmt() {
         try {
             Locale id = new Locale("in", "ID");
-            SimpleDateFormat e = new SimpleDateFormat("dd MMMM yyyy HH:mm z", id);
-            SimpleDateFormat newSdf = new SimpleDateFormat("HH:mm z", Locale.ENGLISH);
+            SimpleDateFormat e = new SimpleDateFormat(DISCUSSION_DATE_TIME_FORMAT, id);
+            SimpleDateFormat newSdf = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
             String hour = newSdf.format(e.parse(this.getMessageReplyTimeFmt()));
             return hour;
         } catch (ParseException var5) {
             return "";
         }
+    }
+
+    public void setAttachment(List<AttachmentViewModel> listAttachment) {
+        this.listAttachment = listAttachment;
+    }
+
+    public List<AttachmentViewModel> getAttachment() {
+        return listAttachment;
+    }
+
+    public String getConversationId() {
+        return conversationId;
+    }
+
+    public void setConversationId(String conversationId) {
+        this.conversationId = conversationId;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(message);
+        dest.writeString(userName);
+        dest.writeString(userLabel);
+        dest.writeInt(userLabelId);
+        dest.writeString(messageReplyTimeFmt);
+        dest.writeString(messageCreateBy);
+        dest.writeTypedList(listAttachment);
+        dest.writeString(conversationId);
     }
 }
 

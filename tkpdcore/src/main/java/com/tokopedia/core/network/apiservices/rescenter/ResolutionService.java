@@ -14,6 +14,7 @@ public class ResolutionService extends BearerService<ResolutionApi> {
 
     public ResolutionService(String mToken) {
         super(mToken);
+        this.mToken = mToken;
     }
 
     @Override

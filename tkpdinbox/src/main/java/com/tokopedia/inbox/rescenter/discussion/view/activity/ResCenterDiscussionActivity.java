@@ -17,10 +17,14 @@ import com.tokopedia.inbox.rescenter.discussion.view.fragment.ResCenterDiscussio
 public class ResCenterDiscussionActivity extends BasePresenterActivity {
 
     private static final String PARAM_RESOLUTION_ID = "PARAM_RESOLUTION_ID";
+    private static final String PARAM_FLAG_RECEIVED = "PARAM_FLAG_RECEIVED";
 
-    public static Intent createIntent(Context context, String resolutionId) {
+
+    public static Intent createIntent(Context context, String resolutionId, boolean flagReceived) {
         Intent intent = new Intent(context, ResCenterDiscussionActivity.class);
         intent.putExtra(PARAM_RESOLUTION_ID, resolutionId);
+        intent.putExtra(PARAM_FLAG_RECEIVED, flagReceived);
+
         return intent;
     }
 
@@ -47,12 +51,16 @@ public class ResCenterDiscussionActivity extends BasePresenterActivity {
     @Override
     protected void initView() {
         String resolutionId = "";
+        boolean flagReceived = false;
+
         if (getIntent().getExtras() != null) {
             resolutionId = getIntent().getExtras().getString(PARAM_RESOLUTION_ID);
+            flagReceived = getIntent().getExtras().getBoolean(PARAM_FLAG_RECEIVED);
+
         }
 
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
-            Fragment fragment = ResCenterDiscussionFragment.createInstance(resolutionId);
+            Fragment fragment = ResCenterDiscussionFragment.createInstance(resolutionId,flagReceived);
             getFragmentManager().beginTransaction()
                     .add(R.id.container, fragment, fragment.getClass().getSimpleName())
                     .commit();

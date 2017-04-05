@@ -6,9 +6,11 @@ import com.tokopedia.core.network.apiservices.rescenter.ResolutionService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.LoadMoreMapper;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionData;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.getdiscussion.DiscussionModel;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.loadmore.LoadMoreModel;
 import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
 import com.tokopedia.inbox.rescenter.historyaction.domain.model.HistoryActionData;
 import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
@@ -19,8 +21,6 @@ import com.tokopedia.inbox.rescenter.product.data.mapper.ListProductMapper;
 import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
 import com.tokopedia.inbox.rescenter.product.domain.model.ListProductDomainData;
 import com.tokopedia.inbox.rescenter.product.domain.model.ProductDetailData;
-import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
-import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
 
 import rx.Observable;
 
@@ -39,6 +39,7 @@ public class CloudResCenterDataSource {
     private ListProductMapper listProductMapper;
     private ProductDetailMapper productDetailMapper;
     private DiscussionResCenterMapper discussionResCenterMapper;
+    private LoadMoreMapper loadMoreMapper;
 
     public CloudResCenterDataSource(Context context,
                                     ResolutionService resolutionService,
@@ -48,7 +49,8 @@ public class CloudResCenterDataSource {
                                     HistoryActionMapper historyActionMapper,
                                     ListProductMapper listProductMapper,
                                     ProductDetailMapper productDetailMapper,
-                                    DiscussionResCenterMapper discussionResCenterMapper) {
+                                    DiscussionResCenterMapper discussionResCenterMapper,
+                                    LoadMoreMapper loadMoreMapper) {
         super();
         this.context = context;
         this.resolutionService = resolutionService;
@@ -59,6 +61,7 @@ public class CloudResCenterDataSource {
         this.listProductMapper = listProductMapper;
         this.productDetailMapper = productDetailMapper;
         this.discussionResCenterMapper = discussionResCenterMapper;
+        this.loadMoreMapper = loadMoreMapper;
     }
 
     public Observable<DetailResCenter> getResCenterDetail(String resolutionID, TKPDMapParam<String, Object> parameters) {
@@ -70,8 +73,8 @@ public class CloudResCenterDataSource {
                 .map(detailResCenterMapper);
     }
 
- public Observable<DiscussionData> getResCenterConversation(String resolutionID,
-                                                               TKPDMapParam<String, Object> parameters) {
+ public Observable<DiscussionModel> getResCenterConversation(String resolutionID,
+                                                             TKPDMapParam<String, Object> parameters) {
         return resolutionService.getApi()
                 .getResCenterConversation(
                         resolutionID,
@@ -80,16 +83,14 @@ public class CloudResCenterDataSource {
                 .map(discussionResCenterMapper);
     }
 
-    public Observable<DetailResCenter> getResCenterConversationMore(String resolutionID,
-                                                                    String conversationID,
-                                                                    TKPDMapParam<String, Object> parameters) {
+    public Observable<LoadMoreModel> getResCenterConversationMore(String resolutionID,
+                                                                  TKPDMapParam<String, Object> parameters) {
         return resolutionService.getApi()
                 .getResCenterConversationMore(
                         resolutionID,
-                        conversationID,
                         AuthUtil.generateParamsNetwork2(context, parameters)
                 )
-                .map(detailResCenterMapper);
+                .map(loadMoreMapper);
     }
 
     public Observable<HistoryAwbData> getHistoryAwb(String resolutionID,

@@ -6,12 +6,17 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.Map;
 
+import okhttp3.RequestBody;
 import retrofit2.Response;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 import retrofit2.http.QueryMap;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -114,4 +119,26 @@ public interface ResCenterActApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.ResCenter.PATH_INPUT_ADDRESS_RESOLUTION)
     Observable<Response<TkpdResponse>> inputAddressResolution2(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_REPLY_CONVERSATION_SUBMIT)
+    Observable<Response<TkpdResponse>> replyConversationSubmit2(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_REPLY_CONVERSATION_VALIDATION)
+    Observable<Response<TkpdResponse>> replyConversationValidation2(@FieldMap Map<String, Object> params);
+
+    @Multipart
+    @POST("")
+    Observable<Response<TkpdResponse>> uploadImage(@Url String url,
+                                                   @PartMap Map<String, RequestBody> params,
+                                                   @Part("fileToUpload\"; filename=\"image.jpg") RequestBody imageFile);
+
+    @Multipart
+    @POST("")
+    Observable<Response<TkpdResponse>> createImage(@Url String url,
+                                                   @PartMap Map<String, RequestBody> params);
+
+
 }
+

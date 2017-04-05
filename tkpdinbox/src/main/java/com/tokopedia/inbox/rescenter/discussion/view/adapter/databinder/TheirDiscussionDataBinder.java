@@ -1,23 +1,27 @@
 package com.tokopedia.inbox.rescenter.discussion.view.adapter.databinder;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.ResCenterDiscussionItemViewModel;
+import com.tokopedia.inbox.rescenter.discussion.view.adapter.AttachmentAdapter;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
+import com.tokopedia.inbox.rescenter.player.VideoPlayerActivity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,10 +40,9 @@ import butterknife.ButterKnife;
 
 public class TheirDiscussionDataBinder extends DataBinder<TheirDiscussionDataBinder.ViewHolder> {
 
-    private static final int ADMIN_ID = 1;
+    private static final int ADMIN_ID = 3;
 
-    public class ViewHolder extends RecyclerView.ViewHolder
-            implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.message)
         TextView message;
@@ -50,74 +53,113 @@ public class TheirDiscussionDataBinder extends DataBinder<TheirDiscussionDataBin
         @BindView(R2.id.date)
         TextView date;
 
-        @BindView(R2.id.username)
-        TextView userName;
+//        @BindView(R2.id.username)
+//        TextView userName;
 
         @BindView(R2.id.label)
         TextView userLabel;
 
+        TextView titleAttachment;
+
+        @BindView(R2.id.image_holder)
+        RecyclerView imageHolder;
+
+        AttachmentAdapter adapter;
+
+
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnCreateContextMenuListener(this);
+            titleAttachment = (TextView) itemView.findViewById(R.id.title_attachment);
         }
 
-        @Override
-        public void onCreateContextMenu(ContextMenu contextMenu,
-                                        View view,
-                                        ContextMenu.ContextMenuInfo contextMenuInfo) {
-            MenuItem actionCopy = contextMenu.add(view.getId(), R.id.action_copy, 99, R.string.menu_copy);
-            actionCopy.setOnMenuItemClickListener(this);
-
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            int i = menuItem.getItemId();
-            if (i == R.id.action_copy) {
-                ClipboardManager clipboard = (ClipboardManager) itemView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("label", message.getText());
-                clipboard.setPrimaryClip(clip);
-                return true;
-            } else {
-                return false;
-            }
-        }
     }
 
-    private ArrayList<ResCenterDiscussionItemViewModel> list;
+    private ArrayList<DiscussionItemViewModel> list;
     private Context context;
     private SimpleDateFormat sdf;
     private Locale id;
-    private int canLoadMore = 0;
 
     public TheirDiscussionDataBinder(DataBindAdapter dataBindAdapter, Context context) {
         super(dataBindAdapter);
         this.list = new ArrayList<>();
         this.context = context;
         this.id = new Locale("in", "ID");
-        this.sdf = new SimpleDateFormat("dd MMMM yyyy HH:mm z", id);
+        this.sdf = new SimpleDateFormat(DiscussionItemViewModel.DISCUSSION_DATE_TIME_FORMAT, id);
     }
 
 
     @Override
     public ViewHolder newViewHolder(ViewGroup parent) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext())
+        ViewHolder holder = new ViewHolder(LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.listview_their_res_center_discussion, parent, false));
+        holder.adapter = AttachmentAdapter.createAdapter(context, false);
+        holder.adapter.setListener(onProductImageActionListener(holder.adapter.getList()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context,
+                LinearLayoutManager.HORIZONTAL, false);
+        holder.imageHolder.setLayoutManager(layoutManager);
+        holder.imageHolder.setAdapter(holder.adapter);
+        return holder;
+    }
+
+    private AttachmentAdapter.ProductImageListener onProductImageActionListener(final ArrayList<AttachmentViewModel> list) {
+        return new AttachmentAdapter.ProductImageListener() {
+
+            @Override
+            public View.OnClickListener onImageClicked(final int position, final AttachmentViewModel imageUpload) {
+                return new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (imageUpload.getImgThumb() != null && !imageUpload.getImgThumb().equals("")) {
+                            openProductPreview(list, position);
+                        } else if (imageUpload.getUrl() != null && !imageUpload.getUrl().equals("")) {
+                            openVideoPlayer(imageUpload.getUrl());
+                        }
+                    }
+                };
+            }
+
+            @Override
+            public View.OnClickListener onDeleteImage(int position, AttachmentViewModel imageUpload) {
+                return null;
+            }
+        };
+    }
+
+    private void openProductPreview(ArrayList<AttachmentViewModel> list, int position) {
+        ArrayList<String> imageUrls = new ArrayList<>();
+        for (AttachmentViewModel model : list) {
+            imageUrls.add(model.getImgThumb());
+        }
+        Intent intent = new Intent(context, PreviewProductImage.class);
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList("fileloc", imageUrls);
+        bundle.putInt("img_pos", position);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    private void openVideoPlayer(String urlVideo) {
+        Intent intent = new Intent(context, VideoPlayerActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(VideoPlayerActivity.PARAMS_URL_VIDEO, urlVideo);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
     @Override
     public void bindViewHolder(ViewHolder holder, final int position) {
         holder.message.setText(list.get(position).getMessage());
         holder.message.setMovementMethod(new SelectableSpannedMovementMethod());
-        holder.userName.setText(list.get(position).getUserName());
+        setImage(holder, list.get(position));
+//        holder.userName.setText(list.get(position).getUserName());
         holder.userLabel.setText(list.get(position).getUserLabel());
         if (list.get(position).getUserLabelId() == ADMIN_ID) {
             MethodChecker.setBackground(holder.userLabel, context.getResources().getDrawable(R.drawable.orange_button_rounded));
             holder.userLabel.setTextColor(MethodChecker.getColor(context, R.color.white));
             holder.userLabel.setPadding(5, 5, 5, 5);
         } else {
-            MethodChecker.setBackground(holder.userLabel, context.getResources().getDrawable(R.drawable.btn_transparent_disable));
+            holder.userLabel.setBackgroundResource(0);
             holder.userLabel.setTextColor(MethodChecker.getColor(context, R.color.grey_500));
             holder.userLabel.setPadding(5, 5, 5, 5);
         }
@@ -128,7 +170,7 @@ public class TheirDiscussionDataBinder extends DataBinder<TheirDiscussionDataBin
             cal.setTime(sdf.parse(list.get(position).getMessageReplyTimeFmt()));
 
             holder.date.setVisibility(View.VISIBLE);
-            holder.date.setText(list.get(position).getMessageReplyTimeFmt());
+            holder.date.setText(list.get(position).getMessageReplyDateFmt());
             if (position != 0) {
                 Calendar calBefore = Calendar.getInstance();
                 calBefore.setTime(sdf.parse(list.get(position - 1).getMessageReplyTimeFmt()));
@@ -137,41 +179,49 @@ public class TheirDiscussionDataBinder extends DataBinder<TheirDiscussionDataBin
                         && cal.get(Calendar.YEAR) == calBefore.get(Calendar.YEAR)) {
                     holder.date.setVisibility(View.GONE);
                 }
-            }
 
+
+            }
 
             holder.hour.setText(list.get(position).getMessageReplyHourFmt());
-            if (position != list.size() - 1) {
-                Calendar calAfter = Calendar.getInstance();
-                calAfter.setTime(sdf.parse(list.get(position + 1).getMessageReplyTimeFmt()));
-
-                if (cal.get(Calendar.HOUR) == calAfter.get(Calendar.HOUR)
-                        && cal.get(Calendar.MINUTE) == calAfter.get(Calendar.MINUTE)) {
-                    holder.date.setVisibility(View.GONE);
-                }
-            }
         } catch (ParseException e) {
             holder.date.setText("");
         }
     }
+
+    private void setImage(ViewHolder holder, DiscussionItemViewModel discussionItemViewModel) {
+        if (isHasAttachment(discussionItemViewModel)) {
+            holder.imageHolder.setVisibility(View.VISIBLE);
+            holder.adapter.addList(discussionItemViewModel.getAttachment());
+            holder.titleAttachment.setVisibility(View.VISIBLE);
+        } else {
+            holder.imageHolder.setVisibility(View.GONE);
+            holder.titleAttachment.setVisibility(View.GONE);
+        }
+    }
+
+    private boolean isHasAttachment(DiscussionItemViewModel discussionItemViewModel) {
+        return discussionItemViewModel.getAttachment() != null && discussionItemViewModel.getAttachment().size() > 0;
+    }
+
 
     @Override
     public int getItemCount() {
         return list.size();
     }
 
-    public void addAll(List<ResCenterDiscussionItemViewModel> list) {
+    public void addAll(List<DiscussionItemViewModel> list) {
         this.list.addAll(0, list);
         notifyDataSetChanged();
     }
 
-    public void addReply(ResCenterDiscussionItemViewModel item) {
+    public void addReply(DiscussionItemViewModel item) {
         this.list.add(item);
         notifyDataSetChanged();
     }
 
-    public void add(int position, ResCenterDiscussionItemViewModel ResCenterDiscussionItemViewModel) {
-        this.list.add(position, ResCenterDiscussionItemViewModel);
+    public void add(int position, DiscussionItemViewModel DiscussionItemViewModel) {
+        this.list.add(position, DiscussionItemViewModel);
         notifyDataSetChanged();
     }
 
@@ -184,7 +234,4 @@ public class TheirDiscussionDataBinder extends DataBinder<TheirDiscussionDataBin
         this.list.clear();
     }
 
-    public void setCanLoadMore(int canLoadMore) {
-        this.canLoadMore = canLoadMore;
-    }
 }
