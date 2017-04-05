@@ -146,13 +146,13 @@ android {
         }
     }
 
-   /* splits {
+    splits {
         density {
             enable allowSplit()
             exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
             compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
         }
-    }*/
+    }
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion

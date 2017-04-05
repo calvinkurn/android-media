@@ -967,7 +967,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         });
         ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
         discoveryInteractor.getHotListBanner(query);
-    }c
+    }
 
     private void fetchCategoriesHeader(final String departementId, final int level) {
         showLoading(true);
