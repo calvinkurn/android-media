@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -45,6 +46,9 @@ public class IntermediaryActivity extends BasePresenterActivity implements Inter
 
     @BindView(R2.id.progressBar)
     ProgressBar progressBar;
+
+    @BindView(R2.id.container)
+    FrameLayout frameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -205,5 +209,13 @@ public class IntermediaryActivity extends BasePresenterActivity implements Inter
 
     public void setProgressBar(ProgressBar progressBar) {
         this.progressBar = progressBar;
+    }
+
+    public FrameLayout getFrameLayout() {
+        return frameLayout;
+    }
+
+    public void setFrameLayout(FrameLayout frameLayout) {
+        this.frameLayout = frameLayout;
     }
 }

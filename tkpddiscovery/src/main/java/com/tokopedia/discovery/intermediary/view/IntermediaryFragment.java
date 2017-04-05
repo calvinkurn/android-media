@@ -241,12 +241,15 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     private void showErrorEmptyState() {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-               //TODO
-            }
-        }).showRetrySnackbar();
+        NetworkErrorHelper.showEmptyState(getActivity(),  ((IntermediaryActivity) getActivity())
+                        .getFrameLayout(),
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                       presenter.getIntermediaryCategory(((IntermediaryActivity) getActivity())
+                               .getDepartmentId());
+                    }
+                });
     }
 
     private int getCategoryWidth() {
