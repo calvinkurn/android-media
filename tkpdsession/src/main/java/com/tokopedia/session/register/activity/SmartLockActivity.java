@@ -143,6 +143,7 @@ public class SmartLockActivity extends AppCompatActivity implements
                             goToContent();
                         } else {
                             Log.w(TAG, "Unrecognized status code: " + status.getStatusCode());
+                            goToContent();
                         }
                     }
                 }
