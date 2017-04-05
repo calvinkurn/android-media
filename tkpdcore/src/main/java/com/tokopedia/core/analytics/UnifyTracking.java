@@ -24,6 +24,8 @@ import java.util.Map;
 
 public class UnifyTracking extends TrackingUtils {
 
+    public static final String EXTRA_LABEL = "label";
+
     public static void eventHomeTab(String label){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.HOMEPAGE,
@@ -1427,6 +1429,15 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.PUSH_NOTIFICATION,
                 AppEventTracking.Action.RECEIVED,
                 AppEventTracking.EventLabel.TOPADS_SUCCESS_TOPUP
+        ).getEvent());
+    }
+
+    public static void eventOpenTopadsPushNotification(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.OPEN_PUSH_NOTIFICATION,
+                AppEventTracking.Category.PUSH_NOTIFICATION,
+                AppEventTracking.Action.OPEN,
+                label
         ).getEvent());
     }
 }

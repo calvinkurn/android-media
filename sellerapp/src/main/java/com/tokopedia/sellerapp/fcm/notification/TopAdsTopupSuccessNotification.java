@@ -18,7 +18,8 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_TITLE;
  */
 
 public class TopAdsTopupSuccessNotification extends BaseNotification {
-    public static final int NOTIFICATION_ID =  1101;
+    public static final int NOTIFICATION_ID = 1101;
+    public static final String NOTIFICATION_LABEL = "Top Ads Topup Success";
 
     public TopAdsTopupSuccessNotification(Context context) {
         super(context);
@@ -26,9 +27,13 @@ public class TopAdsTopupSuccessNotification extends BaseNotification {
 
     @Override
     protected void configureNotificationData(Bundle data) {
-        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
+        Intent intent = NotificationUtils.configureGeneralIntent(
                 new Intent(mContext, TopAdsDashboardActivity.class)
         );
+        intent.putExtra(UnifyTracking.EXTRA_LABEL, NOTIFICATION_LABEL);
+
+        mNotificationPass.mIntent = intent;
+
         mNotificationPass.classParentStack = TopAdsDashboardActivity.class;
         mNotificationPass.title = data.getString(ARG_NOTIFICATION_TITLE, mContext.getString(R.string.title_push_notif_general));
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
