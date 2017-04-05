@@ -35,7 +35,7 @@ public interface BrowseView {
                     Map<String, String> filters);
     void openSort(DataValue filterAttribute, String source);
 
-    void initDiscoverySearchView();
+    void initDiscoverySearchView(String lastQuery);
 
     void initToolbar(String title, boolean isClickable);
 
