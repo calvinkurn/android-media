@@ -1,12 +1,15 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 /**
  * Created by hangnadi on 3/10/17.
  */
 
-public class HistoryData {
+public class HistoryData implements Parcelable {
     private List<HistoryItem> historyList;
 
     public List<HistoryItem> getHistoryList() {
@@ -16,4 +19,33 @@ public class HistoryData {
     public void setHistoryList(List<HistoryItem> historyList) {
         this.historyList = historyList;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(this.historyList);
+    }
+
+    public HistoryData() {
+    }
+
+    protected HistoryData(Parcel in) {
+        this.historyList = in.createTypedArrayList(HistoryItem.CREATOR);
+    }
+
+    public static final Parcelable.Creator<HistoryData> CREATOR = new Parcelable.Creator<HistoryData>() {
+        @Override
+        public HistoryData createFromParcel(Parcel source) {
+            return new HistoryData(source);
+        }
+
+        @Override
+        public HistoryData[] newArray(int size) {
+            return new HistoryData[size];
+        }
+    };
 }

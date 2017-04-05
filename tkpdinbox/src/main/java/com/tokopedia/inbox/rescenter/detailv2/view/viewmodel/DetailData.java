@@ -1,10 +1,13 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by hangnadi on 3/10/17.
  */
 
-public class DetailData {
+public class DetailData implements Parcelable {
     private String awbNumber;
     private String complaintDate;
     private String invoice;
@@ -115,4 +118,54 @@ public class DetailData {
         this.received = received;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.awbNumber);
+        dest.writeString(this.complaintDate);
+        dest.writeString(this.invoice);
+        dest.writeString(this.shopID);
+        dest.writeString(this.shopName);
+        dest.writeString(this.responseDeadline);
+        dest.writeByte(this.deadlineVisibility ? (byte) 1 : (byte) 0);
+        dest.writeString(this.buyerID);
+        dest.writeString(this.buyerName);
+        dest.writeString(this.invoiceUrl);
+        dest.writeString(this.orderID);
+        dest.writeByte(this.received ? (byte) 1 : (byte) 0);
+    }
+
+    public DetailData() {
+    }
+
+    protected DetailData(Parcel in) {
+        this.awbNumber = in.readString();
+        this.complaintDate = in.readString();
+        this.invoice = in.readString();
+        this.shopID = in.readString();
+        this.shopName = in.readString();
+        this.responseDeadline = in.readString();
+        this.deadlineVisibility = in.readByte() != 0;
+        this.buyerID = in.readString();
+        this.buyerName = in.readString();
+        this.invoiceUrl = in.readString();
+        this.orderID = in.readString();
+        this.received = in.readByte() != 0;
+    }
+
+    public static final Parcelable.Creator<DetailData> CREATOR = new Parcelable.Creator<DetailData>() {
+        @Override
+        public DetailData createFromParcel(Parcel source) {
+            return new DetailData(source);
+        }
+
+        @Override
+        public DetailData[] newArray(int size) {
+            return new DetailData[size];
+        }
+    };
 }

@@ -48,6 +48,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         implements DetailResCenterFragmentView {
 
     private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
+    private static final String EXTRA_PARAM_VIEW_DATA = "view_data";
     private static final int REQUEST_EDIT_SOLUTION = 6789;
     private static final int REQUEST_APPEAL_SOLUTION = 5;
     private static final int REQUEST_INPUT_SHIPPING = 6;
@@ -131,11 +132,14 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     @Override
     public void onSaveState(Bundle state) {
         state.putString(EXTRA_PARAM_RESOLUTION_ID, getResolutionID());
+        state.putParcelable(EXTRA_PARAM_VIEW_DATA, getViewData());
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
         setResolutionID(savedState.getString(EXTRA_PARAM_RESOLUTION_ID));
+        setViewData((DetailViewModel) savedState.getParcelable(EXTRA_PARAM_VIEW_DATA));
+        doOnInitSuccess();
     }
 
     @Override
