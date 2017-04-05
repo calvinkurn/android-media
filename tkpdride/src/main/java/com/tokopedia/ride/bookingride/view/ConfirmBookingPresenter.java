@@ -1,6 +1,7 @@
 package com.tokopedia.ride.bookingride.view;
 
 import android.content.Intent;
+import android.net.Uri;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.app.MainApplication;
@@ -9,6 +10,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.drawer.interactor.NetworkInteractor;
 import com.tokopedia.core.drawer.interactor.NetworkInteractorImpl;
 import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
@@ -38,26 +40,39 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
         getView().showProgress();
         getView().hideConfirmButton();
         getView().hideTopupTokoCashButton();
+        getView().hideNotActivatedTokoCashLayout();
         networkInteractor.getTokoCash(getView().getActivity(), new NetworkInteractor.TopCashListener() {
             @Override
             public void onSuccess(TopCashItem topCashItem) {
-                //get balance int value
-                String balanceStr = topCashItem.getData().getBalance();
-                int balance = 0
-                        ;
-                if (balanceStr != null && !balanceStr.isEmpty()) {
-                    balance = CurrencyFormatHelper.convertRupiahToInt(topCashItem.getData().getBalance());
-                }
+                if (topCashItem.getData().getLink() != 0) {
+                    //get balance int value
+                    String balanceStr = topCashItem.getData().getBalance();
+                    int balance = 0;
+                    if (balanceStr != null && !balanceStr.isEmpty()) {
+                        balance = CurrencyFormatHelper.convertRupiahToInt(topCashItem.getData().getBalance());
+                    }
 
-                getView().hideProgress();
+                    getView().hideProgress();
 
-                if (balance < getView().getFarePrice()) {
-                    getView().showTopupTokoCashButton();
-                    getView().hideConfirmButton();
-                    getView().setBalanceText(topCashItem.getData().getBalance());
+                    if (balance < getView().getFarePrice()) {
+                        getView().showTopupTokoCashButton();
+                        getView().hideConfirmButton();
+                        getView().setBalanceText(topCashItem.getData().getBalance());
+                    } else {
+                        getView().hideTopupTokoCashButton();
+                        getView().showConfirmButton();
+                    }
+                    getView().hideNotActivatedTokoCashLayout();
                 } else {
+                    // not activated tokocash
                     getView().hideTopupTokoCashButton();
-                    getView().showConfirmButton();
+                    getView().hideConfirmButton();
+
+                    String seamlessURL = URLGenerator.generateURLSessionLogin(
+                            (Uri.encode(topCashItem.getData().getAction().getRedirectUrl())),
+                            getView().getActivity()
+                    );
+                    getView().showNotActivatedTokoCashLayout(seamlessURL);
                 }
             }
 

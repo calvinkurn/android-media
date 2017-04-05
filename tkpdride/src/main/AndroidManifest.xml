@@ -30,6 +30,8 @@
                 <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY" />
             </intent-filter>
         </service>
+
+        <activity android:name=".bookingride.view.activity.TokoCashWebViewActivity"></activity>
     </application>
 
 </manifest>

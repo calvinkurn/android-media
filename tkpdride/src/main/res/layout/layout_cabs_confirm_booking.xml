@@ -150,4 +150,33 @@
             android:textSize="15sp" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/toko_cash_activation_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_activation_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="TokoCash Activation required."
+            android:textColor="@color/red_600" />
+
+        <TextView
+            android:id="@+id/tv_activation_button"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@color/red_600"
+            android:gravity="center"
+            android:text="Toko Cash Activation"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+    </LinearLayout>
+
 </LinearLayout>

@@ -38,6 +38,10 @@ public interface ConfirmBookingContract {
         void showProgress();
 
         void hideProgress();
+
+        void hideNotActivatedTokoCashLayout();
+
+        void showNotActivatedTokoCashLayout(String redirectUrl);
     }
 
     interface Presenter extends CustomerPresenter<View>{

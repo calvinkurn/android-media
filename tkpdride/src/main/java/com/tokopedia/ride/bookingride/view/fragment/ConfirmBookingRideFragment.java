@@ -3,6 +3,8 @@ package com.tokopedia.ride.bookingride.view.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,12 +17,14 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.ConfirmBookingDependencyInjection;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.view.ConfirmBookingContract;
+import com.tokopedia.ride.bookingride.view.activity.TokoCashWebViewActivity;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.SeatViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
@@ -35,6 +39,7 @@ import butterknife.OnClick;
  * A simple {@link Fragment} subclass.
  */
 public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmBookingContract.View {
+    public static final int WALLET_WEB_VIEW_REQUEST_CODE = 1012;
     public static String EXTRA_PRODUCT = "EXTRA_PRODUCT";
     @BindView(R2.id.cabAppIcon)
     ImageView productIconImageView;
@@ -56,6 +61,13 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     TextView tokoCashLabelTextView;
     @BindView(R2.id.confirm_progress_bar)
     ProgressBar progressBar;
+
+    @BindView(R2.id.toko_cash_activation_layout)
+    LinearLayout tokoCashActivationLayout;
+    @BindView(R2.id.tv_activation_label)
+    TextView tokoCashActivationLabelTextView;
+    @BindView(R2.id.tv_activation_button)
+    TextView tokoCashActivationButton;
 
     ConfirmBookingContract.Presenter presenter;
     OnFragmentInteractionListener mListener;
@@ -225,7 +237,13 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     @OnClick(R2.id.tv_topup_tokocash)
     public void actionTopupButtonClicked() {
-        Toast.makeText(getActivity(), "Go to Top Up ", Toast.LENGTH_SHORT).show();
+        String seamlessURL = URLGenerator.generateURLSessionLogin(
+                (Uri.encode("https://wallet-staging.tokopedia.id/")),
+                getActivity()
+        );
+        Intent intent = TokoCashWebViewActivity.getCallingIntent(getActivity(), seamlessURL);
+        startActivityForResult(intent, WALLET_WEB_VIEW_REQUEST_CODE);
+
     }
 
     @Override
@@ -241,5 +259,37 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     @Override
     public void hideProgress() {
         progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideNotActivatedTokoCashLayout() {
+        tokoCashActivationLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showNotActivatedTokoCashLayout(final String redirectUrl) {
+//        tokoCashActivationLabelTextView.setText();
+        tokoCashActivationLayout.setVisibility(View.VISIBLE);
+        tokoCashActivationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = TokoCashWebViewActivity.getCallingIntent(getActivity(), redirectUrl);
+                startActivityForResult(intent, WALLET_WEB_VIEW_REQUEST_CODE);
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == WALLET_WEB_VIEW_REQUEST_CODE) {
+            presenter.actionCheckBalance();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        presenter.actionCheckBalance();
     }
 }
