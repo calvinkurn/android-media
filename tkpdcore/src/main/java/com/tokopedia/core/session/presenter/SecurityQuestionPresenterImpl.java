@@ -268,7 +268,10 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
                             questionFormModel.setQuestion(2);
                             viewModel.setSecurity2(2);
                             view.setModel(questionFormModel);
-                        } else {
+                        } else if(validateOtpModel.getErrorMessage() != null){
+                            view.showError(validateOtpModel.getErrorMessage());
+                        }
+                        else {
                             viewModel.setIsErrorDisplay(true);
                             view.displayError(true);
                         }
@@ -657,7 +660,6 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
 
     private RequestParams getValidateOtpParam(String answer) {
         RequestParams param = RequestParams.create();
-
         param.putString(RequestOtpUseCase.PARAM_OTP_TYPE, OTP_TYPE_PHONE_NUMBER_VERIFICATION);
         param.putString("os_type", "1");
         param.putString(ValidateOtpUseCase.PARAM_CODE, answer);
