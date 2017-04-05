@@ -31,6 +31,7 @@ public interface BrowseView {
     void openFilter(DataValue filterAttribute,
                     String source,
                     String parentDepartment,
+                    String departmentId,
                     Map<String, String> filters);
     void openSort(DataValue filterAttribute, String source);
 

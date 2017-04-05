@@ -612,7 +612,8 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             } else {
                 filters = new HashMap<>();
             }
-            browseView.openFilter(filterAttribute, source, browseModel.getParentDepartement(), filters);
+            browseView.openFilter(filterAttribute, source,
+                    browseModel.getParentDepartement(), browseModel.getDepartmentId(), filters);
         } else {
             fetchDynamicAttribute(activeTab, source, FILTER);
         }
