@@ -275,5 +275,6 @@
     <string name="product_label_category">Kategori</string>
     <string name="product_label_choose">Pilih</string>
     <string name="product_label_product_recommendation">Rekomendasi Kategori</string>
+    <string name="title_activity_etalase_picker">Pilih Etalase</string>
 
 </resources>

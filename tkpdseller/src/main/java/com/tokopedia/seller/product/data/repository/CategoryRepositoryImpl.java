@@ -4,7 +4,7 @@ import com.tokopedia.seller.product.data.source.CategoryDataSource;
 import com.tokopedia.seller.product.data.source.CategoryVersionDataSource;
 import com.tokopedia.seller.product.di.scope.CategoryPickerScope;
 import com.tokopedia.seller.product.domain.CategoryRepository;
-import com.tokopedia.seller.product.domain.model.CategoryGroupDomainModel;
+import com.tokopedia.seller.product.domain.model.CategoryDomainModel;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     @Override
-    public Observable<List<CategoryGroupDomainModel>> fetchCategory() {
+    public Observable<List<CategoryDomainModel>> fetchCategory() {
         return categoryDataSource.fetchCategory();
     }
 }

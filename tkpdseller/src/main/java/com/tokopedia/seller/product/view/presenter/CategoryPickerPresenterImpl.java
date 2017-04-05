@@ -2,7 +2,8 @@ package com.tokopedia.seller.product.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.product.domain.interactor.FetchCategoryDataUseCase;
-import com.tokopedia.seller.product.domain.model.CategoryGroupDomainModel;
+import com.tokopedia.seller.product.domain.model.CategoryDomainModel;
+import com.tokopedia.seller.product.view.mapper.CategoryViewMapper;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
 
     }
 
-    private class FetchCategoryDataSubscriber extends Subscriber<List<CategoryGroupDomainModel>> {
+    private class FetchCategoryDataSubscriber extends Subscriber<List<CategoryDomainModel>> {
         @Override
         public void onCompleted() {
 
@@ -40,9 +41,11 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
         }
 
         @Override
-        public void onNext(List<CategoryGroupDomainModel> domainModel) {
+        public void onNext(List<CategoryDomainModel> domainModel) {
             checkViewAttached();
             getView().dismissLoadingDialog();
+
+            getView().renderCategory(CategoryViewMapper.map(domainModel));
 
 
         }

@@ -2,6 +2,8 @@ package com.tokopedia.seller.product.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,22 +15,25 @@ import com.tokopedia.seller.product.di.component.CategoryPickerComponent;
 import com.tokopedia.seller.product.di.component.CategoryPickerViewComponent;
 import com.tokopedia.seller.product.di.component.DaggerCategoryPickerViewComponent;
 import com.tokopedia.seller.product.di.module.CategoryPickerViewModule;
+import com.tokopedia.seller.product.view.adapter.CategoryPickerAdapter;
+import com.tokopedia.seller.product.view.model.CategoryViewModel;
 import com.tokopedia.seller.product.view.presenter.CategoryPickerPresenter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
 /**
- * Created by sebastianuskh on 4/3/17.
+ * @author sebastianuskh on 4/3/17.
  */
 
 public class CategoryPickerFragment extends BaseDaggerFragment implements CategoryPickerView{
     public static final String TAG = "CategoryPickerFragment";
-    private CategoryPickerViewComponent component;
 
     @Inject
     CategoryPickerPresenter presenter;
 
-    private TkpdProgressDialog loadingDialog;
+    private CategoryPickerAdapter adapter;
 
     public static CategoryPickerFragment createInstance() {
         return new CategoryPickerFragment();
@@ -37,13 +42,12 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        loadingDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
 
     }
 
     @Override
     protected void initInjector() {
-        component = DaggerCategoryPickerViewComponent
+        CategoryPickerViewComponent component = DaggerCategoryPickerViewComponent
                 .builder()
                 .categoryPickerComponent(getComponent(CategoryPickerComponent.class))
                 .categoryPickerViewModule(new CategoryPickerViewModule())
@@ -55,9 +59,17 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.category_picker_fragment_layout, container, false);
+        setupRecyclerView(view);
         presenter.attachView(this);
         initVar();
         return view;
+    }
+
+    private void setupRecyclerView(View view) {
+        RecyclerView categoryRecyclerView = (RecyclerView) view.findViewById(R.id.category_recycler_view);
+        categoryRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter = new CategoryPickerAdapter();
+        categoryRecyclerView.setAdapter(adapter);
     }
 
     private void initVar() {
@@ -65,17 +77,22 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     }
 
     @Override
-    protected String getScreenName() {
-        return null;
-    }
-
-    @Override
     public void showLoadingDialog() {
-        loadingDialog.showDialog();
+        adapter.showLoading(true);
     }
 
     @Override
     public void dismissLoadingDialog() {
-        loadingDialog.dismiss();
+        adapter.showLoading(false);
+    }
+
+    @Override
+    public void renderCategory(List<CategoryViewModel> map) {
+        adapter.renderItems(map);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 }
