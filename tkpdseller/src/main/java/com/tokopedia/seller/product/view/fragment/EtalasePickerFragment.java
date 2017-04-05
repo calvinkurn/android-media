@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.view.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +17,7 @@ import com.tokopedia.seller.product.di.component.EtalasePickerComponent;
 import com.tokopedia.seller.product.di.component.EtalasePickerViewComponent;
 import com.tokopedia.seller.product.di.module.EtalasePickerViewModule;
 import com.tokopedia.seller.product.view.adapter.etalase.EtalasePickerAdapter;
+import com.tokopedia.seller.product.view.adapter.etalase.EtalasePickerAdapterListener;
 import com.tokopedia.seller.product.view.model.etalase.MyEtalaseViewModel;
 import com.tokopedia.seller.product.view.presenter.EtalasePickerPresenter;
 
@@ -27,13 +29,14 @@ import javax.inject.Inject;
  * @author sebastianuskh on 4/5/17.
  */
 
-public class EtalasePickerFragment extends BaseDaggerFragment implements EtalasePickerView{
+public class EtalasePickerFragment extends BaseDaggerFragment implements EtalasePickerView, EtalasePickerAdapterListener {
     public static final String TAG = "EtalasePicker";
 
     @Inject
     EtalasePickerPresenter presenter;
 
     private EtalasePickerAdapter adapter;
+    private EtalasePickerFragmentListener listener;
 
     public static EtalasePickerFragment createInstance() {
         return new EtalasePickerFragment();
@@ -47,6 +50,16 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
                 .etalasePickerViewModule(new EtalasePickerViewModule())
                 .build();
         component.inject(this);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof EtalasePickerFragmentListener){
+            this.listener = (EtalasePickerFragmentListener) context;
+        } else {
+            throw new RuntimeException("Activity must impelement EtalasePickerFragmentListener");
+        }
     }
 
     @Nullable
@@ -69,7 +82,7 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
     private void setupRecyclerView(View view) {
         RecyclerView etalaseRecyclerView = (RecyclerView) view.findViewById(R.id.etalase_picker_recycler_view);
         etalaseRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new EtalasePickerAdapter();
+        adapter = new EtalasePickerAdapter(this);
         etalaseRecyclerView.setAdapter(adapter);
     }
 
@@ -96,5 +109,10 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
     @Override
     public void renderEtalaseList(List<MyEtalaseViewModel> etalases) {
         adapter.renderData(etalases);
+    }
+
+    @Override
+    public void addNewEtalase() {
+        listener.addNewEtalase();
     }
 }

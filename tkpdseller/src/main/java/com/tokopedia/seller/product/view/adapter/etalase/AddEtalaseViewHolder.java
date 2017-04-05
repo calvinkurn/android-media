@@ -12,7 +12,4 @@ class AddEtalaseViewHolder extends RecyclerView.ViewHolder {
         super(view);
     }
 
-    public void renderView() {
-
-    }
 }

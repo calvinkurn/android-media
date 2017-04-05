@@ -11,13 +11,17 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.di.component.DaggerEtalasePickerComponent;
 import com.tokopedia.seller.product.di.component.EtalasePickerComponent;
 import com.tokopedia.seller.product.di.module.EtalasePickerModule;
+import com.tokopedia.seller.product.view.dialog.AddEtalaseDialog;
 import com.tokopedia.seller.product.view.fragment.EtalasePickerFragment;
+import com.tokopedia.seller.product.view.fragment.EtalasePickerFragmentListener;
 
 /**
  * @author sebastianuskh on 4/5/17.
  */
 
-public class EtalasePickerActivity extends TActivity implements HasComponent<EtalasePickerComponent> {
+public class EtalasePickerActivity
+        extends TActivity
+        implements HasComponent<EtalasePickerComponent>, EtalasePickerFragmentListener {
 
     private FragmentManager fragmentManager;
     private EtalasePickerComponent component;
@@ -54,5 +58,11 @@ public class EtalasePickerActivity extends TActivity implements HasComponent<Eta
     @Override
     public EtalasePickerComponent getComponent() {
         return component;
+    }
+
+    @Override
+    public void addNewEtalase() {
+        AddEtalaseDialog dialog = new AddEtalaseDialog();
+        dialog.show(fragmentManager, AddEtalaseDialog.TAG);
     }
 }
