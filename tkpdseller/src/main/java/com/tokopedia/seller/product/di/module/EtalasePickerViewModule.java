@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.di.module;
 
 import com.tokopedia.seller.product.di.scope.EtalasePickerViewScope;
+import com.tokopedia.seller.product.domain.interactor.FetchMyEtalaseUseCase;
 import com.tokopedia.seller.product.view.presenter.EtalasePickerPresenterImpl;
 import com.tokopedia.seller.product.view.presenter.EtalasePickerPresenter;
 
@@ -16,7 +17,9 @@ public class EtalasePickerViewModule {
 
     @EtalasePickerViewScope
     @Provides
-    EtalasePickerPresenter provideEtalasePickerPresenter(){
-        return new EtalasePickerPresenterImpl();
+    EtalasePickerPresenter provideEtalasePickerPresenter(FetchMyEtalaseUseCase fetchMyEtalaseUseCase){
+        return new EtalasePickerPresenterImpl(fetchMyEtalaseUseCase);
     }
+
 }
+

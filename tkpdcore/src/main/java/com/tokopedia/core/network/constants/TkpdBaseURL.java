@@ -240,11 +240,13 @@ public class TkpdBaseURL {
     }
 
     public static class Shop {
-        public static final String URL_MY_SHOP = BASE_DOMAIN + "v4/myshop/";
+        public static final String PATH_MY_SHOP = "v4/myshop/";
+        public static final String URL_MY_SHOP = BASE_DOMAIN + PATH_MY_SHOP;
         public static final String URL_MY_SHOP_ACTION = BASE_DOMAIN + "v4/action/myshop/";
         public static final String URL_MY_SHOP_ADDRESS = BASE_DOMAIN + "v4/myshop-address/";
         public static final String URL_MY_SHOP_ADDRESS_ACTION = BASE_DOMAIN + "v4/action/myshop-address/";
-        public static final String URL_MY_SHOP_ETALASE = BASE_DOMAIN + "v4/myshop-etalase/";
+        public static final String PATH_MY_SHOP_ETALASE = "v4/myshop-etalase/";
+        public static final String URL_MY_SHOP_ETALASE = BASE_DOMAIN + PATH_MY_SHOP_ETALASE;
         public static final String URL_MY_SHOP_ETALASE_ACTION = BASE_DOMAIN + "v4/action/myshop-etalase/";
         public static final String URL_MY_SHOP_INFO_ACTION = BASE_DOMAIN + "v4/action/myshop-info/";
         public static final String URL_MY_SHOP_INFO = BASE_DOMAIN + "v4/myshop-info/";

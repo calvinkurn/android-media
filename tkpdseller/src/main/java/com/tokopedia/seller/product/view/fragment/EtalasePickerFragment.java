@@ -13,10 +13,8 @@ import com.tokopedia.seller.product.di.component.DaggerEtalasePickerViewComponen
 import com.tokopedia.seller.product.di.component.EtalasePickerComponent;
 import com.tokopedia.seller.product.di.component.EtalasePickerViewComponent;
 import com.tokopedia.seller.product.di.module.EtalasePickerViewModule;
+import com.tokopedia.seller.product.domain.model.MyEtalaseListDomainModel;
 import com.tokopedia.seller.product.view.presenter.EtalasePickerPresenter;
-import com.tokopedia.seller.topads.data.model.data.Etalase;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -77,7 +75,7 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
     }
 
     @Override
-    public void renderEtalaseList(List<Etalase> etalases) {
+    public void renderEtalaseList(MyEtalaseListDomainModel etalases) {
 
     }
 }

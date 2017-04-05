@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.view.fragment;
 
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.seller.product.domain.model.MyEtalaseListDomainModel;
 import com.tokopedia.seller.topads.data.model.data.Etalase;
 
 import java.util.List;
@@ -14,5 +15,5 @@ public interface EtalasePickerView extends CustomerView {
 
     void dismissLoading();
 
-    void renderEtalaseList(List<Etalase> etalases);
+    void renderEtalaseList(MyEtalaseListDomainModel etalases);
 }

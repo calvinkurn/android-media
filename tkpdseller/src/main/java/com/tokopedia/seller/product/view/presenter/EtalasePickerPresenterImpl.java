@@ -1,5 +1,8 @@
 package com.tokopedia.seller.product.view.presenter;
 
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.seller.product.domain.interactor.FetchMyEtalaseUseCase;
+import com.tokopedia.seller.product.domain.model.MyEtalaseListDomainModel;
 import com.tokopedia.seller.topads.data.model.data.Etalase;
 
 import java.util.List;
@@ -12,17 +15,19 @@ import rx.Subscriber;
 
 public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
 
-    public EtalasePickerPresenterImpl() {
+    private final FetchMyEtalaseUseCase fetchMyEtalaseUseCase;
 
+    public EtalasePickerPresenterImpl(FetchMyEtalaseUseCase fetchMyEtalaseUseCase) {
+        this.fetchMyEtalaseUseCase = fetchMyEtalaseUseCase;
     }
 
     public void fetchEtalaseData(String shopId) {
         checkViewAttached();
         getView().showLoading();
-
+        fetchMyEtalaseUseCase.execute(RequestParams.EMPTY, new FetchEtalaseDataSubscriber());
     }
 
-    private class FetchEtalaseDataSubscriber extends Subscriber<List<Etalase>> {
+    private class FetchEtalaseDataSubscriber extends Subscriber<MyEtalaseListDomainModel> {
         @Override
         public void onCompleted() {
 
@@ -36,7 +41,7 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
         }
 
         @Override
-        public void onNext(List<Etalase> etalases) {
+        public void onNext(MyEtalaseListDomainModel etalases) {
             checkViewAttached();
             getView().renderEtalaseList(etalases);
         }
