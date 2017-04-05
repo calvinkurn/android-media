@@ -51,7 +51,6 @@ import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
-import com.tokopedia.ride.common.ride.domain.model.Driver;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.ontrip.di.OnTripDependencyInjection;
@@ -76,6 +75,7 @@ import static com.tokopedia.ride.ontrip.view.OnTripActivity.TASK_TAG_PERIODIC;
  */
 public class OnTripMapFragment extends BaseFragment implements OnTripMapContract.View, OnMapReadyCallback {
     private static final int REQUEST_CODE_TOS_CONFIRM_DIALOG = 1005;
+    private static final int REQUEST_CODE_DRIVER_NOT_FOUND = 1006;
     public static final String EXTRA_RIDE_REQUEST_RESULT = "EXTRA_RIDE_REQUEST_RESULT";
     OnTripMapContract.Presenter presenter;
     ConfirmBookingViewModel confirmBookingViewModel;
@@ -126,6 +126,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     public interface OnFragmentInteractionListener {
         void actionCancelBooking();
+
+        void actionNoDriverAvailable();
     }
 
     public OnTripMapFragment() {
@@ -227,14 +229,12 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void showLoadingWaitingResponse() {
         processingLayout.setVisibility(View.VISIBLE);
-        processingDescription.setVisibility(View.VISIBLE);
         loaderLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoadingWaitingResponse() {
         processingLayout.setVisibility(View.GONE);
-        processingDescription.setVisibility(View.GONE);
         loaderLayout.setVisibility(View.GONE);
     }
 
@@ -369,6 +369,14 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                     Toast.makeText(getActivity(), "User doenst accept tos", Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case REQUEST_CODE_DRIVER_NOT_FOUND:
+                if (resultCode == DriverNotFoundDialogFragment.BOOK_AGAIN_RESULT_CODE) {
+                    getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
+                    getActivity().finish();
+                } else {
+                    getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
+                    getActivity().finish();
+                }
         }
     }
 
@@ -382,7 +390,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 .setService(GetCurrentRideRequestService.class)
                 .setTag(TASK_TAG_PERIODIC)
                 .setExtras(bundle)
-                .setPeriod(2)
+                .setPeriod(2L)
                 .build();
         mGcmNetworkManager.schedule(task);
     }
@@ -393,6 +401,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
+    public void showBottomSection() {
+        bottomContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void onSuccessCreateRideRequest(RideRequest rideRequest) {
         rideConfiguration.setActiveSource(confirmBookingViewModel.getSource());
         rideConfiguration.setActiveDestination(confirmBookingViewModel.getDestination());
@@ -400,7 +413,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void renderAcceptedRequest(RideRequest result) {
-        bottomContainer.setVisibility(View.VISIBLE);
         replaceFragment(R.id.bottom_container, DriverDetailFragment.newInstance(result));
         if (result.getLocation() != null) {
             reDrawDriverMarker(result.getLocation().getLatitude(), result.getLocation().getLongitude());
@@ -437,6 +449,20 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         AlertDialog dialog = dialogBuilder.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.show();
+    }
+
+    @Override
+    public void showNoDriverAvailableDialog() {
+
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("driver_not_found");
+        if (previousDialog != null) {
+            fragmentTransaction.remove(previousDialog);
+        }
+        fragmentTransaction.addToBackStack(null);
+        DialogFragment dialogFragment = DriverNotFoundDialogFragment.newInstance();
+        dialogFragment.setTargetFragment(this, REQUEST_CODE_DRIVER_NOT_FOUND);
+        dialogFragment.show(getFragmentManager().beginTransaction(), "driver_not_found");
     }
 
     @Override
@@ -543,5 +569,16 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 .title("Driver");
 
         mDriverMarker = mGoogleMap.addMarker(options);
+    }
+
+    @Override
+    public void hideRideRequestStatus() {
+        processingDescription.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showRequestRideStatus(String message) {
+        processingDescription.setVisibility(View.VISIBLE);
+        processingDescription.setText(message);
     }
 }
