@@ -195,6 +195,11 @@
             android:name=".product.view.activity.CategoryPickerActivity"
             android:label="title_activity_category_picker" />
 
+        <activity
+            android:name=".product.view.activity.CatalogPickerActivity"
+            android:label="@string/title_activity_catalog_picker"
+            android:exported="true"/>
+
         <service
             android:name="com.tokopedia.seller.selling.SellingService"
             android:exported="false" />

@@ -254,6 +254,7 @@
 
     <string name="title_activity_top_ads_list">Tambah Produk</string>
     <string name="title_activity_category_picker">Pilih Kategori</string>
+    <string name="title_activity_catalog_picker">Pilih Katalog</string>
 
     <string name="delete">Delete</string>
     <string name="insert">Insert</string>
